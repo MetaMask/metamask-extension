@@ -34,38 +34,52 @@ export const SettingsSearchResults = ({
       className="flex-1 overflow-y-auto"
       data-testid="settings-search-results"
     >
-      {results.map((item) => (
-        <button
-          key={`${item.tabRoute}-${item.titleKey}`}
-          className="border-none bg-transparent w-full text-left hover:bg-background-default-hover"
-          onClick={() => onClickResult(item)}
-          data-testid="settings-search-result-item"
-        >
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            padding={4}
-            gap={3}
+      {results.map((item) => {
+        // Collapse consecutive duplicate segments, so a setting whose title matches its tab/sub-page label renders once.
+        const breadcrumb = [
+          item.parentTabLabelKey,
+          item.tabLabelKey,
+          item.titleKey,
+        ]
+          .filter((key): key is string => Boolean(key))
+          .map((key) => t(key))
+          .filter((label, index, labels) => label !== labels[index - 1])
+          .join(' > ');
+
+        return (
+          <button
+            key={`${item.tabRoute}-${item.titleKey}`}
+            className="border-none bg-transparent w-full text-left hover:bg-background-default-hover"
+            onClick={() => onClickResult(item)}
+            data-testid="settings-search-result-item"
           >
-            <Icon
-              name={item.iconName as IconName}
-              size={IconSize.Lg}
-              color={IconColor.IconAlternative}
-            />
             <Box
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
-              className="flex-1 min-w-0"
+              padding={4}
+              gap={3}
             >
-              <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-                {item.parentTabLabelKey
-                  ? `${t(item.parentTabLabelKey)} > ${t(item.tabLabelKey)} > ${t(item.titleKey)}`
-                  : `${t(item.tabLabelKey)} > ${t(item.titleKey)}`}
-              </Text>
+              <Icon
+                name={item.iconName as IconName}
+                size={IconSize.Lg}
+                color={IconColor.IconAlternative}
+              />
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                className="flex-1 min-w-0"
+              >
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {breadcrumb}
+                </Text>
+              </Box>
             </Box>
-          </Box>
-        </button>
-      ))}
+          </button>
+        );
+      })}
       {results.length === 0 && (
         <Box flexDirection={BoxFlexDirection.Column} padding={4}>
           <Box className="pt-3 pb-3">

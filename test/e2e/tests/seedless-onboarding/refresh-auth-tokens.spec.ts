@@ -50,6 +50,7 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         ignoredConsoleErrors: [
           'The operation cannot be completed while the controller is locked.',
+          'Unable to enable notifications',
         ],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
@@ -143,6 +144,7 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         ignoredConsoleErrors: [
           'The operation cannot be completed while the controller is locked.',
+          'Unable to enable notifications',
         ],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {

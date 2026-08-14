@@ -78,6 +78,7 @@ exports[`PersonalSignInfo handle reverse string properly 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>
@@ -222,6 +223,7 @@ exports[`PersonalSignInfo renders correctly for personal sign request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>

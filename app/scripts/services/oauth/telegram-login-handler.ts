@@ -101,11 +101,7 @@ export class TelegramLoginHandler extends BaseLoginHandler {
     const initiateUrl = new URL(
       `${this.#getProfileSyncAuthApiUrl()}${this.OAUTH_SERVER_INITIATE_PATH}`,
     );
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     initiateUrl.searchParams.set('code_challenge', challenge);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     initiateUrl.searchParams.set('app_redirect_uri', appRedirectUri);
     initiateUrl.searchParams.set('state', this.#state);
 
@@ -194,8 +190,6 @@ export class TelegramLoginHandler extends BaseLoginHandler {
       }
     }
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     mintData.profile_pairing_token = hydraIdToken;
 
     return mintData;

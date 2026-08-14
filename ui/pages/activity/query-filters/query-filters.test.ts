@@ -1,5 +1,5 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
@@ -185,6 +185,7 @@ describe('query filters', () => {
         chainId: 'eip155:1',
         status: 'success',
         timestamp: 1778593067000,
+        hash: '0xvalid',
         data: {
           from: subjectAddress,
           to: otherAddress,
@@ -195,7 +196,6 @@ describe('query filters', () => {
             symbol: 'USDC',
             assetId: toAssetId(tokenAddress, 'eip155:1'),
           },
-          hash: '0xvalid',
         },
       },
     ]);

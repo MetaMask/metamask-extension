@@ -1,5 +1,5 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
 import ClearMetametricsData from '../clear-metametrics-data';
@@ -25,12 +25,12 @@ import {
   getOptedIn,
   getShowDataDeletionErrorModal,
   getShowDeleteMetaMetricsDataModal,
-  getLatestMetricsEventTimestamp,
 } from '../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
 import DataDeletionErrorModal from '../data-deletion-error-modal';
 import { formatDate } from '../../../helpers/utils/util';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
+import { useDispatch } from '../../../store/hooks';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -52,12 +52,13 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     <C extends React.ElementType = 'div'>(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       { defaultPrivacySettings, ...props }: DeleteMetaMetricsDataButtonProps<C>,
       ref: PolymorphicRef<C>,
     ) => {
       const t = useI18nContext();
       const dispatch = useDispatch();
+      const [deletionRequestedThisSession, setDeletionRequestedThisSession] =
+        useState(false);
 
       const analyticsId = useSelector(getAnalyticsId);
       const metaMetricsDataDeletionStatus: DeleteRegulationStatus = useSelector(
@@ -77,9 +78,6 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
       const showDataDeletionErrorModal = useSelector(
         getShowDataDeletionErrorModal,
       );
-      const latestMetricsEventTimestamp = useSelector(
-        getLatestMetricsEventTimestamp,
-      );
       const completedMetaMetricsOnboarding = useSelector(
         getCompletedMetaMetricsOnboarding,
       );
@@ -93,7 +91,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
             DeleteRegulationStatus.Running,
             DeleteRegulationStatus.Finished,
           ].includes(metaMetricsDataDeletionStatus) &&
-          metaMetricsDataDeletionTimestamp > latestMetricsEventTimestamp;
+          deletionRequestedThisSession;
       }
       const privacyPolicyLink = (
         <a
@@ -152,7 +150,11 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
               </ButtonPrimary>
             </div>
           </Box>
-          {showDeleteMetaMetricsDataModal && <ClearMetametricsData />}
+          {showDeleteMetaMetricsDataModal && (
+            <ClearMetametricsData
+              onDeletionSuccess={() => setDeletionRequestedThisSession(true)}
+            />
+          )}
           {showDataDeletionErrorModal && <DataDeletionErrorModal />}
         </>
       );

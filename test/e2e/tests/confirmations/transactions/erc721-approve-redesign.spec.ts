@@ -65,7 +65,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
 
           await testDapp.clickERC721ApproveButton();
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await permitConfirmation.verifyNftTitle();
+          await permitConfirmation.checkTitle('Withdrawal request');
           await setApprovalForAllConfirmation.checkSetApprovalForAllSubHeading();
           await erc20ApproveConfirmation.checkEstimatedChangesSection();
           await erc20ApproveConfirmation.checkWithdrawSection();

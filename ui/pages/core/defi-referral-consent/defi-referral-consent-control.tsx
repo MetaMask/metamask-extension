@@ -9,20 +9,17 @@ import {
   FontWeight,
   Text,
   TextAlign,
+  TextButton,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBoolean } from '../../../hooks/useBoolean';
-import { PartnerLink } from './partner-link';
 import { DefiReferralConsentProps } from './defi-referral-consent.types';
 
-const PartnerImage = ({
+const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
   partnerId,
   partnerName,
-}: {
-  partnerId: string;
-  partnerName: string;
 }) => {
   return (
     <img
@@ -32,13 +29,13 @@ const PartnerImage = ({
   );
 };
 
-export const DefiReferralConsentControl = ({
+export const DefiReferralConsentControl: React.FC<DefiReferralConsentProps> = ({
   onActionComplete,
   selectedAddress,
   partnerId,
   partnerName,
   learnMoreUrl,
-}: DefiReferralConsentProps) => {
+}) => {
   const t = useI18nContext();
   const { value: isChecked, toggle } = useBoolean(true);
 
@@ -77,10 +74,11 @@ export const DefiReferralConsentControl = ({
         </Text>
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t(defiReferralSubtitle)}{' '}
-          <PartnerLink
-            text={`${t('learnMoreUpperCase')}.`}
-            url={learnMoreUrl}
-          />
+          <TextButton asChild>
+            <a href={learnMoreUrl} target="_blank" rel="noopener noreferrer">
+              {`${t('learnMoreUpperCase')}.`}
+            </a>
+          </TextButton>
         </Text>
       </Box>
       <Box paddingBottom={6} paddingHorizontal={4}>

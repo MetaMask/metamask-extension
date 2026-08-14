@@ -26,6 +26,21 @@ import {
 import SetupPasskeyContent from '../../../components/app/setup-passkey-content';
 import SetupPasskey from './setup-passkey';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../../shared/lib/passkey', () => ({
   ...jest.requireActual<typeof import('../../../../shared/lib/passkey')>(
     '../../../../shared/lib/passkey',
@@ -128,7 +143,7 @@ const buildMockStore = (
   configureStore({
     metamask: {
       firstTimeFlowType,
-      completedMetaMetricsOnboarding: false,
+      consentDecisionMade: false,
       optedIn: false,
       ...metamaskOverrides,
     },
@@ -291,7 +306,7 @@ describe('SetupPasskey', () => {
         .spyOn(BrowserRuntimeUtils, 'getBrowserName')
         .mockReturnValue('chrome');
       const mockStore = buildMockStore(FirstTimeFlowType.import, {
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
       });
       const { getByText } = renderSetupPasskey(mockStore);

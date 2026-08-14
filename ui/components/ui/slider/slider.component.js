@@ -49,7 +49,7 @@ const sliderSx = {
 };
 
 const Slider = ({
-  editText,
+  editText = 'Edit',
   infoText,
   onEdit,
   titleDetail,
@@ -103,10 +103,6 @@ const Slider = ({
     </div>
   </div>
 );
-
-Slider.defaultProps = {
-  editText: 'Edit',
-};
 
 Slider.propTypes = {
   /**

@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   IconColor,
   BoxJustifyContent,
@@ -16,22 +16,16 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import {
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import {
-  forceUpdateMetamaskState,
-  resetOnboarding,
-} from '../../../store/actions';
+import { useOnboardingReset } from '../hooks/useOnboardingReset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../../srp-input-form';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
@@ -44,15 +38,13 @@ const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ImportSRP({
   submitSecretRecoveryPhrase,
 }: ImportSRPProps) {
-  const dispatch = useDispatch();
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [srpError, setSrpError] = useState('');
   const navigate = useNavigate();
+  const resetOnboardingAndReturn = useOnboardingReset();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const t = useI18nContext();
   const currentKeyring = useSelector(getCurrentKeyring);
@@ -63,15 +55,11 @@ export default function ImportSRP({
       navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
     }
   }, [currentKeyring, navigate, isWalletResetInProgress]);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // reset onboarding flow
-    await dispatch(resetOnboarding());
-    await forceUpdateMetamaskState(dispatch);
-
-    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    await resetOnboardingAndReturn();
   };
 
   const onContinue = useCallback(() => {
@@ -88,19 +76,23 @@ export default function ImportSRP({
 
     submitSecretRecoveryPhrase?.(secretRecoveryPhrase);
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
+      )
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
     navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
   }, [
     secretRecoveryPhrase,
     t,
     hdEntropyIndex,
+    createEventBuilder,
     trackEvent,
     navigate,
     submitSecretRecoveryPhrase,

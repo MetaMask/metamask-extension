@@ -40,28 +40,24 @@ export const ModalHeader = ({
     <HeaderBase
       className={classnames('mm-modal-header', className)}
       startAccessory={
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         startAccessory ||
         (onBack && (
           <ButtonIcon
             iconName={IconName.ArrowLeft}
             ariaLabel={t('back')}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={onBack}
             {...backButtonProps}
           />
         ))
       }
       endAccessory={
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         endAccessory ||
         (onClose && (
           <ButtonIcon
             iconName={IconName.Close}
             ariaLabel={t('close')}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={onClose}
             {...closeButtonProps}
           />

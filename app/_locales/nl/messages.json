@@ -66,9 +66,6 @@
   "decimal": {
     "message": "Decimalen van precisie"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
-  },
   "done": {
     "message": "Gedaan"
   },
@@ -152,9 +149,6 @@
   "message": {
     "message": "Bericht"
   },
-  "mustSelectOne": {
-    "message": "Moet ten minste één token selecteren."
-  },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
     "description": "User is important an account and needs to add a file to continue"
@@ -227,9 +221,6 @@
   },
   "sign": {
     "message": "Teken"
-  },
-  "signatureRequest": {
-    "message": "Ondertekeningsverzoek"
   },
   "stateLogs": {
     "message": "Staatslogboeken"

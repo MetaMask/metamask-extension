@@ -3,6 +3,23 @@ import { Driver } from '../../webdriver/driver';
 import DeepLink from '../pages/deep-link-page';
 import LoginPage from '../pages/login-page';
 
+async function continueFromDeepLinkInterstitial(
+  driver: Driver,
+  shouldShowCheckbox: boolean,
+): Promise<void> {
+  const deepLink = new DeepLink(driver);
+  console.log('Checking if deep link page is loaded');
+  await deepLink.checkPageIsLoaded();
+
+  // we should render the checkbox when the link is "signed"
+  console.log('Checking if deep link interstitial checkbox exists');
+  const hasCheckbox = await deepLink.hasSkipDeepLinkInterstitialCheckBox();
+  assert.equal(hasCheckbox, shouldShowCheckbox, 'Checkbox presence mismatch');
+
+  console.log('Clicking continue button');
+  await deepLink.clickContinueButton();
+}
+
 /**
  * Opens a deep link URL, verifies the checkbox, navigates through the interstitial page,
  * handles login if locked, and verifies the target page has loaded.
@@ -28,17 +45,7 @@ export const navigateDeepLinkToDestination = async (
   console.log('Opening deep link URL');
   await driver.openNewURL(deepLinkUrl);
 
-  const deepLink = new DeepLink(driver);
-  console.log('Checking if deep link page is loaded');
-  await deepLink.checkPageIsLoaded();
-
-  // we should render the checkbox when the link is "signed"
-  console.log('Checking if deep link interstitial checkbox exists');
-  const hasCheckbox = await deepLink.hasSkipDeepLinkInterstitialCheckBox();
-  assert.equal(hasCheckbox, shouldShowCheckbox, 'Checkbox presence mismatch');
-
-  console.log('Clicking continue button');
-  await deepLink.clickContinueButton();
+  await continueFromDeepLinkInterstitial(driver, shouldShowCheckbox);
 
   // If wallet is locked, handle the login flow
   if (locked === 'locked') {
@@ -54,4 +61,28 @@ export const navigateDeepLinkToDestination = async (
   const targetPage = new TargetPage(driver);
   console.log('Checking if target page is loaded');
   await targetPage.checkPageIsLoaded();
+};
+
+/**
+ * Opens a deep link URL, navigates through the interstitial page, and verifies
+ * the external redirect.
+ *
+ * @param driver - The webdriver instance.
+ * @param deepLinkUrl - The prepared deep link URL to navigate to.
+ * @param shouldShowCheckbox - Whether the checkbox should be rendered.
+ * @param expectedUrl - The external URL expected after continuing.
+ */
+export const navigateDeepLinkToExternalRedirect = async (
+  driver: Driver,
+  deepLinkUrl: string,
+  shouldShowCheckbox: boolean,
+  expectedUrl: string,
+): Promise<void> => {
+  console.log('Opening external redirect deep link URL');
+  await driver.openNewURL(deepLinkUrl);
+
+  await continueFromDeepLinkInterstitial(driver, shouldShowCheckbox);
+
+  console.log(`Waiting for external redirect to ${expectedUrl}`);
+  await driver.waitForUrl({ url: expectedUrl });
 };

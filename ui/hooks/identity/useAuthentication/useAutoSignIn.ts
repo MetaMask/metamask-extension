@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import {
@@ -11,6 +11,7 @@ import {
   selectNeedsProfilePairing,
 } from '../../../selectors/identity/authentication';
 import { requestProfilePairing } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import { useSignIn } from './useSignIn';
 
 /**

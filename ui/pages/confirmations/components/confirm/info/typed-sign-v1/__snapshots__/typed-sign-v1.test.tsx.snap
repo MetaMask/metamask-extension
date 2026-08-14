@@ -80,6 +80,7 @@ exports[`TypedSignInfo correctly renders typed sign data request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          data-testid="confirmation__details-origin"
         >
           metamask.github.io
         </p>

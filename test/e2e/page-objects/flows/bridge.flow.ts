@@ -1,7 +1,7 @@
-import type { Hex } from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
-import { ASSET_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
-import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
+import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../pages/account-list-page';
 import ActivityTab from '../pages/home/activity-tab';
@@ -48,9 +48,7 @@ export const verifySubmittedSwapTransaction = async ({
   const expectedDestToken = quote.tokenTo ?? expectedSwapTokens?.tokenTo;
 
   if (quote.unapproved) {
-    action = isBridge
-      ? `Bridged ${expectedSrcToken}`
-      : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
+    action = isBridge ? `Bridged ${expectedSrcToken}` : 'Swapped';
     await activityTab.checkTxAction({
       action,
       confirmedTx: expectedTransactionsCount,
@@ -61,9 +59,7 @@ export const verifySubmittedSwapTransaction = async ({
       txIndex: 2,
     });
   } else {
-    action = isBridge
-      ? `Bridged ${expectedSrcToken}`
-      : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
+    action = isBridge ? `Bridged ${expectedSrcToken}` : 'Swapped';
     await activityTab.checkTxAction({
       action,
       confirmedTx: expectedTransactionsCount,
@@ -108,6 +104,7 @@ export const verifySubmittedSwapTransaction = async ({
  * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
  * @param testParams.expectedStatus - The expected state of the transaction
  * @param testParams.skipStatusPage - Whether to skip the status page after submitting
+ * @param testParams.openPickersWithDebounce - Whether to open the asset pickers only after the prepare page has sent its debounced quote parameter update. Set this only when the test asserts on `Input Changed` metrics events.
  */
 export const bridgeTransaction = async ({
   driver,
@@ -121,6 +118,7 @@ export const bridgeTransaction = async ({
   expectedActivityAmount,
   submitDelay,
   skipStatusPage,
+  openPickersWithDebounce,
 }: {
   driver: Driver;
   quote: BridgeQuote;
@@ -133,6 +131,7 @@ export const bridgeTransaction = async ({
   expectedActivityAmount?: string;
   submitDelay?: number;
   skipStatusPage?: boolean;
+  openPickersWithDebounce?: boolean;
 }) => {
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
@@ -141,7 +140,7 @@ export const bridgeTransaction = async ({
   const bridgePage = new BridgeQuotePage(driver);
 
   await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
-  await bridgePage.enterBridgeQuote(quote);
+  await bridgePage.enterBridgeQuote(quote, { openPickersWithDebounce });
   await bridgePage.waitForQuote();
   await bridgePage.checkExpectedNetworkFeeIsDisplayed();
   submitDelay && (await driver.delay(submitDelay));
@@ -166,6 +165,41 @@ export const bridgeTransaction = async ({
     expectedDetailsDestAmount,
     expectedActivityAmount,
   });
+};
+
+const waitForAssetPageNavigation = async (
+  driver: Driver,
+  {
+    chainId,
+    address,
+    assetId,
+  }: {
+    chainId: Hex;
+    address: string;
+    assetId: CaipAssetType;
+  },
+) => {
+  const lowercaseAssetId = assetId.toLowerCase() as CaipAssetType;
+  const encodedLowercasePath = buildAssetRoutePath(lowercaseAssetId);
+  const checksummedAssetId = toAssetId(address, chainId);
+  const encodedChecksumPath = checksummedAssetId
+    ? buildAssetRoutePath(checksummedAssetId)
+    : encodedLowercasePath;
+  const caipChainId = toEvmCaipChainId(chainId);
+  const addressNeedle = address.toLowerCase().slice(2);
+
+  await driver.waitUntil(
+    async () => {
+      const url = (await driver.getCurrentUrl()).toLowerCase();
+      return (
+        url.includes(encodedLowercasePath.toLowerCase()) ||
+        url.includes(encodedChecksumPath.toLowerCase()) ||
+        (url.includes(`/asset/${caipChainId.toLowerCase()}`) &&
+          url.includes(addressNeedle))
+      );
+    },
+    { timeout: driver.timeout, interval: 100 },
+  );
 };
 
 /**
@@ -194,16 +228,32 @@ export const goToAssetPage = async ({
 }) => {
   const bridgePage = new BridgeQuotePage(driver);
   const picker = assetPicker ?? bridgePage.sourceAssetPickerButton;
-  const expectedAssetId = toAssetId(address, chainId)?.toLowerCase();
-  const expectedUrl = `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(toChecksumHexAddress(address))}`;
+  const assetId = toAssetId(address, chainId);
+  if (!assetId) {
+    throw new Error('Unable to resolve asset id for bridge flow');
+  }
+  // Bridge search results use lowercase erc20 addresses; wallet-held assets may
+  // use checksummed CAIP-19 ids from toAssetId().
+  const normalizedAssetId = assetId.toLowerCase() as typeof assetId;
 
-  await bridgePage.searchAndClickAssetInfo({
-    token,
-    assetId: expectedAssetId ?? '',
-    assetPicker: picker,
-  });
+  try {
+    await bridgePage.searchAndClickAssetInfo({
+      token,
+      assetId: normalizedAssetId,
+      assetPicker: picker,
+    });
+  } catch (error) {
+    if (assetId === normalizedAssetId) {
+      throw error;
+    }
+    await bridgePage.searchAndClickAssetInfo({
+      token,
+      assetId,
+      assetPicker: picker,
+    });
+  }
 
-  await driver.waitForUrlContaining({ url: expectedUrl });
+  await waitForAssetPageNavigation(driver, { chainId, address, assetId });
   const assetPage = new TokenOverviewPage(driver);
   await assetPage.checkPageIsLoaded();
 };
