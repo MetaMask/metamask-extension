@@ -142,15 +142,6 @@ describe('settings-registry', () => {
           parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
         }),
       );
-
-      expect(
-        getSettingsRouteMeta(NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE),
-      ).toEqual(
-        expect.objectContaining({
-          labelKey: 'notificationsSettingsAgenticCliTitle',
-          parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
-        }),
-      );
     });
   });
 

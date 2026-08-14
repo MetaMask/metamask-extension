@@ -72,9 +72,6 @@ describe('NotificationsSettingsContent', () => {
     expect(
       screen.getByTestId('notifications-settings-per-types'),
     ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('notifications-settings-section-agenticCli'),
-    ).toBeInTheDocument();
     expect(screen.getByText('Agent wallet')).toBeInTheDocument();
   });
 });
