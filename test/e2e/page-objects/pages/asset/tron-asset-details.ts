@@ -143,6 +143,10 @@ class TronAssetDetailsPage {
     );
   }
 
+  async checkDailyResourcesSectionIsAbsent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.tronDailyResourcesSection);
+  }
+
   /**
    * Asserts Receive is available via the batch-sell-enabled More overflow menu.
    * Requires `batchSell: { enabled: true }` in test fixtures.

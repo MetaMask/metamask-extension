@@ -6,20 +6,41 @@ import HomePage from '../pages/home/homepage';
 import NonEvmHomepage from '../pages/home/non-evm-homepage';
 import SendPage from '../pages/send/send-page';
 import { TRON_CHAIN_ID } from '../../tests/tron/mocks/common-tron';
+import { addMultipleAccounts } from './add-account.flow';
 import { login } from './login.flow';
 import { selectTronNetwork } from './tron-network.flow';
+import { waitUntilAccountTreeSyncIdle } from './tron-account-derivation.flow';
 
 const TRON_CONFIRM_TIMEOUT_MS = 30_000;
 const TRON_ACTIVITY_PENDING_OR_CONFIRMED_SELECTOR =
   '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"], [data-tx-status="confirmed"]';
 
+/**
+ * Logs in, selects Tron, and opens the Send amount/recipient screen.
+ *
+ * When `accountIndex` is greater than 0, this flow creates that many extra HD
+ * accounts and switches to `Account ${accountIndex + 1}` first.
+ * Send specs that share one Java-Tron node use a distinct derived address per
+ * mutating test so chain state does not leak across cases.
+ *
+ * @param options - Flow options.
+ * @param options.accountIndex - HD account index to land on. `0` is Account 1.
+ * @param options.driver - The webdriver instance.
+ * @param options.symbol - Token symbol used for balance assertions and Send.
+ * @param options.assetId - Optional asset id for the Send deep link.
+ * @param options.expectedNativeBalance - Homepage TRX balance to wait for.
+ * @param options.expectedTokenBalance - Homepage token balance to wait for.
+ * @returns The loaded Send page.
+ */
 export async function landOnTronSendScreen({
+  accountIndex = 0,
   driver,
   symbol,
   assetId,
   expectedNativeBalance = '6.072',
   expectedTokenBalance,
 }: {
+  accountIndex?: number;
   driver: Driver;
   symbol: 'TRX' | 'USDT' | 'USDD' | 'HTX' | 'SEED';
   assetId?: string;
@@ -27,13 +48,29 @@ export async function landOnTronSendScreen({
   expectedTokenBalance?: string;
 }): Promise<SendPage> {
   await login(driver, { validateBalance: false });
-  await selectTronNetwork(driver);
-
-  // Refresh re-hydrates the UI from background state so asynchronously-fetched
-  // Snap balances appear reliably in the token list (same pattern as assets.spec).
-  await driver.refresh();
-
   const home = new NonEvmHomepage(driver);
+  if (accountIndex > 0) {
+    await addMultipleAccounts({
+      accountToSelect: `Account ${accountIndex + 1}`,
+      driver,
+      numberOfAccounts: accountIndex,
+    });
+    // Runtime-created non-EVM accounts must finish loading before a network
+    // switch or refresh. In-flight Snap derivation slows the service worker
+    // and makes the next page load time out on `.controller-loaded`.
+    await home.checkPageIsLoaded();
+    await home.waitForNonEvmAccountsLoaded();
+    await waitUntilAccountTreeSyncIdle(driver);
+  }
+  await selectTronNetwork(driver);
+  await waitUntilAccountTreeSyncIdle(driver);
+
+  // Refresh re-hydrates Account 1 from background state so Snap balances
+  // appear in the token list. Account switches already trigger that hydration.
+  if (accountIndex === 0) {
+    await driver.refresh();
+  }
+
   await home.checkPageIsLoaded();
   // Wait for the live TRX balance to land on the homepage before navigating to
   // Send. Without this gate, Send opens with the cached "0 TRX available" and
