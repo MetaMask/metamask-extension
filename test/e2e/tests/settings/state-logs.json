@@ -1300,7 +1300,13 @@
       "orderBookExpanded": "boolean",
       "chartExpanded": "boolean",
       "orderBookPosition": "string",
-      "orderFormPosition": "string"
+      "orderFormPosition": "string",
+      "positionsSideFilter": "string",
+      "positionsSortField": "string",
+      "positionsSortDirection": "string",
+      "ordersSideFilter": "string",
+      "ordersSortField": "string",
+      "ordersSortDirection": "string"
     },
     "proofBackfillEnqueued": "boolean",
     "providerAutoSelected": "boolean",
