@@ -18,7 +18,7 @@ import { getTransactionControllerInitMessenger } from './messengers/transaction-
 import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
-import { getClaimsControllerInstanceOptions } from './instance-options/claims-controller';
+import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
 import {
   getShieldApiServiceInstanceOptions,
   getShieldControllerInstanceOptions,
@@ -42,8 +42,8 @@ jest.mock('./instance-options/connectivity-controller', () => ({
     () => 'connectivity-options',
   ),
 }));
-jest.mock('./instance-options/claims-controller', () => ({
-  getClaimsControllerInstanceOptions: jest.fn(() => 'claims-options'),
+jest.mock('./instance-options/claims-service', () => ({
+  getClaimsServiceInstanceOptions: jest.fn(() => 'claims-options'),
 }));
 jest.mock('./instance-options/shield-controller', () => ({
   getShieldApiServiceInstanceOptions: jest.fn(
@@ -201,7 +201,7 @@ describe('initializeWallet', () => {
     expect(getApprovalControllerInstanceOptions).toHaveBeenCalledWith({
       showApprovalRequest,
     });
-    expect(getClaimsControllerInstanceOptions).toHaveBeenCalledWith();
+    expect(getClaimsServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldControllerInstanceOptions).toHaveBeenCalledWith();
     expect(getSubscriptionServiceInstanceOptions).toHaveBeenCalledWith();
