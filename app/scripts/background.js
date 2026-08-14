@@ -28,6 +28,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
+  POPUP_INIT_FILE,
 } from '../../shared/constants/app';
 import { AccountOverviewTabKey } from '../../shared/constants/app-state';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
@@ -2323,7 +2324,7 @@ async function applyToolbarSidePanelBehavior() {
   });
   // Keep the persisted action popup aligned with the selected viewport.
   await browser.action?.setPopup?.({
-    popup: useSidePanelAsDefault ? '' : 'popup-init.html',
+    popup: useSidePanelAsDefault ? '' : POPUP_INIT_FILE,
   });
 }
 
@@ -2350,7 +2351,7 @@ const setupSidePanelToolbarBehavior = async () => {
             })
             .then(() =>
               browser.action?.setPopup?.({
-                popup: useSidePanelAsDefault ? '' : 'popup-init.html',
+                popup: useSidePanelAsDefault ? '' : POPUP_INIT_FILE,
               }),
             )
             .catch((error) =>
