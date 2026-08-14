@@ -3364,6 +3364,9 @@
   "deepLink_thePredictPage": {
     "message": "the prediction markets page"
   },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "the privacy settings page"
+  },
   "deepLink_theRewardsPage": {
     "message": "the MetaMask Rewards page"
   },
