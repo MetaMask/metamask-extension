@@ -293,6 +293,18 @@ jobs:
           }}
         run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
         shell: bash
+        # `compare-benchmarks.ts` gates the regression alert on
+        # `SLACK_BENCHMARK_WEBHOOK_URL` and builds the message from the five
+        # below. Without this block every one is undefined at run time, so
+        # `sendBenchmarkNotifications` short-circuits and the alert never fires
+        # — including when the secret is present.
+        env:
+          SLACK_BENCHMARK_WEBHOOK_URL: ${{ secrets.SLACK_BENCHMARK_WEBHOOK_URL }}
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
+          RUN_ID: ${{ github.run_id }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
 
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for
   # historical comparison in PR comments. Runs on main/release branch pushes only.
