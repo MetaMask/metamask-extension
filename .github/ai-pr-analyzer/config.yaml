@@ -1,17 +1,26 @@
-# Required for CI: gh resolves PR file lists; repo slug must match GitHub.
+# Required for CI: repo slug must match GitHub.
+# Config path is passed via action input `config-path: .github/ai-pr-analyzer`.
+#
+# Critical lists are a complementary AI signal only — they do NOT replace CODEOWNERS.
+# Prefer per-subdirectory CODEOWNERS for ownership gates (ui/selectors, ui/ducks, etc.).
 repo: MetaMask/metamask-extension
 
 critical:
   files:
-    - package.json
+    # Tooling / build entrypoints (not package.json / yarn.lock — those FP often; use CODEOWNERS + dep review)
     - babel.config.js
     - tsconfig.json
     - builds.yml
+    - privacy-snapshot.json
+    - development/circular-deps.jsonc
+    - .github/CODEOWNERS
+    # Extension entry / security-sensitive scripts
     - app/manifest/v2/_base.json
     - app/manifest/v3/_base.json
     - app/scripts/metamask-controller.js
     - app/scripts/background.js
     - app/service-worker.ts
+    - app/offscreen/offscreen.ts
     - app/scripts/ui.js
     - app/scripts/contentscript.js
     - app/scripts/inpage.js
@@ -19,6 +28,7 @@ critical:
     - app/scripts/messenger-client-init/network-controller-init.ts
     - app/scripts/lib/createMetamaskMiddleware.ts
     - app/scripts/lib/encryptor-factory.ts
+    # Narrow UI store wiring only (not all of ui/store/)
     - ui/store/store.ts
     - ui/store/background-connection.ts
     - ui/store/patch-store-substream-connection.ts
@@ -42,7 +52,7 @@ critical:
     - app/scripts/streams/
     - app/scripts/lib/rpc-method-middleware/
     - app/scripts/lib/transaction/
-    # Build system
+    # Build system / supply chain
     - development/build/
     - development/webpack/
     - lavamoat/
@@ -63,7 +73,9 @@ models:
   escalation: claude-sonnet-4.6
   escalationThreshold: 2
 
+  # Escalate model when ≥5 critical files touch — skip/escalate gate only, not merge control.
   criticalFileThreshold: 5
+  # Scope/skip style budget for very large PRs; revisit with real PR metrics after rollout.
   fileCountThreshold: 10
   largeDiffThreshold: 300
 
