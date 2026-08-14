@@ -57,8 +57,6 @@ export const useTransactionFocusEffect = () => {
       if (focusedConfirmationId) {
         setTransactionFocus(focusedConfirmationId, false);
       }
-      // Only activate when we have a real transaction id (currentConfirmation
-      // can be null, which would otherwise pass undefined into setTransactionActive).
       if (id) {
         focusedConfirmationIdRef.current = id;
         setTransactionFocus(id, true);

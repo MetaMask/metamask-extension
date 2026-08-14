@@ -1,6 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 
+/**
+ * Multichain per-network address rows: copy, QR, and explorer links.
+ *
+ * Screen: `#/multichain-account-address-list` (named "modal" in tests; it is
+ * the address-list page).
+ * Owns: address rows by network, copy feedback, opening QR for a row, view on
+ * explorer, and back navigation.
+ * Boundaries: the address list. The QR / single-address overlay is
+ * `AccountAddressModal`; account details that open this list are
+ * `MultichainAccountDetailsPage`.
+ * Related: `AccountAddressModal`, `MultichainAccountDetailsPage`.
+ *
+ * @see ui/pages/multichain-accounts/multichain-account-address-list-page/multichain-account-address-list-page.tsx
+ */
 class AddressListModal {
   private readonly accountAddress =
     '[data-testid="multichain-address-row-address"]';

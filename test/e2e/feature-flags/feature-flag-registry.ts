@@ -20,6 +20,7 @@ import type { Json } from '@metamask/utils';
 import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-domain-metrics';
+import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../shared/lib/money/feature-flags';
 
 // ============================================================================
 // Types
@@ -67,7 +68,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-08-04
+ * Production defaults last synced: 2026-08-11
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -202,6 +203,13 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           enabled: true,
           featureVersion: '1',
           minimumVersion: '13.38.0',
+        },
+        '13.42.0': {
+          deprecatedControllers: ['TokenListController'],
+          enabled: true,
+          featureVersion: '1',
+          minimumVersion: '13.38.0',
+          tracesEnabled: true,
         },
       },
     },
@@ -1060,6 +1068,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           gaslessEnabled: false,
         },
       },
+      depositLimit: {
+        moneyAccountDeposit: 500000,
+      },
       perpsWithdrawAnyToken: false,
       predictWithdrawAnyToken: true,
       relayDisabledGasStationChains: [],
@@ -1156,6 +1167,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               },
             },
           },
+          enableMoneyAccountTransactions: {
+            perpsDeposit: false,
+            perpsWithdraw: false,
+          },
         },
       },
       {
@@ -1181,6 +1196,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               },
             },
           },
+          enableMoneyAccountTransactions: {
+            perpsDeposit: false,
+            perpsWithdraw: false,
+          },
         },
       },
     ],
@@ -1203,7 +1222,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'confirmations_pay_post_quote',
     productionDefault: {
       versions: {
-        '13.38.0': {
+        '13.43.0': {
           default: {
             enabled: true,
             hyperliquidActivationFee: {
@@ -1261,6 +1280,27 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   confirmations_pay_tokens: {
     inProd: true,
     name: 'confirmations_pay_tokens',
+    productionDefault: {
+      preferredTokens: {
+        default: [],
+        overrides: {},
+      },
+      blockedTokens: {
+        default: {
+          chainIds: [],
+          tokens: [],
+        },
+        overrides: {},
+      },
+      minimumRequiredTokenBalance: 10,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  confirmations_relay_fixed_spread: {
+    inProd: true,
+    name: 'confirmations_relay_fixed_spread',
     productionDefault: {
       enabled: false,
     },
@@ -2221,6 +2261,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       batchSizeLimit: 10,
       gasEstimateFallback: {
         perChainConfig: {
+          '0x1237': {
+            fixed: 25000000,
+          },
           '0x279f': {
             fixed: 1000000,
           },
@@ -2292,7 +2335,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         name: 'control',
         scope: {
           type: 'threshold',
-          value: 0.99,
+          value: 0.95,
         },
       },
       {
@@ -2506,6 +2549,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         'erc20-token-allowance',
         'token-approval-revocation',
       ],
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
+    inProd: false,
+    name: MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2766,6 +2820,21 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  moneyAccountVaultConfig: {
+    inProd: true,
+    name: 'moneyAccountVaultConfig',
+    productionDefault: {
+      accountantAddress: '0x98A45D90E81849a5743241d3ff765F9Fd788206a',
+      boringVault: '0x1C8a336051D2024E318A229d01F9F6CF96efD316',
+      chainId: '0x8f',
+      lensAddress: '0xa3b5f71AB29BA99B9750327575Dcc456CadC550b',
+      tellerAddress: '0xB30755C750E0A7E5BeD3dDAf0D9948Cf2b1CDc87',
+      underlyingToken: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   neNetworkDiscoverButton: {
     inProd: true,
     name: 'neNetworkDiscoverButton',
@@ -2774,6 +2843,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       '0x8f': true,
       '0xe708': true,
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+      'tron:728126428': true,
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2930,8 +3000,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'perpsOrderBookEnabled',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '13.0.0',
+      enabled: true,
+      minimumVersion: '13.43.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3185,6 +3255,11 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         maxDeadline: 160,
         sentinelUrl: 'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
       },
+      '0x1237': {
+        extensionActive: true,
+        gaslessBridgeWith7702Enabled: false,
+        sentinelUrl: 'https://tx-sentinel-robinhood-mainnet.api.cx.metamask.io',
+      },
       '0x144': {
         extensionActive: false,
         sentinelUrl: 'https://tx-sentinel-zksync-mainnet.api.cx.metamask.io',
@@ -3288,17 +3363,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   stellarAccounts: {
     inProd: true,
     name: 'stellarAccounts',
-    productionDefault: {
-      enabled: false,
-      minimumVersion: '0.0.1',
-    },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  stellarAssetEnrichment: {
-    inProd: true,
-    name: 'stellarAssetEnrichment',
     productionDefault: {
       enabled: false,
       minimumVersion: '0.0.1',
@@ -3420,22 +3484,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   swapsSWAPS4827AbtestChainValueOrder: {
     inProd: true,
     name: 'swapsSWAPS4827AbtestChainValueOrder',
-    productionDefault: [
-      {
-        name: 'control',
-        scope: {
-          type: 'threshold',
-          value: 0.5,
-        },
-      },
-      {
-        name: 'treatment',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-      },
-    ],
+    productionDefault: [],
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },

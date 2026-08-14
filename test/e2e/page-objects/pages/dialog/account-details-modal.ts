@@ -1,5 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Account details modal (address, label edit, private key reveal entry points).
+ *
+ * Screen: modal layered over home / account list, opened from account menu or
+ * account list account-details entry points.
+ * Owns: shortened address / QR, copy address, editable label, close control,
+ * show-private-key visibility checks, and copy-private-key after reveal.
+ * Boundaries: stops at this modal. Multichain account details page flows belong
+ * to `pages/multichain/multichain-account-details-page.ts`. Hold-to-reveal /
+ * export password steps beyond the selectors here are not fully owned.
+ * Related: `AccountListPage`, `HeaderNavbar`, multichain account details page
+ * objects.
+ *
+ * @see ui/components/multichain/account-details/account-details.tsx
+ */
 class AccountDetailsModal {
   private readonly accountAddressText =
     '[data-testid="account-address-shortened"]';

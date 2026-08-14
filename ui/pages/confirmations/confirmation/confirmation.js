@@ -67,6 +67,10 @@ import {
 
 const CONFIRMATION_TYPES_WITH_HEADER = ['result_success', 'result_error'];
 const SNAP_CUSTOM_UI_DIALOG = Object.values(DIALOG_APPROVAL_TYPES);
+const SNAP_DIALOG_TYPE = [
+  ...Object.values(DIALOG_APPROVAL_TYPES),
+  ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
+];
 
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
@@ -292,12 +296,6 @@ export default function ConfirmationPage({
 
   const name = snapsMetadata[pendingConfirmation?.origin]?.name;
 
-  const SNAP_DIALOG_TYPE = Object.values(DIALOG_APPROVAL_TYPES);
-
-  SNAP_DIALOG_TYPE.push(
-    ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
-  );
-
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
   const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
     pendingConfirmation?.type,
@@ -364,21 +362,13 @@ export default function ConfirmationPage({
     }
   }, [templatedValues]);
 
-  // Write-through ref for the last non-null confirmation type (needed after
-  // pendingConfirmation clears for Activity-tab redirect). Prefer a ref over
-  // render-phase useState so render stays free of setState.
   const lastConfirmationTypeRef = useRef(null);
-  /* eslint-disable react-hooks/refs -- intentional previous-value write-through */
-  if (pendingConfirmation?.type) {
-    lastConfirmationTypeRef.current = pendingConfirmation.type;
-  }
-  const lastConfirmationType = lastConfirmationTypeRef.current;
-  /* eslint-enable react-hooks/refs */
-
-  // send-tron.spec expects Activity tab
-  const shouldShowActivity = SNAP_DIALOG_TYPE.includes(lastConfirmationType);
 
   useEffect(() => {
+    if (pendingConfirmation?.type) {
+      lastConfirmationTypeRef.current = pendingConfirmation.type;
+    }
+
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently
@@ -391,6 +381,9 @@ export default function ConfirmationPage({
       redirectToHomeOnZeroConfirmations;
 
     if (wouldNavigate && !isHardwareWalletErrorModalVisible) {
+      const shouldShowActivity = SNAP_DIALOG_TYPE.includes(
+        lastConfirmationTypeRef.current,
+      );
       const to = shouldShowActivity
         ? `${DEFAULT_ROUTE}?tab=activity`
         : DEFAULT_ROUTE;
@@ -398,12 +391,12 @@ export default function ConfirmationPage({
       navigate(to);
     }
   }, [
+    pendingConfirmation?.type,
     pendingConfirmations,
     approvalFlows,
     totalUnapprovedCount,
     navigate,
     redirectToHomeOnZeroConfirmations,
-    shouldShowActivity,
     isHardwareWalletErrorModalVisible,
   ]);
 

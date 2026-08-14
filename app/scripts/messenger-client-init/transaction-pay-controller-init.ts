@@ -1,4 +1,5 @@
 import {
+  PaymentOverride,
   TransactionPayController,
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
@@ -73,6 +74,27 @@ function getApi(
     ) => {
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.accountOverride = accountOverride;
+      });
+    },
+    setTransactionPayPaymentOverride: (
+      transactionId: string,
+      {
+        paymentOverride,
+        refundTo,
+      }: {
+        paymentOverride?: PaymentOverride;
+        refundTo?: Hex;
+      } = {},
+    ) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        config.paymentOverride = paymentOverride;
+        if (paymentOverride === undefined) {
+          config.refundTo = undefined;
+          return;
+        }
+        if (refundTo !== undefined) {
+          config.refundTo = refundTo;
+        }
       });
     },
     updateTransactionPaymentToken:

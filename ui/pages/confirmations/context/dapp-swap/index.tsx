@@ -35,8 +35,6 @@ export const DappSwapContextProvider = ({
 }>) => {
   const { currentConfirmation } = useCurrentConfirmation();
   const confirmationId = currentConfirmation?.id;
-  // Keyed by confirmationId so a confirmation change drops quote/display state
-  // without render-phase setters.
   const [swapState, setSwapState] = useState<DappSwapState>({
     confirmationId,
     selectedQuote: undefined,
@@ -56,8 +54,6 @@ export const DappSwapContextProvider = ({
   const setSelectedQuote = useCallback(
     (quote: QuoteResponseV1 | undefined) => {
       setSwapState((prev) => {
-        // Clear the display flag when the quote is removed so a later quote
-        // does not auto-show without an explicit user toggle.
         let isQuotedSwapDisplayedInInfo = false;
         if (quote !== undefined && prev.confirmationId === confirmationId) {
           isQuotedSwapDisplayedInInfo = prev.isQuotedSwapDisplayedInInfo;

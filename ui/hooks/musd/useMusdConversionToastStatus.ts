@@ -108,9 +108,6 @@ export const useMusdConversionToastStatus = (): {
   );
   const [prevActivePendingTxId, setPrevActivePendingTxId] =
     useState(activePendingTxId);
-  // Start unset so the first observed payment-token symbol is cached. Initializing
-  // to paymentToken?.symbol would skip that sync and leave the cache empty when
-  // the token clears on completion.
   const [prevPaymentTokenSymbol, setPrevPaymentTokenSymbol] = useState<
     string | undefined
   >(undefined);
@@ -120,11 +117,10 @@ export const useMusdConversionToastStatus = (): {
   if (activePendingTxId !== prevActivePendingTxId) {
     setPrevActivePendingTxId(activePendingTxId);
     if (activePendingTxId !== undefined) {
-      setCachedSymbol(undefined);
+      setCachedSymbol(paymentToken?.symbol);
+      setPrevPaymentTokenSymbol(paymentToken?.symbol);
     }
-  }
-
-  if (paymentToken?.symbol !== prevPaymentTokenSymbol) {
+  } else if (paymentToken?.symbol !== prevPaymentTokenSymbol) {
     setPrevPaymentTokenSymbol(paymentToken?.symbol);
     if (paymentToken?.symbol) {
       setCachedSymbol(paymentToken.symbol);

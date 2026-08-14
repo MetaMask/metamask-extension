@@ -149,9 +149,6 @@ export const SendAlertModal = ({
     viewedKeys: new Set(),
   }));
 
-  // React-documented prop→state reset. Open changes clear viewed keys; alert
-  // identity changes only rewind the index (preserve previously viewed keys).
-  // Viewed-key marking happens in event handlers, not during render.
   if (isOpen !== uiState.isOpen) {
     setUiState({
       isOpen,
@@ -202,8 +199,6 @@ export const SendAlertModal = ({
 
   const goToNext = useCallback(() => {
     const nextIndex = Math.min(safeIndex + 1, alerts.length - 1);
-    // Mark both the alert being left and the destination so a mid-flow alert
-    // identity change still preserves keys the user already stepped onto.
     const nextViewed = withCurrentViewed(viewedKeys);
     const destination = alerts[nextIndex];
     if (destination) {

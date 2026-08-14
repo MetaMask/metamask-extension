@@ -324,7 +324,6 @@ import {
   getSendBundleSupportedChains,
   setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
-import { ShieldControllerInit } from './messenger-client-init/shield/shield-controller-init';
 import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
@@ -340,10 +339,7 @@ import { CurrencyRateControllerInit } from './messenger-client-init/currency-rat
 import { EnsControllerInit } from './messenger-client-init/confirmations/ens-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
 import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
-import {
-  SubscriptionControllerInit,
-  SubscriptionServiceInit,
-} from './messenger-client-init/subscription';
+import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
 import { ConfigRegistryControllerInit } from './messenger-client-init/config-registry-controller-init';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
@@ -375,10 +371,6 @@ import {
   QrSyncDataServiceInit,
 } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
-import {
-  ClaimsControllerInit,
-  ClaimsServiceInit,
-} from './messenger-client-init/claims';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
@@ -388,6 +380,9 @@ import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-s
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
+import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
+import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
+import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
@@ -655,12 +650,8 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsControllerV2: DeFiPositionsControllerV2Init,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
-      SubscriptionController: SubscriptionControllerInit,
-      SubscriptionService: SubscriptionServiceInit,
+      ShieldSubscriptionService: ShieldSubscriptionServiceInit,
       NetworkOrderController: NetworkOrderControllerInit,
-      ShieldController: ShieldControllerInit,
-      ClaimsController: ClaimsControllerInit,
-      ClaimsService: ClaimsServiceInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
       SnapsNameProvider: SnapsNameProviderInit,
       EnsController: EnsControllerInit,
@@ -677,6 +668,9 @@ export default class MetamaskController extends EventEmitter {
       ClientController: ClientControllerInit,
       ConfigRegistryController: ConfigRegistryControllerInit,
       ConfigRegistryApiService: ConfigRegistryApiServiceInit,
+      MoneyAccountApiDataService: MoneyAccountApiDataServiceInit,
+      MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
+      MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
@@ -804,15 +798,18 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.DeFiPositionsControllerV2;
     this.accountTreeController = messengerClientsByName.AccountTreeController;
     this.oauthService = messengerClientsByName.OAuthService;
-    this.subscriptionService = messengerClientsByName.SubscriptionService;
+    this.shieldSubscriptionService =
+      messengerClientsByName.ShieldSubscriptionService;
     this.seedlessOnboardingController = this.wallet.getInstance(
       'SeedlessOnboardingController',
     );
-    this.subscriptionController = messengerClientsByName.SubscriptionController;
+    this.subscriptionController = this.wallet.getInstance(
+      'SubscriptionController',
+    );
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
     this.networkEnablementController =
       messengerClientsByName.NetworkEnablementController;
-    this.shieldController = messengerClientsByName.ShieldController;
+    this.shieldController = this.wallet.getInstance('ShieldController');
     this.gatorPermissionsController =
       messengerClientsByName.GatorPermissionsController;
     this.ensController = messengerClientsByName.EnsController;
@@ -821,8 +818,8 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = messengerClientsByName.AccountOrderController;
     this.rewardsController = messengerClientsByName.RewardsController;
     this.qrSyncController = messengerClientsByName.QrSyncController;
-    this.claimsController = messengerClientsByName.ClaimsController;
-    this.claimsService = messengerClientsByName.ClaimsService;
+    this.claimsController = this.wallet.getInstance('ClaimsController');
+    this.claimsService = this.wallet.getInstance('ClaimsService');
     this.profileMetricsController =
       messengerClientsByName.ProfileMetricsController;
     this.legacyBackgroundApiService =
@@ -960,7 +957,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'TransactionController:transactionSubmitted',
       ({ transactionMeta }) => {
-        this.subscriptionService
+        this.shieldSubscriptionService
           .handlePostTransaction(transactionMeta)
           .catch((err) => {
             console.error('Error onShieldSubscriptionApprovalTransaction', err);
@@ -1420,6 +1417,9 @@ export default class MetamaskController extends EventEmitter {
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
       DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
+      ShieldController: this.shieldController,
+      ClaimsController: this.claimsController,
+      SubscriptionController: this.subscriptionController,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
       TransactionController: this.txController,
@@ -2458,64 +2458,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds a network and (optionally) sets it as the active network.
-   *
-   * @param {object} networkConfiguration - The network configuration to add.
-   * @param {object} [options0] - Options for post-add behavior.
-   * @param {boolean} [options0.setActive] - Whether to switch to the added network.
-   * @returns {Promise<object>} The added network configuration.
-   */
-  async _addNetworkAndSetActive(
-    networkConfiguration,
-    { setActive = true } = {},
-  ) {
-    if (setActive) {
-      const addedNetwork =
-        await this.networkController.addNetwork(networkConfiguration);
-      const { networkClientId } =
-        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
-        {};
-      await this.networkController.setActiveNetwork(networkClientId);
-      return addedNetwork;
-    }
-    const previousEnabledNetworkMap = Object.fromEntries(
-      Object.entries(
-        this.networkEnablementController.state.enabledNetworkMap,
-      ).map(([namespace, networks]) => [namespace, { ...networks }]),
-    );
-    const restorePreviousEnabledNetworkMap = () => {
-      this.controllerMessenger.unsubscribe(
-        'NetworkEnablementController:stateChange',
-        restorePreviousEnabledNetworkMap,
-      );
-      this.networkEnablementController.restoreEnabledNetworkMap(
-        previousEnabledNetworkMap,
-      );
-    };
-
-    this.controllerMessenger.subscribe(
-      'NetworkEnablementController:stateChange',
-      restorePreviousEnabledNetworkMap,
-    );
-
-    try {
-      const addedNetwork =
-        await this.networkController.addNetwork(networkConfiguration);
-      await this.controllerMessenger.call(
-        'LegacyBackgroundApiService:lookupSelectedNetworks',
-      );
-      return addedNetwork;
-    } catch (error) {
-      // `addNetwork` rejected, so `networkAdded` was not published
-      this.controllerMessenger.unsubscribe(
-        'NetworkEnablementController:stateChange',
-        restorePreviousEnabledNetworkMap,
-      );
-      throw error;
-    }
-  }
-
-  /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
    * The API object can be transmitted over a stream via JSON-RPC.
@@ -2753,24 +2695,24 @@ export default class MetamaskController extends EventEmitter {
           this.subscriptionController,
         ),
       startSubscriptionWithCard:
-        this.subscriptionService.startSubscriptionWithCard.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.startSubscriptionWithCard.bind(
+          this.shieldSubscriptionService,
         ),
       updateSubscriptionCardPaymentMethod:
-        this.subscriptionService.updateSubscriptionCardPaymentMethod.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.updateSubscriptionCardPaymentMethod.bind(
+          this.shieldSubscriptionService,
         ),
       updateSubscriptionCryptoPaymentMethod:
-        this.subscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
+          this.shieldSubscriptionService,
         ),
       submitSubscriptionUserEvents:
         this.subscriptionController.submitUserEvent.bind(
           this.subscriptionController,
         ),
       linkRewardToShieldSubscription:
-        this.subscriptionService.linkRewardToExistingSubscription.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.linkRewardToExistingSubscription.bind(
+          this.shieldSubscriptionService,
         ),
 
       // rewards
@@ -2966,7 +2908,10 @@ export default class MetamaskController extends EventEmitter {
       },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
-      addNetwork: this._addNetworkAndSetActive.bind(this),
+      addNetwork: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addNetwork',
+      ),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
@@ -3390,8 +3335,14 @@ export default class MetamaskController extends EventEmitter {
       updateTransaction: txController.updateTransaction.bind(txController),
       approveTransactionsWithSameNonce:
         txController.approveTransactionsWithSameNonce.bind(txController),
-      createCancelTransaction: this.createCancelTransaction.bind(this),
-      createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
+      createCancelTransaction: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'TransactionController:stopTransaction',
+      ),
+      createSpeedUpTransaction: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'TransactionController:speedUpTransaction',
+      ),
       estimateGas: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:estimateGas',
@@ -3988,7 +3939,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:lookupSelectedNetworks',
       ),
-      resetWallet: this.resetWallet.bind(this),
+      resetWallet: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:resetWallet',
+      ),
     };
   }
 
@@ -4004,43 +3958,6 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
       origin,
     });
-  }
-
-  /**
-   * Reset the wallet, restart the from the onboarding flow
-   *
-   * @param {boolean} restoreOnly - Whether to only restore the vault, without resetting the onboarding.
-   * @returns void
-   */
-  async resetWallet(restoreOnly = false) {
-    // sign out from Authentication service and clear the Session Data
-    this.authenticationController.performSignOut();
-
-    // clear SeedlessOnboardingController state
-    this.seedlessOnboardingController.clearState();
-
-    // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
-    this.passkeyController.clearState();
-
-    // stop subscription polling
-    this.subscriptionController.stopAllPolling();
-
-    // clear States
-    this.subscriptionController.clearState();
-    this.shieldController.clearState();
-    this.claimsController.clearState();
-
-    // clear contacts (address book)
-    this.addressBookController.clear();
-
-    // reset preferences to defaults
-    this.preferencesController.resetState();
-
-    if (!restoreOnly) {
-      // reset onboarding state
-      this.onboardingController.resetOnboarding();
-      this.appStateController.setIsWalletResetInProgress(true);
-    }
   }
 
   /**
@@ -4505,52 +4422,6 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
   //=============================================================================
-
-  /**
-   * Allows a user to attempt to cancel a previously submitted transaction
-   * by creating a new transaction.
-   *
-   * @param {number} originalTxId - the id of the txMeta that you want to
-   * attempt to cancel
-   * @param {import(
-   *  './controllers/transactions'
-   * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
-   * instead of allowing this method to generate them
-   * @param options
-   * @returns {object} MetaMask state
-   */
-  async createCancelTransaction(originalTxId, customGasSettings, options) {
-    await this.txController.stopTransaction(
-      originalTxId,
-      customGasSettings,
-      options,
-    );
-    const state = this.getState();
-    return state;
-  }
-
-  /**
-   * Allows a user to attempt to speed up a previously submitted transaction
-   * by creating a new transaction.
-   *
-   * @param {number} originalTxId - the id of the txMeta that you want to
-   * attempt to speed up
-   * @param {import(
-   *  './controllers/transactions'
-   * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
-   * instead of allowing this method to generate them
-   * @param options
-   * @returns {object} MetaMask state
-   */
-  async createSpeedUpTransaction(originalTxId, customGasSettings, options) {
-    await this.txController.speedUpTransaction(
-      originalTxId,
-      customGasSettings,
-      options,
-    );
-    const state = this.getState();
-    return state;
-  }
 
   /**
    * When assets-unify-state is enabled, validates ERC-20 `wallet_watchAsset`
@@ -5379,7 +5250,10 @@ export default class MetamaskController extends EventEmitter {
         }),
 
       // Network configuration-related
-      addNetwork: this._addNetworkAndSetActive.bind(this),
+      addNetwork: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addNetwork',
+      ),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),

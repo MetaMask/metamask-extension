@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "预测市场提现"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "购买失败"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "购买失败"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "正在购买 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "正在购买 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "已购买 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "已购买 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "出售失败"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "出售失败"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "正在出售 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "正在出售 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "已出售 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "已出售 $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "从：$1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "了解我们如何保护您的隐私"
-  },
-  "backupApprovalInfo": {
-    "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 MetaMask，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
   },
   "backupApprovalNotice": {
     "message": "请备份您的私钥助记词，确保您的钱包和资金安全。"
@@ -3405,11 +3446,11 @@
   "disconnectAllSites": {
     "message": "断开所有连接"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "如果您断开与所有网站的连接，您需要重新连接账户和网络才能继续使用它们。"
-  },
   "disconnectAllSitesError": {
     "message": "部分去中心化应用无法断开连接。请重试。"
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "断开连接所有?"
   },
   "disconnectAllSitesSuccess": {
     "message": "所有去中心化应用均已成功断开连接。"
@@ -3420,15 +3461,26 @@
   "disconnectPrompt": {
     "message": "断开连接 $1"
   },
+  "disconnectQuestion": {
+    "message": "断开连接?"
+  },
   "disconnectThisAccount": {
     "message": "断开此账户的连接"
   },
   "discover": {
     "message": "发现"
   },
+  "discoverSearchCap": {
+    "message": "市值",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "未找到结果",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "未找到 “$1” 的相关结果",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "查看其他热门资产",
@@ -3590,9 +3642,6 @@
   },
   "editNonceMessage": {
     "message": "这是高级功能，请谨慎使用。"
-  },
-  "editPermissions": {
-    "message": "编辑许可"
   },
   "editSpendingCap": {
     "message": "编辑支出上限"
@@ -6829,9 +6878,6 @@
   "permitSimulationDetailInfo": {
     "message": "您将授予支出者许可，才能从您的账户花费这些代币。"
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 可以访问 $2。"
-  },
   "perps": {
     "message": "永续合约"
   },
@@ -6909,6 +6955,10 @@
   },
   "perpsCancelOrder": {
     "message": "取消订单"
+  },
+  "perpsCancelOrderFailed": {
+    "message": "订单无法取消。请重试。",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
   },
   "perpsCandleIntervals": {
     "message": "设置 K 线间隔"
@@ -7048,6 +7098,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "预估止盈盈亏",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "充值后即可开始交易。",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "探索市场"
@@ -7245,8 +7299,19 @@
   "perpsOrderBookApply": {
     "message": "应用"
   },
+  "perpsOrderBookBuy": {
+    "message": "买入：$1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "排列方式与分组方式"
+  },
   "perpsOrderBookConnectionError": {
     "message": "订单簿连接丢失"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "买入 $1%，卖出 $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "分组依据"
@@ -7254,11 +7319,27 @@
   "perpsOrderBookListedBy": {
     "message": "排序依据"
   },
+  "perpsOrderBookLoading": {
+    "message": "正在加载订单簿"
+  },
+  "perpsOrderBookNoData": {
+    "message": "无订单簿数据"
+  },
   "perpsOrderBookPrice": {
     "message": "价格"
   },
   "perpsOrderBookReconnect": {
     "message": "重新连接"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "正在重新连接订单簿"
+  },
+  "perpsOrderBookResize": {
+    "message": "调整订单簿大小"
+  },
+  "perpsOrderBookSell": {
+    "message": "卖出：$1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "规模"
@@ -7269,8 +7350,24 @@
   "perpsOrderBookTotal": {
     "message": "共计"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "使用 $1 作为限价",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "价值类型"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "显示买盘和卖盘的订单簿",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "仅显示买盘的订单簿",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "仅显示卖盘的订单簿",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "日期"
@@ -7491,6 +7588,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "止盈价必须为 $1 $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "此订单已关闭",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "取消订单失败",
@@ -8069,6 +8170,80 @@
   "rampsOnNetwork": {
     "message": "在 $1 上",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "银行转账详情"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "再次买入"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "费用"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "订单 ID"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "已使用以下支付方式付款：",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1 费用",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "共计"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "在 $1 上查看"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "您的订单处理出错。",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "购买失败",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "您的订单正在处理中。",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "买入进行中",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "您的订单处理出错。",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "出售失败",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "您的订单正在处理中。",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "卖出进行中",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "您的资金正在划转中。",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "卖出成功",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "您的加密货币正在划转中。",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "买入成功",
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "其他选项"
@@ -9091,9 +9266,6 @@
   },
   "select": {
     "message": "选择"
-  },
-  "selectAccountToConnect": {
-    "message": "选择要连接的账户"
   },
   "selectAll": {
     "message": "全部选择"
@@ -11251,15 +11423,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask 启动时出现问题。"
   },
-  "trustSignalBlockDescription": {
-    "message": "如果您访问此网站，您可能会损失所有资产。"
-  },
-  "trustSignalBlockTitle": {
-    "message": "检测到恶意网站"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "仍然连接"
-  },
   "tryAgain": {
     "message": "重试"
   },
@@ -11517,6 +11680,10 @@
   },
   "viewTokenDetails": {
     "message": "查看代币详情"
+  },
+  "viewXMore": {
+    "message": "查看另外 $1 条",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "在 Explorer 中查看 $1",

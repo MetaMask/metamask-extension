@@ -19,8 +19,6 @@ export const SendAlerts = () => {
     navigateToEditNetwork,
   } = useUnreliableNetworkRpc();
 
-  // Keyed by chain + reliability. Persist epoch resets into state so a later
-  // unreliable flap (same chain) does not reuse a stale userClosed=true.
   const epochKey = isNetworkUnreliable
     ? `${chainId}|open`
     : `${chainId}|closed`;

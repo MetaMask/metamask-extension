@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { isCrossChain } from '@metamask/bridge-controller';
+import { assetIdsMatch, isCrossChain } from '@metamask/bridge-controller';
 import { setEvmBalances } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
@@ -25,7 +25,7 @@ export const useLatestBalance = () => {
   useEffect(() => {
     if (
       isCrossChain(fromToken.chainId, currentChainId) ||
-      (token && token.assetId.toLowerCase() !== fromToken.assetId.toLowerCase())
+      (token && !assetIdsMatch(token.assetId, fromToken.assetId))
     ) {
       return;
     }

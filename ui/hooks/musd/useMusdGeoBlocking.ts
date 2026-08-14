@@ -111,8 +111,6 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
   useEffect(() => {
     let cancelled = false;
 
-    // Defer so async helper setState paths are not treated as synchronous
-    // effect updates (react-hooks/set-state-in-effect).
     queueMicrotask(() => {
       if (!cancelled) {
         fetchGeolocation('getGeolocation', {

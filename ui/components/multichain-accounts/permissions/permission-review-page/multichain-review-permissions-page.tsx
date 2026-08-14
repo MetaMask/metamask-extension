@@ -32,7 +32,6 @@ import {
   setPermittedAccounts,
   setPermittedChains,
 } from '../../../../store/actions';
-import { usePermittedNetworkToast } from '../../../../hooks/multichain-accounts/usePermittedNetworkToast';
 import { toast, ToastContent } from '../../../ui/toast/toast';
 import { NoConnectionContent } from '../../../multichain/pages/connections/components/no-connection';
 import { Content, Footer, Page } from '../../../multichain/pages/page';
@@ -68,7 +67,6 @@ export const MultichainReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { dismissPermittedNetworkToast } = usePermittedNetworkToast();
   const [searchParams] = useSearchParams();
 
   const originParam = searchParams.get('origin');
@@ -127,7 +125,6 @@ export const MultichainReviewPermissions = () => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
-    dismissPermittedNetworkToast();
   };
 
   const handleDisconnectClick = () => {
