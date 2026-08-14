@@ -1,15 +1,15 @@
 import { MessengerClientInitFunction } from '../types';
-import { SubscriptionService } from '../../services/subscription/subscription-service';
-import { SubscriptionServiceMessenger } from '../../services/subscription/types';
+import { ShieldSubscriptionService } from '../../services/subscription/shield-subscription-service';
+import { ShieldSubscriptionServiceMessenger } from '../../services/subscription/types';
 import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-factory';
 
-export const SubscriptionServiceInit: MessengerClientInitFunction<
-  SubscriptionService,
-  SubscriptionServiceMessenger
+export const ShieldSubscriptionServiceInit: MessengerClientInitFunction<
+  ShieldSubscriptionService,
+  ShieldSubscriptionServiceMessenger
 > = (request) => {
   const { controllerMessenger, platform } = request;
 
-  const messengerClient = new SubscriptionService({
+  const messengerClient = new ShieldSubscriptionService({
     messenger: controllerMessenger,
     platform,
     webAuthenticator: webAuthenticatorFactory(),
