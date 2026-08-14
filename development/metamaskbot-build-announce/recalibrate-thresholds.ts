@@ -339,8 +339,13 @@ async function main(): Promise<void> {
     }
   }
 
+  // `--json` is a machine-output mode: emit the array and nothing else, so a
+  // saved file round-trips through `--input`, which does a plain `JSON.parse`.
+  // Printing the markdown report after it left the documented workflow
+  // (`--json > file` then `--input file`) throwing on the trailing table.
   if (values.json) {
     console.log(JSON.stringify(rows, null, 2));
+    return;
   }
 
   const rowByKey = new Map(rows.map((r) => [r.key, r]));
