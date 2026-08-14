@@ -51,6 +51,7 @@ import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constan
 import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import { captureException } from '../../../shared/lib/sentry';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
@@ -424,6 +425,152 @@ describe('LegacyBackgroundApiService', () => {
           expect.anything(),
         );
         expect(getAssetsHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('addToken', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      jest.resetModules();
+      process.env = { ...originalEnv };
+    });
+
+    afterEach(() => {
+      process.env = originalEnv;
+    });
+
+    const token = {
+      address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      symbol: 'DAI',
+      decimals: 18,
+      image: 'https://example.com/dai.png',
+      networkClientId: 'mainnet',
+    };
+
+    it('adds the token as a custom asset via the AssetsController when assets unify state is enabled', async () => {
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue({ id: 'account-1' }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x1' } }),
+        );
+
+        const addCustomAssetHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AssetsController:addCustomAsset',
+          addCustomAssetHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:addToken', token),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AssetsController:addCustomAsset',
+          'account-1',
+          toAssetId(token.address, '0x1'),
+          {
+            address: token.address,
+            symbol: token.symbol,
+            name: token.symbol,
+            decimals: token.decimals,
+            chainId: '0x1',
+            iconUrl: token.image,
+          },
+        );
+      });
+    });
+
+    it('throws when an assetId cannot be built for the token', async () => {
+      await withService(async ({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue({ id: 'account-1' }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: undefined } }),
+        );
+
+        const addCustomAssetHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AssetsController:addCustomAsset',
+          addCustomAssetHandler,
+        );
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:addToken', token),
+        ).rejects.toThrow(
+          `MetaMask - Cannot build assetId for token ${token.address}`,
+        );
+
+        expect(addCustomAssetHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    it('adds the token via the TokensController when assets unify state is not enabled', async () => {
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: false, featureVersion: '1' },
+            },
+          }),
+        );
+
+        const addTokenHandler = jest.fn().mockResolvedValue([]);
+        rootMessenger.registerActionHandler(
+          'TokensController:addToken',
+          addTokenHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:addToken', token),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith('TokensController:addToken', {
+          address: token.address,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image: token.image,
+          networkClientId: token.networkClientId,
+        });
       });
     });
   });
@@ -7341,10 +7488,12 @@ function getMessenger(
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsContractController:getTokenStandardAndDetails',
+      'AssetsController:addCustomAsset',
       'AssetsController:getAssets',
       'AssetsController:getState',
       'AssetsController:setSelectedCurrency',
       'TokenListController:getState',
+      'TokensController:addToken',
       'TokensController:getState',
       'KeyringController:exportSeedPhrase',
       'KeyringController:getState',

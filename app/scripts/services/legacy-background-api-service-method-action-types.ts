@@ -43,6 +43,27 @@ export type LegacyBackgroundApiServiceGetAssetsAction = {
 };
 
 /**
+ * Adds a token to the wallet.
+ *
+ * When the assets unify state feature is enabled, the token is added as a
+ * custom asset on the AssetsController for the currently selected account
+ * (resolving the chain ID from the given network client and building the
+ * CAIP-19 asset ID from the address). Otherwise, it is added via the
+ * TokensController.
+ *
+ * @param token - The token to add.
+ * @param token.address - The token contract address.
+ * @param token.symbol - The token symbol.
+ * @param token.decimals - The number of decimals the token uses.
+ * @param token.image - An optional icon URL for the token.
+ * @param token.networkClientId - The ID of the network client the token is on.
+ */
+export type LegacyBackgroundApiServiceAddTokenAction = {
+  type: `LegacyBackgroundApiService:addToken`;
+  handler: LegacyBackgroundApiService['addToken'];
+};
+
+/**
  * Determines if the given endpoint URL is a public endpoint URL.
  *
  * @param endpointUrl - The endpoint URL to check.
@@ -1010,6 +1031,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceIsAssetsUnifyStateEnabledAction
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
   | LegacyBackgroundApiServiceGetAssetsAction
+  | LegacyBackgroundApiServiceAddTokenAction
   | LegacyBackgroundApiServiceIsPublicEndpointUrlAction
   | LegacyBackgroundApiServiceIsSendBundleSupportedAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
