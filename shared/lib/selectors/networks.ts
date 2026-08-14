@@ -19,6 +19,10 @@ import {
   NetworkStatus,
 } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
+import {
+  createParameterizedSelector,
+  createResultEqualSelector,
+} from './selector-creators';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
@@ -72,7 +76,9 @@ export const getNetworkConfigurationsByChainId = (
 // Routed through `getNetworkConfigurationsByChainId` (rather than reading
 // `state` directly) so jest mocks of that selector flow through to consumers
 // of these selectors.
-export const selectNetworkConfigurationByChainId = createSelector(
+export const selectNetworkConfigurationByChainId = createParameterizedSelector(
+  20,
+)(
   [
     (state: NetworkConfigurationsByChainIdState) =>
       getNetworkConfigurationsByChainId(state),
@@ -115,6 +121,29 @@ export function getSelectedNetworkClientId(
   state: SelectedNetworkClientIdState,
 ) {
   return state.metamask.selectedNetworkClientId;
+}
+
+/**
+ * Returns the hex chainId for a given networkClientId by searching through
+ * all network configurations. Returns an empty string if no match is found.
+ *
+ * @param state - Redux state containing networkConfigurationsByChainId.
+ * @param networkClientId - The network client ID to look up.
+ * @returns The hex chainId string, or '' if not found.
+ */
+export function getChainIdByNetworkClientId(
+  state: NetworkConfigurationsByChainIdState,
+  networkClientId: string,
+): string {
+  const networkConfigs = getNetworkConfigurationsByChainId(state);
+  for (const [chainId, network] of Object.entries(networkConfigs ?? {})) {
+    for (const rpcEndpoint of network.rpcEndpoints ?? []) {
+      if (rpcEndpoint.networkClientId === networkClientId) {
+        return chainId;
+      }
+    }
+  }
+  return '';
 }
 
 /**
@@ -188,74 +217,77 @@ export const getNetworkConfigurationsByCaipChainId = ({
  * @param state - Redux state.
  * @returns A consolidated object containing all available network configurations.
  */
-export const getAllNetworkConfigurationsByCaipChainId = createSelector(
-  (state: MultichainNetworkConfigurationsByChainIdState) =>
-    state.metamask.networkConfigurationsByChainId,
-  (state: MultichainNetworkConfigurationsByChainIdState) =>
-    state.metamask.multichainNetworkConfigurationsByChainId,
-  (state: {
-    metamask: { internalAccounts: AccountsControllerState['internalAccounts'] };
-  }) => state.metamask.internalAccounts,
-  (state: { metamask: { snaps: Record<string, { enabled: boolean }> } }) =>
-    state.metamask.snaps,
-  (
-    networkConfigurationsByChainId,
-    multichainNetworkConfigurationsByChainId,
-    internalAccounts,
-    snaps,
-  ) => {
-    // We have this logic here to filter out non EVM test networks
-    // to properly handle this we should use the selector from
-    // multichain/networks.ts in the UI side
-    const { nonEvmNetworks, nonEvmTestNetworks } = Object.keys(
-      multichainNetworkConfigurationsByChainId,
-    ).reduce(
-      (
-        result: {
-          nonEvmNetworks: Record<
-            CaipChainId,
-            InternalMultichainNetworkConfiguration
-          >;
-          nonEvmTestNetworks: Record<
-            CaipChainId,
-            InternalMultichainNetworkConfiguration
-          >;
-        },
-        key: string,
-      ) => {
-        const caipKey = key as CaipChainId;
-        if (NON_EVM_TESTNET_IDS.includes(caipKey)) {
-          result.nonEvmTestNetworks[caipKey] =
-            multichainNetworkConfigurationsByChainId[caipKey];
-        } else {
-          result.nonEvmNetworks[caipKey] =
-            multichainNetworkConfigurationsByChainId[caipKey];
-        }
-        return result;
-      },
-      {
-        nonEvmNetworks: {} as Record<
-          CaipChainId,
-          InternalMultichainNetworkConfiguration
-        >,
-        nonEvmTestNetworks: {} as Record<
-          CaipChainId,
-          InternalMultichainNetworkConfiguration
-        >,
-      },
-    );
-
-    return getNetworkConfigurationsByCaipChainId({
-      multichainNetworkConfigurationsByChainId: {
-        ...nonEvmNetworks,
-        ...nonEvmTestNetworks,
-      },
+export const getAllNetworkConfigurationsByCaipChainId =
+  createResultEqualSelector(
+    (state: MultichainNetworkConfigurationsByChainIdState) =>
+      state.metamask.networkConfigurationsByChainId,
+    (state: MultichainNetworkConfigurationsByChainIdState) =>
+      state.metamask.multichainNetworkConfigurationsByChainId,
+    (state: {
+      metamask: {
+        internalAccounts: AccountsControllerState['internalAccounts'];
+      };
+    }) => state.metamask.internalAccounts,
+    (state: { metamask: { snaps: Record<string, { enabled: boolean }> } }) =>
+      state.metamask.snaps,
+    (
       networkConfigurationsByChainId,
+      multichainNetworkConfigurationsByChainId,
       internalAccounts,
       snaps,
-    });
-  },
-);
+    ) => {
+      // We have this logic here to filter out non EVM test networks
+      // to properly handle this we should use the selector from
+      // multichain/networks.ts in the UI side
+      const { nonEvmNetworks, nonEvmTestNetworks } = Object.keys(
+        multichainNetworkConfigurationsByChainId,
+      ).reduce(
+        (
+          result: {
+            nonEvmNetworks: Record<
+              CaipChainId,
+              InternalMultichainNetworkConfiguration
+            >;
+            nonEvmTestNetworks: Record<
+              CaipChainId,
+              InternalMultichainNetworkConfiguration
+            >;
+          },
+          key: string,
+        ) => {
+          const caipKey = key as CaipChainId;
+          if (NON_EVM_TESTNET_IDS.includes(caipKey)) {
+            result.nonEvmTestNetworks[caipKey] =
+              multichainNetworkConfigurationsByChainId[caipKey];
+          } else {
+            result.nonEvmNetworks[caipKey] =
+              multichainNetworkConfigurationsByChainId[caipKey];
+          }
+          return result;
+        },
+        {
+          nonEvmNetworks: {} as Record<
+            CaipChainId,
+            InternalMultichainNetworkConfiguration
+          >,
+          nonEvmTestNetworks: {} as Record<
+            CaipChainId,
+            InternalMultichainNetworkConfiguration
+          >,
+        },
+      );
+
+      return getNetworkConfigurationsByCaipChainId({
+        multichainNetworkConfigurationsByChainId: {
+          ...nonEvmNetworks,
+          ...nonEvmTestNetworks,
+        },
+        networkConfigurationsByChainId,
+        internalAccounts,
+        snaps,
+      });
+    },
+  );
 
 /**
  * Get the provider configuration for the current selected network.

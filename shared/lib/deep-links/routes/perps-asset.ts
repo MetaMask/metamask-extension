@@ -8,7 +8,7 @@ import { PERPS_MARKET_DETAIL_ROUTE, Route } from './route';
  * - https://link.metamask.io/perps-asset?symbol=BTC
  * - https://link.metamask.io/perps-asset?symbol=ETH
  * - https://link.metamask.io/perps-asset?symbol=SOL
- * - https://link.metamask.io/perps-asset?symbol=xyz:TSLA   (HIP-3 equity)
+ * - https://link.metamask.io/perps-asset?symbol=xyz:TSLA   (HIP-3 stock)
  * - https://link.metamask.io/perps-asset?symbol=xyz:GOLD   (HIP-3 commodity)
  * - https://link.metamask.io/perps-asset?symbol=xyz:EUR    (HIP-3 forex)
  *

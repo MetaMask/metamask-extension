@@ -15,14 +15,12 @@ import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/e
 import { getAssetsControllerMessenger } from './assets/assets-controller-messenger';
 
 export function getTransactionPayControllerMessenger(
-  messenger: RootMessenger,
-): TransactionPayControllerMessenger {
-  const controllerMessenger = new Messenger<
-    'TransactionPayController',
+  messenger: RootMessenger<
     MessengerActions<TransactionPayControllerMessenger>,
-    MessengerEvents<TransactionPayControllerMessenger>,
-    typeof messenger
-  >({
+    MessengerEvents<TransactionPayControllerMessenger>
+  >,
+): TransactionPayControllerMessenger {
+  const controllerMessenger: TransactionPayControllerMessenger = new Messenger({
     namespace: 'TransactionPayController',
     parent: messenger,
   });
@@ -38,12 +36,11 @@ export function getTransactionPayControllerMessenger(
     actions: [
       'AccountTrackerController:getState',
       'AssetsController:getStateForTransactionPay',
-      'BridgeController:fetchQuotes',
-      'BridgeStatusController:submitTx',
       'CurrencyRateController:getState',
       'GasFeeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkConfigurationByChainId',
       'RemoteFeatureFlagController:getState',
       'TokenBalancesController:getState',
       'TokenRatesController:getState',
@@ -55,10 +52,12 @@ export function getTransactionPayControllerMessenger(
       'TransactionController:updateTransaction',
       'KeyringController:getState',
       'KeyringController:signTypedMessage',
+      'RampsController:getOrder',
+      'RampsController:getQuotes',
+      'SentinelApiService:simulateTransactions',
     ],
     events: [
       'AssetsController:stateChange',
-      'BridgeStatusController:stateChange',
       'CurrencyRateController:stateChange',
       'TokenRatesController:stateChange',
       'TokensController:stateChange',

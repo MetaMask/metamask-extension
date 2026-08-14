@@ -1,11 +1,12 @@
 import React from 'react';
+import { Box } from '@metamask/design-system-react';
 import {
   BorderColor,
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import { Text, Box } from '../../component-library';
+import { Text } from '../../component-library';
 import Callout from './callout';
 
 export default {

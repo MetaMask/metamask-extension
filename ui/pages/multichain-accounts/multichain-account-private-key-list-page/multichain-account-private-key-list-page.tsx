@@ -90,13 +90,14 @@ export const MultichainAccountPrivateKeyListPage = ({
       >
         {accountGroupName} / {t('privateKeys')}
       </Header>
-      <Content>
+      <Content padding={0}>
         <BannerAlert
           data-testid="backup-state-banner-alert"
           title={t('revealMultichainPrivateKeysBannerTitle')}
           paddingTop={2}
           paddingBottom={2}
           severity={BannerAlertSeverity.Danger}
+          marginHorizontal={4}
         >
           {t('revealMultichainPrivateKeysBannerDescription', [learnMoreLink])}
         </BannerAlert>

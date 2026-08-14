@@ -3,14 +3,27 @@ import { RawLocator } from '../../common';
 import { tEn } from '../../../../lib/i18n-helpers';
 import Confirmation from './confirmation';
 
+/**
+ * Account details modal opened from a confirmation header.
+ *
+ * Screen: overlay modal on a redesigned confirmation (not a hash route).
+ * Owns: account balance display, address copy / copied feedback, and close.
+ * Boundaries: extends `Confirmation` for shared helpers, but this object is
+ * scoped to the account-details modal only. Opening it via the header button
+ * belongs to `Confirmation`; after close, control returns to the parent
+ * confirmation.
+ * Related: `Confirmation` (how tests get here).
+ *
+ * @see ui/pages/confirmations/components/confirm/header/header-info.tsx
+ */
 class AccountDetailsModal extends Confirmation {
   private accountBalanceInfo: RawLocator;
 
-  private addressCopyButton: RawLocator;
+  private accountDetailsModalCloseButton: RawLocator;
 
   private addressCopiedButton: RawLocator;
 
-  private accountDetailsModalCloseButton: RawLocator;
+  private addressCopyButton: RawLocator;
 
   constructor(driver: Driver) {
     super(driver);
@@ -31,12 +44,27 @@ class AccountDetailsModal extends Confirmation {
       '[data-testid="confirmation-account-details-modal__close-button"]';
   }
 
-  async clickAddressCopyButton() {
-    await this.driver.clickElement(this.addressCopyButton);
+  async assertHeaderInfoBalance(balance: string) {
+    await this.driver.waitForSelector({
+      css: this.accountBalanceInfo.toString(),
+      text: `${balance} ETH`,
+    });
   }
 
-  async waitForAddressCopied() {
-    await this.driver.waitForSelector(this.addressCopiedButton);
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.accountBalanceInfo,
+        this.addressCopyButton,
+        this.accountDetailsModalCloseButton,
+      ]);
+    } catch (error) {
+      console.error(
+        'Error checking if account details modal is loaded:',
+        error,
+      );
+      throw error;
+    }
   }
 
   async clickAccountDetailsModalCloseButton() {
@@ -45,11 +73,12 @@ class AccountDetailsModal extends Confirmation {
     );
   }
 
-  async assertHeaderInfoBalance(balance: string) {
-    await this.driver.waitForSelector({
-      css: this.accountBalanceInfo.toString(),
-      text: `${balance} ETH`,
-    });
+  async clickAddressCopyButton() {
+    await this.driver.clickElement(this.addressCopyButton);
+  }
+
+  async waitForAddressCopied() {
+    await this.driver.waitForSelector(this.addressCopiedButton);
   }
 }
 

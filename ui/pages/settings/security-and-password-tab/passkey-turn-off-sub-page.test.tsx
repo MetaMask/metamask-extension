@@ -54,6 +54,13 @@ jest.mock('../../../../shared/lib/passkey', () => ({
   cancelPasskeyCeremony: jest.fn(),
 }));
 
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
+    '../../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
+}));
+
 const stateWithPasskey = {
   ...mockState,
   metamask: {

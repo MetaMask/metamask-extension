@@ -139,9 +139,7 @@ exports[`TokenListItem should display warning scam modal 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-            >
-              
-            </p>
+            />
           </div>
           <button
             aria-label=""
@@ -149,7 +147,7 @@ exports[`TokenListItem should display warning scam modal 1`] = `
             data-testid="scam-warning"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/danger.svg');"
             />
           </button>
@@ -221,9 +219,7 @@ exports[`TokenListItem should display warning scam modal fallback when safechain
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-            >
-              
-            </p>
+            />
           </div>
           <button
             aria-label=""
@@ -231,7 +227,7 @@ exports[`TokenListItem should display warning scam modal fallback when safechain
             data-testid="scam-warning"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/danger.svg');"
             />
           </button>

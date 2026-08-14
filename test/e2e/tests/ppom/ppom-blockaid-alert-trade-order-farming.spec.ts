@@ -1,12 +1,22 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
-import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
+import {
+  PPOM_MOCK_ETH_BALANCE_DISPLAY,
+  PPOM_MOCK_ETH_BALANCE_HEX,
+  PPOM_MOCK_ETH_BALANCE_HUMAN,
+  SECURITY_ALERTS_PROD_API_BASE_URL,
+} from './constants';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 
 const CONTRACT_ADDRESS = {
@@ -130,13 +140,38 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
               '0x1': true,
             },
           })
+          .withAccountTracker({
+            accountsByChainId: {
+              '0x1': {
+                [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+                  balance: PPOM_MOCK_ETH_BALANCE_HEX,
+                  stakedBalance: '0x0',
+                },
+              },
+            },
+          })
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1/slip44:60': {
+                  amount: PPOM_MOCK_ETH_BALANCE_HUMAN,
+                },
+              },
+            },
+          })
           .build(),
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: PPOM_MOCK_ETH_BALANCE_HUMAN,
+        },
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await login(driver, { expectedBalance: '1.37T ETH' });
+        await login(driver, {
+          expectedBalance: PPOM_MOCK_ETH_BALANCE_DISPLAY,
+          waitForNonEvmAccounts: false,
+        });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
         await testDapp.checkPageIsLoaded();

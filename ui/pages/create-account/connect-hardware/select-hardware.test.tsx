@@ -5,6 +5,21 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import SelectHardware from './select-hardware';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockNavigate = jest.fn();
 let mockLocationKey = 'default';
 jest.mock('react-router-dom', () => ({
@@ -125,11 +140,11 @@ describe('SelectHardware', () => {
       );
     });
 
-    it('connects to OneKey', () => {
+    it('connects to OneKey via QR device onboarding flow', () => {
       render();
       fireEvent.click(screen.getByTestId('connect-hardware-wallet-onekey'));
       expect(mockConnectToHardwareWallet).toHaveBeenCalledWith(
-        HardwareDeviceNames.oneKey,
+        HardwareDeviceNames.qr,
       );
     });
 

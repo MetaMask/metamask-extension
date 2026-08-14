@@ -1,26 +1,23 @@
 import React, { useMemo, useState } from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
-import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
+import { I18nContext } from '../../ui/contexts/i18n';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
 import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
 
-export const I18nProvider = (props) => {
-  const { currentLocale, current, en: eng } = props;
-
+/** @type {import('react').FC<{ currentLocale?: string; current?: object; en?: object; children?: import('react').ReactNode }>} */
+export const I18nProvider = ({ currentLocale, current, en: eng, children }) => {
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
       getMessage(currentLocale, eng, key, ...args);
   }, [currentLocale, current, eng]);
 
-  return (
-    <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={t}>{children}</I18nContext.Provider>;
 };
 
 I18nProvider.propTypes = {
@@ -30,14 +27,10 @@ I18nProvider.propTypes = {
   children: PropTypes.node,
 };
 
-I18nProvider.defaultProps = {
-  children: undefined,
-};
-
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (
     <I18nProvider currentLocale="en" current={en} en={en}>
-      <LegacyI18nProvider>{children}</LegacyI18nProvider>
+      {children}
     </I18nProvider>
   );
 
@@ -99,7 +92,20 @@ export async function integrationTestRender(extendedRenderOptions) {
 
   const store = await setupInitialStore(preloadedState, activeTab);
 
-  return {
-    ...render(<Root store={store} />, { ...renderOptions }),
-  };
+  let result;
+  // Wrap render + microtask flush so async setState from mount effects
+  // (e.g. useAsyncResult / useUserSubscriptions) stays inside act.
+  await act(async () => {
+    result = render(<Root store={store} />, {
+      // Prefer the legacy root for integration tests. RTL v14 defaults to
+      // createRoot (concurrent), which interacts poorly with existing
+      // act()/waitFor patterns and floods act-environment console warnings.
+      legacyRoot: true,
+      ...renderOptions,
+    });
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+
+  return result;
 }

@@ -17,9 +17,8 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
+import { PerpsTab } from '../../page-objects/pages/home/perps-tab';
 import { PerpsActivityPage } from '../../page-objects/pages/perps/perps-activity-page';
-import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { getPerpsConfigEligibleWithActivity } from './perps-fixture-config';
 import { WS_WITH_ACTIVITY_DATA } from './mocks/websocketActivityMocks';
 
@@ -35,10 +34,10 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickRecentActivitySeeAll();
 
         const activityPage = new PerpsActivityPage(driver);
         await activityPage.checkPageIsLoaded();
@@ -64,10 +63,10 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickRecentActivitySeeAll();
 
         const activityPage = new PerpsActivityPage(driver);
         await activityPage.checkPageIsLoaded();
@@ -94,10 +93,10 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickRecentActivitySeeAll();
 
         const activityPage = new PerpsActivityPage(driver);
         await activityPage.checkPageIsLoaded();
@@ -123,10 +122,10 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickRecentActivitySeeAll();
 
         const activityPage = new PerpsActivityPage(driver);
         await activityPage.checkPageIsLoaded();
@@ -152,10 +151,10 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickRecentActivitySeeAll();
 
         const activityPage = new PerpsActivityPage(driver);
         await activityPage.checkPageIsLoaded();
@@ -170,9 +169,9 @@ describe('Perps Activity', function (this: Suite) {
     );
   });
 
-  // ─── Click transaction → market detail ────────────────────────────────────
+  // ─── Click transaction → transaction details ──────────────────────────────
 
-  it('clicking an order transaction navigates to the market detail page', async function () {
+  it('clicking an order transaction navigates to the transaction details page', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligibleWithActivity(this.test?.fullTitle()),
@@ -181,26 +180,26 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickRecentActivitySeeAll();
 
         const activityPage = new PerpsActivityPage(driver);
         await activityPage.checkPageIsLoaded();
 
         // Select Orders filter and wait for an order transaction card.
-        // Only order-type cards have an onClick handler that navigates to market detail.
         await activityPage.clickFilterButton();
         await activityPage.selectFilter('order');
         await activityPage.waitForAnyTransactionCard();
 
-        // Click the first order card — navigates to the ETH market detail page
+        // Click the first order card — navigates to the transaction details page
         await activityPage.clickFirstTransactionCard();
 
-        // Verify we landed on the market detail page
-        const marketDetailPage = new PerpsMarketDetailPage(driver);
-        await marketDetailPage.checkPageIsLoaded();
+        // Verify we landed on the transaction details page
+        await driver.waitForSelector({
+          testId: 'perps-transaction-details-page',
+        });
       },
     );
   });
@@ -216,12 +215,12 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
 
         // Wait for the non-empty recent-activity section to appear
-        await perpsHomePage.waitForRecentActivitySection();
+        await perpsTab.waitForRecentActivitySection();
       },
     );
   });

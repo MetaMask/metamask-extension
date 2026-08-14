@@ -7,21 +7,28 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { mockMultiNetworkBalancePolling } from '../../../mock-balance-polling/mock-balance-polling';
-import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/gas-fee-token-modal';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 import { mockSmartTransactionBatchRequests } from '../../smart-transactions/mocks';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
 import { login } from '../../../page-objects/flows/login.flow';
+import {
+  GAS_FEE_SPOT_PRICES,
+  GAS_FEE_UNIFIED_MAINNET_ADDITIONAL_BALANCES,
+  getGasFeeTokenAssetsControllerPatch,
+} from './gas-fee-token-fixtures';
 
 const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
 
 const TRANSACTION_HASH_2 =
   '0x62700f83ba1bbc29004bf7aef71ed0ea735de4fd59861b4235200d8fa028281f';
+
+const MAINNET_NATIVE_ETH_BALANCE = '20';
 
 describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
   it('confirms one transaction if successful', async function () {
@@ -31,7 +38,19 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withAssetsController(
+            getGasFeeTokenAssetsControllerPatch(MAINNET_NATIVE_ETH_BALANCE),
+          )
           .build(),
+        localNodeOptions: {
+          hardfork: 'london',
+          chainId: '1',
+        },
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: MAINNET_NATIVE_ETH_BALANCE,
+          mainnetAdditionalBalances:
+            GAS_FEE_UNIFIED_MAINNET_ADDITIONAL_BALANCES,
+        },
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockMultiNetworkBalancePolling(mockServer);
           mockSimulationResponse(mockServer);
@@ -39,13 +58,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
           });
           mockSentinelNetworks(mockServer);
-          mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
+          mockSpotPrices(mockServer, GAS_FEE_SPOT_PRICES);
         },
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
@@ -54,7 +67,10 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         ],
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await login(driver, { expectedBalance: '20 ETH' });
+        await login(driver, {
+          expectedBalance: '20 ETH',
+          waitForNonEvmAccounts: false,
+        });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -86,8 +102,8 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -99,7 +115,19 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withAssetsController(
+            getGasFeeTokenAssetsControllerPatch(MAINNET_NATIVE_ETH_BALANCE),
+          )
           .build(),
+        localNodeOptions: {
+          hardfork: 'london',
+          chainId: '1',
+        },
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: MAINNET_NATIVE_ETH_BALANCE,
+          mainnetAdditionalBalances:
+            GAS_FEE_UNIFIED_MAINNET_ADDITIONAL_BALANCES,
+        },
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockSimulationResponse(mockServer);
           await mockSmartTransactionBatchRequests(mockServer, {
@@ -111,7 +139,10 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await login(driver, { expectedBalance: '20 ETH' });
+        await login(driver, {
+          expectedBalance: '20 ETH',
+          waitForNonEvmAccounts: false,
+        });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -132,8 +163,8 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity(1);
       },
     );
   });

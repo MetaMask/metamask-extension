@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CaipChainId, Hex, parseCaipAssetType } from '@metamask/utils';
+import { getAssetId } from '@metamask/assets-controllers';
+import {
+  CaipChainId,
+  Hex,
+  isStrictHexString,
+  parseCaipAssetType,
+} from '@metamask/utils';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { API_URLS, GC_TIMES, STALE_TIMES } from '@metamask/core-backend';
@@ -119,19 +125,30 @@ function getV3HistoricalPricesCaipParams(
   chainId: Hex | CaipChainId,
   address: string,
 ): { caipChainId: CaipChainId; assetType: string } | null {
-  const caipAssetType = toAssetId(address, chainId);
-  if (!caipAssetType) {
+  try {
+    // getAssetId re-uses the assets-controllers v3 spot-prices logic and apply on V3 historical-prices
+    const caipAssetType = isStrictHexString(chainId)
+      ? (getAssetId({
+          chainId,
+          tokenAddress: address,
+        }) ?? toAssetId(address, chainId))
+      : toAssetId(address, chainId);
+
+    if (!caipAssetType) {
+      return null;
+    }
+    const {
+      chainId: caipChainId,
+      assetNamespace,
+      assetReference,
+    } = parseCaipAssetType(caipAssetType);
+    return {
+      caipChainId,
+      assetType: `${assetNamespace}:${assetReference}`,
+    };
+  } catch {
     return null;
   }
-  const {
-    chainId: caipChainId,
-    assetNamespace,
-    assetReference,
-  } = parseCaipAssetType(caipAssetType);
-  return {
-    caipChainId,
-    assetType: `${assetNamespace}:${assetReference}`,
-  };
 }
 
 /**
@@ -151,6 +168,13 @@ export const useHistoricalPrices = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
+  const flatlinePlaceholder: { prices: [number, number][] } = {
+    prices: [
+      [Date.now() - 24 * 60 * 60 * 1000, 0],
+      [Date.now(), 0],
+    ],
+  };
+
   const v3Params = useMemo(
     () => getV3HistoricalPricesCaipParams(chainId, address),
     [chainId, address],
@@ -174,7 +198,13 @@ export const useHistoricalPrices = ({
     ] as const;
   }, [v3Params, currency, timePeriod]);
 
-  const { data: prices = [], isFetching } = useQuery({
+  const {
+    data: prices = [],
+    isFetching,
+    isInitialLoading,
+    isFetchedAfterMount,
+    isPlaceholderData,
+  } = useQuery({
     // @ts-expect-error - fix once extension in react-query v5
     queryKey,
     queryFn: async ({ queryKey: qk, signal }) => {
@@ -199,6 +229,7 @@ export const useHistoricalPrices = ({
     },
     enabled: Boolean(v3Params),
     keepPreviousData: true,
+    placeholderData: flatlinePlaceholder,
     retry: false,
     staleTime: STALE_TIMES.PRICES,
     gcTime: GC_TIMES.DEFAULT,
@@ -208,7 +239,10 @@ export const useHistoricalPrices = ({
   const metadata = useMemo(() => deriveMetadata(prices), [prices]);
 
   return {
-    loading: isFetching,
+    loading: isInitialLoading,
+    isFetching,
+    isFetchedAfterMount,
+    isPlaceholderData,
     data: { prices, metadata },
   };
 };

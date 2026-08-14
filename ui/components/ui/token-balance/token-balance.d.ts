@@ -11,5 +11,7 @@ export type TokenBalanceProps = OverridingUnion<
   }
 >;
 
-declare const TokenBalance: React.FC<TokenBalanceProps>;
+declare const TokenBalance: React.ComponentType<
+  React.PropsWithChildren<TokenBalanceProps>
+>;
 export default TokenBalance;

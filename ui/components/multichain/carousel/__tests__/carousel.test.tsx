@@ -1,6 +1,21 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Carousel } from '../carousel';
+import { fetchCarouselSlidesFromContentful } from '../../../../hooks/useCarouselManagement/fetchCarouselSlidesFromContentful';
+
+const it = globalThis.it as unknown as jest.It;
+const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+jest.mock('../../../../../shared/lib/sentry', () => ({
+  captureException: jest.fn(),
+  sentryLogger: {
+    extend: jest.fn(() => jest.fn()),
+  },
+}));
+
+jest.mock('../../../../../shared/lib/environment', () => ({
+  isProduction: jest.fn().mockReturnValue(false),
+}));
 
 // Mock Redux hooks
 jest.mock('react-redux', () => ({
@@ -55,7 +70,34 @@ const mockSlides = [
   },
 ];
 
+const makeBannerResponse = (linkUrl: string) => ({
+  items: [
+    {
+      sys: { id: 'banner-1' },
+      fields: {
+        headline: 'Test Banner',
+        teaser: 'Test description',
+        image: { sys: { id: 'asset-1' } },
+        linkUrl,
+        undismissable: false,
+        showInExtension: true,
+      },
+    },
+  ],
+  includes: {
+    Asset: [
+      {
+        sys: { id: 'asset-1' },
+        fields: { file: { url: '//images.ctfassets.net/img.png' } },
+      },
+    ],
+  },
+});
+
 describe('Carousel', () => {
+  let fetchSpy: jest.SpyInstance;
+  let previousPlatform: typeof global.platform;
+
   const defaultProps = {
     slides: mockSlides,
     isLoading: false,
@@ -67,6 +109,20 @@ describe('Carousel', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env.CONTENTFUL_ACCESS_SPACE_ID = 'test-space';
+    process.env.CONTENTFUL_ACCESS_TOKEN = 'test-token';
+    fetchSpy = jest.spyOn(globalThis, 'fetch');
+    previousPlatform = global.platform;
+    global.platform = {
+      openTab: jest.fn(),
+    } as unknown as typeof global.platform;
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
+    global.platform = previousPlatform;
+    delete process.env.CONTENTFUL_ACCESS_SPACE_ID;
+    delete process.env.CONTENTFUL_ACCESS_TOKEN;
   });
 
   it('renders without crashing', () => {
@@ -138,4 +194,103 @@ describe('Carousel', () => {
     // Should still show non-dismissed slides
     expect(screen.getByText('Test Slide 1')).toBeInTheDocument();
   });
+
+  it('does not follow href when the slide click handler consumes the click', async () => {
+    const onSlideClickMock = jest.fn().mockReturnValue(true);
+    const slides = [
+      {
+        ...mockSlides[0],
+        id: 'download-mobile-slide',
+        href: 'https://link.metamask.io/buy?amount=100',
+        variableName: 'downloadMobileApp',
+      },
+    ];
+
+    render(
+      <Carousel
+        {...defaultProps}
+        slides={slides}
+        onSlideClick={onSlideClickMock}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId('carousel-slide-download-mobile-slide'));
+
+    expect(onSlideClickMock).toHaveBeenCalledWith('download-mobile-slide');
+    await flushPromises();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(global.platform.openTab).not.toHaveBeenCalled();
+  });
+
+  type CarouselClickTestCase = {
+    testName: string;
+    linkUrl: string;
+    expected: { navigate: string } | { openTab: string };
+  };
+
+  const carouselClickTestCases: CarouselClickTestCase[] = [
+    {
+      testName: 'existing internal route',
+      linkUrl: '/settings',
+      expected: { navigate: '/settings' },
+    },
+    {
+      testName: 'deep link that resolves to an internal route',
+      linkUrl: 'https://link.metamask.io/home?openNetworkSelector=true',
+      expected: { navigate: '/?openNetworkSelector=true' },
+    },
+    {
+      testName: 'deep link subdomain that resolves to an internal route',
+      linkUrl: 'https://links.link.metamask.io/home?openNetworkSelector=true',
+      expected: { navigate: '/?openNetworkSelector=true' },
+    },
+    {
+      testName: 'deep link that resolves to a redirect URL',
+      linkUrl: 'https://link.metamask.io/buy?amount=100',
+      expected: { openTab: 'https://app.metamask.io/buy?amount=100' },
+    },
+    {
+      testName: 'external URL that only starts with the deep link host',
+      linkUrl:
+        'https://link.metamask.io.evil.com/home?openNetworkSelector=true',
+      expected: {
+        openTab:
+          'https://link.metamask.io.evil.com/home?openNetworkSelector=true',
+      },
+    },
+    {
+      testName: 'non-deep-link external URL',
+      linkUrl: 'https://example.com',
+      expected: { openTab: 'https://example.com' },
+    },
+  ];
+
+  it.each(carouselClickTestCases)(
+    'clicks a Contentful slide with a $testName',
+    async ({ linkUrl, expected }: CarouselClickTestCase) => {
+      fetchSpy.mockResolvedValue({
+        ok: true,
+        json: async () => makeBannerResponse(linkUrl),
+      } as Response);
+      const { regularSlides } = await fetchCarouselSlidesFromContentful();
+
+      render(<Carousel {...defaultProps} slides={regularSlides} />);
+
+      fireEvent.click(screen.getByTestId('carousel-slide-contentful-banner-1'));
+
+      if ('navigate' in expected) {
+        await waitFor(() =>
+          expect(mockUseNavigate).toHaveBeenCalledWith(expected.navigate),
+        );
+        expect(global.platform.openTab).not.toHaveBeenCalled();
+      } else {
+        await waitFor(() =>
+          expect(global.platform.openTab).toHaveBeenCalledWith({
+            url: expected.openTab,
+          }),
+        );
+        expect(mockUseNavigate).not.toHaveBeenCalled();
+      }
+    },
+  );
 });

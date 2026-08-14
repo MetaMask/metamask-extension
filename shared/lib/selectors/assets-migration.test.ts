@@ -24,10 +24,24 @@ import {
 } from './assets-migration';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
-// so these selector tests exercise the real feature-flag gating logic.
-jest.mock('../assets-unify-state/remote-feature-flag', () =>
-  jest.requireActual('../assets-unify-state/remote-feature-flag'),
-);
+// and provide the pure flag-evaluation logic without the IN_TEST bypass
+// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
+// so using jest.requireActual here would make the function always return true,
+// breaking all "when disabled" test cases).
+jest.mock('../assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual('../assets-unify-state/remote-feature-flag'),
+  isAssetsUnifyStateFeatureEnabled: jest.fn(
+    (
+      featureFlag:
+        | { enabled: boolean; featureVersion: string }
+        | undefined
+        | null,
+      featureVersion: string,
+    ) =>
+      Boolean(featureFlag?.enabled) &&
+      featureFlag?.featureVersion === featureVersion,
+  ),
+}));
 
 jest.mock('../environment', () => ({
   ...jest.requireActual('../environment'),
@@ -95,27 +109,6 @@ function makeMockPrice(overrides: Partial<Record<string, unknown>> = {}) {
 }
 
 describe('getAccountTrackerControllerAccountsByChainId', () => {
-  describe('when assets unify state feature is disabled', () => {
-    it('returns accountsByChainId from state unchanged', () => {
-      const legacyAccountsByChainId = {
-        '0x1': {
-          [mockAccountAddressChecksummed]: {
-            balance: '0xde0b6b3a7640000' as const,
-          },
-        },
-      };
-      const state = {
-        metamask: {
-          accountsByChainId: legacyAccountsByChainId,
-        },
-      };
-      const result = getAccountTrackerControllerAccountsByChainId(state);
-
-      expect(result).toBe(legacyAccountsByChainId);
-      expect(result).toStrictEqual(legacyAccountsByChainId);
-    });
-  });
-
   describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives accountsByChainId from new state structure', () => {
       const state = {
@@ -323,6 +316,107 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
 
       // 1.23456 with 2 decimals → truncated to 1.23 → 123
       expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe('0x7b');
+    });
+
+    it('does not crash when amount is in scientific notation (e.g. "1e-18")', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1e-18' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      // Should not throw — 1e-18 ETH = 1 wei = 0x1
+      expect(() =>
+        getAccountTrackerControllerAccountsByChainId(state),
+      ).not.toThrow();
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+      expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe('0x1');
+    });
+
+    it('does not crash when amount has absurd scientific notation exponent (e.g. "1e-18000000000000000000")', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1e-18000000000000000000' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      // Should not throw — value is sub-unit, rounds to 0x0
+      expect(() =>
+        getAccountTrackerControllerAccountsByChainId(state),
+      ).not.toThrow();
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+      expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe('0x0');
+    });
+
+    it('correctly parses positive scientific notation (e.g. "1.5e2" with 2 decimals)', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 2 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1.5e2' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      // 1.5e2 = 150 human-readable, with 2 decimals → 15000 base units = 0x3a98
+      expect(() =>
+        getAccountTrackerControllerAccountsByChainId(state),
+      ).not.toThrow();
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+      expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe(
+        '0x3a98',
+      );
     });
   });
 });
@@ -944,6 +1038,31 @@ describe('getTokenBalancesControllerTokenBalances', () => {
           erc20AssetAddressChecksummed
         ],
       ).toBe('0x1312d00'); // 20 * 10^6
+    });
+
+    it('maps non-mainnet native assets to zero address to match TokenBalancesController behavior', () => {
+      const zeroAddress: Hex = '0x0000000000000000000000000000000000000000';
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          tokenBalances: {},
+          assetsInfo: {
+            [nativePolygonAssetId]: { type: 'native', decimals: 18 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativePolygonAssetId]: { amount: '2' },
+            },
+          },
+          customAssets: {},
+          internalAccounts: baseInternalAccounts,
+        },
+      };
+      const result = getTokenBalancesControllerTokenBalances(state);
+
+      expect(result[mockAccountAddressLowercase]['0x89']).toStrictEqual({
+        [zeroAddress]: '0x1bc16d674ec80000', // 2 MATIC (18 decimals)
+      });
     });
   });
 });
@@ -2110,6 +2229,34 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
       expect(entry.marketData?.totalVolume).toBe('500000000');
     });
 
+    it('omits non-finite market data fields instead of stringifying them', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          conversionRates: {},
+          assetsPrice: {
+            [solanaTokenAssetId]: makeMockPrice({
+              id: 'sol-usdc',
+              price: 1.5,
+              allTimeHigh: null,
+              allTimeLow: undefined,
+              circulatingSupply: NaN,
+              marketCap: null,
+              totalVolume: Infinity,
+            }),
+          },
+        },
+      };
+      const result = getMultichainAssetsRatesControllerConversionRates(state);
+
+      const { marketData } = result[solanaTokenAssetId];
+      expect(marketData?.allTimeHigh).toBeUndefined();
+      expect(marketData?.allTimeLow).toBeUndefined();
+      expect(marketData?.circulatingSupply).toBeUndefined();
+      expect(marketData?.marketCap).toBeUndefined();
+      expect(marketData?.totalVolume).toBeUndefined();
+    });
+
     it('handles empty assetsPrice', () => {
       const state = {
         metamask: {
@@ -2128,6 +2275,8 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
 describe('getRatesControllerRates', () => {
   const solanaNativeAssetId =
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+  const solanaSplMissingSymbolAssetId =
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2NzMQx8TiDFbw5p3oMNVBh59UkKAPLHoa62YV6vXNmmG';
 
   describe('when assets unify state feature is disabled', () => {
     it('returns rates from state unchanged', () => {
@@ -2214,6 +2363,44 @@ describe('getRatesControllerRates', () => {
           conversionDate: lastUpdated,
           conversionRate: 91.69,
           usdConversionRate: 91.69,
+        },
+      });
+    });
+
+    it('skips assetsInfo entries with missing symbol without throwing', () => {
+      const lastUpdated = 1700000000000;
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          rates: {},
+          assetsInfo: {
+            [solanaSplMissingSymbolAssetId]: {
+              decimals: 9,
+              type: 'spl',
+            },
+            [bitcoinNativeAssetId]: {
+              type: 'native',
+              symbol: 'BTC',
+              decimals: 8,
+            },
+          },
+          assetsPrice: {
+            [bitcoinNativeAssetId]: makeMockPrice({
+              id: 'btc',
+              price: 71052.43,
+              usdPrice: 71052.43,
+              lastUpdated,
+            }),
+          },
+        },
+      };
+
+      expect(() => getRatesControllerRates(state)).not.toThrow();
+      expect(getRatesControllerRates(state)).toStrictEqual({
+        btc: {
+          conversionDate: lastUpdated,
+          conversionRate: 71052.43,
+          usdConversionRate: 71052.43,
         },
       });
     });

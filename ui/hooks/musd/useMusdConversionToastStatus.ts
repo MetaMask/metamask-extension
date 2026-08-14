@@ -1,11 +1,4 @@
-import {
-  useMemo,
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useContext,
-} from 'react';
+import { useMemo, useEffect, useRef, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   TransactionStatus,
@@ -18,7 +11,7 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../selectors/transactionPayController';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -66,7 +59,7 @@ export const useMusdConversionToastStatus = (): {
   dismissToast: () => void;
 } => {
   const transactions = useSelector(getTransactions) as TransactionMeta[];
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -175,13 +168,19 @@ export const useMusdConversionToastStatus = (): {
       };
       /* eslint-enable @typescript-eslint/naming-convention */
 
-      trackEvent({
-        event: MetaMetricsEventName.MusdConversionStatusUpdated,
-        category: MetaMetricsEventCategory.MusdConversion,
-        properties,
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.MusdConversionStatusUpdated)
+          .addCategory(MetaMetricsEventCategory.MusdConversion)
+          .addProperties(properties)
+          .build(),
+      );
     },
-    [trackEvent, networkConfigurationsByChainId, extractTransferAmount],
+    [
+      createEventBuilder,
+      trackEvent,
+      networkConfigurationsByChainId,
+      extractTransferAmount,
+    ],
   );
 
   // Detect transitions from pending → confirmed/failed and track analytics

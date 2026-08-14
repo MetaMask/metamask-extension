@@ -1,6 +1,6 @@
 import type { Driver } from '../../webdriver/driver';
 import { PerpsActivityPage } from '../pages/perps/perps-activity-page';
-import { PerpsHomePage } from '../pages/perps/perps-home-page';
+import { PerpsTab } from '../pages/home/perps-tab';
 import { PerpsMarketDetailPage } from '../pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
 
@@ -28,17 +28,27 @@ export async function assertPerpsActivityShowsCloseFill({
 
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.clickBack();
-  try {
-    const marketListPage = new PerpsMarketListPage(driver);
+
+  const marketListPage = new PerpsMarketListPage(driver);
+  const onMarketList = await driver.isElementPresentAndVisible(
+    { testId: 'market-list-view' },
+    2000,
+  );
+  if (onMarketList) {
     await marketListPage.clickBack();
-  } catch (error) {
-    console.error('Market list not displayed, moving on', error);
   }
 
-  const perpsHomePage = new PerpsHomePage(driver);
-  await perpsHomePage.navigateToPerpsHome();
-  await perpsHomePage.checkPageIsLoaded();
-  await perpsHomePage.clickRecentActivitySeeAll();
+  const perpsTab = new PerpsTab(driver);
+  const onPerpsHome = await driver.isElementPresentAndVisible(
+    { testId: 'perps-view' },
+    2000,
+  );
+  if (!onPerpsHome) {
+    await perpsTab.navigateToPerpsHome();
+  }
+  await perpsTab.checkPageIsLoaded();
+  await perpsTab.waitForRecentActivitySection();
+  await perpsTab.clickRecentActivitySeeAll();
 
   const activityPage = new PerpsActivityPage(driver);
   await activityPage.checkPageIsLoaded();

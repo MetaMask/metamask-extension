@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Button,
   Box,
@@ -16,9 +16,10 @@ import {
   BoxBackgroundColor,
   IconColor,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 import PasswordForm from '../../components/app/password-form/password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -41,9 +42,29 @@ const CreatePasswordForm = ({
 }: CreatePasswordFormProps) => {
   const t = useI18nContext();
   const [password, setPassword] = useState('');
-  const { value: termsChecked, toggle } = useBoolean();
+  const {
+    value: termsChecked,
+    setValue: setTermsChecked,
+    toggle,
+  } = useBoolean();
+  const hasUserInteractedWithTermsRef = useRef(false);
+  const geolocation = useSelector(
+    (state: { metamask: { location: string } }) => state.metamask?.location,
+  );
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+
+  useEffect(() => {
+    if (
+      isSocialLoginFlow &&
+      // For Social login users in US region, we set the marketing consent to true by default for the first time render
+      geolocation === 'US' &&
+      !hasUserInteractedWithTermsRef.current
+    ) {
+      setTermsChecked(true);
+      hasUserInteractedWithTermsRef.current = true;
+    }
+  }, [setTermsChecked, isSocialLoginFlow, geolocation]);
 
   const handleCreatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,15 +75,16 @@ const CreatePasswordForm = ({
     event: React.MouseEvent<HTMLAnchorElement>,
   ): void => {
     event.stopPropagation();
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        text: 'Learn More',
-        location: 'create_password',
-        url: ZENDESK_URLS.PASSWORD_ARTICLE,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          text: 'Learn More',
+          location: 'create_password',
+          url: ZENDESK_URLS.PASSWORD_ARTICLE,
+        })
+        .build(),
+    );
   };
 
   const createPasswordLink = (
@@ -149,7 +171,10 @@ const CreatePasswordForm = ({
               className="items-start"
               isSelected={termsChecked}
               isDisabled={loading}
-              onChange={toggle}
+              onChange={() => {
+                hasUserInteractedWithTermsRef.current = true;
+                toggle();
+              }}
               label={
                 <Text
                   asChild

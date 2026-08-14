@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
 import {
@@ -21,6 +21,11 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../selectors', () => ({
   getAddressSecurityAlertResponse: jest.fn(),
+}));
+
+jest.mock('./useI18nContext', () => ({
+  useI18nContext: () => (key: string) =>
+    key === 'nameModalTitleMalicious' ? 'Malicious Address' : key,
 }));
 
 jest.mock('../../shared/lib/trust-signals', () => {

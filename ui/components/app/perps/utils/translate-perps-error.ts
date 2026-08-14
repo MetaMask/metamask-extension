@@ -6,7 +6,7 @@ import type { PerpsErrorCode } from '@metamask/perps-controller';
  * Keys that fall through to `somethingWentWrong` do not have
  * user-meaningful distinctions beyond a generic failure message.
  */
-export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
+export const ERROR_CODE_TO_I18N_KEY = {
   // Client lifecycle
   [PERPS_ERROR_CODES.CLIENT_NOT_INITIALIZED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.CLIENT_REINITIALIZING]: 'somethingWentWrong',
@@ -58,10 +58,39 @@ export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
   [PERPS_ERROR_CODES.ORDER_LEVERAGE_BELOW_POSITION]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_MAX_VALUE_EXCEEDED]: 'perpsOrderFailed',
 
+  // Order validation — trigger placements and partial TP/SL. The extension
+  // places neither today, so these are unreachable from its UI and share the
+  // generic `ORDER_*` copy rather than carrying bespoke strings.
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_PRICE_REQUIRED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_PRICE_POSITIVE]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_PRICE_NOT_SUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_TPSL_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_SIZE_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_LINKAGE_CONFLICT]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_POSITION_LINKAGE_UNSUPPORTED]:
+    'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_LINKAGE_REQUIRED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TIME_IN_FORCE_NOT_SUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_EDIT_TRIGGER_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_EDIT_ORDER_UNVERIFIABLE]: 'perpsOrderFailed',
+
   // HyperLiquid client errors
   [PERPS_ERROR_CODES.EXCHANGE_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.INFO_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.SUBSCRIPTION_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
+
+  // HyperLiquid exchange rejections
+  // The wallet has no HyperLiquid account yet — HyperLiquid creates one on the
+  // first USDC credit, so the only way forward is to fund it. This has its own
+  // key rather than reusing `perpsAddFundsDescription`: that string belongs to
+  // the balance-actions empty state, and rewording it there should not silently
+  // reword an error message.
+  [PERPS_ERROR_CODES.EXCHANGE_ACCOUNT_NOT_FOUND]:
+    'perpsExchangeAccountNotFound',
+  // Account needs a multi-sig wrapper for exchange writes — not actionable here.
+  [PERPS_ERROR_CODES.EXCHANGE_MULTI_SIG_REQUIRED]: 'somethingWentWrong',
+  // Stale or reused action nonce; retrying is what resolves it.
+  [PERPS_ERROR_CODES.EXCHANGE_INVALID_NONCE]: 'perpsOrderFailed',
 
   // Wallet / account
   [PERPS_ERROR_CODES.NO_ACCOUNT_SELECTED]: 'perpsWithdrawNoAccount',
@@ -74,6 +103,9 @@ export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
   [PERPS_ERROR_CODES.SWAP_FAILED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.SPOT_PAIR_NOT_FOUND]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.PRICE_UNAVAILABLE]: 'somethingWentWrong',
+
+  // Market / collateral
+  [PERPS_ERROR_CODES.UNSUPPORTED_COLLATERAL]: 'perpsUnsupportedCollateral',
 
   // Batch operations
   [PERPS_ERROR_CODES.BATCH_CANCEL_FAILED]: 'perpsBatchCancelFailed',
@@ -95,6 +127,27 @@ export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
   // Network / service
   [PERPS_ERROR_CODES.SERVICE_UNAVAILABLE]: 'perpsServiceUnavailable',
   [PERPS_ERROR_CODES.NETWORK_ERROR]: 'perpsNetworkError',
+  // `as const satisfies` rather than a `Record<PerpsErrorCode, string>`
+  // annotation: the annotation widens every value to `string`, which would let
+  // `CANCEL_ORDER_I18N_KEY_OVERRIDES` below key off a message key that no longer
+  // exists here without a compile error. `satisfies` alone is not enough — the
+  // keys are computed, so TS falls back to an index signature and re-widens the
+  // values. Exhaustiveness over `PerpsErrorCode` is unchanged.
+} as const satisfies Record<PerpsErrorCode, string>;
+
+/**
+ * Cancel-flow remapping of the keys above.
+ *
+ * Every `ORDER_*` code funnels into `perpsOrderFailed` ("Order could not be
+ * placed."), which is the wrong verb on a screen where the user just pressed
+ * Cancel order — `ORDER_UNKNOWN_COIN` reaches it through the cancel retry.
+ * Remapping the resolved key rather than enumerating codes keeps this correct
+ * as the controller adds more `ORDER_*` codes.
+ */
+export const CANCEL_ORDER_I18N_KEY_OVERRIDES: Partial<
+  Record<(typeof ERROR_CODE_TO_I18N_KEY)[PerpsErrorCode], string>
+> = {
+  perpsOrderFailed: 'perpsCancelOrderFailed',
 };
 
 /**
@@ -174,12 +227,17 @@ export const API_ERROR_PATTERNS: {
  *
  * @param error - The unknown thrown value.
  * @param t - The extension i18n translation function from `useI18nContext()`.
+ * @param i18nKeyOverrides - Optional flow-specific remapping of the resolved
+ * message key, e.g. `CANCEL_ORDER_I18N_KEY_OVERRIDES`.
  * @returns A translated user-facing string, or `null` if no specific translation found.
  */
 export function translatePerpsError(
   error: unknown,
   t: (key: string) => string,
+  i18nKeyOverrides?: Partial<Record<string, string>>,
 ): string | null {
+  const translate = (i18nKey: string) =>
+    t(i18nKeyOverrides?.[i18nKey] ?? i18nKey);
   const errorObj = error instanceof Error ? error : null;
   const errorCode =
     errorObj &&
@@ -191,14 +249,14 @@ export function translatePerpsError(
   // 1. Code-first lookup — narrow to PerpsErrorCode only after membership check
   if (errorCode && errorCode in ERROR_CODE_TO_I18N_KEY) {
     const i18nKey = ERROR_CODE_TO_I18N_KEY[errorCode as PerpsErrorCode];
-    return t(i18nKey);
+    return translate(i18nKey);
   }
 
   // 2. Message-as-code lookup — handles plain strings that ARE error codes
   //    (e.g. WithdrawResult.error wrapped in `new Error(code)`)
   const message = errorObj?.message ?? '';
   if (message && message in ERROR_CODE_TO_I18N_KEY) {
-    return t(ERROR_CODE_TO_I18N_KEY[message as PerpsErrorCode]);
+    return translate(ERROR_CODE_TO_I18N_KEY[message as PerpsErrorCode]);
   }
 
   // 3. Pattern match against raw error message
@@ -206,7 +264,7 @@ export function translatePerpsError(
     for (const { pattern, code } of API_ERROR_PATTERNS) {
       if (pattern.test(message)) {
         const i18nKey = ERROR_CODE_TO_I18N_KEY[code];
-        return t(i18nKey);
+        return translate(i18nKey);
       }
     }
   }

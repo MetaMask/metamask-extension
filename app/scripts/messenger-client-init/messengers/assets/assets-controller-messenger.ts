@@ -1,16 +1,18 @@
 import {
   Messenger,
-  MessengerActions,
-  MessengerEvents,
+  type MessengerActions,
+  type MessengerEvents,
 } from '@metamask/messenger';
 import type { AssetsControllerMessenger } from '@metamask/assets-controller';
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
 } from '../../../controllers/onboarding';
 import { RootMessenger } from '../../../lib/messenger';
+import type { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
 
 /**
  * Messenger type for AssetsController initialization.
@@ -46,50 +48,53 @@ export function getAssetsControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
+      // Account group + network context for RpcDataSource (core#9388)
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
       'NetworkEnablementController:getState',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
-      'BackendWebSocketService:subscribe',
-      'BackendWebSocketService:getConnectionInfo',
-      'BackendWebSocketService:findSubscriptionsByChannelPrefix',
+      'AccountsController:getSelectedAccount',
       'SnapController:handleRequest',
       'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
       'PhishingController:bulkScanTokens',
-      'AccountsController:getSelectedAccount',
+      'RemoteFeatureFlagController:getState',
     ],
     events: [
+      // core#9388: RPC balance refresh on account-group switch / tree updates
       'AccountTreeController:selectedAccountGroupChange',
-      'ClientController:stateChange',
+      // core#9478: use exported :stateChange (not local :stateChanged aliases)
+      'AccountTreeController:stateChange',
+      // core#9388: RPC balance refresh when enabling custom RPC networks (e.g. DXC)
+      // StakedBalanceDataSource also listens to this
       'NetworkEnablementController:stateChange',
+      // UI + keyring lifecycle (RpcDataSource only runs when UI open + unlocked)
+      'ClientController:stateChange',
       'KeyringController:lock',
       'KeyringController:unlock',
-      'NetworkController:stateChange',
-      'NetworkController:networkRemoved',
+      // Network picker (EVM selected network switch)
+      'NetworkController:networkDidChange',
       'NetworkController:networkAdded',
-      'BackendWebSocketService:connectionStateChanged',
+      'NetworkController:networkRemoved',
+      // RpcDataSource + StakedBalanceDataSource
+      'NetworkController:stateChange',
+      // Snap + tx + preferences
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
       'SnapController:snapInstalled',
       'PreferencesController:stateChange',
-      'AccountTreeController:stateChange',
       'TransactionController:transactionConfirmed',
-      'TransactionController:incomingTransactionsReceived',
       'TransactionController:unapprovedTransactionAdded',
+      // Real-time post-tx balances + per-chain connectivity (AccountActivityService WS path)
+      'AccountActivityService:balanceUpdated',
+      'AccountActivityService:statusChanged',
+      'RemoteFeatureFlagController:stateChange',
     ],
   });
 
   return controllerMessenger;
 }
-
-/**
- * PreferencesController:getState action.
- */
-type PreferencesControllerGetStateAction = {
-  type: 'PreferencesController:getState';
-  handler: () => { useTokenDetection: boolean; [key: string]: unknown };
-};
 
 /**
  * Actions needed during AssetsController initialization.
@@ -98,7 +103,8 @@ type AllowedInitializationActions =
   | AuthenticationControllerGetBearerTokenAction
   | SnapControllerHandleRequestAction
   | PreferencesControllerGetStateAction
-  | OnboardingControllerGetStateAction;
+  | OnboardingControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 /**
  * Events needed during AssetsController initialization.
@@ -135,6 +141,7 @@ export function getAssetsControllerInitMessenger(
       'SnapController:handleRequest',
       'PreferencesController:getState',
       'OnboardingController:getState',
+      'RemoteFeatureFlagController:getState',
     ],
     events: ['OnboardingController:stateChange'],
   });
