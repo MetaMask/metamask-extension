@@ -18,9 +18,11 @@ import {
 import {
   addToken,
   findNetworkClientIdByChainId,
+  getTokenStandardAndDetailsByChain,
 } from '../../../../store/actions';
 import { useDispatch } from '../../../../store/hooks';
 import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../../constants/musd';
+import { parseTokenDetailDecimals } from '../../utils/token';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -167,21 +169,25 @@ export function useAutomaticTransactionPayToken({
         }
 
         try {
+          const metadata = await getImportMetadata(automaticToken);
+
+          if (!metadata) {
+            // Guessing decimals corrupts every amount derived from the token,
+            // for example 6-decimal USDC. Leave the import to the
+            // confirmation's own `useAddToken` and retry via `tokens`.
+            return;
+          }
+
           const networkClientId = await findNetworkClientIdByChainId(
             automaticToken.chainId,
           );
-          const isDefaultMusd =
-            automaticToken.address.toLowerCase() ===
-              MUSD_TOKEN_ADDRESS.toLowerCase() &&
-            automaticToken.chainId.toLowerCase() ===
-              CHAIN_IDS.MONAD.toLowerCase();
 
           await dispatch(
             addToken(
               {
                 address: automaticToken.address,
-                symbol: isDefaultMusd ? MUSD_TOKEN.symbol : 'Token',
-                decimals: isDefaultMusd ? MUSD_TOKEN.decimals : 18,
+                symbol: metadata.symbol,
+                decimals: metadata.decimals,
                 networkClientId,
               },
               true,
@@ -312,6 +318,45 @@ export function useAutomaticTransactionPayToken({
     isPostQuoteWithdraw,
     tokensWithBalance.length,
   ]);
+}
+
+/**
+ * Metadata to import a post-quote destination token with. Resolves from the
+ * token lists, the user's tokens or an on-chain lookup.
+ *
+ * @param token - The token to import.
+ * @param token.address - The token address.
+ * @param token.chainId - The chain the token is on.
+ * @returns The metadata, or `undefined` when the decimals are unknown.
+ */
+async function getImportMetadata({
+  address,
+  chainId,
+}: {
+  address: Hex;
+  chainId: Hex;
+}): Promise<{ symbol: string; decimals: number } | undefined> {
+  if (
+    address.toLowerCase() === MUSD_TOKEN_ADDRESS.toLowerCase() &&
+    chainId.toLowerCase() === CHAIN_IDS.MONAD.toLowerCase()
+  ) {
+    return { symbol: MUSD_TOKEN.symbol, decimals: MUSD_TOKEN.decimals };
+  }
+
+  const details = await getTokenStandardAndDetailsByChain(
+    address,
+    undefined,
+    undefined,
+    chainId,
+  );
+
+  const decimals = parseTokenDetailDecimals(details?.decimals);
+
+  if (decimals === undefined) {
+    return undefined;
+  }
+
+  return { symbol: details?.symbol ?? 'Token', decimals };
 }
 
 function getBestToken({

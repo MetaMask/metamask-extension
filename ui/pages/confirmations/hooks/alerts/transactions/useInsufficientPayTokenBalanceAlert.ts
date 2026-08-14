@@ -10,9 +10,9 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
 import { useTokenWithBalance } from '../../tokens/useTokenWithBalance';
 import {
   useIsTransactionPayLoading,
@@ -40,8 +40,10 @@ export function useInsufficientPayTokenBalanceAlert({
   const isMax = useTransactionPayIsMaxAmount();
 
   // Post-quote withdraws: `payToken` is the destination, not the source —
-  // skip input/fees checks; gas check runs against the tx chain.
-  const isPostQuote = isPostQuoteWithdrawTransaction(currentConfirmation);
+  // skip input/fees checks; gas check runs against the tx chain. Gate on the
+  // post-quote flag rather than the transaction type: with post-quote disabled
+  // the withdraw is a direct transfer with regular source-token semantics.
+  const { canSelectWithdrawToken: isPostQuote } = useTransactionPayWithdraw();
 
   const sourceChainId = (
     isPostQuote
