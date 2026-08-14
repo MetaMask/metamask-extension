@@ -94,7 +94,10 @@ jobs:
         with:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
-          ref: ${{ inputs.ref }}
+          # Fall back to the triggering commit rather than passing the empty
+          # default through. Every per-commit caller omits `ref`, and handing
+          # the checkout action an empty string is not the same as omitting it.
+          ref: ${{ inputs.ref || github.sha }}
 
       # Webpack uses TypeScript, but lavamoat node can only run JavaScript, so we need a transpilation step before building.
       - name: Run tsc
