@@ -46,7 +46,8 @@ const SENTRY_BASE = 'https://sentry.io/api/0';
 const SENTRY_WEB = 'https://metamask.sentry.io';
 const ORG = process.env.SENTRY_ORG ?? 'metamask';
 // `metamask-benchmark` project (CI benchmark structured logs).
-const PROJECT_ID = process.env.SENTRY_BENCHMARK_PROJECT_ID ?? '4510302346608640';
+const PROJECT_ID =
+  process.env.SENTRY_BENCHMARK_PROJECT_ID ?? '4510302346608640';
 // Sentry "ourlogs" (TraceItem) dataset backing the Logs Explore view.
 const DATASET = process.env.SENTRY_LOGS_DATASET ?? 'ourlogs';
 
@@ -306,7 +307,9 @@ async function main(): Promise<void> {
   if (values['print-queries']) {
     for (const m of timers) {
       console.log(`\n## ${m.key}  (type=${m.type})`);
-      console.log(`API:  ${buildEventsApiUrl(m, statsPeriod, branch, persona)}`);
+      console.log(
+        `API:  ${buildEventsApiUrl(m, statsPeriod, branch, persona)}`,
+      );
       console.log(
         `Logs: ${buildLogsExploreUrl(m, statsPeriod, branch, persona)}`,
       );
@@ -365,7 +368,8 @@ async function main(): Promise<void> {
     const curName = tierName(m.currentMultiplier);
     const changed =
       rec.multiplier !== null && rec.multiplier !== m.currentMultiplier;
-    const recMult = rec.multiplier === null ? '' : ` (${rec.multiplier.toFixed(2)})`;
+    const recMult =
+      rec.multiplier === null ? '' : ` (${rec.multiplier.toFixed(2)})`;
     console.log(
       `| \`${m.key}\` | ${m.type} | ${curName} (${fmt(m.currentMultiplier, 2)}) | ` +
         `${fmt(cv, 1)} | ${row?.count ?? 0} | ${rec.name}${recMult} | ` +
