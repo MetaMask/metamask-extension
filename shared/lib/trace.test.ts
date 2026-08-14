@@ -384,8 +384,8 @@ describe('Trace', () => {
     });
   });
 
-  describe('explicit parenting only (no ambient active-span fallback)', () => {
-    it('does not inherit from the active span when no parentContext provided', () => {
+  describe('active-span fallback (opt-in via allowActiveSpanFallback)', () => {
+    it('does not inherit from the active span when the flag is absent', () => {
       const activeSpanMock = {
         spanContext: jest.fn().mockReturnValue({
           traceId: 'abc123',
@@ -397,7 +397,8 @@ describe('Trace', () => {
 
       trace({ name: NAME_MOCK }, () => true);
 
-      // The span must start as a root, not grafted onto the ambient span.
+      // The span must start as a root, not grafted onto the ambient span, and
+      // the ambient span must not even be looked up.
       expect(startSpanMock).toHaveBeenCalledWith(
         expect.objectContaining({
           parentSpan: null,
@@ -410,28 +411,75 @@ describe('Trace', () => {
         }),
         expect.any(Function),
       );
+      expect(getActiveSpanMock).not.toHaveBeenCalled();
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
 
-    it('never consults getActiveSpan when starting a span, with or without parentContext', () => {
+    it('inherits the active span and forces a transaction only when the flag is set', () => {
       const activeSpanMock = {
         spanContext: jest.fn(),
       } as unknown as Sentry.Span;
 
       getActiveSpanMock.mockReturnValue(activeSpanMock);
 
-      trace({ name: NAME_MOCK }, () => true);
+      trace({ name: NAME_MOCK, allowActiveSpanFallback: true }, () => true);
+      trace({ name: NAME_MOCK, id: ID_MOCK }, () => true);
+
+      // Asserted as a pair: the flag, and nothing else, is what separates the
+      // inheriting call from the rooting one.
+      const [optedIn] = startSpanMock.mock.calls[0];
+      const [optedOut] = startSpanMock.mock.calls[1];
+
+      expect(optedIn).toEqual(
+        expect.objectContaining({
+          parentSpan: activeSpanMock,
+          forceTransaction: true,
+        }),
+      );
+      expect(optedOut).toEqual(
+        expect.objectContaining({
+          parentSpan: null,
+        }),
+      );
+      expect(optedOut).not.toHaveProperty('forceTransaction');
+    });
+
+    it('lets an explicit parentContext win over the flag, without consulting getActiveSpan', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
       trace(
-        { name: NAME_MOCK, id: ID_MOCK, parentContext: PARENT_CONTEXT_MOCK },
+        {
+          name: NAME_MOCK,
+          parentContext: PARENT_CONTEXT_MOCK,
+          allowActiveSpanFallback: true,
+        },
         () => true,
       );
 
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: PARENT_CONTEXT_MOCK,
+        }),
+        expect.any(Function),
+      );
       expect(getActiveSpanMock).not.toHaveBeenCalled();
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
 
-    it('uses null parentSpan when no active span and no parentContext', () => {
+    it('roots the span when the flag is set but no active span exists', () => {
       getActiveSpanMock.mockReturnValue(undefined);
 
-      trace({ name: NAME_MOCK }, () => true);
+      expect(() => {
+        trace({ name: NAME_MOCK, allowActiveSpanFallback: true }, () => true);
+      }).not.toThrow();
 
       expect(startSpanMock).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -439,6 +487,9 @@ describe('Trace', () => {
         }),
         expect.any(Function),
       );
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
 
     it('still honours an explicitly provided parentContext', () => {
@@ -457,7 +508,7 @@ describe('Trace', () => {
   });
 
   describe('forceTransaction', () => {
-    it('is not set when an active span exists and no parentContext is provided', () => {
+    it('is absent when an active span exists but the flag is not set', () => {
       const activeSpanMock = {
         spanContext: jest.fn(),
       } as unknown as Sentry.Span;
@@ -470,7 +521,7 @@ describe('Trace', () => {
       expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
 
-    it('is not set when a parentContext is provided', () => {
+    it('is absent when a parentContext is provided', () => {
       trace(
         { name: NAME_MOCK, parentContext: PARENT_CONTEXT_MOCK },
         () => true,
@@ -480,13 +531,38 @@ describe('Trace', () => {
       expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
 
-    it('is not set on the manually-ended (startSpanManual) path', () => {
-      getActiveSpanMock.mockReturnValue(undefined);
+    it('is absent on the manually-ended (startSpanManual) path when the flag is not set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
 
       trace({ name: NAME_MOCK, id: ID_MOCK });
 
       const [spanOptions] = startSpanManualMock.mock.calls[0];
       expect(spanOptions).not.toHaveProperty('forceTransaction');
+      expect(spanOptions).toEqual(
+        expect.objectContaining({ parentSpan: null }),
+      );
+    });
+
+    it('is true on the manually-ended (startSpanManual) path when the flag is set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, id: ID_MOCK, allowActiveSpanFallback: true });
+
+      const [spanOptions] = startSpanManualMock.mock.calls[0];
+      expect(spanOptions).toEqual(
+        expect.objectContaining({
+          parentSpan: activeSpanMock,
+          forceTransaction: true,
+        }),
+      );
     });
   });
 
