@@ -223,7 +223,10 @@ function handleWalletSendCalls(
   for (const call of calls) {
     const { to, data } = call;
 
-    // Calls without a recipient (contract deployments) have nothing to scan.
+    // `to` is unvalidated dapp input here (SendCallsStruct validation happens
+    // later, in the 5792 handler); a non-string would throw in createCacheKey.
+    // Deliberately no stricter than the struct's address check, so nothing the
+    // wallet would execute can skip scanning.
     if (typeof to === 'string') {
       scanAddressInBackground(
         to,
