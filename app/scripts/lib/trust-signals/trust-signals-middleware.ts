@@ -197,7 +197,7 @@ function handleWalletSendCalls(
     return;
   }
 
-  const { calls, chainId: requestChainId } = req.params[0];
+  const { calls } = req.params[0];
 
   const { chainId: rawChainId } =
     networkController.getNetworkConfigurationByNetworkClientId(
@@ -209,19 +209,21 @@ function handleWalletSendCalls(
     return;
   }
 
-  // EIP-5792 requests may declare the batch's chain. The 5792 handler
-  // (`validateDappChainId` in @metamask/eip-5792-middleware) rejects requests
-  // whose declared chainId differs from the dapp-selected network, so skip
-  // scanning rather than cache verdicts under a key no confirmation will read.
-  if (
-    typeof requestChainId === 'string' &&
-    requestChainId.toLowerCase() !== rawChainId.toLowerCase()
-  ) {
-    return;
-  }
-
+  // The declared `params[0].chainId` is deliberately ignored: the 5792 handler
+  // rejects mismatches with the dapp-selected network downstream
+  // (`validateDappChainId` in @metamask/eip-5792-middleware), and duplicating
+  // its comparison here would risk drifting stricter than it and silently
+  // skipping scans for requests the wallet executes. Scanning a to-be-rejected
+  // request only writes harmless cache entries. See PSAFE-613.
   for (const call of calls) {
-    const { to, data } = call;
+    // Malformed entries are skipped rather than failing the whole batch, so
+    // scan coverage of well-formed calls does not depend on downstream
+    // validation rejecting the request first.
+    if (typeof call !== 'object' || call === null) {
+      continue;
+    }
+
+    const { to, data } = call as { to?: unknown; data?: unknown };
 
     // `to` is unvalidated dapp input here (SendCallsStruct validation happens
     // later, in the 5792 handler); a non-string would throw in createCacheKey.

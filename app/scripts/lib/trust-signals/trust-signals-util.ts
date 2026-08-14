@@ -60,12 +60,7 @@ export function hasValidSendCallsParams(
 ): req is JsonRpcRequest & {
   params: [
     {
-      calls: {
-        to?: unknown;
-        data?: unknown;
-        [key: string]: unknown;
-      }[];
-      chainId?: unknown;
+      calls: unknown[];
       [key: string]: unknown;
     },
     ...unknown[],
@@ -81,14 +76,14 @@ export function hasValidSendCallsParams(
 
   const firstParam = req.params[0];
 
+  // Individual call entries are deliberately not validated here: the caller
+  // skips malformed entries per call, so one bad entry cannot suppress
+  // scanning of the well-formed ones.
   return (
     typeof firstParam === 'object' &&
     firstParam !== null &&
     'calls' in firstParam &&
-    Array.isArray(firstParam.calls) &&
-    firstParam.calls.every(
-      (call: unknown) => typeof call === 'object' && call !== null,
-    )
+    Array.isArray(firstParam.calls)
   );
 }
 

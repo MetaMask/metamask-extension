@@ -732,6 +732,37 @@ describe('createTrustSignalsMiddleware', () => {
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
     });
 
+    it('scans well-formed calls even when other entries are malformed', async () => {
+      // One bad entry must not suppress scanning of the rest; the request
+      // itself is rejected downstream by SendCallsStruct validation.
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware } = createMiddleware();
+
+      const req = createMockRequest(
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        createSendCallsParams([
+          { to: TEST_ADDRESSES.TO, data: '0x', value: '0x0' },
+          null as unknown as { to?: unknown },
+          'not-an-object' as unknown as { to?: unknown },
+        ]) as Json[],
+      );
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TO,
+        expect.any(Function),
+        expect.any(Function),
+        CHAIN_IDS.MAINNET,
+        expect.anything(),
+      );
+      expect(next).toHaveBeenCalled();
+    });
+
     it('does not scan when params are invalid', async () => {
       const { middleware } = createMiddleware();
 
@@ -773,10 +804,16 @@ describe('createTrustSignalsMiddleware', () => {
       );
     });
 
-    it('does not scan when the declared chainId mismatches the dapp network', async () => {
-      // The 5792 handler rejects such requests (validateDappChainId), so
-      // scanning would only cache verdicts under a key nothing will read.
-      const { middleware } = createMiddleware();
+    it('scans under the dapp-selected chain even when the declared chainId mismatches', async () => {
+      // The declared params[0].chainId is ignored: the 5792 handler rejects
+      // mismatches downstream, and duplicating its comparison here could
+      // drift stricter and silently skip scans. There must be no
+      // client-side chainId gate.
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware, appStateController, phishingController } =
+        createMiddleware();
 
       const req = createMockRequest(
         MESSAGE_TYPE.WALLET_SEND_CALLS,
@@ -789,28 +826,14 @@ describe('createTrustSignalsMiddleware', () => {
 
       await middleware(req, createMockResponse(), next);
 
-      expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TO,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        CHAIN_IDS.MAINNET,
+        phishingController,
+      );
       expect(next).toHaveBeenCalled();
-    });
-
-    it('scans when the declared chainId matches the dapp network case-insensitively', async () => {
-      scanAddressMockAndAddToCache.mockResolvedValue(
-        MOCK_SCAN_RESPONSES.BENIGN,
-      );
-      const { middleware } = createMiddleware();
-
-      const req = createMockRequest(
-        MESSAGE_TYPE.WALLET_SEND_CALLS,
-        createSendCallsParams(
-          [{ to: TEST_ADDRESSES.TO, data: '0x', value: '0x0' }],
-          '0X1', // CHAIN_IDS.MAINNET with different casing
-        ) as Json[],
-      );
-      const next = jest.fn();
-
-      await middleware(req, createMockResponse(), next);
-
-      expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
     });
 
     it('scans the origin URL', async () => {

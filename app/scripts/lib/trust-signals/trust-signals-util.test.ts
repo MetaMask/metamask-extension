@@ -385,9 +385,11 @@ describe('trust-signals-util', () => {
       expect(hasValidSendCallsParams(req)).toBe(false);
     });
 
-    it('returns false when a call entry is not an object', () => {
+    it('returns true when a call entry is not an object', () => {
+      // Entry-level validation is the caller's job (per-call skip), so one
+      // malformed entry does not invalidate the batch for scanning purposes.
       const req = createRequest([{ calls: [{ to: '0x1234' }, null] }]);
-      expect(hasValidSendCallsParams(req)).toBe(false);
+      expect(hasValidSendCallsParams(req)).toBe(true);
     });
   });
 });
