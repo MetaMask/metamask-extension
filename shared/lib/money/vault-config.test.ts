@@ -3,9 +3,6 @@ import {
   parseMoneyAccountVaultConfig,
 } from './vault-config';
 
-/**
- * A well-formed config. Every address is a valid ERC-55 checksum.
- */
 const VALID_CONFIG = {
   chainId: '0x8f',
   boringVault: '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5Ae',
@@ -33,7 +30,7 @@ const INVALID_CHAIN_IDS: [string, unknown][] = [
 const INVALID_ADDRESSES: [string, unknown][] = [
   ['is not hex', 'not-an-address'],
   ['is truncated', '0xb4563bcD3B7764CCBf497f5'],
-  // The shipped address with its final byte upper-cased: still 20 hex bytes,
+  // A valid address but with its final byte upper-cased: still 20 hex bytes,
   // but no longer a valid ERC-55 checksum.
   ['has a bad ERC-55 checksum', '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5AE'],
   ['is missing', undefined],

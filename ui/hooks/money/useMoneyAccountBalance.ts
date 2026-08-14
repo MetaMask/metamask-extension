@@ -72,36 +72,6 @@ export type UseMoneyAccountBalanceOptions = {
 };
 
 /**
- * The Money Account balance, the vault APY, and everything a surface needs to
- * present them — including when they are unavailable.
- *
- * ## Unknown is not zero
- *
- * `tokenTotal` and `withdrawableMusd` are `undefined` while the balance is
- * loading or has failed, never `new BigNumber(0)`. A zero balance and an
- * unknown balance want different UI, and a hook that collapses them takes that
- * choice away from the caller. The same holds for the formatted and raw fiat
- * strings.
- *
- * ## Degradation is visible
- *
- * The canonical balance comes from a facade that reads the Money API and falls
- * back to RPC. Which source answered (`balanceSource`) and whether the fallback
- * was needed (`usedFallback` / `isBalanceDegraded`) are surfaced rather than
- * hidden, so a surface can say so.
- *
- * When there is no live balance at all, `lastKnownTotalFiatFormatted` offers
- * the last successfully fetched figure — but only while it still belongs to the
- * account and currency in view. Note it survives navigation within this UI
- * instance only; the redux tree here is not rehydrated on restart, so genuine
- * restart-survival waits on the value being mirrored into controller state.
- *
- * ## APY precedence
- *
- * Override beats live beats fallback. The fallback is deliberately withheld
- * during the first load with no cache: showing it there would flicker to the
- * real value a moment later, which reads as the rate having changed.
- *
  * @param options - Query controls.
  * @param options.enabled - Whether to fetch at all. Defaults to true.
  * @param options.refetchInterval - Balance poll interval in ms.
@@ -121,10 +91,6 @@ export function useMoneyAccountBalance({
     selectMoneyVaultApyRemoteConfig,
   );
 
-  // No address means no money account to show anything for — see
-  // `useMoneyAccountInfo` on why that also covers the flag being off and the
-  // account not being upgraded. Both queries hang off it, so such a user costs
-  // no balance fetch and no third-party APY request.
   const hasAddress = Boolean(moneyAccountAddress);
 
   const moneyBalanceQuery = useQuery<CanonicalMoneyAccountBalanceResponse>({
@@ -167,7 +133,7 @@ export function useMoneyAccountBalance({
 
   const { tokenTotal, totalFiat, withdrawableFiat, withdrawableMusd } =
     useMemo(() => {
-      // Total balance (mUSD + vmUSD) from the canonical facade response.
+      // Total balance (mUSD + vmUSD) from the canonical response.
       const totalDecimal = moneyBalanceQuery.data?.totalBalance
         ? new BigNumber(moneyBalanceQuery.data.totalBalance).dividedBy(
             MUSD_UNIT,
