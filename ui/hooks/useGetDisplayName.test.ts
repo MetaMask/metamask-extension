@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { useGetDisplayName } from './useGetDisplayName';
+import { NameEntry } from '@metamask/name-controller';
 
 type MockState = {
   addressBook: { address: string; name?: string }[];
@@ -8,6 +9,7 @@ type MockState = {
     accounts: { address: string }[];
   }[];
   tokenList: Record<string, { name?: string }>;
+  names: Record<string, Record<string, Record<string, NameEntry>>>;
 };
 
 // Declared before jest.mock factories so eslint no-use-before-define is happy.
@@ -25,6 +27,7 @@ jest.mock('../selectors', () => ({
     (state: { addressBook: unknown }) => state.addressBook,
   ),
   getTokenList: jest.fn((state: { tokenList: unknown }) => state.tokenList),
+  getNames: jest.fn((state: { names: unknown }) => state.names),
 }));
 
 jest.mock('../selectors/multichain-accounts/account-tree', () => ({
@@ -41,6 +44,7 @@ function setState(overrides: Partial<MockState> = {}) {
     addressBook: [],
     accountGroups: [],
     tokenList: {},
+    names: {},
     ...overrides,
   };
 }
@@ -90,6 +94,20 @@ describe('useGetDisplayName', () => {
     const { result } = renderHook(() => useGetDisplayName());
 
     expect(result.current(mockAddress)).toBe('Wrapped Ether');
+  });
+
+  it('falls back to names from NameController', () => {
+    setState({
+      names: {
+        ethereumAddress: {
+          [mockAddress.toLowerCase()]: { '*': { name: 'пример.eth' } },
+        },
+      },
+    });
+
+    const { result } = renderHook(() => useGetDisplayName());
+
+    expect(result.current(mockAddress)).toBe('пример.eth');
   });
 
   it('returns the contact name for a non-EVM address', () => {
