@@ -276,9 +276,11 @@ export class PerpsTab extends PerpsPositionsBase {
   /**
    * Waits for the Recent Activity list (non-empty) to be visible.
    * When there is no history, the section uses `perps-recent-activity-empty` instead.
+   *
+   * @param timeout - Max wait time in ms (default 20 000; Firefox CI is slower).
    */
-  async waitForRecentActivitySection(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsRecentActivity);
+  async waitForRecentActivitySection(timeout = 20000): Promise<void> {
+    await this.driver.waitForSelector(this.perpsRecentActivity, { timeout });
   }
 
   /**
