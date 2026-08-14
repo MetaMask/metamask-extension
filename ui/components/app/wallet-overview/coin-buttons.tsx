@@ -165,9 +165,7 @@ const MoreButtonsGroup = ({
         onClick={onClick}
       />
       {modalIsOpen && (
-        <Box
-          className="flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg bg-elevated2"
-        >
+        <Box className="flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg bg-elevated2">
           {actions.map((action) => (
             <ButtonBase
               key={action.label}

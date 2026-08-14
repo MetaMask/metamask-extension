@@ -330,13 +330,10 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         })}
       >
         <Box
-          className={classnames(
-            'w-full h-full max-w-[262px] bg-elevated1',
-            {
-              flex: isOnSettingsRoot || !usesCompactSettingsLayout,
-              hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
-            },
-          )}
+          className={classnames('w-full h-full max-w-[262px] bg-elevated1', {
+            flex: isOnSettingsRoot || !usesCompactSettingsLayout,
+            hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
+          })}
         >
           <TabBar
             tabs={usesCompactSettingsLayout ? itemTabs : []}
