@@ -527,21 +527,10 @@ function startSpan<T>(
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
   const { data: attributes, name, parentContext, startTime, op } = request;
-  let parentSpan = resolveParentSpan(parentContext);
-
-  // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
-  // when no explicit parent is provided. Must capture before withIsolationScope
-  // severs the active span context chain.
-  // forceTransaction preserves transaction-level visibility for monitoring while
-  // linking to the auto-instrumentation hierarchy.
-  let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext) {
-    const activeSpan = sentryGetActiveSpan();
-    if (activeSpan) {
-      parentSpan = activeSpan;
-      forceTransaction = true;
-    }
-  }
+  // Parenting is explicit only. A trace without a `parentContext` starts its own
+  // root span rather than grafting onto whatever span happens to be active, so
+  // unrelated operations are never nested under an ambient pageload/navigation.
+  const parentSpan = resolveParentSpan(parentContext);
 
   const spanOptions: StartSpanOptions = {
     attributes,
@@ -549,7 +538,6 @@ function startSpan<T>(
     op: op ?? OP_DEFAULT,
     parentSpan,
     startTime,
-    forceTransaction,
   };
 
   // Cross-process propagation via continueTrace when we have serialized
