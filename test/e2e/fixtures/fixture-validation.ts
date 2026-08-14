@@ -78,6 +78,9 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RemoteFeatureFlagController.remoteFeatureFlags',
   'data.RemoteFeatureFlagController.thresholdCache',
   'data.RemoteFeatureFlagController.rawRemoteFeatureFlags',
+  // Threshold group selection is derived from the (random) analyticsId, so it
+  // is non-deterministic per run, like the other flags above.
+  'data.RemoteFeatureFlagController.featureFlagThresholdGroups',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
@@ -92,10 +95,13 @@ const getFixtureIgnoredKeys = (): string[] => [
   // E2E runs in full-screen / toolbar-popup flows, not the extension side panel.
   // Dist builds still persist `useSidePanelAsDefault: true` while fixtures use `false`.
   'data.PreferencesController.preferences.useSidePanelAsDefault',
+  // Dist build sets this to false despite being true when onboarding with localhost (bug #45237)
+  'data.PreferencesController.preferences.showTestNetworks',
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
   // Random ids
   'data.AnalyticsController.analyticsId',
+  'data.AnalyticsController.preConsentEventQueue',
   'data.MultichainBalancesController',
   'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',

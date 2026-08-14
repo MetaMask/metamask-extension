@@ -38,4 +38,17 @@ describe('getAvatarTokenSrc', () => {
       }),
     ).toBe(mockMainnetImage);
   });
+
+  it('falls back to the static CDN icon for native non-EVM tokens without an image', () => {
+    expect(
+      getAvatarTokenSrc({
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+        isNative: true,
+        tokenImage: '',
+        assetId: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+      }),
+    ).toBe(
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/bip122/000000000019d6689c085ae165831e93/slip44/0.png',
+    );
+  });
 });

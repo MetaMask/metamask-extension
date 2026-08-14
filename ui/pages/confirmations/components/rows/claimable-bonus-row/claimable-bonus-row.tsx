@@ -67,14 +67,9 @@ export function ClaimableBonusRow({
           ariaLabel={t('musdClaimableBonusTooltipAria') as string}
           data-testid="claimable-bonus-tooltip-popover"
         >
-          <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+          <Text variant={TextVariant.BodyMd}>
             {t('musdClaimableBonusTooltip', [
-              <TextButton
-                key="terms-link"
-                size={TextButtonSize.BodyMd}
-                isInverse
-                asChild
-              >
+              <TextButton key="terms-link" size={TextButtonSize.BodyMd} asChild>
                 <a
                   href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
                   target="_blank"

@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'clsx';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
@@ -39,6 +39,7 @@ import { getSuggestedTokens } from '../../selectors';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
+import { useDispatch } from '../../store/hooks';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;

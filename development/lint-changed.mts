@@ -134,6 +134,8 @@ function main(): void {
     '--cache',
     '--cache-location',
     path.join('node_modules', '.cache', 'eslint', '.eslint-cache'),
+    '-c',
+    './.eslintrc.js',
   ];
 
   const eslintArgsWithDelimiter = [...eslintArgsBase, '--'];

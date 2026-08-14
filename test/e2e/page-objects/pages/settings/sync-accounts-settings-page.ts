@@ -3,9 +3,18 @@ import { Driver } from '../../../webdriver/driver';
 const OTP_LENGTH = 6;
 
 /**
- * Page object for Settings → Sync accounts (QrSync) flow.
+ * Sync accounts (QrSync): password, QR, OTP, wallet selection, success.
  *
- * Selectors match `data-testid` values on sync-accounts components.
+ * Screen: `#/sync-accounts`, reached from
+ * `SettingsPage.goToSyncAccountsSettings`.
+ * Owns: sync page shell, password continue, QR code / regenerate, OTP entry,
+ * wallet rows, sync/done/back, and success / expiry assertions.
+ * Boundaries: QR sync flow only. Backup-and-sync toggles belong to
+ * `BackupAndSyncSettings`.
+ * Related: `SettingsPage`, `BackupAndSyncSettings`.
+ *
+ * @see ui/pages/settings/sync-accounts/sync-accounts-settings.tsx
+ * @see ui/pages/settings/sync-accounts/sync-accounts-tab.tsx
  */
 class SyncAccountsSettingsPage {
   private readonly backButton = '[data-testid="sync-accounts-back-button"]';
@@ -34,6 +43,9 @@ class SyncAccountsSettingsPage {
 
   private readonly qrExpiredMessage = { text: 'QR code expired' };
 
+  private readonly qrSyncWalletRowId = (walletId: string) =>
+    `[data-testid="qr-sync-wallet-row-${walletId}"]`;
+
   private readonly sessionExpiredErrorMessage = {
     text: 'This sync session expired. Start again to generate a new QR code.',
   };
@@ -43,23 +55,18 @@ class SyncAccountsSettingsPage {
 
   private readonly success = '[data-testid="qr-sync-success"]';
 
-  private readonly syncButton = '[data-testid="qr-sync-sync-button"]';
-
-  private readonly qrSyncWalletRowId = (walletId: string) =>
-    `[data-testid="qr-sync-wallet-row-${walletId}"]`;
-
   private readonly successWithSyncedCountsLocator = (
     walletCount: number,
     accountCount: number,
   ): string =>
     `[data-testid="qr-sync-success"][data-synced-wallet-count="${walletCount}"][data-synced-account-count="${accountCount}"]`;
 
-  // eslint-disable-next-line @typescript-eslint/member-ordering
+  private readonly syncButton = '[data-testid="qr-sync-sync-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  // eslint-disable-next-line @typescript-eslint/member-ordering
   async assertSuccessSyncedCounts(
     walletCount: number,
     accountCount: number,

@@ -1,16 +1,25 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Represents the Gator Permissions page.
- * This page shows permission categories (Sites and Assets) when Gator Permissions feature is enabled.
+ * Gator permissions hub: Sites and Token transfer categories.
+ *
+ * Screen: `#/gator-permissions` when the Gator permissions feature is enabled.
+ * Owns: page-loaded / displayed checks, navigating into Sites or Token
+ * transfer (Assets), and back toward home.
+ * Boundaries: the category hub only. Site list and per-site management are
+ * `PermissionListPage` / `SitePermissionPage`.
+ * Related: `PermissionListPage`, `flows/permissions.flow.ts`.
+ *
+ * @see ui/components/multichain/pages/gator-permissions/gator-permissions-page.tsx
+ * @see test/e2e/page-objects/flows/permissions.flow.ts
  */
 class GatorPermissionsPage {
-  private driver: Driver;
-
   private readonly assetsButton = { text: 'Token transfer', tag: 'p' };
 
   private readonly backButton =
     '[data-testid="gator-permissions-page"] button[aria-label="Back"]';
+
+  private driver: Driver;
 
   private readonly gatorPermissionsPage =
     '[data-testid="gator-permissions-page"]';
@@ -19,16 +28,6 @@ class GatorPermissionsPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  /**
-   * Check if the Gator Permissions page is displayed.
-   * Useful for flow logic to detect whether we landed on this intermediate page.
-   */
-  async isPageDisplayed(): Promise<boolean> {
-    return await this.driver.isElementPresentAndVisible(
-      this.gatorPermissionsPage,
-    );
   }
 
   /**
@@ -69,6 +68,16 @@ class GatorPermissionsPage {
   async clickSites(): Promise<void> {
     console.log('Click Sites on Gator Permissions page');
     await this.driver.clickElement(this.sitesButton);
+  }
+
+  /**
+   * Check if the Gator Permissions page is displayed.
+   * Useful for flow logic to detect whether we landed on this intermediate page.
+   */
+  async isPageDisplayed(): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(
+      this.gatorPermissionsPage,
+    );
   }
 }
 

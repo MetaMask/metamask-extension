@@ -10,7 +10,7 @@ exports[`BridgeAlertBannerList price-data-unavailable banner renders the banner 
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
+    class="flex flex-row gap-4 items-start pt-3 pr-4 pb-3 pl-4 bg-error-muted rounded-xl"
     data-testid="bridge-price-data-unavailable"
   >
     <svg
@@ -32,7 +32,7 @@ exports[`BridgeAlertBannerList price-data-unavailable banner renders the banner 
         No price information
       </p>
       <div
-        class=""
+        class="mt-0.5"
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
@@ -57,7 +57,7 @@ exports[`BridgeAlertBannerList should render the insufficient-gas alert when ins
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
+    class="flex flex-row gap-4 items-start pt-3 pr-4 pb-4 pl-4 bg-error-muted rounded-xl"
     data-testid="bridge-insufficient-gas"
   >
     <svg
@@ -79,7 +79,7 @@ exports[`BridgeAlertBannerList should render the insufficient-gas alert when ins
         More ETH needed for gas
       </p>
       <div
-        class=""
+        class="mt-0.5"
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
@@ -118,7 +118,7 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
+    class="flex flex-row gap-4 items-start pt-3 pr-4 pb-3 pl-4 bg-error-muted rounded-xl"
     data-testid="bridge-market-closed"
   >
     <svg
@@ -140,7 +140,7 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
         Market closed
       </p>
       <div
-        class=""
+        class="mt-0.5"
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
@@ -165,7 +165,7 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
+    class="flex flex-row gap-4 items-start pt-3 pr-4 pb-3 pl-4 bg-error-muted rounded-xl"
     data-testid="bridge-market-closed"
   >
     <svg
@@ -187,7 +187,7 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
         Market closed
       </p>
       <div
-        class=""
+        class="mt-0.5"
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
@@ -212,7 +212,7 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when no quotes 
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
+    class="flex flex-row gap-4 items-start pt-3 pr-4 pb-3 pl-4 bg-error-muted rounded-xl"
     data-testid="bridge-no-quotes"
   >
     <svg
@@ -254,7 +254,7 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when reason is 
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
+    class="flex flex-row gap-4 items-start pt-3 pr-4 pb-3 pl-4 bg-error-muted rounded-xl"
     data-testid="bridge-no-quotes"
   >
     <svg
@@ -296,7 +296,7 @@ exports[`BridgeAlertBannerList should render the token-security alert when token
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
+    class="flex flex-row gap-4 items-start pt-3 pr-2 pb-3 pl-4 bg-error-muted rounded-xl"
     data-testid="bridge-token-security"
   >
     <svg
@@ -318,7 +318,7 @@ exports[`BridgeAlertBannerList should render the token-security alert when token
         USDC is a malicious token.
       </p>
       <div
-        class=""
+        class="mt-0.5"
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
@@ -356,7 +356,7 @@ exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
+    class="flex flex-row gap-4 items-start pt-3 pr-4 pb-3 pl-4 bg-error-muted rounded-xl"
     data-testid="bridge-tx-alert"
   >
     <svg
@@ -378,7 +378,7 @@ exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is
         This transaction will be reverted
       </p>
       <div
-        class=""
+        class="mt-0.5"
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"

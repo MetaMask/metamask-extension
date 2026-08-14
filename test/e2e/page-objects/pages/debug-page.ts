@@ -5,15 +5,29 @@ import {
   MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
 } from '../../constants';
 
+/**
+ * Developer / Debug settings tab for feature-flag inspection and crash hooks.
+ *
+ * Screen: `#/settings/debug`, reached from Settings when developer options
+ * are available.
+ * Owns: remote feature flags details toggle/state assertions and the generate
+ * page-crash control on the debug tab.
+ * Boundaries: debug tab content only. Broader settings hub navigation belongs
+ * to `SettingsPage`; Sentry/error landing after a crash belongs to `ErrorPage`.
+ * Related: `SettingsPage`, `ErrorPage`.
+ *
+ * @see ui/pages/settings/debug-tab/debug-tab.tsx
+ * @see ui/pages/settings/debug-tab/debug-content/debug-content.tsx
+ */
 class DebugOptions {
+  private readonly developerOptionsRemoteFeatureFlagsState: string =
+    '[data-testid="developer-options-remote-feature-flags"]';
+
   private readonly driver: Driver;
 
   // Locators
   private readonly generatePageCrashButton: string =
     '[data-testid="developer-options-generate-page-crash-button"]';
-
-  private readonly developerOptionsRemoteFeatureFlagsState: string =
-    '[data-testid="developer-options-remote-feature-flags"]';
 
   private readonly remoteFeatureFlagsDetailsToggle: string =
     '[data-testid="remote-feature-flags-toggle"]';

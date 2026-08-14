@@ -63,7 +63,7 @@ import {
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
-import { SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/types';
+import { ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/types';
 import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
@@ -102,7 +102,7 @@ export type TransactionControllerInitMessengerActions =
   | SmartTransactionsControllerGetFeesAction
   | SmartTransactionsControllerSubmitSignedTransactionsAction
   | SubscriptionControllerActions
-  | SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
+  | ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
   | TransactionControllerAddTransactionAction
   | TransactionControllerAddTransactionBatchAction
   | TransactionControllerEstimateGasAction
@@ -191,7 +191,7 @@ export function getTransactionControllerInitMessenger(
       'SmartTransactionsController:getFees',
       'SmartTransactionsController:submitSignedTransactions',
       'SubscriptionController:getSubscriptionByProduct',
-      'SubscriptionService:submitSubscriptionSponsorshipIntent',
+      'ShieldSubscriptionService:submitSubscriptionSponsorshipIntent',
       'TransactionController:addTransaction',
       'TransactionController:addTransactionBatch',
       'TransactionController:estimateGas',

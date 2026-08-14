@@ -27,16 +27,11 @@ jest.mock('../../../shared/lib/selectors/networks', () => ({
 }));
 
 jest.mock('../../ducks/metamask/metamask', () => ({
-  getIsPrimarySeedPhraseBackedUp: () => true,
   getWeb3ShimUsageAlertEnabledness: () => false,
 }));
 
-jest.mock('../../../shared/lib/selectors/accounts', () => ({
-  getSelectedInternalAccount: () => ({ address: '0x1' }),
-}));
-
-jest.mock('../../selectors/multi-srp/multi-srp', () => ({
-  getShouldShowSeedPhraseReminder: () => false,
+jest.mock('../../components/app/recovery-phrase-reminder', () => ({
+  SeedPhraseBackupNotificationContainer: () => null,
 }));
 
 jest.mock('../../store/actions', () => ({

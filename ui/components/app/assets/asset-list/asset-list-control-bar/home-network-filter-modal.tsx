@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { EthScope, isEvmAccountType } from '@metamask/keyring-api';
 import { type AddNetworkFields } from '@metamask/network-controller';
@@ -19,6 +19,7 @@ import {
   FontWeight,
   IconColor as DsIconColor,
   IconName as DsIconName,
+  ModalHeader,
   Text,
   TextColor,
   TextVariant,
@@ -41,7 +42,6 @@ import {
   Modal,
   ModalContent,
   ModalContentSize,
-  ModalHeader,
   ModalOverlay,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -72,10 +72,12 @@ import { useNetworkManagerState } from '../../../../multichain/network-manager/h
 import { useNetworkChangeHandlers } from '../../../../multichain/network-manager/hooks/useNetworkChangeHandlers';
 import { NetworkListItem } from '../../../../multichain/network-list-item';
 import Tooltip from '../../../../ui/tooltip';
+import { useDispatch } from '../../../../../store/hooks';
 
 type HomeNetworkFilterModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  onPendingChange?: (isPending: boolean) => void;
 };
 
 type NetworkRowProps = {
@@ -234,6 +236,7 @@ export const NetworkSelectionModal = ({
   footerButton,
   'data-testid': dataTestId,
 }: NetworkSelectionModalProps) => {
+  const t = useI18nContext();
   return (
     <Modal
       isOpen={isOpen}
@@ -251,7 +254,12 @@ export const NetworkSelectionModal = ({
             className: 'flex h-full flex-col overflow-hidden',
           }}
         >
-          <ModalHeader onClose={onClose}>{title}</ModalHeader>
+          <ModalHeader
+            onClose={onClose}
+            closeButtonProps={{ ariaLabel: t('close') }}
+          >
+            {title}
+          </ModalHeader>
           <Box
             className="min-h-0 flex-1 overflow-y-auto"
             flexDirection={BoxFlexDirection.Column}
@@ -335,8 +343,10 @@ export const NetworkSelectionModal = ({
 
 const HomeNetworkFilterModalContent = ({
   onClose,
+  onPendingChange,
 }: {
   onClose: () => void;
+  onPendingChange?: (isPending: boolean) => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -378,7 +388,15 @@ const HomeNetworkFilterModalContent = ({
       );
     },
   );
-  const { handleNetworkChange } = useNetworkChangeHandlers();
+  const { handleNetworkChange, isPending } = useNetworkChangeHandlers();
+
+  const handleClose = useCallback(() => {
+    if (isPending) {
+      return;
+    }
+    onClose();
+  }, [isPending, onClose]);
+
   const {
     nonTestNetworks: allDefaultNetworkMap,
     isNetworkInDefaultNetworkTab,
@@ -479,24 +497,38 @@ const HomeNetworkFilterModalContent = ({
   }, [blacklistedChainIds, evmNetworks, useExternalServices]);
 
   const handleSelectAllDefaultNetworks = useCallback(() => {
+    if (isPending) {
+      return;
+    }
     dispatch(setEnabledAllPopularNetworks());
     onClose();
-  }, [dispatch, onClose]);
+  }, [dispatch, isPending, onClose]);
 
   const handleSelectNetwork = useCallback(
     async (chainId: CaipChainId) => {
-      await handleNetworkChange(chainId);
+      if (isPending) {
+        return;
+      }
+      onPendingChange?.(true);
       onClose();
+      try {
+        await handleNetworkChange(chainId);
+      } finally {
+        onPendingChange?.(false);
+      }
     },
-    [handleNetworkChange, onClose],
+    [handleNetworkChange, isPending, onClose, onPendingChange],
   );
 
   const handleAddNetwork = useCallback(
     async (network: AddNetworkFields) => {
+      if (isPending) {
+        return;
+      }
       await dispatch(addNetwork(network));
       onClose();
     },
-    [dispatch, onClose],
+    [dispatch, isPending, onClose],
   );
 
   const handleManageNetworks = useCallback(() => {
@@ -512,7 +544,7 @@ const HomeNetworkFilterModalContent = ({
         key: 'default-networks',
         title: hasOnlyDefaultNetworks ? undefined : t('defaultNetworks'),
         items: defaultNetworks.map((network) => ({
-          disabled: isNetworkDisabled(network),
+          disabled: isPending || isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
           iconSrc: getNetworkIcon(network),
@@ -530,7 +562,7 @@ const HomeNetworkFilterModalContent = ({
         key: 'custom-networks',
         title: t('customNetworks'),
         items: customNetworks.map((network) => ({
-          disabled: isNetworkDisabled(network),
+          disabled: isPending || isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
           iconSrc: getNetworkIcon(network),
@@ -548,7 +580,7 @@ const HomeNetworkFilterModalContent = ({
         key: 'test-networks',
         title: t('testnets'),
         items: testNetworks.map((network) => ({
-          disabled: isNetworkDisabled(network),
+          disabled: isPending || isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
           iconSrc: getNetworkIcon(network),
@@ -567,8 +599,9 @@ const HomeNetworkFilterModalContent = ({
         title: t('additionalNetworks'),
         items: additionalNetworks.map((network) => {
           const disabled =
-            !isEvmChainId(network.chainId as CaipChainId) &&
-            isEvmOnlySelectedAccountGroup;
+            isPending ||
+            (!isEvmChainId(network.chainId as CaipChainId) &&
+              isEvmOnlySelectedAccountGroup);
 
           return {
             key: network.chainId,
@@ -600,6 +633,7 @@ const HomeNetworkFilterModalContent = ({
     isEvmOnlySelectedAccountGroup,
     isNetworkDisabled,
     isNetworkSelected,
+    isPending,
     showTestnets,
     t,
     testNetworks,
@@ -608,7 +642,7 @@ const HomeNetworkFilterModalContent = ({
   return (
     <NetworkSelectionModal
       isOpen
-      onClose={onClose}
+      onClose={handleClose}
       title={t('bridgeSelectNetwork')}
       topItem={{
         key: 'all-default-networks',
@@ -634,6 +668,12 @@ const HomeNetworkFilterModalContent = ({
 export const HomeNetworkFilterModal = ({
   isOpen,
   onClose,
+  onPendingChange,
 }: HomeNetworkFilterModalProps) => {
-  return isOpen ? <HomeNetworkFilterModalContent onClose={onClose} /> : null;
+  return isOpen ? (
+    <HomeNetworkFilterModalContent
+      onClose={onClose}
+      onPendingChange={onPendingChange}
+    />
+  ) : null;
 };

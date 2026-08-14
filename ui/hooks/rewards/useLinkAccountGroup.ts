@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useAnalytics } from '../useAnalytics';
@@ -16,6 +16,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { getAccountTypeCategory } from '../../pages/multichain-accounts/account-details/account-type-utils';
 import { setRewardsAccountLinkedTimestamp } from '../../ducks/rewards';
+import { useDispatch } from '../../store/hooks';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 type LinkStatusReport = {

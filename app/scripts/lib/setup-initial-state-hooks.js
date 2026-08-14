@@ -37,6 +37,18 @@ function createLocalStore() {
 
 const localStore = createLocalStore();
 
+function getStateForEarlySegmentEvent(manager) {
+  if (globalThis.stateHooks.getSentryAppState) {
+    return globalThis.stateHooks.getSentryAppState();
+  }
+
+  const persistedState =
+    manager.mostRecentRetrievedState ||
+    globalThis.stateHooks.getMostRecentPersistedState?.();
+
+  return persistedState?.data ?? null;
+}
+
 // Single PersistenceManager per context: one in background, one per UI context.
 export const persistenceManager = new PersistenceManager({ localStore })
   .on('vaultCorruptionDetected', (payload) => {
@@ -58,6 +70,19 @@ export const persistenceManager = new PersistenceManager({ localStore })
       state: payload.state,
       event: MetaMetricsEventName.StateMigrationFailed,
       category: MetaMetricsEventCategory.StateMigration,
+    });
+  })
+  .on('writeRetryRecovered', (payload) => {
+    trackEarlySegmentEvent({
+      state: getStateForEarlySegmentEvent(persistenceManager),
+      event: MetaMetricsEventName.DataPersistenceWriteRetryRecovered,
+      category: MetaMetricsEventCategory.Error,
+      properties: {
+        persistence_event: payload.event,
+        first_error_message: payload.firstErrorMessage,
+        first_error_name: payload.firstErrorName,
+        retry_delay_ms: payload.retryDelayMs,
+      },
     });
   });
 

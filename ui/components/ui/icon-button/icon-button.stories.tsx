@@ -17,7 +17,7 @@ const meta: Meta<typeof IconButton> = {
   },
   args: {
     onClick: () => {},
-    Icon: <Icon name={IconName.Send} />,
+    Icon: <Icon name={IconName.Arrow2UpRight} />,
     disabled: false,
     label: 'Send',
     className: '',

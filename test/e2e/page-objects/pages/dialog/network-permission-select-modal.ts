@@ -2,14 +2,30 @@ import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Edit-networks permission modal for a connected site.
+ *
+ * Screen: modal layered over the site permissions / connection review UI,
+ * opened via the networks "Edit" control on `SitePermissionPage`.
+ * Owns: network list rows and checkbox selection state, validation of which
+ * networks are selected, and the "Update" confirm control.
+ * Boundaries: stops at the modal edge. Opening it belongs to
+ * `SitePermissionPage` / `permissions.flow.ts`. Does not cover account
+ * permission editing (`EditConnectedAccountsModal`).
+ * Related: `SitePermissionPage`, `EditConnectedAccountsModal`,
+ * `flows/permissions.flow.ts`. A page-shaped sibling
+ * `MultichainEditNetworksPage` exists but is not wired as the opener here.
+ *
+ * @see ui/components/multichain/edit-networks-modal/edit-networks-modal.js
+ */
 class NetworkPermissionSelectModal {
-  driver: Driver;
-
   private readonly checkBox = 'input[type="checkbox"]';
 
   private readonly confirmEditButton = {
     testId: 'connect-more-chains-button',
   };
+
+  driver: Driver;
 
   private readonly editNetworksModalTitle = {
     text: 'Edit networks',
@@ -20,6 +36,40 @@ class NetworkPermissionSelectModal {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Validates that the specified networks are selected and all others are unselected
+   *
+   * @param expectedSelectedNetworks - Array of network names that should be selected
+   */
+  async checkNetworkStatus(expectedSelectedNetworks: string[]): Promise<void> {
+    console.log(
+      'Validating network selection in edit network permission modal',
+    );
+    const networkItems = await this.driver.findElements(this.networkListItems);
+
+    for (const networkItem of networkItems) {
+      const networkNameDiv = await networkItem.findElement(
+        By.css('div[data-testid]'),
+      );
+      const networkName = await networkNameDiv.getAttribute('data-testid');
+      const checkbox = await networkItem.findElement(By.css(this.checkBox));
+      const isChecked = await checkbox.isSelected();
+      if (expectedSelectedNetworks.includes(networkName)) {
+        assert.strictEqual(
+          isChecked,
+          true,
+          `Expected ${networkName} to be selected.`,
+        );
+      } else {
+        assert.strictEqual(
+          isChecked,
+          false,
+          `Expected ${networkName} to NOT be selected.`,
+        );
+      }
+    }
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -103,40 +153,6 @@ class NetworkPermissionSelectModal {
       const shouldNotBeChecked = isChecked && !isSelectedNetwork;
       if (shouldBeChecked || shouldNotBeChecked) {
         await checkbox.click();
-      }
-    }
-  }
-
-  /**
-   * Validates that the specified networks are selected and all others are unselected
-   *
-   * @param expectedSelectedNetworks - Array of network names that should be selected
-   */
-  async checkNetworkStatus(expectedSelectedNetworks: string[]): Promise<void> {
-    console.log(
-      'Validating network selection in edit network permission modal',
-    );
-    const networkItems = await this.driver.findElements(this.networkListItems);
-
-    for (const networkItem of networkItems) {
-      const networkNameDiv = await networkItem.findElement(
-        By.css('div[data-testid]'),
-      );
-      const networkName = await networkNameDiv.getAttribute('data-testid');
-      const checkbox = await networkItem.findElement(By.css(this.checkBox));
-      const isChecked = await checkbox.isSelected();
-      if (expectedSelectedNetworks.includes(networkName)) {
-        assert.strictEqual(
-          isChecked,
-          true,
-          `Expected ${networkName} to be selected.`,
-        );
-      } else {
-        assert.strictEqual(
-          isChecked,
-          false,
-          `Expected ${networkName} to NOT be selected.`,
-        );
       }
     }
   }

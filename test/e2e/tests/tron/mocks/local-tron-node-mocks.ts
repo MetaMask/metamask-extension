@@ -81,15 +81,6 @@ type CapturedTxFields = Pick<
   | 'value'
 >;
 
-type TriggerSmartContractRequest = {
-  call_value?: number;
-  contract_address?: string;
-  fee_limit?: number;
-  function_selector?: string;
-  owner_address?: string;
-  parameter?: string;
-};
-
 function normalizeMaybeTronAddress(address?: string): string | undefined {
   if (!address) {
     return undefined;
@@ -114,61 +105,6 @@ function buildSeededTrc20ContractAddressSet(
       .map((address) => normalizeMaybeTronAddress(address))
       .filter((address): address is string => Boolean(address)),
   );
-}
-
-function getFunctionSelectorPrefix(functionSelector?: string): string {
-  // transfer(address,uint256)
-  if (functionSelector === 'transfer(address,uint256)') {
-    return 'a9059cbb';
-  }
-  return '';
-}
-
-function buildTriggerSmartContractTransaction(
-  request: TriggerSmartContractRequest,
-): Record<string, unknown> {
-  const timestamp = Date.now();
-  const ownerAddress = request.owner_address
-    ? normalizeTronHexAddress(request.owner_address)
-    : '';
-  const contractAddress = request.contract_address
-    ? normalizeTronHexAddress(request.contract_address)
-    : '';
-  const data = `${getFunctionSelectorPrefix(request.function_selector)}${
-    request.parameter ?? ''
-  }`;
-
-  return {
-    result: { result: true },
-    transaction: {
-      txID: '0'.repeat(64),
-      raw_data: {
-        contract: [
-          {
-            parameter: {
-              value: {
-                data,
-                owner_address: ownerAddress,
-                contract_address: contractAddress,
-                call_value: request.call_value ?? 0,
-              },
-              type_url: 'type.googleapis.com/protocol.TriggerSmartContract',
-            },
-            type: 'TriggerSmartContract',
-          },
-        ],
-        ref_block_bytes: '0000',
-        ref_block_hash: '0000000000000000',
-        expiration: timestamp + 60_000,
-        fee_limit: request.fee_limit,
-        timestamp,
-      },
-      // Large enough to force a realistic bandwidth cost when the account has
-      // no free bandwidth. The exact bytes are not semantically parsed in tests.
-      raw_data_hex: '00'.repeat(250),
-      visible: false,
-    },
-  };
 }
 
 async function fetchTxFromLocalNode(
@@ -241,6 +177,13 @@ function txInvolvesAccount(tx: CapturedTx, accountAddress: string): boolean {
   const accountHex = normalizeTronHexAddress(accountAddress).toLowerCase();
   const ownerHex = normalizeMaybeTronAddress(tx.ownerAddress);
   const toHex = normalizeMaybeTronAddress(tx.toAddress);
+
+  // When capture could not recover addresses from the broadcast body / local
+  // node, still surface the tx on every registered account history endpoint so
+  // confirmation isn't lost (E2E fixtures only register sender + recipient).
+  if (!ownerHex && !toHex) {
+    return true;
+  }
 
   return ownerHex === accountHex || toHex === accountHex;
 }
@@ -414,9 +357,13 @@ export async function proxyTronBlockchainCalls(
 
   await proxyPostPath('/wallet/getblock');
   await proxyPostPath('/wallet/getaccountresource');
+  await proxyPostPath('/wallet/getaccountnet');
   await proxyPostPath('/wallet/getcontract');
   await proxyPostPath('/wallet/gettransactionbyid');
   await proxyPostPath('/wallet/createtransaction');
+  // Must proxy real java-tron builds: TronWeb validates txID/raw_data_hex.
+  // A synthetic trigger response fails Continuetrial with generic transactionError.
+  await proxyPostPath('/wallet/triggersmartcontract');
   await proxyPostPath('/wallet/getblockbynum');
   await proxyPostPath('/wallet/getaccount');
   await proxyGetPath('/wallet/getnowblock');
@@ -459,29 +406,9 @@ export async function proxyTronBlockchainCalls(
         return proxyPost(localNodeUrl, '/wallet/gettransactioninfobyid', body);
       }),
 
-    await mockServer
-      .forPost(tronProviderUrl('/wallet/triggersmartcontract'))
-      .always()
-      .thenCallback(async (req) => {
-        const body = await req.body.getText();
-        const parsed = body
-          ? (JSON.parse(body) as TriggerSmartContractRequest)
-          : {};
-        const contractAddress = normalizeMaybeTronAddress(
-          parsed.contract_address,
-        );
-        if (
-          contractAddress &&
-          seededTrc20ContractAddresses.has(contractAddress)
-        ) {
-          return {
-            statusCode: 200,
-            json: buildTriggerSmartContractTransaction(parsed),
-          };
-        }
-        return proxyPost(localNodeUrl, '/wallet/triggersmartcontract', body);
-      }),
-
+    // Keep constant-contract energy short-circuit so TRC20 fee estimates stay
+    // under the seeded ~6.072 TRX portfolio balance; real first-transfer energy
+    // can exceed that and block Continuetrial on fee checks.
     await mockServer
       .forPost(tronProviderUrl('/wallet/triggerconstantcontract'))
       .always()
@@ -639,10 +566,10 @@ export async function proxyTronBlockchainCalls(
         .forGet(tronProviderUrl(`/v1/accounts/${accountAddress}/transactions`))
         .always()
         .thenCallback(async () => {
-          const nativeTxs = captured.filter(
-            (tx) =>
-              tx.contractType !== 'TriggerSmartContract' &&
-              txInvolvesAccount(tx, accountAddress),
+          // Include TriggerSmartContract too: the snap confirms from native
+          // /transactions only, then joins /transactions/trc20 by txID.
+          const nativeTxs = captured.filter((tx) =>
+            txInvolvesAccount(tx, accountAddress),
           );
           const data = nativeTxs.map((tx) => {
             tx.pollsObserved += 1;

@@ -1,11 +1,29 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Edit connected accounts modal for a site's account permissions.
+ *
+ * Screen: modal/page layered over site permissions or connection review,
+ * opened via the accounts "Edit" control on `SitePermissionPage` (or connect
+ * flows that reuse the same edit-accounts UI).
+ * Owns: account cells and checkboxes, add-account control, connect/update
+ * footer, and selection status waits.
+ * Boundaries: stops at this edit-accounts surface. Opening it belongs to
+ * `SitePermissionPage` / permissions flows. Network permission editing belongs
+ * to `NetworkPermissionSelectModal`.
+ * Related: `SitePermissionPage`, `NetworkPermissionSelectModal`,
+ * `flows/permissions.flow.ts`.
+ *
+ * @see ui/components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page.tsx
+ */
 class EditConnectedAccountsModal {
-  driver: Driver;
+  private readonly accountCell = '.multichain-account-cell';
 
   private readonly accountCheckbox = 'input[type="checkbox"]';
 
-  private readonly accountCell = '.multichain-account-cell';
+  private readonly accountName = (accountLabel: string) => ({
+    testId: `multichain-account-cell-name-${accountLabel}`,
+  });
 
   private readonly addNewAccountButton = {
     testId: 'add-multichain-account-button',
@@ -16,38 +34,18 @@ class EditConnectedAccountsModal {
     text: 'Add account',
   };
 
-  private readonly editAccountsModalTitle = {
-    text: 'Edit accounts',
-    tag: 'h4',
-  };
-
   private readonly connectAccountsButton = {
     testId: 'connect-more-accounts-button',
   };
 
-  private readonly newlyCreateAccount = {
-    css: 'p',
-    text: 'Account 2',
+  driver: Driver;
+
+  private readonly editAccountsModalHeader = {
+    testId: 'edit-accounts-modal-header',
   };
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.editAccountsModalTitle,
-        this.connectAccountsButton,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for edit connected accounts modal to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Edit connected accounts modal is loaded');
   }
 
   async addNewAccount(): Promise<void> {
@@ -74,11 +72,40 @@ class EditConnectedAccountsModal {
       },
       { interval: 500, timeout: 10000 },
     );
-    await this.driver.waitForSelector(this.newlyCreateAccount, {
+    await this.driver.waitForSelector(this.accountName('Account 2'), {
       timeout: 10000,
     });
-    await this.driver.clickElement(this.newlyCreateAccount);
+    await this.driver.clickElement(this.accountName('Account 2'));
     await this.clickOnConnect();
+  }
+
+  /**
+   * Check that an account label is displayed in the edit accounts modal.
+   *
+   * @param accountLabel - The account label to check for.
+   */
+  async checkAccountIsDisplayed(accountLabel: string): Promise<void> {
+    console.log(`Check that account ${accountLabel} is displayed`);
+    await this.driver.waitForSelector(this.accountName(accountLabel));
+  }
+
+  /**
+   * Check that the given account labels are displayed in the edit accounts modal.
+   *
+   * @param accountLabels - The account labels to check for.
+   */
+  async checkAccountsAreDisplayed(accountLabels: string[]): Promise<void> {
+    for (const accountLabel of accountLabels) {
+      await this.checkAccountIsDisplayed(accountLabel);
+    }
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.editAccountsModalHeader,
+      this.connectAccountsButton,
+    ]);
+    console.log('Edit connected accounts modal is loaded');
   }
 
   async clickOnConnect(): Promise<void> {
@@ -142,6 +169,23 @@ class EditConnectedAccountsModal {
       },
       { interval: 500, timeout: 5000 },
     );
+  }
+
+  /**
+   * Waits until the Connect button reaches the expected state.
+   *
+   * @param options - The options object.
+   * @param options.state - Whether the button should be 'enabled' or 'disabled'.
+   */
+  async waitForConnectButtonState({
+    state,
+  }: {
+    state: 'enabled' | 'disabled';
+  }): Promise<void> {
+    console.log(`Waiting for Connect button to be ${state}`);
+    await this.driver.waitForSelector(this.connectAccountsButton, {
+      state,
+    });
   }
 }
 

@@ -151,23 +151,10 @@ exports[`usePrefillFromSearchQuery should set src token after navigating from ER
 }
 `;
 
-exports[`usePrefillFromSearchQuery should set src token after navigating from native asset page 1`] = `
+exports[`usePrefillFromSearchQuery should set src token after navigating from native asset page 2`] = `
 {
-  "fromToken": {
-    "accountType": undefined,
-    "assetId": "eip155:59144/slip44:60",
-    "balance": "0",
-    "chainId": "eip155:59144",
-    "decimals": 18,
-    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/slip44/60.png",
-    "isVerified": undefined,
-    "name": "Ethereum",
-    "rwaData": undefined,
-    "securityData": undefined,
-    "symbol": "ETH",
-    "tokenFiatAmount": undefined,
-  },
-  "fromTokenInputValue": null,
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
   "toToken": undefined,
 }
 `;

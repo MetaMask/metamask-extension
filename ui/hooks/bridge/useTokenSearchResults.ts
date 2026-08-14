@@ -106,7 +106,7 @@ export const useTokenSearchResults = ({
   );
 
   const debouncedFetchSearchResults = useCallback(
-    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/use-memo
     debounce(
       (query: string, assets: BridgeToken[]) =>
         fetchSearchResults(query, assets),
@@ -137,17 +137,17 @@ export const useTokenSearchResults = ({
   }, [filteredAssetsToInclude]);
 
   useEffect(() => {
-    if (!jwt) {
-      return;
-    }
     // Reset state on search query change
     abortControllerRef.current.abort('Search query changed');
     setSearchResultsWithBalance([]);
     setSearchResultCursor(undefined);
     setHasMoreResults(false);
     if (searchQuery.length > 0) {
-      setIsSearchResultsLoading(true);
       setSearchResultsWithBalance(filteredAssetsToInclude);
+      if (!jwt) {
+        return;
+      }
+      setIsSearchResultsLoading(true);
       // Debounce the initial fetch until the user stops typing
       debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
     }
