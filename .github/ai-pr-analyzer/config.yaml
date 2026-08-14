@@ -3,11 +3,13 @@
 #
 # Critical lists are a complementary AI signal only — they do NOT replace CODEOWNERS.
 # Prefer per-subdirectory CODEOWNERS for ownership gates (ui/selectors, ui/ducks, etc.).
+# package.json is included as a soft signal (any dep/manifest change); yarn.lock is not.
 repo: MetaMask/metamask-extension
 
 critical:
   files:
-    # Tooling / build entrypoints (not package.json / yarn.lock — those FP often; use CODEOWNERS + dep review)
+    # Tooling / build entrypoints (yarn.lock stays out — lockfile-only noise; prefer dep review there)
+    - package.json
     - babel.config.js
     - tsconfig.json
     - builds.yml

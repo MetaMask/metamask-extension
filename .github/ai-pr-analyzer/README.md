@@ -11,7 +11,7 @@ Passed to the action as `config-path: .github/ai-pr-analyzer` from [`.github/wor
 
 ## Critical list philosophy
 
-This list is a **complementary signal** for the AI risk model. It does **not** replace [CODEOWNERS](../CODEOWNERS). Broad ownership surfaces (`ui/selectors/`, `ui/ducks/`, full `ui/store/`, `package.json`, `yarn.lock`) stay out of critical files/paths on purpose — use per-subdir CODEOWNERS instead.
+This list is a **complementary signal** for the AI risk model. It does **not** replace [CODEOWNERS](../CODEOWNERS). Broad ownership surfaces (`ui/selectors/`, `ui/ducks/`, full `ui/store/`, `yarn.lock`) stay out of critical files/paths on purpose — use per-subdir CODEOWNERS (or lockfile/dep review) instead. `package.json` is included as a soft signal that dependency/manifest changes deserve weight; all changed files are still assessed.
 
 `models.criticalFileThreshold: 5` escalates the model when many critical files are touched. It is not a merge gate.
 
