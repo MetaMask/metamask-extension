@@ -1,4 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
+import { ACTIVITY_ROUTE } from '../../../../../ui/helpers/constants/routes';
 import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
@@ -22,6 +23,21 @@ export type CheckExpectedBalanceOptions = {
 // past the default 10s wait.
 const NON_EVM_ICON_TIMEOUT = 20_000;
 
+/**
+ * Wallet home / account overview: balance, primary CTAs, and tab navigation.
+ *
+ * Screen: `#/` (DEFAULT_ROUTE), after unlock / onboarding.
+ * Owns: balance and empty-state checks, Send / Swap / Bridge / Receive,
+ * navigating to Tokens / NFTs / DeFi / Activity tabs, home notifications,
+ * shield entry modal, survey and SRP toasts, and page-ready waits.
+ * Boundaries: tab content belongs to `TokensTab`, `NftsTab`, `DeFiTab`,
+ * `ActivityTab`, and `PerpsTab`. The promotional carousel belongs to
+ * `CarouselPage`. Non-EVM account-specific helpers live on `NonEvmHomepage`.
+ * Related: `HeaderNavbar`, `TokensTab` / `NftsTab` / `DeFiTab` /
+ * `ActivityTab` / `PerpsTab` / `CarouselPage` / `NonEvmHomepage`.
+ *
+ * @see ui/pages/home/home.tsx
+ */
 class HomePage {
   protected readonly activityTab = {
     testId: 'account-overview__activity-tab',
@@ -532,14 +548,17 @@ class HomePage {
 
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
-    await this.checkPageIsLoaded();
     const isBottomNav = await this.driver.isElementPresentAndVisible(
       this.bottomNavActivityButton,
       3000,
     );
     if (isBottomNav) {
       await this.driver.clickElement(this.bottomNavActivityButton);
+      await this.driver.waitForUrl({
+        url: `${this.driver.extensionUrl}/home.html#${ACTIVITY_ROUTE}`,
+      });
     } else {
+      await this.checkPageIsLoaded();
       await this.driver.clickElement(this.activityTab);
     }
   }

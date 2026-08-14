@@ -2,9 +2,12 @@
 import { DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE } from '../../../../shared/lib/transaction/enforced-simulations';
 import {
   selectBlockedPayTokens,
+  selectDepositLimits,
+  selectEnableMoneyAccountTransactions,
   selectEnforcedSimulationsSlippage,
   selectIsEnforcedSimulationsEnabled,
   selectIsMetaMaskPayDappsEnabled,
+  selectIsMoneyAccountTransactionEnabled,
   selectIsPayAmountPrefillEnabled,
   selectIsPayHardwareEnabled,
   selectMinimumRequiredTokenBalance,
@@ -64,12 +67,17 @@ type PayPrefilledAmountConfig = {
   enabled?: boolean;
 };
 
+type PayFlag = {
+  depositLimit?: Record<string, number>;
+};
+
 type PayExtendedFlag = {
   prefilledAmount?: {
     default?: PayPrefilledAmountConfig;
     overrides?: Record<string, PayPrefilledAmountConfig>;
     musdConversion?: PayPrefilledAmountConfig;
   };
+  enableMoneyAccountTransactions?: Record<string, boolean>;
 };
 
 type HardwareWalletFlag = {
@@ -79,6 +87,7 @@ type HardwareWalletFlag = {
 type MockState = {
   metamask: {
     remoteFeatureFlags: {
+      confirmations_pay?: PayFlag;
       confirmations_pay_dapps?: ConfirmationsPayDappsFlag;
       confirmations_enforced_simulations?: EnforcedSimulationsFlag;
       confirmations_pay_post_quote?: PayPostQuoteFlag;
@@ -132,6 +141,16 @@ const getMockPayTokensState = (
     remoteFeatureFlags: {
       ...(confirmations_pay_tokens !== undefined && {
         confirmations_pay_tokens,
+      }),
+    },
+  },
+});
+
+const getMockPayState = (confirmations_pay?: PayFlag): MockState => ({
+  metamask: {
+    remoteFeatureFlags: {
+      ...(confirmations_pay !== undefined && {
+        confirmations_pay,
       }),
     },
   },
@@ -452,6 +471,46 @@ describe('Confirmations Pay Feature Flags', () => {
     });
   });
 
+  describe('selectDepositLimits', () => {
+    it('returns the default empty map when the flag is absent', () => {
+      const state = getMockPayState();
+
+      expect(selectDepositLimits(state)).toStrictEqual({});
+    });
+
+    it('returns the default empty map when depositLimit is absent', () => {
+      const state = getMockPayState({});
+
+      expect(selectDepositLimits(state)).toStrictEqual({});
+    });
+
+    it('returns deposit limits from the feature flag', () => {
+      const state = getMockPayState({
+        depositLimit: {
+          moneyAccountDeposit: 100000,
+        },
+      });
+
+      expect(selectDepositLimits(state)).toStrictEqual({
+        moneyAccountDeposit: 100000,
+      });
+    });
+
+    it('returns multiple deposit type limits', () => {
+      const state = getMockPayState({
+        depositLimit: {
+          moneyAccountDeposit: 100000,
+          perpsDeposit: 25000,
+        },
+      });
+
+      expect(selectDepositLimits(state)).toStrictEqual({
+        moneyAccountDeposit: 100000,
+        perpsDeposit: 25000,
+      });
+    });
+  });
+
   describe('selectIsPayAmountPrefillEnabled', () => {
     it('returns true when the transaction override is enabled', () => {
       const state = getMockPayExtendedState({
@@ -516,6 +575,66 @@ describe('Confirmations Pay Feature Flags', () => {
       expect(selectIsPayAmountPrefillEnabled(state, 'musdConversion')).toBe(
         false,
       );
+    });
+  });
+
+  describe('selectEnableMoneyAccountTransactions', () => {
+    it('returns the map from the flag', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: {
+          perpsDeposit: true,
+          predictDeposit: false,
+        },
+      });
+
+      expect(selectEnableMoneyAccountTransactions(state)).toStrictEqual({
+        perpsDeposit: true,
+        predictDeposit: false,
+      });
+    });
+
+    it('defaults to an empty map when the flag is absent', () => {
+      const state = getMockPayExtendedState();
+      expect(selectEnableMoneyAccountTransactions(state)).toStrictEqual({});
+    });
+  });
+
+  describe('selectIsMoneyAccountTransactionEnabled', () => {
+    it('returns true when the transaction type is enabled', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { perpsDeposit: true },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(true);
+    });
+
+    it('returns false when the transaction type is disabled', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { perpsDeposit: false },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(false);
+    });
+
+    it('returns false when the transaction type is absent', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { predictDeposit: true },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(false);
+    });
+
+    it('returns false when the flag map is missing', () => {
+      const state = getMockPayExtendedState();
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(false);
     });
   });
 

@@ -6,6 +6,18 @@ import { Driver } from '../../webdriver/driver';
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
+/**
+ * Local Solana test dapp for wallet-adapter connect and Solana actions.
+ *
+ * Screen: `http://127.0.0.1:8080` served from `@metamask/test-dapp-solana`.
+ * Owns: connect/disconnect, account/connection status, endpoint update, and
+ * wallet-adapter modal selection of MetaMask.
+ * Boundaries: the Solana dapp UI only. MetaMask Solana confirmations and
+ * account UI belong to extension page objects.
+ * Related: Solana confirmation / account flows in the extension.
+ *
+ * @see node_modules/@metamask/test-dapp-solana/dist/index.html
+ */
 export class TestDappSolana {
   private readonly accountLocator = (text: string) => ({
     testId: dataTestIds.testPage.header.account,

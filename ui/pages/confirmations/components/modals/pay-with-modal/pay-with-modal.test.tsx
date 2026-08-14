@@ -20,14 +20,21 @@ import {
   addToken,
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
+import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
+import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
 import { PayWithModal } from './pay-with-modal';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayBlockedTokens');
 jest.mock('../../../hooks/pay/useWithdrawTokenFilter');
+jest.mock('../../../hooks/pay/usePayWithSections');
 jest.mock('../../../utils/transaction-pay');
 jest.mock('../../../../../hooks/musd');
+jest.mock('../../../selectors/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/feature-flags'),
+  selectIsMoneyAccountTransactionEnabled: jest.fn(),
+}));
 jest.mock('../../../context/confirm', () => ({
   useConfirmContext: jest.fn(),
 }));
@@ -73,6 +80,17 @@ jest.mock('../../send/asset', () => ({
           onClick={() => onAssetSelect?.({ address: '0x123', chainId: '0x1' })}
         >
           Select Token
+        </button>
+        <button
+          data-testid="select-current-token"
+          onClick={() =>
+            onAssetSelect?.({
+              address: '0x0000000000000000000000000000000000000000',
+              chainId: '0x1',
+            })
+          }
+        >
+          Select Current Token
         </button>
         <button
           data-testid="select-disabled-token"
@@ -124,6 +142,10 @@ describe('PayWithModal', () => {
   const usePostQuoteWithdrawTokenFilterMock = jest.mocked(
     usePostQuoteWithdrawTokenFilter,
   );
+  const selectIsMoneyAccountTransactionEnabledMock = jest.mocked(
+    selectIsMoneyAccountTransactionEnabled,
+  );
+  const usePayWithSectionsMock = jest.mocked(usePayWithSections);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -131,6 +153,8 @@ describe('PayWithModal', () => {
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: {},
     } as ReturnType<typeof useConfirmContext>);
+    selectIsMoneyAccountTransactionEnabledMock.mockReturnValue(false);
+    usePayWithSectionsMock.mockReturnValue({ sections: [] });
 
     getAvailableTokensMock.mockImplementation(({ tokens }) => tokens as never);
     useTransactionPayBlockedTokensMock.mockReturnValue({
@@ -295,6 +319,15 @@ describe('PayWithModal', () => {
       });
       expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
     });
+
+    it('does not call setPayToken when the selected token matches the current payToken', () => {
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      fireEvent.click(screen.getByTestId('select-current-token'));
+
+      expect(setPayTokenMock).not.toHaveBeenCalled();
+      expect(onCloseMock).toHaveBeenCalled();
+    });
   });
 
   describe('perpsWithdraw destination token import', () => {
@@ -385,6 +418,103 @@ describe('PayWithModal', () => {
       expect(onCloseMock).not.toHaveBeenCalled();
 
       consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe('money account pay sections', () => {
+    beforeEach(() => {
+      selectIsMoneyAccountTransactionEnabledMock.mockReturnValue(true);
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.perpsDeposit,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+      usePayWithSectionsMock.mockReturnValue({
+        sections: [
+          {
+            id: 'money-account',
+            title: '',
+            testId: 'pay-with-section-money-account',
+            rows: [
+              {
+                id: 'money-account-musd',
+                icon: <span />,
+                title: 'Money account',
+                subtitle: '$7.05 available',
+                testId: 'pay-with-money-account-row',
+              },
+            ],
+          },
+          {
+            id: 'crypto',
+            title: 'Crypto',
+            testId: 'pay-with-section-crypto',
+            rows: [
+              {
+                id: 'crypto-other-assets',
+                icon: <span />,
+                title: 'Other assets',
+                subtitle: 'Select from your tokens',
+                trailingElement: 'chevron',
+                onPress: jest.fn(),
+                testId: 'pay-with-crypto-section-other-assets-row',
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('renders sectioned pay options when money account transactions are enabled', () => {
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByTestId('pay-with-sections')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('pay-with-money-account-row'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.payWithMoneyAccount.message),
+      ).toBeInTheDocument();
+      expect(screen.queryByTestId('asset-component')).not.toBeInTheDocument();
+    });
+
+    it('keeps the token asset picker when money account transactions are disabled', () => {
+      selectIsMoneyAccountTransactionEnabledMock.mockReturnValue(false);
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByTestId('asset-component')).toBeInTheDocument();
+      expect(screen.queryByTestId('pay-with-sections')).not.toBeInTheDocument();
+    });
+
+    it('switches to the asset picker when Other assets is pressed', () => {
+      usePayWithSectionsMock.mockImplementation(({ onOtherAssetsPress }) => ({
+        sections: [
+          {
+            id: 'crypto',
+            title: 'Crypto',
+            testId: 'pay-with-section-crypto',
+            rows: [
+              {
+                id: 'crypto-other-assets',
+                icon: <span />,
+                title: 'Other assets',
+                onPress: () => onOtherAssetsPress(),
+                testId: 'pay-with-crypto-section-other-assets-row',
+              },
+            ],
+          },
+        ],
+      }));
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      fireEvent.click(
+        screen.getByTestId('pay-with-crypto-section-other-assets-row'),
+      );
+
+      expect(screen.getByTestId('asset-component')).toBeInTheDocument();
+      expect(screen.queryByTestId('pay-with-sections')).not.toBeInTheDocument();
     });
   });
 });

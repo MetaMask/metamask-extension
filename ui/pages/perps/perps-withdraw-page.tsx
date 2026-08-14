@@ -199,11 +199,11 @@ const PerpsWithdrawPage = () => {
 
   useEffect(() => {
     let cancelled = false;
-    setRoutesError(null);
 
     submitRequestToBackground<AssetRoute[]>('perpsGetWithdrawalRoutes', [])
       .then((routes) => {
         if (!cancelled) {
+          setRoutesError(null);
           setWithdrawalRoutes(Array.isArray(routes) ? routes : []);
         }
       })
