@@ -126,7 +126,7 @@ export async function withBtcWalletStandardSnap(
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       await login(driver);
-      await driver.delay(regularDelayMs);
+      await driver.delay(regularDelayMs); // workaround to avoid flakiness
       await addMultipleAccounts({ driver, numberOfAccounts });
       await test(driver, mockServer);
     },
