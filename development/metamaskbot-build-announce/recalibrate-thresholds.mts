@@ -1,4 +1,4 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env node
 /**
  * Empirical threshold recalibration query — MetaMask-planning#7252.
  *
@@ -21,7 +21,7 @@
  * interactions. CLS is emitted as web-vitals spans (not these tags) and is
  * gated on fixed Google thresholds with no multiplier, so it is excluded here.
  *
- * Run: `SENTRY_AUTH_TOKEN=<token> yarn tsx <thisFile>`. Options:
+ * Run: `SENTRY_AUTH_TOKEN=<token> node <thisFile>`. Options:
  * `--window 21d` lookback (Sentry statsPeriod); `--branch main` ci.branch
  * filter; `--persona powerUser` extra ci.persona filter (default: intrinsic
  * per flow); `--warn-headroom 1.10` / `--fail-headroom 1.25` proposed =
@@ -35,12 +35,12 @@ import { parseArgs } from 'util';
 import {
   BENCHMARK_TYPE,
   type BenchmarkType,
-} from '../../shared/constants/benchmarks';
-import { GATED_METRICS } from '../../test/e2e/benchmarks/utils/gated-metrics';
+} from '../../shared/constants/benchmarks.ts';
+import { GATED_METRICS } from '../../test/e2e/benchmarks/utils/gated-metrics.ts';
 import {
   CI_MULTIPLIER,
   THRESHOLD_REGISTRY,
-} from '../../test/e2e/benchmarks/utils/thresholds';
+} from '../../test/e2e/benchmarks/utils/thresholds.ts';
 
 const SENTRY_BASE = 'https://sentry.io/api/0';
 const SENTRY_WEB = 'https://metamask.sentry.io';
