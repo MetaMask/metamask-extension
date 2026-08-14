@@ -83,14 +83,6 @@ import {
   getSmartTransactionsControllerInitMessenger,
   getSmartTransactionsControllerMessenger,
 } from './smart-transactions-controller-messenger';
-import {
-  getShieldControllerInitMessenger,
-  getShieldControllerMessenger,
-} from './shield/shield-controller-messenger';
-import {
-  getSubscriptionControllerInitMessenger,
-  getSubscriptionControllerMessenger,
-} from './subscription';
 import { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
@@ -160,7 +152,7 @@ import {
 } from './permission-controller-messenger';
 import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
-import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
+import { getShieldSubscriptionServiceMessenger } from './subscription/shield-subscription-service-messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
@@ -187,11 +179,6 @@ import {
   getUserOperationControllerMessenger,
 } from './user-operation-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
-import {
-  getClaimsControllerInitMessenger,
-  getClaimsControllerMessenger,
-} from './claims/claims-controller-messenger';
-import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
@@ -387,14 +374,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getBridgeStatusControllerMessenger,
     getInitMessenger: noop,
   },
-  ClaimsController: {
-    getMessenger: getClaimsControllerMessenger,
-    getInitMessenger: getClaimsControllerInitMessenger,
-  },
-  ClaimsService: {
-    getMessenger: getClaimsServiceMessenger,
-    getInitMessenger: noop,
-  },
   ClientController: {
     getMessenger: getClientControllerMessenger,
     getInitMessenger: noop,
@@ -583,10 +562,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getSentinelApiServiceMessenger,
     getInitMessenger: noop,
   },
-  ShieldController: {
-    getMessenger: getShieldControllerMessenger,
-    getInitMessenger: getShieldControllerInitMessenger,
-  },
   SignatureController: {
     getMessenger: getSignatureControllerMessenger,
     getInitMessenger: getSignatureControllerInitMessenger,
@@ -623,12 +598,8 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getSubjectMetadataControllerMessenger,
     getInitMessenger: noop,
   },
-  SubscriptionController: {
-    getMessenger: getSubscriptionControllerMessenger,
-    getInitMessenger: getSubscriptionControllerInitMessenger,
-  },
-  SubscriptionService: {
-    getMessenger: getSubscriptionServiceMessenger,
+  ShieldSubscriptionService: {
+    getMessenger: getShieldSubscriptionServiceMessenger,
     getInitMessenger: noop,
   },
   RewardsDataService: {
