@@ -1,16 +1,20 @@
 import { PRIVACY_ROUTE, Route } from './route';
 
 /**
- * Maps the `setting` query param to the settings item ids declared in
- * `ui/pages/settings/privacy-tab/privacy-tab.tsx`. The settings page scrolls
- * the matching item into view via the URL hash.
+ * Where a `privacy` deeplink lands when no `setting` is given, or when the one
+ * given isn't recognised.
  */
-export const SETTING_ANCHORS: Record<string, string> = {
-  metametrics: 'metametrics',
-  'data-collection': 'data-collection',
-};
-
 export const DEFAULT_SETTING_ANCHOR = 'metametrics';
+
+/**
+ * Accepted `setting` query param values. Each doubles as the settings item id
+ * declared in `ui/pages/settings/privacy-tab/privacy-tab.tsx`, which the
+ * settings page scrolls into view via the URL hash.
+ */
+export const SETTING_ANCHORS = new Set([
+  DEFAULT_SETTING_ANCHOR,
+  'data-collection',
+]);
 
 /**
  * Deeplink to the Privacy & Security settings tab, scrolled to a specific
@@ -28,8 +32,10 @@ export const privacy = new Route({
   pathname: '/privacy',
   getTitle: (_: URLSearchParams) => 'deepLink_thePrivacySettingsPage',
   handler: function handler(params: URLSearchParams) {
-    const anchor =
-      SETTING_ANCHORS[params.get('setting') ?? ''] ?? DEFAULT_SETTING_ANCHOR;
+    const setting = params.get('setting') ?? '';
+    const anchor = SETTING_ANCHORS.has(setting)
+      ? setting
+      : DEFAULT_SETTING_ANCHOR;
     return {
       path: `${PRIVACY_ROUTE}#${anchor}`,
       query: new URLSearchParams(),

@@ -45,6 +45,7 @@ import {
   ONBOARDING_WELCOME_ROUTE,
   UNLOCK_ROUTE,
 } from '../../helpers/constants/routes';
+import { getRedirectAfterUnlock } from '../../helpers/utils/redirect-after-unlock';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -272,17 +273,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     });
 
     if (isUnlocked) {
-      // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
-      let redirectTo = DEFAULT_ROUTE;
-      const fromLocation = location.state?.from;
-      if (fromLocation?.pathname) {
-        const search = fromLocation.search || '';
-        // Keep the hash: deep links (e.g. /settings/privacy#metametrics) use it
-        // to scroll to a specific setting.
-        const hash = fromLocation.hash || '';
-        redirectTo = fromLocation.pathname + search + hash;
-      }
-      navigate(redirectTo, { replace: true });
+      navigate(getRedirectAfterUnlock(location.state), { replace: true });
     }
   }
 

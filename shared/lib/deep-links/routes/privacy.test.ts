@@ -43,6 +43,23 @@ describe('privacyRoute', () => {
     expect(result.path).toBe(`${PRIVACY_ROUTE}#metametrics`);
   });
 
+  // These keys exist on Object.prototype, so an object-literal allowlist would
+  // resolve them (e.g. `#function Object() { [native code] }`) instead of
+  // falling back.
+  for (const setting of [
+    'constructor',
+    'toString',
+    'hasOwnProperty',
+    '__proto__',
+  ]) {
+    it(`falls back to the metametrics toggle for the inherited key ${setting}`, () => {
+      const result = privacy.handler(new URLSearchParams({ setting }));
+
+      assertPathDestination(result);
+      expect(result.path).toBe(`${PRIVACY_ROUTE}#metametrics`);
+    });
+  }
+
   it('ignores unrelated params', () => {
     const result = privacy.handler(new URLSearchParams({ foo: 'bar' }));
 
