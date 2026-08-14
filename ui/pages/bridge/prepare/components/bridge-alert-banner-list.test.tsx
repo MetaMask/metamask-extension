@@ -9,7 +9,10 @@ import * as reactRouterUtils from 'react-router-dom';
 import { BridgeAssetSecurityDataType } from '../../utils/tokens';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
-import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
+import {
+  createBridgeMockStore,
+  DEFAULT_VALIDATION_ERRORS,
+} from '../../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createTestProviderTools } from '../../../../../test/stub/provider';
@@ -187,10 +190,14 @@ describe('BridgeAlertBannerList', () => {
       jest
         .spyOn(reactRouterUtils, 'useSearchParams')
         .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
+      jest.spyOn(bridgeSelectors, 'getActiveQuotePriceData').mockReturnValue({
+        priceImpact: { amount: '0' },
+      });
       validationErrors &&
-        jest
-          .spyOn(bridgeSelectors, 'getValidationErrors')
-          .mockReturnValue(validationErrors as never);
+        jest.spyOn(bridgeSelectors, 'getValidationErrors').mockReturnValue({
+          ...DEFAULT_VALIDATION_ERRORS,
+          ...validationErrors,
+        });
       const mockStore = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
@@ -257,11 +264,12 @@ describe('BridgeAlertBannerList', () => {
         .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
       jest
         .spyOn(bridgeSelectors, 'getActiveQuotePriceData')
-        .mockReturnValue(undefined as never);
+        .mockReturnValue(undefined);
       if (Object.keys(validationErrorOverrides).length > 0) {
-        jest
-          .spyOn(bridgeSelectors, 'getValidationErrors')
-          .mockReturnValue(validationErrorOverrides as never);
+        jest.spyOn(bridgeSelectors, 'getValidationErrors').mockReturnValue({
+          ...DEFAULT_VALIDATION_ERRORS,
+          ...validationErrorOverrides,
+        });
       }
 
       const mockStore = createBridgeMockStore({
