@@ -125,7 +125,7 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
         timeVisible: true,
         secondsVisible: false,
         fixLeftEdge: true,
-        fixRightEdge: true,
+        rightOffsetPixels: 16,
         // Midnight in a 24h window is a Day tick; LW charts bold those.
         allowBoldLabels: false,
         tickMarkFormatter: (time: number) => formatChartTime(time * 1000),
@@ -195,17 +195,11 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
 
   if (values.length < 2) {
     return (
-      <div>
-        <div className="grid h-[170px] place-items-center text-s-body-sm text-alternative">
-          {loading ? 'Loading chart…' : 'Chart unavailable'}
-        </div>
+      <div className="grid h-[170px] place-items-center text-s-body-sm text-alternative">
+        {loading ? 'Loading chart…' : 'Chart unavailable'}
       </div>
     );
   }
 
-  return (
-    <div>
-      <div ref={containerRef} className="h-[170px] w-full" />
-    </div>
-  );
+  return <div ref={containerRef} className="h-[170px] w-full" />;
 }

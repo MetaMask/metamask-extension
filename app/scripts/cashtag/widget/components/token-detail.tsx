@@ -59,7 +59,7 @@ export function TokenDetail({
       <header className="mb-7 flex items-center justify-between">
         <div className="flex min-w-0 items-center gap-4">
           <TokenAvatar asset={data} size="lg" />
-          <div className="flex min-w-0 flex-col justify-center gap-1">
+          <div className="flex min-w-0 flex-col justify-center">
             <div className="flex items-center gap-2 leading-none">
               <Label>{data.ticker}</Label>
               {data.verified ? (
@@ -84,7 +84,7 @@ export function TokenDetail({
         </div>
       </header>
 
-      <section className="mb-3 flex items-start justify-between">
+      <section className="flex items-start justify-between">
         <div>
           <div className="text-s-display-md font-bold">
             {data.price === null ? '—' : formatUsd(data.price)}
@@ -106,7 +106,7 @@ export function TokenDetail({
             <span className="text-alternative">Today</span>
           </div>
         </div>
-        <dl className="flex gap-10 pt-2">
+        <dl className="flex gap-10 pt-2 mb-6">
           <div className="flex flex-col items-end">
             <dt className="text-s-body-sm font-medium text-alternative">
               Market cap
@@ -134,7 +134,7 @@ export function TokenDetail({
         </dl>
       </section>
 
-      <div className="mb-2">
+      <div className="mb-6">
         <PriceChart
           caipAssetId={data.caipAssetId}
           currentPrice={data.price}
