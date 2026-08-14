@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
-import { useGetDisplayName } from './useGetDisplayName';
 import { NameEntry } from '@metamask/name-controller';
+import { useGetDisplayName } from './useGetDisplayName';
 
 type MockState = {
   addressBook: { address: string; name?: string }[];
