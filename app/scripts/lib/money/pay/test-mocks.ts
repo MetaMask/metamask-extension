@@ -1,3 +1,7 @@
+import type {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type { MoneyPayMessenger } from './pay-context';
 
@@ -112,9 +116,103 @@ export function createMoneyPayMessengerMock(
     return handler(...args);
   });
 
+  type TransactionAddedHandler = (transaction: TransactionMeta) => void;
+  const subscribers = new Set<TransactionAddedHandler>();
+
+  const subscribe = jest.fn(
+    (_eventType: string, handler: TransactionAddedHandler) => {
+      subscribers.add(handler);
+    },
+  );
+
+  const unsubscribe = jest.fn(
+    (_eventType: string, handler: TransactionAddedHandler) => {
+      subscribers.delete(handler);
+    },
+  );
+
   return {
-    messenger: { call } as unknown as MoneyPayMessenger,
+    messenger: { call, subscribe, unsubscribe } as unknown as MoneyPayMessenger,
     call,
+    subscribe,
+    unsubscribe,
     provider,
+    /**
+     * Publishes `TransactionController:unapprovedTransactionAdded`.
+     *
+     * @param transaction - The transaction that was added.
+     */
+    emitUnapprovedTransactionAdded: (transaction: Partial<TransactionMeta>) => {
+      for (const handler of [...subscribers]) {
+        handler(transaction as TransactionMeta);
+      }
+    },
   };
+}
+
+/** The `addTransactionBatch` request the placeholder batches submit. */
+export type BatchRequestMock = {
+  batchId: Hex;
+  requiredAssets?: { address: Hex; amount: Hex; standard: string }[];
+  transactions: { params: { to: Hex; value: Hex }; type: TransactionType }[];
+};
+
+export type PlaceholderBatchMockOptions = MessengerMockOptions & {
+  /** Id of the transaction the batch creates. */
+  transactionId: string;
+  /** Rejection from the batch, standing in for a failed submission. */
+  batchError?: Error;
+};
+
+/**
+ * A `MoneyPayMessenger` mock whose `addTransactionBatch` behaves like the
+ * controller's: it publishes `unapprovedTransactionAdded` for the created
+ * transaction and then stays **pending**, because the real batch settles only
+ * once the user approves the confirmation. An unrelated transaction is
+ * published first, so consumers must match on the batch id.
+ *
+ * @param options - The options bag, also accepting every
+ * `createMoneyPayMessengerMock` option.
+ * @param options.transactionId - Id of the transaction the batch creates.
+ * @param options.batchError - Rejection from the batch, standing in for a
+ * failed submission.
+ * @returns The messenger mock and the `addTransactionBatch` mock.
+ */
+export function createPlaceholderBatchMessengerMock({
+  transactionId,
+  batchError,
+  ...options
+}: PlaceholderBatchMockOptions) {
+  const emitter: {
+    emit?: (transaction: Partial<TransactionMeta>) => void;
+  } = {};
+
+  const addTransactionBatch = jest.fn(
+    async ({ batchId }: BatchRequestMock): Promise<never> => {
+      if (batchError) {
+        throw batchError;
+      }
+
+      emitter.emit?.({ id: 'unrelated-transaction', batchId: '0xffff' });
+      emitter.emit?.({
+        id: transactionId,
+        batchId: batchId.toLowerCase() as Hex,
+      });
+
+      return await new Promise<never>(() => undefined);
+    },
+  );
+
+  const mock = createMoneyPayMessengerMock({
+    ...options,
+    handlers: {
+      'TransactionController:addTransactionBatch':
+        addTransactionBatch as unknown as (...args: unknown[]) => unknown,
+      ...options.handlers,
+    },
+  });
+
+  emitter.emit = mock.emitUnapprovedTransactionAdded;
+
+  return { ...mock, addTransactionBatch };
 }
