@@ -194,18 +194,26 @@ export class QrSyncController extends BaseController<
       QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
     ]);
 
-    let snapshot = await this.messenger.call(
-      'AccountTreeController:exportState',
-      { includeSecrets: true, password },
-    );
+    let exportData: QrSyncReadyData;
+    try {
+      let snapshot = await this.messenger.call(
+        'AccountTreeController:exportState',
+        { includeSecrets: true, password },
+      );
 
-    const selectedPayloadIds = new Set(
-      selectedAccountGroupIds.map((groupId) => snapshot.toPayloadId(groupId)),
-    );
-    snapshot = snapshot.filterAllGroups((payloadGroup) =>
-      selectedPayloadIds.has(payloadGroup.id),
-    );
-    const exportData = snapshot.serialize();
+      const selectedPayloadIds = new Set(
+        selectedAccountGroupIds.map((groupId) =>
+          snapshot.toPayloadId(groupId),
+        ),
+      );
+      snapshot = snapshot.filterAllGroups((payloadGroup) =>
+        selectedPayloadIds.has(payloadGroup.id),
+      );
+      exportData = snapshot.serialize();
+    } catch (error) {
+      this.#reportToSentry('Failed to export account tree for QR sync', error);
+      throw error;
+    }
 
     const deadline = Date.now() + QR_SYNC_TIMEOUT_MS.SYNC_COMPLETION_TIMEOUT;
 

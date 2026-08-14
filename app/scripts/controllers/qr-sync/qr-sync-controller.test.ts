@@ -1095,6 +1095,32 @@ describe('QrSyncController', () => {
   });
 
   describe('Sentry reporting', () => {
+    it('reports account tree export failures to Sentry', async () => {
+      const captureException = jest.fn();
+      const exportError = new Error('Invalid password');
+      const { controller, qrSyncMessenger, mockExportState, primaryGroupId } =
+        setupController();
+      // @ts-expect-error - captureException mock
+      qrSyncMessenger.captureException = captureException;
+      mockExportState.mockRejectedValueOnce(exportError);
+
+      await mockStartSession(controller);
+      await mockSetReviewingSyncOffer(controller);
+
+      await expect(
+        controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]),
+      ).rejects.toThrow(exportError);
+
+      expect(captureException).toHaveBeenCalledTimes(1);
+      const sentryError = captureException.mock.calls[0][0] as Error & {
+        cause: unknown;
+      };
+      expect(sentryError.message).toBe(
+        'Failed to export account tree for QR sync',
+      );
+      expect(sentryError.cause).toBe(exportError);
+    });
+
     it('reports unexpected session failures to Sentry', async () => {
       const captureException = jest.fn();
       const connectError = new Error('Relay unavailable');

@@ -8,7 +8,7 @@ The extension is the **sender**; mobile is the **receiver**.
 
 **User entry point:** Settings → **Sync with mobile** (`syncAccounts` locale key).
 
-**Last updated:** 2026-07-16.
+**Last updated:** 2026-08-14.
 
 ---
 
@@ -71,7 +71,9 @@ Phases are defined in `shared/constants/qr-sync.ts`. The UI maps them in `ui/pag
 
 ## Architecture
 
-QR Sync splits **session transport** from **wallet export assembly**:
+QR Sync has a single background layer: `QrSyncController` owns both MWP session
+transport and wallet export assembly, delegating the actual account-tree/keyring
+export work to `AccountTreeController` via `exportState`:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -82,20 +84,28 @@ QR Sync splits **session transport** from **wallet export assembly**:
                             ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  QrSyncController                                               │
-│  MWP connect, OTP, sync-offer, sync-ready send, completion wait │
+│  MWP connect, OTP, sync-offer                                   │
+│  syncAccounts(): AccountTreeController:exportState               │
+│    → snapshot.filterAllGroups(selected) → snapshot.serialize()  │
+│  sync-ready send, completion wait                                │
 └───────────────┬─────────────────────────────┬───────────────────┘
                 │                             │
-                │ QrSyncDataService:          │ MWP DappClient
-                │ buildWalletExportEntries    │ (relay + encryption)
+                │ AccountTreeController:      │ MWP DappClient
+                │ exportState                 │ (relay + encryption)
                 ▼                             ▼
 ┌───────────────────────────┐         ┌───────────────────────────┐
-│  QrSyncDataService        │         │  @metamask/mobile-wallet- │
-│  Account tree + keyring   │         │  protocol-dapp-client     │
-│  → WalletExportEntry[]    │         └───────────────────────────┘
+│  AccountTreeController    │         │  @metamask/mobile-wallet- │
+│  (@metamask/account-tree- │         │  protocol-dapp-client     │
+│  controller)              │         └───────────────────────────┘
+│  → AccountTreeSnapshot    │
 └───────────────────────────┘
 ```
 
-**Why two layers?** The controller owns MWP session state and message timing. Export logic needs `AccountTreeController`, `AccountsController`, and `KeyringController` — kept in `QrSyncDataService` with its own restricted messenger so the controller stays focused on protocol flow.
+Export assembly (account tree traversal, mnemonic/private-key encoding, ID
+mapping) lives entirely in `AccountTreeController.exportState()` /
+`AccountTreeSnapshot` — an external package, not code owned by this feature.
+`QrSyncController` only selects which groups to keep (`filterAllGroups`) and
+serializes the result before sending it as `sync-ready` data.
 
 ---
 
@@ -159,7 +169,9 @@ The `sync-ready` message carries wallet export entries directly in `data`, with 
 
 ### Export entries (`QrSyncReadyData`)
 
-Defined in `app/scripts/controllers/qr-sync/types.ts` as `WalletExportEntry[]` (alias `QrSyncReadyData`).
+Defined in `app/scripts/controllers/qr-sync/types.ts` as `QrSyncReadyData = AccountTreePayload` (from `@metamask/account-tree-controller`), not a bespoke type owned by this feature.
+
+> **Note:** the JSON example and field names below (`"type": "Mnemonic"`, `mnemonic`/`privateKey`, `isPrimary`) describe the pre-refactor payload shape produced by the old `QrSyncDataService`. The currently-installed `@metamask/account-tree-controller`'s `AccountTreePayload` type uses different discriminant values (`"mnemonic"` / `"private-key"`) and does not expose an `isPrimary` field in its type declarations, while `qr-sync-controller.test.ts` still asserts against the old shape via loosely-typed mocks. This section needs a from-scratch rewrite against the actual current `AccountTreePayload` schema (with mobile alignment, since it's a locked-in wire contract) — flagging rather than guessing at the new shape here.
 
 ### Encoding rules
 
@@ -168,7 +180,7 @@ Defined in `app/scripts/controllers/qr-sync/types.ts` as `WalletExportEntry[]` (
 | `mnemonic`   | Wordlist indices → UTF-8 space-separated words → base64 |
 | `privateKey` | UTF-8 hex string (`0x…`) → base64                       |
 
-Encoding is implemented as private methods on `QrSyncDataService` (`#encodeMnemonicForWalletExport`, `#encodePrivateKeyForWalletExport`), using `convertEnglishWordlistIndicesToCodepoints` and `@metamask/utils` base64 helpers.
+Encoding is performed by `AccountTreeController.exportState()` / `AccountTreeSnapshot` (`@metamask/account-tree-controller`), not by anything in this feature's own codebase.
 
 ### Design decisions (do not change without mobile alignment)
 
@@ -223,40 +235,51 @@ Imported private-key accounts export via `KeyringController:exportAccount` → `
 | `syncAccounts(password, selectedAccountGroupIds)` | Build export via data service, send `sync-ready`, wait for completion |
 | `cancelOtp()` / `cancelSync()`                    | User-initiated cancel                                                 |
 
-`syncAccounts` delegates export assembly:
+`syncAccounts` exports and filters directly:
 
 ```typescript
-const exportData = await this.messenger.call(
-  'QrSyncDataService:buildWalletExportEntries',
-  password,
-  selectedAccountGroupIds,
-);
+try {
+  let snapshot = await this.messenger.call('AccountTreeController:exportState', {
+    includeSecrets: true,
+    password,
+  });
+
+  const selectedPayloadIds = new Set(
+    selectedAccountGroupIds.map((groupId) => snapshot.toPayloadId(groupId)),
+  );
+  snapshot = snapshot.filterAllGroups((payloadGroup) =>
+    selectedPayloadIds.has(payloadGroup.id),
+  );
+  exportData = snapshot.serialize();
+} catch (error) {
+  this.#reportToSentry('Failed to export account tree for QR sync', error);
+  throw error;
+}
 ```
 
 Then sends `sync-ready` with `deadline = now + SYNC_COMPLETION_TIMEOUT` and transitions to `awaiting-sync-completion`.
 
+Export/password failures from `exportState` are reported to Sentry unconditionally
+before being rethrown to the caller (see [Error handling & Sentry](#error-handling--sentry)),
+matching the reporting behavior of the removed `QrSyncDataService`.
+
 **Sync-offer validation:** `isQrSyncOffer()` requires `sessionId` (string) and `isOnboardingCompleted` (boolean). Invalid payloads (e.g. `{}`) are ignored; phase stays `awaiting-sync-offer`.
 
-### QrSyncDataService
+### AccountTreeController.exportState (external)
 
-**File:** `app/scripts/controllers/qr-sync/qr-sync-data-service.ts`
-
-`buildWalletExportEntries(password, selectedAccountGroupIds)`:
-
-1. Deduplicates group IDs; rejects empty selection.
-2. For each group, loads group + wallet via `AccountTreeController`.
-3. **Entropy wallet** → groups by `entropyId`, one `Mnemonic` per source with selected `groups[]`.
-4. **Keyring + simple** → one `PrivateKey` per group (`exportAccount`).
-5. **Keyring + hd** → resolves entropy from account options, exports as `Mnemonic`.
-6. **Hardware / Snap / other** → throws `Account group "…" cannot be synced.`
-7. Sets `isPrimary` when entropy ID matches first HD keyring (`KeyringController:withKeyringV2`).
+Wallet/account-group export assembly is implemented in `AccountTreeController`
+(`@metamask/account-tree-controller`), not in this feature's own code. See that
+package for the account-tree traversal, hardware/Snap exclusion,
+mnemonic/private-key encoding, and primary-wallet logic. `QrSyncController`
+only calls `exportState({ includeSecrets: true, password })` and filters the
+resulting `AccountTreeSnapshot` down to the selected account groups
+(`filterAllGroups`) before serializing it.
 
 ### Messenger delegation
 
-| Messenger                           | Delegated actions                                                                                                                                                                |
-| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `qr-sync-controller-messenger.ts`   | `QrSyncDataService:buildWalletExportEntries`                                                                                                                                     |
-| `qr-sync-data-service-messenger.ts` | `KeyringController:withKeyringV2`, `exportSeedPhrase`, `exportAccount`; `AccountTreeController:getAccountGroupObject`, `getAccountWalletObject`; `AccountsController:getAccount` |
+| Messenger                         | Delegated actions                  |
+| ---------------------------------- | ----------------------------------- |
+| `qr-sync-controller-messenger.ts` | `AccountTreeController:exportState` |
 
 ---
 
@@ -369,16 +392,14 @@ Summary for PMs:
 
 ### Core implementation
 
-| File                                                                             | Purpose                                          |
-| -------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `app/scripts/controllers/qr-sync/qr-sync-controller.ts`                          | MWP session lifecycle, `syncAccounts`, messaging |
-| `app/scripts/controllers/qr-sync/qr-sync-data-service.ts`                        | Wallet export payload assembly                   |
-| `app/scripts/controllers/qr-sync/types.ts`                                       | Payload types, messenger types, controller state |
-| `app/scripts/controllers/qr-sync/constants.ts`                                   | Message version, action types, error messages    |
-| `app/scripts/controllers/qr-sync/utils.ts`                                       | `isQrSyncOffer`, `parseMwpError`, timeouts       |
-| `app/scripts/controllers/qr-sync/metadata.ts`                                    | Controller state defaults + metadata             |
-| `app/scripts/messenger-client-init/messengers/qr-sync-controller-messenger.ts`   | Controller messenger                             |
-| `app/scripts/messenger-client-init/messengers/qr-sync-data-service-messenger.ts` | Data service messenger                           |
+| File                                                                                    | Purpose                                                                |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `app/scripts/controllers/qr-sync/qr-sync-controller.ts`                                | MWP session lifecycle, `syncAccounts` (calls `exportState`), messaging |
+| `app/scripts/controllers/qr-sync/types.ts`                                             | Payload types, messenger types, controller state                       |
+| `app/scripts/controllers/qr-sync/constants.ts`                                         | Message version, action types, error messages                          |
+| `app/scripts/controllers/qr-sync/utils.ts`                                             | `isQrSyncOffer`, `parseMwpError`, timeouts                              |
+| `app/scripts/controllers/qr-sync/metadata.ts`                                          | Controller state defaults + metadata                                   |
+| `app/scripts/messenger-client-init/messengers/qr-sync/qr-sync-controller-messenger.ts` | Controller messenger — delegates `AccountTreeController:exportState`  |
 
 ### UI
 
@@ -427,17 +448,12 @@ yarn test:unit ui/pages/settings/sync-accounts/
 
 **Controller** (`qr-sync-controller.test.ts`):
 
-- Session lifecycle, `syncAccounts` → `sync-ready` send
+- Session lifecycle, `syncAccounts` → `AccountTreeController:exportState` → filter/serialize → `sync-ready` send
+- Mnemonic export with `groups[]`, `isPrimary`; partial SRP group selection; mixed mnemonic + private-key exports (via mocked `exportState` snapshot)
 - Invalid sync-offer rejection
 - Sentry reporting (reported vs suppressed scenarios)
 
-**Data service** (`qr-sync-data-service.test.ts`):
-
-- Mnemonic export with `groups[]`, `isPrimary`
-- Partial SRP group selection (subset of accounts in one wallet)
-- Private-key and mixed mnemonic + private-key exports
-- Hardware / unsupported wallet rejection
-- Sentry on export failure
+Account-tree export assembly itself (traversal, encoding, hardware/Snap exclusion) is covered by `@metamask/account-tree-controller`'s own test suite, not by this repo.
 
 **UI** (`utils.test.ts`, `wallet-selection-list.test.tsx`, `add-wallets.test.tsx`):
 
