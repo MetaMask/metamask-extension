@@ -3,7 +3,7 @@
 #
 # Critical lists are a complementary AI signal only — they do NOT replace CODEOWNERS.
 # Prefer per-subdirectory CODEOWNERS for ownership gates (ui/selectors, ui/ducks, etc.).
-# package.json is included as a soft signal (any dep/manifest change); yarn.lock is not.
+# package.json is included as a soft signal (any dep/manifest change);
 repo: MetaMask/metamask-extension
 
 critical:
@@ -71,15 +71,11 @@ searchDirs:
   - .github/
 
 models:
-  default: grok-4-20-reasoning
-  escalation: claude-sonnet-4.6
-  escalationThreshold: 2
-
-  # Escalate model when ≥5 critical files touch — skip/escalate gate only, not merge control.
+  # +1 signal when critical files > 5
   criticalFileThreshold: 5
-  # Scope/skip style budget for very large PRs; revisit with real PR metrics after rollout.
+  # +1 signal when changed files > 10
   fileCountThreshold: 10
+  # +1 signal when total diff lines > 300
   largeDiffThreshold: 300
-
 modes:
   - pr-risk-analysis
