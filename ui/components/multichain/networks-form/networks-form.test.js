@@ -15,6 +15,7 @@ import * as fetchWithCacheModule from '../../../../shared/lib/fetch-with-cache';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import {
   addNetwork,
+  setShowTestNetworks,
   setTokenNetworkFilter,
   updateNetwork,
 } from '../../../store/actions';
@@ -40,6 +41,9 @@ jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   updateNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
   addNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+  setShowTestNetworks: jest
+    .fn()
+    .mockReturnValue(jest.fn().mockResolvedValue()),
   setTokenNetworkFilter: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
@@ -477,6 +481,22 @@ describe('NetworkForm Component', () => {
         },
         { setActive: true },
       );
+    });
+  });
+
+  it('enables test networks when saving a new test network', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        chainId: '1337',
+      },
+    });
+
+    fireEvent.click(getByText(messages.save.message));
+
+    await waitFor(() => {
+      expect(setShowTestNetworks).toHaveBeenCalledWith(true);
     });
   });
 
