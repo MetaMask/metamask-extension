@@ -173,11 +173,11 @@ const BTC_ASSET_ID = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
 /**
  * Mock for the v3 spot-prices endpoint used across BTC swap flows.
  *
- * The real API returns two different shapes depending on `includeMarketData`:
- * - `includeMarketData=true` (assets controller): rich market-data object keyed
- *   by asset id (`{ id, price, marketCap, ... }`).
- * - otherwise (bridge controller `fetchAssetPrices`): prices keyed by the
- *   requested currency (`{ [assetId]: { usd: <price> } }`).
+ * The real API returns two different shapes depending on `includeMarketData`.
+ * With `includeMarketData=true` (assets controller) it returns a rich
+ * market-data object keyed by asset id (`{ id, price, marketCap, ... }`).
+ * Otherwise (bridge controller `fetchAssetPrices`) it returns prices keyed by
+ * the requested currency (`{ [assetId]: { usd: <price> } }`).
  *
  * Returning only the market-data shape breaks the bridge controller's price
  * parser, leaving the BTC exchange rate empty so the non-EVM network fee has no
