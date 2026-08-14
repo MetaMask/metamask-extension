@@ -141,8 +141,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'TransactionController:updateEditableParams',
       'TransactionController:estimateGas',
       'TransactionController:isAtomicBatchSupported',
-      'TransactionController:stopTransaction',
-      'TransactionController:speedUpTransaction',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'PermissionController:acceptPermissionsRequest',

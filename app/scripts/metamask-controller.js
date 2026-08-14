@@ -3398,11 +3398,11 @@ export default class MetamaskController extends EventEmitter {
         txController.approveTransactionsWithSameNonce.bind(txController),
       createCancelTransaction: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'LegacyBackgroundApiService:createCancelTransaction',
+        'TransactionController:stopTransaction',
       ),
       createSpeedUpTransaction: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'LegacyBackgroundApiService:createSpeedUpTransaction',
+        'TransactionController:speedUpTransaction',
       ),
       estimateGas: this.controllerMessenger.call.bind(
         this.controllerMessenger,

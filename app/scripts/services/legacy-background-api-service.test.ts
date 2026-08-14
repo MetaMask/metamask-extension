@@ -2076,66 +2076,6 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
-  describe('createCancelTransaction', () => {
-    it('stops the transaction via the TransactionController', async () => {
-      const stopTransaction = jest.fn().mockResolvedValue(undefined);
-
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-        rootMessenger.registerActionHandler(
-          'TransactionController:stopTransaction',
-          stopTransaction,
-        );
-
-        const customGasSettings = { gasPrice: '0x1' };
-        const options = { estimatedBaseFee: '0x2' };
-        await rootMessenger.call(
-          'LegacyBackgroundApiService:createCancelTransaction',
-          '123',
-          customGasSettings,
-          options,
-        );
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'TransactionController:stopTransaction',
-          '123',
-          customGasSettings,
-          options,
-        );
-      });
-    });
-  });
-
-  describe('createSpeedUpTransaction', () => {
-    it('speeds up the transaction via the TransactionController', async () => {
-      const speedUpTransaction = jest.fn().mockResolvedValue(undefined);
-
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-        rootMessenger.registerActionHandler(
-          'TransactionController:speedUpTransaction',
-          speedUpTransaction,
-        );
-
-        const customGasSettings = { gasPrice: '0x1' };
-        const options = { estimatedBaseFee: '0x2' };
-        await rootMessenger.call(
-          'LegacyBackgroundApiService:createSpeedUpTransaction',
-          '123',
-          customGasSettings,
-          options,
-        );
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'TransactionController:speedUpTransaction',
-          '123',
-          customGasSettings,
-          options,
-        );
-      });
-    });
-  });
-
   describe('addTransaction', () => {
     const TRANSACTION_PARAMS = {
       from: '0xfromaddress',
@@ -7279,8 +7219,6 @@ function getMessenger(
       'TransactionController:updateEditableParams',
       'TransactionController:estimateGas',
       'TransactionController:isAtomicBatchSupported',
-      'TransactionController:stopTransaction',
-      'TransactionController:speedUpTransaction',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'PermissionController:acceptPermissionsRequest',

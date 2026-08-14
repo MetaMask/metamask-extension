@@ -91,8 +91,6 @@ import {
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
-  TransactionControllerSpeedUpTransactionAction,
-  TransactionControllerStopTransactionAction,
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateEditableParamsAction,
   TransactionControllerUpdateSecurityAlertResponseAction,
@@ -457,12 +455,10 @@ const MESSENGER_EXPOSED_METHODS = [
   'checkHardwareStatus',
   'checkIsSeedlessPasswordOutdated',
   'connectHardware',
-  'createCancelTransaction',
   'createNewVaultAndGetSeedPhrase',
   'createNewVaultAndKeychain',
   'createNewVaultAndRestore',
   'createSeedPhraseBackup',
-  'createSpeedUpTransaction',
   'decodeTransactionData',
   'discoverAndCreateAccounts',
   'estimateGas',
@@ -681,8 +677,6 @@ type AllowedActions =
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
-  | TransactionControllerSpeedUpTransactionAction
-  | TransactionControllerStopTransactionAction
   | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerUpdateSecurityAlertResponseAction
   | TransactionControllerWipeTransactionsAction
@@ -1063,66 +1057,6 @@ export class LegacyBackgroundApiService {
     });
 
     return result.toString(16);
-  }
-
-  /**
-   * Allows a user to attempt to cancel a previously submitted transaction
-   * by creating a new transaction.
-   *
-   * @param originalTxId - The id of the txMeta that you want to attempt to
-   * cancel.
-   * @param customGasSettings - Overrides to use for gas params instead of
-   * allowing this method to generate them.
-   * @param options - Options for the cancel transaction.
-   * @returns A promise that resolves when the transaction has been cancelled.
-   */
-  async createCancelTransaction(
-    originalTxId: Parameters<
-      TransactionControllerStopTransactionAction['handler']
-    >[0],
-    customGasSettings?: Parameters<
-      TransactionControllerStopTransactionAction['handler']
-    >[1],
-    options?: Parameters<
-      TransactionControllerStopTransactionAction['handler']
-    >[2],
-  ): Promise<void> {
-    await this.#messenger.call(
-      'TransactionController:stopTransaction',
-      originalTxId,
-      customGasSettings,
-      options,
-    );
-  }
-
-  /**
-   * Allows a user to attempt to speed up a previously submitted transaction
-   * by creating a new transaction.
-   *
-   * @param originalTxId - The id of the txMeta that you want to attempt to
-   * speed up.
-   * @param customGasSettings - Overrides to use for gas params instead of
-   * allowing this method to generate them.
-   * @param options - Options for the speed up transaction.
-   * @returns A promise that resolves when the transaction has been sped up.
-   */
-  async createSpeedUpTransaction(
-    originalTxId: Parameters<
-      TransactionControllerSpeedUpTransactionAction['handler']
-    >[0],
-    customGasSettings?: Parameters<
-      TransactionControllerSpeedUpTransactionAction['handler']
-    >[1],
-    options?: Parameters<
-      TransactionControllerSpeedUpTransactionAction['handler']
-    >[2],
-  ): Promise<void> {
-    await this.#messenger.call(
-      'TransactionController:speedUpTransaction',
-      originalTxId,
-      customGasSettings,
-      options,
-    );
   }
 
   /**
