@@ -2295,6 +2295,63 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('exportSeedPhraseWithPasskey', () => {
+    const authenticationResponse =
+      'authentication-response' as unknown as Parameters<
+        LegacyBackgroundApiService['exportSeedPhraseWithPasskey']
+      >[0];
+
+    it('exports the seed phrase via the passkey controller and re-encodes it', async () => {
+      const mnemonic =
+        'test test test test test test test test test test test ball';
+
+      const mockSeedPhrase = new Uint8Array(
+        new Uint16Array(
+          mnemonic.split(' ').map((word) => wordlist.indexOf(word)),
+        ).buffer,
+      );
+
+      const encodedSeedPhrase = Buffer.from(mnemonic, 'utf8');
+
+      await withService(async ({ rootMessenger }) => {
+        const exportSpy = jest.fn().mockResolvedValue(mockSeedPhrase);
+        rootMessenger.registerActionHandler(
+          'PasskeyController:exportSeedPhraseWithPasskey',
+          exportSpy,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:exportSeedPhraseWithPasskey',
+          authenticationResponse,
+          'keyring-id',
+        );
+
+        expect(exportSpy).toHaveBeenCalledWith(
+          authenticationResponse,
+          'keyring-id',
+        );
+        expect(result).toEqual(encodedSeedPhrase);
+      });
+    });
+
+    it('propagates errors from the passkey controller', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('invalid assertion');
+        rootMessenger.registerActionHandler(
+          'PasskeyController:exportSeedPhraseWithPasskey',
+          jest.fn().mockRejectedValue(error),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:exportSeedPhraseWithPasskey',
+            authenticationResponse,
+          ),
+        ).rejects.toThrow(error);
+      });
+    });
+  });
+
   describe('addTransaction', () => {
     const TRANSACTION_PARAMS = {
       from: '0xfromaddress',
@@ -7393,6 +7450,7 @@ function getMessenger(
       'PreferencesController:setPasswordForgotten',
       'PasskeyController:unlockWithPasskey',
       'PasskeyController:changePasswordWithPasskeyVerification',
+      'PasskeyController:exportSeedPhraseWithPasskey',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',

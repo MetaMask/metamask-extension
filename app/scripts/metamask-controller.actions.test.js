@@ -18,7 +18,6 @@ import { CHAIN_IDS } from '../../shared/constants/network';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
-import { convertEnglishWordlistIndicesToCodepoints } from './lib/util';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // so unify-state tests can exercise real feature-flag gating via controller state.
@@ -759,60 +758,20 @@ describe('MetaMaskController', function () {
     });
 
     describe('#exportSeedPhraseWithPasskey', function () {
-      it('delegates to the passkey controller and re-encodes the result', async function () {
-        const mnemonic = new Uint8Array([0, 0, 0, 1]);
-        const exportSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'exportSeedPhraseWithPasskey',
-          )
-          .mockResolvedValue(mnemonic);
+      it('delegates to the legacy background API service export action', async function () {
+        const callSpy = jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockResolvedValue(undefined);
 
-        const result = await metamaskController.exportSeedPhraseWithPasskey(
+        await metamaskController
+          .getApi()
+          .exportSeedPhraseWithPasskey(authenticationResponse, 'keyring-id');
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'LegacyBackgroundApiService:exportSeedPhraseWithPasskey',
           authenticationResponse,
           'keyring-id',
         );
-
-        expect(exportSpy).toHaveBeenCalledWith(
-          authenticationResponse,
-          'keyring-id',
-        );
-        expect(result).toStrictEqual(
-          convertEnglishWordlistIndicesToCodepoints(mnemonic),
-        );
-      });
-
-      it('defaults to the primary keyring when no keyring id is provided', async function () {
-        const exportSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'exportSeedPhraseWithPasskey',
-          )
-          .mockResolvedValue(new Uint8Array([0, 0, 0, 1]));
-
-        await metamaskController.exportSeedPhraseWithPasskey(
-          authenticationResponse,
-        );
-
-        expect(exportSpy).toHaveBeenCalledWith(
-          authenticationResponse,
-          undefined,
-        );
-      });
-
-      it('propagates errors from the passkey controller', async function () {
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'exportSeedPhraseWithPasskey',
-          )
-          .mockRejectedValue(new Error('invalid assertion'));
-
-        await expect(
-          metamaskController.exportSeedPhraseWithPasskey(
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('invalid assertion');
       });
     });
 

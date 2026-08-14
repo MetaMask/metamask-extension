@@ -250,6 +250,7 @@ import type {
   PasskeyAuthenticationResponse,
   PasskeyControllerChangePasswordWithPasskeyVerificationAction,
   PasskeyControllerClearStateAction,
+  PasskeyControllerExportSeedPhraseWithPasskeyAction,
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
@@ -471,6 +472,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
+  'exportSeedPhraseWithPasskey',
   'forgetDevice',
   'getAccountsBySnapId',
   'getAppNameAndVersion',
@@ -641,6 +643,7 @@ type AllowedActions =
   | OnboardingControllerResetOnboardingAction
   | PasskeyControllerChangePasswordWithPasskeyVerificationAction
   | PasskeyControllerClearStateAction
+  | PasskeyControllerExportSeedPhraseWithPasskeyAction
   | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
@@ -2463,6 +2466,31 @@ export class LegacyBackgroundApiService {
     );
 
     await this.#initAccountsAfterUnlock();
+  }
+
+  /**
+   * Exports the Secret Recovery Phrase after verifying a passkey assertion,
+   * used as a password-less alternative to {@link getSeedPhrase}.
+   *
+   * Assertion verification + vault-key export live in `PasskeyController`, which
+   * returns the raw wordlist-index bytes from `KeyringController`. The extension
+   * re-encodes them as UTF-8 codepoints for the UI.
+   *
+   * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+   * @param keyringId - The id of the HD keyring to export. Defaults to the primary keyring.
+   * @returns The seed phrase encoded as an array of UTF-8 bytes.
+   */
+  async exportSeedPhraseWithPasskey(
+    authenticationResponse: PasskeyAuthenticationResponse,
+    keyringId?: string,
+  ): Promise<Buffer> {
+    const mnemonic = await this.#messenger.call(
+      'PasskeyController:exportSeedPhraseWithPasskey',
+      authenticationResponse,
+      keyringId,
+    );
+
+    return convertEnglishWordlistIndicesToCodepoints(mnemonic);
   }
 
   /**

@@ -224,7 +224,6 @@ import {
   initializeRpcProviderDomains,
   getPlatform,
   getBooleanFlag,
-  convertEnglishWordlistIndicesToCodepoints,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiReferralMiddleware';
@@ -3335,7 +3334,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'PasskeyController:exportAccountsWithPasskey',
       ),
-      exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
+      exportSeedPhraseWithPasskey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:exportSeedPhraseWithPasskey',
+      ),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -3964,26 +3966,6 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
       origin,
     });
-  }
-
-  /**
-   * Exports the Secret Recovery Phrase after verifying a passkey assertion,
-   * used as a password-less alternative to {@link getSeedPhrase}.
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
-   * @param {string} [keyringId] - The id of the HD keyring to export. Defaults to the primary keyring.
-   * @returns {Promise<Buffer>} The seed phrase encoded as an array of UTF-8 bytes.
-   */
-  async exportSeedPhraseWithPasskey(authenticationResponse, keyringId) {
-    // Assertion verification + vault-key export live in `PasskeyController`,
-    // which returns the raw wordlist-index bytes from `KeyringController`. The
-    // extension re-encodes them as UTF-8 codepoints for the UI.
-    const mnemonic = await this.passkeyController.exportSeedPhraseWithPasskey(
-      authenticationResponse,
-      keyringId,
-    );
-
-    return convertEnglishWordlistIndicesToCodepoints(mnemonic);
   }
 
   //=============================================================================
