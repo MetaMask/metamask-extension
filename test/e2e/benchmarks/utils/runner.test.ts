@@ -91,6 +91,9 @@ describe('runBenchmarkWithIterations logging', () => {
 
   beforeEach(() => {
     logSpy = jest.spyOn(console, 'log').mockImplementation();
+    // The failure-path test drives `runWithRetries` into `retry()`, which logs
+    // through `console.error`. Silence it so the console baseline stays clean.
+    jest.spyOn(console, 'error').mockImplementation();
   });
 
   afterEach(() => {
