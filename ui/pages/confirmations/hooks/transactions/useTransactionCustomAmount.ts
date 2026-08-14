@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { debounce, type DebouncedFunc } from 'lodash';
 import { BigNumber } from 'bignumber.js';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { setIsMaxAmount } from '../../../../store/controller-actions/transaction-pay-controller';
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
+import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
@@ -13,6 +17,7 @@ import {
   useTransactionPayPrimaryRequiredToken,
 } from '../pay/useTransactionPayData';
 import { getTokenAddress } from '../../utils/transaction-pay';
+import { useDepositPrefillAmount } from './useDepositPrefillAmount';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
 
 export const MAX_LENGTH = 28;
@@ -63,6 +68,22 @@ export function useTransactionCustomAmount({
   );
   const hasPrefilledMaxRef = useRef(false);
   const userEditedRef = useRef(false);
+  // Mirrors `userEditedRef` for render-time use: the ref is needed to block
+  // prefill synchronously, before the next render, while the state is what the
+  // loading flag below can safely read. Stored as the edited transaction id so
+  // a new confirmation clears it without an extra effect.
+  const [editedTransactionId, setEditedTransactionId] = useState<
+    string | undefined
+  >(undefined);
+  const hasUserEditedAmount =
+    editedTransactionId !== undefined && editedTransactionId === transactionId;
+  const isMoneyAccountDeposit = hasTransactionType(transactionMeta, [
+    TransactionType.moneyAccountDeposit,
+  ]);
+  const depositPrefill = useDepositPrefillAmount();
+  const shouldUseDepositPrefill =
+    isMoneyAccountDeposit && depositPrefill.enabled;
+  const prevDepositHasPrefilledRef = useRef(depositPrefill.hasPrefilled);
 
   // Create and update debounced function
   useEffect(() => {
@@ -161,6 +182,7 @@ export function useTransactionCustomAmount({
       // Record the manual edit synchronously so prefill can't overwrite it
       // before the debounced `isInputChanged` catches up.
       userEditedRef.current = true;
+      setEditedTransactionId(transactionId);
 
       // The input allows a comma as decimal separator, but BigNumber throws
       // on commas, so normalize it to a dot before it reaches state.
@@ -207,6 +229,7 @@ export function useTransactionCustomAmount({
       // later override it.
       if (!isPrefill) {
         userEditedRef.current = true;
+        setEditedTransactionId(transactionId);
       }
 
       const newAmountFiatValue = new BigNumber(percentage)
@@ -282,12 +305,99 @@ export function useTransactionCustomAmount({
     userEditedRef.current = false;
   }, [transactionId]);
 
+  const applyDepositPrefillAmount = useCallback(
+    (fiatAmount: string) => {
+      const balanceUsdValue = new BigNumber(String(balanceUsd ?? 0));
+      const prefillFiat = new BigNumber(fiatAmount);
+
+      if (
+        !balanceUsdValue.isFinite() ||
+        balanceUsdValue.lte(0) ||
+        !prefillFiat.isFinite()
+      ) {
+        return;
+      }
+
+      // Money-account deposits keep isMaxAmount false (matches mobile) so the
+      // typed fiat amount is what gets submitted, not the raw token balance.
+      if (isMaxAmount) {
+        setIsMax(false);
+      }
+
+      if (transactionId) {
+        upsertTransactionUIMetricsFragment(transactionId, {
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            mm_pay_amount_input_type: 'prefilled_max',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            mm_pay_quote_requested: true,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            mm_pay_prefilled_amount: Number(fiatAmount),
+          },
+        });
+      }
+
+      setAmountFiat(fiatAmount);
+
+      const newAmountHuman = getAmountHumanFromFiat(
+        fiatAmount,
+        tokenFiatRate,
+        hasBalanceUsdOverride,
+      );
+
+      debounceRef.current?.cancel();
+      setAmountHumanDebounced(newAmountHuman);
+      if (!disableUpdate) {
+        updateTokenAmountCallback(newAmountHuman);
+      }
+    },
+    [
+      balanceUsd,
+      disableUpdate,
+      hasBalanceUsdOverride,
+      isMaxAmount,
+      setIsMax,
+      tokenFiatRate,
+      transactionId,
+      updateTokenAmountCallback,
+    ],
+  );
+
+  // Money-account deposit prefill (feature-flagged). Re-applies when the pay
+  // token or funding account changes, unless the user has edited the amount.
+  // Only `hasPrefilled` is a dependency (matches mobile): balance updates on
+  // the same token must not overwrite a committed prefill.
+  useEffect(() => {
+    if (!shouldUseDepositPrefill) {
+      prevDepositHasPrefilledRef.current = depositPrefill.hasPrefilled;
+      return;
+    }
+
+    // Skip if the user has manually typed — a transient hasPrefilled toggle
+    // (from tokenKey changes) must not overwrite their input.
+    if (userEditedRef.current) {
+      prevDepositHasPrefilledRef.current = depositPrefill.hasPrefilled;
+      return;
+    }
+
+    if (depositPrefill.hasPrefilled) {
+      applyDepositPrefillAmount(depositPrefill.prefillAmount ?? '0');
+    } else if (prevDepositHasPrefilledRef.current) {
+      setAmountFiat('0');
+    }
+
+    prevDepositHasPrefilledRef.current = depositPrefill.hasPrefilled;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- see comment above
+  }, [depositPrefill.hasPrefilled, shouldUseDepositPrefill]);
+
   // Pre-fill the max amount once the balance is known, unless the user has
   // already edited the field. `userEditedRef` is used instead of
   // `isInputChanged` because the latter also flips from debounced sync of
   // existing required-token USD, which would wrongly block prefill.
+  // Skipped when deposit prefill handles money-account deposits.
   useEffect(() => {
     if (
+      shouldUseDepositPrefill ||
       !prefillMaxOnLoad ||
       hasPrefilledMaxRef.current ||
       userEditedRef.current ||
@@ -297,13 +407,27 @@ export function useTransactionCustomAmount({
     }
     hasPrefilledMaxRef.current = true;
     updatePendingAmountPercentage(100, { isPrefill: true });
-  }, [prefillMaxOnLoad, balanceUsd, updatePendingAmountPercentage]);
+  }, [
+    balanceUsd,
+    prefillMaxOnLoad,
+    shouldUseDepositPrefill,
+    updatePendingAmountPercentage,
+  ]);
 
   return {
     amountFiat,
     amountHuman,
     amountHumanDebounced,
     hasInput,
+    isDepositPrefillEnabled: shouldUseDepositPrefill,
+    // A pay token or funding account change restarts the prefill computation,
+    // but the result is discarded once the user has typed, so reporting it as
+    // loading would swap their amount for a skeleton and back again.
+    isDepositPrefillLoading:
+      shouldUseDepositPrefill &&
+      depositPrefill.isLoading &&
+      !hasUserEditedAmount,
+    isDepositPrefilled: shouldUseDepositPrefill && depositPrefill.hasPrefilled,
     isInputChanged,
     updatePendingAmount,
     updatePendingAmountPercentage,

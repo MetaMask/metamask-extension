@@ -68,11 +68,8 @@ type PayPrefilledAmountConfig = {
   enabled?: boolean;
 };
 
-type PayFlag = {
-  depositLimit?: Record<string, number>;
-};
-
 type PayExtendedFlag = {
+  depositLimit?: Record<string, number>;
   prefilledAmount?: {
     default?: PayPrefilledAmountConfig;
     overrides?: Record<string, PayPrefilledAmountConfig>;
@@ -88,7 +85,6 @@ type HardwareWalletFlag = {
 type MockState = {
   metamask: {
     remoteFeatureFlags: {
-      confirmations_pay?: PayFlag;
       confirmations_pay_dapps?: ConfirmationsPayDappsFlag;
       confirmations_enforced_simulations?: EnforcedSimulationsFlag;
       confirmations_pay_post_quote?: PayPostQuoteFlag;
@@ -142,16 +138,6 @@ const getMockPayTokensState = (
     remoteFeatureFlags: {
       ...(confirmations_pay_tokens !== undefined && {
         confirmations_pay_tokens,
-      }),
-    },
-  },
-});
-
-const getMockPayState = (confirmations_pay?: PayFlag): MockState => ({
-  metamask: {
-    remoteFeatureFlags: {
-      ...(confirmations_pay !== undefined && {
-        confirmations_pay,
       }),
     },
   },
@@ -474,19 +460,19 @@ describe('Confirmations Pay Feature Flags', () => {
 
   describe('selectDepositLimits', () => {
     it('returns the default empty map when the flag is absent', () => {
-      const state = getMockPayState();
+      const state = getMockPayExtendedState();
 
       expect(selectDepositLimits(state)).toStrictEqual({});
     });
 
     it('returns the default empty map when depositLimit is absent', () => {
-      const state = getMockPayState({});
+      const state = getMockPayExtendedState({});
 
       expect(selectDepositLimits(state)).toStrictEqual({});
     });
 
     it('returns deposit limits from the feature flag', () => {
-      const state = getMockPayState({
+      const state = getMockPayExtendedState({
         depositLimit: {
           moneyAccountDeposit: 100000,
         },
@@ -498,7 +484,7 @@ describe('Confirmations Pay Feature Flags', () => {
     });
 
     it('returns multiple deposit type limits', () => {
-      const state = getMockPayState({
+      const state = getMockPayExtendedState({
         depositLimit: {
           moneyAccountDeposit: 100000,
           perpsDeposit: 25000,
