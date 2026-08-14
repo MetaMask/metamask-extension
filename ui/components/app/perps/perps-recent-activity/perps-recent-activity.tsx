@@ -102,19 +102,17 @@ export const PerpsRecentActivity = ({
         gap={2}
         data-testid="perps-recent-activity-empty"
       >
-        <ButtonBase
-          className="w-full flex flex-row justify-between items-center px-4 py-3 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
-          onClick={handleSeeAll}
-          data-testid="perps-recent-activity-see-all"
-          aria-label={`${t('perpsRecentActivity')}, ${t('perpsSeeAll')}`}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={3}
+          paddingBottom={3}
         >
           <Text fontWeight={FontWeight.Medium}>{t('perpsRecentActivity')}</Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-          />
-        </ButtonBase>
+        </Box>
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
           <Text
             variant={TextVariant.BodySm}

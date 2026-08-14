@@ -66,11 +66,13 @@ exports[`MultichainConnectPage renders correctly 1`] = `
           </p>
           <div
             class="bg-muted rounded-lg cursor-pointer"
-            data-testid="account-selection-section"          >
+            data-testid="account-selection-section"
+          >
             <div
               class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell multichain-account-cell--no-hover"
               data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-              style="cursor: pointer; position: relative;"            >
+              style="cursor: pointer; position: relative;"
+            >
               <div
                 class="flex flex-row items-center justify-start"
                 style="min-width: 0; flex: 1;"
@@ -145,6 +147,22 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                   >
                     Test Account Group 1
                   </p>
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
+                    data-testid="balance-display-subtitle"
+                  >
+                    0.00
+                  </p>
+                </div>
+              </div>
+              <div
+                class="flex flex-row items-center justify-center"
+                style="flex-shrink: 0;"
+              >
+                <div
+                  aria-label="Test Account Group 1 options"
+                  class="flex flex-row items-center justify-end multichain-account-cell__end_accessory"
+                  data-testid="multichain-account-cell-end-accessory"
                 >
                   <svg
                     class="inline-block w-4 h-4 text-icon-alternative"
@@ -156,26 +174,9 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                       d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
                     />
                   </svg>
-                </div>              </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div
-            class="justify-start mt-4 p-4 flex"
-          >
-            <div
-              class="items-center justify-center mr-4 p-2 bg-info-muted flex multichain-connect-page__edit-icon rounded-md"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-                style="mask-image: url('./images/icons/edit.svg');"
-              />
-            </div>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-transparent"
-              data-testid="edit"
-            >
-              Edit accounts
-            </button>
           </div>
         </div>
         <div
@@ -346,11 +347,13 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
           </p>
           <div
             class="bg-muted rounded-lg cursor-pointer"
-            data-testid="account-selection-section"          >
+            data-testid="account-selection-section"
+          >
             <div
               class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell multichain-account-cell--no-hover"
               data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-              style="cursor: pointer; position: relative;"            >
+              style="cursor: pointer; position: relative;"
+            >
               <div
                 class="flex flex-row items-center justify-start"
                 style="min-width: 0; flex: 1;"
@@ -425,6 +428,22 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                   >
                     Test Account Group 1
                   </p>
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
+                    data-testid="balance-display-subtitle"
+                  >
+                    0.00
+                  </p>
+                </div>
+              </div>
+              <div
+                class="flex flex-row items-center justify-center"
+                style="flex-shrink: 0;"
+              >
+                <div
+                  aria-label="Test Account Group 1 options"
+                  class="flex flex-row items-center justify-end multichain-account-cell__end_accessory"
+                  data-testid="multichain-account-cell-end-accessory"
                 >
                   <svg
                     class="inline-block w-4 h-4 text-icon-alternative"
@@ -436,26 +455,9 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                       d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
                     />
                   </svg>
-                </div>              </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div
-            class="justify-start mt-4 p-4 flex"
-          >
-            <div
-              class="items-center justify-center mr-4 p-2 bg-info-muted flex multichain-connect-page__edit-icon rounded-md"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-                style="mask-image: url('./images/icons/edit.svg');"
-              />
-            </div>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-transparent"
-              data-testid="edit"
-            >
-              Edit accounts
-            </button>
           </div>
         </div>
         <div
@@ -626,11 +628,13 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
           </p>
           <div
             class="bg-muted rounded-lg cursor-pointer"
-            data-testid="account-selection-section"          >
+            data-testid="account-selection-section"
+          >
             <div
               class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell multichain-account-cell--no-hover"
               data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-              style="cursor: pointer; position: relative;"            >
+              style="cursor: pointer; position: relative;"
+            >
               <div
                 class="flex flex-row items-center justify-start"
                 style="min-width: 0; flex: 1;"
@@ -705,6 +709,22 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                   >
                     Test Account Group 1
                   </p>
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
+                    data-testid="balance-display-subtitle"
+                  >
+                    0.00
+                  </p>
+                </div>
+              </div>
+              <div
+                class="flex flex-row items-center justify-center"
+                style="flex-shrink: 0;"
+              >
+                <div
+                  aria-label="Test Account Group 1 options"
+                  class="flex flex-row items-center justify-end multichain-account-cell__end_accessory"
+                  data-testid="multichain-account-cell-end-accessory"
                 >
                   <svg
                     class="inline-block w-4 h-4 text-icon-alternative"
@@ -716,26 +736,9 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                       d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
                     />
                   </svg>
-                </div>              </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div
-            class="justify-start mt-4 p-4 flex"
-          >
-            <div
-              class="items-center justify-center mr-4 p-2 bg-info-muted flex multichain-connect-page__edit-icon rounded-md"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-                style="mask-image: url('./images/icons/edit.svg');"
-              />
-            </div>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-transparent"
-              data-testid="edit"
-            >
-              Edit accounts
-            </button>
           </div>
         </div>
         <div

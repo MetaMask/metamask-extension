@@ -161,7 +161,6 @@ export const CustomAmountInfo = React.memo(
             amountFiat={amountFiat}
             disablePay={disablePay}
             displayAccountRow={displayAccountRow}
-            hasTokens={hasTokens}
           />
         )}
       </Box>
@@ -265,12 +264,10 @@ function BottomContainer({
   amountFiat,
   disablePay,
   displayAccountRow,
-  hasTokens,
 }: {
   amountFiat: string;
   disablePay?: boolean;
   displayAccountRow?: boolean;
-  hasTokens: boolean;
 }) {
   const t = useI18nContext();
   const isResultReady = useIsResultReady();

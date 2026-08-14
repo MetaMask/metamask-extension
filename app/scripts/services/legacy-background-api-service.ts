@@ -3618,6 +3618,7 @@ export class LegacyBackgroundApiService {
       }
     }
   }
+
   /**
    * Capture an artificial error in a timeout handler for testing purposes.
    *
@@ -3869,14 +3870,6 @@ export class LegacyBackgroundApiService {
       );
     }
   }
-
-  /**
-   * Creates a new Vault and create a new keychain.
-   *
-   * @param password - The password used to encrypt the vault.
-   * @returns created keyring object
-
-
 
   /**
    * Creates a new Vault and create a new keychain.

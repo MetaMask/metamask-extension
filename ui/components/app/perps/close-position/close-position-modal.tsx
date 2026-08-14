@@ -375,9 +375,6 @@ export const ClosePositionModal = ({
       setIsGeoBlockModalOpen(false);
       setSelectedOrderType('market');
       setLimitPrice('');
-      // Reopening starts a fresh close session: a commit from the previous one
-      // must not suppress abandon tracking for this one.
-      hasConfirmedCloseRef.current = false;
     }
   }
 

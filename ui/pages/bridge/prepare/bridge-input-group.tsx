@@ -48,6 +48,7 @@ import { useDispatch } from '../../../store/hooks';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { SelectedAssetButton } from '../asset-picker/selected-asset-button';
 import { BridgeAssetPicker } from '../asset-picker/modal';
+
 export const BridgeInputGroup = ({
   header,
   token,

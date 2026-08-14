@@ -2458,64 +2458,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds a network and (optionally) sets it as the active network.
-   *
-   * @param {object} networkConfiguration - The network configuration to add.
-   * @param {object} [options0] - Options for post-add behavior.
-   * @param {boolean} [options0.setActive] - Whether to switch to the added network.
-   * @returns {Promise<object>} The added network configuration.
-   */
-  async _addNetworkAndSetActive(
-    networkConfiguration,
-    { setActive = true } = {},
-  ) {
-    if (setActive) {
-      const addedNetwork =
-        await this.networkController.addNetwork(networkConfiguration);
-      const { networkClientId } =
-        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
-        {};
-      await this.networkController.setActiveNetwork(networkClientId);
-      return addedNetwork;
-    }
-    const previousEnabledNetworkMap = Object.fromEntries(
-      Object.entries(
-        this.networkEnablementController.state.enabledNetworkMap,
-      ).map(([namespace, networks]) => [namespace, { ...networks }]),
-    );
-    const restorePreviousEnabledNetworkMap = () => {
-      this.controllerMessenger.unsubscribe(
-        'NetworkEnablementController:stateChange',
-        restorePreviousEnabledNetworkMap,
-      );
-      this.networkEnablementController.restoreEnabledNetworkMap(
-        previousEnabledNetworkMap,
-      );
-    };
-
-    this.controllerMessenger.subscribe(
-      'NetworkEnablementController:stateChange',
-      restorePreviousEnabledNetworkMap,
-    );
-
-    try {
-      const addedNetwork =
-        await this.networkController.addNetwork(networkConfiguration);
-      await this.controllerMessenger.call(
-        'LegacyBackgroundApiService:lookupSelectedNetworks',
-      );
-      return addedNetwork;
-    } catch (error) {
-      // `addNetwork` rejected, so `networkAdded` was not published
-      this.controllerMessenger.unsubscribe(
-        'NetworkEnablementController:stateChange',
-        restorePreviousEnabledNetworkMap,
-      );
-      throw error;
-    }
-  }
-
-  /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
    * The API object can be transmitted over a stream via JSON-RPC.
@@ -4039,43 +3981,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   //=============================================================================
-  // VAULT / KEYRING RELATED METHODS
-  //=============================================================================
-
-  /**
-   * Get an account balance from the AccountTrackerController or request it directly from the network.
-   *
-   * @param {string} address - The account address
-   * @param {Provider} provider - The provider instance to use when asking the network
-   */
-  async getBalance(address, provider) {
-    const accountsByChainId = getAccountTrackerControllerAccountsByChainId(
-      this._getMetaMaskState(),
-    );
-    const accounts =
-      accountsByChainId[
-        this.controllerMessenger.call(
-          'LegacyBackgroundApiService:getGlobalChainId',
-        )
-      ];
-    const cached = accounts?.[toChecksumHexAddress(address)];
-
-    if (cached && cached.balance) {
-      return cached.balance;
-    }
-
-    try {
-      const balance = await provider.request({
-        method: 'eth_getBalance',
-        params: [address, 'latest'],
-      });
-      return balance || '0x0';
-    } catch (error) {
-      log.error(error);
-      throw error;
-    }
-  }
-
   // VAULT / KEYRING RELATED METHODS
   //=============================================================================
 

@@ -546,6 +546,7 @@ describe('MultichainConnectPage', () => {
 
   it('returns to connect page when edit accounts is closed', () => {
     const { getByTestId } = render();
+
     const accountCell = getByTestId(
       'multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
     );

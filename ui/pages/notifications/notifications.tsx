@@ -65,12 +65,18 @@ const useFeatureAnnouncementsEnabled = () => {
           Boolean(preferences?.marketing.inAppNotificationsEnabled),
         );
       } catch {
-        setAreFeatureAnnouncementsEnabled(false);
+        setAreFeatureAnnouncementsEnabled(
+          Boolean(featureAnnouncementsEnabledInState),
+        );
       }
     };
 
     loadPreferences();
-  }, [dispatch, setAreFeatureAnnouncementsEnabled]);
+  }, [
+    dispatch,
+    featureAnnouncementsEnabledInState,
+    setAreFeatureAnnouncementsEnabled,
+  ]);
 
   return areFeatureAnnouncementsEnabled;
 };

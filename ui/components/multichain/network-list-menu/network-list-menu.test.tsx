@@ -29,19 +29,6 @@ const mockSetTokenNetworkFilter = jest.fn();
 const mockDetectNfts = jest.fn();
 const mockAddPermittedChain = jest.fn();
 const mockSetEnabledNetworks = jest.fn();
-const mockShowPermittedNetworkToast = jest.fn();
-
-jest.mock(
-  '../../../hooks/multichain-accounts/usePermittedNetworkToast',
-  () => ({
-    usePermittedNetworkToast: () => ({
-      showPermittedNetworkToast: (...args: unknown[]) => {
-        mockShowPermittedNetworkToast(...args);
-      },
-      dismissPermittedNetworkToast: jest.fn(),
-    }),
-  }),
-);
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => {
