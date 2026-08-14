@@ -1,4 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
+import { ACTIVITY_ROUTE } from '../../../../../ui/helpers/constants/routes';
 import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
@@ -547,14 +548,17 @@ class HomePage {
 
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
-    await this.checkPageIsLoaded();
     const isBottomNav = await this.driver.isElementPresentAndVisible(
       this.bottomNavActivityButton,
       3000,
     );
     if (isBottomNav) {
       await this.driver.clickElement(this.bottomNavActivityButton);
+      await this.driver.waitForUrl({
+        url: `${this.driver.extensionUrl}/home.html#${ACTIVITY_ROUTE}`,
+      });
     } else {
+      await this.checkPageIsLoaded();
       await this.driver.clickElement(this.activityTab);
     }
   }

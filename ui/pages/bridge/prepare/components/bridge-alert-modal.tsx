@@ -108,9 +108,6 @@ export const BridgeAlertModal = ({
   // Reset alert index only when the modal opens. Do not call onClose whenever
   // isModalOpen is false — that races with alert/quote settling and clears
   // parent isOpen before the modal can appear (and inline onClose in deps OOMs).
-  // Reset alert index only when the modal opens. Do not call onClose whenever
-  // isModalOpen is false — that races with alert/quote settling and clears
-  // parent isOpen before the modal can appear (and inline onClose in deps OOMs).
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;

@@ -155,13 +155,19 @@ export const useTokenSearchResults = ({
       setSearchResultCursor(undefined);
       setHasMoreResults(false);
 
-      if (searchQuery.length === 0 || !jwt) {
+      if (searchQuery.length === 0) {
         setSearchResultsWithBalance([]);
         setIsSearchResultsLoading(false);
         return;
       }
 
       setSearchResultsWithBalance(assetsToIncludeForSearch);
+
+      if (!jwt) {
+        setIsSearchResultsLoading(false);
+        return;
+      }
+
       setIsSearchResultsLoading(true);
     });
 
