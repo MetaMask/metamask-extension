@@ -140,7 +140,6 @@ export class PerpsTab extends PerpsPositionsBase {
 
   /**
    * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
-   * Shown for both the populated list header and the empty-state header.
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
@@ -177,20 +176,35 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
-   * Navigates to Perps Home by clicking the Perps tab on the account overview.
-   * Requires the account overview to be visible (e.g. after login or driver.navigate()).
-   * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.
+   * Navigates to Perps Home by clicking the Perps tab on the account overview
+   * or the bottom-nav Perps button when present.
    */
   async navigateToPerpsHome(): Promise<void> {
     console.log('Navigate to Perps home');
+    await this.driver.waitUntil(
+      async () => {
+        const isBottomNav = await this.driver.isElementPresentAndVisible(
+          this.bottomNavPerpsButton,
+          500,
+        );
+        if (isBottomNav) {
+          return true;
+        }
+        return await this.driver.isElementPresentAndVisible(
+          this.accountOverviewPerpsTab,
+          500,
+        );
+      },
+      { timeout: 20000, interval: 500 },
+    );
+
     const isBottomNav = await this.driver.isElementPresentAndVisible(
       this.bottomNavPerpsButton,
-      3000,
+      1000,
     );
     if (isBottomNav) {
       await this.driver.clickElement(this.bottomNavPerpsButton);
     } else {
-      await this.driver.waitForSelector(this.accountOverviewPerpsTab);
       await this.driver.clickElement(this.accountOverviewPerpsTab);
     }
     await this.checkPageIsLoaded();
@@ -257,9 +271,11 @@ export class PerpsTab extends PerpsPositionsBase {
   /**
    * Waits for the Recent Activity list (non-empty) to be visible.
    * When there is no history, the section uses `perps-recent-activity-empty` instead.
+   *
+   * @param timeout - Max wait time in ms (default 20 000).
    */
-  async waitForRecentActivitySection(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsRecentActivity);
+  async waitForRecentActivitySection(timeout = 20000): Promise<void> {
+    await this.driver.waitForSelector(this.perpsRecentActivity, { timeout });
   }
 
   /**
