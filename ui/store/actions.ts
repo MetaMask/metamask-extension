@@ -232,6 +232,7 @@ import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscription
 import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
 import { PendingRedirectRoute } from '../../shared/lib/pending-redirect-state';
 import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
+import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -3565,11 +3566,12 @@ export function createCancelTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createCancelTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
-    const newState = await submitRequestToBackground<
-      MetaMaskReduxState['metamask']
-    >('createCancelTransaction', [
+    await submitRequestToBackground('createCancelTransaction', [
       txId,
       customGasSettings,
       { ...options, actionId },
@@ -3577,9 +3579,7 @@ export function createCancelTransaction(
 
     await forceUpdateMetamaskState(dispatch);
 
-    const currentNetworkTxList = getCurrentNetworkTransactions({
-      metamask: newState,
-    });
+    const currentNetworkTxList = getCurrentNetworkTransactions(getState());
     const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
     return id;
   };
@@ -3592,11 +3592,12 @@ export function createSpeedUpTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createSpeedUpTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
-    const newState = await submitRequestToBackground<
-      MetaMaskReduxState['metamask']
-    >('createSpeedUpTransaction', [
+    await submitRequestToBackground('createSpeedUpTransaction', [
       txId,
       customGasSettings,
       { ...options, actionId },
@@ -3604,9 +3605,7 @@ export function createSpeedUpTransaction(
 
     await forceUpdateMetamaskState(dispatch);
 
-    const currentNetworkTxList = getCurrentNetworkTransactions({
-      metamask: newState,
-    });
+    const currentNetworkTxList = getCurrentNetworkTransactions(getState());
     const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
     return newTx;
@@ -5916,6 +5915,15 @@ export async function getLedgerPublicKey(
   hdPath: string,
 ): Promise<GetPublicKeyResponse> {
   return await submitRequestToBackground('getLedgerPublicKey', [hdPath]);
+}
+
+/**
+ * Get the active Ledger handler mode from the background.
+ *
+ * @returns Resolves to `LedgerHandlerMode.DMK` when the DMK bridge handler is active, or `LedgerHandlerMode.Legacy` otherwise.
+ */
+export async function getLedgerMode(): Promise<LedgerHandlerMode> {
+  return await submitRequestToBackground('getLedgerMode');
 }
 
 /**
