@@ -617,7 +617,7 @@ export function pushUserFillsClosePositionSnapshot(
       channel: 'userFills',
       data: {
         user,
-        isSnapshot: true,
+        isSnapshot: false,
         fills: [fill],
       },
     }),
