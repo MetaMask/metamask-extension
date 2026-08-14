@@ -61,21 +61,14 @@ describe('ledger-mode-offscreen-bridge', () => {
       });
     });
 
-    it('swallows errors when sendMessage throws', () => {
-      sendMessageMock.mockImplementationOnce(() => {
-        throw new Error('offscreen not ready');
-      });
+    it('swallows errors when sendMessage rejects', async () => {
+      sendMessageMock.mockRejectedValueOnce(new Error('offscreen not ready'));
 
       expect(() =>
         sendSwitchLedgerModeMessage(LedgerHandlerMode.Legacy),
       ).not.toThrow();
-    });
 
-    it('swallows errors when sendMessage rejects', async () => {
-      sendMessageMock.mockRejectedValueOnce(new Error('offscreen not ready'));
-
-      sendSwitchLedgerModeMessage(LedgerHandlerMode.Legacy);
-
+      // Flush the rejected sendMessage microtask attached via .catch().
       await expect(Promise.resolve()).resolves.toBeUndefined();
     });
   });

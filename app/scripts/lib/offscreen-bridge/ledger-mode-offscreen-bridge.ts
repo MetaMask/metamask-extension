@@ -26,23 +26,20 @@ type LedgerModeController = {
 
 /**
  * Sends a switchLedgerMode message to the offscreen document.
- * Failures are ignored because the offscreen may not be ready yet.
+ * Promise rejections are ignored because the offscreen may not be ready yet
+ * (e.g. "Receiving end does not exist").
  *
  * @param mode - The Ledger handler mode to activate.
  */
 export function sendSwitchLedgerModeMessage(mode: LedgerHandlerMode): void {
-  try {
-    // Fire-and-forget; offscreen may not be ready yet.
-    browser.runtime
-      .sendMessage({
-        target: OffscreenCommunicationTarget.extension,
-        event: OffscreenCommunicationEvents.switchLedgerMode,
-        mode,
-      })
-      .catch(() => undefined);
-  } catch {
-    // noop
-  }
+  // Fire-and-forget; offscreen may not be ready yet.
+  browser.runtime
+    .sendMessage({
+      target: OffscreenCommunicationTarget.extension,
+      event: OffscreenCommunicationEvents.switchLedgerMode,
+      mode,
+    })
+    .catch(() => undefined);
 }
 
 /**
