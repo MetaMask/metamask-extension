@@ -146,4 +146,63 @@ describe('TransactionPayControllerInit', () => {
       expect(config).toEqual({ accountOverride });
     });
   });
+
+  describe('api.setTransactionPayPaymentOverride', () => {
+    function initApi() {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      const setTransactionConfigMock = jest.mocked(
+        messengerClient.setTransactionConfig,
+      );
+      return { api, setTransactionConfigMock };
+    }
+
+    it('writes paymentOverride and refundTo', () => {
+      const { api, setTransactionConfigMock } = initApi();
+      const refundTo = '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+
+      api.setTransactionPayPaymentOverride('tx-1', {
+        paymentOverride: 'moneyAccount' as never,
+        refundTo,
+      });
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: {
+        paymentOverride?: string;
+        refundTo?: string;
+      } = {};
+      updater(config as never);
+
+      expect(config).toEqual({
+        paymentOverride: 'moneyAccount',
+        refundTo,
+      });
+    });
+
+    it('clears paymentOverride and refundTo when override is undefined', () => {
+      const { api, setTransactionConfigMock } = initApi();
+
+      api.setTransactionPayPaymentOverride('tx-2', {
+        paymentOverride: undefined,
+      });
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: {
+        paymentOverride?: string;
+        refundTo?: string;
+      } = {
+        paymentOverride: 'moneyAccount',
+        refundTo: '0xabc',
+      };
+      updater(config as never);
+
+      expect(config).toEqual({
+        paymentOverride: undefined,
+        refundTo: undefined,
+      });
+    });
+  });
 });
