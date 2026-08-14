@@ -779,5 +779,23 @@ module.exports = {
         ],
       },
     },
+    /**
+     * `recalibrate-thresholds.mts` runs on Node's type stripping rather than
+     * `tsx`, and Node ESM resolves no extensions implicitly, so every relative
+     * specifier in its import chain must carry one. `tsconfig` already sets
+     * `allowImportingTsExtensions`. This has to live here rather than in a
+     * directory-local config: the TypeScript override above matches every file
+     * in `tsconfig.fileNames`, and a parent `overrides` entry is applied after
+     * — and therefore beats — a nested `.eslintrc`.
+     */
+    {
+      files: [
+        'test/e2e/benchmarks/utils/gated-metrics.ts',
+        'test/e2e/benchmarks/utils/thresholds.ts',
+      ],
+      rules: {
+        'import-x/extensions': 'off',
+      },
+    },
   ],
 };
