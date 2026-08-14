@@ -299,6 +299,7 @@
     "paymentMethods": "object",
     "pendingApprovalCount": "number",
     "pendingApprovals": "object",
+    "pendingDeepLinkRequestIds": "object",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
     "pendingRevocations": "object",
