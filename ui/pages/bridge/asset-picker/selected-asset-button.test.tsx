@@ -1,11 +1,11 @@
 import React from 'react';
 import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
-import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../../../../shared/constants/bridge';
-import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { createBridgeMockStore } from '../../../../../../test/data/bridge/mock-bridge-store';
-import configureStore from '../../../../../store/store';
-import { toBridgeToken } from '../../../../../ducks/bridge/utils';
+import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../../shared/constants/bridge';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import configureStore from '../../../store/store';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { SelectedAssetButton } from './selected-asset-button';
 
 const renderButton = (asset: ReturnType<typeof toBridgeToken>) =>

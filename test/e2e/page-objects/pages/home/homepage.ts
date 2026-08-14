@@ -550,7 +550,6 @@ class HomePage {
 
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
-    await this.checkPageIsLoaded();
     const isBottomNav = await this.driver.isElementPresentAndVisible(
       this.bottomNavActivityButton,
       3000,
@@ -561,6 +560,7 @@ class HomePage {
         url: `${this.driver.extensionUrl}/home.html#${ACTIVITY_ROUTE}`,
       });
     } else {
+      await this.checkPageIsLoaded();
       await this.driver.clickElement(this.activityTab);
     }
   }
