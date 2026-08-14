@@ -460,7 +460,7 @@
     "@metamask/ppom-validator": "0.39.1",
     "@metamask/preinstalled-example-snap": "^0.8.1",
     "@metamask/profile-metrics-controller": "^4.0.3",
-    "@metamask/profile-sync-controller": "^29.0.0",
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@29.0.0-preview-9ab272863",
     "@metamask/providers": "^22.1.1",
     "@metamask/ramps-controller": "^15.0.0",
     "@metamask/rate-limit-controller": "^7.0.0",
