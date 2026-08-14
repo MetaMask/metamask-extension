@@ -69,7 +69,7 @@ export function getTransactionControllerHooks(
 function afterAddHook({ messenger }: TransactionControllerHookRequest) {
   return async ({ transactionMeta }: { transactionMeta: TransactionMeta }) => {
     await messenger.call(
-      'SubscriptionService:submitSubscriptionSponsorshipIntent',
+      'ShieldSubscriptionService:submitSubscriptionSponsorshipIntent',
       transactionMeta,
     );
     return {};
