@@ -149,7 +149,6 @@ describe('getShieldApiServiceInstanceOptions', () => {
 
     expect(getShieldApiServiceInstanceOptions()).toStrictEqual({
       env: Env.UAT,
-      fetchFunction: expect.any(Function),
       captureException: expect.any(Function),
     });
   });
@@ -161,28 +160,6 @@ describe('getShieldApiServiceInstanceOptions', () => {
 
     expect(getShieldApiServiceInstanceOptions().env).toBe(Env.PRD);
     expect(loadShieldConfigMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('delegates fetch requests to global fetch', async () => {
-    const fetchMock = jest.fn().mockResolvedValue(new Response());
-    const originalFetch = global.fetch;
-    global.fetch = fetchMock as unknown as typeof fetch;
-
-    loadShieldConfigMock.mockReturnValue({
-      shieldEnv: Env.UAT,
-    } as ReturnType<typeof loadShieldConfig>);
-
-    const { fetchFunction } = getShieldApiServiceInstanceOptions();
-    if (!fetchFunction) {
-      throw new Error('fetchFunction is not defined');
-    }
-    const init = { method: 'GET' };
-
-    await fetchFunction('https://example.com', init);
-
-    expect(fetchMock).toHaveBeenCalledWith('https://example.com', init);
-
-    global.fetch = originalFetch;
   });
 
   it('uses the shared sentry captureException helper', () => {

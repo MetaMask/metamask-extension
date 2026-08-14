@@ -1,5 +1,6 @@
 import { Env } from '@metamask/subscription-controller';
 import { loadShieldConfig } from '../../../../shared/lib/shield';
+import { captureException } from '../../../../shared/lib/sentry';
 import { getSubscriptionServiceInstanceOptions } from './subscription-service';
 
 jest.mock('../../../../shared/lib/shield');
@@ -12,8 +13,7 @@ describe('getSubscriptionServiceInstanceOptions', () => {
 
     expect(getSubscriptionServiceInstanceOptions()).toStrictEqual({
       env: Env.UAT,
-      fetchFunction: expect.any(Function),
-      captureException: expect.any(Function),
+      captureException,
     });
   });
 });

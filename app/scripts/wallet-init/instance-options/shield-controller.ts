@@ -59,7 +59,6 @@ export function getShieldApiServiceInstanceOptions(): ShieldApiServiceInstanceOp
 
   return {
     env: shieldEnv,
-    fetchFunction: (input, init) => fetch(input, init),
     captureException,
   };
 }

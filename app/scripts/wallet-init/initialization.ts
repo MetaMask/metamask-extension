@@ -20,7 +20,7 @@ import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controlle
 import type { InitializeWalletRequest } from './types';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
-import { getClaimsControllerInstanceOptions } from './instance-options/claims-controller';
+import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
 import {
   getShieldApiServiceInstanceOptions,
   getShieldControllerInstanceOptions,
@@ -59,7 +59,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
       }),
-      claimsService: getClaimsControllerInstanceOptions(),
+      claimsService: getClaimsServiceInstanceOptions(),
       connectivityController: getConnectivityControllerInstanceOptions({
         connectivityAdapter,
       }),

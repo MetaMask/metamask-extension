@@ -10,11 +10,10 @@ type ClaimsServiceInstanceOptions = NonNullable<
  *
  * @returns The ClaimsService instance options.
  */
-export function getClaimsControllerInstanceOptions(): ClaimsServiceInstanceOptions {
+export function getClaimsServiceInstanceOptions(): ClaimsServiceInstanceOptions {
   const { claimsEnv } = loadShieldConfig();
 
   return {
     env: claimsEnv,
-    fetchFunction: fetch.bind(globalThis),
   };
 }
