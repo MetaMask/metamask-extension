@@ -1,7 +1,11 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
 import { Skeleton } from '@metamask/design-system-react';
+import { getMoneyAccountTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
@@ -184,9 +188,16 @@ const Info = () => {
     );
   }
 
+  // Money-account deposits/withdrawals are batches: the top-level type is
+  // `batch` and the meaningful type sits on a nested transaction, so resolve
+  // it before the map lookup (mirrors mobile's info-root routing).
+  const confirmationType =
+    getMoneyAccountTransactionType(currentConfirmation as TransactionMeta) ??
+    currentConfirmation?.type;
+
   const InfoComponent =
     ConfirmationInfoComponentMap[
-      currentConfirmation?.type as keyof typeof ConfirmationInfoComponentMap
+      confirmationType as keyof typeof ConfirmationInfoComponentMap
     ]();
 
   return <InfoComponent />;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
+import { BalanceProjection } from '../../../money-account-confirmations/balance-projection';
 import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN,
@@ -8,6 +9,8 @@ import {
 } from '../../../../constants/musd';
 
 const MONEY_ACCOUNT_DEPOSIT_CURRENCY = 'usd';
+
+const PROJECTED_YEARS = 1;
 
 export const MoneyAccountDepositInfo = () => {
   useAddToken({
@@ -19,6 +22,12 @@ export const MoneyAccountDepositInfo = () => {
 
   return (
     <CustomAmountInfo
+      amountDetails={(amountFiat) => (
+        <BalanceProjection
+          amountFiat={amountFiat}
+          projectedYears={PROJECTED_YEARS}
+        />
+      )}
       autoFocusAmount
       currency={MONEY_ACCOUNT_DEPOSIT_CURRENCY}
       displayAccountRow

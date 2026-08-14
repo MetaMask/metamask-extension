@@ -6,6 +6,7 @@ import {
 import {
   isBatchTransaction,
   hasTransactionType,
+  getMoneyAccountTransactionType,
   getPostQuoteWithdrawTransactionType,
   getTransactionType,
   isPostQuoteWithdrawTransaction,
@@ -236,6 +237,48 @@ describe('Transactions utils', () => {
 
     it('returns false when transactionMeta is undefined', () => {
       expect(isPerpsWithdrawTransaction(undefined)).toBe(false);
+    });
+  });
+
+  describe('getMoneyAccountTransactionType', () => {
+    it('returns moneyAccountDeposit when it is a nested transaction of a batch', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.moneyAccountDeposit },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(getMoneyAccountTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountDeposit,
+      );
+    });
+
+    it('returns moneyAccountWithdraw when it is the top-level type', () => {
+      const transactionMeta = {
+        type: TransactionType.moneyAccountWithdraw,
+      } as TransactionMeta;
+
+      expect(getMoneyAccountTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountWithdraw,
+      );
+    });
+
+    it('returns undefined for unrelated batch transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.tokenMethodTransfer },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(getMoneyAccountTransactionType(transactionMeta)).toBeUndefined();
+    });
+
+    it('returns undefined when transactionMeta is undefined', () => {
+      expect(getMoneyAccountTransactionType(undefined)).toBeUndefined();
     });
   });
 

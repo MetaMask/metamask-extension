@@ -276,7 +276,10 @@ export function useMoneyAccountBalance({
   const apyPercent =
     apyDecimal === undefined
       ? undefined
-      : new BigNumber(apyDecimal)
+      : // Stringified first: `bignumber.js@4` throws on a *number* with more
+        // than 15 significant digits, and a live APY such as
+        // 0.06894619904358379 has 17.
+        new BigNumber(String(apyDecimal))
           .times(PERCENT)
           // `round(dp, rm)`, not mobile's `dp(dp, rm)`: in `bignumber.js@4`
           // `decimalPlaces`/`dp` is a getter that ignores both arguments and

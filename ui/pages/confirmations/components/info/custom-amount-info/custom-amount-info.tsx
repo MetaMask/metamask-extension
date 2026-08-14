@@ -66,6 +66,12 @@ const MONEY_ACCOUNT_TRANSACTION_TYPES: TransactionType[] = [
 
 export type CustomAmountInfoProps = {
   /**
+   * Optional subtitle rendered directly under the amount input (e.g. APY
+   * pitch / projected balance on Money Account deposit). Receives the current
+   * fiat amount string from the input.
+   */
+  amountDetails?: (amountFiat: string) => ReactNode;
+  /**
    * Optional caller-provided balance (USD) used as the source for the
    * percentage buttons. Takes precedence over the default `payToken.balanceUsd`.
    * Used by flows (e.g. Perps Withdraw) whose balance comes from a different
@@ -109,6 +115,7 @@ export type CustomAmountInfoProps = {
 
 export const CustomAmountInfo = React.memo(
   ({
+    amountDetails,
     balanceUsdOverride,
     children,
     autoFocusAmount = false,
@@ -193,6 +200,7 @@ export const CustomAmountInfo = React.memo(
         data-testid="custom-amount-info"
       >
         <CenterContainer
+          amountDetails={amountDetails}
           autoFocusAmount={autoFocusAmount}
           amountFiat={amountFiat}
           amountHuman={amountHuman}
@@ -241,6 +249,7 @@ export function CustomAmountInfoSkeleton() {
 }
 
 type CenterContainerProps = {
+  amountDetails?: (amountFiat: string) => ReactNode;
   autoFocusAmount: boolean;
   amountFiat: string;
   amountHuman: string;
@@ -256,6 +265,7 @@ type CenterContainerProps = {
 };
 
 function CenterContainer({
+  amountDetails,
   autoFocusAmount,
   amountFiat,
   amountHuman,
@@ -286,6 +296,8 @@ function CenterContainer({
         isLoading={isAmountLoading}
         onChange={onAmountChange}
       />
+
+      {amountDetails?.(amountFiat)}
 
       {overrideCenterContent ? (
         overrideCenterContent(amountHuman, hasInput)

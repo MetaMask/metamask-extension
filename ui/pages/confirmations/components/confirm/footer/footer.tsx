@@ -7,6 +7,7 @@ import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import { getMoneyAccountTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import {
   Box,
@@ -450,9 +451,15 @@ const Footer = () => {
     return null;
   }
 
+  // Money-account batches carry their meaningful type on a nested
+  // transaction, so resolve it before matching against the list.
+  const confirmationType =
+    getMoneyAccountTransactionType(currentConfirmation as TransactionMeta) ??
+    currentConfirmation.type;
+
   if (
-    currentConfirmation.type &&
-    SINGLE_ACTION_FOOTER_TYPES.includes(currentConfirmation.type)
+    confirmationType &&
+    SINGLE_ACTION_FOOTER_TYPES.includes(confirmationType)
   ) {
     return (
       <SingleActionFooter

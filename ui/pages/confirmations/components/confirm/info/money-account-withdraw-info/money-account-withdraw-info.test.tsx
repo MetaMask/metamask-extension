@@ -5,6 +5,7 @@ import { useAddToken } from '../../../../hooks/tokens/useAddToken';
 import { useTransactionPayPostQuote } from '../../../../hooks/pay/useTransactionPayPostQuote';
 import { useTransactionPayWithdraw } from '../../../../hooks/pay/useTransactionPayWithdraw';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
+import { useMoneyAccountBalance } from '../../../../../../hooks/money/useMoneyAccountBalance';
 import { MUSD_TOKEN_ADDRESS } from '../../../../constants/musd';
 import { MoneyAccountWithdrawInfo } from './money-account-withdraw-info';
 
@@ -23,13 +24,35 @@ jest.mock('../../../../hooks/pay/useTransactionPayWithdraw', () => ({
   })),
 }));
 
+jest.mock('../../../../../../hooks/money/useMoneyAccountBalance', () => ({
+  useMoneyAccountBalance: jest.fn(),
+}));
+
+jest.mock('../../../../../../layouts/route-with-messenger', () => ({
+  RouteWithMessenger: ({ children }: { children: React.ReactNode }) => children,
+}));
+
+jest.mock(
+  '../../../money-account-confirmations/money-account-withdraw-balance',
+  () => ({
+    MoneyAccountWithdrawBalance: () => (
+      <div data-testid="money-account-withdraw-balance-mock" />
+    ),
+  }),
+);
+
 jest.mock('../../../info/custom-amount-info', () => ({
-  CustomAmountInfo: jest.fn(() => <div data-testid="custom-amount-info" />),
+  CustomAmountInfo: jest.fn(
+    ({ children }: { children?: React.ReactNode }) => (
+      <div data-testid="custom-amount-info">{children}</div>
+    ),
+  ),
 }));
 
 const useAddTokenMock = jest.mocked(useAddToken);
 const useTransactionPayPostQuoteMock = jest.mocked(useTransactionPayPostQuote);
 const useTransactionPayWithdrawMock = jest.mocked(useTransactionPayWithdraw);
+const useMoneyAccountBalanceMock = jest.mocked(useMoneyAccountBalance);
 const customAmountInfoMock = jest.mocked(CustomAmountInfo);
 
 describe('MoneyAccountWithdrawInfo', () => {
@@ -39,6 +62,9 @@ describe('MoneyAccountWithdrawInfo', () => {
       isWithdraw: true,
       canSelectWithdrawToken: true,
     });
+    useMoneyAccountBalanceMock.mockReturnValue({
+      withdrawableFiatRaw: '7.06',
+    } as ReturnType<typeof useMoneyAccountBalance>);
   });
 
   it('registers Monad mUSD via useAddToken', () => {
@@ -58,13 +84,14 @@ describe('MoneyAccountWithdrawInfo', () => {
     expect(useTransactionPayPostQuoteMock).toHaveBeenCalledTimes(1);
   });
 
-  it('renders CustomAmountInfo for a USD withdraw with account row and preferred Monad mUSD', () => {
+  it('renders CustomAmountInfo for a USD withdraw with vault balance as the max source', () => {
     render(<MoneyAccountWithdrawInfo />);
 
     expect(screen.getByTestId('custom-amount-info')).toBeInTheDocument();
     expect(customAmountInfoMock).toHaveBeenCalledWith(
       expect.objectContaining({
         autoFocusAmount: true,
+        balanceUsdOverride: 7.06,
         currency: 'usd',
         disablePay: false,
         displayAccountRow: true,
@@ -79,6 +106,14 @@ describe('MoneyAccountWithdrawInfo', () => {
     );
   });
 
+  it('renders the withdrawable-balance subtitle inside CustomAmountInfo', () => {
+    render(<MoneyAccountWithdrawInfo />);
+
+    expect(
+      screen.getByTestId('money-account-withdraw-balance-mock'),
+    ).toBeInTheDocument();
+  });
+
   it('disables pay when withdraw token selection is not enabled', () => {
     useTransactionPayWithdrawMock.mockReturnValue({
       isWithdraw: true,
@@ -90,6 +125,21 @@ describe('MoneyAccountWithdrawInfo', () => {
     expect(customAmountInfoMock).toHaveBeenCalledWith(
       expect.objectContaining({
         disablePay: true,
+      }),
+      expect.anything(),
+    );
+  });
+
+  it('uses 0 as the max source when the withdrawable balance is unknown', () => {
+    useMoneyAccountBalanceMock.mockReturnValue({
+      withdrawableFiatRaw: undefined,
+    } as ReturnType<typeof useMoneyAccountBalance>);
+
+    render(<MoneyAccountWithdrawInfo />);
+
+    expect(customAmountInfoMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        balanceUsdOverride: 0,
       }),
       expect.anything(),
     );

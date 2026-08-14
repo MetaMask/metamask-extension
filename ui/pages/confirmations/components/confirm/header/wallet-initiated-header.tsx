@@ -5,6 +5,7 @@ import {
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import { getMoneyAccountTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import {
   Box,
   ButtonIcon,
@@ -35,25 +36,28 @@ export const WalletInitiatedHeader = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const navigate = useNavigate();
 
+  // Money-account batches carry their meaningful type on a nested
+  // transaction, so resolve it before matching by type.
+  const confirmationType =
+    getMoneyAccountTransactionType(currentConfirmation) ??
+    currentConfirmation?.type;
+
   const isSendTransaction =
-    currentConfirmation?.type &&
-    SEND_TRANSACTION_TYPES.includes(currentConfirmation.type);
+    confirmationType && SEND_TRANSACTION_TYPES.includes(confirmationType);
 
   const handleBackButtonClick = useCallback(() => {
-    if (
-      currentConfirmation.type === TransactionType.shieldSubscriptionApprove
-    ) {
+    if (confirmationType === TransactionType.shieldSubscriptionApprove) {
       onCancel({ location: MetaMetricsEventLocation.Confirmation });
       navigate(SHIELD_PLAN_ROUTE);
       return;
     }
 
     if (
-      currentConfirmation.type === TransactionType.moneyAccountDeposit ||
-      currentConfirmation.type === TransactionType.moneyAccountWithdraw ||
-      currentConfirmation.type === TransactionType.musdClaim ||
-      currentConfirmation.type === TransactionType.perpsDeposit ||
-      currentConfirmation.type === TransactionType.perpsWithdraw
+      confirmationType === TransactionType.moneyAccountDeposit ||
+      confirmationType === TransactionType.moneyAccountWithdraw ||
+      confirmationType === TransactionType.musdClaim ||
+      confirmationType === TransactionType.perpsDeposit ||
+      confirmationType === TransactionType.perpsWithdraw
     ) {
       onCancel({
         location: MetaMetricsEventLocation.Confirmation,
@@ -62,13 +66,12 @@ export const WalletInitiatedHeader = () => {
       return;
     }
 
-    const isNativeSend =
-      currentConfirmation.type === TransactionType.simpleSend;
+    const isNativeSend = confirmationType === TransactionType.simpleSend;
     const isERC20TokenSend =
-      currentConfirmation.type === TransactionType.tokenMethodTransfer;
+      confirmationType === TransactionType.tokenMethodTransfer;
     const isNFTTokenSend =
-      currentConfirmation.type === TransactionType.tokenMethodTransferFrom ||
-      currentConfirmation.type === TransactionType.tokenMethodSafeTransferFrom;
+      confirmationType === TransactionType.tokenMethodTransferFrom ||
+      confirmationType === TransactionType.tokenMethodSafeTransferFrom;
 
     if (isNativeSend || isERC20TokenSend || isNFTTokenSend) {
       onCancel({
@@ -76,30 +79,28 @@ export const WalletInitiatedHeader = () => {
         navigateBackForSend: true,
       });
     }
-  }, [currentConfirmation, navigate, onCancel]);
+  }, [confirmationType, navigate, onCancel]);
 
   const getHeaderTitle = () => {
     if (isSendTransaction) {
       return null;
     }
-    if (
-      currentConfirmation?.type === TransactionType.shieldSubscriptionApprove
-    ) {
+    if (confirmationType === TransactionType.shieldSubscriptionApprove) {
       return t('shieldConfirmMembership');
     }
-    if (currentConfirmation?.type === TransactionType.moneyAccountDeposit) {
+    if (confirmationType === TransactionType.moneyAccountDeposit) {
       return t('addFunds');
     }
-    if (currentConfirmation?.type === TransactionType.moneyAccountWithdraw) {
+    if (confirmationType === TransactionType.moneyAccountWithdraw) {
       return t('send');
     }
-    if (currentConfirmation?.type === TransactionType.musdClaim) {
+    if (confirmationType === TransactionType.musdClaim) {
       return null;
     }
-    if (currentConfirmation?.type === TransactionType.perpsDeposit) {
+    if (confirmationType === TransactionType.perpsDeposit) {
       return t('perpsDepositFundsTitle');
     }
-    if (currentConfirmation?.type === TransactionType.perpsWithdraw) {
+    if (confirmationType === TransactionType.perpsWithdraw) {
       return t('perpsWithdrawFundsTitle');
     }
     return t('review');
