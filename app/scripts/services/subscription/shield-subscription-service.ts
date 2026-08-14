@@ -45,10 +45,10 @@ import {
 } from '../../../../shared/lib/shield';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import {
-  SubscriptionServiceOptions,
+  ShieldSubscriptionServiceOptions,
   SERVICE_NAME,
   ServiceName,
-  SubscriptionServiceMessenger,
+  ShieldSubscriptionServiceMessenger,
 } from './types';
 
 const SUBSCRIPTION_POLL_INTERVAL = 5 * SECOND;
@@ -67,13 +67,13 @@ type ShieldSubscriptionCryptoApprovalTransactionMeta = Parameters<
   SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction['handler']
 >[0];
 
-export class SubscriptionService {
+export class ShieldSubscriptionService {
   // Required for modular initialisation.
   name: ServiceName = SERVICE_NAME;
 
   state = null;
 
-  #messenger: SubscriptionServiceMessenger;
+  #messenger: ShieldSubscriptionServiceMessenger;
 
   #platform: ExtensionPlatform;
 
@@ -83,7 +83,7 @@ export class SubscriptionService {
     messenger,
     platform,
     webAuthenticator,
-  }: SubscriptionServiceOptions) {
+  }: ShieldSubscriptionServiceOptions) {
     this.#messenger = messenger;
     this.#platform = platform;
     this.#webAuthenticator = webAuthenticator;
