@@ -31,6 +31,11 @@ class AccountListPage {
   private readonly accountListItem =
     '.multichain-account-menu-popover__list--menu-item';
 
+  // Matches an account row in either the multichain account menu or the
+  // legacy account list, so render-complete waits work across both UIs.
+  private readonly accountListItemRow =
+    '[data-testid="account-item"], [data-testid="account-list-item"]';
+
   private readonly accountMenuButton =
     '[data-testid="account-list-menu-details"]';
 
@@ -38,11 +43,6 @@ class AccountListPage {
 
   private readonly accountValueAndSuffix =
     '[data-testid="account-value-and-suffix"]';
-
-  // Matches an account row in either the multichain account menu or the
-  // legacy account list, so render-complete waits work across both UIs.
-  private readonly accountListItemRow =
-    '[data-testid="account-item"], [data-testid="account-list-item"]';
 
   private readonly addAccountButtonSyncing = {
     css: '[data-testid="add-multichain-account-button"]',
@@ -264,35 +264,6 @@ class AccountListPage {
   }
 
   /**
-   * Waits until at least the expected number of account rows have rendered and
-   * the count has stayed stable for the optional stability window.
-   *
-   * Benchmarks use this instead of {@link checkPageIsLoaded} because the latter
-   * resolves once the account-menu container is visible, before the rows have
-   * finished rendering — which adds noise to the measured render duration.
-   *
-   * @param options - Wait options.
-   * @param options.expectedCount - The number of account rows expected to render.
-   * @param options.timeout - Optional timeout override in milliseconds.
-   * @param options.stableFor - Optional stability window in milliseconds.
-   */
-  async checkAccountListRenderComplete({
-    expectedCount,
-    timeout = 10000,
-    stableFor = 0,
-  }: {
-    expectedCount: number;
-    timeout?: number;
-    stableFor?: number;
-  }): Promise<void> {
-    await this.driver.waitForElementCountToBeAtLeast(
-      this.accountListItemRow,
-      expectedCount,
-      { timeout, stableFor },
-    );
-  }
-
-  /**
    * Watch an EOA (external owned account).
    *
    * @param address - The address to watch.
@@ -463,6 +434,35 @@ class AccountListPage {
   async checkAccountIsUnpinned(): Promise<void> {
     console.log(`Check that account is unpinned`);
     await this.driver.assertElementNotPresent(this.pinnedHeader);
+  }
+
+  /**
+   * Waits until at least the expected number of account rows have rendered and
+   * the count has stayed stable for the optional stability window.
+   *
+   * Benchmarks use this instead of {@link checkPageIsLoaded} because the latter
+   * resolves once the account-menu container is visible, before the rows have
+   * finished rendering — which adds noise to the measured render duration.
+   *
+   * @param options - Wait options.
+   * @param options.expectedCount - The number of account rows expected to render.
+   * @param options.timeout - Optional timeout override in milliseconds.
+   * @param options.stableFor - Optional stability window in milliseconds.
+   */
+  async checkAccountListRenderComplete({
+    expectedCount,
+    timeout = 10000,
+    stableFor = 0,
+  }: {
+    expectedCount: number;
+    timeout?: number;
+    stableFor?: number;
+  }): Promise<void> {
+    await this.driver.waitForElementCountToBeAtLeast(
+      this.accountListItemRow,
+      expectedCount,
+      { timeout, stableFor },
+    );
   }
 
   async checkAccountNameIsDisplayed(accountName: string): Promise<void> {
