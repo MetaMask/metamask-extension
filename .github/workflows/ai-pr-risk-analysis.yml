@@ -48,17 +48,17 @@ jobs:
             exit 1
           fi
 
-      # # Pinned immutable SHA — see header pin bump process
-      # - name: Checkout AI Analyzer
-      #   uses: actions/checkout@v6
-      #   with:
-      #     repository: MetaMask/ai-analyzer
-      #     ref: b89c011b1515c193e0c3514393c38ad7066e21c4
-      #     path: .ai-analyzer-action
-      #     token: ${{ secrets.AI_ANALYZER_TOKEN }}
+      # Pinned immutable SHA — see header pin bump process
+      - name: Checkout AI Analyzer
+        uses: actions/checkout@v6
+        with:
+          repository: MetaMask/ai-analyzer
+          ref: b89c011b1515c193e0c3514393c38ad7066e21c4
+          path: .ai-analyzer-action
+          token: ${{ secrets.AI_ANALYZER_TOKEN }}
 
       - name: Run AI PR Analysis
-        uses: MetaMask/ai-analyzer@b89c011b1515c193e0c3514393c38ad7066e21c4
+        uses: ./.ai-analyzer-action
         with:
           mode: pr-risk-analysis
           config-path: .github/ai-pr-analyzer
