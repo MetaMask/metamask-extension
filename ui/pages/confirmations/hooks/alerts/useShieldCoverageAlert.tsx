@@ -1,6 +1,6 @@
 import { SignatureRequest } from '@metamask/signature-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { CoverageStatus } from '@metamask/shield-controller';
@@ -301,9 +301,7 @@ export function useShieldCoverageAlert(): Alert[] {
         reason: modalTitle,
         field: RowAlertKey.ShieldFooterCoverageIndicator,
         severity,
-        content: ShieldCoverageAlertMessage({
-          modalBodyStr,
-        }),
+        content: <ShieldCoverageAlertMessage modalBodyStr={modalBodyStr} />,
         isBlocking: false,
         inlineAlertText,
         inlineAlertTextPill: true,
