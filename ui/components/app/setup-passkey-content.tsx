@@ -21,7 +21,7 @@ import {
   TextColor,
   TextAlign,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   getFirstTimeFlowType,
@@ -53,6 +53,8 @@ import {
   forceUpdateMetamaskState,
 } from '../../store/actions';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { useDispatch } from '../../store/hooks';
+
 import {
   PasskeyEnrollmentSteps,
   type PasskeyEnrollmentStepStatus,

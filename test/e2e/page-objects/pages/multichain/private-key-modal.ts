@@ -1,12 +1,26 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Password gate before revealing a multichain account private key.
+ *
+ * Screen: password step on / from
+ * `#/multichain-account-private-key-list` (opened from account details export).
+ * Owns: password input, confirm, and wrong-password messaging.
+ * Boundaries: authentication only. The revealed key list/rows belong to the
+ * private-key list UI; account details entry is
+ * `MultichainAccountDetailsPage`.
+ * Related: `MultichainAccountDetailsPage` (export entry point).
+ *
+ * @see ui/components/multichain-accounts/multichain-private-key-list/multichain-private-key-list.tsx
+ * @see ui/pages/multichain-accounts/multichain-account-private-key-list-page/multichain-account-private-key-list-page.tsx
+ */
 class PrivateKeyModal {
+  private readonly confirmButton = '[data-testid="confirm-button"]';
+
   private driver: Driver;
 
   private readonly privateKeyPasswordInput =
     '[data-testid="multichain-private-key-password-input"]';
-
-  private readonly confirmButton = '[data-testid="confirm-button"]';
 
   private readonly wrontPasswordMsg = '[data-testid="wrong-password-msg"]';
 
@@ -31,12 +45,10 @@ class PrivateKeyModal {
   }
 
   /**
-   * Enter Password
-   *
-   * @param password
+   * Check wrong password message
    */
-  async typePassword(password: string): Promise<void> {
-    await this.driver.fill(this.privateKeyPasswordInput, password);
+  async checkWrongPasswordMsgIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.wrontPasswordMsg);
   }
 
   /**
@@ -47,10 +59,12 @@ class PrivateKeyModal {
   }
 
   /**
-   * Check wrong password message
+   * Enter Password
+   *
+   * @param password
    */
-  async checkWrongPasswordMsgIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.wrontPasswordMsg);
+  async typePassword(password: string): Promise<void> {
+    await this.driver.fill(this.privateKeyPasswordInput, password);
   }
 }
 

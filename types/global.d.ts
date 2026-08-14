@@ -1,23 +1,8 @@
 // Many of the state hooks return untyped raw state.
 
 import * as Sentry from '@sentry/browser';
-import {
-  Success,
-  Unsuccessful,
-  PROTO,
-  EthereumSignedTx,
-  Params,
-  EthereumSignTransaction,
-  EthereumSignTypedHash,
-  EthereumSignMessage,
-  EthereumSignTypedDataTypes,
-} from '@trezor/connect-web';
 import type { Provider } from '@metamask/network-controller';
 import type { Browser } from 'webextension-polyfill';
-import {
-  OffscreenCommunicationTarget,
-  TrezorAction,
-} from '../shared/constants/offscreen-communication';
 import type { Preferences } from '../shared/types/preferences';
 import type ExtensionPlatform from '../app/scripts/platforms/extension';
 import type { ExtensionLazyListener } from '../app/scripts/lib/extension-lazy-listener/extension-lazy-listener';
@@ -26,221 +11,6 @@ import type {
   LongTaskMetricsWithTBT,
 } from '../ui/helpers/utils/performance-observers';
 import type { Backup } from '../shared/lib/stores/persistence-manager';
-
-declare class MessageSender {
-  documentId?: string;
-
-  documentLivecycle?: string;
-
-  frameId?: number;
-
-  id?: string;
-
-  origin?: string;
-
-  url?: string;
-}
-
-type SerializedLedgerError = {
-  message: string;
-  name?: string;
-  stack?: string;
-  // from TransportStatusError
-  statusCode?: number;
-  statusText?: string;
-};
-
-export type LedgerIframeMissingResponse = {
-  success: false;
-  payload: {
-    error: SerializedLedgerError;
-  };
-};
-
-type ResponseType =
-  | Unsuccessful
-  | Success<{ publicKey: string; chainCode: string }>
-  | Success<EthereumSignedTx>
-  | Success<PROTO.MessageSignature>
-  | Success<PROTO.EthereumTypedDataSignature>
-  | Record<string, unknown>
-  | LedgerIframeMissingResponse;
-
-/**
- * Defines an overloaded set of function call signatures for the chrome
- * runtime sendMessage function. Each of these are overloaded by specific
- * input values so that the correct type can be inferred in the callback
- * method
- */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-type sendMessage = {
-  (
-    extensionId: string,
-    message: Record<string, unknown>,
-    options?: Record<string, unknown>,
-    callback?: (response: Record<string, unknown>) => void,
-  ): void;
-  (
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    message: any,
-    options?: Record<string, unknown>,
-    callback?: (response: Record<string, unknown>) => void,
-  ): void;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  <T extends EthereumSignTypedDataTypes>(
-    message: {
-      target: OffscreenCommunicationTarget.trezorOffscreen;
-      action: TrezorAction.signTypedData;
-      params: Params<EthereumSignTypedHash<T>>;
-    },
-    callback: (
-      response: Unsuccessful | Success<PROTO.EthereumTypedDataSignature>,
-    ) => void,
-  ): Promise<Unsuccessful | Success<PROTO.EthereumTypedDataSignature>>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.trezorOffscreen;
-      action: TrezorAction.signTransaction;
-      params: Params<EthereumSignTransaction>;
-    },
-    callback: (response: Unsuccessful | Success<EthereumSignedTx>) => void,
-  ): Promise<Unsuccessful | Success<EthereumSignedTx>>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.trezorOffscreen;
-      action: TrezorAction.signMessage;
-      params: Params<EthereumSignMessage>;
-    },
-    callback: (
-      response: Unsuccessful | Success<PROTO.MessageSignature>,
-    ) => void,
-  ): Promise<Unsuccessful | Success<PROTO.MessageSignature>>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.trezorOffscreen;
-      action: TrezorAction.getPublicKey;
-      params: { path: string; coin: string };
-    },
-    callback: (
-      response:
-        | Unsuccessful
-        | Success<{ publicKey: string; chainCode: string }>,
-    ) => void,
-  ): Promise<Unsuccessful | Success<{ publicKey: string; chainCode: string }>>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.ledgerOffscreen;
-      action: LedgerAction.signTransaction;
-      params: { hdPath: string; tx: string };
-    },
-    callback: (response: {
-      success: boolean;
-      payload: { v: string; s: string; r: string; error?: Error };
-    }) => void,
-  ): Promise<{
-    success: boolean;
-    payload?: { v: string; s: string; r: string };
-  }>;
-  (
-    message:
-      | {
-          target: OffscreenCommunicationTarget.ledgerOffscreen;
-          action: LedgerAction.signMessage;
-          params: { hdPath: string; message: string };
-        }
-      | {
-          target: OffscreenCommunicationTarget.ledgerOffscreen;
-          action: LedgerAction.signTypedData;
-          params: {
-            hdPath: string;
-            domainSeparatorHex: string;
-            hashStructMessageHex: string;
-          };
-        },
-    callback: (response: {
-      success: boolean;
-      payload: {
-        v: number;
-        s: string;
-        r: string;
-        error?: SerializedLedgerError;
-      };
-    }) => void,
-  ): Promise<{ v: number; s: string; r: string }>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.ledgerOffscreen;
-      action: LedgerAction.getPublicKey;
-      params: { hdPath: string };
-    },
-    callback: (response: {
-      success: boolean;
-      payload: {
-        publicKey: string;
-        address: string;
-        chainCode?: string;
-        error?: SerializedLedgerError;
-      };
-    }) => void,
-  ): Promise<{ publicKey: string; address: string; chainCode?: string }>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.ledgerOffscreen;
-      action: LedgerAction.updateTransport;
-      params: { transportType: string };
-    },
-    callback: (response: { success: boolean }) => void,
-  ): Promise<boolean>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.ledgerOffscreen;
-      action: LedgerAction.makeApp;
-    },
-    callback: (response: {
-      success: boolean;
-      error?: SerializedLedgerError;
-    }) => void,
-  ): Promise<boolean>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.latticeOffscreen;
-      params: {
-        url: string;
-      };
-    },
-
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    callback: (response: { result: any; error?: Error }) => void,
-  );
-  (
-    message: Record<string, unknown>,
-    callback?: (response: ResponseType) => void,
-  ): void;
-};
-
-declare class Runtime {
-  onMessage: {
-    addListener: (
-      callback: (
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        message: any,
-        sender: MessageSender,
-        sendResponse: (response?: ResponseType) => void,
-      ) => void,
-    ) => void;
-  };
-
-  sendMessage: sendMessage;
-}
-
-declare class Chrome {
-  runtime: Runtime;
-}
 
 type StateHooks = {
   getCustomTraces?: () => { [name: string]: number };
@@ -277,11 +47,24 @@ type StateHooks = {
   throwTestError?: (msg?: string) => void;
   captureTestError?: (msg?: string) => Promise<void>;
   captureBackgroundError?: (msg?: string) => Promise<void>;
+  /**
+   * State hook used to verify that LavaMoat is applied correctly.
+   *
+   * Delegates to a test-only package (`@metamask/dummy-package`) that has no
+   * policy grant for `console`. When invoked from inside that package's
+   * compartment, the check for `console` must resolve to `false` because
+   * LavaMoat withholds the endowment.
+   *
+   * @returns `true` if the dummy package can see a usable `console` in its
+   * compartment — meaning LavaMoat is NOT enforcing its policy — and `false`
+   * when the policy is correctly enforced.
+   */
+  hasConsoleAccess?: () => boolean;
 
   /**
    * This is initialized by the service worker in MV3. It is handled in `background.js`.
    */
-  lazyListener?: ExtensionLazyListener<typeof globalThis.chrome>;
+  lazyListener?: ExtensionLazyListener<typeof chrome>;
   /**
    * Reload the extension. This is used to trigger extension reload from a page context by E2E
    * tests.
@@ -330,12 +113,12 @@ type StateHooks = {
   getPerpsStreamManager?: () => unknown;
 };
 
-export declare global {
+declare global {
   var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: Sentry | undefined;
 
-  var chrome: Chrome;
+  var chrome: typeof chrome;
 
   var ethereumProvider: Provider;
 

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import type { Hex } from '@metamask/utils';
 import { useNavigate, useParams, Navigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   ButtonIcon,
@@ -22,6 +22,7 @@ import {
 } from '../../selectors/snaps/address-book';
 import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import { removeFromAddressBook } from '../../store/actions';
+import { useDispatch } from '../../store/hooks';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,

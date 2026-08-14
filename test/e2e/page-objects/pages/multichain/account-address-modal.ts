@@ -1,11 +1,24 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Single-address QR overlay: full address and view-on-explorer.
+ *
+ * Screen: address QR modal opened from the multichain address list (not a
+ * dedicated hash route).
+ * Owns: reading the displayed address, view-on-Etherscan presence, and close /
+ * back.
+ * Boundaries: the QR modal only. The per-network address list is
+ * `AddressListModal`.
+ * Related: `AddressListModal` (how tests open this overlay).
+ *
+ * @see ui/components/multichain-accounts/address-qr-code-modal/address-qr-code-modal.tsx
+ */
 class AccountAddressModal {
-  private driver: Driver;
-
   private readonly accountAddress = '[data-testid="account-address"]';
 
   private readonly backButton = '[aria-label="Close"]';
+
+  private driver: Driver;
 
   private readonly viewOnEtherscanButton = {
     css: 'button',
@@ -37,6 +50,14 @@ class AccountAddressModal {
   }
 
   /**
+   * Verify the View on Etherscan button is present
+   */
+  async checkViewOnEtherscanButton(): Promise<void> {
+    console.log('Verifying View on Etherscan button');
+    await this.driver.findElement(this.viewOnEtherscanButton);
+  }
+
+  /**
    * Get the account address from the modal
    */
   async getAccountAddress(): Promise<string> {
@@ -56,14 +77,6 @@ class AccountAddressModal {
    */
   async goBack(): Promise<void> {
     await this.driver.clickElement(this.backButton);
-  }
-
-  /**
-   * Verify the View on Etherscan button is present
-   */
-  async checkViewOnEtherscanButton(): Promise<void> {
-    console.log('Verifying View on Etherscan button');
-    await this.driver.findElement(this.viewOnEtherscanButton);
   }
 }
 

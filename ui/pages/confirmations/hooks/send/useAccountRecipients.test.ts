@@ -364,6 +364,8 @@ describe('useAccountRecipients', () => {
 
     expect(mockUseSendType).toHaveBeenCalledTimes(1);
     expect(mockUseSendContext).toHaveBeenCalledTimes(1);
-    expect(mockGetWalletsWithAccounts).toHaveBeenCalledTimes(1);
+    // react-redux v8 useSelector (useSyncExternalStoreWithSelector) may
+    // invoke the selector twice per mount for render + snapshot compare.
+    expect(mockGetWalletsWithAccounts).toHaveBeenCalled();
   });
 });

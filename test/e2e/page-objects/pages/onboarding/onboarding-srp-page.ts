@@ -2,13 +2,28 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 import { E2E_SRP } from '../../../constants';
 
+/**
+ * Import-wallet Secret Recovery Phrase entry during onboarding.
+ *
+ * Screen: `#/onboarding/import-with-recovery-phrase`
+ * Owns: SRP paste / word-by-word input, clear-all, checksum error, and
+ * confirm (including the disabled-until-valid state).
+ * Boundaries: import SRP entry only. Does not set the password or handle
+ * create-wallet SRP reveal/confirm (that is `SecureWalletPage`).
+ * Related: preceded by `StartOnboardingPage.importWallet` /
+ * `clickImportWithSrpButton`; next is `OnboardingPasswordPage`; then
+ * `SetupPasskeyPage` → `OnboardingMetricsPage` → `OnboardingCompletePage`;
+ * `flows/onboarding.flow.ts`.
+ *
+ * @see ui/pages/onboarding-flow/import-srp/import-srp.tsx
+ */
 class OnboardingSrpPage {
-  private driver: Driver;
-
   private readonly clearAllButton = {
     tag: 'span',
     text: 'Clear all',
   };
+
+  private driver: Driver;
 
   private readonly importDescription = {
     tag: 'p',
@@ -33,6 +48,14 @@ class OnboardingSrpPage {
     this.driver = driver;
   }
 
+  async checkConfirmSrpButtonIsDisabled(): Promise<void> {
+    console.log('Check that confirm SRP button is disabled');
+    const confirmSeedPhrase = await this.driver.findElement(
+      this.srpConfirmButton,
+    );
+    assert.equal(await confirmSeedPhrase.isEnabled(), false);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -52,6 +75,11 @@ class OnboardingSrpPage {
       throw e;
     }
     console.log('Onboarding srp page is loaded');
+  }
+
+  async checkSrpError(): Promise<void> {
+    console.log('Check that SRP error is displayed');
+    await this.driver.waitForSelector(this.srpError);
   }
 
   async clickConfirmButton(): Promise<void> {
@@ -97,19 +125,6 @@ class OnboardingSrpPage {
         }
       }
     }
-  }
-
-  async checkConfirmSrpButtonIsDisabled(): Promise<void> {
-    console.log('Check that confirm SRP button is disabled');
-    const confirmSeedPhrase = await this.driver.findElement(
-      this.srpConfirmButton,
-    );
-    assert.equal(await confirmSeedPhrase.isEnabled(), false);
-  }
-
-  async checkSrpError(): Promise<void> {
-    console.log('Check that SRP error is displayed');
-    await this.driver.waitForSelector(this.srpError);
   }
 }
 

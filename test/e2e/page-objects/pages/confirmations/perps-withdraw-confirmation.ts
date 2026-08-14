@@ -8,13 +8,20 @@ import { Driver } from '../../../webdriver/driver';
 const QUOTE_READY_TIMEOUT = 30_000;
 
 /**
- * Page object for the Perps Withdraw confirmation flow.
+ * The Perps Withdraw confirmation: quote-backed amount, fees, and confirm.
+ *
+ * Screen: wallet-initiated confirmation layered after
+ * `PerpsWithdrawPage` submit (not a `#/perps/*` route of its own).
+ * Owns: available balance and amount input, pay-with / receive / bridge-time
+ * rows, confirm button enabled/disabled and label, and header back.
+ * Boundaries: the withdraw form before confirmation belongs to
+ * `PerpsWithdrawPage`. This object starts once the confirmation header is
+ * shown and the quote can settle.
+ * Related: `PerpsWithdrawPage` (how tests get here).
  *
  * @see ui/pages/confirmations/components/confirm/info/perps-withdraw-info/perps-withdraw-info.tsx
  */
 export class PerpsWithdrawConfirmation {
-  private readonly driver: Driver;
-
   private readonly amountInput = { testId: 'custom-amount-input' };
 
   private readonly bridgeTimeRow = { testId: 'bridge-time-row' };
@@ -27,6 +34,8 @@ export class PerpsWithdrawConfirmation {
     testId: 'custom-amount-info',
     text,
   });
+
+  private readonly driver: Driver;
 
   private readonly headerBackButton = {
     testId: 'wallet-initiated-header-back-button',
@@ -117,7 +126,9 @@ export class PerpsWithdrawConfirmation {
   }
 
   async clickWithdraw(): Promise<void> {
-    await this.driver.clickElement(this.confirmButton);
+    // Firefox WebDriver often reports a successful element.click() here without
+    // firing the React handler, leaving the confirmation unapproved.
+    await this.driver.clickElementUsingMouseMove(this.confirmButton);
   }
 
   async fillAmount(amount: string): Promise<void> {

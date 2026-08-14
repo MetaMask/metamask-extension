@@ -1,4 +1,5 @@
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import {
   selectTransactionDataByTransactionId,
   selectTransactionPayTotalsByTransactionId,
@@ -8,6 +9,8 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   selectTransactionPaySourceAmountsByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
+  selectTransactionPayAccountOverrideByTransactionId,
+  selectPaymentOverrideByTransactionId,
   TransactionPayState,
 } from './transactionPayController';
 
@@ -255,6 +258,70 @@ describe('transactionPayController selectors', () => {
       );
 
       expect(result).toBe(false);
+    });
+  });
+
+  describe('selectTransactionPayAccountOverrideByTransactionId', () => {
+    const ACCOUNT_OVERRIDE =
+      '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+
+    it('returns accountOverride when present', () => {
+      const state = createMockState({ accountOverride: ACCOUNT_OVERRIDE });
+
+      const result = selectTransactionPayAccountOverrideByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBe(ACCOUNT_OVERRIDE);
+    });
+
+    it('returns undefined when accountOverride is absent', () => {
+      const state = createMockState({ isLoading: false });
+
+      const result = selectTransactionPayAccountOverrideByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when transaction data does not exist', () => {
+      const state = createMockState();
+
+      const result = selectTransactionPayAccountOverrideByTransactionId(
+        state,
+        'non-existent-id',
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('selectPaymentOverrideByTransactionId', () => {
+    it('returns paymentOverride when present', () => {
+      const state = createMockState({
+        paymentOverride: PaymentOverride.MoneyAccount,
+      });
+
+      const result = selectPaymentOverrideByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBe(PaymentOverride.MoneyAccount);
+    });
+
+    it('returns undefined when paymentOverride is absent', () => {
+      const state = createMockState({ isLoading: false });
+
+      const result = selectPaymentOverrideByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBeUndefined();
     });
   });
 });

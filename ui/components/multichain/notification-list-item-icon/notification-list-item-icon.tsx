@@ -109,7 +109,7 @@ const getBadge = (badge: BadgeProps, children: JSX.Element): JSX.Element => {
           iconName={badge.icon}
           size={AvatarIconSize.Sm}
           severity={AvatarIconSeverity.Info}
-          className="border-2 border-background-default"
+          className="border-2 border-background-default bg-info-default"
           iconProps={{
             color: IconColor.InfoInverse,
             size: IconSize.Xs,

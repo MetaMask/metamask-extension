@@ -24,6 +24,7 @@ import {
   createParameterizedSelector,
   createParameterizedShallowEqualSelector,
 } from '../../../shared/lib/selectors/selector-creators';
+import { EMPTY_ARRAY } from '../shared';
 import {
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForActiveTab,
@@ -621,33 +622,32 @@ export const getMultichainAccountsByWalletId = createSelector(
  * @param groupId - The ID of the account group.
  * @returns Array of internal accounts in the specified group, or empty array if not found.
  */
-export const getInternalAccountsFromGroupById = createParameterizedSelector(
-  GROUP_LRU_CACHE_SIZE,
-)(
-  getAccountTree,
-  getInternalAccountsObject,
-  (_, groupId: AccountGroupId) => groupId,
-  (
-    accountTree: AccountTreeState,
-    internalAccounts: Record<AccountId, InternalAccount>,
-    groupId: AccountGroupId | null,
-  ): InternalAccount[] => {
-    if (!groupId) {
-      return [];
-    }
+export const getInternalAccountsFromGroupById =
+  createParameterizedShallowEqualSelector(GROUP_LRU_CACHE_SIZE)(
+    getAccountTree,
+    getInternalAccountsObject,
+    (_, groupId: AccountGroupId) => groupId,
+    (
+      accountTree: AccountTreeState,
+      internalAccounts: Record<AccountId, InternalAccount>,
+      groupId: AccountGroupId | null,
+    ): InternalAccount[] => {
+      if (!groupId) {
+        return EMPTY_ARRAY;
+      }
 
-    const { wallets } = accountTree;
-    const group = getGroupByGroupId(wallets, groupId);
+      const { wallets } = accountTree;
+      const group = getGroupByGroupId(wallets, groupId);
 
-    if (!group) {
-      return [];
-    }
+      if (!group) {
+        return EMPTY_ARRAY;
+      }
 
-    return group.accounts
-      .map((accountId) => internalAccounts[accountId])
-      .filter((account): account is InternalAccount => Boolean(account));
-  },
-);
+      return group.accounts
+        .map((accountId) => internalAccounts[accountId])
+        .filter((account): account is InternalAccount => Boolean(account));
+    },
+  );
 
 /**
  * Selector to get account groups by a list of addresses.

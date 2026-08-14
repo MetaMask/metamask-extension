@@ -1,9 +1,17 @@
-import type { PersistenceManager as PersistenceManagerType } from '../../../shared/lib/stores/persistence-manager';
+import type {
+  PersistenceManager as PersistenceManagerType,
+  WriteRetryRecoveredEvent,
+} from '../../../shared/lib/stores/persistence-manager';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 
 const mockGet = jest.fn();
 const mockGetBackup = jest.fn();
 const mockCleanUpMostRecentRetrievedState = jest.fn();
 const mockPersistenceOn = jest.fn();
+const mockTrackEarlySegmentEvent = jest.fn();
 let mockMostRecentRetrievedState: unknown = null;
 
 jest.mock('../platforms/extension', () => {
@@ -22,6 +30,10 @@ jest.mock('../constants/sentry-state', () => ({
 
 jest.mock('../../../shared/lib/object.utils', () => ({
   maskObject: jest.fn((obj) => obj),
+}));
+
+jest.mock('./segment/custom-segment-tracking', () => ({
+  trackEarlySegmentEvent: mockTrackEarlySegmentEvent,
 }));
 
 jest.mock('../../../shared/lib/stores/extension-store', () => {
@@ -79,6 +91,7 @@ describe('setup-initial-state-hooks', () => {
     mockMostRecentRetrievedState = null;
     mockCleanUpMostRecentRetrievedState.mockClear();
     mockPersistenceOn.mockClear();
+    mockTrackEarlySegmentEvent.mockClear();
     globalThis.stateHooks = {} as typeof stateHooks;
   });
 
@@ -177,7 +190,7 @@ describe('setup-initial-state-hooks', () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
 
-      expect(mockPersistenceOn).toHaveBeenCalledTimes(3);
+      expect(mockPersistenceOn).toHaveBeenCalledTimes(4);
       expect(mockPersistenceOn).toHaveBeenCalledWith(
         'vaultCorruptionDetected',
         expect.any(Function),
@@ -190,6 +203,50 @@ describe('setup-initial-state-hooks', () => {
         'splitStateMigrationFailed',
         expect.any(Function),
       );
+      expect(mockPersistenceOn).toHaveBeenCalledWith(
+        'writeRetryRecovered',
+        expect.any(Function),
+      );
+    });
+
+    it('tracks write retry recovery events to Segment', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      const metricsState = {
+        AnalyticsController: {
+          optedIn: true,
+          analyticsId: 'test-metrics-id',
+        },
+      };
+      globalThis.stateHooks.getSentryAppState = () => metricsState;
+
+      const writeRetryRecoveredHandler = mockPersistenceOn.mock.calls.find(
+        ([eventName]) => eventName === 'writeRetryRecovered',
+      )?.[1] as (payload: WriteRetryRecoveredEvent) => void;
+
+      writeRetryRecoveredHandler({
+        event: 'persist-retry-recovered',
+        firstErrorMessage: 'Database is shutting down',
+        firstErrorName: 'Error',
+        retryDelayMs: 500,
+      });
+
+      expect(mockTrackEarlySegmentEvent).toHaveBeenCalledWith({
+        state: metricsState,
+        event: MetaMetricsEventName.DataPersistenceWriteRetryRecovered,
+        category: MetaMetricsEventCategory.Error,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          persistence_event: 'persist-retry-recovered',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          first_error_message: 'Database is shutting down',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          first_error_name: 'Error',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          retry_delay_ms: 500,
+        },
+      });
     });
   });
 

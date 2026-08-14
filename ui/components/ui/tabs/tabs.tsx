@@ -147,6 +147,114 @@ export const Tabs = <TKey extends string = string>({
     }
   };
 
+  /**
+   * Returns indices of tabs that are not disabled, for keyboard navigation.
+   */
+  const getEnabledTabIndices = (): number[] => {
+    return getValidChildren.reduce<number[]>((indices, child, index) => {
+      if (!child.props.disabled) {
+        indices.push(index);
+      }
+      return indices;
+    }, []);
+  };
+
+  /**
+   * Focuses the tab button at the given index within the tab list.
+   *
+   * @param index - Zero-based index of the tab to focus.
+   */
+  const focusTabAtIndex = (index: number): void => {
+    const tabs =
+      tabListRef.current?.querySelectorAll<HTMLElement>('[role="tab"]');
+    tabs?.[index]?.focus();
+  };
+
+  /**
+   * Activates and focuses the tab at the given index if it is enabled.
+   * Follows the WAI-ARIA Tabs "automatic activation" pattern used by
+   * Chakra UI and Radix UI: arrow keys both move focus and select the tab.
+   *
+   * @param index - Zero-based index of the tab to activate.
+   * @see https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
+   */
+  const activateTabByIndex = (index: number): void => {
+    const child = getValidChildren[index];
+    if (!child || child.props.disabled) {
+      return;
+    }
+
+    handleTabClick(index, child.props.tabKey);
+    focusTabAtIndex(index);
+  };
+
+  /**
+   * Keyboard handler for the tab list (WAI-ARIA Tabs pattern).
+   * - ArrowRight / ArrowLeft: move to next / previous enabled tab (wraps)
+   * - Home / End: first / last enabled tab
+   * Disabled tabs are skipped.
+   *
+   * @param event - Keyboard event from the tablist.
+   * @see https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
+   * @see https://chakra-ui.com/docs/components/tabs
+   * @see https://www.radix-ui.com/primitives/docs/components/tabs
+   */
+  const handleTabListKeyDown = (
+    event: React.KeyboardEvent<HTMLDivElement>,
+  ): void => {
+    const enabledIndices = getEnabledTabIndices();
+    if (enabledIndices.length === 0) {
+      return;
+    }
+
+    let currentEnabledPos = enabledIndices.indexOf(clampedIndex);
+    if (currentEnabledPos === -1) {
+      // Active tab may be disabled; fall back to the nearest enabled tab
+      // before the active index, or the first enabled tab.
+      currentEnabledPos = enabledIndices.findLastIndex(
+        (index) => index < clampedIndex,
+      );
+      if (currentEnabledPos === -1) {
+        currentEnabledPos = 0;
+      }
+    }
+
+    let nextIndex: number | undefined;
+
+    switch (event.key) {
+      case 'ArrowRight': {
+        event.preventDefault();
+        const nextPos = (currentEnabledPos + 1) % enabledIndices.length;
+        nextIndex = enabledIndices[nextPos];
+        break;
+      }
+      case 'ArrowLeft': {
+        event.preventDefault();
+        const nextPos =
+          (currentEnabledPos - 1 + enabledIndices.length) %
+          enabledIndices.length;
+        nextIndex = enabledIndices[nextPos];
+        break;
+      }
+      case 'Home': {
+        event.preventDefault();
+        nextIndex = enabledIndices[0];
+        break;
+      }
+      case 'End': {
+        event.preventDefault();
+        nextIndex = enabledIndices.at(-1);
+        break;
+      }
+      default:
+        return;
+    }
+
+    if (nextIndex !== undefined) {
+      activateTabByIndex(nextIndex);
+    }
+  };
+
   const renderTabs = (): React.ReactNode => {
     const validChildren = getValidChildren;
     const numberOfTabs = validChildren.length;
@@ -172,7 +280,11 @@ export const Tabs = <TKey extends string = string>({
     }
 
     const activeChild = validChildren[clampedIndex];
-    return activeChild?.props.children || null;
+    return (
+      <React.Fragment key={activeChild.props.tabKey}>
+        {activeChild.props.children}
+      </React.Fragment>
+    );
   };
 
   return (
@@ -185,6 +297,7 @@ export const Tabs = <TKey extends string = string>({
         backgroundColor={BoxBackgroundColor.BackgroundDefault}
         gap={4}
         {...tabListProps}
+        onKeyDown={handleTabListKeyDown}
       >
         {renderTabs()}
       </Box>

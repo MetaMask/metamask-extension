@@ -24,8 +24,9 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profile-metrics-controller';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -63,6 +64,11 @@ import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state
 import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type { Preferences } from '../../../shared/types/preferences';
+import {
+  createHardwareWalletError,
+  HardwareWalletType,
+  toHardwareWalletError,
+} from '../../../shared/lib/hardware-wallets';
 import { LegacyBackgroundApiServiceSetLockedAction } from '../services/legacy-background-api-service-method-action-types';
 import type {
   PreferencesControllerGetStateAction,
@@ -71,7 +77,7 @@ import type {
 import { AppStateControllerMethodActions } from './app-state-controller-method-action-types';
 
 export type DappSwapComparisonData = {
-  quotes?: QuoteResponse[];
+  quotes?: QuoteResponseV1[];
   latency?: number;
   commands?: string;
   error?: string;
@@ -1477,11 +1483,12 @@ export class AppStateController extends BaseController<
   };
 
   /**
-   * A setter for the currentPopupId which indicates the id of popup window that's currently active
+   * A setter for the currentPopupId which indicates the id of popup window that's currently active.
+   * Pass `undefined` to clear when the popup is closed.
    *
    * @param currentPopupId
    */
-  setCurrentPopupId(currentPopupId: number): void {
+  setCurrentPopupId(currentPopupId: number | undefined): void {
     this.update((state) => {
       state.currentPopupId = currentPopupId;
     });
@@ -1592,10 +1599,14 @@ export class AppStateController extends BaseController<
    * Cancels the current QR code scan, if one is in progress.
    * This will reject the promise with an error.
    *
-   * @param error - The error to reject the promise with.
+   * @param error - The error (or serialized form) to reject the promise with.
+   * Callers across the extension-port boundary may pass a plain string or a
+   * serialized `HardwareWalletError` JSON shape because `Error` instances do
+   * not survive port serialization. Missing payloads default to
+   * `ErrorCode.UserCancelled`.
    * @throws If no QR code scan is in progress.
    */
-  cancelQrCodeScan(error?: Error): void {
+  cancelQrCodeScan(error?: unknown): void {
     if (!this.#qrCodeScanPromise) {
       throw new Error('No QR code scan is in progress.');
     }
@@ -1605,7 +1616,17 @@ export class AppStateController extends BaseController<
       state.lastQrScanCompletedSuccessfully = false;
     });
 
-    this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));
+    this.#qrCodeScanPromise.reject(
+      toHardwareWalletError(
+        error ??
+          createHardwareWalletError(
+            ErrorCode.UserCancelled,
+            HardwareWalletType.Qr,
+            'Scan cancelled',
+          ),
+        HardwareWalletType.Qr,
+      ),
+    );
     this.#qrCodeScanPromise = null;
   }
 

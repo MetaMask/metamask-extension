@@ -1,16 +1,26 @@
-import { useCallback, useMemo, type ChangeEvent } from 'react';
+import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import {
+  getInternalOrderCode,
+  normalizeProviderCode,
+} from '@metamask/ramps-controller';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
-import { RAMPS_PAYMENT_METHOD_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+  RAMPS_PAYMENT_METHOD_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
+import { showBuyTabOpenedToast } from '../../../../helpers/utils/show-buy-tab-opened-toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
+import { watchRampsCheckoutTab } from '../../../../store/controller-actions/ramps-controller';
 import {
   findSelectedQuote,
   isTokenStateSettled,
@@ -66,6 +76,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedPaymentMethod,
     paymentMethods,
     paymentMethodsStatus,
+    getBuyWidgetData,
   } = useRampsController();
 
   const intentAssetId = (location.state as BuildQuoteLocationState | null)
@@ -157,7 +168,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   );
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handlePaymentMethodPress = useCallback(() => {
@@ -174,12 +185,56 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     hasQuoteFetchError,
   });
 
-  const handleContinue = useCallback(() => {
-    if (!canContinue || !selectedQuote) {
+  const [isContinuing, setIsContinuing] = useState(false);
+  const [continueError, setContinueError] = useState<string | null>(null);
+
+  const handleContinue = useCallback(async () => {
+    if (!canContinue || !selectedQuote || isContinuing) {
       return;
     }
-    return undefined;
-  }, [canContinue, selectedQuote]);
+    setContinueError(null);
+    setIsContinuing(true);
+    try {
+      const widget = await getBuyWidgetData(selectedQuote);
+      if (!widget?.url) {
+        setContinueError(t('rampsBuyWidgetError'));
+        return;
+      }
+
+      const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
+      const orderCode = widget.orderId
+        ? getInternalOrderCode(widget.orderId)
+        : undefined;
+
+      // Open + watch in the background so popup-mode UI can close when the
+      // provider tab opens without losing the callback listener.
+      await watchRampsCheckoutTab({
+        url: widget.url,
+        providerCode,
+        walletAddress,
+        orderCode,
+      });
+
+      navigate(DEFAULT_ROUTE);
+      showBuyTabOpenedToast(
+        t('buyTabOpenedToastText'),
+        t('buyTabOpenedToastDescription'),
+      );
+    } catch (error) {
+      setContinueError(parseUserFacingError(error, t('rampsBuyWidgetError')));
+    } finally {
+      setIsContinuing(false);
+    }
+  }, [
+    canContinue,
+    getBuyWidgetData,
+    isContinuing,
+    navigate,
+    selectedProvider,
+    selectedQuote,
+    t,
+    walletAddress,
+  ]);
 
   const viewKind = resolveBuildQuoteViewKind({
     intentAssetId,
@@ -220,11 +275,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       paymentMethodsStatus === 'loading' &&
       paymentMethods.length === 0 &&
       !selectedPaymentMethod,
-    displayedQuoteError,
-    // Keep the known provider visible while quotes refresh; loading is shown
-    // on the Continue button instead of replacing this label.
+    displayedQuoteError: continueError ?? displayedQuoteError,
     providerStatusLabel: providerLabel,
-    isQuoteLoading,
+    isQuoteLoading: isQuoteLoading || isContinuing,
     canContinue,
     handleBack,
     handlePaymentMethodPress,

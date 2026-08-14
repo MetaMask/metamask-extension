@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+  useTransition,
 } from 'react';
 
 import {
@@ -11,7 +12,7 @@ import {
   AccountWalletId,
   AccountWalletType,
 } from '@metamask/account-api';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
 import {
@@ -60,8 +61,10 @@ import {
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
+import { EMPTY_ARRAY } from '../../../selectors/shared';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
+import { useDispatch } from '../../../store/hooks';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -111,6 +114,7 @@ export const MultichainAccountList = ({
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
@@ -150,7 +154,7 @@ export const MultichainAccountList = ({
   const selectConnectedAccountGroups = useCallback(
     (state: MultichainAccountsState) => {
       if (!showConnectionStatus || permittedAddresses.length === 0) {
-        return [];
+        return EMPTY_ARRAY;
       }
       return getAccountGroupsByAddress(state, permittedAddresses);
     },
@@ -256,8 +260,11 @@ export const MultichainAccountList = ({
         ],
       });
 
-      dispatch(setSelectedMultichainAccount(accountGroupId));
-      navigate(DEFAULT_ROUTE);
+      // Defer expensive Home/Routes re-renders so the account list shell stays responsive.
+      startTransition(() => {
+        dispatch(setSelectedMultichainAccount(accountGroupId));
+        navigate(DEFAULT_ROUTE);
+      });
     },
     [
       trackEvent,
@@ -266,16 +273,23 @@ export const MultichainAccountList = ({
       defaultHomeActiveTabName,
       dispatch,
       navigate,
+      startTransition,
     ],
   );
 
   const handleAccountClickToUse = useCallback(
     (accountGroupId: AccountGroupId) => {
+      // Only gate the default switch path; custom handlers own their own pending UX.
+      if (isPending && !handleAccountClick) {
+        return;
+      }
       const handlerToUse = handleAccountClick ?? defaultHandleAccountClick;
       handlerToUse?.(accountGroupId);
     },
-    [handleAccountClick, defaultHandleAccountClick],
+    [handleAccountClick, defaultHandleAccountClick, isPending],
   );
+
+  const isSwitchPending = isPending && !handleAccountClick;
 
   const renderAccountCell = useCallback(
     (
@@ -319,6 +333,7 @@ export const MultichainAccountList = ({
             balance={formatCurrencyWithMinThreshold(balance, currency)}
             selected={selectedAccountGroupsSet.has(groupId as AccountGroupId)}
             onClick={handleAccountClickToUse}
+            pending={isSwitchPending}
             connectionStatus={
               connectedStatus as
                 | typeof STATUS_CONNECTED
@@ -340,6 +355,7 @@ export const MultichainAccountList = ({
                     isSelected={selectedAccountGroupsSet.has(
                       groupId as AccountGroupId,
                     )}
+                    isDisabled={isSwitchPending}
                     onChange={() => {
                       handleAccountClickToUse(groupId as AccountGroupId);
                     }}
@@ -369,6 +385,7 @@ export const MultichainAccountList = ({
       showConnectionStatus,
       selectedAccountGroupsSet,
       handleAccountClickToUse,
+      isSwitchPending,
       privacyMode,
       showAccountCheckbox,
       wallets,

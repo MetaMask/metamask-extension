@@ -6,7 +6,10 @@ import {
 import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
 import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
-import type { MetaMetricsEventPayload } from '../../../../shared/constants/metametrics';
+import type {
+  AnalyticsEvent,
+  AnalyticsEventBuildOptions,
+} from '../../../../shared/lib/analytics/create-event-builder';
 import type {
   TraceRequest,
   EndTraceRequest,
@@ -159,19 +162,12 @@ export type OAuthServiceOptions = {
   bufferedEndTrace: (request: EndTraceRequest) => void;
 
   /**
-   * Add an event before metrics opt-in (for buffering before user consent)
+   * Track an analytics event built with createEventBuilder.
    */
-  addEventBeforeMetricsOptIn: (event: MetaMetricsEventPayload) => void;
-
-  /**
-   * Get whether the user has completed the analytics onboarding prompt
-   */
-  getCompletedMetaMetricsOnboarding: () => boolean;
-
-  /**
-   * Get whether the user has opted into analytics
-   */
-  getOptedIn: () => boolean;
+  trackEvent: (
+    built: AnalyticsEvent,
+    options?: AnalyticsEventBuildOptions,
+  ) => void;
 
   /**
    * Persist the temporary Telegram profile-sync JWT until the SRP profile is

@@ -238,7 +238,7 @@ describe('MultichainAccountList', () => {
     expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
   });
 
-  it('marks only the selected account with a check icon and dispatches action on click', () => {
+  it('marks only the selected account with a check icon and dispatches action on click', async () => {
     renderComponent();
 
     // With default props, checkboxes should not be shown (showAccountCheckbox defaults to false)
@@ -256,13 +256,34 @@ describe('MultichainAccountList', () => {
     const accountCell = screen.getByTestId(
       `multichain-account-cell-${walletTwoGroupId}`,
     );
-    accountCell.click();
+    // useTransition schedules pending-state updates that must flush inside act
+    await act(async () => {
+      fireEvent.click(accountCell);
+    });
 
     // Verify that the action was dispatched with the correct account group ID
     expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
       walletTwoGroupId,
     );
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('does not wrap custom handleAccountClick in the default switch transition gate', async () => {
+    const customHandleAccountClick = jest.fn();
+    renderComponent({
+      handleAccountClick: customHandleAccountClick,
+    });
+
+    const accountCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    await act(async () => {
+      fireEvent.click(accountCell);
+    });
+
+    expect(customHandleAccountClick).toHaveBeenCalledWith(walletTwoGroupId);
+    expect(mockSetSelectedMultichainAccount).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('updates selected account when selectedAccountGroup changes', () => {

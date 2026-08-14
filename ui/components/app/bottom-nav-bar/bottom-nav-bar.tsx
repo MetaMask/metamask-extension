@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Icon,
@@ -25,6 +25,7 @@ import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-
 import { getDefaultHomeActiveTabName } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { resetBridgeController } from '../../../ducks/bridge/actions';
+import { useDispatch } from '../../../store/hooks';
 import { transitionForward } from '../../ui/transition';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
