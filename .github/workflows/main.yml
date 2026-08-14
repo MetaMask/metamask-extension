@@ -447,6 +447,7 @@ jobs:
       checks: write
     uses: ./.github/workflows/ai-pr-risk-analysis.yml
     secrets:
+      AI_ANALYZER_TOKEN: ${{ secrets.AI_ANALYZER_TOKEN }}
       AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
 
   e2e-chrome:

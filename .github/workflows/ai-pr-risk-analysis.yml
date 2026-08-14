@@ -5,16 +5,23 @@ name: AI PR risk analysis
 #
 # The action owns labels / check runs / summaries.
 #
+# Temporary: checkout + local `uses` until public-repo direct invoke
+# (`uses: MetaMask/ai-analyzer@<sha>`) works for this repo. Then drop the
+# checkout step, AI_ANALYZER_TOKEN, and switch to direct `uses`.
+#
 # Pin bump process for MetaMask/ai-analyzer:
 # 1. Pick an immutable commit SHA from main
 #    (https://github.com/MetaMask/ai-analyzer/commits/main) or from a release
 #    (https://github.com/MetaMask/ai-analyzer/releases)
-# 2. Update `uses: MetaMask/ai-analyzer@<sha>`
+# 2. Update the checkout `ref:` (and later `uses: MetaMask/ai-analyzer@<sha>`)
 # 3. Smoke-test Analyze on a PR
 
 on:
   workflow_call:
     secrets:
+      AI_ANALYZER_TOKEN:
+        description: Token with read access to MetaMask/ai-analyzer (private action checkout)
+        required: true
       AI_ANALYZER_LITELLM_KEY:
         description: LiteLLM API key for AI PR analysis
         required: true
@@ -46,8 +53,16 @@ jobs:
           fi
 
       # Pinned immutable SHA — see header pin bump process
+      - name: Checkout AI Analyzer
+        uses: actions/checkout@v6
+        with:
+          repository: MetaMask/ai-analyzer
+          ref: b89c011b1515c193e0c3514393c38ad7066e21c4
+          path: .ai-analyzer-action
+          token: ${{ secrets.AI_ANALYZER_TOKEN }}
+
       - name: Run AI PR Analysis
-        uses: MetaMask/ai-analyzer@b89c011b1515c193e0c3514393c38ad7066e21c4
+        uses: ./.ai-analyzer-action
         with:
           mode: pr-risk-analysis
           config-path: .github/ai-pr-analyzer
