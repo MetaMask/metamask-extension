@@ -142,7 +142,7 @@ export function PayWithRow({
     canEdit,
     from,
     ownerId,
-    isPerpsWithdraw,
+    isPostQuoteWithdraw,
     isMoneyAccountSelected,
     openModal,
     modal,
@@ -156,7 +156,9 @@ export function PayWithRow({
 
   // When the selected account has no funding tokens, show an empty
   // "Select payment method" placeholder instead of an endless skeleton.
-  if (!displayToken && !hasAccountNoFunds) {
+  // Post-quote withdraws also avoid an endless skeleton — destination tokens
+  // may still be importing/enriching; show an empty Receive selector instead.
+  if (!displayToken && !hasAccountNoFunds && !isPostQuoteWithdraw) {
     return <PayWithRowSkeleton />;
   }
 
@@ -182,7 +184,7 @@ export function PayWithRow({
             displayToken={displayToken}
             emptyLabel={t('payWithEmptySelection')}
             balanceText={` (${balanceUsdFormatted})`}
-            showBalance={Boolean(displayToken) && !isPerpsWithdraw}
+            showBalance={Boolean(displayToken) && !isPostQuoteWithdraw}
             showArrow={canEdit && Boolean(from)}
             isMoneyAccountSelected={isMoneyAccountSelected}
           />
