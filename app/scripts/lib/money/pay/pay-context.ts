@@ -14,6 +14,7 @@ import type {
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateTransactionMetadataAction,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -47,10 +48,14 @@ type MoneyPayActions =
   // account (`update-withdraw-amount.ts`).
   | AccountsControllerGetSelectedAccountAction;
 
+// Initiation resolves the created transaction's id from the added transaction
+// rather than the batch result (`submit-placeholder-batch.ts`).
+type MoneyPayEvents = TransactionControllerUnapprovedTransactionAddedEvent;
+
 /**
  * The messenger surface the Money Pay callbacks need.
  */
-export type MoneyPayMessenger = Messenger<string, MoneyPayActions, never>;
+export type MoneyPayMessenger = Messenger<string, MoneyPayActions, MoneyPayEvents>;
 
 /**
  * Everything a Money Pay callback needs before it can build calldata. Resolved

@@ -3,10 +3,10 @@ import {
   buildMoneyAccountDepositPlaceholderBatch,
   getMoneyAccountDepositAssetAddress,
 } from '@metamask/money-account-utils';
-import type { TransactionControllerState } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
+import { submitPlaceholderBatch } from './submit-placeholder-batch';
 
 const LOG_TAG = '[Money Account]';
 
@@ -48,8 +48,7 @@ export async function createMoneyAccountDepositTransaction(
     tellerAddress,
   });
 
-  await messenger.call('TransactionController:addTransactionBatch', {
-    batchId,
+  const transactionId = await submitPlaceholderBatch(messenger, batchId, {
     disableHook: true,
     disableSequential: true,
     disableUpgrade: true,
@@ -70,22 +69,5 @@ export async function createMoneyAccountDepositTransaction(
     transactions: [approveTx, depositTx],
   });
 
-  // `addTransactionBatch` returns only the batch id; the confirmation
-  // navigation needs the transaction id, so resolve it from state. The cast
-  // mirrors `lib/transaction/hooks`: TS cannot narrow this action's return
-  // type out of the messenger union.
-  const { transactions } = messenger.call(
-    'TransactionController:getState',
-  ) as TransactionControllerState;
-  const transaction = transactions.find(
-    (tx) => tx.batchId?.toLowerCase() === batchId.toLowerCase(),
-  );
-
-  if (!transaction) {
-    throw new Error(
-      `${LOG_TAG} Deposit transaction not found after batch creation`,
-    );
-  }
-
-  return { transactionId: transaction.id, batchId };
+  return { transactionId, batchId };
 }

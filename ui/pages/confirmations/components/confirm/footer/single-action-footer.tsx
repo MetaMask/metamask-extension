@@ -3,6 +3,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { Button, ButtonSize } from '@metamask/design-system-react';
+import { getMoneyAccountTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -31,7 +32,11 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
-  const transactionType = currentConfirmation?.type;
+  // Money-account batches carry their meaningful type on a nested
+  // transaction, so resolve it before the button-text lookup.
+  const transactionType =
+    getMoneyAccountTransactionType(currentConfirmation) ??
+    currentConfirmation?.type;
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayLoading();

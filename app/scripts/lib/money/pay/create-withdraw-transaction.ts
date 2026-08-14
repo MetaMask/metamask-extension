@@ -1,9 +1,10 @@
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { buildMoneyAccountWithdrawPlaceholderBatch } from '@metamask/money-account-utils';
-import type { TransactionControllerState } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import { bytesToHex, type Hex } from '@metamask/utils';
+import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
+import { submitPlaceholderBatch } from './submit-placeholder-batch';
 
 const LOG_TAG = '[Money Account]';
 
@@ -15,10 +16,11 @@ const LOG_TAG = '[Money Account]';
  * initiation needs neither the selected account nor a vault read.
  *
  * Mirrors `create-deposit-transaction.ts`, with two differences that follow
- * mobile: no `requiredAssets` (the withdrawal consumes the vault balance,
- * not a payment asset) and no caller-supplied batch id (withdrawals have no
- * deposit-intent map to key; the controller-generated id is used to resolve
- * the created transaction).
+ * mobile: no `requiredAssets` (the withdrawal consumes the vault balance, not
+ * a payment asset) and a locally generated batch id (withdrawals have no
+ * deposit-intent map for the caller to key, but the id must still be known
+ * before submission so `submitPlaceholderBatch` can recognise the
+ * transaction).
  *
  * @param messenger - The messenger to build and submit through.
  * @returns The id of the created transaction, for confirmation navigation.
@@ -39,37 +41,21 @@ export async function createMoneyAccountWithdrawTransaction(
     tellerAddress,
   });
 
-  const { batchId } = await messenger.call(
-    'TransactionController:addTransactionBatch',
-    {
-      disableHook: true,
-      disableSequential: true,
-      disableUpgrade: true,
-      from: moneyAccountAddress,
-      // The gas-station sponsorship exists on Monad mainnet only.
-      isGasFeeSponsored: chainId === CHAIN_IDS.MONAD,
-      isInternal: true,
-      networkClientId,
-      origin: ORIGIN_METAMASK,
-      skipInitialGasEstimate: true,
-      transactions: [withdrawTx, transferTx],
-    },
-  );
+  const batchId = bytesToHex(new Uint8Array(uuidParse(uuidv4())));
 
-  // The cast mirrors `lib/transaction/hooks`: TS cannot narrow this action's
-  // return type out of the messenger union.
-  const { transactions } = messenger.call(
-    'TransactionController:getState',
-  ) as TransactionControllerState;
-  const transaction = transactions.find(
-    (tx) => tx.batchId?.toLowerCase() === batchId.toLowerCase(),
-  );
+  const transactionId = await submitPlaceholderBatch(messenger, batchId, {
+    disableHook: true,
+    disableSequential: true,
+    disableUpgrade: true,
+    from: moneyAccountAddress,
+    // The gas-station sponsorship exists on Monad mainnet only.
+    isGasFeeSponsored: chainId === CHAIN_IDS.MONAD,
+    isInternal: true,
+    networkClientId,
+    origin: ORIGIN_METAMASK,
+    skipInitialGasEstimate: true,
+    transactions: [withdrawTx, transferTx],
+  });
 
-  if (!transaction) {
-    throw new Error(
-      `${LOG_TAG} Withdrawal transaction not found after batch creation`,
-    );
-  }
-
-  return { transactionId: transaction.id, batchId };
+  return { transactionId, batchId };
 }

@@ -4,6 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { getMoneyAccountTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import {
   Box,
   ButtonIcon,
@@ -35,6 +36,12 @@ export const AdvancedDetailsButton = () => {
     dispatch(setConfirmationAdvancedDetailsOpen(value));
   };
 
+  // Money-account batches carry their meaningful type on a nested
+  // transaction, so resolve it before matching by type.
+  const confirmationType =
+    getMoneyAccountTransactionType(currentConfirmation) ??
+    currentConfirmation?.type;
+
   return (
     <Box
       backgroundColor={
@@ -46,12 +53,11 @@ export const AdvancedDetailsButton = () => {
       // hiding through visibility instead of rendering conditionally so the
       // header layout is not affected
       style={
-        currentConfirmation?.type ===
-          TransactionType.shieldSubscriptionApprove ||
-        currentConfirmation?.type === TransactionType.moneyAccountDeposit ||
-        currentConfirmation?.type === TransactionType.moneyAccountWithdraw ||
-        currentConfirmation?.type === TransactionType.perpsDeposit ||
-        currentConfirmation?.type === TransactionType.perpsWithdraw
+        confirmationType === TransactionType.shieldSubscriptionApprove ||
+        confirmationType === TransactionType.moneyAccountDeposit ||
+        confirmationType === TransactionType.moneyAccountWithdraw ||
+        confirmationType === TransactionType.perpsDeposit ||
+        confirmationType === TransactionType.perpsWithdraw
           ? { visibility: 'hidden' }
           : {}
       }

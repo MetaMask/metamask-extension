@@ -1,38 +1,24 @@
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { MUSD_TOKEN_ADDRESS_BY_CHAIN } from '@metamask/money-account-utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
 import { createMoneyAccountWithdrawTransaction } from './create-withdraw-transaction';
 import {
-  createMoneyPayMessengerMock,
+  createPlaceholderBatchMessengerMock,
   MONEY_ACCOUNT_ADDRESS_MOCK,
   NETWORK_CLIENT_ID_MOCK,
   VAULT_CONFIG_MOCK,
-  type MessengerMockOptions,
+  type PlaceholderBatchMockOptions,
 } from './test-mocks';
 
-const BATCH_ID = '0xW1'.replace('W', 'a') as Hex;
 const TRANSACTION_ID = 'transaction-id-mock';
 
 const MUSD_ADDRESS = MUSD_TOKEN_ADDRESS_BY_CHAIN[VAULT_CONFIG_MOCK.chainId];
 
-function setup(options: MessengerMockOptions = {}) {
-  const addTransactionBatch = jest
-    .fn()
-    .mockResolvedValue({ batchId: BATCH_ID });
-
-  const mock = createMoneyPayMessengerMock({
+function setup(options: Omit<PlaceholderBatchMockOptions, 'transactionId'> = {}) {
+  return createPlaceholderBatchMessengerMock({
+    transactionId: TRANSACTION_ID,
     ...options,
-    handlers: {
-      'TransactionController:addTransactionBatch': addTransactionBatch,
-      'TransactionController:getState': () => ({
-        transactions: [{ id: TRANSACTION_ID, batchId: BATCH_ID }],
-      }),
-      ...options.handlers,
-    },
   });
-
-  return { ...mock, addTransactionBatch };
 }
 
 describe('createMoneyAccountWithdrawTransaction', () => {
@@ -41,12 +27,12 @@ describe('createMoneyAccountWithdrawTransaction', () => {
 
     const result = await createMoneyAccountWithdrawTransaction(messenger);
 
+    const request = addTransactionBatch.mock.calls[0][0];
+
     expect(result).toStrictEqual({
       transactionId: TRANSACTION_ID,
-      batchId: BATCH_ID,
+      batchId: request.batchId,
     });
-
-    const request = addTransactionBatch.mock.calls[0][0];
     expect(request).toMatchObject({
       disableHook: true,
       disableSequential: true,
@@ -60,8 +46,9 @@ describe('createMoneyAccountWithdrawTransaction', () => {
     });
     // No requiredAssets: the withdrawal consumes the vault balance.
     expect(request.requiredAssets).toBeUndefined();
-    // No caller batch id: withdrawals have no deposit-intent map to key.
-    expect(request.batchId).toBeUndefined();
+    // The batch id is generated here, not by the controller, so the created
+    // transaction can be recognised as it is added.
+    expect(request.batchId).toMatch(/^0x[0-9a-f]{32}$/u);
 
     const [withdrawTx, transferTx] = request.transactions;
     expect(withdrawTx).toStrictEqual({
@@ -85,15 +72,14 @@ describe('createMoneyAccountWithdrawTransaction', () => {
     expect(addTransactionBatch).not.toHaveBeenCalled();
   });
 
-  it('throws when the created transaction cannot be found', async () => {
-    const { messenger } = setup({
-      handlers: {
-        'TransactionController:getState': () => ({ transactions: [] }),
-      },
+  it('throws when the batch fails before the transaction is added', async () => {
+    const { messenger, unsubscribe } = setup({
+      batchError: new Error('Account does not support EIP-7702'),
     });
 
     await expect(
       createMoneyAccountWithdrawTransaction(messenger),
-    ).rejects.toThrow('Withdrawal transaction not found after batch creation');
+    ).rejects.toThrow('Account does not support EIP-7702');
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
   });
 });

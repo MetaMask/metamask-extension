@@ -6,6 +6,7 @@ import React, { memo, useMemo } from 'react';
 
 import { Skeleton } from '@metamask/design-system-react';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
+import { getMoneyAccountTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -57,7 +58,11 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
-  const transactionType = currentConfirmation?.type;
+  // Money-account batches carry their meaningful type on a nested
+  // transaction, so resolve it before matching against the list.
+  const transactionType =
+    getMoneyAccountTransactionType(currentConfirmation) ??
+    currentConfirmation?.type;
   const shouldHideBanner =
     transactionType && TRANSACTION_TYPES_HIDE_BANNER.includes(transactionType);
 
@@ -278,6 +283,9 @@ const ConfirmTitle = memo(() => {
   const { currentConfirmation } = useConfirmContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
   const { loader } = useConfirmationNavigationOptions();
+  const isMoneyAccountTransaction = Boolean(
+    getMoneyAccountTransactionType(currentConfirmation as TransactionMeta),
+  );
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
@@ -361,7 +369,7 @@ const ConfirmTitle = memo(() => {
   return (
     <>
       <ConfirmBannerAlert ownerId={currentConfirmation.id} />
-      {title ? (
+      {!isMoneyAccountTransaction && title ? (
         <Text
           variant={TextVariant.headingLg}
           paddingTop={4}
@@ -372,10 +380,10 @@ const ConfirmTitle = memo(() => {
           {title}
         </Text>
       ) : (
-        showTitleSkeleton && <TitleSkeleton />
+        !isMoneyAccountTransaction && showTitleSkeleton && <TitleSkeleton />
       )}
-      <NestedTransactionTag />
-      {description !== '' && (
+      {!isMoneyAccountTransaction && <NestedTransactionTag />}
+      {!isMoneyAccountTransaction && description !== '' && (
         <Text
           paddingBottom={4}
           color={TextColor.textAlternative}

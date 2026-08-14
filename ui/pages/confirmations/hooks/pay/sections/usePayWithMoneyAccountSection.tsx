@@ -6,6 +6,7 @@ import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
+import { getMoneyAccountTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
@@ -29,7 +30,11 @@ export function usePayWithMoneyAccountSection({
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
-  const transactionType = currentConfirmation?.type;
+  // Money-account batches carry their meaningful type on a nested
+  // transaction, so resolve it before the feature-flag check.
+  const transactionType =
+    getMoneyAccountTransactionType(currentConfirmation) ??
+    currentConfirmation?.type;
 
   const isEnabled = useSelector((state) =>
     selectIsMoneyAccountTransactionEnabled(state, transactionType),

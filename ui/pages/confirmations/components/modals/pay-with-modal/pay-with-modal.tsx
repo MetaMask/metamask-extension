@@ -33,7 +33,10 @@ import {
   addToken,
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
-import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import {
+  getMoneyAccountTransactionType,
+  isPostQuoteWithdrawTransaction,
+} from '../../../../../../shared/lib/transactions.utils';
 import { useDispatch } from '../../../../../store/hooks';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
@@ -53,8 +56,14 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const blockedTokens = useTransactionPayBlockedTokens();
   const [showOtherAssets, setShowOtherAssets] = useState(false);
 
+  // Money-account batches carry their meaningful type on a nested
+  // transaction, so resolve it before matching by type.
+  const confirmationType =
+    getMoneyAccountTransactionType(currentConfirmation) ??
+    currentConfirmation?.type;
+
   const isMoneyAccountPayEnabled = useSelector((state) =>
-    selectIsMoneyAccountTransactionEnabled(state, currentConfirmation?.type),
+    selectIsMoneyAccountTransactionEnabled(state, confirmationType),
   );
 
   const { filterTokens: musdTokenFilter } = useMusdConversionTokens({
@@ -72,7 +81,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
   const isMoneyAccountDeposit =
-    currentConfirmation?.type === TransactionType.moneyAccountDeposit;
+    confirmationType === TransactionType.moneyAccountDeposit;
   const { renderNoFeeTag } = usePayWithNoFeeToken();
   const tagRenderers = useMemo(
     () => (isMoneyAccountDeposit ? [renderNoFeeTag] : undefined),
