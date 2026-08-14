@@ -66,6 +66,10 @@ import {
 } from './notifications';
 import { getDeFiPositionsControllerMessenger } from './defi-positions';
 import { getDeFiPositionsControllerInitMessenger } from './defi-positions/defi-positions-controller-messenger';
+import {
+  getDeFiPositionsControllerV2Messenger,
+  getDeFiPositionsControllerV2InitMessenger,
+} from './defi-positions/defi-positions-controller-v2-messenger';
 import { getDelegationControllerMessenger } from './delegation/delegation-controller-messenger';
 import {
   getAccountTreeControllerMessenger,
@@ -74,23 +78,11 @@ import {
   getMultichainAccountServiceInitMessenger,
   getSnapAccountServiceMessenger,
 } from './accounts';
-import {
-  getOAuthServiceMessenger,
-  getSeedlessOnboardingControllerMessenger,
-  getSeedlessOnboardingControllerInitMessenger,
-} from './seedless-onboarding';
+import { getOAuthServiceMessenger } from './seedless-onboarding';
 import {
   getSmartTransactionsControllerInitMessenger,
   getSmartTransactionsControllerMessenger,
 } from './smart-transactions-controller-messenger';
-import {
-  getShieldControllerInitMessenger,
-  getShieldControllerMessenger,
-} from './shield/shield-controller-messenger';
-import {
-  getSubscriptionControllerInitMessenger,
-  getSubscriptionControllerMessenger,
-} from './subscription';
 import { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
@@ -128,17 +120,12 @@ import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
-import {
-  getGasFeeControllerInitMessenger,
-  getGasFeeControllerMessenger,
-} from './gas-fee-controller-messenger';
 import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 import {
   getAccountTrackerControllerInitMessenger,
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 import {
   getQrSyncControllerMessenger,
   getQrSyncDataServiceMessenger,
@@ -165,7 +152,7 @@ import {
 } from './permission-controller-messenger';
 import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
-import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
+import { getShieldSubscriptionServiceMessenger } from './subscription/shield-subscription-service-messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
@@ -192,11 +179,6 @@ import {
   getUserOperationControllerMessenger,
 } from './user-operation-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
-import {
-  getClaimsControllerInitMessenger,
-  getClaimsControllerMessenger,
-} from './claims/claims-controller-messenger';
-import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
@@ -209,6 +191,10 @@ import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
+import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
+import { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
+import { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
+import { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -248,11 +234,6 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
-export type { GasFeeControllerInitMessenger } from './gas-fee-controller-messenger';
-export {
-  getGasFeeControllerMessenger,
-  getGasFeeControllerInitMessenger,
-} from './gas-fee-controller-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
@@ -264,7 +245,6 @@ export {
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export {
   getQrSyncControllerMessenger,
@@ -287,6 +267,10 @@ export {
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
+export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
+export { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
+export { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
+export { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
 export type { ComplianceServiceMessenger } from './compliance-service-messenger';
@@ -390,14 +374,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getBridgeStatusControllerMessenger,
     getInitMessenger: noop,
   },
-  ClaimsController: {
-    getMessenger: getClaimsControllerMessenger,
-    getInitMessenger: getClaimsControllerInitMessenger,
-  },
-  ClaimsService: {
-    getMessenger: getClaimsServiceMessenger,
-    getInitMessenger: noop,
-  },
   ClientController: {
     getMessenger: getClientControllerMessenger,
     getInitMessenger: noop,
@@ -442,6 +418,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getDeFiPositionsControllerMessenger,
     getInitMessenger: getDeFiPositionsControllerInitMessenger,
   },
+  DeFiPositionsControllerV2: {
+    getMessenger: getDeFiPositionsControllerV2Messenger,
+    getInitMessenger: getDeFiPositionsControllerV2InitMessenger,
+  },
   DelegationController: {
     getMessenger: getDelegationControllerMessenger,
     getInitMessenger: noop,
@@ -461,10 +441,6 @@ export const MESSENGER_FACTORIES = {
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
-  },
-  GasFeeController: {
-    getMessenger: getGasFeeControllerMessenger,
-    getInitMessenger: getGasFeeControllerInitMessenger,
   },
   GatorPermissionsController: {
     getMessenger: getGatorPermissionsControllerMessenger,
@@ -496,6 +472,18 @@ export const MESSENGER_FACTORIES = {
   },
   MetaMetricsDataDeletionController: {
     getMessenger: getMetaMetricsDataDeletionControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MoneyAccountApiDataService: {
+    getMessenger: getMoneyAccountApiDataServiceMessenger,
+    getInitMessenger: noop,
+  },
+  MoneyAccountAvailabilityService: {
+    getMessenger: getMoneyAccountAvailabilityServiceMessenger,
+    getInitMessenger: noop,
+  },
+  MoneyAccountBalanceService: {
+    getMessenger: getMoneyAccountBalanceServiceMessenger,
     getInitMessenger: noop,
   },
   MultichainAssetsController: {
@@ -542,10 +530,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getOnboardingControllerMessenger,
     getInitMessenger: noop,
   },
-  PasskeyController: {
-    getMessenger: getPasskeyControllerMessenger,
-    getInitMessenger: noop,
-  },
   PermissionController: {
     getMessenger: getPermissionControllerMessenger,
     getInitMessenger: getPermissionControllerInitMessenger,
@@ -570,17 +554,13 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getRatesControllerMessenger,
     getInitMessenger: noop,
   },
-  SeedlessOnboardingController: {
-    getMessenger: getSeedlessOnboardingControllerMessenger,
-    getInitMessenger: getSeedlessOnboardingControllerInitMessenger,
-  },
   SelectedNetworkController: {
     getMessenger: getSelectedNetworkControllerMessenger,
     getInitMessenger: noop,
   },
-  ShieldController: {
-    getMessenger: getShieldControllerMessenger,
-    getInitMessenger: getShieldControllerInitMessenger,
+  SentinelApiService: {
+    getMessenger: getSentinelApiServiceMessenger,
+    getInitMessenger: noop,
   },
   SignatureController: {
     getMessenger: getSignatureControllerMessenger,
@@ -618,12 +598,8 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getSubjectMetadataControllerMessenger,
     getInitMessenger: noop,
   },
-  SubscriptionController: {
-    getMessenger: getSubscriptionControllerMessenger,
-    getInitMessenger: getSubscriptionControllerInitMessenger,
-  },
-  SubscriptionService: {
-    getMessenger: getSubscriptionServiceMessenger,
+  ShieldSubscriptionService: {
+    getMessenger: getShieldSubscriptionServiceMessenger,
     getInitMessenger: noop,
   },
   RewardsDataService: {

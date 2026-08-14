@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type Hex } from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
@@ -41,7 +41,6 @@ import {
   setNextNonce,
   setShowTestNetworks,
   setTokenNetworkFilter,
-  showPermittedNetworkToast,
   updateCustomNonce,
 } from '../../../store/actions';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
@@ -52,6 +51,8 @@ import {
   sortNetworks,
 } from '../../../../shared/lib/network.utils';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -171,7 +172,6 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
             await dispatch(
               addPermittedChain(selectedTabOrigin, network.chainId),
             );
-            dispatch(showPermittedNetworkToast());
           }
 
           await setNetworkClientIdForDomain(

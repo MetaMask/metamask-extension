@@ -10,6 +10,7 @@ import type {
 } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { RampsProviderSelectionScreen } from './provider-selection';
 
 const mockNavigate = jest.fn();
@@ -267,7 +268,7 @@ describe('RampsProviderSelectionScreen', () => {
     });
 
     expect(mockSetSelectedProvider).toHaveBeenCalledWith(moonpay);
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('navigates back from the header', () => {
@@ -278,6 +279,6 @@ describe('RampsProviderSelectionScreen', () => {
     );
 
     fireEvent.click(screen.getByTestId('ramps-provider-selection-back'));
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 });

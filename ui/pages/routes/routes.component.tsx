@@ -2,14 +2,13 @@
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -18,6 +17,7 @@ import Alerts from '../../components/app/alerts';
 
 import {
   ASSET_DETAILS_ROUTE,
+  ASSET_SECURITY_TRUST_ROUTE,
   ASSET_IMAGE_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -41,6 +41,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
   TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
@@ -60,6 +61,7 @@ import {
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
   CUSTOM_TOKEN_IMPORT_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
@@ -72,6 +74,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  PERPS_TRANSACTION_DETAILS_ROUTE,
   PERPS_WITHDRAW_ROUTE,
   ACTIVITY_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
@@ -88,6 +91,7 @@ import {
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
 } from '../../selectors';
+import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
@@ -127,6 +131,7 @@ import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/mult
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
+import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
@@ -165,6 +170,7 @@ const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
 );
+const DiscoverSearchPage = mmLazy(() => import('../discover-search/index.ts'));
 const CustomTokenImportPage = mmLazy(
   () => import('../custom-token-import/index.ts'),
 );
@@ -183,6 +189,9 @@ const ConfirmDecryptMessage = mmLazy(
 const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
 const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
 const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
+const HardwareWalletSignaturesPage = mmLazy(
+  () => import('../hardware-wallets/swap/hardware-wallet-signatures-page.tsx'),
+);
 const PermissionsConnect = mmLazy(
   () => import('../permissions-connect/index.js'),
 );
@@ -203,7 +212,12 @@ const NftFullImage = mmLazy(
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
-const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const SecurityTrustPage = mmLazy(
+  () => import('../asset/security-trust/index.ts'),
+);
+const DeFiPage = mmLazy(
+  () => import('../defi/components/defi-details-page.tsx'),
+);
 const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
 const RampsTokenSelection = mmLazy(
   () => import('../ramps/token-selection/index.ts'),
@@ -250,6 +264,9 @@ const MarketListView = mmLazy(() => import('../perps/market-list/index.tsx'));
 const PerpsActivityPage = mmLazy(
   () => import('../perps/perps-activity-page.tsx'),
 );
+const PerpsTransactionDetailsPage = mmLazy(
+  () => import('../perps/perps-transaction-details-page.tsx'),
+);
 const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
 const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
 const PerpsWithdrawPage = mmLazy(
@@ -280,6 +297,16 @@ const SettingsV2LegacyRedirect = () => {
 
 export const TokenManagementFeatureRoute = () => {
   return <TokenManagementPage />;
+};
+
+export const DiscoverSearchFeatureRoute = () => {
+  const isDiscoverSearchEnabled = useAppSelector(getIsDiscoverSearchEnabled);
+
+  if (!isDiscoverSearchEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
+  return <DiscoverSearchPage />;
 };
 
 export const CustomTokenImportFeatureRoute = () => {
@@ -353,6 +380,14 @@ export const routeConfig = [
         ),
       },
       {
+        path: DISCOVER_SEARCH_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <DiscoverSearchFeatureRoute />
+          </GlobalMenuRouteTransition>
+        ),
+      },
+      {
         path: CUSTOM_TOKEN_IMPORT_ROUTE,
         element: <CustomTokenImportFeatureRoute />,
       },
@@ -393,6 +428,10 @@ export const routeConfig = [
         element: <Confirm />,
       },
       {
+        path: `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+        element: <HardwareWalletSignaturesPage />,
+      },
+      {
         path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
         element: <ConfirmAddSuggestedTokenPage />,
       },
@@ -415,6 +454,10 @@ export const routeConfig = [
       {
         path: ASSET_IMAGE_ROUTE,
         element: <NftFullImage />,
+      },
+      {
+        path: ASSET_SECURITY_TRUST_ROUTE,
+        element: <SecurityTrustPage />,
       },
       {
         path: ASSET_DETAILS_ROUTE,
@@ -585,6 +628,10 @@ export const routeConfig = [
                 element: <PerpsActivityPage />,
               },
               {
+                path: PERPS_TRANSACTION_DETAILS_ROUTE,
+                element: <PerpsTransactionDetailsPage />,
+              },
+              {
                 path: PERPS_MARKET_LIST_ROUTE,
                 element: <MarketListView />,
               },
@@ -673,6 +720,8 @@ export default function Routes() {
   // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
+
+  useNavigateRouteListener();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 

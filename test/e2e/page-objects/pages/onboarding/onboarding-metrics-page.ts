@@ -1,8 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * MetaMetrics / marketing consent during onboarding.
+ *
+ * Screen: `#/onboarding/metametrics` (Firefox may show this before welcome;
+ * Chrome typically shows it after SRP backup or import password/passkey).
+ * Owns: participate-in-MetaMetrics and marketing data-collection checkboxes,
+ * their checked/unchecked assertions, and continue.
+ * Boundaries: consent toggles and continue only. Does not finish onboarding
+ * or open privacy settings.
+ * Related: after `SecureWalletPage` (create) or `SetupPasskeyPage` /
+ * password (import); next is `OnboardingCompletePage`;
+ * `flows/onboarding.flow.ts` (`onboardingMetricsFlow`).
+ *
+ * @see ui/pages/onboarding-flow/metametrics/metametrics.tsx
+ */
 class OnboardingMetricsPage {
-  private driver: Driver;
-
   private readonly continueButton = '[data-testid="metametrics-i-agree"]';
 
   private readonly dataCollectionForMarketingCheckbox =
@@ -11,11 +24,7 @@ class OnboardingMetricsPage {
   private readonly dataParticipateInMetaMetricsCheckbox =
     '[data-testid="metametrics-checkbox"]';
 
-  private readonly participateChecked =
-    '[data-testid="metametrics-checkbox"][data-checked="true"]';
-
-  private readonly participateUnchecked =
-    '[data-testid="metametrics-checkbox"][data-checked="false"]';
+  private driver: Driver;
 
   private readonly marketingChecked =
     '[data-testid="metametrics-data-collection-checkbox"][data-checked="true"]';
@@ -24,6 +33,12 @@ class OnboardingMetricsPage {
     text: 'Help improve MetaMask',
     tag: 'h2',
   };
+
+  private readonly participateChecked =
+    '[data-testid="metametrics-checkbox"][data-checked="true"]';
+
+  private readonly participateUnchecked =
+    '[data-testid="metametrics-checkbox"][data-checked="false"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -45,28 +60,16 @@ class OnboardingMetricsPage {
     console.log('Onboarding metametrics page is loaded');
   }
 
-  async clickOnContinueButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.continueButton);
-  }
-
   async clickDataCollectionForMarketingCheckbox(): Promise<void> {
     await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
   }
 
+  async clickOnContinueButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.continueButton);
+  }
+
   async clickParticipateInMetaMetricsCheckbox(): Promise<void> {
     await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
-  }
-
-  async validateDataCollectionForMarketingIsChecked(): Promise<void> {
-    await this.driver.waitForSelector(this.marketingChecked);
-  }
-
-  async validateParticipateInMetaMetricsIsChecked(): Promise<void> {
-    await this.driver.waitForSelector(this.participateChecked);
-  }
-
-  async validateParticipateInMetaMetricsIsUnchecked(): Promise<void> {
-    await this.driver.waitForSelector(this.participateUnchecked);
   }
 
   /**
@@ -87,6 +90,18 @@ class OnboardingMetricsPage {
   async skipMetricAndContinue(): Promise<void> {
     await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
     await this.driver.clickElement(this.continueButton);
+  }
+
+  async validateDataCollectionForMarketingIsChecked(): Promise<void> {
+    await this.driver.waitForSelector(this.marketingChecked);
+  }
+
+  async validateParticipateInMetaMetricsIsChecked(): Promise<void> {
+    await this.driver.waitForSelector(this.participateChecked);
+  }
+
+  async validateParticipateInMetaMetricsIsUnchecked(): Promise<void> {
+    await this.driver.waitForSelector(this.participateUnchecked);
   }
 }
 

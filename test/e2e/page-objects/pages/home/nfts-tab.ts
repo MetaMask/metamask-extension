@@ -1,5 +1,19 @@
 import HomePage from './homepage';
 
+/**
+ * Home NFTs tab: grid, empty state, and import-NFT modal.
+ *
+ * Screen: `#/` NFTs tab (`account-overview__nfts-tab`), reached via
+ * `HomePage.goToNftTab()`.
+ * Owns: NFT grid items and names, empty state, opening the import modal
+ * (network / address / token id), and import/remove success toasts.
+ * Boundaries: homepage chrome and other tabs stay on `HomePage`. Full NFT
+ * detail screens are outside this object — `clickNFTIconOnActivityList` only
+ * opens one.
+ * Related: `HomePage` (`goToNftTab`).
+ *
+ * @see ui/components/app/assets/nfts/nfts-tab/nfts-tab.tsx
+ */
 class NftsTab extends HomePage {
   private readonly actionBarButton =
     '[data-testid="asset-list-control-bar-action-button"]';
@@ -22,7 +36,7 @@ class NftsTab extends HomePage {
     '[data-testid="test-import-tokens-drop-down-custom-import"]';
 
   private readonly importNftNetworkName =
-    '[data-testid="select-network-item-0x539"]';
+    '[data-testid="network-list-item-0x539"]';
 
   private readonly importNftTokenIdInput = '#token-id';
 

@@ -1,14 +1,8 @@
 import { Token } from '@metamask/assets-controllers';
-import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import {
-  CaipAssetType,
-  Hex,
-  isCaipChainId,
-  parseCaipAssetType,
-} from '@metamask/utils';
+import { CaipAssetType, Hex, isCaipChainId } from '@metamask/utils';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
@@ -18,13 +12,12 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/select
 import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getURLHostName } from '../../../helpers/utils/util';
+import { getFungibleAssetBlockExplorerLink } from '../../../helpers/utils/multichain/blockExplorer';
 import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
+import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
 import { showModal } from '../../../store/actions';
-import { getAssetDetailsAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { useDispatch } from '../../../store/hooks';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -46,12 +39,9 @@ const TokenAsset = ({
   const allNetworks: {
     [key: `0x${string}`]: NetworkConfiguration;
   } = useSelector(getNetworkConfigurationsByChainId);
-  // get the correct rpc url for the current token
-  const defaultIdx = allNetworks[chainId]?.defaultBlockExplorerUrlIndex;
-  const currentTokenBlockExplorer =
-    defaultIdx === undefined
-      ? null
-      : allNetworks[chainId]?.blockExplorerUrls[defaultIdx];
+  const allMultichainNetworkConfigurations = useSelector(
+    getAllMultichainNetworkConfigurations,
+  );
 
   const caipChainId = isCaipChainId(chainId)
     ? chainId
@@ -63,12 +53,6 @@ const TokenAsset = ({
   const { address: walletAddress } = selectedAccount;
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
-
-  const multichainNetwork = useMultichainSelector(
-    getMultichainNetwork,
-    selectedAccount,
-  );
-  const isEvm = isEvmChainId(chainId);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -91,20 +75,16 @@ const TokenAsset = ({
 
   const aggregators = tokenData?.aggregators;
 
-  const tokenTrackerLink = getTokenTrackerLink(
-    token.address,
-    chainId,
-    '',
-    walletAddress,
-    { blockExplorerUrl: currentTokenBlockExplorer ?? '' },
-  );
-
-  const blockExplorerLink = isEvm
-    ? tokenTrackerLink
-    : getAssetDetailsAccountUrl(
-        parseCaipAssetType(address as CaipAssetType).assetReference,
-        multichainNetwork,
-      );
+  const blockExplorerLink =
+    getFungibleAssetBlockExplorerLink({
+      caipChainId,
+      tokenAddress: address as CaipAssetType | string,
+      isNative: false,
+      evmNetworkConfigurations: allNetworks,
+      multichainNetworkConfigurations: allMultichainNetworkConfigurations,
+      fallbackExplorerLabel: 'Block Explorer',
+      walletAddress,
+    })?.url ?? '';
 
   return (
     <AssetPage
@@ -138,7 +118,7 @@ const TokenAsset = ({
                   action: 'Token Options',
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                   // eslint-disable-next-line @typescript-eslint/naming-convention
-                  block_explorer_domain: getURLHostName(tokenTrackerLink),
+                  block_explorer_domain: getURLHostName(blockExplorerLink),
                 })
                 .build(),
             );

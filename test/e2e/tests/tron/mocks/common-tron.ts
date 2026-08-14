@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
+import { getProductionRemoteFlagApiResponse } from '../../../feature-flags';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
@@ -107,6 +108,7 @@ export const BIP44_STAGE_TWO = {
     enabled: true,
     minimumVersion: '13.6.0',
   },
+  tronTestnetsEnabled: true,
 };
 
 export const TRON_SWAP_TOKEN_REGISTRY = {
@@ -189,7 +191,19 @@ export async function mockTronFeatureFlags(
     })
     .thenCallback(() => ({
       statusCode: 200,
-      json: [BIP44_STAGE_TWO],
+      json: [
+        ...getProductionRemoteFlagApiResponse(),
+        BIP44_STAGE_TWO,
+        // The Tron mocks answer `getQuote`, not the SSE `getQuoteStream` that
+        // the production bridge config turns on. An unparseable `bridgeConfig`
+        // resolves to the bridge controller's built-in default, which is what
+        // these tests already ran against when the flag was absent entirely.
+        { bridgeConfig: {} },
+        // Account discovery queries every popular EVM chain, and these fixtures
+        // only mock the Infura endpoint, which are not mocked/redirected as Anvil is off.
+        // Disabling the failover feature to avoid new privacy hosts
+        { corePlatformRpcFailoverMode: 'disabled' },
+      ],
     }));
 }
 
@@ -1263,7 +1277,7 @@ function buildTronTrxToUsdtTrade(grossSrcAmount: string) {
   };
 }
 
-function buildTronQuoteResponse(fixture: TronQuoteFixture) {
+function buildTronQuoteResponseV1(fixture: TronQuoteFixture) {
   const srcAsset = buildTronAsset(fixture.src);
   const destAsset = buildTronAsset(fixture.dest);
   const feeSun = fixture.feeSun ?? 8_750;
@@ -1343,7 +1357,7 @@ export async function mockBridgeGetTronQuoteFor(
     .forGet(/^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u)
     .thenCallback(() => ({
       statusCode: 200,
-      json: [buildTronQuoteResponse(fixture)],
+      json: [buildTronQuoteResponseV1(fixture)],
     }));
 }
 

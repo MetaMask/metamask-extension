@@ -67,7 +67,7 @@ export function PerpsDepositDetails({ item }: Readonly<Props>) {
         <Section>
           <Row
             label={t('status')}
-            value={<TransactionStatus status={item.status} />}
+            value={<TransactionStatus status={item.status} hash={item.hash} />}
           />
 
           <Row label={t('date')} value={formatDateTime(item.timestamp)} />

@@ -14,7 +14,6 @@ import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
   bytesToString,
   CaipAccountId,
-  type CaipAssetType,
   type CaipChainId,
   type Hex,
   type Json,
@@ -58,7 +57,6 @@ import type { NotificationServicesController } from '@metamask/notification-serv
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Immer, Patch } from 'immer';
-import { HandlerType } from '@metamask/snaps-utils';
 import {
   GetAppNameAndVersionResponse,
   AppConfigurationResponse,
@@ -72,6 +70,7 @@ import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-s
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
+import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   BillingPortalResponse,
   GetCryptoApproveTransactionRequest,
@@ -1283,9 +1282,11 @@ export function protectVaultKeyWithPasskey(
   password?: string,
 ): Promise<void> {
   return submitRequestToBackground('protectVaultKeyWithPasskey', [
-    registrationResponse,
-    authenticationResponse,
-    password,
+    {
+      registrationResponse,
+      authenticationResponse,
+      password,
+    },
   ]);
 }
 
@@ -1332,9 +1333,11 @@ export function changePasswordWithPasskeyVerification(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('changePasswordWithPasskeyVerification', [
-      newPassword,
-      authenticationResponse,
-      options,
+      {
+        newPassword,
+        authenticationResponse,
+        options,
+      },
     ]);
   };
 }
@@ -2591,7 +2594,8 @@ export function setSelectedMultichainAccount(
   return async (dispatch, _getState) => {
     log.debug(`background.setSelectedMultichainAccount`);
     try {
-      dispatch(showLoadingIndication());
+      // Fullscreen loading indication removed; callers are responsible for pending UX
+      // (e.g. component-local state, or `useTransition` where appropriate).
       await submitRequestToBackground('setSelectedMultichainAccount', [
         accountGroupId,
       ]);
@@ -2600,8 +2604,6 @@ export function setSelectedMultichainAccount(
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -3563,11 +3565,12 @@ export function createCancelTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createCancelTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
-    const newState = await submitRequestToBackground<
-      MetaMaskReduxState['metamask']
-    >('createCancelTransaction', [
+    await submitRequestToBackground('createCancelTransaction', [
       txId,
       customGasSettings,
       { ...options, actionId },
@@ -3575,9 +3578,7 @@ export function createCancelTransaction(
 
     await forceUpdateMetamaskState(dispatch);
 
-    const currentNetworkTxList = getCurrentNetworkTransactions({
-      metamask: newState,
-    });
+    const currentNetworkTxList = getCurrentNetworkTransactions(getState());
     const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
     return id;
   };
@@ -3590,11 +3591,12 @@ export function createSpeedUpTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createSpeedUpTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
-    const newState = await submitRequestToBackground<
-      MetaMaskReduxState['metamask']
-    >('createSpeedUpTransaction', [
+    await submitRequestToBackground('createSpeedUpTransaction', [
       txId,
       customGasSettings,
       { ...options, actionId },
@@ -3602,9 +3604,7 @@ export function createSpeedUpTransaction(
 
     await forceUpdateMetamaskState(dispatch);
 
-    const currentNetworkTxList = getCurrentNetworkTransactions({
-      metamask: newState,
-    });
+    const currentNetworkTxList = getCurrentNetworkTransactions(getState());
     const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
     return newTx;
@@ -3823,18 +3823,6 @@ export function showImportNftsModal(payload: {
 export function hideImportNftsModal(): Action {
   return {
     type: actionConstants.IMPORT_NFTS_MODAL_CLOSE,
-  };
-}
-
-export function hidePermittedNetworkToast(): Action {
-  return {
-    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE,
-  };
-}
-
-export function showPermittedNetworkToast(): Action {
-  return {
-    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN,
   };
 }
 
@@ -4247,6 +4235,10 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
+export function setShowTickerWidget(value: boolean) {
+  return setPreference('showTickerWidget', value);
+}
+
 export function setDismissSmartAccountSuggestionEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4346,12 +4338,7 @@ export function toggleDefaultView(): ThunkAction<
       }
 
       if (isPopup) {
-        const browserWithSidePanel = browser as typeof browser & {
-          sidePanel?: {
-            open: (options: { windowId: number }) => Promise<void>;
-          };
-        };
-
+        const browserWithSidePanel = chrome;
         if (!browserWithSidePanel?.sidePanel?.open) {
           return;
         }
@@ -6704,14 +6691,18 @@ export function completeQrCodeScan(
   };
 }
 
-export function cancelQrCodeScan(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function cancelQrCodeScan(
+  error?: Error,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('cancelQrCodeScan');
+    // Error class instances do not survive extension-port serialization.
+    // HardwareWalletError is sent as its JSON shape so the background can
+    // reconstruct a typed error; plain Errors are reduced to their message.
+    const cancelPayload = error
+      ? [error instanceof HardwareWalletError ? error.toJSON() : error.message]
+      : [];
+
+    await submitRequestToBackground('cancelQrCodeScan', cancelPayload);
   };
 }
 
@@ -7782,33 +7773,6 @@ function applyPatches(
   return immer.applyPatches(oldState, patches);
 }
 
-export async function sendMultichainTransaction(
-  snapId: string,
-  {
-    account,
-    scope,
-    assetType,
-  }: {
-    account: string;
-    scope: string;
-    assetType?: CaipAssetType;
-  },
-) {
-  await handleSnapRequest({
-    snapId,
-    origin: 'metamask',
-    handler: HandlerType.OnRpcRequest,
-    request: {
-      method: 'startSendTransactionFlow',
-      params: {
-        account,
-        scope,
-        assetId: assetType, // The Solana snap names the parameter `assetId` while it is in fact an `assetType`
-      },
-    },
-  });
-}
-
 export async function getCode(address: Hex, networkClientId: string) {
   return await submitRequestToBackground<string>('getCode', [
     address,
@@ -7836,6 +7800,14 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
 
 export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
   return await submitRequestToBackground<boolean>('isSendBundleSupported', [
+    chainId,
+  ]);
+}
+
+export async function getSentinelNetworkFlags(
+  chainId: Hex,
+): Promise<SentinelNetwork> {
+  return await submitRequestToBackground<boolean>('getSentinelNetworkFlags', [
     chainId,
   ]);
 }
@@ -7890,11 +7862,15 @@ export async function getERC1155BalanceOf(
 export async function applyTransactionContainersExisting(
   transactionId: string,
   containerTypes: TransactionContainerType[],
+  incrementToggleCount = false,
 ) {
-  return await submitRequestToBackground<void>(
-    'applyTransactionContainersExisting',
-    [transactionId, containerTypes],
-  );
+  return await submitRequestToBackground<{
+    enforcedSimulationsSlippage?: number;
+  }>('applyTransactionContainersExisting', [
+    transactionId,
+    containerTypes,
+    incrementToggleCount,
+  ]);
 }
 
 export async function getLayer1GasFeeValue({

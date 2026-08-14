@@ -2,6 +2,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { navigateDeepLinkToExternalRedirect } from '../../page-objects/flows/deep-link.flow';
 import {
   bytesToB64,
   generateECDSAKeyPair,
@@ -37,8 +38,12 @@ describe('Deep Link - External Redirects', function () {
             signed: 'signed with sig_params',
             privateKey: keyPair.privateKey,
           });
-          await driver.openNewURL(signedUrl);
-          await driver.waitForUrl({ url: expectedUrl });
+          await navigateDeepLinkToExternalRedirect(
+            driver,
+            signedUrl,
+            true,
+            expectedUrl,
+          );
 
           await driver.navigate();
           await homePage.checkPageIsLoaded();
@@ -48,8 +53,12 @@ describe('Deep Link - External Redirects', function () {
             route,
             signed: 'unsigned',
           });
-          await driver.openNewURL(unsignedUrl);
-          await driver.waitForUrl({ url: expectedUrl });
+          await navigateDeepLinkToExternalRedirect(
+            driver,
+            unsignedUrl,
+            false,
+            expectedUrl,
+          );
 
           await driver.navigate();
           await homePage.checkPageIsLoaded();
