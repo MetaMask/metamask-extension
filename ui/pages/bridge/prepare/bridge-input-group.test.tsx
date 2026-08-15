@@ -29,14 +29,17 @@ import * as actions from '../../../ducks/bridge/actions';
 import configureStore from '../../../store/store';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
+import type { BridgeToken } from '../../../ducks/bridge/types';
+import BridgeAssetPickerPage from '../asset-picker';
 import { BridgeInputGroup } from './bridge-input-group';
-import BridgeAssetPickerPage from './bridge-asset-picker-page';
 
 /** Matches `data-testid` on asset rows: `bridge-asset--${caipAssetId}` */
 const BRIDGE_ASSET_ROW_TEST_ID = /^bridge-asset--/u;
 
 const mockUseVirtualizer = jest.fn();
 const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+
 const mockTrackUnifiedSwapBridgeEvent = jest.fn();
 
 jest.mock('react-router-dom', () => {
@@ -44,6 +47,7 @@ jest.mock('react-router-dom', () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+    useLocation: () => mockUseLocation(),
   };
 });
 
@@ -143,7 +147,7 @@ const InputGroup = ({
     <BridgeInputGroup
       header={'Swap'}
       token={getFromToken(mockState)}
-      onAssetChange={(asset) => {
+      onAssetChange={(asset: BridgeToken) => {
         actions.setFromToken(asset);
       }}
       networks={getFromChains(mockState)}
@@ -264,6 +268,13 @@ describe('BridgeInputGroup', () => {
         })),
       getTotalSize: () => 78 * tokens.length,
       measureElement: () => 78,
+    });
+    mockUseLocation.mockReturnValue({
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: null,
+      key: 'default',
     });
   });
 
@@ -524,7 +535,10 @@ describe('BridgeInputGroup', () => {
 
     await userEvent.click(screen.getByLabelText(messages.back.message));
 
-    expect(mockNavigate).toHaveBeenCalledWith(SWAP_PATH, { replace: true });
+    expect(mockNavigate).toHaveBeenCalledWith(
+      { pathname: SWAP_PATH, search: '' },
+      { replace: true, state: { token: undefined } },
+    );
   });
 
   it('clears picker flags when browser navigation unmounts the page', async () => {
@@ -538,10 +552,19 @@ describe('BridgeInputGroup', () => {
       'setIsSrcAssetPickerOpen',
     );
 
-    const { unmount } = renderAssetPickerPage(undefined, {
-      isSrcAssetPickerOpen: true,
-      isDestAssetPickerOpen: false,
-    });
+    const { unmount } = renderAssetPickerPage(
+      {
+        metamaskStateOverrides: {
+          featureFlagOverrides: {
+            extensionUxNetworkManagement: false,
+          },
+        },
+      },
+      {
+        isSrcAssetPickerOpen: true,
+        isDestAssetPickerOpen: false,
+      },
+    );
 
     await waitFor(() => {
       expect(
@@ -551,8 +574,8 @@ describe('BridgeInputGroup', () => {
 
     unmount();
 
-    expect(setDestinationPickerOpenSpy).toHaveBeenCalledWith(false);
-    expect(setSourcePickerOpenSpy).toHaveBeenCalledWith(false);
+    expect(setDestinationPickerOpenSpy).not.toHaveBeenCalled();
+    expect(setSourcePickerOpenSpy).not.toHaveBeenCalled();
     setDestinationPickerOpenSpy.mockRestore();
     setSourcePickerOpenSpy.mockRestore();
   });
@@ -644,6 +667,13 @@ describe('BridgeInputGroup', () => {
         tokens.slice(0, 2).concat(tokensWithBalance),
       );
 
+      mockUseLocation.mockReturnValue({
+        pathname: '/',
+        search: isDestination ? '?field=dest' : '',
+        hash: '',
+        state: null,
+        key: 'default',
+      });
       const stateOverrides = {
         metamaskStateOverrides: {
           enabledNetworkMap,

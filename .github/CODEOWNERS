@@ -117,10 +117,20 @@ ui/helpers/utils/permission.js                             @MetaMask/core-platfo
 app/scripts/constants/snaps.ts                             @MetaMask/core-platform
 app/scripts/services/legacy-background-api-service.ts      @MetaMask/core-platform
 app/scripts/services/legacy-background-api-service.test.ts @MetaMask/core-platform
-
+## UI-level messengers
+test/lib/mock-route-messenger.ts                           @MetaMask/core-platform
+test/lib/mock-ui-messenger.ts                              @MetaMask/core-platform
+ui/contexts/route-messenger.ts                             @MetaMask/core-platform
+ui/contexts/ui-messenger.tsx                               @MetaMask/core-platform
+ui/helpers/route-messenger-helpers.test.tsx                @MetaMask/core-platform
+ui/helpers/route-messenger-helpers.tsx                     @MetaMask/core-platform
+ui/hooks/useMessenger.ts                                   @MetaMask/core-platform
+ui/messengers/configs/helpers.ts                           @MetaMask/core-platform
+ui/messengers/route-messenger.ts                           @MetaMask/core-platform
+ui/messengers/ui-messenger.ts                              @MetaMask/core-platform
 
 # Co-owned by Extension Platform and Core Platform
-app/scripts/metamask-controller.js @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/metamask-controller.js              @MetaMask/extension-platform @MetaMask/core-platform
 
 # Co-owned by Confirmations and Core Platform
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform

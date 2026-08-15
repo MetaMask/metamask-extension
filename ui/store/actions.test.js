@@ -170,6 +170,7 @@ describe('Actions', () => {
     background.getAppNameAndVersion = sinon.stub();
     background.getLedgerAppConfiguration = sinon.stub();
     background.getLedgerPublicKey = sinon.stub();
+    background.getLedgerMode = sinon.stub();
     background.unlockHardwareWalletAccount = sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
@@ -976,6 +977,23 @@ describe('Actions', () => {
 
       expect(background.getLedgerPublicKey.callCount).toStrictEqual(1);
       expect(result).toStrictEqual(mockResponse);
+    });
+  });
+
+  describe('#getLedgerMode', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getLedgerMode in background and returns the active handler mode', async () => {
+      background.getLedgerMode.resolves('dmk');
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getLedgerMode();
+
+      expect(background.getLedgerMode.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual('dmk');
     });
   });
 
