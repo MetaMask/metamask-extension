@@ -135,7 +135,6 @@ function render(
   options: {
     disableAutomaticToken?: boolean;
     disablePay?: boolean;
-    hasMax?: boolean;
     hidePayTokenAmount?: boolean;
     availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
     accountNoFundsAlert?: { key: string }[];
@@ -155,7 +154,6 @@ function render(
   const {
     disableAutomaticToken,
     disablePay = false,
-    hasMax = false,
     hidePayTokenAmount = false,
     availableTokens = [MOCK_AVAILABLE_TOKEN],
     accountNoFundsAlert = [],
@@ -254,7 +252,6 @@ function render(
     <CustomAmountInfo
       disableAutomaticToken={disableAutomaticToken}
       disablePay={disablePay}
-      hasMax={hasMax}
       hidePayTokenAmount={hidePayTokenAmount}
     />,
     mockStore(state),
@@ -483,29 +480,27 @@ describe('CustomAmountInfo', () => {
       expect(queryByTestId('percentage-button-100')).not.toBeInTheDocument();
     });
 
-    it('replaces 90% with Max when hasMax is true and the pay token is not native', () => {
+    it('replaces 90% with Max for no-fee (fixed-spread) tokens', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        hasMax: true,
+        isMoneyNoFeeToken: true,
       });
 
       expect(getByTestId('percentage-button-100')).toHaveTextContent('Max');
       expect(queryByTestId('percentage-button-90')).not.toBeInTheDocument();
     });
 
-    it('keeps 90% when hasMax is true but the pay token is native', () => {
+    it('keeps 90% for tokens that are not no-fee', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        hasMax: true,
-        isNativePayToken: true,
+        isMoneyNoFeeToken: false,
       });
 
       expect(getByTestId('percentage-button-90')).toBeInTheDocument();
       expect(queryByTestId('percentage-button-100')).not.toBeInTheDocument();
     });
 
-    it('shows Max for a native pay token on withdraw', () => {
+    it('always shows Max on withdraw, irrespective of the selected token', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        hasMax: true,
-        isNativePayToken: true,
+        isMoneyNoFeeToken: false,
         isWithdraw: true,
       });
 
@@ -513,9 +508,11 @@ describe('CustomAmountInfo', () => {
       expect(queryByTestId('percentage-button-90')).not.toBeInTheDocument();
     });
 
-    it('shows Max for no-fee money-account tokens without hasMax', () => {
+    it('always shows Max on withdraw when the pay token is native', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isMoneyNoFeeToken: true,
+        isMoneyNoFeeToken: false,
+        isNativePayToken: true,
+        isWithdraw: true,
       });
 
       expect(getByTestId('percentage-button-100')).toHaveTextContent('Max');
