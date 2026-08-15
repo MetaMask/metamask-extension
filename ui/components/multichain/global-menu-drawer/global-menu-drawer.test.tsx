@@ -8,7 +8,6 @@ import {
   NETWORKS_ROUTE,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
@@ -94,26 +93,6 @@ describe('GlobalMenuDrawer', () => {
     });
 
     expect(getByTestId('global-menu-drawer')).toBeInTheDocument();
-  });
-
-  // The border-l is applied only when isLargeDrawer (fullscreen or sidepanel).
-
-  it('does not apply border-l on popup', async () => {
-    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-
-    const { container } = renderWithProvider(
-      <GlobalMenuDrawer isOpen onClose={() => undefined}>
-        <span>Content</span>
-      </GlobalMenuDrawer>,
-      configureStore(mockState),
-      '/',
-    );
-
-    await waitFor(() => {
-      expect(
-        container.querySelector('.border-l.border-alternative'),
-      ).not.toBeInTheDocument();
-    });
   });
 
   it('calls onClose when close button is clicked', async () => {

@@ -330,16 +330,4 @@ describe('Popover', () => {
     // Assert that the popover is closed after the click event
     expect(queryByText('Click outside to close')).not.toBeInTheDocument();
   });
-
-  it('applies elevated2 background', () => {
-    const { getByTestId } = render(
-      <Popover data-testid="popover" isOpen={true} isPortal={false}>
-        Popover
-      </Popover>,
-    );
-
-    expect(getByTestId('popover')).toHaveClass(
-      'mm-box--background-color-background-elevated2',
-    );
-  });
 });

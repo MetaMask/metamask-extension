@@ -9,9 +9,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const QRCodeScanner = connect(
-  null,
-  mapDispatchToProps,
-)(QRCodeScannerComponent);
+const QRCodeScanner = connect(null, mapDispatchToProps)(QRCodeScannerComponent);
 
 export default QRCodeScanner;

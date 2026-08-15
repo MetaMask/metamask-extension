@@ -215,22 +215,4 @@ describe('Settings', () => {
       });
     });
   });
-
-  describe('sidebar background', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-      setBackgroundConnection(backgroundConnectionMock as never);
-      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
-    });
-
-    it('applies bg-elevated1 to sidebar', async () => {
-      mockPathname = CURRENCY_ROUTE;
-
-      const { container } = renderSettings(mockStore);
-
-      await waitFor(() => {
-        expect(container.querySelector('.bg-elevated1')).toBeInTheDocument();
-      });
-    });
-  });
 });

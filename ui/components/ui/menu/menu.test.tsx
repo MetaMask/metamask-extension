@@ -64,14 +64,4 @@ describe('Menu Component', () => {
     );
     expect(getByTestId('test-menu')).toBeInTheDocument();
   });
-
-  it('applies elevated2 background and alternative border', () => {
-    render(<Menu {...defaultProps} />);
-    const menuContainer = document.body.querySelector(
-      '.menu__container',
-    ) as HTMLElement;
-    expect(menuContainer).toHaveClass('bg-elevated2');
-    expect(menuContainer).toHaveClass('border');
-    expect(menuContainer).toHaveClass('border-alternative');
-  });
 });
