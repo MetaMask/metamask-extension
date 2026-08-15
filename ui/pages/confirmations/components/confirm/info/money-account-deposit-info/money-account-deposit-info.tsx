@@ -22,7 +22,6 @@ export const MoneyAccountDepositInfo = () => {
       autoFocusAmount
       currency={MONEY_ACCOUNT_DEPOSIT_CURRENCY}
       displayAccountRow
-      hasMax
       hidePayTokenAmount
     />
   );
