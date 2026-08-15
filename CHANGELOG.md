@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.44.0]
+
+### Added
+
+- Added Discover Search for crypto assets, perpetual markets, and stocks behind a feature flag (#45037)
+- Added loading skeletons and no-results suggestions to Discover Search (#45156)
+- Added security indicators and improved navigation in Discover Search (#45223)
+- Added a live order book to the Perps order entry page, including a resizable layout, configurable grouping and denomination, and limit-order price prefills behind a feature flag (#44254)
+- Added transaction-details links to transaction status toasts (#45173)
+- Added support for opening the side panel for dapp transaction confirmations when it is the preferred view (#38964)
+- Allowed swapping the maximum native-token amount on supported networks (#44885)
+
+### Changed
+
+- Updated Discover Search result controls to show the number of additional results and improved its layout and formatting (#45194)
+- Updated the network picker header alignment (#45137)
+- Updated the private-key list layout and copy confirmation state (#45150)
+- Updated the Wallet Activity panel to scroll without moving the settings sidebar (#45138)
+- Updated the phishing protection dependency (#44841)
+- Updated the assets controller dependency (#44903)
+
+### Removed
+
+- Removed the "Simulation has changed" alert from transaction confirmations (#45203)
+
+### Fixed
+
+- Fixed Ledger account imports and signing flows that could remain stuck (#45158)
+- Fixed the maximum native-token send amount from changing when a transaction simulation fails (#45080)
+- Fixed missing token icons when token data does not provide one (#45023)
+- Fixed confirmation details and trust signals from changing or reloading when added protection is toggled (#45198)
+- Fixed Perps order cancellations for orders that are already filled or canceled, and checked live balances before Perps withdrawals (#45067)
+- Fixed duplicate transaction-confirmed toasts for hardware-wallet transactions (#45174)
+- Fixed added protection for transactions that spend nearly the full token or native-token balance (#45110)
+- Fixed missing fiat values for non-EVM activity transactions (#45118)
+
+### Security
+
+- Expanded address security screening to 15 additional networks, including Robinhood Chain and Arc (#45092)
+- Fixed address-poisoning detection to flag lookalikes of token-transfer recipients and avoid flagging token-contract lookalikes (#45112)
+
 ## [13.43.0]
 
 ### Added
@@ -2912,7 +2953,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.43.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.44.0...HEAD
+[13.44.0]: https://github.com/MetaMask/metamask-extension/compare/v13.43.0...v13.44.0
 [13.43.0]: https://github.com/MetaMask/metamask-extension/compare/v13.42.0...v13.43.0
 [13.42.0]: https://github.com/MetaMask/metamask-extension/compare/v13.41.0...v13.42.0
 [13.41.0]: https://github.com/MetaMask/metamask-extension/compare/v13.40.0...v13.41.0
