@@ -91,12 +91,6 @@ export type CustomAmountInfoProps = {
    * letting the user choose which account funds the transaction.
    */
   displayAccountRow?: boolean;
-  /**
-   * When true, the last percentage shortcut is Max instead of 90%, unless the
-   * pay token is native (gas reserve). Also shown automatically for no-fee
-   * money-account tokens. Matches mobile `CustomAmountInfo` `hasMax`.
-   */
-  hasMax?: boolean;
   hidePayTokenAmount?: boolean;
   /**
    * When true, pre-fills the amount field with the max balance on load.
@@ -116,7 +110,6 @@ export const CustomAmountInfo = React.memo(
     disableAutomaticToken,
     disablePay,
     displayAccountRow,
-    hasMax,
     hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
@@ -166,9 +159,10 @@ export const CustomAmountInfo = React.memo(
       currentConfirmation,
       MONEY_ACCOUNT_TRANSACTION_TYPES,
     );
-    const showMax =
-      (Boolean(hasMax) || isMoneyNoFeeToken) &&
-      (isWithdraw || !isNativePayToken);
+    // Withdraw always offers Max. Deposit shows Max only for fixed-spread
+    // ("No fee") tokens; other deposit tokens and native deposit tokens keep
+    // 90% so a gas/fee buffer remains.
+    const showMax = isWithdraw || (isMoneyNoFeeToken && !isNativePayToken);
 
     const handleAmountChange = useCallback(
       (value: string) => {

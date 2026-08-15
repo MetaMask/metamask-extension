@@ -22,6 +22,7 @@ import {
 } from '../../../../store/actions';
 import { useDispatch } from '../../../../store/hooks';
 import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../../constants/musd';
+import { ARBITRUM_USDC } from '../../constants/perps';
 import { parseTokenDetailDecimals } from '../../utils/token';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -139,85 +140,86 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
+    const matchingToken = tokens.find(
+      (token) =>
+        token.address?.toLowerCase() === automaticToken.address.toLowerCase() &&
+        String(token.chainId)?.toLowerCase() ===
+          automaticToken.chainId.toLowerCase(),
+    );
+
+    const isPreferredAutomatic =
+      preferredToken !== undefined &&
+      preferredToken.address.toLowerCase() ===
+        automaticToken.address.toLowerCase() &&
+      preferredToken.chainId.toLowerCase() ===
+        automaticToken.chainId.toLowerCase();
+
+    // Post-quote destinations typically have $0 in-wallet, so they never
+    // enter `availableTokens`. Wait for allowlist enrichment unless this is
+    // the caller-provided preferred token, which we can select immediately.
+    if (isPostQuoteWithdraw && !matchingToken && !isPreferredAutomatic) {
+      return;
+    }
+
+    // Select first. Import is best-effort and must not gate `setPayToken` —
+    // awaiting network-client lookup / addToken races with effect cleanup
+    // when `tokens` / `requiredTokens` churn during confirmation load.
+    isUpdated.current = transactionId;
+    setPayToken({
+      address: automaticToken.address,
+      chainId: automaticToken.chainId,
+    }).catch((error) => {
+      console.error('Failed to set automatic pay token', error);
+      if (isUpdated.current === transactionId) {
+        isUpdated.current = undefined;
+      }
+    });
+
+    if (!(isPostQuoteWithdraw && !matchingToken && isPreferredAutomatic)) {
+      return;
+    }
+
     let cancelled = false;
 
-    const selectAutomaticToken = async () => {
-      const matchingToken = tokens.find(
-        (token) =>
-          token.address?.toLowerCase() ===
-            automaticToken.address.toLowerCase() &&
-          String(token.chainId)?.toLowerCase() ===
-            automaticToken.chainId.toLowerCase(),
-      );
-
-      // Post-quote destinations must exist in TokensController before
-      // `updatePaymentToken` can resolve metadata. PayWithModal imports first;
-      // auto-select must do the same or the call fails and this guard never
-      // retries (isUpdated would stick).
-      if (isPostQuoteWithdraw && !matchingToken) {
-        const isPreferredAutomatic =
-          preferredToken !== undefined &&
-          preferredToken.address.toLowerCase() ===
-            automaticToken.address.toLowerCase() &&
-          preferredToken.chainId.toLowerCase() ===
-            automaticToken.chainId.toLowerCase();
-
-        if (!isPreferredAutomatic) {
-          // Wait for allowlist enrichment (`useSendTokens`) to surface the
-          // destination token, then retry via the `tokens` dependency.
-          return;
-        }
-
-        try {
-          const metadata = await getImportMetadata(automaticToken);
-
-          if (!metadata) {
-            // Guessing decimals corrupts every amount derived from the token,
-            // for example 6-decimal USDC. Leave the import to the
-            // confirmation's own `useAddToken` and retry via `tokens`.
-            return;
-          }
-
-          const networkClientId = await findNetworkClientIdByChainId(
-            automaticToken.chainId,
-          );
-
-          await dispatch(
-            addToken(
-              {
-                address: automaticToken.address,
-                symbol: metadata.symbol,
-                decimals: metadata.decimals,
-                networkClientId,
-              },
-              true,
-            ),
-          );
-        } catch (error) {
-          console.error(
-            'Failed to import automatic withdraw destination token',
-            error,
-          );
-          return;
-        }
-      }
-
-      if (cancelled) {
-        return;
-      }
-
+    const importPreferredToken = async () => {
       try {
-        await setPayToken({
-          address: automaticToken.address,
-          chainId: automaticToken.chainId,
-        });
-        isUpdated.current = transactionId;
+        const metadata = await getImportMetadata(automaticToken);
+
+        // Skip import when decimals are unknown; guessing (e.g. Token/18 for
+        // USDC) corrupts amounts. `useAddToken` / the fixture already seed
+        // TokensController for known destinations.
+        if (!metadata || cancelled) {
+          return;
+        }
+
+        const networkClientId = await findNetworkClientIdByChainId(
+          automaticToken.chainId,
+        );
+
+        if (cancelled) {
+          return;
+        }
+
+        await dispatch(
+          addToken(
+            {
+              address: automaticToken.address,
+              symbol: metadata.symbol,
+              decimals: metadata.decimals,
+              networkClientId,
+            },
+            true,
+          ),
+        );
       } catch (error) {
-        console.error('Failed to set automatic pay token', error);
+        console.error(
+          'Failed to import automatic withdraw destination token',
+          error,
+        );
       }
     };
 
-    selectAutomaticToken();
+    importPreferredToken();
 
     return () => {
       cancelled = true;
@@ -341,6 +343,13 @@ async function getImportMetadata({
     chainId.toLowerCase() === CHAIN_IDS.MONAD.toLowerCase()
   ) {
     return { symbol: MUSD_TOKEN.symbol, decimals: MUSD_TOKEN.decimals };
+  }
+
+  if (
+    address.toLowerCase() === ARBITRUM_USDC.address.toLowerCase() &&
+    chainId.toLowerCase() === ARBITRUM_USDC.chainId.toLowerCase()
+  ) {
+    return { symbol: ARBITRUM_USDC.symbol, decimals: ARBITRUM_USDC.decimals };
   }
 
   const details = await getTokenStandardAndDetailsByChain(

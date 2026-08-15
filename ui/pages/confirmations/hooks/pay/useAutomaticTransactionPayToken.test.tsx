@@ -16,6 +16,7 @@ import {
   getTokenStandardAndDetailsByChain,
 } from '../../../../store/actions';
 import { useDispatch } from '../../../../store/hooks';
+import { ARBITRUM_USDC } from '../../constants/perps';
 import {
   ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS,
   useAutomaticTransactionPayToken,
@@ -479,7 +480,7 @@ describe('useAutomaticTransactionPayToken', () => {
     );
   });
 
-  it('does not import the preferred withdraw token when its decimals cannot be resolved', async () => {
+  it('selects the preferred withdraw token without importing when decimals cannot be resolved', async () => {
     mockPreferredWithdrawTokenMissingFromTokenList();
     getTokenStandardAndDetailsByChainMock.mockResolvedValue({} as never);
 
@@ -496,7 +497,85 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     expect(addTokenMock).not.toHaveBeenCalled();
-    expect(setPayTokenMock).not.toHaveBeenCalled();
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: PREFERRED_TOKEN_ADDRESS_MOCK,
+      chainId: PREFERRED_CHAIN_ID_MOCK,
+    });
+  });
+
+  it('imports Arbitrum USDC with known decimals without an on-chain lookup', async () => {
+    mockPreferredWithdrawTokenMissingFromTokenList();
+    usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: () => [] as Asset[],
+      isFilterApplied: true,
+      isTokenAllowed: (chainId, address) =>
+        chainId.toLowerCase() === ARBITRUM_USDC.chainId.toLowerCase() &&
+        address.toLowerCase() === ARBITRUM_USDC.address.toLowerCase(),
+    });
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: ARBITRUM_USDC.address,
+        chainId: ARBITRUM_USDC.chainId,
+      },
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(getTokenStandardAndDetailsByChainMock).not.toHaveBeenCalled();
+    expect(addTokenMock).toHaveBeenCalledWith(
+      {
+        address: ARBITRUM_USDC.address,
+        symbol: ARBITRUM_USDC.symbol,
+        decimals: ARBITRUM_USDC.decimals,
+        networkClientId: 'network-client-id',
+      },
+      true,
+    );
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: ARBITRUM_USDC.address,
+      chainId: ARBITRUM_USDC.chainId,
+    });
+  });
+
+  it('selects the preferred withdraw token when it is missing from available tokens', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([]);
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: ARBITRUM_USDC.address,
+        chainId: ARBITRUM_USDC.chainId,
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: ARBITRUM_USDC.address,
+      chainId: ARBITRUM_USDC.chainId,
+    });
+  });
+
+  it('selects the preferred withdraw token even if destination import never resolves', () => {
+    mockPreferredWithdrawTokenMissingFromTokenList();
+    findNetworkClientIdByChainIdMock.mockReturnValue(
+      new Promise(() => undefined),
+    );
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+        chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: PREFERRED_TOKEN_ADDRESS_MOCK,
+      chainId: PREFERRED_CHAIN_ID_MOCK,
+    });
   });
 
   it('does nothing when payToken is already set', () => {
