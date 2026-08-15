@@ -22,6 +22,8 @@ import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { useDispatch } from '../../../store/hooks';
+import { RouteWithMessenger } from '../../../layouts/route-with-messenger';
+import { networkConnectionBannerCapabilities } from './messenger';
 
 type BannerIcon = {
   color: IconColor;
@@ -225,7 +227,7 @@ const getBannerContent = (
   };
 };
 
-export const NetworkConnectionBanner = () => {
+const NetworkConnectionBannerInner = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -289,5 +291,14 @@ export const NetworkConnectionBanner = () => {
 
   return null;
 };
+
+export const NetworkConnectionBanner = () => (
+  <RouteWithMessenger
+    path="network-connection-banner"
+    capabilities={networkConnectionBannerCapabilities}
+  >
+    <NetworkConnectionBannerInner />
+  </RouteWithMessenger>
+);
 
 export default NetworkConnectionBanner;

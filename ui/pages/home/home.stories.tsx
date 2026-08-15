@@ -6,10 +6,10 @@ import testData from '../../../.storybook/test-data';
 import configureStore from '../../store/store';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
-import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
-import { RouteMessengerContext } from '../../contexts/route-messenger';
+import { createMockUIMessenger } from '../../../test/lib/mock-ui-messenger';
+import { UIMessengerProvider } from '../../contexts/ui-messenger';
 
-const routeMessenger = createMockRouteMessenger();
+const uiMessenger = createMockUIMessenger();
 
 type HomeStoryStateOverrides = {
   metamask?: Record<string, unknown>;
@@ -53,13 +53,13 @@ const meta: Meta<typeof Home> = {
   component: Home,
   decorators: [
     (Story) => (
-      <RouteMessengerContext.Provider value={routeMessenger}>
+      <UIMessengerProvider value={uiMessenger}>
         <Provider store={createHomeStoryStore()}>
           <div className="-m-4">
             <Story />
           </div>
         </Provider>
-      </RouteMessengerContext.Provider>
+      </UIMessengerProvider>
     ),
   ],
   parameters: {
