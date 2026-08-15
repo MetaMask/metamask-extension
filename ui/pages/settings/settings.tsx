@@ -330,7 +330,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         })}
       >
         <Box
-          className={classnames('w-full h-full max-w-[262px] bg-elevated1', {
+          className={classnames('w-full h-full max-w-[262px] bg-muted', {
             flex: isOnSettingsRoot || !usesCompactSettingsLayout,
             hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
           })}
