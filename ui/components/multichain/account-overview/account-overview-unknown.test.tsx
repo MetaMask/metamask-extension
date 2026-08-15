@@ -2,7 +2,6 @@ import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createMockRouteMessenger } from '../../../../test/lib/mock-route-messenger';
 import {
   AccountOverviewUnknown,
   AccountOverviewUnknownProps,
@@ -13,15 +12,7 @@ const render = (props: AccountOverviewUnknownProps) => {
     metamask: mockState.metamask,
   });
 
-  return renderWithProvider(
-    <AccountOverviewUnknown {...props} />,
-    store,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    createMockRouteMessenger(),
-  );
+  return renderWithProvider(<AccountOverviewUnknown {...props} />, store);
 };
 
 describe('AccountOverviewUnknown', () => {

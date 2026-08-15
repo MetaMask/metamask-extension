@@ -1,24 +1,24 @@
 import React from 'react';
 import { AccountOverviewNonEvm } from './account-overview-non-evm';
 import { AccountOverviewCommonProps } from './common';
-import { createMockRouteMessenger } from '../../../../test/lib/mock-route-messenger';
-import { RouteMessengerContext } from '../../../contexts/route-messenger';
+import { createMockUIMessenger } from '../../../../test/lib/mock-ui-messenger';
+import { UIMessengerProvider } from '../../../contexts/ui-messenger';
 import {
   BtcAccountType,
   SolAccountType,
   TrxAccountType,
 } from '@metamask/keyring-api';
 
-const routeMessenger = createMockRouteMessenger();
+const uiMessenger = createMockUIMessenger();
 
 export default {
   title: 'Components/Multichain/AccountOverviewNonEvm',
   component: AccountOverviewNonEvm,
   decorators: [
     (Story: () => JSX.Element) => (
-      <RouteMessengerContext.Provider value={routeMessenger}>
+      <UIMessengerProvider value={uiMessenger}>
         <Story />
-      </RouteMessengerContext.Provider>
+      </UIMessengerProvider>
     ),
   ],
   args: {
