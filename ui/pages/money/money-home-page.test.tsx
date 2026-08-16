@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, within } from '@testing-library/react';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { MoneyHomePage } from './money-home-page';
 
 const mockUseMoneyAccountAvailability = jest.fn();
@@ -56,7 +57,9 @@ describe('MoneyHomePage', () => {
     expect(screen.getByTestId('money-home-page')).toBeInTheDocument();
     expect(screen.getByTestId('money-balance')).toHaveTextContent('$0.00');
     expect(screen.getByText('Earn up to 4.2% APY')).toBeInTheDocument();
-    expect(screen.getByText('How it works')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyHowItWorks.message),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('money-how-it-works-description'),
     ).toHaveTextContent(
@@ -70,20 +73,18 @@ describe('MoneyHomePage', () => {
     expect(
       screen.queryByTestId('money-eligible-assets'),
     ).not.toBeInTheDocument();
-    expect(screen.getByText('Benefits')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyBenefits.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('Auto-earn up to ~4.2% APY')).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'Keep your money secure in mUSD, a 1:1 dollar-backed stablecoin',
-      ),
+      screen.getByText(messages.moneyBenefitStablecoin.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'Get full liquidity with no lockups, so you can trade or withdraw anytime',
-      ),
+      screen.getByText(messages.moneyBenefitLiquidity.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Learn more' }),
+      screen.getByRole('button', { name: messages.moneyLearnMore.message }),
     ).toBeInTheDocument();
     expect(
       screen
