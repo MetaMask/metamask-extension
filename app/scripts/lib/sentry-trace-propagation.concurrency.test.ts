@@ -28,7 +28,10 @@
 import * as Sentry from '@sentry/browser';
 import type { Client } from '@sentry/core';
 import { trace, TraceName } from '../../../shared/lib/trace';
-import { consensysTracePropagationIntegration } from './sentry-trace-propagation';
+import {
+  consensysTracePropagationIntegration,
+  resetConsensysRequestIdProvider,
+} from './sentry-trace-propagation';
 
 const BACKEND_URL = 'https://accounts.api.cx.metamask.io/v1/accounts';
 
@@ -119,6 +122,11 @@ describe('getCurrentTraceId() under concurrent trace() calls (MetaMask-planning#
 
   afterEach(() => {
     Sentry.getCurrentScope().clear();
+    // Without this, `requestIdByTraceId` entries survive into the next test.
+    // The discriminating control below is only discriminating if it starts
+    // from a clean provider -- otherwise it can read a correlation left
+    // behind by the interleaved case it is meant to contrast with.
+    resetConsensysRequestIdProvider();
   });
 
   function capturedBaggage(callIndex = 0): string | undefined {
@@ -166,72 +174,79 @@ describe('getCurrentTraceId() under concurrent trace() calls (MetaMask-planning#
 
   describe('when a second, unrelated trace() call is still pending', () => {
     // Bug confirmed via this harness; not yet fixed -- see
-    // MetaMask-planning#7523. Skipped (rather than left red) so CI doesn't
-    // fail with no explanation. Remove `.skip` to see it fail today: A's own
-    // outbound request correlates with B's trace id (or with neither),
-    // instead of with A's own. Once a fix lands, remove `.skip` -- if it's
-    // still red at that point, the fix is incomplete.
-    it.skip('correlates an operation’s own outbound request with its own trace id, not a concurrently-pending unrelated operation’s', async () => {
-      const aGate = deferred<void>();
-      const bGate = deferred<void>();
-      let fetchResponse: Response | undefined;
+    // MetaMask-planning#7523. `it.failing` rather than `it.skip`: it runs and
+    // passes *because* the assertions below fail today (A's own outbound
+    // request correlates with B's trace id, or with neither, instead of with
+    // A's own). When a fix lands this goes red, which is the signal to flip
+    // it to `it`. A skipped test detects neither the defect nor its repair.
+    it.failing(
+      'correlates an operation’s own outbound request with its own trace id, not a concurrently-pending unrelated operation’s',
+      async () => {
+        const aGate = deferred<void>();
+        const bGate = deferred<void>();
+        let fetchResponse: Response | undefined;
 
-      // Operation A: continues a distributed trace with an explicit,
-      // fixed trace id (as real cross-boundary UI->background RPC calls
-      // do). A pauses once, then -- after resuming -- makes its own
-      // outbound backend fetch as part of its own logic.
-      const aPromise = trace(
-        {
-          name: TraceName.Transaction,
-          id: 'A-distributed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          parentContext: { _traceId: TRACE_ID_A, _spanId: SPAN_ID_A },
-        },
-        async () => {
-          await aGate.promise; // A's pending window.
-          fetchResponse = await fetch(BACKEND_URL);
-          return fetchResponse;
-        },
-      );
-
-      await tick(2);
-
-      try {
-        // Operation B: a logically unrelated concurrent operation
-        // continuing a DIFFERENT, explicit distributed trace, started
-        // and still pending while A is paused. B's stack layers push on
-        // top of A's and stay there.
-        const bPromise = trace(
+        // Operation A: continues a distributed trace with an explicit,
+        // fixed trace id (as real cross-boundary UI->background RPC calls
+        // do). A pauses once, then -- after resuming -- makes its own
+        // outbound backend fetch as part of its own logic.
+        const aPromise = trace(
           {
             name: TraceName.Transaction,
-            id: 'B-distributed-concurrent',
+            id: 'A-distributed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            parentContext: { _traceId: TRACE_ID_B, _spanId: SPAN_ID_B },
+            parentContext: { _traceId: TRACE_ID_A, _spanId: SPAN_ID_A },
           },
           async () => {
-            await bGate.promise;
+            await aGate.promise; // A's pending window.
+            fetchResponse = await fetch(BACKEND_URL);
+            return fetchResponse;
           },
         );
+
         await tick(2);
 
-        // Resolve only A's gate. B is still pending (its layers are
-        // still on top of the shared stack) when A's continuation runs
-        // its own fetch() call.
-        aGate.resolve();
-        await tick(10);
-        expect(fetchResponse).toBeDefined();
+        try {
+          // Operation B: a logically unrelated concurrent operation
+          // continuing a DIFFERENT, explicit distributed trace, started
+          // and still pending while A is paused. B's stack layers push on
+          // top of A's and stay there.
+          const bPromise = trace(
+            {
+              name: TraceName.Transaction,
+              id: 'B-distributed-concurrent',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              parentContext: { _traceId: TRACE_ID_B, _spanId: SPAN_ID_B },
+            },
+            async () => {
+              await bGate.promise;
+            },
+          );
+          await tick(2);
 
-        const requestId = requestIdFromBaggage(capturedBaggage());
+          // Resolve only A's gate. B is still pending (its layers are
+          // still on top of the shared stack) when A's continuation runs
+          // its own fetch() call.
+          aGate.resolve();
+          await tick(10);
+          expect(fetchResponse).toBeDefined();
 
-        expect(correlatedRequestId(TRACE_ID_A)).toBe(requestId);
-        expect(correlatedRequestId(TRACE_ID_B)).not.toBe(requestId);
+          const requestId = requestIdFromBaggage(capturedBaggage());
 
-        bGate.resolve();
-        await bPromise;
-      } finally {
-        await aPromise;
-      }
-    });
+          expect(correlatedRequestId(TRACE_ID_A)).toBe(requestId);
+          expect(correlatedRequestId(TRACE_ID_B)).not.toBe(requestId);
+        } finally {
+          // Both gates must settle here, not after the assertions. Under
+          // `it.failing` the assertions above are expected to throw, so any
+          // teardown placed after them never runs: B would stay pending, its
+          // AsyncContextStack layers would stay pushed, and the discriminating
+          // control that follows would start from a polluted shared stack.
+          bGate.resolve();
+          await bPromise;
+          await aPromise;
+        }
+      },
+    );
 
     it('correlates correctly once the concurrent operation has already resolved (discriminating control)', async () => {
       // Structurally identical to the test above, except B fully resolves
