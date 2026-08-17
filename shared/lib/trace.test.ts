@@ -527,25 +527,25 @@ describe('Trace', () => {
     // `parent_span` id while being billed as roots, across 25 families.
     //
     it('does not promote an unresolvable in-process parent to a segment', () => {
-        continueTraceMock.mockImplementation((_opts, fn) => fn());
+      continueTraceMock.mockImplementation((_opts, fn) => fn());
 
-        // No pending trace is created, so the map lookup misses.
-        trace(
-          {
-            name: TraceName.Middleware,
-            parentContext: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              _name: TraceName.Transaction,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              _id: 'absent-from-map',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              _traceId: 'trace123',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              _spanId: 'span456',
-            },
+      // No pending trace is created, so the map lookup misses.
+      trace(
+        {
+          name: TraceName.Middleware,
+          parentContext: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _name: TraceName.Transaction,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _id: 'absent-from-map',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _traceId: 'trace123',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _spanId: 'span456',
           },
-          () => true,
-        );
+        },
+        () => true,
+      );
 
       // A parent was named. Failing to resolve it locally must not silently
       // convert the span into a billed root.
@@ -555,7 +555,9 @@ describe('Trace', () => {
     // `undefined` and `null` are different statements; only the first may be
     // promoted to a transaction. See MetaMask/MetaMask-planning#7569.
     it('does not promote a null parentContext to a segment', () => {
-      const activeSpanMock = { spanContext: jest.fn() } as unknown as Sentry.Span;
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
       getActiveSpanMock.mockReturnValue(activeSpanMock);
 
       trace({ name: NAME_MOCK, parentContext: null }, () => true);
