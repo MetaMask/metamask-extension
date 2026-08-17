@@ -500,7 +500,7 @@ describe('createTrustSignalsMiddleware', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[createTrustSignalsMiddleware] error scanning spender address for approval:',
+          '[createTrustSignalsMiddleware] error scanning spender address for transaction approval:',
           expect.any(Error),
         );
       });
