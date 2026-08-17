@@ -6458,21 +6458,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ens-controller@npm:^19.1.4":
-  version: 19.1.4
-  resolution: "@metamask/ens-controller@npm:19.1.4"
-  dependencies:
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/network-controller": "npm:^33.0.0"
-    "@metamask/utils": "npm:^11.11.0"
-    punycode: "npm:^2.1.1"
-  checksum: 10/3c7e73020f62d00f843cd75df332d65931d655264a9dcf58ada7de3d42f964449f9d00617efd5376dc1e469b9f294dd82eca68fc1d651217d88bd0c5ce8a16c9
-  languageName: node
-  linkType: hard
-
 "@metamask/ens-resolver-snap@npm:^1.2.0":
   version: 1.2.0
   resolution: "@metamask/ens-resolver-snap@npm:1.2.0"
@@ -33229,7 +33214,6 @@ __metadata:
     "@metamask/dummy-package": "workspace:*"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
-    "@metamask/ens-controller": "npm:^19.1.4"
     "@metamask/ens-resolver-snap": "npm:^1.2.0"
     "@metamask/eslint-config": "npm:^14.1.1"
     "@metamask/eslint-config-jest": "npm:^14.1.1"
@@ -33551,7 +33535,7 @@ __metadata:
     mocha: "npm:^10.2.0"
     mocha-junit-reporter: "npm:^2.2.1"
     mockttp: "npm:^4.2.3"
-    nanoid: "npm:^3.3.17"
+    nanoid: "npm:^3.3.18"
     navigator.locks: "npm:^0.8.6"
     nock: "patch:nock@npm%3A13.5.4#~/.yarn/patches/nock-npm-13.5.4-2c4f77b249.patch"
     node-fetch: "npm:^2.6.1"
@@ -33611,7 +33595,6 @@ __metadata:
     selenium-webdriver: "npm:^4.44.0"
     semver: "npm:^7.5.4"
     serve-handler: "npm:^6.1.2"
-    ses: "npm:^1.1.0"
     sharp: "npm:^0.35.3"
     sinon: "npm:^9.0.0"
     source-map: "npm:^0.7.4"
@@ -34350,12 +34333,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.10, nanoid@npm:^3.3.11, nanoid@npm:^3.3.16, nanoid@npm:^3.3.17, nanoid@npm:^3.3.8":
-  version: 3.3.17
-  resolution: "nanoid@npm:3.3.17"
+"nanoid@npm:^3.3.10, nanoid@npm:^3.3.16, nanoid@npm:^3.3.18, nanoid@npm:^3.3.8":
+  version: 3.3.18
+  resolution: "nanoid@npm:3.3.18"
   bin:
     nanoid: bin/nanoid.cjs
-  checksum: 10/54c3238ba6ea31c173ccf70922481814892075dbf1b4636abec249d0b34d5594fc9a8892c04872068674010a11fa3d18316dc06e59e700def131ff9d8e740426
+  checksum: 10/1b3b4fdac831b92b56d1dbe8b1e63a372432faf86ea383134e3b53141ef8108a60b7f84343b5cefecac9550bb74edf8164da93ea07d1c4f757039bc75d8a5d9e
   languageName: node
   linkType: hard
 
