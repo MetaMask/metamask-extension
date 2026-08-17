@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "Semua jaringan"
   },
-  "allPermissions": {
-    "message": "Koneksi dapp"
-  },
   "allPopularNetworks": {
     "message": "Semua jaringan populer"
   },
@@ -3102,9 +3099,6 @@
   },
   "customerSupport": {
     "message": "dukungan pelanggan"
-  },
-  "dappConnections": {
-    "message": "Koneksi Dapp"
   },
   "dappSuggested": {
     "message": "Situs yang disarankan"
@@ -5886,9 +5880,6 @@
   },
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
-  },
-  "noConnectionDescription": {
-    "message": "MetaMask tidak terhubung ke situs ini. Untuk memulai, pilih tombol Hubungkan ke situs ini."
   },
   "noDefaultAddress": {
     "message": "Tidak ada alamat $1",
@@ -10163,9 +10154,6 @@
   },
   "singleNetwork": {
     "message": "1 jaringan"
-  },
-  "sites": {
-    "message": "Situs"
   },
   "siweIssued": {
     "message": "Diterbitkan"

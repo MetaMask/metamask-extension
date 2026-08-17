@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "Όλα τα δίκτυα"
   },
-  "allPermissions": {
-    "message": "Συνδέσεις με Dapp"
-  },
   "allPopularNetworks": {
     "message": "Όλα τα δημοφιλή δίκτυα"
   },
@@ -3102,9 +3099,6 @@
   },
   "customerSupport": {
     "message": "υποστήριξη πελατών"
-  },
-  "dappConnections": {
-    "message": "Συνδέσεις με Dapp"
   },
   "dappSuggested": {
     "message": "Υπόδειξη ιστότοπου"
@@ -5882,9 +5876,6 @@
   },
   "noAccountsFound": {
     "message": "Δεν βρέθηκαν λογαριασμοί για το συγκεκριμένο αίτημα αναζήτησης"
-  },
-  "noConnectionDescription": {
-    "message": "Το MetaMask δεν είναι συνδεδεμένο με αυτόν τον ιστότοπο. Για να ξεκινήσετε, επιλέξτε το κουμπί Σύνδεση του ιστότοπου."
   },
   "noDefaultAddress": {
     "message": "Δεν υπάρχει διεύθυνση $1",
@@ -10155,9 +10146,6 @@
   },
   "singleNetwork": {
     "message": "1 δίκτυο"
-  },
-  "sites": {
-    "message": "Ιστότοποι"
   },
   "siweIssued": {
     "message": "Εκδόθηκε"

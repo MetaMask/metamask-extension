@@ -9,11 +9,6 @@
       "count": 3
     }
   },
-  "app/scripts/metamask-controller.test.js": {
-    "jest/no-disabled-tests": {
-      "count": 1
-    }
-  },
   "development/webpack/utils/loaders/swcLoader.ts": {
     "promise/no-callback-in-promise": {
       "count": 1
@@ -270,11 +265,6 @@
     }
   },
   "ui/pages/bridge/prepare/components/bridge-alert-modal.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/bridge/prepare/components/bridge-asset-picker/bridge-asset-picker-content.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
     }

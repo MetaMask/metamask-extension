@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "Alle Netzwerke"
   },
-  "allPermissions": {
-    "message": "dApp-Verbindungen"
-  },
   "allPopularNetworks": {
     "message": "Alle beliebte Netzwerke"
   },
@@ -3102,9 +3099,6 @@
   },
   "customerSupport": {
     "message": "Kundendienst"
-  },
-  "dappConnections": {
-    "message": "dApp-Verbindungen"
   },
   "dappSuggested": {
     "message": "Website vorgeschlagen"
@@ -5882,9 +5876,6 @@
   },
   "noAccountsFound": {
     "message": "Keine Konten für die angegebene Suchanfrage gefunden"
-  },
-  "noConnectionDescription": {
-    "message": "MetaMask ist nicht mit dieser Website verbunden. Um zu beginnen, wählen Sie die Schaltfläche „Verbinden“ der Website."
   },
   "noDefaultAddress": {
     "message": "Keine $1-Adresse",
@@ -10155,9 +10146,6 @@
   },
   "singleNetwork": {
     "message": "1 Netzwerk"
-  },
-  "sites": {
-    "message": "Websites"
   },
   "siweIssued": {
     "message": "Ausgestellt"
