@@ -801,6 +801,12 @@ describe('perps-controller selectors', () => {
         chartExpanded: false,
         orderBookPosition: 'right',
         orderFormPosition: 'right',
+        positionsSideFilter: 'all',
+        positionsSortField: 'positionValue',
+        positionsSortDirection: 'desc',
+        ordersSideFilter: 'all',
+        ordersSortField: 'time',
+        ordersSortDirection: 'desc',
       });
     });
 
@@ -810,6 +816,12 @@ describe('perps-controller selectors', () => {
         chartExpanded: false,
         orderBookPosition: 'left',
         orderFormPosition: 'right',
+        positionsSideFilter: 'all',
+        positionsSortField: 'positionValue',
+        positionsSortDirection: 'desc',
+        ordersSideFilter: 'all',
+        ordersSortField: 'time',
+        ordersSortDirection: 'desc',
       });
     });
 

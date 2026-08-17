@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "सभी नेटवर्क"
   },
-  "allPermissions": {
-    "message": "Dapp कनेक्शन्स"
-  },
   "allPopularNetworks": {
     "message": "सभी लोकप्रिय नेटवर्क"
   },
@@ -3096,9 +3093,6 @@
   },
   "customerSupport": {
     "message": "ग्राहक सहायता"
-  },
-  "dappConnections": {
-    "message": "Dapp कनेक्शन्स"
   },
   "dappSuggested": {
     "message": "सुझावित साइट"
@@ -5870,9 +5864,6 @@
   },
   "noAccountsFound": {
     "message": "दी गई खोज क्वेरी के लिए कोई अकाउंट नहीं मिला"
-  },
-  "noConnectionDescription": {
-    "message": "MetaMask इस साइट से कनेक्ट नहीं है। शुरू करने के लिए, साइट का कनेक्ट बटन चुनें।"
   },
   "noDefaultAddress": {
     "message": "कोई $1 एड्रेस नहीं",
@@ -10143,9 +10134,6 @@
   },
   "singleNetwork": {
     "message": "1 नेटवर्क"
-  },
-  "sites": {
-    "message": "साइटें"
   },
   "siweIssued": {
     "message": "जारी किया गया"

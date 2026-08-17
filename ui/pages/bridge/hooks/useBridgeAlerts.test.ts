@@ -1,4 +1,5 @@
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { BannerAlertSeverity } from '@metamask/design-system-react';
 import { KnownCaipNamespace } from '@metamask/utils';
 import { merge } from 'lodash';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -17,7 +18,6 @@ import {
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
-import { BannerAlertSeverity } from '../../../components/component-library';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
