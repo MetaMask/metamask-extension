@@ -69,6 +69,8 @@ class HomePage {
   private readonly bottomNavActivityButton =
     '[data-testid="bottom-nav-activity"]';
 
+  private readonly bottomNavHomeButton = '[data-testid="bottom-nav-home"]';
+
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -578,6 +580,14 @@ class HomePage {
 
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
+    const isBottomNav = await this.driver.isElementPresentAndVisible(
+      this.bottomNavHomeButton,
+      3000,
+    );
+    if (isBottomNav) {
+      await this.driver.clickElement(this.bottomNavHomeButton);
+      await this.checkPageIsLoaded();
+    }
     await this.driver.clickElement(this.nftTab);
   }
 
