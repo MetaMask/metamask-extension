@@ -191,7 +191,6 @@ const PermissionsPage = () => {
               size={ButtonSize.Lg}
               block
               variant={ButtonVariant.Secondary}
-              startIconName={IconName.Logout}
               danger
               onClick={() => setShowDisconnectAllModal(true)}
               data-testid="disconnect-all-button"

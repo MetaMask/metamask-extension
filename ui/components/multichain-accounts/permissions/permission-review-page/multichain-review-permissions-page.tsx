@@ -424,7 +424,6 @@ export const MultichainReviewPermissions = () => {
                   size={ButtonSize.Lg}
                   isFullWidth
                   variant={ButtonVariant.Secondary}
-                  startIconName={IconName.Logout}
                   isDanger
                   onClick={handleDisconnectClick}
                   data-test-id="disconnect-all"
