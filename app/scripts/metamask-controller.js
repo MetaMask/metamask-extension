@@ -346,6 +346,7 @@ import { NameControllerInit } from './messenger-client-init/confirmations/name-c
 import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
 import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
 import { ConfigRegistryControllerInit } from './messenger-client-init/config-registry-controller-init';
+import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
 import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
@@ -655,6 +656,7 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsControllerV2: DeFiPositionsControllerV2Init,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
+      NetworkConnectionBannerController: NetworkConnectionBannerControllerInit,
       ShieldSubscriptionService: ShieldSubscriptionServiceInit,
       NetworkOrderController: NetworkOrderControllerInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
@@ -3185,10 +3187,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       addMusdConversionDismissedCtaKey:
         appStateController.addMusdConversionDismissedCtaKey.bind(
-          appStateController,
-        ),
-      updateNetworkConnectionBanner:
-        appStateController.updateNetworkConnectionBanner.bind(
           appStateController,
         ),
       setShowShieldEntryModalOnce:
