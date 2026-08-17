@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
 import {
   Box,
@@ -24,13 +24,28 @@ export const ConfirmInfoExpandableRow = (
   const { content, children, startExpanded, ...rowProps } = props;
 
   const { value: expanded, toggle } = useBoolean(startExpanded);
+  const contentRef = useRef<HTMLSpanElement | null>(null);
   const [contentHeight, setContentHeight] = useState(0);
 
-  const setContentRef = useCallback((node: HTMLSpanElement | null) => {
-    if (node) {
-      setContentHeight(node.scrollHeight);
+  useEffect(() => {
+    const node = contentRef.current;
+    if (!node) {
+      return undefined;
     }
-  }, []);
+
+    const updateHeight = () => {
+      setContentHeight(node.scrollHeight);
+    };
+
+    updateHeight();
+
+    const resizeObserver = new ResizeObserver(updateHeight);
+    resizeObserver.observe(node);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [expanded, content]);
 
   return (
     <>
@@ -52,7 +67,7 @@ export const ConfirmInfoExpandableRow = (
         </Box>
       </ConfirmInfoRow>
       <Box
-        ref={setContentRef}
+        ref={contentRef}
         className="expandable"
         style={{
           height: expanded ? contentHeight : '0px',

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
@@ -185,82 +185,88 @@ export function MultipleAlertModal({
   const [currentAlertKey, setCurrentAlertKey] = useState<string | undefined>(
     initialAlertKey,
   );
-  const [pendingAlertKey, setPendingAlertKey] = useState<string | undefined>();
-  const [prevAlertKey, setPrevAlertKey] = useState(alertKey);
-  const alertsKeyFingerprint = alertsToDisplay
-    .map((alert) => alert.key)
-    .join('|');
-  const navigableAlertsKeyFingerprint = navigableAlertsToDisplay
-    .map((alert) => alert.key)
-    .join('|');
-  const [prevAlertsKeyFingerprint, setPrevAlertsKeyFingerprint] =
-    useState(alertsKeyFingerprint);
-  const [
-    prevNavigableAlertsKeyFingerprint,
-    setPrevNavigableAlertsKeyFingerprint,
-  ] = useState(navigableAlertsKeyFingerprint);
 
-  if (
-    alertKey !== prevAlertKey ||
-    alertsKeyFingerprint !== prevAlertsKeyFingerprint ||
-    navigableAlertsKeyFingerprint !== prevNavigableAlertsKeyFingerprint
-  ) {
-    const alertKeyChanged = alertKey !== prevAlertKey;
-    setPrevAlertKey(alertKey);
-    setPrevAlertsKeyFingerprint(alertsKeyFingerprint);
-    setPrevNavigableAlertsKeyFingerprint(navigableAlertsKeyFingerprint);
+  const previousAlertKeyRef = useRef<string | undefined>();
+  const pendingAlertKeyRef = useRef<string | undefined>();
 
+  useEffect(() => {
     const alertKeyExists = alertKey
       ? alertsToDisplay.some((alert) => alert.key === alertKey)
       : false;
 
-    let nextPendingAlertKey = pendingAlertKey;
-    let nextCurrentAlertKey = currentAlertKey;
-
-    if (alertKeyChanged) {
-      if (alertKeyExists && alertKey) {
-        nextCurrentAlertKey = alertKey;
-        nextPendingAlertKey = undefined;
-      } else {
-        nextPendingAlertKey = alertKey ?? undefined;
-      }
+    if (alertKey === previousAlertKeyRef.current) {
+      return;
     }
 
-    if (
-      nextPendingAlertKey &&
-      alertsToDisplay.some((alert) => alert.key === nextPendingAlertKey)
-    ) {
-      nextCurrentAlertKey = nextPendingAlertKey;
-      nextPendingAlertKey = undefined;
+    previousAlertKeyRef.current = alertKey;
+
+    if (alertKeyExists && alertKey) {
+      queueMicrotask(() => {
+        setCurrentAlertKey((current) =>
+          alertKey === current ? current : alertKey,
+        );
+      });
+      pendingAlertKeyRef.current = undefined;
+    } else {
+      pendingAlertKeyRef.current = alertKey ?? undefined;
+    }
+  }, [alertKey, alertsToDisplay]);
+
+  useEffect(() => {
+    const pendingAlertKey = pendingAlertKeyRef.current;
+
+    if (!pendingAlertKey) {
+      return;
     }
 
-    const currentAlertStillExists = nextCurrentAlertKey
-      ? alertsToDisplay.some((alert) => alert.key === nextCurrentAlertKey)
+    const pendingAlertExists = alertsToDisplay.some(
+      (alert) => alert.key === pendingAlertKey,
+    );
+
+    if (!pendingAlertExists) {
+      return;
+    }
+
+    queueMicrotask(() => {
+      setCurrentAlertKey((current) =>
+        pendingAlertKey === current ? current : pendingAlertKey,
+      );
+    });
+    pendingAlertKeyRef.current = undefined;
+  }, [alertsToDisplay]);
+
+  useEffect(() => {
+    const currentAlertStillExists = currentAlertKey
+      ? alertsToDisplay.some((alert) => alert.key === currentAlertKey)
+      : false;
+    const alertKeyExists = alertKey
+      ? alertsToDisplay.some((alert) => alert.key === alertKey)
+      : false;
+    const pendingAlertKey = pendingAlertKeyRef.current;
+    const pendingAlertExists = pendingAlertKey
+      ? alertsToDisplay.some((alert) => alert.key === pendingAlertKey)
       : false;
 
-    if (!currentAlertStillExists) {
-      const pendingAlertExists = nextPendingAlertKey
-        ? alertsToDisplay.some((alert) => alert.key === nextPendingAlertKey)
-        : false;
-
-      nextCurrentAlertKey =
-        (alertKeyExists ? alertKey : undefined) ??
-        (pendingAlertExists ? nextPendingAlertKey : undefined) ??
-        navigableAlertsToDisplay[0]?.key ??
-        alertsToDisplay[0]?.key;
-
-      if (pendingAlertExists && nextCurrentAlertKey === nextPendingAlertKey) {
-        nextPendingAlertKey = undefined;
-      }
+    if (currentAlertStillExists) {
+      return;
     }
 
-    if (nextCurrentAlertKey !== currentAlertKey) {
-      setCurrentAlertKey(nextCurrentAlertKey);
+    const fallbackKey =
+      (alertKeyExists ? alertKey : undefined) ??
+      (pendingAlertExists ? pendingAlertKey : undefined) ??
+      navigableAlertsToDisplay[0]?.key ??
+      alertsToDisplay[0]?.key;
+
+    queueMicrotask(() => {
+      setCurrentAlertKey((current) =>
+        fallbackKey === current ? current : fallbackKey,
+      );
+    });
+
+    if (pendingAlertExists && fallbackKey === pendingAlertKey) {
+      pendingAlertKeyRef.current = undefined;
     }
-    if (nextPendingAlertKey !== pendingAlertKey) {
-      setPendingAlertKey(nextPendingAlertKey);
-    }
-  }
+  }, [alertKey, alertsToDisplay, navigableAlertsToDisplay, currentAlertKey]);
 
   const selectedAlert =
     alertsToDisplay.find((alert) => alert.key === currentAlertKey) ??

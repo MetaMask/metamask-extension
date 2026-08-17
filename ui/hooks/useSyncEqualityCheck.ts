@@ -12,7 +12,7 @@ import type { Json } from '@metamask/utils';
  *
  * @param value - Must be JSON-serializable. No support for `undefined`, functions, `BigInt`, circular refs, or `Date` objects.
  * @returns Referentially stable value
- * @see {@link useEqualityCheck} - async version that triggers re-renders
+ * @see {@link useEqualityCheck} - lodash isEqual-based version for non-JSON values
  * @example
  * ```tsx
  * const stableInput = useSyncEqualityCheck({ chainId, networkClientId });

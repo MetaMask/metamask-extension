@@ -136,42 +136,29 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
     prevChainIdRef.current = selectedChainId;
   }, [selectedChainId, enteredDomainName, input, dispatch]);
 
-  const [prevQrCodeData, setPrevQrCodeData] = useState(qrCodeData);
-  if (qrCodeData !== prevQrCodeData) {
-    setPrevQrCodeData(qrCodeData);
-    if (qrCodeData?.type === 'address' && qrCodeData?.values?.address) {
-      const scannedAddress = qrCodeData.values.address.toLowerCase();
-      const addresses = [
-        ...(domainResolutions?.map(
-          (r: { resolvedAddress: string }) => r.resolvedAddress,
-        ) ?? []),
-        selectedAddress,
-      ]
-        .filter(Boolean)
-        .map((addr: string) => addr.toLowerCase());
-      if (!addresses.includes(scannedAddress)) {
+  useEffect(() => {
+    if (qrCodeData?.type !== 'address' || !qrCodeData?.values?.address) {
+      return;
+    }
+
+    const scannedAddress = qrCodeData.values.address.toLowerCase();
+    const addresses = [
+      ...(domainResolutions?.map(
+        (r: { resolvedAddress: string }) => r.resolvedAddress,
+      ) ?? []),
+      selectedAddress,
+    ]
+      .filter(Boolean)
+      .map((addr: string) => addr.toLowerCase());
+
+    if (!addresses.includes(scannedAddress)) {
+      queueMicrotask(() => {
         setInput(scannedAddress);
         validate(scannedAddress);
-      }
+      });
+      dispatch(qrCodeDetected(null as never));
     }
-  }
-
-  useEffect(() => {
-    if (qrCodeData?.type === 'address' && qrCodeData?.values?.address) {
-      const scannedAddress = qrCodeData.values.address.toLowerCase();
-      const addresses = [
-        ...(domainResolutions?.map(
-          (r: { resolvedAddress: string }) => r.resolvedAddress,
-        ) ?? []),
-        selectedAddress,
-      ]
-        .filter(Boolean)
-        .map((addr: string) => addr.toLowerCase());
-      if (!addresses.includes(scannedAddress)) {
-        dispatch(qrCodeDetected(null as never));
-      }
-    }
-  }, [qrCodeData, domainResolutions, selectedAddress, dispatch]);
+  }, [qrCodeData, domainResolutions, selectedAddress, validate, dispatch]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;

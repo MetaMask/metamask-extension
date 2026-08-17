@@ -125,11 +125,11 @@ export const useCarouselManagement = ({
 
   if (eligibilityKey !== prevEligibilityKey) {
     setPrevEligibilityKey(eligibilityKey);
-    if (!eligibilityNeeded) {
+    if (eligibilityNeeded) {
+      setDownloadEligibilityReady(false);
+    } else {
       setDownloadEligible(false);
       setDownloadEligibilityReady(true);
-    } else {
-      setDownloadEligibilityReady(false);
     }
   }
 

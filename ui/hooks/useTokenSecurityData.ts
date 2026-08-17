@@ -64,7 +64,9 @@ export const useTokenSecurityData = ({
   );
   const [error, setError] = useState<Error | null>(null);
   const [assetMetadata, setAssetMetadata] =
-    useState<TokenSecurityAssetMetadata>({});
+    useState<TokenSecurityAssetMetadata>(() =>
+      assetId ? getAssetMetadataFromAssetId(assetId) : {},
+    );
   const activeAssetIdRef = useRef<CaipAssetType | null>(null);
 
   const fetchData = useCallback(async (requestAssetId: CaipAssetType) => {
@@ -110,17 +112,17 @@ export const useTokenSecurityData = ({
       setSecurityData(prefetchedData);
       setError(null);
       setIsLoading(false);
-    } else if (!assetId) {
+    } else if (assetId) {
+      setSecurityData(null);
+      setError(null);
+      setAssetMetadata(getAssetMetadataFromAssetId(assetId));
+      setIsLoading(true);
+    } else {
       activeAssetIdRef.current = null;
       setSecurityData(null);
       setError(null);
       setAssetMetadata({});
       setIsLoading(false);
-    } else {
-      setSecurityData(null);
-      setError(null);
-      setAssetMetadata(getAssetMetadataFromAssetId(assetId));
-      setIsLoading(true);
     }
   }
 

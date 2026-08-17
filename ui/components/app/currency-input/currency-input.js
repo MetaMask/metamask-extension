@@ -129,51 +129,40 @@ export default function CurrencyInput({
   };
 
   const timeoutRef = useRef(null);
-  const decimalizedHexValue = new Numeric(hexValue, 16)
-    .toBase(10)
-    .shiftedBy(assetDecimals)
-    .toString();
 
-  // Align input to upstream value during render when deps change.
-  const conversionRateKey = tokenToFiatConversionRate?.toString() ?? '';
-  const [prevHexValue, setPrevHexValue] = useState(hexValue);
-  const [prevAssetAddress, setPrevAssetAddress] = useState(asset?.address);
-  const [prevIsTokenPrimary, setPrevIsTokenPrimary] = useState(isTokenPrimary);
-  const [prevAssetDecimals, setPrevAssetDecimals] = useState(assetDecimals);
-  const [prevIsDisabled, setPrevIsDisabled] = useState(isDisabled);
-  const [prevConversionRateKey, setPrevConversionRateKey] =
-    useState(conversionRateKey);
+  // Align input to upstream value when deps change.
+  useEffect(() => {
+    const decimalizedHexValue = new Numeric(hexValue, 16)
+      .toBase(10)
+      .shiftedBy(assetDecimals)
+      .toString();
 
-  if (
-    hexValue !== prevHexValue ||
-    asset?.address !== prevAssetAddress ||
-    isTokenPrimary !== prevIsTokenPrimary ||
-    assetDecimals !== prevAssetDecimals ||
-    isDisabled !== prevIsDisabled ||
-    conversionRateKey !== prevConversionRateKey
-  ) {
-    setPrevHexValue(hexValue);
-    setPrevAssetAddress(asset?.address);
-    setPrevIsTokenPrimary(isTokenPrimary);
-    setPrevAssetDecimals(assetDecimals);
-    setPrevIsDisabled(isDisabled);
-    setPrevConversionRateKey(conversionRateKey);
-
-    if (Number(decimalizedHexValue) !== Number(tokenDecimalValue)) {
-      // if input is disabled or the input hasn't changed, the value is upstream (i.e., based on the raw token value)
-      const isUpstreamValue =
-        isDisabled || isInputUnchanged || isMatchingUpstream;
-
-      const { newTokenDecimalValue, newFiatDecimalValue } =
-        processNewDecimalValue(
-          decimalizedHexValue,
-          isUpstreamValue ? true : undefined,
-        );
-
-      setTokenDecimalValue(newTokenDecimalValue);
-      setFiatDecimalValue(newFiatDecimalValue);
+    if (Number(decimalizedHexValue) === Number(tokenDecimalValue)) {
+      return;
     }
-  }
+
+    // if input is disabled or the input hasn't changed, the value is upstream (i.e., based on the raw token value)
+    const isUpstreamValue =
+      isDisabled || isInputUnchanged || isMatchingUpstream;
+
+    const { newTokenDecimalValue, newFiatDecimalValue } =
+      processNewDecimalValue(
+        decimalizedHexValue,
+        isUpstreamValue ? true : undefined,
+      );
+
+    setTokenDecimalValue(newTokenDecimalValue);
+    setFiatDecimalValue(newFiatDecimalValue);
+
+    // tokenDecimalValue does not need to be in here, since this side effect is only for upstream updates
+  }, [
+    hexValue,
+    asset?.address,
+    processNewDecimalValue,
+    isTokenPrimary,
+    assetDecimals,
+    isDisabled,
+  ]);
 
   useEffect(() => {
     // timeout intentionally not cleared after render so this always runs
