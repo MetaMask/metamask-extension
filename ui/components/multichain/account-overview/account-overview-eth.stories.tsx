@@ -1,19 +1,19 @@
 import React from 'react';
 import { AccountOverviewEth } from './account-overview-eth';
 import { AccountOverviewCommonProps } from './common';
-import { createMockUIMessenger } from '../../../../test/lib/mock-ui-messenger';
-import { UIMessengerProvider } from '../../../contexts/ui-messenger';
+import { createMockRouteMessenger } from '../../../../test/lib/mock-route-messenger';
+import { RouteMessengerContext } from '../../../contexts/route-messenger';
 
-const uiMessenger = createMockUIMessenger();
+const routeMessenger = createMockRouteMessenger();
 
 export default {
   title: 'Components/Multichain/AccountOverviewEth',
   component: AccountOverviewEth,
   decorators: [
     (Story: () => JSX.Element) => (
-      <UIMessengerProvider value={uiMessenger}>
+      <RouteMessengerContext.Provider value={routeMessenger}>
         <Story />
-      </UIMessengerProvider>
+      </RouteMessengerContext.Provider>
     ),
   ],
 };

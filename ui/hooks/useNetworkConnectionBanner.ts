@@ -7,7 +7,7 @@ import type {
   NetworkConnectionBannerStatus,
 } from '@metamask/network-connection-banner-controller';
 import type { MetaMaskReduxState } from '../store/store';
-import type { RouteMessengerInstance } from '../components/app/network-connection-banner/messenger';
+import type { RouteMessengerInstance } from '../pages/home/messenger';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
