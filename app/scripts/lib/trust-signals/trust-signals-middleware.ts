@@ -9,6 +9,7 @@ import { PreferencesController } from '../../controllers/preferences-controller'
 import {
   parseTypedDataMessage,
   parseApprovalTransactionData,
+  parseTransferTransactionData,
 } from '../../../../shared/lib/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
@@ -184,6 +185,22 @@ function scanCallTargets(
       scanAddressInBackground(
         spenderAddress,
         `spender address for ${context} approval`,
+        chainId,
+        appStateController,
+        phishingController,
+      );
+    }
+
+    // If the call is a token transfer, also scan the recipient decoded from
+    // calldata: for transfers `to` is only the token contract; the funds
+    // move to the address inside the calldata.
+    const transferRecipient = parseTransferTransactionData(
+      data as `0x${string}`,
+    )?.recipient;
+    if (transferRecipient) {
+      scanAddressInBackground(
+        transferRecipient,
+        `transfer recipient address for ${context}`,
         chainId,
         appStateController,
         phishingController,
