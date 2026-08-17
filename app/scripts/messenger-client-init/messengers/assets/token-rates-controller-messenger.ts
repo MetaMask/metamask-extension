@@ -5,6 +5,10 @@ import {
 } from '@metamask/messenger';
 import { TokenRatesControllerMessenger } from '@metamask/assets-controllers';
 import {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../../../controllers/onboarding';
+import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../../controllers/preferences-controller';
@@ -39,9 +43,13 @@ export function getTokenRatesControllerMessenger(
   return controllerMessenger;
 }
 
-type AllowedInitializationActions = PreferencesControllerGetStateAction;
+type AllowedInitializationActions =
+  | PreferencesControllerGetStateAction
+  | OnboardingControllerGetStateAction;
 
-type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
+type AllowedInitializationEvents =
+  | PreferencesControllerStateChangeEvent
+  | OnboardingControllerStateChangeEvent;
 
 export type TokenRatesControllerInitMessenger = ReturnType<
   typeof getTokenRatesControllerInitMessenger
@@ -72,8 +80,14 @@ export function getTokenRatesControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['PreferencesController:getState'],
-    events: ['PreferencesController:stateChange'],
+    actions: [
+      'PreferencesController:getState',
+      'OnboardingController:getState',
+    ],
+    events: [
+      'PreferencesController:stateChange',
+      'OnboardingController:stateChange',
+    ],
   });
   return controllerInitMessenger;
 }
