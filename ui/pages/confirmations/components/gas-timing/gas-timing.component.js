@@ -70,7 +70,7 @@ export default function GasTiming({
     chainIsGasEstimatesLoading ?? rootIsGasEstimatesLoading;
 
   const gasFeeEstimates = chainGasFeeEstimates || gasFeeEstimatesFromRoot;
-  const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
+  const [customEstimate, setCustomEstimate] = useState(null);
   const t = useContext(I18nContext);
 
   // If the user has chosen a value lower than the low gas fee estimate,
@@ -83,27 +83,12 @@ export default function GasTiming({
 
   const previousMaxFeePerGas = usePrevious(maxFeePerGas);
   const previousMaxPriorityFeePerGas = usePrevious(maxPriorityFeePerGas);
-  const [prevEstimateInputs, setPrevEstimateInputs] = useState({
-    isUnknownLow,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-  });
-  if (
-    isUnknownLow !== prevEstimateInputs.isUnknownLow ||
-    maxFeePerGas !== prevEstimateInputs.maxFeePerGas ||
-    maxPriorityFeePerGas !== prevEstimateInputs.maxPriorityFeePerGas
-  ) {
-    const shouldClearCustomEstimate =
-      prevEstimateInputs.isUnknownLow === true && isUnknownLow !== false;
-    setPrevEstimateInputs({
-      isUnknownLow,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-    });
-    if (shouldClearCustomEstimate) {
-      setCustomEstimatedTime(null);
-    }
-  }
+  const customEstimatedTime =
+    customEstimate &&
+    customEstimate.maxFeePerGas === maxFeePerGas &&
+    customEstimate.maxPriorityFeePerGas === maxPriorityFeePerGas
+      ? customEstimate.result
+      : null;
 
   const estimateTextMap = useMemo(
     () => ({
@@ -134,7 +119,11 @@ export default function GasTiming({
           maxPriorityFeePerGas === priority &&
           isMounted
         ) {
-          setCustomEstimatedTime(result);
+          setCustomEstimate({
+            maxFeePerGas: fee,
+            maxPriorityFeePerGas: priority,
+            result,
+          });
         }
       });
     }

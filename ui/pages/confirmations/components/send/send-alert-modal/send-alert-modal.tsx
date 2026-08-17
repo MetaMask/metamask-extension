@@ -126,13 +126,6 @@ const PageNavigation = ({
   );
 };
 
-type ModalUiState = {
-  isOpen: boolean;
-  alertKeys: string;
-  currentIndex: number;
-  viewedKeys: Set<string>;
-};
-
 export const SendAlertModal = ({
   isOpen,
   alerts,
@@ -142,35 +135,25 @@ export const SendAlertModal = ({
 }: SendAlertModalProps) => {
   const t = useI18nContext();
   const alertKeys = alerts.map((alert) => alert.key).join('|');
-  const [uiState, setUiState] = useState<ModalUiState>(() => ({
-    isOpen,
-    alertKeys,
-    currentIndex: 0,
-    viewedKeys: new Set(),
-  }));
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [viewedKeys, setViewedKeys] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const [prevAlertKeys, setPrevAlertKeys] = useState(alertKeys);
 
-  if (isOpen !== uiState.isOpen) {
-    setUiState({
-      isOpen,
-      alertKeys,
-      currentIndex: 0,
-      viewedKeys: new Set(),
-    });
-  } else if (alertKeys !== uiState.alertKeys) {
-    setUiState((prev) => ({
-      ...prev,
-      alertKeys,
-      currentIndex: 0,
-    }));
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    setCurrentIndex(0);
+    setViewedKeys(new Set());
+  } else if (alertKeys !== prevAlertKeys) {
+    setPrevAlertKeys(alertKeys);
+    setCurrentIndex(0);
   }
 
-  const safeIndex = Math.min(
-    uiState.currentIndex,
-    Math.max(alerts.length - 1, 0),
-  );
+  const safeIndex = Math.min(currentIndex, Math.max(alerts.length - 1, 0));
   const currentAlert = alerts[safeIndex];
   const hasMultiple = alerts.length > 1;
-  const { viewedKeys } = uiState;
 
   const withCurrentViewed = useCallback(
     (base: Set<string>) => {
@@ -190,11 +173,8 @@ export const SendAlertModal = ({
     if (destination) {
       nextViewed.add(destination.key);
     }
-    setUiState((prev) => ({
-      ...prev,
-      currentIndex: nextIndex,
-      viewedKeys: nextViewed,
-    }));
+    setCurrentIndex(nextIndex);
+    setViewedKeys(nextViewed);
   }, [alerts, safeIndex, viewedKeys, withCurrentViewed]);
 
   const goToNext = useCallback(() => {
@@ -204,11 +184,8 @@ export const SendAlertModal = ({
     if (destination) {
       nextViewed.add(destination.key);
     }
-    setUiState((prev) => ({
-      ...prev,
-      currentIndex: nextIndex,
-      viewedKeys: nextViewed,
-    }));
+    setCurrentIndex(nextIndex);
+    setViewedKeys(nextViewed);
   }, [alerts, safeIndex, viewedKeys, withCurrentViewed]);
 
   const isOnLastAlert = safeIndex >= Math.max(alerts.length - 1, 0);
@@ -227,11 +204,8 @@ export const SendAlertModal = ({
     if (destination) {
       acknowledged.add(destination.key);
     }
-    setUiState((prev) => ({
-      ...prev,
-      currentIndex: nextIndex,
-      viewedKeys: acknowledged,
-    }));
+    setCurrentIndex(nextIndex);
+    setViewedKeys(acknowledged);
   }, [
     alerts,
     currentAlert,
