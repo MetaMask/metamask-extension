@@ -25,7 +25,8 @@ export function useMoneyAccountAvailability() {
     queryKey: ['moneyAccountAvailability', isEnabled],
     queryFn: () =>
       submitRequestToBackground<MoneyAccountAvailability>(
-        'getMoneyAccountAvailability',
+        'messengerCall',
+        ['MoneyAccountAvailabilityService:getAvailability', []],
       ),
     enabled: isEnabled,
     refetchOnMount: 'always',

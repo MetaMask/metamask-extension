@@ -40,7 +40,8 @@ describe('useMoneyAccountAvailability', () => {
       expect(result.current.availability).toStrictEqual(availability);
     });
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'getMoneyAccountAvailability',
+      'messengerCall',
+      ['MoneyAccountAvailabilityService:getAvailability', []],
     );
   });
 
