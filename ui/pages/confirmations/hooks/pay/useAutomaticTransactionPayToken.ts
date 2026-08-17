@@ -7,7 +7,6 @@ import {
   getTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
 import {
@@ -15,16 +14,8 @@ import {
   selectPreferredPayTokens,
   type PreferredPayToken,
 } from '../../selectors/feature-flags';
-import {
-  addToken,
-  findNetworkClientIdByChainId,
-  getTokenStandardAndDetailsByChain,
-} from '../../../../store/actions';
-import { useDispatch } from '../../../../store/hooks';
-import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../../constants/musd';
-import { ARBITRUM_USDC } from '../../constants/perps';
-import { parseTokenDetailDecimals } from '../../utils/token';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
+import { useImportPayToken } from './useImportPayToken';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -43,7 +34,6 @@ export function useAutomaticTransactionPayToken({
 } = {}) {
   // Per-id guard: don't re-dispatch on revisit, do dispatch for new tx.
   const isUpdated = useRef<string | undefined>(undefined);
-  const dispatch = useDispatch();
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const availableTokens = useTransactionPayAvailableTokens();
@@ -99,6 +89,28 @@ export function useAutomaticTransactionPayToken({
     () => requiredTokens.find((token) => !token.allowUnderMinimum),
     [requiredTokens],
   );
+
+  const isPreferredTokenAvailable = useMemo(
+    () =>
+      preferredToken !== undefined &&
+      tokens.some(
+        (token) =>
+          token.address?.toLowerCase() ===
+            preferredToken.address.toLowerCase() &&
+          String(token.chainId)?.toLowerCase() ===
+            preferredToken.chainId.toLowerCase(),
+      ),
+    [preferredToken, tokens],
+  );
+
+  // Post-quote destinations typically have $0 in-wallet, so they never enter
+  // the user's funding tokens. Import the preferred destination so its
+  // metadata (symbol / decimals) is available to the confirmation.
+  useImportPayToken({
+    address: preferredToken?.address,
+    chainId: preferredToken?.chainId,
+    enabled: !disable && isPostQuoteWithdraw && !isPreferredTokenAvailable,
+  });
 
   const automaticToken = useMemo(
     () =>
@@ -156,14 +168,12 @@ export function useAutomaticTransactionPayToken({
 
     // Post-quote destinations typically have $0 in-wallet, so they never
     // enter `availableTokens`. Wait for allowlist enrichment unless this is
-    // the caller-provided preferred token, which we can select immediately.
+    // the caller-provided preferred token, which we can select immediately —
+    // `useImportPayToken` imports it with its resolved metadata.
     if (isPostQuoteWithdraw && !matchingToken && !isPreferredAutomatic) {
       return;
     }
 
-    // Select first. Import is best-effort and must not gate `setPayToken` —
-    // awaiting network-client lookup / addToken races with effect cleanup
-    // when `tokens` / `requiredTokens` churn during confirmation load.
     isUpdated.current = transactionId;
     setPayToken({
       address: automaticToken.address,
@@ -174,64 +184,12 @@ export function useAutomaticTransactionPayToken({
         isUpdated.current = undefined;
       }
     });
-
-    if (!(isPostQuoteWithdraw && !matchingToken && isPreferredAutomatic)) {
-      return;
-    }
-
-    let cancelled = false;
-
-    const importPreferredToken = async () => {
-      try {
-        const metadata = await getImportMetadata(automaticToken);
-
-        // Skip import when decimals are unknown; guessing (e.g. Token/18 for
-        // USDC) corrupts amounts. `useAddToken` / the fixture already seed
-        // TokensController for known destinations.
-        if (!metadata || cancelled) {
-          return;
-        }
-
-        const networkClientId = await findNetworkClientIdByChainId(
-          automaticToken.chainId,
-        );
-
-        if (cancelled) {
-          return;
-        }
-
-        await dispatch(
-          addToken(
-            {
-              address: automaticToken.address,
-              symbol: metadata.symbol,
-              decimals: metadata.decimals,
-              networkClientId,
-            },
-            true,
-          ),
-        );
-      } catch (error) {
-        console.error(
-          'Failed to import automatic withdraw destination token',
-          error,
-        );
-      }
-    };
-
-    importPreferredToken();
-
-    return () => {
-      cancelled = true;
-    };
   }, [
     automaticToken,
     disable,
-    dispatch,
     isPostQuoteWithdraw,
     payToken,
     preferredToken,
-    requiredTokens,
     setPayToken,
     tokens,
     transactionId,
@@ -320,52 +278,6 @@ export function useAutomaticTransactionPayToken({
     isPostQuoteWithdraw,
     tokensWithBalance.length,
   ]);
-}
-
-/**
- * Metadata to import a post-quote destination token with. Resolves from the
- * token lists, the user's tokens or an on-chain lookup.
- *
- * @param token - The token to import.
- * @param token.address - The token address.
- * @param token.chainId - The chain the token is on.
- * @returns The metadata, or `undefined` when the decimals are unknown.
- */
-async function getImportMetadata({
-  address,
-  chainId,
-}: {
-  address: Hex;
-  chainId: Hex;
-}): Promise<{ symbol: string; decimals: number } | undefined> {
-  if (
-    address.toLowerCase() === MUSD_TOKEN_ADDRESS.toLowerCase() &&
-    chainId.toLowerCase() === CHAIN_IDS.MONAD.toLowerCase()
-  ) {
-    return { symbol: MUSD_TOKEN.symbol, decimals: MUSD_TOKEN.decimals };
-  }
-
-  if (
-    address.toLowerCase() === ARBITRUM_USDC.address.toLowerCase() &&
-    chainId.toLowerCase() === ARBITRUM_USDC.chainId.toLowerCase()
-  ) {
-    return { symbol: ARBITRUM_USDC.symbol, decimals: ARBITRUM_USDC.decimals };
-  }
-
-  const details = await getTokenStandardAndDetailsByChain(
-    address,
-    undefined,
-    undefined,
-    chainId,
-  );
-
-  const decimals = parseTokenDetailDecimals(details?.decimals);
-
-  if (decimals === undefined) {
-    return undefined;
-  }
-
-  return { symbol: details?.symbol ?? 'Token', decimals };
 }
 
 function getBestToken({

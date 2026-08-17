@@ -25,13 +25,12 @@ import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
-import {
-  isPerpsWithdrawTransaction,
-  isPostQuoteWithdrawTransaction,
-} from '../../../../../../shared/lib/transactions.utils';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
+import { useTransactionPayPostQuote } from '../../../hooks/pay/useTransactionPayPostQuote';
+import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
   useIsTransactionPayLoading,
@@ -102,14 +101,15 @@ export const CustomAmountInfo = React.memo(
       disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
       preferredToken,
     });
+    // Configures post-quote mode for withdraw flows; no-op for other flows.
+    useTransactionPayPostQuote();
     useTransactionPayMetrics();
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
     const availableTokens = useTransactionPayAvailableTokens();
     const accountNoFundsAlert = useAccountNoFundsAlert();
     const hasAccountNoFunds = accountNoFundsAlert.length > 0;
-    const isPostQuoteWithdraw =
-      isPostQuoteWithdrawTransaction(currentConfirmation);
+    const { isWithdraw: isPostQuoteWithdraw } = useTransactionPayWithdraw();
     // Post-quote withdrawals (e.g. Perps) source funds off-chain, not from a
     // wallet token, so the amount input stays usable without wallet tokens.
     const hasTokens = availableTokens.length > 0 || isPostQuoteWithdraw;
@@ -291,8 +291,7 @@ function BottomContainer({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-  const isPostQuoteWithdraw =
-    isPostQuoteWithdrawTransaction(currentConfirmation);
+  const { isWithdraw: isPostQuoteWithdraw } = useTransactionPayWithdraw();
 
   return (
     <Box

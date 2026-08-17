@@ -11,6 +11,7 @@ import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAu
 import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
+import * as useTransactionPayWithdrawModule from '../../../hooks/pay/useTransactionPayWithdraw';
 import * as useAccountNoFundsAlertModule from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import {
   CustomAmountInfo,
@@ -20,6 +21,8 @@ import {
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
 jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
+jest.mock('../../../hooks/pay/useTransactionPayPostQuote');
+jest.mock('../../../hooks/pay/useTransactionPayWithdraw');
 jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
@@ -200,6 +203,12 @@ function render(
         typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
       >,
     );
+  jest
+    .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
+    .mockReturnValue({
+      isWithdraw: false,
+      canSelectWithdrawToken: false,
+    });
 
   const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
@@ -521,6 +530,12 @@ describe('CustomAmountInfo', () => {
         .mockReturnValue({ skipIfBalance: false } as ReturnType<
           typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
         >);
+      jest
+        .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
+        .mockReturnValue({
+          isWithdraw: false,
+          canSelectWithdrawToken: false,
+        });
 
       const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
