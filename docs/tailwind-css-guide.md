@@ -72,7 +72,7 @@ Tailwind CSS classes have **the lowest CSS specificity** compared to our existin
 Because we have **legacy SASS classes** throughout the codebase, Tailwind CSS linting is **opt-in by directory** to prevent conflicts with the `no-custom-classname` rule.
 
 ```javascript
-// .eslintrc.js - Strict Tailwind enforcement areas
+// eslint.config.mjs - Strict Tailwind enforcement areas
 {
   files: [
     'ui/pages/design-system/**/*.{ts,tsx}', // ✅ Fully migrated
@@ -100,7 +100,7 @@ When you're ready to use **strict Tailwind** in your workspace:
 2. **Add your directory to the strict enforcement list**:
 
 ```javascript
-// .eslintrc.js
+// eslint.config.mjs
 {
   files: [
     'ui/pages/design-system/**/*.{ts,tsx}',

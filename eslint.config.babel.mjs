@@ -1,7 +1,7 @@
-const babelPlugin = require('@babel/eslint-plugin');
-const babelParser = require('@babel/eslint-parser');
+import babelPlugin from '@babel/eslint-plugin';
+import babelParser from '@babel/eslint-parser';
 
-module.exports = {
+export const config = {
   languageOptions: {
     parser: babelParser,
   },

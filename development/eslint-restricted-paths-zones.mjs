@@ -1,24 +1,24 @@
 // Shared zone definitions for `import-x/no-restricted-paths`.
 //
-// These are required (not extended) by both `.eslintrc.base.js` and
-// `.eslintrc.js`, so the same zone list is used wherever the rule needs
-// to be configured (notably the router-registry override in `.eslintrc.js`
+// These are required (not extended) by both `eslint.config.base.mjs` and
+// `eslint.config.mjs`, so the same zone list is used wherever the rule needs
+// to be configured (notably the router-registry override in `eslint.config.mjs`
 // re-enables only the non-route-isolation source-boundary zones).
 //
-// Kept outside `.eslintrc*.js` because ESLint v8 validates every config
+// Kept outside ESLint config modules because ESLint v8 validates every config
 // it loads and rejects unknown top-level exports.
 //
 // See ADR 0021 (modularize-routes):
 // https://github.com/MetaMask/decisions/tree/main/decisions/core/0021-modularize-routes.md
 
-const fs = require('node:fs');
-const path = require('node:path');
+import fs from 'node:fs';
+import path from 'node:path';
 
 // Architectural boundaries between the three top-level source trees:
 // - `app/`     (background script — service worker, controllers, RPC)
 // - `ui/`      (React UI rendered in the extension popup/expanded view)
 // - `shared/`  (code safe to import from either side)
-const architecturalZones = [
+export const architecturalZones = [
   {
     target: './app',
     from: './ui',
@@ -43,7 +43,7 @@ const architecturalZones = [
   },
 ];
 
-const buildSystemZones = [
+export const buildSystemZones = [
   {
     target: './app',
     from: './development',
@@ -68,8 +68,8 @@ const buildSystemZones = [
 // is treated as a "route module" per ADR 0021 (modularize-routes). The
 // `routes` subdirectory holds the React Router registry (which must
 // reference every route by design) and is exempted via overrides in
-// `.eslintrc.js`.
-const PAGES_DIR = path.join(__dirname, '..', 'ui/pages');
+// `eslint.config.mjs`.
+const PAGES_DIR = path.join(import.meta.dirname, '..', 'ui/pages');
 const ROUTE_ISOLATION_EXEMPT_DIRS = new Set(['routes']);
 const routeDirs = fs
   .readdirSync(PAGES_DIR, { withFileTypes: true })
@@ -83,7 +83,7 @@ const routeDirs = fs
 // except itself and the router registry. `import-x/no-restricted-paths`
 // resolves `except` paths relative to `from`, so we can keep one zone
 // per route instead of a quadratic pair list.
-const routeIsolationZones = routeDirs.map((route) => ({
+export const routeIsolationZones = routeDirs.map((route) => ({
   target: `./ui/pages/${route}`,
   from: './ui/pages',
   except: [`./${route}`, './routes'],
@@ -91,5 +91,3 @@ const routeIsolationZones = routeDirs.map((route) => ({
     `Route directories must be isolated. "${route}" must not import ` +
     `from a sibling route directory. See ADR 0021 (modularize-routes).`,
 }));
-
-module.exports = { architecturalZones, buildSystemZones, routeIsolationZones };

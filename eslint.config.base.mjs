@@ -1,11 +1,9 @@
-const designTokensPlugin = require('@metamask/eslint-plugin-design-tokens');
-const {
-  architecturalZones,
-  buildSystemZones,
-  routeIsolationZones,
-} = require('./development/eslint-restricted-paths-zones');
+import * as designTokensPlugin from '@metamask/eslint-plugin-design-tokens';
 
-module.exports = {
+const { architecturalZones, buildSystemZones, routeIsolationZones } =
+  await import('./development/eslint-restricted-paths-zones.mjs');
+
+export const config = {
   plugins: {
     '@metamask/design-tokens': designTokensPlugin,
   },

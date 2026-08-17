@@ -26,7 +26,7 @@ ignores:
   #
 
   # ESLint import resolvers, referenced by short name in `import-x/resolver`
-  # settings in .eslintrc.js (`node`, `typescript`) rather than imported
+  # settings in eslint.config.mjs (`node`, `typescript`) rather than imported
   - 'eslint-import-resolver-node'
   - 'eslint-import-resolver-typescript'
   # invoked as a string transform (`bundler.transform('babelify')`) in the

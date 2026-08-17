@@ -116,7 +116,7 @@ function classify(member) {
   return null;
 }
 
-module.exports = {
+export default {
   meta: {
     type: 'suggestion',
     docs: {

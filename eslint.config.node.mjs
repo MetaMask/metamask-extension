@@ -1,6 +1,6 @@
-const nodeConfig = require('@metamask/eslint-config-nodejs').default;
+import nodeConfig from '@metamask/eslint-config-nodejs';
 
-module.exports = [
+export const configs = [
   ...nodeConfig,
   {
     rules: {
@@ -26,6 +26,9 @@ module.exports = [
       //
       // TODO: Remove these modifications after the ESLint v9 update
       'no-restricted-globals': 'off',
+
+      // Extensions are required by the `import` keyword in Node.js
+      'import-x/extensions': 'off',
     },
   },
 ];

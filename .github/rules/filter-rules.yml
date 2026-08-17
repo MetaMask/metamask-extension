@@ -33,7 +33,6 @@ test_files: &test_files
 config_files: &config_files
   - '.depcheckrc.yml'
   - '.editorconfig'
-  - '.eslint*'
   - '.git-blame-ignore-revs'
   - '.gitattributes'
   - '.madgerc'
@@ -43,7 +42,7 @@ config_files: &config_files
   - 'codecov.yml'
   - 'coverage.json'
   - 'crowdin.yml'
-  - 'eslint.config.js'
+  - 'eslint.config.*'
   - 'oxfmt.config.mts'
   - 'privacy-snapshot.json'
   - 'sonar-project.properties'

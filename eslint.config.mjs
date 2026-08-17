@@ -1,33 +1,32 @@
-const { readFileSync } = require('node:fs');
-const { defineConfig } = require('eslint/config');
-const eslintConfig = require('@metamask/eslint-config').default;
-const typescriptConfig = require('@metamask/eslint-config-typescript').default;
-const mochaConfig = require('@metamask/eslint-config-mocha').default;
-const jestConfig = require('@metamask/eslint-config-jest').default;
-const ts = require('typescript');
-const babelParser = require('@babel/eslint-parser');
-const reactPackageJson = require('react/package.json');
-const reactPlugin = require('eslint-plugin-react');
-const reactHooksPlugin = require('eslint-plugin-react-hooks');
-const storybookPlugin = require('eslint-plugin-storybook');
-const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
-const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
-
-const {
+import { readFileSync } from 'node:fs';
+import { defineConfig } from 'eslint/config';
+import eslintConfig from '@metamask/eslint-config';
+import typescriptConfig from '@metamask/eslint-config-typescript';
+import mochaConfig from '@metamask/eslint-config-mocha';
+import jestConfig from '@metamask/eslint-config-jest';
+import ts from 'typescript';
+import babelParser from '@babel/eslint-parser';
+import reactPackageJson from 'react/package.json' with { type: 'json' };
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import storybookPlugin from 'eslint-plugin-storybook';
+import tailwindCssPlugin from 'eslint-plugin-tailwindcss';
+import pageObjectMemberOrderRule from './development/eslint-rules/page-object-member-order.mjs';
+import { config as baseConfig } from './eslint.config.base.mjs';
+import { config as babelConfig } from './eslint.config.babel.mjs';
+import { configs as nodeConfigs } from './eslint.config.node.mjs';
+import { config as typescriptCompatConfig } from './eslint.config.typescript-compat.mjs';
+import {
   architecturalZones,
   buildSystemZones,
-} = require('./development/eslint-restricted-paths-zones');
-const baseConfig = require('./.eslintrc.base');
-const babelConfig = require('./.eslintrc.babel');
-const nodeConfigs = require('./.eslintrc.node');
-const typescriptCompatConfig = require('./.eslintrc.typescript-compat');
+} from './development/eslint-restricted-paths-zones.mjs';
 
 const reactVersion = reactPackageJson.version;
 const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
 const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
 
-module.exports = defineConfig([
+export default defineConfig([
   {
     // Ignore files which are also in .prettierignore
     ignores: readFileSync('.prettierignore', 'utf8')
@@ -61,8 +60,6 @@ module.exports = defineConfig([
      * export other modules.
      */
     files: [
-      '.eslintrc.js',
-      '.eslintrc.*.js',
       '.mocharc.js',
       '*.config.js',
       'development/**/*.js',
@@ -103,6 +100,8 @@ module.exports = defineConfig([
    */
   {
     files: [
+      'eslint.config.mjs',
+      'eslint.config.*.mjs',
       'app/**/*.js',
       'shared/**/*.js',
       'ui/**/*.js',
@@ -149,7 +148,7 @@ module.exports = defineConfig([
     languageOptions: {
       parserOptions: {
         // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
-        tsconfigRootDir: __dirname,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     extends: [

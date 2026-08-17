@@ -2,7 +2,7 @@
 
 const { RuleTester } = require('eslint');
 const { parser: tsParser } = require('typescript-eslint');
-const rule = require('./page-object-member-order');
+const rule = require('./page-object-member-order.mjs');
 
 const ruleTester = new RuleTester({
   languageOptions: {

@@ -1,5 +1,5 @@
 [
-  ".eslintrc.js",
+  "eslint.config.mjs",
   "app/scripts/background.js",
   "app/scripts/contentscript.js",
   "app/scripts/detect-multiple-instances.js",

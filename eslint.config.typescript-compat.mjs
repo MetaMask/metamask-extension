@@ -1,4 +1,4 @@
-module.exports = {
+export const config = {
   settings: {
     'import-x/extensions': ['.js', '.ts', '.tsx'],
     'import-x/parsers': {

@@ -266,10 +266,10 @@ ui/selectors/money/                  @MetaMask/earn
 
 # Lint
 /.editorconfig                                        @MetaMask/extension-platform
-/.eslintrc.js                                         @MetaMask/extension-platform
-/.eslintrc.*.js                                       @MetaMask/extension-platform
 /.prettierignore                                      @MetaMask/extension-platform
 /.prettierrc.yml                                      @MetaMask/extension-platform
+/eslint.config.mjs                                    @MetaMask/extension-platform
+/eslint.config.*.mjs                                  @MetaMask/extension-platform
 /stylelint.config.js                                  @MetaMask/extension-platform
 
 # Test
