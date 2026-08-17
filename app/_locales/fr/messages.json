@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "Tous les réseaux"
   },
-  "allPermissions": {
-    "message": "Connexions aux dapps"
-  },
   "allPopularNetworks": {
     "message": "Tous les réseaux populaires"
   },
@@ -3096,9 +3093,6 @@
   },
   "customerSupport": {
     "message": "assistance à la clientèle"
-  },
-  "dappConnections": {
-    "message": "Connexions aux dapps"
   },
   "dappSuggested": {
     "message": "Suggéré par le site"
@@ -5876,9 +5870,6 @@
   },
   "noAccountsFound": {
     "message": "Aucun compte trouvé pour la demande de recherche effectuée"
-  },
-  "noConnectionDescription": {
-    "message": "Pour vous connecter à un site, trouvez et sélectionnez le bouton « connecter ». N’oubliez pas que MetaMask ne peut se connecter qu’à des sites Web3"
   },
   "noDefaultAddress": {
     "message": "Aucune adresse $1",
@@ -10149,9 +10140,6 @@
   },
   "singleNetwork": {
     "message": "1 réseau"
-  },
-  "sites": {
-    "message": "Sites"
   },
   "siweIssued": {
     "message": "Émis"

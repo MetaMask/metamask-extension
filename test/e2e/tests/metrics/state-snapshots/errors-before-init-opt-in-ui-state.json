@@ -106,13 +106,7 @@
       "version": null
     },
     "CurrencyController": {
-      "currencyRates": {
-        "ETH": {
-          "conversionDate": "object",
-          "conversionRate": 1700,
-          "usdConversionRate": null
-        }
-      },
+      "currencyRates": {},
       "currentCurrency": "usd"
     },
     "DeFiPositionsControllerV2": "object",
