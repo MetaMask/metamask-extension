@@ -66,10 +66,7 @@ export default function RecoveryPhraseChips({
     () => quizWords.map((word) => word.index),
     [quizWords],
   );
-  const quizWordsKey = useMemo(
-    () => indicesToCheck.join('|'),
-    [indicesToCheck],
-  );
+  const quizWordsKey = quizWords;
 
   const setNextTargetIndex = (
     newQuizAnswers: { index: number; word: string }[],

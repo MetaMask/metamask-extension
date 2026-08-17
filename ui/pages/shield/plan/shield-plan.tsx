@@ -325,11 +325,12 @@ const ShieldPlan = () => {
   });
 
   const onStartSubscription = useCallback(() => {
+    setPaymentMethodLocal(selectedPaymentMethod);
     // set flag to prevent auto-switching payment method after payment cancel/failure
     setHasInitializedPaymentMethod(true);
 
     handleSubscription();
-  }, [handleSubscription]);
+  }, [handleSubscription, selectedPaymentMethod]);
 
   const handleUserChangeToken = useCallback(
     async (token: TokenWithApprovalAmount) => {

@@ -80,6 +80,7 @@ export default function WelcomeLogin({
     loginType?: LoginType,
   ) => {
     if (isSeedlessOnboardingFeatureEnabled) {
+      setHiddenForLoginParam(null);
       setIsTransitioning(true);
       // Clear any existing timeout
       if (timeoutRef.current) {
@@ -89,6 +90,7 @@ export default function WelcomeLogin({
       timeoutRef.current = setTimeout(() => {
         setIsTransitioning(false);
         timeoutRef.current = null;
+        setLocalLoginOption(option);
         navigate(`${ONBOARDING_WELCOME_ROUTE}?login=${option}`);
       }, 100);
     } else {
