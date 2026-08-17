@@ -665,6 +665,11 @@ export class LedgerDmkBridgeHandler {
    * so the HID listeners must stay registered to detect replug. Bumping
    * `bridgeGeneration` also discards any in-flight `constructBridge()`
    * result so it cannot resurrect the torn-down bridge.
+   *
+   * Bridge references are cleared synchronously before awaiting
+   * `bridge.destroy()`, matching the legacy handler's `closeTransport()`.
+   * That way `ensureBridge()` never returns a mid-destroy bridge, and a
+   * hung `destroy()` cannot permanently stick callers on a dead instance.
    */
   private async tearDownBridge(): Promise<void> {
     this.bridgeGeneration += 1;
@@ -672,16 +677,23 @@ export class LedgerDmkBridgeHandler {
       this.sessionStateSubscription.unsubscribe();
       this.sessionStateSubscription = null;
     }
-    if (this.bridge) {
-      try {
-        await this.bridge.destroy();
-      } catch {
-        // Bridge cleanup failed; nothing to recover here.
-      }
-      this.bridge = null;
-    }
+
+    const bridgeToDestroy = this.bridge;
+    // Clear synchronously before the first await so concurrent ensureBridge()
+    // callers construct a fresh bridge instead of reusing one mid-destroy.
+    this.bridge = null;
     this.bridgePromise = null;
     this.sessionId = null;
+
+    if (!bridgeToDestroy) {
+      return;
+    }
+
+    try {
+      await bridgeToDestroy.destroy();
+    } catch {
+      // Bridge cleanup failed; nothing to recover here.
+    }
   }
 
   /**

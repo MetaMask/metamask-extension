@@ -508,6 +508,51 @@ describe('LedgerDmkBridgeHandler', () => {
       expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
     });
 
+    it('clears bridge state before awaiting destroy so a hung destroy cannot stick callers', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const consoleLogSpy = jest
+        .spyOn(console, 'log')
+        .mockImplementation(() => undefined);
+
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+      await handler.handleAction(LedgerAction.makeApp);
+
+      let resolveDestroy: (() => void) | undefined;
+      mockBridgeDestroy.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveDestroy = resolve;
+          }),
+      );
+
+      // Disconnect starts tearDownBridge, which must clear this.bridge before
+      // awaiting the hung destroy — otherwise ensureBridge would keep returning
+      // the mid-destroy instance.
+      mockOnSessionStateChangeSubject.next({ connected: false });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+      expect(resolveDestroy).toBeDefined();
+
+      (LedgerDmkBridge as jest.Mock).mockClear();
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await expect(handler.handleAction(LedgerAction.makeApp)).resolves.toBe(
+        true,
+      );
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+
+      resolveDestroy?.();
+      consoleErrorSpy.mockRestore();
+      consoleLogSpy.mockRestore();
+    });
+
     it('preserves HID listeners on device disconnect (replug still notifies)', async () => {
       const handler = new LedgerDmkBridgeHandler();
       mockHidGetDevices.mockResolvedValue([]);
