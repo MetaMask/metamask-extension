@@ -1232,15 +1232,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/ens-controller": {
-      "packages": {
-        "@ethersproject/providers": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/utils": true,
-        "punycode": true
-      }
-    },
     "@metamask/eth-token-tracker>@metamask/eth-block-tracker": {
       "globals": {
         "clearTimeout": true,
@@ -2083,6 +2074,7 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
+        "URLSearchParams": true,
         "clearInterval": true,
         "clearTimeout": true,
         "fetch": true,

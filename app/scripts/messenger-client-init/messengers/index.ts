@@ -33,10 +33,13 @@ import {
 } from './core-backend';
 import {
   getMultichainBalancesControllerMessenger,
+  getMultichainBalancesControllerInitMessenger,
   getMultichainTransactionsControllerMessenger,
   getMultichainAssetsControllerMessenger,
+  getMultichainAssetsControllerInitMessenger,
   getMultichainNetworkControllerMessenger,
   getMultichainAssetsRatesControllerMessenger,
+  getMultichainAssetsRatesControllerInitMessenger,
 } from './multichain';
 import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
 import {
@@ -113,10 +116,6 @@ import {
   getCurrencyRateControllerInitMessenger,
   getCurrencyRateControllerMessenger,
 } from './currency-rate-controller-messenger';
-import {
-  getEnsControllerInitMessenger,
-  getEnsControllerMessenger,
-} from './ens-controller-messenger';
 import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
@@ -230,11 +229,6 @@ export {
   getEncryptionPublicKeyControllerInitMessenger,
 } from './encryption-public-key-controller-messenger';
 export { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
-export type { EnsControllerInitMessenger } from './ens-controller-messenger';
-export {
-  getEnsControllerMessenger,
-  getEnsControllerInitMessenger,
-} from './ens-controller-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
@@ -439,10 +433,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getEncryptionPublicKeyManagerMessenger,
     getInitMessenger: noop,
   },
-  EnsController: {
-    getMessenger: getEnsControllerMessenger,
-    getInitMessenger: getEnsControllerInitMessenger,
-  },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
@@ -493,15 +483,15 @@ export const MESSENGER_FACTORIES = {
   },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainAssetsControllerInitMessenger,
   },
   MultichainAssetsRatesController: {
     getMessenger: getMultichainAssetsRatesControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainAssetsRatesControllerInitMessenger,
   },
   MultichainBalancesController: {
     getMessenger: getMultichainBalancesControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainBalancesControllerInitMessenger,
   },
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,

@@ -136,13 +136,7 @@
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
-    "currencyRates": {
-      "ETH": {
-        "conversionDate": "object",
-        "conversionRate": 1700,
-        "usdConversionRate": null
-      }
-    },
+    "currencyRates": {},
     "currentCurrency": "usd"
   },
   "DeFiPositionsController": "object",
@@ -155,10 +149,6 @@
   "EncryptionPublicKeyController": {
     "unapprovedEncryptionPublicKeyMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object"
-  },
-  "EnsController": {
-    "ensEntries": "object",
-    "ensResolutionsByAddress": "object"
   },
   "GasFeeController": {
     "estimatedGasFeeTimeBounds": {},

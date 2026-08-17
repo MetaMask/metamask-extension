@@ -593,6 +593,12 @@ class HomePage {
 
   async goToTokensTab(): Promise<void> {
     console.log(`Go to tokens tab on homepage`);
+    // With the bottom nav bar, activity is its own route instead of a home
+    // tab, so the tab strip is absent and we have to return home first.
+    const currentUrl = await this.driver.getCurrentUrl();
+    if (currentUrl.includes(`#${ACTIVITY_ROUTE}`)) {
+      await this.driver.clickElement(this.bottomNavHomeButton);
+    }
     await this.driver.clickElement(this.tokensTab);
   }
 
