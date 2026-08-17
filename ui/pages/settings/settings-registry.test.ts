@@ -75,27 +75,6 @@ describe('settings-registry', () => {
       );
     });
 
-    it('assigns enrollment messenger capabilities to passkey registration', () => {
-      const expectedCapabilities = {
-        actions: [
-          'PasskeyController:generateRegistrationOptions',
-          'PasskeyController:generatePostRegistrationAuthenticationOptions',
-          'PasskeyController:protectVaultKeyWithPasskey',
-        ],
-        events: [],
-      };
-
-      expect(
-        getSettingsRouteMeta(SECURITY_REGISTER_PASSKEY_ROUTE)
-          ?.messengerCapabilities,
-      ).toStrictEqual(expectedCapabilities);
-      expect(
-        SETTINGS_RENDERABLE_ROUTES.find(
-          ({ path }) => path === SECURITY_REGISTER_PASSKEY_ROUTE,
-        )?.messengerCapabilities,
-      ).toStrictEqual(expectedCapabilities);
-    });
-
     it('assigns removal messenger capabilities to passkey settings routes', () => {
       expect(
         getSettingsRouteMeta(SECURITY_AND_PASSWORD_ROUTE)

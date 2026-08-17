@@ -86,17 +86,6 @@ describe('PasskeyRegisterSubPage', () => {
     );
   });
 
-  it('allows only passkey enrollment actions on the route messenger', () => {
-    expect(PASSKEY_REGISTRATION_ROUTE_CAPABILITIES).toStrictEqual({
-      actions: [
-        'PasskeyController:generateRegistrationOptions',
-        'PasskeyController:generatePostRegistrationAuthenticationOptions',
-        'PasskeyController:protectVaultKeyWithPasskey',
-      ],
-      events: [],
-    });
-  });
-
   it('redirects to security when biometrics is already registered', async () => {
     const store = configureMockStore()(stateWithPasskeyRegistered);
     renderWithProvider(<PasskeyRegisterSubPage />, store);

@@ -144,6 +144,15 @@ export function createProviderWrapper(
   return Wrapper;
 }
 
+/**
+ * @param component
+ * @param [store]
+ * @param [pathname]
+ * @param [renderer]
+ * @param [getMockTrackEvent]
+ * @param {UIMessenger} [uiMessenger]
+ * @param {RouteMessenger | null} [routeMessenger]
+ */
 export function renderWithProvider(
   component,
   store,

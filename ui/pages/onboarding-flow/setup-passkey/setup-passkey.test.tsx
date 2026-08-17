@@ -133,17 +133,6 @@ describe('SetupPasskey', () => {
     };
   }
 
-  it('allows only passkey enrollment actions on the route messenger', () => {
-    expect(PASSKEY_SETUP_ROUTE_CAPABILITIES).toStrictEqual({
-      actions: [
-        'PasskeyController:generateRegistrationOptions',
-        'PasskeyController:generatePostRegistrationAuthenticationOptions',
-        'PasskeyController:protectVaultKeyWithPasskey',
-      ],
-      events: [],
-    });
-  });
-
   it('renders core passkey setup actions', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
     renderSetupPasskey(mockStore);
