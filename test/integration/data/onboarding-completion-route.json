@@ -45,10 +45,7 @@
   },
   "addressSecurityAlertResponses": {},
   "advancedGasFee": {},
-  "alertEnabledness": {
-    "unconnectedAccount": true,
-    "web3ShimUsage": true
-  },
+  "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
   "allDetectedTokens": {},
   "allIgnoredAssets": {},
   "allIgnoredTokens": {},
@@ -57,36 +54,12 @@
   "allTokens": {},
   "analyticsId": "0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb",
   "announcements": {
-    "8": {
-      "id": 8,
-      "date": "2021-11-01",
-      "isShown": false
-    },
-    "20": {
-      "id": 20,
-      "date": null,
-      "isShown": false
-    },
-    "24": {
-      "id": 24,
-      "date": null,
-      "isShown": false
-    },
-    "25": {
-      "id": 25,
-      "date": null,
-      "isShown": false
-    },
-    "28": {
-      "id": 28,
-      "date": null,
-      "isShown": false
-    },
-    "29": {
-      "id": 29,
-      "date": null,
-      "isShown": false
-    },
+    "8": { "id": 8, "date": "2021-11-01", "isShown": false },
+    "20": { "id": 20, "date": null, "isShown": false },
+    "24": { "id": 24, "date": null, "isShown": false },
+    "25": { "id": 25, "date": null, "isShown": false },
+    "28": { "id": 28, "date": null, "isShown": false },
+    "29": { "id": 29, "date": null, "isShown": false },
     "30": {
       "id": 30,
       "date": null,
@@ -114,18 +87,11 @@
       },
       "isShown": false
     },
-    "33": {
-      "id": 33,
-      "date": "2024-04-09",
-      "isShown": false
-    }
+    "33": { "id": 33, "date": "2024-04-09", "isShown": false }
   },
   "approvalFlows": [],
   "assetsMetadata": {},
-  "browserEnvironment": {
-    "os": "mac",
-    "browser": "firefox"
-  },
+  "browserEnvironment": { "os": "mac", "browser": "firefox" },
   "completedOnboarding": false,
   "confirmationExchangeRates": {},
   "connectedStatusPopoverHasBeenShown": true,
@@ -188,9 +154,7 @@
         "scopes": ["eip155:0"],
         "metadata": {
           "name": "Account 1",
-          "keyring": {
-            "type": "HD Key Tree"
-          },
+          "keyring": { "type": "HD Key Tree" },
           "lastSelected": 1715944041814
         }
       }
@@ -267,12 +231,7 @@
   "networkConnectionBanner": {
     "status": "unknown"
   },
-  "networksMetadata": {
-    "sepolia": {
-      "status": "unknown",
-      "EIPS": {}
-    }
-  },
+  "networksMetadata": { "sepolia": { "status": "unknown", "EIPS": {} } },
   "networksWithTransactionActivity": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
       "namespace": "eip155",
@@ -338,19 +297,11 @@
   "signatureSecurityAlertResponses": {},
   "slides": [],
   "smartTransactionsState": {
-    "smartTransactions": {
-      "0x1": []
-    },
+    "smartTransactions": { "0x1": [] },
     "fees": {},
     "liveness": true,
-    "livenessByChainId": {
-      "0x1": true,
-      "0xaa36a7": true
-    },
-    "feesByChainId": {
-      "0x1": {},
-      "0xaa36a7": {}
-    }
+    "livenessByChainId": { "0x1": true, "0xaa36a7": true },
+    "feesByChainId": { "0x1": {}, "0xaa36a7": {} }
   },
   "snapRegistryList": {},
   "snapStates": {},
@@ -363,10 +314,7 @@
       "id": "npm:@metamask/message-signing-snap",
       "initialPermissions": {
         "snap_getEntropy": {},
-        "endowment:rpc": {
-          "dapps": true,
-          "snaps": false
-        }
+        "endowment:rpc": { "dapps": true, "snaps": false }
       },
       "manifest": {
         "version": "0.3.3",
@@ -389,21 +337,14 @@
         },
         "initialPermissions": {
           "snap_getEntropy": {},
-          "endowment:rpc": {
-            "dapps": true,
-            "snaps": false
-          }
+          "endowment:rpc": { "dapps": true, "snaps": false }
         },
         "manifestVersion": "0.1"
       },
       "status": "stopped",
       "version": "0.3.3",
       "versionHistory": [
-        {
-          "version": "0.3.3",
-          "date": 1715943225450,
-          "origin": "metamask"
-        }
+        { "version": "0.3.3", "date": 1715943225450, "origin": "metamask" }
       ],
       "localizationFiles": []
     }
@@ -466,13 +407,7 @@
           "parentCapability": "endowment:rpc",
           "invoker": "npm:@metamask/message-signing-snap",
           "caveats": [
-            {
-              "type": "rpcOrigin",
-              "value": {
-                "dapps": true,
-                "snaps": false
-              }
-            }
+            { "type": "rpcOrigin", "value": { "dapps": true, "snaps": false } }
           ],
           "date": 1715943225451
         }
