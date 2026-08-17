@@ -54,7 +54,10 @@ describe('HyperEVM frxUSD decimal formatting', function () {
           FRXUSD_SYMBOL,
           '11,811,649',
         );
-        await tokensTab.checkTokenRowDoesNotContainText(FRXUSD_SYMBOL, '11.81M');
+        await tokensTab.checkTokenRowDoesNotContainText(
+          FRXUSD_SYMBOL,
+          '11.81M',
+        );
 
         await tokensTab.openTokenDetails(FRXUSD_SYMBOL);
         await tokensTab.checkTokenAmountIsDisplayed(FRXUSD_DISPLAY_AMOUNT);
