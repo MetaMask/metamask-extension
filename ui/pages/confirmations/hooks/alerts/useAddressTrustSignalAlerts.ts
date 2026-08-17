@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
+import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
@@ -52,7 +53,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
   const { state: trustSignalDisplayState } = useTrustSignal(
     addressToCheck || '',
     NameType.ETHEREUM_ADDRESS,
-    currentConfirmation?.chainId,
+    currentConfirmation?.chainId as Hex | undefined,
   );
 
   return useMemo(() => {

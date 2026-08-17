@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Icon as DsIcon,
@@ -25,10 +25,14 @@ export function PerpsWithdrawToast() {
   const { formatCurrency } = useFormatters();
   const lastWithdrawResult = useSelector(selectPerpsLastWithdrawResult);
   const [dismissed, setDismissed] = useState(false);
+  const withdrawTimestamp = lastWithdrawResult?.timestamp;
+  const [prevWithdrawTimestamp, setPrevWithdrawTimestamp] =
+    useState(withdrawTimestamp);
 
-  useEffect(() => {
+  if (withdrawTimestamp !== prevWithdrawTimestamp) {
+    setPrevWithdrawTimestamp(withdrawTimestamp);
     setDismissed(false);
-  }, [lastWithdrawResult?.timestamp]);
+  }
 
   const dismissToast = useCallback(() => {
     setDismissed(true);

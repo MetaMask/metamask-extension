@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { act, renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -51,15 +52,17 @@ const STATE_MOCK = {
     TransactionPayController: {
       transactionData: {},
     },
+    remoteFeatureFlags: {},
   },
 };
 
 function renderHookWithProvider({
   disable = false,
   preferredToken,
-  transactionType,
+  transactionType = TransactionType.perpsDeposit,
   transactionId = TRANSACTION_ID_MOCK,
   from = '0x123',
+  remoteFeatureFlags,
   confirmContextValue: confirmContextValueOverride,
 }: {
   disable?: boolean;
@@ -67,6 +70,7 @@ function renderHookWithProvider({
   transactionType?: TransactionType;
   transactionId?: string;
   from?: string;
+  remoteFeatureFlags?: Record<string, unknown>;
   confirmContextValue?: {
     currentConfirmation: {
       id: string;
@@ -77,7 +81,12 @@ function renderHookWithProvider({
     setIsScrollToBottomCompleted: jest.Mock;
   };
 } = {}) {
-  const store = mockStore(STATE_MOCK);
+  const store = mockStore({
+    metamask: {
+      ...STATE_MOCK.metamask,
+      remoteFeatureFlags: remoteFeatureFlags ?? {},
+    },
+  });
 
   const confirmContextValue = confirmContextValueOverride ?? {
     currentConfirmation: {
@@ -191,15 +200,12 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('selects target token if no tokens with balance', () => {
+  it('does not select token when no tokens with balance', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
 
     renderHookWithProvider();
 
-    expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
-    });
+    expect(setPayTokenMock).not.toHaveBeenCalled();
   });
 
   it('does nothing if no required tokens', () => {
@@ -253,7 +259,7 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('selects target token when preferred payment token provided but no tokens available', () => {
+  it('does not select token when preferred payment token provided but no tokens available', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
 
     renderHookWithProvider({
@@ -263,10 +269,7 @@ describe('useAutomaticTransactionPayToken', () => {
       },
     });
 
-    expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
-    });
+    expect(setPayTokenMock).not.toHaveBeenCalled();
   });
 
   it('selects first available token when preferred token not in available tokens', () => {
@@ -548,7 +551,7 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('settles with the required-token fallback after empty-account reselect timeout', () => {
+  it('leaves pay token unset after empty-account reselect timeout', () => {
     jest.useFakeTimers();
     useTransactionPayAvailableTokensMock.mockReturnValue([
       { address: TOKEN_ADDRESS_2_MOCK, chainId: CHAIN_ID_2_MOCK },
@@ -572,6 +575,171 @@ describe('useAutomaticTransactionPayToken', () => {
 
     act(() => {
       jest.advanceTimersByTime(ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS);
+    });
+
+    // Deposit flows intentionally do not fall back to the required destination
+    // token when the selected account has no funding balance.
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+  });
+
+  it('selects a funding token that arrives after empty-account reselect timeout', () => {
+    jest.useFakeTimers();
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_2_MOCK, chainId: CHAIN_ID_2_MOCK },
+    ] as Asset[]);
+    useTransactionAccountOverrideMock.mockReturnValue(undefined);
+
+    const { rerender } = renderHookWithProvider();
+    expect(setPayTokenMock).toHaveBeenCalled();
+    setPayTokenMock.mockClear();
+
+    useTransactionAccountOverrideMock.mockReturnValue(
+      '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex,
+    );
+    useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: setPayTokenMock,
+    });
+    rerender();
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS);
+    });
+    rerender();
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_3_MOCK, chainId: CHAIN_ID_2_MOCK },
+    ] as Asset[]);
+    rerender();
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_3_MOCK,
+      chainId: CHAIN_ID_2_MOCK,
+    });
+  });
+
+  it('selects preferred flag token with highest fiat balance among eligible tokens', () => {
+    selectMinimumRequiredTokenBalanceMock.mockReturnValue(5);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+        fiat: { balance: 10 },
+      },
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+        fiat: { balance: 20 },
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({
+      remoteFeatureFlags: {
+        confirmations_pay_tokens: {
+          preferredTokens: {
+            overrides: {
+              perpsDeposit: [
+                {
+                  address: TOKEN_ADDRESS_2_MOCK,
+                  chainId: CHAIN_ID_2_MOCK,
+                },
+                {
+                  address: TOKEN_ADDRESS_1_MOCK,
+                  chainId: CHAIN_ID_1_MOCK,
+                },
+              ],
+            },
+          },
+        },
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_1_MOCK,
+      chainId: CHAIN_ID_1_MOCK,
+    });
+  });
+
+  it('skips preferred flag tokens below the minimum required balance', () => {
+    selectMinimumRequiredTokenBalanceMock.mockReturnValue(15);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+        fiat: { balance: 10 },
+      },
+      {
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+        fiat: { balance: 20 },
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({
+      remoteFeatureFlags: {
+        confirmations_pay_tokens: {
+          preferredTokens: {
+            overrides: {
+              perpsDeposit: [
+                {
+                  address: TOKEN_ADDRESS_1_MOCK,
+                  chainId: CHAIN_ID_1_MOCK,
+                },
+                {
+                  address: TOKEN_ADDRESS_2_MOCK,
+                  chainId: CHAIN_ID_2_MOCK,
+                },
+              ],
+            },
+          },
+        },
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_2_MOCK,
+      chainId: CHAIN_ID_2_MOCK,
+    });
+  });
+
+  it('resolves preferred flag tokens from nested type on batch transactions', () => {
+    selectMinimumRequiredTokenBalanceMock.mockReturnValue(5);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+        fiat: { balance: 20 },
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({
+      confirmContextValue: {
+        currentConfirmation: {
+          id: TRANSACTION_ID_MOCK,
+          type: TransactionType.batch,
+          nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+          txParams: { from: '0x123' },
+        } as never,
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: jest.fn(),
+      },
+      remoteFeatureFlags: {
+        confirmations_pay_tokens: {
+          preferredTokens: {
+            overrides: {
+              moneyAccountDeposit: [
+                {
+                  address: TOKEN_ADDRESS_1_MOCK,
+                  chainId: CHAIN_ID_1_MOCK,
+                },
+              ],
+            },
+          },
+        },
+      },
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({

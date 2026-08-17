@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Rút tiền dự đoán"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Mua thất bại"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Mua thất bại"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Đang mua $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Đang mua $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Đã mua $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Đã mua $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Bán thất bại"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Bán thất bại"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Đang bán $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Đang bán $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "Đã bán $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "Đã bán $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "Từ: $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn"
-  },
-  "backupApprovalInfo": {
-    "message": "Đây là mã bí mật bắt buộc phải dùng để khôi phục ví trong trường hợp bạn bị mất thiết bị, quên mật khẩu, phải cài đặt lại MetaMask hoặc muốn truy cập ví của mình trên một thiết bị khác."
   },
   "backupApprovalNotice": {
     "message": "Sao lưu Cụm từ khôi phục bí mật để đảm bảo an toàn cho ví và tiền của bạn."
@@ -3405,11 +3446,11 @@
   "disconnectAllSites": {
     "message": "Ngắt kết nối tất cả"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Nếu bạn ngắt kết nối khỏi tất cả các trang web, bạn sẽ cần kết nối lại tài khoản và mạng để sử dụng lại."
-  },
   "disconnectAllSitesError": {
     "message": "Không thể ngắt kết nối một số dapp. Vui lòng thử lại."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Ngắt kết nối tất cả?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Đã ngắt kết nối tất cả dapp thành công."
@@ -3420,15 +3461,26 @@
   "disconnectPrompt": {
     "message": "Ngắt kết nối $1"
   },
+  "disconnectQuestion": {
+    "message": "Ngắt kết nối?"
+  },
   "disconnectThisAccount": {
     "message": "Ngắt kết nối tài khoản này"
   },
   "discover": {
     "message": "Khám phá"
   },
+  "discoverSearchCap": {
+    "message": "vốn hóa",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "Không tìm thấy kết quả",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "Không tìm thấy kết quả cho “$1”",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "Khám phá các tài sản phổ biến khác",
@@ -3590,9 +3642,6 @@
   },
   "editNonceMessage": {
     "message": "Đây là tính năng nâng cao, hãy dùng một cách thận trọng."
-  },
-  "editPermissions": {
-    "message": "Chỉnh sửa quyền"
   },
   "editSpendingCap": {
     "message": "Chỉnh sửa hạn mức chi tiêu"
@@ -6833,9 +6882,6 @@
   "permitSimulationDetailInfo": {
     "message": "Bạn đang cho phép người chi tiêu sử dụng số lượng token này từ tài khoản của bạn."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 có quyền truy cập vào $2."
-  },
   "perps": {
     "message": "Vĩnh cửu"
   },
@@ -6913,6 +6959,10 @@
   },
   "perpsCancelOrder": {
     "message": "Hủy lệnh"
+  },
+  "perpsCancelOrderFailed": {
+    "message": "Không thể hủy lệnh. Hãy thử lại.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
   },
   "perpsCandleIntervals": {
     "message": "Đặt khoảng nến"
@@ -7052,6 +7102,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "Lãi/Lỗ ước tính tại mức chốt lời",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "Nạp tiền để bắt đầu giao dịch.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Khám phá thị trường"
@@ -7249,8 +7303,19 @@
   "perpsOrderBookApply": {
     "message": "Áp dụng"
   },
+  "perpsOrderBookBuy": {
+    "message": "Mua: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Niêm yết bởi & Nhóm theo"
+  },
   "perpsOrderBookConnectionError": {
     "message": "Mất kết nối với sổ lệnh"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Mua $1%, bán $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "Nhóm theo"
@@ -7261,11 +7326,24 @@
   "perpsOrderBookLoading": {
     "message": "Đang tải sổ lệnh"
   },
+  "perpsOrderBookNoData": {
+    "message": "Không có dữ liệu sổ lệnh"
+  },
   "perpsOrderBookPrice": {
     "message": "Giá"
   },
   "perpsOrderBookReconnect": {
     "message": "Kết nối lại"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Đang kết nối lại với sổ lệnh"
+  },
+  "perpsOrderBookResize": {
+    "message": "Thay đổi kích thước sổ lệnh"
+  },
+  "perpsOrderBookSell": {
+    "message": "Bán: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "Kích thước"
@@ -7276,8 +7354,24 @@
   "perpsOrderBookTotal": {
     "message": "Tổng cộng"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Sử dụng $1 làm giá giới hạn",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Loại giá trị"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Sổ lệnh hiển thị giá mua và giá bán",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Sổ lệnh chỉ hiển thị giá mua",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Sổ lệnh chỉ hiển thị giá bán",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Ngày"
@@ -7498,6 +7592,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Chốt lời phải là giá $1 $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Lệnh này không còn mở",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Hủy lệnh thất bại",
@@ -8080,6 +8178,80 @@
   "rampsOnNetwork": {
     "message": "trên $1",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Chi tiết chuyển khoản ngân hàng"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Mua lại"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Phí"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Mã lệnh"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Đã thanh toán bằng",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "Phí $1",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Tổng cộng"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Xem trên $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Đã xảy ra lỗi với lệnh của bạn.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Mua thất bại",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Lệnh của bạn đang được xử lý.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Đang mua",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Đã xảy ra lỗi với lệnh của bạn.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Bán thất bại",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Lệnh của bạn đang được xử lý.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Đang bán",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Tiền của bạn đang được chuyển đến.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Bán thành công",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Tiền mã hóa của bạn đang được chuyển đến.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Mua thành công",
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "Tùy chọn khác"
@@ -9102,9 +9274,6 @@
   },
   "select": {
     "message": "Chọn"
-  },
-  "selectAccountToConnect": {
-    "message": "Chọn tài khoản để kết nối"
   },
   "selectAll": {
     "message": "Chọn tất cả"
@@ -11262,15 +11431,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask gặp sự cố khi khởi động."
   },
-  "trustSignalBlockDescription": {
-    "message": "Nếu bạn kết nối với trang web này, bạn có thể mất toàn bộ tài sản của mình."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Phát hiện trang web độc hại"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Vẫn kết nối"
-  },
   "tryAgain": {
     "message": "Thử lại"
   },
@@ -11528,6 +11688,10 @@
   },
   "viewTokenDetails": {
     "message": "Xem chi tiết token"
+  },
+  "viewXMore": {
+    "message": "Xem thêm $1",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Xem $1 trong trình khám phá",

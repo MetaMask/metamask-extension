@@ -180,6 +180,7 @@ describe('Actions', () => {
     background.getAppNameAndVersion = sinon.stub();
     background.getLedgerAppConfiguration = sinon.stub();
     background.getLedgerPublicKey = sinon.stub();
+    background.getLedgerMode = sinon.stub();
     background.unlockHardwareWalletAccount = sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
@@ -1445,6 +1446,23 @@ describe('Actions', () => {
     });
   });
 
+  describe('#getLedgerMode', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getLedgerMode in background and returns the active handler mode', async () => {
+      background.getLedgerMode.resolves('dmk');
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getLedgerMode();
+
+      expect(background.getLedgerMode.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual('dmk');
+    });
+  });
+
   describe('#forgetDevice', () => {
     afterEach(() => {
       sinon.restore();
@@ -2262,17 +2280,13 @@ describe('Actions', () => {
 
       setBackgroundConnection(background.getApi());
 
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
       await store.dispatch(
         actions.setSelectedMultichainAccount(
           'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
         ),
       );
-      expect(store.getActions()).toStrictEqual(expectedActions);
+      // No fullscreen loading indication — pending UI is owned by useTransition
+      expect(store.getActions()).toStrictEqual([]);
     });
   });
 

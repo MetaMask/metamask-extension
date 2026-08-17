@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Mga prediksyon sa pag-withdraw"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Nabigo ang pagbili"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Nabigo ang pagbili"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Bumibili ng $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Bumibili ng $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Bumili ng $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Bumili ng $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Nabigo ang pagbebenta"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Nabigo ang pagbebenta"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Ibinibenta ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Ibinibenta ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "Naibenta ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "Naibenta ang $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "Mula kay/sa: $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Alamin kung paano namin pinoprotektahan ang privacy mo"
-  },
-  "backupApprovalInfo": {
-    "message": "Ang lihim na code na ito ay kinakailangan para ma-recover ang iyong wallet sakaling maiwala mo ang iyong device, makalimutan ang iyong password, kailanganin mong i-install ulit ang MetaMask, o gusto mong i-access ang iyong wallet sa ibang device."
   },
   "backupApprovalNotice": {
     "message": "I-back up ang iyong Lihim na Parirala sa Pagbawi para mapanatiling secure ang iyong wallet at mga pondo."
@@ -3403,13 +3444,13 @@
     "message": "Sigurado ka bang gusto mong idiskonekta? Maaaring mawala ang functionality ng site."
   },
   "disconnectAllSites": {
-    "message": "Idiskonekta Lahat"
-  },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Kapag idiniskonekta mo sa lahat ng site, kakailanganin mong muling ikonekta ang mga account at network mo para magamit muli ang mga iyon."
+    "message": "Idiskonekta ang lahat"
   },
   "disconnectAllSitesError": {
     "message": "Hindi maaaring idiskonekta ang ilang mga dapp. Pakisubukan muli."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Idiskonekta ang lahat ng?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Matagumpay na naidiskonekta ang lahat ng dapp."
@@ -3419,6 +3460,9 @@
   },
   "disconnectPrompt": {
     "message": "Idiskonekta $1"
+  },
+  "disconnectQuestion": {
+    "message": "Idiskonekta?"
   },
   "disconnectThisAccount": {
     "message": "Idiskonekta ang account na ito"
@@ -3590,9 +3634,6 @@
   },
   "editNonceMessage": {
     "message": "Ito ay isang advanced feature, maingat na gamitin."
-  },
-  "editPermissions": {
-    "message": "Mag-edit ng mga pahintulot"
   },
   "editSpendingCap": {
     "message": "I-edit ang limitasyon sa paggastos"
@@ -6829,9 +6870,6 @@
   "permitSimulationDetailInfo": {
     "message": "Binibigyan mo ng pahintulot ang gumagastos na gastusin ang ganito karaming token mula sa account mo."
   },
-  "permittedChainToastUpdate": {
-    "message": "Ang $1 ay may access sa $2."
-  },
   "perps": {
     "message": "Perps"
   },
@@ -8073,6 +8111,30 @@
     "message": "sa $1",
     "description": "$1 is the network name"
   },
+  "rampsOrderDetailsFees": {
+    "message": "Mga Bayarin"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Order ID"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Magbayad gamit ang",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Kabuuan"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Tingnan sa $1"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Nabigo ang pagbili",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Nabigo ang pagbebenta",
+    "description": "Title for the failed ramp sell order toast"
+  },
   "rampsOtherOptions": {
     "message": "Iba pang opsyon"
   },
@@ -9094,9 +9156,6 @@
   },
   "select": {
     "message": "Piliin"
-  },
-  "selectAccountToConnect": {
-    "message": "Piliin ang account na ikokonekta"
   },
   "selectAll": {
     "message": "Piliin lahat"
@@ -11253,15 +11312,6 @@
   },
   "troubleStartingTitle": {
     "message": "Nagkakaproblema ang MetaMask sa pagsisimula."
-  },
-  "trustSignalBlockDescription": {
-    "message": "Kapag kumonekta ka sa site na ito, maaaring mawala sa iyo ang lahat ng asset mo."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Natukoy ang mapanganib na site"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Kumonekta Pa Rin"
   },
   "tryAgain": {
     "message": "Subukang muli"

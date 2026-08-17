@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Вывод средств прогнозов"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Ошибка покупки"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Ошибка покупки"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Покупка $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Покупка $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Куплено $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Куплено $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Ошибка продажи"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Ошибка продажи"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Продажа $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Продажа $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "Продано $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "Продано $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "От: $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Узнайте, как мы защищаем вашу конфиденциальность"
-  },
-  "backupApprovalInfo": {
-    "message": "Этот секретный код необходим для восстановления вашего кошелька в случае, если вы потеряете свое устройство, забудете пароль, вам придется переустановить MetaMask или захотите получить доступ к своему кошельку на другом устройстве."
   },
   "backupApprovalNotice": {
     "message": "Создайте резервную копию своей секретной фразы для восстановления, чтобы обезопасить свой кошелек и средства."
@@ -3405,11 +3446,11 @@
   "disconnectAllSites": {
     "message": "Отключить все"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Если вы отключитесь от всех сайтов, вам придется повторно подключить свои счета и сети, чтобы снова использовать их."
-  },
   "disconnectAllSitesError": {
     "message": "Не удалось отключить приложения dapp. Повторите попытку."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Отключить все?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Все приложения dapp успешно отключены."
@@ -3420,15 +3461,26 @@
   "disconnectPrompt": {
     "message": "Отключить $1"
   },
+  "disconnectQuestion": {
+    "message": "Отключить?"
+  },
   "disconnectThisAccount": {
     "message": "Отключить этот счет"
   },
   "discover": {
     "message": "Обзор"
   },
+  "discoverSearchCap": {
+    "message": "максимум",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "Результаты не найдены",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "По запросу «$1» ничего не найдено",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "Посмотрите другие популярные активы",
@@ -3590,9 +3642,6 @@
   },
   "editNonceMessage": {
     "message": "Это продвинутая функция, используйте ее с осторожностью."
-  },
-  "editPermissions": {
-    "message": "Изменить разрешения"
   },
   "editSpendingCap": {
     "message": "Изменить лимит расходов"
@@ -3882,10 +3931,10 @@
     "message": "Не удалось получить ID блокчейна. Верен ли ваш URL RPC?"
   },
   "failover": {
-    "message": "Отказоустойчивость"
+    "message": "Резервный RPC"
   },
   "failoverRpcUrl": {
-    "message": "URL-адрес отказоустойчивого RPC"
+    "message": "URL-адрес резервного RPC"
   },
   "failureMessage": {
     "message": "Что-то пошло не так, и мы не смогли завершить действие"
@@ -6241,7 +6290,7 @@
     "message": "Использовать секретную фразу для восстановления"
   },
   "onboardingSrpImport": {
-    "message": "Импорт с помощью секретной фразы для восстановления"
+    "message": "Использовать секретную фразу восстановления"
   },
   "onboardingSrpImportError": {
     "message": "Используйте только строчные буквы, проверьте орфографию и расположите слова в исходном порядке."
@@ -6829,9 +6878,6 @@
   "permitSimulationDetailInfo": {
     "message": "Вы даете отправителю разрешение потратить такое количество токенов с вашего счета."
   },
-  "permittedChainToastUpdate": {
-    "message": "У $1 есть доступ к $2."
-  },
   "perps": {
     "message": "Перпы"
   },
@@ -6909,6 +6955,10 @@
   },
   "perpsCancelOrder": {
     "message": "Отменить ордер"
+  },
+  "perpsCancelOrderFailed": {
+    "message": "Не удалось отменить ордер. Повторите попытку.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
   },
   "perpsCandleIntervals": {
     "message": "Задать интервал свечи"
@@ -7048,6 +7098,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "Прим. П/У при тейк-профите",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "Внесите средства, чтобы начать торговать.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Обзор рынков"
@@ -7245,8 +7299,19 @@
   "perpsOrderBookApply": {
     "message": "Применить"
   },
+  "perpsOrderBookBuy": {
+    "message": "Покупка: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Сортировка и группировка"
+  },
   "perpsOrderBookConnectionError": {
     "message": "Соединение с книгой ордеров потеряно"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Покупка $1%, продажа $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "Группировать по"
@@ -7257,11 +7322,24 @@
   "perpsOrderBookLoading": {
     "message": "Загрузка реестра ордеров"
   },
+  "perpsOrderBookNoData": {
+    "message": "Нет данных книги ордеров"
+  },
   "perpsOrderBookPrice": {
     "message": "Цена"
   },
   "perpsOrderBookReconnect": {
     "message": "Переподключить"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Переподключение к книге ордеров"
+  },
+  "perpsOrderBookResize": {
+    "message": "Изменить размер книги ордеров"
+  },
+  "perpsOrderBookSell": {
+    "message": "Продажа: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "Размер"
@@ -7272,8 +7350,24 @@
   "perpsOrderBookTotal": {
     "message": "Итого"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Использовать $1 в качестве предельной цены",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Тип стоимости"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Книга ордеров показывает заявки на покупку и продажу",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Книга ордеров показывает только заявки на покупку",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Книга ордеров показывает только заявки на продажу",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Дата"
@@ -7494,6 +7588,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Тейк-профит должен быть $1 $2 цены",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Этот ордер больше не активен",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Не удалось отменить ордер",
@@ -8072,6 +8170,80 @@
   "rampsOnNetwork": {
     "message": "в $1",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Реквизиты банковского перевода"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Купить снова"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Комиссии"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Ид. ордера"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Оплачено с помощью",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "Комиссия $1",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Итого"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Смотреть в $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Что-то пошло не так с вашим ордером.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Ошибка покупки",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Ваш ордер обрабатывается.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Покупка выполняется",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Что-то пошло не так с вашим ордером.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Ошибка продажи",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Ваш ордер обрабатывается.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Продажа выполняется",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Ваши средства в пути.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Успешная продажа",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Ваша криптовалюта в пути.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Успешная покупка",
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "Другие варианты"
@@ -9095,9 +9267,6 @@
   "select": {
     "message": "Выбрать"
   },
-  "selectAccountToConnect": {
-    "message": "Выберите счет для подключения"
-  },
   "selectAll": {
     "message": "Выбрать все"
   },
@@ -9878,7 +10047,7 @@
     "message": "Показать секретную фразу для восстановления"
   },
   "showTestnetNetworks": {
-    "message": "Показать тестнеты"
+    "message": "Показать тестовые сети"
   },
   "sidePanelMigrationToast": {
     "message": "Теперь MetaMask по умолчанию открывается в боковой панели. $1 в любое время из меню.",
@@ -10194,7 +10363,7 @@
     "message": "Этот Snap хочет перенаправить вас на заблокированный сайт. $1."
   },
   "snaps": {
-    "message": "Привязки"
+    "message": "Snaps"
   },
   "snapsConnected": {
     "message": "Snaps подключены"
@@ -10320,13 +10489,13 @@
     "message": "Секретная фраза для восстановления, также называемая сид-фразой или мнемонической фразой, представляет собой набор слов, который позволяет вам получать доступ к вашему криптокошельку и управлять им. Чтобы переместить кошелек в MetaMask, вам нужна эта фраза."
   },
   "srpDetailsOwnsAccessListItemOne": {
-    "message": "Снимите все свои деньги"
+    "message": "Получить все ваши деньги"
   },
   "srpDetailsOwnsAccessListItemThree": {
-    "message": "Измените данные для входа"
+    "message": "Изменить ваши данные для входа"
   },
   "srpDetailsOwnsAccessListItemTwo": {
-    "message": "Проверьте транзакции"
+    "message": "Подтвердить транзакции"
   },
   "srpDetailsOwnsAccessListTitle": {
     "message": "Любой, кто знает вашу секретную фразу для восстановления, может:"
@@ -10405,7 +10574,7 @@
     "message": "Правильно! Никто не может помочь вернуть вашу секретную фразу для восстановления"
   },
   "srpSecurityQuizQuestionOneWrongAnswer": {
-    "message": "Не сможет вернуть ее вам"
+    "message": "Сможет вам ее вернуть"
   },
   "srpSecurityQuizQuestionOneWrongAnswerDescription": {
     "message": "Если вы потеряете свою секретную фразу для восстановления, она пропадет навсегда. Никто не может помочь вам вернуть ее, что бы кто ни говорил."
@@ -11254,15 +11423,6 @@
   "troubleStartingTitle": {
     "message": "У MetaMask возникли проблемы с запуском."
   },
-  "trustSignalBlockDescription": {
-    "message": "Если вы подключитесь к этому сайту, вы можете потерять все свои активы."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Обнаружен вредоносный сайт"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Все равно подключить"
-  },
   "tryAgain": {
     "message": "Повторить попытку"
   },
@@ -11520,6 +11680,10 @@
   },
   "viewTokenDetails": {
     "message": "Смотреть сведения о токене"
+  },
+  "viewXMore": {
+    "message": "Показать еще $1",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Смотреть $1 в обозревателе",
