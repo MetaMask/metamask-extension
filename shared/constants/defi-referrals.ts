@@ -81,7 +81,7 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     id: DefiReferralPartner.Variational,
     name: 'Variational',
     origin: 'https://omni.variational.io',
-    referralUrl: 'https://omni.variational.io?ref=OMNI6R3SG1G0', // TODO: use MM code
+    referralUrl: 'https://omni.variational.io?ref=OMNIMETAMASK',
     learnMoreUrl: 'https://docs.variational.io/omni/rewards/referrals',
     approvalType: 'variational_referral_consent',
     connectionFlow: 'permissions',
