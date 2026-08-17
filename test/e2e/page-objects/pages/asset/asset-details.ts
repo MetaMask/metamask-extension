@@ -130,9 +130,7 @@ class AssetDetailsPage {
   }
 
   async checkDailyResourcesSectionIsAbsent(): Promise<void> {
-    await this.driver.assertElementNotPresent(
-      this.tronDailyResourcesSection,
-    );
+    await this.driver.assertElementNotPresent(this.tronDailyResourcesSection);
   }
 
   /**
