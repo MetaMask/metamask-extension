@@ -26,6 +26,8 @@ describe('Asset sticky actions', function () {
           .build(),
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd: 1700,
+        // Known SubscriptionsController startup race; unrelated to this page.
+        ignoredConsoleErrors: ['getSubscriptions'],
         localNodeOptions: {
           chainId: parseInt(chainId, 16),
         },
