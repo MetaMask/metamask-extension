@@ -1,7 +1,7 @@
 import { hasProperty } from '@metamask/utils';
 import type { Migrate } from './types';
 
-export const version = 222;
+export const version = 223;
 
 /**
  * Removes the deprecated `AccountOrderController` from persisted state.
