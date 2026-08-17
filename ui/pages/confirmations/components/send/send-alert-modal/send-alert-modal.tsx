@@ -136,9 +136,7 @@ export const SendAlertModal = ({
   const t = useI18nContext();
   const alertKeys = alerts.map((alert) => alert.key).join('|');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [viewedKeys, setViewedKeys] = useState<Set<string>>(
-    () => new Set(),
-  );
+  const [viewedKeys, setViewedKeys] = useState<Set<string>>(() => new Set());
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
   const [prevAlertKeys, setPrevAlertKeys] = useState(alertKeys);
 
