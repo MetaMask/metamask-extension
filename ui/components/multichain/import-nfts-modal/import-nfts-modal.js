@@ -4,7 +4,6 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  AvatarNetworkSize,
   Button,
   ButtonSize,
   ButtonVariant,
