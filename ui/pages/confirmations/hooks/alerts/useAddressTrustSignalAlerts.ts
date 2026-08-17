@@ -14,10 +14,12 @@ import { SignatureRequestType } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
+import { useSendingAssetsFiatTotal } from './useSendingAssetsFiatTotal';
 
 export function useAddressTrustSignalAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext();
   const t = useI18nContext();
+  const sendingFiatTotal = useSendingAssetsFiatTotal();
 
   const addressToCheck = useMemo(() => {
     if (!currentConfirmation) {
@@ -69,8 +71,12 @@ export function useAddressTrustSignalAlerts(): Alert[] {
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'trustSignalMalicious',
-        message: t('alertMessageAddressTrustSignalMalicious'),
-        reason: t('nameModalTitleMalicious'),
+        message: sendingFiatTotal
+          ? t('alertMessageAddressTrustSignalMaliciousWithAmount', [
+              sendingFiatTotal,
+            ])
+          : t('alertMessageAddressTrustSignalMalicious'),
+        reason: t('alertReasonAddressTrustSignalMalicious'),
         severity: Severity.Danger,
       });
     } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
@@ -79,12 +85,14 @@ export function useAddressTrustSignalAlerts(): Alert[] {
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'trustSignalWarning',
-        message: t('alertMessageAddressTrustSignal'),
-        reason: t('nameModalTitleWarning'),
+        message: sendingFiatTotal
+          ? t('alertMessageAddressTrustSignalWithAmount', [sendingFiatTotal])
+          : t('alertMessageAddressTrustSignal'),
+        reason: t('alertReasonAddressTrustSignalWarning'),
         severity: Severity.Warning,
       });
     }
 
     return alerts;
-  }, [addressToCheck, trustSignalDisplayState, t]);
+  }, [addressToCheck, trustSignalDisplayState, sendingFiatTotal, t]);
 }

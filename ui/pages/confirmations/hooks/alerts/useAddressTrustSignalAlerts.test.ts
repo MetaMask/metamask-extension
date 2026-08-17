@@ -32,9 +32,16 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(() => (key: string) => key),
 }));
 
+jest.mock('./useSendingAssetsFiatTotal', () => ({
+  useSendingAssetsFiatTotal: jest.fn(() => null),
+}));
+
 const mockUseTrustSignal = jest.requireMock(
   '../../../../hooks/useTrustSignals',
 ).useTrustSignal;
+const mockUseSendingAssetsFiatTotal = jest.requireMock(
+  './useSendingAssetsFiatTotal',
+).useSendingAssetsFiatTotal;
 const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
   '../../../../../app/scripts/lib/ppom/security-alerts-api',
 ).isSecurityAlertsAPIEnabled;
@@ -49,7 +56,7 @@ const expectedMaliciousAlert = {
   isBlocking: false,
   key: 'trustSignalMalicious',
   message: 'alertMessageAddressTrustSignalMalicious',
-  reason: 'nameModalTitleMalicious',
+  reason: 'alertReasonAddressTrustSignalMalicious',
   severity: Severity.Danger,
 };
 
@@ -59,7 +66,7 @@ const expectedWarningAlert = {
   isBlocking: false,
   key: 'trustSignalWarning',
   message: 'alertMessageAddressTrustSignal',
-  reason: 'nameModalTitleWarning',
+  reason: 'alertReasonAddressTrustSignalWarning',
   severity: Severity.Warning,
 };
 
@@ -115,6 +122,34 @@ describe('useTrustSignalAlerts', () => {
         NameType.ETHEREUM_ADDRESS,
         CHAIN_IDS.GOERLI,
       );
+    });
+
+    it('uses the amount message variants when a sending fiat total is available', () => {
+      mockUseSendingAssetsFiatTotal.mockReturnValue('$1,234.56');
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+      });
+
+      const contractInteraction = genUnapprovedContractInteractionConfirmation({
+        chainId: CHAIN_IDS.GOERLI,
+      });
+
+      const { result } = renderHookWithConfirmContextProvider(
+        () => useAddressTrustSignalAlerts(),
+        getMockConfirmStateForTransaction({
+          ...contractInteraction,
+          txParams: {
+            ...(contractInteraction as TransactionMeta).txParams,
+            to: MALICIOUS_ADDRESS,
+          },
+        } as TransactionMeta),
+      );
+
+      expect(result.current[0].message).toBe(
+        'alertMessageAddressTrustSignalMaliciousWithAmount',
+      );
+
+      mockUseSendingAssetsFiatTotal.mockReturnValue(null);
     });
 
     it('uses the original address when the transaction is wrapped', () => {

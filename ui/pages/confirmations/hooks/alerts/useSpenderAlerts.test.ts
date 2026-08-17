@@ -57,9 +57,16 @@ jest.mock('../../../../store/actions', () => ({
   getTokenStandardAndDetailsByChain: jest.fn(),
 }));
 
+jest.mock('./useSendingAssetsFiatTotal', () => ({
+  useSendingAssetsFiatTotal: jest.fn(() => null),
+}));
+
 const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
   '../../../../../app/scripts/lib/ppom/security-alerts-api',
 ).isSecurityAlertsAPIEnabled;
+const mockUseSendingAssetsFiatTotal = jest.requireMock(
+  './useSendingAssetsFiatTotal',
+).useSendingAssetsFiatTotal;
 
 const mockUseIsNFT = useIsNFT as jest.MockedFunction<typeof useIsNFT>;
 const mockUseAsyncResult = useAsyncResult as jest.MockedFunction<
@@ -86,6 +93,7 @@ function setupDefaultMocks() {
     label: null,
   });
   mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
+  mockUseSendingAssetsFiatTotal.mockReturnValue(null);
   mockUseIsNFT.mockReturnValue({ isNFT: false, pending: false });
   mockUseAsyncResult.mockReturnValue({
     value: null,
@@ -115,7 +123,7 @@ const expectedWarningAlert = {
   isBlocking: false,
   key: 'spenderTrustSignalWarning',
   message: 'alertMessageAddressTrustSignal',
-  reason: 'nameModalTitleWarning',
+  reason: 'alertReasonAddressTrustSignalWarning',
   severity: Severity.Warning,
 };
 
@@ -125,7 +133,7 @@ const expectedMaliciousAlert = {
   isBlocking: false,
   key: 'spenderTrustSignalMalicious',
   message: 'alertMessageAddressTrustSignalMalicious',
-  reason: 'nameModalTitleMalicious',
+  reason: 'alertReasonAddressTrustSignalMalicious',
   severity: Severity.Danger,
 };
 
@@ -230,6 +238,24 @@ describe('useSpenderAlerts', () => {
       );
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual(expectedMaliciousAlert);
+    });
+
+    it('uses the amount message variant when a sending fiat total is available', () => {
+      setupDefaultMocks();
+      mockUseSendingAssetsFiatTotal.mockReturnValue('$1,234.56');
+      const mockTransaction = buildApproveTransaction();
+      setupConfirmContext(mockTransaction);
+      setupTrustSignal(
+        TrustSignalDisplayState.Malicious,
+        'Known malicious address',
+      );
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0].message).toBe(
+        'alertMessageAddressTrustSignalMaliciousWithAmount',
+      );
     });
 
     it('returns alert for warning spender in tokenMethodApprove', () => {
