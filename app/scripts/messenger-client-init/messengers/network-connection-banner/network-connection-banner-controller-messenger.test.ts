@@ -87,11 +87,7 @@ describe('getNetworkConnectionBannerControllerMessenger', () => {
     // controller messenger. This throws if the events or actions were not
     // delegated to the controller messenger.
     expect(() => {
-      messenger.publish(
-        'ClientController:stateChanged',
-        { isUiOpen: true } as never,
-        [],
-      );
+      messenger.publish('ClientController:stateChange', { isUiOpen: true }, []);
       messenger.publish('KeyringController:unlock');
     }).not.toThrow();
 
@@ -127,7 +123,7 @@ describe('getNetworkConnectionBannerControllerMessenger', () => {
       connectivityListener,
     );
     controllerMessenger.subscribe(
-      'ClientController:stateChanged',
+      'ClientController:stateChange',
       clientListener,
     );
     controllerMessenger.subscribe('KeyringController:unlock', unlockListener);
@@ -145,14 +141,10 @@ describe('getNetworkConnectionBannerControllerMessenger', () => {
     );
     messenger.publish(
       'ConnectivityController:stateChange',
-      { connectivityStatus: 'offline' } as never,
+      { connectivityStatus: 'offline' },
       [],
     );
-    messenger.publish(
-      'ClientController:stateChanged',
-      { isUiOpen: true } as never,
-      [],
-    );
+    messenger.publish('ClientController:stateChange', { isUiOpen: true }, []);
     messenger.publish('KeyringController:unlock');
     messenger.publish('KeyringController:lock');
 

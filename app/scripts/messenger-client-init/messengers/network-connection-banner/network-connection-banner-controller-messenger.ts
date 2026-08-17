@@ -37,7 +37,7 @@ export function getNetworkConnectionBannerControllerMessenger(
       'NetworkController:stateChange',
       'NetworkEnablementController:stateChange',
       'ConnectivityController:stateChange',
-      'ClientController:stateChanged',
+      'ClientController:stateChange',
       'KeyringController:unlock',
       'KeyringController:lock',
     ],

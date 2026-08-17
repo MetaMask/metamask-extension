@@ -7679,20 +7679,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-connection-banner-controller@npm:^0.1.0":
-  version: 0.1.2
-  resolution: "@metamask/network-connection-banner-controller@npm:0.1.2"
+"@metamask/network-connection-banner-controller@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@metamask/network-connection-banner-controller@npm:0.2.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/client-controller": "npm:^1.0.1"
     "@metamask/connectivity-controller": "npm:^0.3.0"
-    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/keyring-controller": "npm:^27.1.1"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/network-controller": "npm:^35.0.0"
-    "@metamask/network-enablement-controller": "npm:^6.0.1"
+    "@metamask/network-controller": "npm:^35.0.1"
+    "@metamask/network-enablement-controller": "npm:^6.0.3"
     "@metamask/utils": "npm:^11.11.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/dc68a7d6db9fbf57d1efe6e149558eed65c3ec8e96f0a976c2489dd183ed19dffd7da9f430a8ba1b4ace505c0d667c5ce67b03442c2e8fcd9f112a4d3725ef18
+  checksum: 10/1175b4a8aa5eb8c423cd3e19a5c5a070c4071c23278b096c59f7861a66ac4a45bc3ea40204883c133609e9aaedaa6413331869686655c240420fc115828e6d7f
   languageName: node
   linkType: hard
 
@@ -7725,7 +7725,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^6.0.0, @metamask/network-enablement-controller@npm:^6.0.1, @metamask/network-enablement-controller@npm:^6.0.2, @metamask/network-enablement-controller@npm:^6.0.3":
+"@metamask/network-enablement-controller@npm:^6.0.0, @metamask/network-enablement-controller@npm:^6.0.2, @metamask/network-enablement-controller@npm:^6.0.3":
   version: 6.0.3
   resolution: "@metamask/network-enablement-controller@npm:6.0.3"
   dependencies:
@@ -33292,7 +33292,7 @@ __metadata:
     "@metamask/multichain-network-controller": "npm:^3.2.3"
     "@metamask/multichain-transactions-controller": "npm:^7.1.2"
     "@metamask/name-controller": "npm:^9.1.0"
-    "@metamask/network-connection-banner-controller": "npm:^0.1.0"
+    "@metamask/network-connection-banner-controller": "npm:^0.2.0"
     "@metamask/network-controller": "npm:^35.0.0"
     "@metamask/network-enablement-controller": "npm:^6.0.0"
     "@metamask/notification-services-controller": "npm:^26.0.0"
