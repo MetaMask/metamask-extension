@@ -33,15 +33,15 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "optedIn": false,
       "consentDecisionMade": false,
+      "optedIn": false,
       "preConsentEventQueue": {
         "00000000-0000-4000-8000-000000000000": {
-          "type": "track",
           "eventName": "App Installed",
           "messageId": "00000000-0000-4000-8000-000000000000",
+          "properties": {},
           "timestamp": "2026-01-01T00:00:00.000Z",
-          "properties": {}
+          "type": "track"
         }
       }
     },
@@ -592,7 +592,7 @@
           "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": false
         },
         "stellar": {
-          "stellar:pubnet": false,
+          "stellar:pubnet": true,
           "stellar:testnet": false
         },
         "tron": {
@@ -2119,7 +2119,6 @@
       "syncQueue": {}
     },
     "RampsController": {
-      "userRegion": null,
       "countries": {
         "data": [],
         "error": null,
@@ -2127,7 +2126,8 @@
         "selected": null
       },
       "orders": [],
-      "providerAutoSelected": false
+      "providerAutoSelected": false,
+      "userRegion": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
@@ -2176,6 +2176,7 @@
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/permissions-kernel-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
+        "npm:@metamask/stellar-wallet-snap": "mainnet",
         "npm:@metamask/tron-wallet-snap": "mainnet"
       }
     },
