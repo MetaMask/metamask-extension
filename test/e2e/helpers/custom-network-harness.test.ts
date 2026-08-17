@@ -1,6 +1,9 @@
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../constants';
 import {
   CONVERSION_RATE_NETWORKS,
+  FRXUSD_ASSET_ID,
+  FRXUSD_HUMAN_BALANCE,
+  FRXUSD_SYMBOL,
   prepareCustomNetwork,
 } from './custom-network-harness';
 
@@ -81,6 +84,41 @@ describe('custom-network-harness', () => {
     it('rejects ERC-20 scenarios on networks that do not seed TST', () => {
       expect(() => prepareCustomNetwork('injective', 'nativeAndErc20')).toThrow(
         'nativeAndErc20 is only defined for xdc, not injective',
+      );
+    });
+
+    it('seeds HyperEVM native HYPE and 6-decimal frxUSD for wrongDecimals', () => {
+      const { fixtures, network } = prepareCustomNetwork(
+        'hyperevm',
+        'wrongDecimals',
+      );
+      const assetsController = fixtures.data.AssetsController as {
+        customAssets: Record<string, string[]>;
+        assetsBalance: Record<string, Record<string, { amount: string }>>;
+        assetsInfo: Record<string, { decimals: number; symbol: string }>;
+      };
+      const accountAssets = assetsController.assetsBalance[
+        DEFAULT_FIXTURE_ACCOUNT_ID
+      ] as Record<string, { amount: string }>;
+
+      expect(networkController(fixtures).selectedNetworkClientId).toBe(
+        'hyperevm-local',
+      );
+      expect(network.nativeSymbol).toBe('HYPE');
+      expect(accountAssets[network.uiNativeAssetId]?.amount).toBe('25');
+      expect(accountAssets[FRXUSD_ASSET_ID]?.amount).toBe(FRXUSD_HUMAN_BALANCE);
+      expect(assetsController.assetsInfo[FRXUSD_ASSET_ID]?.decimals).toBe(6);
+      expect(assetsController.assetsInfo[FRXUSD_ASSET_ID]?.symbol).toBe(
+        FRXUSD_SYMBOL,
+      );
+      expect(
+        assetsController.customAssets[DEFAULT_FIXTURE_ACCOUNT_ID],
+      ).toContain(FRXUSD_ASSET_ID);
+    });
+
+    it('rejects the wrongDecimals scenario on networks other than HyperEVM', () => {
+      expect(() => prepareCustomNetwork('xdc', 'wrongDecimals')).toThrow(
+        'wrongDecimals is only defined for hyperevm, not xdc',
       );
     });
   });

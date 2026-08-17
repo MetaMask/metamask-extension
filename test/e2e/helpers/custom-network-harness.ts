@@ -1,5 +1,5 @@
 import { Mockttp } from 'mockttp';
-import type { Hex } from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import type { NativeAssetIdentifiersMap } from '@metamask/network-enablement-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../constants';
@@ -23,7 +23,8 @@ export type CustomNetworkScenario =
   | 'nativeAndErc20'
   | 'dualNetworkWithErc20'
   | 'conversionRate'
-  | 'unsupportedPrice';
+  | 'unsupportedPrice'
+  | 'wrongDecimals';
 
 export type CustomNetworkConfig = {
   id: CustomNetworkId;
@@ -45,6 +46,17 @@ const SEEDED_ERC20_ADDRESS = '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947';
 const SEEDED_ERC20_ASSET_ID = `eip155:50/erc20:${SEEDED_ERC20_ADDRESS}`;
 const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 const MAINNET_CHAIN_ID_HEX = '0x1';
+
+/** 6-decimal HyperEVM frxUSD fixture used by the `wrongDecimals` scenario. */
+export const FRXUSD_SYMBOL = 'frxUSD';
+export const FRXUSD_DECIMALS = 6;
+export const FRXUSD_HUMAN_BALANCE = '11.811649';
+export const FRXUSD_ADDRESS = '0xcacd6fd266af91b8aed52accc382b4e165586e29';
+export const FRXUSD_CHECKSUM_ADDRESS =
+  '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29';
+export const FRXUSD_ASSET_ID =
+  `eip155:999/erc20:${FRXUSD_ADDRESS}` as CaipAssetType;
+export const FRXUSD_DISPLAY_AMOUNT = `${FRXUSD_HUMAN_BALANCE} ${FRXUSD_SYMBOL}`;
 
 const CUSTOM_NETWORKS: Record<CustomNetworkId, CustomNetworkConfig> = {
   xdc: {
@@ -161,6 +173,16 @@ function erc20CatalogAsset(): CatalogAsset {
   };
 }
 
+function frxUsdCatalogAsset(): CatalogAsset {
+  return {
+    name: FRXUSD_SYMBOL,
+    symbol: FRXUSD_SYMBOL,
+    decimals: FRXUSD_DECIMALS,
+    priceInUsd: 1,
+    assetIds: [FRXUSD_ASSET_ID],
+  };
+}
+
 function mainnetNativeCatalogAsset(): CatalogAsset {
   return {
     name: 'Ethereum',
@@ -187,6 +209,8 @@ function catalogAssetsFor(
         nativeCatalogAsset(network),
         erc20CatalogAsset(),
       ];
+    case 'wrongDecimals':
+      return [nativeCatalogAsset(network), frxUsdCatalogAsset()];
     default: {
       const exhaustive: never = scenario;
       throw new Error(`Unknown scenario: ${String(exhaustive)}`);
@@ -202,6 +226,7 @@ function priceModeFor(scenario: CustomNetworkScenario): PriceMode {
     case 'nativeAndErc20':
     case 'dualNetworkWithErc20':
     case 'conversionRate':
+    case 'wrongDecimals':
       return 'quoted';
     default: {
       const exhaustive: never = scenario;
@@ -219,6 +244,9 @@ function assertScenarioSupportsNetwork(
     id !== 'xdc'
   ) {
     throw new Error(`${scenario} is only defined for xdc, not ${id}`);
+  }
+  if (scenario === 'wrongDecimals' && id !== 'hyperevm') {
+    throw new Error(`${scenario} is only defined for hyperevm, not ${id}`);
   }
 }
 
@@ -284,6 +312,26 @@ function applyScenarioState(
             },
           },
         });
+    case 'wrongDecimals':
+      return builder.withAssetsController({
+        customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [FRXUSD_ASSET_ID] },
+        assetsBalance: {
+          [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+            [network.uiNativeAssetId]: { amount: '25' },
+            [FRXUSD_ASSET_ID]: { amount: FRXUSD_HUMAN_BALANCE },
+          },
+        },
+        assetsInfo: {
+          [FRXUSD_ASSET_ID]: {
+            aggregators: ['Metamask'],
+            decimals: FRXUSD_DECIMALS,
+            image: `https://static.cx.metamask.io/api/v1/tokenIcons/${network.chainIdDecimal}/${FRXUSD_ADDRESS}.png`,
+            name: FRXUSD_SYMBOL,
+            symbol: FRXUSD_SYMBOL,
+            type: 'erc20',
+          },
+        },
+      });
     default: {
       const exhaustive: never = scenario;
       throw new Error(`Unknown scenario: ${String(exhaustive)}`);
