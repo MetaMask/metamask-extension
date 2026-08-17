@@ -252,9 +252,6 @@ export class LedgerDmkBridgeHandler {
         // in-flight `bridgePromise`.
         this.setupDisconnectMonitoring(bridge);
         this.bridge = bridge;
-        console.log('[LedgerDMK] ensureBridge: bridge ready', {
-          sessionId: this.sessionId,
-        });
         return bridge;
       })
       .catch((error: unknown) => {
@@ -286,14 +283,10 @@ export class LedgerDmkBridgeHandler {
       webHidTransportFactory,
     );
     const bridge = new LedgerDmkBridge({
-      // The transport package resolves DMK 1.7.1 while the bridge resolves its
-      // nested DMK 1.5.1. Their runtime contract is compatible, but protected
-      // members make the duplicate declaration types nominally incompatible.
-      // The factory is wrapped so `startDiscovering` uses `getDevices()` (no
-      // user gesture needed) instead of `requestDevice()` (fails offscreen).
-      transportFactory: offscreenTransportFactory as unknown as NonNullable<
-        ConstructorParameters<typeof LedgerDmkBridge>[0]['transportFactory']
-      >,
+      // Wrapped so `startDiscovering` uses already-permitted devices via
+      // `getDevices()` (no user gesture) instead of `requestDevice()`, which
+      // always fails in the offscreen document.
+      transportFactory: offscreenTransportFactory,
     });
 
     try {
