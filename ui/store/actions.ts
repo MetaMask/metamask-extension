@@ -1416,18 +1416,6 @@ export function getSeedPhraseWithPasskey(
   };
 }
 
-export function tryReverseResolveAddress(
-  address: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('tryReverseResolveAddress', [address]);
-    } catch (err) {
-      logErrorWithMessage(err);
-    }
-  };
-}
-
 export function resetAccount(): ThunkAction<
   Promise<string>,
   MetaMaskReduxState,
