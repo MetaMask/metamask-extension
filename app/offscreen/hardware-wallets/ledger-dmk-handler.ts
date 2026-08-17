@@ -34,6 +34,7 @@ import {
   timeout as timeoutOperator,
 } from 'rxjs';
 
+import { toHardwareWalletError } from '../../../shared/lib/hardware-wallets';
 import {
   LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS,
   LedgerAction,
@@ -113,36 +114,6 @@ function createLedgerError(
     severity: Severity.Err,
     category,
     userMessage: message,
-  });
-}
-
-/**
- * Wraps an unknown thrown value as a structured `HardwareWalletError` so
- * downstream consumers can reconstruct it across the offscreen message
- * boundary. Existing `HardwareWalletError` instances are returned as-is.
- *
- * @param reason - The value thrown by an observable pipeline or bridge call.
- * @param code - The hardware-wallet error code to assign.
- * @param fallbackMessage - Message used when `reason` has no useful text.
- * @param category - Error category for downstream UI mapping.
- */
-function toHardwareWalletError(
-  reason: unknown,
-  code: ErrorCode,
-  fallbackMessage: string,
-  category: Category = Category.Connection,
-): HardwareWalletError {
-  if (reason instanceof HardwareWalletError) {
-    return reason;
-  }
-
-  const message = toErrorMessage(reason) || fallbackMessage;
-  return new HardwareWalletError(message, {
-    code,
-    severity: Severity.Err,
-    category,
-    userMessage: message,
-    cause: reason instanceof Error ? reason : undefined,
   });
 }
 
