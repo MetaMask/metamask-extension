@@ -1,10 +1,9 @@
 import React from 'react';
-import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
-import { useAddToken } from '../../../../hooks/tokens/useAddToken';
-import { useTransactionPayPostQuote } from '../../../../hooks/pay/useTransactionPayPostQuote';
-import { useTransactionPayWithdraw } from '../../../../hooks/pay/useTransactionPayWithdraw';
-import { CustomAmountInfo } from '../../../info/custom-amount-info';
-import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../../../../constants/musd';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { useAddToken } from '../../../hooks/tokens/useAddToken';
+import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
+import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../../../constants/musd';
+import { CustomAmountInfo } from '../custom-amount-info';
 
 const MONEY_ACCOUNT_WITHDRAW_CURRENCY = 'usd';
 
@@ -27,8 +26,6 @@ export const MoneyAccountWithdrawInfo = () => {
     symbol: MUSD_TOKEN.symbol,
     tokenAddress: MUSD_TOKEN_ADDRESS,
   });
-
-  useTransactionPayPostQuote();
 
   const { canSelectWithdrawToken } = useTransactionPayWithdraw();
 
