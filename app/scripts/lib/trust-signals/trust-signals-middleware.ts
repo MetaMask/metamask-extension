@@ -9,6 +9,7 @@ import { PreferencesController } from '../../controllers/preferences-controller'
 import {
   parseTypedDataMessage,
   parseApprovalTransactionData,
+  parseTransferTransactionData,
 } from '../../../../shared/lib/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
@@ -179,8 +180,8 @@ function scanAddressInBackground(
 
 /**
  * Scans the addresses a single transaction or batched call exposes: its
- * target `to` plus any addresses encoded in calldata (currently the spender
- * of a token approval). Shared by the `eth_sendTransaction` and
+ * target `to` plus any addresses encoded in calldata (approval spenders and
+ * token-transfer recipients). Shared by the `eth_sendTransaction` and
  * `wallet_sendCalls` handlers so decoding logic stays in one place; new
  * calldata decoders should be added here to cover both paths at once.
  *
@@ -221,6 +222,22 @@ function scanCallTargets(
       scanAddressInBackground(
         spenderAddress,
         `spender address for ${context} approval`,
+        chainId,
+        appStateController,
+        phishingController,
+      );
+    }
+
+    // If the call is a token transfer, also scan the recipient decoded from
+    // calldata: for transfers `to` is only the token contract; the funds
+    // move to the address inside the calldata.
+    const transferRecipient = parseTransferTransactionData(
+      data as `0x${string}`,
+    )?.recipient;
+    if (transferRecipient) {
+      scanAddressInBackground(
+        transferRecipient,
+        `transfer recipient address for ${context}`,
         chainId,
         appStateController,
         phishingController,
