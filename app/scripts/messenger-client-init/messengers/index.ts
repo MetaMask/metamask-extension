@@ -164,6 +164,7 @@ import { getSubscriptionServiceMessenger } from './subscription/subscription-ser
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
+import { getPhishingDataServiceMessenger } from './phishing-data-service-messenger';
 import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 import { getLoggingControllerMessenger } from './logging-controller-messenger';
@@ -285,6 +286,7 @@ export { getComplianceServiceMessenger } from './compliance-service-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
+export { getPhishingDataServiceMessenger } from './phishing-data-service-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type { SignatureControllerInitMessenger } from './signature-controller-messenger';
 export {
@@ -547,6 +549,10 @@ export const MESSENGER_FACTORIES = {
   },
   PhishingController: {
     getMessenger: getPhishingControllerMessenger,
+    getInitMessenger: noop,
+  },
+  PhishingDataService: {
+    getMessenger: getPhishingDataServiceMessenger,
     getInitMessenger: noop,
   },
   RateLimitController: {
