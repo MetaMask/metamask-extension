@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "Todas as redes"
   },
-  "allPermissions": {
-    "message": "Conexões de dapps"
-  },
   "allPopularNetworks": {
     "message": "Todas as redes populares"
   },
@@ -3063,9 +3060,6 @@
   },
   "customerSupport": {
     "message": "suporte ao cliente"
-  },
-  "dappConnections": {
-    "message": "Conexões de dapps"
   },
   "dappSuggested": {
     "message": "Site sugerido"
@@ -5843,9 +5837,6 @@
   },
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
-  },
-  "noConnectionDescription": {
-    "message": "Para se conectar a um site, encontre e selecione o botão \"conectar\". Lembre-se de que a MetaMask só pode se conectar a sites na web3"
   },
   "noDefaultAddress": {
     "message": "Nenhum endereço $1",
@@ -10116,9 +10107,6 @@
   },
   "singleNetwork": {
     "message": "1 rede"
-  },
-  "sites": {
-    "message": "Sites"
   },
   "siweIssued": {
     "message": "Emitida"

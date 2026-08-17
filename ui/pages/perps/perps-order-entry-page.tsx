@@ -738,9 +738,18 @@ const PerpsOrderEntryPage = () => {
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
   );
+  const livePriceStreamKey =
+    decodedSymbol && selectedAddress
+      ? `${decodedSymbol}:${selectedAddress}`
+      : null;
+  const [prevLivePriceStreamKey, setPrevLivePriceStreamKey] =
+    useState(livePriceStreamKey);
+  if (livePriceStreamKey !== prevLivePriceStreamKey) {
+    setPrevLivePriceStreamKey(livePriceStreamKey);
+    setLivePrice(undefined);
+  }
   useEffect(() => {
     if (!decodedSymbol || !selectedAddress) {
-      setLivePrice(undefined);
       return undefined;
     }
     // Activate background price stream for this symbol
@@ -775,9 +784,18 @@ const PerpsOrderEntryPage = () => {
   const [topOfBook, setTopOfBook] = useState<{
     midPrice: number;
   } | null>(null);
+  const topOfBookStreamKey =
+    decodedSymbol && selectedAddress
+      ? `${decodedSymbol}:${selectedAddress}`
+      : null;
+  const [prevTopOfBookStreamKey, setPrevTopOfBookStreamKey] =
+    useState(topOfBookStreamKey);
+  if (topOfBookStreamKey !== prevTopOfBookStreamKey) {
+    setPrevTopOfBookStreamKey(topOfBookStreamKey);
+    setTopOfBook(null);
+  }
   useEffect(() => {
     if (!decodedSymbol || !selectedAddress) {
-      setTopOfBook(null);
       return undefined;
     }
     // Activate background orderBook stream for this symbol

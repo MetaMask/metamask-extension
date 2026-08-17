@@ -123,8 +123,6 @@
       "0xaa36a7": true
     }
   },
-  "ensEntries": {},
-  "ensResolutionsByAddress": {},
   "estimatedGasFeeTimeBounds": {},
   "featureFlags": {},
   "firstTimeFlowType": "create",

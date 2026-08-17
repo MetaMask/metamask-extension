@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "Tüm ağlar"
   },
-  "allPermissions": {
-    "message": "Dapp bağlantıları"
-  },
   "allPopularNetworks": {
     "message": "Tüm popüler ağlar"
   },
@@ -3063,9 +3060,6 @@
   },
   "customerSupport": {
     "message": "müşteri hizmetleri"
-  },
-  "dappConnections": {
-    "message": "Dapp Bağlantıları"
   },
   "dappSuggested": {
     "message": "Önerilen site"
@@ -5847,9 +5841,6 @@
   },
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
-  },
-  "noConnectionDescription": {
-    "message": "MetaMask bu siteye bağlı değil. Başlamak için sitenin Bağla düğmesini seçin."
   },
   "noDefaultAddress": {
     "message": "$1 adresi yok",
@@ -10124,9 +10115,6 @@
   },
   "singleNetwork": {
     "message": "1 ağ"
-  },
-  "sites": {
-    "message": "Siteler"
   },
   "siweIssued": {
     "message": "Düzenlendi"

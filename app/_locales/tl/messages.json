@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "Lahat ng network"
   },
-  "allPermissions": {
-    "message": "Mga koneksyon ng dapp"
-  },
   "allPopularNetworks": {
     "message": "Lahat ng sikat na network"
   },
@@ -3063,9 +3060,6 @@
   },
   "customerSupport": {
     "message": "suporta sa kostumer"
-  },
-  "dappConnections": {
-    "message": "Mga koneksyon ng Dapp"
   },
   "dappSuggested": {
     "message": "Iminungkahing site"
@@ -5835,9 +5829,6 @@
   },
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
-  },
-  "noConnectionDescription": {
-    "message": "Para kumonekta sa site, hanapin at piliin ang \"connect\" button. Tandaan na ang MetaMask ay maaari lamang kumonekta sa mga site sa web3"
   },
   "noDefaultAddress": {
     "message": "Walang $1 address",
@@ -10006,9 +9997,6 @@
   },
   "singleNetwork": {
     "message": "1 network"
-  },
-  "sites": {
-    "message": "Mga Site"
   },
   "siweIssued": {
     "message": "Inisyu"

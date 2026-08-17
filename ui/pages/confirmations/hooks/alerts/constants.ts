@@ -3,6 +3,7 @@ import { BlockaidReason } from '../../../../../shared/constants/security-provide
 export enum AlertsName {
   AccountNoFunds = 'accountNoFunds',
   AddressPoisoning = 'address_poisoning',
+  DepositLimit = 'depositLimit',
   GasEstimateFailed = 'gasEstimateFailed',
   GasFeeLow = 'gasFeeLow',
   GasTooLow = 'gasTooLow',
