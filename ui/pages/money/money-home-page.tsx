@@ -101,9 +101,10 @@ export function MoneyHomePage() {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
-  const balanceDisplay = balanceQuery.isError
-    ? t('moneyBalanceUnavailable')
-    : (formattedBalance ?? t('moneyZeroBalance'));
+  const balanceDisplay =
+    balanceQuery.isError || formattedBalance === undefined
+      ? t('moneyBalanceUnavailable')
+      : formattedBalance;
   const apyDisplay = formattedApy;
 
   return (

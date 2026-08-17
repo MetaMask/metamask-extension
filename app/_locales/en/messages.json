@@ -5442,9 +5442,6 @@
   "moneySend": {
     "message": "Send"
   },
-  "moneyZeroBalance": {
-    "message": "$0.00"
-  },
   "month": {
     "message": "month"
   },
