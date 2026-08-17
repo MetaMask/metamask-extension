@@ -578,6 +578,25 @@ class HomePage {
     await this.driver.clickElement(this.defiTab);
   }
 
+  async goToHomePage(): Promise<void> {
+    console.log('Go to home page');
+    const alreadyOnHome = await this.driver.isElementPresentAndVisible(
+      this.balance,
+      1000,
+    );
+    if (alreadyOnHome) {
+      return;
+    }
+    const isBottomNav = await this.driver.isElementPresentAndVisible(
+      this.bottomNavHomeButton,
+      1000,
+    );
+    if (isBottomNav) {
+      await this.driver.clickElement(this.bottomNavHomeButton);
+      await this.checkPageIsLoaded();
+    }
+  }
+
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
     const isBottomNav = await this.driver.isElementPresentAndVisible(
