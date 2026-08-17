@@ -1030,14 +1030,25 @@ export async function mockTronSpotPrices(
     .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
     .always()
     .thenCallback((request) => {
-      const assetIds = new URL(request.url).searchParams
-        .get('assetIds')
-        ?.split(',');
+      const { searchParams } = new URL(request.url);
+      const assetIds = searchParams.get('assetIds')?.split(',');
+      // Without `includeMarketData` the API answers with prices keyed by the
+      // requested currency instead of market data. The bridge controller relies
+      // on that form to populate `assetExchangeRates` for the quoted assets.
+      const includeMarketData =
+        searchParams.get('includeMarketData') === 'true';
+      const vsCurrency = searchParams.get('vsCurrency') ?? 'usd';
       const requestedPrices = Object.fromEntries(
-        (assetIds ?? Object.keys(pricesByAssetId)).map((assetId) => [
-          assetId,
-          pricesByAssetId[assetId as keyof typeof pricesByAssetId] ?? null,
-        ]),
+        (assetIds ?? Object.keys(pricesByAssetId)).map((assetId) => {
+          const marketData =
+            pricesByAssetId[assetId as keyof typeof pricesByAssetId] ?? null;
+
+          if (includeMarketData || !marketData) {
+            return [assetId, marketData];
+          }
+
+          return [assetId, { [vsCurrency]: marketData.price }];
+        }),
       );
 
       return {

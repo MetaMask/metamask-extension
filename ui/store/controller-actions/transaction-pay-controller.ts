@@ -1,3 +1,4 @@
+import type { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import { submitRequestToBackground } from '../background-connection';
 
@@ -16,6 +17,22 @@ export async function updateTransactionPaymentToken({
       tokenAddress,
       chainId,
     },
+  ]);
+}
+
+export async function setPaymentOverride(
+  transactionId: string,
+  {
+    paymentOverride,
+    refundTo,
+  }: {
+    paymentOverride?: PaymentOverride;
+    refundTo?: Hex;
+  } = {},
+): Promise<void> {
+  return await submitRequestToBackground('setTransactionPayPaymentOverride', [
+    transactionId,
+    { paymentOverride, refundTo },
   ]);
 }
 

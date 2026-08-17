@@ -3,6 +3,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -12,12 +13,17 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getInternalAccountByAddress } from '../../../../selectors/accounts';
+import {
+  selectPaymentOverrideByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../multichain-accounts/account-details/account-type-utils';
 import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
+import { MONEY_ACCOUNT_DUMMY_BALANCE_FIAT } from './sections/usePayWithMoneyAccountSection';
 
 export type PayWithDisplayToken = {
   chainId: string;
@@ -34,6 +40,7 @@ type PayWithToken = {
   from: string | undefined;
   ownerId: string;
   isPerpsWithdraw: boolean;
+  isMoneyAccountSelected: boolean;
   openModal: () => void;
   modal: React.ReactNode;
 };
@@ -55,10 +62,16 @@ export function usePayWithToken(): PayWithToken {
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const from = currentConfirmation?.txParams?.from;
+  const transactionId = currentConfirmation?.id ?? '';
 
   const fromAccount = useSelector((state) =>
     getInternalAccountByAddress(state, from ?? ''),
   );
+  const paymentOverride = useSelector((state: TransactionPayState) =>
+    selectPaymentOverrideByTransactionId(state, transactionId),
+  );
+  const isMoneyAccountSelected =
+    paymentOverride === PaymentOverride.MoneyAccount;
 
   const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
@@ -84,20 +97,31 @@ export function usePayWithToken(): PayWithToken {
   const resolvedToken =
     payToken ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
 
-  const balanceUsdFormatted = useMemo(
-    () =>
-      fiatFormatter(new BigNumber(resolvedToken?.balanceUsd ?? '0').toNumber()),
-    [fiatFormatter, resolvedToken?.balanceUsd],
-  );
+  const balanceUsdFormatted = useMemo(() => {
+    if (isMoneyAccountSelected) {
+      return MONEY_ACCOUNT_DUMMY_BALANCE_FIAT;
+    }
+    return fiatFormatter(
+      new BigNumber(resolvedToken?.balanceUsd ?? '0').toNumber(),
+    );
+  }, [fiatFormatter, isMoneyAccountSelected, resolvedToken?.balanceUsd]);
 
-  const displayToken = resolvedToken?.chainId
-    ? {
-        chainId: resolvedToken.chainId,
-        address: resolvedToken.address,
-        symbol: resolvedToken.symbol,
-        balanceUsd: resolvedToken.balanceUsd,
-      }
-    : undefined;
+  let displayToken: PayWithDisplayToken | undefined;
+  if (isMoneyAccountSelected) {
+    displayToken = {
+      chainId: resolvedToken?.chainId ?? '',
+      address: '',
+      symbol: t('payWithMoneyAccount'),
+      balanceUsd: MONEY_ACCOUNT_DUMMY_BALANCE_FIAT,
+    };
+  } else if (resolvedToken?.chainId) {
+    displayToken = {
+      chainId: resolvedToken.chainId,
+      address: resolvedToken.address,
+      symbol: resolvedToken.symbol,
+      balanceUsd: resolvedToken.balanceUsd,
+    };
+  }
 
   return {
     displayToken,
@@ -107,6 +131,7 @@ export function usePayWithToken(): PayWithToken {
     from,
     ownerId: currentConfirmation?.id ?? '',
     isPerpsWithdraw,
+    isMoneyAccountSelected,
     openModal,
     modal: isModalOpen ? (
       <PayWithModal isOpen={isModalOpen} onClose={closeModal} />
