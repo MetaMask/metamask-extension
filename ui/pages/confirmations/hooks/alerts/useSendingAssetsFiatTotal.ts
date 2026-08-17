@@ -1,11 +1,10 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getShouldShowFiat } from '../../../../selectors';
 import { useBalanceChanges } from '../../components/simulation-details/useBalanceChanges';
 import { calculateTotalFiat } from '../../components/simulation-details/fiat-display';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 
 /**
  * Above this USD value the formatted amount is suppressed and copy falls back
@@ -25,11 +24,10 @@ export const SENDING_ASSETS_FIAT_DISPLAY_CEILING_USD = 10_000_000;
  * display ceiling. Callers fall back to amount-less copy.
  */
 export function useSendingAssetsFiatTotal(): string | null {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMeta = useTransactionMetadataRequestOptional();
   const shouldShowFiat = useSelector(getShouldShowFiat);
   const fiatFormatter = useFiatFormatter();
 
-  const transactionMeta = currentConfirmation as TransactionMeta | undefined;
   const chainId = transactionMeta?.chainId as Hex;
   const simulationData = transactionMeta?.simulationData;
 

@@ -22,7 +22,7 @@ import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import { useSendingAssetsFiatTotal } from '../../../../pages/confirmations/hooks/alerts/useSendingAssetsFiatTotal';
-import { REASON_TO_REQUEST_TYPE_TKEY } from '../../../../pages/confirmations/hooks/alerts/utils';
+import { REASON_TO_REQUEST_TYPE_TKEY } from '../../../../pages/confirmations/hooks/alerts/constants';
 import {
   Button,
   ButtonSize,
