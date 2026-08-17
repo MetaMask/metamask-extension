@@ -512,6 +512,52 @@ describe('Trace', () => {
         expect.any(Function),
       );
     });
+
+    // Regression test for MetaMask-planning#7569.
+    //
+    // The case above covers a map-lookup HIT. This covers the MISS: an
+    // in-process parent whose span is not in `tracesByKey` (it ended, or was
+    // never registered). `resolveParentSpan` returns `null` for that, which is
+    // the same value it returns for "no parent intended" — so `startSpan`
+    // cannot tell the two apart, sees the serialized ids, and routes to
+    // `continueTrace` with `parentSpan: undefined`. That promotes the span to a
+    // segment, and a segment is a billed transaction.
+    //
+    // Measured consequence: ~44.6% of extension transactions carry a
+    // `parent_span` id while being billed as roots, across 25 families.
+    //
+    // Marked `.failing` because it asserts the INTENDED behaviour, which the
+    // current implementation does not have. It passes today by failing. When
+    // the fix lands this test will start passing and `.failing` will report
+    // that as an error — at which point change `it.failing` to `it`.
+    it.failing(
+      'does not promote an unresolvable in-process parent to a segment',
+      () => {
+        continueTraceMock.mockImplementation((_opts, fn) => fn());
+
+        // No pending trace is created, so the map lookup misses.
+        trace(
+          {
+            name: TraceName.Middleware,
+            parentContext: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              _name: TraceName.Transaction,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              _id: 'absent-from-map',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              _traceId: 'trace123',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              _spanId: 'span456',
+            },
+          },
+          () => true,
+        );
+
+        // A parent was named. Failing to resolve it locally must not silently
+        // convert the span into a billed root.
+        expect(continueTraceMock).not.toHaveBeenCalled();
+      },
+    );
   });
 
   describe('getSerializedTraceContext', () => {
