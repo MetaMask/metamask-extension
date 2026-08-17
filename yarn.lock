@@ -6458,21 +6458,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ens-controller@npm:^19.1.4":
-  version: 19.1.4
-  resolution: "@metamask/ens-controller@npm:19.1.4"
-  dependencies:
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/network-controller": "npm:^33.0.0"
-    "@metamask/utils": "npm:^11.11.0"
-    punycode: "npm:^2.1.1"
-  checksum: 10/3c7e73020f62d00f843cd75df332d65931d655264a9dcf58ada7de3d42f964449f9d00617efd5376dc1e469b9f294dd82eca68fc1d651217d88bd0c5ce8a16c9
-  languageName: node
-  linkType: hard
-
 "@metamask/ens-resolver-snap@npm:^1.2.0":
   version: 1.2.0
   resolution: "@metamask/ens-resolver-snap@npm:1.2.0"
@@ -33229,7 +33214,6 @@ __metadata:
     "@metamask/dummy-package": "workspace:*"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
-    "@metamask/ens-controller": "npm:^19.1.4"
     "@metamask/ens-resolver-snap": "npm:^1.2.0"
     "@metamask/eslint-config": "npm:^14.1.1"
     "@metamask/eslint-config-jest": "npm:^14.1.1"

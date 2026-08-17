@@ -763,51 +763,6 @@
       "eip155:137": "string",
       "eip155:6343": "string"
     },
-    "ensEntries": {
-      "0x1": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      },
-      "0x3": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      },
-      "0x4": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      },
-      "0x4268": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      },
-      "0x5": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      },
-      "0xaa36a7": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      }
-    },
-    "ensResolutionsByAddress": {},
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",

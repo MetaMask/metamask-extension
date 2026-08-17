@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+import { NameEntry } from '@metamask/name-controller';
 import { useGetDisplayName } from './useGetDisplayName';
 
 type MockState = {
@@ -8,7 +9,7 @@ type MockState = {
     accounts: { address: string }[];
   }[];
   tokenList: Record<string, { name?: string }>;
-  metamask: { ensResolutionsByAddress: Record<string, string> };
+  names: Record<string, Record<string, Record<string, NameEntry>>>;
 };
 
 // Declared before jest.mock factories so eslint no-use-before-define is happy.
@@ -26,6 +27,7 @@ jest.mock('../selectors', () => ({
     (state: { addressBook: unknown }) => state.addressBook,
   ),
   getTokenList: jest.fn((state: { tokenList: unknown }) => state.tokenList),
+  getNames: jest.fn((state: { names: unknown }) => state.names),
 }));
 
 jest.mock('../selectors/multichain-accounts/account-tree', () => ({
@@ -42,7 +44,7 @@ function setState(overrides: Partial<MockState> = {}) {
     addressBook: [],
     accountGroups: [],
     tokenList: {},
-    metamask: { ensResolutionsByAddress: {} },
+    names: {},
     ...overrides,
   };
 }
@@ -94,10 +96,19 @@ describe('useGetDisplayName', () => {
     expect(result.current(mockAddress)).toBe('Wrapped Ether');
   });
 
-  it('falls back to the decoded ENS name', () => {
+  it('falls back to names from NameController', () => {
     setState({
-      metamask: {
-        ensResolutionsByAddress: { [mockAddress]: 'xn--e1afmkfd.eth' },
+      names: {
+        ethereumAddress: {
+          [mockAddress.toLowerCase()]: {
+            '*': {
+              name: 'пример.eth',
+              sourceId: null,
+              origin: null,
+              proposedNames: {},
+            },
+          },
+        },
       },
     });
 

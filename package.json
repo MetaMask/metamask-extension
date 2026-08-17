@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.45.0",
+  "version": "13.46.0",
   "private": true,
   "imports": {
     "#ui/*": [
@@ -399,7 +399,6 @@
     "@metamask/dummy-package": "workspace:*",
     "@metamask/eip-5792-middleware": "3.0.3",
     "@metamask/eip-7702-internal-rpc-middleware": "^0.1.0",
-    "@metamask/ens-controller": "^19.1.4",
     "@metamask/ens-resolver-snap": "^1.2.0",
     "@metamask/eth-hd-keyring": "^15.0.0",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
