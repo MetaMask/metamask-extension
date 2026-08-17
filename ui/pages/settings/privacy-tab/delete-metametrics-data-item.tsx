@@ -1,25 +1,18 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  Button,
-  Icon,
-  IconColor,
-  IconName,
-} from '@metamask/design-system-react';
+import { Button } from '@metamask/design-system-react';
 import {
   DeleteRegulationStatus,
   DATA_DELETION_REQUESTED_STATUSES,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getLatestMetricsEventTimestamp,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../selectors';
-import { Toast, ToastContainer } from '../../../components/multichain/toast';
-import { BorderRadius } from '../../../helpers/constants/design-system';
+import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { PRIVACY_ITEMS } from '../search-config';
 import DeleteMetametricsModal from './delete-metametrics-modal';
 import DeletionInProgressModal from './deletion-in-progress-modal';
@@ -30,31 +23,24 @@ export const DeleteMetametricsDataItem = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeletionInProgressModal, setShowDeletionInProgressModal] =
     useState(false);
-  const [showDataDeletionErrorToast, setShowDataDeletionErrorToast] =
-    useState(false);
-  const [showDataDeletionSuccessToast, setShowDataDeletionSuccessToast] =
+  const [deletionRequestedThisSession, setDeletionRequestedThisSession] =
     useState(false);
 
-  const metaMetricsId = useSelector(getMetaMetricsId);
+  const analyticsId = useSelector(getAnalyticsId);
   const metaMetricsDataDeletionStatus: DeleteRegulationStatus = useSelector(
     getMetaMetricsDataDeletionStatus,
   );
-  const metaMetricsDataDeletionTimestamp = useSelector(
-    getMetaMetricsDataDeletionTimestamp,
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
-  const latestMetricsEventTimestamp = useSelector(
-    getLatestMetricsEventTimestamp,
-  );
+  const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled =
-    useSelector(getParticipateInMetaMetrics) && Boolean(metaMetricsId);
-
-  const hasNoPendingDataToDelete =
-    metaMetricsDataDeletionTimestamp > latestMetricsEventTimestamp;
+    completedMetaMetricsOnboarding && isOptedIn && Boolean(analyticsId);
 
   const isDataDeletionInProgress =
-    Boolean(metaMetricsId) &&
+    Boolean(analyticsId) &&
     DATA_DELETION_REQUESTED_STATUSES.includes(metaMetricsDataDeletionStatus) &&
-    hasNoPendingDataToDelete;
+    deletionRequestedThisSession;
 
   return (
     <>
@@ -73,48 +59,27 @@ export const DeleteMetametricsDataItem = () => {
       {showDeleteModal && (
         <DeleteMetametricsModal
           onClose={() => setShowDeleteModal(false)}
-          onSuccess={() => setShowDataDeletionSuccessToast(true)}
-          onError={() => setShowDataDeletionErrorToast(true)}
+          onSuccess={() => {
+            setDeletionRequestedThisSession(true);
+            toast.success(t('deleteMetaMetricsDataToast'), {
+              id: 'delete-metametrics-data-success-toast',
+            });
+          }}
+          onError={() => {
+            toast.error(
+              <ToastContent
+                title={t('deleteMetaMetricsDataErrorToast')}
+                description={t('deleteMetaMetricsDataErrorDesc')}
+              />,
+              { id: 'delete-metametrics-data-error-toast' },
+            );
+          }}
         />
       )}
       {showDeletionInProgressModal && (
         <DeletionInProgressModal
           onClose={() => setShowDeletionInProgressModal(false)}
         />
-      )}
-      {showDataDeletionErrorToast && (
-        <ToastContainer>
-          <Toast
-            startAdornment={
-              <Icon name={IconName.Warning} color={IconColor.WarningDefault} />
-            }
-            text={t('deleteMetaMetricsDataErrorToast')}
-            description={t('deleteMetaMetricsDataErrorDesc')}
-            onClose={() => setShowDataDeletionErrorToast(false)}
-            borderRadius={BorderRadius.LG}
-            textClassName="text-base"
-            data-testid="delete-metametrics-data-error-toast"
-          />
-        </ToastContainer>
-      )}
-      {showDataDeletionSuccessToast && (
-        <ToastContainer>
-          <Toast
-            startAdornment={
-              <Icon
-                name={IconName.CheckBold}
-                color={IconColor.SuccessDefault}
-              />
-            }
-            text={t('deleteMetaMetricsDataToast')}
-            onClose={() => setShowDataDeletionSuccessToast(false)}
-            autoHideTime={2500}
-            onAutoHideToast={() => setShowDataDeletionSuccessToast(false)}
-            borderRadius={BorderRadius.LG}
-            textClassName="text-base"
-            data-testid="delete-metametrics-data-success-toast"
-          />
-        </ToastContainer>
       )}
     </>
   );

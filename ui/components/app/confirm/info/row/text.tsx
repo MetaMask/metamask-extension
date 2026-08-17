@@ -32,14 +32,14 @@ export type ConfirmInfoRowTextProps = {
   editIconDataTestId?: string;
 };
 
-export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
+export const ConfirmInfoRowText = ({
   text,
   onEditClick,
   editIconClassName,
   tooltip,
   'data-testid': dataTestId,
   editIconDataTestId,
-}) => {
+}: ConfirmInfoRowTextProps) => {
   const t = useContext(I18nContext);
 
   const isEditable = Boolean(onEditClick);
@@ -55,8 +55,6 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
     >
       {isEditable ? (
         <ButtonIcon
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           className={editIconClassName || undefined}
           color={IconColor.primaryDefault}
           ariaLabel={t('edit')}

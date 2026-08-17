@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { DefaultRootState } from 'react-redux';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -62,9 +61,7 @@ function render({
     isBlocking?: boolean;
   }[];
 } = {}) {
-  const baseState = getMockConfirmStateForTransaction(
-    confirmation,
-  ) as DefaultRootState;
+  const baseState = getMockConfirmStateForTransaction(confirmation);
 
   const state = {
     ...baseState,
@@ -107,18 +104,18 @@ describe('<SingleActionFooter />', () => {
     expect(MOCK_ON_SUBMIT).toHaveBeenCalledTimes(1);
   });
 
-  it('shows loading state when gasless is loading', () => {
+  it('disables the button when gasless is loading', () => {
     const { getByTestId } = render({ isGaslessLoading: true });
 
-    expect(getByTestId('confirm-footer-button')).not.toBeDisabled();
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
-  it('shows loading state when pay token data is loading', () => {
+  it('disables the button when pay token data is loading', () => {
     jest.mocked(useIsTransactionPayLoading).mockReturnValue(true);
 
     const { getByTestId } = render();
 
-    expect(getByTestId('confirm-footer-button')).not.toBeDisabled();
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
   it('prefers alert reason as button text when blocking alert has both reason and message', () => {

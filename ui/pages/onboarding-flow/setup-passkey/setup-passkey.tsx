@@ -7,13 +7,13 @@ import {
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import {
+  getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
-  getIsParticipateInMetaMetricsSet,
+  getCompletedMetaMetricsOnboarding,
 } from '../../../selectors';
 import SetupPasskeyContent from '../../../components/app/setup-passkey-content';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
 
 /**
  * Onboarding wrapper that renders the reusable passkey setup content and
@@ -21,14 +21,13 @@ import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
  */
 export default function SetupPasskey() {
   const navigate = useNavigate();
+  const isFirefox = useIsFirefox();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isParticipateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
 
   const handleNext = useCallback(() => {
-    const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
-
     let nextRoute: string;
 
     if (firstTimeFlowType === FirstTimeFlowType.create) {
@@ -37,7 +36,7 @@ export default function SetupPasskey() {
       if (isFirefox) {
         nextRoute = ONBOARDING_COMPLETION_ROUTE;
       } else {
-        nextRoute = isParticipateInMetaMetricsSet
+        nextRoute = completedMetaMetricsOnboarding
           ? ONBOARDING_COMPLETION_ROUTE
           : ONBOARDING_METAMETRICS;
       }
@@ -46,7 +45,7 @@ export default function SetupPasskey() {
     }
 
     navigate(nextRoute, { replace: true });
-  }, [firstTimeFlowType, navigate, isParticipateInMetaMetricsSet]);
+  }, [firstTimeFlowType, isFirefox, navigate, completedMetaMetricsOnboarding]);
 
   return <SetupPasskeyContent onNext={handleNext} />;
 }

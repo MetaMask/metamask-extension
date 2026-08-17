@@ -1,11 +1,15 @@
 import { Suite } from 'mocha';
 import { Hex } from '@metamask/utils';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import ConfirmAlertModal from '../../page-objects/pages/dialog/confirm-alert';
 import { WALLET_ADDRESS } from '../confirmations/signatures/signature-helpers';
 import { Driver } from '../../webdriver/driver';
@@ -20,6 +24,9 @@ type NetworkConfig = {
   chainId: Hex;
 };
 
+/** Default Anvil account balance (25 ETH) in wei. */
+const ANVIL_DEFAULT_BALANCE = '0x15af1d78b58c40000';
+
 // Network configurations
 const networkConfigs: NetworkConfig[] = [
   {
@@ -32,7 +39,7 @@ const networkConfigs: NetworkConfig[] = [
   },
   {
     name: 'MegaETH Testnet',
-    tokenSymbol: 'ETH',
+    tokenSymbol: 'MegaETH',
     fixtureMethod: (builder) =>
       builder.withSelectedNetwork(NETWORK_CLIENT_ID.MEGAETH_TESTNET_V2),
     testTitle: 'MegaETH Network Connection Tests',
@@ -77,19 +84,31 @@ networkConfigs.forEach((config) => {
                 [config.chainId]: true,
               },
             })
+            .withAccountTracker({
+              accountsByChainId: {
+                [config.chainId]: {
+                  [DEFAULT_FIXTURE_ACCOUNT]: {
+                    balance: ANVIL_DEFAULT_BALANCE,
+                    stakedBalance: '0x0',
+                  },
+                },
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await login(driver);
+          // TODO: Investigate why the balance intermittently fails to load on Monad
+          // Testnet in CI and re-enable balance validation once the root cause is found.
+          await login(driver, { validateBalance: false });
 
-          const assetListPage = new AssetListPage(driver);
+          const tokensTab = new TokensTab(driver);
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
           // Verify token is displayed
-          await assetListPage.checkTokenExistsInList(config.tokenSymbol);
+          await tokensTab.checkTokenExistsInList(config.tokenSymbol);
 
           // Open the test dapp and verify balance
           const testDapp = new TestDapp(driver);

@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CaipChainId, NonEmptyArray, Hex } from '@metamask/utils';
 import {
@@ -8,9 +8,15 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
 import {
+  AvatarFavicon,
+  AvatarFaviconSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconName,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
@@ -19,26 +25,14 @@ import {
   getConnectedSitesList,
   getPermissions,
   getPermissionSubjects,
-  getShowPermittedNetworkToastOpen,
 } from '../../../../selectors';
 import {
-  hidePermittedNetworkToast,
   removePermissionsFor,
   requestAccountsAndChainPermissionsWithId,
   setPermittedAccounts,
   setPermittedChains,
 } from '../../../../store/actions';
-import {
-  AvatarFavicon,
-  AvatarFaviconSize,
-  Button,
-  ButtonPrimary,
-  ButtonPrimarySize,
-  ButtonSize,
-  ButtonVariant,
-  IconName,
-} from '../../../component-library';
-import { ToastContainer, Toast } from '../../../multichain/toast/toast';
+import { toast, ToastContent } from '../../../ui/toast/toast';
 import { NoConnectionContent } from '../../../multichain/pages/connections/components/no-connection';
 import { Content, Footer, Page } from '../../../multichain/pages/page';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
@@ -51,7 +45,7 @@ import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../../shared/constants/netw
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { MultichainSiteCell } from '../../multichain-site-cell/multichain-site-cell';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
-import { getCaip25CaveatValueFromPermissions } from '../../../../pages/permissions-connect/connect-page/utils';
+import { getCaip25CaveatValueFromPermissions } from '../../../../helpers/utils/caip25-permissions';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/multichain-edit-accounts-page';
 import {
@@ -62,6 +56,7 @@ import {
 import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
+import { useDispatch } from '../../../../store/hooks';
 
 export enum MultichainReviewPermissionsPageMode {
   Summary = 'summary',
@@ -76,8 +71,6 @@ export const MultichainReviewPermissions = () => {
 
   const originParam = searchParams.get('origin');
   const securedOrigin = decodeURIComponent(originParam ?? '');
-  const [showAccountToast, setShowAccountToast] = useState(false);
-  const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
   const [showDisconnectPermissionsModal, setShowDisconnectPermissionsModal] =
     useState(false);
@@ -85,17 +78,6 @@ export const MultichainReviewPermissions = () => {
     MultichainReviewPermissionsPageMode.Summary,
   );
   const activeTabOrigin: string = securedOrigin;
-
-  const showPermittedNetworkToastOpen = useSelector(
-    getShowPermittedNetworkToastOpen,
-  );
-
-  useEffect(() => {
-    if (showPermittedNetworkToastOpen) {
-      setShowNetworkToast(showPermittedNetworkToastOpen);
-      dispatch(hidePermittedNetworkToast());
-    }
-  }, [showPermittedNetworkToastOpen, dispatch]);
 
   const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(
@@ -114,6 +96,19 @@ export const MultichainReviewPermissions = () => {
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
   const subjects = useSelector(getPermissionSubjects);
 
+  const showNetworkPermissionToast = useCallback(() => {
+    toast.success(<ToastContent title={t('networkPermissionToast')} />, {
+      id: 'network-permission-toast',
+      icon: (
+        <AvatarFavicon
+          name={connectedSubjectsMetadata?.name}
+          size={AvatarFaviconSize.Sm}
+          src={connectedSubjectsMetadata?.iconUrl}
+        />
+      ),
+    });
+  }, [connectedSubjectsMetadata?.iconUrl, connectedSubjectsMetadata?.name, t]);
+
   const disconnectAllPermissions = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
 
@@ -130,7 +125,6 @@ export const MultichainReviewPermissions = () => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
-    dispatch(hidePermittedNetworkToast());
   };
 
   const handleDisconnectClick = () => {
@@ -182,7 +176,7 @@ export const MultichainReviewPermissions = () => {
 
     dispatch(setPermittedChains(activeTabOrigin, chainIds));
 
-    setShowNetworkToast(true);
+    showNetworkPermissionToast();
   };
 
   const existingPermissions = useSelector((state) =>
@@ -311,6 +305,24 @@ export const MultichainReviewPermissions = () => {
     );
   }, [gatorPermissionsGroupMetaData]);
 
+  // Handle disconnect flow with gator permissions check: if token transfer
+  // permissions exist, shows the permissions modal, else disconnect directly
+  const handleDisconnectWithGatorCheck = () => {
+    const hasTokenTransferPermissions =
+      gatorPermissionsGroupMetaData &&
+      Object.values(gatorPermissionsGroupMetaData).some(
+        (details) => details.count > 0,
+      );
+
+    if (hasTokenTransferPermissions) {
+      setShowDisconnectPermissionsModal(true);
+    } else {
+      trace({ name: TraceName.DisconnectAllModal });
+      disconnectAllPermissions();
+      endTrace({ name: TraceName.DisconnectAllModal });
+    }
+  };
+
   const handleRemoveAllPermissions = async () => {
     try {
       trace({ name: TraceName.DisconnectAllModal });
@@ -377,24 +389,11 @@ export const MultichainReviewPermissions = () => {
 
           {showDisconnectAllModal ? (
             <DisconnectAllModal
+              origin={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
                 setShowDisconnectAllModal(false);
-
-                // Check if there are token transfer permissions
-                const hasTokenTransferPermissions =
-                  gatorPermissionsGroupMetaData &&
-                  Object.values(gatorPermissionsGroupMetaData).some(
-                    (details) => details.count > 0,
-                  );
-
-                if (hasTokenTransferPermissions) {
-                  setShowDisconnectPermissionsModal(true);
-                } else {
-                  trace({ name: TraceName.DisconnectAllModal });
-                  disconnectAllPermissions();
-                  endTrace({ name: TraceName.DisconnectAllModal });
-                }
+                handleDisconnectWithGatorCheck();
               }}
             />
           ) : null}
@@ -417,42 +416,12 @@ export const MultichainReviewPermissions = () => {
                 gap={2}
                 alignItems={BoxAlignItems.Center}
               >
-                {showAccountToast ? (
-                  <ToastContainer>
-                    <Toast
-                      text={t('accountPermissionToast')}
-                      onClose={() => setShowAccountToast(false)}
-                      startAdornment={
-                        <AvatarFavicon
-                          name={connectedSubjectsMetadata?.name}
-                          size={AvatarFaviconSize.Sm}
-                          src={connectedSubjectsMetadata?.iconUrl}
-                        />
-                      }
-                    />
-                  </ToastContainer>
-                ) : null}
-                {showNetworkToast ? (
-                  <ToastContainer>
-                    <Toast
-                      text={t('networkPermissionToast')}
-                      onClose={() => setShowNetworkToast(false)}
-                      startAdornment={
-                        <AvatarFavicon
-                          name={connectedSubjectsMetadata?.name}
-                          size={AvatarFaviconSize.Sm}
-                          src={connectedSubjectsMetadata?.iconUrl}
-                        />
-                      }
-                    />
-                  </ToastContainer>
-                ) : null}
                 <Button
                   size={ButtonSize.Lg}
-                  block
+                  isFullWidth
                   variant={ButtonVariant.Secondary}
                   startIconName={IconName.Logout}
-                  danger
+                  isDanger
                   onClick={handleDisconnectClick}
                   data-test-id="disconnect-all"
                 >
@@ -462,16 +431,15 @@ export const MultichainReviewPermissions = () => {
             ) : (
               <>
                 {connectedAccountGroups.length > 0 ? (
-                  <ButtonPrimary
-                    size={ButtonPrimarySize.Lg}
-                    block
+                  <Button
+                    variant={ButtonVariant.Primary}
+                    size={ButtonSize.Lg}
+                    isFullWidth
                     data-test-id="no-connections-button"
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={requestAccountsAndChainPermissions}
                   >
                     {t('connectAccounts')}
-                  </ButtonPrimary>
+                  </Button>
                 ) : null}
               </>
             )}
@@ -481,12 +449,21 @@ export const MultichainReviewPermissions = () => {
     </Page>
   ) : (
     <MultichainEditAccountsPage
-      title={t('editAccounts')}
-      confirmButtonText={t('update')}
+      title={t('manageConnectedAccounts')}
+      confirmButtonText={t('save')}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}
       onClose={() => setPageMode(MultichainReviewPermissionsPageMode.Summary)}
+      siteMetadata={{
+        origin: activeTabOrigin,
+        name: connectedSubjectsMetadata?.name,
+        iconUrl: connectedSubjectsMetadata?.iconUrl,
+      }}
+      onDisconnect={() => {
+        handleDisconnectWithGatorCheck();
+        setPageMode(MultichainReviewPermissionsPageMode.Summary);
+      }}
     />
   );
 };

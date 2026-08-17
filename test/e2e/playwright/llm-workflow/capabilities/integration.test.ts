@@ -16,7 +16,6 @@ describe('Capability Integration', () => {
       expect(context.chain).toBeDefined();
       expect(context.contractSeeding).toBeDefined();
       expect(context.stateSnapshot).toBeDefined();
-      expect(context.mockServer).toBeDefined();
       expect(context.config).toBeDefined();
     });
 

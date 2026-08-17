@@ -42,6 +42,10 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
+import {
+  getActiveTabDomainAllowlist,
+  getActiveTabDomainForMetrics,
+} from '../../shared/lib/active-tab-domain-metrics';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { maskObject } from '../../shared/lib/object.utils';
@@ -59,16 +63,18 @@ import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getInstallAttribution } from '../../shared/lib/install-attribution';
+import { createEvent } from '../../shared/lib/deep-links/metrics';
 import {
   backedUpStateKeys,
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
-import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
-import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
-import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
-import { useSplitStateStorage } from './lib/use-split-state-storage';
-import migrations from './migrations';
 import Migrator from './lib/migrator';
+import migrations from './migrations';
+import { useSplitStateStorage } from './lib/use-split-state-storage';
+import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
+import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
+import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
+import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
@@ -79,6 +85,7 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
+import { createEventBuilder, trackEvent } from './controllers/analytics';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -92,8 +99,6 @@ import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
 
-/* eslint-enable import-x/first */
-
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
@@ -102,7 +107,6 @@ import {
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
-import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 import {
   readCriticalErrorRestoreSession,
@@ -111,9 +115,13 @@ import {
   openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
 import { requestRepair } from './lib/repair';
+import {
+  createSidepanelOpener,
+  shouldUseSidepanel,
+} from './sidepanel/background';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
+import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
 import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 
@@ -132,8 +140,6 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
 const BADGE_MAX_COUNT = 9;
 const maxSeenFailedNonces = 99;
-
-const inTest = process.env.IN_TEST;
 
 const VAULT_AT_STARTUP_TEST_WINDOW_MS = 60_000;
 
@@ -154,7 +160,7 @@ function hadVaultAtStartupRecently(hasVaultAtStartup) {
  * Test-only state shared across startup and later port handling (hang simulations).
  * `null` in production builds so we do not keep loose mutable test globals.
  */
-const inTestState = inTest
+const inTestState = process.env.IN_TEST
   ? { restoreInProgress: false, hasVaultAtStartup: null }
   : null;
 
@@ -228,7 +234,9 @@ const senderOriginMapping = {};
 const tabOriginMapping = {};
 const frameIdMapping = {};
 
-if (inTest || process.env.METAMASK_DEBUG) {
+const requestOpenSidepanel = createSidepanelOpener();
+
+if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
     persistenceManager,
     { validateVault: false },
@@ -425,7 +433,7 @@ function maybeDetectPhishing(theController) {
 
       const { hostname, href, searchParams } = new URL(details.url);
       if (
-        inTest &&
+        process.env.IN_TEST &&
         searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')
       ) {
         // this is a test page that needs to bypass early phishing detection
@@ -482,12 +490,10 @@ function maybeDetectPhishing(theController) {
       // Helper function to track phishing page metrics
       const trackPhishingMetrics = () => {
         if (!isFirefox) {
-          theController.metaMetricsController.trackEvent(
-            {
-              // should we differentiate between background redirection and content script redirection?
-              event: MetaMetricsEventName.PhishingPageDisplayed,
-              category: MetaMetricsEventCategory.Phishing,
-              properties: {
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.PhishingPageDisplayed)
+              .addCategory(MetaMetricsEventCategory.Phishing)
+              .addProperties({
                 url: blockedUrl,
                 referrer: {
                   url: blockedUrl,
@@ -496,11 +502,10 @@ function maybeDetectPhishing(theController) {
                 requestDomain: blockedRequestResponse.result
                   ? hostname
                   : undefined,
-              },
-            },
-            {
-              excludeMetaMetricsId: true,
-            },
+              })
+              .build({
+                excludeMetaMetricsId: true,
+              }),
           );
         }
       };
@@ -587,7 +592,7 @@ const criticalErrorHandler = new CriticalErrorHandler();
  */
 const handleOnConnect = async (port) => {
   const { isMetaMaskUIPort } = parsePortInfo(port);
-  if (inTest) {
+  if (process.env.IN_TEST) {
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
     if (simulatedDelay === true) {
@@ -638,8 +643,11 @@ const handleOnConnect = async (port) => {
     // Notify UI that background initialization is complete, before sending state.
     // This is sent on the raw port (like ALIVE) so the UI can distinguish between
     // "background still initializing" vs "background initialized but state sync failed".
-    if (!tryPostMessage(port, BACKGROUND_INITIALIZED_METHOD)) {
-      return;
+    // Only MetaMask UI ports listen for this message (contentscripts do not).
+    if (isMetaMaskUIPort) {
+      if (!tryPostMessage(port, BACKGROUND_INITIALIZED_METHOD)) {
+        return;
+      }
     }
 
     // For testing: skip connectWindowPostMessage to simulate state sync hang.
@@ -647,7 +655,7 @@ const handleOnConnect = async (port) => {
     // not during the initial onboarding session) and we're not in the restore
     // flow (so recovery can complete).
     if (
-      inTest &&
+      process.env.IN_TEST &&
       getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
       !inTestState?.restoreInProgress &&
       hadVaultAtStartupRecently(inTestState.hasVaultAtStartup)
@@ -725,7 +733,7 @@ const installOnConnectListener = () => {
   lazyListener.addListener('runtime', 'onConnect', handleOnConnect);
 };
 if (
-  inTest &&
+  process.env.IN_TEST &&
   getManifestFlags().testing?.simulatedSlowBackgroundLoadingTimeout
 ) {
   const { simulatedSlowBackgroundLoadingTimeout } = getManifestFlags().testing;
@@ -740,12 +748,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // This is set in `setupController`, which is called as part of initialization
   connectExternallyConnectable(...args);
 });
-
-function saveTimestamp() {
-  const timestamp = new Date().toISOString();
-
-  browser.storage.session.set({ timestamp });
-}
 
 /**
  * @typedef {import('@metamask/transaction-controller').TransactionMeta} TransactionMeta
@@ -811,12 +813,9 @@ async function initialize(backup) {
 
   if (isManifestV3) {
     addOffscreenConnectivityListener((isOnline) => {
-      if (
-        connectivityReady &&
-        controller.messengerClientApi.setConnectivityStatus
-      ) {
+      if (connectivityReady && controller.connectivityAdapter) {
         const status = isOnline ? 'online' : 'offline';
-        controller.messengerClientApi.setConnectivityStatus(status);
+        controller.connectivityAdapter.setStatus(status);
       } else {
         // Queue until controller is ready
         pendingConnectivityStatus = isOnline;
@@ -837,22 +836,13 @@ async function initialize(backup) {
   // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
   if (process.env.IN_TEST && window.navigator?.webdriver) {
     const { getSocketBackgroundToMocha } =
-      // Use `require` to make it easier to exclude this test code from the Browserify build.
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+      // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
+      // eslint-disable-next-line n/global-require
       require('../../test/e2e/background-socket/socket-background-to-mocha');
     getSocketBackgroundToMocha();
   }
 
   if (isManifestV3) {
-    // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
-    // miliseconds. This keeps the service worker alive.
-    if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
-      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
-
-      saveTimestamp();
-      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
-    }
-
     const sessionData = await browser.storage.session.get([
       'isFirstMetaMaskControllerSetup',
     ]);
@@ -862,24 +852,6 @@ async function initialize(backup) {
     await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
   }
 
-  const overrides = inTest
-    ? {
-        keyrings: {
-          // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
-          trezorBridge: require('../../test/stub/keyring-bridge')
-            .FakeTrezorBridge,
-          // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
-          ledgerBridge: require('../../test/stub/keyring-bridge')
-            .FakeLedgerBridge,
-          // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
-          qrBridge: require('../../test/stub/keyring-bridge').FakeQrBridge,
-        },
-      }
-    : {};
-
   const preinstalledSnaps = await loadPreinstalledSnaps();
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
@@ -887,13 +859,14 @@ async function initialize(backup) {
   setupController(
     initState,
     initLangCode,
-    overrides,
     isFirstMetaMaskControllerSetup,
     initData.meta,
     offscreenPromise,
     preinstalledSnaps,
     cronjobControllerStorageManager,
   );
+
+  setupLedgerModeOffscreenBridge(controller, offscreenPromise);
 
   controller.metaMetricsController.updateTraits({
     [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,
@@ -908,13 +881,13 @@ async function initialize(backup) {
     connectivityReady = true;
     if (pendingConnectivityStatus !== null) {
       const status = pendingConnectivityStatus ? 'online' : 'offline';
-      controller.messengerClientApi.setConnectivityStatus(status);
+      controller.connectivityAdapter.setStatus(status);
     }
   } else {
     // MV2: Background page has access to window events
     const updateConnectivity = (isOnline) => {
       const status = isOnline ? 'online' : 'offline';
-      controller.messengerClientApi.setConnectivityStatus(status);
+      controller.connectivityAdapter.setStatus(status);
     };
     updateConnectivity(globalThis.navigator.onLine);
     globalThis.addEventListener('online', () => updateConnectivity(true));
@@ -933,9 +906,7 @@ async function initialize(backup) {
     .on('navigate', async ({ url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)
       if (!('redirectTo' in parsed)) {
-        await controller.metaMetricsController.trackEvent(
-          createEvent({ signature: parsed.signature, url }),
-        );
+        trackEvent(createEvent({ signature: parsed.signature, url }));
       }
     })
     .on('error', (error) => sentry?.captureException(error))
@@ -1044,8 +1015,8 @@ export async function loadStateFromPersistence(backup) {
   if (process.env.WITH_STATE) {
     const withState = JSON.parse(process.env.WITH_STATE);
 
-    // Use `require` to make it easier to exclude this test code from the Browserify build.
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+    // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
+    // eslint-disable-next-line n/global-require
     const { generateWalletState } = require('./fixtures/generate-wallet-state');
     const fixtureBuilder = await generateWalletState(withState, false);
 
@@ -1102,7 +1073,7 @@ export async function loadStateFromPersistence(backup) {
   const migrator = new Migrator({
     migrations,
     defaultVersion: process.env.WITH_STATE
-      ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+      ? // eslint-disable-next-line n/global-require
         require('../../test/e2e/fixtures/default-fixture.json').meta.version
       : null,
   });
@@ -1295,8 +1266,8 @@ export async function loadStateFromPersistence(backup) {
  * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
  */
 function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
-  const { metaMetricsId } = controller.metaMetricsController.state;
-  if (!shouldEmitDappViewedEvent(metaMetricsId)) {
+  const { analyticsId } = controller.getState();
+  if (!shouldEmitDappViewedEvent(analyticsId)) {
     return;
   }
 
@@ -1315,23 +1286,21 @@ function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
 
   const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
 
-  controller.metaMetricsController.trackEvent(
-    {
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.DappViewed)
+      .addCategory(MetaMetricsEventCategory.InpageProvider)
+      .addProperties({
         is_first_visit: false,
         number_of_accounts: numberOfTotalAccounts,
         number_of_accounts_connected: numberOfConnectedAccounts,
         ...iframeProps,
-      },
-    },
-    {
-      excludeMetaMetricsId: true,
-    },
+      })
+      .build({
+        referrer: {
+          url: origin,
+        },
+        excludeMetaMetricsId: true,
+      }),
   );
 }
 
@@ -1389,28 +1358,40 @@ function trackDappView(remotePort) {
  * @param {string} environmentType - The environment type where the app is opening
  */
 function emitAppOpenedMetricEvent(environmentType) {
-  const { metaMetricsId, participateInMetaMetrics } =
-    controller.metaMetricsController.state;
+  const { consentDecisionMade, optedIn } = controller.getState();
 
   // Skip if user hasn't opted into metrics
-  if (metaMetricsId === null && !participateInMetaMetrics) {
+  if (!consentDecisionMade || !optedIn) {
     return;
   }
 
-  controller.metaMetricsController.trackEvent({
-    event: MetaMetricsEventName.AppOpened,
-    category: MetaMetricsEventCategory.App,
-    environmentType,
-  });
+  const activeTabOrigin =
+    controller.appStateController.state.appActiveTab?.origin;
+  const allowlist = getActiveTabDomainAllowlist(
+    controller.remoteFeatureFlagController.state,
+  );
+  const activeTabDomain = getActiveTabDomainForMetrics(
+    activeTabOrigin,
+    allowlist,
+  );
+
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.AppOpened)
+      .addCategory(MetaMetricsEventCategory.App)
+      .addProperties(
+        activeTabDomain ? { active_tab_domain: activeTabDomain } : {},
+      )
+      .build({ environmentType }),
+  );
 }
 
 /**
- * This function checks if the app is being opened
- * and emits an event only if no other UI instances are currently open.
+ * Returns true if the App Opened metric event should fire for the given env.
  *
  * @param {string} environment - The environment type where the app is opening
+ * @returns {boolean}
  */
-function trackAppOpened(environment) {
+function shouldEmitAppOpened(environment) {
   // List of valid environment types to track
   const environmentTypeList = [
     ENVIRONMENT_TYPE_POPUP,
@@ -1428,7 +1409,17 @@ function trackAppOpened(environment) {
     openSidePanelCount > 0;
 
   // Only emit event if no UI is open and environment is valid
-  if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
+  return !isAlreadyOpen && environmentTypeList.includes(environment);
+}
+
+/**
+ * This function checks if the app is being opened
+ * and emits an event only if no other UI instances are currently open.
+ *
+ * @param {string} environment - The environment type where the app is opening
+ */
+function trackAppOpened(environment) {
+  if (shouldEmitAppOpened(environment)) {
     emitAppOpenedMetricEvent(environment);
   }
 }
@@ -1506,7 +1497,6 @@ const refreshAppActiveTab = async (windowId) => {
  *
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
- * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
@@ -1516,7 +1506,6 @@ const refreshAppActiveTab = async (windowId) => {
 export function setupController(
   initState,
   initLangCode,
-  overrides,
   isFirstMetaMaskControllerSetup,
   stateMetadata,
   offscreenPromise,
@@ -1544,7 +1533,6 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
@@ -1737,9 +1725,7 @@ export function setupController(
       /**
        * @type {ExtensionPortStream}
        */
-      const portStream =
-        overrides?.getPortStream?.(remotePort) ||
-        new ExtensionPortStream(remotePort);
+      const portStream = new ExtensionPortStream(remotePort);
 
       /**
        * send event to sentry with details about the event
@@ -1747,15 +1733,12 @@ export function setupController(
        * @param {import("extension-port-stream").MessageTooLargeEventData} details
        */
       const handleMessageTooLarge = function ({ chunkSize }) {
-        /**
-         * @type {MetamaskController}
-         */
-        const theController = controller;
-        theController.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PortStreamChunked,
-          category: MetaMetricsEventCategory.PortStream,
-          properties: { chunkSize },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.PortStreamChunked)
+            .addCategory(MetaMetricsEventCategory.PortStream)
+            .addProperties({ chunkSize })
+            .build(),
+        );
       };
       remotePort.onDisconnect.addListener(() =>
         portStream.off('message-too-large', handleMessageTooLarge),
@@ -1769,7 +1752,16 @@ export function setupController(
         .finally(() => {
           removeCriticalErrorListeners?.();
         });
-      trackAppOpened(processName);
+      // Snapshot the "track App Opened" decision synchronously here, before any
+      // open-count is incremented below. The sidepanel path defers the actual
+      // emission until refreshAppActiveTab() resolves.
+      const sidepanelShouldTrackAppOpened =
+        processName === ENVIRONMENT_TYPE_SIDEPANEL &&
+        shouldEmitAppOpened(ENVIRONMENT_TYPE_SIDEPANEL);
+
+      if (processName !== ENVIRONMENT_TYPE_SIDEPANEL) {
+        trackAppOpened(processName);
+      }
 
       // lazily update the remote feature flags every time the UI is opened.
       updateRemoteFeatureFlags(controller);
@@ -1788,9 +1780,15 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
         clearFailedTxBadge();
         openSidePanelCount += 1;
-        // Refresh appActiveTab when sidepanel opens to ensure it has the current tab info
-        // This handles the case where user connected to dapp while sidepanel was closed
-        refreshAppActiveTab();
+        // Refresh appActiveTab when sidepanel opens to ensure it has the current
+        // tab info. This handles the case where the user connected to a dapp while
+        // the sidepanel was closed. The App Opened event is emitted only after the
+        // refresh so that active_tab_domain reflects the current tab, not stale state.
+        refreshAppActiveTab().then(() => {
+          if (sidepanelShouldTrackAppOpened) {
+            emitAppOpenedMetricEvent(ENVIRONMENT_TYPE_SIDEPANEL);
+          }
+        });
         finished(portStream, () => {
           openSidePanelCount = Math.max(openSidePanelCount - 1, 0);
           const isClientOpen = isClientOpenStatus();
@@ -1838,9 +1836,9 @@ export function setupController(
       senderUrl.origin === phishingPageUrl.origin &&
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
-      const portStreamForPhishingPage =
-        overrides?.getPortStream?.(remotePort) ||
-        new ExtensionPortStream(remotePort, { chunkSize: 0 });
+      const portStreamForPhishingPage = new ExtensionPortStream(remotePort, {
+        chunkSize: 0,
+      });
       controller.setupPhishingCommunication({
         connectionStream: portStreamForPhishingPage,
       });
@@ -1868,17 +1866,16 @@ export function setupController(
           (origin) => origin === senderUrl.origin,
         )
       ) {
-        const portStreamForCookieHandlerPage =
-          overrides?.getPortStream?.(remotePort) ||
-          new ExtensionPortStream(remotePort, { chunkSize: 0 });
+        const portStreamForCookieHandlerPage = new ExtensionPortStream(
+          remotePort,
+          { chunkSize: 0 },
+        );
         controller.setUpCookieHandlerCommunication({
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
 
-      const portStream =
-        overrides?.getPortStream?.(remotePort) ||
-        new ExtensionPortStream(remotePort, { chunkSize: 0 });
+      const portStream = new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
       connectEip1193(portStream, remotePort.sender);
 
@@ -1906,9 +1903,7 @@ export function setupController(
       }
     }
 
-    const portStream =
-      overrides?.getPortStream?.(remotePort) ||
-      new ExtensionPortStream(remotePort, { chunkSize: 0 });
+    const portStream = new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
     // if the sender.id value is present it means the caller is an extension rather
     // than a site. When the caller is an extension we want to fallback to connecting
@@ -1941,13 +1936,6 @@ export function setupController(
       sender,
     });
   };
-
-  if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(
-      connectWindowPostMessage,
-      connectEip1193,
-    );
-  }
 
   //
   // User Interface setup
@@ -2123,13 +2111,19 @@ export function setupController(
       REJECT_NOTIFICATION_CLOSE,
     );
 
-    controller.rejectAllPendingApprovals();
+    controller.legacyBackgroundApiService.rejectAllPendingApprovals();
   }
 }
 
 //
 // Etc...
 //
+
+async function getCurrentTab() {
+  const queryOptions = { active: true, lastFocusedWindow: true };
+  const [tab] = await browser.tabs.query(queryOptions);
+  return tab;
+}
 
 /**
  * Opens the browser popup for user confirmation
@@ -2145,12 +2139,28 @@ async function triggerUi() {
     tabs.length > 0 &&
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
+
+  if (openSidePanelCount > 0) {
+    return;
+  }
+
+  // Attempt to open the sidepanel with a roundtrip request
+  if (shouldUseSidepanel(controller)) {
+    const tab = await getCurrentTab();
+    if (tab?.id) {
+      const opened = await requestOpenSidepanel(tab.id);
+      if (opened) {
+        return;
+      }
+      // If the sidepanel failed to open, fall back to opening the popup
+    }
+  }
+
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
-    openSidePanelCount === 0 &&
-    true
+    openSidePanelCount === 0
   ) {
     uiIsTriggering = true;
     try {
@@ -2185,36 +2195,19 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     eventProperties.deeplink_path = deferredDeepLink.referringLink;
   }
 
-  const appInstalledEvent = {
-    category: MetaMetricsEventCategory.App,
-    event: MetaMetricsEventName.AppInstalled,
-    properties: eventProperties,
-  };
+  const { consentDecisionMade, optedIn } = controller.getState();
 
-  const { participateInMetaMetrics, metaMetricsId } =
-    controller.metaMetricsController.state;
-
-  if (participateInMetaMetrics === false) {
+  if (consentDecisionMade === true && optedIn === false) {
     // We can skip tracking completely if they've already explicitly opted out
     return;
   }
 
-  // Track immediately only once consent is active and the controller has a
-  // persisted MetaMetrics ID. Otherwise keep the event buffered for the opt-in
-  // flush path so it is not dropped.
-  // No need to call getMetaMetricsId() first: setParticipateInMetaMetrics()
-  // generates and persists the ID before setting participation to true, and this
-  // install handler should not create a metrics ID outside that consent path.
-  if (participateInMetaMetrics === true && metaMetricsId) {
-    controller.metaMetricsController.trackEvent(appInstalledEvent);
-  } else {
-    // participateInMetaMetrics is either `null` (not opted in or out yet) or
-    // `true` (opted in, but for some reason we don't have a MetaMetrics ID yet),
-    // so we queue the metrics event for possible submission later.
-    controller.metaMetricsController.addEventBeforeMetricsOptIn(
-      appInstalledEvent,
-    );
-  }
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.AppInstalled)
+      .addCategory(MetaMetricsEventCategory.App)
+      .addProperties(eventProperties)
+      .build(),
+  );
 };
 
 /**
@@ -2297,8 +2290,9 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          controller
-            .handleDefiReferral(
+          controller.controllerMessenger
+            .call(
+              'LegacyBackgroundApiService:handleDefiReferral',
               partner,
               tabId,
               ReferralTriggerType.OnNavigateConnectedTab,
@@ -2572,7 +2566,7 @@ async function initBackground(backup) {
     // IndexedDB and we're not already in the restore flow (backup param is
     // null). Skip when backup param is non-null so vault recovery can complete.
     if (
-      inTest &&
+      process.env.IN_TEST &&
       !backup &&
       getManifestFlags().testing?.simulateBackgroundInitializationHang &&
       hadVaultAtStartupRecently(inTestState.hasVaultAtStartup)
@@ -2606,7 +2600,9 @@ async function initOrRestoreBackground() {
   // Fetch the backup once, shared by the restore path below and by
   // the simulateBackground*Hang test flags (which need to know whether a
   // backup already existed at startup, before onboarding can create one).
-  const testingFlags = inTest ? getManifestFlags().testing : undefined;
+  const testingFlags = process.env.IN_TEST
+    ? getManifestFlags().testing
+    : undefined;
   let backup = null;
   if (
     restoreSession ||
@@ -2661,7 +2657,7 @@ initOrRestoreBackground().catch((error) => {
   log.error('initOrRestoreBackground failed', error);
 });
 
-if (inTest) {
+if (process.env.IN_TEST) {
   // listen for test messages from the background
   // maintenance note: if you can't find any tests containing 'STOP_PERSISTENCE'
   // you can remove this, and probably the evacuate function in app\scripts\lib\safe-reload.ts too.
@@ -2672,4 +2668,8 @@ if (inTest) {
     }
     return Promise.resolve();
   });
+  // Load conditionally so this test-only package is excluded from production builds and policies.
+  global.stateHooks.hasConsoleAccess = () =>
+    // eslint-disable-next-line n/global-require
+    require('@metamask/dummy-package').hasConsoleAccess();
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import Box from '../../ui/box';
 
@@ -12,12 +11,15 @@ import {
 import { ModalFocus } from './modal-focus';
 
 export default {
-  title: 'Components/ComponentLibrary/ModalFocus',
+  title: 'Components/ComponentLibrary/ModalFocus (deprecated)',
   component: ModalFocus,
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [ModalFocus from @metamask/design-system-react] instead.',
+      },
     },
   },
   args: {
@@ -59,100 +61,3 @@ const Template: ComponentStory<typeof ModalFocus> = (args) => {
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-
-export const Children = Template.bind({});
-Children.args = {
-  children: (
-    <>
-      <p>Modal focus children</p>
-    </>
-  ),
-};
-export const InitialFocusRef = (args) => {
-  const ref = React.useRef<HTMLButtonElement>(null);
-  const [open, setOpen] = React.useState(false);
-  return (
-    <>
-      <button onClick={() => setOpen(true)}>Open</button>
-      {open && (
-        <ModalFocus {...args} initialFocusRef={ref}>
-          <Box
-            padding={4}
-            borderColor={BorderColor.borderDefault}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            gap={4}
-          >
-            <input />
-            {args.children}
-            <button ref={ref} onClick={() => setOpen(false)}>
-              Close
-            </button>
-          </Box>
-        </ModalFocus>
-      )}
-    </>
-  );
-};
-InitialFocusRef.args = {
-  children: <p>Initial focus is on the close button</p>,
-};
-
-export const FinalFocusRef = (args) => {
-  const ref = React.useRef<HTMLInputElement>(null);
-  const [open, setOpen] = React.useState(false);
-  return (
-    <>
-      <Box display={DISPLAY.FLEX} gap={4}>
-        <button onClick={() => setOpen(true)}>Open</button>
-        <input placeholder="Focus will return here" ref={ref} />
-      </Box>
-      {open && (
-        <ModalFocus {...args} finalFocusRef={ref}>
-          <Box
-            padding={4}
-            borderColor={BorderColor.borderDefault}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            gap={4}
-          >
-            <p>Focus will be returned to the input once closed</p>
-            <button onClick={() => setOpen(false)}>Close</button>
-          </Box>
-        </ModalFocus>
-      )}
-    </>
-  );
-};
-
-export const RestoreFocus = (args) => {
-  const ref = React.useRef<HTMLButtonElement>(null);
-  const [open, setOpen] = React.useState(false);
-  return (
-    <>
-      <button ref={ref} onClick={() => setOpen(!open)}>
-        Open
-      </button>
-      {open && (
-        <ModalFocus {...args} restoreFocus>
-          <Box
-            padding={4}
-            borderColor={BorderColor.borderDefault}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            gap={4}
-          >
-            <p>Focus will be restored to the open button once closed</p>
-            <button onClick={() => setOpen(false)}>Close</button>
-          </Box>
-        </ModalFocus>
-      )}
-    </>
-  );
-};
-
-export const AutoFocus = Template.bind({});
-AutoFocus.args = {
-  autoFocus: false,
-  children: <p>auto focus set to false</p>,
-};

@@ -1,15 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React from 'react';
 import qrCode from 'qrcode-generator';
 import { isHexPrefixed } from 'ethereumjs-util';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
+import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
-  AlignItems,
-  Display,
   IconColor,
   TextAlign,
   TextColor,
@@ -24,8 +21,6 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 const PREFIX_LEN = 6;
 const SUFFIX_LEN = 5;
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function QrCodeView({
   Qr,
   accountName,
@@ -37,7 +32,7 @@ function QrCodeView({
   accountName?: string;
   location?: string;
 }) {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   // useCopyToClipboard analysis: As of writing this, this is only used for public addresses
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
@@ -115,23 +110,23 @@ function QrCodeView({
         {addressEnd}
       </Text>
       <Box
-        display={Display.Flex}
         marginBottom={4}
         gap={2}
-        alignItems={AlignItems.center}
+        alignItems={BoxAlignItems.Center}
         color={TextColor.primaryDefault}
-        className="qr-code__copy-button"
+        className="flex qr-code__copy-button"
         data-testid="address-copy-button-text"
         data-clipboard-text={checksummedAddress}
         onClick={() => {
           handleCopy(checksummedAddress);
-          trackEvent({
-            category: MetaMetricsEventCategory.Accounts,
-            event: MetaMetricsEventName.PublicAddressCopied,
-            properties: {
-              location,
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.PublicAddressCopied)
+              .addCategory(MetaMetricsEventCategory.Accounts)
+              .addProperties({
+                location,
+              })
+              .build(),
+          );
         }}
       >
         <Icon

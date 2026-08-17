@@ -3,10 +3,7 @@ import {
   UIMessengerActions,
   UIMessengerEvents,
 } from '../messengers/ui-messenger';
-import {
-  LegacyRouteMessengerProvider,
-  RouteMessengerContext,
-} from '../contexts/route-messenger';
+import { RouteMessengerContext } from '../contexts/route-messenger';
 import { useUIMessenger } from '../contexts/ui-messenger';
 import {
   createRouteMessenger,
@@ -57,7 +54,7 @@ export const RouteWithMessenger = ({
 
   return (
     <RouteMessengerContext.Provider value={routeMessenger}>
-      <LegacyRouteMessengerProvider>{children}</LegacyRouteMessengerProvider>
+      {children}
     </RouteMessengerContext.Provider>
   );
 };

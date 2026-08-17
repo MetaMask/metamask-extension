@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import { parse } from './parse';
+import { NavigationOrigin, parse } from './parse';
 import { VALID, INVALID, MISSING, verify } from './verify';
 import { type Route, routes } from './routes';
 import { SIG_PARAM } from './constants';
@@ -8,6 +8,9 @@ const mockVerify = verify as jest.MockedFunction<typeof verify>;
 const mockRoutes = routes as jest.Mocked<Map<string, Route>>;
 
 jest.mock('./verify', () => ({
+  INVALID: 'invalid',
+  MISSING: 'missing',
+  VALID: 'valid',
   verify: jest.fn(),
 }));
 jest.mock('./routes', () => ({
@@ -133,7 +136,7 @@ describe('parse', () => {
     expect(mockVerify).toHaveBeenCalledWith(new URL(urlStr));
   });
 
-  it('skips signature verification when verify is false', async () => {
+  it('skips signature verification when `navigationOrigin` is `NavigationOrigin.INTERNAL`', async () => {
     mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
     mockHandler.mockReturnValue({
       path: 'destination-value',
@@ -141,7 +144,9 @@ describe('parse', () => {
     });
 
     const urlStr = 'https://example.com/test?sig=bar';
-    const result = await parse(new URL(urlStr), { verify: false });
+    const result = await parse(new URL(urlStr), {
+      navigationOrigin: NavigationOrigin.INTERNAL,
+    });
 
     expect(result).toStrictEqual({
       destination: {

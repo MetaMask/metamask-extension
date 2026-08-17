@@ -31,7 +31,6 @@ export type BridgeTimeRowProps = {
   rowVariant?: ConfirmInfoRowSize;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BridgeTimeRow({
   rowVariant = ConfirmInfoRowSize.Default,
 }: BridgeTimeRowProps) {

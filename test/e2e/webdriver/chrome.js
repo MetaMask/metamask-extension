@@ -31,6 +31,7 @@ class ChromeDriver {
     constrainWindowSize,
     port,
     proxyPort,
+    isBenchmark = false,
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
@@ -40,6 +41,10 @@ class ChromeDriver {
       '--disable-dev-shm-usage',
       '--no-sandbox',
     ];
+
+    if (isBenchmark) {
+      args.push('--js-flags=--expose-gc');
+    }
 
     if (process.env.MULTIPROVIDER) {
       args.push(

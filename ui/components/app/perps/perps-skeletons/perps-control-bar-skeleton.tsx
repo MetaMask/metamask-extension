@@ -4,16 +4,14 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
+  Skeleton,
 } from '@metamask/design-system-react';
-
-import { Skeleton } from '../../../component-library/skeleton';
-import { BorderRadius } from '../../../../helpers/constants/design-system';
 
 /**
  * PerpsControlBarSkeleton component displays a loading skeleton for the control bar
  * Matches the layout of PerpsBalanceDropdown
  */
-export const PerpsControlBarSkeleton: React.FC = () => {
+export const PerpsControlBarSkeleton = () => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -36,7 +34,7 @@ export const PerpsControlBarSkeleton: React.FC = () => {
           gap={2}
         >
           <Skeleton className="h-4 w-20" />
-          <Skeleton className="h-4 w-4" borderRadius={BorderRadius.SM} />
+          <Skeleton className="h-4 w-4 rounded" />
         </Box>
       </Box>
     </Box>

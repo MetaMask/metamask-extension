@@ -22,6 +22,7 @@ import {
   assertSignatureRejectedMetrics,
   WALLET_ETH_BALANCE,
 } from './signature-helpers';
+import { SIGN_TYPED_DATA_EXPECTED } from './sign-typed-data-expected';
 
 const signatureMessageWithoutVerifyingContract = [
   DEFAULT_FIXTURE_ACCOUNT,
@@ -195,17 +196,21 @@ async function assertInfoValues({
   const signTypedData = new SignTypedData(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   if (verifyingContract) {
-    await signTypedData.verifyContractPetName();
+    await signTypedData.verifyContractPetName(
+      SIGN_TYPED_DATA_EXPECTED.contract,
+    );
   }
-  await signTypedData.verifyOrigin();
-  await signTypedData.verifyPrimaryType();
-  await signTypedData.verifyFromName();
-  await signTypedData.verifyFromAddress();
-  await signTypedData.verifyToName();
-  await signTypedData.verifyToAddress();
-  await signTypedData.verifyContents();
-  await signTypedData.verifyAttachment();
-  await signTypedData.verifyToAddressNum2();
+  await signTypedData.verifyOrigin(SIGN_TYPED_DATA_EXPECTED.origin);
+  await signTypedData.verifyPrimaryType(SIGN_TYPED_DATA_EXPECTED.primaryType);
+  await signTypedData.verifyFromName(SIGN_TYPED_DATA_EXPECTED.fromName);
+  await signTypedData.verifyFromAddress(SIGN_TYPED_DATA_EXPECTED.fromAddress);
+  await signTypedData.verifyToName(SIGN_TYPED_DATA_EXPECTED.toName);
+  await signTypedData.verifyToAddress(SIGN_TYPED_DATA_EXPECTED.toAddress);
+  await signTypedData.verifyContents(SIGN_TYPED_DATA_EXPECTED.contents);
+  await signTypedData.verifyAttachment(SIGN_TYPED_DATA_EXPECTED.attachment);
+  await signTypedData.verifyToAddressNum2(
+    SIGN_TYPED_DATA_EXPECTED.toAddressNum2,
+  );
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {

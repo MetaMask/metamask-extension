@@ -70,8 +70,6 @@ export { Input, InputType } from './input';
 export type { InputProps } from './input';
 export { TextField, TextFieldType, TextFieldSize } from './text-field';
 export type { TextFieldProps } from './text-field';
-export { TextFieldSearch, TextFieldSearchSize } from './text-field-search';
-export type { TextFieldSearchProps } from './text-field-search';
 export { ModalContent, ModalContentSize } from './modal-content';
 export type { ModalContentProps } from './modal-content';
 export { ModalOverlay } from './modal-overlay';
