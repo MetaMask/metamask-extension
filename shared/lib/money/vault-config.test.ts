@@ -9,6 +9,7 @@ const VALID_CONFIG = {
   tellerAddress: '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117',
   accountantAddress: '0x7382c5b8B51B8C4f127B3123C1039581BAA5A06B',
   lensAddress: '0xA816ECd922de94c6879AD23B9A884dB257F20947',
+  underlyingToken: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
 } as const;
 
 const ADDRESS_KEYS = [
@@ -16,6 +17,7 @@ const ADDRESS_KEYS = [
   'tellerAddress',
   'accountantAddress',
   'lensAddress',
+  'underlyingToken',
 ] as const;
 
 const INVALID_CHAIN_IDS: [string, unknown][] = [
@@ -62,6 +64,7 @@ describe('parseMoneyAccountVaultConfig', () => {
     expect(parsed?.tellerAddress).toBe(VALID_CONFIG.tellerAddress);
     expect(parsed?.accountantAddress).toBe(VALID_CONFIG.accountantAddress);
     expect(parsed?.lensAddress).toBe(VALID_CONFIG.lensAddress);
+    expect(parsed?.underlyingToken).toBe(VALID_CONFIG.underlyingToken);
   });
 
   it('accepts all-lowercase addresses', () => {

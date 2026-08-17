@@ -18,6 +18,7 @@ export type MoneyAccountVaultConfig = {
   tellerAddress: Hex;
   accountantAddress: Hex;
   lensAddress: Hex;
+  underlyingToken: Hex;
 };
 
 /**
@@ -61,8 +62,15 @@ export const parseMoneyAccountVaultConfig = (
   const tellerAddress = parseAddress(raw.tellerAddress);
   const accountantAddress = parseAddress(raw.accountantAddress);
   const lensAddress = parseAddress(raw.lensAddress);
+  const underlyingToken = parseAddress(raw.underlyingToken);
 
-  if (!boringVault || !tellerAddress || !accountantAddress || !lensAddress) {
+  if (
+    !boringVault ||
+    !tellerAddress ||
+    !accountantAddress ||
+    !lensAddress ||
+    !underlyingToken
+  ) {
     return undefined;
   }
 
@@ -72,6 +80,7 @@ export const parseMoneyAccountVaultConfig = (
     tellerAddress,
     accountantAddress,
     lensAddress,
+    underlyingToken,
   };
 };
 
