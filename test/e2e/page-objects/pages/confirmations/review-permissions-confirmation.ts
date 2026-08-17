@@ -1,8 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Review permissions page for connected-site network/account permissions.
+ *
+ * Screen: permissions review UI reached from a connected site (not a
+ * `#/confirmation` redesign route).
+ * Owns: "Review permissions" title, enabled-networks messaging, network
+ * presence checks, connect-more-chains, and page-container confirm/cancel.
+ * Boundaries: initial dapp connect is `ConnectAccountConfirmation`. Editing
+ * the chain set after "connect more chains" moves into the edit-networks
+ * page/modal.
+ * Related: `ConnectAccountConfirmation`.
+ *
+ * @see ui/components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page.tsx
+ * @see ui/components/multichain-accounts/permissions/multichain-edit-networks-page/multichain-edit-networks-page.tsx
+ */
 class ReviewPermissionsConfirmation {
-  driver: Driver;
-
   private readonly cancelReviewPermissionsButton =
     '[data-testid="page-container-footer-cancel"]';
 
@@ -11,6 +24,8 @@ class ReviewPermissionsConfirmation {
 
   private readonly connectMoreChainsButton =
     '[data-testid="connect-more-chains-button"]';
+
+  driver: Driver;
 
   private readonly reviewPermissionsConfirmationTitle = {
     text: 'Review permissions',
@@ -26,6 +41,16 @@ class ReviewPermissionsConfirmation {
     this.driver = driver;
   }
 
+  async checkNetworkIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check network ${networkName} is displayed on review permissions confirmation page`,
+    );
+    await this.driver.waitForSelector({
+      text: networkName,
+      tag: 'p',
+    });
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(
@@ -39,6 +64,11 @@ class ReviewPermissionsConfirmation {
       throw e;
     }
     console.log('Review permissions confirmation page is loaded');
+  }
+
+  async checkUseEnabledNetworksMessageIsDisplayed(): Promise<void> {
+    console.log('Check use enabled networks message is displayed');
+    await this.driver.waitForSelector(this.useEnabledNetworksMessage);
   }
 
   async clickCancelReviewPermissionsButton(): Promise<void> {
@@ -58,28 +88,6 @@ class ReviewPermissionsConfirmation {
     );
   }
 
-  async confirmReviewPermissions(): Promise<void> {
-    console.log('Confirm review permissions');
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmReviewPermissionsButton,
-    );
-  }
-
-  async checkNetworkIsDisplayed(networkName: string): Promise<void> {
-    console.log(
-      `Check network ${networkName} is displayed on review permissions confirmation page`,
-    );
-    await this.driver.waitForSelector({
-      text: networkName,
-      tag: 'p',
-    });
-  }
-
-  async checkUseEnabledNetworksMessageIsDisplayed(): Promise<void> {
-    console.log('Check use enabled networks message is displayed');
-    await this.driver.waitForSelector(this.useEnabledNetworksMessage);
-  }
-
   async clickConnectMoreChainsButton(): Promise<void> {
     console.log('Click connect more chains button');
     await this.driver.clickElement(this.connectMoreChainsButton);
@@ -91,6 +99,13 @@ class ReviewPermissionsConfirmation {
       text: networkName,
       tag: 'p',
     });
+  }
+
+  async confirmReviewPermissions(): Promise<void> {
+    console.log('Confirm review permissions');
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmReviewPermissionsButton,
+    );
   }
 }
 

@@ -10,7 +10,15 @@ import {
 } from '../../../helpers/constants/routes';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import ImportSrp from './import-srp';
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 const mockUseNavigate = jest.fn();
 
@@ -27,6 +35,10 @@ const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
 describe('Import SRP', () => {
+  beforeEach(() => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+  });
+
   const mockState = {
     ...initializedMockState,
     metamask: {

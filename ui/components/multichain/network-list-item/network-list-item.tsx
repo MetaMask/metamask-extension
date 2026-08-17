@@ -8,6 +8,11 @@ import React, {
 import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import {
+  ButtonIcon as DsButtonIcon,
+  ButtonIconSize as DsButtonIconSize,
+  IconName as DsIconName,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BlockSize,
@@ -23,8 +28,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
-  ButtonIcon,
-  ButtonIconSize,
   Icon,
   IconName,
   IconSize,
@@ -134,11 +137,9 @@ export const NetworkListItem = ({
   const { isNetworkGasSponsored } = useIsNetworkGasSponsored(chainId);
 
   const renderButton = useCallback(() => {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     return onDeleteClick || onEditClick || onDiscoverClick ? (
-      <ButtonIcon
-        iconName={IconName.MoreVertical}
+      <DsButtonIcon
+        iconName={DsIconName.MoreVertical}
         ref={setNetworkListItemMenuRef}
         data-testid={`network-list-item-options-button-${chainId}`}
         ariaLabel={t('networkOptions')}
@@ -159,7 +160,7 @@ export const NetworkListItem = ({
             setIsMenuClosing(false);
           }
         }}
-        size={ButtonIconSize.Sm}
+        size={DsButtonIconSize.Md}
       />
     ) : null;
   }, [

@@ -1,7 +1,6 @@
-import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
@@ -13,12 +12,14 @@ import { maskObject } from '../shared/lib/object.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
+// TODO: Remove restricted import
+// eslint-disable-next-line import-x/no-restricted-paths
+import { sanitizeStateLogs } from '../app/scripts/lib/state-utils';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../shared/constants/app';
 import { getBrowserName } from '../shared/lib/browser-runtime.utils';
-import { COPY_OPTIONS } from '../shared/constants/copy';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
@@ -65,6 +66,17 @@ export {
 } from './helpers/utils/display-critical-error';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+
+const reactRoots = new WeakMap();
+
+function renderUi(element, container) {
+  let root = reactRoots.get(container);
+  if (!root) {
+    root = createRoot(container);
+    reactRoots.set(container, root);
+  }
+  root.render(element);
+}
 
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
@@ -245,8 +257,10 @@ async function startApp(metamaskState, opts) {
   // UI messenger is created here in preparation for completely replacing
   // `submitRequestToBackground` with it.
   const uiMessenger = createUIMessenger();
+  // StrictMode is applied once in `ui/pages/index.js` (withStrictMode).
+  // Do not wrap again here — nested StrictMode doubles remounts and races Rive.
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
+    renderUi(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
   );
 
   return store;
@@ -327,10 +341,10 @@ export async function getCleanAppState(store) {
   state.browser = window.navigator.userAgent;
 
   // when JSON.stringiy, `undefined` value will be left out.
-  state.metamask = {
+  state.metamask = sanitizeStateLogs({
     ...state.metamask,
     socialLoginEmail: undefined,
-  };
+  });
 
   return state;
 }
@@ -408,7 +422,13 @@ function setupStateHooks(store) {
   };
   window.stateHooks.getSentryAppState = function () {
     const reduxState = store.getState();
-    return maskObject(reduxState, SENTRY_UI_STATE);
+    return maskObject(
+      {
+        ...reduxState,
+        metamask: sanitizeStateLogs(reduxState.metamask),
+      },
+      SENTRY_UI_STATE,
+    );
   };
   window.stateHooks.getLogs = function () {
     // These logs are logged by LoggingController
@@ -445,6 +465,13 @@ function setupStateHooks(store) {
     globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
     globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
   }
+
+  if (process.env.IN_TEST) {
+    // Load conditionally so this test-only package is excluded from production builds and policies.
+    window.stateHooks.hasConsoleAccess = () =>
+      // eslint-disable-next-line n/global-require
+      require('@metamask/dummy-package').hasConsoleAccess();
+  }
 }
 
 /**
@@ -464,7 +491,7 @@ window.logState = async function (toClipboard) {
   try {
     const result = await window.logStateString();
     if (toClipboard) {
-      copyToClipboard(result, COPY_OPTIONS);
+      await navigator.clipboard.writeText(result);
       console.log('State log copied');
     } else {
       console.log(result);

@@ -1,5 +1,3 @@
-'use no memo';
-
 import { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionMeta } from '@metamask/transaction-controller';

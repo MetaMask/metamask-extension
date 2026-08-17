@@ -11,11 +11,11 @@ import {
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { EditNetworksModal } from '../../multichain/edit-networks-modal';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AccountGroupWithInternalAccounts,
   MultichainAccountsState,
@@ -49,7 +49,7 @@ export const MultichainSiteCell = ({
   hideAllToasts = () => undefined,
 }: MultichainSiteCellProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const allNetworks = [...nonTestNetworks, ...testNetworks];
   const seedAddressIcon = useSelector((state: MultichainAccountsState) => {
     // Only get seed address if we have a valid account group ID
@@ -77,28 +77,30 @@ export const MultichainSiteCell = ({
 
   const handleOpenAccountsModal = () => {
     hideAllToasts?.();
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.ViewPermissionedAccounts,
-      properties: {
-        location:
-          'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ViewPermissionedAccounts)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location:
+            'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
+        })
+        .build(),
+    );
     showEditAccounts();
   };
 
   const handleOpenNetworksModal = () => {
     hideAllToasts?.();
     setShowEditNetworksModal(true);
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.ViewPermissionedNetworks,
-      properties: {
-        location:
-          'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ViewPermissionedNetworks)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location:
+            'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
+        })
+        .build(),
+    );
   };
 
   const accountMessageConnectedState = useMemo(() => {

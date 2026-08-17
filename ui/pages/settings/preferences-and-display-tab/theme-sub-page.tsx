@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -24,6 +24,8 @@ import {
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { transitionBack } from '../../../components/ui/transition';
+import { useDispatch } from '../../../store/hooks';
 import { THEME_OPTIONS } from './theme-utils';
 
 const ThemeSubPage = () => {
@@ -44,7 +46,7 @@ const ThemeSubPage = () => {
         .build(),
     );
     dispatch(setTheme(value));
-    navigate(PREFERENCES_AND_DISPLAY_ROUTE);
+    transitionBack(() => navigate(PREFERENCES_AND_DISPLAY_ROUTE));
   };
 
   return (

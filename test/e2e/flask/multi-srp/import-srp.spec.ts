@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
@@ -9,6 +8,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import {
   importAdditionalSecretRecoveryPhrase,
   SECOND_TEST_E2E_SRP,
+  verifyAccountBelongsToSrp,
 } from '../../page-objects/flows/multi-srp.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -43,8 +43,10 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         await importAdditionalSecretRecoveryPhrase(driver);
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkAccountBelongsToSrp('Account 1', 2);
+        await verifyAccountBelongsToSrp(driver, {
+          accountName: 'Account 1',
+          srpIndex: 2,
+        });
       },
     );
   });
@@ -99,23 +101,13 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         await accountListPage.addMultichainWallet();
         await accountListPage.clickImportWallet();
 
-        const firstSrpInputSelector =
-          '[data-testid="srp-input-import__srp-note"]';
-        await driver.waitForSelector(firstSrpInputSelector);
+        await accountListPage.checkImportSrpInputIsDisplayed();
 
-        const firstSrpInput = await driver.findElement(firstSrpInputSelector);
-
-        assert.strictEqual(
-          await firstSrpInput.getAttribute('type'),
-          'textarea',
-          'First SRP input type should be password initially',
-        );
-
-        await firstSrpInput.sendKeys(TEST_SRP_WORDS_FOR_UI_TEST[0]);
-        assert.strictEqual(
-          await firstSrpInput.getAttribute('value'),
+        await accountListPage.typeIntoImportSrpInput(
           TEST_SRP_WORDS_FOR_UI_TEST[0],
-          'First SRP input value should match typed word',
+        );
+        await accountListPage.checkImportSrpInputValue(
+          TEST_SRP_WORDS_FOR_UI_TEST[0],
         );
       },
     );

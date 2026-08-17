@@ -31,7 +31,7 @@ exports[`Confirm Delete Network should match snapshot 1`] = `
           role="dialog"
         >
           <header
-            class="grid grid-cols-[1fr_auto_1fr] items-center px-0 pb-4"
+            class="grid grid-cols-[1fr_auto_1fr] items-start px-0 pb-4"
           >
             <div
               class="col-start-2 col-end-3 w-full"

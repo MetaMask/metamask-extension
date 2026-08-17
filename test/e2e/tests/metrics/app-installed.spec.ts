@@ -50,7 +50,7 @@ describe('App Installed Events', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),

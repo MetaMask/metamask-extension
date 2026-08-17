@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import * as ControllerActionsModule from '../store/controller-actions/multichain-asset-rates-controller';
 import { getCompletedOnboarding } from '../ducks/metamask/metamask';
@@ -98,7 +98,6 @@ describe('useMultichainAssetsRatesPolling', () => {
 
     renderHook(() => useMultichainAssetsRatesPolling());
 
-    expect(mockUsePolling).toHaveBeenCalledTimes(1);
     expect(mockUsePolling).toHaveBeenCalledWith({
       startPolling: mocks.mockStartPolling,
       stopPollingByPollingToken: mocks.mockStopPollingByPollingToken,

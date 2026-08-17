@@ -19,12 +19,12 @@ import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
-import { getAnalyticsMessenger } from './analytics-messenger';
+import { getAnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import {
   configureAnalytics,
+  getProfileIdentityProperties,
   identify,
   trackEvent,
-  trackPage,
   updateProfileSessionData,
 } from './analytics';
 
@@ -118,10 +118,10 @@ function createConfiguredMessenger() {
     trackViewHandler as never,
   );
 
+  const analyticsMessenger = getAnalyticsControllerInitMessenger(rootMessenger);
+
   configureAnalytics({
-    messenger: getAnalyticsMessenger(rootMessenger),
-    version: '1.2.3',
-    environment: 'test',
+    messenger: analyticsMessenger,
   });
 
   return {
@@ -175,19 +175,12 @@ describe('analytics', () => {
         name: 'Test Event',
         properties: expect.objectContaining({
           category: 'Test Category',
-          locale: 'en-US',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'popup',
         }),
       }),
       expect.objectContaining({
-        app: {
-          name: 'MetaMask Extension',
-          version: '1.2.3-test',
-        },
-        marketingCampaignCookieId: 'campaign-id',
+        page: expect.any(Object),
       }),
     );
   });
@@ -247,96 +240,13 @@ describe('analytics', () => {
     warnSpy.mockRestore();
   });
 
-  describe('profile identity event properties', () => {
-    it('omits profile identity properties when srpSessionData is unavailable', () => {
-      const { trackEventHandler } = createConfiguredMessenger();
-      updateProfileSessionData(undefined);
+  it('caches profile identity for downstream enrichment', () => {
+    updateProfileSessionData(undefined);
+    expect(getProfileIdentityProperties()).toEqual({});
 
-      trackEvent(
-        createEventBuilder('Test Event').addCategory('Test Category').build(),
-      );
-
-      expect(trackEventHandler).toHaveBeenCalledWith(
-        expect.objectContaining({
-          properties: expect.not.objectContaining(
-            PROFILE_IDENTITY_EVENT_PROPERTIES,
-          ),
-        }),
-        expect.any(Object),
-      );
-    });
-
-    it('includes profile identity properties on track events when srpSessionData is available', () => {
-      const { trackEventHandler } = createConfiguredMessenger();
-      updateProfileSessionData(SAMPLE_SRP_SESSION_DATA);
-
-      trackEvent(
-        createEventBuilder('Test Event').addCategory('Test Category').build(),
-      );
-
-      expect(trackEventHandler).toHaveBeenCalledWith(
-        expect.objectContaining({
-          properties: expect.objectContaining({
-            category: 'Test Category',
-            ...PROFILE_IDENTITY_EVENT_PROPERTIES,
-          }),
-        }),
-        expect.any(Object),
-      );
-    });
-
-    it('includes profile identity properties on page events when srpSessionData is available', () => {
-      const { trackViewHandler } = createConfiguredMessenger();
-      updateProfileSessionData(SAMPLE_SRP_SESSION_DATA);
-
-      trackPage({
-        name: 'home',
-        environmentType: 'background',
-      });
-
-      expect(trackViewHandler).toHaveBeenCalledWith(
-        'home',
-        expect.objectContaining(PROFILE_IDENTITY_EVENT_PROPERTIES),
-        expect.any(Object),
-      );
-    });
-
-    it('uses the latest profile identity values after srpSessionData changes', () => {
-      const { trackEventHandler } = createConfiguredMessenger();
-
-      updateProfileSessionData(SAMPLE_SRP_SESSION_DATA);
-      trackEvent(
-        createEventBuilder('Test Event 1').addCategory('Test Category').build(),
-      );
-
-      updateProfileSessionData({
-        entropySourceId1: {
-          ...SAMPLE_SRP_SESSION_DATA.entropySourceId1,
-          profile: {
-            ...SAMPLE_SRP_SESSION_DATA.entropySourceId1.profile,
-            profileId: 'updatedProfileId',
-            canonicalProfileId: 'updatedCanonicalProfileId',
-          },
-        },
-      });
-      trackEvent(
-        createEventBuilder('Test Event 2').addCategory('Test Category').build(),
-      );
-
-      expect(trackEventHandler).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          name: 'Test Event 2',
-          properties: expect.objectContaining({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            profile_id: 'updatedProfileId',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            canonical_profile_id: 'updatedCanonicalProfileId',
-          }),
-        }),
-        expect.any(Object),
-      );
-    });
+    updateProfileSessionData(SAMPLE_SRP_SESSION_DATA);
+    expect(getProfileIdentityProperties()).toEqual(
+      PROFILE_IDENTITY_EVENT_PROPERTIES,
+    );
   });
 });

@@ -368,7 +368,8 @@ export type AppStateControllerAddSignatureSecurityAlertResponseAction = {
 };
 
 /**
- * A setter for the currentPopupId which indicates the id of popup window that's currently active
+ * A setter for the currentPopupId which indicates the id of popup window that's currently active.
+ * Pass `undefined` to clear when the popup is closed.
  *
  * @param currentPopupId
  */
@@ -428,7 +429,11 @@ export type AppStateControllerCompleteQrCodeScanAction = {
  * Cancels the current QR code scan, if one is in progress.
  * This will reject the promise with an error.
  *
- * @param error - The error to reject the promise with.
+ * @param error - The error (or serialized form) to reject the promise with.
+ * Callers across the extension-port boundary may pass a plain string or a
+ * serialized `HardwareWalletError` JSON shape because `Error` instances do
+ * not survive port serialization. Missing payloads default to
+ * `ErrorCode.UserCancelled`.
  * @throws If no QR code scan is in progress.
  */
 export type AppStateControllerCancelQrCodeScanAction = {

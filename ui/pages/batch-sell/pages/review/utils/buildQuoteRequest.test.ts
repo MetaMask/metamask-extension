@@ -60,6 +60,14 @@ describe('buildSrcTokenAmountSmallestUnit', () => {
       '1000000000000000000',
     );
   });
+
+  it('does not throw when sendAmountPercent has more than 15 significant digits', () => {
+    const asset = buildAsset({ balance: '100', decimals: 6 });
+
+    expect(() =>
+      buildSrcTokenAmountSmallestUnit(asset, 33.333333333333336),
+    ).not.toThrow();
+  });
 });
 
 describe('buildQuoteRequestForEntry', () => {

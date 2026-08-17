@@ -58,14 +58,6 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [
     tokenListChain1Mock,
     await mockServer
-      .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: [{ fakedata: true }],
-        };
-      }),
-    await mockServer
       .forGet('https://chainid.network/chains.json')
       .thenCallback(() => {
         return {
@@ -183,6 +175,7 @@ describe('MetaMask onboarding ', function () {
         const tokensTab = new TokensTab(driver);
         await tokensTab.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         await homePage.headerNavbar.openAccountMenu();
         await new AccountList(driver).checkPageIsLoaded();
 

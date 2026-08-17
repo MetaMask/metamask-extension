@@ -1,15 +1,24 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import {
   BATCH_SELL_ASSET_IDS,
   buildSendAssetConfigEntry,
   buildReceivedAsset,
 } from '../../../../../test/data/batch-sell';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { useRefreshSmartTransactionsLiveness } from '../../../bridge/hooks/useRefreshSmartTransactionsLiveness';
 import { useBatchSellQuotesConfig } from './hooks/useBatchSellQuotesConfig';
 import { useBatchSellQuotesFetching } from './hooks/useBatchSellQuotesFetching';
 import { useBatchSellAggregateValidation } from './hooks/useBatchSellAggregateValidation';
+
 import { BatchSellReviewPage } from './batch-sell-review-page';
+
+// Referenced from inside the `useBatchSellHighRateAlertModal` jest.mock(..)
+// factory below, so its name must start with `mock` (see other `mock`-
+// prefixed variables further down for the same reason).
+const mockOpenHighAlertModal = jest.fn();
 
 // ── Hooks ──────────────────────────────────────────────────────────────────
 jest.mock('./hooks/useBatchSellQuotesConfig');
@@ -18,6 +27,15 @@ jest.mock('./hooks/useBatchSellTradesFetching', () => ({
   useBatchSellTradesFetching: jest.fn(),
 }));
 jest.mock('./hooks/useBatchSellAggregateValidation');
+jest.mock('../../../bridge/hooks/useRefreshSmartTransactionsLiveness', () => ({
+  useRefreshSmartTransactionsLiveness: jest.fn(),
+}));
+jest.mock('../../hooks/useBatchSellHighRateAlertModal', () => ({
+  useBatchSellHighRateAlertModal: () => ({
+    openHighAlertModal: mockOpenHighAlertModal,
+    closeHighAlertModal: jest.fn(),
+  }),
+}));
 
 // ── Utilities ──────────────────────────────────────────────────────────────
 jest.mock('./utils/hasAtLeastOneQuoteAvailable', () => ({
@@ -164,12 +182,19 @@ const mockUseBatchSellQuotesFetching = jest.mocked(useBatchSellQuotesFetching);
 const mockUseBatchSellAggregateValidation = jest.mocked(
   useBatchSellAggregateValidation,
 );
+const mockUseRefreshSmartTransactionsLiveness = jest.mocked(
+  useRefreshSmartTransactionsLiveness,
+);
 const mockUseSelector = jest.mocked(useSelector);
 
 // ── Default return values ──────────────────────────────────────────────────
 const defaultQuotesConfig = {
+  // Two enabled assets by default so `onReviewClick` takes the
+  // "open the review-and-confirm modal" branch; tests for the
+  // single-enabled-asset ("high alert modal") branch override this.
   sendAssetsConfig: {
     [BATCH_SELL_ASSET_IDS.DAI]: buildSendAssetConfigEntry(true),
+    [BATCH_SELL_ASSET_IDS.USDT]: buildSendAssetConfigEntry(true),
   },
   selectedReceiveAsset: buildReceivedAsset({
     assetId: BATCH_SELL_ASSET_IDS.USDC,
@@ -255,6 +280,34 @@ describe('BatchSellReviewPage', () => {
 
       expect(screen.getByTestId('batch-sell-review-page')).toBeInTheDocument();
       expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('STX liveness refresh', () => {
+    // STX availability is gated on per-chain liveness, which is only fetched
+    // for chains the wallet has visited, so the review page refreshes it for
+    // the batch-sell source chain up front.
+    it('refreshes STX liveness for the selected receive asset chain', () => {
+      renderPage();
+
+      expect(mockUseRefreshSmartTransactionsLiveness).toHaveBeenCalledWith(
+        '0x1',
+      );
+    });
+
+    it('passes undefined for a non-EVM selected receive asset chain', () => {
+      renderPage({
+        quotesConfig: {
+          selectedReceiveAsset: buildReceivedAsset({
+            assetId: BATCH_SELL_ASSET_IDS.USDC,
+            chainId: MultichainNetworks.SOLANA,
+          }),
+        },
+      });
+
+      expect(mockUseRefreshSmartTransactionsLiveness).toHaveBeenCalledWith(
+        undefined,
+      );
     });
   });
 
@@ -423,6 +476,90 @@ describe('BatchSellReviewPage', () => {
             .getAttribute('data-fees-loading'),
         ).toBe('true');
       });
+    });
+  });
+
+  describe('onReviewClick', () => {
+    it('opens the review-and-confirm modal (not the high alert modal) when more than one asset is enabled to sell', () => {
+      renderPage();
+
+      fireEvent.click(screen.getByTestId('footer-review'));
+
+      expect(mockOpenHighAlertModal).not.toHaveBeenCalled();
+      expect(screen.getByTestId('review-confirm-modal')).toBeInTheDocument();
+    });
+
+    it('opens the review-and-confirm modal when no assets are enabled to sell', () => {
+      renderPage({
+        quotesConfig: {
+          sendAssetsConfig: {
+            [BATCH_SELL_ASSET_IDS.DAI]: buildSendAssetConfigEntry(false),
+          },
+        },
+      });
+
+      fireEvent.click(screen.getByTestId('footer-review'));
+
+      expect(mockOpenHighAlertModal).not.toHaveBeenCalled();
+      expect(screen.getByTestId('review-confirm-modal')).toBeInTheDocument();
+    });
+
+    it('opens the high alert modal instead of the review-and-confirm modal when exactly one asset is enabled to sell', () => {
+      const singleAssetConfig = {
+        [BATCH_SELL_ASSET_IDS.DAI]: buildSendAssetConfigEntry(true),
+      };
+      renderPage({ quotesConfig: { sendAssetsConfig: singleAssetConfig } });
+
+      fireEvent.click(screen.getByTestId('footer-review'));
+
+      expect(mockOpenHighAlertModal).toHaveBeenCalledTimes(1);
+      expect(mockOpenHighAlertModal).toHaveBeenCalledWith(
+        singleAssetConfig[BATCH_SELL_ASSET_IDS.DAI].asset,
+        defaultQuotesConfig.selectedReceiveAsset.assetId,
+      );
+      expect(
+        screen.queryByTestId('review-confirm-modal'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('ignores disabled assets when counting how many assets are enabled to sell', () => {
+      const oneEnabledOneDisabledConfig = {
+        [BATCH_SELL_ASSET_IDS.DAI]: buildSendAssetConfigEntry(true),
+        [BATCH_SELL_ASSET_IDS.USDT]: buildSendAssetConfigEntry(false),
+      };
+      renderPage({
+        quotesConfig: { sendAssetsConfig: oneEnabledOneDisabledConfig },
+      });
+
+      fireEvent.click(screen.getByTestId('footer-review'));
+
+      expect(mockOpenHighAlertModal).toHaveBeenCalledWith(
+        oneEnabledOneDisabledConfig[BATCH_SELL_ASSET_IDS.DAI].asset,
+        defaultQuotesConfig.selectedReceiveAsset.assetId,
+      );
+    });
+
+    it('passes the currently selected receive asset id to the high alert modal', () => {
+      const singleAssetConfig = {
+        [BATCH_SELL_ASSET_IDS.DAI]: buildSendAssetConfigEntry(true),
+      };
+      const selectedReceiveAsset = buildReceivedAsset({
+        assetId: BATCH_SELL_ASSET_IDS.ETH_NATIVE,
+        symbol: 'ETH',
+      });
+      renderPage({
+        quotesConfig: {
+          sendAssetsConfig: singleAssetConfig,
+          selectedReceiveAsset,
+        },
+      });
+
+      fireEvent.click(screen.getByTestId('footer-review'));
+
+      expect(mockOpenHighAlertModal).toHaveBeenCalledWith(
+        expect.anything(),
+        selectedReceiveAsset.assetId,
+      );
     });
   });
 
