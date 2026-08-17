@@ -19,9 +19,9 @@ export const SENDING_ASSETS_FIAT_DISPLAY_CEILING_USD = 10_000_000;
  * ("If you continue, your $1,234.56 can't be recovered.").
  *
  * Returns null when no amount should be displayed: signatures and other
- * confirmations without simulation data, zero/unavailable fiat conversion,
- * fiat display disabled, simulation still loading, or totals above the
- * display ceiling. Callers fall back to amount-less copy.
+ * confirmations without simulation data, zero/unavailable fiat or USD
+ * conversion, fiat display disabled, simulation still loading, or totals above
+ * the display ceiling. Callers fall back to amount-less copy.
  */
 export function useSendingAssetsFiatTotal(): string | null {
   const transactionMeta = useTransactionMetadataRequestOptional();
@@ -55,7 +55,14 @@ export function useSendingAssetsFiatTotal(): string | null {
     calculateTotalFiat(sendingAssets.map((change) => change.usdAmount)),
   );
 
-  if (totalFiat === 0 || totalUsd > SENDING_ASSETS_FIAT_DISPLAY_CEILING_USD) {
+  // The ceiling is denominated in USD, and unavailable conversions total to
+  // zero, so a zero USD total means the amount cannot be checked against the
+  // ceiling rather than meaning the amount is small.
+  if (
+    totalFiat === 0 ||
+    totalUsd === 0 ||
+    totalUsd > SENDING_ASSETS_FIAT_DISPLAY_CEILING_USD
+  ) {
     return null;
   }
 

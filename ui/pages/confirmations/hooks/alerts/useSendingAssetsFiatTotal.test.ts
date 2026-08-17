@@ -89,4 +89,9 @@ describe('useSendingAssetsFiatTotal', () => {
     const result = renderHook([buildBalanceChange(-1, -100)], true);
     expect(result.current).toBeNull();
   });
+
+  it('returns null when the USD conversion is unavailable, so the ceiling cannot be checked', () => {
+    const result = renderHook([buildBalanceChange(-1, -50_000_000, null)]);
+    expect(result.current).toBeNull();
+  });
 });
