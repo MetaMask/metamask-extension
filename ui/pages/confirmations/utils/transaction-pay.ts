@@ -1,11 +1,14 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import type {
-  TransactionPayRequiredToken,
-  TransactionPaymentToken,
+import {
+  PaymentOverride,
+  type TransactionPayRequiredToken,
+  type TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import { BigNumber } from 'bignumber.js';
 import { isTestNetwork } from '../../../helpers/utils/network-helper';
+import { isPostQuoteWithdrawTransaction } from '../../../../shared/lib/transactions.utils';
+import { setPaymentOverride } from '../../../store/controller-actions/transaction-pay-controller';
 import type { BlockedPayTokensListConfig } from '../selectors/feature-flags';
 import { Asset, AssetStandard } from '../types/send';
 
@@ -162,4 +165,43 @@ export function isTokenBlocked(
       blocked.address.toLowerCase() === address.toLowerCase() &&
       blocked.chainId.toLowerCase() === chainId.toLowerCase(),
   );
+}
+
+/**
+ * Selects Money Account as the payment method for a confirmation.
+ * Sets `paymentOverride` and, for deposit flows, refunds leftover funds to the
+ * money account address.
+ *
+ * @param transactionId - Confirmation transaction id.
+ * @param moneyAccountAddress - Derived money account address, when known.
+ * @param transactionMeta - Current confirmation metadata.
+ */
+export function applyMoneyAccountOverride(
+  transactionId: string,
+  moneyAccountAddress: string | undefined,
+  transactionMeta: TransactionMeta | undefined,
+): void {
+  const isWithdraw = isPostQuoteWithdrawTransaction(transactionMeta);
+
+  setPaymentOverride(transactionId, {
+    paymentOverride: PaymentOverride.MoneyAccount,
+    ...(!isWithdraw && moneyAccountAddress
+      ? { refundTo: moneyAccountAddress as Hex }
+      : {}),
+  }).catch((error) => {
+    console.error('Failed to apply money account payment override', error);
+  });
+}
+
+/**
+ * Clears a Money Account (or other) payment override on the confirmation.
+ *
+ * @param transactionId - Confirmation transaction id.
+ */
+export function clearPaymentOverride(transactionId: string): void {
+  setPaymentOverride(transactionId, {
+    paymentOverride: undefined,
+  }).catch((error) => {
+    console.error('Failed to clear payment override', error);
+  });
 }
