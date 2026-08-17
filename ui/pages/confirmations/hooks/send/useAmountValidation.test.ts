@@ -1,5 +1,4 @@
 import { waitFor } from '@testing-library/react';
-
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_NATIVE_ASSET } from '../../../../../test/data/send/assets';
@@ -13,6 +12,18 @@ import {
   validatePositiveNumericString,
   mapSnapErrorCodeIntoTranslation,
 } from './useAmountValidation';
+
+const mockDebounce = jest.fn((fn: (...args: unknown[]) => unknown) => {
+  const immediate = (...args: unknown[]) => fn(...args);
+  immediate.cancel = jest.fn();
+  return immediate;
+});
+
+jest.mock('lodash', () => ({
+  ...jest.requireActual('lodash'),
+  debounce: (...args: unknown[]) =>
+    mockDebounce(...(args as Parameters<typeof mockDebounce>)),
+}));
 
 const MOCK_ADDRESS_1 = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
@@ -230,6 +241,10 @@ describe('mapSnapErrorCodeIntoTranslation', () => {
 });
 
 describe('useAmountValidation', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('return field for amount error', () => {
     const { result } = renderHookWithProvider(
       () => useAmountValidation(),
@@ -237,6 +252,27 @@ describe('useAmountValidation', () => {
     );
     expect(result.current.amountError).toEqual(undefined);
     expect(result.current.validateNonEvmAmountAsync).toBeDefined();
+  });
+
+  it('snap validation is debounced with 300ms delay for non-EVM send flows', async () => {
+    mockDebounce.mockClear();
+
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: {
+        isNative: true,
+        rawBalance: '0xde0b6b3a7640000',
+        decimals: 18,
+      },
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      from: MOCK_ADDRESS_1,
+      value: '1',
+    } as unknown as SendContext.SendContextType);
+
+    renderHookWithProvider(() => useAmountValidation(), mockState);
+
+    await waitFor(() => {
+      expect(mockDebounce).toHaveBeenCalledWith(expect.any(Function), 300);
+    });
   });
 
   it('return error for invalid amount value', async () => {

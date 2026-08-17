@@ -82,6 +82,17 @@ jest.mock('../../send/asset', () => ({
           Select Token
         </button>
         <button
+          data-testid="select-current-token"
+          onClick={() =>
+            onAssetSelect?.({
+              address: '0x0000000000000000000000000000000000000000',
+              chainId: '0x1',
+            })
+          }
+        >
+          Select Current Token
+        </button>
+        <button
           data-testid="select-disabled-token"
           onClick={() =>
             onAssetSelect?.({
@@ -307,6 +318,15 @@ describe('PayWithModal', () => {
         chainId: '0x1',
       });
       expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
+    });
+
+    it('does not call setPayToken when the selected token matches the current payToken', () => {
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      fireEvent.click(screen.getByTestId('select-current-token'));
+
+      expect(setPayTokenMock).not.toHaveBeenCalled();
+      expect(onCloseMock).toHaveBeenCalled();
     });
   });
 

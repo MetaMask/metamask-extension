@@ -12,7 +12,7 @@ import {
   IconName,
   IconColor,
 } from '@metamask/design-system-react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -100,13 +100,17 @@ export const AmountInput = ({
 
   // Re-read the stored denomination whenever the market changes so each market
   // keeps its own last-used choice.
-  useEffect(() => {
+  const [prevAsset, setPrevAsset] = useState(asset);
+  if (asset !== prevAsset) {
+    setPrevAsset(asset);
     setDenomination(getSizeDenomination(asset));
-  }, [asset]);
+  }
 
-  useEffect(() => {
+  const [prevBalancePercent, setPrevBalancePercent] = useState(balancePercent);
+  if (balancePercent !== prevBalancePercent) {
+    setPrevBalancePercent(balancePercent);
     setPercentInputValue(String(balancePercent));
-  }, [balancePercent]);
+  }
 
   const tokenAmount = useMemo(() => {
     const numAmount = Number.parseFloat(amount.replace(/,/gu, '')) || 0;
