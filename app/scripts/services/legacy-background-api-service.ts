@@ -4598,6 +4598,17 @@ export class LegacyBackgroundApiService {
       return;
     }
 
+    // If the partner requires a specific chain and user's chain doesn't match,
+    // return early to avoid the referral code potentially not being applied.
+    // Don't write any account status so that the prompt can show on the next
+    // trigger (NewConnection or OnNavigateConnectedTab) once the user has switched chain
+    if (partner.requiredChainId) {
+      const currentChainId = this.getCurrentChainIdForDomain(partner.origin);
+      if (currentChainId !== partner.requiredChainId) {
+        return;
+      }
+    }
+
     const { activePermittedAddressOverride } = options;
     const activePermittedAccount =
       (activePermittedAddressOverride &&
