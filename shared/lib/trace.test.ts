@@ -526,13 +526,7 @@ describe('Trace', () => {
     // Measured consequence: ~44.6% of extension transactions carry a
     // `parent_span` id while being billed as roots, across 25 families.
     //
-    // Marked `.failing` because it asserts the INTENDED behaviour, which the
-    // current implementation does not have. It passes today by failing. When
-    // the fix lands this test will start passing and `.failing` will report
-    // that as an error — at which point change `it.failing` to `it`.
-    it.failing(
-      'does not promote an unresolvable in-process parent to a segment',
-      () => {
+    it('does not promote an unresolvable in-process parent to a segment', () => {
         continueTraceMock.mockImplementation((_opts, fn) => fn());
 
         // No pending trace is created, so the map lookup misses.
@@ -553,11 +547,24 @@ describe('Trace', () => {
           () => true,
         );
 
-        // A parent was named. Failing to resolve it locally must not silently
-        // convert the span into a billed root.
-        expect(continueTraceMock).not.toHaveBeenCalled();
-      },
-    );
+      // A parent was named. Failing to resolve it locally must not silently
+      // convert the span into a billed root.
+      expect(continueTraceMock).not.toHaveBeenCalled();
+    });
+
+    // `undefined` and `null` are different statements; only the first may be
+    // promoted to a transaction. See MetaMask/MetaMask-planning#7569.
+    it('does not promote a null parentContext to a segment', () => {
+      const activeSpanMock = { spanContext: jest.fn() } as unknown as Sentry.Span;
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, parentContext: null }, () => true);
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({ forceTransaction: undefined }),
+        expect.any(Function),
+      );
+    });
   });
 
   describe('getSerializedTraceContext', () => {
