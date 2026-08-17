@@ -24,10 +24,10 @@ export function useMoneyAccountAvailability() {
   const query = useQuery({
     queryKey: ['moneyAccountAvailability', isEnabled],
     queryFn: () =>
-      submitRequestToBackground<MoneyAccountAvailability>(
-        'messengerCall',
-        ['MoneyAccountAvailabilityService:getAvailability', []],
-      ),
+      submitRequestToBackground<MoneyAccountAvailability>('messengerCall', [
+        'MoneyAccountAvailabilityService:getAvailability',
+        [],
+      ]),
     enabled: isEnabled,
     refetchOnMount: 'always',
   });
