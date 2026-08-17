@@ -141,20 +141,17 @@ const apyQueryOptions = () =>
   queryOptionsFor(MoneyAccountBalanceServiceQueryKeys.GET_VAULT_APY);
 
 type StateOptions = {
-  currency?: string;
   lastKnownBalance?: PersistedMoneyBalance | null;
   vaultApyFallback?: number;
   vaultApyOverride?: number;
 };
 
 const buildState = ({
-  currency = 'usd',
   lastKnownBalance = null,
   vaultApyFallback,
   vaultApyOverride,
 }: StateOptions = {}) => ({
   metamask: {
-    currentCurrency: currency,
     remoteFeatureFlags: {
       earnMoneyVaultApyControl: {
         ...(vaultApyFallback === undefined ? {} : { vaultApyFallback }),
@@ -310,7 +307,6 @@ describe('useMoneyAccountBalance', () => {
         lastKnownBalance: {
           address: MONEY_ADDRESS,
           value: '$2,384.34',
-          currency: 'usd',
           updatedAt: 1,
         },
       });
@@ -477,7 +473,6 @@ describe('useMoneyAccountBalance', () => {
     const persisted: PersistedMoneyBalance = {
       address: MONEY_ADDRESS,
       value: '$2,384.34',
-      currency: 'usd',
       updatedAt: 1,
     };
 
@@ -487,7 +482,7 @@ describe('useMoneyAccountBalance', () => {
       stubQueries(BALANCE_LOADING);
     });
 
-    it('is offered when the account and currency still match', () => {
+    it('is offered when the account still matches', () => {
       const { result } = renderBalanceHook(undefined, {
         lastKnownBalance: persisted,
       });
@@ -503,14 +498,6 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.lastKnownTotalFiatFormatted).toBeUndefined();
     });
 
-    it('is withheld when it was formatted in a different currency', () => {
-      const { result } = renderBalanceHook(undefined, {
-        lastKnownBalance: { ...persisted, currency: 'eur' },
-      });
-
-      expect(result.current.lastKnownTotalFiatFormatted).toBeUndefined();
-    });
-
     it('is persisted on every successful fetch', () => {
       stubQueries(BALANCE_LOADED);
 
@@ -520,7 +507,6 @@ describe('useMoneyAccountBalance', () => {
         expect.objectContaining({
           address: MONEY_ADDRESS,
           value: '$3.00',
-          currency: 'usd',
         }),
       );
     });

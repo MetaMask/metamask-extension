@@ -9,7 +9,6 @@ import reducer, {
 const balance: PersistedMoneyBalance = {
   address: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
   value: '$2,384.34',
-  currency: 'usd',
   updatedAt: 1700000000000,
 };
 

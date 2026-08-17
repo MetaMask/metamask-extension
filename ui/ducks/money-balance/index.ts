@@ -6,8 +6,6 @@ export type PersistedMoneyBalance = {
   address: Hex;
   /** Formatted fiat balance, e.g. "$2,384.34". */
   value: string;
-  /** Currency code the value was formatted in, e.g. "usd". */
-  currency: string;
   /** Epoch milliseconds when the balance was last successfully fetched. */
   updatedAt: number;
 };

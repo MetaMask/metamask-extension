@@ -12,7 +12,6 @@ const OTHER_ADDRESS = '0x1111111111111111111111111111111111111111' as Hex;
 const balance: PersistedMoneyBalance = {
   address: ADDRESS,
   value: '$2,384.34',
-  currency: 'usd',
   updatedAt: 1700000000000,
 };
 
@@ -36,9 +35,9 @@ describe('selectLastKnownMoneyBalance', () => {
 });
 
 describe('isPersistedMoneyBalanceUsable', () => {
-  const inView = { address: ADDRESS, currency: 'usd' };
+  const inView = { address: ADDRESS };
 
-  it('is true when the address and currency both match what is in view', () => {
+  it('is true when the address matches what is in view', () => {
     expect(isPersistedMoneyBalanceUsable(balance, inView)).toBe(true);
   });
 
@@ -58,7 +57,7 @@ describe('isPersistedMoneyBalanceUsable', () => {
   });
 
   // The failure mode this guard exists to prevent: showing a figure that
-  // belongs to another account, or to another currency's conversion.
+  // belongs to another account.
   const unusable: [string, PersistedMoneyBalance | null | undefined][] = [
     ['there is no persisted balance', null],
     ['the persisted balance is undefined', undefined],
@@ -67,11 +66,6 @@ describe('isPersistedMoneyBalanceUsable', () => {
       { ...balance, address: OTHER_ADDRESS },
     ],
     ['the persisted address is empty', { ...balance, address: '' as Hex }],
-    ['the persisted currency is different', { ...balance, currency: 'eur' }],
-    [
-      'the persisted currency differs only in casing',
-      { ...balance, currency: 'USD' },
-    ],
   ];
 
   for (const [description, persisted] of unusable) {
@@ -80,13 +74,9 @@ describe('isPersistedMoneyBalanceUsable', () => {
     });
   }
 
-  const noAccountInView: [string, { address?: Hex; currency: string }][] = [
-    ['no address is in view yet', { address: undefined, currency: 'usd' }],
-    ['the address in view is empty', { address: '' as Hex, currency: 'usd' }],
-    [
-      'the currency in view is different',
-      { address: ADDRESS, currency: 'eur' },
-    ],
+  const noAccountInView: [string, { address?: Hex }][] = [
+    ['no address is in view yet', { address: undefined }],
+    ['the address in view is empty', { address: '' as Hex }],
   ];
 
   for (const [description, target] of noAccountInView) {

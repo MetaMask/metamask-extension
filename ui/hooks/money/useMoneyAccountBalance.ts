@@ -17,7 +17,6 @@ import {
   selectLastKnownMoneyBalance,
 } from '../../ducks/money-balance/selectors';
 import { selectMoneyVaultApyRemoteConfig } from '../../selectors/money/money-account-feature-flags';
-import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
 
 const DEFAULT_REFETCH_INTERVAL = 30 * 1000; // 30 seconds
@@ -85,7 +84,6 @@ export function useMoneyAccountBalance({
   const { primaryMoneyAccount } = useMoneyAccountInfo();
   const moneyAccountAddress = primaryMoneyAccount?.address;
 
-  const currentCurrency: string = useSelector(getCurrentCurrency);
   const lastKnownBalance = useSelector(selectLastKnownMoneyBalance);
   const { vaultApyFallback, vaultApyOverride } = useSelector(
     selectMoneyVaultApyRemoteConfig,
@@ -181,8 +179,8 @@ export function useMoneyAccountBalance({
       : undefined;
 
   // Persist every successful balance so it can be shown as the "last known"
-  // figure (for the current account/currency) the next time the live balance
-  // is unavailable.
+  // figure (for the current account) the next time the live balance is
+  // unavailable.
   useEffect(() => {
     if (
       enabled &&
@@ -195,7 +193,6 @@ export function useMoneyAccountBalance({
         setLastKnownMoneyBalance({
           address: moneyAccountAddress,
           value: totalFiatFormatted,
-          currency: currentCurrency,
           updatedAt: Date.now(),
         }),
       );
@@ -206,7 +203,6 @@ export function useMoneyAccountBalance({
     moneyAccountAddress,
     isBalanceFetchError,
     totalFiatFormatted,
-    currentCurrency,
     isBalanceLoading,
   ]);
 
@@ -215,10 +211,10 @@ export function useMoneyAccountBalance({
   const isBalanceUnavailable = totalFiatFormatted === undefined;
 
   // Last successfully fetched balance, but only when it still matches the
-  // account and currency in view; otherwise it would be misleading.
+  // account in view; otherwise it would be misleading.
   const lastKnownTotalFiatFormatted = isPersistedMoneyBalanceUsable(
     lastKnownBalance,
-    { address: moneyAccountAddress, currency: currentCurrency },
+    { address: moneyAccountAddress },
   )
     ? lastKnownBalance.value
     : undefined;

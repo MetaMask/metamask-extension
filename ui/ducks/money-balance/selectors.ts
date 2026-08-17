@@ -9,9 +9,9 @@ export const selectLastKnownMoneyBalance = (
 
 /**
  * A persisted balance is only safe to show as the "last known" figure when it
- * belongs to the account currently in view and was formatted in the currency
- * currently selected — otherwise the figure would be misleadingly stale (wrong
- * account) or numerically wrong (a different currency conversion).
+ * belongs to the account currently in view — otherwise the figure would be
+ * misleadingly stale. The Money account balance is always shown in USD, so no
+ * currency check is needed.
  *
  * Age is deliberately not part of this check: the alternative to showing an old
  * last-known figure is showing nothing, and the caller is expected to label the
@@ -19,16 +19,14 @@ export const selectLastKnownMoneyBalance = (
  * present the age, or gate on it, can.
  *
  * @param persisted - The persisted balance, if any.
- * @param inView - The money account address and currency currently in view.
+ * @param inView - The money account address currently in view.
  * @param inView.address - Money account address in view, if it is known yet.
- * @param inView.currency - Currency code currently selected.
- * @returns True when `persisted` matches the account and currency in view.
+ * @returns True when `persisted` matches the account in view.
  */
 export const isPersistedMoneyBalanceUsable = (
   persisted: PersistedMoneyBalance | null | undefined,
-  { address, currency }: { address?: Hex; currency: string },
+  { address }: { address?: Hex },
 ): persisted is PersistedMoneyBalance =>
   Boolean(persisted) &&
   Boolean(address) &&
-  isEqualCaseInsensitive(persisted?.address ?? '', address ?? '') &&
-  persisted?.currency === currency;
+  isEqualCaseInsensitive(persisted?.address ?? '', address ?? '');
