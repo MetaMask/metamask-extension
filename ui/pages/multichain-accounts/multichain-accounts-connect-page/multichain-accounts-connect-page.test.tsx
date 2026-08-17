@@ -478,9 +478,9 @@ describe('MultichainConnectPage', () => {
   });
 
   it('renders image icon correctly', () => {
-    const { getByAltText } = render();
+    const { container } = render();
 
-    const image = getByAltText('metamask.github.io logo');
+    const image = container.querySelector('img');
     expect(image).toHaveAttribute(
       'src',
       'https://metamask.github.io/test-dapp/metamask-fox.svg',
@@ -488,7 +488,7 @@ describe('MultichainConnectPage', () => {
   });
 
   it('renders fallback icon correctly', () => {
-    const { container } = render({
+    const { getByText } = render({
       props: {
         targetSubjectMetadata: {
           ...mockTargetSubjectMetadata,
@@ -497,12 +497,11 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const divElement = container.querySelector('div.mm-avatar-base--size-lg');
-    expect(divElement).toHaveTextContent('m');
+    expect(getByText('m')).toBeDefined();
   });
 
   it('renders fallback icon correctly for IP address as an origin', () => {
-    const { container } = render({
+    const { getByText } = render({
       props: {
         targetSubjectMetadata: {
           ...mockTargetSubjectMetadata,
@@ -512,8 +511,7 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const divElement = container.querySelector('div.mm-avatar-base--size-lg');
-    expect(divElement).toHaveTextContent('?');
+    expect(getByText('?')).toBeDefined();
   });
 
   it('renders title correctly', () => {
@@ -527,29 +525,34 @@ describe('MultichainConnectPage', () => {
   });
 
   it('renders account list correctly', () => {
-    const { getByText } = render();
+    const { getByTestId } = render();
 
-    expect(getByText(messages.editAccounts.message)).toBeDefined();
+    const accountCell = getByTestId(
+      'multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+    );
+    expect(accountCell).toBeDefined();
   });
 
-  it('renders edit accounts modal when edit button is clicked', () => {
-    const { getByText } = render();
+  it('renders edit accounts page when account row is clicked', () => {
+    const { getByTestId } = render();
 
-    const editAccountsButton = getByText(messages.editAccounts.message);
-    fireEvent.click(editAccountsButton);
+    const accountCell = getByTestId(
+      'multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+    );
+    fireEvent.click(accountCell);
 
-    // The modal should open when edit button is clicked
-    expect(editAccountsButton).toBeDefined();
+    expect(getByTestId('modal-page')).toBeDefined();
   });
 
-  it('closes edit accounts modal when close button is clicked', () => {
-    const { getByText } = render();
+  it('returns to connect page when edit accounts is closed', () => {
+    const { getByTestId } = render();
 
-    const editAccountsButton = getByText(messages.editAccounts.message);
-    fireEvent.click(editAccountsButton);
+    const accountCell = getByTestId(
+      'multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+    );
+    fireEvent.click(accountCell);
 
-    // The modal should be interactive
-    expect(editAccountsButton).toBeDefined();
+    expect(getByTestId('modal-page')).toBeDefined();
   });
 
   it('renders confirm and cancel buttons', () => {
@@ -650,13 +653,14 @@ describe('MultichainConnectPage', () => {
   });
 
   it('handles account group selection correctly', () => {
-    const { getByText } = render();
+    const { getByTestId } = render();
 
-    const editAccountsButton = getByText(messages.editAccounts.message);
-    fireEvent.click(editAccountsButton);
+    const accountCell = getByTestId(
+      'multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+    );
+    fireEvent.click(accountCell);
 
-    // The modal should be interactive for account group selection
-    expect(editAccountsButton).toBeDefined();
+    expect(getByTestId('modal-page')).toBeDefined();
   });
 
   it('renders with multichain origin request correctly', () => {

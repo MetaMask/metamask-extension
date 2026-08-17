@@ -3643,9 +3643,6 @@
   "editNonceMessage": {
     "message": "Bu gelişmiş bir özelliktir, dikkatli kullanın."
   },
-  "editPermissions": {
-    "message": "İzinleri düzenle"
-  },
   "editSpendingCap": {
     "message": "Harcama üst limitini düzenle"
   },
@@ -6885,9 +6882,6 @@
   "permitSimulationDetailInfo": {
     "message": "Harcama yapan tarafa hesabınızdan bu kadar token harcama izni veriyorsunuz."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 için $2 erişimi var."
-  },
   "perps": {
     "message": "Sürekli Vadeli"
   },
@@ -9281,9 +9275,6 @@
   "select": {
     "message": "Seç"
   },
-  "selectAccountToConnect": {
-    "message": "Bağlamak için bir hesap seç"
-  },
   "selectAll": {
     "message": "Tümünü seç"
   },
@@ -11439,15 +11430,6 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask başlatılırken sorun oluştu."
-  },
-  "trustSignalBlockDescription": {
-    "message": "Bu siteye bağlanırsanız varlıklarınızın tamamını kaybedebilirsiniz."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Kötü amaçlı site algılandı"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Yine de Bağlan"
   },
   "tryAgain": {
     "message": "Tekrar deneyin"

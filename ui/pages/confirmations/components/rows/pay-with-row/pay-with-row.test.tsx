@@ -3,20 +3,29 @@ import { screen, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { TransactionType } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
+import useAlerts from '../../../../../hooks/useAlerts';
+import { AlertsName } from '../../../hooks/alerts/constants';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
+import { MONEY_ACCOUNT_DUMMY_BALANCE_FIAT } from '../../../hooks/pay/sections/usePayWithMoneyAccountSection';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../selectors/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/feature-flags'),
+  selectIsMoneyAccountTransactionEnabled: jest.fn(() => false),
+}));
 jest.mock('../../../hooks/send/useSendTokens');
 jest.mock('../../../context/confirm');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
+jest.mock('../../../../../hooks/useAlerts');
 
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',
@@ -27,14 +36,6 @@ jest.mock(
     }),
   }),
 );
-
-jest.mock('../../../../../hooks/useAlerts', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: () => ({
-    getFieldAlerts: () => [],
-  }),
-}));
 
 jest.mock('../../modals/pay-with-modal', () => ({
   PayWithModal: ({
@@ -59,7 +60,32 @@ const FROM_ADDRESS_MOCK = '0xabcdef1234567890abcdef1234567890abcdef12';
 
 const mockStore = configureStore([thunk]);
 
-const getMockState = () => ({
+const MOCK_PAY_TOKEN = {
+  address: ADDRESS_MOCK,
+  balanceHuman: '1.5',
+  balanceFiat: '$150.00',
+  balanceRaw: '1500000000000000000',
+  balanceUsd: '150',
+  chainId: CHAIN_ID_MOCK,
+  decimals: 18,
+  symbol: 'ETH',
+} as const;
+
+const MOCK_REQUIRED_TOKEN = {
+  ...MOCK_PAY_TOKEN,
+  allowUnderMinimum: false,
+  amountFiat: '$50.00',
+  amountHuman: '0.5',
+  amountRaw: '500000000000000000',
+  amountUsd: '50',
+  skipIfBalance: false,
+} as const;
+
+const getMockState = ({
+  paymentOverride,
+}: {
+  paymentOverride?: PaymentOverride;
+} = {}) => ({
   metamask: {
     internalAccounts: {
       accounts: {
@@ -104,29 +130,14 @@ const getMockState = () => ({
       },
     },
     multichainNetworkConfigurationsByChainId: {},
+    transactionData: {
+      'test-id': {
+        paymentOverride,
+        paymentToken: MOCK_PAY_TOKEN,
+      },
+    },
   },
 });
-
-const MOCK_PAY_TOKEN = {
-  address: ADDRESS_MOCK,
-  balanceHuman: '1.5',
-  balanceFiat: '$150.00',
-  balanceRaw: '1500000000000000000',
-  balanceUsd: '150',
-  chainId: CHAIN_ID_MOCK,
-  decimals: 18,
-  symbol: 'ETH',
-} as const;
-
-const MOCK_REQUIRED_TOKEN = {
-  ...MOCK_PAY_TOKEN,
-  allowUnderMinimum: false,
-  amountFiat: '$50.00',
-  amountHuman: '0.5',
-  amountRaw: '500000000000000000',
-  amountUsd: '50',
-  skipIfBalance: false,
-} as const;
 
 describe('PayWithRow', () => {
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
@@ -135,13 +146,21 @@ describe('PayWithRow', () => {
   );
   const useSendTokensMock = jest.mocked(useSendTokens);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useAlertsMock = jest.mocked(useAlerts);
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
+  const getFieldAlertsMock = jest.fn(
+    (_field?: string | undefined): { key: string }[] => [],
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
 
     useSendTokensMock.mockReturnValue([]);
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    getFieldAlertsMock.mockReturnValue([]);
+    useAlertsMock.mockReturnValue({
+      getFieldAlerts: getFieldAlertsMock,
+    } as never);
 
     useTransactionPayTokenMock.mockReturnValue({
       payToken: MOCK_PAY_TOKEN,
@@ -218,6 +237,27 @@ describe('PayWithRow', () => {
     renderWithProvider(<PayWithRow />, store);
 
     expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
+  });
+
+  it('renders empty selection placeholder when account has no funds', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+      isNative: false,
+    });
+    useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    getFieldAlertsMock.mockReturnValue([{ key: AlertsName.AccountNoFunds }]);
+
+    const store = mockStore(getMockState());
+    renderWithProvider(<PayWithRow />, store);
+
+    expect(
+      screen.queryByTestId('pay-with-row-skeleton'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+      'Select payment method',
+    );
   });
 
   it('falls back to first required token when no pay token', () => {
@@ -353,6 +393,23 @@ describe('PayWithRow', () => {
 
       expect(screen.queryByTestId('pay-with-balance')).not.toBeInTheDocument();
     });
+  });
+
+  it('renders the Money account icon and dummy balance when selected', () => {
+    const store = mockStore(
+      getMockState({ paymentOverride: PaymentOverride.MoneyAccount }),
+    );
+    renderWithProvider(<PayWithRow />, store);
+
+    expect(
+      screen.getByTestId('pay-with-money-account-icon'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+      'Money account',
+    );
+    expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
+      `(${MONEY_ACCOUNT_DUMMY_BALANCE_FIAT})`,
+    );
   });
 });
 

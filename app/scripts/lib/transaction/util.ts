@@ -15,6 +15,7 @@ import {
   UserOperationControllerStartPollingByNetworkClientIdAction,
 } from '@metamask/user-operation-controller';
 import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
+import type { PhishingControllerScanAddressAction } from '@metamask/phishing-controller';
 import { MessengerActions, MessengerEvents } from '@metamask/messenger';
 import {
   PRODUCT_TYPES,
@@ -40,10 +41,7 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield/shield';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
-import {
-  mapChainIdToSupportedEVMChain,
-  ScanAddressResponse,
-} from '../../../../shared/lib/trust-signals';
+import { ScanAddressResponse } from '../../../../shared/lib/trust-signals';
 import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.utils';
 import {
   AppStateControllerAddAddressSecurityAlertResponseAction,
@@ -65,8 +63,9 @@ export type AddTransactionOptions = NonNullable<
 /**
  * The messenger used by the shared transaction-add pipeline. It extends the
  * {@link PPOMMessenger} (security validation) with the actions needed to add a
- * transaction or user operation, resolve an account's keyring, and read the
- * security-alerts gateway configuration.
+ * transaction or user operation, resolve an account's keyring, scan a
+ * recipient address for trust signals, and read the security-alerts gateway
+ * configuration.
  */
 export type AddTransactionMessenger = RootMessenger<
   | MessengerActions<PPOMMessenger>
@@ -77,6 +76,7 @@ export type AddTransactionMessenger = RootMessenger<
   | KeyringControllerGetKeyringForAccountAction
   | AppStateControllerGetAddressSecurityAlertResponseAction
   | AppStateControllerAddAddressSecurityAlertResponseAction
+  | PhishingControllerScanAddressAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | AuthenticationControllerGetBearerTokenAction,
   MessengerEvents<PPOMMessenger>
@@ -422,11 +422,6 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     return;
   }
 
-  const supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
-  if (!supportedEVMChain) {
-    return;
-  }
-
   const getAddressSecurityAlertResponseWithChain = (cacheKey: string) => {
     return messenger.call(
       'AppStateController:getAddressSecurityAlertResponse',
@@ -445,11 +440,20 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     );
   };
 
+  // Satisfies scanAddressAndAddToCache's Pick<PhishingController, 'scanAddress'>
+  // parameter without holding a controller instance; the middleware caller
+  // passes the real PhishingController directly.
+  const phishingControllerScanAdapter = {
+    scanAddress: (scanChainId: string, address: string) =>
+      messenger.call('PhishingController:scanAddress', scanChainId, address),
+  };
+
   scanAddressAndAddToCache(
     to,
     getAddressSecurityAlertResponseWithChain,
     addAddressSecurityAlertResponseWithChain,
-    supportedEVMChain,
+    chainId,
+    phishingControllerScanAdapter,
   ).catch((error) => {
     console.error(
       '[scanAddressForTrustSignals] error scanning address for trust signals:',

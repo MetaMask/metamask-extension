@@ -3643,9 +3643,6 @@
   "editNonceMessage": {
     "message": "Ini merupakan fitur lanjutan, gunakan dengan hati-hati."
   },
-  "editPermissions": {
-    "message": "Edit izin"
-  },
   "editSpendingCap": {
     "message": "Edit batas penggunaan"
   },
@@ -6885,9 +6882,6 @@
   "permitSimulationDetailInfo": {
     "message": "Anda memberi izin kepada spender untuk menggunakan sejumlah token ini dari akun Anda."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 memiliki akses ke $2."
-  },
   "perps": {
     "message": "Perps"
   },
@@ -9281,9 +9275,6 @@
   "select": {
     "message": "Pilih"
   },
-  "selectAccountToConnect": {
-    "message": "Pilih akun yang akan dihubungkan"
-  },
   "selectAll": {
     "message": "Pilih semua"
   },
@@ -11439,15 +11430,6 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask mengalami masalah saat memulai."
-  },
-  "trustSignalBlockDescription": {
-    "message": "Jika Anda terhubung ke situs ini, Anda bisa kehilangan seluruh aset Anda."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Situs berbahaya terdeteksi"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Tetap Terhubung"
   },
   "tryAgain": {
     "message": "Coba lagi"
