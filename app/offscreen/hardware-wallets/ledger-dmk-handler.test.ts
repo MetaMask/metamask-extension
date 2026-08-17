@@ -161,9 +161,9 @@ describe('LedgerDmkBridgeHandler', () => {
         name: 'HardwareWalletError',
         code: ErrorCode.Unknown,
         severity: Severity.Err,
-        category: Category.Connection,
+        category: Category.Unknown,
         message: 'HID permission denied',
-        cause: discoveryError,
+        metadata: { walletType: 'ledger' },
       });
       expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
     });

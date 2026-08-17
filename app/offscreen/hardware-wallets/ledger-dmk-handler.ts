@@ -34,7 +34,10 @@ import {
   timeout as timeoutOperator,
 } from 'rxjs';
 
-import { toHardwareWalletError } from '../../../shared/lib/hardware-wallets';
+import {
+  HardwareWalletType,
+  toHardwareWalletError,
+} from '../../../shared/lib/hardware-wallets';
 import {
   LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS,
   LedgerAction,
@@ -81,22 +84,6 @@ function createOffscreenTransportFactory(
 type LedgerDevice = Parameters<DeviceManagementKit['connect']>[0]['device'];
 
 /**
- * Converts an unknown thrown value into a message string without
- * `JSON.stringify`, which can throw on circular structures.
- *
- * @param reason - The value thrown by an observable pipeline.
- */
-function toErrorMessage(reason: unknown): string {
-  if (reason instanceof Error) {
-    return reason.message;
-  }
-  if (typeof reason === 'string') {
-    return reason;
-  }
-  return String(reason);
-}
-
-/**
  * Creates a structured `HardwareWalletError` for handler-owned failure paths
  * (validation, teardown races, unknown actions).
  *
@@ -139,11 +126,7 @@ function normalizeDiscoveryError(reason: unknown): HardwareWalletError {
       cause: reason,
     });
   }
-  return toHardwareWalletError(
-    reason,
-    ErrorCode.Unknown,
-    'Ledger device discovery failed',
-  );
+  return toHardwareWalletError(reason, HardwareWalletType.Ledger);
 }
 
 /**
@@ -231,11 +214,7 @@ export class LedgerDmkBridgeHandler {
           this.bridgePromise = null;
           this.sessionId = null;
         }
-        throw toHardwareWalletError(
-          error,
-          ErrorCode.Unknown,
-          'Ledger bridge connection failed',
-        );
+        throw toHardwareWalletError(error, HardwareWalletType.Ledger);
       });
 
     this.bridgePromise = pending;
@@ -572,12 +551,7 @@ export class LedgerDmkBridgeHandler {
           throw createLedgerError(`Unknown Ledger action: ${action as string}`);
       }
     } catch (error) {
-      throw toHardwareWalletError(
-        error,
-        ErrorCode.Unknown,
-        'Ledger action failed',
-        Category.Unknown,
-      );
+      throw toHardwareWalletError(error, HardwareWalletType.Ledger);
     }
   }
 
