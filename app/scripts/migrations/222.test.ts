@@ -207,4 +207,16 @@ describe(`migration #${version}`, () => {
 
     expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
   });
+
+  it('skips migration on Firefox', async () => {
+    const oldStorage = buildVersionedData();
+
+    jest.spyOn(require('../lib/util'), 'getPlatform').mockReturnValue('firefox');
+
+    await migrate(oldStorage, new Set());
+
+    expect(oldStorage.meta.version).toBe(version);
+    expect(mockBrowser.storage.local.get).not.toHaveBeenCalled();
+    expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
+  });
 });

@@ -13,6 +13,10 @@ import {
   IndexedDBStore,
   isIndexedDBMutationBlockedError,
 } from './indexeddb-store';
+import { getPlatform } from '../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../constants/app';
+
+const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
 type StorageDatabase = Pick<
   IndexedDBStore,
@@ -55,6 +59,7 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
         STORAGE_SERVICE_INDEXED_DB_NAME,
         STORAGE_SERVICE_INDEXED_DB_VERSION,
       );
+
       return true;
     } catch (error) {
       if (!isIndexedDBMutationBlockedError(error)) {
@@ -70,6 +75,19 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
   }
 
   async #canUseIndexedDB(): Promise<boolean> {
+    // Chrome has an issue with its `storage.local` implementation -- it doesn't
+    // like sharing the database with "large" keys, like Snaps source code.
+    // Firefox doesn't have any issues with storage stability in storage.local,
+    // but users are able to turn `indexedDB` completely _off_ in Firefox. We
+    // can reasonably fall back to storage.local in such cases, since we'd be
+    // missing data that once existed... and to make things more complicated,
+    // if a user turns `indexedDB` back on later, the old "missing" data comes
+    // back like it was never missing in the first place.
+    // So, on FireFox, we report `indexedDb` as unavailable.
+    if (isFirefox) {
+      return false;
+    }
+
     if (!this.#openPromise) {
       this.#openPromise = this.#selectStorage().catch((error) => {
         this.#openPromise = undefined;
