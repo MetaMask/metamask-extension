@@ -9,11 +9,6 @@
       "count": 3
     }
   },
-  "app/scripts/metamask-controller.test.js": {
-    "jest/no-disabled-tests": {
-      "count": 1
-    }
-  },
   "development/webpack/utils/loaders/swcLoader.ts": {
     "promise/no-callback-in-promise": {
       "count": 1

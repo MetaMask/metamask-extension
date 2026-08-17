@@ -12,9 +12,9 @@ import {
   TextColor,
   TextVariant,
   BannerAlert,
+  BannerAlertSeverity,
 } from '@metamask/design-system-react';
 import {
-  BannerAlertSeverity,
   Modal,
   ModalContent,
   ModalFooter,
