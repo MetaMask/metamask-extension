@@ -11,6 +11,7 @@ import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useConfirmContext } from '../../context/confirm';
+import { usePayWithNoFeeToken } from '../pay/usePayWithNoFeeToken';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import {
   useTransactionPayIsMaxAmount,
@@ -60,6 +61,10 @@ export function useTransactionCustomAmount({
   const hasBalanceUsdOverride = balanceUsdOverride !== undefined;
   const { payToken } = useTransactionPayToken();
   const balanceUsd = getTokenBalanceUsd(balanceUsdOverride, payToken);
+  const { isNoFeeToken } = usePayWithNoFeeToken();
+  const isNoFeePayToken = Boolean(
+    payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
+  );
 
   const { updateTokenAmount: updateTokenAmountCallback } =
     useUpdateTokenAmount();
@@ -272,8 +277,12 @@ export function useTransactionCustomAmount({
         setIsMax(false);
       }
 
+      // `updateTokenAmount` treats the human amount as the destination token
+      // (mUSD), so the raw pay-token balance is only a valid Max amount for
+      // no-fee (subsidised) sources, which convert 1:1. Max is only rendered
+      // for those tokens; anything else uses the fiat conversion below.
       const isMaxMoneyAccountDeposit =
-        percentage === 100 && isMoneyAccountDeposit;
+        percentage === 100 && isMoneyAccountDeposit && isNoFeePayToken;
       depositMaxHumanRef.current = isMaxMoneyAccountDeposit
         ? getHumanAmountFromBalanceRaw(payToken?.balanceRaw, payToken?.decimals)
         : null;
@@ -323,6 +332,7 @@ export function useTransactionCustomAmount({
       hasBalanceUsdOverride,
       isMaxAmount,
       isMoneyAccountDeposit,
+      isNoFeePayToken,
       payToken?.balanceRaw,
       payToken?.decimals,
       setIsMax,

@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  TransactionType,
-  type TransactionMeta,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import configureMockStore from 'redux-mock-store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -16,7 +13,7 @@ import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useT
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import * as useTransactionPayWithdrawModule from '../../../hooks/pay/useTransactionPayWithdraw';
-import * as useMoneyNoFeeTokensModule from '../../../hooks/pay/useMoneyNoFeeTokens';
+import * as usePayWithNoFeeTokenModule from '../../../hooks/pay/usePayWithNoFeeToken';
 import * as useAccountNoFundsAlertModule from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import {
   CustomAmountInfo,
@@ -26,12 +23,13 @@ import {
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
 jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
+jest.mock('../../../hooks/pay/useTransactionPayPostQuote');
+jest.mock('../../../hooks/pay/useTransactionPayWithdraw');
 jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
-jest.mock('../../../hooks/pay/useTransactionPayWithdraw');
-jest.mock('../../../hooks/pay/useMoneyNoFeeTokens');
+jest.mock('../../../hooks/pay/usePayWithNoFeeToken');
 jest.mock('../../../hooks/alerts/transactions/useAccountNoFundsAlert');
 jest.mock('../../transactions/custom-amount/custom-amount', () => ({
   CustomAmount: ({
@@ -77,16 +75,6 @@ jest.mock('../../rows/total-row/total-row', () => ({
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
-
-// Deposits are batches, so the money-account type sits on a nested transaction.
-const MOCK_MONEY_ACCOUNT_TRANSACTION_META = {
-  ...MOCK_TRANSACTION_META,
-  type: TransactionType.batch,
-  nestedTransactions: [
-    { type: TransactionType.tokenMethodApprove },
-    { type: TransactionType.moneyAccountDeposit },
-  ],
-} as TransactionMeta;
 
 const mockStore = configureMockStore([]);
 
@@ -134,6 +122,7 @@ function render(
   options: {
     disableAutomaticToken?: boolean;
     disablePay?: boolean;
+    displayPercentageButtons?: boolean;
     hidePayTokenAmount?: boolean;
     availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
     accountNoFundsAlert?: { key: string }[];
@@ -142,7 +131,7 @@ function render(
     isQuotesLoading?: boolean;
     hasQuotes?: boolean;
     isNativePayToken?: boolean;
-    isMoneyNoFeeToken?: boolean;
+    isNoFeePayToken?: boolean;
     isWithdraw?: boolean;
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
@@ -153,6 +142,7 @@ function render(
   const {
     disableAutomaticToken,
     disablePay = false,
+    displayPercentageButtons = false,
     hidePayTokenAmount = false,
     availableTokens = [MOCK_AVAILABLE_TOKEN],
     accountNoFundsAlert = [],
@@ -161,7 +151,7 @@ function render(
     isQuotesLoading = false,
     hasQuotes = false,
     isNativePayToken = false,
-    isMoneyNoFeeToken = false,
+    isNoFeePayToken = false,
     isWithdraw = false,
     sourceAmounts = [],
     requiredTokens = [],
@@ -232,11 +222,12 @@ function render(
     .mocked(useTransactionPayTokenModule.useTransactionPayToken)
     .mockReturnValue({
       isNative: isNativePayToken,
-      payToken: undefined,
+      payToken: MOCK_AVAILABLE_TOKEN as never,
       setPayToken: jest.fn(),
     });
-  jest.mocked(useMoneyNoFeeTokensModule.useMoneyNoFeeTokens).mockReturnValue({
-    isMoneyNoFeeToken,
+  jest.mocked(usePayWithNoFeeTokenModule.usePayWithNoFeeToken).mockReturnValue({
+    isNoFeeToken: () => isNoFeePayToken,
+    renderNoFeeTag: () => null,
   });
   jest
     .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
@@ -251,6 +242,7 @@ function render(
     <CustomAmountInfo
       disableAutomaticToken={disableAutomaticToken}
       disablePay={disablePay}
+      displayPercentageButtons={displayPercentageButtons}
       hidePayTokenAmount={hidePayTokenAmount}
     />,
     mockStore(state),
@@ -454,15 +446,15 @@ describe('CustomAmountInfo', () => {
   });
 
   describe('percentage buttons', () => {
-    // The shortcuts are money-account only, so every case below needs a
-    // money-account confirmation.
+    // The shortcuts are opted into by the money-account flows via the
+    // displayPercentageButtons prop.
     const renderMoneyAccount = (options: Parameters<typeof render>[0] = {}) =>
       render({
         ...options,
-        transactionMeta: MOCK_MONEY_ACCOUNT_TRANSACTION_META,
+        displayPercentageButtons: true,
       });
 
-    it('is not rendered for other flows sharing the component', () => {
+    it('is not rendered when displayPercentageButtons is not set', () => {
       const { queryByTestId } = render();
 
       expect(queryByTestId('percentage-buttons')).not.toBeInTheDocument();
@@ -481,7 +473,7 @@ describe('CustomAmountInfo', () => {
 
     it('replaces 90% with Max for no-fee (fixed-spread) tokens', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isMoneyNoFeeToken: true,
+        isNoFeePayToken: true,
       });
 
       expect(getByTestId('percentage-button-100')).toHaveTextContent('Max');
@@ -490,7 +482,7 @@ describe('CustomAmountInfo', () => {
 
     it('keeps 90% for tokens that are not no-fee', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isMoneyNoFeeToken: false,
+        isNoFeePayToken: false,
       });
 
       expect(getByTestId('percentage-button-90')).toBeInTheDocument();
@@ -499,7 +491,7 @@ describe('CustomAmountInfo', () => {
 
     it('always shows Max on withdraw, irrespective of the selected token', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isMoneyNoFeeToken: false,
+        isNoFeePayToken: false,
         isWithdraw: true,
       });
 
@@ -509,7 +501,7 @@ describe('CustomAmountInfo', () => {
 
     it('always shows Max on withdraw when the pay token is native', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isMoneyNoFeeToken: false,
+        isNoFeePayToken: false,
         isNativePayToken: true,
         isWithdraw: true,
       });
@@ -520,7 +512,7 @@ describe('CustomAmountInfo', () => {
 
     it('keeps 90% when the no-fee token is native', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isMoneyNoFeeToken: true,
+        isNoFeePayToken: true,
         isNativePayToken: true,
       });
 
@@ -668,9 +660,10 @@ describe('CustomAmountInfo', () => {
           setPayToken: jest.fn(),
         });
       jest
-        .mocked(useMoneyNoFeeTokensModule.useMoneyNoFeeTokens)
+        .mocked(usePayWithNoFeeTokenModule.usePayWithNoFeeToken)
         .mockReturnValue({
-          isMoneyNoFeeToken: false,
+          isNoFeeToken: () => false,
+          renderNoFeeTag: () => null,
         });
       jest
         .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
@@ -700,7 +693,7 @@ describe('CustomAmountInfo', () => {
 describe('CustomAmountInfoSkeleton', () => {
   it('renders skeleton components', () => {
     const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
-    const { getByTestId } = renderWithConfirmContextProvider(
+    const { getByTestId, queryByTestId } = renderWithConfirmContextProvider(
       <CustomAmountInfoSkeleton />,
       mockStore(state),
     );
@@ -708,6 +701,18 @@ describe('CustomAmountInfoSkeleton', () => {
     expect(getByTestId('custom-amount-info-skeleton')).toBeInTheDocument();
     expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
     expect(getByTestId('pay-token-amount-skeleton')).toBeInTheDocument();
+    expect(
+      queryByTestId('percentage-buttons-skeleton'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the percentage buttons skeleton when the flow displays them', () => {
+    const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <CustomAmountInfoSkeleton displayPercentageButtons />,
+      mockStore(state),
+    );
+
     expect(getByTestId('percentage-buttons-skeleton')).toBeInTheDocument();
   });
 });

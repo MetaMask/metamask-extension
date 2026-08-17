@@ -10,6 +10,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/co
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import * as TransactionPayControllerActions from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTokenFiatRatesModule from '../tokens/useTokenFiatRates';
+import * as usePayWithNoFeeTokenModule from '../pay/usePayWithNoFeeToken';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../pay/useTransactionPayToken';
 import {
@@ -21,6 +22,7 @@ import * as useUpdateTokenAmountModule from './useUpdateTokenAmount';
 
 jest.mock('../../../../store/controller-actions/transaction-pay-controller');
 jest.mock('../tokens/useTokenFiatRates');
+jest.mock('../pay/usePayWithNoFeeToken');
 jest.mock('../pay/useTransactionPayData');
 jest.mock('../pay/useTransactionPayToken');
 jest.mock('./useDepositPrefillAmount');
@@ -51,6 +53,7 @@ function runHook({
   payTokenAddress = '0xpaytoken',
   payTokenChainId = '0x1',
   balanceUsdOverride,
+  isNoFeePayToken = true,
   isMaxAmount = false,
   requiredTokens = [],
   updateTokenAmountMock = jest.fn(),
@@ -67,6 +70,7 @@ function runHook({
   payTokenAddress?: string;
   payTokenChainId?: string;
   balanceUsdOverride?: number;
+  isNoFeePayToken?: boolean;
   isMaxAmount?: boolean;
   requiredTokens?: { amountUsd?: string; skipIfBalance?: boolean }[];
   updateTokenAmountMock?: jest.Mock;
@@ -109,6 +113,10 @@ function runHook({
       setPayToken: jest.fn(),
       isNative: false,
     });
+  jest.mocked(usePayWithNoFeeTokenModule.usePayWithNoFeeToken).mockReturnValue({
+    isNoFeeToken: () => isNoFeePayToken,
+    renderNoFeeTag: () => null,
+  });
   jest.mocked(useUpdateTokenAmountModule.useUpdateTokenAmount).mockReturnValue({
     updateTokenAmount: updateTokenAmountMock,
     isUpdating: false,
@@ -998,6 +1006,25 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(updateTokenAmountMock).toHaveBeenCalledWith('1.123456');
+    });
+
+    it('uses the fiat-derived amount for Max when the pay token is not a no-fee token', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result } = runHook({
+        ...depositMaxPayToken,
+        isNoFeePayToken: false,
+        updateTokenAmountMock,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      // The raw balance is denominated in the pay token, not mUSD, so a
+      // non-1:1 token must go through the fiat conversion:
+      // 100% of 2.246912 rounded down = 2.24, ÷ 2 = 1.12
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('1.12');
+      expect(updateTokenAmountMock).not.toHaveBeenCalledWith('1.123456');
     });
 
     it('falls back to the fiat-derived amount when balanceRaw is missing', () => {
