@@ -981,7 +981,7 @@
           "priceChange1d": 0.001
         },
         "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
-          "price": 1.8e-9,
+          "price": 0.0000000018,
           "contractPercentChange1d": 0.02,
           "priceChange1d": 0.01
         }
@@ -1003,7 +1003,7 @@
           "priceChange1d": 0.001
         },
         "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
-          "price": 1.8e-9,
+          "price": 0.0000000018,
           "contractPercentChange1d": 0.02,
           "priceChange1d": 0.01
         }
@@ -1025,7 +1025,7 @@
           "priceChange1d": 0.001
         },
         "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
-          "price": 1.8e-9,
+          "price": 0.0000000018,
           "contractPercentChange1d": 0.02,
           "priceChange1d": 0.01
         }
