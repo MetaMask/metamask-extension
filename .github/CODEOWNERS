@@ -179,7 +179,7 @@ ui/hooks/subscription                                 @MetaMask/web3auth
 ui/pages/shield                                       @MetaMask/web3auth
 ui/pages/settings/transaction-shield-tab              @MetaMask/web3auth
 
-# Web3Auth / Subscription
+# Web3Auth / Subscriptions
 app/scripts/wallet-init/instance-options/shield-controller*       @MetaMask/web3auth
 app/scripts/wallet-init/instance-options/subscription-service*    @MetaMask/web3auth
 app/scripts/wallet-init/instance-options/claims-service*          @MetaMask/web3auth
