@@ -113,10 +113,6 @@ import {
   getCurrencyRateControllerMessenger,
 } from './currency-rate-controller-messenger';
 import {
-  getEnsControllerInitMessenger,
-  getEnsControllerMessenger,
-} from './ens-controller-messenger';
-import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
@@ -229,11 +225,6 @@ export {
   getEncryptionPublicKeyControllerInitMessenger,
 } from './encryption-public-key-controller-messenger';
 export { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
-export type { EnsControllerInitMessenger } from './ens-controller-messenger';
-export {
-  getEnsControllerMessenger,
-  getEnsControllerInitMessenger,
-} from './ens-controller-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
@@ -433,10 +424,6 @@ export const MESSENGER_FACTORIES = {
   EncryptionPublicKeyManager: {
     getMessenger: getEncryptionPublicKeyManagerMessenger,
     getInitMessenger: noop,
-  },
-  EnsController: {
-    getMessenger: getEnsControllerMessenger,
-    getInitMessenger: getEnsControllerInitMessenger,
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
