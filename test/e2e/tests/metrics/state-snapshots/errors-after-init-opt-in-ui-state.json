@@ -453,6 +453,7 @@
     "withdrawalProgress": "object",
     "withdrawalRequests": "object"
   },
+  "moneyBalance": "object",
   "perpsTutorial": "object",
   "rewards": "object",
   "smartAccounts": "object",
