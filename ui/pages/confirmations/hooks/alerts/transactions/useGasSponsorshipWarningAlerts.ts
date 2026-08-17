@@ -1,5 +1,3 @@
-'use no memo';
-
 import {
   SimulationData,
   TransactionMeta,

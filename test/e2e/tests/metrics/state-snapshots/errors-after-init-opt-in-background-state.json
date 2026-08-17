@@ -169,10 +169,6 @@
     "unapprovedEncryptionPublicKeyMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object"
   },
-  "EnsController": {
-    "ensEntries": "object",
-    "ensResolutionsByAddress": "object"
-  },
   "GasFeeController": {
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none",

@@ -1,4 +1,3 @@
-import { toUnicode } from 'punycode/punycode.js';
 import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -203,7 +202,7 @@ import {
 import { getApprovalRequestsByType } from './approvals';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 import { getIsSocialLoginFlow } from './first-time-flow';
-import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
+import { getInternalAccounts } from './accounts';
 
 const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
@@ -1174,21 +1173,6 @@ export const getCompleteAddressBook = createShallowResultSelector(
       )
       .flat(),
 );
-
-export function getEnsResolutionByAddress(state, address) {
-  if (state.metamask.ensResolutionsByAddress[address]) {
-    const ensResolution = state.metamask.ensResolutionsByAddress[address];
-    // ensResolution is a punycode encoded string hence toUnicode is used to decode it from same package
-    const normalizedEnsResolution = toUnicode(ensResolution);
-    return normalizedEnsResolution;
-  }
-
-  const entry =
-    getAddressBookEntry(state, address) ||
-    getInternalAccountByAddress(state, address);
-
-  return entry?.name || '';
-}
 
 export function getAddressBookEntry(state, address) {
   const addressBook = getCompleteAddressBook(state);
