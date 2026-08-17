@@ -2927,10 +2927,6 @@
     "message": "Connected with $1",
     "description": "$1 represents account name"
   },
-  "connectedWithNetwork": {
-    "message": "$1 networks connected",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Connecting"
   },
@@ -5832,9 +5828,6 @@
   },
   "networkOptions": {
     "message": "Network options"
-  },
-  "networkPermissionToast": {
-    "message": "Network permissions updated"
   },
   "networkStatus": {
     "message": "Network status"

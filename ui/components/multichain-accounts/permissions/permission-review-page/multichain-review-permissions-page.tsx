@@ -8,15 +8,12 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
 import {
-  AvatarFavicon,
-  AvatarFaviconSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   Button,
   ButtonSize,
   ButtonVariant,
-  IconName,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
@@ -30,9 +27,7 @@ import {
   removePermissionsFor,
   requestAccountsAndChainPermissionsWithId,
   setPermittedAccounts,
-  setPermittedChains,
 } from '../../../../store/actions';
-import { toast, ToastContent } from '../../../ui/toast/toast';
 import { Content, Footer, Page } from '../../../multichain/pages/page';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
@@ -98,19 +93,6 @@ export const MultichainReviewPermissions = () => {
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
   const subjects = useSelector(getPermissionSubjects);
 
-  const showNetworkPermissionToast = useCallback(() => {
-    toast.success(<ToastContent title={t('networkPermissionToast')} />, {
-      id: 'network-permission-toast',
-      icon: (
-        <AvatarFavicon
-          name={connectedSubjectsMetadata?.name}
-          size={AvatarFaviconSize.Sm}
-          src={connectedSubjectsMetadata?.iconUrl}
-        />
-      ),
-    });
-  }, [connectedSubjectsMetadata?.iconUrl, connectedSubjectsMetadata?.name, t]);
-
   const disconnectAllPermissions = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
 
@@ -169,17 +151,6 @@ export const MultichainReviewPermissions = () => {
   const connectedChainIds = useSelector((state) =>
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
-
-  const handleSelectChainIds = async (chainIds: string[]) => {
-    if (chainIds.length === 0) {
-      setShowDisconnectAllModal(true);
-      return;
-    }
-
-    dispatch(setPermittedChains(activeTabOrigin, chainIds));
-
-    showNetworkPermissionToast();
-  };
 
   const existingPermissions = useSelector((state) =>
     getPermissions(state, activeTabOrigin),
@@ -358,13 +329,9 @@ export const MultichainReviewPermissions = () => {
         <Content padding={0}>
           {connectedAccountGroups.length > 0 ? (
             <MultichainSiteCell
-              nonTestNetworks={nonTestNetworks}
-              testNetworks={testNetworks}
               supportedAccountGroups={supportedAccountGroups}
               showEditAccounts={setModeToEditAccounts}
-              onSelectChainIds={handleSelectChainIds}
               selectedAccountGroupIds={selectedAccountGroupIds}
-              selectedChainIds={connectedChainIds}
             />
           ) : null}
 
