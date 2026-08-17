@@ -56,6 +56,7 @@ describe('MoneyAccountWithdrawInfo', () => {
         currency: 'usd',
         disablePay: false,
         displayAccountRow: true,
+        displayPercentageButtons: true,
         hidePayTokenAmount: true,
         preferredToken: {
           address: MUSD_TOKEN_ADDRESS,
