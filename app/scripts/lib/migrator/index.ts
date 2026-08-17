@@ -1,16 +1,17 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { isObject } from '@metamask/utils';
+import type {
+  MetaData,
+  MetaMaskStateType,
+} from '../../../../shared/lib/stores/base-store';
 import { PersistenceManager } from '../../../../shared/lib/stores/persistence-manager';
 
 const MIGRATION_V2_START_VERSION = 186;
 
 export type MigrationState = {
-  data: Record<string, unknown>;
-  meta: {
-    version: number;
-    storageKind?: string;
-  };
+  data: MetaMaskStateType;
+  meta: MetaData;
 };
 
 export type LegacyMigration = {
@@ -156,9 +157,7 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
     }
   }
 
-  generateInitialState(
-    data: Record<string, unknown> = {},
-  ): MigrationState & { meta: { version: number; storageKind: string } } {
+  generateInitialState(data: MetaMaskStateType = {}): MigrationState {
     return {
       data,
       meta: {
