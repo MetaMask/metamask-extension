@@ -152,8 +152,6 @@
       "stellar": "object",
       "tron": "object"
     },
-    "ensEntries": "object",
-    "ensResolutionsByAddress": "object",
     "error": null,
     "estimatedGasFeeTimeBounds": {},
     "etag": null,
