@@ -16,7 +16,8 @@ const HYPERLIQUID_CONFIG =
   DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
 const GMX_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX];
 const ASTERDEX_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.AsterDEX];
-const VARIATIONAL_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Variational];
+const VARIATIONAL_CONFIG =
+  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Variational];
 
 const STATE_MOCK_DEFAULT = {
   metamask: {
