@@ -140,6 +140,58 @@ function scanAddressInBackground(
   });
 }
 
+/**
+ * Scans the addresses a single transaction or batched call exposes: its
+ * target `to` plus any addresses encoded in calldata (currently the spender
+ * of a token approval). Shared by the `eth_sendTransaction` and
+ * `wallet_sendCalls` handlers so decoding logic stays in one place; new
+ * calldata decoders should be added here to cover both paths at once.
+ *
+ * @param to - The call's target address
+ * @param data - The call's calldata, if any
+ * @param context - Label describing the request type in scan error logs
+ * @param chainId - The hex chainId of the chain the call targets
+ * @param appStateController - Provides the security alert response cache
+ * @param phishingController - Controller providing scanAddress
+ */
+function scanCallTargets(
+  to: unknown,
+  data: unknown,
+  context: 'transaction' | 'sendCalls',
+  chainId: Hex,
+  appStateController: AppStateController,
+  phishingController: PhishingController,
+) {
+  // `to` may be unvalidated dapp input (batched calls are only validated
+  // downstream, by SendCallsStruct in the 5792 handler); a non-string would
+  // throw in createCacheKey. Deliberately no stricter than the struct's
+  // address check, so nothing the wallet would execute can skip scanning.
+  if (typeof to === 'string') {
+    scanAddressInBackground(
+      to,
+      `address for ${context}`,
+      chainId,
+      appStateController,
+      phishingController,
+    );
+  }
+
+  // If the call is a token approval, also scan the spender address.
+  if (typeof data === 'string') {
+    const approvalData = parseApprovalTransactionData(data as `0x${string}`);
+    const spenderAddress = approvalData?.spender;
+    if (spenderAddress) {
+      scanAddressInBackground(
+        spenderAddress,
+        `spender address for ${context} approval`,
+        chainId,
+        appStateController,
+        phishingController,
+      );
+    }
+  }
+}
+
 function handleEthSendTransaction(
   req: TrustSignalsMiddlewareRequest,
   appStateController: AppStateController,
@@ -162,29 +214,14 @@ function handleEthSendTransaction(
     return;
   }
 
-  // Scan the 'to' address (contract address)
-  scanAddressInBackground(
+  scanCallTargets(
     to,
-    'address for transaction',
+    data,
+    'transaction',
     rawChainId,
     appStateController,
     phishingController,
   );
-
-  // If this is an approval transaction, also scan the spender address
-  if (data && typeof data === 'string') {
-    const approvalData = parseApprovalTransactionData(data as `0x${string}`);
-    const spenderAddress = approvalData?.spender;
-    if (spenderAddress) {
-      scanAddressInBackground(
-        spenderAddress,
-        'spender address for approval',
-        rawChainId,
-        appStateController,
-        phishingController,
-      );
-    }
-  }
 }
 
 function handleWalletSendCalls(
@@ -225,35 +262,14 @@ function handleWalletSendCalls(
 
     const { to, data } = call as { to?: unknown; data?: unknown };
 
-    // `to` is unvalidated dapp input here (SendCallsStruct validation happens
-    // later, in the 5792 handler); a non-string would throw in createCacheKey.
-    // Deliberately no stricter than the struct's address check, so nothing the
-    // wallet would execute can skip scanning.
-    if (typeof to === 'string') {
-      scanAddressInBackground(
-        to,
-        'address for sendCalls',
-        rawChainId,
-        appStateController,
-        phishingController,
-      );
-    }
-
-    // If a nested call is an approval, also scan the spender address for
-    // parity with the eth_sendTransaction path.
-    if (typeof data === 'string') {
-      const approvalData = parseApprovalTransactionData(data as `0x${string}`);
-      const spenderAddress = approvalData?.spender;
-      if (spenderAddress) {
-        scanAddressInBackground(
-          spenderAddress,
-          'spender address for sendCalls approval',
-          rawChainId,
-          appStateController,
-          phishingController,
-        );
-      }
-    }
+    scanCallTargets(
+      to,
+      data,
+      'sendCalls',
+      rawChainId,
+      appStateController,
+      phishingController,
+    );
   }
 }
 
