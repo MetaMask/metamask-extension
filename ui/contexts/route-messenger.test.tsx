@@ -1,7 +1,7 @@
 import React from 'react';
 import { renderWithProvider } from '../../test/lib/render-helpers-navigate';
-import { RouteMessengerProvider } from './route-messenger';
 import * as routeMessengerModule from '../messengers/route-messenger';
+import { RouteMessengerProvider } from './route-messenger';
 
 describe('RouteMessengerProvider', () => {
   it('renders children and provides a route messenger', () => {
