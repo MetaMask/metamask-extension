@@ -96,4 +96,14 @@ describe('useNavigateRouteListener', () => {
 
     expect(mockNavigate).not.toHaveBeenCalled();
   });
+
+  it('ignores non-object messages', () => {
+    renderHook(() => useNavigateRouteListener());
+
+    act(() => {
+      messageListener?.(null);
+    });
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
 });

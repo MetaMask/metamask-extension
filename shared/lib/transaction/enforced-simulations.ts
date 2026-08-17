@@ -2,13 +2,11 @@ import {
   SimulationData,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { Hex } from '@metamask/utils';
 import {
   CachedScanAddressResponse,
   createCacheKey,
-  mapChainIdToSupportedEVMChain,
   ResultType,
 } from '../trust-signals';
 
@@ -110,10 +108,10 @@ export function getEnforcedSimulationsSlippageBasisPoints(
 /**
  * Determines whether a transaction is eligible for enforced simulations.
  *
- * When the chain supports trust signals, also requires that at least one
- * recipient address is loaded and not trusted. If the chain is
- * unsupported by trust signals, the transaction remains eligible since
- * we cannot verify trust.
+ * Also requires that at least one recipient address is loaded and not
+ * trusted, based on cached trust signal scan results keyed by chain and
+ * address. A recipient with no cache entry, or one still loading, does not
+ * disqualify the transaction; only a cached non-Trusted verdict does.
  *
  * @param transactionMeta - The transaction metadata.
  * @param state - Trust signal state and EIP-7702 supported chains.
@@ -123,11 +121,7 @@ export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, origin, simulationData } = transactionMeta;
-
-  if (!origin || origin === ORIGIN_METAMASK) {
-    return false;
-  }
+  const { chainId, simulationData } = transactionMeta;
 
   if (
     !state.eip7702SupportedChains?.some(
@@ -167,13 +161,16 @@ function isTrusted(
   const { chainId, txParams, txParamsOriginal, nestedTransactions } =
     transactionMeta;
 
-  const supportedChain = chainId
-    ? mapChainIdToSupportedEVMChain(chainId)
-    : undefined;
-
-  // If trust signals don't support this chain, we can't verify trust —
-  // treat as not trusted so the user still gets protection.
-  if (!supportedChain) {
+  // Trust verdicts are cache-driven on every chain: only a cached non-Trusted
+  // verdict disqualifies a recipient, and chains the Security Alerts API
+  // cannot screen resolve to ErrorResult once scanned, which is non-Trusted
+  // and therefore enforces.
+  //
+  // Recipients that no scan path covers stay cache misses and are treated as
+  // trusted here. The trust-signals middleware only scans a transaction's own
+  // `to`, so nested `wallet_sendCalls` recipients are never scanned, and
+  // nothing is scanned at all when the user has security alerts disabled.
+  if (!chainId) {
     return false;
   }
 
@@ -187,7 +184,7 @@ function isTrusted(
   }
 
   return !toAddresses.some((address) => {
-    const cacheKey = createCacheKey(supportedChain, address);
+    const cacheKey = createCacheKey(chainId, address);
     const cached = state.addressSecurityAlertResponses[cacheKey];
 
     if (!cached || cached.result_type === ResultType.Loading) {
