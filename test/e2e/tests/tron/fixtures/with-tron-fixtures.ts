@@ -181,7 +181,9 @@ export async function withTronFixtures(
       // `.controller-loaded` and masks the real assertion result.
       ignoredConsoleErrors: [
         'getSubscriptions',
-        'JsonRpcError: Unexpected end of JSON input',
+        // Matches both `JsonRpcError: Unexpected end of JSON input` and the
+        // SES-wrapped `SES_UNHANDLED_REJECTION: -32603, ..., Unexpected end of JSON input`.
+        'Unexpected end of JSON input',
         ...ignoredConsoleErrors,
       ],
       localNodeOptions,
