@@ -8,7 +8,10 @@ import {
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import {
+  PREVIOUS_ROUTE,
+  RAMPS_PROVIDER_SELECTION_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
@@ -22,7 +25,6 @@ import {
   RampsSelectionCenteredMessage,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
-import RampsProviderSelectionModal from '../provider-selection/provider-selection';
 import RampsChangeProviderFooter from './components/ramps-change-provider-footer';
 import RampsPaymentMethodListItem from './components/ramps-payment-method-list-item';
 import {
@@ -128,16 +130,11 @@ export function RampsPaymentMethodScreen() {
     navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
-  const [isProviderSelectionModalOpen, setIsProviderSelectionModalOpen] =
-    useState(false);
-
   const handleChangeProvider = useCallback(() => {
-    setIsProviderSelectionModalOpen(true);
-  }, []);
-
-  const handleCloseProviderSelectionModal = useCallback(() => {
-    setIsProviderSelectionModalOpen(false);
-  }, []);
+    navigate(RAMPS_PROVIDER_SELECTION_ROUTE, {
+      state: { amount },
+    });
+  }, [amount, navigate]);
 
   const handlePaymentMethodSelect = useCallback(
     async (paymentMethod: PaymentMethod) => {
@@ -246,30 +243,21 @@ export function RampsPaymentMethodScreen() {
   }
 
   return (
-    <>
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId={testId}
-        backButtonTestId={backButtonTestId}
-      >
-        {body}
-        {selectedProvider ? (
-          <RampsChangeProviderFooter
-            providerName={selectedProvider.name}
-            isDisabled={isSelecting}
-            onChangeProvider={handleChangeProvider}
-          />
-        ) : null}
-      </RampsSelectionPage>
-      {isProviderSelectionModalOpen ? (
-        <RampsProviderSelectionModal
-          isOpen={isProviderSelectionModalOpen}
-          onClose={handleCloseProviderSelectionModal}
-          amount={amount}
+    <RampsSelectionPage
+      title={title}
+      onBack={handleBack}
+      testId={testId}
+      backButtonTestId={backButtonTestId}
+    >
+      {body}
+      {selectedProvider ? (
+        <RampsChangeProviderFooter
+          providerName={selectedProvider.name}
+          isDisabled={isSelecting}
+          onChangeProvider={handleChangeProvider}
         />
       ) : null}
-    </>
+    </RampsSelectionPage>
   );
 }
 

@@ -79,7 +79,7 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
                   class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
                   data-testid="ramps-payment-method-item-delay-debit-credit-card"
                 >
-                  5-10 mins
+                  5 - 10 mins
                 </p>
               </div>
             </div>
@@ -618,7 +618,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
                   class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
                   data-testid="ramps-payment-method-item-delay-debit-credit-card"
                 >
-                  5-10 mins
+                  5 - 10 mins
                 </p>
               </div>
             </div>
@@ -792,7 +792,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
                   class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
                   data-testid="ramps-payment-method-item-delay-debit-credit-card"
                 >
-                  5-10 mins
+                  5 - 10 mins
                 </p>
               </div>
             </div>

@@ -43,7 +43,7 @@ exports[`RampsPaymentMethodListItem matches snapshot when showQuote with no matc
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
             data-testid="ramps-payment-method-item-delay-debit-credit-card"
           >
-            5-10 mins
+            5 - 10 mins
           </p>
         </div>
       </div>
@@ -98,7 +98,7 @@ exports[`RampsPaymentMethodListItem matches snapshot while quote is loading 1`] 
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
             data-testid="ramps-payment-method-item-delay-debit-credit-card"
           >
-            5-10 mins
+            5 - 10 mins
           </p>
         </div>
       </div>
@@ -179,7 +179,7 @@ exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] =
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
             data-testid="ramps-payment-method-item-delay-debit-credit-card"
           >
-            5-10 mins • $25.00 – $2,000.00
+            5 - 10 mins • $25.00 – $2,000.00
           </p>
         </div>
       </div>
@@ -298,7 +298,7 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote amounts 1`] = `
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
             data-testid="ramps-payment-method-item-delay-debit-credit-card"
           >
-            5-10 mins
+            5 - 10 mins
           </p>
         </div>
       </div>

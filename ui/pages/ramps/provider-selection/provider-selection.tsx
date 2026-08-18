@@ -1,19 +1,15 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   Box,
   BoxFlexDirection,
-  Modal,
-  ModalContent,
-  ModalContentSize,
-  ModalHeader,
-  ModalOverlay,
   Text,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -28,10 +24,16 @@ import { completedOrdersFromRampsOrders } from '../../../hooks/ramps/utils/deter
 import { parseUserFacingError } from '../../../hooks/ramps/utils/parseUserFacingError';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import RampsListSkeleton from '../components/ramps-list-skeleton';
-import { RampsSelectionCenteredMessage } from '../components/ramps-selection-page';
+import {
+  RampsSelectionCenteredMessage,
+  RampsSelectionPage,
+} from '../components/ramps-selection-page';
 import { providerSupportsAsset } from '../utils/providerSupportsAsset';
 import { getProviderLimitMessage } from '../utils/getProviderLimitMessage';
-import { RampsProviderSeparator } from './components/ramps-provider-list-helpers';
+import {
+  RampsProviderSeparator,
+  RampsQuotesForPaymentMethodBanner,
+} from './components/ramps-provider-list-helpers';
 import RampsProviderListItem from './components/ramps-provider-list-item';
 import {
   buildProviderListItems,
@@ -41,10 +43,8 @@ import {
   type ProviderTag,
 } from './utils/build-provider-list-items';
 
-export type RampsProviderSelectionModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  amount: number;
+type ProviderSelectionLocationState = {
+  amount?: number;
 };
 
 type ProviderListRow =
@@ -160,21 +160,15 @@ function buildProviderListRows({
 }
 
 /**
- * Ramps buy-flow provider selection modal.
+ * Ramps buy-flow provider selection screen.
  *
  * Lists providers with optional quotes for the current payment method and
- * updates controller selection, overlaid on whichever screen opened it.
- * @param options0
- * @param options0.isOpen
- * @param options0.onClose
- * @param options0.amount
+ * updates controller selection before returning to payment-method.
  */
-export function RampsProviderSelectionModal({
-  isOpen,
-  onClose,
-  amount,
-}: RampsProviderSelectionModalProps) {
+export function RampsProviderSelectionScreen() {
   const t = useI18nContext();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { formatCurrency } = useFormatters();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const controllerOrders = useSelector(selectRampsOrdersForSelectedAccount);
@@ -194,6 +188,8 @@ export function RampsProviderSelectionModal({
 
   useRampsScreenViewed('Provider Selection');
 
+  const amount =
+    (location.state as ProviderSelectionLocationState | null)?.amount ?? 0;
   const walletAddress = selectedAccount?.address ?? '';
   const assetId = selectedToken?.assetId
     ? normalizeAssetIdForApi(selectedToken.assetId)
@@ -319,6 +315,10 @@ export function RampsProviderSelectionModal({
     ],
   );
 
+  const handleBack = useCallback(() => {
+    navigate(PREVIOUS_ROUTE);
+  }, [navigate]);
+
   const handleProviderSelect = useCallback(
     async (provider: Provider) => {
       if (isSelectingRef.current) {
@@ -335,21 +335,22 @@ export function RampsProviderSelectionModal({
           previousProvider: selectedProvider?.name,
           location: 'Provider Selection',
         });
-        onClose();
+        navigate(PREVIOUS_ROUTE);
       } catch {
         isSelectingRef.current = false;
         setIsSelecting(false);
       }
     },
     [
-      onClose,
+      navigate,
       selectedProvider?.name,
       setSelectedProvider,
       trackProviderSelected,
     ],
   );
 
-  const title = t('rampsChooseProvider');
+  const title = t('rampsProviders');
+  const backButtonTestId = 'ramps-provider-selection-back';
 
   let testId = 'ramps-provider-selection-screen';
   let body: React.ReactNode;
@@ -368,6 +369,11 @@ export function RampsProviderSelectionModal({
   } else {
     body = (
       <>
+        {showQuotes && selectedPaymentMethod ? (
+          <RampsQuotesForPaymentMethodBanner
+            paymentMethodName={selectedPaymentMethod.name}
+          />
+        ) : null}
         {quotesErrorMessage ? (
           <Box className="px-4 pb-2">
             <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
@@ -406,28 +412,15 @@ export function RampsProviderSelectionModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent
-        size={ModalContentSize.Sm}
-        className="items-center"
-        modalDialogProps={{
-          className: 'border-0',
-          'data-testid': testId,
-        }}
-      >
-        <ModalHeader
-          onClose={onClose}
-          closeButtonProps={{ ariaLabel: t('close') }}
-        >
-          <Text variant={TextVariant.HeadingSm} textAlign={TextAlign.Center}>
-            {title}
-          </Text>
-        </ModalHeader>
-        {body}
-      </ModalContent>
-    </Modal>
+    <RampsSelectionPage
+      title={title}
+      onBack={handleBack}
+      testId={testId}
+      backButtonTestId={backButtonTestId}
+    >
+      {body}
+    </RampsSelectionPage>
   );
 }
 
-export default RampsProviderSelectionModal;
+export default RampsProviderSelectionScreen;

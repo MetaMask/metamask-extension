@@ -10,12 +10,25 @@ import type {
 } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { RampsProviderSelectionModal } from './provider-selection';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { RampsProviderSelectionScreen } from './provider-selection';
 
-const mockOnClose = jest.fn();
+const mockNavigate = jest.fn();
 const mockSetSelectedProvider = jest.fn().mockResolvedValue(undefined);
 const mockUseRampsQuotes = jest.fn();
+let mockLocationState: { amount?: number } | null = null;
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => ({
+    pathname: '/ramps/provider-selection',
+    search: '',
+    hash: '',
+    state: mockLocationState,
+    key: 'default',
+  }),
+}));
 
 jest.mock('../../../hooks/ramps/useRampsController', () => ({
   useRampsController: jest.fn(),
@@ -101,9 +114,10 @@ const defaultControllerState = {
   },
 };
 
-describe('RampsProviderSelectionModal', () => {
+describe('RampsProviderSelectionScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLocationState = null;
     mockSetSelectedProvider.mockResolvedValue(undefined);
     useRampsController.mockReturnValue(defaultControllerState);
     mockUseRampsQuotes.mockReturnValue({
@@ -118,12 +132,13 @@ describe('RampsProviderSelectionModal', () => {
   });
 
   it('matches snapshot with providers', () => {
-    const { baseElement } = renderWithProvider(
-      <RampsProviderSelectionModal isOpen onClose={mockOnClose} amount={0} />,
+    const { container } = renderWithProvider(
+      <RampsProviderSelectionScreen />,
       createStore(),
+      '/ramps/provider-selection',
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('matches snapshot while loading', () => {
@@ -134,12 +149,13 @@ describe('RampsProviderSelectionModal', () => {
       selectedProvider: null,
     });
 
-    const { baseElement } = renderWithProvider(
-      <RampsProviderSelectionModal isOpen onClose={mockOnClose} amount={0} />,
+    const { container } = renderWithProvider(
+      <RampsProviderSelectionScreen />,
       createStore(),
+      '/ramps/provider-selection',
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('matches snapshot when empty', () => {
@@ -149,33 +165,22 @@ describe('RampsProviderSelectionModal', () => {
       selectedProvider: null,
     });
 
-    const { baseElement } = renderWithProvider(
-      <RampsProviderSelectionModal isOpen onClose={mockOnClose} amount={0} />,
+    const { container } = renderWithProvider(
+      <RampsProviderSelectionScreen />,
       createStore(),
+      '/ramps/provider-selection',
     );
 
-    expect(baseElement).toMatchSnapshot();
-  });
-
-  it('renders nothing when closed', () => {
-    renderWithProvider(
-      <RampsProviderSelectionModal
-        isOpen={false}
-        onClose={mockOnClose}
-        amount={0}
-      />,
-      createStore(),
-    );
-
-    expect(
-      screen.queryByTestId('ramps-provider-selection-screen'),
-    ).not.toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('fetches quotes for all providers when amount and payment method exist', () => {
+    mockLocationState = { amount: 100 };
+
     renderWithProvider(
-      <RampsProviderSelectionModal isOpen onClose={mockOnClose} amount={100} />,
+      <RampsProviderSelectionScreen />,
       createStore(),
+      '/ramps/provider-selection',
     );
 
     expect(mockUseRampsQuotes).toHaveBeenCalledWith(
@@ -189,6 +194,7 @@ describe('RampsProviderSelectionModal', () => {
   });
 
   it('keeps the provider list visible while quotes load', () => {
+    mockLocationState = { amount: 100 };
     mockUseRampsQuotes.mockReturnValue({
       data: null,
       loading: true,
@@ -199,9 +205,10 @@ describe('RampsProviderSelectionModal', () => {
       getBuyWidgetData: jest.fn(),
     });
 
-    const { baseElement } = renderWithProvider(
-      <RampsProviderSelectionModal isOpen onClose={mockOnClose} amount={100} />,
+    const { container } = renderWithProvider(
+      <RampsProviderSelectionScreen />,
       createStore(),
+      '/ramps/provider-selection',
     );
 
     expect(
@@ -213,10 +220,11 @@ describe('RampsProviderSelectionModal', () => {
     expect(screen.getAllByTestId('ramps-quote-display-loading')).toHaveLength(
       2,
     );
-    expect(baseElement).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('matches snapshot with provider quotes', () => {
+    mockLocationState = { amount: 100 };
     mockUseRampsQuotes.mockReturnValue({
       data: {
         success: [transakQuote],
@@ -237,18 +245,20 @@ describe('RampsProviderSelectionModal', () => {
       getBuyWidgetData: jest.fn(),
     });
 
-    const { baseElement } = renderWithProvider(
-      <RampsProviderSelectionModal isOpen onClose={mockOnClose} amount={100} />,
+    const { container } = renderWithProvider(
+      <RampsProviderSelectionScreen />,
       createStore(),
+      '/ramps/provider-selection',
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
-  it('selects a provider and closes the modal', async () => {
+  it('selects a provider and navigates back', async () => {
     renderWithProvider(
-      <RampsProviderSelectionModal isOpen onClose={mockOnClose} amount={0} />,
+      <RampsProviderSelectionScreen />,
       createStore(),
+      '/ramps/provider-selection',
     );
 
     await act(async () => {
@@ -258,18 +268,17 @@ describe('RampsProviderSelectionModal', () => {
     });
 
     expect(mockSetSelectedProvider).toHaveBeenCalledWith(moonpay);
-    expect(mockOnClose).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
-  it('closes when the close button is clicked', () => {
+  it('navigates back from the header', () => {
     renderWithProvider(
-      <RampsProviderSelectionModal isOpen onClose={mockOnClose} amount={0} />,
+      <RampsProviderSelectionScreen />,
       createStore(),
+      '/ramps/provider-selection',
     );
 
-    fireEvent.click(
-      screen.getByRole('button', { name: messages.close.message }),
-    );
-    expect(mockOnClose).toHaveBeenCalled();
+    fireEvent.click(screen.getByTestId('ramps-provider-selection-back'));
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 });

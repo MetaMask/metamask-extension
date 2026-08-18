@@ -101,10 +101,7 @@ function translateDelayToken(
 }
 
 /**
- * Formats a payment method delay array for display (e.g. "5-10 mins").
- *
- * Ranges are joined tight to the dash ("1-2 days") while the unit keeps its
- * space.
+ * Formats a payment method delay array for display (e.g. "5 - 10 mins").
  *
  * @param delay - Delay bounds in minutes, when present.
  * @param t - i18n translate function.
@@ -118,12 +115,7 @@ export function formatPaymentMethodDelay(
     return null;
   }
 
-  return timeToDescription(delay).reduce<string>((acc, token, index) => {
-    const text = translateDelayToken(token, t);
-    if (index === 0) {
-      return text;
-    }
-    const isTightJoin = token === 'separator' || acc.endsWith('-');
-    return isTightJoin ? `${acc}${text}` : `${acc} ${text}`;
-  }, '');
+  return timeToDescription(delay)
+    .map((token) => translateDelayToken(token, t))
+    .join(' ');
 }
