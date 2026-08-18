@@ -152,9 +152,6 @@
   "accountsConnected": {
     "message": "账户已连接"
   },
-  "accountsPermissionsTitle": {
-    "message": "查看您的账户并建议交易"
-  },
   "accountsSmallCase": {
     "message": "账户"
   },
@@ -2795,9 +2792,6 @@
   "connectAHardwareWalletDescription": {
     "message": "使用 USB 或二维码"
   },
-  "connectAccounts": {
-    "message": "连接账户"
-  },
   "connectHardwareDevice": {
     "message": "连接$1",
     "description": "$1 is the hardware wallet device name"
@@ -2841,18 +2835,6 @@
   },
   "connectedSnaps": {
     "message": "连接的 Snap"
-  },
-  "connectedWithAccount": {
-    "message": "已连接 $1 账户",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "已与 $1 连接",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "已连接 $1 网络",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "连接中……"
@@ -3449,9 +3431,6 @@
   "disconnectAllSitesSuccess": {
     "message": "所有去中心化应用均已成功断开连接。"
   },
-  "disconnectMessage": {
-    "message": "这将断开您与此站点的连接"
-  },
   "disconnectPrompt": {
     "message": "断开连接 $1"
   },
@@ -3627,9 +3606,6 @@
   },
   "editNetworkLink": {
     "message": "编辑原始网络"
-  },
-  "editNetworksTitle": {
-    "message": "编辑网络"
   },
   "editNonceField": {
     "message": "编辑 nonce"
@@ -5257,10 +5233,6 @@
   "more": {
     "message": "展开"
   },
-  "moreAccounts": {
-    "message": "+ 另外 $1 个账户",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "展开"
   },
@@ -5717,9 +5689,6 @@
   "networkOptions": {
     "message": "网络选项"
   },
-  "networkPermissionToast": {
-    "message": "网络许可已更新"
-  },
   "networkStatus": {
     "message": "网络状态"
   },
@@ -5754,9 +5723,6 @@
     "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
-    "message": "网络"
-  },
-  "networksSmallCase": {
     "message": "网络"
   },
   "new": {
@@ -8456,9 +8422,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "这是要求您确认的网站。"
-  },
-  "requestingFor": {
-    "message": "请求"
   },
   "required": {
     "message": "必需"

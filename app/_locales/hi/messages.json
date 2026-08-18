@@ -152,9 +152,6 @@
   "accountsConnected": {
     "message": "अकाउंट्स कनेक्ट किए गए।"
   },
-  "accountsPermissionsTitle": {
-    "message": "आपके अकाउंट को देखकर ट्रांसेक्शन का सुझाव दें"
-  },
   "accountsSmallCase": {
     "message": "एकाउंट्स"
   },
@@ -2795,9 +2792,6 @@
   "connectAHardwareWalletDescription": {
     "message": "USB या QR कोड का उपयोग करना"
   },
-  "connectAccounts": {
-    "message": "खातों को कनेक्ट करें"
-  },
   "connectHardwareDevice": {
     "message": "$1 को कनेक्ट करें",
     "description": "$1 is the hardware wallet device name"
@@ -2841,18 +2835,6 @@
   },
   "connectedSnaps": {
     "message": "कनेक्टेड Snaps"
-  },
-  "connectedWithAccount": {
-    "message": "$1 अकाउंट्स कनेक्ट किए गए",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "$1 से कनेक्ट किए गए",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 नेटवर्क कनेक्ट किए गए",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "कनेक्ट किया जा रहा है"
@@ -3446,9 +3428,6 @@
   "disconnectAllSitesSuccess": {
     "message": "सभी dapps सही से डिसकनेक्ट किए गए।"
   },
-  "disconnectMessage": {
-    "message": "यह आपको इस साइट से डिस्कनेक्ट कर देगा"
-  },
   "disconnectPrompt": {
     "message": "$1 डिस्कनेक्ट करें"
   },
@@ -3621,9 +3600,6 @@
   },
   "editNetworkLink": {
     "message": "मूल नेटवर्क को बदलें"
-  },
-  "editNetworksTitle": {
-    "message": "नेटवर्क बदलें"
   },
   "editNonceField": {
     "message": "Nonce बदलें"
@@ -5251,10 +5227,6 @@
   "more": {
     "message": "अधिक"
   },
-  "moreAccounts": {
-    "message": "+ $1 और अकाउंट",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "अधिक"
   },
@@ -5711,9 +5683,6 @@
   "networkOptions": {
     "message": "नेटवर्क के विकल्प"
   },
-  "networkPermissionToast": {
-    "message": "नेटवर्क अनुमतियाँ अपडेट की गईं"
-  },
   "networkStatus": {
     "message": "नेटवर्क का स्टेटस"
   },
@@ -5748,9 +5717,6 @@
     "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
-    "message": "नेटवर्क"
-  },
-  "networksSmallCase": {
     "message": "नेटवर्क"
   },
   "new": {
@@ -8450,9 +8416,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "यह वही साइट है जो आपका कन्फर्मेशन मांग रही है।"
-  },
-  "requestingFor": {
-    "message": "के लिए अनुरोध कर रहे हैं"
   },
   "required": {
     "message": "जरुरी"

@@ -152,9 +152,6 @@
   "accountsConnected": {
     "message": "Συνδεδεμένοι λογαριασμοί"
   },
-  "accountsPermissionsTitle": {
-    "message": "Δείτε τους λογαριασμούς σας και προτείνετε συναλλαγές"
-  },
   "accountsSmallCase": {
     "message": "λογαριασμοί"
   },
@@ -2795,9 +2792,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Χρήση USB ή κωδικού QR"
   },
-  "connectAccounts": {
-    "message": "Σύνδεση λογαριασμών"
-  },
   "connectHardwareDevice": {
     "message": "Σύνδεση $1",
     "description": "$1 is the hardware wallet device name"
@@ -2841,18 +2835,6 @@
   },
   "connectedSnaps": {
     "message": "Συνδεδεμένα Snaps"
-  },
-  "connectedWithAccount": {
-    "message": "$1 λογαριασμοί συνδεδεμένοι",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Συνδέθηκε με το $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 δίκτυα συνδεδεμένα",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Σύνδεση"
@@ -3449,9 +3431,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Όλες οι αποκεντρωμένες εφαρμογές (dapps) αποσυνδέθηκαν με επιτυχία."
   },
-  "disconnectMessage": {
-    "message": "Αυτό θα σας αποσυνδέσει από αυτόν το ιστότοπο"
-  },
   "disconnectPrompt": {
     "message": "Αποσύνδεση $1"
   },
@@ -3627,9 +3606,6 @@
   },
   "editNetworkLink": {
     "message": "επεξεργαστείτε το αρχικό δίκτυο"
-  },
-  "editNetworksTitle": {
-    "message": "Επεξεργασία δικτύων"
   },
   "editNonceField": {
     "message": "Επεξεργασία Nonce"
@@ -5257,10 +5233,6 @@
   "more": {
     "message": "περισσότερα"
   },
-  "moreAccounts": {
-    "message": "+ $1 περισσότεροι λογαριασμοί",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "Περισσότερα"
   },
@@ -5717,9 +5689,6 @@
   "networkOptions": {
     "message": "Επιλογές δικτύου"
   },
-  "networkPermissionToast": {
-    "message": "Ενημερωμένες άδειες χρήσης δικτύων"
-  },
   "networkStatus": {
     "message": "Κατάσταση δικτύου"
   },
@@ -5755,9 +5724,6 @@
   },
   "networks": {
     "message": "Δίκτυα"
-  },
-  "networksSmallCase": {
-    "message": "δίκτυα"
   },
   "new": {
     "message": "Νέα!"
@@ -8456,9 +8422,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Αυτός είναι ο ιστότοπος που ζητά την επιβεβαίωσή σας."
-  },
-  "requestingFor": {
-    "message": "Ζητάει για το"
   },
   "required": {
     "message": "Απαιτείται"
