@@ -4,23 +4,29 @@ type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
 export type HeldFixturesContext = Parameters<WithFixturesTestSuite>[0];
 
-export type HeldFixturesSession = {
-  context: HeldFixturesContext;
+export type HeldSession<TContext> = {
+  context: TContext;
   release: (error?: unknown) => Promise<void>;
 };
 
+export type HeldFixturesSession = HeldSession<HeldFixturesContext>;
+
+type HeldSessionRun<TContext> = (
+  callback: (context: TContext) => Promise<void>,
+) => Promise<void>;
+
 /**
- * Starts `withFixtures` and keeps the browser session open until `release`
- * is called. Pair with Mocha `before`/`after` so several `it` blocks can
- * share one extension start.
+ * Starts a fixture runner and keeps it open until `release` is called.
+ * Pair with Mocha `before`/`after` so several `it` blocks can share one
+ * extension start.
  *
- * @param options - The same options as `withFixtures`.
+ * @param run - Fixture runner that calls `callback` with the live context.
  * @returns The live fixture context and a `release` function that lets
- * `withFixtures` finish (and tear down) once the suite is done.
+ * the runner finish (and tear down) once the suite is done.
  */
-export async function startHeldFixtures(
-  options: WithFixturesOptions,
-): Promise<HeldFixturesSession> {
+export async function startHeldSession<TContext>(
+  run: HeldSessionRun<TContext>,
+): Promise<HeldSession<TContext>> {
   let resolveHold: () => void = () => undefined;
   let rejectHold: (error: unknown) => void = () => undefined;
   const hold = new Promise<void>((resolve, reject) => {
@@ -28,14 +34,14 @@ export async function startHeldFixtures(
     rejectHold = reject;
   });
 
-  let resolveContext: (context: HeldFixturesContext) => void = () => undefined;
+  let resolveContext: (context: TContext) => void = () => undefined;
   let rejectContext: (error: unknown) => void = () => undefined;
-  const contextReady = new Promise<HeldFixturesContext>((resolve, reject) => {
+  const contextReady = new Promise<TContext>((resolve, reject) => {
     resolveContext = resolve;
     rejectContext = reject;
   });
 
-  const fixturesRun = withFixtures(options, async (context) => {
+  const fixturesRun = run(async (context) => {
     resolveContext(context);
     await hold;
   }).catch((error: unknown) => {
@@ -60,4 +66,19 @@ export async function startHeldFixtures(
     await fixturesRun.catch(() => undefined);
     throw error;
   }
+}
+
+/**
+ * Starts `withFixtures` and keeps the browser session open until `release`
+ * is called. Pair with Mocha `before`/`after` so several `it` blocks can
+ * share one extension start.
+ *
+ * @param options - The same options as `withFixtures`.
+ * @returns The live fixture context and a `release` function that lets
+ * `withFixtures` finish (and tear down) once the suite is done.
+ */
+export async function startHeldFixtures(
+  options: WithFixturesOptions,
+): Promise<HeldFixturesSession> {
+  return startHeldSession((callback) => withFixtures(options, callback));
 }
