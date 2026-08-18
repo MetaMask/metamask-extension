@@ -1988,29 +1988,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "अगर आप ऐसा करना जारी रखते हैं, तो Blur पर आपके द्वारा सूचीबद्ध सभी एसेट्स खतरे में पड़ सकती हैं।"
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "आप एक बुरी नीयत वाली साइट के साथ इंटरैक्ट कर रहे हैं। अगर आप ऐसा करना जारी रखेंगे, तो आप अपनी एसेट्स खो देंगे।"
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "अगर आप ऐसा करना जारी रखते हैं, तो OpenSea पर आपके द्वारा सूचीबद्ध सभी एसेट्स खतरे में पड़ सकती हैं।"
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो आप अपनी एसेट्स खो सकते हैं। हम सुझाव देते हैं कि आप इस अनुरोध को कैंसिल कर दें।"
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "आप अपनी एसेट्स किसी स्कैमर को भेज रहे हैं। अगर आप ऐसा करना जारी रखेंगे, तो आप उन एसेट्स को खो देंगे।"
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो आप एक स्कैमर को अपनी एसेट्स निकालने और खर्च करने की अनुमति दे रहे हैं। आपको वे वापस नहीं मिलेंगे।"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "यदि आप इस रिक्वेस्ट को एप्रूव करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है।"
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "यदि आप इस रिक्वेस्ट को स्वीकार करते हैं, तो कोई Blur पर लिस्टेड आपके सारे एसेट चुरा सकता है।"
   },
   "blockaidDescriptionErrored": {
     "message": "किसी समस्या के कारण, हम सुरक्षा अलर्ट की जाँच नहीं कर सके। केवल तभी जारी रखें जब आपको इसमें शामिल प्रत्येक पते पर भरोसा हो।"
@@ -2018,23 +1997,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "आप एक बुरी नीयत वाले डोमेन से इंटरैक्ट कर रहे हैं। यदि आप इस रिक्वेस्ट को एप्रूव करते हैं, तो आप अपने सारे एसेट गंवा सकते हैं।"
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "यदि आप इस अनुरोध को एप्रूव करते हैं, तो आप अपने सारे एसेट गंवा सकते हैं।"
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "यदि आप इस अनुरोध को एप्रूव करते हैं, तो कोई OpenSea पर लिस्टेड आपके सारे एसेट चुरा सकता है।"
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "यदि आप इस रिक्वेस्ट को एप्रूव करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा लेगी।"
   },
-  "blockaidTitleDeceptive": {
-    "message": "इस अनुरोध को धोखेबाजी के उद्देश्य से भेजा गया है"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "सावधान रहें"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "इस रिक्वेस्ट पर एकदम से भरोसा नहीं किया जा सकता"
   },
   "blockies": {
     "message": "ब्लॉकी"

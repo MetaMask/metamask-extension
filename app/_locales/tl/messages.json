@@ -1988,29 +1988,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Kung magpapatuloy ka, maaaring malagay sa panganib ang lahat ng asset na ini-list mo sa Blur."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Nakikipag-ugnayan ka sa isang site na may masamang hangarin. Kapag magpapatuloy ka, mawawala sa iyo ang mga asset mo."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Kung magpapatuloy ka, maaaring malagay sa panganib ang lahat ng asset na ini-list mo sa OpenSea."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Kapag kinumpirma mo ang kahilingang ito, maaaring mawala sa iyo ang mga asset mo. Inirerekomenda namin na kanselahin mo ang kahilingang ito."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Ipapadala mo ang iyong mga asset sa scammer. Kapag nagpatuloy ka, mawawala sa iyo ang mga asset na iyon."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Kapag kinumpirma mo ang kahilingang ito, pinapayagan mo ang scammer na i-withdraw at gastusin ang mga asset mo. Hindi mo na mababawi ang mga iyon."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Kung aaprubahan mo ang kahilingang ito, maaaring kunin ng third party na kilala sa mga panloloko ang lahat asset mo."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Kung aaprubahan mo ang kahilingang ito, posibleng nakawin ng ibang tao ang mga asset mo na nakalista sa Blur."
   },
   "blockaidDescriptionErrored": {
     "message": "Dahil sa error, hindi namin masuri para sa alerto sa seguridad. Magpatuloy lamang kung pinagkakatiwalan mo ang kaugnay na address."
@@ -2018,23 +1997,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "Nakikipag-ugnayan ka sa isang mapaminsalang domain. Kung aaprubahan mo ang kahilingang ito, posibleng mawala sa iyo ang mga asset mo."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Kung aaprubahan mo ang kahilingang ito, posibleng mawala sa iyo ang mga asset mo."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Kung aaprubahan mo ang kahilingang ito, posibleng nakawin ng ibang tao ang mga asset mo na nakalista sa OpenSea."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "Kung aaprubahan mo ang kahilingang ito, kukunin ng third party na kilala sa mga panloloko ang lahat ng asset mo."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Isa itong mapanlinlang na kahilingan"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "Maging maingat"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Isa itong kahina-hinalang kahilingan"
   },
   "blockies": {
     "message": "Mga Blocky"

@@ -1988,29 +1988,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Wenn Sie so weitermachen, könnten alle von Ihnen auf Blur aufgeführten Assets gefährdet sein."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Sie interagieren mit einer schädlichen Website. Wenn Sie fortfahren, werden Sie Ihre Assets verlieren."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Wenn Sie fortfahren, könnten von Ihnen auf OpenSea aufgeführten Assets gefährdet sein."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Wenn Sie diese Anfrage bestätigen, könnten Sie Ihre Assets verlieren. Wir empfehlen Ihnen, diese Anfrage abzubrechen."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Sie senden Ihre Assets an einen Betrüger. Wenn Sie fortfahren, werden Sie diese Assets verlieren."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Wenn Sie diese Anfrage bestätigen, erlauben Sie einem Betrüger, sich Ihre Assets abzahlen zu lassen und auszugeben. Sie erhalten diese nicht zurück."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Wenn Sie diese Anfrage genehmigen, könnten Dritte, die für Betrügereien bekannt sind, alle Ihre Assets an sich reißen."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Wenn Sie diese Anfrage genehmigen, kann jemand Ihre auf Blur aufgeführten Assets stehlen."
   },
   "blockaidDescriptionErrored": {
     "message": "Aufgrund eines Fehlers konnten wir nicht auf Sicherheitsalarme prüfen. Fahren Sie nur fort, wenn Sie jeder involvierten Adresse vertrauen."
@@ -2018,23 +1997,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "Sie haben es mit einer bösartigen Domain zu tun. Wenn Sie diese Anfrage genehmigen, könnten Sie Ihre Assets verlieren."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Wenn Sie diese Anfrage genehmigen, könnten Sie Ihre Assets verlieren."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Wenn Sie diese Anfrage genehmigen, kann jemand Ihre auf OpenSea aufgeführten Assets stehlen."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "Wenn Sie diese Anfrage genehmigen, wird eine dritte Partei, die für Betrügereien bekannt ist, alle Ihre Assets an sich reißen."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Dies ist eine betrügerische Anfrage."
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "Seien Sie vorsichtig"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Dies ist eine verdächtige Anfrage."
   },
   "blockies": {
     "message": "Blockies"

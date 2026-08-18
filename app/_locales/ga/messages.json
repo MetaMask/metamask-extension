@@ -689,29 +689,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Má leanann tú ar aghaidh, d’fhéadfadh na sócmhainní go léir atá liostaithe agat ar Blur a bheith i mbaol."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Tá tú ag idirghníomhú le suíomh mailíseach. Má leanann tú ar aghaidh, caillfidh tú do shócmhainní."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Má leanann tú ar aghaidh, d’fhéadfadh na sócmhainní go léir atá liostaithe agat ar OpenSea a bheith i mbaol."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Má dheimhníonn tú an t-iarratas seo, d’fhéadfá do shócmhainní a chailleadh. Molaimid duit an t-iarratas seo a chealú."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Tá tú ag seoladh do shócmhainní chuig camscéimeoir. Má leanann tú ar aghaidh, caillfidh tú na sócmhainní sin."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Má dheimhníonn tú an t-iarratas seo, tá tú ag ligean do chalaoiseoir do shócmhainní a tharraingt siar agus a chaitheamh. Ní bhfaighidh tú ar ais iad."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Má cheadaíonn tú an t-iarratas seo, d’fhéadfadh tríú páirtí atá aitheanta as camscéimeanna do shócmhainní go léir a thógáil."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Má cheadaíonn tú an t-iarratas seo, is féidir le duine éigin do shócmhainní atá liostaithe ar Blur a ghoid."
   },
   "blockaidDescriptionErrored": {
     "message": "Mar gheall ar earráid, ní raibh muid in ann foláirimh slándála a sheiceáil. Ná lean ar aghaidh ach amháin má tá muinín agat as gach seoladh lena mbaineann."
@@ -719,23 +698,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "Tá tú ag idirghníomhú le fearann ​​mailíseach. Má cheadaíonn tú an t-iarratas seo, d'fhéadfá do shócmhainní a chailleadh."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Má cheadaíonn tú an t-iarratas seo, d’fhéadfá do shócmhainní a chailleadh."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Má cheadaíonn tú an iarratas seo, is féidir le duine éigin do shócmhainní atá liostaithe ar OpenSea a ghoid."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "Má cheadaíonn tú an t-iarratas seo, tógfaidh tríú páirtí atá aitheanta as camscéimeanna do shócmhainní go léir."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Is iarratas mealltach é seo"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "Bí cúramach"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Is iarratas amhrasach é seo"
   },
   "blockies": {
     "message": "Blocaigh"
