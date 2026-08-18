@@ -78,6 +78,7 @@ import {
   PERPS_WITHDRAW_ROUTE,
   ACTIVITY_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
+  MONEY_HOME_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -147,6 +148,7 @@ import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/se
 import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
+import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import BatchSell from '../batch-sell/batch-sell-page';
 import { getConnectingLabel, setTheme } from './utils';
@@ -269,6 +271,7 @@ const PerpsTransactionDetailsPage = mmLazy(
 );
 const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
 const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
+const MoneyHomePage = mmLazy(() => import('../money/index.ts'));
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -532,10 +535,11 @@ export const routeConfig = [
         ),
         children: contactsRoutes,
       },
-      {
+      createRouteWithMessenger({
         path: DEFAULT_ROUTE,
+        capabilities: HOME_ROUTE_ALLOWED_CAPABILITIES,
         element: <Home />,
-      },
+      }),
       {
         path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
         element: <TransactionDetailsRoute />,
@@ -648,6 +652,10 @@ export const routeConfig = [
           {
             path: PERPS_HOME_PAGE_ROUTE,
             element: <PerpsPage />,
+          },
+          {
+            path: MONEY_HOME_ROUTE,
+            element: <MoneyHomePage />,
           },
         ],
       },

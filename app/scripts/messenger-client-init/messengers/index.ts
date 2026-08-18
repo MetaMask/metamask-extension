@@ -33,10 +33,13 @@ import {
 } from './core-backend';
 import {
   getMultichainBalancesControllerMessenger,
+  getMultichainBalancesControllerInitMessenger,
   getMultichainTransactionsControllerMessenger,
   getMultichainAssetsControllerMessenger,
+  getMultichainAssetsControllerInitMessenger,
   getMultichainNetworkControllerMessenger,
   getMultichainAssetsRatesControllerMessenger,
+  getMultichainAssetsRatesControllerInitMessenger,
 } from './multichain';
 import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
 import {
@@ -83,15 +86,8 @@ import {
   getSmartTransactionsControllerInitMessenger,
   getSmartTransactionsControllerMessenger,
 } from './smart-transactions-controller-messenger';
-import {
-  getShieldControllerInitMessenger,
-  getShieldControllerMessenger,
-} from './shield/shield-controller-messenger';
-import {
-  getSubscriptionControllerInitMessenger,
-  getSubscriptionControllerMessenger,
-} from './subscription';
 import { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
+import { getNetworkConnectionBannerControllerMessenger } from './network-connection-banner';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -120,10 +116,6 @@ import {
   getCurrencyRateControllerInitMessenger,
   getCurrencyRateControllerMessenger,
 } from './currency-rate-controller-messenger';
-import {
-  getEnsControllerInitMessenger,
-  getEnsControllerMessenger,
-} from './ens-controller-messenger';
 import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
@@ -160,7 +152,7 @@ import {
 } from './permission-controller-messenger';
 import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
-import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
+import { getShieldSubscriptionServiceMessenger } from './subscription/shield-subscription-service-messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
@@ -187,11 +179,6 @@ import {
   getUserOperationControllerMessenger,
 } from './user-operation-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
-import {
-  getClaimsControllerInitMessenger,
-  getClaimsControllerMessenger,
-} from './claims/claims-controller-messenger';
-import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
@@ -242,11 +229,6 @@ export {
   getEncryptionPublicKeyControllerInitMessenger,
 } from './encryption-public-key-controller-messenger';
 export { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
-export type { EnsControllerInitMessenger } from './ens-controller-messenger';
-export {
-  getEnsControllerMessenger,
-  getEnsControllerInitMessenger,
-} from './ens-controller-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
@@ -387,12 +369,8 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getBridgeStatusControllerMessenger,
     getInitMessenger: noop,
   },
-  ClaimsController: {
-    getMessenger: getClaimsControllerMessenger,
-    getInitMessenger: getClaimsControllerInitMessenger,
-  },
-  ClaimsService: {
-    getMessenger: getClaimsServiceMessenger,
+  NetworkConnectionBannerController: {
+    getMessenger: getNetworkConnectionBannerControllerMessenger,
     getInitMessenger: noop,
   },
   ClientController: {
@@ -455,10 +433,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getEncryptionPublicKeyManagerMessenger,
     getInitMessenger: noop,
   },
-  EnsController: {
-    getMessenger: getEnsControllerMessenger,
-    getInitMessenger: getEnsControllerInitMessenger,
-  },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
@@ -509,15 +483,15 @@ export const MESSENGER_FACTORIES = {
   },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainAssetsControllerInitMessenger,
   },
   MultichainAssetsRatesController: {
     getMessenger: getMultichainAssetsRatesControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainAssetsRatesControllerInitMessenger,
   },
   MultichainBalancesController: {
     getMessenger: getMultichainBalancesControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainBalancesControllerInitMessenger,
   },
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,
@@ -583,10 +557,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getSentinelApiServiceMessenger,
     getInitMessenger: noop,
   },
-  ShieldController: {
-    getMessenger: getShieldControllerMessenger,
-    getInitMessenger: getShieldControllerInitMessenger,
-  },
   SignatureController: {
     getMessenger: getSignatureControllerMessenger,
     getInitMessenger: getSignatureControllerInitMessenger,
@@ -623,12 +593,8 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getSubjectMetadataControllerMessenger,
     getInitMessenger: noop,
   },
-  SubscriptionController: {
-    getMessenger: getSubscriptionControllerMessenger,
-    getInitMessenger: getSubscriptionControllerInitMessenger,
-  },
-  SubscriptionService: {
-    getMessenger: getSubscriptionServiceMessenger,
+  ShieldSubscriptionService: {
+    getMessenger: getShieldSubscriptionServiceMessenger,
     getInitMessenger: noop,
   },
   RewardsDataService: {

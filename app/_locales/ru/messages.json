@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "Все сети"
   },
-  "allPermissions": {
-    "message": "Соединения dapp"
-  },
   "allPopularNetworks": {
     "message": "Все популярные сети"
   },
@@ -3096,9 +3093,6 @@
   },
   "customerSupport": {
     "message": "поддержка пользователя"
-  },
-  "dappConnections": {
-    "message": "Соединения dapp"
   },
   "dappSuggested": {
     "message": "Рекомендовано сайтом"
@@ -5876,9 +5870,6 @@
   },
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
-  },
-  "noConnectionDescription": {
-    "message": "Для подключения к сайту найдите и нажмите кнопку «подключиться». Помните, что MetaMask может подключаться только к сайтам в web3"
   },
   "noDefaultAddress": {
     "message": "Адрес № $1",
@@ -10149,9 +10140,6 @@
   },
   "singleNetwork": {
     "message": "1 сеть"
-  },
-  "sites": {
-    "message": "Сайты"
   },
   "siweIssued": {
     "message": "Выпущено"

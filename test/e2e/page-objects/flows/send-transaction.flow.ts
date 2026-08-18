@@ -119,7 +119,9 @@ export const validateBalanceAndActivity = async (
   expectedBalance: string,
   expectedActivityEntries = 1,
 ): Promise<void> => {
-  await new HomePage(driver).checkExpectedBalanceIsDisplayed(expectedBalance);
+  const homePage = new HomePage(driver);
+  await homePage.goToHomePage();
+  await homePage.checkExpectedBalanceIsDisplayed(expectedBalance);
 
   const activityTab = new ActivityTab(driver);
   await activityTab.goToActivityList();
