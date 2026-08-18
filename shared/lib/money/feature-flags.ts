@@ -22,6 +22,6 @@ export function isMoneyAccountEnabled(
   return (
     validatedVersionGatedFeatureFlag(
       remoteFeatureFlags?.[MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME],
-    ) ?? true
+    ) ?? false
   );
 }
