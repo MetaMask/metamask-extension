@@ -33,10 +33,12 @@ export class PerpsMarketListPage {
 
   private readonly headerBackButton = { testId: 'back-button' };
 
-  private readonly marketListView = { testId: 'market-list-view' };
-
   private readonly marketRow = {
     xpath: "//*[starts-with(@data-testid,'market-row-')]",
+  };
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-perps-market-list',
   };
 
   /**
@@ -72,7 +74,7 @@ export class PerpsMarketListPage {
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
       this.filterSortRow,
-      this.marketListView,
+      this.parentSelector,
     ]);
   }
 
@@ -100,6 +102,19 @@ export class PerpsMarketListPage {
    */
   private getFilterOptionSelector(optionId: string): { testId: string } {
     return { testId: `filter-select-option-${optionId}` };
+  }
+
+  /**
+   * Checks whether the Perps Market List page is visible.
+   *
+   * @param timeout - Maximum time in milliseconds to wait for the page.
+   * @returns Whether the page is present and visible.
+   */
+  async isPageLoaded(timeout = 2000): Promise<boolean> {
+    return this.driver.isElementPresentAndVisible(
+      this.parentSelector,
+      timeout,
+    );
   }
 
   /**
