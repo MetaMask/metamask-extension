@@ -8385,10 +8385,6 @@
     "message": "Change provider",
     "description": "Inline link in the payment method footer, e.g. 'Buying via Transak. Change provider'"
   },
-  "rampsChooseProvider": {
-    "message": "Choose provider",
-    "description": "Title of the provider selection modal"
-  },
   "rampsEligibilityFailedDescription": {
     "message": "Please try again, or contact support if this keeps happening."
   },
