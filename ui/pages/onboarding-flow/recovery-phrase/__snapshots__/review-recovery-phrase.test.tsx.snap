@@ -80,7 +80,7 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
         class="flex flex-col gap-4"
       >
         <div
-          class="bg-section recovery-phrase__secret rounded-lg w-full"
+          class="recovery-phrase__secret rounded-lg w-full"
         >
           <div
             class="items-center justify-center recovery-phrase__chips grid recovery-phrase__chips--hidden"
@@ -382,7 +382,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
         class="flex flex-col gap-4"
       >
         <div
-          class="bg-section recovery-phrase__secret rounded-lg w-full"
+          class="recovery-phrase__secret rounded-lg w-full"
         >
           <div
             class="items-center justify-center recovery-phrase__chips grid recovery-phrase__chips--hidden"
@@ -695,7 +695,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
         class="flex flex-col gap-4"
       >
         <div
-          class="bg-section recovery-phrase__secret rounded-lg w-full"
+          class="recovery-phrase__secret rounded-lg w-full"
         >
           <div
             class="items-center justify-center recovery-phrase__chips grid"

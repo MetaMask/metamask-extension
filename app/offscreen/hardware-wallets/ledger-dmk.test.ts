@@ -4,6 +4,7 @@ import { LedgerDmkBridgeHandler } from './ledger-dmk';
 const mockLegacyInit = jest.fn();
 const mockLegacyDestroy = jest.fn();
 const mockLegacyHandleAction = jest.fn();
+const mockLegacyForceReset = jest.fn();
 
 jest.mock('./ledger', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -12,6 +13,7 @@ jest.mock('./ledger', () => ({
     init: mockLegacyInit,
     destroy: mockLegacyDestroy,
     handleAction: mockLegacyHandleAction,
+    forceReset: mockLegacyForceReset,
   })),
 }));
 
@@ -83,6 +85,26 @@ describe('LedgerDmkBridgeHandler', () => {
         params,
       );
       expect(result).toEqual({ ok: true });
+    });
+  });
+
+  describe('forceReset', () => {
+    it('forwards the reset to the underlying legacy handler when initialised', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      await handler.init();
+
+      handler.forceReset();
+
+      expect(mockLegacyForceReset).toHaveBeenCalledTimes(1);
+    });
+
+    it('is a safe no-op when called before init', () => {
+      const handler = new LedgerDmkBridgeHandler();
+
+      // The optional-chaining guard means a pre-init reset does not throw and
+      // does not touch the (non-existent) legacy handler.
+      expect(() => handler.forceReset()).not.toThrow();
+      expect(mockLegacyForceReset).not.toHaveBeenCalled();
     });
   });
 });

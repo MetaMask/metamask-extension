@@ -1,12 +1,25 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Single NFT details view: image, metadata, send, and remove actions.
+ *
+ * Screen: NFT asset details under `#/asset/...` (NFT id), reached from the
+ * home NFTs tab.
+ * Owns: NFT name/description/address display, show-image confirm, send/remove
+ * options, default vs rendered image checks, and back navigation.
+ * Boundaries: the NFT details surface only. The NFTs tab list belongs to
+ * `NftsTab`; send confirmation belongs to confirmation page objects.
+ * Related: `NftsTab`, send confirmation flows.
+ *
+ * @see ui/components/app/assets/nfts/nft-details/nft-details.tsx
+ */
 class NFTDetailsPage {
-  private driver: Driver;
-
   private readonly confirmShowNftImageButton = {
     text: 'Confirm',
     tag: 'button',
   };
+
+  private driver: Driver;
 
   private readonly nftBackButton = '[data-testid="nft__back"]';
 

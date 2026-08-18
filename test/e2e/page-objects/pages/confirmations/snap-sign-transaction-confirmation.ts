@@ -1,7 +1,22 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Snap-rendered sign-transaction confirmation (snap custom UI footer).
+ *
+ * Screen: snap confirmation dialog with "Sign transaction" header (not
+ * redesigned MetaMask `#/confirmation`).
+ * Owns: header/footer loaded checks, confirm disabled state, fee asset and
+ * insufficient-funds banner, and confirm footer action.
+ * Boundaries: snap sign-and-send ("Transaction request") is
+ * `SnapTransactionConfirmation`. MetaMask transaction confirms are
+ * `TransactionConfirmation` and subclasses.
+ * Related: `SnapTransactionConfirmation`, `TransactionConfirmation`.
+ *
+ * @see ui/components/app/snaps/snap-ui-footer-button/snap-ui-footer-button.tsx
+ * @see ui/components/app/snaps/snap-ui-renderer/components/footer.ts
+ */
 class SnapSignTransactionConfirmation {
-  protected driver: Driver;
+  private addressTestId = 'snap-ui-address';
 
   private cancelButton = {
     testId: 'confirm-sign-transaction-cancel-snap-footer-button',
@@ -13,12 +28,12 @@ class SnapSignTransactionConfirmation {
     text: 'Confirm',
   };
 
+  protected driver: Driver;
+
   private header = {
     text: 'Sign transaction',
     tag: 'h2',
   };
-
-  private addressTestId = 'snap-ui-address';
 
   private insufficientFundsBanner = {
     text: 'Insufficient funds',
@@ -26,6 +41,20 @@ class SnapSignTransactionConfirmation {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkConfirmButtonIsDisabled(): Promise<void> {
+    await this.driver.waitForSelector(this.confirmButton, {
+      state: 'disabled',
+    });
+  }
+
+  async checkFeeAssetIsDisplayed(asset: string): Promise<void> {
+    await this.driver.findElement({ text: asset });
+  }
+
+  async checkInsufficientFundsBannerIsDisplayed(): Promise<void> {
+    await this.driver.findElement(this.insufficientFundsBanner);
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -47,20 +76,6 @@ class SnapSignTransactionConfirmation {
 
   async clickFooterConfirmButton() {
     await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
-  }
-
-  async checkFeeAssetIsDisplayed(asset: string): Promise<void> {
-    await this.driver.findElement({ text: asset });
-  }
-
-  async checkInsufficientFundsBannerIsDisplayed(): Promise<void> {
-    await this.driver.findElement(this.insufficientFundsBanner);
-  }
-
-  async checkConfirmButtonIsDisabled(): Promise<void> {
-    await this.driver.waitForSelector(this.confirmButton, {
-      state: 'disabled',
-    });
   }
 }
 export default SnapSignTransactionConfirmation;

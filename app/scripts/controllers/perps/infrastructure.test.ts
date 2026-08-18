@@ -20,18 +20,24 @@ jest.mock('../analytics', () => {
   };
 });
 
-jest.mock('@metamask/perps-controller', () => ({
-  formatPerpsFiat: jest.fn((value: number) =>
-    new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(value),
-  ),
-  formatPercentage: jest.fn((percent: number) => `+${percent.toFixed(2)}%`),
-  PRICE_RANGES_UNIVERSAL: [{ threshold: 0, decimals: 2 }],
-}));
+jest.mock('@metamask/perps-controller', () => {
+  const stub = jest.requireActual(
+    '../../../../test/mocks/metamask-perps-controller.js',
+  );
+  return {
+    ...stub,
+    formatPerpsFiat: jest.fn((value: number) =>
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value),
+    ),
+    formatPercentage: jest.fn((percent: number) => `+${percent.toFixed(2)}%`),
+    PRICE_RANGES_UNIVERSAL: [{ threshold: 0, decimals: 2 }],
+  };
+});
 
 const mockCaptureException = jest.fn();
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -208,6 +214,37 @@ describe('createPerpsInfrastructure', () => {
             [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
               PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
             [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+          }),
+        }),
+      );
+    });
+
+    it('merges attribution context into trackPerpsEvent properties when provided', () => {
+      const mergeAttributionContext = jest.fn(
+        (properties?: Record<string, unknown>) => ({
+          ...properties,
+          [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'campaign-a',
+        }),
+      );
+      const infrastructure = createPerpsInfrastructure(
+        getDeps({ mergeAttributionContext }),
+      );
+
+      infrastructure.metrics.trackPerpsEvent(
+        PerpsAnalyticsEvent.TradeTransaction,
+        {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
+        },
+      );
+
+      expect(mergeAttributionContext).toHaveBeenCalledWith({
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
+      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
+            [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'campaign-a',
           }),
         }),
       );

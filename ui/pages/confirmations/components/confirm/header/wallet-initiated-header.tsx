@@ -49,6 +49,7 @@ export const WalletInitiatedHeader = () => {
     }
 
     if (
+      currentConfirmation.type === TransactionType.moneyAccountDeposit ||
       currentConfirmation.type === TransactionType.musdClaim ||
       currentConfirmation.type === TransactionType.perpsDeposit ||
       currentConfirmation.type === TransactionType.perpsWithdraw
@@ -84,6 +85,9 @@ export const WalletInitiatedHeader = () => {
       currentConfirmation?.type === TransactionType.shieldSubscriptionApprove
     ) {
       return t('shieldConfirmMembership');
+    }
+    if (currentConfirmation?.type === TransactionType.moneyAccountDeposit) {
+      return t('addFunds');
     }
     if (currentConfirmation?.type === TransactionType.musdClaim) {
       return null;

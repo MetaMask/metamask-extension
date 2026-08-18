@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Box } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+} from '@metamask/design-system-react';
 import {
   Button,
   ButtonSize,
@@ -14,8 +18,6 @@ import {
   Text,
   TextField,
   TextFieldType,
-  BannerAlert,
-  BannerAlertSeverity,
   TextFieldSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -24,7 +26,6 @@ import {
   BorderColor,
   JustifyContent,
   TextVariant,
-  SEVERITIES,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import {
@@ -36,6 +37,7 @@ import { setSlippageUserOverride } from '../../../ducks/bridge/actions';
 import { SlippageValue } from '../utils/slippage-service';
 import { Column, Row, Tooltip } from '../layout';
 import { sanitizeAmountInput } from '../utils/quote';
+import { useDispatch } from '../../../store/hooks';
 
 const HARDCODED_SLIPPAGE_OPTIONS = [
   SlippageValue.EvmStablecoin,
@@ -91,7 +93,7 @@ export const BridgeTransactionSettingsModal = ({
 
     if (slippageValue < 0.5) {
       return {
-        severity: SEVERITIES.WARNING,
+        severity: BannerAlertSeverity.Warning,
         text: t('swapSlippageLowDescription', [slippageValue]),
         title: t('swapSlippageLowTitle'),
       };
@@ -246,12 +248,11 @@ export const BridgeTransactionSettingsModal = ({
           {notificationConfig && (
             <Box marginTop={5}>
               <BannerAlert
-                severity={notificationConfig.severity as BannerAlertSeverity}
+                severity={notificationConfig.severity}
                 title={notificationConfig.title}
                 titleProps={{ 'data-testid': 'swaps-banner-title' }}
-              >
-                <Text>{notificationConfig.text}</Text>
-              </BannerAlert>
+                description={notificationConfig.text}
+              />
             </Box>
           )}
         </Column>

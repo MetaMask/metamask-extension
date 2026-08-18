@@ -10,7 +10,17 @@ import {
   isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
 import { TraceName, trace, endTrace } from '../../../../shared/lib/trace';
+import { useDispatch } from '../../../store/hooks';
 import { MultichainPrivateKeyList } from './multichain-private-key-list';
+
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn().mockReturnValue((action: unknown) => {
+    if (typeof action === 'function') {
+      return action(jest.fn(), jest.fn());
+    }
+    return action;
+  }),
+}));
 
 const mockTrackEvent = jest.fn();
 
@@ -367,11 +377,14 @@ describe('MultichainPrivateKeyList', () => {
         name: TraceName.ShowAccountPrivateKeyList,
       }),
     );
-    expect(mockEndTrace).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: TraceName.ShowAccountPrivateKeyList,
-      }),
-    );
+    // endTrace runs in a useEffect after reveal becomes true
+    await waitFor(() => {
+      expect(mockEndTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.ShowAccountPrivateKeyList,
+        }),
+      );
+    });
   });
 
   describe('passkey reveal', () => {

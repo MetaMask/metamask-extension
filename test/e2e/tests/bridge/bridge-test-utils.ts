@@ -19,6 +19,7 @@ import {
   DEFAULT_BTC_CONVERSION_RATE,
 } from '../../constants';
 import { getEventPayloads } from '../../helpers';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
   BRIDGE_ETH_USD_SPOT_PRICE,
@@ -579,6 +580,23 @@ function mockSseEventSource(
   );
 }
 
+/**
+ * Production sends smart transactions to endpoints these fixtures do not mock:
+ * the migration flags move them to the per-network sentinel hosts instead of
+ * `transaction.api.cx.metamask.io`, and EIP-7702 support on mainnet publishes
+ * gasless swaps through the transaction relay. Pinning both off keeps the
+ * request URLs the mocks below answer.
+ */
+const UNMOCKED_TRANSACTION_ENDPOINTS_OFF = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  confirmations_eip_7702: { contracts: {}, supportedChains: [] },
+  stxMigrationBatchStatus: { value: false },
+  stxMigrationCancel: { value: false },
+  stxMigrationGetFees: { value: false },
+  stxMigrationSubmitTransactions: { value: false },
+};
+
 async function mockFeatureFlags(
   mockServer: Mockttp,
   featureFlags: Partial<FeatureFlagResponse>,
@@ -591,8 +609,10 @@ async function mockFeatureFlags(
         ok: true,
         statusCode: 200,
         json: [
+          ...getProductionRemoteFlagApiResponse(),
           {
             bridgeConfig: featureFlags,
+            ...UNMOCKED_TRANSACTION_ENDPOINTS_OFF,
             ...additionalFlags,
           },
         ],
@@ -825,6 +845,18 @@ async function mockAccountsTransactions(mockServer: Mockttp) {
     });
 }
 
+async function mockLineaTransactionDetails(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/networks\/59144\/transactions\/0x[0-9a-fA-F]+/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { data: null },
+    }));
+}
+
 async function mockAccountsBalances(mockServer: Mockttp) {
   return await mockServer
     .forGet(
@@ -938,7 +970,10 @@ async function mockPriceSpotPricesV3(
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .thenCallback((request) => {
       const url = new URL(request.url);
-      const vsCurrency = url.searchParams.get('vsCurrency')?.toLowerCase();
+      const vsCurrency =
+        url.searchParams.get('vsCurrency')?.toLowerCase() ?? 'usd';
+      const includeMarketData =
+        url.searchParams.get('includeMarketData') === 'true';
       const ethPriceChange1d = vsCurrency === 'usd' ? 2.5 : 0;
       const requestedAssetIds = (url.searchParams.get('assetIds') ?? '')
         .split(',')
@@ -975,7 +1010,20 @@ async function mockPriceSpotPricesV3(
         }
       }
 
-      return { statusCode: 200, json };
+      if (includeMarketData) {
+        return { statusCode: 200, json };
+      }
+
+      // Without `includeMarketData` the API answers with prices keyed by the
+      // requested currency, which is the shape the bridge controller parses.
+      const pricesByCurrency = Object.fromEntries(
+        Object.entries(json).map(([assetId, { price }]) => [
+          assetId,
+          { [vsCurrency]: price },
+        ]),
+      );
+
+      return { statusCode: 200, json: pricesByCurrency };
     });
 }
 
@@ -1314,7 +1362,7 @@ export const getBridgeFixtures = ({
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withMetaMetricsController({
       analyticsId: MOCK_ANALYTICS_ID,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
     })
     .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
@@ -1729,6 +1777,7 @@ export const getBridgeL2Fixtures = (
           featureFlags,
           STX_LINEA_NETWORK_CONFIG,
         ),
+        await mockLineaTransactionDetails(mockServer),
         await mockAccountsBalances(mockServer),
         await mockSwapAggregatorMetadataLinea(mockServer),
         await mockSwapTokensLinea(mockServer),

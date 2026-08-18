@@ -1,3 +1,4 @@
+import type { InputMethod } from '@metamask/perps-controller';
 import { OrderType } from '../types';
 
 /**
@@ -107,6 +108,8 @@ export type OrderEntryProps = {
   onSubmit?: (formState: OrderFormState) => void;
   /** Callback when form state changes (used when showSubmitButton is false) */
   onFormStateChange?: (formState: OrderFormState) => void;
+  /** Callback when the user changes the size via a specific input control */
+  onInputMethodChange?: (inputMethod: InputMethod) => void;
   /** Callback when calculated values change (liquidation price, margin, fees) */
   onCalculationsChange?: (calculations: OrderCalculations) => void;
   /** Whether to show the internal submit button (defaults to true) */
@@ -141,6 +144,12 @@ export type OrderEntryProps = {
   autoFocusLimitPrice?: boolean;
   /** Placeholder override for the USD input. Defaults to AmountInput's '0.00'. */
   usdPlaceholder?: string;
+  /**
+   * One-shot limit-price prefill (e.g. from tapping a price in the order book).
+   * Provide a fresh object per selection; the value is applied to the limit
+   * price input while manual edits between selections are preserved.
+   */
+  limitPricePrefill?: { price: string };
 };
 
 /**
@@ -161,6 +170,11 @@ export type AmountInputProps = {
   amount: string;
   /** Callback when amount changes */
   onAmountChange: (amount: string) => void;
+  /**
+   * Callback reporting which control the user used to set the size
+   * (keypad/slider/percentage/max), for analytics attribution.
+   */
+  onInputMethodChange?: (inputMethod: InputMethod) => void;
   /** Current balance percentage (0-100) */
   balancePercent: number;
   /** Callback when balance percentage changes */

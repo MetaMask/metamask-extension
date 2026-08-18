@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import log from 'loglevel';
 import {
@@ -22,6 +22,8 @@ import {
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
 import { isHardwareAccount } from '../../components/app/rewards/utils/isHardwareAccount';
 import { useI18nContext } from '../useI18nContext';
+import { useDispatch } from '../../store/hooks';
+import { EMPTY_ARRAY } from '../../selectors/shared';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 export type UseOptinResult = {
@@ -64,7 +66,7 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
           state,
           selectedAccountGroupId as AccountGroupId,
         )
-      : [],
+      : EMPTY_ARRAY,
   );
 
   // Get accounts for the primary account group

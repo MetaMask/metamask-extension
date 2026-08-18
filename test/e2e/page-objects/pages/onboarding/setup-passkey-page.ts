@@ -1,5 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Optional passkey / biometrics enrollment during onboarding (Chrome).
+ *
+ * Screen: `#/onboarding/setup-passkey`
+ * Owns: Set up / Maybe later CTAs and enrollment step / success indicators.
+ * Boundaries: passkey setup or skip only. Shown for non-social SRP flows;
+ * typically skipped in Firefox E2E. Does not handle SRP backup or metrics.
+ * Related: after `OnboardingPasswordPage`; create path next is
+ * `SecureWalletPage`, import path next is `OnboardingMetricsPage`;
+ * `flows/onboarding.flow.ts` (`skipPasskeySetup`).
+ *
+ * @see ui/pages/onboarding-flow/setup-passkey/setup-passkey.tsx
+ */
 class SetupPasskeyPage {
   private driver: Driver;
 
@@ -33,14 +46,14 @@ class SetupPasskeyPage {
     console.log('Setup passkey page is loaded');
   }
 
-  async skipPasskeySetup(): Promise<void> {
-    console.log('Skip passkey setup');
-    await this.driver.clickElementAndWaitToDisappear(this.maybeLaterButton);
-  }
-
   async clickSetUpPasskey(): Promise<void> {
     console.log('Click Set up biometrics during onboarding');
     await this.driver.clickElement(this.setUpPasskeyButton);
+  }
+
+  async skipPasskeySetup(): Promise<void> {
+    console.log('Skip passkey setup');
+    await this.driver.clickElementAndWaitToDisappear(this.maybeLaterButton);
   }
 
   async waitForEnrollmentSteps(): Promise<void> {

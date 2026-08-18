@@ -134,6 +134,13 @@ export type UsePerpsOrderFormOptions = {
    * fee estimates will show $0.00 until a real rate arrives (mobile parity).
    */
   feeRate?: number;
+  /**
+   * One-shot limit-price prefill (e.g. from tapping a price in the order book).
+   * Applied whenever a new object reference is provided, so re-selecting the
+   * same price after a manual edit still re-applies it. Wrap the value in a
+   * fresh object per selection; a stable reference is ignored on re-render.
+   */
+  limitPricePrefill?: { price: string };
 };
 
 export type UsePerpsOrderFormReturn = {
@@ -194,6 +201,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.szDecimals - HyperLiquid size decimals (used for position-size rounding in margin calc)
  * @param options.markPrice - Oracle mark price for margin calculation (falls back to currentPrice)
  * @param options.feeRate - Dynamic fee rate from usePerpsOrderFees (falls back to static constant)
+ * @param options.limitPricePrefill - One-shot limit-price prefill (fresh object per selection)
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -212,6 +220,7 @@ export function usePerpsOrderForm({
   maxLeverage = 50,
   markPrice,
   feeRate,
+  limitPricePrefill,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const displayAssetSymbol = getDisplaySymbol(asset);
   const isTestnet = useSelector(selectPerpsIsTestnet);
@@ -297,128 +306,126 @@ export function usePerpsOrderForm({
   });
 
   // Update order type when prop changes (from dropdown)
-  useEffect(() => {
+  const [prevOrderType, setPrevOrderType] = useState(orderType);
+  if (orderType !== prevOrderType) {
+    setPrevOrderType(orderType);
     setFormState((prev) => ({ ...prev, type: orderType }));
-  }, [orderType]);
-
-  // Refs so the reset effect can read latest values without depending on them,
-  // preventing stream updates (new object refs) from wiping user edits.
-  const availableBalanceRef = useRef(availableBalance);
-  availableBalanceRef.current = availableBalance;
-  const existingPositionRef = useRef(existingPosition);
-  existingPositionRef.current = existingPosition;
-  const orderTypeRef = useRef(orderType);
-  orderTypeRef.current = orderType;
-  const initialAmountValueRef = useRef(initialAmountValue);
-  initialAmountValueRef.current = initialAmountValue;
-  const currentPriceRef = useRef(currentPrice);
-  currentPriceRef.current = currentPrice;
+  }
 
   // Track which deps trigger a full form reset. orderType changes should NOT
-  // reset amount/leverage—only the effect above updates formState.type.
-  // Ref starts null so the first effect run always applies. `existingPosition`
-  // uses undefined vs JSON digest so async hydration cannot collide with a size
-  // string like "none" the way a single concatenated key could.
-  const prevResetDepsRef = useRef<{
+  // reset amount/leverage—only the sync above updates formState.type.
+  // `existingPosition` uses undefined vs JSON digest so async hydration cannot
+  // collide with a size string like "none" the way a single concatenated key could.
+  const existingPositionDigest =
+    existingPosition === undefined
+      ? undefined
+      : JSON.stringify({
+          size: existingPosition.size,
+          entryPrice: existingPosition.entryPrice,
+          leverage: existingPosition.leverage,
+          takeProfitPrice: existingPosition.takeProfitPrice ?? null,
+          stopLossPrice: existingPosition.stopLossPrice ?? null,
+        });
+
+  const [prevResetDeps, setPrevResetDeps] = useState<{
     mode: OrderMode;
     asset: string;
     initialDirection: 'long' | 'short';
     existingPositionDigest: string | undefined;
     initialLeverage: number | undefined;
   } | null>(null);
-  useEffect(() => {
-    const existingPositionDigest =
-      existingPosition === undefined
-        ? undefined
-        : JSON.stringify({
-            size: existingPosition.size,
-            entryPrice: existingPosition.entryPrice,
-            leverage: existingPosition.leverage,
-            takeProfitPrice: existingPosition.takeProfitPrice ?? null,
-            stopLossPrice: existingPosition.stopLossPrice ?? null,
-          });
 
-    const prev = prevResetDepsRef.current;
-    if (
-      prev !== null &&
-      prev.mode === mode &&
-      prev.asset === asset &&
-      prev.initialDirection === initialDirection &&
-      prev.existingPositionDigest === existingPositionDigest &&
-      prev.initialLeverage === initialLeverage
-    ) {
-      return;
-    }
-
-    prevResetDepsRef.current = {
+  if (
+    prevResetDeps === null ||
+    prevResetDeps.mode !== mode ||
+    prevResetDeps.asset !== asset ||
+    prevResetDeps.initialDirection !== initialDirection ||
+    prevResetDeps.existingPositionDigest !== existingPositionDigest ||
+    prevResetDeps.initialLeverage !== initialLeverage
+  ) {
+    setPrevResetDeps({
       mode,
       asset,
       initialDirection,
       existingPositionDigest,
       initialLeverage,
-    };
+    });
 
-    const pos = existingPositionRef.current;
-    const typeForReset = orderTypeRef.current;
     const resetLeverage = initialLeverage ?? TRADING_DEFAULTS.leverage;
     const defaultAmountFields =
       mode === 'new'
         ? buildDefaultNewOrderAmountFields(
-            initialAmountValueRef.current,
+            initialAmountValue,
             resetLeverage,
-            availableBalanceRef.current,
+            availableBalance,
           )
         : {};
 
-    if (mode === 'modify' && pos) {
-      hasUserEditedAmount.current = false;
+    hasUserEditedAmount.current = false;
+    if (mode === 'modify' && existingPosition) {
       setFormState({
         ...mockOrderFormDefaults,
         asset,
         direction: initialDirection,
-        type: typeForReset,
-        ...deriveModifyFields(pos),
+        type: orderType,
+        ...deriveModifyFields(existingPosition),
       });
     } else {
-      hasUserEditedAmount.current = false;
       setFormState({
         ...mockOrderFormDefaults,
         asset,
         direction: initialDirection,
-        type: typeForReset,
+        type: orderType,
         ...(initialLeverage !== undefined && { leverage: initialLeverage }),
         ...defaultAmountFields,
       });
     }
-  }, [mode, asset, initialDirection, existingPosition, initialLeverage]);
+  }
 
-  useEffect(() => {
-    if (mode !== 'new' || hasUserEditedAmount.current) {
-      return;
-    }
-
-    const defaultAmountFields = buildDefaultNewOrderAmountFields(
-      computeInitialAmountValue(formState.leverage),
-      formState.leverage,
-      availableBalance,
-    );
-    if (!defaultAmountFields.amount) {
-      return;
-    }
-
-    setFormState((prev) => {
-      if (
-        prev.amount === defaultAmountFields.amount &&
-        prev.balancePercent === defaultAmountFields.balancePercent
-      ) {
-        return prev;
-      }
-      return {
+  // Apply an external one-shot limit-price prefill (e.g. an order-book price
+  // tap). Declared after the reset sync so a mount-time prefill wins over the
+  // form reset. Keyed on the object reference so each selection re-applies,
+  // while manual edits between selections are preserved.
+  // `false` sentinel ensures the initial prefill is applied on first render.
+  const [prevLimitPricePrefill, setPrevLimitPricePrefill] = useState<
+    typeof limitPricePrefill | false
+  >(false);
+  if (limitPricePrefill !== prevLimitPricePrefill) {
+    setPrevLimitPricePrefill(limitPricePrefill);
+    if (limitPricePrefill?.price) {
+      setFormState((prev) => ({
         ...prev,
-        ...defaultAmountFields,
-      };
-    });
-  }, [mode, computeInitialAmountValue, formState.leverage, availableBalance]);
+        limitPrice: limitPricePrefill.price,
+      }));
+    }
+  }
+
+  const defaultAmountFieldsForBalance = buildDefaultNewOrderAmountFields(
+    computeInitialAmountValue(formState.leverage),
+    formState.leverage,
+    availableBalance,
+  );
+  const [prevDefaultAmountKey, setPrevDefaultAmountKey] = useState(
+    `${mode}|${formState.leverage}|${availableBalance}|${defaultAmountFieldsForBalance.amount}|${defaultAmountFieldsForBalance.balancePercent}`,
+  );
+  const defaultAmountKey = `${mode}|${formState.leverage}|${availableBalance}|${defaultAmountFieldsForBalance.amount}|${defaultAmountFieldsForBalance.balancePercent}`;
+
+  if (
+    defaultAmountKey !== prevDefaultAmountKey &&
+    mode === 'new' &&
+    !hasUserEditedAmount.current &&
+    defaultAmountFieldsForBalance.amount &&
+    (formState.amount !== defaultAmountFieldsForBalance.amount ||
+      formState.balancePercent !== defaultAmountFieldsForBalance.balancePercent)
+  ) {
+    setPrevDefaultAmountKey(defaultAmountKey);
+    setFormState((prev) => ({
+      ...prev,
+      ...defaultAmountFieldsForBalance,
+    }));
+  } else if (defaultAmountKey !== prevDefaultAmountKey) {
+    setPrevDefaultAmountKey(defaultAmountKey);
+  }
 
   // Notify parent of form state changes
   useEffect(() => {

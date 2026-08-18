@@ -7,6 +7,220 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.44.0]
+
+### Added
+
+- Added Discover Search for crypto assets, perpetual markets, and stocks behind a feature flag (#45037)
+- Added loading skeletons and no-results suggestions to Discover Search (#45156)
+- Added security indicators and improved navigation in Discover Search (#45223)
+- Added a live order book to the Perps order entry page, including a resizable layout, configurable grouping and denomination, and limit-order price prefills behind a feature flag (#44254)
+- Added transaction-details links to transaction status toasts (#45173)
+- Added support for opening the side panel for dapp transaction confirmations when it is the preferred view (#38964)
+- Allowed swapping the maximum native-token amount on supported networks (#44885)
+
+### Changed
+
+- Updated Discover Search result controls to show the number of additional results and improved its layout and formatting (#45194)
+- Updated the network picker header alignment (#45137)
+- Updated the private-key list layout and copy confirmation state (#45150)
+- Updated the Wallet Activity panel to scroll without moving the settings sidebar (#45138)
+- Updated the phishing protection dependency (#44841)
+- Updated the assets controller dependency (#44903)
+
+### Removed
+
+- Removed the "Simulation has changed" alert from transaction confirmations (#45203)
+
+### Fixed
+
+- Fixed Ledger account imports and signing flows that could remain stuck (#45158)
+- Fixed the maximum native-token send amount from changing when a transaction simulation fails (#45080)
+- Fixed missing token icons when token data does not provide one (#45023)
+- Fixed confirmation details and trust signals from changing or reloading when added protection is toggled (#45198)
+- Fixed Perps order cancellations for orders that are already filled or canceled, and checked live balances before Perps withdrawals (#45067)
+- Fixed duplicate transaction-confirmed toasts for hardware-wallet transactions (#45174)
+- Fixed added protection for transactions that spend nearly the full token or native-token balance (#45110)
+- Fixed missing fiat values for non-EVM activity transactions (#45118)
+
+### Security
+
+- Expanded address security screening to 15 additional networks, including Robinhood Chain and Arc (#45092)
+- Fixed address-poisoning detection to flag lookalikes of token-transfer recipients and avoid flagging token-contract lookalikes (#45112)
+
+## [13.43.0]
+
+### Added
+
+- Added Security and Trust signals on the token details page, including verified badges, warning banners, a detail view, and confirmation prompts before buying or swapping risky tokens (#44761)
+- Added contact names to Activity rows when available (#45013)
+- Added spacing below the marketing consent text on the notification settings page (#45021)
+- Added native buy checkout that opens the provider in a new tab, returns home, and tracks the order in the background until the provider redirects (#44689)
+- Added Robinhood Chain to the networks supporting smart transactions (#44926)
+- Added memoization to network/asset modal components (Batch D) (#44296)
+- Added the new hardware wallet signing page and send bundle for hardware wallets (#43947)
+- Enabled Pure Black OLED dark mode for users with dark theme active (#44806)
+
+### Changed
+
+- Improved Perps error messaging when a market uses unsupported collateral (#45024)
+- Updated the Stellar asset component across asset details, rows, and buttons (#44979)
+- Updated the DeFi tab to use the new controller when enabled (#44392)
+- Updated Buy navigation so wallets that previously connected to Portfolio continue opening Portfolio while never-connected wallets use in-app Buy when ramps are enabled (#44804)
+- Updated Secret Recovery Phrase import input styling for Pure Black theme (#45004)
+- Updated the Send button icon to use the MetaMask Design System arrow-2-up-right icon (#44929)
+- Updated Google sign-in button icon to the new Google gradient `G` logo; fixed invisible Google icon on the Secret Recovery Phrase security settings page (#44755)
+- Removed Stellar and Arc from the default bridge network list when remote configuration is unavailable (#44749)
+- Updated scroll behavior (#44696)
+- Updated Swap and Bridge to use and display partial QuoteMetadata (#44630)
+- Updated unified asset balance calculations and added remotely gated tracing (#44978)
+- Updated the Import NFT flow and network selector (#44899)
+- Updated notification analytics to the new Segment schema (#43132)
+- Moved the Swaps token picker network filter below the search bar (#44911)
+- Updated HeaderSearch and asset picker modal search bars to use TextFieldSearch (#44910)
+- Updated the Swap/Bridge asset picker to use the TextFieldSearch component (#44905)
+- Updated Perps, token management, assets, and accounts search bars to match the latest designs (#44430)
+- Showed the password mismatch error only after the confirmation password is long enough (#44790)
+
+### Deprecated
+
+- Deprecated support for infura ipfs (#44982)
+
+### Removed
+
+- Removed the token approval message and tooltip from swap and bridge quotes (#44794)
+
+### Fixed
+
+- Fixed a bug where connecting a hardware wallet account could leave the loading spinner stuck forever if the device stopped responding (#45048)
+- Fixed a bug where smart transactions could be incorrectly enabled or disabled during batch sell based on the globally selected network instead of the chain being sold on (#45032)
+- Fixed the contact copy button so it is vertically centered instead of bottom aligned in the Contacts list (#45020)
+- Fixed issue with DeFi balances in the new controller not aggregating loans correctly (#45003)
+- Fixed Secret Recovery Phrase backup page backgrounds in pure black mode (#44983)
+- Fixed a bug where a completed Perps deposit could be missing from the Perps Activity Deposits filter, and Perps withdrawals now appear immediately with an accurate status (#44736)
+- Fixed a bug that could send users to the swap page instead of home after closing and reopening the extension while reviewing a batch sell (#44991)
+- Fixed markets list skeleton loader background color in pure black mode (#44984)
+- Fixed Snap install screen background color for Pure Black theme (#45002)
+- Fixed cancel buttons in contact and network forms showing an incorrect border in pure black mode (#44981)
+- Fixed a bug that could leave the Perps deposit and withdraw screens stuck on a loading placeholder (#44950)
+- Fixed QR permission error handling when users reject camera permission (#44701)
+- Fixed a bug that unexpectedly redirected users from the Batch Sell screens to the Swap screen (#44951)
+- Fixed multiple issues on enabled networks Rootstock, Stable, and Gnosis (#44161)
+- Fixed a crash when opening a non-EVM asset deeplink while an EVM-only account is selected (#44904)
+- Fixed very high network fees that could appear when Added protection was enabled and made protection unavailable when its estimate fails (#44308)
+- Fixed the local bridge activity label when switching to non-EVM accounts (#44858)
+- Fixed missing native token icons and activity entries for Monad and MegaETH (#45006)
+- Fixed stale destination exchange rates in Swap and Bridge (#44968)
+- Fixed QR signing in the side panel on Brave Browser (#44934)
+- Fixed deep links so protected routes no longer bypassed the security interstitial based only on their path (#44830)
+- Fixed gas sponsorship incorrectly appearing for hardware wallet accounts when a Non-EVM network is selected (#44706)
+- Fixed sponsored network fee transfer to show the `Paid by MetaMask` label in activity page (#44780)
+- Fixed the aggregated account balance excluding tokens whose balance is very large relative to their decimals (e.g. 54B TangYuan with 9 decimals) (#44796)
+- Fixed the mUSD conversion activity details (#44586)
+
+## [13.42.0]
+
+### Added
+
+- Added skeleton for balance overview (#44703)
+- Added new dmk feature flag (#43488)
+- Added verified badges to selected Swaps tokens (#44623)
+- Added skeleton for token loading (#44705)
+- Added a high-rate alert warning when reviewing a batch sell with only one asset still selected to sell (#44646)
+- Added Robinhood chain metadata to EIP-7715 Advanced Permissions (#44499)
+- Added tab hover and page transitions to bottom nav bar (#44641)
+- Added gating for bottom nav bar experiment (#44403)
+- Added limit orders when closing all or part of a perpetual position (#44466)
+- Added a provider selection screen in ramps so users can compare quotes and change their buy provider (#44553)
+- Added decimal validation (#44602)
+- Added conditional Swap page header when bottom nav experiment is on (#44233)
+- Added transitions (#44481)
+
+### Changed
+
+- Updated `@metamask/seedless-onboarding-controller` to `v10.1.0` (#44771)
+- Navigated users to batch sell through a deeplink (#44671)
+- Updated the slider step to one in batch sell (#44648)
+- Raised legacy toasts over footers when applicable (#44654)
+- Made various fixes and improvements on the batch sell select page (#44603)
+- Patched `@metamask/assets-controller` for suggested occurrence floors (#44525)
+- Upgraded Sentry SDK from v8 to v10, improving telemetry and enabling full incorporation of backend instrumentation (API, RPC, DB, Cache, CDN domains) into Sentry distributed tracing (#42867)
+- Deleted the token cache (#44522)
+- Updated the toggle for manage tokens (#44434)
+- Restored `google.svg` and relocated it to `app/images/` (#44383)
+- Changed the default bridge network list to remove Stellar and Arc to hide them when remote feature flag API down (#44787)
+- Updated scroll behaviour (#44770)
+- Updated Activity swap rows labels (#44637)
+- Updated the dapp connection bar styling to match the latest design spec (#44539)
+- Changed sidepanel max-width (#44647)
+- Updated Swap/Bridge to use suggested slippage from quote responses (#44537)
+
+### Removed
+
+- Removed page border styles to make page UI consistent across app (#44721)
+
+### Fixed
+
+- Fixed an issue where connecting a Trezor hardware wallet could hang indefinitely by adding a response timeout, and corrected the timeout error message so Trezor no longer shows a Ledger-specific message (#44626)
+- Fixed CAIP-19 asset deep links so they show the phishing interstitial when Skip Interstitial is disabled (#44639)
+- Fixed non-EVM activity labels (#44751)
+- Fixed the review modal rendering assets without quotes (#44650)
+- Restored enabled networks via the controller (#44371)
+- Fixed transactions being underpriced by a stale saved advanced gas fee, by clearing the orphaned `advancedGasFee` preference (migration 216) (#44205)
+- Fixed a bug that caused notification Home links to open in a new tab (#43419)
+- Fixed bridge smart transactions that could remain stuck as pending after being cancelled by the relay (#44372)
+- Fixed custom tokens on niche EVM networks losing their name, symbol, and icon by restoring the wiped metadata on startup (#44303)
+- Fixed the mUSD conversion activity details (#44613)
+- Fixed cross-chain bridge transaction details showing "Confirmed" before the destination transaction had completed; the status now remains "Pending" until the bridge finishes end-to-end (#44536)
+- Fixed a bug where attempting to connect a hardware wallet without going through could lock the user out of accounts operations on Firefox (#44483)
+- Fixed activity titles for swaps that are missing destination token data (#44501)
+
+## [13.41.0]
+
+### Added
+
+- Added transitions to manage tokens page (#44484)
+- Added the ability to save gas fee preferences per account and network (#43317)
+- Added support for `Blob` global in Snaps (#44396)
+- Added the ability to sync selected wallets and accounts from the extension to MetaMask Mobile via QR code pairing in Settings (#44047)
+- Added Robinhood Chain as a supported network in the Swap & Bridge flow (#44347)
+- Added Robinhood default Infura RPC and Quicknode failover (#44331)
+- Added Stellar Asset Activation UI component (#44193)
+- Added a QR code prompt when opening a trending/explore deeplink on Extension, so users can continue on MetaMask mobile (#44170)
+- Added order summary tooltips for Margin, Liquidation price, and Fees labels (#44290)
+
+### Changed
+
+- Replaced the "Loading..." text on the Activity screen with a skeleton (#44423)
+- Prevented cache thrashing in parameterized network lookups (#44475)
+- Navigated directly to the Perps deposit screen from the Perps Funded activity details 'Fund again' CTA (#44427)
+- Display 1:1 proportion of qr code for smaller screen (#44417)
+- Migrated asset routes to CAIP-19 identifiers (#44114)
+- QR Sync flow should now show step specific error and global errors on a dedicated error view (#44081)
+- Moved account-sync flow from settings sub-page to top level route (#43870)
+- Seed unified assets for non-EVM search (#44361)
+
+### Fixed
+
+- Fixed extra mascot showing in unlock page while on strict mode (#44533)
+- Fixed a bug where home subtab content was emitting duplicate events (#44528)
+- Fixed a bug that required two clicks to select a token when buying crypto (#44497)
+- Fixed a crash when typing a comma as the decimal separator in the amount field of MetaMask Pay confirmations, such as Perps withdraw or mUSD conversion (#44521)
+- Fixed asset selector cache thrashing for NFTs and token scan results (#44473)
+- Fixed a regression that hid the destination-network block explorer link (and destination token) on cross-chain bridge transaction details, leaving only the source-network link (#44488)
+- Fixed parameterized selector cache thrashing for chain-checking selectors (#44474)
+- Fixed the Perps reverse-position modal displaying a raw provider-prefixed symbol instead of the ticker, and added the market ticker next to the volume on Perps market list rows (#44478)
+- Ensure stellar assets show correctly in token details page (#44444)
+- Fixed QR account sync session timeout, cancellation, and error recovery when pairing with MetaMask Mobile (#44422)
+- Fixed a bug that could cause the Perps deposit screen to get stuck on a loading skeleton when opened for the first time (#44247)
+- Fixed perps deposit/withdraw activity details missing info bug (#44425)
+- Fixed display details and spacing for added protection in transaction confirmations (#44343)
+- Fixed a bug where open order size and value were not hidden when Privacy Mode was enabled (#44432)
+- Fixed extra pending row during mUSD conversion flow (#44370)
+- Fixed extra pending row during mUSD conversion flow (#44359)
+- Fixed an issue where the VIP badge could be missing on a fresh install even when VIP fee discounts were applied (#44282)
+- Fixed misaligned warning icon in estimated changes section on malicious approval confirmations (#44207)
+
 ## [13.40.0]
 
 ### Added
@@ -2739,7 +2953,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.40.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.44.0...HEAD
+[13.44.0]: https://github.com/MetaMask/metamask-extension/compare/v13.43.0...v13.44.0
+[13.43.0]: https://github.com/MetaMask/metamask-extension/compare/v13.42.0...v13.43.0
+[13.42.0]: https://github.com/MetaMask/metamask-extension/compare/v13.41.0...v13.42.0
+[13.41.0]: https://github.com/MetaMask/metamask-extension/compare/v13.40.0...v13.41.0
 [13.40.0]: https://github.com/MetaMask/metamask-extension/compare/v13.39.2...v13.40.0
 [13.39.2]: https://github.com/MetaMask/metamask-extension/compare/v13.39.1...v13.39.2
 [13.39.1]: https://github.com/MetaMask/metamask-extension/compare/v13.39.0...v13.39.1

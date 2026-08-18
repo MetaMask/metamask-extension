@@ -37,9 +37,7 @@ import {
 } from '../../../../selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import {
-  ARC_USDC_TOKEN_ADDRESS,
   CHAIN_ID_TOKEN_IMAGE_MAP,
-  CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
@@ -61,6 +59,7 @@ import {
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { isTronSpecialAsset } from '../../../../../shared/lib/asset-utils';
 
+import { isExcludedAsset } from '../../../app/assets/enablement/networks-customization';
 import { useAssetMetadata } from './hooks/useAssetMetadata';
 import type { ERC20Asset, NativeAsset, AssetWithDisplayData } from './types';
 import AssetList from './AssetList';
@@ -214,19 +213,17 @@ export function AssetPickerModal({
           string?: string;
         })
     > {
-      // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
-      // display duplicate. Hide it from the picker so only the native token is
-      // selectable; native tokens (empty/zero address) are never affected.
+      // Excluded homonym ERC-20s (Arc USDC, Stable USDT0) are display
+      // duplicates of their chain's native gas token. Hide them so only the
+      // native token is selectable. Native tokens (empty address) are never
+      // affected.
       const addToken = (
         symbol: string,
         address?: null | string,
         tokenChainId?: string,
       ) =>
         shouldAddToken(symbol, address, tokenChainId) &&
-        !(
-          tokenChainId === CHAIN_IDS.ARC &&
-          (address ?? '').toLowerCase() === ARC_USDC_TOKEN_ADDRESS
-        );
+        !(tokenChainId && isExcludedAsset(tokenChainId, address ?? undefined));
 
       // Yield multichain tokens with balances
       for (const token of multichainTokensWithBalance) {
@@ -411,7 +408,7 @@ export function AssetPickerModal({
     return unlistedAssetMetadata ? [unlistedAssetMetadata] : filteredTokenList;
   }, [unlistedAssetMetadata, filteredTokenList]);
 
-  const getNetworkPickerLabel = () => {
+  const networkPickerLabel = useMemo(() => {
     if (!isMultiselectEnabled) {
       return (
         (selectedNetwork?.chainId &&
@@ -434,7 +431,13 @@ export function AssetPickerModal({
       default:
         return t('someNetworks', [selectedChainIds?.length]);
     }
-  };
+  }, [
+    isMultiselectEnabled,
+    selectedNetwork,
+    selectedChainIds,
+    allNetworksToUse.length,
+    t,
+  ]);
 
   return (
     <Modal
@@ -484,7 +487,7 @@ export function AssetPickerModal({
             justifyContent={JustifyContent.center}
           >
             <PickerNetwork
-              label={getNetworkPickerLabel()}
+              label={networkPickerLabel}
               src={
                 selectedNetwork?.chainId
                   ? getImageForChainId(selectedNetwork.chainId)

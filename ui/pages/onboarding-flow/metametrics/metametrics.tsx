@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
 import {
@@ -43,6 +43,7 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useDispatch } from '../../../store/hooks';
 
 type MetametricsCheckboxOptionProps = Readonly<{
   id: string;
@@ -50,7 +51,6 @@ type MetametricsCheckboxOptionProps = Readonly<{
   isSelected: boolean;
   isDisabled?: boolean;
   onChange: () => void;
-  checkboxRef: React.RefObject<{ toggle: () => void }>;
   label: React.ReactNode;
   description: React.ReactNode;
   containerClassName: string;
@@ -68,12 +68,17 @@ function MetametricsCheckboxOption({
   isSelected,
   isDisabled,
   onChange,
-  checkboxRef,
   label,
   description,
   containerClassName,
   isInteractive = true,
 }: Readonly<MetametricsCheckboxOptionProps>) {
+  const handleContainerActivate = () => {
+    if (isInteractive) {
+      onChange();
+    }
+  };
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -85,11 +90,11 @@ function MetametricsCheckboxOption({
       data-checked={String(isSelected)}
       role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
-      onClick={isInteractive ? () => checkboxRef.current?.toggle() : undefined}
+      onClick={isInteractive ? handleContainerActivate : undefined}
       onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
         if ((e.key === ' ' || e.key === 'Enter') && isInteractive) {
           e.preventDefault();
-          checkboxRef.current?.toggle();
+          handleContainerActivate();
         }
       }}
     >
@@ -98,7 +103,6 @@ function MetametricsCheckboxOption({
         isSelected={isSelected}
         isDisabled={isDisabled}
         onChange={onChange}
-        ref={checkboxRef}
         onClick={stopClickPropagation}
         inputProps={{ onClick: stopClickPropagation }}
         label={label}
@@ -127,26 +131,29 @@ export default function OnboardingMetametrics() {
   );
   const isOptedIn = useSelector(getOptedIn);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-  const [
-    isParticipateInMetaMetricsChecked,
-    setIsParticipateInMetaMetricsChecked,
-  ] = useState(true);
-  const [
-    isDataCollectionForMarketingChecked,
-    setIsDataCollectionForMarketingChecked,
-  ] = useState(false);
 
-  const participateCheckboxRef = useRef<{ toggle: () => void } | null>(null);
-  const marketingCheckboxRef = useRef<{ toggle: () => void } | null>(null);
+  const [checkboxDraft, setCheckboxDraft] = useState({
+    participateTouched: false,
+    marketingTouched: false,
+    participateLocal: true,
+    marketingLocal: false,
+  });
+  const {
+    participateTouched,
+    marketingTouched,
+    participateLocal,
+    marketingLocal,
+  } = checkboxDraft;
 
-  useEffect(() => {
-    if (completedMetaMetricsOnboarding) {
-      setIsParticipateInMetaMetricsChecked(isOptedIn);
-    }
-    if (dataCollectionForMarketing) {
-      setIsDataCollectionForMarketingChecked(dataCollectionForMarketing);
-    }
-  }, [completedMetaMetricsOnboarding, isOptedIn, dataCollectionForMarketing]);
+  let isParticipateInMetaMetricsChecked = true;
+  if (participateTouched) {
+    isParticipateInMetaMetricsChecked = participateLocal;
+  } else if (completedMetaMetricsOnboarding) {
+    isParticipateInMetaMetricsChecked = isOptedIn;
+  }
+  const isDataCollectionForMarketingChecked = marketingTouched
+    ? marketingLocal
+    : Boolean(dataCollectionForMarketing);
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
@@ -213,13 +220,21 @@ export default function OnboardingMetametrics() {
   };
 
   const handleParticipateInMetaMetricsChange = () => {
-    setIsParticipateInMetaMetricsChecked((prev) => {
-      const next = !prev;
-      if (!next) {
-        setIsDataCollectionForMarketingChecked(false);
-      }
-      return next;
-    });
+    const next = !isParticipateInMetaMetricsChecked;
+    setCheckboxDraft((prev) => ({
+      ...prev,
+      participateTouched: true,
+      participateLocal: next,
+      ...(next ? {} : { marketingTouched: true, marketingLocal: false }),
+    }));
+  };
+
+  const handleMarketingChange = () => {
+    setCheckboxDraft((prev) => ({
+      ...prev,
+      marketingTouched: true,
+      marketingLocal: !isDataCollectionForMarketingChecked,
+    }));
   };
 
   return (
@@ -261,7 +276,6 @@ export default function OnboardingMetametrics() {
         testId="metametrics-checkbox"
         isSelected={isParticipateInMetaMetricsChecked}
         onChange={handleParticipateInMetaMetricsChange}
-        checkboxRef={participateCheckboxRef}
         containerClassName="onboarding-metametrics__checkbox"
         label={
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
@@ -279,10 +293,7 @@ export default function OnboardingMetametrics() {
           isDataCollectionForMarketingChecked
         }
         isDisabled={!isParticipateInMetaMetricsChecked}
-        onChange={() => {
-          setIsDataCollectionForMarketingChecked((prev) => !prev);
-        }}
-        checkboxRef={marketingCheckboxRef}
+        onChange={handleMarketingChange}
         containerClassName={
           isParticipateInMetaMetricsChecked
             ? 'onboarding-metametrics__checkbox'

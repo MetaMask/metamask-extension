@@ -43,8 +43,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   AnalyticsController: {
     analyticsId: true,
+    consentDecisionMade: true,
     eventQueue: false,
     optedIn: true,
+    preConsentEventQueue: false,
   },
   AnnouncementController: {
     announcements: false,
@@ -175,10 +177,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     unapprovedEncryptionPublicKeyMsgs: false,
     unapprovedEncryptionPublicKeyMsgCount: true,
   },
-  EnsController: {
-    ensResolutionsByAddress: false,
-    ensEntries: false,
-  },
   GasFeeController: {
     estimatedGasFeeTimeBounds: true,
     gasEstimateType: true,
@@ -206,8 +204,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
-    completedMetaMetricsOnboarding: true,
-    eventsBeforeMetricsOptIn: false,
     tracesBeforeMetricsOptIn: false,
     fragments: false,
     traits: false,

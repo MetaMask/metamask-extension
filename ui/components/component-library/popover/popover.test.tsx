@@ -336,7 +336,7 @@ describe('Popover', () => {
     expect(queryByText('Click outside to close')).not.toBeInTheDocument();
   });
 
-  it('applies background-alternative when pure black mode is active', () => {
+  it('applies background-section when pure black mode is active', () => {
     const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
     usePureBlack.mockReturnValue(true);
 
@@ -347,7 +347,7 @@ describe('Popover', () => {
     );
 
     expect(getByTestId('popover')).toHaveClass(
-      'mm-box--background-color-background-alternative',
+      'mm-box--background-color-background-section',
     );
   });
 });

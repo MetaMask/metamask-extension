@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
+import { getProductionRemoteFlagApiResponse } from '../../../feature-flags';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
@@ -107,6 +108,7 @@ export const BIP44_STAGE_TWO = {
     enabled: true,
     minimumVersion: '13.6.0',
   },
+  tronTestnetsEnabled: true,
 };
 
 export const TRON_SWAP_TOKEN_REGISTRY = {
@@ -189,7 +191,19 @@ export async function mockTronFeatureFlags(
     })
     .thenCallback(() => ({
       statusCode: 200,
-      json: [BIP44_STAGE_TWO],
+      json: [
+        ...getProductionRemoteFlagApiResponse(),
+        BIP44_STAGE_TWO,
+        // The Tron mocks answer `getQuote`, not the SSE `getQuoteStream` that
+        // the production bridge config turns on. An unparseable `bridgeConfig`
+        // resolves to the bridge controller's built-in default, which is what
+        // these tests already ran against when the flag was absent entirely.
+        { bridgeConfig: {} },
+        // Account discovery queries every popular EVM chain, and these fixtures
+        // only mock the Infura endpoint, which are not mocked/redirected as Anvil is off.
+        // Disabling the failover feature to avoid new privacy hosts
+        { corePlatformRpcFailoverMode: 'disabled' },
+      ],
     }));
 }
 
@@ -1016,14 +1030,25 @@ export async function mockTronSpotPrices(
     .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
     .always()
     .thenCallback((request) => {
-      const assetIds = new URL(request.url).searchParams
-        .get('assetIds')
-        ?.split(',');
+      const { searchParams } = new URL(request.url);
+      const assetIds = searchParams.get('assetIds')?.split(',');
+      // Without `includeMarketData` the API answers with prices keyed by the
+      // requested currency instead of market data. The bridge controller relies
+      // on that form to populate `assetExchangeRates` for the quoted assets.
+      const includeMarketData =
+        searchParams.get('includeMarketData') === 'true';
+      const vsCurrency = searchParams.get('vsCurrency') ?? 'usd';
       const requestedPrices = Object.fromEntries(
-        (assetIds ?? Object.keys(pricesByAssetId)).map((assetId) => [
-          assetId,
-          pricesByAssetId[assetId as keyof typeof pricesByAssetId] ?? null,
-        ]),
+        (assetIds ?? Object.keys(pricesByAssetId)).map((assetId) => {
+          const marketData =
+            pricesByAssetId[assetId as keyof typeof pricesByAssetId] ?? null;
+
+          if (includeMarketData || !marketData) {
+            return [assetId, marketData];
+          }
+
+          return [assetId, { [vsCurrency]: marketData.price }];
+        }),
       );
 
       return {
@@ -1263,7 +1288,7 @@ function buildTronTrxToUsdtTrade(grossSrcAmount: string) {
   };
 }
 
-function buildTronQuoteResponse(fixture: TronQuoteFixture) {
+function buildTronQuoteResponseV1(fixture: TronQuoteFixture) {
   const srcAsset = buildTronAsset(fixture.src);
   const destAsset = buildTronAsset(fixture.dest);
   const feeSun = fixture.feeSun ?? 8_750;
@@ -1343,7 +1368,7 @@ export async function mockBridgeGetTronQuoteFor(
     .forGet(/^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u)
     .thenCallback(() => ({
       statusCode: 200,
-      json: [buildTronQuoteResponse(fixture)],
+      json: [buildTronQuoteResponseV1(fixture)],
     }));
 }
 

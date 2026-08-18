@@ -4,7 +4,7 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Footer, Header, Page } from '../page';
 import {
@@ -15,12 +15,9 @@ import {
   ButtonSize,
   ButtonVariant,
   IconName,
-  Text,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTheme } from '../../../../hooks/useTheme';
-import { TabEmptyState } from '../../../ui/tab-empty-state';
-import { ThemeType } from '../../../../../shared/constants/preferences';
+import { PermissionsEmptyState } from '../gator-permissions/components';
 import {
   AlignItems,
   BackgroundColor,
@@ -29,14 +26,10 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
-  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
-  PREVIOUS_ROUTE,
   REVIEW_PERMISSIONS,
-  GATOR_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import {
   getConnectedSitesListWithNetworkInfo,
@@ -49,11 +42,11 @@ import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-me
 import { transitionForward } from '../../../ui/transition';
 import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
 import { toast } from '../../../ui/toast/toast';
+import { useDispatch } from '../../../../store/hooks';
 import { ConnectionListItem } from './connection-list-item';
 
 const PermissionsPage = () => {
   const t = useI18nContext();
-  const theme = useTheme();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
@@ -64,13 +57,11 @@ const PermissionsPage = () => {
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
+      // Came directly from home via auto-redirect - close with animation
+      runCloseTransition(() => navigate(-1));
     } else {
-      navigate(
-        isGatorPermissionsRevocationFeatureEnabled()
-          ? GATOR_PERMISSIONS
-          : DEFAULT_ROUTE,
-      );
+      // Came from Gator hub or other navigation - just go back through history
+      navigate(-1);
     }
   };
   const [totalConnections, setTotalConnections] = useState(0);
@@ -160,24 +151,15 @@ const PermissionsPage = () => {
           <ButtonIcon
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            className="connections-header__start-accessory"
             color={Color.iconDefault}
             onClick={handleBack}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             data-testid="permissions-page-back"
           />
         }
+        textProps={{ 'data-testid': 'permissions-page-title' }}
       >
-        <Text
-          as="span"
-          variant={TextVariant.headingMd}
-          textAlign={TextAlign.Center}
-          data-testid="permissions-page-title"
-        >
-          {isGatorPermissionsRevocationFeatureEnabled()
-            ? t('sites')
-            : t('dappConnections')}
-        </Text>
+        {t('permissions')}
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
@@ -192,22 +174,7 @@ const PermissionsPage = () => {
             height={BlockSize.Full}
             padding={4}
           >
-            <TabEmptyState
-              icon={
-                <img
-                  src={
-                    theme === ThemeType.dark
-                      ? '/images/empty-state-permissions-dark.png'
-                      : '/images/empty-state-permissions-light.png'
-                  }
-                  alt={t('permissionsPageEmptyDescription')}
-                  width={72}
-                  height={72}
-                />
-              }
-              description={t('permissionsPageEmptyDescription')}
-              className="mx-auto"
-            />
+            <PermissionsEmptyState />
           </Box>
         )}
       </Content>

@@ -34,6 +34,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
+const checkboxContainerProps = {
+  style: { pointerEvents: 'none' },
+};
+
 export const EditNetworksModal = ({
   nonTestNetworks,
   testNetworks,
@@ -111,9 +115,11 @@ export const EditNetworksModal = ({
         >
           <Box padding={4}>
             <Checkbox
+              data-testid="network-list-item-checkbox-select-all"
               label={t('selectAll')}
               isSelected={checked || isIndeterminate}
               onChange={() => (allAreSelected() ? deselectAll() : selectAll())}
+              checkboxContainerProps={checkboxContainerProps}
               checkedIconProps={
                 isIndeterminate ? { name: IconName.MinusBold } : undefined
               }
@@ -129,10 +135,11 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
+                  data-testid={`network-list-item-checkbox-${network.name}`}
                   isSelected={selectedChainIds.includes(network.caipChainId)}
+                  checkboxContainerProps={checkboxContainerProps}
                   onChange={() => handleNetworkClick(network.caipChainId)}
                   onClick={(event) => event.stopPropagation()}
-                  checkboxContainerProps={{ className: 'pointer-events-none' }}
                 />
               }
             />
@@ -150,10 +157,11 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
+                  data-testid={`network-list-item-checkbox-${network.name}`}
                   isSelected={selectedChainIds.includes(network.caipChainId)}
+                  checkboxContainerProps={checkboxContainerProps}
                   onChange={() => handleNetworkClick(network.caipChainId)}
                   onClick={(event) => event.stopPropagation()}
-                  checkboxContainerProps={{ className: 'pointer-events-none' }}
                 />
               }
               showEndAccessory={false}
