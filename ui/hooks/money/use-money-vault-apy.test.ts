@@ -67,13 +67,13 @@ describe('useMoneyVaultApy', () => {
     expect(result.current.formattedApy).toBe('2.5%');
   });
 
-  it('does not use the fallback while the live query is loading', () => {
+  it('uses the fallback while the live query is loading', () => {
     const { result } = renderApyHook(
       { isLoading: true, isError: false, data: undefined },
       { vaultApyFallback: 0.025 },
     );
 
-    expect(result.current.formattedApy).toBeUndefined();
+    expect(result.current.formattedApy).toBe('2.5%');
   });
 
   it('passes query enablement through to the service query', () => {

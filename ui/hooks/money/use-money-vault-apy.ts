@@ -25,12 +25,8 @@ export function useMoneyVaultApy(enabled = true) {
   }) as UseQueryResult<NormalizedVaultApyResponse>;
 
   const serviceApy = query.data?.apy;
-  const shouldUseFallback =
-    !query.isLoading && (query.isError || serviceApy === undefined);
   const apyDecimal =
-    vaultApyOverride ??
-    serviceApy ??
-    (shouldUseFallback ? vaultApyFallback : undefined);
+    vaultApyOverride ?? serviceApy ?? vaultApyFallback;
   const apyPercent =
     apyDecimal === undefined
       ? undefined

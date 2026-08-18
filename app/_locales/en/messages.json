@@ -5407,7 +5407,19 @@
     "message": "Earn on your crypto"
   },
   "moneyEarnOnCryptoDescription": {
-    "message": "Fund your Money account using eligible assets already in your wallet."
+    "message": "See how your money can grow over time by converting your crypto to mUSD."
+  },
+  "moneyEarnOnCryptoDescriptionMiddle": {
+    "message": "in assets and you could earn up to"
+  },
+  "moneyEarnOnCryptoDescriptionPrefix": {
+    "message": "Add your"
+  },
+  "moneyEarnOnCryptoDescriptionSuffix": {
+    "message": "in one year."
+  },
+  "moneyEarnOnCryptoNoFee": {
+    "message": "No fee"
   },
   "moneyEarnTitle": {
     "message": "Earn on your balance"

@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonIcon,
-  ButtonSize,
   ButtonVariant,
   FontWeight,
   Icon,
@@ -15,20 +15,16 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  AvatarToken,
-  AvatarTokenSize,
-} from '../../components/component-library';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyAccountBalance } from '../../hooks/money/use-money-account-balance';
+import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
 import { useMoneyVaultApy } from '../../hooks/money/use-money-vault-apy';
-import useMultiChainAssets from '../../components/app/assets/hooks/useMultichainAssets';
+import { getPrivacyMode } from '../../selectors/selectors';
 import { MoneyActivityPlaceholder } from './components/money-activity-placeholder';
+import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 
-const ELIGIBLE_ASSET_SYMBOLS = new Set(['DAI', 'ETH', 'SOL', 'USDC', 'USDT']);
-const MAX_ASSET_PREVIEW_COUNT = 5;
 const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
 
 type ActionCardProps = {
@@ -62,26 +58,11 @@ export function MoneyHomePage() {
   const address = availability.isAvailable ? availability.address : undefined;
   const { query: balanceQuery, formattedBalance } =
     useMoneyAccountBalance(address);
-  const { query: apyQuery, formattedApy } = useMoneyVaultApy(
+  const { query: apyQuery, apyDecimal, formattedApy } = useMoneyVaultApy(
     availability.isAvailable,
   );
-  const assets = useMultiChainAssets();
-  const eligibleAssets = useMemo(
-    () =>
-      assets
-        .filter(
-          (asset) =>
-            ELIGIBLE_ASSET_SYMBOLS.has(asset.symbol?.toUpperCase() ?? '') &&
-            Number(asset.tokenFiatAmount ?? 0) > 0,
-        )
-        .sort(
-          (first, second) =>
-            Number(second.tokenFiatAmount ?? 0) -
-            Number(first.tokenFiatAmount ?? 0),
-        )
-        .slice(0, MAX_ASSET_PREVIEW_COUNT),
-    [assets],
-  );
+  const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
+  const privacyMode = useSelector(getPrivacyMode);
 
   if (isAvailabilityLoading) {
     return (
@@ -236,72 +217,13 @@ export function MoneyHomePage() {
         <MoneySectionDivider />
         <MoneyActivityPlaceholder />
 
-        {eligibleAssets.length > 0 ? (
-          <>
-            <MoneySectionDivider />
-            <section className="py-3" data-testid="money-eligible-assets">
-              <div className="px-4">
-                <Text
-                  variant={TextVariant.HeadingMd}
-                  fontWeight={FontWeight.Bold}
-                >
-                  {t('moneyEarnOnCrypto')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodyMd}
-                  color={TextColor.TextAlternative}
-                  className="mt-1"
-                >
-                  {t('moneyEarnOnCryptoDescription')}
-                </Text>
-              </div>
-              <div className="mt-3 flex flex-col">
-                {eligibleAssets.map((asset) => (
-                  <div
-                    key={`${asset.chainId}:${asset.address}`}
-                    className="flex min-h-[70px] items-center gap-4 px-4 py-3"
-                  >
-                    <AvatarToken
-                      name={asset.symbol}
-                      src={asset.image}
-                      size={AvatarTokenSize.Lg}
-                    />
-                    <div className="min-w-0 flex-1">
-                      <Text
-                        variant={TextVariant.BodyMd}
-                        fontWeight={FontWeight.Medium}
-                      >
-                        {asset.symbol}
-                      </Text>
-                      <Text
-                        variant={TextVariant.BodySm}
-                        color={TextColor.TextAlternative}
-                      >
-                        {String(asset.secondary)}
-                      </Text>
-                    </div>
-                    <Button
-                      size={ButtonSize.Sm}
-                      variant={ButtonVariant.Secondary}
-                      disabled
-                    >
-                      {t('moneyAdd')}
-                    </Button>
-                  </div>
-                ))}
-              </div>
-              <div className="px-4 pt-2">
-                <Button
-                  variant={ButtonVariant.Secondary}
-                  disabled
-                  className="w-full"
-                >
-                  {t('viewAll')}
-                </Button>
-              </div>
-            </section>
-          </>
-        ) : null}
+        <MoneySectionDivider />
+        <MoneyPotentialEarnings
+          tokens={depositTokens}
+          apyDecimal={apyDecimal}
+          isNoFeeToken={isNoFeeToken}
+          privacyMode={privacyMode}
+        />
 
         <MoneySectionDivider />
         <section className="px-4 py-3">

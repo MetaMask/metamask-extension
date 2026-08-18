@@ -7,8 +7,21 @@ import { MoneyHomePage } from './money-home-page';
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyAccountBalance = jest.fn();
 const mockUseMoneyVaultApy = jest.fn();
-const mockUseMultiChainAssets = jest.fn();
+const mockUseMoneyDepositTokens = jest.fn();
 
+jest.mock('react-redux', () => ({
+  useSelector: () => false,
+}));
+jest.mock('../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number) =>
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+      }).format(value),
+  }),
+}));
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   Navigate: ({ to }: { to: string }) => (
@@ -24,10 +37,8 @@ jest.mock('../../hooks/money/use-money-account-balance', () => ({
 jest.mock('../../hooks/money/use-money-vault-apy', () => ({
   useMoneyVaultApy: () => mockUseMoneyVaultApy(),
 }));
-jest.mock('../../components/app/assets/hooks/useMultichainAssets', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: () => mockUseMultiChainAssets(),
+jest.mock('../../hooks/money/use-money-deposit-tokens', () => ({
+  useMoneyDepositTokens: () => mockUseMoneyDepositTokens(),
 }));
 
 describe('MoneyHomePage', () => {
@@ -46,9 +57,13 @@ describe('MoneyHomePage', () => {
     });
     mockUseMoneyVaultApy.mockReturnValue({
       query: { isLoading: false },
+      apyDecimal: 0.042,
       formattedApy: '4.2%',
     });
-    mockUseMultiChainAssets.mockReturnValue([]);
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [],
+      isNoFeeToken: () => false,
+    });
   });
 
   it('renders the full empty-state composition with a live zero balance', () => {
@@ -70,9 +85,8 @@ describe('MoneyHomePage', () => {
         '4.2% APY',
       ),
     ).toHaveClass('text-success-default');
-    expect(
-      screen.queryByTestId('money-eligible-assets'),
-    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
+    expect(screen.getByText(messages.moneyEarnOnCrypto.message)).toBeInTheDocument();
     expect(
       screen.getByText(messages.moneyBenefits.message),
     ).toBeInTheDocument();
@@ -146,6 +160,7 @@ describe('MoneyHomePage', () => {
   it('shows a configured APY override while the service query is loading', () => {
     mockUseMoneyVaultApy.mockReturnValue({
       query: { isLoading: true },
+      apyDecimal: 0.05,
       formattedApy: '5%',
     });
 
@@ -159,29 +174,30 @@ describe('MoneyHomePage', () => {
   });
 
   it('previews eligible wallet assets using their existing balances', () => {
-    mockUseMultiChainAssets.mockReturnValue([
-      {
-        address: '0x1',
-        chainId: '0x1',
-        image: 'usdc.png',
-        secondary: '$12.00',
-        symbol: 'USDC',
-        tokenFiatAmount: 12,
-      },
-      {
-        address: '0x2',
-        chainId: '0x1',
-        image: 'other.png',
-        secondary: '$100.00',
-        symbol: 'OTHER',
-        tokenFiatAmount: 100,
-      },
-    ]);
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [
+        {
+          address: '0x0000000000000000000000000000000000000001',
+          chainId: '0x1',
+          decimals: 6,
+          image: 'usdc.png',
+          moneyFiatAmountUsd: 12,
+          secondary: '$12.00',
+          symbol: 'USDC',
+          title: 'USD Coin',
+          tokenFiatAmount: 12,
+        },
+      ],
+      isNoFeeToken: () => true,
+    });
 
     renderWithLocalization(<MoneyHomePage />);
 
-    expect(screen.getByTestId('money-eligible-assets')).toBeInTheDocument();
-    expect(screen.getByText('USDC')).toBeInTheDocument();
-    expect(screen.queryByText('OTHER')).not.toBeInTheDocument();
+    expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
+    expect(screen.getByText('USD Coin')).toBeInTheDocument();
+    expect(screen.getByText('No fee')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-potential-earnings-projection'),
+    ).toHaveTextContent('+$0.50');
   });
 });
