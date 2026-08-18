@@ -1123,6 +1123,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1147,6 +1148,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1188,6 +1190,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1211,6 +1214,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1234,6 +1238,9 @@ describe('preferences controller', () => {
         ).toStrictEqual({});
         expect(
           controller.state.referrals[DefiReferralPartner.AsterDEX],
+        ).toStrictEqual({});
+        expect(
+          controller.state.referrals[DefiReferralPartner.Variational],
         ).toStrictEqual({});
       });
 
