@@ -87,6 +87,17 @@ jest.mock('../../send/asset', () => ({
           Select Token
         </button>
         <button
+          data-testid="select-current-token"
+          onClick={() =>
+            onAssetSelect?.({
+              address: '0x0000000000000000000000000000000000000000',
+              chainId: '0x1',
+            })
+          }
+        >
+          Select Current Token
+        </button>
+        <button
           data-testid="select-disabled-token"
           onClick={() =>
             onAssetSelect?.({
@@ -326,6 +337,15 @@ describe('PayWithModal', () => {
       });
       expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
     });
+
+    it('does not call setPayToken when the selected token matches the current payToken', () => {
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      fireEvent.click(screen.getByTestId('select-current-token'));
+
+      expect(setPayTokenMock).not.toHaveBeenCalled();
+      expect(onCloseMock).toHaveBeenCalled();
+    });
   });
 
   describe('perpsWithdraw destination token import', () => {
@@ -478,6 +498,36 @@ describe('PayWithModal', () => {
 
     it('keeps the token asset picker when money account transactions are disabled', () => {
       selectIsMoneyAccountTransactionEnabledMock.mockReturnValue(false);
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByTestId('asset-component')).toBeInTheDocument();
+      expect(screen.queryByTestId('pay-with-sections')).not.toBeInTheDocument();
+    });
+
+    it('renders sectioned pay options for perpsWithdraw when enabled', () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByTestId('pay-with-sections')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('pay-with-money-account-row'),
+      ).toBeInTheDocument();
+      expect(screen.queryByTestId('asset-component')).not.toBeInTheDocument();
+    });
+
+    it('keeps the token asset picker for perpsWithdraw when money account is disabled', () => {
+      selectIsMoneyAccountTransactionEnabledMock.mockReturnValue(false);
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
 
       renderModal({ isOpen: true, onClose: onCloseMock });
 

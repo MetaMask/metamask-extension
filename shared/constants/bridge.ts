@@ -346,6 +346,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
 } as const;
 
 export const BRIDGE_ASSET_PICKER_HIDDEN_ASSETS = new Set([
-  // Arc blockchain: Two USDC - one native, one ERC20. Hidding native for convenience.
+  // Arc blockchain: Two USDC - one native, one ERC20. Hiding native for convenience.
+  // Both the legacy erc20:0x0 placeholder and the current slip44:5042 ID are
+  // listed because persisted balance state may still carry the legacy ID
+  // until the pending state migration for the slip44 rollout lands.
   'eip155:5042/erc20:0x0000000000000000000000000000000000000000',
+  'eip155:5042/slip44:5042',
 ]);

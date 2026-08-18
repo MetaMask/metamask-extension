@@ -99,6 +99,16 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         return;
       }
 
+      if (
+        payToken &&
+        payToken.address.toLowerCase() === token.address?.toLowerCase() &&
+        payToken.chainId.toLowerCase() ===
+          (token.chainId as string)?.toLowerCase()
+      ) {
+        handleClose();
+        return;
+      }
+
       const tokenSelection = {
         address: token.address as Hex,
         chainId: token.chainId as Hex,
@@ -160,6 +170,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       handleClose,
       isPostQuoteWithdraw,
       onMusdPaymentTokenChange,
+      payToken,
       setPayToken,
     ],
   );
@@ -192,8 +203,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
     ],
   );
 
-  const showSections =
-    isMoneyAccountPayEnabled && !showOtherAssets && !isPostQuoteWithdraw;
+  const showSections = isMoneyAccountPayEnabled && !showOtherAssets;
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} isClosedOnOutsideClick={false}>
