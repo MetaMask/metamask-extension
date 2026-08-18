@@ -6,6 +6,7 @@ import type {
 import type { Messenger } from '@metamask/messenger';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger, type Hex } from '@metamask/utils';
+import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
 import { isMoneyAccountEnabled } from '../../../../shared/lib/money/feature-flags';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
 
@@ -49,12 +50,7 @@ export type MoneyAccountAvailabilityMessenger = Messenger<
   MoneyAccountAvailabilityEvents
 >;
 
-/**
- * Whether this user has a usable Money Account, and its address when they do.
- */
-export type MoneyAccountAvailability =
-  | { isAvailable: true; address: Hex }
-  | { isAvailable: false };
+export type { MoneyAccountAvailability };
 
 const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
 

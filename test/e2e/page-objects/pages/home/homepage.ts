@@ -369,6 +369,38 @@ class HomePage {
     });
   }
 
+  async checkNoErrorToastIsDisplayed(): Promise<void> {
+    console.log('Check no blocking error toast is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.storageErrorToast, {
+      waitAtLeastGuard: regularDelayMs,
+      timeout: 5000,
+    });
+    await this.driver.assertElementNotPresent(this.surveyToast, {
+      waitAtLeastGuard: regularDelayMs,
+      timeout: 5000,
+    });
+    await this.driver.assertElementNotPresent(
+      {
+        css: '.toast-container',
+        text: 'cryptocurrencies',
+      },
+      {
+        waitAtLeastGuard: regularDelayMs,
+        timeout: 5000,
+      },
+    );
+    await this.driver.assertElementNotPresent(
+      {
+        css: '.toast-container',
+        text: 'unsupported',
+      },
+      {
+        waitAtLeastGuard: regularDelayMs,
+        timeout: 5000,
+      },
+    );
+  }
+
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
     console.log('Check no shield entry modal is displayed on homepage');
     await this.driver.assertElementNotPresent(this.shieldEntryModal, {
@@ -576,6 +608,25 @@ class HomePage {
   async goToDeFiTab(): Promise<void> {
     console.log(`Go to DeFi tab on homepage`);
     await this.driver.clickElement(this.defiTab);
+  }
+
+  async goToHomePage(): Promise<void> {
+    console.log('Go to home page');
+    const alreadyOnHome = await this.driver.isElementPresentAndVisible(
+      this.balance,
+      1000,
+    );
+    if (alreadyOnHome) {
+      return;
+    }
+    const isBottomNav = await this.driver.isElementPresentAndVisible(
+      this.bottomNavHomeButton,
+      1000,
+    );
+    if (isBottomNav) {
+      await this.driver.clickElement(this.bottomNavHomeButton);
+      await this.checkPageIsLoaded();
+    }
   }
 
   async goToNftTab(): Promise<void> {
