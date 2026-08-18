@@ -11,11 +11,14 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
+import { useRampsAnalytics } from '../../../hooks/ramps/useRampsAnalytics';
+import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
@@ -179,8 +182,11 @@ export function RampsProviderSelectionScreen() {
     selectedToken,
     userRegion,
   } = useRampsController();
+  const { trackProviderSelected } = useRampsAnalytics();
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
+
+  useRampsScreenViewed('Provider Selection');
 
   const amount =
     (location.state as ProviderSelectionLocationState | null)?.amount ?? 0;
@@ -310,7 +316,7 @@ export function RampsProviderSelectionScreen() {
   );
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handleProviderSelect = useCallback(
@@ -324,13 +330,23 @@ export function RampsProviderSelectionScreen() {
 
       try {
         await setSelectedProvider(provider);
-        navigate(-1);
+        trackProviderSelected({
+          provider: provider.name,
+          previousProvider: selectedProvider?.name,
+          location: 'Provider Selection',
+        });
+        navigate(PREVIOUS_ROUTE);
       } catch {
         isSelectingRef.current = false;
         setIsSelecting(false);
       }
     },
-    [navigate, setSelectedProvider],
+    [
+      navigate,
+      selectedProvider?.name,
+      setSelectedProvider,
+      trackProviderSelected,
+    ],
   );
 
   const title = t('rampsProviders');

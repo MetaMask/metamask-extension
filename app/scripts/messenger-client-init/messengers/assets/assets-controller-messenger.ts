@@ -50,15 +50,11 @@ export function getAssetsControllerMessenger(
     actions: [
       // Account group + network context for RpcDataSource (core#9388)
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
       'NetworkEnablementController:getState',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'AccountsController:getSelectedAccount',
-      'BackendWebSocketService:subscribe',
-      'BackendWebSocketService:getConnectionInfo',
-      'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-      'BackendWebSocketService:addChannelCallback',
-      'BackendWebSocketService:removeChannelCallback',
       'SnapController:handleRequest',
       'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
@@ -83,16 +79,16 @@ export function getAssetsControllerMessenger(
       'NetworkController:networkRemoved',
       // RpcDataSource + StakedBalanceDataSource
       'NetworkController:stateChange',
-      // Snap + WS + tx + preferences
-      'BackendWebSocketService:connectionStateChanged',
+      // Snap + tx + preferences
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
       'SnapController:snapInstalled',
       'PreferencesController:stateChange',
       'TransactionController:transactionConfirmed',
       'TransactionController:unapprovedTransactionAdded',
-      // Real-time post-tx balances (AccountActivityService WS path)
+      // Real-time post-tx balances + per-chain connectivity (AccountActivityService WS path)
       'AccountActivityService:balanceUpdated',
+      'AccountActivityService:statusChanged',
       'RemoteFeatureFlagController:stateChange',
     ],
   });

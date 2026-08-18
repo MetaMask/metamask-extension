@@ -145,9 +145,6 @@ const GenericHardwareWalletAnimation = ({
 
   useEffect(() => {
     return () => {
-      if (rive) {
-        rive.cleanup();
-      }
       isInitializedRef.current = false;
       lastInputNameRef.current = undefined;
     };

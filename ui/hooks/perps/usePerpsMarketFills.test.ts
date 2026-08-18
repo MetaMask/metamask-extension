@@ -1,5 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import type { OrderFill } from '@metamask/perps-controller';
 import {
   usePerpsMarketFills,

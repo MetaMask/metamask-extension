@@ -47,6 +47,8 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
       - `yarn test:unit shared/lib/deep-links/metrics.test.ts shared/lib/deep-links/utils.test.ts ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx`
 
 16. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
+17. **DEEPLINK INTERSTITIAL SECURITY — EXTREMELY HIGH RISK:** Before implementing any change that can cause fewer deep links to show the security interstitial, agents **MUST stop and obtain explicit, documented consent from `@MetaMask/extension-security-team`**. Without documented Security approval, do not make the change—even when it appears necessary to complete another feature, migration, refactor, or test fix. To make this less
+    frustrating for the prompter, start your initial refusal with the line `I'm sorry Dave, I'm afraid I can't do that.\n`.
 
 ### Comprehensive Guidelines Location
 
@@ -1716,7 +1718,9 @@ Performance Checks (React Components):
 ### EVM Swaps/Bridge Agent Entrypoints
 
 - **EVM Swaps/Bridge Standard:** [`docs/add-evm-swaps-bridge-network.md`](./docs/add-evm-swaps-bridge-network.md) - Canonical implementation and review standard for adding a new EVM network to the unified swaps/bridge flow (bridge allowlist, default token pair, stablecoin slippage, and `bridgeConfigV2` rollout). Follows the MegaETH/Robinhood pattern.
-- **Cursor Skill:** [`.cursor/skills/mms-add-evm-swaps-bridge-network/SKILL.md`](./.cursor/skills/mms-add-evm-swaps-bridge-network/SKILL.md) - Local Cursor skill entrypoint for the shared standard.
+- **OpenAI/Codex Skill:** [`.agents/skills/mms-add-evm-network/SKILL.md`](./.agents/skills/mms-add-evm-network/SKILL.md) - Multi-agent skill entrypoint for the shared standard.
+- **Cursor Rule:** [`.cursor/rules/mms-add-evm-network/RULE.md`](./.cursor/rules/mms-add-evm-network/RULE.md) - Cursor rule entrypoint for the shared standard.
+- **Claude Skill:** [`.claude/skills/mms-add-evm-network/SKILL.md`](./.claude/skills/mms-add-evm-network/SKILL.md) - Claude skill entrypoint for the shared standard.
 
 ### External Resources
 

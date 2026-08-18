@@ -2,9 +2,9 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { startCase } from 'lodash';
 import {
-  type QuoteMetadata,
-  type QuoteResponseV1,
+  type QuoteResponse,
   FeatureId,
+  QuoteMetadata,
   UnifiedSwapBridgeEventName,
   formatProviderLabel,
 } from '@metamask/bridge-controller';
@@ -25,7 +25,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setSelectedQuote,
@@ -41,6 +40,13 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useDispatch } from '../../../store/hooks';
+import {
+  getGasFees,
+  getPriceImpactNumber,
+  getTotalNetworkFee,
+  formatCurrencyAmount,
+  formatTokenAmount,
+} from '../utils/quote';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -58,14 +64,14 @@ export const BridgeQuotesModal = ({
   const locale = useSelector(getIntlLocale);
 
   const isRecommendedQuote = useCallback(
-    (quote: QuoteMetadata & QuoteResponseV1) => {
+    (quote: QuoteResponse) => {
       return quote.quote.requestId === recommendedQuote?.quote.requestId;
     },
     [recommendedQuote],
   );
 
   const handleQuoteSelected = useCallback(
-    (quote: QuoteMetadata & QuoteResponseV1) => {
+    (quote: QuoteResponse) => {
       dispatch(setSelectedQuote(quote));
       recommendedQuote &&
         dispatch(
@@ -83,17 +89,17 @@ export const BridgeQuotesModal = ({
               best_quote_provider: formatProviderLabel(recommendedQuote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_gas: Number(quote.gasFee?.total?.usd ?? 0),
+              usd_quoted_gas: Number(getGasFees(quote)?.usd ?? 0),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               quoted_time_minutes: quote.estimatedProcessingTimeInSeconds / 60,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_return: Number(quote.toTokenAmount?.usd ?? 0),
+              usd_quoted_return: Number(quote.quote.dest.usd),
               provider: formatProviderLabel(quote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              price_impact: Number(quote.quote?.priceData?.priceImpact ?? '0'),
+              price_impact: getPriceImpactNumber(quote) ?? 0,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               gas_included: Boolean(quote.quote?.gasIncluded),
@@ -134,13 +140,12 @@ export const BridgeQuotesModal = ({
         {/* QUOTE LIST */}
         <Column maxWidth={BlockSize.Full} style={{ overflow: 'auto' }}>
           {sortedQuotes.map(
-            (quote: QuoteMetadata & QuoteResponseV1, index: number) => {
+            (quote: QuoteMetadata & QuoteResponse, index: number) => {
               const {
-                totalNetworkFee,
-                toTokenAmount,
-                cost,
-                quote: { destAsset, bridges, requestId },
+                quote: { dest, protocols, requestId },
               } = quote;
+              const totalNetworkFee = getTotalNetworkFee(quote);
+              const { priceImpact } = quote.quote.priceData ?? {};
               const isQuoteActive = requestId === activeQuote?.quote.requestId;
               const isRecommended = isRecommendedQuote(quote);
 
@@ -184,7 +189,7 @@ export const BridgeQuotesModal = ({
                         textOverflow: 'ellipsis',
                       }}
                     >
-                      {startCase(bridges[0])}
+                      {startCase(protocols[0])}
                     </Text>
                     {/* DEST AMOUNT */}
                     <Text
@@ -194,8 +199,8 @@ export const BridgeQuotesModal = ({
                     >
                       {formatTokenAmount(
                         locale,
-                        toTokenAmount?.amount ?? '0',
-                        destAsset.symbol,
+                        dest.normalizedAmount,
+                        dest.asset.symbol,
                       )}
                     </Text>
                   </Row>
@@ -213,15 +218,16 @@ export const BridgeQuotesModal = ({
                         style={{ whiteSpace: 'nowrap' }}
                       >
                         {t('quotedTotalCost', [
-                          cost?.valueInCurrency
+                          priceImpact?.valueInCurrency
                             ? formatCurrencyAmount(
-                                cost.valueInCurrency,
+                                priceImpact.valueInCurrency,
                                 currency,
                                 2,
                               )
-                            : formatTokenAmount(
+                            : totalNetworkFee?.normalizedAmount &&
+                              formatTokenAmount(
                                 locale,
-                                totalNetworkFee?.amount ?? '0',
+                                totalNetworkFee.normalizedAmount,
                                 nativeCurrency,
                               ),
                         ])}
@@ -249,13 +255,7 @@ export const BridgeQuotesModal = ({
                       color={TextColor.textAlternative}
                       style={{ whiteSpace: 'nowrap' }}
                     >
-                      {toTokenAmount?.valueInCurrency
-                        ? formatCurrencyAmount(
-                            toTokenAmount.valueInCurrency,
-                            currency,
-                            2,
-                          )
-                        : ''}
+                      {formatCurrencyAmount(dest.valueInCurrency, currency, 2)}
                     </Text>
                   </Row>
                 </Column>

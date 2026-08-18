@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useStore } from 'react-redux';
+import type { Hex } from 'viem';
 import {
   TransactionStatus,
   TransactionType,
@@ -9,6 +10,8 @@ import type {
   AccountTransactionsUpdatedEventPayload,
   Transaction,
 } from '@metamask/keyring-api';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
@@ -96,6 +99,14 @@ const generateToastId = (id: string) => `tx-${id}`;
 const extractPayload = <Type>(raw: Type | [Type]) =>
   Array.isArray(raw) ? raw[0] : raw;
 
+function getDetailsRoute(chainId?: Hex, hash?: string) {
+  if (!chainId || !hash) {
+    return undefined;
+  }
+
+  return `${TX_DETAILS_ROUTE}/${toEvmCaipChainId(chainId)}/${hash}`;
+}
+
 function isSpeedUpReplacement(
   replacedById: string,
   transactions: TransactionMeta[],
@@ -149,7 +160,7 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
-      const { id, status } = transactionMeta;
+      const { id, status, hash, chainId } = transactionMeta;
       if (!id || !status) {
         return;
       }
@@ -159,7 +170,10 @@ export function useTransactionEventToasts(): void {
       }
 
       const toastId = generateToastId(id);
-      const props = { transactionId: id };
+      const props = {
+        transactionId: id,
+        to: getDetailsRoute(chainId, hash),
+      };
 
       if (isPendingToastStatus(transactionMeta, status)) {
         if (shouldShowPendingToast(id)) {

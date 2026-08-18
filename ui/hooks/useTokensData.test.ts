@@ -1,5 +1,4 @@
-import { waitFor } from '@testing-library/react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { handleFetch } from '@metamask/controller-utils';
 import { parseCaipAssetType } from '@metamask/utils';
 import {

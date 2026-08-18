@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { debounce } from 'lodash';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -18,6 +19,8 @@ type SnapOnAmountInputResult = {
   errors: { code: string }[];
 };
 
+const AMOUNT_VALIDATION_DEBOUNCE_MS = 300;
+
 export const useAmountValidation = () => {
   const t = useI18nContext();
   const { isNonEvmSendType } = useSendType();
@@ -25,9 +28,12 @@ export const useAmountValidation = () => {
   const { validateAmountWithSnap } = useSnapAmountOnInput();
   const { rawBalanceNumeric } = useBalance();
   const [amountError, setAmountError] = useState<string | undefined>(undefined);
+  const unmountedRef = useRef(false);
 
   const setAndReturnError = useCallback((errorMessage: string | undefined) => {
-    setAmountError(errorMessage);
+    if (!unmountedRef.current) {
+      setAmountError(errorMessage);
+    }
     return errorMessage;
   }, []);
 
@@ -100,9 +106,36 @@ export const useAmountValidation = () => {
     return setAndReturnError(error);
   }, [value, validateNonEvmAmount, setAndReturnError]);
 
+  const validateAmountAsyncRef = useRef(validateAmountAsync);
+  validateAmountAsyncRef.current = validateAmountAsync;
+
+  const debouncedSnapValidation = useMemo(
+    () =>
+      debounce(() => {
+        validateAmountAsyncRef.current();
+      }, AMOUNT_VALIDATION_DEBOUNCE_MS),
+    [],
+  );
+
+  // EVM: run immediately — no snap RPC, so amountError must never be stale.
   useEffect(() => {
-    validateAmountAsync();
-  }, [validateAmountAsync]);
+    if (!isNonEvmSendType) {
+      validateAmountAsync();
+    }
+  }, [isNonEvmSendType, validateAmountAsync]);
+
+  // Non-EVM: debounce to avoid a snap RPC call on every keystroke.
+  // Also tracks mount state so async validation can't set state after unmount.
+  useEffect(() => {
+    unmountedRef.current = false;
+    if (isNonEvmSendType) {
+      debouncedSnapValidation();
+    }
+    return () => {
+      unmountedRef.current = true;
+      debouncedSnapValidation.cancel();
+    };
+  }, [isNonEvmSendType, debouncedSnapValidation, validateAmountAsync]);
 
   return { amountError, validateNonEvmAmountAsync };
 };

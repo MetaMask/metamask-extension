@@ -1,5 +1,17 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Expanded notification detail for a single notification (including snaps).
+ *
+ * Screen: `#/notifications/:uuid`, reached from `NotificationsListPage`.
+ * Owns: back button, snap avatar/name/title/markdown content checks, and
+ * full-page expanded-view layout assertion.
+ * Boundaries: detail view only. The notifications list and notifications
+ * settings belong to their own page objects.
+ * Related: `NotificationsListPage`, `NotificationsSettingsPage`.
+ *
+ * @see ui/pages/notification-details/notification-details.tsx
+ */
 class NotificationDetailsPage {
   private readonly detailsPageBackButton =
     '[data-testid="notification-details-back-button"]';

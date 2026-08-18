@@ -6,26 +6,17 @@ import GatorPermissionsPage from '../pages/permission/gator-permissions-page';
 import PermissionListPage from '../pages/permission/permission-list-page';
 import SitePermissionPage from '../pages/permission/site-permission-page';
 
-export type OpenPermissionsPageOptions = {
-  /**
-   * If true, stops at Gator Permissions Page without clicking "Sites".
-   * Only relevant for Flask builds with Gator flow.
-   */
-  skipSitesNavigation?: boolean;
-};
-
 /**
- * Opens the Permissions Page (Sites/Connections page).
+ * Opens the Permissions Page (Connections page).
  * Handles both flows:
- * - Regular: Click "All Permissions" → Permissions Page
- * - Gator (Flask): Click "All Permissions" → Gator Permissions Page → Click "Sites" → Permissions Page
+ * - Regular: Click "Permissions" → Permissions Page
+ * - Gator (Flask): Click "Permissions" → Gator Permissions Page → Click "Connections" → Permissions Page
+ * (If only dapp connections exist without gator permissions, auto-redirects to Permissions Page)
  *
  * @param driver - The webdriver instance.
- * @param options - Optional configuration.
  */
 export const openPermissionsPageFlow = async (
   driver: Driver,
-  options?: OpenPermissionsPageOptions,
 ): Promise<void> => {
   console.log('Open permissions page flow');
   const headerNavbar = new HeaderNavbar(driver);
@@ -34,11 +25,23 @@ export const openPermissionsPageFlow = async (
   const gatorPermissionsPage = new GatorPermissionsPage(driver);
   const isGatorPage = await gatorPermissionsPage.isPageDisplayed();
 
-  if (isGatorPage && !options?.skipSitesNavigation) {
-    console.log(
-      'Detected Gator Permissions Page, clicking "Sites" to navigate to Permissions Page',
-    );
-    await gatorPermissionsPage.clickSites();
+  if (isGatorPage) {
+    // Wait for loading to complete before checking for buttons
+    await gatorPermissionsPage.waitForLoadingComplete();
+
+    // If only dapp connections exist (no gator permissions), the page auto-redirects to Permissions page
+    const hasConnectionsButton =
+      await gatorPermissionsPage.isConnectionsButtonPresent();
+    if (hasConnectionsButton) {
+      console.log(
+        'Detected Gator Permissions Page "Connections" section, clicking to navigate to Permissions Page',
+      );
+      await gatorPermissionsPage.clickConnections();
+    } else {
+      console.log(
+        'Gator Permissions Page detected - no Connections button means auto-redirect to Permissions page is happening',
+      );
+    }
   }
 };
 
@@ -95,4 +98,62 @@ export async function getPermissionsPageForHost(
   const sitePermissionPage = new SitePermissionPage(driver);
   await sitePermissionPage.checkPageIsLoaded(hostname);
   return sitePermissionPage;
+}
+
+export type NetworkSelectionUpdate = {
+  networkName: string;
+  shouldBeSelected: boolean;
+};
+
+async function editConnectedSiteNetworks(
+  driver: Driver,
+  hostname: string,
+  editNetworks: (modal: NetworkPermissionSelectModal) => Promise<void>,
+): Promise<void> {
+  const sitePermissionPage = await getPermissionsPageForHost(driver, hostname);
+  await sitePermissionPage.openNetworkPermissionsModal();
+  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
+  await networkPermissionSelectModal.checkPageIsLoaded();
+  await editNetworks(networkPermissionSelectModal);
+  await networkPermissionSelectModal.clickConfirmEditButton();
+}
+
+/**
+ * Updates the connected site's permitted networks from the Connected sites page.
+ *
+ * @param driver - The webdriver instance.
+ * @param hostname - The hostname shown on the site permission page.
+ * @param updates - Network display names and desired selection state.
+ */
+export async function updateConnectedSiteNetworkSelection(
+  driver: Driver,
+  hostname: string,
+  updates: NetworkSelectionUpdate[],
+): Promise<void> {
+  await editConnectedSiteNetworks(driver, hostname, async (modal) => {
+    for (const { networkName, shouldBeSelected } of updates) {
+      await modal.selectNetwork({
+        networkName,
+        shouldBeSelected,
+      });
+    }
+  });
+}
+
+/**
+ * Updates the connected site's permitted networks so only the specified
+ * networks remain selected.
+ *
+ * @param driver - The webdriver instance.
+ * @param hostname - The hostname shown on the site permission page.
+ * @param selectedNetworkNames - Network display names that should remain selected.
+ */
+export async function updateConnectedSiteNetworksToOnly(
+  driver: Driver,
+  hostname: string,
+  selectedNetworkNames: string[],
+): Promise<void> {
+  await editConnectedSiteNetworks(driver, hostname, async (modal) => {
+    await modal.updateNetworkStatus(selectedNetworkNames);
+  });
 }

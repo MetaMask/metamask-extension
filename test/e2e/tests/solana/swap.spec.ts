@@ -4,7 +4,8 @@ import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
@@ -661,10 +662,11 @@ describe('Swap on Solana', function () {
         }
 
         // Switch to Solana network
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
@@ -761,10 +763,11 @@ describe('Swap on Solana', function () {
         const homePage = new HomePage(driver);
 
         // Switch to Solana network
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
@@ -817,10 +820,11 @@ describe('Swap on Solana', function () {
         }
 
         // Switch to Solana network
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
@@ -861,10 +865,11 @@ describe('Swap on Solana', function () {
         }
 
         // Switch to Solana network
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');

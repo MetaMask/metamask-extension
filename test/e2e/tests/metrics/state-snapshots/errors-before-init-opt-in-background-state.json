@@ -95,10 +95,6 @@
       "currentCurrency": "usd"
     },
     "DeFiPositionsControllerV2": "object",
-    "EnsController": {
-      "ensEntries": "object",
-      "ensResolutionsByAddress": "object"
-    },
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
       "gasEstimateType": "none",
@@ -217,6 +213,7 @@
         "showMultiRpcModal": "boolean",
         "showNativeTokenAsMainBalance": true,
         "showTestNetworks": true,
+        "showTickerWidget": "boolean",
         "skipDeepLinkInterstitial": "boolean",
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
@@ -253,6 +250,7 @@
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
+      "featureFlagThresholdGroups": "object",
       "localOverrides": "object",
       "remoteFeatureFlags": {
         "feature1": true,
