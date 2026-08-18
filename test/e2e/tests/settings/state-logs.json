@@ -824,9 +824,8 @@
     "needsProfilePairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
-    "networkConnectionBanner": {
-      "status": "string"
-    },
+    "networkConnectionBannerNetwork": "null",
+    "networkConnectionBannerStatus": "string",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": {
@@ -1258,6 +1257,9 @@
     "withdrawalRequests": [],
     "web3ShimUsageOrigins": {},
     "verifiedSnaps": {}
+  },
+  "moneyBalance": {
+    "lastKnownBalance": "null"
   },
   "perpsTutorial": {
     "tutorialModalOpen": "boolean",
