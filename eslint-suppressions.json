@@ -99,11 +99,6 @@
       "count": 1
     }
   },
-  "ui/components/multichain/edit-networks-modal/edit-networks-modal.js": {
-    "react-hooks/exhaustive-deps": {
-      "count": 2
-    }
-  },
   "ui/components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1

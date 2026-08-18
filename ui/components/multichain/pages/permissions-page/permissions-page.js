@@ -30,6 +30,7 @@ import {
 import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
 import {
   getConnectedSitesListWithNetworkInfo,
@@ -57,10 +58,7 @@ const PermissionsPage = () => {
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      // Came directly from home via auto-redirect - close with animation
       runCloseTransition(() => navigate(-1));
-    } else {
-      // Came from Gator hub or other navigation - just go back through history
       navigate(-1);
     }
   };
@@ -120,14 +118,26 @@ const PermissionsPage = () => {
   }, [dispatch, mergedConnectionsList, subjects, t]);
 
   const handleConnectionClick = (connection) => {
-    transitionForward(() =>
+    const hasOnlyAdvancedPermissions =
+      !connection.addresses?.length &&
+      (connection.advancedPermissionsCount ?? 0) > 0 &&
+      connection.addresses.length === 0;
+
+    transitionForward(() => {
+      if (hasOnlyAdvancedPermissions) {
+        navigate(
+          `${TOKEN_TRANSFER_ROUTE}/${encodeURIComponent(connection.origin)}`,
+        );
+        return;
+      }
+
       navigate({
         pathname: REVIEW_PERMISSIONS,
         search: createSearchParams({
           origin: connection.origin,
         }).toString(),
-      }),
-    );
+      });
+    });
   };
 
   const renderConnectionsList = (connectionList) =>
