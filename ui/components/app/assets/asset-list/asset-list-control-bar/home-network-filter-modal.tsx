@@ -243,11 +243,11 @@ export const NetworkSelectionModal = ({
       onClose={onClose}
       isClosedOnOutsideClick
       isClosedOnEscapeKey
-      data-testid={dataTestId}
     >
       <ModalOverlay />
       {isOpen ? (
         <ModalContent
+          data-testid={dataTestId}
           size={ModalContentSize.Sm}
           modalDialogProps={{
             padding: 0,
