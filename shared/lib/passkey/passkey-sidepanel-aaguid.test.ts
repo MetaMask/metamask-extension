@@ -1,6 +1,7 @@
 import {
   normalizePasskeyAaguid,
   isPasskeyAaguidIncompatibleWithSidepanel,
+  getPasskeyAuthenticatorName,
 } from './passkey-sidepanel-aaguid';
 
 /** Must match private Google Password Manager AAGUID in passkey-sidepanel-aaguid.ts */
@@ -58,5 +59,24 @@ describe('isPasskeyAaguidIncompatibleWithSidepanel', () => {
 
   it('returns false for non-list string', () => {
     expect(isPasskeyAaguidIncompatibleWithSidepanel('not-a-uuid')).toBe(false);
+  });
+});
+
+describe('getPasskeyAuthenticatorName', () => {
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([
+    ['ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4', 'google_password_manager'],
+    ['08987058-cadc-4b81-b6e1-30de50dcbe96', 'windows_hello'],
+    ['dd4ec289-e01d-41c9-bb89-70fa845d4bf2', 'apple'],
+    ['bada5566-a7aa-401f-bd96-45619a55120d', 'onepassword'],
+  ])('maps %s to %s', (aaguid: string, expectedName: string) => {
+    expect(getPasskeyAuthenticatorName(aaguid)).toBe(expectedName);
+  });
+
+  it('returns unknown for an unrecognized or missing AAGUID', () => {
+    expect(
+      getPasskeyAuthenticatorName('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'),
+    ).toBe('unknown');
+    expect(getPasskeyAuthenticatorName(undefined)).toBe('unknown');
   });
 });

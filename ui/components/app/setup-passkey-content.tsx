@@ -41,6 +41,7 @@ import { createSentryError } from '../../../shared/lib/error';
 import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
+  getPasskeyAuthenticatorName,
   startPasskeyRegistration,
   startPasskeyAuthentication,
   translatePasskeyError,
@@ -243,6 +244,7 @@ export default function SetupPasskeyContent({
       const authenticatorId = getPasskeyAuthenticatorId({
         metamask: newMetamaskState,
       });
+      const authenticatorName = getPasskeyAuthenticatorName(authenticatorId);
 
       trackEvent(
         createEventBuilder(MetaMetricsEventName.PasskeySetup)
@@ -253,7 +255,7 @@ export default function SetupPasskeyContent({
             // eslint-disable-next-line @typescript-eslint/naming-convention
             derivation_method: derivationMethod,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            authenticator_id: authenticatorId,
+            authenticator_name: authenticatorName,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - enrollmentStartedAt,
           })

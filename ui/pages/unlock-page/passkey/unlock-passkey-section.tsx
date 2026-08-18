@@ -29,6 +29,7 @@ import {
   isPasskeyCeremonySilentError,
   translatePasskeyError,
   getPasskeyErrorCode,
+  getPasskeyAuthenticatorName,
 } from '../../../../shared/lib/passkey';
 import { captureException } from '../../../../shared/lib/sentry';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -72,6 +73,9 @@ export const UnlockPasskeySection = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
   const passkeyAuthenticatorId = useSelector(getPasskeyAuthenticatorId);
+  const passkeyAuthenticatorName = getPasskeyAuthenticatorName(
+    passkeyAuthenticatorId,
+  );
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
@@ -115,7 +119,7 @@ export const UnlockPasskeySection = ({
         /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
         is_auto_prompt: isAutoPrompt,
         derivation_method: passkeyDerivationMethod,
-        authenticator_id: passkeyAuthenticatorId,
+        authenticator_name: passkeyAuthenticatorName,
         /* eslint-enable @typescript-eslint/naming-convention */
       };
       try {
@@ -147,7 +151,7 @@ export const UnlockPasskeySection = ({
               // eslint-disable-next-line @typescript-eslint/naming-convention
               passkey_enabled: isPasskeyActive,
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              authenticator_id: passkeyAuthenticatorId,
+              authenticator_name: passkeyAuthenticatorName,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               duration_ms: Date.now() - startedAt,
             })
@@ -199,7 +203,7 @@ export const UnlockPasskeySection = ({
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 passkey_enabled: isPasskeyActive,
                 // eslint-disable-next-line @typescript-eslint/naming-convention
-                authenticator_id: passkeyAuthenticatorId,
+                authenticator_name: passkeyAuthenticatorName,
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 duration_ms: durationMs,
               })
@@ -223,7 +227,7 @@ export const UnlockPasskeySection = ({
       onUnlockWithPasskey,
       passkeyMethodLabel,
       passkeyDerivationMethod,
-      passkeyAuthenticatorId,
+      passkeyAuthenticatorName,
       t,
       trackEvent,
       createEventBuilder,
