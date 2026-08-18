@@ -586,9 +586,26 @@ class HomePage {
     await this.driver.clickElement(this.tokensTab);
   }
 
+  async navigateToHome(): Promise<void> {
+    console.log('Navigate to home.html so the current route is left');
+    await this.driver.navigate();
+    await this.checkPageIsLoaded();
+  }
+
   async openPortfolioPage(): Promise<void> {
     console.log(`Open portfolio page on homepage`);
     await this.driver.clickElement(this.portfolioLink);
+  }
+
+  /**
+   * Reloads the home UI from background state. Tron Snap balances and
+   * `isEvmSelected` after an account-group switch do not always land without
+   * this. Prefer waiting for a selector when a stable one exists.
+   */
+  async reloadHome(): Promise<void> {
+    console.log('Reload home to rehydrate Snap / network state');
+    await this.driver.refresh();
+    await this.checkPageIsLoaded();
   }
 
   async startBridgeFlow(): Promise<void> {
