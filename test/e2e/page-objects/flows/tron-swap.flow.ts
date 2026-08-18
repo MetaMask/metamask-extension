@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
+import HomePage from '../pages/home/homepage';
 import { login } from './login.flow';
 import { switchToNetworkFromNetworkSelect } from './network.flow';
-import HomePage from '../pages/home/homepage';
 
 export async function landOnTronHome(driver: Driver): Promise<void> {
   await login(driver);

@@ -1,10 +1,10 @@
 import { Driver } from '../../webdriver/driver';
+import HomePage from '../pages/home/homepage';
 import { addMultipleAccounts } from './add-account.flow';
 import { switchToAccount } from './account-list.flow';
 import { login } from './login.flow';
 import { switchToNetworkFromNetworkSelect } from './network.flow';
 import { waitUntilAccountTreeSyncIdle } from './tron-account-derivation.flow';
-import HomePage from '../pages/home/homepage';
 
 const PORTFOLIO_ACCOUNT_INDEX = 1;
 
