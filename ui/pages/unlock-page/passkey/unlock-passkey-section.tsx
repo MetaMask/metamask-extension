@@ -147,8 +147,6 @@ export const UnlockPasskeySection = ({
               // eslint-disable-next-line @typescript-eslint/naming-convention
               passkey_enabled: isPasskeyActive,
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              authenticator_id: passkeyAuthenticatorId,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               duration_ms: Date.now() - startedAt,
             })
             .build(),
@@ -199,8 +197,6 @@ export const UnlockPasskeySection = ({
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 passkey_enabled: isPasskeyActive,
                 // eslint-disable-next-line @typescript-eslint/naming-convention
-                authenticator_id: passkeyAuthenticatorId,
-                // eslint-disable-next-line @typescript-eslint/naming-convention
                 duration_ms: durationMs,
               })
               .build(),
@@ -246,12 +242,19 @@ export const UnlockPasskeySection = ({
           /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
           derivation_method: passkeyDerivationMethod,
           /* eslint-enable @typescript-eslint/naming-convention */
+          authenticator_id: passkeyAuthenticatorId,
         })
         .build(),
     );
     cancelPasskeyCeremony();
     onUsePassword();
-  }, [onUsePassword, trackEvent, createEventBuilder, passkeyDerivationMethod]);
+  }, [
+    onUsePassword,
+    trackEvent,
+    createEventBuilder,
+    passkeyDerivationMethod,
+    passkeyAuthenticatorId,
+  ]);
 
   const openUnlockInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();
