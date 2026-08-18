@@ -386,7 +386,6 @@ describe('TokenManagementPage', () => {
   const createState = ({
     enabledNetworks = { '0x1': true },
     enabledNetworkMap = { eip155: enabledNetworks },
-    networkManagementEnabled = true,
     accountGroupAssets = {
       '0x1': [mainnetToken, nativeToken],
       '0x5': [goerliToken],
@@ -395,7 +394,6 @@ describe('TokenManagementPage', () => {
   }: {
     enabledNetworks?: Record<string, boolean>;
     enabledNetworkMap?: Record<string, Record<string, boolean>>;
-    networkManagementEnabled?: boolean;
     accountGroupAssets?: Record<string, unknown[]>;
     selectedMultichainNetworkChainId?: string;
   } = {}) => ({
@@ -414,10 +412,6 @@ describe('TokenManagementPage', () => {
           order: 'asc',
           sortCallback: 'alphaNumeric',
         },
-      },
-      remoteFeatureFlags: {
-        ...mockState.metamask.remoteFeatureFlags,
-        extensionUxNetworkManagement: networkManagementEnabled,
       },
       enabledNetworkMap,
       networkConfigurationsByChainId: {

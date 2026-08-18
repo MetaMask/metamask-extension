@@ -62,7 +62,6 @@ import {
   importCustomAssetsBatch,
   multichainAddAssets,
   multichainIgnoreAssets,
-  showModal,
 } from '../../store/actions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
@@ -88,7 +87,6 @@ import { ScrollContainer } from '../../contexts/scroll-container';
 import { Header } from '../../components/multichain/pages/page';
 import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
 import { HomeNetworkFilterModal } from '../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
-import { getIsNetworkManagementEnabled } from '../../selectors/multichain/feature-flags';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
 import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
 import {
@@ -516,7 +514,6 @@ export const TokenManagementPage = () => {
   );
   const useExternalServices = useSelector(getUseExternalServices);
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
-  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
@@ -781,12 +778,8 @@ export const TokenManagementPage = () => {
 
   const handleOpenNetworkFilter = useCallback(() => {
     commitStagedHides().catch(() => undefined);
-    if (!isNetworkManagementEnabled) {
-      dispatch(showModal({ name: 'NETWORK_MANAGER' }));
-      return;
-    }
     setIsNetworkFilterModalOpen(true);
-  }, [commitStagedHides, dispatch, isNetworkManagementEnabled]);
+  }, [commitStagedHides]);
 
   const handleCloseNetworkFilter = useCallback(() => {
     setIsNetworkFilterModalOpen(false);
@@ -1612,12 +1605,10 @@ export const TokenManagementPage = () => {
         </ButtonBase>
       </Box>
 
-      {isNetworkManagementEnabled ? (
-        <HomeNetworkFilterModal
-          isOpen={isNetworkFilterModalOpen}
-          onClose={handleCloseNetworkFilter}
-        />
-      ) : null}
+      <HomeNetworkFilterModal
+        isOpen={isNetworkFilterModalOpen}
+        onClose={handleCloseNetworkFilter}
+      />
 
       <ScrollContainer
         data-testid="token-management-page-list"

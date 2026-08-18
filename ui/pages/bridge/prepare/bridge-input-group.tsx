@@ -38,7 +38,6 @@ import {
 import { shortenString } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { getIsNetworkManagementEnabled } from '../../../selectors/multichain/feature-flags';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import { CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
@@ -50,11 +49,8 @@ import { SelectedAssetButton } from '../asset-picker/selected-asset-button';
 import { BridgeAssetPicker } from '../asset-picker/modal';
 
 export const BridgeInputGroup = ({
-  header,
   token,
-  onAssetChange,
   onAmountChange,
-  networks,
   amountFieldProps,
   secondaryDisplay,
   amountInputPrefix,
@@ -62,22 +58,12 @@ export const BridgeInputGroup = ({
   onMaxButtonClick,
   onBlockExplorerClick,
   buttonProps,
-  accountAddress,
-  disabledChainId,
   containerProps = {},
   isDestination,
   showAmountSkeleton = false,
-  isAssetPickerOpen,
   setIsAssetPickerOpen,
   tokenSecurityData,
 }: {
-  /**
-   * @deprecated - use the new URLSearchParams(search).get('field') === 'dest' instead
-   */
-  isAssetPickerOpen: boolean;
-  /**
-   * @deprecated - navigate to the bridge asset picker page instead
-   */
   setIsAssetPickerOpen: (isOpen: boolean) => void;
   secondaryDisplay?: string;
   amountInputPrefix?: React.ReactNode;
@@ -106,7 +92,6 @@ export const BridgeInputGroup = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { navigateToBridgeAssetPickerPage } = useBridgeNavigation();
-  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
 
   const { isInsufficientBalance, isEstimatedReturnLow } = useSelector(
     getValidationErrors,
@@ -311,27 +296,6 @@ export const BridgeInputGroup = ({
             {...amountFieldProps}
           />
         )}
-        {/*
-         * When the network management feature flag is enabled, token selection
-         * happens on a dedicated page (`BridgeAssetPickerPage`) instead of this
-         * modal. The button below records which picker is open and navigates to
-         * that page.
-         */}
-        {!isNetworkManagementEnabled && (
-          <BridgeAssetPicker
-            disabledChainId={disabledChainId}
-            selectedAsset={token}
-            header={header}
-            isOpen={isAssetPickerOpen}
-            onClose={() => setIsAssetPickerOpen(false)}
-            onAssetChange={(asset: BridgeToken) => {
-              onAssetChange?.(asset);
-            }}
-            chains={networks}
-            accountAddress={accountAddress}
-            isDestination={isDestination}
-          />
-        )}
         <SelectedAssetButton
           onClick={() => {
             dispatch(
@@ -348,9 +312,7 @@ export const BridgeInputGroup = ({
               ),
             );
             setIsAssetPickerOpen(true);
-            if (isNetworkManagementEnabled) {
-              navigateToBridgeAssetPickerPage(isDestination ? 'dest' : 'src');
-            }
+            navigateToBridgeAssetPickerPage(isDestination ? 'dest' : 'src');
           }}
           asset={selectedButtonAsset}
           data-testid={buttonProps.testId}

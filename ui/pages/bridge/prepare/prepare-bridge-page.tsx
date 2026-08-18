@@ -422,7 +422,6 @@ const PrepareBridgePage = ({
 
       <Column className="prepare-bridge-page" gap={4}>
         <BridgeInputGroup
-          isAssetPickerOpen={isSrcAssetPickerOpen}
           setIsAssetPickerOpen={(isOpen) =>
             dispatch(setIsSrcAssetPickerOpen(isOpen))
           }
@@ -586,7 +585,6 @@ const PrepareBridgePage = ({
           />
 
           <BridgeInputGroup
-            isAssetPickerOpen={isDestAssetPickerOpen}
             setIsAssetPickerOpen={(isOpen) =>
               dispatch(setIsDestAssetPickerOpen(isOpen))
             }

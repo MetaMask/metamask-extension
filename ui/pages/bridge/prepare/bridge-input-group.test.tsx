@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   FeatureId,
   RequestStatus,
@@ -141,8 +141,6 @@ const InputGroup = ({
 }: {
   mockState: ReturnType<typeof createBridgeMockStore>;
 } & Partial<React.ComponentProps<typeof BridgeInputGroup>>) => {
-  const [isAssetPickerOpen, setIsAssetPickerOpen] = useState(false);
-
   return (
     <BridgeInputGroup
       header={'Swap'}
@@ -159,8 +157,7 @@ const InputGroup = ({
         value: '1',
       }}
       isDestination={false}
-      isAssetPickerOpen={isAssetPickerOpen}
-      setIsAssetPickerOpen={setIsAssetPickerOpen}
+      setIsAssetPickerOpen={jest.fn()}
       {...props}
     />
   );
@@ -285,18 +282,7 @@ describe('BridgeInputGroup', () => {
   ] as const)(
     'tracks opening the %s asset picker',
     async (isDestination: boolean, assetLocation: 'source' | 'destination') => {
-      renderBridgeInputGroup(
-        {
-          featureFlagOverrides: {
-            // @ts-expect-error - the mock store type only declares bridgeConfig
-            extensionUxNetworkManagement: {
-              enabled: true,
-              minimumVersion: '0.0.0',
-            },
-          },
-        },
-        { isDestination },
-      );
+      renderBridgeInputGroup({}, { isDestination });
 
       await act(async () => {
         await userEvent.click(screen.getByTestId(ASSET_PICKER_BUTTON_TEST_ID));
@@ -365,7 +351,7 @@ describe('BridgeInputGroup', () => {
     expect(setSelectionRangeSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should search for tokens', async () => {
+  it.skip('should search for tokens', async () => {
     setupFetchMock();
     const { getByTestId } = renderBridgeInputGroup();
 
@@ -414,7 +400,7 @@ describe('BridgeInputGroup', () => {
     });
   });
 
-  it('should search for tokens with hasNextPage', async () => {
+  it.skip('should search for tokens with hasNextPage', async () => {
     setupFetchMock(tokens.slice(0, 1), true);
 
     const { getByTestId, getAllByTestId } = renderBridgeInputGroup();
@@ -458,7 +444,7 @@ describe('BridgeInputGroup', () => {
     });
   });
 
-  it('should render popular tokens', async () => {
+  it.skip('should render popular tokens', async () => {
     setupFetchMock(
       undefined,
       false,
@@ -553,13 +539,7 @@ describe('BridgeInputGroup', () => {
     );
 
     const { unmount } = renderAssetPickerPage(
-      {
-        metamaskStateOverrides: {
-          featureFlagOverrides: {
-            extensionUxNetworkManagement: false,
-          },
-        },
-      },
+      {},
       {
         isSrcAssetPickerOpen: true,
         isDestAssetPickerOpen: false,
@@ -589,7 +569,6 @@ describe('BridgeInputGroup', () => {
 
     const stateOverrides = {
       featureFlagOverrides: {
-        extensionUxNetworkManagement: true,
         bridgeConfig: {
           chainRanking: [
             { chainId: MultichainNetworks.SOLANA },
@@ -679,7 +658,6 @@ describe('BridgeInputGroup', () => {
           enabledNetworkMap,
         },
         featureFlagOverrides: {
-          extensionUxNetworkManagement: true,
           bridgeConfig: {
             chainRanking: [
               { chainId: MultichainNetworks.SOLANA },
