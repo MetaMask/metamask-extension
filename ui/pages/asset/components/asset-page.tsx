@@ -419,7 +419,10 @@ const AssetPage = ({
       assetId={caipAssetId as CaipAssetType}
       token={securityTrustToken}
     >
-      <Box className="asset__content">
+      <Box
+        className="asset__content"
+        data-testid="parent-selector-asset-details"
+      >
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
