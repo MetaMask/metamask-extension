@@ -359,7 +359,12 @@ export default function SetupPasskeyContent({
   }
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} gap={4} className="h-full">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      gap={4}
+      className="h-full"
+      data-testid="parent-selector-setup-passkey"
+    >
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Center}

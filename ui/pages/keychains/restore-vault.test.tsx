@@ -98,7 +98,9 @@ describe('Restore vault Component', () => {
 
     fireEvent.click(confirmSrpButton as HTMLElement);
 
-    expect(queryByTestId('create-password')).toBeInTheDocument();
+    expect(
+      queryByTestId('parent-selector-onboarding-password'),
+    ).toBeInTheDocument();
   });
 
   it('should call handleImport when password is submitted', async () => {
@@ -162,7 +164,9 @@ describe('Restore vault Component', () => {
 
     // Wait for the password form to appear
     await waitFor(() => {
-      expect(queryByTestId('create-password')).toBeInTheDocument();
+      expect(
+        queryByTestId('parent-selector-onboarding-password'),
+      ).toBeInTheDocument();
     });
 
     const createPasswordInput = queryByTestId('create-password-new-input');
@@ -190,7 +194,9 @@ describe('Restore vault Component', () => {
     const terms = queryByTestId('create-password-terms');
     fireEvent.click(terms as HTMLElement);
 
-    const createPasswordForm = queryByTestId('create-password');
+    const createPasswordForm = queryByTestId(
+      'parent-selector-onboarding-password',
+    );
     const createNewWalletButton = queryByTestId('create-password-submit');
 
     // Wait for the button to be enabled (password validation is async)
@@ -274,7 +280,9 @@ describe('Restore vault Component', () => {
     fireEvent.click(queryByTestId('import-srp-confirm') as HTMLElement);
 
     await waitFor(() => {
-      expect(queryByTestId('create-password')).toBeInTheDocument();
+      expect(
+        queryByTestId('parent-selector-onboarding-password'),
+      ).toBeInTheDocument();
     });
 
     fireEvent.change(
@@ -291,7 +299,9 @@ describe('Restore vault Component', () => {
     );
 
     fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
-    fireEvent.submit(queryByTestId('create-password') as HTMLElement);
+    fireEvent.submit(
+      queryByTestId('parent-selector-onboarding-password') as HTMLElement,
+    );
 
     await waitFor(() => {
       expect(mockCreateNewVaultAndRestore.calledOnce).toBe(true);
