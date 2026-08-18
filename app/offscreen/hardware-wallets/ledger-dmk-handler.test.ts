@@ -6,21 +6,28 @@ import {
   Severity,
 } from '@metamask/hw-wallet-sdk';
 
-import { NEVER, of, Subject, throwError } from 'rxjs';
+import { firstValueFrom, NEVER, of, Subject, throwError, toArray } from 'rxjs';
 
 import {
   LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS,
   LedgerAction,
   OffscreenCommunicationEvents,
+  OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 import { LedgerDmkBridgeHandler } from './ledger-dmk-handler';
 
 // Mock the transport factory (virtual: ESM-only package has no CJS export for Jest)
+const mockListenToAvailableDevices = jest.fn();
+const mockWebHidTransportFactory = jest.fn(() => ({
+  listenToAvailableDevices: mockListenToAvailableDevices,
+  startDiscovering: jest.fn(),
+}));
 jest.mock(
   '@ledgerhq/device-transport-kit-web-hid',
   () => ({
-    webHidTransportFactory: jest.fn(),
+    webHidTransportFactory: (...args: unknown[]) =>
+      mockWebHidTransportFactory(...args),
   }),
   { virtual: true },
 );
@@ -61,25 +68,32 @@ jest.mock('@metamask/eth-ledger-bridge-keyring', () => ({
 const mockHidGetDevices = jest.fn();
 const mockHidAddEventListener = jest.fn();
 const mockHidRemoveEventListener = jest.fn();
-Object.defineProperty(globalThis, 'navigator', {
-  value: {
-    ...globalThis.navigator,
-    hid: {
-      getDevices: mockHidGetDevices,
-      addEventListener: mockHidAddEventListener,
-      removeEventListener: mockHidRemoveEventListener,
+
+function installWebHidNavigator(): void {
+  Object.defineProperty(globalThis, 'navigator', {
+    value: {
+      hid: {
+        getDevices: mockHidGetDevices,
+        addEventListener: mockHidAddEventListener,
+        removeEventListener: mockHidRemoveEventListener,
+      },
     },
-  },
-  writable: true,
-});
+    writable: true,
+    configurable: true,
+  });
+}
+
+installWebHidNavigator();
 
 // Mock chrome.runtime
 const mockSendMessage = jest.fn();
 const mockAddListener = jest.fn();
+const mockRemoveListener = jest.fn();
 const mockChromeRuntime = {
   sendMessage: mockSendMessage,
   onMessage: {
     addListener: mockAddListener,
+    removeListener: mockRemoveListener,
   },
   lastError: null as { message: string } | null,
 };
@@ -94,8 +108,12 @@ Object.defineProperty(globalThis, 'chrome', {
 describe('LedgerDmkBridgeHandler', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    installWebHidNavigator();
     mockOnSessionStateChangeSubject = new Subject();
     (LedgerDmkBridge as jest.Mock).mockImplementation(() => createMockBridge());
+    mockListenToAvailableDevices.mockReturnValue(
+      of([{ name: 'MockLedgerDevice' }]),
+    );
     mockBridgeStartDiscovering.mockReturnValue(
       of({ name: 'MockLedgerDevice' }),
     );
@@ -454,6 +472,258 @@ describe('LedgerDmkBridgeHandler', () => {
           }),
         ).rejects.toThrow('Missing delegation authorization parameter');
       });
+    });
+
+    it('throws for an unknown action', async () => {
+      await expect(
+        handler.handleAction('not-a-real-action' as LedgerAction),
+      ).rejects.toMatchObject({
+        name: 'HardwareWalletError',
+        message: 'Unknown Ledger action: not-a-real-action',
+        code: ErrorCode.Unknown,
+      });
+    });
+  });
+
+  describe('init', () => {
+    it('registers a message listener unless skipMessageListener is true', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      mockHidGetDevices.mockResolvedValue([]);
+
+      await handler.init();
+      expect(mockAddListener).toHaveBeenCalledTimes(1);
+
+      mockAddListener.mockClear();
+      await handler.init(true);
+      expect(mockAddListener).not.toHaveBeenCalled();
+
+      await handler.destroy();
+    });
+
+    it('notifies the extension when a permitted Ledger is already present', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+
+      await handler.init(true);
+
+      expect(mockSendMessage).toHaveBeenCalledWith({
+        target: OffscreenCommunicationTarget.extension,
+        event: OffscreenCommunicationEvents.ledgerDeviceConnect,
+        payload: true,
+      });
+
+      await handler.destroy();
+    });
+
+    it('does not notify when no permitted Ledger is present', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      mockHidGetDevices.mockResolvedValue([{ vendorId: 0x1234 }]);
+
+      await handler.init(true);
+
+      expect(mockSendMessage).not.toHaveBeenCalled();
+      await handler.destroy();
+    });
+
+    it('logs and continues when checking permitted devices fails', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockHidGetDevices.mockRejectedValue(new Error('HID permission denied'));
+
+      const handler = new LedgerDmkBridgeHandler();
+      await expect(handler.init(true)).resolves.toBeUndefined();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[LedgerDMK] Error checking for permitted Ledger devices:',
+        expect.any(Error),
+      );
+
+      consoleErrorSpy.mockRestore();
+      await handler.destroy();
+    });
+
+    it('skips HID setup when WebHID is unavailable', async () => {
+      Object.defineProperty(globalThis, 'navigator', {
+        value: {},
+        writable: true,
+        configurable: true,
+      });
+
+      const handler = new LedgerDmkBridgeHandler();
+      await handler.init(true);
+
+      expect(mockHidAddEventListener).not.toHaveBeenCalled();
+      expect(mockHidGetDevices).not.toHaveBeenCalled();
+      await handler.destroy();
+    });
+  });
+
+  describe('message listener', () => {
+    it('ignores messages not targeting ledger-offscreen', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      mockHidGetDevices.mockResolvedValue([]);
+      await handler.init();
+
+      const listener = mockAddListener.mock.calls[0][0];
+      const sendResponse = jest.fn();
+      expect(
+        listener(
+          { target: OffscreenCommunicationTarget.extension, action: 'x' },
+          {},
+          sendResponse,
+        ),
+      ).toBe(false);
+      expect(sendResponse).not.toHaveBeenCalled();
+
+      await handler.destroy();
+    });
+
+    it('routes ledger-offscreen actions and responds with success', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      mockHidGetDevices.mockResolvedValue([]);
+      await handler.init();
+
+      const listener = mockAddListener.mock.calls[0][0];
+      const sendResponse = jest.fn();
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      expect(
+        listener(
+          {
+            target: OffscreenCommunicationTarget.ledgerOffscreen,
+            action: LedgerAction.makeApp,
+          },
+          {},
+          sendResponse,
+        ),
+      ).toBe(true);
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(sendResponse).toHaveBeenCalledWith({
+        success: true,
+        payload: true,
+      });
+
+      await handler.destroy();
+    });
+
+    it('responds with a serialized error when the action fails', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const handler = new LedgerDmkBridgeHandler();
+      mockHidGetDevices.mockResolvedValue([]);
+      await handler.init();
+
+      mockBridgeGetAppNameAndVersion.mockRejectedValueOnce(
+        new Error('device busy'),
+      );
+      const listener = mockAddListener.mock.calls[0][0];
+      const sendResponse = jest.fn();
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      expect(
+        listener(
+          {
+            target: OffscreenCommunicationTarget.ledgerOffscreen,
+            action: LedgerAction.makeApp,
+            params: null,
+          },
+          {},
+          sendResponse,
+        ),
+      ).toBe(true);
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[LedgerDMK] Action failed:',
+        expect.any(Error),
+      );
+      expect(sendResponse).toHaveBeenCalledWith({
+        success: false,
+        payload: {
+          error: expect.objectContaining({
+            message: 'device busy',
+          }),
+        },
+      });
+
+      consoleErrorSpy.mockRestore();
+      await handler.destroy();
+    });
+
+    it('removes the message listener on destroy', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      mockHidGetDevices.mockResolvedValue([]);
+      await handler.init();
+
+      const listener = mockAddListener.mock.calls[0][0];
+      await handler.destroy();
+
+      expect(mockRemoveListener).toHaveBeenCalledWith(listener);
+    });
+  });
+
+  describe('HID device events', () => {
+    it('notifies on Ledger disconnect and ignores non-Ledger devices', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      mockHidGetDevices.mockResolvedValue([]);
+      await handler.init(true);
+
+      const disconnectListener = mockHidAddEventListener.mock.calls.find(
+        ([event]) => event === 'disconnect',
+      )?.[1];
+      expect(disconnectListener).toBeDefined();
+
+      mockSendMessage.mockClear();
+      disconnectListener?.({ device: { vendorId: 0x9999 } });
+      expect(mockSendMessage).not.toHaveBeenCalled();
+
+      disconnectListener?.({
+        device: { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      });
+      expect(mockSendMessage).toHaveBeenCalledWith({
+        target: OffscreenCommunicationTarget.extension,
+        event: OffscreenCommunicationEvents.ledgerDeviceConnect,
+        payload: false,
+      });
+
+      await handler.destroy();
+    });
+  });
+
+  describe('offscreen transport factory', () => {
+    it('redirects startDiscovering to listenToAvailableDevices and flattens devices', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      mockListenToAvailableDevices.mockReturnValue(
+        of([{ name: 'Ledger A' }, { name: 'Ledger B' }]),
+      );
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+      const { transportFactory } = (LedgerDmkBridge as jest.Mock).mock
+        .calls[0][0];
+      expect(typeof transportFactory).toBe('function');
+
+      const wrappedTransport = transportFactory({});
+      const devices = await firstValueFrom(
+        wrappedTransport.startDiscovering().pipe(toArray()),
+      );
+
+      expect(mockListenToAvailableDevices).toHaveBeenCalledTimes(1);
+      expect(devices).toEqual([{ name: 'Ledger A' }, { name: 'Ledger B' }]);
+
+      await handler.destroy();
     });
   });
 
