@@ -118,9 +118,7 @@ describe('filterMoneyDepositTokens', () => {
   it('keeps assets that meet the minimum after USD normalization', () => {
     const result = filterMoneyDepositTokens({
       ...defaultOptions,
-      assets: [
-        createAsset({ fiat: { balance: 0.009, currency: 'eur' } }),
-      ],
+      assets: [createAsset({ fiat: { balance: 0.009, currency: 'eur' } })],
       currentCurrency: 'eur',
       currencyRates: {
         ETH: { conversionRate: 2000, usdConversionRate: 2500 },
@@ -136,9 +134,7 @@ describe('filterMoneyDepositTokens', () => {
   it('excludes assets below the minimum after USD normalization', () => {
     const result = filterMoneyDepositTokens({
       ...defaultOptions,
-      assets: [
-        createAsset({ fiat: { balance: 0.011, currency: 'eur' } }),
-      ],
+      assets: [createAsset({ fiat: { balance: 0.011, currency: 'eur' } })],
       currentCurrency: 'eur',
       currencyRates: {
         ETH: { conversionRate: 2500, usdConversionRate: 2000 },
