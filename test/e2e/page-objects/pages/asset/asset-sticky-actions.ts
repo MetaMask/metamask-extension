@@ -13,6 +13,9 @@ import { Driver } from '../../../webdriver/driver';
 class AssetStickyActions {
   private driver: Driver;
 
+  private readonly scrollContainer =
+    '[data-testid="asset-page-scroll-container"]';
+
   private readonly stickyActions = '[data-testid="asset-sticky-actions"]';
 
   private readonly stickyBuy = '[data-testid="asset-sticky-buy"]';
@@ -50,6 +53,21 @@ class AssetStickyActions {
       `);
       return Boolean(isPinned);
     }, this.driver.timeout);
+  }
+
+  /**
+   * Scrolls the Token Detail Page scrollport to the bottom, far enough that a
+   * non-sticky footer would leave the viewport.
+   */
+  async scrollToBottom(): Promise<void> {
+    console.log('Scroll the token detail page to the bottom');
+    await this.driver.waitForSelector(this.scrollContainer);
+    await this.driver.executeScript(`
+      const scroller = document.querySelector('[data-testid="asset-page-scroll-container"]');
+      if (scroller) {
+        scroller.scrollTo(0, scroller.scrollHeight);
+      }
+    `);
   }
 }
 

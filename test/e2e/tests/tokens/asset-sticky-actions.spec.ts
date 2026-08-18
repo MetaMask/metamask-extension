@@ -52,13 +52,7 @@ describe('Asset sticky actions', function () {
         await stickyActions.checkPageIsLoaded();
         await stickyActions.checkPinnedToViewportBottom();
 
-        // Scroll far enough that a non-sticky footer would leave the viewport.
-        await driver.executeScript(`
-          const scroller = document.querySelector('.main-container.asset__container');
-          if (scroller) {
-            scroller.scrollTo(0, scroller.scrollHeight);
-          }
-        `);
+        await stickyActions.scrollToBottom();
 
         await stickyActions.checkPageIsLoaded();
         await stickyActions.checkPinnedToViewportBottom();
