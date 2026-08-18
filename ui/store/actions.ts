@@ -1239,8 +1239,13 @@ export function submitPassword(password: string): Promise<void> {
  */
 export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
   const prfSupported = await isPasskeyPRFSupported();
+  // SECURITY: PRF is required for passkey setup. Never allow userHandle-based
+  // key derivation as a fallback.
+  if (prfSupported !== true) {
+    throw new Error('Passkey setup requires PRF support');
+  }
   return submitRequestToBackground('generatePasskeyRegistrationOptions', [
-    { prfAvailable: prfSupported !== false },
+    { prfAvailable: true },
   ]);
 }
 

@@ -41,7 +41,7 @@ import { createSentryError } from '../../../shared/lib/error';
 import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
-  getPasskeyAuthenticatorName,
+  isPasskeyPRFSupported,
   startPasskeyRegistration,
   startPasskeyAuthentication,
   translatePasskeyError,
@@ -146,6 +146,33 @@ export default function SetupPasskeyContent({
   }, [onNext]);
 
   useEffect(() => {
+    let isCancelled = false;
+
+    const checkPrfSupport = async () => {
+      let prfSupported = false;
+      try {
+        prfSupported = (await isPasskeyPRFSupported()) === true;
+      } catch {
+        // Treat capability detection failures as unsupported for security.
+      }
+
+      if (isCancelled || prfSupported) {
+        return;
+      }
+
+      // SECURITY: PRF is required for passkey setup. Never fall back to
+      // userHandle-based key derivation.
+      goToNextStep();
+    };
+
+    checkPrfSupport();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [goToNextStep]);
+
+  useEffect(() => {
     isMountedRef.current = true;
 
     return () => {
@@ -244,7 +271,6 @@ export default function SetupPasskeyContent({
       const authenticatorId = getPasskeyAuthenticatorId({
         metamask: newMetamaskState,
       });
-      const authenticatorName = getPasskeyAuthenticatorName(authenticatorId);
 
       trackEvent(
         createEventBuilder(MetaMetricsEventName.PasskeySetup)
@@ -255,7 +281,7 @@ export default function SetupPasskeyContent({
             // eslint-disable-next-line @typescript-eslint/naming-convention
             derivation_method: derivationMethod,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            authenticator_name: authenticatorName,
+            authenticator_id: authenticatorId,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - enrollmentStartedAt,
           })

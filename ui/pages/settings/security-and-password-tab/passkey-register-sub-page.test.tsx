@@ -82,7 +82,14 @@ jest.mock('../../../../shared/lib/passkey', () => ({
     },
     clientExtensionResults: {},
   }),
+  isPasskeyPRFSupported: jest.fn().mockResolvedValue(true),
 }));
+
+const mockIsPasskeyPRFSupported = jest.mocked(
+  jest.requireMock<typeof import('../../../../shared/lib/passkey')>(
+    '../../../../shared/lib/passkey',
+  ).isPasskeyPRFSupported,
+);
 
 jest.mock('../../../../shared/lib/sentry', () => ({
   ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
@@ -120,11 +127,25 @@ describe('PasskeyRegisterSubPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsPasskeyPRFSupported.mockResolvedValue(true);
   });
 
   it('redirects to security when biometrics is already registered', async () => {
     const store = configureMockStore()(stateWithPasskeyRegistered);
     renderWithProvider(<PasskeyRegisterSubPage />, store);
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        SECURITY_AND_PASSWORD_ROUTE,
+        { replace: true },
+      );
+    });
+  });
+
+  it('redirects to security when PRF is unavailable', async () => {
+    mockIsPasskeyPRFSupported.mockResolvedValue(false);
+
+    renderWithProvider(<PasskeyRegisterSubPage />, mockStore);
 
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(

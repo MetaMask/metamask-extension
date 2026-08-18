@@ -27,6 +27,7 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
+  isPasskeyPRFSupported,
   startPasskeyRegistration,
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
@@ -52,6 +53,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   getIsPasskeyRegistered,
+  getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
 } from '../../../selectors';
 import {
@@ -121,6 +123,33 @@ export default function PasskeyRegisterSubPage() {
     },
     [],
   );
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const checkPrfSupport = async () => {
+      let prfSupported = false;
+      try {
+        prfSupported = (await isPasskeyPRFSupported()) === true;
+      } catch {
+        // Treat capability detection failures as unsupported for security.
+      }
+
+      if (isCancelled || prfSupported) {
+        return;
+      }
+
+      // SECURITY: PRF is required for passkey setup. Never fall back to
+      // userHandle-based key derivation.
+      navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
+    };
+
+    checkPrfSupport();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [navigate]);
 
   useEffect(() => {
     // Only redirect when a passkey already exists before enrollment UI. During
@@ -195,6 +224,9 @@ export default function PasskeyRegisterSubPage() {
       const derivationMethod = getPasskeyDerivationMethod({
         metamask: newMetamaskState,
       });
+      const authenticatorId = getPasskeyAuthenticatorId({
+        metamask: newMetamaskState,
+      });
       trackEvent(
         createEventBuilder(MetaMetricsEventName.PasskeySetup)
           .addCategory(MetaMetricsEventCategory.Settings)
@@ -202,6 +234,8 @@ export default function PasskeyRegisterSubPage() {
             status: 'completed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             derivation_method: derivationMethod,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            authenticator_id: authenticatorId,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - enrollmentStartedAt,
           })

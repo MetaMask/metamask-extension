@@ -530,22 +530,49 @@ describe('Actions', () => {
       ).toBe(true);
     });
 
-    it('#generatePasskeyRegistrationOptions passes prfAvailable false when PRF support is false', async () => {
+    it('#generatePasskeyRegistrationOptions rejects when PRF support is false', async () => {
       jest
         .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
         .mockResolvedValue(false);
-      background.generatePasskeyRegistrationOptions.resolves({
-        rp: { name: 'MM' },
-      });
       setBackgroundConnection(background);
 
-      await actions.generatePasskeyRegistrationOptions();
+      await expect(
+        actions.generatePasskeyRegistrationOptions(),
+      ).rejects.toThrow('Passkey setup requires PRF support');
 
-      expect(
-        background.generatePasskeyRegistrationOptions.calledOnceWith({
-          prfAvailable: false,
-        }),
-      ).toBe(true);
+      expect(background.generatePasskeyRegistrationOptions.notCalled).toBe(
+        true,
+      );
+    });
+
+    it('#generatePasskeyRegistrationOptions rejects when PRF support is unknown', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockResolvedValue(undefined);
+      setBackgroundConnection(background);
+
+      await expect(
+        actions.generatePasskeyRegistrationOptions(),
+      ).rejects.toThrow('Passkey setup requires PRF support');
+
+      expect(background.generatePasskeyRegistrationOptions.notCalled).toBe(
+        true,
+      );
+    });
+
+    it('#generatePasskeyRegistrationOptions rejects when PRF detection fails', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockRejectedValue(new Error('capability detection failed'));
+      setBackgroundConnection(background);
+
+      await expect(
+        actions.generatePasskeyRegistrationOptions(),
+      ).rejects.toThrow('capability detection failed');
+
+      expect(background.generatePasskeyRegistrationOptions.notCalled).toBe(
+        true,
+      );
     });
 
     it('#generatePasskeyAuthenticationOptions forwards to the background', async () => {

@@ -66,6 +66,7 @@ jest.mock('../../../../shared/lib/passkey', () => ({
     },
     clientExtensionResults: {},
   }),
+  isPasskeyPRFSupported: jest.fn().mockResolvedValue(true),
 }));
 
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -74,6 +75,12 @@ jest.mock('../../../../shared/lib/sentry', () => ({
   ),
   captureException: jest.fn(),
 }));
+
+const mockIsPasskeyPRFSupported = jest.mocked(
+  jest.requireMock<typeof import('../../../../shared/lib/passkey')>(
+    '../../../../shared/lib/passkey',
+  ).isPasskeyPRFSupported,
+);
 
 const mockAuthenticationResponse = {
   id: 'AQ',
@@ -125,7 +132,13 @@ jest.mock('react-router-dom', () => ({
 }));
 
 const testPasskeyRecord = {
-  credential: { id: 'AQ', publicKey: 'AQ', counter: 0, transports: [] },
+  credential: {
+    id: 'AQ',
+    publicKey: 'AQ',
+    counter: 0,
+    transports: [],
+    aaguid: 'ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4',
+  },
   encryptedVaultKey: { ciphertext: 'AQ', iv: 'AQ' },
   keyDerivation: { method: 'prf' as const, prfSalt: 'AQ' },
 };
@@ -176,6 +189,7 @@ describe('SetupPasskey', () => {
     jest
       .mocked(startPasskeyAuthentication)
       .mockResolvedValue(mockAuthenticationResponse);
+    mockIsPasskeyPRFSupported.mockResolvedValue(true);
   });
 
   function renderSetupPasskey(mockStore: ReturnType<typeof buildMockStore>) {
@@ -208,6 +222,35 @@ describe('SetupPasskey', () => {
     expect(
       screen.queryByTestId('passkey-enrollment-error'),
     ).not.toBeInTheDocument();
+  });
+
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([
+    ['false', false],
+    ['undefined', undefined],
+  ])(
+    'skips setup when PRF support is %s',
+    async (_label: string, support: boolean | undefined) => {
+      mockIsPasskeyPRFSupported.mockResolvedValue(support);
+      const mockStore = buildMockStore(FirstTimeFlowType.create);
+      const { onNext } = renderSetupPasskeyContent(mockStore);
+
+      await waitFor(() => {
+        expect(onNext).toHaveBeenCalledTimes(1);
+      });
+      expect(generatePasskeyRegistrationOptions).not.toHaveBeenCalled();
+    },
+  );
+
+  it('skips setup when PRF capability detection throws', async () => {
+    mockIsPasskeyPRFSupported.mockRejectedValue(new Error('detection failed'));
+    const mockStore = buildMockStore(FirstTimeFlowType.create);
+    const { onNext } = renderSetupPasskeyContent(mockStore);
+
+    await waitFor(() => {
+      expect(onNext).toHaveBeenCalledTimes(1);
+    });
+    expect(generatePasskeyRegistrationOptions).not.toHaveBeenCalled();
   });
 
   it('renders the heading text', () => {
@@ -350,11 +393,13 @@ describe('SetupPasskey', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
       jest
         .mocked(forceUpdateMetamaskState)
+        // @ts-expect-error Mock implementation
         .mockImplementation(async (dispatch) => {
           dispatch({
             type: UPDATE_METAMASK_STATE,
             value: { passkeyRecord: testPasskeyRecord },
           });
+          return { passkeyRecord: testPasskeyRecord };
         });
       const { getByTestId } = renderSetupPasskey(mockStore);
 
@@ -382,6 +427,14 @@ describe('SetupPasskey', () => {
           );
         },
         { timeout: 4000 },
+      );
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            authenticator_id: 'ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4',
+          }),
+        }),
       );
     });
 
