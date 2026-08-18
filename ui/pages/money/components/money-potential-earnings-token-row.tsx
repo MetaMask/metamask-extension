@@ -142,11 +142,7 @@ export function MoneyPotentialEarningsTokenRow({
         </Box>
       </Box>
 
-      <Button
-        variant={ButtonVariant.Secondary}
-        size={ButtonSize.Md}
-        disabled
-      >
+      <Button variant={ButtonVariant.Secondary} size={ButtonSize.Md} disabled>
         {t('moneyAdd')}
       </Button>
     </Box>

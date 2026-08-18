@@ -177,7 +177,7 @@ export function filterMoneyDepositTokens({
     .flatMap((asset) => {
       const fiatAmount = Number(asset.fiat?.balance);
       const chainId = String(asset.chainId ?? '');
-      const {address} = asset;
+      const { address } = asset;
       if (
         !asset.accountType?.includes('eip155') ||
         !chainId ||
@@ -220,8 +220,7 @@ export function filterMoneyDepositTokens({
       ];
     })
     .sort(
-      (first, second) =>
-        second.moneyFiatAmountUsd - first.moneyFiatAmountUsd,
+      (first, second) => second.moneyFiatAmountUsd - first.moneyFiatAmountUsd,
     );
 }
 
@@ -242,12 +241,16 @@ export function parseMoneySubsidizedRoutes(
       return [];
     }
   }
-  if (!isRecord(parsed) || !isRecord(parsed.chains) || !isRecord(parsed.tokens)) {
+  if (
+    !isRecord(parsed) ||
+    !isRecord(parsed.chains) ||
+    !isRecord(parsed.tokens)
+  ) {
     return [];
   }
 
-  const {chains} = parsed;
-  const {tokens} = parsed;
+  const { chains } = parsed;
+  const { tokens } = parsed;
   if (!Array.isArray(parsed.routes)) {
     return [];
   }
@@ -261,8 +264,12 @@ export function parseMoneySubsidizedRoutes(
       return [];
     }
 
-    const [sourceChainAlias, sourceTokenAlias, targetChainAlias, targetTokenAlias] =
-      route as string[];
+    const [
+      sourceChainAlias,
+      sourceTokenAlias,
+      targetChainAlias,
+      targetTokenAlias,
+    ] = route as string[];
     const sourceChain = chains[sourceChainAlias];
     const sourceToken = tokens[sourceTokenAlias];
     const targetChain = chains[targetChainAlias];

@@ -86,7 +86,9 @@ describe('MoneyHomePage', () => {
       ),
     ).toHaveClass('text-success-default');
     expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
-    expect(screen.getByText(messages.moneyEarnOnCrypto.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyEarnOnCrypto.message),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(messages.moneyBenefits.message),
     ).toBeInTheDocument();

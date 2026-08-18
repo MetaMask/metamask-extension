@@ -45,11 +45,7 @@ export function MoneyPotentialEarnings({
     [tokens],
   );
   const totalAssetsFiat = useMemo(
-    () =>
-      tokens.reduce(
-        (total, token) => total + token.moneyFiatAmountUsd,
-        0,
-      ),
+    () => tokens.reduce((total, token) => total + token.moneyFiatAmountUsd, 0),
     [tokens],
   );
   const projectedAmount = calculateMoneyProjectedEarnings(
@@ -86,8 +82,7 @@ export function MoneyPotentialEarnings({
               data-testid="money-potential-earnings-total"
             >
               {formatCurrencyWithMinThreshold(totalAssetsFiat, 'USD')}
-            </SensitiveText>
-            {' '}
+            </SensitiveText>{' '}
             <Text
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
@@ -105,8 +100,7 @@ export function MoneyPotentialEarnings({
               data-testid="money-potential-earnings-projection"
             >
               {`+${formatCurrencyWithMinThreshold(projectedAmount, 'USD')}`}
-            </SensitiveText>
-            {' '}
+            </SensitiveText>{' '}
             <Text
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}

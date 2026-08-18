@@ -33,9 +33,7 @@ export function useMoneyDepositTokens(): {
   const minBalance = useSelector(selectMoneyDepositMinBalance);
   const currentCurrency = useSelector(getCurrentCurrency);
   const currencyRates = useSelector(getCurrencyRates);
-  const networkConfigurations = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
 
   const tokens = useMemo(

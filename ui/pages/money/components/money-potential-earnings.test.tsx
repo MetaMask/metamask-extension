@@ -63,9 +63,9 @@ describe('MoneyPotentialEarnings', () => {
     );
 
     expect(screen.getByText('Earn on your crypto')).toBeInTheDocument();
-    expect(screen.getByTestId('money-potential-earnings-total')).toHaveTextContent(
-      '$5,000.00',
-    );
+    expect(
+      screen.getByTestId('money-potential-earnings-total'),
+    ).toHaveTextContent('$5,000.00');
     expect(
       screen.getByTestId('money-potential-earnings-projection'),
     ).toHaveTextContent('+$200.00');
@@ -97,9 +97,7 @@ describe('MoneyPotentialEarnings', () => {
   it('renders at most five token rows and View all for additional tokens', () => {
     renderWithLocalization(
       <MoneyPotentialEarnings
-        tokens={Array.from({ length: 6 }, (_, index) =>
-          createToken(index + 1),
-        )}
+        tokens={Array.from({ length: 6 }, (_, index) => createToken(index + 1))}
         apyDecimal={0.04}
         isNoFeeToken={() => false}
         privacyMode={false}
@@ -151,9 +149,9 @@ describe('MoneyPotentialEarnings', () => {
       />,
     );
 
-    expect(screen.getByTestId('money-potential-earnings-total')).toHaveTextContent(
-      '•'.repeat(9),
-    );
+    expect(
+      screen.getByTestId('money-potential-earnings-total'),
+    ).toHaveTextContent('•'.repeat(9));
     expect(
       screen.getByTestId('money-potential-earnings-token-projection'),
     ).toHaveTextContent('•'.repeat(6));

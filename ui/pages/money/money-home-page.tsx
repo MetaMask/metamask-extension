@@ -58,9 +58,11 @@ export function MoneyHomePage() {
   const address = availability.isAvailable ? availability.address : undefined;
   const { query: balanceQuery, formattedBalance } =
     useMoneyAccountBalance(address);
-  const { query: apyQuery, apyDecimal, formattedApy } = useMoneyVaultApy(
-    availability.isAvailable,
-  );
+  const {
+    query: apyQuery,
+    apyDecimal,
+    formattedApy,
+  } = useMoneyVaultApy(availability.isAvailable);
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
   const privacyMode = useSelector(getPrivacyMode);
 

@@ -14,9 +14,7 @@ import {
   parseMoneySubsidizedRoutes,
 } from './money-deposit-token-utils';
 
-const createAsset = (
-  overrides: Partial<Asset> = {},
-): Asset => ({
+const createAsset = (overrides: Partial<Asset> = {}): Asset => ({
   accountType: 'eip155:eoa' as KeyringAccountType,
   address: '0x0000000000000000000000000000000000000001',
   chainId: CHAIN_IDS.MAINNET,
