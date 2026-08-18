@@ -6220,10 +6220,10 @@
     "message": "You have not received any notifications yet."
   },
   "notificationsSettingsAgenticCliDescription": {
-    "message": "CLI connection requests, approvals, and session updates for Agentic"
+    "message": "CLI connection requests, approvals, and session updates for Agent wallet"
   },
   "notificationsSettingsAgenticCliTitle": {
-    "message": "Agentic CLI"
+    "message": "Agent wallet"
   },
   "notificationsSettingsBoxError": {
     "message": "Something went wrong. Please try again."

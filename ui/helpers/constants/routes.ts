@@ -689,7 +689,7 @@ export const ROUTES = [
   },
   {
     path: NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
-    label: 'Notifications Agentic CLI Settings Page',
+    label: 'Notifications Agent Wallet Settings Page',
     trackInAnalytics: false,
   },
   {
