@@ -5,8 +5,10 @@ import { startHeldFixtures } from '../../fixtures/held-fixtures';
 import type { HeldFixturesSession } from '../../fixtures/held-fixtures';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { login } from '../../page-objects/flows/login.flow';
-import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import {
+  landOnTronHome,
+  returnToTronHome,
+} from '../../page-objects/flows/tron-swap.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
@@ -15,21 +17,6 @@ import {
   mockTronSwapApisWithoutFeeEstimation,
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
-
-async function landOnTronHome(driver: Driver): Promise<void> {
-  await login(driver);
-  await switchToNetworkFromNetworkSelect(driver, 'Tron');
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-  await homePage.checkExpectedBalanceIsDisplayed('106.07');
-}
-
-async function returnToTronHome(driver: Driver): Promise<void> {
-  await driver.navigate();
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-  await homePage.checkExpectedBalanceIsDisplayed('106.07');
-}
 
 describe('Swap on Tron', function (this: Suite) {
   this.timeout(180_000);

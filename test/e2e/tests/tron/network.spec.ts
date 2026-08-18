@@ -112,7 +112,7 @@ describe('Tron - Network', function (this: Suite) {
       await networksPage.fillNetworkSearchInput('Tron');
       await networksPage.openNetworkListOptions(TRON_CHAIN_ID);
       await networksPage.checkDiscoverButtonIsVisible();
-      await driver.navigate();
+      await networksPage.clickCloseButton();
       await homePage.checkPageIsLoaded();
     });
 

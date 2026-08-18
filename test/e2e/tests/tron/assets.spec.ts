@@ -5,15 +5,16 @@ import {
 } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
-import { switchToAccount } from '../../page-objects/flows/account-list.flow';
-import { login } from '../../page-objects/flows/login.flow';
-import { waitUntilAccountTreeSyncIdle } from '../../page-objects/flows/tron-account-derivation.flow';
 import {
   selectAllNetworksFromNetworkSelect,
   switchToNetworkFromNetworkSelect,
 } from '../../page-objects/flows/network.flow';
 import { enableNativeTokenAsMainBalance } from '../../page-objects/flows/settings.flow';
+import {
+  prepareTronAssetsHomepage,
+  returnToTronHome,
+  switchToPortfolioTronAccount,
+} from '../../page-objects/flows/tron-assets.flow';
 import AssetDetailsPage from '../../page-objects/pages/asset/asset-details';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
@@ -61,48 +62,12 @@ const PORTFOLIO_ACCOUNT_FIXTURE: TronFixtureAccount[] = [
   },
 ];
 
-const PORTFOLIO_ACCOUNT_INDEX = 1;
-
 function buildTronAssetsFixture(): FixtureBuilderV2 {
   // Native-as-main stays ON so Account 1/2 header tests can assert `0 TRX`
   // and `6.072 TRX`. Toggle it off after those tests.
   return new FixtureBuilderV2().withRemoteFeatureFlagController(
     TRON_ASSETS_REMOTE_FEATURE_FLAGS,
   );
-}
-
-async function prepareTronAssetsHomepage(driver: Driver): Promise<void> {
-  await login(driver, { validateBalance: false });
-  const homePage = new HomePage(driver);
-  await addMultipleAccounts({
-    accountToSelect: 'Account 1',
-    driver,
-    numberOfAccounts: PORTFOLIO_ACCOUNT_INDEX,
-  });
-  await homePage.checkPageIsLoaded();
-  await homePage.waitForNonEvmAccountsLoaded();
-  await waitUntilAccountTreeSyncIdle(driver);
-  await switchToNetworkFromNetworkSelect(driver, 'Tron');
-  await driver.refresh();
-  await homePage.checkPageIsLoaded();
-}
-
-async function returnToTronHome(driver: Driver): Promise<void> {
-  await driver.navigate();
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-}
-
-async function switchToPortfolioTronAccount(driver: Driver): Promise<void> {
-  await returnToTronHome(driver);
-  await switchToAccount(driver, 'Account 2');
-  await waitUntilAccountTreeSyncIdle(driver);
-  await switchToNetworkFromNetworkSelect(driver, 'Tron');
-  // Account-group switch leaves isEvmSelected true; re-select Tron then
-  // refresh so native-as-main applies (same as prepareTronAssetsHomepage).
-  await driver.refresh();
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
 }
 
 async function waitForTronAssetList(
