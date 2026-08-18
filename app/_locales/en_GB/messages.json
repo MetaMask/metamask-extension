@@ -5412,6 +5412,12 @@
   "moneyEarnTitle": {
     "message": "Earn on your balance"
   },
+  "moneyEarnings": {
+    "message": "Earnings"
+  },
+  "moneyExploreBenefits": {
+    "message": "Explore your benefits"
+  },
   "moneyFundDescription": {
     "message": "Fund your Money account and watch your balance grow."
   },
@@ -5424,14 +5430,24 @@
   "moneyHowItWorksDescription": {
     "message": "Add mUSD and your dollar-backed balance is ready to spend, trade, or send anytime."
   },
-  "moneyHowItWorksPrefix": {
-    "message": "Add mUSD and earn up to"
+  "moneyHowItWorksDescriptionWithApy": {
+    "message": "Add mUSD and earn up to $1. Your balance is dollar-backed and ready to spend, trade, or send anytime.",
+    "description": "$1 is the current mUSD APY."
   },
-  "moneyHowItWorksSuffix": {
-    "message": "Your balance is dollar-backed and ready to spend, trade, or send anytime."
+  "moneyHowYourMoneyGrows": {
+    "message": "How your money grows"
   },
   "moneyLearnMore": {
     "message": "Learn more"
+  },
+  "moneyLifetime": {
+    "message": "Lifetime"
+  },
+  "moneyMeetMusd": {
+    "message": "Meet mUSD"
+  },
+  "moneyMoreInformation": {
+    "message": "More information"
   },
   "moneyMoreOptions": {
     "message": "More options"
