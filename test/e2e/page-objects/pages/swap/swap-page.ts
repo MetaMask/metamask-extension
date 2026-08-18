@@ -239,6 +239,31 @@ class SwapPage {
     });
   }
 
+  /**
+   * Waits until both swap amount fields have a non-empty value, then asserts
+   * they stayed populated so the timeout error names the empty field.
+   */
+  async checkSwapAmountsArePopulated(): Promise<void> {
+    console.log('Check swap from-amount and to-amount are populated');
+    await this.driver.wait(async () => {
+      const fromAmount = await this.getFromAmountValue();
+      const toAmount = await this.getToAmountValue();
+      return fromAmount !== '' && toAmount !== '';
+    });
+    const fromAmount = await this.getFromAmountValue();
+    const toAmount = await this.getToAmountValue();
+    assert.notEqual(
+      fromAmount,
+      '',
+      'Swap from-amount should be populated after the quote loads',
+    );
+    assert.notEqual(
+      toAmount,
+      '',
+      'Swap to-amount should be populated after the quote loads',
+    );
+  }
+
   async checkSwapButtonIsEnabled(): Promise<void> {
     await this.driver.waitForSelector(this.swapButton, {
       state: 'enabled',

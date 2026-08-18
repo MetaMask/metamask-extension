@@ -68,12 +68,6 @@ export async function prepareTronHomepageForSend({
   await selectTronNetwork(driver);
   await waitUntilAccountTreeSyncIdle(driver);
 
-  // Reload re-hydrates Account 1 from background state so Snap balances
-  // appear in the token list. Account switches already trigger that hydration.
-  if (extraHdAccountCount === 0 || accountToSelect === 'Account 1') {
-    await home.reloadHome();
-  }
-
   await home.checkPageIsLoaded();
   // Wait for the live TRX balance to land on the homepage before navigating to
   // Send. Without this gate, Send opens with the cached "0 TRX available" and

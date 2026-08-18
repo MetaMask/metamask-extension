@@ -1,4 +1,7 @@
-import { TRON_ACCOUNT_ADDRESS } from '../tests/tron/mocks/common-tron';
+import {
+  TRON_ACCOUNT_ADDRESS,
+  TRX_BALANCE,
+} from '../tests/tron/mocks/common-tron';
 import {
   GAS_FREE,
   HTX,
@@ -7,6 +10,7 @@ import {
   USDD,
   USDT,
 } from '../tests/tron/fixtures/tokens';
+import { TRON_CHECK_BALANCE_ACCOUNT } from '../tests/tron/fixtures/environments';
 import { buildTronNodeOptions } from '../tests/tron/fixtures/with-tron-fixtures';
 
 describe('withTronFixtures', () => {
@@ -28,6 +32,27 @@ describe('withTronFixtures', () => {
     ).toStrictEqual({
       initialBalances: {
         [TRON_ACCOUNT_ADDRESS]: 6_072_392,
+      },
+      trc10Balances: {
+        [TRON_ACCOUNT_ADDRESS]: {
+          GAS_FREE: '33333333',
+        },
+      },
+      trc20Balances: {
+        [TRON_ACCOUNT_ADDRESS]: {
+          HTX: '3156454956836360132407885',
+          SEED: '89851311',
+          USDD: '289757448699320931',
+          USDT: '2804595',
+        },
+      },
+    });
+  });
+
+  it('builds the check-balance funded account with 106.072 TRX', () => {
+    expect(buildTronNodeOptions([TRON_CHECK_BALANCE_ACCOUNT])).toStrictEqual({
+      initialBalances: {
+        [TRON_ACCOUNT_ADDRESS]: TRX_BALANCE,
       },
       trc10Balances: {
         [TRON_ACCOUNT_ADDRESS]: {
