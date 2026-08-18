@@ -407,7 +407,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                             <div
                               class="flex-1 min-w-0"
                             >
-                              Dapp connections
+                              Permissions
                             </div>
                             <div
                               class="flex flex-row items-center ml-2 flex-shrink-0"

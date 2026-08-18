@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "Tất cả mạng"
   },
-  "allPermissions": {
-    "message": "Kết nối Dapp"
-  },
   "allPopularNetworks": {
     "message": "Tất cả mạng phổ biến"
   },
@@ -3096,9 +3093,6 @@
   },
   "customerSupport": {
     "message": "hỗ trợ khách hàng"
-  },
-  "dappConnections": {
-    "message": "Kết nối Dapp"
   },
   "dappSuggested": {
     "message": "Trang web đề xuất"
@@ -5880,9 +5874,6 @@
   },
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
-  },
-  "noConnectionDescription": {
-    "message": "MetaMask chưa được kết nối với trang web này. Để bắt đầu, hãy chọn nút Kết nối của trang web."
   },
   "noDefaultAddress": {
     "message": "Không có địa chỉ $1",
@@ -10157,9 +10148,6 @@
   },
   "singleNetwork": {
     "message": "1 mạng"
-  },
-  "sites": {
-    "message": "Trang web"
   },
   "siweIssued": {
     "message": "Đã phát hành"
