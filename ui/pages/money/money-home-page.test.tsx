@@ -130,8 +130,12 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(screen.getByTestId('money-balance')).toHaveTextContent('$3,475.45');
-    expect(screen.getByTestId('money-position-placeholder')).toBeInTheDocument();
-    expect(screen.getByText(messages.moneyEarnings.message)).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-position-placeholder'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyEarnings.message),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('money-position-monthly-skeleton'),
     ).toBeInTheDocument();
@@ -147,7 +151,9 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByText(messages.moneyHowYourMoneyGrows.message),
     ).toBeInTheDocument();
-    expect(screen.getByText(messages.moneyMeetMusd.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyMeetMusd.message),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(messages.moneyExploreBenefits.message),
     ).toBeInTheDocument();

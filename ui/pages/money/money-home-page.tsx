@@ -61,8 +61,11 @@ export function MoneyHomePage() {
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
   const address = availability.isAvailable ? availability.address : undefined;
-  const { query: balanceQuery, balance, formattedBalance } =
-    useMoneyAccountBalance(address);
+  const {
+    query: balanceQuery,
+    balance,
+    formattedBalance,
+  } = useMoneyAccountBalance(address);
   const { query: apyQuery, formattedApy } = useMoneyVaultApy(
     availability.isAvailable,
   );
@@ -110,8 +113,7 @@ export function MoneyHomePage() {
       ? t('moneyBalanceUnavailable')
       : formattedBalance;
   const apyDisplay = formattedApy;
-  const isFunded =
-    balance?.abs().gte(MONEY_FUNDED_BALANCE_THRESHOLD) === true;
+  const isFunded = balance?.abs().gte(MONEY_FUNDED_BALANCE_THRESHOLD) === true;
 
   return (
     <main
@@ -131,17 +133,13 @@ export function MoneyHomePage() {
 
       <div className="flex flex-col gap-2 px-4 pt-2 sm:items-center">
         <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
-          {balanceQuery.isLoading ? (
-            <Skeleton className="h-[50px] w-36" />
-          ) : (
-            <Text
-              variant={TextVariant.DisplayLg}
-              fontWeight={FontWeight.Medium}
-              data-testid="money-balance"
-            >
-              {balanceDisplay}
-            </Text>
-          )}
+          <Text
+            variant={TextVariant.DisplayLg}
+            fontWeight={FontWeight.Medium}
+            data-testid="money-balance"
+          >
+            {balanceDisplay}
+          </Text>
           <div className="flex h-6 items-center gap-1">
             {apyQuery.isLoading && !apyDisplay ? (
               <Skeleton className="h-4 w-24" />
@@ -187,7 +185,10 @@ export function MoneyHomePage() {
               className="h-[185px] w-full rounded-[14px] object-cover"
             />
             <div>
-              <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
+              <Text
+                variant={TextVariant.HeadingLg}
+                fontWeight={FontWeight.Bold}
+              >
                 {apyDisplay
                   ? t('moneyEarnApyTitle', [apyDisplay])
                   : t('moneyEarnTitle')}
@@ -209,9 +210,7 @@ export function MoneyHomePage() {
         )}
       </div>
 
-      <div
-        className={`mx-auto w-full max-w-[816px] ${isFunded ? '' : 'mt-3'}`}
-      >
+      <div className={`mx-auto w-full max-w-[816px] ${isFunded ? '' : 'mt-3'}`}>
         {isFunded ? (
           <>
             <MoneyPositionPlaceholder />
@@ -328,7 +327,10 @@ export function MoneyHomePage() {
 
             <MoneySectionDivider />
             <section className="px-4 py-3">
-              <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
+              <Text
+                variant={TextVariant.HeadingMd}
+                fontWeight={FontWeight.Bold}
+              >
                 {t('moneyBenefits')}
               </Text>
               <ul className="mt-3 flex flex-col gap-3">

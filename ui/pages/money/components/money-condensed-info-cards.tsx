@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  FontWeight,
-  Text,
-  TextVariant,
-} from '@metamask/design-system-react';
+import { FontWeight, Text, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const CONDENSED_CARDS = [
@@ -36,32 +32,30 @@ export function MoneyCondensedInfoCards() {
       aria-label={t('moneyMoreInformation')}
       data-testid="money-condensed-info-cards"
     >
-      {CONDENSED_CARDS.map(
-        ({ key, image, imageClassName, labelKey }) => (
-          <button
-            key={key}
-            type="button"
-            disabled
-            className="flex min-h-[110px] w-full items-center gap-4 rounded-xl bg-background-muted p-4 text-left disabled:cursor-default disabled:opacity-100"
-            data-testid={`money-condensed-info-card-${key}`}
+      {CONDENSED_CARDS.map(({ key, image, imageClassName, labelKey }) => (
+        <button
+          key={key}
+          type="button"
+          disabled
+          className="flex min-h-[110px] w-full items-center gap-4 rounded-xl bg-background-muted p-4 text-left disabled:cursor-default disabled:opacity-100"
+          data-testid={`money-condensed-info-card-${key}`}
+        >
+          <span
+            className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-xl bg-background-subsection"
+            data-testid={`money-condensed-info-card-${key}-image`}
           >
-            <span
-              className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-xl bg-background-subsection"
-              data-testid={`money-condensed-info-card-${key}-image`}
-            >
-              <img
-                src={image}
-                alt=""
-                className={imageClassName}
-                aria-hidden="true"
-              />
-            </span>
-            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-              {t(labelKey)}
-            </Text>
-          </button>
-        ),
-      )}
+            <img
+              src={image}
+              alt=""
+              className={imageClassName}
+              aria-hidden="true"
+            />
+          </span>
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {t(labelKey)}
+          </Text>
+        </button>
+      ))}
     </section>
   );
 }
