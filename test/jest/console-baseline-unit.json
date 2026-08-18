@@ -436,9 +436,6 @@
     "ui/components/multichain/pages/gator-permissions/gator-permissions-page.test.tsx": {
       "MetaMask: Background connection not initialized": 2
     },
-    "ui/components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.test.tsx": {
-      "React: DOM nesting violations": 1
-    },
     "ui/components/multichain/product-tour-popover/product-tour-popover.test.js": {
       "React: Act warnings (component updates not wrapped)": 3,
       "React: PropTypes validation failures": 2
