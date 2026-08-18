@@ -93,6 +93,18 @@ async function returnToTronHome(driver: Driver): Promise<void> {
   await homePage.checkPageIsLoaded();
 }
 
+async function switchToPortfolioTronAccount(driver: Driver): Promise<void> {
+  await returnToTronHome(driver);
+  await switchToAccount(driver, 'Account 2');
+  await waitUntilAccountTreeSyncIdle(driver);
+  await switchToNetworkFromNetworkSelect(driver, 'Tron');
+  // Account-group switch leaves isEvmSelected true; re-select Tron then
+  // refresh so native-as-main applies (same as prepareTronAssetsHomepage).
+  await driver.refresh();
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+}
+
 async function waitForTronAssetList(
   tokensTab: TokensTab,
   tokenName = 'Tron',
@@ -184,9 +196,7 @@ describe('Tron - Assets', function (this: Suite) {
   });
 
   it('Portfolio account shows native TRX as the main balance', async function () {
-    await returnToTronHome(driver);
-    await switchToAccount(driver, 'Account 2');
-    await waitUntilAccountTreeSyncIdle(driver);
+    await switchToPortfolioTronAccount(driver);
     const homePage = new HomePage(driver);
     await homePage.checkExpectedBalanceIsDisplayed({
       expectedBalance: '6.072 TRX',
@@ -206,9 +216,7 @@ describe('Tron - Assets', function (this: Suite) {
 
   describe('Assets list', function () {
     it('Lists TRX, TRC10, TRC20 with name, symbol, amount, fiat for portfolio account', async function () {
-      await returnToTronHome(driver);
-      await switchToAccount(driver, 'Account 2');
-      await waitUntilAccountTreeSyncIdle(driver);
+      await switchToPortfolioTronAccount(driver);
 
       const tokensTab = new TokensTab(driver);
       await waitForTronAssetList(tokensTab, 'Tron');
@@ -256,9 +264,7 @@ describe('Tron - Assets', function (this: Suite) {
     });
 
     it('Low-value assets section hides tokens under $1 until expanded', async function () {
-      await returnToTronHome(driver);
-      await switchToAccount(driver, 'Account 2');
-      await waitUntilAccountTreeSyncIdle(driver);
+      await switchToPortfolioTronAccount(driver);
 
       const tokensTab = new TokensTab(driver);
       await tokensTab.checkTokenNameVisible('Tron', {
@@ -292,9 +298,7 @@ describe('Tron - Assets', function (this: Suite) {
 
     describe('Networks filter', function () {
       it('Current network filter shows only Tron assets', async function () {
-        await returnToTronHome(driver);
-        await switchToAccount(driver, 'Account 2');
-        await waitUntilAccountTreeSyncIdle(driver);
+        await switchToPortfolioTronAccount(driver);
 
         const tokensTab = new TokensTab(driver);
         await waitForTronAssetList(tokensTab);
@@ -310,9 +314,7 @@ describe('Tron - Assets', function (this: Suite) {
       });
 
       it('All networks filter shows other chains alongside Tron', async function () {
-        await returnToTronHome(driver);
-        await switchToAccount(driver, 'Account 2');
-        await waitUntilAccountTreeSyncIdle(driver);
+        await switchToPortfolioTronAccount(driver);
 
         const tokensTab = new TokensTab(driver);
         await waitForTronAssetList(tokensTab);
@@ -327,9 +329,7 @@ describe('Tron - Assets', function (this: Suite) {
 
   describe('Asset details', function () {
     it('TRX asset details: header, chart, action buttons, daily resource, sections', async function () {
-      await returnToTronHome(driver);
-      await switchToAccount(driver, 'Account 2');
-      await waitUntilAccountTreeSyncIdle(driver);
+      await switchToPortfolioTronAccount(driver);
 
       const tokensTab = new TokensTab(driver);
       await waitForTronAssetList(tokensTab);
@@ -349,9 +349,7 @@ describe('Tron - Assets', function (this: Suite) {
     });
 
     it('TRC20 asset details: header, chart, action buttons, sections — no daily resource', async function () {
-      await returnToTronHome(driver);
-      await switchToAccount(driver, 'Account 2');
-      await waitUntilAccountTreeSyncIdle(driver);
+      await switchToPortfolioTronAccount(driver);
 
       const tokensTab = new TokensTab(driver);
       await waitForTronAssetList(tokensTab);
