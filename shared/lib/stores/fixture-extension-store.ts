@@ -12,6 +12,10 @@ import {
   IndexedDBStore,
   isIndexedDBMutationBlockedError,
 } from './indexeddb-store';
+import { getPlatform } from '../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../constants/app';
+
+const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -47,6 +51,15 @@ async function setStorageServiceData(
   storageServiceData: Record<string, unknown>,
 ): Promise<void> {
   const database = new IndexedDBStore();
+
+  if (isFirefox) {
+    // we don't use IndexedDB on Firefox as storage.local does have the same
+    // reliability concerns as chromium, additionally, Firefox has modes that
+    // might block IndexedDB access entirely, so we just don't even bother with
+    // it at all.
+    await browser.storage.local.set(storageServiceData);
+    return;
+  }
 
   try {
     await database.open(
