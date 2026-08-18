@@ -90,6 +90,11 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   // v10 Sentry web-vitals (whenIdleOrHidden) feature-detects this;
   // under scuttling the detection itself throws unless excepted.
   'requestIdleCallback',
+  // Web Push / FCM: Firebase isSupported() and getToken() need these on globalThis
+  'PushManager',
+  'Notification',
+  'PushSubscription',
+  'clients',
   // globals used by e2e
   ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
 ];
