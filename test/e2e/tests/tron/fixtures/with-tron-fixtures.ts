@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { MockedEndpoint, Mockttp } from 'mockttp';
+import {
+  startHeldSession,
+  type HeldSession,
+} from '../../../fixtures/held-fixtures';
 import { withFixtures } from '../../../helpers';
 import {
   TronLocalNodeOptions,
@@ -34,10 +38,7 @@ type TronFixturesTestSuiteContext = Parameters<WithFixturesTestSuite>[0] & {
   localNodes: unknown[];
 };
 
-export type HeldTronFixturesSession = {
-  context: TronFixturesTestSuiteContext;
-  release: (error?: unknown) => Promise<void>;
-};
+export type HeldTronFixturesSession = HeldSession<TronFixturesTestSuiteContext>;
 
 export type TronFixtureAsset =
   | TronNativeFixtureAsset
@@ -234,51 +235,11 @@ export async function withTronFixtures(
 export async function startHeldTronFixtures(
   options: WithTronFixturesOptions,
 ): Promise<HeldTronFixturesSession> {
-  let resolveHold: () => void = () => undefined;
-  let rejectHold: (error: unknown) => void = () => undefined;
-  const hold = new Promise<void>((resolve, reject) => {
-    resolveHold = resolve;
-    rejectHold = reject;
-  });
-
-  let resolveContext: (context: TronFixturesTestSuiteContext) => void = () =>
-    undefined;
-  let rejectContext: (error: unknown) => void = () => undefined;
-  const contextReady = new Promise<TronFixturesTestSuiteContext>(
-    (resolve, reject) => {
-      resolveContext = resolve;
-      rejectContext = reject;
-    },
+  return startHeldSession((callback) =>
+    withTronFixtures(options, async (context) => {
+      await callback(context as TronFixturesTestSuiteContext);
+    }),
   );
-
-  const fixturesRun = withTronFixtures(
-    options,
-    async (context) => {
-      resolveContext(context as TronFixturesTestSuiteContext);
-      await hold;
-    },
-  ).catch((error: unknown) => {
-    rejectContext(error);
-    throw error;
-  });
-
-  try {
-    const context = await contextReady;
-    return {
-      context,
-      release: async (error?: unknown) => {
-        if (error) {
-          rejectHold(error);
-        } else {
-          resolveHold();
-        }
-        await fixturesRun;
-      },
-    };
-  } catch (error) {
-    await fixturesRun.catch(() => undefined);
-    throw error;
-  }
 }
 
 async function seedTronSmartContracts(
