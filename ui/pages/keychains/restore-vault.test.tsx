@@ -41,6 +41,13 @@ jest.mock('../../selectors', () => ({
   getIsSocialLoginFlow: jest.fn(),
 }));
 
+jest.mock('../../../shared/lib/passkey', () => ({
+  ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
+    '../../../shared/lib/passkey',
+  ),
+  isPasskeyPRFSupported: jest.fn().mockResolvedValue(true),
+}));
+
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
