@@ -49,9 +49,6 @@ export async function isPasskeyPRFSupported(): Promise<boolean | undefined> {
  *
  * @param response - Passkey authentication response.
  * @param response.clientExtensionResults
- * @param response.clientExtensionResults.prf
- * @param response.clientExtensionResults.prf.results
- * @param response.clientExtensionResults.prf.results.first
  * @returns True when a non-empty PRF result is present.
  */
 export function hasPasskeyPRFResult(response: {

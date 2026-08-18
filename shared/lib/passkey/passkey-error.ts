@@ -5,6 +5,8 @@ import { PasskeyCeremonyTimeoutError } from './passkey-ceremony';
 
 export type TranslateFn = (key: string, substitutions?: string[]) => string;
 
+const PASSKEY_PRF_REQUIRED_ERROR_CODE = 'prf_required';
+
 /**
  * Maps passkey error `code` strings (controller + extension) to extension `messages.json` keys.
  */
@@ -26,7 +28,7 @@ const PASSKEY_ERROR_CODE_TO_I18N_KEY: Record<string, string> = {
   [PasskeyControllerErrorCode.VaultKeyMismatch]: 'passkeyErrorVaultKeyMismatch',
   [PasskeyControllerErrorCode.VaultKeyRenewalFailed]:
     'passkeyErrorVaultKeyRenewalFailed',
-  prf_required: 'passkeyErrorNotSupported',
+  [PASSKEY_PRF_REQUIRED_ERROR_CODE]: 'passkeyErrorNotSupported',
 };
 
 /**
@@ -62,7 +64,7 @@ export function getPasskeyErrorCode(err: unknown): string {
     return 'timeout';
   }
   if (err instanceof PasskeyPRFRequiredError) {
-    return 'prf_required';
+    return PASSKEY_PRF_REQUIRED_ERROR_CODE;
   }
   if (err instanceof Error) {
     if (err.name === 'NotAllowedError') {
@@ -123,7 +125,11 @@ export function translatePasskeyError(
   authMethodLabel: string,
 ): string | null {
   if (error instanceof PasskeyPRFRequiredError) {
-    return translatePasskeyCode('prf_required', t, authMethodLabel);
+    return translatePasskeyCode(
+      PASSKEY_PRF_REQUIRED_ERROR_CODE,
+      t,
+      authMethodLabel,
+    );
   }
   const code = getPasskeyControllerErrorCode(error);
   if (code === null) {
