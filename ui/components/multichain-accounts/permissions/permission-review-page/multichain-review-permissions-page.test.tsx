@@ -300,7 +300,10 @@ describe('MultichainReviewPermissions', () => {
     });
 
     it('disconnects and navigates back when there are no gator permissions', () => {
-      const removePermissionsForSpy = jest.spyOn(actions, 'removePermissionsFor');
+      const removePermissionsForSpy = jest.spyOn(
+        actions,
+        'removePermissionsFor',
+      );
       const { getByTestId } = render({
         subjects: {
           ...mockState.metamask.subjects,

@@ -54,7 +54,7 @@ export const MultichainReviewPermissions = () => {
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
   const subjects = useSelector(getPermissionSubjects);
 
-  const disconnectAllPermissions = () => {
+  const disconnectAllPermissions = useCallback(() => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
 
     if (subject) {
@@ -70,7 +70,7 @@ export const MultichainReviewPermissions = () => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
-  };
+  }, [activeTabOrigin, dispatch, subjects]);
 
   const connectedChainIds = useSelector((state) =>
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
@@ -159,7 +159,7 @@ export const MultichainReviewPermissions = () => {
 
   // Handle disconnect flow with gator permissions check: if token transfer
   // permissions exist, shows the permissions modal, else disconnect directly
-  const handleDisconnectWithGatorCheck = () => {
+  const handleDisconnectWithGatorCheck = useCallback(() => {
     const hasTokenTransferPermissions =
       gatorPermissionsGroupMetaData &&
       Object.values(gatorPermissionsGroupMetaData).some(
@@ -175,7 +175,7 @@ export const MultichainReviewPermissions = () => {
     disconnectAllPermissions();
     endTrace({ name: TraceName.DisconnectAllModal });
     navigate(PREVIOUS_ROUTE);
-  };
+  }, [disconnectAllPermissions, gatorPermissionsGroupMetaData, navigate]);
 
   const handleSkipPermissions = () => {
     setShowDisconnectPermissionsModal(false);

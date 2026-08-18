@@ -386,8 +386,7 @@ describe('All Connections', () => {
                   },
                 },
                 context: '0x00000000',
-                delegationManager:
-                  '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+                delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
               },
               siteOrigin: gatorOnlyOrigin,
               status: 'Active',
