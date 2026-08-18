@@ -16,12 +16,12 @@ import {
   mockTronSwapApis,
   mockTronSwapApisNoQuotes,
   mockTronSwapApisWithoutFeeEstimation,
-  TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
 
 describe('Swap on Tron', function (this: Suite) {
   this.timeout(180_000);
 
+  // Same mocks and Swap form. Cases only inspect quotes; they do not submit.
   describe('quotes available', function (this: Suite) {
     let driver: Driver;
     let firstFailure: unknown;
@@ -34,9 +34,6 @@ describe('Swap on Tron', function (this: Suite) {
             fixtures: new FixtureBuilderV2().build(),
             title: this.test?.parent?.fullTitle() ?? 'Swap on Tron quotes',
             testSpecificMock: mockTronSwapApis,
-            ignoredConsoleErrors: [
-              `Failed to send transaction: ${TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE}`,
-            ],
           },
           callback,
         ),
@@ -69,7 +66,15 @@ describe('Swap on Tron', function (this: Suite) {
       await session.release(firstFailure);
     });
 
+    it('Swap form shows default token on open', async function () {
+      const homePage = new HomePage(driver);
+      const swapPage = new SwapPage(driver);
+      await homePage.clickOnSwapButton();
+      await swapPage.checkSourceToken('TRX');
+    });
+
     it('Quote displayed between TRX and TRC20', async function () {
+      await returnToTronHome(driver, '106.07');
       const homePage = new HomePage(driver);
       const swapPage = new SwapPage(driver);
       await homePage.clickOnSwapButton();
@@ -79,11 +84,13 @@ describe('Swap on Tron', function (this: Suite) {
         swapFrom: 'TRX',
         network: 'Tron',
       });
-      await swapPage.reviewQuote({
-        swapToAmount: '0.295',
-        swapFrom: 'TRX',
-        swapTo: 'USDT',
-        swapFromAmount: '1',
+      await swapPage.waitForQuote();
+      await swapPage.checkQuoteIsDisplayed();
+      await swapPage.checkSourceToken('TRX');
+      await swapPage.checkDestinationToken('USDT');
+      await swapPage.checkSwapAmounts({
+        fromAmount: '1',
+        toAmount: '0.295',
       });
     });
 
@@ -136,14 +143,6 @@ describe('Swap on Tron', function (this: Suite) {
       await swapPage.waitForQuote();
       await swapPage.checkQuoteIsDisplayed();
       await swapPage.checkDestinationToken('USDC');
-      await swapPage.checkSourceToken('TRX');
-    });
-
-    it('Swap form shows default token on open', async function () {
-      await returnToTronHome(driver, '106.07');
-      const homePage = new HomePage(driver);
-      const swapPage = new SwapPage(driver);
-      await homePage.clickOnSwapButton();
       await swapPage.checkSourceToken('TRX');
     });
   });

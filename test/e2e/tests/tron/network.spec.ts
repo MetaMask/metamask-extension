@@ -30,14 +30,18 @@ async function mockTronNetworkFlags(mockServer: Mockttp) {
   return [await mockTronFeatureFlags(mockServer)];
 }
 
-async function closeNetworkPickerIfOpen(driver: Driver): Promise<void> {
-  const selectNetworkModal = new SelectNetworkModal(driver);
-  await selectNetworkModal.close().catch(() => undefined);
-}
+const TRON_DEFAULT_WALLET_MANIFEST_FLAGS = {
+  remoteFeatureFlags: {
+    neNetworkDiscoverButton: {
+      [TRON_CHAIN_ID]: true,
+    },
+  },
+} as const;
 
 describe('Tron - Network', function (this: Suite) {
   this.timeout(180_000);
 
+  // Listing only. Selecting Tron mutates the active network, so that case is isolated.
   describe('default wallet', function () {
     let driver: Driver;
     let firstFailure: unknown;
@@ -51,13 +55,7 @@ describe('Tron - Network', function (this: Suite) {
             title: this.test?.parent?.fullTitle() ?? 'Tron - Network default',
             localNodeOptions: ['anvil'],
             testSpecificMock: mockTronNetworkFlags,
-            manifestFlags: {
-              remoteFeatureFlags: {
-                neNetworkDiscoverButton: {
-                  [TRON_CHAIN_ID]: true,
-                },
-              },
-            },
+            manifestFlags: TRON_DEFAULT_WALLET_MANIFEST_FLAGS,
           },
           callback,
         ),
@@ -123,19 +121,31 @@ describe('Tron - Network', function (this: Suite) {
       await networksPage.clickCloseButton();
       await homePage.checkPageIsLoaded();
     });
-
-    it('selects Tron from the home network filter', async function () {
-      await closeNetworkPickerIfOpen(driver);
-      const selectNetworkModal = new SelectNetworkModal(driver);
-      const networkFilter = new NetworkFilter(driver);
-
-      await networkFilter.open();
-      await selectNetworkModal.checkPageIsLoaded();
-      await selectNetworkModal.selectNetworkByChainId(TRON_CHAIN_ID);
-      await networkFilter.checkLabelIs('Tron');
-    });
   });
 
+  it('selects Tron from the home network filter', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        localNodeOptions: ['anvil'],
+        testSpecificMock: mockTronNetworkFlags,
+        manifestFlags: TRON_DEFAULT_WALLET_MANIFEST_FLAGS,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByChainId(TRON_CHAIN_ID);
+        await networkFilter.checkLabelIs('Tron');
+      },
+    );
+  });
+
+  // Same showTestNetworks fixture. Both cases only list networks and close the picker.
   describe('test networks enabled', function () {
     let driver: Driver;
     let firstFailure: unknown;

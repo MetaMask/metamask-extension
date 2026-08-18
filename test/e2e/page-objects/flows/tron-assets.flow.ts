@@ -28,14 +28,16 @@ export async function prepareTronAssetsHomepage(driver: Driver): Promise<void> {
   await waitUntilAccountTreeSyncIdle(driver);
   await switchToNetworkFromNetworkSelect(driver, 'Tron');
   const tokensTab = new TokensTab(driver);
-  await tokensTab.checkTokenExistsInList('Tron', '0', {
+  await tokensTab.checkTokenNameVisible('Tron', {
     timeout: TRON_HOMEPAGE_TOKEN_TIMEOUT_MS,
   });
+  await tokensTab.checkTokenAmountIsDisplayed('0');
 }
 
 /**
  * Switches to an already-derived account, re-selects Tron, and waits for the
- * native TRX token row instead of reloading the page.
+ * native TRX token row instead of reloading the page. Does not expand the
+ * low-value assets section, so collapse coverage can run after a switch.
  *
  * @param driver - The webdriver instance.
  * @param options - Account switch options.
@@ -57,9 +59,12 @@ export async function switchToTronAccount(
   await waitUntilAccountTreeSyncIdle(driver);
   await switchToNetworkFromNetworkSelect(driver, 'Tron');
   const tokensTab = new TokensTab(driver);
-  await tokensTab.checkTokenExistsInList('Tron', expectedTrxAmount, {
+  await tokensTab.checkTokenNameVisible('Tron', {
     timeout: TRON_HOMEPAGE_TOKEN_TIMEOUT_MS,
   });
+  if (expectedTrxAmount !== undefined) {
+    await tokensTab.checkTokenAmountIsDisplayed(expectedTrxAmount);
+  }
 }
 
 export async function switchToPortfolioTronAccount(

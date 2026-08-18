@@ -84,6 +84,8 @@ function getTronTrc20AssetId(
 describe('Tron Send', function (this: Suite) {
   this.timeout(300_000);
 
+  // One held Chrome: form checks on Account 1 plus confirmed sends on Accounts 3–6.
+
   const sharedTronNode = new TronNode();
   let driver: Driver;
   let firstFailure: unknown;
@@ -145,6 +147,7 @@ describe('Tron Send', function (this: Suite) {
   });
 
   describe('form validations', function () {
+    // Account 1 does not spend. Cases reopen Send on the same screen.
     it('blocks Continue when a bad address is entered', async function () {
       const sendPage = await openTronSendAmountRecipient({ driver });
       await sendPage.fillRecipient({
@@ -202,6 +205,7 @@ describe('Tron Send', function (this: Suite) {
   });
 
   describe('confirmed sends', function () {
+    // Each case uses its own funded HD account so confirmed txs do not share balances.
     it('sends part of TRX balance and shows it pending then confirmed', async function () {
       await switchToTronAccountForSend({
         accountName: 'Account 3',

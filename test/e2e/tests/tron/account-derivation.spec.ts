@@ -172,6 +172,10 @@ const TRON_ACCOUNT_DERIVATION_ALL_ACCOUNTS: TronFixtureAccount[] = [
  * - Tron address derivation (automatic): BIP44 Stage 2 derives Tron for each HD index once Tron is enabled (mocked via BIP44_STAGE_TWO).
  * - HD account groups (manual in most tests): a fresh wallet only has Account 1; Accounts 2-8 are added via "Add account" or asset discovery.
  *
+ * Shared Java-Tron node only. Each `it` still uses a fresh `withTronFixtures`
+ * browser because cases mutate the account tree or use different fixtures
+ * (onboarding vs already-imported wallet).
+ *
  * Coverage map:
  * - incremental add 1-8: add + assert per step — derivation correct at each new HD index
  * - 8 existing groups: add 8, then enable Tron — retroactive alignment when network enabled later
