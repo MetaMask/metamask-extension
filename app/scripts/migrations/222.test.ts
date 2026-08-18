@@ -211,7 +211,7 @@ describe(`migration #${version}`, () => {
   it('skips migration on Firefox', async () => {
     const oldStorage = buildVersionedData();
 
-    jest.spyOn(require('../lib/util'), 'getPlatform').mockReturnValue('firefox');
+    jest.spyOn(require('../lib/util'), 'getPlatform').mockReturnValue('Firefox');
 
     await migrate(oldStorage, new Set());
 
