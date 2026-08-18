@@ -2,14 +2,18 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
+import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { Button, ButtonSize } from '@metamask/design-system-react';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import {
   useIsTransactionPayLoading,
+  useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
+  useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
 
@@ -34,7 +38,15 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayLoading();
+  const isPostQuote = useTransactionPayIsPostQuote();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+  const quotes = useTransactionPayQuotes();
+  const hasExecutableQuote = quotes?.some(
+    (quote) => quote.strategy !== TransactionPayStrategy.None,
+  );
+  const isPayReady =
+    !isPerpsWithdrawTransaction(currentConfirmation) ||
+    (isPostQuote && hasExecutableQuote);
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
@@ -63,7 +75,10 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
         : defaultButtonText;
 
     const isDisabled =
-      isAwaitingRequiredToken || hasBlockingAlerts || !hasAmount;
+      isAwaitingRequiredToken ||
+      hasBlockingAlerts ||
+      !hasAmount ||
+      !isPayReady;
 
     const isLoading =
       isAwaitingRequiredToken || isGaslessLoading || isPayLoading;
@@ -72,6 +87,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   }, [
     blockingAlerts,
     isGaslessLoading,
+    isPayReady,
     isPayLoading,
     primaryRequiredToken,
     transactionType,
