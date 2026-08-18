@@ -20,13 +20,20 @@ class NetworkFilter {
 
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-network-filter',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkIsLoaded(): Promise<void> {
     console.log('Waiting for the network filter');
-    await this.driver.waitForSelector(this.networksToggle);
+    await this.driver.waitForMultipleSelectors([
+      this.parentSelector,
+      this.networksToggle,
+    ]);
   }
 
   /**

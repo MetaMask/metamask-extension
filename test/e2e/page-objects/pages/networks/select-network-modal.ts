@@ -65,6 +65,10 @@ class SelectNetworkModal {
 
   private readonly networkListItemClass = '.multichain-network-list-item';
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-select-network-modal',
+  };
+
   private readonly selectedAllNetworksItem = `${this.allNetworksItem}.bg-muted`;
 
   private readonly selectedNetworkListItem = (selector: string) =>
@@ -150,7 +154,10 @@ class SelectNetworkModal {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Checking the select network modal is loaded');
-    await this.driver.waitForSelector(this.allNetworksItem);
+    await this.driver.waitForMultipleSelectors([
+      this.parentSelector,
+      this.allNetworksItem,
+    ]);
   }
 
   /**

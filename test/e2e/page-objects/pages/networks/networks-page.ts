@@ -56,6 +56,10 @@ class NetworksPage {
     testId: 'networks-page-network-success-toast',
   };
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-networks-page',
+  };
+
   private readonly rpcUrlItem = '.select-rpc-url__item';
 
   private readonly searchButton = '[data-testid="page-header-search-button"]';
@@ -153,6 +157,7 @@ class NetworksPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.selectNetworkMessage,
         this.addCustomNetworkButton,
       ]);

@@ -641,6 +641,7 @@ const HomeNetworkFilterModalContent = ({
 
   return (
     <NetworkSelectionModal
+      data-testid="parent-selector-select-network-modal"
       isOpen
       onClose={handleClose}
       title={t('bridgeSelectNetwork')}
