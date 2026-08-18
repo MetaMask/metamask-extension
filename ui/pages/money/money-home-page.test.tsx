@@ -197,7 +197,9 @@ describe('MoneyHomePage', () => {
 
     expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
     expect(screen.getByText('USD Coin')).toBeInTheDocument();
-    expect(screen.getByText('No fee')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyEarnOnCryptoNoFee.message),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('money-potential-earnings-projection'),
     ).toHaveTextContent('+$0.50');

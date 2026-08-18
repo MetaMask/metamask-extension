@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
 import { MoneyPotentialEarnings } from './money-potential-earnings';
 
@@ -41,11 +42,11 @@ describe('MoneyPotentialEarnings', () => {
     );
 
     expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
-    expect(screen.getByText('Earn on your crypto')).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'See how your money can grow over time by converting your crypto to mUSD.',
-      ),
+      screen.getByText(messages.moneyEarnOnCrypto.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyEarnOnCryptoDescription.message),
     ).toBeInTheDocument();
     expect(
       screen.queryByTestId('money-potential-earnings-token-row'),
@@ -62,7 +63,9 @@ describe('MoneyPotentialEarnings', () => {
       />,
     );
 
-    expect(screen.getByText('Earn on your crypto')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyEarnOnCrypto.message),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('money-potential-earnings-total'),
     ).toHaveTextContent('$5,000.00');
@@ -85,9 +88,7 @@ describe('MoneyPotentialEarnings', () => {
     );
 
     expect(
-      screen.getByText(
-        'See how your money can grow over time by converting your crypto to mUSD.',
-      ),
+      screen.getByText(messages.moneyEarnOnCryptoDescription.message),
     ).toBeInTheDocument();
     expect(
       screen.queryByTestId('money-potential-earnings-projection'),
@@ -108,7 +109,9 @@ describe('MoneyPotentialEarnings', () => {
       screen.getAllByTestId('money-potential-earnings-token-row'),
     ).toHaveLength(5);
     expect(screen.queryByText('Token 6')).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'View all' })).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: messages.viewAll.message }),
+    ).toBeDisabled();
   });
 
   it('hides View all when all tokens are visible', () => {
@@ -122,7 +125,7 @@ describe('MoneyPotentialEarnings', () => {
     );
 
     expect(
-      screen.queryByRole('button', { name: 'View all' }),
+      screen.queryByRole('button', { name: messages.viewAll.message }),
     ).not.toBeInTheDocument();
   });
 
@@ -136,7 +139,9 @@ describe('MoneyPotentialEarnings', () => {
       />,
     );
 
-    expect(screen.getAllByText('No fee')).toHaveLength(1);
+    expect(
+      screen.getAllByText(messages.moneyEarnOnCryptoNoFee.message),
+    ).toHaveLength(1);
   });
 
   it('masks balances and projections in privacy mode', () => {
@@ -167,6 +172,8 @@ describe('MoneyPotentialEarnings', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: messages.moneyAdd.message }),
+    ).toBeDisabled();
   });
 });
