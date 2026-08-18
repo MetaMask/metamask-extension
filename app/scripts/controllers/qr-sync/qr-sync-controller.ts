@@ -8,6 +8,7 @@ import {
   type OtpRequiredPayload,
 } from '@metamask/mobile-wallet-protocol-dapp-client';
 import type { AccountGroupId } from '@metamask/account-api';
+import { ExportStateOptions } from '@metamask/account-tree-controller';
 
 import log from 'loglevel';
 import { createSentryError } from '../../../../shared/lib/error';
@@ -55,7 +56,6 @@ import {
 } from './metadata';
 import { InMemoryKvStore } from './kv-store';
 import { getMwpDappClient } from './mwp-dapp-client-factory';
-import { ExportStateOptions } from '@metamask/account-tree-controller';
 
 export class QrSyncController extends BaseController<
   typeof QR_SYNC_CONTROLLER_NAME,
