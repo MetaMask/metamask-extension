@@ -9284,9 +9284,6 @@
   "selectNFTPrivacyPreference": {
     "message": "NFT Otomatik Algılamayı etkinleştir"
   },
-  "selectNetworkToFilter": {
-    "message": "Filtrelemek için ağ seç"
-  },
   "selectPathHelp": {
     "message": "Beklediğiniz hesapları görmüyorsanız HD yoluna veya geçerli seçilen ağa geçmeyi deneyin."
   },

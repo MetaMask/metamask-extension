@@ -9284,9 +9284,6 @@
   "selectNFTPrivacyPreference": {
     "message": "Aktifkan Autodeteksi NFT"
   },
-  "selectNetworkToFilter": {
-    "message": "Pilih jaringan untuk disaring"
-  },
   "selectPathHelp": {
     "message": "Jika Anda tidak menemukan akun yang diharapkan, coba alihkan jalur HD atau jaringan yang dipilih saat ini."
   },

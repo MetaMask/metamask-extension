@@ -47,8 +47,6 @@ import {
   getFromAccount,
   getIsStxEnabled,
   getValidatedFromValue,
-  getIsSrcAssetPickerOpen,
-  getIsDestAssetPickerOpen,
   getQuoteRequestInsufficientBal,
 } from '../../../ducks/bridge/selectors';
 import {
@@ -145,8 +143,6 @@ const PrepareBridgePage = ({
   const { dest } = unvalidatedQuote?.quote ?? {};
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
-  const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
-  const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
 
   const isQuoteRequestInsufficientBal = useSelector(
     getQuoteRequestInsufficientBal,

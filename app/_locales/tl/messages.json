@@ -9166,9 +9166,6 @@
   "selectNFTPrivacyPreference": {
     "message": "Paganahin ang autodetection ng NFT"
   },
-  "selectNetworkToFilter": {
-    "message": "Piliin ang network na ifi-filter"
-  },
   "selectPathHelp": {
     "message": "Kung hindi mo makita ang mga account na inaasahan mo, subukang lumipat ng HD path o kasalukuyang piniling network."
   },
