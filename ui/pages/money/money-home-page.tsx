@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { Navigate } from 'react-router-dom';
 import {
+  AvatarToken,
+  AvatarTokenSize,
   Button,
   ButtonIcon,
   ButtonSize,
@@ -15,10 +17,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  AvatarToken,
-  AvatarTokenSize,
-} from '../../components/component-library';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';

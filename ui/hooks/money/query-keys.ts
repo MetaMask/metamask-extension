@@ -3,3 +3,7 @@ export const MoneyAccountBalanceServiceQueryKeys = {
     'MoneyAccountBalanceService:fetchBalanceWithFallback',
   GetVaultApy: 'MoneyAccountBalanceService:getVaultApy',
 } as const;
+
+export const MoneyAccountAvailabilityServiceQueryKeys = {
+  GetAvailability: 'MoneyAccountAvailabilityService:getAvailability',
+} as const;
