@@ -6,7 +6,7 @@ import {
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from '../../../shared/lib/stores/indexeddb-storage-constants';
 import { IndexedDBStore } from '../../../shared/lib/stores/indexeddb-store';
-import { migrate, version } from './222';
+import { migrate, version } from './223';
 
 jest.mock('webextension-polyfill', () => ({
   runtime: { getManifest: jest.fn(() => ({})) },
