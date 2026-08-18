@@ -7,8 +7,9 @@ import {
   BoxAlignItems,
   BoxBackgroundColor,
   BoxJustifyContent,
+  Checkbox,
 } from '@metamask/design-system-react';
-import { Icon, IconName, Checkbox } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 
 // End accessory
 const MoreOptionsAccessory = () => (
@@ -30,7 +31,13 @@ const CheckboxAccessory = ({ checked = false }: { checked?: boolean }) => (
     justifyContent={BoxJustifyContent.Center}
     marginRight={2}
   >
-    <Checkbox isChecked={checked} />
+    <Checkbox
+      id={`multichain-account-cell-checkbox-${checked ? 'checked' : 'unchecked'}`}
+      isSelected={checked}
+      onChange={() => {
+        // Story accessory only — selection is controlled via story args.
+      }}
+    />
   </Box>
 );
 
