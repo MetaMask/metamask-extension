@@ -8385,17 +8385,9 @@
     "message": "Change provider",
     "description": "Inline link in the payment method footer, e.g. 'Buying via Transak. Change provider'"
   },
-  "rampsChangeProvidersLink": {
-    "message": "change providers",
-    "description": "Inline link in the buy amount error, e.g. 'Error getting quotes. Enter a lower amount or change providers'"
-  },
   "rampsChooseProvider": {
     "message": "Choose provider",
     "description": "Title of the provider selection modal"
-  },
-  "rampsContactProviderSupport": {
-    "message": "Contact $1 support",
-    "description": "$1 is the ramp provider name"
   },
   "rampsEligibilityFailedDescription": {
     "message": "Please try again, or contact support if this keeps happening."
@@ -8548,9 +8540,6 @@
   "rampsPreviouslyUsed": {
     "message": "Previously used"
   },
-  "rampsQuoteErrorEnterLowerAmount": {
-    "message": "Error getting quotes. Enter a lower amount or"
-  },
   "rampsQuoteFetchError": {
     "message": "Failed to fetch quote."
   },
@@ -8577,18 +8566,6 @@
   },
   "rampsUnsupportedTitle": {
     "message": "Buying isn’t available here"
-  },
-  "rampsWeeklyLimitDescription": {
-    "message": "Sorry, you cannot place this order. This usually happens for one of the following reasons:"
-  },
-  "rampsWeeklyLimitReached": {
-    "message": "You’ve reached your weekly limit."
-  },
-  "rampsWeeklyLimitReasonLargeOrders": {
-    "message": "We don’t support large orders in your country, so please place a smaller order."
-  },
-  "rampsWeeklyLimitReasonTimeLimits": {
-    "message": "You’ve exceeded your time based limits, which you can check in the menu."
   },
   "rank": {
     "message": "Rank"
