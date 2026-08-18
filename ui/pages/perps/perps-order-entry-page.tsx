@@ -71,6 +71,7 @@ import {
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
   selectPerpsActiveProvider,
+  selectOrderBookPosition,
 } from '../../selectors/perps-controller';
 import {
   CandlePeriod,
@@ -150,6 +151,7 @@ import {
   ORDER_BOOK_FORM_MIN_WIDTH_PX,
   clampOrderBookWidthPct,
   computeOrderBookWidthPct,
+  computeOrderBookWidthPctFromLeft,
   getOrderBookMaxWidthPct,
 } from '../../components/app/perps/order-book';
 import { useVipTier } from '../../hooks/rewards/useVipTier';
@@ -340,6 +342,8 @@ const PerpsOrderEntryPage = () => {
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
+  const orderBookPosition = useSelector(selectOrderBookPosition);
+  const isOrderBookOnLeft = orderBookPosition === 'left';
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
   const { formatPercentWithMinThreshold } = useFormatters();
@@ -734,9 +738,18 @@ const PerpsOrderEntryPage = () => {
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
   );
+  const livePriceStreamKey =
+    decodedSymbol && selectedAddress
+      ? `${decodedSymbol}:${selectedAddress}`
+      : null;
+  const [prevLivePriceStreamKey, setPrevLivePriceStreamKey] =
+    useState(livePriceStreamKey);
+  if (livePriceStreamKey !== prevLivePriceStreamKey) {
+    setPrevLivePriceStreamKey(livePriceStreamKey);
+    setLivePrice(undefined);
+  }
   useEffect(() => {
     if (!decodedSymbol || !selectedAddress) {
-      setLivePrice(undefined);
       return undefined;
     }
     // Activate background price stream for this symbol
@@ -771,9 +784,18 @@ const PerpsOrderEntryPage = () => {
   const [topOfBook, setTopOfBook] = useState<{
     midPrice: number;
   } | null>(null);
+  const topOfBookStreamKey =
+    decodedSymbol && selectedAddress
+      ? `${decodedSymbol}:${selectedAddress}`
+      : null;
+  const [prevTopOfBookStreamKey, setPrevTopOfBookStreamKey] =
+    useState(topOfBookStreamKey);
+  if (topOfBookStreamKey !== prevTopOfBookStreamKey) {
+    setPrevTopOfBookStreamKey(topOfBookStreamKey);
+    setTopOfBook(null);
+  }
   useEffect(() => {
     if (!decodedSymbol || !selectedAddress) {
-      setTopOfBook(null);
       return undefined;
     }
     // Activate background orderBook stream for this symbol
@@ -1340,7 +1362,13 @@ const PerpsOrderEntryPage = () => {
       // dragging (ResizeObserver also refreshes this on container resize).
       setOrderBookMaxWidthPct(getOrderBookMaxWidthPct(rect.width));
       setOrderBookWidthPct(
-        computeOrderBookWidthPct(rect.right, rect.width, moveEvent.clientX),
+        isOrderBookOnLeft
+          ? computeOrderBookWidthPctFromLeft(
+              rect.left,
+              rect.width,
+              moveEvent.clientX,
+            )
+          : computeOrderBookWidthPct(rect.right, rect.width, moveEvent.clientX),
       );
     };
     const handleUp = () => setIsResizingOrderBook(false);
@@ -1350,7 +1378,7 @@ const PerpsOrderEntryPage = () => {
       window.removeEventListener('mousemove', handleMove);
       window.removeEventListener('mouseup', handleUp);
     };
-  }, [isResizingOrderBook, bodyEl]);
+  }, [isResizingOrderBook, bodyEl, isOrderBookOnLeft]);
 
   // Re-clamp the stored width when the body resizes (popup resize / expand to
   // fullscreen). Without this, a width set on a wide body would exceed the
@@ -1373,8 +1401,6 @@ const PerpsOrderEntryPage = () => {
     return () => observer.disconnect();
   }, [bodyEl]);
 
-  // Keyboard resizing for the divider: arrows nudge the split, Home/End jump to
-  // the bounds. The order book is right-aligned, so ArrowLeft widens it.
   const handleOrderBookResizeKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
       const containerWidth = bodyEl?.getBoundingClientRect().width;
@@ -1385,7 +1411,9 @@ const PerpsOrderEntryPage = () => {
           event.preventDefault();
           setOrderBookWidthPct((width) =>
             clampOrderBookWidthPct(
-              width + ORDER_BOOK_RESIZE_STEP_PCT,
+              isOrderBookOnLeft
+                ? width - ORDER_BOOK_RESIZE_STEP_PCT
+                : width + ORDER_BOOK_RESIZE_STEP_PCT,
               containerWidth,
             ),
           );
@@ -1394,7 +1422,9 @@ const PerpsOrderEntryPage = () => {
           event.preventDefault();
           setOrderBookWidthPct((width) =>
             clampOrderBookWidthPct(
-              width - ORDER_BOOK_RESIZE_STEP_PCT,
+              isOrderBookOnLeft
+                ? width + ORDER_BOOK_RESIZE_STEP_PCT
+                : width - ORDER_BOOK_RESIZE_STEP_PCT,
               containerWidth,
             ),
           );
@@ -1411,7 +1441,7 @@ const PerpsOrderEntryPage = () => {
           break;
       }
     },
-    [bodyEl],
+    [bodyEl, isOrderBookOnLeft],
   );
 
   const handleToggleOrderBook = useCallback(() => {
@@ -2044,6 +2074,194 @@ const PerpsOrderEntryPage = () => {
     }
   }
 
+  // The keys are structural: they let React move these panes when the layout
+  // preference flips instead of remounting them and discarding a part-filled
+  // order form.
+  const formPane = (
+    <Box
+      key="form"
+      flexDirection={BoxFlexDirection.Column}
+      style={{
+        minWidth: isOrderBookOpen ? ORDER_BOOK_FORM_MIN_WIDTH_PX : undefined,
+      }}
+      className="flex-1 min-w-0 h-full overflow-hidden"
+    >
+      {/* Scrollable form */}
+      <Box
+        paddingLeft={4}
+        paddingRight={4}
+        paddingBottom={4}
+        flexDirection={BoxFlexDirection.Column}
+        gap={4}
+        className={twMerge(
+          'flex-1 overflow-y-auto overflow-x-hidden',
+          isOrderPending && 'pointer-events-none opacity-50',
+        )}
+      >
+        {orderMode === 'new' && (
+          <DirectionTabs
+            direction={orderDirection}
+            onDirectionChange={handleDirectionChange}
+          />
+        )}
+        <OrderEntry
+          asset={decodedSymbol}
+          currentPrice={currentPrice}
+          markPrice={oraclePrice}
+          maxLeverage={maxLeverage}
+          availableBalance={availableBalance}
+          initialDirection={orderDirection}
+          showSubmitButton={false}
+          showOrderSummary={false}
+          onFormStateChange={handleFormStateChange}
+          onInputMethodChange={handleInputMethodChange}
+          onCalculationsChange={handleCalculationsChange}
+          mode={orderMode}
+          orderType={orderType}
+          existingPosition={existingPositionForOrder}
+          midPrice={topOfBook?.midPrice}
+          onOrderTypeChange={setOrderType}
+          onAddFunds={handleAddFunds}
+          initialLeverage={initialLeverage}
+          autoFocusUsd={orderMode !== 'close'}
+          autoFocusLimitPrice={orderMode !== 'close'}
+          sizeDecimals={marketInfo?.szDecimals}
+          limitPricePrefill={limitPricePrefill ?? undefined}
+        />
+      </Box>
+
+      {/* Sticky bottom: summary + button */}
+      <Box
+        paddingLeft={4}
+        paddingRight={4}
+        paddingBottom={4}
+        paddingTop={3}
+        flexDirection={BoxFlexDirection.Column}
+        gap={4}
+        className="shrink-0"
+      >
+        {orderCalculations && (
+          <OrderSummary
+            marginRequired={orderCalculations.marginRequired}
+            estimatedFees={orderCalculations.estimatedFees}
+            originalEstimatedFees={originalEstimatedFees}
+            liquidationPrice={orderCalculations.liquidationPrice}
+            metamaskFeeRateDiscountPercentage={
+              metamaskFeeRateDiscountPercentage
+            }
+            metamaskFeeRate={metamaskFeeRate}
+            originalMetamaskFeeRate={originalMetamaskFeeRate}
+            protocolFeeRate={protocolFeeRate}
+            protocolFeeLabel={protocolFeeLabel}
+            showSlippageRow={
+              isSlippageConfigEnabled &&
+              orderType === 'market' &&
+              orderMode !== 'close'
+            }
+            slippageDisplay={slippageDisplay}
+            exceedsMaxSlippage={exceedsMaxSlippage}
+            isSlippageRowDisabled={isMaxSlippageLoading}
+            onSlippageClick={() => {
+              if (isMaxSlippageLoading) {
+                return;
+              }
+              setIsSlippageModalOpen(true);
+              track(MetaMetricsEventName.PerpsUiInteraction, {
+                [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+                  PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_OPENED,
+                [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+                [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]:
+                  bpsToPercent(maxSlippageBps),
+                [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]:
+                  maxSlippageSource === 'user_configured'
+                    ? PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED
+                    : PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
+              });
+            }}
+          />
+        )}
+        {submitError && (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.ErrorDefault}
+            data-testid="perps-order-submit-error"
+          >
+            {submitError}
+          </Text>
+        )}
+        <Button
+          type="submit"
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          disabled={isSubmitDisabled}
+          className={twMerge(
+            'w-full',
+            isSubmitDisabled && 'opacity-70 cursor-not-allowed',
+          )}
+          data-testid="submit-order-button"
+        >
+          {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
+        </Button>
+      </Box>
+    </Box>
+  );
+
+  // Draggable divider: resize the order book / form split.
+  const resizeDivider =
+    isOrderBookEnabled && isOrderBookOpen ? (
+      <div
+        key="divider"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label={t('perpsOrderBookResize')}
+        aria-valuenow={Math.round(orderBookWidthPct)}
+        aria-valuemin={ORDER_BOOK_MIN_WIDTH_PCT}
+        aria-valuemax={Math.round(orderBookMaxWidthPct)}
+        tabIndex={0}
+        onMouseDown={handleOrderBookResizeStart}
+        onKeyDown={handleOrderBookResizeKeyDown}
+        className="w-0.5 shrink-0 cursor-col-resize bg-muted hover:bg-primary-default active:bg-primary-default"
+        data-testid="perps-order-book-resize-handle"
+      />
+    ) : null;
+
+  // Order book: slides in from whichever side `orderBookPosition` pins it to,
+  // resizable via the divider. It is unmounted while collapsed so its focusable
+  // controls never sit in a zero-width, hidden panel.
+  const orderBookPane = isOrderBookEnabled ? (
+    <Box
+      key="order-book"
+      flexDirection={BoxFlexDirection.Column}
+      style={{
+        width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%',
+        // Floor the width while open, and use a transitionable 0 (not
+        // `undefined`/`auto`) while closed: CSS cannot interpolate
+        // `auto -> <floor>`, so an `undefined` closed value made the panel
+        // snap to full width on open instead of animating. Animating
+        // min-width between 0 and the floor keeps open and close symmetric.
+        minWidth: isOrderBookOpen ? ORDER_BOOK_MIN_WIDTH_PX : 0,
+      }}
+      className={twMerge(
+        'shrink-0 h-full overflow-hidden',
+        !isResizingOrderBook && 'transition-all duration-300 ease-in-out',
+      )}
+    >
+      {isOrderBookOpen && (
+        <PerpsOrderBook
+          symbol={decodedSymbol}
+          isOpen={isOrderBookOpen}
+          marketPrice={currentPrice}
+          szDecimals={marketInfo?.szDecimals}
+          onSelectPrice={handleOrderBookPriceSelect}
+        />
+      )}
+    </Box>
+  ) : null;
+
+  const bodyPanes = isOrderBookOnLeft
+    ? [orderBookPane, resizeDivider, formPane]
+    : [formPane, resizeDivider, orderBookPane];
+
   return (
     <form
       className="main-container asset__container relative overflow-hidden"
@@ -2080,187 +2298,17 @@ const PerpsOrderEntryPage = () => {
         }
       />
 
-      {/* Body: form content (left) + sliding order book (right). Scrolls
-          horizontally as a fallback when a narrow popup cannot fit both
-          pixel-floored panes. */}
+      {/* Body: form content + sliding order book, ordered by
+          `orderBookPosition`. Scrolls horizontally as a fallback when a narrow
+          popup cannot fit both pixel-floored panes, so the panes must lay out
+          left-to-right (a reversed container would push the overflow past the
+          inline-start edge, where it cannot be scrolled to). */}
       <div
         ref={setBodyEl}
+        data-testid="perps-order-body"
         className="flex flex-row flex-1 min-h-0 w-full overflow-x-auto"
       >
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          style={{
-            minWidth: isOrderBookOpen
-              ? ORDER_BOOK_FORM_MIN_WIDTH_PX
-              : undefined,
-          }}
-          className="flex-1 min-w-0 h-full overflow-hidden"
-        >
-          {/* Scrollable form */}
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            flexDirection={BoxFlexDirection.Column}
-            gap={4}
-            className={twMerge(
-              'flex-1 overflow-y-auto overflow-x-hidden',
-              isOrderPending && 'pointer-events-none opacity-50',
-            )}
-          >
-            {orderMode === 'new' && (
-              <DirectionTabs
-                direction={orderDirection}
-                onDirectionChange={handleDirectionChange}
-              />
-            )}
-            <OrderEntry
-              asset={decodedSymbol}
-              currentPrice={currentPrice}
-              markPrice={oraclePrice}
-              maxLeverage={maxLeverage}
-              availableBalance={availableBalance}
-              initialDirection={orderDirection}
-              showSubmitButton={false}
-              showOrderSummary={false}
-              onFormStateChange={handleFormStateChange}
-              onInputMethodChange={handleInputMethodChange}
-              onCalculationsChange={handleCalculationsChange}
-              mode={orderMode}
-              orderType={orderType}
-              existingPosition={existingPositionForOrder}
-              midPrice={topOfBook?.midPrice}
-              onOrderTypeChange={setOrderType}
-              onAddFunds={handleAddFunds}
-              initialLeverage={initialLeverage}
-              autoFocusUsd={orderMode !== 'close'}
-              autoFocusLimitPrice={orderMode !== 'close'}
-              sizeDecimals={marketInfo?.szDecimals}
-              limitPricePrefill={limitPricePrefill ?? undefined}
-            />
-          </Box>
-
-          {/* Sticky bottom: summary + button */}
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingTop={3}
-            flexDirection={BoxFlexDirection.Column}
-            gap={4}
-            className="shrink-0"
-          >
-            {orderCalculations && (
-              <OrderSummary
-                marginRequired={orderCalculations.marginRequired}
-                estimatedFees={orderCalculations.estimatedFees}
-                originalEstimatedFees={originalEstimatedFees}
-                liquidationPrice={orderCalculations.liquidationPrice}
-                metamaskFeeRateDiscountPercentage={
-                  metamaskFeeRateDiscountPercentage
-                }
-                metamaskFeeRate={metamaskFeeRate}
-                originalMetamaskFeeRate={originalMetamaskFeeRate}
-                protocolFeeRate={protocolFeeRate}
-                protocolFeeLabel={protocolFeeLabel}
-                showSlippageRow={
-                  isSlippageConfigEnabled &&
-                  orderType === 'market' &&
-                  orderMode !== 'close'
-                }
-                slippageDisplay={slippageDisplay}
-                exceedsMaxSlippage={exceedsMaxSlippage}
-                isSlippageRowDisabled={isMaxSlippageLoading}
-                onSlippageClick={() => {
-                  if (isMaxSlippageLoading) {
-                    return;
-                  }
-                  setIsSlippageModalOpen(true);
-                  track(MetaMetricsEventName.PerpsUiInteraction, {
-                    [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-                      PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_OPENED,
-                    [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
-                    [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]:
-                      bpsToPercent(maxSlippageBps),
-                    [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]:
-                      maxSlippageSource === 'user_configured'
-                        ? PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED
-                        : PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
-                  });
-                }}
-              />
-            )}
-            {submitError && (
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.ErrorDefault}
-                data-testid="perps-order-submit-error"
-              >
-                {submitError}
-              </Text>
-            )}
-            <Button
-              type="submit"
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              disabled={isSubmitDisabled}
-              className={twMerge(
-                'w-full',
-                isSubmitDisabled && 'opacity-70 cursor-not-allowed',
-              )}
-              data-testid="submit-order-button"
-            >
-              {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
-            </Button>
-          </Box>
-        </Box>
-        {/* Draggable divider: resize the order book / form split. */}
-        {isOrderBookEnabled && isOrderBookOpen && (
-          <div
-            role="separator"
-            aria-orientation="vertical"
-            aria-label={t('perpsOrderBookResize')}
-            aria-valuenow={Math.round(orderBookWidthPct)}
-            aria-valuemin={ORDER_BOOK_MIN_WIDTH_PCT}
-            aria-valuemax={Math.round(orderBookMaxWidthPct)}
-            tabIndex={0}
-            onMouseDown={handleOrderBookResizeStart}
-            onKeyDown={handleOrderBookResizeKeyDown}
-            className="w-0.5 shrink-0 cursor-col-resize bg-muted hover:bg-primary-default active:bg-primary-default"
-            data-testid="perps-order-book-resize-handle"
-          />
-        )}
-        {/* Order book: slides in from the right, resizable via the divider. It
-            is unmounted while collapsed so its focusable controls never sit in
-            a zero-width, hidden panel. */}
-        {isOrderBookEnabled && (
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            style={{
-              width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%',
-              // Floor the width while open, and use a transitionable 0 (not
-              // `undefined`/`auto`) while closed: CSS cannot interpolate
-              // `auto -> <floor>`, so an `undefined` closed value made the panel
-              // snap to full width on open instead of animating. Animating
-              // min-width between 0 and the floor keeps open and close symmetric.
-              minWidth: isOrderBookOpen ? ORDER_BOOK_MIN_WIDTH_PX : 0,
-            }}
-            className={twMerge(
-              'shrink-0 h-full overflow-hidden',
-              !isResizingOrderBook && 'transition-all duration-300 ease-in-out',
-            )}
-          >
-            {isOrderBookOpen && (
-              <PerpsOrderBook
-                symbol={decodedSymbol}
-                isOpen={isOrderBookOpen}
-                marketPrice={currentPrice}
-                szDecimals={marketInfo?.szDecimals}
-                onSelectPrice={handleOrderBookPriceSelect}
-              />
-            )}
-          </Box>
-        )}
+        {bodyPanes}
       </div>
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}

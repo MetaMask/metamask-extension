@@ -5,6 +5,7 @@ import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import DappBarNetworkSelectorPopover from '../../page-objects/pages/dialog/dapp-bar-network-selector-popover';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 
 describe('Deprecated networks', function (this: Suite) {
   it('User should not find goerli network when clicking on the network selector', async function () {
@@ -18,6 +19,9 @@ describe('Deprecated networks', function (this: Suite) {
         // Navigate to extension home screen
         await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
         // Open the first dapp which starts on chain '0x539
         await driver.openNewPage(DAPP_URL);
         await driver.clickElement({
@@ -27,10 +31,7 @@ describe('Deprecated networks', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.openNewPage(
           `${driver.extensionUrl}/popup.html?activeTabOrigin=${DAPP_URL}`,

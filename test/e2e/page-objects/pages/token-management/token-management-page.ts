@@ -1,5 +1,17 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Manage Tokens hub: open custom import and success toast.
+ *
+ * Screen: `#/token-management`.
+ * Owns: page-loaded check, "Add a custom token", success toast after import,
+ * and back to homepage.
+ * Boundaries: the manage-tokens list/hub. The custom token form is
+ * `CustomTokenImportPage`.
+ * Related: `CustomTokenImportPage`.
+ *
+ * @see ui/pages/token-management/token-management.tsx
+ */
 class TokenManagementPage {
   private readonly addCustomTokenButton =
     '[data-testid="token-management-add-custom-token-button"]';

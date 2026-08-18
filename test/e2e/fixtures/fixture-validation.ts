@@ -78,6 +78,9 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RemoteFeatureFlagController.remoteFeatureFlags',
   'data.RemoteFeatureFlagController.thresholdCache',
   'data.RemoteFeatureFlagController.rawRemoteFeatureFlags',
+  // Threshold group selection is derived from the (random) analyticsId, so it
+  // is non-deterministic per run, like the other flags above.
+  'data.RemoteFeatureFlagController.featureFlagThresholdGroups',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',

@@ -18,6 +18,12 @@ import { getTransactionControllerInitMessenger } from './messengers/transaction-
 import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
+import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import {
+  getShieldApiServiceInstanceOptions,
+  getShieldControllerInstanceOptions,
+} from './instance-options/shield-controller';
+import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
@@ -34,6 +40,22 @@ jest.mock('./instance-options/approval-controller', () => ({
 jest.mock('./instance-options/connectivity-controller', () => ({
   getConnectivityControllerInstanceOptions: jest.fn(
     () => 'connectivity-options',
+  ),
+}));
+jest.mock('./instance-options/claims-service', () => ({
+  getClaimsServiceInstanceOptions: jest.fn(() => 'claims-options'),
+}));
+jest.mock('./instance-options/shield-controller', () => ({
+  getShieldApiServiceInstanceOptions: jest.fn(
+    () => 'shield-api-service-options',
+  ),
+  getShieldControllerInstanceOptions: jest.fn(
+    () => 'shield-controller-options',
+  ),
+}));
+jest.mock('./instance-options/subscription-service', () => ({
+  getSubscriptionServiceInstanceOptions: jest.fn(
+    () => 'subscription-service-options',
   ),
 }));
 jest.mock('./instance-options/gas-fee-controller', () => ({
@@ -115,6 +137,7 @@ describe('initializeWallet', () => {
     expect(MockWallet).toHaveBeenCalledWith({
       instanceOptions: {
         approvalController: 'approval-options',
+        claimsService: 'claims-options',
         connectivityController: 'connectivity-options',
         gasFeeController: 'gas-fee-controller-options',
         keyringController: 'keyring-options',
@@ -137,11 +160,18 @@ describe('initializeWallet', () => {
             '0xa86a': [],
             '0xe708': [],
           },
+          analyticsOptions: {
+            isRpcEndpointUrlPublic: expect.any(Function),
+            rpcServiceEventsSampleRate: expect.any(Number),
+          },
         },
         passkeyController: 'passkey-options',
         seedlessOnboardingController: 'seedless-onboarding-options',
+        shieldApiService: 'shield-api-service-options',
+        shieldController: 'shield-controller-options',
         remoteFeatureFlagController: 'rffc-options',
         storageService: 'storage-options',
+        subscriptionService: 'subscription-service-options',
         transactionController: 'transaction-controller-options',
       },
       messenger,
@@ -171,6 +201,10 @@ describe('initializeWallet', () => {
     expect(getApprovalControllerInstanceOptions).toHaveBeenCalledWith({
       showApprovalRequest,
     });
+    expect(getClaimsServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getShieldApiServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getShieldControllerInstanceOptions).toHaveBeenCalledWith();
+    expect(getSubscriptionServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getPasskeyControllerInstanceOptions).toHaveBeenCalledWith({
       messenger,
       platform,
