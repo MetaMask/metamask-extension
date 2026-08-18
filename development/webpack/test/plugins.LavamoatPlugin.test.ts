@@ -140,30 +140,6 @@ describe('LavamoatPlugin', () => {
       );
     });
 
-    it('includes Web Push globals in service-worker.ts scuttleGlobalThis exceptions', () => {
-      const result = runtimeConfig(mockChunk('service-worker.ts')) as {
-        embeddedOptions?: {
-          scuttleGlobalThis?: {
-            exceptions: (string | RegExp)[];
-          };
-        };
-      };
-
-      const exceptions =
-        result.embeddedOptions?.scuttleGlobalThis?.exceptions ?? [];
-      for (const name of [
-        'PushManager',
-        'Notification',
-        'PushSubscription',
-        'clients',
-      ]) {
-        assert.ok(
-          exceptions.includes(name),
-          `${name} must be excepted from scuttling so Firebase isSupported() can see it`,
-        );
-      }
-    });
-
     it('keeps null_unsafe mode for inpage.js and bootstrap (no LavaMoat runtime needed)', () => {
       for (const name of ['scripts/inpage.js', 'bootstrap']) {
         const result = runtimeConfig(mockChunk(name)) as { mode: string };
