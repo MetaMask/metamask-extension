@@ -104,17 +104,8 @@ export class PerpsMarketListPage {
     return { testId: `filter-select-option-${optionId}` };
   }
 
-  /**
-   * Checks whether the Perps Market List page is visible.
-   *
-   * @param timeout - Maximum time in milliseconds to wait for the page.
-   * @returns Whether the page is present and visible.
-   */
   async isPageLoaded(timeout = 2000): Promise<boolean> {
-    return this.driver.isElementPresentAndVisible(
-      this.parentSelector,
-      timeout,
-    );
+    return this.driver.isElementPresentAndVisible(this.parentSelector, timeout);
   }
 
   /**
