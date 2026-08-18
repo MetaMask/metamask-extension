@@ -68,10 +68,10 @@ export async function prepareTronHomepageForSend({
   await selectTronNetwork(driver);
   await waitUntilAccountTreeSyncIdle(driver);
 
-  // Refresh re-hydrates Account 1 from background state so Snap balances
+  // Reload re-hydrates Account 1 from background state so Snap balances
   // appear in the token list. Account switches already trigger that hydration.
   if (extraHdAccountCount === 0 || accountToSelect === 'Account 1') {
-    await driver.refresh();
+    await home.reloadHome();
   }
 
   await home.checkPageIsLoaded();
@@ -109,6 +109,7 @@ export async function openTronSendAmountRecipient({
   driver: Driver;
 }): Promise<SendPage> {
   const sendPage = new SendPage(driver);
+  const home = new HomePage(driver);
   const searchParams = new URLSearchParams({ chainId: TRON_CHAIN_ID });
   if (assetId) {
     searchParams.set('asset', assetId);
@@ -118,7 +119,7 @@ export async function openTronSendAmountRecipient({
   // leave Send first when a previous case already landed here.
   const currentUrl = await driver.getCurrentUrl();
   if (currentUrl.includes('#/send')) {
-    await driver.navigate();
+    await home.navigateToHome();
   }
   await driver.openNewURL(sendUrl);
   await sendPage.checkSendFormIsLoaded();
@@ -152,12 +153,12 @@ export async function switchToTronAccountForSend({
   expectedTokenBalance?: string;
   symbol?: TronSendSymbol;
 }): Promise<void> {
+  const home = new NonEvmHomepage(driver);
   const currentUrl = await driver.getCurrentUrl();
   if (currentUrl.includes('#/send')) {
-    await driver.navigate();
+    await home.navigateToHome();
   }
 
-  const home = new NonEvmHomepage(driver);
   await home.checkPageIsLoaded();
   await waitUntilAccountTreeSyncIdle(driver);
   await switchToAccount(driver, accountName);
