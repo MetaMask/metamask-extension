@@ -11,6 +11,7 @@ export enum NetworkId {
   BASE = 'eip155:8453',
   OPTIMISM = 'eip155:10',
   POLYGON = 'eip155:137',
+  XDC = 'eip155:50',
 }
 
 /**

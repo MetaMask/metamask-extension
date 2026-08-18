@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
@@ -13,23 +16,30 @@ import {
   useTransactionCustomAmount,
   MAX_LENGTH,
 } from './useTransactionCustomAmount';
+import { useDepositPrefillAmount } from './useDepositPrefillAmount';
 import * as useUpdateTokenAmountModule from './useUpdateTokenAmount';
 
 jest.mock('../../../../store/controller-actions/transaction-pay-controller');
 jest.mock('../tokens/useTokenFiatRates');
 jest.mock('../pay/useTransactionPayData');
 jest.mock('../pay/useTransactionPayToken');
+jest.mock('./useDepositPrefillAmount');
 jest.mock('./useUpdateTokenAmount');
 jest.mock('../../../../store/actions', () => ({
   upsertTransactionUIMetricsFragment: jest.fn(),
 }));
 
+const useDepositPrefillAmountMock = jest.mocked(useDepositPrefillAmount);
+
+const DISABLED_DEPOSIT_PREFILL = {
+  prefillAmount: undefined,
+  enabled: false,
+  isLoading: false,
+  hasPrefilled: false,
+};
+
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
-
-const DEFAULT_MOCK_STATE = getMockConfirmStateForTransaction(
-  MOCK_TRANSACTION_META,
-);
 
 function runHook({
   currency,
@@ -41,6 +51,8 @@ function runHook({
   requiredTokens = [],
   updateTokenAmountMock = jest.fn(),
   prefillMaxOnLoad = false,
+  transactionMeta = MOCK_TRANSACTION_META,
+  depositPrefill = DISABLED_DEPOSIT_PREFILL,
 }: {
   currency?: string;
   disableUpdate?: boolean;
@@ -51,6 +63,8 @@ function runHook({
   requiredTokens?: { amountUsd?: string; skipIfBalance?: boolean }[];
   updateTokenAmountMock?: jest.Mock;
   prefillMaxOnLoad?: boolean;
+  transactionMeta?: TransactionMeta;
+  depositPrefill?: ReturnType<typeof useDepositPrefillAmount>;
 } = {}) {
   jest
     .mocked(useTokenFiatRatesModule.useTokenFiatRate)
@@ -87,6 +101,7 @@ function runHook({
     updateTokenAmount: updateTokenAmountMock,
     isUpdating: false,
   });
+  useDepositPrefillAmountMock.mockReturnValue(depositPrefill);
 
   return renderHookWithConfirmContextProvider(
     () =>
@@ -96,7 +111,7 @@ function runHook({
         disableUpdate,
         prefillMaxOnLoad,
       }),
-    DEFAULT_MOCK_STATE,
+    getMockConfirmStateForTransaction(transactionMeta),
   );
 }
 
@@ -108,6 +123,7 @@ describe('useTransactionCustomAmount', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.useFakeTimers();
+    useDepositPrefillAmountMock.mockReturnValue(DISABLED_DEPOSIT_PREFILL);
   });
 
   afterEach(() => {
@@ -637,6 +653,153 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(result.current.amountFiat).toBe('0');
+    });
+  });
+
+  describe('deposit prefill', () => {
+    const moneyAccountDepositMeta = {
+      ...MOCK_TRANSACTION_META,
+      type: TransactionType.moneyAccountDeposit,
+    } as TransactionMeta;
+
+    it('applies the deposit prefill amount for money account deposits', () => {
+      const { result } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenBalanceUsd: 1000,
+        depositPrefill: {
+          enabled: true,
+          hasPrefilled: true,
+          isLoading: false,
+          prefillAmount: '500',
+        },
+      });
+
+      expect(result.current.amountFiat).toBe('500');
+      expect(result.current.isDepositPrefillEnabled).toBe(true);
+      expect(result.current.isDepositPrefilled).toBe(true);
+    });
+
+    it('does not set max amount mode for deposit prefill', () => {
+      runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenBalanceUsd: 1000,
+        depositPrefill: {
+          enabled: true,
+          hasPrefilled: true,
+          isLoading: false,
+          prefillAmount: '1000',
+        },
+      });
+
+      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        true,
+      );
+    });
+
+    it('records prefilled amount metrics for deposit prefill', () => {
+      runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenBalanceUsd: 1000,
+        depositPrefill: {
+          enabled: true,
+          hasPrefilled: true,
+          isLoading: false,
+          prefillAmount: '500',
+        },
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        {
+          properties: expect.objectContaining({
+            mm_pay_amount_input_type: 'prefilled_max',
+            mm_pay_prefilled_amount: 500,
+          }),
+        },
+      );
+    });
+
+    it('does not apply deposit prefill for non-deposit transactions', () => {
+      const { result } = runHook({
+        payTokenBalanceUsd: 1000,
+        depositPrefill: {
+          enabled: true,
+          hasPrefilled: true,
+          isLoading: false,
+          prefillAmount: '500',
+        },
+      });
+
+      expect(result.current.amountFiat).toBe('0');
+      expect(result.current.isDepositPrefillEnabled).toBe(false);
+    });
+
+    it('reports prefill loading while the amount recomputes', () => {
+      const { result } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenBalanceUsd: 1000,
+        depositPrefill: {
+          enabled: true,
+          hasPrefilled: false,
+          isLoading: true,
+          prefillAmount: undefined,
+        },
+      });
+
+      expect(result.current.isDepositPrefillLoading).toBe(true);
+    });
+
+    it('does not report prefill loading after a manual edit', () => {
+      const { result, rerender } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenBalanceUsd: 1000,
+        depositPrefill: {
+          enabled: true,
+          hasPrefilled: true,
+          isLoading: false,
+          prefillAmount: '500',
+        },
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('123');
+      });
+
+      // Changing the pay token or funding account restarts the computation.
+      useDepositPrefillAmountMock.mockReturnValue({
+        enabled: true,
+        hasPrefilled: false,
+        isLoading: true,
+        prefillAmount: undefined,
+      });
+
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.isDepositPrefillLoading).toBe(false);
+      expect(result.current.amountFiat).toBe('123');
+    });
+
+    it('skips prefillMaxOnLoad when deposit prefill is enabled', () => {
+      const { result } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        prefillMaxOnLoad: true,
+        payTokenBalanceUsd: 1000,
+        depositPrefill: {
+          enabled: true,
+          hasPrefilled: true,
+          isLoading: false,
+          prefillAmount: '500',
+        },
+      });
+
+      expect(result.current.amountFiat).toBe('500');
+      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        true,
+      );
     });
   });
 
