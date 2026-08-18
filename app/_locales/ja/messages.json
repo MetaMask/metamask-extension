@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "すべてのネットワーク"
   },
-  "allPermissions": {
-    "message": "DAppの接続"
-  },
   "allPopularNetworks": {
     "message": "すべての人気のネットワーク"
   },
@@ -3096,9 +3093,6 @@
   },
   "customerSupport": {
     "message": "カスタマーサポート"
-  },
-  "dappConnections": {
-    "message": "DAppの接続"
   },
   "dappSuggested": {
     "message": "おすすめのサイト"
@@ -5880,9 +5874,6 @@
   },
   "noAccountsFound": {
     "message": "指定された検索クエリでアカウントが見つかりませんでした"
-  },
-  "noConnectionDescription": {
-    "message": "サイトに接続するには、「接続」ボタンを見つけて選択します。MetaMaskはWeb3のサイトにしか接続できないのでご注意ください"
   },
   "noDefaultAddress": {
     "message": "$1アドレスがありません",
@@ -10153,9 +10144,6 @@
   },
   "singleNetwork": {
     "message": "1つのネットワーク"
-  },
-  "sites": {
-    "message": "サイト"
   },
   "siweIssued": {
     "message": "発行されました"

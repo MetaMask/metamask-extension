@@ -30,7 +30,7 @@ class SitePermissionPage {
   private readonly disconnectButton = '[data-test-id="disconnect-all"]';
 
   private readonly disconnectConfirmMessage =
-    '[data-testid="no-connection-description"]';
+    '[data-testid="permissions-empty-state"]';
 
   private readonly disconnectModalTitle = {
     text: 'Disconnect',
