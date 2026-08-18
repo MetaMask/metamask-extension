@@ -343,6 +343,50 @@ describe('getBalanceAwareSwapDefaults', () => {
     });
   });
 
+  it('reads the chain from the asset map key when an asset omits its chain id', () => {
+    const { chainId: _omitted, ...assetWithoutChainId } = userAsset({
+      assetId: currentToken.address,
+      symbol: currentToken.symbol,
+      balance: '2',
+      fiatBalance: 10,
+    });
+
+    const result = getBalanceAwareSwapDefaults({
+      currentToken,
+      assetsByChain: {
+        '0x1': [assetWithoutChainId],
+      },
+    });
+
+    expect(result).toEqual({
+      sourceToken: currentToken,
+    });
+  });
+
+  it('ignores assets that carry neither an address nor an asset id', () => {
+    const result = getBalanceAwareSwapDefaults({
+      currentToken,
+      currentTokenBalance: '0',
+      assetsByChain: {
+        '0x1': [
+          {
+            assetId: '',
+            symbol: 'UNKNOWN',
+            decimals: 18,
+            fiat: { balance: 100 },
+          } as BalanceAwareUserAsset,
+          userAsset({
+            assetId: WETH_ADDRESS,
+            symbol: 'WETH',
+            fiatBalance: 10,
+          }),
+        ],
+      },
+    });
+
+    expect(result.sourceToken.address).toBe(WETH_ADDRESS);
+  });
+
   it('resolves current balance from the asset list when no page balance is passed', () => {
     const result = getBalanceAwareSwapDefaults({
       currentToken,

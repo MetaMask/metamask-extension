@@ -27,7 +27,8 @@ export type BalanceAwareSwapSourceToken = {
 export type BalanceAwareUserAsset = {
   assetId: string;
   address?: string;
-  chainId: string;
+  /** Absent on assets that are only identified by their `assetsByChain` key. */
+  chainId?: string;
   symbol: string;
   name?: string;
   decimals: number;
@@ -35,6 +36,9 @@ export type BalanceAwareUserAsset = {
   fiat?: { balance?: number } | null;
   balance?: string;
 };
+
+/** A user asset whose chain id has been resolved from its `assetsByChain` key. */
+type ChainScopedUserAsset = BalanceAwareUserAsset & { chainId: string };
 
 export type BalanceAwareSwapDefaults = {
   sourceToken: BalanceAwareSwapSourceToken;
@@ -85,9 +89,13 @@ export function hasPositiveTokenBalance(
  * Normalizes an address or CAIP-19 asset id to a comparable lowercase reference.
  *
  * @param addressOrAssetId - Hex address or CAIP-19 asset id.
- * @returns Lowercase asset reference / address.
+ * @returns Lowercase asset reference / address, or an empty string when absent.
  */
-function getComparableAddress(addressOrAssetId: string): string {
+function getComparableAddress(addressOrAssetId?: string): string {
+  if (!addressOrAssetId) {
+    return '';
+  }
+
   if (isCaipAssetType(addressOrAssetId)) {
     return parseCaipAssetType(addressOrAssetId).assetReference.toLowerCase();
   }
@@ -102,7 +110,11 @@ function getComparableAddress(addressOrAssetId: string): string {
  * @param rightChainId - Second chain id (hex or CAIP-2).
  * @returns True when both normalize to the same CAIP-2 chain id.
  */
-function areSameChain(leftChainId: string, rightChainId: string): boolean {
+function areSameChain(leftChainId?: string, rightChainId?: string): boolean {
+  if (!leftChainId || !rightChainId) {
+    return false;
+  }
+
   try {
     return (
       formatChainIdToCaip(leftChainId) === formatChainIdToCaip(rightChainId)
@@ -132,14 +144,18 @@ function isSameTokenAsCurrent(
 
   // Native assets are keyed by `slip44` asset ids, which never match the zero
   // address the Token Detail Page uses for the native token.
-  if (asset.isNative && isNativeAddress(currentToken.address)) {
+  if (
+    asset.isNative &&
+    currentToken.address &&
+    isNativeAddress(currentToken.address)
+  ) {
     return true;
   }
 
   const assetAddress = getComparableAddress(asset.address ?? asset.assetId);
   const currentAddress = getComparableAddress(currentToken.address);
 
-  return assetAddress === currentAddress;
+  return assetAddress !== '' && assetAddress === currentAddress;
 }
 
 /**
@@ -169,7 +185,7 @@ function hasEligibleFiatBalance(asset: BalanceAwareUserAsset): boolean {
  * @returns Source token for `openBridgeExperience`.
  */
 function toSourceToken(
-  asset: BalanceAwareUserAsset,
+  asset: ChainScopedUserAsset,
 ): BalanceAwareSwapSourceToken {
   return {
     address: asset.address ?? asset.assetId,
@@ -181,17 +197,36 @@ function toSourceToken(
 }
 
 /**
- * Flattens account-group assets and keeps only those with positive fiat.
+ * Flattens account-group assets, falling back to the map key for assets that
+ * carry no chain id of their own.
+ *
+ * @param assetsByChain - Assets keyed by chain id.
+ * @returns Flat list of assets, each with a chain id.
+ */
+function flattenAssets(
+  assetsByChain: Record<string, BalanceAwareUserAsset[]>,
+): ChainScopedUserAsset[] {
+  return Object.entries(assetsByChain).flatMap(([chainId, assets]) =>
+    (assets ?? []).map((asset) => ({ ...asset, chainId: asset.chainId ?? chainId })),
+  );
+}
+
+/**
+ * Flattens account-group assets and keeps only those that can open a swap:
+ * a positive fiat balance and an identifier the bridge can resolve.
  *
  * @param assetsByChain - Assets keyed by chain id.
  * @returns Flat list of funded assets.
  */
 function getFundedAssets(
   assetsByChain: Record<string, BalanceAwareUserAsset[]>,
-): BalanceAwareUserAsset[] {
-  return Object.values(assetsByChain)
-    .flat()
-    .filter(hasEligibleFiatBalance);
+): ChainScopedUserAsset[] {
+  return flattenAssets(assetsByChain).filter(
+    (asset) =>
+      hasEligibleFiatBalance(asset) &&
+      Boolean(asset.address ?? asset.assetId) &&
+      Boolean(asset.symbol),
+  );
 }
 
 /**
@@ -263,9 +298,9 @@ function isCurrentTokenFunded(
     return true;
   }
 
-  const match = Object.values(assetsByChain)
-    .flat()
-    .find((asset) => isSameTokenAsCurrent(asset, currentToken));
+  const match = flattenAssets(assetsByChain).find((asset) =>
+    isSameTokenAsCurrent(asset, currentToken),
+  );
 
   if (!match) {
     return false;
