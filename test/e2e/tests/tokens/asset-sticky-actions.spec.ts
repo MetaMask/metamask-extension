@@ -9,10 +9,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import AssetStickyActions from '../../page-objects/pages/asset/asset-sticky-actions';
 import { login } from '../../page-objects/flows/login.flow';
-import {
-  mockHistoricalPricesV3,
-  mockSpotPrices,
-} from './utils/mocks';
+import { mockHistoricalPricesV3, mockSpotPrices } from './utils/mocks';
 
 describe('Asset sticky actions', function () {
   const chainId = CHAIN_IDS.MAINNET;
