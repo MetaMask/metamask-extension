@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
@@ -89,7 +88,7 @@ describe('Swap on Tron', function (this: Suite) {
     });
 
     it('Quote displayed for USDT to TRX swap (reverse direction)', async function () {
-      await returnToTronHome(driver);
+      await returnToTronHome(driver, '106.07');
       const homePage = new HomePage(driver);
       const swapPage = new SwapPage(driver);
       await homePage.clickOnSwapButton();
@@ -103,12 +102,11 @@ describe('Swap on Tron', function (this: Suite) {
       await swapPage.checkQuoteIsDisplayed();
       await swapPage.checkSourceToken('USDT');
       await swapPage.checkDestinationToken('TRX');
-      assert.notEqual(await swapPage.getFromAmountValue(), '');
-      assert.notEqual(await swapPage.getToAmountValue(), '');
+      await swapPage.checkSwapAmountsArePopulated();
     });
 
     it('Amount exceeding balance shows insufficient funds', async function () {
-      await returnToTronHome(driver);
+      await returnToTronHome(driver, '106.07');
       const homePage = new HomePage(driver);
       const swapPage = new SwapPage(driver);
       await homePage.clickOnSwapButton();
@@ -122,7 +120,7 @@ describe('Swap on Tron', function (this: Suite) {
     });
 
     it('Quote updates when selecting different destination token', async function () {
-      await returnToTronHome(driver);
+      await returnToTronHome(driver, '106.07');
       const homePage = new HomePage(driver);
       const swapPage = new SwapPage(driver);
       await homePage.clickOnSwapButton();
@@ -142,7 +140,7 @@ describe('Swap on Tron', function (this: Suite) {
     });
 
     it('Swap form shows default token on open', async function () {
-      await returnToTronHome(driver);
+      await returnToTronHome(driver, '106.07');
       const homePage = new HomePage(driver);
       const swapPage = new SwapPage(driver);
       await homePage.clickOnSwapButton();

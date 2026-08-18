@@ -14,6 +14,7 @@ import { enableNativeTokenAsMainBalance } from '../../page-objects/flows/setting
 import {
   prepareTronAssetsHomepage,
   returnToTronHome,
+  switchToFundedTronAccount,
   switchToPortfolioTronAccount,
 } from '../../page-objects/flows/tron-assets.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -22,6 +23,7 @@ import TronAssetDetailsPage from '../../page-objects/pages/asset/tron-asset-deta
 import { TronNode } from '../../seeder/tron/node';
 import {
   EMPTY_TRON_ACCOUNT,
+  TRON_CHECK_BALANCE_ACCOUNT,
   TRON_PORTFOLIO_ACCOUNT,
   TRON_PORTFOLIO_LOW_VALUE_ASSET_NAMES,
   TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES,
@@ -63,9 +65,22 @@ const PORTFOLIO_ACCOUNT_FIXTURE: TronFixtureAccount[] = [
   },
 ];
 
+const CHECK_BALANCE_ACCOUNT_FIXTURE: TronFixtureAccount[] = [
+  {
+    ...TRON_CHECK_BALANCE_ACCOUNT,
+    address: EXPECTED_TRON_ADDRESSES_BY_INDEX[2],
+  },
+];
+
+const TRON_ASSETS_ACCOUNTS: TronFixtureAccount[] = [
+  ...EMPTY_ACCOUNT_FIXTURE,
+  ...PORTFOLIO_ACCOUNT_FIXTURE,
+  ...CHECK_BALANCE_ACCOUNT_FIXTURE,
+];
+
 function buildTronAssetsFixture(): FixtureBuilderV2 {
-  // Native-as-main stays ON so Account 1/2 header tests can assert `0 TRX`
-  // and `6.072 TRX`. Toggle it off after those tests.
+  // Native-as-main stays ON so Account 1/2/3 header tests can assert `0 TRX`,
+  // `6.072 TRX`, and `106.072 TRX`. Toggle it off after those tests.
   return new FixtureBuilderV2().withRemoteFeatureFlagController(
     TRON_ASSETS_REMOTE_FEATURE_FLAGS,
   );
@@ -89,16 +104,11 @@ describe('Tron - Assets', function (this: Suite) {
   let session: HeldTronFixturesSession | undefined;
 
   before(async function () {
-    await sharedTronNode.start(
-      buildTronNodeOptions([
-        ...EMPTY_ACCOUNT_FIXTURE,
-        ...PORTFOLIO_ACCOUNT_FIXTURE,
-      ]),
-    );
+    await sharedTronNode.start(buildTronNodeOptions(TRON_ASSETS_ACCOUNTS));
     session = await startHeldSession((callback) =>
       withTronFixtures(
         {
-          accounts: [...EMPTY_ACCOUNT_FIXTURE, ...PORTFOLIO_ACCOUNT_FIXTURE],
+          accounts: TRON_ASSETS_ACCOUNTS,
           borrowedTronNode: sharedTronNode,
           fixtures: buildTronAssetsFixture().build(),
           manifestFlags: TRON_ASSETS_MANIFEST_FLAGS,
@@ -151,7 +161,7 @@ describe('Tron - Assets', function (this: Suite) {
     });
   });
 
-  it('For an empty account, TRX should be present with a balance of 0', async function () {
+  it('empty account lists TRX with balance 0', async function () {
     await returnToTronHome(driver);
 
     const tokensTab = new TokensTab(driver);
@@ -164,6 +174,15 @@ describe('Tron - Assets', function (this: Suite) {
       '0 TRX',
       '$',
     ]);
+  });
+
+  it('funded account shows 106.072 TRX as the main balance', async function () {
+    await switchToFundedTronAccount(driver);
+    const homePage = new HomePage(driver);
+    await homePage.checkExpectedBalanceIsDisplayed({
+      expectedBalance: '106.072 TRX',
+      timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+    });
   });
 
   it('Portfolio account shows native TRX as the main balance', async function () {
@@ -181,6 +200,15 @@ describe('Tron - Assets', function (this: Suite) {
     await homePage.checkPageIsLoaded();
     await homePage.checkExpectedBalanceIsDisplayed({
       expectedBalance: '$10.18',
+      timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+    });
+  });
+
+  it('funded account shows $39.65 as the main balance when native token is disabled', async function () {
+    await switchToFundedTronAccount(driver);
+    const homePage = new HomePage(driver);
+    await homePage.checkExpectedBalanceIsDisplayed({
+      expectedBalance: '$39.65',
       timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
     });
   });

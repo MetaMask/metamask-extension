@@ -598,9 +598,9 @@ class HomePage {
   }
 
   /**
-   * Reloads the home UI from background state. Tron Snap balances and
-   * `isEvmSelected` after an account-group switch do not always land without
-   * this. Prefer waiting for a selector when a stable one exists.
+   * Last-resort home reload. Prefer waiting for a selector such as the token
+   * list or header balance (`checkExpectedBalanceIsDisplayed`) so Snap /
+   * `isEvmSelected` state can land without a full refresh.
    */
   async reloadHome(): Promise<void> {
     console.log('Reload home to rehydrate Snap / network state');
