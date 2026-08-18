@@ -1646,9 +1646,6 @@
   "allNetworks": {
     "message": "All networks"
   },
-  "allPermissions": {
-    "message": "Dapp connections"
-  },
   "allPopularNetworks": {
     "message": "All popular networks"
   },
@@ -2971,6 +2968,9 @@
   "connectionRequest": {
     "message": "Connection request"
   },
+  "connections": {
+    "message": "Connections"
+  },
   "connectionsRemovedModalDescription": {
     "message": "Some connections (like hardware wallets and snaps) were removed due to inactivity on this device. You can re-add them anytime in Settings."
   },
@@ -3177,9 +3177,6 @@
   "customerSupport": {
     "message": "customer support"
   },
-  "dappConnections": {
-    "message": "Dapp Connections"
-  },
   "dappSuggested": {
     "message": "Site suggested"
   },
@@ -3204,6 +3201,9 @@
   },
   "dappSwapRewardText": {
     "message": "Earn $1 points"
+  },
+  "dapps": {
+    "message": "Dapps"
   },
   "darkTheme": {
     "message": "Dark"
@@ -5987,9 +5987,6 @@
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
-  "noConnectionDescription": {
-    "message": "MetaMask isn't connected to this site. To get started, select the site's Connect button."
-  },
   "noDefaultAddress": {
     "message": "No $1 address",
     "description": "$1 is the default address scope"
@@ -6994,7 +6991,10 @@
     "message": "Permissions"
   },
   "permissionsPageEmptyDescription": {
-    "message": "No permissions detected. Once you grant permissions to a site or install a Snap, the details will appear here."
+    "message": "When you grant permissions, the details will appear here."
+  },
+  "permissionsPageEmptyTitle": {
+    "message": "Nothing to see here"
   },
   "permitSimulationChange_approve": {
     "message": "Spending cap"
@@ -10332,9 +10332,6 @@
   "sitePermissionsBanner": {
     "message": "$1 can see your connected accounts and suggest transactions.",
     "description": "$1 is the site hostname"
-  },
-  "sites": {
-    "message": "Sites"
   },
   "siweIssued": {
     "message": "Issued"
