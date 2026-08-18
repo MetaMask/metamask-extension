@@ -20,6 +20,8 @@ function formatCell(value: number | null) {
 }
 
 export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
+  const showLiquidity = results.some((asset) => asset.liquidity !== null);
+
   return (
     <div className="flex h-full flex-col py-6">
       <header className="mb-5 flex items-center gap-3 px-6">
@@ -46,7 +48,9 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
               <th className="pb-3 pl-6 pr-3 font-medium">Name</th>
               <th className="pb-3 pr-3 text-right font-medium">Price</th>
               <th className="pb-3 pr-3 text-right font-medium">Market cap</th>
-              <th className="pb-3 pr-3 text-right font-medium">Liquidity</th>
+              {showLiquidity ? (
+                <th className="pb-3 pr-3 text-right font-medium">Liquidity</th>
+              ) : null}
               <th className="pb-3 pr-6 text-right font-medium">24h volume</th>
             </tr>
           </thead>
@@ -73,9 +77,11 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
                   <td className="py-3 pr-3 text-right tabular-nums">
                     {formatCell(asset.marketCap)}
                   </td>
-                  <td className="py-3 pr-3 text-right tabular-nums">
-                    {formatCell(asset.liquidity)}
-                  </td>
+                  {showLiquidity ? (
+                    <td className="py-3 pr-3 text-right tabular-nums">
+                      {formatCell(asset.liquidity)}
+                    </td>
+                  ) : null}
                   <td className="py-3 pr-6 text-right tabular-nums">
                     {formatCell(asset.volume24h)}
                   </td>

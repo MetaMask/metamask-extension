@@ -28,12 +28,10 @@ a[interestfor='mm-cashtag-popover'] {
   transition-behavior: allow-discrete;
 
   position-anchor: --cashtag-invoker;
-  position-area: bottom center;
+  top: anchor(bottom);
+  justify-self: anchor-center;
   margin-block-start: 8px;
-  position-try-fallbacks:
-    flip-block,
-    flip-inline,
-    flip-block flip-inline;
+  position-try-fallbacks: flip-block;
 }
 
 #mm-cashtag-popover:popover-open {
