@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { Navigate } from "react-router-dom";
+import React, { useMemo } from 'react';
+import { Navigate } from 'react-router-dom';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -16,20 +16,20 @@ import {
   Text,
   TextColor,
   TextVariant,
-} from "@metamask/design-system-react";
-import { DEFAULT_ROUTE } from "../../helpers/constants/routes";
-import { useI18nContext } from "../../hooks/useI18nContext";
-import { useMoneyAccountAvailability } from "../../hooks/money/use-money-account-availability";
-import { useMoneyAccountBalance } from "../../hooks/money/useMoneyAccountBalance";
-import useMultiChainAssets from "../../components/app/assets/hooks/useMultichainAssets";
-import { MoneyActivityPlaceholder } from "./components/money-activity-placeholder";
-import { MoneyCondensedInfoCards } from "./components/money-condensed-info-cards";
-import { MoneyPositionPlaceholder } from "./components/money-position-placeholder";
+} from '@metamask/design-system-react';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
+import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
+import useMultiChainAssets from '../../components/app/assets/hooks/useMultichainAssets';
+import { MoneyActivityPlaceholder } from './components/money-activity-placeholder';
+import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
+import { MoneyPositionPlaceholder } from './components/money-position-placeholder';
 
-const ELIGIBLE_ASSET_SYMBOLS = new Set(["DAI", "ETH", "SOL", "USDC", "USDT"]);
+const ELIGIBLE_ASSET_SYMBOLS = new Set(['DAI', 'ETH', 'SOL', 'USDC', 'USDT']);
 const MAX_ASSET_PREVIEW_COUNT = 5;
 const MONEY_FUNDED_BALANCE_THRESHOLD = 0.01;
-const MONEY_ONBOARDING_ARTWORK = "./images/money-onboarding-stepper-step-1.png";
+const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
 
 type ActionCardProps = {
   icon: IconName;
@@ -57,7 +57,8 @@ const MoneySectionDivider = () => {
 
 export function MoneyHomePage() {
   const t = useI18nContext();
-  const { availability, isLoading: isAvailabilityLoading } = useMoneyAccountAvailability();
+  const { availability, isLoading: isAvailabilityLoading } =
+    useMoneyAccountAvailability();
   const {
     apyPercentFormatted,
     isBalanceFetchError,
@@ -72,12 +73,13 @@ export function MoneyHomePage() {
       assets
         .filter(
           (asset) =>
-            ELIGIBLE_ASSET_SYMBOLS.has(asset.symbol?.toUpperCase() ?? "") &&
+            ELIGIBLE_ASSET_SYMBOLS.has(asset.symbol?.toUpperCase() ?? '') &&
             Number(asset.tokenFiatAmount ?? 0) > 0,
         )
         .sort(
           (first, second) =>
-            Number(second.tokenFiatAmount ?? 0) - Number(first.tokenFiatAmount ?? 0),
+            Number(second.tokenFiatAmount ?? 0) -
+            Number(first.tokenFiatAmount ?? 0),
         )
         .slice(0, MAX_ASSET_PREVIEW_COUNT),
     [assets],
@@ -103,18 +105,26 @@ export function MoneyHomePage() {
 
   const balanceDisplay =
     isBalanceFetchError || totalFiatFormatted === undefined
-      ? t("moneyBalanceUnavailable")
+      ? t('moneyBalanceUnavailable')
       : totalFiatFormatted;
   const apyDisplay = apyPercentFormatted;
-  const isFunded = tokenTotal?.abs().gte(MONEY_FUNDED_BALANCE_THRESHOLD) === true;
+  const isFunded =
+    tokenTotal?.abs().gte(MONEY_FUNDED_BALANCE_THRESHOLD) === true;
 
   return (
-    <main className="min-h-full bg-background-default pb-5" data-testid="money-home-page">
+    <main
+      className="min-h-full bg-background-default pb-5"
+      data-testid="money-home-page"
+    >
       <header className="flex h-14 items-center justify-between px-4">
         <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
-          {t("money")}
+          {t('money')}
         </Text>
-        <ButtonIcon iconName={IconName.MoreVertical} ariaLabel={t("moneyMoreOptions")} disabled />
+        <ButtonIcon
+          iconName={IconName.MoreVertical}
+          ariaLabel={t('moneyMoreOptions')}
+          disabled
+        />
       </header>
 
       <div className="flex flex-col gap-2 px-4 pt-2 sm:items-center">
@@ -132,22 +142,35 @@ export function MoneyHomePage() {
             ) : (
               <>
                 {apyDisplay ? (
-                  <Text variant={TextVariant.BodyMd} className="text-success-default">
-                    {t("moneyApy", [apyDisplay])}
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    className="text-success-default"
+                  >
+                    {t('moneyApy', [apyDisplay])}
                   </Text>
                 ) : null}
-                <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-                  {apyDisplay ? `• ${t("moneyMusd")}` : t("moneyMusd")}
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextAlternative}
+                >
+                  {apyDisplay ? `• ${t('moneyMusd')}` : t('moneyMusd')}
                 </Text>
-                <Icon name={IconName.Info} size={IconSize.Sm} color={IconColor.IconAlternative} />
+                <Icon
+                  name={IconName.Info}
+                  size={IconSize.Sm}
+                  color={IconColor.IconAlternative}
+                />
               </>
             )}
           </div>
         </div>
 
         <div className="mt-2 flex w-full max-w-[389px] gap-2 py-2">
-          <MoneyActionCard icon={IconName.Add} label={t("moneyAdd")} />
-          <MoneyActionCard icon={IconName.Arrow2UpRight} label={t("moneySend")} />
+          <MoneyActionCard icon={IconName.Add} label={t('moneyAdd')} />
+          <MoneyActionCard
+            icon={IconName.Arrow2UpRight}
+            label={t('moneySend')}
+          />
         </div>
 
         {isFunded ? null : (
@@ -158,23 +181,32 @@ export function MoneyHomePage() {
               className="h-[185px] w-full rounded-[14px] object-cover"
             />
             <div>
-              <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
-                {apyDisplay ? t("moneyEarnApyTitle", [apyDisplay]) : t("moneyEarnTitle")}
-              </Text>
-              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative} className="mt-1">
+              <Text
+                variant={TextVariant.HeadingLg}
+                fontWeight={FontWeight.Bold}
+              >
                 {apyDisplay
-                  ? t("moneyFundDescriptionWithApy", [apyDisplay])
-                  : t("moneyFundDescription")}
+                  ? t('moneyEarnApyTitle', [apyDisplay])
+                  : t('moneyEarnTitle')}
+              </Text>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+                className="mt-1"
+              >
+                {apyDisplay
+                  ? t('moneyFundDescriptionWithApy', [apyDisplay])
+                  : t('moneyFundDescription')}
               </Text>
             </div>
             <Button disabled className="w-full">
-              {t("addFunds")}
+              {t('addFunds')}
             </Button>
           </section>
         )}
       </div>
 
-      <div className={`mx-auto w-full max-w-[816px] ${isFunded ? "" : "mt-3"}`}>
+      <div className={`mx-auto w-full max-w-[816px] ${isFunded ? '' : 'mt-3'}`}>
         {isFunded ? (
           <>
             <MoneyPositionPlaceholder />
@@ -187,8 +219,11 @@ export function MoneyHomePage() {
           <>
             <section className="px-4 py-3">
               <div className="flex items-center gap-1">
-                <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
-                  {t("moneyHowItWorks")}
+                <Text
+                  variant={TextVariant.HeadingMd}
+                  fontWeight={FontWeight.Bold}
+                >
+                  {t('moneyHowItWorks')}
                 </Text>
                 <Icon
                   name={IconName.ArrowRight}
@@ -203,12 +238,12 @@ export function MoneyHomePage() {
                 data-testid="money-how-it-works-description"
               >
                 {apyDisplay
-                  ? t("moneyHowItWorksDescriptionWithApy", [
+                  ? t('moneyHowItWorksDescriptionWithApy', [
                       <span key="apy" className="text-success-default">
-                        {t("moneyApy", [apyDisplay])}
+                        {t('moneyApy', [apyDisplay])}
                       </span>,
                     ])
-                  : t("moneyHowItWorksDescription")}
+                  : t('moneyHowItWorksDescription')}
               </Text>
             </section>
 
@@ -220,15 +255,18 @@ export function MoneyHomePage() {
                 <MoneySectionDivider />
                 <section className="py-3" data-testid="money-eligible-assets">
                   <div className="px-4">
-                    <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
-                      {t("moneyEarnOnCrypto")}
+                    <Text
+                      variant={TextVariant.HeadingMd}
+                      fontWeight={FontWeight.Bold}
+                    >
+                      {t('moneyEarnOnCrypto')}
                     </Text>
                     <Text
                       variant={TextVariant.BodyMd}
                       color={TextColor.TextAlternative}
                       className="mt-1"
                     >
-                      {t("moneyEarnOnCryptoDescription")}
+                      {t('moneyEarnOnCryptoDescription')}
                     </Text>
                   </div>
                   <div className="mt-3 flex flex-col">
@@ -243,22 +281,36 @@ export function MoneyHomePage() {
                           size={AvatarTokenSize.Lg}
                         />
                         <div className="min-w-0 flex-1">
-                          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+                          <Text
+                            variant={TextVariant.BodyMd}
+                            fontWeight={FontWeight.Medium}
+                          >
                             {asset.symbol}
                           </Text>
-                          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+                          <Text
+                            variant={TextVariant.BodySm}
+                            color={TextColor.TextAlternative}
+                          >
                             {String(asset.secondary)}
                           </Text>
                         </div>
-                        <Button size={ButtonSize.Sm} variant={ButtonVariant.Secondary} disabled>
-                          {t("moneyAdd")}
+                        <Button
+                          size={ButtonSize.Sm}
+                          variant={ButtonVariant.Secondary}
+                          disabled
+                        >
+                          {t('moneyAdd')}
                         </Button>
                       </div>
                     ))}
                   </div>
                   <div className="px-4 pt-2">
-                    <Button variant={ButtonVariant.Secondary} disabled className="w-full">
-                      {t("viewAll")}
+                    <Button
+                      variant={ButtonVariant.Secondary}
+                      disabled
+                      className="w-full"
+                    >
+                      {t('viewAll')}
                     </Button>
                   </div>
                 </section>
@@ -267,17 +319,20 @@ export function MoneyHomePage() {
 
             <MoneySectionDivider />
             <section className="px-4 py-3">
-              <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
-                {t("moneyBenefits")}
+              <Text
+                variant={TextVariant.HeadingMd}
+                fontWeight={FontWeight.Bold}
+              >
+                {t('moneyBenefits')}
               </Text>
               <ul className="mt-3 flex flex-col gap-3">
                 {[
                   apyDisplay
-                    ? t("moneyBenefitAutoEarnWithApy", [apyDisplay])
-                    : t("moneyBenefitAutoEarn"),
-                  t("moneyBenefitStablecoin"),
-                  t("moneyBenefitLiquidity"),
-                  t("moneyBenefitSend"),
+                    ? t('moneyBenefitAutoEarnWithApy', [apyDisplay])
+                    : t('moneyBenefitAutoEarn'),
+                  t('moneyBenefitStablecoin'),
+                  t('moneyBenefitLiquidity'),
+                  t('moneyBenefitSend'),
                 ].map((benefit) => (
                   <li key={benefit} className="flex items-start gap-3">
                     <Icon
@@ -290,8 +345,12 @@ export function MoneyHomePage() {
                   </li>
                 ))}
               </ul>
-              <Button variant={ButtonVariant.Secondary} disabled className="mt-4 w-full">
-                {t("moneyLearnMore")}
+              <Button
+                variant={ButtonVariant.Secondary}
+                disabled
+                className="mt-4 w-full"
+              >
+                {t('moneyLearnMore')}
               </Button>
             </section>
           </>
