@@ -16,6 +16,7 @@ describe('useEnableDiscoverAssetNetwork', () => {
   });
 
   it('adds a missing popular network without changing the network filter', async () => {
+    mockDispatch.mockResolvedValue({});
     const mockAddNetwork = jest
       .spyOn(ActionsModule, 'addNetwork')
       .mockReturnValue(jest.fn().mockResolvedValue(undefined) as never);
@@ -36,5 +37,25 @@ describe('useEnableDiscoverAssetNetwork', () => {
       expect.objectContaining({ chainId: '0x89', name: 'Polygon' }),
       { setActive: false },
     );
+  });
+
+  it('does not report success when adding the network fails', async () => {
+    jest
+      .spyOn(ActionsModule, 'addNetwork')
+      .mockReturnValue(jest.fn().mockResolvedValue(undefined) as never);
+    const hook = renderHookWithProvider(
+      () => useEnableDiscoverAssetNetwork(),
+      createBridgeMockStore({
+        metamaskStateOverrides: {
+          networkConfigurationsByChainId: {},
+        },
+      }),
+    );
+
+    await expect(
+      hook.result.current(
+        'eip155:137/erc20:0x0000000000000000000000000000000000000000',
+      ),
+    ).resolves.toBeNull();
   });
 });

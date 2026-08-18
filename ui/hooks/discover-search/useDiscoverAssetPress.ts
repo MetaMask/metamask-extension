@@ -40,8 +40,10 @@ export const useEnableDiscoverAssetNetwork = () => {
         return null;
       }
 
-      await dispatch(addNetwork(featuredEvmNetwork, { setActive: false }));
-      return featuredEvmNetwork.name;
+      const addedNetwork = await dispatch(
+        addNetwork(featuredEvmNetwork, { setActive: false }),
+      );
+      return addedNetwork ? featuredEvmNetwork.name : null;
     },
     [dispatch, evmNetworkConfigurations, featuredEvmNetworks],
   );
