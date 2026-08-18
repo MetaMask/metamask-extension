@@ -7,7 +7,19 @@ import { MoneyHomePage } from './money-home-page';
 
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyAccountBalance = jest.fn();
+const mockUseMoneyAccountInterest = jest.fn();
 const mockUseMultiChainAssets = jest.fn();
+const mockUseSelector = jest.fn();
+
+const interestResponse = (value: string) => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  interest_earned_usd: value,
+});
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: (...args: unknown[]) => mockUseSelector(...args),
+}));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -21,6 +33,10 @@ jest.mock('../../hooks/money/use-money-account-availability', () => ({
 jest.mock('../../hooks/money/useMoneyAccountBalance', () => ({
   useMoneyAccountBalance: () => mockUseMoneyAccountBalance(),
 }));
+jest.mock('../../hooks/money/useMoneyAccountInterest', () => ({
+  useMoneyAccountInterest: (options: unknown) =>
+    mockUseMoneyAccountInterest(options),
+}));
 jest.mock('../../components/app/assets/hooks/useMultichainAssets', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
@@ -30,6 +46,7 @@ jest.mock('../../components/app/assets/hooks/useMultichainAssets', () => ({
 describe('MoneyHomePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseSelector.mockReturnValue(true);
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
         isAvailable: true,
@@ -38,12 +55,24 @@ describe('MoneyHomePage', () => {
       isLoading: false,
     });
     mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
       tokenTotal: new BigNumber(0),
       totalFiatFormatted: '$0.00',
+      totalFiatRaw: '0',
       vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyAccountInterest.mockReturnValue({
+      last30DaysQuery: {
+        data: interestResponse('12.34'),
+        isInitialLoading: false,
+      },
+      sinceInceptionQuery: {
+        data: interestResponse('56.78'),
+        isInitialLoading: false,
+      },
     });
     mockUseMultiChainAssets.mockReturnValue([]);
   });
@@ -110,11 +139,13 @@ describe('MoneyHomePage', () => {
 
   it('renders the filled-state composition for a funded Money account', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
       tokenTotal: new BigNumber('3475.45'),
       totalFiatFormatted: '$3,475.45',
+      totalFiatRaw: '3475.45',
       vaultApyQuery: { isLoading: false },
     });
     mockUseMultiChainAssets.mockReturnValue([
@@ -138,11 +169,11 @@ describe('MoneyHomePage', () => {
       screen.getByText(messages.moneyEarnings.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId('money-position-monthly-skeleton'),
-    ).toBeInTheDocument();
+      screen.getByTestId('money-position-monthly-value'),
+    ).toHaveTextContent('+$12.34');
     expect(
-      screen.getByTestId('money-position-lifetime-skeleton'),
-    ).toBeInTheDocument();
+      screen.getByTestId('money-position-lifetime-value'),
+    ).toHaveTextContent('+$56.78');
     expect(
       screen.getByTestId('money-activity-placeholder'),
     ).toBeInTheDocument();
@@ -176,6 +207,154 @@ describe('MoneyHomePage', () => {
     screen.getAllByRole('button').forEach((button) => {
       expect(button).toBeDisabled();
     });
+  });
+
+  it('shows earnings skeletons during the initial interest load', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('10'),
+      totalFiatFormatted: '$10.00',
+      totalFiatRaw: '10',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyAccountInterest.mockReturnValue({
+      last30DaysQuery: { data: undefined, isInitialLoading: true },
+      sinceInceptionQuery: { data: undefined, isInitialLoading: true },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByTestId('money-position-monthly-skeleton'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-position-lifetime-skeleton'),
+    ).toBeInTheDocument();
+  });
+
+  it('uses Mobile-parity fallbacks when interest data is invalid', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.06917567309149253,
+      apyPercentFormatted: '6.9%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('120'),
+      totalFiatFormatted: '$120.00',
+      totalFiatRaw: '120',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyAccountInterest.mockReturnValue({
+      last30DaysQuery: {
+        data: interestResponse('invalid'),
+        isInitialLoading: false,
+      },
+      sinceInceptionQuery: {
+        data: interestResponse('Infinity'),
+        isInitialLoading: false,
+      },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByTestId('money-position-monthly-value'),
+    ).toHaveTextContent('+$0.69');
+    expect(
+      screen.getByTestId('money-position-lifetime-value'),
+    ).toHaveTextContent('$0.00');
+  });
+
+  it('formats zero interest without a positive prefix', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('10'),
+      totalFiatFormatted: '$10.00',
+      totalFiatRaw: '10',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyAccountInterest.mockReturnValue({
+      last30DaysQuery: {
+        data: interestResponse('0'),
+        isInitialLoading: false,
+      },
+      sinceInceptionQuery: {
+        data: interestResponse('0.001'),
+        isInitialLoading: false,
+      },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByTestId('money-position-monthly-value'),
+    ).toHaveTextContent('$0.00');
+    expect(
+      screen.getByTestId('money-position-lifetime-value'),
+    ).toHaveTextContent('$0.00');
+  });
+
+  it('formats negative interest with a minus sign', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('10'),
+      totalFiatFormatted: '$10.00',
+      totalFiatRaw: '10',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyAccountInterest.mockReturnValue({
+      last30DaysQuery: {
+        data: interestResponse('-12.34'),
+        isInitialLoading: false,
+      },
+      sinceInceptionQuery: {
+        data: interestResponse('-0.001'),
+        isInitialLoading: false,
+      },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByTestId('money-position-monthly-value'),
+    ).toHaveTextContent('-$12.34');
+    expect(
+      screen.getByTestId('money-position-lifetime-value'),
+    ).toHaveTextContent('$0.00');
+  });
+
+  it('hides earnings and disables interest requests when the flag is off', () => {
+    mockUseSelector.mockReturnValue(false);
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('10'),
+      totalFiatFormatted: '$10.00',
+      totalFiatRaw: '10',
+      vaultApyQuery: { isLoading: false },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.queryByTestId('money-position-placeholder'),
+    ).not.toBeInTheDocument();
+    expect(mockUseMoneyAccountInterest).toHaveBeenCalledWith({
+      enabled: false,
+    });
+    expect(
+      screen.getByTestId('money-activity-placeholder'),
+    ).toBeInTheDocument();
   });
 
   it('keeps a balance below the funded threshold in the empty state', () => {
