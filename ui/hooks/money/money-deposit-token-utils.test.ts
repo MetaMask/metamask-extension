@@ -114,6 +114,42 @@ describe('filterMoneyDepositTokens', () => {
 
     expect(result[0].moneyFiatAmountUsd).toBe(2500);
   });
+
+  it('keeps assets that meet the minimum after USD normalization', () => {
+    const result = filterMoneyDepositTokens({
+      ...defaultOptions,
+      assets: [
+        createAsset({ fiat: { balance: 0.009, currency: 'eur' } }),
+      ],
+      currentCurrency: 'eur',
+      currencyRates: {
+        ETH: { conversionRate: 2000, usdConversionRate: 2500 },
+      },
+      networkConfigurations: {
+        [CHAIN_IDS.MAINNET]: { nativeCurrency: 'ETH' },
+      },
+    });
+
+    expect(result).toHaveLength(1);
+  });
+
+  it('excludes assets below the minimum after USD normalization', () => {
+    const result = filterMoneyDepositTokens({
+      ...defaultOptions,
+      assets: [
+        createAsset({ fiat: { balance: 0.011, currency: 'eur' } }),
+      ],
+      currentCurrency: 'eur',
+      currencyRates: {
+        ETH: { conversionRate: 2500, usdConversionRate: 2000 },
+      },
+      networkConfigurations: {
+        [CHAIN_IDS.MAINNET]: { nativeCurrency: 'ETH' },
+      },
+    });
+
+    expect(result).toStrictEqual([]);
+  });
 });
 
 describe('parseMoneySubsidizedRoutes', () => {

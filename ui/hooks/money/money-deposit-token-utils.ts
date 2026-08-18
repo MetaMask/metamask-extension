@@ -183,7 +183,6 @@ export function filterMoneyDepositTokens({
         !chainId ||
         !address ||
         !Number.isFinite(fiatAmount) ||
-        fiatAmount < minBalance ||
         isTokenBlocked(asset, blockedTokens)
       ) {
         return [];
@@ -200,7 +199,8 @@ export function filterMoneyDepositTokens({
       if (
         moneyFiatAmountUsd === undefined ||
         !Number.isFinite(moneyFiatAmountUsd) ||
-        moneyFiatAmountUsd <= 0
+        moneyFiatAmountUsd <= 0 ||
+        moneyFiatAmountUsd < minBalance
       ) {
         return [];
       }
