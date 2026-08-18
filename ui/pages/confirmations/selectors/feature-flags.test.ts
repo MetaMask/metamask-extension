@@ -610,6 +610,16 @@ describe('Confirmations Pay Feature Flags', () => {
       ).toBe(true);
     });
 
+    it('returns true when perpsWithdraw is enabled', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { perpsWithdraw: true },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsWithdraw'),
+      ).toBe(true);
+    });
+
     it('returns false when the transaction type is disabled', () => {
       const state = getMockPayExtendedState({
         enableMoneyAccountTransactions: { perpsDeposit: false },
