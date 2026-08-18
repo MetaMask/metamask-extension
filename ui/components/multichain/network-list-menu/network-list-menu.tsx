@@ -963,6 +963,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       <ModalContent
         padding={0}
         className="multichain-network-list-menu-content-wrapper"
+        data-testid={
+          actionMode === ACTION_MODE.ADD_EDIT
+            ? 'parent-selector-add-edit-network-page'
+            : undefined
+        }
         modalDialogProps={{
           className: 'multichain-network-list-menu-content-wrapper__dialog',
           display: Display.Flex,
