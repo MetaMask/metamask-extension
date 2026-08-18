@@ -41,7 +41,6 @@ import { createSentryError } from '../../../shared/lib/error';
 import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
-  isPasskeyPRFSupported,
   startPasskeyRegistration,
   startPasskeyAuthentication,
   translatePasskeyError,
@@ -56,6 +55,7 @@ import {
 } from '../../store/actions';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
+import { usePasskeyPRFSupport } from '../../hooks/usePasskeyPRFSupport';
 
 import {
   PasskeyEnrollmentSteps,
@@ -145,32 +145,7 @@ export default function SetupPasskeyContent({
     onNext();
   }, [onNext]);
 
-  useEffect(() => {
-    let isCancelled = false;
-
-    const checkPrfSupport = async () => {
-      let prfSupported = false;
-      try {
-        prfSupported = (await isPasskeyPRFSupported()) === true;
-      } catch {
-        // Treat capability detection failures as unsupported for security.
-      }
-
-      if (isCancelled || prfSupported) {
-        return;
-      }
-
-      // SECURITY: PRF is required for passkey setup. Never fall back to
-      // userHandle-based key derivation.
-      goToNextStep();
-    };
-
-    checkPrfSupport();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [goToNextStep]);
+  usePasskeyPRFSupport(goToNextStep);
 
   useEffect(() => {
     isMountedRef.current = true;

@@ -6,6 +6,7 @@
  */
 const GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID =
   'ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4';
+
 /**
  * AAGUIDs for passkey authenticators that should not run passkey ceremonies in
  * the extension side panel; open a normal extension tab instead.
