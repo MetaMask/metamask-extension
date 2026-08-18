@@ -165,7 +165,7 @@ describe('DeFiDetailsPage', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByAltText('stETH logo')).toHaveAttribute(
+      expect(screen.getByAltText('stETH')).toHaveAttribute(
         'src',
         'logo.png',
       );
@@ -180,7 +180,7 @@ describe('DeFiDetailsPage', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByAltText('USDC logo')).toHaveAttribute(
+      expect(screen.getByAltText('USDC')).toHaveAttribute(
         'src',
         'logo.png',
       );
