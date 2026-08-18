@@ -68,6 +68,9 @@ jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
 jest.mock('../../rows/total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row" />,
 }));
+jest.mock('../../rows/receive-row/receive-row', () => ({
+  ReceiveRow: () => <div data-testid="receive-row" />,
+}));
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -127,6 +130,7 @@ function render(
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
+    withdraw?: { isWithdraw: boolean; canSelectWithdrawToken: boolean };
   } = {},
 ) {
   const {
@@ -141,6 +145,7 @@ function render(
     hasQuotes = false,
     sourceAmounts = [],
     requiredTokens = [],
+    withdraw = { isWithdraw: false, canSelectWithdrawToken: false },
   } = options;
   const primaryRequiredToken = Object.prototype.hasOwnProperty.call(
     options,
@@ -205,10 +210,7 @@ function render(
     );
   jest
     .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
-    .mockReturnValue({
-      isWithdraw: false,
-      canSelectWithdrawToken: false,
-    });
+    .mockReturnValue(withdraw);
 
   const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
@@ -452,6 +454,52 @@ describe('CustomAmountInfo', () => {
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+    });
+
+    it('renders the receive row for a withdraw when post-quote is enabled', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
+      });
+
+      expect(getByTestId('receive-row')).toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('renders the total row for a withdraw when post-quote is disabled', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('withdraw amount input', () => {
+    it('keeps the amount input enabled without wallet tokens when post-quote is disabled', () => {
+      const { getByTestId } = render({
+        availableTokens: [],
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getByTestId('custom-amount')).toHaveAttribute(
+        'data-disabled',
+        'false',
+      );
+    });
+
+    it('disables the amount input without wallet tokens for non-withdraw flows', () => {
+      const { getByTestId } = render({
+        availableTokens: [],
+        withdraw: { isWithdraw: false, canSelectWithdrawToken: false },
+      });
+
+      expect(getByTestId('custom-amount')).toHaveAttribute(
+        'data-disabled',
+        'true',
+      );
     });
   });
 

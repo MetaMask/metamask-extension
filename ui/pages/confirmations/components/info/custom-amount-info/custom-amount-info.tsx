@@ -109,10 +109,12 @@ export const CustomAmountInfo = React.memo(
     const availableTokens = useTransactionPayAvailableTokens();
     const accountNoFundsAlert = useAccountNoFundsAlert();
     const hasAccountNoFunds = accountNoFundsAlert.length > 0;
-    const { isWithdraw: isPostQuoteWithdraw } = useTransactionPayWithdraw();
-    // Post-quote withdrawals (e.g. Perps) source funds off-chain, not from a
-    // wallet token, so the amount input stays usable without wallet tokens.
-    const hasTokens = availableTokens.length > 0 || isPostQuoteWithdraw;
+    // Input enablement keys off the transaction type, not the post-quote flag:
+    // withdrawals source funds off-chain (Perps HyperCore, money-account vault)
+    // regardless of whether token selection is enabled, so the amount input
+    // must stay usable with an empty wallet in both flag states.
+    const { isWithdraw } = useTransactionPayWithdraw();
+    const hasTokens = availableTokens.length > 0 || isWithdraw;
     const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
     const isAwaitingRequiredToken = !disablePay && !primaryRequiredToken;
 
@@ -291,7 +293,11 @@ function BottomContainer({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-  const { isWithdraw: isPostQuoteWithdraw } = useTransactionPayWithdraw();
+  // Gate the Receive row on the flag, not the transaction type: with post-quote
+  // disabled the withdraw falls back to a direct transfer, which has a regular
+  // total rather than a bridged "you'll receive" amount. Mirrors mobile
+  // `CustomAmountTotals`.
+  const { canSelectWithdrawToken } = useTransactionPayWithdraw();
 
   return (
     <Box
@@ -313,7 +319,7 @@ function BottomContainer({
             }
           />
           <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
-          {isPostQuoteWithdraw ? (
+          {canSelectWithdrawToken ? (
             <ReceiveRow
               inputAmountUsd={amountFiat}
               variant={ConfirmInfoRowSize.Small}

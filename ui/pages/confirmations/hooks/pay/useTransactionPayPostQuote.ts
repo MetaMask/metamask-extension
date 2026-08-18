@@ -47,6 +47,12 @@ export function useTransactionPayPostQuote(): void {
     // being permanently stuck with an un-configured post-quote tx.
     isSet.current = transactionId;
 
+    // Perps withdraws source funds from HyperLiquid, so the bridge needs
+    // `isHyperliquidSource` to quote HyperCore -> Relay. Money-account
+    // withdraws intentionally pass an empty config: funds come from the vault
+    // teller straight to the user's address, so there is no special source to
+    // declare and no `refundTo` (unlike Predict, which refunds to a Safe
+    // proxy). Enabling post-quote mode alone is enough.
     setPostQuote(
       transactionId,
       isPerpsWithdraw ? { isHyperliquidSource: true } : {},
