@@ -78,6 +78,7 @@ import {
   PERPS_WITHDRAW_ROUTE,
   ACTIVITY_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
+  MONEY_HOME_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -270,6 +271,7 @@ const PerpsTransactionDetailsPage = mmLazy(
 );
 const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
 const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
+const MoneyHomePage = mmLazy(() => import('../money/index.ts'));
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -650,6 +652,10 @@ export const routeConfig = [
           {
             path: PERPS_HOME_PAGE_ROUTE,
             element: <PerpsPage />,
+          },
+          {
+            path: MONEY_HOME_ROUTE,
+            element: <MoneyHomePage />,
           },
         ],
       },

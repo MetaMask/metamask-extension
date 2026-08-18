@@ -514,6 +514,9 @@
     "ui/hooks/metamask-notifications/useSwitchNotifications.test.tsx": {
       "MetaMask: Background connection not initialized": 5
     },
+    "ui/hooks/money/useMoneyAccountInfo.test.ts": {
+      "error: Error: locked": 1
+    },
     "ui/hooks/musd/useMusdConversion.test.ts": {
       "error: [MUSD] Transaction creation failed: Error:": 1,
       "warn: [MUSD] Conversion flow not enabled": 1,
