@@ -120,14 +120,20 @@ describe('LedgerDmkBridgeHandler', () => {
 
   describe('constructBridge error normalization', () => {
     let handler: LedgerDmkBridgeHandler;
+    let consoleErrorSpy: jest.SpyInstance;
 
     beforeEach(() => {
       jest.useFakeTimers();
+      // ensureBridge logs connect failures; silence for intentional error-path tests.
+      consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
       handler = new LedgerDmkBridgeHandler();
     });
 
     afterEach(async () => {
       await handler.destroy();
+      consoleErrorSpy.mockRestore();
       jest.useRealTimers();
     });
 
