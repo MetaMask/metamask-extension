@@ -6233,16 +6233,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/connectivity-controller@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/connectivity-controller@npm:0.2.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/messenger": "npm:^1.0.0"
-  checksum: 10/586c80931341375c713aa5a474725ec88174e6e885d5f75d23b6458b734ec0e912a8c47996bea94a82f9549c9598ba982ac99aaeccac1fd92002c35a38f5397f
-  languageName: node
-  linkType: hard
-
 "@metamask/connectivity-controller@npm:^0.3.0":
   version: 0.3.0
   resolution: "@metamask/connectivity-controller@npm:0.3.0"
@@ -6370,9 +6360,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.35.1":
-  version: 0.35.1
-  resolution: "@metamask/design-system-react@npm:0.35.1"
+"@metamask/design-system-react@npm:^0.35.2":
+  version: 0.35.2
+  resolution: "@metamask/design-system-react@npm:0.35.2"
   dependencies:
     "@floating-ui/react-dom": "npm:^2.1.2"
     "@metamask/design-system-shared": "npm:^0.32.0"
@@ -6387,7 +6377,7 @@ __metadata:
     "@metamask/utils": ^11.11.0
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/ebc008169484c943ea15ec8a5062572f3887a9f28b287527bcccc862aa3771298a2fee3c444147a6d49b9dd39c1ef770c257aa0da094b93c9a9b0c43f14c4629
+  checksum: 10/23efd882a43de479b4056adc4c9cae050bc3acfe5711e1119fa32c3314cd615f5076ad04df816df0fc5acd6205da35037c7eceec05813b4c37d4734db2edc983
   languageName: node
   linkType: hard
 
@@ -7671,6 +7661,23 @@ __metadata:
     "@metamask/utils": "npm:^11.9.0"
     async-mutex: "npm:^0.5.0"
   checksum: 10/9820002f3340216cf7bc6566f74cd9de4ac40c80e4ee897d299172674cdb9337373449c5cea4ea3640c99621f908056cd03d38aebfb5325af95d846a616f1683
+  languageName: node
+  linkType: hard
+
+"@metamask/network-connection-banner-controller@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@metamask/network-connection-banner-controller@npm:0.2.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/client-controller": "npm:^1.0.1"
+    "@metamask/connectivity-controller": "npm:^0.3.0"
+    "@metamask/keyring-controller": "npm:^27.1.1"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/network-controller": "npm:^35.0.1"
+    "@metamask/network-enablement-controller": "npm:^6.0.3"
+    "@metamask/utils": "npm:^11.11.0"
+    reselect: "npm:^5.1.1"
+  checksum: 10/1175b4a8aa5eb8c423cd3e19a5c5a070c4071c23278b096c59f7861a66ac4a45bc3ea40204883c133609e9aaedaa6413331869686655c240420fc115828e6d7f
   languageName: node
   linkType: hard
 
@@ -33200,14 +33207,14 @@ __metadata:
     "@metamask/client-utils": "npm:^2.0.2"
     "@metamask/compliance-controller": "npm:^2.1.0"
     "@metamask/config-registry-controller": "npm:^2.0.1"
-    "@metamask/connectivity-controller": "npm:^0.2.0"
+    "@metamask/connectivity-controller": "npm:^0.3.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/core-backend": "npm:^8.0.0"
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
-    "@metamask/design-system-react": "npm:^0.35.1"
+    "@metamask/design-system-react": "npm:^0.35.2"
     "@metamask/design-system-shared": "npm:^0.32.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.10.0"
     "@metamask/design-tokens": "npm:^8.7.0"
@@ -33269,6 +33276,7 @@ __metadata:
     "@metamask/multichain-network-controller": "npm:^3.2.3"
     "@metamask/multichain-transactions-controller": "npm:^7.1.2"
     "@metamask/name-controller": "npm:^9.1.0"
+    "@metamask/network-connection-banner-controller": "npm:^0.2.0"
     "@metamask/network-controller": "npm:^35.0.0"
     "@metamask/network-enablement-controller": "npm:^6.0.0"
     "@metamask/notification-services-controller": "npm:^26.0.0"
@@ -33554,7 +33562,6 @@ __metadata:
     prettier-plugin-sort-json: "npm:^4.1.1"
     process: "npm:^0.11.10"
     prop-types: "npm:^15.6.1"
-    psl: "npm:^1.15.0"
     punycode: "npm:^2.1.1"
     qrcode-generator: "npm:^2.0.4"
     qrcode.react: "npm:^4.2.0"
@@ -36971,7 +36978,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"psl@npm:^1.1.33, psl@npm:^1.15.0":
+"psl@npm:^1.1.33":
   version: 1.15.0
   resolution: "psl@npm:1.15.0"
   dependencies:

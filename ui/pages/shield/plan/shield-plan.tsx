@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   PAYMENT_TYPES,
   PaymentType,
@@ -198,18 +192,6 @@ const ShieldPlan = () => {
   });
   const hasAvailableToken = availableTokenBalances.length > 0;
 
-  const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<PaymentType>(() => {
-      // always default to card if no token is available
-      if (!hasAvailableToken) {
-        return PAYMENT_TYPES.byCard;
-      }
-      if (lastUsedPaymentDetails?.type) {
-        return lastUsedPaymentDetails.type;
-      }
-      return PAYMENT_TYPES.byCrypto;
-    });
-
   // default options for the new subscription request
   const defaultOptions = useMemo(() => {
     const paymentType =
@@ -225,83 +207,94 @@ const ShieldPlan = () => {
     };
   }, [availableTokenBalances]);
 
-  const [selectedToken, setSelectedToken] = useState<
-    TokenWithApprovalAmount | undefined
-  >(() => {
-    return availableTokenBalances[0];
-  });
+  // Token selection is keyed by plan so a plan change drops the prior token
+  // without render-phase setState; a default is derived when none is chosen.
+  const [tokenState, setTokenState] = useState<{
+    plan: RecurringInterval;
+    token: TokenWithApprovalAmount | undefined;
+    userSelected: boolean;
+  }>(() => ({
+    plan: selectedPlan,
+    token: availableTokenBalances[0],
+    userSelected: false,
+  }));
 
-  // set selected token to the first available token if no token is selected
-  useEffect(() => {
-    if (
-      pendingAvailableTokenBalances ||
-      selectedToken ||
-      availableTokenBalances.length === 0
-    ) {
-      return;
+  const defaultSelectedToken = useMemo(() => {
+    if (pendingAvailableTokenBalances || availableTokenBalances.length === 0) {
+      return undefined;
     }
-
     const lastUsedPaymentToken = lastUsedPaymentDetails?.paymentTokenAddress;
     const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
     const lastUsedPaymentPlan = lastUsedPaymentDetails?.plan;
-
-    let lastUsedSelectedToken = availableTokenBalances[0];
     if (
       lastUsedPaymentToken &&
       lastUsedPaymentMethod === PAYMENT_TYPES.byCrypto &&
       lastUsedPaymentPlan === selectedPlan
     ) {
-      lastUsedSelectedToken =
+      return (
         availableTokenBalances.find(
           (token) => token.address === lastUsedPaymentToken,
-        ) || availableTokenBalances[0];
+        ) || availableTokenBalances[0]
+      );
     }
-
-    setSelectedToken(lastUsedSelectedToken);
+    return availableTokenBalances[0];
   }, [
-    pendingAvailableTokenBalances,
     availableTokenBalances,
-    selectedToken,
-    setSelectedToken,
     lastUsedPaymentDetails,
+    pendingAvailableTokenBalances,
     selectedPlan,
   ]);
 
-  // reset selected token if selected plan changes
-  useEffect(() => {
-    setSelectedToken(undefined);
-  }, [selectedPlan, setSelectedToken]);
+  let selectedToken = defaultSelectedToken;
+  if (tokenState.plan === selectedPlan) {
+    selectedToken = tokenState.userSelected
+      ? tokenState.token
+      : (tokenState.token ?? defaultSelectedToken);
+  }
+
+  const setSelectedToken = useCallback(
+    (token: TokenWithApprovalAmount | undefined) => {
+      setTokenState({
+        plan: selectedPlan,
+        token,
+        userSelected: true,
+      });
+    },
+    [selectedPlan],
+  );
 
   const selectedTokenAddress = selectedToken?.address;
 
   // Track if initial payment method selection has been done
-  // This prevents auto-switching after payment cancel/failure when cache is cleared
-  const hasInitializedPaymentMethod = useRef(false);
-
-  // set default selected payment method to crypto if selected token available
-  // should only trigger if selectedTokenAddress change (shouldn't trigger again if selected token object updated but still same token)
-  useEffect(() => {
-    // Skip auto-selection after initial setup to prevent switching after payment cancel
-    if (hasInitializedPaymentMethod.current) {
-      // Only handle the case when selectedTokenAddress becomes undefined (no tokens available)
-      if (!selectedTokenAddress) {
-        setSelectedPaymentMethod(PAYMENT_TYPES.byCard);
+  // This prevents auto-switching after payment cancel/failure when cache is cleared.
+  const [hasInitializedPaymentMethod, setHasInitializedPaymentMethod] =
+    useState(false);
+  const [paymentMethodLocal, setPaymentMethodLocal] = useState<PaymentType>(
+    () => {
+      if (!hasAvailableToken) {
+        return PAYMENT_TYPES.byCard;
       }
-      return;
-    }
+      if (lastUsedPaymentDetails?.type) {
+        return lastUsedPaymentDetails.type;
+      }
+      return PAYMENT_TYPES.byCrypto;
+    },
+  );
 
-    const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
-    if (
-      selectedTokenAddress &&
-      lastUsedPaymentMethod !== PAYMENT_TYPES.byCard
-    ) {
-      setSelectedPaymentMethod(PAYMENT_TYPES.byCrypto);
-    } else {
-      // should reset to byCard when selectedTokenAddress becomes undefined (no tokens available)
-      // to prevent switching to a plan without available tokens leaves selectedPaymentMethod as byCrypto with no tokens
-      setSelectedPaymentMethod(PAYMENT_TYPES.byCard);
+  // Derive payment method from token availability until the user starts checkout;
+  // after that, keep the local choice unless tokens disappear.
+  let selectedPaymentMethod: PaymentType = PAYMENT_TYPES.byCard;
+  if (selectedTokenAddress) {
+    if (hasInitializedPaymentMethod) {
+      selectedPaymentMethod = paymentMethodLocal;
+    } else if (lastUsedPaymentDetails?.type !== PAYMENT_TYPES.byCard) {
+      selectedPaymentMethod = PAYMENT_TYPES.byCrypto;
     }
-  }, [selectedTokenAddress, setSelectedPaymentMethod, lastUsedPaymentDetails]);
+  }
+
+  const setSelectedPaymentMethod = useCallback((method: PaymentType) => {
+    setPaymentMethodLocal(method);
+  }, []);
 
   const tokensSupported = useMemo(() => {
     const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
@@ -332,11 +325,12 @@ const ShieldPlan = () => {
   });
 
   const onStartSubscription = useCallback(() => {
+    setPaymentMethodLocal(selectedPaymentMethod);
     // set flag to prevent auto-switching payment method after payment cancel/failure
-    hasInitializedPaymentMethod.current = true;
+    setHasInitializedPaymentMethod(true);
 
     handleSubscription();
-  }, [handleSubscription]);
+  }, [handleSubscription, selectedPaymentMethod]);
 
   const handleUserChangeToken = useCallback(
     async (token: TokenWithApprovalAmount) => {
