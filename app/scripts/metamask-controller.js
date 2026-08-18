@@ -222,6 +222,7 @@ import {
   trackPage,
 } from './controllers/analytics';
 import Backup from './lib/backup';
+import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
   addHexPrefix,
@@ -857,6 +858,15 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe('KeyringController:lock', () =>
       this._onLock(),
+    );
+
+    // Ramps buy-flow terminal-outcome KPIs (completed / failed). Fires in the
+    // background (not the UI) so the outcome is captured even when the popup is
+    // closed — the common case, since the order polls to a terminal status
+    // after the user finishes on the provider's page.
+    this.controllerMessenger.subscribe(
+      'RampsController:orderStatusChanged',
+      (event) => handleRampsOrderStatusChanged(event),
     );
 
     // on/off shield controller based on shield subscription
