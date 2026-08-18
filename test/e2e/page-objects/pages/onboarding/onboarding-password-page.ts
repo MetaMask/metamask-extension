@@ -39,8 +39,7 @@ class OnboardingPasswordPage {
   private readonly newPasswordInput =
     '[data-testid="create-password-new-input"]';
 
-  private readonly page =
-    '[data-testid="parent-selector-onboarding-password"]';
+  private readonly page = '[data-testid="parent-selector-onboarding-password"]';
 
   private readonly passwordTerms = '[data-testid="create-password-terms"]';
 

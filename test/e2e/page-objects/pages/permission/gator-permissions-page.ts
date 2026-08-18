@@ -92,9 +92,7 @@ class GatorPermissionsPage {
    * Useful for flow logic to detect whether we landed on this intermediate page.
    */
   async isPageDisplayed(): Promise<boolean> {
-    return await this.driver.isElementPresentAndVisible(
-      this.page,
-    );
+    return await this.driver.isElementPresentAndVisible(this.page);
   }
 
   /**
