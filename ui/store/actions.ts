@@ -1238,10 +1238,15 @@ export function submitPassword(password: string): Promise<void> {
  * @returns Passkey registration options.
  */
 export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
-  const prfSupported = await isPasskeyPRFSupported();
+  let prfSupported: boolean | undefined;
+  try {
+    prfSupported = await isPasskeyPRFSupported();
+  } catch {
+    // Capability detection is unavailable; let the PRF ceremony decide.
+  }
   // SECURITY: PRF is required for passkey setup. Never allow userHandle-based
   // key derivation as a fallback.
-  if (prfSupported !== true) {
+  if (prfSupported === false) {
     throw new Error('Passkey setup requires PRF support');
   }
   return submitRequestToBackground('generatePasskeyRegistrationOptions', [

@@ -27,6 +27,7 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
+  hasPasskeyPRFResult,
   startPasskeyRegistration,
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
@@ -124,12 +125,13 @@ export default function PasskeyRegisterSubPage() {
     [],
   );
 
-  usePasskeyPRFSupport(
-    useCallback(
+  usePasskeyPRFSupport({
+    enabled: !isPasskeyRegistered,
+    onUnsupported: useCallback(
       () => navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
       [navigate],
     ),
-  );
+  });
 
   useEffect(() => {
     // Only redirect when a passkey already exists before enrollment UI. During
@@ -189,6 +191,10 @@ export default function PasskeyRegisterSubPage() {
         );
       const postRegAuthenticationResponse =
         await startPasskeyAuthentication(postRegAuthOptions);
+
+      if (!hasPasskeyPRFResult(postRegAuthenticationResponse)) {
+        throw new Error('Passkey setup requires PRF support');
+      }
 
       currentStep = 'enroll';
       await protectVaultKeyWithPasskey(

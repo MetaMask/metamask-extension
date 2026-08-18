@@ -6,6 +6,7 @@ export {
   isPasskeyCeremonySilentError,
 } from './passkey-ceremony';
 export {
+  hasPasskeyPRFResult,
   isPasskeyPRFSupported,
   isWebAuthnSupported,
 } from './passkey-capabilities';

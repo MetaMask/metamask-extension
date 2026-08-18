@@ -10,8 +10,7 @@ export function isWebAuthnSupported(): boolean {
 /**
  * Whether this client reports support for PRF-backed passkeys.
  *
- * @returns Known support when the browser exposes capability data; otherwise `undefined`
- * so callers can still try a ceremony and handle failure if needed.
+ * @returns `true` when PRF is supported, otherwise `false` or `undefined`.
  */
 export async function isPasskeyPRFSupported(): Promise<boolean | undefined> {
   if (!browserSupportsWebAuthn()) {
@@ -33,4 +32,27 @@ export async function isPasskeyPRFSupported(): Promise<boolean | undefined> {
   }
 
   return undefined;
+}
+
+/**
+ * Checks whether a passkey authentication response contains a PRF result.
+ *
+ * @param response - Passkey authentication response.
+ * @param response.clientExtensionResults
+ * @param response.clientExtensionResults.prf
+ * @param response.clientExtensionResults.prf.results
+ * @param response.clientExtensionResults.prf.results.first
+ * @returns True when a non-empty PRF result is present.
+ */
+export function hasPasskeyPRFResult(response: {
+  clientExtensionResults?: {
+    prf?: {
+      results?: {
+        first?: unknown;
+      };
+    };
+  };
+}): boolean {
+  const prfFirst = response.clientExtensionResults?.prf?.results?.first;
+  return typeof prfFirst === 'string' && prfFirst.length > 0;
 }

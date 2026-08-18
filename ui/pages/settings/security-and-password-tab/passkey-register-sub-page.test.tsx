@@ -69,7 +69,7 @@ jest.mock('../../../../shared/lib/passkey', () => ({
       clientDataJSON: 'e30',
       attestationObject: 'e30',
     },
-    clientExtensionResults: {},
+    clientExtensionResults: { prf: { results: { first: 'AQ' } } },
   }),
   startPasskeyAuthentication: jest.fn().mockResolvedValue({
     id: 'AQ',
@@ -80,7 +80,7 @@ jest.mock('../../../../shared/lib/passkey', () => ({
       authenticatorData: 'AA',
       signature: 'AA',
     },
-    clientExtensionResults: {},
+    clientExtensionResults: { prf: { results: { first: 'AQ' } } },
   }),
   isPasskeyPRFSupported: jest.fn().mockResolvedValue(true),
 }));

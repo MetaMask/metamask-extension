@@ -545,34 +545,40 @@ describe('Actions', () => {
       );
     });
 
-    it('#generatePasskeyRegistrationOptions rejects when PRF support is unknown', async () => {
+    it('#generatePasskeyRegistrationOptions attempts registration when PRF support is unknown', async () => {
       jest
         .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
         .mockResolvedValue(undefined);
+      background.generatePasskeyRegistrationOptions.resolves({
+        rp: { name: 'MM' },
+      });
       setBackgroundConnection(background);
 
-      await expect(
-        actions.generatePasskeyRegistrationOptions(),
-      ).rejects.toThrow('Passkey setup requires PRF support');
+      await actions.generatePasskeyRegistrationOptions();
 
-      expect(background.generatePasskeyRegistrationOptions.notCalled).toBe(
-        true,
-      );
+      expect(
+        background.generatePasskeyRegistrationOptions.calledOnceWith({
+          prfAvailable: true,
+        }),
+      ).toBe(true);
     });
 
-    it('#generatePasskeyRegistrationOptions rejects when PRF detection fails', async () => {
+    it('#generatePasskeyRegistrationOptions attempts registration when PRF detection fails', async () => {
       jest
         .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
         .mockRejectedValue(new Error('capability detection failed'));
+      background.generatePasskeyRegistrationOptions.resolves({
+        rp: { name: 'MM' },
+      });
       setBackgroundConnection(background);
 
-      await expect(
-        actions.generatePasskeyRegistrationOptions(),
-      ).rejects.toThrow('capability detection failed');
+      await actions.generatePasskeyRegistrationOptions();
 
-      expect(background.generatePasskeyRegistrationOptions.notCalled).toBe(
-        true,
-      );
+      expect(
+        background.generatePasskeyRegistrationOptions.calledOnceWith({
+          prfAvailable: true,
+        }),
+      ).toBe(true);
     });
 
     it('#generatePasskeyAuthenticationOptions forwards to the background', async () => {

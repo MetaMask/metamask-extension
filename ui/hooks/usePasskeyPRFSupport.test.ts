@@ -20,7 +20,7 @@ describe('usePasskeyPRFSupport', () => {
     mockIsPasskeyPRFSupported.mockResolvedValue(true);
     const onUnsupported = jest.fn();
 
-    renderHook(() => usePasskeyPRFSupport(onUnsupported));
+    renderHook(() => usePasskeyPRFSupport({ onUnsupported }));
 
     await waitFor(() => {
       expect(mockIsPasskeyPRFSupported).toHaveBeenCalled();
@@ -28,29 +28,44 @@ describe('usePasskeyPRFSupport', () => {
     expect(onUnsupported).not.toHaveBeenCalled();
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each([false, undefined])(
-    'invokes the callback when PRF support is %s',
-    async (support: boolean | undefined) => {
-      mockIsPasskeyPRFSupported.mockResolvedValue(support);
-      const onUnsupported = jest.fn();
-
-      renderHook(() => usePasskeyPRFSupport(onUnsupported));
-
-      await waitFor(() => {
-        expect(onUnsupported).toHaveBeenCalledTimes(1);
-      });
-    },
-  );
-
-  it('invokes the callback when capability detection fails', async () => {
-    mockIsPasskeyPRFSupported.mockRejectedValue(new Error('detection failed'));
+  it('does not check PRF for an already registered passkey', async () => {
     const onUnsupported = jest.fn();
 
-    renderHook(() => usePasskeyPRFSupport(onUnsupported));
+    renderHook(() => usePasskeyPRFSupport({ enabled: false, onUnsupported }));
+
+    await Promise.resolve();
+    expect(mockIsPasskeyPRFSupported).not.toHaveBeenCalled();
+    expect(onUnsupported).not.toHaveBeenCalled();
+  });
+
+  it('invokes the callback when PRF support is false', async () => {
+    mockIsPasskeyPRFSupported.mockResolvedValue(false);
+    const onUnsupported = jest.fn();
+
+    renderHook(() => usePasskeyPRFSupport({ onUnsupported }));
 
     await waitFor(() => {
       expect(onUnsupported).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it('does not invoke the callback when PRF support is unknown', async () => {
+    mockIsPasskeyPRFSupported.mockResolvedValue(undefined);
+    const onUnsupported = jest.fn();
+
+    renderHook(() => usePasskeyPRFSupport({ onUnsupported }));
+
+    await Promise.resolve();
+    expect(onUnsupported).not.toHaveBeenCalled();
+  });
+
+  it('does not invoke the callback when capability detection fails', async () => {
+    mockIsPasskeyPRFSupported.mockRejectedValue(new Error('detection failed'));
+    const onUnsupported = jest.fn();
+
+    renderHook(() => usePasskeyPRFSupport({ onUnsupported }));
+
+    await Promise.resolve();
+    expect(onUnsupported).not.toHaveBeenCalled();
   });
 });

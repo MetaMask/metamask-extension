@@ -23,6 +23,12 @@ import { getEnvironmentType } from '../environment-type';
  */
 export const PASSKEY_SIDEPANEL_CEREMONY_TIMEOUT_MS = 30_000;
 
+export const MOCK_PASSKEY_PRF_RESULT = {
+  results: {
+    first: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+  },
+};
+
 export class PasskeyCeremonyTimeoutError extends Error {
   override readonly name = 'PasskeyCeremonyTimeoutError';
 
@@ -150,11 +156,24 @@ export async function startPasskeyAuthentication(
       extensions: decodePrfInExtensionOptions(options.extensions),
     };
     const response = await startAuthentication({ optionsJSON });
+    const clientExtensionResults = encodePrfInClientExtensionResults(
+      response.clientExtensionResults,
+    );
+    const prfFirst = (
+      clientExtensionResults as {
+        prf?: { results?: { first?: unknown } };
+      }
+    ).prf?.results?.first;
+
+    // In test (e2e) env, we add a deterministic PRF result to the response for the virtual authenticator to use.
+    // so we can test the passkey PRF flow in the e2e tests.
+    if (process.env.IN_TEST && !prfFirst) {
+      clientExtensionResults.prf = MOCK_PASSKEY_PRF_RESULT;
+    }
+
     return {
       ...response,
-      clientExtensionResults: encodePrfInClientExtensionResults(
-        response.clientExtensionResults,
-      ),
+      clientExtensionResults,
     };
   });
 }

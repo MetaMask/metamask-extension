@@ -91,7 +91,7 @@ const mockAuthenticationResponse = {
     authenticatorData: 'AA',
     signature: 'AA',
   },
-  clientExtensionResults: {},
+  clientExtensionResults: { prf: { results: { first: 'AQ' } } },
 };
 
 jest.mock('../../../store/actions', () => {
@@ -224,26 +224,8 @@ describe('SetupPasskey', () => {
     ).not.toBeInTheDocument();
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each([
-    ['false', false],
-    ['undefined', undefined],
-  ])(
-    'skips setup when PRF support is %s',
-    async (_label: string, support: boolean | undefined) => {
-      mockIsPasskeyPRFSupported.mockResolvedValue(support);
-      const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { onNext } = renderSetupPasskeyContent(mockStore);
-
-      await waitFor(() => {
-        expect(onNext).toHaveBeenCalledTimes(1);
-      });
-      expect(generatePasskeyRegistrationOptions).not.toHaveBeenCalled();
-    },
-  );
-
-  it('skips setup when PRF capability detection throws', async () => {
-    mockIsPasskeyPRFSupported.mockRejectedValue(new Error('detection failed'));
+  it('skips setup when PRF is explicitly unsupported', async () => {
+    mockIsPasskeyPRFSupported.mockResolvedValue(false);
     const mockStore = buildMockStore(FirstTimeFlowType.create);
     const { onNext } = renderSetupPasskeyContent(mockStore);
 

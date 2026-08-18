@@ -11,19 +11,31 @@ import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
  * @param onUnsupported - Called when PRF is unavailable or capability
  * detection fails.
  */
-export function usePasskeyPRFSupport(onUnsupported: () => void): void {
+export type UsePasskeyPRFSupportOptions = {
+  enabled?: boolean;
+  onUnsupported: () => void;
+};
+
+export function usePasskeyPRFSupport({
+  enabled = true,
+  onUnsupported,
+}: UsePasskeyPRFSupportOptions): void {
   useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+
     let isCancelled = false;
 
     const checkPrfSupport = async () => {
-      let prfSupported = false;
+      let prfSupported: boolean | undefined;
       try {
-        prfSupported = (await isPasskeyPRFSupported()) === true;
+        prfSupported = await isPasskeyPRFSupported();
       } catch {
-        // Treat capability detection failures as unsupported for security.
+        // Capability detection is unavailable; allow the ceremony to decide.
       }
 
-      if (isCancelled || prfSupported) {
+      if (isCancelled || prfSupported !== false) {
         return;
       }
 
@@ -35,5 +47,5 @@ export function usePasskeyPRFSupport(onUnsupported: () => void): void {
     return () => {
       isCancelled = true;
     };
-  }, [onUnsupported]);
+  }, [enabled, onUnsupported]);
 }

@@ -41,6 +41,7 @@ import { createSentryError } from '../../../shared/lib/error';
 import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
+  hasPasskeyPRFResult,
   startPasskeyRegistration,
   startPasskeyAuthentication,
   translatePasskeyError,
@@ -145,7 +146,10 @@ export default function SetupPasskeyContent({
     onNext();
   }, [onNext]);
 
-  usePasskeyPRFSupport(goToNextStep);
+  usePasskeyPRFSupport({
+    enabled: !isPasskeyRegistered,
+    onUnsupported: goToNextStep,
+  });
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -228,6 +232,10 @@ export default function SetupPasskeyContent({
         );
       const postRegAuthenticationResponse =
         await startPasskeyAuthentication(postRegAuthOptions);
+
+      if (!hasPasskeyPRFResult(postRegAuthenticationResponse)) {
+        throw new Error('Passkey setup requires PRF support');
+      }
 
       currentStep = 'enroll';
       await protectVaultKeyWithPasskey(

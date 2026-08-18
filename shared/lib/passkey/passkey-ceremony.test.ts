@@ -17,6 +17,7 @@ import {
   isPasskeyCeremonySilentError,
   startPasskeyAuthentication,
   startPasskeyRegistration,
+  MOCK_PASSKEY_PRF_RESULT,
 } from './passkey-ceremony';
 
 jest.mock('@simplewebauthn/browser', () => ({
@@ -181,7 +182,7 @@ describe('passkey ceremony helpers', () => {
   });
 
   describe('startPasskeyAuthentication', () => {
-    it('runs authentication and returns results without PRF transform when missing', async () => {
+    it('adds a PRF result in test builds when missing', async () => {
       const response = {
         id: 'credential-id',
         rawId: 'raw-id',
@@ -199,7 +200,12 @@ describe('passkey ceremony helpers', () => {
       expect(mockStartAuthentication).toHaveBeenCalledWith({
         optionsJSON: { challenge: 'abc' },
       });
-      expect(result).toStrictEqual(response);
+      expect(result).toStrictEqual({
+        ...response,
+        clientExtensionResults: {
+          prf: MOCK_PASSKEY_PRF_RESULT,
+        },
+      });
     });
 
     it('decodes PRF eval.first string to buffer for authentication options', async () => {
