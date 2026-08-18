@@ -1,6 +1,7 @@
 import React, {
   useState,
   useEffect,
+  useRef,
   MouseEvent as ReactMouseEvent,
   CSSProperties,
 } from 'react';
@@ -146,6 +147,8 @@ export const SnapUISelector = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
 
+  const onSelectRef = useRef(onSelect);
+
   if (initialValue !== prevInitialValue) {
     setPrevInitialValue(initialValue);
     if (initialValue !== undefined && initialValue !== null) {
@@ -154,10 +157,14 @@ export const SnapUISelector = ({
   }
 
   useEffect(() => {
+    onSelectRef.current = onSelect;
+  }, [onSelect]);
+
+  useEffect(() => {
     if (initialValue !== undefined && initialValue !== null) {
-      onSelect?.(initialValue);
+      onSelectRef.current?.(initialValue);
     }
-  }, [initialValue, onSelect]);
+  }, [initialValue]);
 
   const handleModalOpen = (event: ReactMouseEvent<HTMLElement>) => {
     event.preventDefault();

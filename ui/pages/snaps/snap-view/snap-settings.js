@@ -111,7 +111,7 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     return t('connectedSites');
   };
 
-  const [prevInitRemove, setPrevInitRemove] = useState(initRemove);
+  const [prevInitRemove, setPrevInitRemove] = useState(false);
   if (initRemove !== prevInitRemove) {
     setPrevInitRemove(initRemove);
     if (initRemove) {

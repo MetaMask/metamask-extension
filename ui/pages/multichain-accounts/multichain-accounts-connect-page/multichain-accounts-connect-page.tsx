@@ -13,7 +13,6 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
-import { isEqual } from 'lodash';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
 
 import { Tooltip } from 'react-tippy';
@@ -392,14 +391,14 @@ export const MultichainAccountsConnectPage = ({
   const defaultAccountGroupIds = suggestedAccountGroups.map(
     (group) => group.id,
   );
-  if (
-    !userHasModifiedAccountSelection &&
-    !isEqual(defaultAccountGroupIds, selectedAccountGroupIds)
-  ) {
-    handleAccountGroupIdsSelected(defaultAccountGroupIds, {
-      isUserModified: false,
-    });
-  }
+
+  const effectiveSelectedAccountGroupIds = userHasModifiedAccountSelection
+    ? selectedAccountGroupIds
+    : defaultAccountGroupIds;
+
+  const effectiveSelectedCaipAccountIds = userHasModifiedAccountSelection
+    ? selectedCaipAccountIds
+    : suggestedCaipAccountIds;
 
   const setModeToEditAccounts = useCallback(() => {
     trackEvent(
@@ -425,7 +424,7 @@ export const MultichainAccountsConnectPage = ({
         ...request.permissions,
         ...generateCaip25Caveat(
           requestedCaip25CaveatValueWithExistingPermissions,
-          selectedCaipAccountIds,
+          effectiveSelectedCaipAccountIds,
           defaultConnectChainIds,
         ),
       },
@@ -434,7 +433,7 @@ export const MultichainAccountsConnectPage = ({
   }, [
     request,
     requestedCaip25CaveatValueWithExistingPermissions,
-    selectedCaipAccountIds,
+    effectiveSelectedCaipAccountIds,
     defaultConnectChainIds,
     approveConnection,
   ]);
@@ -569,9 +568,9 @@ export const MultichainAccountsConnectPage = ({
             backgroundColor={BoxBackgroundColor.BackgroundDefault}
             className="rounded-xl"
           >
-            {selectedAccountGroupIds.map(renderAccountCell)}
+            {effectiveSelectedAccountGroupIds.map(renderAccountCell)}
           </Box>
-          {selectedAccountGroupIds.length === 0 && (
+          {effectiveSelectedAccountGroupIds.length === 0 && (
             <Box
               className="flex multichain-connect-page__accounts-empty rounded-xl"
               justifyContent={BoxJustifyContent.Start}
@@ -582,7 +581,7 @@ export const MultichainAccountsConnectPage = ({
               </ButtonLink>
             </Box>
           )}
-          {selectedAccountGroupIds.length > 0 && (
+          {effectiveSelectedAccountGroupIds.length > 0 && (
             <Box
               className="flex"
               marginTop={4}
@@ -641,7 +640,7 @@ export const MultichainAccountsConnectPage = ({
                   ? IconName.Danger
                   : undefined
               }
-              disabled={selectedAccountGroupIds.length === 0}
+              disabled={effectiveSelectedAccountGroupIds.length === 0}
             >
               {t('connect')}
             </Button>
@@ -654,7 +653,7 @@ export const MultichainAccountsConnectPage = ({
       title={t('selectAccounts')}
       confirmButtonText={t('save')}
       supportedAccountGroups={supportedAccountGroups}
-      defaultSelectedAccountGroups={selectedAccountGroupIds}
+      defaultSelectedAccountGroups={effectiveSelectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}
       onClose={() => setPageMode(MultichainAccountsConnectPageMode.Summary)}
     />
