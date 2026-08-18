@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "Gaasi ülemmäär peab olema vähemalt 21 000"
   },
-  "gasUsed": {
-    "message": "Kasutatud gaasihulk"
-  },
   "general": {
     "message": "Üldine teave"
   },
@@ -343,9 +340,6 @@
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Uus kontakt"
   },
   "newPassword": {
     "message": "Uus parool (vähemalt 8 tähemärki)"
@@ -568,9 +562,6 @@
   },
   "unapproved": {
     "message": "Kinnitamata"
-  },
-  "units": {
-    "message": "ühikud"
   },
   "unknown": {
     "message": "Teadmata"

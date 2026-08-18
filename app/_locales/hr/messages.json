@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "Ograničenje za gorivo mora biti najmanje 21000"
   },
-  "gasUsed": {
-    "message": "Upotrijebljeno gorivo"
-  },
   "general": {
     "message": "Opće"
   },
@@ -346,9 +343,6 @@
   "newAccountNumberName": {
     "message": "Račun $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Novi ugovor"
   },
   "newPassword": {
     "message": "Nova lozinka (najmanje osam znakova)"
@@ -568,9 +562,6 @@
   },
   "unapproved": {
     "message": "Neodobreno"
-  },
-  "units": {
-    "message": "jedinice/a"
   },
   "unknown": {
     "message": "Nepoznato"

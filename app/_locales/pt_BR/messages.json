@@ -97,9 +97,6 @@
   "advanced": {
     "message": "Avançado"
   },
-  "advancedGasPriceTitle": {
-    "message": "Preço do gás"
-  },
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
@@ -622,9 +619,6 @@
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Gás usado"
-  },
   "general": {
     "message": "Geral"
   },
@@ -934,9 +928,6 @@
   "newAccountNumberName": {
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Novo contrato"
   },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
@@ -1502,27 +1493,6 @@
   "transactionErrorNoContract": {
     "message": "Tentando chamar uma função em um endereço que não está no contrato."
   },
-  "transactionHistoryBaseFee": {
-    "message": "Taxa de base (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Taxa de gás L1 total"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Limite de gás L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Preço do gás L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Taxa máxima por gás"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Taxa de prioridade (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Taxa de gás total"
-  },
   "transfer": {
     "message": "Transferir"
   },
@@ -1545,9 +1515,6 @@
   },
   "unapproved": {
     "message": "Não aprovado"
-  },
-  "units": {
-    "message": "unidades"
   },
   "unknown": {
     "message": "Desconhecido"

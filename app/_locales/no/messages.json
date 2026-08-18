@@ -224,9 +224,6 @@
   "gasLimitTooLow": {
     "message": "Datakraftsgrense må være minst 21000"
   },
-  "gasUsed": {
-    "message": "Brukt datakraft "
-  },
   "general": {
     "message": "Generell"
   },
@@ -340,9 +337,6 @@
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Ny kontaktperson"
   },
   "newPassword": {
     "message": "Nytt passord (minimum 8 tegn)"
@@ -559,9 +553,6 @@
   },
   "unapproved": {
     "message": "Ikke godkjent "
-  },
-  "units": {
-    "message": "enheter "
   },
   "unknown": {
     "message": "Ukjent"

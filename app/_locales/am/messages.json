@@ -218,9 +218,6 @@
   "gasLimitTooLow": {
     "message": "የነዳጅ ገደብ ቢያንስ 21000 መሆን አለበት"
   },
-  "gasUsed": {
-    "message": "ጥቅም ላይ የዋለ ነዳጅ"
-  },
   "general": {
     "message": "አጠቃላይ"
   },
@@ -334,9 +331,6 @@
   "newAccountNumberName": {
     "message": "መለያ $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "አዲስ ኮንትራት"
   },
   "newPassword": {
     "message": "አዲስ የይለፍ ቃል (ቢያንስ 8 ቁምፊዎች)"
@@ -559,9 +553,6 @@
   },
   "unapproved": {
     "message": "ያልተፈቀደ"
-  },
-  "units": {
-    "message": "መለኪያዎች"
   },
   "unknown": {
     "message": "ያልታወቀ"

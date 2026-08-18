@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "Ліміт газу має бути не менше 21000"
   },
-  "gasUsed": {
-    "message": "Пального використано"
-  },
   "general": {
     "message": "Загальні"
   },
@@ -349,9 +346,6 @@
   "newAccountNumberName": {
     "message": "Обліковий запис $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Новий контракт"
   },
   "newPassword": {
     "message": "Новий пароль (мінімум 8 символів)"
@@ -574,9 +568,6 @@
   },
   "unapproved": {
     "message": "Не затверджено"
-  },
-  "units": {
-    "message": "одиниці"
   },
   "unknown": {
     "message": "невідомо"

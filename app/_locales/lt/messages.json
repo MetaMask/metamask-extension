@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "Dujų apribojimas turi būti bent 21000"
   },
-  "gasUsed": {
-    "message": "Sunaudotos dujos"
-  },
   "general": {
     "message": "Bendra"
   },
@@ -349,9 +346,6 @@
   "newAccountNumberName": {
     "message": "Paskyra $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Nauja sutartis"
   },
   "newPassword": {
     "message": "Naujas slaptažodis (bent 8 ženklai)"
@@ -574,9 +568,6 @@
   },
   "unapproved": {
     "message": "Nepatvirtinta"
-  },
-  "units": {
-    "message": "vienetai"
   },
   "unknown": {
     "message": "Nežinoma"

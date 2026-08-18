@@ -1379,9 +1379,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Erweiterte Netzwerkgebühr"
   },
-  "advancedGasPriceTitle": {
-    "message": "Gas-Preis"
-  },
   "advancedPermissionSmallCase": {
     "message": "Erweiterte Genehmigung"
   },
@@ -1599,12 +1596,6 @@
   },
   "amount": {
     "message": "Betrag"
-  },
-  "amountReceived": {
-    "message": "Empfangener Betrag"
-  },
-  "amountSent": {
-    "message": "Gesendeter Betrag"
   },
   "andForListItems": {
     "message": "$1 und $2",
@@ -4086,9 +4077,6 @@
     "message": "$1 Sekunde",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Verwendetes Gas"
-  },
   "gatorNoJustificationProvided": {
     "message": "Für die Genehmigung wurde keine Begründung angegeben"
   },
@@ -5772,9 +5760,6 @@
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Neuer Contract"
   },
   "newCustomTokenAdded": {
     "message": "„$1“ wurde erfolgreich hinzugefügt!"
@@ -11292,27 +11277,6 @@
   "transactionFlowNetwork": {
     "message": "Netzwerk"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Grundgebühr (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Gesamte L1 Gas-Gebühr"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 Gas-Limit"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 Gas-Preis"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Maximale Gebühr pro Gas"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Prioritätsgebühr (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Gesamte Gas-Gebühr"
-  },
   "transactionIdCopied": {
     "message": "Transaktions-ID kopiert"
   },
@@ -11480,9 +11444,6 @@
   "unifiedSwapFromTo": {
     "message": "Swappen von $1 $2 mit $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "Einheiten"
   },
   "unknown": {
     "message": "Unbekannt"

@@ -221,9 +221,6 @@
   "gasLimitTooLow": {
     "message": "Gasgräns måste vara minst 21 000"
   },
-  "gasUsed": {
-    "message": "Gas använd"
-  },
   "general": {
     "message": "Allmänt"
   },
@@ -337,9 +334,6 @@
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Nytt kontrakt"
   },
   "newPassword": {
     "message": "Nytt lösenord (minst 8 tecken)"
@@ -553,9 +547,6 @@
   },
   "unapproved": {
     "message": "Inte godkänd"
-  },
-  "units": {
-    "message": "enheter"
   },
   "unknown": {
     "message": "okänt"

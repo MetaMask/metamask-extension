@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "A gáz határértéke legyen legalább 21000"
   },
-  "gasUsed": {
-    "message": "Használt gáz"
-  },
   "general": {
     "message": "Általános"
   },
@@ -346,9 +343,6 @@
   "newAccountNumberName": {
     "message": "$1 fiók",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Új szerződés"
   },
   "newPassword": {
     "message": "Új jelszó (minimum 8 karakter)"
@@ -568,9 +562,6 @@
   },
   "unapproved": {
     "message": "Jóvá nem hagyott"
-  },
-  "units": {
-    "message": "egységek"
   },
   "unknown": {
     "message": "Ismeretlen"

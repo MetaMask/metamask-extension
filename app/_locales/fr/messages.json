@@ -1379,9 +1379,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Frais de réseau avancés"
   },
-  "advancedGasPriceTitle": {
-    "message": "Prix du gaz"
-  },
   "advancedPermissionSmallCase": {
     "message": "autorisation avancée"
   },
@@ -1599,12 +1596,6 @@
   },
   "amount": {
     "message": "Montant"
-  },
-  "amountReceived": {
-    "message": "Montant reçu"
-  },
-  "amountSent": {
-    "message": "Montant envoyé"
   },
   "andForListItems": {
     "message": "$1, et $2",
@@ -4086,9 +4077,6 @@
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Gaz utilisé"
-  },
   "gatorNoJustificationProvided": {
     "message": "Aucune justification n’a été fournie pour cette autorisation"
   },
@@ -5772,9 +5760,6 @@
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Nouveau contrat"
   },
   "newCustomTokenAdded": {
     "message": "« $1 » a été ajouté avec succès !"
@@ -11292,27 +11277,6 @@
   "transactionFlowNetwork": {
     "message": "Réseau :"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Frais de base (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Total des frais de transaction L1"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Montant maximal des frais de transaction L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Prix du gaz L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Frais maximaux par unité de gaz"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Frais de priorité (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Montant total des frais de gaz"
-  },
   "transactionIdCopied": {
     "message": "ID de transaction copié"
   },
@@ -11480,9 +11444,6 @@
   "unifiedSwapFromTo": {
     "message": "Échanger $1 $2 contre $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "unités"
   },
   "unknown": {
     "message": "Inconnu"

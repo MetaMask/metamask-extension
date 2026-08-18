@@ -148,9 +148,6 @@
   "gasLimitTooLow": {
     "message": "Limit gaz dwe omwen 21000"
   },
-  "gasUsed": {
-    "message": "Gaz yo Itilize"
-  },
   "hardware": {
     "message": "materyèl"
   },
@@ -246,9 +243,6 @@
   "newAccountNumberName": {
     "message": "Kont $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Nouvo Kontra"
   },
   "newPassword": {
     "message": "Nouvo modpas (minit 8)"
@@ -420,9 +414,6 @@
   },
   "unapproved": {
     "message": "Pa apwouve"
-  },
-  "units": {
-    "message": "inite yo"
   },
   "unknown": {
     "message": "Enkoni"

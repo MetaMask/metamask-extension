@@ -231,9 +231,6 @@
   "gasLimitTooLow": {
     "message": "يجب أن يكون حد وحدات الجاس على الأقل 21000"
   },
-  "gasUsed": {
-    "message": "وحدات جاس المستخدمة"
-  },
   "general": {
     "message": "عام"
   },
@@ -350,9 +347,6 @@
   "newAccountNumberName": {
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "عقد جديد"
   },
   "newPassword": {
     "message": "كلمة مرور جديدة (8 أحرف كحد أدنى)"
@@ -575,9 +569,6 @@
   },
   "unapproved": {
     "message": "تم الرفض"
-  },
-  "units": {
-    "message": "وحدات"
   },
   "unknown": {
     "message": "غير معروف"

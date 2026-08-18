@@ -432,9 +432,6 @@
   "gasPriceFetchFailed": {
     "message": "由於網路錯誤，gas 價格估計失敗。"
   },
-  "gasUsed": {
-    "message": "Gas 用量"
-  },
   "general": {
     "message": "一般"
   },
@@ -645,9 +642,6 @@
   "newAccountNumberName": {
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "建立新合約"
   },
   "newPassword": {
     "message": "新密碼（至少8個字元）"
@@ -953,9 +947,6 @@
   },
   "unapproved": {
     "message": "未批准"
-  },
-  "units": {
-    "message": "單位"
   },
   "unknown": {
     "message": "未知"

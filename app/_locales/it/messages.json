@@ -97,9 +97,6 @@
   "advanced": {
     "message": "Avanzate"
   },
-  "advancedGasPriceTitle": {
-    "message": "Prezzo gas"
-  },
   "alertDisableTooltip": {
     "message": "Può essere cambiato in \"Impostazioni > Avvisi\""
   },
@@ -546,9 +543,6 @@
   "gasLimitTooLow": {
     "message": "Il Gas Limite deve essere almeno 21000"
   },
-  "gasUsed": {
-    "message": "Gas Utilizzato"
-  },
   "general": {
     "message": "Generale"
   },
@@ -712,9 +706,6 @@
   },
   "networks": {
     "message": "Reti"
-  },
-  "newContract": {
-    "message": "Nuovo Contratto"
   },
   "newPassword": {
     "message": "Nuova Password (minimo 8 caratteri)"
@@ -1111,9 +1102,6 @@
   },
   "unapproved": {
     "message": "Non approvata"
-  },
-  "units": {
-    "message": "unità"
   },
   "unknown": {
     "message": "Sconosciuto"

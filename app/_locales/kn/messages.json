@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿಯು ಕನಿಷ್ಟ 21000 ಆಗಿರಬೇಕು"
   },
-  "gasUsed": {
-    "message": "ಗ್ಯಾಸ್ ಬಳಸಲಾಗಿದೆ"
-  },
   "general": {
     "message": "ಸಾಮಾನ್ಯ"
   },
@@ -349,9 +346,6 @@
   "newAccountNumberName": {
     "message": "ಖಾತೆ $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "ಹೊಸ ಒಪ್ಪಂದ"
   },
   "newPassword": {
     "message": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ (ಕನಿಷ್ಟ 8 ಅಕ್ಷರಗಳು)"
@@ -574,9 +568,6 @@
   },
   "unapproved": {
     "message": "ಅನುಮೋದಿಸದಿರುವುದು"
-  },
-  "units": {
-    "message": "ಘಟಕಗಳು"
   },
   "unknown": {
     "message": "ಅಪರಿಚಿತ"

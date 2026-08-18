@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "הגבלת הדלק חייבת להיות לפחות 21000"
   },
-  "gasUsed": {
-    "message": "דלק שנעשה בו שימוש"
-  },
   "general": {
     "message": "כללי"
   },
@@ -346,9 +343,6 @@
   "newAccountNumberName": {
     "message": "חשבון $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "חוזה חדש"
   },
   "newPassword": {
     "message": "ססמה חדשה (לפחות 8 תווים)"
@@ -571,9 +565,6 @@
   },
   "unapproved": {
     "message": "לא אושר"
-  },
-  "units": {
-    "message": "יחידות"
   },
   "unknown": {
     "message": "לא ידוע"

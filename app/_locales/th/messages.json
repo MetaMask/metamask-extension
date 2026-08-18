@@ -199,9 +199,6 @@
     "message": "บัญชี $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "สร้างสัญญาใหม่"
-  },
   "newPassword": {
     "message": "รหัสผ่านใหม่(ขั้นต่ำ 8 ตัวอักษร)"
   },

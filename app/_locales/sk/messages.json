@@ -221,9 +221,6 @@
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
   },
-  "gasUsed": {
-    "message": "GAS použitý"
-  },
   "general": {
     "message": "Všeobecne"
   },
@@ -324,9 +321,6 @@
   "newAccountNumberName": {
     "message": "Účet $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Nový kontrakt"
   },
   "newPassword": {
     "message": "Nové heslo (min 8 znaků)"
@@ -540,9 +534,6 @@
   },
   "unapproved": {
     "message": "Neschváleno"
-  },
-  "units": {
-    "message": "jednotky"
   },
   "unknown": {
     "message": "Neznámé"

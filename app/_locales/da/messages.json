@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "Brændstofgrænsen skal være mindst 21000"
   },
-  "gasUsed": {
-    "message": "Gas brugt"
-  },
   "general": {
     "message": "Generelt"
   },
@@ -340,9 +337,6 @@
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Ny Kontrakt"
   },
   "newPassword": {
     "message": "Ny adgangskode (min. 8 tegn)"
@@ -550,9 +544,6 @@
   },
   "unapproved": {
     "message": "Ikke godkendt"
-  },
-  "units": {
-    "message": "enheder"
   },
   "unknown": {
     "message": "ukendt"

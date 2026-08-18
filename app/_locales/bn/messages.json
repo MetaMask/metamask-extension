@@ -224,9 +224,6 @@
   "gasLimitTooLow": {
     "message": "গ্যাসের সীমা অবশ্যই অন্তত 21000 এ থাকতে হবে"
   },
-  "gasUsed": {
-    "message": "গ্যাস ব্যবহার করা হয়েছে"
-  },
   "general": {
     "message": "সাধারণ"
   },
@@ -346,9 +343,6 @@
   "newAccountNumberName": {
     "message": "অ্যাকাউন্ট $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "নতুন কন্ট্র্যাক্ট"
   },
   "newPassword": {
     "message": "নতুন পাসওয়ার্ড (অন্তত 8 অক্ষরের)"
@@ -571,9 +565,6 @@
   },
   "unapproved": {
     "message": "অননুমোদিত"
-  },
-  "units": {
-    "message": "ইউনিটসমূহ"
   },
   "unknown": {
     "message": "অজানা"

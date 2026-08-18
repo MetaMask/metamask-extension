@@ -224,9 +224,6 @@
   "gasLimitTooLow": {
     "message": "Gas limit mora biti vsaj 21000"
   },
-  "gasUsed": {
-    "message": "Uporabljen gas"
-  },
   "general": {
     "message": "Splošno"
   },
@@ -337,9 +334,6 @@
   "newAccountNumberName": {
     "message": "Račun $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Nova pogodba"
   },
   "newPassword": {
     "message": "Novo geslo (min 8 znakov)"
@@ -562,9 +556,6 @@
   },
   "unapproved": {
     "message": "Neodobreno"
-  },
-  "units": {
-    "message": "enote"
   },
   "unknown": {
     "message": "Neznano"

@@ -1379,9 +1379,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Τέλη δικτύου για προχωρημένους"
   },
-  "advancedGasPriceTitle": {
-    "message": "Τέλη συναλλαγών"
-  },
   "advancedPermissionSmallCase": {
     "message": "προηγμένη άδεια"
   },
@@ -1599,12 +1596,6 @@
   },
   "amount": {
     "message": "Ποσό"
-  },
-  "amountReceived": {
-    "message": "Ποσό που ελήφθη"
-  },
-  "amountSent": {
-    "message": "Ποσό που εστάλη"
   },
   "andForListItems": {
     "message": "$1 και $2",
@@ -4086,9 +4077,6 @@
     "message": "$1 δευτ",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Τέλος συναλλαγής που χρησιμοποιήθηκε"
-  },
   "gatorNoJustificationProvided": {
     "message": "Δεν δόθηκε αιτιολόγηση για την άδεια"
   },
@@ -5772,9 +5760,6 @@
   "newAccountNumberName": {
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Νέο συμβόλαιο"
   },
   "newCustomTokenAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"
@@ -11292,27 +11277,6 @@
   "transactionFlowNetwork": {
     "message": "Δίκτυο"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Βασικό τέλος (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Σύνολο Τέλους Συναλλαγής L1"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Όριο τέλους συναλλαγής L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Τιμή τέλους συναλλαγής L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Μέγιστη χρέωση ανά τέλος συναλλαγής"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Τέλος προτεραιότητας (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Σύνολο τελών συναλλαγών"
-  },
   "transactionIdCopied": {
     "message": "Το αναγνωριστικό συναλλαγής αντιγράφηκε"
   },
@@ -11480,9 +11444,6 @@
   "unifiedSwapFromTo": {
     "message": "Ανταλλαγή $1 $2 με $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "μονάδες"
   },
   "unknown": {
     "message": "Άγνωστο"

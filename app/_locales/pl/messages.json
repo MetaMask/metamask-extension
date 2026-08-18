@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "Limit gazu musi wynosić co najmniej 21000"
   },
-  "gasUsed": {
-    "message": "Użyty gaz"
-  },
   "general": {
     "message": "Ogólne"
   },
@@ -346,9 +343,6 @@
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Nowy kontrakt"
   },
   "newPassword": {
     "message": "Nowe hasło (min. 8 znaków)"
@@ -562,9 +556,6 @@
   },
   "unapproved": {
     "message": "Niezatwierdzone"
-  },
-  "units": {
-    "message": "jednostki"
   },
   "unknown": {
     "message": "Nieznane"

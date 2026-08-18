@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "Limita de gaz trebuie să fie de cel puțin 21.000"
   },
-  "gasUsed": {
-    "message": "Suma gaz folosită"
-  },
   "goerli": {
     "message": "Rețea de test Goerli"
   },
@@ -340,9 +337,6 @@
   "newAccountNumberName": {
     "message": "Cont $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Contract nou"
   },
   "newPassword": {
     "message": "Parola Nouă (minimum 8 caractere)"
@@ -559,9 +553,6 @@
   },
   "unapproved": {
     "message": "Neaprobat"
-  },
-  "units": {
-    "message": "unități"
   },
   "unknown": {
     "message": "Necunoscută"

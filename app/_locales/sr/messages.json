@@ -224,9 +224,6 @@
   "gasLimitTooLow": {
     "message": "Limit za gas mora da bude najmanje 21 000"
   },
-  "gasUsed": {
-    "message": "Korišćen gas"
-  },
   "general": {
     "message": "Opšte"
   },
@@ -340,9 +337,6 @@
   "newAccountNumberName": {
     "message": "Nalog $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Novi ugovor"
   },
   "newPassword": {
     "message": "Nova lozinka (minimalno 8 karaktera)"
@@ -562,9 +556,6 @@
   },
   "unapproved": {
     "message": "Neodobren"
-  },
-  "units": {
-    "message": "jedinice"
   },
   "unknown": {
     "message": "Непознато"

@@ -224,9 +224,6 @@
   "gasLimitTooLow": {
     "message": "El límit de gas ha de ser al menys 21000"
   },
-  "gasUsed": {
-    "message": "Gas utilitzat"
-  },
   "goerli": {
     "message": "Xarxa de test Goerli"
   },
@@ -337,9 +334,6 @@
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContract": {
-    "message": "Nou Contracte"
   },
   "newPassword": {
     "message": "Nova contrasenya (mínim 8 caràcters)"
@@ -553,9 +547,6 @@
   },
   "unapproved": {
     "message": "Pendent d'aprovació"
-  },
-  "units": {
-    "message": "unitats"
   },
   "unknown": {
     "message": "Desconegut"
