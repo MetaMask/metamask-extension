@@ -1,3 +1,4 @@
+import { PrfClientExtensionResults } from '@metamask/passkey-controller';
 import { browserSupportsWebAuthn } from '@simplewebauthn/browser';
 
 /**
@@ -45,13 +46,7 @@ export async function isPasskeyPRFSupported(): Promise<boolean | undefined> {
  * @returns True when a non-empty PRF result is present.
  */
 export function hasPasskeyPRFResult(response: {
-  clientExtensionResults?: {
-    prf?: {
-      results?: {
-        first?: unknown;
-      };
-    };
-  };
+  clientExtensionResults?: PrfClientExtensionResults;
 }): boolean {
   const prfFirst = response.clientExtensionResults?.prf?.results?.first;
   return typeof prfFirst === 'string' && prfFirst.length > 0;

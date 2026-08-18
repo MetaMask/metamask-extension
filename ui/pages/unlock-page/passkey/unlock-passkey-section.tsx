@@ -241,8 +241,8 @@ export const UnlockPasskeySection = ({
           status: 'use_password_selected',
           /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
           derivation_method: passkeyDerivationMethod,
-          /* eslint-enable @typescript-eslint/naming-convention */
           authenticator_id: passkeyAuthenticatorId,
+          /* eslint-enable @typescript-eslint/naming-convention */
         })
         .build(),
     );

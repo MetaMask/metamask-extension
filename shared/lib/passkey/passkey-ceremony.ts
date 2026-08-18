@@ -16,6 +16,7 @@ import type {
 } from '@metamask/passkey-controller';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../constants/app';
 import { getEnvironmentType } from '../environment-type';
+import { hasPasskeyPRFResult } from './passkey-capabilities';
 
 /**
  * Wall-clock cap for WebAuthn in the **side panel** only (where ceremonies often hang).
@@ -167,7 +168,10 @@ export async function startPasskeyAuthentication(
 
     // In test (e2e) env, we add a deterministic PRF result to the response for the virtual authenticator to use.
     // so we can test the passkey PRF flow in the e2e tests.
-    if (process.env.IN_TEST && !prfFirst) {
+    if (
+      process.env.IN_TEST &&
+      !hasPasskeyPRFResult({ clientExtensionResults })
+    ) {
       clientExtensionResults.prf = MOCK_PASSKEY_PRF_RESULT;
     }
 
