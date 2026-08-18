@@ -37,6 +37,22 @@ jest.mock('../hooks/useGasIncludedSupport', () => ({
   }),
 }));
 
+jest.mock('../../../hooks/bridge/useBridgeQuotesQuery', () => ({
+  useBridgeQuotesQuery: jest.fn().mockReturnValue({
+    quotes: null,
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    error: null,
+    dataUpdatedAt: 0,
+    isQueryEnabled: false,
+    reduxQuotes: {
+      isLoading: false,
+      quoteFetchError: null,
+    },
+  }),
+}));
+
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
 const mockUseHardwareWalletState = jest.fn();

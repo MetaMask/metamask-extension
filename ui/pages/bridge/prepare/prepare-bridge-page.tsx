@@ -92,6 +92,7 @@ import { useDispatch } from '../../../store/hooks';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getCurrencySymbol } from '../../../helpers/utils/common.util';
 import { useSourceInputAmount } from '../../../hooks/bridge/useSourceInputAmount';
+import { useBridgeQuotesQuery } from '../../../hooks/bridge/useBridgeQuotesQuery';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -138,10 +139,16 @@ const PrepareBridgePage = ({
 
   const quoteRequest = useSelector(getQuoteRequest);
   const {
-    isLoading,
+    isLoading: reduxIsLoading,
     // This quote may be older than the refresh rate, but we keep it for display purposes
     activeQuote: unvalidatedQuote,
   } = useSelector(getBridgeQuotes);
+  // TanStack dual-read path (gated by remote flag `bridgeQuotesTanStackQuery`).
+  // BridgeController still owns quote state for selectors / submit / dapp-swap.
+  const bridgeQuotesQuery = useBridgeQuotesQuery();
+  const isLoading = bridgeQuotesQuery.isQueryEnabled
+    ? bridgeQuotesQuery.isLoading || reduxIsLoading
+    : reduxIsLoading;
   const { dest } = unvalidatedQuote?.quote ?? {};
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
