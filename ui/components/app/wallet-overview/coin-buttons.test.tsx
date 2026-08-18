@@ -40,6 +40,18 @@ jest.mock('../../../hooks/bridge/useBridging', () => ({
   })),
 }));
 
+jest.mock('../../../pages/asset/hooks/useBalanceAwareSwapDefaults', () => ({
+  useBalanceAwareSwapDefaults: jest.fn(() => ({
+    sourceToken: {
+      symbol: 'ETH',
+      address: '0x0000000000000000000000000000000000000000',
+      chainId: '0x1',
+      decimals: 18,
+      name: 'Ether',
+    },
+  })),
+}));
+
 jest.mock('../../../hooks/batch-sell/useBatchSell', () => ({
   useBatchSell: jest.fn(() => ({
     openBatchSellExperience: jest.fn(),
