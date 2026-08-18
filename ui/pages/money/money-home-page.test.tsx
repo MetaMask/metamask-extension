@@ -7,7 +7,6 @@ import { MoneyHomePage } from './money-home-page';
 
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyAccountBalance = jest.fn();
-const mockUseMoneyVaultApy = jest.fn();
 const mockUseMultiChainAssets = jest.fn();
 
 jest.mock('react-router-dom', () => ({
@@ -19,11 +18,8 @@ jest.mock('react-router-dom', () => ({
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
   useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
 }));
-jest.mock('../../hooks/money/use-money-account-balance', () => ({
+jest.mock('../../hooks/money/useMoneyAccountBalance', () => ({
   useMoneyAccountBalance: () => mockUseMoneyAccountBalance(),
-}));
-jest.mock('../../hooks/money/use-money-vault-apy', () => ({
-  useMoneyVaultApy: () => mockUseMoneyVaultApy(),
 }));
 jest.mock('../../components/app/assets/hooks/useMultichainAssets', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -42,13 +38,12 @@ describe('MoneyHomePage', () => {
       isLoading: false,
     });
     mockUseMoneyAccountBalance.mockReturnValue({
-      query: { isLoading: false, isError: false },
-      balance: new BigNumber(0),
-      formattedBalance: '$0.00',
-    });
-    mockUseMoneyVaultApy.mockReturnValue({
-      query: { isLoading: false },
-      formattedApy: '4.2%',
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber(0),
+      totalFiatFormatted: '$0.00',
+      vaultApyQuery: { isLoading: false },
     });
     mockUseMultiChainAssets.mockReturnValue([]);
   });
@@ -115,9 +110,12 @@ describe('MoneyHomePage', () => {
 
   it('renders the filled-state composition for a funded Money account', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
-      query: { isLoading: false, isError: false },
-      balance: new BigNumber('3475.45'),
-      formattedBalance: '$3,475.45',
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      vaultApyQuery: { isLoading: false },
     });
     mockUseMultiChainAssets.mockReturnValue([
       {
@@ -182,9 +180,12 @@ describe('MoneyHomePage', () => {
 
   it('keeps a balance below the funded threshold in the empty state', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
-      query: { isLoading: false, isError: false },
-      balance: new BigNumber('0.009'),
-      formattedBalance: '$0.01',
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('0.009'),
+      totalFiatFormatted: '$0.01',
+      vaultApyQuery: { isLoading: false },
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -213,9 +214,12 @@ describe('MoneyHomePage', () => {
 
   it('keeps state-specific content hidden while the balance is loading', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
-      query: { isLoading: true, isError: false },
-      balance: undefined,
-      formattedBalance: undefined,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: true,
+      tokenTotal: undefined,
+      totalFiatFormatted: undefined,
+      vaultApyQuery: { isLoading: false },
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -243,8 +247,12 @@ describe('MoneyHomePage', () => {
 
   it('does not fabricate a balance when the balance service fails', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
-      query: { isLoading: false, isError: true },
-      formattedBalance: undefined,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: true,
+      isBalanceLoading: false,
+      tokenTotal: undefined,
+      totalFiatFormatted: undefined,
+      vaultApyQuery: { isLoading: false },
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -255,9 +263,13 @@ describe('MoneyHomePage', () => {
   });
 
   it('shows a configured APY override while the service query is loading', () => {
-    mockUseMoneyVaultApy.mockReturnValue({
-      query: { isLoading: true },
-      formattedApy: '5%',
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercentFormatted: '5%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber(0),
+      totalFiatFormatted: '$0.00',
+      vaultApyQuery: { isLoading: true },
     });
 
     renderWithLocalization(<MoneyHomePage />);

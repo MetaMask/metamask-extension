@@ -20,8 +20,7 @@ import {
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
-import { useMoneyAccountBalance } from '../../hooks/money/use-money-account-balance';
-import { useMoneyVaultApy } from '../../hooks/money/use-money-vault-apy';
+import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import useMultiChainAssets from '../../components/app/assets/hooks/useMultichainAssets';
 import { MoneyActivityPlaceholder } from './components/money-activity-placeholder';
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
@@ -60,15 +59,14 @@ export function MoneyHomePage() {
   const t = useI18nContext();
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
-  const address = availability.isAvailable ? availability.address : undefined;
   const {
-    query: balanceQuery,
-    balance,
-    formattedBalance,
-  } = useMoneyAccountBalance(address);
-  const { query: apyQuery, formattedApy } = useMoneyVaultApy(
-    availability.isAvailable,
-  );
+    apyPercentFormatted,
+    isBalanceFetchError,
+    isBalanceLoading,
+    tokenTotal,
+    totalFiatFormatted,
+    vaultApyQuery,
+  } = useMoneyAccountBalance({ enabled: availability.isAvailable });
   const assets = useMultiChainAssets();
   const eligibleAssets = useMemo(
     () =>
@@ -89,7 +87,7 @@ export function MoneyHomePage() {
 
   if (
     isAvailabilityLoading ||
-    (availability.isAvailable && balanceQuery.isLoading)
+    (availability.isAvailable && isBalanceLoading)
   ) {
     return (
       <div
@@ -109,11 +107,12 @@ export function MoneyHomePage() {
   }
 
   const balanceDisplay =
-    balanceQuery.isError || formattedBalance === undefined
+    isBalanceFetchError || totalFiatFormatted === undefined
       ? t('moneyBalanceUnavailable')
-      : formattedBalance;
-  const apyDisplay = formattedApy;
-  const isFunded = balance?.abs().gte(MONEY_FUNDED_BALANCE_THRESHOLD) === true;
+      : totalFiatFormatted;
+  const apyDisplay = apyPercentFormatted;
+  const isFunded =
+    tokenTotal?.abs().gte(MONEY_FUNDED_BALANCE_THRESHOLD) === true;
 
   return (
     <main
@@ -141,7 +140,7 @@ export function MoneyHomePage() {
             {balanceDisplay}
           </Text>
           <div className="flex h-6 items-center gap-1">
-            {apyQuery.isLoading && !apyDisplay ? (
+            {vaultApyQuery.isLoading && !apyDisplay ? (
               <Skeleton className="h-4 w-24" />
             ) : (
               <>
