@@ -15,7 +15,7 @@ import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
-export const version = 222;
+export const version = 223;
 
 /**
  * Moves StorageService data from browser.storage.local to IndexedDB in chrome.
