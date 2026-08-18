@@ -260,7 +260,7 @@ describe('getBalanceAwareSwapDefaults', () => {
       },
     });
 
-    expect(result.sourceToken.address).toBe(USDC_ADDRESS);
+    expect(result.sourceToken?.address).toBe(USDC_ADDRESS);
     expect(result.destTokenAssetId).toBe(
       'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
     );
@@ -384,7 +384,77 @@ describe('getBalanceAwareSwapDefaults', () => {
       },
     });
 
-    expect(result.sourceToken.address).toBe(WETH_ADDRESS);
+    expect(result.sourceToken?.address).toBe(WETH_ADDRESS);
+  });
+
+  it('keeps a funded non-EVM native as from when the page passes the zero address', () => {
+    const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
+    const bitcoinToken: BalanceAwareSwapSourceToken = {
+      address: ZERO_ADDRESS,
+      chainId: bitcoinChainId,
+      decimals: 8,
+      symbol: 'BTC',
+      name: 'Bitcoin',
+    };
+
+    const result = getBalanceAwareSwapDefaults({
+      currentToken: bitcoinToken,
+      assetsByChain: {
+        '0x1': [
+          userAsset({
+            assetId: USDC_ADDRESS,
+            symbol: 'USDC',
+            decimals: 6,
+            fiatBalance: 5000,
+          }),
+        ],
+        [bitcoinChainId]: [
+          {
+            assetId: `${bitcoinChainId}/slip44:0`,
+            chainId: bitcoinChainId,
+            symbol: 'BTC',
+            name: 'Bitcoin',
+            decimals: 8,
+            isNative: true,
+            balance: '10',
+            fiat: { balance: 1635.5 },
+          },
+        ],
+      },
+    });
+
+    expect(result).toEqual({
+      sourceToken: bitcoinToken,
+    });
+  });
+
+  it('sets an unfunded non-EVM native as the destination', () => {
+    const bitcoinToken: BalanceAwareSwapSourceToken = {
+      address: ZERO_ADDRESS,
+      chainId: 'bip122:000000000019d6689c085ae165831e93',
+      decimals: 8,
+      symbol: 'BTC',
+      name: 'Bitcoin',
+    };
+
+    const result = getBalanceAwareSwapDefaults({
+      currentToken: bitcoinToken,
+      assetsByChain: {
+        '0x1': [
+          userAsset({
+            assetId: USDC_ADDRESS,
+            symbol: 'USDC',
+            decimals: 6,
+            fiatBalance: 5000,
+          }),
+        ],
+      },
+    });
+
+    expect(result.sourceToken?.address).toBe(USDC_ADDRESS);
+    expect(result.destTokenAssetId).toBe(
+      'bip122:000000000019d6689c085ae165831e93/slip44:0',
+    );
   });
 
   it('resolves current balance from the asset list when no page balance is passed', () => {

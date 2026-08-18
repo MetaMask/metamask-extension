@@ -41,7 +41,8 @@ export type BalanceAwareUserAsset = {
 type ChainScopedUserAsset = BalanceAwareUserAsset & { chainId: string };
 
 export type BalanceAwareSwapDefaults = {
-  sourceToken: BalanceAwareSwapSourceToken;
+  /** Absent when the caller has no token to open the swap with. */
+  sourceToken?: BalanceAwareSwapSourceToken;
   /**
    * CAIP-19 asset id for the destination token when the current token has no
    * balance and a funded alternate source was selected. `undefined` keeps the

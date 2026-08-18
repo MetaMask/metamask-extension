@@ -11,7 +11,8 @@ import {
 } from '../utils/get-balance-aware-swap-defaults';
 
 export type UseBalanceAwareSwapDefaultsParams = {
-  currentToken: BalanceAwareSwapSourceToken;
+  /** Absent when the page chain cannot open a swap. */
+  currentToken?: BalanceAwareSwapSourceToken | null;
   /**
    * Balance rendered for the Token Detail Page asset, when available.
    * Balances from the selected account-group assets are also consulted.
@@ -44,8 +45,8 @@ export function useBalanceAwareSwapDefaults({
   const isReturningToSwap = Boolean(state?.bridgeState);
 
   return useMemo(() => {
-    if (isReturningToSwap) {
-      return { sourceToken: currentToken };
+    if (!currentToken || isReturningToSwap) {
+      return { sourceToken: currentToken ?? undefined };
     }
 
     return getBalanceAwareSwapDefaults({

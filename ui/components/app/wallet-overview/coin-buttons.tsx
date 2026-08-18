@@ -17,6 +17,7 @@ import {
 } from '@metamask/utils';
 import {
   BridgeAsset,
+  formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -102,8 +103,10 @@ const NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN: { [key: string]: BridgeAsset } = {
   [ARC_HEX_CHAIN_ID]: ARC_ERC20_USDC_BRIDGE_ASSET,
 };
 
-function getSwapNativeTokenWithOverridesForChain(chainId: string): BridgeAsset {
-  const override = NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN[chainId];
+function getSwapNativeTokenWithOverridesForChain(
+  chainId: string | number,
+): BridgeAsset {
+  const override = NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN[String(chainId)];
   return override ?? getNativeAssetForChainId(chainId);
 }
 
@@ -356,20 +359,16 @@ const CoinButtons = ({
 
   const assetPageSwapToken = useMemo(() => {
     if (!ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId)) {
-      return {
-        symbol: 'ETH',
-        address: '0x0000000000000000000000000000000000000000',
-        chainId: '0x1',
-        decimals: 18,
-        name: 'Ether',
-      };
+      return null;
     }
 
     const nativeSwapToken = getSwapNativeTokenWithOverridesForChain(chainId);
     return {
       symbol: nativeSwapToken.symbol,
       address: nativeSwapToken.address,
-      chainId: String(nativeSwapToken.chainId),
+      // `getNativeAssetForChainId` reports the chain as a decimal number, which
+      // the bridge entry point does not recognize as a supported chain.
+      chainId: formatChainIdToCaip(chainId),
       decimals: nativeSwapToken.decimals,
       name: nativeSwapToken.name ?? nativeSwapToken.symbol,
     };
