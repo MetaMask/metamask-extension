@@ -85,12 +85,10 @@ export const BridgeAlertModal = ({
    */
   const handleContinue = useCallback(async () => {
     const nextAlertIndex = activeAlertIndex + 1;
-    if (
-      nextAlertIndex === alerts.length &&
-      shouldShowSubmitCTA &&
-      activeQuote
-    ) {
-      await submitBridgeTransaction(activeQuote);
+    if (nextAlertIndex === alerts.length && shouldShowSubmitCTA) {
+      if (activeQuote) {
+        await submitBridgeTransaction(activeQuote);
+      }
       onClose();
       return;
     }
@@ -113,16 +111,16 @@ export const BridgeAlertModal = ({
     onCloseRef.current = onClose;
   }, [onClose]);
 
-  const wasModalOpenRef = useRef(isModalOpen);
+  const wasOpenRef = useRef(isOpen);
   useEffect(() => {
-    const wasOpen = wasModalOpenRef.current;
-    wasModalOpenRef.current = isModalOpen;
-    if (isModalOpen && !wasOpen) {
+    const wasOpen = wasOpenRef.current;
+    wasOpenRef.current = isOpen;
+    if (isOpen && !wasOpen) {
       queueMicrotask(() => {
         setActiveAlertIndex(0);
       });
     }
-  }, [isModalOpen, setActiveAlertIndex]);
+  }, [isOpen, setActiveAlertIndex]);
 
   // If the submit modal was open and the quote becomes unusable, close it.
   useEffect(() => {
