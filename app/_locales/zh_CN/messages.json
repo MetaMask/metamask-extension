@@ -1575,9 +1575,6 @@
   "allNetworks": {
     "message": "所有网络"
   },
-  "allPermissions": {
-    "message": "去中心化应用连接"
-  },
   "allPopularNetworks": {
     "message": "所有热门网络"
   },
@@ -3096,9 +3093,6 @@
   },
   "customerSupport": {
     "message": "客户支持团队"
-  },
-  "dappConnections": {
-    "message": "去中心化应用连接"
   },
   "dappSuggested": {
     "message": "建议的网站"
@@ -5876,9 +5870,6 @@
   },
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
-  },
-  "noConnectionDescription": {
-    "message": "要连接到网站，请找到并选择“连接”按钮。记住，MetaMask 仅限连接到 Web3 上的网站"
   },
   "noDefaultAddress": {
     "message": "无 $1 地址",
@@ -10149,9 +10140,6 @@
   },
   "singleNetwork": {
     "message": "1 个网络"
-  },
-  "sites": {
-    "message": "网站"
   },
   "siweIssued": {
     "message": "已签发"

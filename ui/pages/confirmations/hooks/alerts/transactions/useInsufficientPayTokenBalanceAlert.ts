@@ -1,5 +1,3 @@
-'use no memo';
-
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
