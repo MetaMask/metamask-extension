@@ -131,7 +131,7 @@ describe('MoneyHomePage', () => {
 
     expect(screen.getByTestId('money-balance')).toHaveTextContent('$3,475.45');
     expect(screen.getByTestId('money-position-placeholder')).toBeInTheDocument();
-    expect(screen.getByText('Earnings')).toBeInTheDocument();
+    expect(screen.getByText(messages.moneyEarnings.message)).toBeInTheDocument();
     expect(
       screen.getByTestId('money-position-monthly-skeleton'),
     ).toBeInTheDocument();
@@ -144,9 +144,13 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-condensed-info-cards'),
     ).toBeInTheDocument();
-    expect(screen.getByText('How your money grows')).toBeInTheDocument();
-    expect(screen.getByText('Meet mUSD')).toBeInTheDocument();
-    expect(screen.getByText('Explore your benefits')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyHowYourMoneyGrows.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText(messages.moneyMeetMusd.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyExploreBenefits.message),
+    ).toBeInTheDocument();
     ['growth', 'musd', 'benefits'].forEach((card) => {
       expect(
         screen.getByTestId(`money-condensed-info-card-${card}-image`),
@@ -196,6 +200,25 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(screen.getByTestId('money-home-loading')).toBeInTheDocument();
+  });
+
+  it('keeps state-specific content hidden while the balance is loading', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      query: { isLoading: true, isError: false },
+      balance: undefined,
+      formattedBalance: undefined,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-home-loading')).toBeInTheDocument();
+    expect(screen.queryByTestId('money-home-page')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyHowItWorks.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-position-placeholder'),
+    ).not.toBeInTheDocument();
   });
 
   it('redirects unavailable users to Home', () => {

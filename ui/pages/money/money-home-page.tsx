@@ -84,7 +84,10 @@ export function MoneyHomePage() {
     [assets],
   );
 
-  if (isAvailabilityLoading) {
+  if (
+    isAvailabilityLoading ||
+    (availability.isAvailable && balanceQuery.isLoading)
+  ) {
     return (
       <div
         className="flex min-h-full flex-col gap-4 bg-background-default p-4"
