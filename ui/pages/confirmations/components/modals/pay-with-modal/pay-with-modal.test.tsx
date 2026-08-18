@@ -62,12 +62,14 @@ jest.mock('../../send/asset', () => ({
     hideNfts,
     includeNoBalance,
     tagRenderers,
+    searchPlaceholder,
   }: {
     onAssetSelect?: (token: Record<string, unknown>) => void;
     tokenFilter?: (tokens: unknown[]) => unknown[];
     hideNfts?: boolean;
     includeNoBalance?: boolean;
     tagRenderers?: unknown[];
+    searchPlaceholder?: string;
   }) => {
     if (tokenFilter) {
       tokenFilter([]);
@@ -80,6 +82,7 @@ jest.mock('../../send/asset', () => ({
         <span data-testid="has-tag-renderers">
           {String(Boolean(tagRenderers?.length))}
         </span>
+        <span data-testid="search-placeholder">{String(searchPlaceholder)}</span>
         <button
           data-testid="select-token"
           onClick={() => onAssetSelect?.({ address: '0x123', chainId: '0x1' })}
@@ -209,6 +212,9 @@ describe('PayWithModal', () => {
     expect(
       screen.getByText(messages.payWithModalTitle.message),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('search-placeholder')).toHaveTextContent(
+      'undefined',
+    );
   });
 
   it('renders Asset component with correct props', () => {
@@ -345,6 +351,33 @@ describe('PayWithModal', () => {
 
       expect(setPayTokenMock).not.toHaveBeenCalled();
       expect(onCloseMock).toHaveBeenCalled();
+    });
+  });
+
+  describe('withdrawal receive-token picker copy', () => {
+    beforeEach(() => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+    });
+
+    it('shows the receive title instead of pay with', () => {
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByText(messages.receive.message)).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.payWithModalTitle.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('passes the search tokens placeholder to the asset picker', () => {
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByTestId('search-placeholder')).toHaveTextContent(
+        messages.searchTokens.message,
+      );
     });
   });
 
