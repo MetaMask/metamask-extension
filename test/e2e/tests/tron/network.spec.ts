@@ -1,8 +1,11 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { startHeldFixtures } from '../../fixtures/held-fixtures';
-import type { HeldFixturesSession } from '../../fixtures/held-fixtures';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import {
+  startHeldSession,
+  type HeldFixturesSession,
+} from '../../fixtures/held-fixtures';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -41,19 +44,24 @@ describe('Tron - Network', function (this: Suite) {
     let session: HeldFixturesSession | undefined;
 
     before(async function () {
-      session = await startHeldFixtures({
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.parent?.fullTitle() ?? 'Tron - Network default',
-        localNodeOptions: ['anvil'],
-        testSpecificMock: mockTronNetworkFlags,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            neNetworkDiscoverButton: {
-              [TRON_CHAIN_ID]: true,
+      session = await startHeldSession((callback) =>
+        withFixtures(
+          {
+            fixtures: new FixtureBuilderV2().build(),
+            title: this.test?.parent?.fullTitle() ?? 'Tron - Network default',
+            localNodeOptions: ['anvil'],
+            testSpecificMock: mockTronNetworkFlags,
+            manifestFlags: {
+              remoteFeatureFlags: {
+                neNetworkDiscoverButton: {
+                  [TRON_CHAIN_ID]: true,
+                },
+              },
             },
           },
-        },
-      });
+          callback,
+        ),
+      );
       driver = session.context.driver;
       try {
         await login(driver);
@@ -134,12 +142,17 @@ describe('Tron - Network', function (this: Suite) {
     let session: HeldFixturesSession | undefined;
 
     before(async function () {
-      session = await startHeldFixtures({
-        fixtures: buildTronNetworkFixture(),
-        title: this.test?.parent?.fullTitle() ?? 'Tron - Network testnets',
-        localNodeOptions: ['anvil'],
-        testSpecificMock: mockTronNetworkFlags,
-      });
+      session = await startHeldSession((callback) =>
+        withFixtures(
+          {
+            fixtures: buildTronNetworkFixture(),
+            title: this.test?.parent?.fullTitle() ?? 'Tron - Network testnets',
+            localNodeOptions: ['anvil'],
+            testSpecificMock: mockTronNetworkFlags,
+          },
+          callback,
+        ),
+      );
       driver = session.context.driver;
       try {
         await login(driver);

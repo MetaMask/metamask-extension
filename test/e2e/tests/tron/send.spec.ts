@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { startHeldSession } from '../../fixtures/held-fixtures';
 import {
   confirmTronSendAndAssertActivity,
   openTronSendAmountRecipient,
@@ -16,7 +17,7 @@ import {
 } from './fixtures/environments';
 import {
   buildTronNodeOptions,
-  startHeldTronFixtures,
+  withTronFixtures,
   type HeldTronFixturesSession,
   type TronFixtureAccount,
 } from './fixtures/with-tron-fixtures';
@@ -91,12 +92,17 @@ describe('Tron Send', function (this: Suite) {
 
   before(async function () {
     await sharedTronNode.start(buildTronNodeOptions(TRON_SEND_ACCOUNTS));
-    session = await startHeldTronFixtures({
-      accounts: TRON_SEND_ACCOUNTS,
-      borrowedTronNode: sharedTronNode,
-      fixtures: new FixtureBuilderV2().build(),
-      title: this.test?.parent?.fullTitle() ?? 'Tron Send',
-    });
+    session = await startHeldSession((callback) =>
+      withTronFixtures(
+        {
+          accounts: TRON_SEND_ACCOUNTS,
+          borrowedTronNode: sharedTronNode,
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.parent?.fullTitle() ?? 'Tron Send',
+        },
+        callback,
+      ),
+    );
     driver = session.context.driver;
     localNodes = session.context.localNodes;
     try {

@@ -1,8 +1,10 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { startHeldFixtures } from '../../fixtures/held-fixtures';
-import type { HeldFixturesSession } from '../../fixtures/held-fixtures';
+import {
+  startHeldSession,
+  type HeldFixturesSession,
+} from '../../fixtures/held-fixtures';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import {
@@ -27,14 +29,19 @@ describe('Swap on Tron', function (this: Suite) {
     let session: HeldFixturesSession | undefined;
 
     before(async function () {
-      session = await startHeldFixtures({
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.parent?.fullTitle() ?? 'Swap on Tron quotes',
-        testSpecificMock: mockTronSwapApis,
-        ignoredConsoleErrors: [
-          `Failed to send transaction: ${TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE}`,
-        ],
-      });
+      session = await startHeldSession((callback) =>
+        withFixtures(
+          {
+            fixtures: new FixtureBuilderV2().build(),
+            title: this.test?.parent?.fullTitle() ?? 'Swap on Tron quotes',
+            testSpecificMock: mockTronSwapApis,
+            ignoredConsoleErrors: [
+              `Failed to send transaction: ${TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE}`,
+            ],
+          },
+          callback,
+        ),
+      );
       driver = session.context.driver;
       try {
         await landOnTronHome(driver);
