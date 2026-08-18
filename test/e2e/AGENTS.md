@@ -10,7 +10,7 @@ Instructions for AI coding agents working on E2E tests in the MetaMask Browser E
 - **E2E create:** `mms-extension-testing` → `references/e2e.md` → `references/e2e/writing-tests.md`
 - **E2E maintain (flake / bad practices):** `mms-extension-testing` → `references/e2e.md` → `references/e2e/maintain.md`
 - **E2E CI decision tree:** [.github/guidelines/E2E_DECISION_TREE.md](../../.github/guidelines/E2E_DECISION_TREE.md) — when E2E runs/skips, label effects, build-reuse logic
-- **E2E deprecated patterns & POM anti-patterns:** [.cursor/BUGBOT.md](../../.cursor/BUGBOT.md) — sections **3.1–3.9**; path-scoped copy: [.cursor/BUGBOT.md](./.cursor/BUGBOT.md). Useful for local review; **not a reliable Bugbot CI merge gate** — see skill `references/e2e/pom-antipatterns.md`.
+- **E2E deprecated patterns & POM anti-patterns (local review):** [.cursor/BUGBOT.md](../../.cursor/BUGBOT.md) — sections **3.1–3.9**. Applied by **local** review (CODEBOT / `/review` / local Bugbot run) and agent self-check, **not** by Bugbot on the PR — see skill `references/e2e/pom-antipatterns.md`.
 - **Human E2E guidelines (POM best practices):** [contributor-docs extension E2E guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e/extension-e2e-guidelines.md#best-practices)
 - **Testing philosophy:** [docs/testing.md](../../docs/testing.md)
 - **E2E Driver API:** [webdriver/README.md](./webdriver/README.md)
@@ -26,7 +26,7 @@ Deprecated standalone skills (`mms-e2e-testing`, `mms-e2e-flakiness-patterns`) r
 
 ## POM anti-patterns (quick checklist)
 
-Before adding or reviewing E2E code, load [.cursor/BUGBOT.md](../../.cursor/BUGBOT.md) sections **3.3–3.9** and the skill checklist `references/e2e/pom-antipatterns.md`. Do **not** introduce:
+Write E2E correctly from the start using `mms-extension-testing`. Before submitting, run local review against [.cursor/BUGBOT.md](../../.cursor/BUGBOT.md) sections **3.3–3.9** and the skill checklist `references/e2e/pom-antipatterns.md`. Do **not** introduce:
 
 | Avoid                                                         | Prefer                                                |
 | ------------------------------------------------------------- | ----------------------------------------------------- |
