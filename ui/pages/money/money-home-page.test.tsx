@@ -65,7 +65,10 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-how-it-works-description'),
     ).toHaveTextContent(
-      'Add mUSD and earn up to 4.2% APY. Your balance is dollar-backed and ready to spend, trade, or send anytime.',
+      messages.moneyHowItWorksDescriptionWithApy.message.replace(
+        '$1',
+        '4.2% APY',
+      ),
     );
     expect(
       within(screen.getByTestId('money-how-it-works-description')).getByText(

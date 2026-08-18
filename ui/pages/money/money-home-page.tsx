@@ -241,17 +241,13 @@ export function MoneyHomePage() {
                 className="mt-2"
                 data-testid="money-how-it-works-description"
               >
-                {apyDisplay ? (
-                  <>
-                    {t('moneyHowItWorksPrefix')}{' '}
-                    <span className="text-success-default">
-                      {t('moneyApy', [apyDisplay])}
-                    </span>
-                    {`. ${t('moneyHowItWorksSuffix')}`}
-                  </>
-                ) : (
-                  t('moneyHowItWorksDescription')
-                )}
+                {apyDisplay
+                  ? t('moneyHowItWorksDescriptionWithApy', [
+                      <span key="apy" className="text-success-default">
+                        {t('moneyApy', [apyDisplay])}
+                      </span>,
+                    ])
+                  : t('moneyHowItWorksDescription')}
               </Text>
             </section>
 
