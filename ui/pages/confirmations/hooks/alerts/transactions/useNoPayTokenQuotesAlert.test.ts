@@ -1,15 +1,25 @@
 import { Hex, Json } from '@metamask/utils';
 import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   TransactionPayQuote,
   TransactionPayRequiredToken,
   TransactionPaySourceAmount,
+  TransactionPayStrategy,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
-import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
+import {
+  getMockConfirmState,
+  getMockConfirmStateForTransaction,
+} from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
   useIsTransactionPayLoading,
+  useTransactionPayIsPostQuote,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
@@ -36,16 +46,24 @@ const SOURCE_AMOUNT_MOCK = {
 
 const REQUIRED_TOKEN_MOCK = {
   address: ADDRESS_MOCK,
+  amountRaw: '1000000',
   skipIfBalance: false,
 } as TransactionPayRequiredToken;
 
-function runHook() {
-  const state = getMockConfirmState();
-
+function runHook(state = getMockConfirmState()) {
   return renderHookWithConfirmContextProvider(
     () => useNoPayTokenQuotesAlert(),
     state,
   );
+}
+
+function getPerpsWithdrawState() {
+  const transaction = {
+    ...genUnapprovedContractInteractionConfirmation(),
+    type: TransactionType.perpsWithdraw,
+  } as TransactionMeta;
+
+  return getMockConfirmStateForTransaction(transaction);
 }
 
 describe('useNoPayTokenQuotesAlert', () => {
@@ -56,6 +74,9 @@ describe('useNoPayTokenQuotesAlert', () => {
   );
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
+  );
+  const useTransactionPayIsPostQuoteMock = jest.mocked(
+    useTransactionPayIsPostQuote,
   );
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
@@ -71,6 +92,7 @@ describe('useNoPayTokenQuotesAlert', () => {
     });
 
     useIsTransactionPayLoadingMock.mockReturnValue(false);
+    useTransactionPayIsPostQuoteMock.mockReturnValue(false);
     useTransactionPayQuotesMock.mockReturnValue(undefined);
     useTransactionPaySourceAmountsMock.mockReturnValue([SOURCE_AMOUNT_MOCK]);
     useTransactionPayRequiredTokensMock.mockReturnValue([REQUIRED_TOKEN_MOCK]);
@@ -141,5 +163,72 @@ describe('useNoPayTokenQuotesAlert', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual([]);
+  });
+
+  describe('Perps withdrawal', () => {
+    beforeEach(() => {
+      useTransactionPayIsPostQuoteMock.mockReturnValue(true);
+      useTransactionPayQuotesMock.mockReturnValue([
+        {
+          strategy: TransactionPayStrategy.Relay,
+        } as TransactionPayQuote<Json>,
+      ]);
+    });
+
+    it('returns an alert when post-quote mode is not initialized', () => {
+      useTransactionPayIsPostQuoteMock.mockReturnValue(false);
+
+      const { result } = runHook(getPerpsWithdrawState());
+
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.NoPayTokenQuotes,
+          reason: 'No quotes',
+          isBlocking: true,
+        }),
+      ]);
+    });
+
+    it('returns an alert when the payment token is not selected', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: undefined,
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook(getPerpsWithdrawState());
+
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.NoPayTokenQuotes,
+          reason: 'No quotes',
+          isBlocking: true,
+        }),
+      ]);
+    });
+
+    it('returns an alert when no executable quote is available', () => {
+      useTransactionPayQuotesMock.mockReturnValue([
+        {
+          strategy: TransactionPayStrategy.None,
+        } as TransactionPayQuote<Json>,
+      ]);
+
+      const { result } = runHook(getPerpsWithdrawState());
+
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.NoPayTokenQuotes,
+          reason: 'No quotes',
+          isBlocking: true,
+        }),
+      ]);
+    });
+
+    it('returns no alert when an executable quote is ready', () => {
+      const { result } = runHook(getPerpsWithdrawState());
+
+      expect(result.current).toStrictEqual([]);
+    });
   });
 });

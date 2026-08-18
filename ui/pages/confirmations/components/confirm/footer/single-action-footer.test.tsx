@@ -1,6 +1,11 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionPayQuote,
+  TransactionPayStrategy,
+} from '@metamask/transaction-pay-controller';
+import type { Json } from '@metamask/utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -9,7 +14,9 @@ import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   useIsTransactionPayLoading,
+  useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
+  useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
 import { SingleActionFooter } from './single-action-footer';
 
@@ -84,6 +91,12 @@ describe('<SingleActionFooter />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.mocked(useIsTransactionPayLoading).mockReturnValue(false);
+    jest.mocked(useTransactionPayIsPostQuote).mockReturnValue(true);
+    jest.mocked(useTransactionPayQuotes).mockReturnValue([
+      {
+        strategy: TransactionPayStrategy.Relay,
+      } as TransactionPayQuote<Json>,
+    ]);
     jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
       amountUsd: '10.00',
       skipIfBalance: false,
@@ -250,5 +263,33 @@ describe('<SingleActionFooter />', () => {
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.perpsWithdraw.message,
     );
+  });
+
+  it('disables perps withdrawal before post-quote mode is initialized', () => {
+    jest.mocked(useTransactionPayIsPostQuote).mockReturnValue(false);
+
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('disables perps withdrawal without an executable quote', () => {
+    jest.mocked(useTransactionPayQuotes).mockReturnValue([
+      {
+        strategy: TransactionPayStrategy.None,
+      } as TransactionPayQuote<Json>,
+    ]);
+
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('submits perps withdrawal when an executable quote is ready', () => {
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    fireEvent.click(getByTestId('confirm-footer-button'));
+
+    expect(MOCK_ON_SUBMIT).toHaveBeenCalledTimes(1);
   });
 });

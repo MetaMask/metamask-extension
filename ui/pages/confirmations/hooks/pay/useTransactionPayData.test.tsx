@@ -14,6 +14,7 @@ import { ConfirmContext } from '../../context/confirm';
 import {
   useIsTransactionPayLoading,
   useTransactionPayIsMaxAmount,
+  useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
@@ -51,6 +52,7 @@ const STATE_MOCK = {
       [TRANSACTION_ID_MOCK]: {
         isLoading: true,
         isMaxAmount: true,
+        isPostQuote: true,
         quotes: [QUOTE_MOCK],
         sourceAmounts: [SOURCE_AMOUNT_MOCK],
         tokens: [REQUIRED_TOKEN_MOCK],
@@ -144,6 +146,15 @@ describe('useTransactionPayData', () => {
   describe('useTransactionPayIsMaxAmount', () => {
     it('returns isMaxAmount state', () => {
       const { result } = renderHook(() => useTransactionPayIsMaxAmount(), {
+        wrapper: createWrapper(),
+      });
+      expect(result.current).toBe(true);
+    });
+  });
+
+  describe('useTransactionPayIsPostQuote', () => {
+    it('returns isPostQuote state', () => {
+      const { result } = renderHook(() => useTransactionPayIsPostQuote(), {
         wrapper: createWrapper(),
       });
       expect(result.current).toBe(true);
