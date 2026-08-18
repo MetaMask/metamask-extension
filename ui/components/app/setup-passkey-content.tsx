@@ -46,6 +46,7 @@ import {
   startPasskeyAuthentication,
   translatePasskeyError,
   isPasskeyCeremonySilentError,
+  PasskeyPRFRequiredError,
 } from '../../../shared/lib/passkey';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -234,7 +235,7 @@ export default function SetupPasskeyContent({
         await startPasskeyAuthentication(postRegAuthOptions);
 
       if (!hasPasskeyPRFResult(postRegAuthenticationResponse)) {
-        throw new Error('Passkey setup requires PRF support');
+        throw new PasskeyPRFRequiredError();
       }
 
       currentStep = 'enroll';

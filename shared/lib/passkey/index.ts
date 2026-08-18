@@ -9,6 +9,7 @@ export {
   hasPasskeyPRFResult,
   isPasskeyPRFSupported,
   isWebAuthnSupported,
+  PasskeyPRFRequiredError,
 } from './passkey-capabilities';
 export {
   translatePasskeyError,

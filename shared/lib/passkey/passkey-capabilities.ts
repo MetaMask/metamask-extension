@@ -1,6 +1,15 @@
 import { PrfClientExtensionResults } from '@metamask/passkey-controller';
 import { browserSupportsWebAuthn } from '@simplewebauthn/browser';
 
+export class PasskeyPRFRequiredError extends Error {
+  override readonly name = 'PasskeyPRFRequiredError';
+
+  constructor() {
+    super('Passkey setup requires PRF support');
+    Object.setPrototypeOf(this, PasskeyPRFRequiredError.prototype);
+  }
+}
+
 /**
  * Whether this client can use WebAuthn at all (sync hint for UI).
  */

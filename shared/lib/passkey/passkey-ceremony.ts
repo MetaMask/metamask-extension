@@ -160,11 +160,6 @@ export async function startPasskeyAuthentication(
     const clientExtensionResults = encodePrfInClientExtensionResults(
       response.clientExtensionResults,
     );
-    const prfFirst = (
-      clientExtensionResults as {
-        prf?: { results?: { first?: unknown } };
-      }
-    ).prf?.results?.first;
 
     // In test (e2e) env, we add a deterministic PRF result to the response for the virtual authenticator to use.
     // so we can test the passkey PRF flow in the e2e tests.

@@ -106,7 +106,10 @@ import {
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
-import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
+import {
+  isPasskeyPRFSupported,
+  PasskeyPRFRequiredError,
+} from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -1247,7 +1250,7 @@ export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegis
   // SECURITY: PRF is required for passkey setup. Never allow userHandle-based
   // key derivation as a fallback.
   if (prfSupported === false) {
-    throw new Error('Passkey setup requires PRF support');
+    throw new PasskeyPRFRequiredError();
   }
   return submitRequestToBackground('generatePasskeyRegistrationOptions', [
     { prfAvailable: true },

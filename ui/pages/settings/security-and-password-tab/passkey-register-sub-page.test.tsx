@@ -259,6 +259,38 @@ describe('PasskeyRegisterSubPage', () => {
     );
   });
 
+  it('shows passkey not supported when authentication returns no PRF result', async () => {
+    const { startPasskeyAuthentication } = jest.requireMock<
+      typeof import('../../../../shared/lib/passkey')
+    >('../../../../shared/lib/passkey');
+    jest.mocked(startPasskeyAuthentication).mockResolvedValueOnce({
+      id: 'AQ',
+      rawId: 'AQ',
+      type: 'public-key',
+      response: {
+        clientDataJSON: 'e30',
+        authenticatorData: 'AA',
+        signature: 'AA',
+      },
+      clientExtensionResults: {},
+    });
+
+    const { getByTestId, getByText } = renderWithProvider(
+      <PasskeyRegisterSubPage />,
+      mockStore,
+    );
+
+    fireEvent.change(getByTestId('register-passkey-password-input'), {
+      target: { value: 'test-password' },
+    });
+    fireEvent.click(getByTestId('register-passkey-verify-continue-button'));
+
+    await waitFor(() => {
+      expect(getByText('Passkey not supported')).toBeInTheDocument();
+    });
+    expect(mockProtectVaultKeyWithPasskey).not.toHaveBeenCalled();
+  });
+
   it('stays on register passkey when protectVaultKeyWithPasskey fails after ceremonies', async () => {
     mockProtectVaultKeyWithPasskey.mockRejectedValueOnce(
       new Error('vault error'),

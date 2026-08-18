@@ -3,6 +3,7 @@ import {
   hasPasskeyPRFResult,
   isPasskeyPRFSupported,
   isWebAuthnSupported,
+  PasskeyPRFRequiredError,
 } from './passkey-capabilities';
 
 jest.mock('@simplewebauthn/browser', () => ({
@@ -10,6 +11,16 @@ jest.mock('@simplewebauthn/browser', () => ({
 }));
 
 const mockBrowserSupportsWebAuthn = jest.mocked(browserSupportsWebAuthn);
+
+describe('PasskeyPRFRequiredError', () => {
+  it('uses a stable name and message', () => {
+    const error = new PasskeyPRFRequiredError();
+
+    expect(error).toBeInstanceOf(Error);
+    expect(error.name).toBe('PasskeyPRFRequiredError');
+    expect(error.message).toBe('Passkey setup requires PRF support');
+  });
+});
 
 describe('isWebAuthnSupported', () => {
   afterEach(() => {
