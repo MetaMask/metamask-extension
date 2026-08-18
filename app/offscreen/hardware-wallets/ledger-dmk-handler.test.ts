@@ -19,15 +19,16 @@ import { LedgerDmkBridgeHandler } from './ledger-dmk-handler';
 
 // Mock the transport factory (virtual: ESM-only package has no CJS export for Jest)
 const mockListenToAvailableDevices = jest.fn();
-const mockWebHidTransportFactory = jest.fn(() => ({
+const mockWebHidTransportFactory: jest.Mock = jest.fn(() => ({
   listenToAvailableDevices: mockListenToAvailableDevices,
   startDiscovering: jest.fn(),
 }));
 jest.mock(
   '@ledgerhq/device-transport-kit-web-hid',
   () => ({
-    webHidTransportFactory: (...args: unknown[]) =>
-      mockWebHidTransportFactory(...args),
+    // Wrapper keeps the mock reachable under jest.mock hoisting.
+    webHidTransportFactory: (deps?: unknown) =>
+      mockWebHidTransportFactory(deps),
   }),
   { virtual: true },
 );
