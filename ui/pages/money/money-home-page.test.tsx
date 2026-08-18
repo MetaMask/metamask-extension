@@ -1,5 +1,6 @@
 import React from 'react';
 import { screen, within } from '@testing-library/react';
+import { BigNumber } from 'bignumber.js';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { MoneyHomePage } from './money-home-page';
@@ -42,6 +43,7 @@ describe('MoneyHomePage', () => {
     });
     mockUseMoneyAccountBalance.mockReturnValue({
       query: { isLoading: false, isError: false },
+      balance: new BigNumber(0),
       formattedBalance: '$0.00',
     });
     mockUseMoneyVaultApy.mockReturnValue({
@@ -106,6 +108,83 @@ describe('MoneyHomePage', () => {
     screen.getAllByRole('button').forEach((button) => {
       expect(button).toBeDisabled();
     });
+  });
+
+  it('renders the filled-state composition for a funded Money account', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      query: { isLoading: false, isError: false },
+      balance: new BigNumber('3475.45'),
+      formattedBalance: '$3,475.45',
+    });
+    mockUseMultiChainAssets.mockReturnValue([
+      {
+        address: '0x1',
+        chainId: '0x1',
+        image: 'usdc.png',
+        secondary: '$12.00',
+        symbol: 'USDC',
+        tokenFiatAmount: 12,
+      },
+    ]);
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-balance')).toHaveTextContent('$3,475.45');
+    expect(screen.getByTestId('money-position-placeholder')).toBeInTheDocument();
+    expect(screen.getByText('Earnings')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-position-monthly-skeleton'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-position-lifetime-skeleton'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-activity-placeholder'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-condensed-info-cards'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('How your money grows')).toBeInTheDocument();
+    expect(screen.getByText('Meet mUSD')).toBeInTheDocument();
+    expect(screen.getByText('Explore your benefits')).toBeInTheDocument();
+    ['growth', 'musd', 'benefits'].forEach((card) => {
+      expect(
+        screen.getByTestId(`money-condensed-info-card-${card}-image`),
+      ).toHaveClass('rounded-xl', 'bg-background-subsection');
+    });
+    expect(screen.queryByText('Earn up to 4.2% APY')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyHowItWorks.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyBenefits.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-eligible-assets'),
+    ).not.toBeInTheDocument();
+    screen.getAllByRole('button').forEach((button) => {
+      expect(button).toBeDisabled();
+    });
+  });
+
+  it('keeps a balance below the funded threshold in the empty state', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      query: { isLoading: false, isError: false },
+      balance: new BigNumber('0.009'),
+      formattedBalance: '$0.01',
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByText(messages.moneyHowItWorks.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-position-placeholder'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-condensed-info-cards'),
+    ).not.toBeInTheDocument();
   });
 
   it('renders a loading composition while availability is resolving', () => {
