@@ -47,7 +47,7 @@ export default function RampsChangeProviderFooter({
       </Text>
       {isDisabled ? (
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('rampsChangeProviderLink')}
+          {t('rampsChangeProvider')}
         </Text>
       ) : (
         <TextButton
@@ -55,7 +55,7 @@ export default function RampsChangeProviderFooter({
           onClick={onChangeProvider}
           data-testid="ramps-change-provider-button"
         >
-          {t('rampsChangeProviderLink')}
+          {t('rampsChangeProvider')}
         </TextButton>
       )}
     </Box>

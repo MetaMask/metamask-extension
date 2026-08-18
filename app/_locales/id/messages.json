@@ -8131,6 +8131,9 @@
     "message": "Pembelian melalui $1.",
     "description": "$1 is the ramp provider name"
   },
+  "rampsChangeProvider": {
+    "message": "Ubah penyedia."
+  },
   "rampsEligibilityFailedDescription": {
     "message": "Coba lagi, atau hubungi dukungan jika hal ini terus terjadi."
   },
@@ -8267,6 +8270,14 @@
   },
   "rampsPaymentDelayMinutes": {
     "message": "menit"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "Maks $1",
+    "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
     "message": "Min $1",

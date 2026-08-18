@@ -5,11 +5,14 @@ import {
 } from './format-payment-method-limits';
 
 const t = (key: string, substitutions?: string[]) => {
-  if (key === 'rampsPaymentMethodLimit') {
-    return `${substitutions?.[0]} limit`;
+  if (key === 'rampsPaymentMethodLimits') {
+    return `${substitutions?.[0]} – ${substitutions?.[1]}`;
   }
   if (key === 'rampsPaymentMethodMinLimit') {
     return `Min ${substitutions?.[0]}`;
+  }
+  if (key === 'rampsPaymentMethodMaxLimit') {
+    return `Max ${substitutions?.[0]}`;
   }
   return key;
 };

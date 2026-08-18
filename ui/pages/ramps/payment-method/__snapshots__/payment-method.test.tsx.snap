@@ -166,7 +166,7 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider
+          Change provider.
         </span>
       </button>
     </div>
@@ -232,7 +232,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when no payment methods are a
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider
+          Change provider.
         </span>
       </button>
     </div>
@@ -298,7 +298,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when payment methods fail to 
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider
+          Change provider.
         </span>
       </button>
     </div>
@@ -364,7 +364,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when payment methods query is
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider
+          Change provider.
         </span>
       </button>
     </div>
@@ -531,7 +531,7 @@ exports[`RampsPaymentMethodScreen matches snapshot while loading 1`] = `
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider
+          Change provider.
         </span>
       </button>
     </div>
@@ -705,7 +705,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider
+          Change provider.
         </span>
       </button>
     </div>
@@ -913,7 +913,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider
+          Change provider.
         </span>
       </button>
     </div>
