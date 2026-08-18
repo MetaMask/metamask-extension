@@ -27,6 +27,7 @@ import {
   getFirstTimeFlowType,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
+  getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
   getSocialLoginType,
 } from '../../selectors';
@@ -239,6 +240,9 @@ export default function SetupPasskeyContent({
       const derivationMethod = getPasskeyDerivationMethod({
         metamask: newMetamaskState,
       });
+      const authenticatorId = getPasskeyAuthenticatorId({
+        metamask: newMetamaskState,
+      });
 
       trackEvent(
         createEventBuilder(MetaMetricsEventName.PasskeySetup)
@@ -248,6 +252,8 @@ export default function SetupPasskeyContent({
             status: 'completed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             derivation_method: derivationMethod,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            authenticator_id: authenticatorId,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - enrollmentStartedAt,
           })
