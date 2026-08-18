@@ -1,4 +1,7 @@
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  isNativeAddress,
+} from '@metamask/bridge-controller';
 import {
   isCaipAssetType,
   parseCaipAssetType,
@@ -46,8 +49,9 @@ export type BalanceAwareSwapDefaults = {
 export type GetBalanceAwareSwapDefaultsParams = {
   currentToken: BalanceAwareSwapSourceToken;
   /**
-   * Optional up-to-date balance for the token on the Token Detail Page.
-   * Falls back to looking up the current token in `assetsByChain`.
+   * Balance rendered for the token on the Token Detail Page, when available.
+   * The account-group assets are also consulted, so a missing or unparsable
+   * value here never hides a holding the wallet knows about.
    */
   currentTokenBalance?: string | number;
   /**
@@ -124,6 +128,12 @@ function isSameTokenAsCurrent(
 ): boolean {
   if (!areSameChain(asset.chainId, currentToken.chainId)) {
     return false;
+  }
+
+  // Native assets are keyed by `slip44` asset ids, which never match the zero
+  // address the Token Detail Page uses for the native token.
+  if (asset.isNative && isNativeAddress(currentToken.address)) {
+    return true;
   }
 
   const assetAddress = getComparableAddress(asset.address ?? asset.assetId);
@@ -234,27 +244,34 @@ export function selectBestSwapSourceToken(
 }
 
 /**
- * Resolves the balance for the current Token Detail Page token.
+ * Whether the token on the Token Detail Page can fund a swap.
+ *
+ * The page balance and the account-group assets are both consulted because the
+ * page derives its balance from a route lookup that can miss a held token.
  *
  * @param currentToken - Token shown on the Token Detail Page.
- * @param currentTokenBalance - Optional explicit balance override.
+ * @param currentTokenBalance - Balance rendered by the Token Detail Page.
  * @param assetsByChain - Assets for the selected account group.
- * @returns Balance to evaluate for "has funds" checks.
+ * @returns True when the current token holds funds.
  */
-function resolveCurrentTokenBalance(
+function isCurrentTokenFunded(
   currentToken: BalanceAwareSwapSourceToken,
   currentTokenBalance: string | number | undefined,
   assetsByChain: Record<string, BalanceAwareUserAsset[]>,
-): string | number | undefined {
-  if (currentTokenBalance !== undefined) {
-    return currentTokenBalance;
+): boolean {
+  if (hasPositiveTokenBalance(currentTokenBalance)) {
+    return true;
   }
 
   const match = Object.values(assetsByChain)
     .flat()
     .find((asset) => isSameTokenAsCurrent(asset, currentToken));
 
-  return match?.balance;
+  if (!match) {
+    return false;
+  }
+
+  return hasPositiveTokenBalance(match.balance) || hasEligibleFiatBalance(match);
 }
 
 /**
@@ -265,7 +282,7 @@ function resolveCurrentTokenBalance(
  * token as "to" so the Swap screen opens actionable. If no funded alternate
  * exists, fall back to current as "from".
  *
- * @param params - Current token, optional balance override, and user assets.
+ * @param params - Current token, its rendered balance, and user assets.
  * @param params.currentToken
  * @param params.currentTokenBalance
  * @param params.assetsByChain
@@ -276,13 +293,7 @@ export function getBalanceAwareSwapDefaults({
   currentTokenBalance,
   assetsByChain,
 }: GetBalanceAwareSwapDefaultsParams): BalanceAwareSwapDefaults {
-  const resolvedBalance = resolveCurrentTokenBalance(
-    currentToken,
-    currentTokenBalance,
-    assetsByChain,
-  );
-
-  if (hasPositiveTokenBalance(resolvedBalance)) {
+  if (isCurrentTokenFunded(currentToken, currentTokenBalance, assetsByChain)) {
     return {
       sourceToken: currentToken,
     };

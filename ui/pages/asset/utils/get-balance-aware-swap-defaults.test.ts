@@ -213,7 +213,7 @@ describe('getBalanceAwareSwapDefaults', () => {
     });
   });
 
-  it('uses currentTokenBalance over the asset-list balance when provided', () => {
+  it('keeps the current token as from when only the page balance is positive', () => {
     const result = getBalanceAwareSwapDefaults({
       currentToken,
       currentTokenBalance: '0.5',
@@ -286,7 +286,64 @@ describe('getBalanceAwareSwapDefaults', () => {
     });
   });
 
-  it('resolves current balance from the asset list when no override is passed', () => {
+  it('keeps the current token as from when only the asset list reports a balance', () => {
+    const result = getBalanceAwareSwapDefaults({
+      currentToken,
+      // The Token Detail Page renders an unparsable balance when its route
+      // lookup misses the held asset.
+      currentTokenBalance: 'NaN',
+      assetsByChain: {
+        '0x1': [
+          userAsset({
+            assetId: currentToken.address,
+            symbol: currentToken.symbol,
+            balance: '50',
+            fiatBalance: 0,
+          }),
+          userAsset({
+            assetId: WETH_ADDRESS,
+            symbol: 'WETH',
+            fiatBalance: 9000,
+          }),
+        ],
+      },
+    });
+
+    expect(result).toEqual({
+      sourceToken: currentToken,
+    });
+  });
+
+  it('matches the native asset by chain when the page uses the zero address', () => {
+    const nativeToken: BalanceAwareSwapSourceToken = {
+      address: ZERO_ADDRESS,
+      chainId: '0x1',
+      decimals: 18,
+      symbol: 'ETH',
+      name: 'Ether',
+    };
+
+    const result = getBalanceAwareSwapDefaults({
+      currentToken: nativeToken,
+      assetsByChain: {
+        '0x1': [
+          userAsset({
+            assetId: 'eip155:1/slip44:60',
+            symbol: 'ETH',
+            balance: '24.998',
+            fiatBalance: 75000,
+            isNative: true,
+          }),
+        ],
+      },
+    });
+
+    expect(result).toEqual({
+      sourceToken: nativeToken,
+    });
+  });
+
+  it('resolves current balance from the asset list when no page balance is passed', () => {
     const result = getBalanceAwareSwapDefaults({
       currentToken,
       assetsByChain: {

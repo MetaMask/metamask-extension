@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
 import { getAssetsBySelectedAccountGroup } from '../../../selectors/assets';
 import {
@@ -12,8 +13,8 @@ import {
 export type UseBalanceAwareSwapDefaultsParams = {
   currentToken: BalanceAwareSwapSourceToken;
   /**
-   * Optional up-to-date balance for the Token Detail Page asset.
-   * When omitted, balance is resolved from the selected account-group assets.
+   * Balance rendered for the Token Detail Page asset, when available.
+   * Balances from the selected account-group assets are also consulted.
    */
   currentTokenBalance?: string | number;
 };
@@ -21,7 +22,11 @@ export type UseBalanceAwareSwapDefaultsParams = {
 /**
  * Resolves balance-aware Swap from/to defaults for Token Detail Page entry.
  *
- * @param params - Current token and optional balance override.
+ * Defaults are only applied when the Token Detail Page was not opened from an
+ * in-progress swap: the asset picker's info icon carries the bridge state
+ * through navigation, and the tokens the user picked there take precedence.
+ *
+ * @param params - Current token and its rendered balance.
  * @param params.currentToken
  * @param params.currentTokenBalance
  * @returns Source token and optional destination CAIP-19 asset id.
@@ -33,14 +38,20 @@ export function useBalanceAwareSwapDefaults({
   const assetsByChain = useSelector(
     getAssetsBySelectedAccountGroup,
   ) as Record<string, BalanceAwareUserAsset[]>;
+  const { state } = useLocation() as {
+    state?: { bridgeState?: unknown } | null;
+  };
+  const isReturningToSwap = Boolean(state?.bridgeState);
 
-  return useMemo(
-    () =>
-      getBalanceAwareSwapDefaults({
-        currentToken,
-        currentTokenBalance,
-        assetsByChain,
-      }),
-    [assetsByChain, currentToken, currentTokenBalance],
-  );
+  return useMemo(() => {
+    if (isReturningToSwap) {
+      return { sourceToken: currentToken };
+    }
+
+    return getBalanceAwareSwapDefaults({
+      currentToken,
+      currentTokenBalance,
+      assetsByChain,
+    });
+  }, [assetsByChain, currentToken, currentTokenBalance, isReturningToSwap]);
 }

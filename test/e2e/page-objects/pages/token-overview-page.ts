@@ -17,8 +17,6 @@ class TokenOverviewPage {
 
   private readonly backButton = '.asset-page__back-button';
 
-  private readonly coinSwapButton = '[data-testid="coin-overview-swap"]';
-
   private driver: Driver;
 
   private readonly moreButton = '[data-testid="coin-overview-more"]';
@@ -34,8 +32,6 @@ class TokenOverviewPage {
     text: 'Swap',
     css: '.icon-button',
   };
-
-  private readonly tokenSwapButton = '[data-testid="token-overview-swap"]';
 
   private readonly viewAssetInExplorerButton = {
     text: 'View Asset in explorer',
@@ -94,21 +90,6 @@ class TokenOverviewPage {
   }
 
   async clickSwap(): Promise<void> {
-    // Prefer asset-page test ids; fall back to the shared Swap label.
-    if (
-      await this.driver.isElementPresentAndVisible(this.tokenSwapButton, 1000)
-    ) {
-      await this.driver.clickElement(this.tokenSwapButton);
-      return;
-    }
-
-    if (
-      await this.driver.isElementPresentAndVisible(this.coinSwapButton, 1000)
-    ) {
-      await this.driver.clickElement(this.coinSwapButton);
-      return;
-    }
-
     await this.driver.clickElement(this.swapButton);
   }
 
