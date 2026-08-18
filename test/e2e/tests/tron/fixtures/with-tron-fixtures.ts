@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import {
-  startHeldSession,
-  type HeldSession,
-} from '../../../fixtures/held-fixtures';
+import type { HeldSession } from '../../../fixtures/held-fixtures';
 import { withFixtures } from '../../../helpers';
 import {
   TronLocalNodeOptions,
@@ -34,9 +31,14 @@ const TRON_PROVIDER_ANY_ACCOUNT_RE =
 
 type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
-type TronFixturesTestSuiteContext = Parameters<WithFixturesTestSuite>[0] & {
-  localNodes: unknown[];
-};
+export type TronFixturesTestSuiteContext =
+  Parameters<WithFixturesTestSuite>[0] & {
+    localNodes: unknown[];
+  };
+
+type TronFixturesTestSuite = (
+  context: TronFixturesTestSuiteContext,
+) => Promise<void> | void;
 
 export type HeldTronFixturesSession = HeldSession<TronFixturesTestSuiteContext>;
 
@@ -140,7 +142,7 @@ export function buildTronNodeOptions(
 
 export async function withTronFixtures(
   options: WithTronFixturesOptions,
-  testSuite: WithFixturesTestSuite,
+  testSuite: TronFixturesTestSuite,
 ): Promise<void> {
   const {
     afterLocalNodesStart,
@@ -220,25 +222,6 @@ export async function withTronFixtures(
           context.contractRegistry ?? tronSeeder?.getContractRegistry(),
       });
     },
-  );
-}
-
-/**
- * Starts `withTronFixtures` and keeps the browser session open until
- * `release` is called. Pair with Mocha `before`/`after` so several `it`
- * blocks can share one extension start.
- *
- * @param options - The same options as {@link withTronFixtures}.
- * @returns The live fixture context and a `release` function that lets
- * `withTronFixtures` finish (and tear down) once the suite is done.
- */
-export async function startHeldTronFixtures(
-  options: WithTronFixturesOptions,
-): Promise<HeldTronFixturesSession> {
-  return startHeldSession((callback) =>
-    withTronFixtures(options, async (context) => {
-      await callback(context as TronFixturesTestSuiteContext);
-    }),
   );
 }
 

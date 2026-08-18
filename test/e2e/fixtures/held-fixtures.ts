@@ -1,6 +1,5 @@
 import { withFixtures } from '../helpers';
 
-type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
 export type HeldFixturesContext = Parameters<WithFixturesTestSuite>[0];
 
@@ -16,9 +15,9 @@ type HeldSessionRun<TContext> = (
 ) => Promise<void>;
 
 /**
- * Starts a fixture runner and keeps it open until `release` is called.
- * Pair with Mocha `before`/`after` so several `it` blocks can share one
- * extension start.
+ * Starts a fixture runner (`withFixtures`, `withTronFixtures`, …) and keeps
+ * it open until `release` is called. Pair with Mocha `before`/`after` so
+ * several `it` blocks can share one extension start.
  *
  * @param run - Fixture runner that calls `callback` with the live context.
  * @returns The live fixture context and a `release` function that lets
@@ -66,19 +65,4 @@ export async function startHeldSession<TContext>(
     await fixturesRun.catch(() => undefined);
     throw error;
   }
-}
-
-/**
- * Starts `withFixtures` and keeps the browser session open until `release`
- * is called. Pair with Mocha `before`/`after` so several `it` blocks can
- * share one extension start.
- *
- * @param options - The same options as `withFixtures`.
- * @returns The live fixture context and a `release` function that lets
- * `withFixtures` finish (and tear down) once the suite is done.
- */
-export async function startHeldFixtures(
-  options: WithFixturesOptions,
-): Promise<HeldFixturesSession> {
-  return startHeldSession((callback) => withFixtures(options, callback));
 }

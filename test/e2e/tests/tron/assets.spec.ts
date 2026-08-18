@@ -4,6 +4,7 @@ import {
   HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
 } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { startHeldSession } from '../../fixtures/held-fixtures';
 import { Driver } from '../../webdriver/driver';
 import {
   selectAllNetworksFromNetworkSelect,
@@ -27,7 +28,7 @@ import {
 } from './fixtures/environments';
 import {
   buildTronNodeOptions,
-  startHeldTronFixtures,
+  withTronFixtures,
   type HeldTronFixturesSession,
   type TronFixtureAccount,
 } from './fixtures/with-tron-fixtures';
@@ -94,13 +95,18 @@ describe('Tron - Assets', function (this: Suite) {
         ...PORTFOLIO_ACCOUNT_FIXTURE,
       ]),
     );
-    session = await startHeldTronFixtures({
-      accounts: [...EMPTY_ACCOUNT_FIXTURE, ...PORTFOLIO_ACCOUNT_FIXTURE],
-      borrowedTronNode: sharedTronNode,
-      fixtures: buildTronAssetsFixture().build(),
-      manifestFlags: TRON_ASSETS_MANIFEST_FLAGS,
-      title: this.test?.parent?.fullTitle() ?? 'Tron - Assets',
-    });
+    session = await startHeldSession((callback) =>
+      withTronFixtures(
+        {
+          accounts: [...EMPTY_ACCOUNT_FIXTURE, ...PORTFOLIO_ACCOUNT_FIXTURE],
+          borrowedTronNode: sharedTronNode,
+          fixtures: buildTronAssetsFixture().build(),
+          manifestFlags: TRON_ASSETS_MANIFEST_FLAGS,
+          title: this.test?.parent?.fullTitle() ?? 'Tron - Assets',
+        },
+        callback,
+      ),
+    );
     driver = session.context.driver;
     try {
       await prepareTronAssetsHomepage(driver);
