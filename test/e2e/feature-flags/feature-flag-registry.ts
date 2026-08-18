@@ -20,6 +20,7 @@ import type { Json } from '@metamask/utils';
 import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-domain-metrics';
+import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../shared/lib/money/feature-flags';
 
 // ============================================================================
 // Types
@@ -67,7 +68,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-08-11
+ * Production defaults last synced: 2026-08-18
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -91,7 +92,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   additionalNetworksBlacklist: {
     inProd: true,
     name: 'additionalNetworksBlacklist',
-    productionDefault: ['0x1079', '0x13b2'],
+    productionDefault: ['0x13b2'],
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -208,7 +209,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           enabled: true,
           featureVersion: '1',
           minimumVersion: '13.38.0',
-          tracesEnabled: true,
+          tracesEnabled: false,
         },
       },
     },
@@ -1269,18 +1270,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'confirmations_pay_tokens',
     productionDefault: {
-      preferredTokens: {
-        default: [],
-        overrides: {},
-      },
-      blockedTokens: {
-        default: {
-          chainIds: [],
-          tokens: [],
-        },
-        overrides: {},
-      },
-      minimumRequiredTokenBalance: 10,
+      enabled: false,
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2358,8 +2348,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'dappOpenSidepanelEnabled',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '13.41.0',
+      enabled: true,
+      minimumVersion: '13.44.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2458,8 +2448,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'earnMusdConversionFlowEnabled',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '0.0.0',
+      enabled: true,
+      minimumVersion: '13.44.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2487,8 +2477,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'earnMusdConversionTokenListItemCtaEnabled',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '0.0.0',
+      enabled: true,
+      minimumVersion: '13.44.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2633,7 +2623,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'extensionTrustAndSecurityTdp',
     productionDefault: {
-      enabled: false,
+      enabled: true,
       minimumVersion: '13.44.0',
     },
     status: FeatureFlagStatus.Active,
@@ -2807,6 +2797,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       lensAddress: '0xa3b5f71AB29BA99B9750327575Dcc456CadC550b',
       tellerAddress: '0xB30755C750E0A7E5BeD3dDAf0D9948Cf2b1CDc87',
       underlyingToken: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  moneyEnableMoneyAccount: {
+    inProd: false,
+    name: 'moneyEnableMoneyAccount',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3113,6 +3114,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'productSafetyScamQuestionnaireEnabled',
     productionDefault: [],
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  productSafetyScamQuestionnaireURLList: {
+    inProd: true,
+    name: 'productSafetyScamQuestionnaireURLList',
+    productionDefault: {
+      enabled: false,
+    },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },

@@ -9,11 +9,6 @@
       "count": 3
     }
   },
-  "app/scripts/metamask-controller.test.js": {
-    "jest/no-disabled-tests": {
-      "count": 1
-    }
-  },
   "development/webpack/utils/loaders/swcLoader.ts": {
     "promise/no-callback-in-promise": {
       "count": 1
@@ -186,7 +181,7 @@
   },
   "ui/hooks/bridge/useRewards.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 2
+      "count": 1
     }
   },
   "ui/hooks/bridge/useTokenSearchResults.ts": {
@@ -274,11 +269,6 @@
       "count": 1
     }
   },
-  "ui/pages/bridge/prepare/components/bridge-asset-picker/bridge-asset-picker-content.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/pages/bridge/prepare/prepare-bridge-page.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 2
@@ -340,26 +330,6 @@
     }
   },
   "ui/pages/confirmations/hooks/alerts/transactions/useContractCode.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/alerts/transactions/useGasFeeLowAlerts.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/alerts/transactions/useGasTooLowAlerts.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/alerts/transactions/useNoGasPriceAlerts.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/alerts/transactions/useNonContractAddressAlerts.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
     }

@@ -11,7 +11,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
       data-testid="connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
@@ -20,59 +20,58 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="justify-center mb-8 flex"
+              class="flex justify-center mt-4 mb-6"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
               >
                 <img
-                  alt="metamask.github.io logo"
-                  class="mm-avatar-favicon__image"
+                  alt="metamask.github.io"
+                  class="size-full object-contain"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
               </div>
             </div>
             <div
-              class="gap-2 items-center justify-center mb-1 flex"
+              class="flex flex-col gap-2"
             >
-              <h2
-                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
-                style="word-break: break-word; white-space: normal;"
+              <h3
+                class="text-default text-s-heading-md leading-s-heading-md tracking-s-heading-md md:text-l-heading-md md:leading-l-heading-md md:tracking-l-heading-md font-bold font-default break-words whitespace-normal"
               >
                 metamask.github.io
-              </h2>
-            </div>
-            <div
-              class="justify-center flex"
-            >
+              </h3>
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
               >
                 Connect this website with MetaMask
               </p>
             </div>
+            <div
+              class="flex justify-center mt-4"
+            />
           </p>
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
         style="overflow: auto;"
       >
         <div
-          class="mt-2"
+          class="flex flex-col gap-1"
         >
           <p
-            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default ml-4"
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           >
-            Accounts
+            Account
           </p>
           <div
-            class="bg-default rounded-xl"
+            class="bg-muted rounded-lg cursor-pointer"
+            data-testid="account-selection-section"
           >
             <div
               class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell multichain-account-cell--no-hover"
               data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-              style="cursor: default; position: relative;"
+              style="cursor: pointer; position: relative;"
             >
               <div
                 class="flex flex-row items-center justify-start"
@@ -148,43 +147,102 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                   >
                     Test Account Group 1
                   </p>
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
+                    data-testid="balance-display-subtitle"
+                  >
+                    0.00
+                  </p>
                 </div>
               </div>
               <div
                 class="flex flex-row items-center justify-center"
                 style="flex-shrink: 0;"
               >
-                <p
-                  class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
-                  data-testid="balance-display"
-                >
-                  0.00
-                </p>
                 <div
                   aria-label="Test Account Group 1 options"
                   class="flex flex-row items-center justify-end multichain-account-cell__end_accessory"
                   data-testid="multichain-account-cell-end-accessory"
-                />
+                >
+                  <svg
+                    class="inline-block w-4 h-4 text-icon-alternative"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
-          <div
-            class="justify-start mt-4 p-4 flex"
+        </div>
+        <div
+          class="flex flex-col gap-2"
+        >
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           >
-            <div
-              class="items-center justify-center mr-4 p-2 bg-info-muted flex multichain-connect-page__edit-icon rounded-md"
+            Permissions
+          </p>
+          <div
+            class="flex flex-row gap-2 items-center pb-1"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-success-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-                style="mask-image: url('./images/icons/edit.svg');"
+              <path
+                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
               />
-            </div>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-transparent"
-              data-testid="edit"
+            </svg>
+            <p
+              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
             >
-              Edit accounts
-            </button>
+              See addresses, balances, and activity
+            </p>
+          </div>
+          <div
+            class="flex flex-row gap-2 items-center pb-1"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-success-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+              />
+            </svg>
+            <p
+              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            >
+              Send requests for transactions
+            </p>
+          </div>
+          <div
+            class="flex flex-row gap-2 items-center pb-1"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-error-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+              />
+            </svg>
+            <p
+              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            >
+              Cannot move funds without your permission
+            </p>
           </div>
         </div>
       </div>
@@ -192,24 +250,30 @@ exports[`MultichainConnectPage renders correctly 1`] = `
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="flex-col gap-4 flex w-full"
+          class="flex w-full gap-4 flex-row"
         >
-          <div
-            class="gap-4 flex w-full"
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="cancel-btn"
+            role="button"
           >
-            <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-              data-testid="cancel-btn"
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
               Cancel
-            </button>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
-              data-testid="confirm-btn"
+            </span>
+          </button>
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="confirm-btn"
+            role="button"
+          >
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
               Connect
-            </button>
-          </div>
+            </span>
+          </button>
         </div>
       </div>
     </div>
@@ -228,7 +292,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
       data-testid="connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
@@ -237,59 +301,58 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="justify-center mb-8 flex"
+              class="flex justify-center mt-4 mb-6"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
               >
                 <img
-                  alt="metamask.github.io logo"
-                  class="mm-avatar-favicon__image"
+                  alt="metamask.github.io"
+                  class="size-full object-contain"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
               </div>
             </div>
             <div
-              class="gap-2 items-center justify-center mb-1 flex"
+              class="flex flex-col gap-2"
             >
-              <h2
-                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
-                style="word-break: break-word; white-space: normal;"
+              <h3
+                class="text-default text-s-heading-md leading-s-heading-md tracking-s-heading-md md:text-l-heading-md md:leading-l-heading-md md:tracking-l-heading-md font-bold font-default break-words whitespace-normal"
               >
                 metamask.github.io
-              </h2>
-            </div>
-            <div
-              class="justify-center flex"
-            >
+              </h3>
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
               >
                 Connect this website with MetaMask
               </p>
             </div>
+            <div
+              class="flex justify-center mt-4"
+            />
           </p>
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
         style="overflow: auto;"
       >
         <div
-          class="mt-2"
+          class="flex flex-col gap-1"
         >
           <p
-            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default ml-4"
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           >
-            Accounts
+            Account
           </p>
           <div
-            class="bg-default rounded-xl"
+            class="bg-muted rounded-lg cursor-pointer"
+            data-testid="account-selection-section"
           >
             <div
               class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell multichain-account-cell--no-hover"
               data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-              style="cursor: default; position: relative;"
+              style="cursor: pointer; position: relative;"
             >
               <div
                 class="flex flex-row items-center justify-start"
@@ -365,43 +428,102 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                   >
                     Test Account Group 1
                   </p>
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
+                    data-testid="balance-display-subtitle"
+                  >
+                    0.00
+                  </p>
                 </div>
               </div>
               <div
                 class="flex flex-row items-center justify-center"
                 style="flex-shrink: 0;"
               >
-                <p
-                  class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
-                  data-testid="balance-display"
-                >
-                  0.00
-                </p>
                 <div
                   aria-label="Test Account Group 1 options"
                   class="flex flex-row items-center justify-end multichain-account-cell__end_accessory"
                   data-testid="multichain-account-cell-end-accessory"
-                />
+                >
+                  <svg
+                    class="inline-block w-4 h-4 text-icon-alternative"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
-          <div
-            class="justify-start mt-4 p-4 flex"
+        </div>
+        <div
+          class="flex flex-col gap-2"
+        >
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           >
-            <div
-              class="items-center justify-center mr-4 p-2 bg-info-muted flex multichain-connect-page__edit-icon rounded-md"
+            Permissions
+          </p>
+          <div
+            class="flex flex-row gap-2 items-center pb-1"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-success-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-                style="mask-image: url('./images/icons/edit.svg');"
+              <path
+                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
               />
-            </div>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-transparent"
-              data-testid="edit"
+            </svg>
+            <p
+              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
             >
-              Edit accounts
-            </button>
+              See addresses, balances, and activity
+            </p>
+          </div>
+          <div
+            class="flex flex-row gap-2 items-center pb-1"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-success-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+              />
+            </svg>
+            <p
+              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            >
+              Send requests for transactions
+            </p>
+          </div>
+          <div
+            class="flex flex-row gap-2 items-center pb-1"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-error-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+              />
+            </svg>
+            <p
+              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            >
+              Cannot move funds without your permission
+            </p>
           </div>
         </div>
       </div>
@@ -409,24 +531,30 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="flex-col gap-4 flex w-full"
+          class="flex w-full gap-4 flex-row"
         >
-          <div
-            class="gap-4 flex w-full"
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="cancel-btn"
+            role="button"
           >
-            <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-              data-testid="cancel-btn"
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
               Cancel
-            </button>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
-              data-testid="confirm-btn"
+            </span>
+          </button>
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="confirm-btn"
+            role="button"
+          >
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
               Connect
-            </button>
-          </div>
+            </span>
+          </button>
         </div>
       </div>
     </div>
@@ -445,7 +573,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
       data-testid="connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
@@ -454,59 +582,58 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="justify-center mb-8 flex"
+              class="flex justify-center mt-4 mb-6"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
               >
                 <img
-                  alt="metamask.github.io logo"
-                  class="mm-avatar-favicon__image"
+                  alt="metamask.github.io"
+                  class="size-full object-contain"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
               </div>
             </div>
             <div
-              class="gap-2 items-center justify-center mb-1 flex"
+              class="flex flex-col gap-2"
             >
-              <h2
-                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
-                style="word-break: break-word; white-space: normal;"
+              <h3
+                class="text-default text-s-heading-md leading-s-heading-md tracking-s-heading-md md:text-l-heading-md md:leading-l-heading-md md:tracking-l-heading-md font-bold font-default break-words whitespace-normal"
               >
                 metamask.github.io
-              </h2>
-            </div>
-            <div
-              class="justify-center flex"
-            >
+              </h3>
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
               >
                 Connect this website with MetaMask
               </p>
             </div>
+            <div
+              class="flex justify-center mt-4"
+            />
           </p>
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
         style="overflow: auto;"
       >
         <div
-          class="mt-2"
+          class="flex flex-col gap-1"
         >
           <p
-            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default ml-4"
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           >
-            Accounts
+            Account
           </p>
           <div
-            class="bg-default rounded-xl"
+            class="bg-muted rounded-lg cursor-pointer"
+            data-testid="account-selection-section"
           >
             <div
               class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell multichain-account-cell--no-hover"
               data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-              style="cursor: default; position: relative;"
+              style="cursor: pointer; position: relative;"
             >
               <div
                 class="flex flex-row items-center justify-start"
@@ -582,43 +709,102 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                   >
                     Test Account Group 1
                   </p>
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
+                    data-testid="balance-display-subtitle"
+                  >
+                    0.00
+                  </p>
                 </div>
               </div>
               <div
                 class="flex flex-row items-center justify-center"
                 style="flex-shrink: 0;"
               >
-                <p
-                  class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
-                  data-testid="balance-display"
-                >
-                  0.00
-                </p>
                 <div
                   aria-label="Test Account Group 1 options"
                   class="flex flex-row items-center justify-end multichain-account-cell__end_accessory"
                   data-testid="multichain-account-cell-end-accessory"
-                />
+                >
+                  <svg
+                    class="inline-block w-4 h-4 text-icon-alternative"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
-          <div
-            class="justify-start mt-4 p-4 flex"
+        </div>
+        <div
+          class="flex flex-col gap-2"
+        >
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           >
-            <div
-              class="items-center justify-center mr-4 p-2 bg-info-muted flex multichain-connect-page__edit-icon rounded-md"
+            Permissions
+          </p>
+          <div
+            class="flex flex-row gap-2 items-center pb-1"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-success-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-                style="mask-image: url('./images/icons/edit.svg');"
+              <path
+                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
               />
-            </div>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-transparent"
-              data-testid="edit"
+            </svg>
+            <p
+              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
             >
-              Edit accounts
-            </button>
+              See addresses, balances, and activity
+            </p>
+          </div>
+          <div
+            class="flex flex-row gap-2 items-center pb-1"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-success-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+              />
+            </svg>
+            <p
+              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            >
+              Send requests for transactions
+            </p>
+          </div>
+          <div
+            class="flex flex-row gap-2 items-center pb-1"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-error-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+              />
+            </svg>
+            <p
+              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            >
+              Cannot move funds without your permission
+            </p>
           </div>
         </div>
       </div>
@@ -626,24 +812,30 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="flex-col gap-4 flex w-full"
+          class="flex w-full gap-4 flex-row"
         >
-          <div
-            class="gap-4 flex w-full"
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="cancel-btn"
+            role="button"
           >
-            <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-              data-testid="cancel-btn"
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
               Cancel
-            </button>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
-              data-testid="confirm-btn"
+            </span>
+          </button>
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="confirm-btn"
+            role="button"
+          >
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
               Connect
-            </button>
-          </div>
+            </span>
+          </button>
         </div>
       </div>
     </div>

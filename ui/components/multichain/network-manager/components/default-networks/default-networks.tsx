@@ -143,7 +143,8 @@ const DefaultNetworks = memo(() => {
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
 
   // Use the shared network change handlers hook
-  const { handleNetworkChange } = useNetworkChangeHandlers();
+  const { handleNetworkChange, isPending, startTransition } =
+    useNetworkChangeHandlers();
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
@@ -274,11 +275,10 @@ const DefaultNetworks = memo(() => {
 
     dispatch(setEnabledAllPopularNetworks());
     dispatch(hideModal());
-    // deferring execution to keep select all unblocked
-    setTimeout(() => {
+    startTransition(() => {
       dispatch(setActiveNetwork(finalNetworkClientId));
-    }, 0);
-  }, [dispatch, evmNetworks, orderedNetworks]);
+    });
+  }, [dispatch, evmNetworks, orderedNetworks, startTransition]);
 
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
@@ -376,6 +376,9 @@ const DefaultNetworks = memo(() => {
           onDiscoverClick={onDiscoverClick}
           onRpcEndpointClick={onRpcSelect}
           selected={isSelected}
+          // Last-remaining stays clickable so the modal can still close; the
+          // switch itself is no-op'd in handleNetworkChangeCallback.
+          disabled={isPending && !isLastRemainingNetwork}
         />
       );
     });
@@ -396,6 +399,7 @@ const DefaultNetworks = memo(() => {
     enabledChainIds,
     useExternalServices,
     selectedNonEvmChainId,
+    isPending,
   ]);
 
   // Memoize the additional network list items

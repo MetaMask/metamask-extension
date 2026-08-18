@@ -6,6 +6,13 @@ import {
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { getIsPayAmountPrefillEnabled } from '../../../../shared/lib/transaction/pay-prefill';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
+import {
+  getRelayFixedSpreadFromConfig,
+  type RelayFixedSpreadConfig,
+} from '../utils/relay-fixed-spread';
+
+export const RELAY_FIXED_SPREAD_FEATURE_FLAG =
+  'confirmations_relay_fixed_spread';
 
 type ConfirmationsPayDappsFlag = {
   enabled?: boolean;
@@ -67,6 +74,12 @@ type HardwareWalletConfig = {
   enabled?: boolean;
 };
 
+type ConfirmationsPayFlag = {
+  depositLimit?: Record<string, number>;
+};
+
+const EMPTY_DEPOSIT_LIMITS: Record<string, number> = {};
+
 const selectConfirmationsPayDappsFlag = createSelector(
   getRemoteFeatureFlags,
   (flags) =>
@@ -120,6 +133,18 @@ const selectPayHardwareFlag = createSelector(
   /* eslint-enable @typescript-eslint/naming-convention */
 );
 
+const selectConfirmationsPayFlag = createSelector(
+  getRemoteFeatureFlags,
+  (flags) =>
+    /* eslint-disable @typescript-eslint/naming-convention */
+    (
+      flags as unknown as {
+        confirmations_pay?: ConfirmationsPayFlag;
+      }
+    ).confirmations_pay,
+  /* eslint-enable @typescript-eslint/naming-convention */
+);
+
 /**
  * Resolves the effective post-quote config for a given transaction type.
  * Transaction-specific config may be supplied either as
@@ -169,6 +194,22 @@ export const selectIsPayAmountPrefillEnabled = createSelector(
   ],
   (remoteFeatureFlags, transactionType): boolean =>
     getIsPayAmountPrefillEnabled({ remoteFeatureFlags }, transactionType),
+);
+
+/**
+ * Per-transaction-type USD deposit limits from
+ * `confirmations_pay.depositLimit`. Empty map when unset.
+ */
+export const selectDepositLimits = createSelector(
+  selectConfirmationsPayFlag,
+  (flag): Record<string, number> => {
+    const depositLimit = flag?.depositLimit;
+    if (!depositLimit || typeof depositLimit !== 'object') {
+      return EMPTY_DEPOSIT_LIMITS;
+    }
+
+    return depositLimit;
+  },
 );
 
 /**
@@ -239,6 +280,64 @@ export const selectEnforcedSimulationsSlippage = createSelector(
 export const selectIsPayHardwareEnabled = createSelector(
   selectPayHardwareFlag,
   (flag): boolean => flag?.enabled ?? false,
+);
+
+type PayExtendedFlag = {
+  enableMoneyAccountTransactions?: Record<string, boolean>;
+};
+
+const selectPayExtendedFlag = createSelector(
+  getRemoteFeatureFlags,
+  (flags) =>
+    /* eslint-disable @typescript-eslint/naming-convention */
+    (
+      flags as unknown as {
+        confirmations_pay_extended?: PayExtendedFlag;
+      }
+    ).confirmations_pay_extended,
+  /* eslint-enable @typescript-eslint/naming-convention */
+);
+
+/**
+ * Map of transaction types that may use Money Account as a pay method, from
+ * `confirmations_pay_extended.enableMoneyAccountTransactions`.
+ */
+export const selectEnableMoneyAccountTransactions = createSelector(
+  selectPayExtendedFlag,
+  (flag): Record<string, boolean> => flag?.enableMoneyAccountTransactions ?? {},
+);
+
+/**
+ * Whether Money Account pay is enabled for a given transaction type.
+ *
+ * @param _state
+ * @param transactionType
+ */
+export const selectIsMoneyAccountTransactionEnabled = createSelector(
+  [
+    selectEnableMoneyAccountTransactions,
+    (_state, transactionType?: string) => transactionType,
+  ],
+  (enableMoneyAccountTransactions, transactionType): boolean =>
+    Boolean(transactionType && enableMoneyAccountTransactions[transactionType]),
+);
+
+/**
+ * Parses the `confirmations_relay_fixed_spread` remote feature flag into a
+ * normalised route config used to identify no-fee Money Account deposit tokens.
+ */
+export const selectRelayFixedSpread = createSelector(
+  getRemoteFeatureFlags,
+  (flags): RelayFixedSpreadConfig =>
+    getRelayFixedSpreadFromConfig(
+      (
+        flags as unknown as {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          confirmations_relay_fixed_spread?: unknown;
+        }
+      ).confirmations_relay_fixed_spread,
+      RELAY_FIXED_SPREAD_FEATURE_FLAG,
+    ),
 );
 
 function getPreferredTokensForTransaction(

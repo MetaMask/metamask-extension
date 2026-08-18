@@ -115,6 +115,7 @@ export const EditNetworksModal = ({
         >
           <Box padding={4}>
             <Checkbox
+              data-testid="network-list-item-checkbox-select-all"
               label={t('selectAll')}
               isSelected={checked || isIndeterminate}
               onChange={() => (allAreSelected() ? deselectAll() : selectAll())}
@@ -134,6 +135,7 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
+                  data-testid={`network-list-item-checkbox-${network.name}`}
                   isSelected={selectedChainIds.includes(network.caipChainId)}
                   checkboxContainerProps={checkboxContainerProps}
                   onChange={() => handleNetworkClick(network.caipChainId)}
@@ -155,6 +157,7 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
+                  data-testid={`network-list-item-checkbox-${network.name}`}
                   isSelected={selectedChainIds.includes(network.caipChainId)}
                   checkboxContainerProps={checkboxContainerProps}
                   onChange={() => handleNetworkClick(network.caipChainId)}
