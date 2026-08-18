@@ -46,7 +46,6 @@ import {
 } from '../../../selectors/dapp';
 import {
   addPermittedAccounts,
-  hidePermittedNetworkToast,
   removePermissionsFor,
 } from '../../../store/actions';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
@@ -190,7 +189,6 @@ export const DappConnectionControlBar = memo(() => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
-    dispatch(hidePermittedNetworkToast());
     setShowDisconnectModal(false);
   }, [dispatch, subjects, activeTabOrigin]);
 
@@ -393,6 +391,7 @@ export const DappConnectionControlBar = memo(() => {
         <DisconnectAllModal
           onClose={handleCloseDisconnectModal}
           onClick={handleDisconnect}
+          origin={activeTabOrigin}
         />
       )}
 

@@ -45,7 +45,6 @@ import {
   setNextNonce,
   setShowTestNetworks,
   setTokenNetworkFilter,
-  showPermittedNetworkToast,
   updateCustomNonce,
 } from '../../../store/actions';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
@@ -177,7 +176,6 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
             await dispatch(
               addPermittedChain(selectedTabOrigin, network.chainId),
             );
-            dispatch(showPermittedNetworkToast());
           }
 
           await setNetworkClientIdForDomain(

@@ -2,21 +2,16 @@ import React, { useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import {
-  Box as BoxDeprecated,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
-  IconName as IconNameDeprecated,
-  Text,
-} from '../../component-library';
+  IconName,
+} from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
   MetaMetricsEventName,
@@ -106,6 +101,14 @@ export const AppHeaderUnlockedContent = ({
   }, [accountOptionsMenuOpen, trackEvent, createEventBuilder, setSearchParams]);
 
   const handleOpenDiscoverSearch = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ExploreSearchInteracted)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          interaction_type: 'opened',
+        })
+        .build(),
+    );
     transitionForward(() =>
       navigate(DISCOVER_SEARCH_ROUTE, {
         state: {
@@ -113,18 +116,16 @@ export const AppHeaderUnlockedContent = ({
         },
       }),
     );
-  }, [navigate]);
+  }, [createEventBuilder, navigate, trackEvent]);
 
   const multichainAccountAppContent = useMemo(() => {
     return (
-      <BoxDeprecated style={{ overflow: 'hidden' }}>
+      <Box style={{ overflow: 'hidden' }}>
         {/* Prevent overflow of account picker by long account names */}
-        <Text
-          as="div"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexStart}
-          ellipsis
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Start}
+          className="min-w-0"
         >
           <AccountPicker
             address={''} // No address shown in multichain mode
@@ -158,12 +159,10 @@ export const AppHeaderUnlockedContent = ({
             paddingLeft={2}
             paddingRight={2}
           />
-        </Text>
+        </Box>
         {selectedMultichainAccountId && (
-          <BoxDeprecated
-            marginTop={1}
-            marginLeft={2}
-            style={{ width: 'fit-content' }}
+          <Box
+            className="ml-2 mt-1 w-fit"
             data-testid="networks-subtitle-test-id"
           >
             <MultichainTriggeredAddressRowsList
@@ -181,9 +180,9 @@ export const AppHeaderUnlockedContent = ({
                 groupId={selectedMultichainAccountId}
               />
             </MultichainTriggeredAddressRowsList>
-          </BoxDeprecated>
+          </Box>
         )}
-      </BoxDeprecated>
+      </Box>
     );
   }, [
     accountName,
@@ -198,54 +197,49 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      <BoxDeprecated
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={2}
         className="min-w-0"
       >
         {multichainAccountAppContent}
-      </BoxDeprecated>
-      <BoxDeprecated
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.flexEnd}
-        style={{ marginLeft: 'auto' }}
+      </Box>
+      <Box
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.End}
+        className="ml-auto"
       >
-        <BoxDeprecated display={Display.Flex} gap={2}>
-          <BoxDeprecated
-            display={Display.Flex}
-            justifyContent={JustifyContent.flexEnd}
-            width={BlockSize.Full}
-            style={{ position: 'relative' }}
-          >
-            {!accountOptionsMenuOpen && (
-              <BoxDeprecated onClick={handleMainMenuToggle}>
-                <NotificationsTagCounter noLabel />
-              </BoxDeprecated>
-            )}
-            {isDiscoverSearchEnabled && (
-              <ButtonIcon
-                iconName={IconNameDeprecated.Search}
-                data-testid="discover-search-button"
-                ariaLabel={t('searchTokens')}
-                onClick={handleOpenDiscoverSearch}
-                size={ButtonIconSize.Lg}
-              />
-            )}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.End}
+          className="relative w-full"
+          gap={2}
+        >
+          {!accountOptionsMenuOpen && (
+            <Box onClick={handleMainMenuToggle}>
+              <NotificationsTagCounter noLabel />
+            </Box>
+          )}
+          {isDiscoverSearchEnabled && (
             <ButtonIcon
-              ref={menuRef}
-              iconName={IconNameDeprecated.Menu}
-              data-testid="account-options-menu-button"
-              ariaLabel={t('accountOptions')}
-              onClick={handleMainMenuToggle}
-              size={ButtonIconSize.Lg}
+              iconName={IconName.Search}
+              data-testid="discover-search-button"
+              ariaLabel={t('searchTokens')}
+              onClick={handleOpenDiscoverSearch}
+              size={ButtonIconSize.Md}
             />
-          </BoxDeprecated>
-        </BoxDeprecated>
+          )}
+          <ButtonIcon
+            ref={menuRef}
+            iconName={IconName.Menu}
+            data-testid="account-options-menu-button"
+            ariaLabel={t('accountOptions')}
+            onClick={handleMainMenuToggle}
+            size={ButtonIconSize.Md}
+          />
+        </Box>
         <GlobalMenuDrawerWithList
-          anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
           onClose={closeAccountOptionsMenu}
         />
@@ -253,7 +247,7 @@ export const AppHeaderUnlockedContent = ({
           isOpen={showSupportDataConsentModal}
           onClose={() => dispatch(setShowSupportDataConsentModal(false))}
         />
-      </BoxDeprecated>
+      </Box>
     </>
   );
 };

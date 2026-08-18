@@ -1,7 +1,6 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
   dedupeItems,
-  getActivityDetailsPath,
   getActivityItemIdentifier,
   getItemKey,
   getLastEvmItemIndex,
@@ -26,46 +25,12 @@ function makeItem(
   } as ActivityListItem;
 }
 
-describe('getActivityDetailsPath', () => {
-  it('uses the ramps-owned details route for ramp buys', () => {
-    const rampBuy = makeItem({
-      timestamp: 1,
-      status: 'pending',
-      type: 'rampBuy',
-      hash: undefined,
-      data: { id: 'moonpay/orders/native-uuid' },
-    });
-
-    expect(getActivityDetailsPath(rampBuy)).toBe(
-      '/ramps/order/eip155:1/native-uuid',
-    );
-  });
-
-  it('uses the generic tx details route for non-ramp items', () => {
-    const send = makeItem({
-      timestamp: 1,
-      status: 'success',
-      type: 'send',
-      hash: '0xabc',
-    });
-
-    expect(getActivityDetailsPath(send)).toBe('/tx/eip155:1/0xabc');
-  });
-
-  it('returns undefined when the item has no identifier', () => {
-    const rampSell = makeItem({
-      timestamp: 1,
-      status: 'pending',
-      type: 'rampSell',
-      hash: undefined,
-      data: {},
-    });
-
-    expect(getActivityDetailsPath(rampSell)).toBeUndefined();
-  });
-});
-
 describe('getActivityItemIdentifier', () => {
+  it('returns undefined when no item is selected', () => {
+    expect(getActivityItemIdentifier(undefined)).toBeUndefined();
+    expect(getActivityItemIdentifier(null)).toBeUndefined();
+  });
+
   it('reduces a provider-prefixed ramp order id to its order code', () => {
     const rampBuy = makeItem({
       timestamp: 1,

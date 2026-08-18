@@ -6,6 +6,7 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import type { PaymentMethod, Quote } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { RampsPaymentMethodScreen } from './payment-method';
 
 const mockNavigate = jest.fn();
@@ -233,7 +234,7 @@ describe('RampsPaymentMethodScreen', () => {
     );
 
     fireEvent.click(screen.getByTestId('ramps-payment-method-back'));
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('keeps back navigation available when idle', () => {
@@ -253,7 +254,7 @@ describe('RampsPaymentMethodScreen', () => {
     );
 
     fireEvent.click(screen.getByTestId('ramps-payment-method-back'));
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('matches snapshot when payment methods fail to load', () => {
@@ -397,7 +398,7 @@ describe('RampsPaymentMethodScreen', () => {
     });
 
     expect(mockSetSelectedPaymentMethod).toHaveBeenCalledWith(bankTransfer);
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('selects a payment method and navigates back', async () => {
@@ -414,7 +415,7 @@ describe('RampsPaymentMethodScreen', () => {
     });
 
     expect(mockSetSelectedPaymentMethod).toHaveBeenCalledWith(bankTransfer);
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('ignores a second tap while selection is in flight', async () => {

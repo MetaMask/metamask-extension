@@ -162,6 +162,7 @@ export const spanLocator = {
   sendManageStateResultSpan: '#sendManageStateResult',
   snapUIRenderer: '.snap-ui-renderer__content',
   snapUiRendererPanel: '.snap-ui-renderer__panel',
+  snapUiRendererText: '.snap-ui-renderer__text',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
   signMessageMultichainResultSpan: '#signMessageMultichainResult',
   signTypedDataMultichainResultSpan: '#signTypedDataMultichainResult',
@@ -174,7 +175,7 @@ export const spanLocator = {
   wasmResultSpan: '#wasmResult',
   unencryptedStateResultSpan: '#unencryptedStateResult',
   getStateUnencryptedResultSpan: '#getStateUnencryptedResult',
-  backgroundEventResultSpan: '#schedulebackgroundEventResult',
+  backgroundEventResultSpan: '#scheduleBackgroundEventResult',
   getBackgroundEventResultSpan: '#getBackgroundEventsResult',
 } satisfies Record<string, string>;
 
@@ -186,6 +187,18 @@ const dropDownLocator = {
   multichainNetworkDropdown: '#select-multichain-chain',
 } satisfies Record<string, string>;
 
+/**
+ * Test Snaps playground dapp for installing and exercising example snaps.
+ *
+ * Screen: `DAPP_URL` when serving `@metamask/test-snaps` (Flask snaps E2E).
+ * Owns: connect buttons for each example snap, dialog/insight/cron/state
+ * inputs, result spans, and preference/version helpers used by snaps tests.
+ * Boundaries: the test-snaps site only. Snap install warnings, interactive
+ * dialogs, and confirmation UI belong to dialog/confirmation page objects.
+ * Related: `SnapInstall`, `SnapInteractiveDialog`, `SnapListPage`.
+ *
+ * @see node_modules/@metamask/test-snaps/dist/index.html
+ */
 export class TestSnaps {
   driver: Driver;
 
@@ -412,6 +425,21 @@ export class TestSnaps {
       text: name,
       css: `${locator} option`,
     });
+  }
+
+  /**
+   * Wait until the given result span contains text, and return that text.
+   *
+   * @param spanSelectorId - The name of the result span locator to wait for.
+   * @returns The text of the result span.
+   */
+  async waitForNonEmptyResult(
+    spanSelectorId: keyof typeof spanLocator,
+  ): Promise<string> {
+    console.log(`Waiting for a result in ${spanSelectorId}`);
+    const element = await this.driver.findElement(spanLocator[spanSelectorId]);
+    await this.driver.waitForNonEmptyElement(element);
+    return await element.getText();
   }
 
   async waitForWebSocketUpdate(state: {

@@ -7,15 +7,18 @@ import {
 const mockDmkInit = jest.fn();
 const mockDmkDestroy = jest.fn();
 const mockDmkHandleAction = jest.fn();
+const mockDmkForceReset = jest.fn();
 
 const mockLegacyInit = jest.fn();
 const mockLegacyDestroy = jest.fn();
 const mockLegacyHandleAction = jest.fn();
+const mockLegacyForceReset = jest.fn();
 
 type MockHandler = {
   init: jest.Mock;
   destroy: jest.Mock;
   handleAction: jest.Mock;
+  forceReset: jest.Mock;
 };
 
 let mockDmkInstance: MockHandler;
@@ -28,6 +31,7 @@ jest.mock('./ledger-dmk', () => {
         init: mockDmkInit,
         destroy: mockDmkDestroy,
         handleAction: mockDmkHandleAction,
+        forceReset: mockDmkForceReset,
       };
       return mockDmkInstance;
     }),
@@ -50,6 +54,7 @@ jest.mock('./ledger', () => ({
       init: mockLegacyInit,
       destroy: mockLegacyDestroy,
       handleAction: mockLegacyHandleAction,
+      forceReset: mockLegacyForceReset,
     };
     return mockLegacyInstance;
   }),
@@ -65,6 +70,8 @@ type LegacyModule = typeof import('./ledger');
 let initLedger: RouterModule['default'];
 let switchLedgerHandler: RouterModule['switchLedgerHandler'];
 let bootstrapLedger: RouterModule['bootstrapLedger'];
+let READ_ACTION_TIMEOUT_MS: RouterModule['READ_ACTION_TIMEOUT_MS'];
+let SIGN_ACTION_TIMEOUT_MS: RouterModule['SIGN_ACTION_TIMEOUT_MS'];
 let mockedDmkCtor: jest.Mock;
 let mockedLegacyCtor: jest.Mock;
 
@@ -136,6 +143,8 @@ describe('LedgerRouter', () => {
       initLedger = router.default;
       switchLedgerHandler = router.switchLedgerHandler;
       bootstrapLedger = router.bootstrapLedger;
+      READ_ACTION_TIMEOUT_MS = router.READ_ACTION_TIMEOUT_MS;
+      SIGN_ACTION_TIMEOUT_MS = router.SIGN_ACTION_TIMEOUT_MS;
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const dmkModule = require('./ledger-dmk') as DmkModule;
       // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -219,12 +228,12 @@ describe('LedgerRouter', () => {
       );
 
       expect(result).toBe(true);
+
+      await flushAsync();
       expect(mockDmkHandleAction).toHaveBeenCalledWith(
         LedgerAction.getPublicKey,
         { hdPath: "m/44'/60'/0'/0/0" },
       );
-
-      await flushAsync();
       expect(sendResponse).toHaveBeenCalledWith({
         success: true,
         payload: 'dmk-result',
@@ -239,12 +248,11 @@ describe('LedgerRouter', () => {
 
       getListener()(makeMessage(LedgerAction.getPublicKey), {}, sendResponse);
 
+      await flushAsync();
       expect(mockLegacyHandleAction).toHaveBeenCalledWith(
         LedgerAction.getPublicKey,
         undefined,
       );
-
-      await flushAsync();
       expect(sendResponse).toHaveBeenCalledWith({
         success: true,
         payload: 'legacy-result',
@@ -277,6 +285,219 @@ describe('LedgerRouter', () => {
       expect(sendResponse).toHaveBeenCalledWith({
         success: false,
         payload: { error: expect.objectContaining({ message: 'bad' }) },
+      });
+    });
+
+    it('serializes concurrent actions so the second runs only after the first resolves', async () => {
+      await initLedger(LedgerHandlerMode.Legacy);
+      let resolveFirst!: (value: unknown) => void;
+      const firstPending = new Promise((r) => {
+        resolveFirst = r;
+      });
+      mockLegacyHandleAction.mockReturnValueOnce(firstPending);
+      mockLegacyHandleAction.mockResolvedValueOnce('second-result');
+
+      const sendResponse1 = jest.fn();
+      const sendResponse2 = jest.fn();
+
+      getListener()(
+        makeMessage(LedgerAction.getPublicKey, { hdPath: 'a' }),
+        {},
+        sendResponse1,
+      );
+      getListener()(
+        makeMessage(LedgerAction.getPublicKey, { hdPath: 'b' }),
+        {},
+        sendResponse2,
+      );
+
+      await flushAsync();
+      // First action is in flight; the second must not have started yet, and
+      // neither response has been sent.
+      expect(mockLegacyHandleAction).toHaveBeenCalledTimes(1);
+      expect(sendResponse1).not.toHaveBeenCalled();
+      expect(sendResponse2).not.toHaveBeenCalled();
+
+      resolveFirst('first-result');
+      await flushAsync();
+
+      expect(mockLegacyHandleAction).toHaveBeenCalledTimes(2);
+      expect(sendResponse1).toHaveBeenCalledWith({
+        success: true,
+        payload: 'first-result',
+      });
+      expect(sendResponse2).toHaveBeenCalledWith({
+        success: true,
+        payload: 'second-result',
+      });
+    });
+
+    it('rejects a wedged action after the timeout, force-resets the handler, and frees the chain', async () => {
+      const sendResponse1 = jest.fn();
+      const sendResponse2 = jest.fn();
+      jest.useFakeTimers();
+      try {
+        await initLedger(LedgerHandlerMode.Legacy);
+
+        // First action never resolves (wedged offscreen WebHID round-trip);
+        // second action resolves normally once it gets to run.
+        mockLegacyHandleAction
+          .mockReturnValueOnce(
+            new Promise(() => {
+              /* never resolves */
+            }),
+          )
+          .mockResolvedValueOnce('after-recovery');
+
+        getListener()(
+          makeMessage(LedgerAction.getPublicKey, { hdPath: 'a' }),
+          {},
+          sendResponse1,
+        );
+        getListener()(
+          makeMessage(LedgerAction.getPublicKey, { hdPath: 'b' }),
+          {},
+          sendResponse2,
+        );
+
+        // Let the chain reach the wedged action.
+        await Promise.resolve();
+        expect(sendResponse1).not.toHaveBeenCalled();
+
+        // Cross the read-action backstop: the link rejects and the
+        // handler is force-reset (synchronously, within the timer callback).
+        jest.advanceTimersByTime(READ_ACTION_TIMEOUT_MS);
+        expect(mockLegacyForceReset).toHaveBeenCalledTimes(1);
+      } finally {
+        // Always restore real timers so later tests don't hang on faked setTimeout.
+        jest.useRealTimers();
+      }
+
+      // Drain the microtask chain now that timers are real.
+      await flushAsync();
+      expect(sendResponse1).toHaveBeenCalledWith({
+        success: false,
+        payload: {
+          error: expect.objectContaining({
+            message: expect.stringContaining('timed out'),
+          }),
+        },
+      });
+      expect(sendResponse2).toHaveBeenCalledWith({
+        success: true,
+        payload: 'after-recovery',
+      });
+    });
+
+    it('swallows the late rejection of a timed-out action (no unhandled rejection)', async () => {
+      // After the timeout fires and forceReset closes the transport, the
+      // abandoned handleAction promise typically rejects. That rejection must
+      // be consumed (not surface as unhandled) and must not change the
+      // already-sent timeout response.
+      const unhandled: unknown[] = [];
+      const onUnhandled = (reason: unknown) => {
+        unhandled.push(reason);
+      };
+      process.on('unhandledRejection', onUnhandled);
+
+      let rejectAction!: (error: unknown) => void;
+      const sendResponse = jest.fn();
+      jest.useFakeTimers();
+      try {
+        await initLedger(LedgerHandlerMode.Legacy);
+        mockLegacyHandleAction.mockReturnValueOnce(
+          new Promise<unknown>((_resolve, reject) => {
+            rejectAction = reject;
+          }),
+        );
+
+        getListener()(
+          makeMessage(LedgerAction.getPublicKey, { hdPath: 'a' }),
+          {},
+          sendResponse,
+        );
+
+        // Let the chain reach the wedged action, then cross the read-action
+        // backstop. forceReset runs synchronously inside the timer.
+        await Promise.resolve();
+        jest.advanceTimersByTime(READ_ACTION_TIMEOUT_MS);
+        expect(mockLegacyForceReset).toHaveBeenCalledTimes(1);
+      } finally {
+        jest.useRealTimers();
+      }
+
+      // Drain the microtask chain: the timeout rejection reaches sendResponse.
+      await flushAsync();
+      expect(sendResponse).toHaveBeenCalledWith({
+        success: false,
+        payload: {
+          error: expect.objectContaining({
+            message: expect.stringContaining('timed out'),
+          }),
+        },
+      });
+
+      // The transport now closes (forceReset ran); the wedged action rejects
+      // late. This rejection must be consumed, not surface as unhandled.
+      rejectAction(new Error('transport closed'));
+      await flushAsync();
+      process.off('unhandledRejection', onUnhandled);
+
+      expect(unhandled).toHaveLength(0);
+      // The timeout response stands; the late rejection did not overwrite it.
+      expect(sendResponse).toHaveBeenCalledTimes(1);
+    });
+
+    it('uses the longer sign-action backstop for signing actions (330s, not 60s)', async () => {
+      // Signing actions (signTransaction/signPersonalMessage/signTypedData)
+      // require user confirmation on the device and use a longer backstop than
+      // read actions. A wedged sign action must NOT time out at the 60s read
+      // backstop — only at the 330s sign backstop.
+      jest.useFakeTimers();
+      const sendResponse = jest.fn();
+      try {
+        await initLedger(LedgerHandlerMode.Legacy);
+        mockLegacyHandleAction.mockReturnValueOnce(
+          new Promise(() => {
+            /* never resolves */
+          }),
+        );
+
+        getListener()(
+          makeMessage(LedgerAction.signTransaction, {
+            hdPath: 'a',
+            tx: '0x0',
+          }),
+          {},
+          sendResponse,
+        );
+
+        // Let the chain reach the wedged action.
+        await Promise.resolve();
+
+        // Cross the read-action backstop: a signing action is still pending.
+        jest.advanceTimersByTime(READ_ACTION_TIMEOUT_MS);
+        expect(mockLegacyForceReset).not.toHaveBeenCalled();
+        expect(sendResponse).not.toHaveBeenCalled();
+
+        // Cross the remaining sign-action backstop: now it times
+        // out and force-resets the handler.
+        jest.advanceTimersByTime(
+          SIGN_ACTION_TIMEOUT_MS - READ_ACTION_TIMEOUT_MS,
+        );
+        expect(mockLegacyForceReset).toHaveBeenCalledTimes(1);
+      } finally {
+        jest.useRealTimers();
+      }
+
+      await flushAsync();
+      expect(sendResponse).toHaveBeenCalledWith({
+        success: false,
+        payload: {
+          error: expect.objectContaining({
+            message: expect.stringContaining('timed out'),
+          }),
+        },
       });
     });
   });
@@ -361,6 +582,37 @@ describe('LedgerRouter', () => {
         payload: 'legacy-result',
       });
     });
+
+    it('awaits an in-flight initLedger before switching, avoiding a duplicate handler', async () => {
+      // Start a Legacy init and hold it in flight so a switch arriving
+      // mid-init must wait for `initInProgress` to settle before creating the
+      // new (DMK) handler. Without the guard, the switch would see
+      // `activeHandler === null` and boot a second Legacy handler.
+      let resolveLegacyInit!: () => void;
+      mockLegacyInit.mockReturnValueOnce(
+        new Promise<void>((resolve) => {
+          resolveLegacyInit = resolve;
+        }),
+      );
+
+      const initPromise = initLedger(LedgerHandlerMode.Legacy);
+      // initLedger assigns `initInProgress` synchronously before suspending.
+      const switchPromise = switchLedgerHandler(LedgerHandlerMode.DMK);
+
+      // The switch is parked on the in-flight init; no DMK handler is created yet.
+      await Promise.resolve();
+      expect(mockedDmkCtor).not.toHaveBeenCalled();
+
+      // Let the initial init complete; the switch can now proceed.
+      resolveLegacyInit();
+      await Promise.all([initPromise, switchPromise]);
+
+      // Exactly one Legacy handler (from initLedger) and one DMK handler (from
+      // the switch); the Legacy handler was destroyed after the atomic swap.
+      expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
+      expect(mockedDmkCtor).toHaveBeenCalledTimes(1);
+      expect(mockLegacyDestroy).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('bootstrapLedger', () => {
@@ -370,6 +622,24 @@ describe('LedgerRouter', () => {
       expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
       expect(mockLegacyInit).toHaveBeenCalledWith();
       expect(mockedDmkCtor).not.toHaveBeenCalled();
+    });
+
+    it('swallows init failure and logs instead of throwing', async () => {
+      // A real device failure during bootstrap must not reject the bootstrap
+      // promise (the offscreen document would otherwise be left in a broken
+      // state); it is logged so the failure is observable from DevTools.
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockLegacyInit.mockRejectedValueOnce(new Error('init boom'));
+
+      await expect(bootstrapLedger()).resolves.toBeUndefined();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[ledger-router] bootstrapLedger failed:',
+        expect.objectContaining({ message: 'init boom' }),
+      );
+      consoleErrorSpy.mockRestore();
     });
   });
 

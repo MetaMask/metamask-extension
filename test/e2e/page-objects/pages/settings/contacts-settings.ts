@@ -1,8 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the new Contacts flow (standalone contacts page from global menu).
- * Replaces the old settings contact list tab.
+ * Standalone Contacts address book (list, add, view, edit, delete).
+ *
+ * Screen: `#/contacts` (and add/view/edit sub-routes), opened from
+ * `HeaderNavbar.openContactsPage` — not a Settings tab.
+ * Owns: contact list, add/edit forms, network selector on create, delete
+ * confirm, and presence/label/address assertions.
+ * Boundaries: contacts CRUD only. Contact sync toggles belong to
+ * `BackupAndSyncSettings`.
+ * Related: `HeaderNavbar` (how tests get here), `BackupAndSyncSettings`.
+ *
+ * @see ui/pages/contacts/contacts-list-page.tsx
+ * @see ui/pages/contacts/add-contact-page.tsx
+ * @see ui/pages/contacts/contact-details-page.tsx
+ * @see ui/pages/contacts/edit-contact-page.tsx
  */
 class ContactsSettings {
   private readonly addContactButton =

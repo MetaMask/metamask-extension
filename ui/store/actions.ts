@@ -14,7 +14,6 @@ import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
   bytesToString,
   CaipAccountId,
-  type CaipAssetType,
   type CaipChainId,
   type Hex,
   type Json,
@@ -58,7 +57,6 @@ import type { NotificationServicesController } from '@metamask/notification-serv
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Immer, Patch } from 'immer';
-import { HandlerType } from '@metamask/snaps-utils';
 import {
   GetAppNameAndVersionResponse,
   AppConfigurationResponse,
@@ -208,10 +206,7 @@ import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
-import {
-  ClaimSubmitToastType,
-  type NetworkConnectionBanner,
-} from '../../shared/constants/app-state';
+import { ClaimSubmitToastType } from '../../shared/constants/app-state';
 import {
   SeasonDtoState,
   SeasonStatusState,
@@ -234,6 +229,7 @@ import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscription
 import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
 import { PendingRedirectRoute } from '../../shared/lib/pending-redirect-state';
 import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
+import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -1284,9 +1280,11 @@ export function protectVaultKeyWithPasskey(
   password?: string,
 ): Promise<void> {
   return submitRequestToBackground('protectVaultKeyWithPasskey', [
-    registrationResponse,
-    authenticationResponse,
-    password,
+    {
+      registrationResponse,
+      authenticationResponse,
+      password,
+    },
   ]);
 }
 
@@ -1333,9 +1331,11 @@ export function changePasswordWithPasskeyVerification(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('changePasswordWithPasskeyVerification', [
-      newPassword,
-      authenticationResponse,
-      options,
+      {
+        newPassword,
+        authenticationResponse,
+        options,
+      },
     ]);
   };
 }
@@ -1409,18 +1409,6 @@ export function getSeedPhraseWithPasskey(
       ]);
     } finally {
       dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-export function tryReverseResolveAddress(
-  address: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('tryReverseResolveAddress', [address]);
-    } catch (err) {
-      logErrorWithMessage(err);
     }
   };
 }
@@ -2592,7 +2580,8 @@ export function setSelectedMultichainAccount(
   return async (dispatch, _getState) => {
     log.debug(`background.setSelectedMultichainAccount`);
     try {
-      dispatch(showLoadingIndication());
+      // Fullscreen loading indication removed; callers are responsible for pending UX
+      // (e.g. component-local state, or `useTransition` where appropriate).
       await submitRequestToBackground('setSelectedMultichainAccount', [
         accountGroupId,
       ]);
@@ -2601,8 +2590,6 @@ export function setSelectedMultichainAccount(
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -3564,11 +3551,12 @@ export function createCancelTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createCancelTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
-    const newState = await submitRequestToBackground<
-      MetaMaskReduxState['metamask']
-    >('createCancelTransaction', [
+    await submitRequestToBackground('createCancelTransaction', [
       txId,
       customGasSettings,
       { ...options, actionId },
@@ -3576,9 +3564,7 @@ export function createCancelTransaction(
 
     await forceUpdateMetamaskState(dispatch);
 
-    const currentNetworkTxList = getCurrentNetworkTransactions({
-      metamask: newState,
-    });
+    const currentNetworkTxList = getCurrentNetworkTransactions(getState());
     const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
     return id;
   };
@@ -3591,11 +3577,12 @@ export function createSpeedUpTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createSpeedUpTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
-    const newState = await submitRequestToBackground<
-      MetaMaskReduxState['metamask']
-    >('createSpeedUpTransaction', [
+    await submitRequestToBackground('createSpeedUpTransaction', [
       txId,
       customGasSettings,
       { ...options, actionId },
@@ -3603,9 +3590,7 @@ export function createSpeedUpTransaction(
 
     await forceUpdateMetamaskState(dispatch);
 
-    const currentNetworkTxList = getCurrentNetworkTransactions({
-      metamask: newState,
-    });
+    const currentNetworkTxList = getCurrentNetworkTransactions(getState());
     const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
     return newTx;
@@ -3824,18 +3809,6 @@ export function showImportNftsModal(payload: {
 export function hideImportNftsModal(): Action {
   return {
     type: actionConstants.IMPORT_NFTS_MODAL_CLOSE,
-  };
-}
-
-export function hidePermittedNetworkToast(): Action {
-  return {
-    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE,
-  };
-}
-
-export function showPermittedNetworkToast(): Action {
-  return {
-    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN,
   };
 }
 
@@ -4248,6 +4221,10 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
+export function setShowTickerWidget(value: boolean) {
+  return setPreference('showTickerWidget', value);
+}
+
 export function setDismissSmartAccountSuggestionEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4372,6 +4349,8 @@ export function toggleDefaultView(): ThunkAction<
         // closing the popup, and skip persisting the preference, leaving both
         // surfaces open and the next launch defaulting back to the popup.
         try {
+          // Persist the preference
+          await dispatch(setUseSidePanelAsDefault(true));
           await browserWithSidePanel.sidePanel.open({ windowId });
         } catch (error) {
           // Nothing was opened, so the popup stays and state is consistent.
@@ -4381,11 +4360,6 @@ export function toggleDefaultView(): ThunkAction<
           );
           return;
         }
-
-        // Persist the preference before closing the popup so a reopen always
-        // honors the side panel choice and the background toolbar-behavior
-        // subscription flips to open-on-click.
-        await dispatch(setUseSidePanelAsDefault(true));
         window.close();
       }
     } catch (error) {
@@ -5926,6 +5900,15 @@ export async function getLedgerPublicKey(
 }
 
 /**
+ * Get the active Ledger handler mode from the background.
+ *
+ * @returns Resolves to `LedgerHandlerMode.DMK` when the DMK bridge handler is active, or `LedgerHandlerMode.Legacy` otherwise.
+ */
+export async function getLedgerMode(): Promise<LedgerHandlerMode> {
+  return await submitRequestToBackground('getLedgerMode');
+}
+
+/**
  * Fetch the features/capabilities of the connected Trezor device.
  *
  * @returns The Trezor device features response including model, capabilities, and session info
@@ -6589,16 +6572,6 @@ export function fetchSmartTransactionsLiveness({
     }
   };
 }
-export function updateNetworkConnectionBanner(
-  networkConnectionBanner: NetworkConnectionBanner,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    await submitRequestToBackground('updateNetworkConnectionBanner', [
-      networkConnectionBanner,
-    ]);
-  };
-}
-
 /**
  * Sends the background state the networkClientId and domain upon network switch
  *
@@ -7782,33 +7755,6 @@ function applyPatches(
   return immer.applyPatches(oldState, patches);
 }
 
-export async function sendMultichainTransaction(
-  snapId: string,
-  {
-    account,
-    scope,
-    assetType,
-  }: {
-    account: string;
-    scope: string;
-    assetType?: CaipAssetType;
-  },
-) {
-  await handleSnapRequest({
-    snapId,
-    origin: 'metamask',
-    handler: HandlerType.OnRpcRequest,
-    request: {
-      method: 'startSendTransactionFlow',
-      params: {
-        account,
-        scope,
-        assetId: assetType, // The Solana snap names the parameter `assetId` while it is in fact an `assetType`
-      },
-    },
-  });
-}
-
 export async function getCode(address: Hex, networkClientId: string) {
   return await submitRequestToBackground<string>('getCode', [
     address,
@@ -7898,11 +7844,15 @@ export async function getERC1155BalanceOf(
 export async function applyTransactionContainersExisting(
   transactionId: string,
   containerTypes: TransactionContainerType[],
+  incrementToggleCount = false,
 ) {
-  return await submitRequestToBackground<void>(
-    'applyTransactionContainersExisting',
-    [transactionId, containerTypes],
-  );
+  return await submitRequestToBackground<{
+    enforcedSimulationsSlippage?: number;
+  }>('applyTransactionContainersExisting', [
+    transactionId,
+    containerTypes,
+    incrementToggleCount,
+  ]);
 }
 
 export async function getLayer1GasFeeValue({

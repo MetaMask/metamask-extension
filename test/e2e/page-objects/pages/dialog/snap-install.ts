@@ -1,6 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 import { veryLargeDelayMs } from '../../../helpers';
 
+/**
+ * Snap install / connect / update confirmation dialog window.
+ *
+ * Screen: notification/dialog window opened when a dapp or test snap requests
+ * install, connection, or update (permissions-connect snap flow).
+ * Owns: connect / confirm / approve / close footers, install and update scroll
+ * areas, permission connect surface, and common snap UI prompt inputs.
+ * Boundaries: stops at this dialog. Warning acknowledge step belongs to
+ * `SnapInstallWarning`; interactive snap UI dialogs belong to
+ * `SnapInteractiveDialog`; post-install snaps list belongs to snap settings pages.
+ * Related: `SnapInstallWarning`, `flows/install-test-snap.flow.ts`,
+ * `flows/snap-permission.flow.ts`.
+ *
+ * @see ui/pages/permissions-connect/snaps/snap-install/snap-install.js
+ */
 class SnapInstall {
   private readonly addToMetaMaskHeader = {
     tag: 'h3',
@@ -8,6 +23,11 @@ class SnapInstall {
   };
 
   private readonly approveButton = '[data-testid="confirmation-submit-button"]';
+
+  private readonly closeButton = {
+    tag: 'button',
+    text: 'Close',
+  };
 
   private readonly confirmationDialogBoldUrl = {
     text: 'snaps.metamask.io',
@@ -110,6 +130,11 @@ class SnapInstall {
   async clickCheckboxPermission() {
     console.log('Clicking permission checkbox');
     await this.driver.clickElement(this.permissionConnect);
+  }
+
+  async clickCloseButton() {
+    console.log('Clicking Close button and wait for dialog to close');
+    await this.driver.clickElementAndWaitForWindowToClose(this.closeButton);
   }
 
   async clickConfirmationDialogLinkText(): Promise<void> {

@@ -176,7 +176,7 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         const testDapp = new TestDappSolana(driver);
 
         await testDapp.openTestDappPage();
@@ -233,7 +233,7 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
@@ -292,7 +292,7 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
@@ -313,7 +313,9 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.checkPageIsLoaded();
 
+        // Both the existing Solana account and the requested EVM account should be pre-selected
         await connectAccountConfirmation.checkForAccountsInPermissionList([
+          EVM_ACCOUNT_LABEL_ONE,
           EVM_ACCOUNT_LABEL_TWO,
         ]);
 

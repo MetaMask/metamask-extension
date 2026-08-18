@@ -6,6 +6,7 @@ import {
   selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
+import { useRampsDetailsItem } from './templates/ramps/hooks';
 import { TransactionDetails } from './transaction-details';
 
 jest.mock('./components/header', () => ({
@@ -21,18 +22,25 @@ jest.mock('./templates/template-loader', () => ({
   TemplateLoader: ({
     item,
   }: {
-    item?: { type?: string; chainId?: string; data?: { id?: string } };
+    item?: {
+      type?: string;
+      chainId?: string;
+      status?: string;
+      data?: { id?: string };
+    };
   }) => (
     <div
       data-testid="template-loader"
       data-item-type={item?.type}
       data-chain-id={item?.chainId}
+      data-item-status={item?.status}
       data-order-id={item?.data?.id}
     />
   ),
 }));
 jest.mock('../../hooks/activity/useApiTransaction');
 jest.mock('../../selectors/activity');
+jest.mock('./templates/ramps/hooks');
 jest.mock('react-redux', () => ({
   useSelector: (selector: (state: unknown) => unknown) => selector(undefined),
 }));
@@ -45,6 +53,7 @@ const mockSelectLocalActivityItemsByIdentifier = jest.mocked(
 const mockSelectNonEvmActivityItemsById = jest.mocked(
   selectNonEvmActivityItemsById,
 );
+const mockUseRampsDetailsItem = jest.mocked(useRampsDetailsItem);
 
 const validTxHash =
   '0x8586e162e456a23c1969573a4b79e77912705b474bc5aa0c2a63d56556623ab2';
@@ -56,6 +65,7 @@ describe('TransactionDetails', () => {
     mockSelectLocalActivityItemsByIdentifier.mockReturnValue(new Map());
     mockSelectNonEvmActivityItemsById.mockReturnValue(new Map());
     mockUseApiTransaction.mockReturnValue(undefined as never);
+    mockUseRampsDetailsItem.mockReturnValue(undefined);
   });
 
   it('does not query the accounts API using a non-hash identifier', () => {
@@ -123,14 +133,14 @@ describe('TransactionDetails', () => {
     );
   });
 
-  it('prefers a seeded activity item over generic resolution', () => {
-    const seededItem = {
+  it('prefers a resolved ramp order over the generic transaction sharing its hash', () => {
+    mockUseRampsDetailsItem.mockReturnValue({
       type: 'rampBuy',
       chainId: 'eip155:1',
       status: 'pending',
       timestamp: 1,
       data: { id: 'order-1', from: '0x1' },
-    } as never;
+    } as never);
 
     mockSelectLocalActivityItemsByIdentifier.mockReturnValue(
       new Map([
@@ -150,7 +160,6 @@ describe('TransactionDetails', () => {
 
     const { getByTestId } = render(
       <TransactionDetails
-        item={seededItem}
         chainId="eip155:1"
         txIdentifier="order-1"
         onBack={jest.fn()}
@@ -162,5 +171,49 @@ describe('TransactionDetails', () => {
       'rampBuy',
     );
     expect(getByTestId('header')).toHaveAttribute('data-item-type', 'rampBuy');
+  });
+
+  it('reflects ramp order updates without remounting', () => {
+    mockUseRampsDetailsItem.mockReturnValue({
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: { id: 'order-1' },
+    } as never);
+
+    const { getByTestId, rerender } = render(
+      <TransactionDetails
+        chainId="eip155:1"
+        txIdentifier="order-1"
+        onBack={jest.fn()}
+      />,
+    );
+
+    expect(getByTestId('template-loader')).toHaveAttribute(
+      'data-item-status',
+      'pending',
+    );
+
+    mockUseRampsDetailsItem.mockReturnValue({
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      data: { id: 'order-1' },
+    } as never);
+
+    rerender(
+      <TransactionDetails
+        chainId="eip155:1"
+        txIdentifier="order-1"
+        onBack={jest.fn()}
+      />,
+    );
+
+    expect(getByTestId('template-loader')).toHaveAttribute(
+      'data-item-status',
+      'success',
+    );
   });
 });

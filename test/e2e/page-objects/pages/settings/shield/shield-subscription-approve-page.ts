@@ -1,6 +1,20 @@
 import TransactionConfirmation from '../../confirmations/transaction-confirmation';
 import { RawLocator } from '../../../common';
 
+/**
+ * Confirmation for Shield crypto subscription approve transactions.
+ *
+ * Screen: wallet confirmation layered after starting a crypto Shield plan;
+ * extends `TransactionConfirmation`.
+ * Owns: Shield-specific sections (subscription details, estimated changes,
+ * account details), payment-token checks in estimated changes, and Start now
+ * via the shared footer confirm.
+ * Boundaries: confirmation chrome only. Plan selection belongs to
+ * `ShieldPlanPage`; post-approve membership UI to `ShieldDetailPage`.
+ * Related: `ShieldPlanPage`, `ShieldDetailPage`, `TransactionConfirmation`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/shield-subscription-approve/shield-subscription-approve.tsx
+ */
 class ShieldSubscriptionApprovePage extends TransactionConfirmation {
   private readonly accountDetailsSection: RawLocator =
     '[data-testid="shield-subscription-approve__account_details_section"]';

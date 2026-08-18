@@ -12,7 +12,7 @@ import {
   IconName,
   IconColor,
 } from '@metamask/design-system-react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -65,10 +65,12 @@ const handleNumericFocusSelectAll = (
  * @param options0.autoFocus
  * @param options0.usdPlaceholder
  * @param options0.usdInputRef
+ * @param options0.onInputMethodChange
  */
 export const AmountInput = ({
   amount,
   onAmountChange,
+  onInputMethodChange,
   balancePercent,
   onBalancePercentChange,
   availableBalance,
@@ -98,13 +100,17 @@ export const AmountInput = ({
 
   // Re-read the stored denomination whenever the market changes so each market
   // keeps its own last-used choice.
-  useEffect(() => {
+  const [prevAsset, setPrevAsset] = useState(asset);
+  if (asset !== prevAsset) {
+    setPrevAsset(asset);
     setDenomination(getSizeDenomination(asset));
-  }, [asset]);
+  }
 
-  useEffect(() => {
+  const [prevBalancePercent, setPrevBalancePercent] = useState(balancePercent);
+  if (balancePercent !== prevBalancePercent) {
+    setPrevBalancePercent(balancePercent);
     setPercentInputValue(String(balancePercent));
-  }, [balancePercent]);
+  }
 
   const tokenAmount = useMemo(() => {
     const numAmount = Number.parseFloat(amount.replace(/,/gu, '')) || 0;
@@ -171,6 +177,7 @@ export const AmountInput = ({
         return;
       }
 
+      onInputMethodChange?.('keypad');
       onAmountChange(value);
 
       const maxSize = availableBalance * leverage;
@@ -189,7 +196,13 @@ export const AmountInput = ({
         setPercentInputValue('0');
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance, leverage],
+    [
+      onAmountChange,
+      onInputMethodChange,
+      onBalancePercentChange,
+      availableBalance,
+      leverage,
+    ],
   );
 
   const handleAmountBlur = useCallback(() => {
@@ -214,6 +227,7 @@ export const AmountInput = ({
         return;
       }
 
+      onInputMethodChange?.('keypad');
       // Always update the local draft so partial inputs like "0", "0.", "0.0"
       // are preserved in the field while the user is still typing.
       setTokenInputValue(value);
@@ -248,6 +262,7 @@ export const AmountInput = ({
       leverage,
       availableBalance,
       onAmountChange,
+      onInputMethodChange,
       onBalancePercentChange,
       formatAmount,
     ],
@@ -282,6 +297,7 @@ export const AmountInput = ({
   const handleSliderChange = useCallback(
     (_event: Event, value: number | number[]) => {
       const percent = Array.isArray(value) ? value[0] : value;
+      onInputMethodChange?.(percent >= 100 ? 'max' : 'slider');
       onBalancePercentChange(percent);
       setPercentInputValue(String(percent));
       if (percent === 0) {
@@ -294,6 +310,7 @@ export const AmountInput = ({
     },
     [
       onAmountChange,
+      onInputMethodChange,
       onBalancePercentChange,
       availableBalance,
       leverage,
@@ -308,6 +325,7 @@ export const AmountInput = ({
         setPercentInputValue(value);
         const num = parseInt(value, 10);
         if (!isNaN(num) && num >= 0 && num <= 100) {
+          onInputMethodChange?.(num >= 100 ? 'max' : 'percentage');
           onBalancePercentChange(num);
           if (num === 0) {
             onAmountChange('');
@@ -321,6 +339,7 @@ export const AmountInput = ({
     },
     [
       onAmountChange,
+      onInputMethodChange,
       onBalancePercentChange,
       availableBalance,
       leverage,

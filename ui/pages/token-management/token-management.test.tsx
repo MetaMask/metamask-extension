@@ -1761,7 +1761,7 @@ describe('TokenManagementPage', () => {
   });
 
   it('shows the multichain network name for a non-EVM search result', () => {
-    const solanaResultId = `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
+    const solanaResultId = `${solanaChainId}/token:So11111111111111111111111111111111111111112`;
     setTokenSearchState({
       results: [
         {

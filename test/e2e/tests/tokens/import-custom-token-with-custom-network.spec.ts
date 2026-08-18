@@ -6,9 +6,9 @@ import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/netwo
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
+import NetworksPage from '../../page-objects/pages/networks/networks-page';
+import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
+import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
 import TokenManagementPage from '../../page-objects/pages/token-management/token-management-page';
 import CustomTokenImportPage from '../../page-objects/pages/token-management/custom-token-import-page';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -304,43 +304,39 @@ describe('Import custom token on a custom network', function () {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openAddCustomNetworkModal();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openAddCustomNetworkPage();
 
-        const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.fillNetworkNameInputField(
+        const addEditNetworkPage = new AddEditNetworkPage(driver);
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.fillNetworkNameInputField(
           PULSECHAIN_NETWORK_NAME,
         );
-        await addEditNetworkModal.fillNetworkChainIdInputField(
+        await addEditNetworkPage.fillNetworkChainIdInputField(
           PULSECHAIN_CHAIN_ID_DECIMAL.toString(),
         );
-        await addEditNetworkModal.fillCurrencySymbolInputField(
+        await addEditNetworkPage.fillCurrencySymbolInputField(
           PULSECHAIN_CURRENCY_SYMBOL,
         );
-        await addEditNetworkModal.openAddRpcUrlModal();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
-        const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.checkPageIsLoaded();
-        await addRpcUrlModal.fillAddRpcUrlInput(PULSECHAIN_RPC_URL);
-        await addRpcUrlModal.fillAddRpcNameInput(PULSECHAIN_NETWORK_NAME);
-        await addRpcUrlModal.saveAddRpcUrl();
-        await addEditNetworkModal.saveEditedNetwork(SAVE_NETWORK_TIMEOUT);
+        const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
+        await addEditRpcUrlPage.checkPageIsLoaded();
+        await addEditRpcUrlPage.fillAddRpcUrlInput(PULSECHAIN_RPC_URL);
+        await addEditRpcUrlPage.fillAddRpcNameInput(PULSECHAIN_NETWORK_NAME);
+        await addEditRpcUrlPage.saveAddRpcUrl();
+        await addEditNetworkPage.saveEditedNetwork(SAVE_NETWORK_TIMEOUT);
 
-        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
+        await networksPage.checkAddNetworkMessageIsDisplayed(
           PULSECHAIN_NETWORK_NAME,
         );
-        await selectNetworkDialog.clickCloseButton();
+        await networksPage.clickCloseButton();
         await homePage.checkPageIsLoaded();
 
         // Switch the active network to PulseChain so the "Add a custom token"
         // page defaults to it.
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          PULSECHAIN_NETWORK_NAME,
-        );
+        await switchToNetworkFromNetworkSelect(driver, PULSECHAIN_NETWORK_NAME);
         await homePage.checkPageIsLoaded();
 
         const tokensTab = new TokensTab(driver);

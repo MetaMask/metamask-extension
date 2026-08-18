@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   setRampsSelectedPaymentMethod,

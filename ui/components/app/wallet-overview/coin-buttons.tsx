@@ -79,14 +79,13 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
-import { useOnClickOutside } from '../perps/hooks/useClickOutside';
+import { useOnClickOutside } from '../../../hooks/useClickOutside';
 import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
 import {
   ARC_ERC20_USDC_BRIDGE_ASSET,
   ARC_HEX_CHAIN_ID,
 } from '../assets/enablement/arc';
-import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 
 /**
  * Allows to manually set the default Swap token when clicking on the Swap CTA from
@@ -255,8 +254,6 @@ const CoinButtons = ({
     throw new Error('defaultSwapsToken is required');
   }
 
-  const handleSendNonEvm = useHandleSendNonEvm();
-
   const location = useLocation();
 
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
@@ -401,7 +398,7 @@ const CoinButtons = ({
     const params =
       trackingLocation === 'home' ? undefined : { chainId: chainId.toString() };
     transitionForward(() => navigateToSendRoute(navigate, params));
-  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
+  }, [chainId, account, setCorrectChain, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
     const opened = await goToBuy({

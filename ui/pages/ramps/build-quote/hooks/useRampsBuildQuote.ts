@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { v4 as uuidV4 } from 'uuid';
 import {
   getInternalOrderCode,
   normalizeProviderCode,
@@ -9,6 +10,7 @@ import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
@@ -192,7 +194,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   );
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handlePaymentMethodPress = useCallback(() => {
@@ -245,6 +247,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     }
     setContinueError(null);
     setIsContinuing(true);
+    const checkoutSessionId = uuidV4();
     try {
       const widget = await getBuyWidgetData(selectedQuote);
       if (!widget?.url) {
@@ -259,11 +262,16 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
 
       // Open + watch in the background so popup-mode UI can close when the
       // provider tab opens without losing the callback listener.
+      // trackCheckoutOpened fires from the background after the tab opens,
+      // so a failed openTab does not emit a false checkout-opened event.
       await watchRampsCheckoutTab({
         url: widget.url,
         providerCode,
         walletAddress,
         orderCode,
+        checkoutSessionId,
+        region: userRegion?.regionCode,
+        providerName: selectedProvider?.name,
       });
 
       navigate(DEFAULT_ROUTE);
@@ -281,9 +289,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     getBuyWidgetData,
     isContinuing,
     navigate,
-    selectedProvider,
+    selectedProvider?.id,
+    selectedProvider?.name,
     selectedQuote,
     t,
+    userRegion?.regionCode,
     walletAddress,
   ]);
 

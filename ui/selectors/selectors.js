@@ -1,4 +1,3 @@
-import { toUnicode } from 'punycode/punycode.js';
 import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -72,6 +71,7 @@ import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
+  getIsStellarSupportEnabled,
   getIsSolanaTestnetSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   getIsTronTestnetSupportEnabled,
@@ -202,7 +202,7 @@ import {
 import { getApprovalRequestsByType } from './approvals';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 import { getIsSocialLoginFlow } from './first-time-flow';
-import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
+import { getInternalAccounts } from './accounts';
 
 const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
@@ -219,6 +219,7 @@ export {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
+  getIsStellarSupportEnabled,
   getIsSolanaTestnetSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   getIsTronTestnetSupportEnabled,
@@ -263,10 +264,6 @@ export function getCustomNonceValue(state) {
 
 export function getNextSuggestedNonce(state) {
   return Number(state.appState.nextNonce);
-}
-
-export function getShowPermittedNetworkToastOpen(state) {
-  return state.appState.showPermittedNetworkToastOpen;
 }
 
 /**
@@ -796,7 +793,9 @@ export const getCrossChainMetaMaskCachedBalances = createSelector(
  * @returns {object} An object of tokens with balances for the given account. Data relationship will be chainId => balance
  */
 function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
-  const { accountsByChainId } = state.metamask;
+  // AccountTrackerController no longer holds balances once AssetsController owns
+  // them, so read through the selector that falls back to unified assets state.
+  const accountsByChainId = getAccountTrackerControllerAccountsByChainId(state);
   const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
   const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
@@ -1176,21 +1175,6 @@ export const getCompleteAddressBook = createShallowResultSelector(
       )
       .flat(),
 );
-
-export function getEnsResolutionByAddress(state, address) {
-  if (state.metamask.ensResolutionsByAddress[address]) {
-    const ensResolution = state.metamask.ensResolutionsByAddress[address];
-    // ensResolution is a punycode encoded string hence toUnicode is used to decode it from same package
-    const normalizedEnsResolution = toUnicode(ensResolution);
-    return normalizedEnsResolution;
-  }
-
-  const entry =
-    getAddressBookEntry(state, address) ||
-    getInternalAccountByAddress(state, address);
-
-  return entry?.name || '';
-}
 
 export function getAddressBookEntry(state, address) {
   const addressBook = getCompleteAddressBook(state);
@@ -1576,6 +1560,16 @@ export function getFeatureNotificationsEnabled(state) {
 export function getShowExtensionInFullSizeView(state) {
   const { showExtensionInFullSizeView } = getPreferences(state);
   return Boolean(showExtensionInFullSizeView);
+}
+
+export function selectShowTickerWidget(state) {
+  const { showTickerWidget = true } = getPreferences(state);
+  return Boolean(showTickerWidget);
+}
+
+export function selectIsTickerWidgetFeatureEnabled(state) {
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+  return getBooleanFeatureFlag(remoteFeatureFlags?.cashtagInjection, false);
 }
 
 export function getTestNetworkBackgroundColor(state) {
@@ -4028,14 +4022,6 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
 );
 
 /**
- * @param {MetaMaskReduxState} state - The Redux state
- * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
- */
-export function getNetworkConnectionBanner(state) {
-  return state.metamask.networkConnectionBanner;
-}
-
-/**
  * Check if the device is offline.
  *
  * @param {MetaMaskReduxState} state - The Redux state
@@ -4090,7 +4076,7 @@ export function getDeferredDeepLink(state) {
 export const getDeferredDeepLinkParameters = createResultEqualSelector(
   getDeferredDeepLink,
   (deferredDeepLink) => {
-    if (!deferredDeepLink) {
+    if (!deferredDeepLink?.referringLink) {
       return null;
     }
 
