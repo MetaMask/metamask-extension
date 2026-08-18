@@ -8,10 +8,10 @@ import {
   IndexedDBStore,
   isIndexedDBMutationBlockedError,
 } from '../../../shared/lib/stores/indexeddb-store';
-import type { Migrate } from './types';
 
 import { getPlatform } from '../lib/util';
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
+import type { Migrate } from './types';
 
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
