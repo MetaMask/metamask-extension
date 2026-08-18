@@ -75,10 +75,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
         : defaultButtonText;
 
     const isDisabled =
-      isAwaitingRequiredToken ||
-      hasBlockingAlerts ||
-      !hasAmount ||
-      !isPayReady;
+      isAwaitingRequiredToken || hasBlockingAlerts || !hasAmount || !isPayReady;
 
     const isLoading =
       isAwaitingRequiredToken || isGaslessLoading || isPayLoading;
