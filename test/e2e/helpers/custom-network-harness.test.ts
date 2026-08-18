@@ -68,6 +68,32 @@ describe('custom-network-harness', () => {
       expect(network.uiNativeAssetId).toBe('eip155:1776/slip44:22000119');
     });
 
+    it('seeds the UI native asset id for native send', () => {
+      const { fixtures, network } = prepareCustomNetwork(
+        'injective',
+        'nativeSend',
+      );
+      const assetsController = fixtures.data.AssetsController as {
+        assetsBalance: Record<string, Record<string, { amount: string }>>;
+      };
+
+      expect(
+        assetsController.assetsBalance[DEFAULT_FIXTURE_ACCOUNT_ID]?.[
+          network.uiNativeAssetId
+        ]?.amount,
+      ).toBe('25');
+      expect(network.uiNativeAssetId).toBe('eip155:1776/slip44:22000119');
+      expect(network.nativeAssetId).toBe('eip155:1776/slip44:60');
+    });
+
+    it('rejects ERC-20 scenarios on networks that do not seed TST', () => {
+      expect(() => prepareCustomNetwork('injective', 'nativeAndErc20')).toThrow(
+        'nativeAndErc20 is only defined for xdc, not injective',
+      );
+    });
+  });
+
+  describe('CONVERSION_RATE_NETWORKS', () => {
     it('lists every conversion-rate network', () => {
       expect(CONVERSION_RATE_NETWORKS).toStrictEqual([
         'injective',
@@ -76,12 +102,6 @@ describe('custom-network-harness', () => {
         'rootstock',
         'hyperevm',
       ]);
-    });
-
-    it('rejects ERC-20 scenarios on networks that do not seed TST', () => {
-      expect(() => prepareCustomNetwork('injective', 'nativeAndErc20')).toThrow(
-        'nativeAndErc20 is only defined for xdc, not injective',
-      );
     });
   });
 });

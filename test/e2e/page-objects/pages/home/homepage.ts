@@ -369,9 +369,11 @@ class HomePage {
   async checkNoErrorToastIsDisplayed(): Promise<void> {
     console.log('Check no blocking error toast is displayed on homepage');
     await this.driver.assertElementNotPresent(this.storageErrorToast, {
+      waitAtLeastGuard: regularDelayMs,
       timeout: 5000,
     });
     await this.driver.assertElementNotPresent(this.surveyToast, {
+      waitAtLeastGuard: regularDelayMs,
       timeout: 5000,
     });
     await this.driver.assertElementNotPresent(
@@ -379,14 +381,20 @@ class HomePage {
         css: '.toast-container',
         text: 'cryptocurrencies',
       },
-      { timeout: 5000 },
+      {
+        waitAtLeastGuard: regularDelayMs,
+        timeout: 5000,
+      },
     );
     await this.driver.assertElementNotPresent(
       {
         css: '.toast-container',
         text: 'unsupported',
       },
-      { timeout: 5000 },
+      {
+        waitAtLeastGuard: regularDelayMs,
+        timeout: 5000,
+      },
     );
   }
 
