@@ -1,5 +1,6 @@
 import { browserSupportsWebAuthn } from '@simplewebauthn/browser';
 import {
+  hasPasskeyPRFEnabled,
   hasPasskeyPRFResult,
   isPasskeyPRFSupported,
   isWebAuthnSupported,
@@ -118,5 +119,25 @@ describe('hasPasskeyPRFResult', () => {
   it('returns false when the response does not contain a PRF result', () => {
     expect(hasPasskeyPRFResult({ clientExtensionResults: {} })).toBe(false);
     expect(hasPasskeyPRFResult({})).toBe(false);
+  });
+});
+
+describe('hasPasskeyPRFEnabled', () => {
+  it('returns true when the registration response enables PRF', () => {
+    expect(
+      hasPasskeyPRFEnabled({
+        clientExtensionResults: { prf: { enabled: true } },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false when PRF is disabled or missing', () => {
+    expect(
+      hasPasskeyPRFEnabled({
+        clientExtensionResults: { prf: { enabled: false } },
+      }),
+    ).toBe(false);
+    expect(hasPasskeyPRFEnabled({ clientExtensionResults: {} })).toBe(false);
+    expect(hasPasskeyPRFEnabled({})).toBe(false);
   });
 });

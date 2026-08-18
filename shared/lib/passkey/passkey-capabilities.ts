@@ -60,3 +60,16 @@ export function hasPasskeyPRFResult(response: {
   const prfFirst = response.clientExtensionResults?.prf?.results?.first;
   return typeof prfFirst === 'string' && prfFirst.length > 0;
 }
+
+/**
+ * Checks whether a passkey registration response confirms PRF support.
+ *
+ * @param response - Passkey registration response.
+ * @param response.clientExtensionResults
+ * @returns True when the PRF extension is enabled.
+ */
+export function hasPasskeyPRFEnabled(response: {
+  clientExtensionResults?: PrfClientExtensionResults;
+}): boolean {
+  return response.clientExtensionResults?.prf?.enabled === true;
+}

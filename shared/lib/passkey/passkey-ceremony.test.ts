@@ -77,8 +77,47 @@ describe('passkey ceremony helpers', () => {
           extensions: undefined,
         },
       });
-      expect(result).toStrictEqual(response);
+      expect(result).toStrictEqual({
+        ...response,
+        clientExtensionResults: {
+          prf: {
+            enabled: true,
+          },
+        },
+      });
       expect(mockCancelCeremony).not.toHaveBeenCalled();
+    });
+
+    it('rejects registration when PRF is disabled outside test builds', async () => {
+      const originalInTest = process.env.IN_TEST;
+      delete process.env.IN_TEST;
+      try {
+        mockStartRegistration.mockResolvedValue({
+          id: 'credential-id',
+          rawId: 'raw-id',
+          response: {} as never,
+          type: 'public-key',
+          authenticatorAttachment: null,
+          clientExtensionResults: {
+            prf: {
+              enabled: false,
+            },
+          },
+        } as never);
+
+        await expect(
+          startPasskeyRegistration({ challenge: 'abc' } as never),
+        ).rejects.toMatchObject({
+          name: 'PasskeyPRFRequiredError',
+          message: 'Passkey setup requires PRF support',
+        });
+      } finally {
+        if (originalInTest === undefined) {
+          delete process.env.IN_TEST;
+        } else {
+          process.env.IN_TEST = originalInTest;
+        }
+      }
     });
 
     it('times out in sidepanel and cancels ceremony', async () => {

@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent, waitFor } from '@testing-library/react';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -286,7 +287,9 @@ describe('PasskeyRegisterSubPage', () => {
     fireEvent.click(getByTestId('register-passkey-verify-continue-button'));
 
     await waitFor(() => {
-      expect(getByText('Passkey not supported')).toBeInTheDocument();
+      expect(
+        getByText(messages.passkeyErrorNotSupported.message),
+      ).toBeInTheDocument();
     });
     expect(mockProtectVaultKeyWithPasskey).not.toHaveBeenCalled();
   });

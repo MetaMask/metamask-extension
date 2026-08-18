@@ -16,7 +16,11 @@ import type {
 } from '@metamask/passkey-controller';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../constants/app';
 import { getEnvironmentType } from '../environment-type';
-import { hasPasskeyPRFResult } from './passkey-capabilities';
+import {
+  hasPasskeyPRFEnabled,
+  hasPasskeyPRFResult,
+  PasskeyPRFRequiredError,
+} from './passkey-capabilities';
 
 /**
  * Wall-clock cap for WebAuthn in the **side panel** only (where ceremonies often hang).
@@ -132,11 +136,28 @@ export async function startPasskeyRegistration(
       extensions: decodePrfInExtensionOptions(options.extensions),
     };
     const response = await startRegistration({ optionsJSON });
+    const clientExtensionResults = encodePrfInClientExtensionResults(
+      response.clientExtensionResults,
+    );
+
+    // Virtual authenticators do not support PRF, so test builds supply the
+    // capability result required to exercise passkey enrollment.
+    if (
+      process.env.IN_TEST &&
+      !hasPasskeyPRFEnabled({ clientExtensionResults })
+    ) {
+      clientExtensionResults.prf = {
+        enabled: true,
+      };
+    }
+
+    if (!hasPasskeyPRFEnabled({ clientExtensionResults })) {
+      throw new PasskeyPRFRequiredError();
+    }
+
     return {
       ...response,
-      clientExtensionResults: encodePrfInClientExtensionResults(
-        response.clientExtensionResults,
-      ),
+      clientExtensionResults,
     };
   });
 }
