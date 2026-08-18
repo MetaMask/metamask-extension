@@ -1,7 +1,7 @@
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '#shared/constants/tokens';
 import { getCaipAssetImageUrl } from '#shared/lib/asset-utils';
-import type { AssetData, ResolvedTicker } from './types';
+import type { AssetData, PricePoint, ResolvedTicker } from './types';
 
 const tokenSearchUrl = `${TOKEN_API_METASWAP_CODEFI_URL}search`;
 const historicalPricesUrl =
@@ -37,6 +37,7 @@ function chainIdFromAssetId(assetId: string): CaipChainId | null {
 }
 
 function toAssetData(hit: SearchHit, ticker: string): AssetData {
+  const liquidity = num(hit.liquidity);
   return {
     ticker,
     name: hit.name,
@@ -49,7 +50,7 @@ function toAssetData(hit: SearchHit, ticker: string): AssetData {
     price: num(hit.price),
     change24hPercent: num(hit.pricePercentChange1d),
     marketCap: num(hit.marketCap),
-    liquidity: num(hit.liquidity) || null,
+    liquidity: liquidity !== null && liquidity > 0 ? liquidity : null,
     volume24h: num(hit.aggregatedUsdVolume),
   };
 }
@@ -86,7 +87,7 @@ async function searchBySymbol(symbol: string): Promise<SearchHit[]> {
 
 export async function fetchPriceHistory(
   caipAssetId: string,
-): Promise<number[] | null> {
+): Promise<PricePoint[] | null> {
   const separator = caipAssetId.indexOf('/');
   if (separator === -1) {
     return null;
@@ -118,14 +119,16 @@ export async function fetchPriceHistory(
     const body = (await response.json()) as {
       prices?: [number, number][];
     };
-    const values = (body.prices ?? [])
-      .map((point) => point?.[1])
+    const points = (body.prices ?? [])
       .filter(
-        (value): value is number =>
-          typeof value === 'number' && Number.isFinite(value),
-      );
+        (point): point is [number, number] =>
+          Array.isArray(point) &&
+          Number.isFinite(point[0]) &&
+          Number.isFinite(point[1]),
+      )
+      .map(([time, value]) => ({ time, value }));
 
-    return values.length >= 2 ? values : null;
+    return points.length >= 2 ? points : null;
   } catch {
     return null;
   }

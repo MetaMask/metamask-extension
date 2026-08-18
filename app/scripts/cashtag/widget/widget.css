@@ -9,16 +9,22 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.mm-cashtag-card {
+  anchor-name: --cashtag-widget;
+}
+
 .mm-cashtag-disable-dialog {
-  margin: auto;
+  margin: 0;
+  inset: auto;
+  position: fixed;
+  position-anchor: --cashtag-widget;
+  top: anchor(center);
+  left: anchor(center);
+  translate: -50% -50%;
 }
 
 .mm-cashtag-disable-dialog:not([open]) {
   display: none;
-}
-
-.mm-cashtag-disable-dialog::backdrop {
-  background: transparent;
 }
 
 .mm-cashtag-menu:popover-open {

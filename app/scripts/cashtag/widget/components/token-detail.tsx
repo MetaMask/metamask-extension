@@ -115,14 +115,16 @@ export function TokenDetail({
               {data.marketCap === null ? '—' : formatUsdCompact(data.marketCap)}
             </dd>
           </div>
-          <div className="flex flex-col items-end">
-            <dt className="text-s-body-sm font-medium text-alternative">
-              Liquidity
-            </dt>
-            <dd className="text-s-body-sm font-medium text-default">
-              {data.liquidity === null ? '—' : formatUsdCompact(data.liquidity)}
-            </dd>
-          </div>
+          {data.liquidity !== null ? (
+            <div className="flex flex-col items-end">
+              <dt className="text-s-body-sm font-medium text-alternative">
+                Liquidity
+              </dt>
+              <dd className="text-s-body-sm font-medium text-default">
+                {formatUsdCompact(data.liquidity)}
+              </dd>
+            </div>
+          ) : null}
           <div className="flex flex-col items-end">
             <dt className="text-s-body-sm font-medium text-alternative">
               24h volume
@@ -163,14 +165,14 @@ export function TokenDetail({
 
       {onViewSimilar ? (
         <div className="mt-4 flex justify-end">
-          <TextButton
-            size={TextButtonSize.BodySm}
+          <Button
+            variant={ButtonVariant.Tertiary}
             endIconName={IconName.ArrowRight}
             endIconProps={{ size: IconSize.Xs }}
             onClick={onWidgetClick(onViewSimilar)}
           >
             View similar tokens
-          </TextButton>
+          </Button>
         </div>
       ) : null}
     </div>

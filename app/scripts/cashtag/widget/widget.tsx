@@ -31,7 +31,7 @@ export function Widget({
   return (
     <>
       <div
-        className={`w-[576px] overflow-y-auto rounded-xl border border-muted bg-default text-default shadow-lg${view === 'results' ? ' h-[503px]' : ''}`}
+        className={`mm-cashtag-card w-[576px] overflow-y-auto rounded-xl border border-muted bg-default text-default shadow-lg${view === 'results' ? ' h-[503px]' : ''}`}
       >
         {view === 'detail' ? (
           <TokenDetail

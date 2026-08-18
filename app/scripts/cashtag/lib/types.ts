@@ -14,6 +14,11 @@ export type AssetData = {
   volume24h: number | null;
 };
 
+export type PricePoint = {
+  time: number;
+  value: number;
+};
+
 export type ResolvedTicker = {
   primary: AssetData;
   similar: AssetData[];

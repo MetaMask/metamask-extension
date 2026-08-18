@@ -10,6 +10,7 @@ import {
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '#shared/constants/messages';
 import { formatChartTime, formatUsd } from '../../lib/helpers';
+import type { PricePoint } from '../../lib/types';
 
 type Props = {
   caipAssetId: string | null;
@@ -21,20 +22,24 @@ function readCssColor(element: Element, name: string) {
   return getComputedStyle(element).getPropertyValue(name).trim();
 }
 
-function toSeriesData(values: number[], currentPrice: number | null) {
-  const nowSec = Math.floor(Date.now() / 1000);
-  const spanSec = 24 * 60 * 60;
-  const lastIndex = Math.max(values.length - 1, 1);
-
-  return values.map((value, index) => {
-    const isLast = index === values.length - 1;
+function toSeriesData(points: PricePoint[], currentPrice: number | null) {
+  return points.map((point, index) => {
+    const isLast = index === points.length - 1;
     return {
-      time: (nowSec -
-        spanSec +
-        Math.round((spanSec * index) / lastIndex)) as UTCTimestamp,
-      value: isLast && currentPrice !== null ? currentPrice : value,
+      time: Math.floor(point.time / 1000) as UTCTimestamp,
+      value: isLast && currentPrice !== null ? currentPrice : point.value,
     };
   });
+}
+
+function isPricePoint(point: unknown): point is PricePoint {
+  const candidate = point as PricePoint | null;
+  return (
+    typeof candidate === 'object' &&
+    candidate !== null &&
+    Number.isFinite(candidate.time) &&
+    Number.isFinite(candidate.value)
+  );
 }
 
 function loadPriceHistory(caipAssetId: string) {
@@ -47,14 +52,11 @@ function loadPriceHistory(caipAssetId: string) {
       },
     })
     .then((response) => {
-      const values = response?.body?.priceHistory;
-      return Array.isArray(values) &&
-        values.length >= 2 &&
-        values.every(
-          (value: unknown) =>
-            typeof value === 'number' && Number.isFinite(value),
-        )
-        ? (values as number[])
+      const points = response?.body?.priceHistory;
+      return Array.isArray(points) &&
+        points.length >= 2 &&
+        points.every(isPricePoint)
+        ? (points as PricePoint[])
         : null;
     })
     .catch(() => null);
@@ -63,25 +65,25 @@ function loadPriceHistory(caipAssetId: string) {
 export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const [values, setValues] = useState<number[]>([]);
+  const [points, setPoints] = useState<PricePoint[]>([]);
   const [loading, setLoading] = useState(Boolean(caipAssetId));
 
   useEffect(() => {
     if (!caipAssetId) {
-      setValues([]);
+      setPoints([]);
       setLoading(false);
       return;
     }
 
     let cancelled = false;
     setLoading(true);
-    setValues([]);
+    setPoints([]);
 
     loadPriceHistory(caipAssetId).then((history) => {
       if (cancelled) {
         return;
       }
-      setValues(history ?? []);
+      setPoints(history ?? []);
       setLoading(false);
     });
 
@@ -92,7 +94,7 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || values.length < 2) {
+    if (!container || points.length < 2) {
       return;
     }
 
@@ -119,6 +121,7 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
       rightPriceScale: {
         borderVisible: false,
         scaleMargins: { top: 0.12, bottom: 0.12 },
+        entireTextOnly: true,
       },
       timeScale: {
         borderVisible: false,
@@ -165,7 +168,7 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
       },
     });
 
-    const data = toSeriesData(values, currentPrice);
+    const data = toSeriesData(points, currentPrice);
     series.setData(data);
 
     series.createPriceLine({
@@ -191,9 +194,9 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
       chart.remove();
       chartRef.current = null;
     };
-  }, [values, currentPrice, positive]);
+  }, [points, currentPrice, positive]);
 
-  if (values.length < 2) {
+  if (points.length < 2) {
     return (
       <div className="grid h-[170px] place-items-center text-s-body-sm text-alternative">
         {loading ? 'Loading chart…' : 'Chart unavailable'}
