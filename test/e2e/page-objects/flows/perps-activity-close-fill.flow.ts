@@ -39,14 +39,8 @@ export async function assertPerpsActivityShowsCloseFill({
   }
 
   const perpsTab = new PerpsTab(driver);
-  const onPerpsHome = await driver.isElementPresentAndVisible(
-    { testId: 'perps-view' },
-    2000,
-  );
-  if (!onPerpsHome) {
-    await perpsTab.navigateToPerpsHome();
-  }
-  await perpsTab.checkPageIsLoaded();
+  await perpsTab.navigateToPerpsHome();
+  await perpsTab.waitForPerpsViewStable();
   await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
 
