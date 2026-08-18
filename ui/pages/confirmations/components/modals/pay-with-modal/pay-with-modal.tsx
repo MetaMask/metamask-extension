@@ -195,8 +195,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
     ],
   );
 
-  const showSections =
-    isMoneyAccountPayEnabled && !showOtherAssets && !isPostQuoteWithdraw;
+  const showSections = isMoneyAccountPayEnabled && !showOtherAssets;
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} isClosedOnOutsideClick={false}>

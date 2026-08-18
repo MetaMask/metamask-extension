@@ -487,6 +487,36 @@ describe('PayWithModal', () => {
       expect(screen.queryByTestId('pay-with-sections')).not.toBeInTheDocument();
     });
 
+    it('renders sectioned pay options for perpsWithdraw when enabled', () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByTestId('pay-with-sections')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('pay-with-money-account-row'),
+      ).toBeInTheDocument();
+      expect(screen.queryByTestId('asset-component')).not.toBeInTheDocument();
+    });
+
+    it('keeps the token asset picker for perpsWithdraw when money account is disabled', () => {
+      selectIsMoneyAccountTransactionEnabledMock.mockReturnValue(false);
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByTestId('asset-component')).toBeInTheDocument();
+      expect(screen.queryByTestId('pay-with-sections')).not.toBeInTheDocument();
+    });
+
     it('switches to the asset picker when Other assets is pressed', () => {
       usePayWithSectionsMock.mockImplementation(({ onOtherAssetsPress }) => ({
         sections: [
