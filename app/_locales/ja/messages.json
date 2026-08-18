@@ -1988,29 +1988,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "続行すると、Blurに出品しているすべての資産がリスクにさらされる可能性があります。"
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "悪意のあるサイトとやり取りしています。続行すると、資産を失うことになります。"
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "続行すると、OpenSeaに出品しているすべての資産がリスクにさらされる可能性があります。"
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "この要求を確定すると、資産が失われる可能性があります。この要求はキャンセルすることをお勧めします。"
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "資産を詐欺師に送ろうとしています。続行すると、これらの資産が失われます。"
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "この要求を確定すると、詐欺師に資産の引き出しと使用を許可することになります。失った資産を取り戻すことはできません。"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われる可能性があります。"
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "このリクエストを承認すると、Blurに登録されている資産を誰かに盗まれる可能性があります。"
   },
   "blockaidDescriptionErrored": {
     "message": "エラーが発生したため、セキュリティアラートをチェックできませんでした。関連するすべてのアドレスが信頼できる場合のみ続行してください。"
@@ -2018,23 +1997,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "悪質なドメインとやり取りしています。このリクエストを承認すると、資産を失う可能性があります。"
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "このリクエストを承認すると、資産を失う可能性があります。"
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "このリクエストを承認すると、OpenSeaに登録されている資産を誰かに盗まれる可能性があります。"
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われます。"
   },
-  "blockaidTitleDeceptive": {
-    "message": "これは虚偽のリクエストです"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "ご注意ください"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "これは不審なリクエストです"
   },
   "blockies": {
     "message": "Blockie"
