@@ -96,7 +96,9 @@ const NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN: { [key: string]: BridgeAsset } = {
   [ARC_HEX_CHAIN_ID]: ARC_ERC20_USDC_BRIDGE_ASSET,
 };
 
-function getSwapNativeTokenWithOverridesForChain(chainId: string): BridgeAsset {
+export function getSwapNativeTokenWithOverridesForChain(
+  chainId: string,
+): BridgeAsset {
   const override = NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN[chainId];
   return override ?? getNativeAssetForChainId(chainId);
 }

@@ -1,12 +1,12 @@
 import React from 'react';
 import { screen, within } from '@testing-library/react';
+import { BigNumber } from 'bignumber.js';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { MoneyHomePage } from './money-home-page';
 
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyAccountBalance = jest.fn();
-const mockUseMoneyVaultApy = jest.fn();
 const mockUseMoneyDepositTokens = jest.fn();
 
 jest.mock('react-redux', () => ({
@@ -31,11 +31,8 @@ jest.mock('react-router-dom', () => ({
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
   useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
 }));
-jest.mock('../../hooks/money/use-money-account-balance', () => ({
+jest.mock('../../hooks/money/useMoneyAccountBalance', () => ({
   useMoneyAccountBalance: () => mockUseMoneyAccountBalance(),
-}));
-jest.mock('../../hooks/money/use-money-vault-apy', () => ({
-  useMoneyVaultApy: () => mockUseMoneyVaultApy(),
 }));
 jest.mock('../../hooks/money/use-money-deposit-tokens', () => ({
   useMoneyDepositTokens: () => mockUseMoneyDepositTokens(),
@@ -52,13 +49,13 @@ describe('MoneyHomePage', () => {
       isLoading: false,
     });
     mockUseMoneyAccountBalance.mockReturnValue({
-      query: { isLoading: false, isError: false },
-      formattedBalance: '$0.00',
-    });
-    mockUseMoneyVaultApy.mockReturnValue({
-      query: { isLoading: false },
+      apyPercentFormatted: '4.2%',
       apyDecimal: 0.042,
-      formattedApy: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber(0),
+      totalFiatFormatted: '$0.00',
+      vaultApyQuery: { isLoading: false },
     });
     mockUseMoneyDepositTokens.mockReturnValue({
       tokens: [],
@@ -78,7 +75,10 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-how-it-works-description'),
     ).toHaveTextContent(
-      'Add mUSD and earn up to 4.2% APY. Your balance is dollar-backed and ready to spend, trade, or send anytime.',
+      messages.moneyHowItWorksDescriptionWithApy.message.replace(
+        '$1',
+        '4.2% APY',
+      ),
     );
     expect(
       within(screen.getByTestId('money-how-it-works-description')).getByText(
@@ -124,6 +124,90 @@ describe('MoneyHomePage', () => {
     });
   });
 
+  it('renders the filled-state composition for a funded Money account', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercentFormatted: '4.2%',
+      apyDecimal: 0.042,
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      vaultApyQuery: { isLoading: false },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-balance')).toHaveTextContent('$3,475.45');
+    expect(
+      screen.getByTestId('money-position-placeholder'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyEarnings.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-position-monthly-skeleton'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-position-lifetime-skeleton'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-activity-placeholder'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-condensed-info-cards'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyHowYourMoneyGrows.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyMeetMusd.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyExploreBenefits.message),
+    ).toBeInTheDocument();
+    ['growth', 'musd', 'benefits'].forEach((card) => {
+      expect(
+        screen.getByTestId(`money-condensed-info-card-${card}-image`),
+      ).toHaveClass('rounded-xl', 'bg-background-subsection');
+    });
+    expect(screen.queryByText('Earn up to 4.2% APY')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyHowItWorks.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyBenefits.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-potential-earnings'),
+    ).not.toBeInTheDocument();
+    screen.getAllByRole('button').forEach((button) => {
+      expect(button).toBeDisabled();
+    });
+  });
+
+  it('keeps a balance below the funded threshold in the empty state', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('0.009'),
+      totalFiatFormatted: '$0.01',
+      vaultApyQuery: { isLoading: false },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByText(messages.moneyHowItWorks.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-position-placeholder'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-condensed-info-cards'),
+    ).not.toBeInTheDocument();
+  });
+
   it('renders a loading composition while availability is resolving', () => {
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: { isAvailable: false },
@@ -133,6 +217,28 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(screen.getByTestId('money-home-loading')).toBeInTheDocument();
+  });
+
+  it('keeps state-specific content hidden while the balance is loading', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: true,
+      tokenTotal: undefined,
+      totalFiatFormatted: undefined,
+      vaultApyQuery: { isLoading: false },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-home-loading')).toBeInTheDocument();
+    expect(screen.queryByTestId('money-home-page')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyHowItWorks.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-position-placeholder'),
+    ).not.toBeInTheDocument();
   });
 
   it('redirects unavailable users to Home', () => {
@@ -148,8 +254,12 @@ describe('MoneyHomePage', () => {
 
   it('does not fabricate a balance when the balance service fails', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
-      query: { isLoading: false, isError: true },
-      formattedBalance: undefined,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: true,
+      isBalanceLoading: false,
+      tokenTotal: undefined,
+      totalFiatFormatted: undefined,
+      vaultApyQuery: { isLoading: false },
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -160,10 +270,14 @@ describe('MoneyHomePage', () => {
   });
 
   it('shows a configured APY override while the service query is loading', () => {
-    mockUseMoneyVaultApy.mockReturnValue({
-      query: { isLoading: true },
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercentFormatted: '5%',
       apyDecimal: 0.05,
-      formattedApy: '5%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber(0),
+      totalFiatFormatted: '$0.00',
+      vaultApyQuery: { isLoading: true },
     });
 
     renderWithLocalization(<MoneyHomePage />);
