@@ -20,16 +20,6 @@ function createBlockedError(): DOMException {
   );
 }
 
-function createFallbackStorage(): jest.Mocked<StorageAdapter> {
-  return {
-    clear: jest.fn().mockResolvedValue(undefined),
-    getAllKeys: jest.fn().mockResolvedValue([]),
-    getItem: jest.fn().mockResolvedValue({}),
-    removeItem: jest.fn().mockResolvedValue(undefined),
-    setItem: jest.fn().mockResolvedValue(undefined),
-  };
-}
-
 function createDatabase() {
   return {
     get: jest.fn().mockResolvedValue([undefined]),
@@ -44,15 +34,12 @@ type DatabaseMock = ReturnType<typeof createDatabase>;
 
 function createAdapter({
   database = createDatabase(),
-  fallbackStorage = createFallbackStorage(),
 }: {
   database?: DatabaseMock;
-  fallbackStorage?: jest.Mocked<StorageAdapter>;
 } = {}) {
   return {
-    adapter: new IndexedDBStorageAdapter({ database, fallbackStorage }),
+    adapter: new IndexedDBStorageAdapter({ database }),
     database,
-    fallbackStorage,
   };
 }
 
@@ -68,7 +55,7 @@ describe('IndexedDBStorageAdapter', () => {
 
   describe('when IndexedDB is available', () => {
     it('uses IndexedDB for all storage operations', async () => {
-      const { adapter, database, fallbackStorage } = createAdapter();
+      const { adapter, database } = createAdapter();
       database.get.mockResolvedValueOnce([{ data: 'test' }]);
       database.getKeys.mockResolvedValue([FULL_KEY]);
 
@@ -89,7 +76,6 @@ describe('IndexedDBStorageAdapter', () => {
       expect(keys).toStrictEqual([TEST_KEY]);
       expect(database.remove).toHaveBeenCalledWith([FULL_KEY]);
       expect(database.remove).toHaveBeenCalledTimes(2);
-      expect(fallbackStorage.setItem).not.toHaveBeenCalled();
     });
 
     it('returns an empty result when a key is missing', async () => {
@@ -101,42 +87,10 @@ describe('IndexedDBStorageAdapter', () => {
     });
   });
 
-  describe('when IndexedDB is blocked during open', () => {
-    it('delegates all operations to fallback storage', async () => {
-      const { adapter, database, fallbackStorage } = createAdapter();
-      database.open.mockRejectedValue(createBlockedError());
-      fallbackStorage.getItem.mockResolvedValueOnce({
-        result: 'fallback-value',
-      });
-      fallbackStorage.getAllKeys.mockResolvedValueOnce(['fallback-key']);
-
-      await adapter.setItem(TEST_NAMESPACE, TEST_KEY, 'value');
-      const value = await adapter.getItem(TEST_NAMESPACE, TEST_KEY);
-      await adapter.removeItem(TEST_NAMESPACE, TEST_KEY);
-      const keys = await adapter.getAllKeys(TEST_NAMESPACE);
-      await adapter.clear(TEST_NAMESPACE);
-
-      expect(fallbackStorage.setItem).toHaveBeenCalledWith(
-        TEST_NAMESPACE,
-        TEST_KEY,
-        'value',
-      );
-      expect(value).toStrictEqual({ result: 'fallback-value' });
-      expect(fallbackStorage.removeItem).toHaveBeenCalledWith(
-        TEST_NAMESPACE,
-        TEST_KEY,
-      );
-      expect(keys).toStrictEqual(['fallback-key']);
-      expect(fallbackStorage.clear).toHaveBeenCalledWith(TEST_NAMESPACE);
-      expect(database.open).toHaveBeenCalledTimes(1);
-      expect(database.set).not.toHaveBeenCalled();
-    });
-  });
-
   describe('when IndexedDB open fails unexpectedly', () => {
     it('retries storage selection on the next operation', async () => {
       const databaseError = new Error('IndexedDB open failed');
-      const { adapter, database, fallbackStorage } = createAdapter();
+      const { adapter, database } = createAdapter();
       database.open.mockRejectedValueOnce(databaseError);
 
       await expect(
@@ -146,32 +100,28 @@ describe('IndexedDBStorageAdapter', () => {
 
       expect(database.open).toHaveBeenCalledTimes(2);
       expect(database.set).toHaveBeenCalledWith({ [FULL_KEY]: 'value' });
-      expect(fallbackStorage.setItem).not.toHaveBeenCalled();
     });
   });
 
   describe('when an IndexedDB operation fails after open', () => {
     it('returns a read error without switching to fallback storage', async () => {
       const databaseError = createBlockedError();
-      const { adapter, database, fallbackStorage } = createAdapter();
+      const { adapter, database } = createAdapter();
       database.get.mockRejectedValueOnce(databaseError);
 
       const result = await adapter.getItem(TEST_NAMESPACE, TEST_KEY);
 
       expect(result).toStrictEqual({ error: databaseError });
-      expect(fallbackStorage.getItem).not.toHaveBeenCalled();
     });
 
     it('does not switch to fallback storage after a write fails', async () => {
       const databaseError = createBlockedError();
-      const { adapter, database, fallbackStorage } = createAdapter();
+      const { adapter, database } = createAdapter();
       database.set.mockRejectedValueOnce(databaseError);
 
       await expect(
         adapter.setItem(TEST_NAMESPACE, TEST_KEY, 'value'),
       ).rejects.toBe(databaseError);
-
-      expect(fallbackStorage.setItem).not.toHaveBeenCalled();
     });
   });
 });

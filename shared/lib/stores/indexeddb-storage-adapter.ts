@@ -17,7 +17,6 @@ type StorageDatabase = Pick<
 
 type IndexedDBStorageAdapterOptions = {
   database?: StorageDatabase;
-  fallbackStorage?: StorageAdapter;
 };
 
 /**
