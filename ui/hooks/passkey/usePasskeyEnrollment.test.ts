@@ -33,7 +33,11 @@ const registrationResponse: PasskeyRegistrationResponse = {
     clientDataJSON: 'client-data',
     attestationObject: 'attestation',
   },
-  clientExtensionResults: {},
+  clientExtensionResults: {
+    prf: {
+      enabled: true,
+    },
+  },
 };
 
 const authenticationResponse: PasskeyAuthenticationResponse = {
@@ -45,7 +49,13 @@ const authenticationResponse: PasskeyAuthenticationResponse = {
     authenticatorData: 'authenticator-data',
     signature: 'signature',
   },
-  clientExtensionResults: {},
+  clientExtensionResults: {
+    prf: {
+      results: {
+        first: 'AQ',
+      },
+    },
+  },
 };
 
 type RenderHookOptions = {
