@@ -20,6 +20,7 @@ import {
   isEIP1559Transaction,
   isLegacyTransaction,
   parseApprovalTransactionData,
+  parseTransferTransactionData,
   parseStandardTokenTransactionData,
   parseTypedDataMessage,
 } from './transaction.utils';
@@ -825,6 +826,74 @@ describe('Transaction.utils', function () {
       const result = getTransactionDataRecipient(data);
 
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe('parseTransferTransactionData', () => {
+    const RECIPIENT_ADDRESS = '0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706';
+    const RECIPIENT_WORD =
+      '00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706';
+    const SENDER_WORD =
+      '0000000000000000000000001234567890123456789012345678901234567890';
+    const ONE_WORD =
+      '0000000000000000000000000000000000000000000000000000000000000001';
+
+    it('parses ERC-20 transfer', () => {
+      const data = `0xa9059cbb${RECIPIENT_WORD}${ONE_WORD}`;
+
+      expect(parseTransferTransactionData(data)).toStrictEqual({
+        name: 'transfer',
+        recipient: RECIPIENT_ADDRESS,
+      });
+    });
+
+    it('parses transferFrom', () => {
+      const data = `0x23b872dd${SENDER_WORD}${RECIPIENT_WORD}${ONE_WORD}`;
+
+      expect(parseTransferTransactionData(data)).toStrictEqual({
+        name: 'transferFrom',
+        recipient: RECIPIENT_ADDRESS,
+      });
+    });
+
+    it('parses ERC-721 safeTransferFrom', () => {
+      // safeTransferFrom(address from, address to, uint256 tokenId)
+      const data = `0x42842e0e${SENDER_WORD}${RECIPIENT_WORD}${ONE_WORD}`;
+
+      expect(parseTransferTransactionData(data)).toStrictEqual({
+        name: 'safeTransferFrom',
+        recipient: RECIPIENT_ADDRESS,
+      });
+    });
+
+    it('parses ERC-1155 safeTransferFrom', () => {
+      // safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes data)
+      const bytesOffsetWord =
+        '00000000000000000000000000000000000000000000000000000000000000a0';
+      const bytesLengthWord =
+        '0000000000000000000000000000000000000000000000000000000000000000';
+      const data = `0xf242432a${SENDER_WORD}${RECIPIENT_WORD}${ONE_WORD}${ONE_WORD}${bytesOffsetWord}${bytesLengthWord}`;
+
+      expect(parseTransferTransactionData(data)).toStrictEqual({
+        name: 'safeTransferFrom',
+        recipient: RECIPIENT_ADDRESS,
+      });
+    });
+
+    it('returns undefined for an approval', () => {
+      const data = `0x095ea7b3${RECIPIENT_WORD}${ONE_WORD}`;
+
+      expect(parseTransferTransactionData(data)).toBeUndefined();
+    });
+
+    it('returns undefined for an unrecognized function selector', () => {
+      const data = `0xffffffff${RECIPIENT_WORD}${ONE_WORD}`;
+
+      expect(parseTransferTransactionData(data)).toBeUndefined();
+    });
+
+    it('returns undefined for malformed data', () => {
+      expect(parseTransferTransactionData('0xa9059cbb123')).toBeUndefined();
     });
   });
 

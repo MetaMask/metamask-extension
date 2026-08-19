@@ -195,16 +195,28 @@ function isTrusted(
     transactionMeta;
 
   // Trust verdicts are cache-driven on every chain: only a cached non-Trusted
-  // verdict disqualifies a recipient, and chains the Security Alerts API
+  // verdict disqualifies an address, and chains the Security Alerts API
   // cannot screen resolve to ErrorResult once scanned, which is non-Trusted
   // and therefore enforces.
   //
-  // Recipients that no scan path covers stay cache misses and are treated as
+  // Addresses that no scan path covers stay cache misses and are treated as
   // trusted here. The trust-signals middleware scans dapp `eth_sendTransaction`
-  // and `wallet_sendCalls` requests (including each nested call's `to`), but
-  // nothing is scanned when the user has security alerts disabled, and the
-  // outer batch target (`txParamsOriginal.to`, the upgraded EOA for a 7702
-  // batch) is never scanned, so its cache miss never disqualifies.
+  // and `wallet_sendCalls` requests (each call's `to` plus approval spenders
+  // and token-transfer recipients decoded from calldata), but nothing is
+  // scanned when the user has security alerts disabled, and the outer batch
+  // target (`txParamsOriginal.to`, the upgraded EOA for a 7702 batch) is
+  // never scanned, so its cache miss never disqualifies.
+  //
+  // This gate deliberately evaluates `to` (the contract being executed) and
+  // NOT the decoded recipient of a token transfer. Enforced simulations
+  // defend against red-pill contracts that detect simulation and change
+  // behavior on-chain; only executing code can do that, so what matters is
+  // whether the interaction target is a verified/Trusted contract
+  // (CONF-1078). A `Trusted` verdict is a contract-verification signal, so
+  // for a USDC transfer the exemption keys off USDC itself; the transfer
+  // recipient cannot alter the simulation. Recipient verdicts are still
+  // scanned into this same cache, but they power UI trust signals
+  // (e.g. flagging a malicious payee), not this enforcement gate.
   if (!chainId) {
     return false;
   }

@@ -283,6 +283,18 @@ export const APPROVAL_METHOD_NAMES = [
   'setApprovalForAll',
 ];
 
+/**
+ * Token transfer methods whose economic recipient is encoded in calldata
+ * rather than `txParams.to` (which is the token contract). Mirrors the
+ * types `getEffectiveRecipient` in `@metamask/transaction-controller`
+ * decodes for.
+ */
+export const TRANSFER_METHOD_NAMES = [
+  'transfer',
+  'transferFrom',
+  'safeTransferFrom',
+];
+
 // 4-byte selector for setApprovalForAll(address,bool) (ERC-721 + ERC-1155)
 export const SET_APPROVAL_FOR_ALL = '0xa22cb465' as const;
 
