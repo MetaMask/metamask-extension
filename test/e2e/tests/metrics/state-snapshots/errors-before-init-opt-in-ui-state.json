@@ -106,20 +106,10 @@
       "version": null
     },
     "CurrencyController": {
-      "currencyRates": {
-        "ETH": {
-          "conversionDate": "object",
-          "conversionRate": 1700,
-          "usdConversionRate": null
-        }
-      },
+      "currencyRates": {},
       "currentCurrency": "usd"
     },
     "DeFiPositionsControllerV2": "object",
-    "EnsController": {
-      "ensEntries": "object",
-      "ensResolutionsByAddress": "object"
-    },
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
       "gasEstimateType": "none",
@@ -265,6 +255,7 @@
         "showMultiRpcModal": "boolean",
         "showNativeTokenAsMainBalance": true,
         "showTestNetworks": true,
+        "showTickerWidget": "boolean",
         "skipDeepLinkInterstitial": "boolean",
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
@@ -303,15 +294,13 @@
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
+      "featureFlagThresholdGroups": "object",
       "localOverrides": "object",
       "rawRemoteFeatureFlags": "object",
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": {
-          "name": "groupA",
-          "value": "valueA"
-        }
+        "feature3": "valueA"
       },
       "thresholdCache": "object"
     },
@@ -378,6 +367,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 221
+    "version": 222
   }
 }

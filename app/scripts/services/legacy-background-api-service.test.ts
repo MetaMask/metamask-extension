@@ -23,6 +23,11 @@ import {
   type Hex,
 } from '@metamask/utils';
 import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
+import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import {
   EncAccountDataType,
   SecretType,
   RecoveryError,
@@ -68,6 +73,7 @@ import { ReferralTriggerType } from '../lib/defi-referrals/createDefiReferralMid
 import { checkGmxHasReferralCode } from '../lib/defi-referrals/referral-onchain-check';
 import { checkHyperliquidHasReferralCode } from '../lib/defi-referrals/referral-api-check';
 import { trackEvent } from '../controllers/analytics';
+import { createTestProviderTools } from '../../../test/stub/provider';
 import {
   HARDWARE_DEVICE_READ_TIMEOUT_MS,
   LegacyBackgroundApiService,
@@ -418,6 +424,220 @@ describe('LegacyBackgroundApiService', () => {
           expect.anything(),
         );
         expect(getAssetsHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('getTokenStandardAndDetails', () => {
+    it('gets token data from the token list and a balance retrieved via the global provider', async () => {
+      const providerResultStub = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        eth_getCode: '0x123',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      await withService(async ({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ selectedNetworkClientId: 'client' }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest
+            .fn()
+            .mockReturnValue({ configuration: { chainId: '0x5' }, provider }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokenListController:getState',
+          jest.fn().mockReturnValue({
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': {
+                    decimals: 18,
+                    symbol: 'DAI',
+                  },
+                },
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetails',
+          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+        );
+
+        expect(result.standard).toStrictEqual('ERC20');
+        expect(result.decimals).toStrictEqual('18');
+        expect(result.symbol).toStrictEqual('DAI');
+        expect(result.balance).toStrictEqual('3000000000000000000');
+      });
+    });
+
+    it('falls back to the AssetsContractController when the token is not in any list', async () => {
+      await withService(async ({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ selectedNetworkClientId: 'client' }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x5' } }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokenListController:getState',
+          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+        const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
+          standard: 'ERC20',
+          decimals: '18',
+          symbol: 'DAI',
+          balance: 333,
+        });
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          getTokenStandardAndDetails,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetails',
+          '0xNotInTokenList',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+        );
+
+        expect(getTokenStandardAndDetails).toHaveBeenCalled();
+        expect(result.standard).toStrictEqual('ERC20');
+        expect(result.decimals).toStrictEqual('18');
+        expect(result.balance).toStrictEqual('333');
+      });
+    });
+  });
+
+  describe('getTokenStandardAndDetailsByChain', () => {
+    it('falls back to the AssetsContractController using the chain-resolved network client id', async () => {
+      const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
+        standard: 'ERC20',
+        decimals: '18',
+        symbol: 'DAI',
+        balance: 333,
+      });
+
+      await withService(async ({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            selectedNetworkClientId: 'client',
+            networkConfigurationsByChainId: {
+              '0x1': {
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [{ networkClientId: 'mainnet' }],
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x5' } }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue({ address: '0xabc' }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokenListController:getState',
+          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          getTokenStandardAndDetails,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain',
+          '0xNotInTokenList',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+          undefined,
+          '0x1',
+        );
+
+        expect(getTokenStandardAndDetails).toHaveBeenCalledWith(
+          '0xNotInTokenList',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+          undefined,
+          'mainnet',
+        );
+        expect(result.standard).toStrictEqual('ERC20');
+        expect(result.balance).toStrictEqual('333');
+      });
+    });
+  });
+
+  describe('getTokenSymbol', () => {
+    it('returns the token symbol from the AssetsContractController', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          jest.fn().mockResolvedValue({ standard: 'ERC20', symbol: 'DAI' }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenSymbol',
+          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        );
+
+        expect(result).toStrictEqual('DAI');
+      });
+    });
+
+    it('returns null when the lookup throws', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          jest.fn().mockRejectedValue(new Error('error')),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenSymbol',
+          '0xNotInTokenList',
+        );
+
+        expect(result).toBeNull();
       });
     });
   });
@@ -1832,6 +2052,220 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('addNetwork', () => {
+    const networkConfiguration = {
+      chainId: '0x1',
+    } as unknown as AddNetworkFields;
+    const addedNetwork = {
+      chainId: '0x1',
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [{ networkClientId: 'network-client-id' }],
+    } as unknown as NetworkConfiguration;
+
+    it('adds the network and sets it as active by default', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const addNetworkHandler = jest.fn().mockReturnValue(addedNetwork);
+        const setActiveNetworkHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'NetworkController:addNetwork',
+          addNetworkHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:setActiveNetwork',
+          setActiveNetworkHandler,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addNetwork',
+          networkConfiguration,
+        );
+
+        expect(addNetworkHandler).toHaveBeenCalledWith(networkConfiguration);
+        expect(setActiveNetworkHandler).toHaveBeenCalledWith(
+          'network-client-id',
+        );
+        expect(result).toStrictEqual(addedNetwork);
+      });
+    });
+
+    it('adds the network without setting it as active and refreshes the selected networks', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const addNetworkHandler = jest.fn().mockReturnValue(addedNetwork);
+        const setActiveNetworkHandler = jest.fn();
+        const lookupNetworkHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'NetworkController:addNetwork',
+          addNetworkHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:setActiveNetwork',
+          setActiveNetworkHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          lookupNetworkHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({ enabledNetworkMap: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:isNetworkEnabled',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:restoreEnabledNetworkMap',
+          jest.fn(),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addNetwork',
+          networkConfiguration,
+          { setActive: false },
+        );
+
+        expect(addNetworkHandler).toHaveBeenCalledWith(networkConfiguration);
+        expect(setActiveNetworkHandler).not.toHaveBeenCalled();
+        // `lookupSelectedNetworks` runs after adding the network.
+        expect(lookupNetworkHandler).toHaveBeenCalledWith();
+        expect(result).toStrictEqual(addedNetwork);
+      });
+    });
+
+    it('restores the previous enabled network map once the added network becomes enabled', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const restoreEnabledNetworkMapHandler = jest.fn();
+        let networkEnabled = false;
+        rootMessenger.registerActionHandler(
+          'NetworkController:addNetwork',
+          jest.fn().mockReturnValue(addedNetwork),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({
+            enabledNetworkMap: { eip155: { '0x1': true } },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:isNetworkEnabled',
+          jest.fn().mockImplementation(() => networkEnabled),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:restoreEnabledNetworkMap',
+          restoreEnabledNetworkMapHandler,
+        );
+
+        const promise = rootMessenger.call(
+          'LegacyBackgroundApiService:addNetwork',
+          networkConfiguration,
+          { setActive: false },
+        );
+
+        // Let `addNetwork` reach the `#whenNetworkEnabled` wait.
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // The added network becomes enabled and the controller publishes.
+        networkEnabled = true;
+        rootMessenger.publish(
+          'NetworkEnablementController:stateChange',
+          {
+            enabledNetworkMap: { eip155: { '0x1': true, '0xa': true } },
+          } as unknown as NetworkEnablementControllerState,
+          [],
+        );
+
+        await promise;
+
+        // The map captured before the network was added is restored, and the
+        // restore runs exactly once, outside the state-change publish.
+        expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledTimes(1);
+        expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledWith({
+          eip155: { '0x1': true },
+        });
+      });
+    });
+
+    it('rethrows when adding the network fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const lookupNetworkHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'NetworkController:addNetwork',
+          jest.fn().mockImplementation(() => {
+            throw new Error('add network failed');
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          lookupNetworkHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({ enabledNetworkMap: {} }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addNetwork',
+            networkConfiguration,
+            { setActive: false },
+          ),
+        ).rejects.toThrow('add network failed');
+
+        expect(lookupNetworkHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('lookupSelectedNetworks', () => {
+    it('looks up the global network and each enabled network client', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const lookupNetworkHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({
+            enabledNetworkMap: { eip155: { '0x1': true, '0xa': false } },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            networkConfigurationsByChainId: {
+              '0x1': {
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [{ networkClientId: 'mainnet' }],
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          lookupNetworkHandler,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:lookupSelectedNetworks',
+        );
+
+        // Global lookup (no client id) plus one for the enabled `0x1` network.
+        expect(lookupNetworkHandler).toHaveBeenCalledWith();
+        expect(lookupNetworkHandler).toHaveBeenCalledWith('mainnet');
+        expect(lookupNetworkHandler).toHaveBeenCalledTimes(2);
+      });
+    });
+  });
+
   describe('getSeedPhrase', () => {
     it('returns the seed phrase', async () => {
       const mnemonic =
@@ -1857,6 +2291,141 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toEqual(encodedSeedPhrase);
+      });
+    });
+  });
+
+  describe('addTransaction', () => {
+    const TRANSACTION_PARAMS = {
+      from: '0xfromaddress',
+      to: '0xtoaddress',
+    } as unknown as Parameters<LegacyBackgroundApiService['addTransaction']>[0];
+    const NETWORK_CLIENT_ID = 'networkClientId';
+
+    /**
+     * Registers the handlers required by the transaction-add pipeline to add an
+     * EOA transaction with security alerts disabled.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @param transactions - The transactions to expose via
+     * `TransactionController:getState`.
+     */
+    function registerAddTransactionHandlers(
+      rootMessenger: RootMessenger,
+      transactions: TransactionMeta[] = [],
+    ): void {
+      rootMessenger.registerActionHandler(
+        'AccountsController:listAccounts',
+        jest.fn().mockReturnValue([]),
+      );
+      rootMessenger.registerActionHandler(
+        'AccountsController:getAccountByAddress',
+        jest
+          .fn()
+          .mockReturnValue(
+            createMockInternalAccount({ address: '0xfromaddress' }),
+          ),
+      );
+      rootMessenger.registerActionHandler(
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        jest.fn().mockReturnValue({ chainId: '0x1' }),
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:getState',
+        jest.fn().mockReturnValue({ securityAlertsEnabled: false }),
+      );
+      rootMessenger.registerActionHandler(
+        'TransactionController:getState',
+        jest.fn().mockReturnValue({ transactions }),
+      );
+    }
+
+    it('adds the transaction via the TransactionController and returns its metadata without waiting for publish', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const transactionMeta = {
+          id: 'txId',
+          hash: '0xhash',
+        } as TransactionMeta;
+        registerAddTransactionHandlers(rootMessenger);
+        const addTransactionHandler = jest.fn().mockResolvedValue({
+          result: Promise.resolve('0xhash'),
+          transactionMeta,
+        });
+        rootMessenger.registerActionHandler(
+          'TransactionController:addTransaction',
+          addTransactionHandler,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addTransaction',
+          TRANSACTION_PARAMS,
+          { networkClientId: NETWORK_CLIENT_ID },
+        );
+
+        expect(addTransactionHandler).toHaveBeenCalledWith(TRANSACTION_PARAMS, {
+          networkClientId: NETWORK_CLIENT_ID,
+          isInternal: true,
+        });
+        expect(result).toStrictEqual(transactionMeta);
+      });
+    });
+  });
+
+  describe('addTransactionAndWaitForPublish', () => {
+    const TRANSACTION_PARAMS = {
+      from: '0xfromaddress',
+      to: '0xtoaddress',
+    } as unknown as Parameters<
+      LegacyBackgroundApiService['addTransactionAndWaitForPublish']
+    >[0];
+    const NETWORK_CLIENT_ID = 'networkClientId';
+
+    it('waits for the transaction to publish and returns the final metadata', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const finalTransactionMeta = {
+          id: 'txId',
+          hash: '0xhash',
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:listAccounts',
+          jest.fn().mockReturnValue([]),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest
+            .fn()
+            .mockReturnValue(
+              createMockInternalAccount({ address: '0xfromaddress' }),
+            ),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkConfigurationByNetworkClientId',
+          jest.fn().mockReturnValue({ chainId: '0x1' }),
+        );
+        rootMessenger.registerActionHandler(
+          'PreferencesController:getState',
+          jest.fn().mockReturnValue({ securityAlertsEnabled: false }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [finalTransactionMeta] }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:addTransaction',
+          jest.fn().mockResolvedValue({
+            result: Promise.resolve('0xhash'),
+            transactionMeta: { id: 'txId' } as TransactionMeta,
+          }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
+          TRANSACTION_PARAMS,
+          { networkClientId: NETWORK_CLIENT_ID },
+        );
+
+        expect(result).toStrictEqual(finalTransactionMeta);
       });
     });
   });
@@ -1940,6 +2509,134 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).toHaveBeenCalledWith(
           'NetworkController:resetConnection',
         );
+      });
+    });
+  });
+
+  describe('resetWallet', () => {
+    /**
+     * Registers no-op handlers for every action `resetWallet` invokes.
+     *
+     * @param rootMessenger - The root messenger to register the handlers on.
+     */
+    function registerResetWalletHandlers(rootMessenger: RootMessenger): void {
+      rootMessenger.registerActionHandler(
+        'AuthenticationController:performSignOut',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'SeedlessOnboardingController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'PasskeyController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:stopAllPolling',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'ShieldController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'ClaimsController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'AddressBookController:clear',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:resetState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'OnboardingController:resetOnboarding',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'AppStateController:setIsWalletResetInProgress',
+        jest.fn(),
+      );
+    }
+
+    it('clears sensitive controller state and signs the user out', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        registerResetWalletHandlers(rootMessenger);
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resetWallet',
+          false,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AuthenticationController:performSignOut',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:clearState',
+        );
+        expect(callSpy).toHaveBeenCalledWith('PasskeyController:clearState');
+        expect(callSpy).toHaveBeenCalledWith(
+          'SubscriptionController:stopAllPolling',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SubscriptionController:clearState',
+        );
+        expect(callSpy).toHaveBeenCalledWith('ShieldController:clearState');
+        expect(callSpy).toHaveBeenCalledWith('ClaimsController:clearState');
+        expect(callSpy).toHaveBeenCalledWith('AddressBookController:clear');
+        expect(callSpy).toHaveBeenCalledWith(
+          'PreferencesController:resetState',
+        );
+      });
+    });
+
+    it('resets onboarding and flags the reset as in progress when restoreOnly is false', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        registerResetWalletHandlers(rootMessenger);
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resetWallet',
+          false,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'OnboardingController:resetOnboarding',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'AppStateController:setIsWalletResetInProgress',
+          true,
+        );
+      });
+    });
+
+    it('preserves onboarding state when restoreOnly is true', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        registerResetWalletHandlers(rootMessenger);
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resetWallet',
+          true,
+        );
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'OnboardingController:resetOnboarding',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AppStateController:setIsWalletResetInProgress',
+          true,
+        );
+        // Non-onboarding cleanup still runs.
+        expect(callSpy).toHaveBeenCalledWith('PasskeyController:clearState');
       });
     });
   });
@@ -3344,6 +4041,174 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('unlockWithPasskey', () => {
+    const authenticationResponse =
+      'authentication-response' as unknown as Parameters<
+        LegacyBackgroundApiService['unlockWithPasskey']
+      >[0];
+
+    it('unlocks via the passkey controller and runs post-unlock account init', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const unlockSpy = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'PasskeyController:unlockWithPasskey',
+          unlockSpy,
+        );
+        registerUnlockSideEffectHandlers(rootMessenger);
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:unlockWithPasskey',
+            authenticationResponse,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(unlockSpy).toHaveBeenCalledWith(authenticationResponse);
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:updateAccounts',
+        );
+        expect(callSpy).toHaveBeenCalledWith('MultichainAccountService:init');
+        expect(callSpy).toHaveBeenCalledWith('AccountTreeController:init');
+      });
+    });
+
+    it('propagates errors from the passkey controller and skips account init', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const error = new Error('not enrolled');
+        rootMessenger.registerActionHandler(
+          'PasskeyController:unlockWithPasskey',
+          jest.fn().mockRejectedValue(error),
+        );
+        registerUnlockSideEffectHandlers(rootMessenger);
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:unlockWithPasskey',
+            authenticationResponse,
+          ),
+        ).rejects.toThrow(error);
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AccountsController:updateAccounts',
+        );
+      });
+    });
+  });
+
+  describe('changePasswordWithPasskeyVerification', () => {
+    const params = {
+      newPassword: 'new-password',
+      authenticationResponse: 'authentication-response',
+      options: { renewVaultKeyProtection: true },
+    } as unknown as Parameters<
+      LegacyBackgroundApiService['changePasswordWithPasskeyVerification']
+    >[0];
+
+    it('delegates to the passkey controller with the params', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const changePasswordHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          changePasswordHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+            params,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(changePasswordHandler).toHaveBeenCalledWith(params);
+        expect(callSpy).toHaveBeenCalledWith(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          params,
+        );
+      });
+    });
+
+    it('serializes the change through the shared seedless operation mutex', async () => {
+      const runExclusiveSpy = jest.spyOn(Mutex.prototype, 'runExclusive');
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+          params,
+        );
+
+        expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
+      });
+
+      runExclusiveSpy.mockRestore();
+    });
+
+    it('releases the mutex even when the passkey controller throws', async () => {
+      const runExclusiveSpy = jest.spyOn(Mutex.prototype, 'runExclusive');
+      const error = new Error('verification failed');
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          jest.fn().mockRejectedValue(error),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+            params,
+          ),
+        ).rejects.toThrow(error);
+
+        expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
+      });
+
+      runExclusiveSpy.mockRestore();
+    });
+  });
+
+  describe('exportSeedPhraseWithPasskey', () => {
+    it('returns JSON-safe UTF-8 bytes while preserving the keyring id', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const mnemonic = new Uint8Array(new Uint16Array([0, 1]).buffer);
+        const exportHandler = jest.fn().mockResolvedValue(mnemonic);
+        rootMessenger.registerActionHandler(
+          'PasskeyController:exportSeedPhraseWithPasskey',
+          exportHandler,
+        );
+        const params = {
+          authenticationResponse: {
+            id: 'credential-id',
+          },
+          keyringId: 'keyring-id',
+        } as unknown as Parameters<
+          LegacyBackgroundApiService['exportSeedPhraseWithPasskey']
+        >[0];
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:exportSeedPhraseWithPasskey',
+            params,
+          ),
+        ).resolves.toStrictEqual(Array.from(Buffer.from('abandon ability')));
+        expect(exportHandler).toHaveBeenCalledWith(
+          params.authenticationResponse,
+          'keyring-id',
+        );
+      });
+    });
+  });
+
   describe('changePassword', () => {
     it('changes the keyring password and releases the lock for a non-social login flow', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
@@ -3383,33 +4248,31 @@ describe('LegacyBackgroundApiService', () => {
 
     it('releases the seedless operation mutex after a successful change', async () => {
       const releaseLock = jest.fn();
-      const seedlessOperationMutex = new Mutex();
-      jest
-        .spyOn(seedlessOperationMutex, 'acquire')
+      const acquireSpy = jest
+        .spyOn(Mutex.prototype, 'acquire')
         .mockResolvedValue(releaseLock);
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'OnboardingController:getIsSocialLoginFlow',
-            jest.fn().mockReturnValue(false),
-          );
-          rootMessenger.registerActionHandler(
-            'KeyringController:changePassword',
-            jest.fn().mockResolvedValue(undefined),
-          );
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
 
-          await rootMessenger.call(
-            'LegacyBackgroundApiService:changePassword',
-            'new-password',
-            'old-password',
-          );
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:changePassword',
+          'new-password',
+          'old-password',
+        );
 
-          expect(seedlessOperationMutex.acquire).toHaveBeenCalledTimes(1);
-          expect(releaseLock).toHaveBeenCalledTimes(1);
-        },
-      );
+        expect(acquireSpy).toHaveBeenCalledTimes(1);
+        expect(releaseLock).toHaveBeenCalledTimes(1);
+      });
+
+      acquireSpy.mockRestore();
     });
 
     it('also changes the seedless onboarding password and stores the new keyring encryption key for a social login flow', async () => {
@@ -3535,36 +4398,34 @@ describe('LegacyBackgroundApiService', () => {
 
     it('releases the lock and rethrows when the keyring password change fails', async () => {
       const releaseLock = jest.fn();
-      const seedlessOperationMutex = new Mutex();
-      jest
-        .spyOn(seedlessOperationMutex, 'acquire')
+      const acquireSpy = jest
+        .spyOn(Mutex.prototype, 'acquire')
         .mockResolvedValue(releaseLock);
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          const error = new Error('keyring change failed');
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('keyring change failed');
 
-          rootMessenger.registerActionHandler(
-            'OnboardingController:getIsSocialLoginFlow',
-            jest.fn().mockReturnValue(false),
-          );
-          rootMessenger.registerActionHandler(
-            'KeyringController:changePassword',
-            jest.fn().mockRejectedValue(error),
-          );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          jest.fn().mockRejectedValue(error),
+        );
 
-          await expect(
-            rootMessenger.call(
-              'LegacyBackgroundApiService:changePassword',
-              'new-password',
-              'old-password',
-            ),
-          ).rejects.toThrow(error);
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          ),
+        ).rejects.toThrow(error);
 
-          expect(releaseLock).toHaveBeenCalledTimes(1);
-        },
-      );
+        expect(releaseLock).toHaveBeenCalledTimes(1);
+      });
+
+      acquireSpy.mockRestore();
     });
   });
 
@@ -6487,15 +7348,24 @@ function getMessenger(
       'NetworkController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
       'NetworkController:getSelectedNetworkClient',
+      'NetworkController:addNetwork',
+      'NetworkController:setActiveNetwork',
       'NetworkController:lookupNetwork',
       'NetworkEnablementController:getState',
       'NetworkEnablementController:enableNetwork',
       'NetworkEnablementController:enableAllPopularNetworks',
+      'NetworkEnablementController:isNetworkEnabled',
+      'NetworkEnablementController:restoreEnabledNetworkMap',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
+      'AssetsContractController:getTokenStandardAndDetails',
       'AssetsController:getAssets',
+      'AssetsController:getState',
       'AssetsController:setSelectedCurrency',
+      'TokenListController:getState',
+      'TokensController:getState',
       'KeyringController:exportSeedPhrase',
       'KeyringController:getState',
       'AccountsController:getSelectedAccount',
@@ -6541,6 +7411,9 @@ function getMessenger(
       'PreferencesController:removeReferralDeclinedAccount',
       'PreferencesController:setAccountsReferralApproved',
       'PreferencesController:setPasswordForgotten',
+      'PasskeyController:unlockWithPasskey',
+      'PasskeyController:changePasswordWithPasskeyVerification',
+      'PasskeyController:exportSeedPhraseWithPasskey',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
@@ -6603,6 +7476,32 @@ function getMessenger(
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
       'ShieldController:stop',
+      'TransactionController:addTransaction',
+      'TransactionController:addTransactionBatch',
+      'TransactionController:updateSecurityAlertResponse',
+      'UserOperationController:addUserOperationFromTransaction',
+      'UserOperationController:startPollingByNetworkClientId',
+      'PPOMController:usePPOM',
+      'KeyringController:getKeyringForAccount',
+      'SignatureController:getState',
+      'AppStateController:getAddressSecurityAlertResponse',
+      'AppStateController:addAddressSecurityAlertResponse',
+      'AppStateController:addSignatureSecurityAlertResponse',
+      'SubscriptionController:getSubscriptionByProduct',
+      'AuthenticationController:getBearerToken',
+      'ShieldController:clearState',
+      'SeedlessOnboardingController:clearState',
+      'PasskeyController:clearState',
+      'SubscriptionController:clearState',
+      'ClaimsController:clearState',
+      'AddressBookController:clear',
+      'PreferencesController:resetState',
+      'OnboardingController:resetOnboarding',
+    ],
+    events: [
+      'NetworkEnablementController:stateChange',
+      'TransactionController:unapprovedTransactionAdded',
+      'SignatureController:stateChange',
     ],
   });
 
@@ -6640,7 +7539,6 @@ async function withService<ReturnValue>(
     markNotificationPopupAsAutomaticallyClosed: jest.fn(),
     requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
-    seedlessOperationMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,
   });

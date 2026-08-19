@@ -58,10 +58,68 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.ORDER_LEVERAGE_BELOW_POSITION]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_MAX_VALUE_EXCEEDED]: 'perpsOrderFailed',
 
+  // Order validation — trigger placements and partial TP/SL. The extension
+  // places neither today, so these are unreachable from its UI and share the
+  // generic `ORDER_*` copy rather than carrying bespoke strings.
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_PRICE_REQUIRED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_PRICE_POSITIVE]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_PRICE_NOT_SUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_TPSL_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_SIZE_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_LINKAGE_CONFLICT]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_POSITION_LINKAGE_UNSUPPORTED]:
+    'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_LINKAGE_REQUIRED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TIME_IN_FORCE_NOT_SUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_EDIT_TRIGGER_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_EDIT_ORDER_UNVERIFIABLE]: 'perpsOrderFailed',
+
+  // Order validation — strategy placements (`twap`, `scale`, `chase`). Same
+  // reasoning as the trigger block above: the extension's order form places
+  // only market and limit orders, so nothing in its UI can produce a strategy
+  // request and none of these codes is reachable from it. They share the
+  // generic `ORDER_*` copy rather than carrying nineteen bespoke strings that
+  // every locale would have to translate for a flow that does not exist.
+  // `ORDER_STRATEGY_HANDLE_UNKNOWN` and `ORDER_STRATEGY_CANCEL_INCOMPLETE`
+  // arrive on the cancel path, where `CANCEL_ORDER_I18N_KEY_OVERRIDES` already
+  // remaps `perpsOrderFailed` to the cancel wording.
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_PARAMS_NOT_SUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_FIELD_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_MARKET_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_HANDLE_UNKNOWN]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_CANCEL_INCOMPLETE]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_EDIT_STRATEGY_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TWAP_DURATION_REQUIRED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TWAP_DURATION_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TWAP_NOTIONAL_TOO_SMALL]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_RANGE_REQUIRED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_RANGE_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_COUNT_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_SIZE_TOO_SMALL]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_NOTIONAL_TOO_SMALL]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_INTERVAL_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_DURATION_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_LIMIT_REACHED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_ABANDONED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_TOUCH_UNAVAILABLE]: 'perpsOrderFailed',
+
   // HyperLiquid client errors
   [PERPS_ERROR_CODES.EXCHANGE_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.INFO_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.SUBSCRIPTION_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
+
+  // HyperLiquid exchange rejections
+  // The wallet has no HyperLiquid account yet — HyperLiquid creates one on the
+  // first USDC credit, so the only way forward is to fund it. This has its own
+  // key rather than reusing `perpsAddFundsDescription`: that string belongs to
+  // the balance-actions empty state, and rewording it there should not silently
+  // reword an error message.
+  [PERPS_ERROR_CODES.EXCHANGE_ACCOUNT_NOT_FOUND]:
+    'perpsExchangeAccountNotFound',
+  // Account needs a multi-sig wrapper for exchange writes — not actionable here.
+  [PERPS_ERROR_CODES.EXCHANGE_MULTI_SIG_REQUIRED]: 'somethingWentWrong',
+  // Stale or reused action nonce; retrying is what resolves it.
+  [PERPS_ERROR_CODES.EXCHANGE_INVALID_NONCE]: 'perpsOrderFailed',
 
   // Wallet / account
   [PERPS_ERROR_CODES.NO_ACCOUNT_SELECTED]: 'perpsWithdrawNoAccount',

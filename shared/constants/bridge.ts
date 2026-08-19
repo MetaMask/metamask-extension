@@ -21,6 +21,7 @@ export const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   MultichainNetworks.SOLANA,
   MultichainNetworks.BITCOIN,
   MultichainNetworks.TRON,
+  MultichainNetworks.STELLAR,
 ];
 
 const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
@@ -164,6 +165,7 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
   [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
   [MultichainNetworks.TRON]: 'Tron',
+  [MultichainNetworks.STELLAR]: 'Stellar',
 };
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
@@ -333,9 +335,21 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
     name: 'Tether USD',
     assetId: `${MultichainNetworks.TRON}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
   },
+  [MultichainNetworks.STELLAR]: {
+    // XLM -> USDC on Stellar
+    address: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+    symbol: 'USDC',
+    decimals: 7,
+    name: 'USDC',
+    assetId: `${MultichainNetworks.STELLAR}/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN`,
+  },
 } as const;
 
 export const BRIDGE_ASSET_PICKER_HIDDEN_ASSETS = new Set([
-  // Arc blockchain: Two USDC - one native, one ERC20. Hidding native for convenience.
+  // Arc blockchain: Two USDC - one native, one ERC20. Hiding native for convenience.
+  // Both the legacy erc20:0x0 placeholder and the current slip44:5042 ID are
+  // listed because persisted balance state may still carry the legacy ID
+  // until the pending state migration for the slip44 rollout lands.
   'eip155:5042/erc20:0x0000000000000000000000000000000000000000',
+  'eip155:5042/slip44:5042',
 ]);

@@ -1,4 +1,4 @@
-import { JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
+import { JsonRpcRequest, JsonRpcResponse, type Hex } from '@metamask/utils';
 import {
   NetworkController,
   NetworkClientId,
@@ -14,7 +14,6 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
-import { mapChainIdToSupportedEVMChain } from '../../../../shared/lib/trust-signals';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
   hasValidTypedDataParams,
@@ -57,10 +56,20 @@ export function createTrustSignalsMiddleware(
       }
 
       if (isEthSendTransaction(req)) {
-        handleEthSendTransaction(req, appStateController, networkController);
+        handleEthSendTransaction(
+          req,
+          appStateController,
+          networkController,
+          phishingController,
+        );
         scanUrl(req, phishingController);
       } else if (isEthSignTypedData(req)) {
-        handleEthSignTypedData(req, appStateController, networkController);
+        handleEthSignTypedData(
+          req,
+          appStateController,
+          networkController,
+          phishingController,
+        );
         scanUrl(req, phishingController);
       } else if (isConnected(req, getPermittedAccounts)) {
         scanUrl(req, phishingController);
@@ -90,10 +99,42 @@ function scanUrl(
   }
 }
 
+/**
+ * Fire-and-forget an address scan, logging (rather than propagating) any
+ * failure so one rejected scan cannot affect the middleware pipeline.
+ *
+ * @param address - The address to scan
+ * @param logLabel - Describes the address's role in the error log message
+ * @param chainId - The hex chainId of the chain the address exists on
+ * @param appStateController - Provides the security alert response cache
+ * @param phishingController - Controller providing scanAddress
+ */
+function scanAddressInBackground(
+  address: string,
+  logLabel: string,
+  chainId: Hex,
+  appStateController: AppStateController,
+  phishingController: PhishingController,
+) {
+  scanAddressAndAddToCache(
+    address,
+    appStateController.getAddressSecurityAlertResponse,
+    appStateController.addAddressSecurityAlertResponse,
+    chainId,
+    phishingController,
+  ).catch((error) => {
+    console.error(
+      `[createTrustSignalsMiddleware] error scanning ${logLabel}:`,
+      error,
+    );
+  });
+}
+
 function handleEthSendTransaction(
   req: TrustSignalsMiddlewareRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
+  phishingController: PhishingController,
 ) {
   if (!hasValidTransactionParams(req)) {
     return;
@@ -111,41 +152,27 @@ function handleEthSendTransaction(
     return;
   }
 
-  const supportedEVMChain = mapChainIdToSupportedEVMChain(rawChainId);
-  if (!supportedEVMChain) {
-    console.error('Unsupported chainId:', rawChainId);
-    return;
-  }
-
   // Scan the 'to' address (contract address)
-  scanAddressAndAddToCache(
+  scanAddressInBackground(
     to,
-    appStateController.getAddressSecurityAlertResponse,
-    appStateController.addAddressSecurityAlertResponse,
-    supportedEVMChain,
-  ).catch((error) => {
-    console.error(
-      '[createTrustSignalsMiddleware] error scanning address for transaction:',
-      error,
-    );
-  });
+    'address for transaction',
+    rawChainId,
+    appStateController,
+    phishingController,
+  );
 
   // If this is an approval transaction, also scan the spender address
   if (data && typeof data === 'string') {
     const approvalData = parseApprovalTransactionData(data as `0x${string}`);
     const spenderAddress = approvalData?.spender;
     if (spenderAddress) {
-      scanAddressAndAddToCache(
+      scanAddressInBackground(
         spenderAddress,
-        appStateController.getAddressSecurityAlertResponse,
-        appStateController.addAddressSecurityAlertResponse,
-        supportedEVMChain,
-      ).catch((error) => {
-        console.error(
-          '[createTrustSignalsMiddleware] error scanning spender address for approval:',
-          error,
-        );
-      });
+        'spender address for approval',
+        rawChainId,
+        appStateController,
+        phishingController,
+      );
     }
   }
 }
@@ -154,6 +181,7 @@ function handleEthSignTypedData(
   req: TrustSignalsMiddlewareRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
+  phishingController: PhishingController,
 ) {
   if (
     req.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
@@ -186,24 +214,14 @@ function handleEthSignTypedData(
     return;
   }
 
-  const supportedEVMChain = mapChainIdToSupportedEVMChain(rawChainId);
-  if (!supportedEVMChain) {
-    console.error('Unsupported chainId:', rawChainId);
-    return;
-  }
-
   // Scan the verifying contract address (token contract)
-  scanAddressAndAddToCache(
+  scanAddressInBackground(
     verifyingContract,
-    appStateController.getAddressSecurityAlertResponse,
-    appStateController.addAddressSecurityAlertResponse,
-    supportedEVMChain,
-  ).catch((error) => {
-    console.error(
-      '[createTrustSignalsMiddleware] error scanning address for signature:',
-      error,
-    );
-  });
+    'address for signature',
+    rawChainId,
+    appStateController,
+    phishingController,
+  );
 
   const { primaryType }: { primaryType: string } = typedDataMessage;
   if (!primaryType) {
@@ -215,17 +233,13 @@ function handleEthSignTypedData(
   if (PRIMARY_TYPES_PERMIT.includes(primaryType as any)) {
     const spenderAddress = typedDataMessage.message?.spender;
     if (spenderAddress) {
-      scanAddressAndAddToCache(
+      scanAddressInBackground(
         spenderAddress,
-        appStateController.getAddressSecurityAlertResponse,
-        appStateController.addAddressSecurityAlertResponse,
-        supportedEVMChain,
-      ).catch((error) => {
-        console.error(
-          '[createTrustSignalsMiddleware] error scanning spender address for permit:',
-          error,
-        );
-      });
+        'spender address for permit',
+        rawChainId,
+        appStateController,
+        phishingController,
+      );
     }
   }
 
@@ -233,17 +247,13 @@ function handleEthSignTypedData(
   if (primaryType === PRIMARY_TYPE_DELEGATION) {
     const delegateAddress = typedDataMessage.message?.delegate;
     if (delegateAddress) {
-      scanAddressAndAddToCache(
+      scanAddressInBackground(
         delegateAddress,
-        appStateController.getAddressSecurityAlertResponse,
-        appStateController.addAddressSecurityAlertResponse,
-        supportedEVMChain,
-      ).catch((error) => {
-        console.error(
-          '[createTrustSignalsMiddleware] error scanning delegate address for delegation:',
-          error,
-        );
-      });
+        'delegate address for delegation',
+        rawChainId,
+        appStateController,
+        phishingController,
+      );
     }
   }
 }

@@ -32,9 +32,7 @@ import {
   setPermittedAccounts,
   setPermittedChains,
 } from '../../../../store/actions';
-import { usePermittedNetworkToast } from '../../../../hooks/multichain-accounts/usePermittedNetworkToast';
 import { toast, ToastContent } from '../../../ui/toast/toast';
-import { NoConnectionContent } from '../../../multichain/pages/connections/components/no-connection';
 import { Content, Footer, Page } from '../../../multichain/pages/page';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
@@ -54,7 +52,10 @@ import {
   getTokenTransferPermissionsByOrigin,
   getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
-import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
+import {
+  PermissionsCell,
+  PermissionsEmptyState,
+} from '../../../multichain/pages/gator-permissions/components';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
 import { useDispatch } from '../../../../store/hooks';
@@ -68,7 +69,6 @@ export const MultichainReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { dismissPermittedNetworkToast } = usePermittedNetworkToast();
   const [searchParams] = useSearchParams();
 
   const originParam = searchParams.get('origin');
@@ -127,7 +127,6 @@ export const MultichainReviewPermissions = () => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
-    dismissPermittedNetworkToast();
   };
 
   const handleDisconnectClick = () => {
@@ -308,6 +307,24 @@ export const MultichainReviewPermissions = () => {
     );
   }, [gatorPermissionsGroupMetaData]);
 
+  // Handle disconnect flow with gator permissions check: if token transfer
+  // permissions exist, shows the permissions modal, else disconnect directly
+  const handleDisconnectWithGatorCheck = () => {
+    const hasTokenTransferPermissions =
+      gatorPermissionsGroupMetaData &&
+      Object.values(gatorPermissionsGroupMetaData).some(
+        (details) => details.count > 0,
+      );
+
+    if (hasTokenTransferPermissions) {
+      setShowDisconnectPermissionsModal(true);
+    } else {
+      trace({ name: TraceName.DisconnectAllModal });
+      disconnectAllPermissions();
+      endTrace({ name: TraceName.DisconnectAllModal });
+    }
+  };
+
   const handleRemoveAllPermissions = async () => {
     try {
       trace({ name: TraceName.DisconnectAllModal });
@@ -369,29 +386,18 @@ export const MultichainReviewPermissions = () => {
 
           {connectedAccountGroups.length === 0 &&
           !shouldRenderGatorPermissionGroupDetails ? (
-            <NoConnectionContent />
+            <Box className="flex justify-center items-center h-full">
+              <PermissionsEmptyState />
+            </Box>
           ) : null}
 
           {showDisconnectAllModal ? (
             <DisconnectAllModal
+              origin={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
                 setShowDisconnectAllModal(false);
-
-                // Check if there are token transfer permissions
-                const hasTokenTransferPermissions =
-                  gatorPermissionsGroupMetaData &&
-                  Object.values(gatorPermissionsGroupMetaData).some(
-                    (details) => details.count > 0,
-                  );
-
-                if (hasTokenTransferPermissions) {
-                  setShowDisconnectPermissionsModal(true);
-                } else {
-                  trace({ name: TraceName.DisconnectAllModal });
-                  disconnectAllPermissions();
-                  endTrace({ name: TraceName.DisconnectAllModal });
-                }
+                handleDisconnectWithGatorCheck();
               }}
             />
           ) : null}
@@ -447,12 +453,21 @@ export const MultichainReviewPermissions = () => {
     </Page>
   ) : (
     <MultichainEditAccountsPage
-      title={t('editAccounts')}
-      confirmButtonText={t('update')}
+      title={t('manageConnectedAccounts')}
+      confirmButtonText={t('save')}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}
       onClose={() => setPageMode(MultichainReviewPermissionsPageMode.Summary)}
+      siteMetadata={{
+        origin: activeTabOrigin,
+        name: connectedSubjectsMetadata?.name,
+        iconUrl: connectedSubjectsMetadata?.iconUrl,
+      }}
+      onDisconnect={() => {
+        handleDisconnectWithGatorCheck();
+        setPageMode(MultichainReviewPermissionsPageMode.Summary);
+      }}
     />
   );
 };
