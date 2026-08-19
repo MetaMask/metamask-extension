@@ -6,7 +6,6 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Box,
   Text,
@@ -24,7 +23,6 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
-  startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
   translatePasskeyError,
@@ -33,7 +31,6 @@ import {
 import { captureException } from '../../../../shared/lib/sentry';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
-import { generatePasskeyAuthenticationOptions } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -45,6 +42,7 @@ import {
   getPasskeyDerivationMethod,
 } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
+import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
@@ -52,9 +50,7 @@ export type UnlockPasskeySectionProps = {
   passkeyAutoUnlockSuppressed: boolean;
   mustDeferPasskeyToBrowserTab: boolean;
   isPasswordInProgress: boolean;
-  onUnlockWithPasskey: (
-    authenticationResponse: PasskeyAuthenticationResponse,
-  ) => Promise<void>;
+  onUnlockSuccess: () => Promise<void>;
   onUsePassword: () => void;
 };
 
@@ -64,12 +60,13 @@ export const UnlockPasskeySection = ({
   passkeyAutoUnlockSuppressed,
   mustDeferPasskeyToBrowserTab,
   isPasswordInProgress,
-  onUnlockWithPasskey,
+  onUnlockSuccess,
   onUsePassword,
 }: UnlockPasskeySectionProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const unlockWithPasskey = usePasskeyUnlock();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
   const passkeyAuthenticatorId = useSelector(getPasskeyAuthenticatorId);
 
@@ -92,7 +89,6 @@ export const UnlockPasskeySection = ({
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
-      cancelPasskeyCeremony();
     };
   }, []);
 
@@ -129,11 +125,8 @@ export const UnlockPasskeySection = ({
             .build(),
         );
 
-        const authOptions = await generatePasskeyAuthenticationOptions();
-        const authenticationResponse =
-          await startPasskeyAuthentication(authOptions);
-
-        await onUnlockWithPasskey(authenticationResponse);
+        await unlockWithPasskey();
+        await onUnlockSuccess();
 
         trackEvent(
           createEventBuilder(MetaMetricsEventName.AppUnlocked)
@@ -216,13 +209,14 @@ export const UnlockPasskeySection = ({
       isPasswordInProgress,
       passkeyInProgress,
       isPasskeyActive,
-      onUnlockWithPasskey,
+      onUnlockSuccess,
       passkeyMethodLabel,
       passkeyDerivationMethod,
       passkeyAuthenticatorId,
       t,
       trackEvent,
       createEventBuilder,
+      unlockWithPasskey,
     ],
   );
 
