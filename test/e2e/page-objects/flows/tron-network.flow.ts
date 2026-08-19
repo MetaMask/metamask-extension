@@ -2,7 +2,6 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import NetworkFilter from '../pages/networks/network-filter';
 import SelectNetworkModal from '../pages/networks/select-network-modal';
-import { waitForNetworkModalBackdropToClear } from './network.flow';
 
 /**
  * Selects the Tron network from the network filter modal and waits for any
@@ -25,5 +24,4 @@ export async function selectTronNetwork(driver: Driver): Promise<void> {
   await selectNetworkModal.checkPageIsLoaded();
   await selectNetworkModal.selectNetworkByNameWithWait('Tron');
   await selectNetworkModal.closeIfOpen();
-  await waitForNetworkModalBackdropToClear(driver);
 }
