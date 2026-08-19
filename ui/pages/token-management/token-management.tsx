@@ -90,6 +90,7 @@ import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
 import { HomeNetworkFilterModal } from '../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
 import { getIsNetworkManagementEnabled } from '../../selectors/multichain/feature-flags';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
+import { useEnableFeaturedEvmNetwork } from '../../hooks/useEnableFeaturedEvmNetwork';
 import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
 import {
   convertSearchResultToImportPayload,
@@ -110,6 +111,7 @@ import {
 } from '../../../shared/constants/transaction';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { filterExcludedAssetList } from '../../components/app/assets/enablement/networks-customization';
+import { getFeaturedEvmNetworks } from '../../selectors/config-registry/config-registry';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -147,6 +149,16 @@ type TokenManagementRouteState = {
   };
 };
 
+type TokenManagementPageToast =
+  | {
+      type: 'customTokenAdded';
+      symbol: string;
+    }
+  | {
+      type: 'networkAdded';
+      name: string;
+    };
+
 type TokenManagementListItem =
   | {
       type: 'managed';
@@ -168,6 +180,7 @@ const getTokenManagementToastFromRouteState = (state: unknown) => {
   }
 
   return {
+    type: 'customTokenAdded' as const,
     symbol: toast.symbol,
   };
 };
@@ -238,6 +251,15 @@ const normalizeToHexChainId = (chainId: string): string => {
   return Number.isFinite(decimalChainId)
     ? `0x${decimalChainId.toString(16)}`.toLowerCase()
     : chainId.toLowerCase();
+};
+
+const isEvmAddress = (query: string) => /^0x[a-fA-F0-9]{40}$/u.test(query);
+
+const convertHexChainIdToCaipChainId = (chainId: string) => {
+  const decimalChainId = Number.parseInt(chainId, 16);
+  return Number.isFinite(decimalChainId)
+    ? `eip155:${decimalChainId}`
+    : undefined;
 };
 
 const getTokenAddressKey = (chainId: string, address: string) =>
@@ -387,9 +409,12 @@ export const TokenManagementPage = () => {
   const location = useLocation();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const enableFeaturedEvmNetwork = useEnableFeaturedEvmNetwork();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [pageToast, setPageToast] = useState<{ symbol: string } | null>(null);
+  const [pageToast, setPageToast] = useState<TokenManagementPageToast | null>(
+    null,
+  );
   const [isNetworkFilterModalOpen, setIsNetworkFilterModalOpen] =
     useState(false);
   const [pendingKeys, setPendingKeys] = useState<ReadonlySet<string>>(
@@ -526,6 +551,7 @@ export const TokenManagementPage = () => {
   const allMultichainNetworkConfigurations = useSelector(
     getAllMultichainNetworkConfigurations,
   );
+  const featuredEvmNetworks = useSelector(getFeaturedEvmNetworks);
   const allTokensByChain = useSelector(getTokensControllerAllTokens) as Record<
     string,
     Record<string, EvmToken[]>
@@ -552,7 +578,14 @@ export const TokenManagementPage = () => {
 
   const getNetworkMeta = useCallback(
     (chainId: Hex) => {
-      const config = networkConfigurations?.[chainId];
+      const updatedNetworkConfigurations = getNetworkConfigurationsByChainId(
+        store.getState() as Parameters<
+          typeof getNetworkConfigurationsByChainId
+        >[0],
+      );
+      const config =
+        networkConfigurations?.[chainId] ??
+        updatedNetworkConfigurations?.[chainId];
       const endpoint =
         config?.rpcEndpoints?.[config.defaultRpcEndpointIndex ?? 0];
       return {
@@ -560,7 +593,7 @@ export const TokenManagementPage = () => {
         networkClientId: endpoint?.networkClientId,
       };
     },
-    [networkConfigurations],
+    [networkConfigurations, store],
   );
 
   const visibleTokens: ManagedAsset[] = useMemo(() => {
@@ -651,11 +684,20 @@ export const TokenManagementPage = () => {
   const tokenSearchQuery = hasQuery ? deferredNormalizedQuery : '';
 
   const searchNetworks = useMemo(() => {
+    if (isEvmAddress(tokenSearchQuery)) {
+      const featuredEvmChainIds = featuredEvmNetworks
+        .map((network) => convertHexChainIdToCaipChainId(network.chainId))
+        .filter((chainId): chainId is string => Boolean(chainId));
+      return Array.from(
+        new Set([...enabledCaipChainIds, ...featuredEvmChainIds]),
+      );
+    }
+
     if (enabledCaipChainIds.length === 0) {
       return undefined;
     }
     return enabledCaipChainIds;
-  }, [enabledCaipChainIds]);
+  }, [enabledCaipChainIds, featuredEvmNetworks, tokenSearchQuery]);
 
   const {
     data: searchResponse,
@@ -1065,8 +1107,11 @@ export const TokenManagementPage = () => {
           if (!payload.hexChainId) {
             return;
           }
+          const addedNetwork = await enableFeaturedEvmNetwork(payload.assetId);
           const { networkClientId } = getNetworkMeta(payload.hexChainId);
-          if (!networkClientId) {
+          const networkClientIdForImport =
+            addedNetwork?.networkClientId ?? networkClientId;
+          if (!networkClientIdForImport) {
             return;
           }
           const evmAccount = getAccountForChain(payload.caipChainId);
@@ -1086,7 +1131,7 @@ export const TokenManagementPage = () => {
                     ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
                   },
                 ],
-                networkClientId,
+                networkClientIdForImport,
               ),
             ),
             ...(isAssetsUnifiedStateInBuild
@@ -1102,6 +1147,9 @@ export const TokenManagementPage = () => {
           ]);
 
           trackEvent(tokenAddedEvent);
+          if (addedNetwork) {
+            setPageToast({ type: 'networkAdded', name: addedNetwork.name });
+          }
           return;
         }
 
@@ -1128,6 +1176,7 @@ export const TokenManagementPage = () => {
     [
       addPendingKey,
       dispatch,
+      enableFeaturedEvmNetwork,
       getAccountForChain,
       getNetworkMeta,
       isAssetsUnifiedStateInBuild,
@@ -1676,7 +1725,9 @@ export const TokenManagementPage = () => {
                 color={IconColor.SuccessDefault}
               />
               <Text variant={TextVariant.BodyMd} className="flex-1">
-                {t('newCustomTokenAdded', [pageToast.symbol])}
+                {pageToast.type === 'customTokenAdded'
+                  ? t('newCustomTokenAdded', [pageToast.symbol])
+                  : t('newNetworkAdded', [pageToast.name])}
               </Text>
               <ButtonIcon
                 ariaLabel={t('close')}

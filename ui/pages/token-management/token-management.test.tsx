@@ -81,6 +81,13 @@ jest.mock('../../store/actions', () => {
   const actual = jest.requireActual('../../store/actions');
   return {
     ...actual,
+    addNetwork: jest.fn(() =>
+      () =>
+        Promise.resolve({
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [],
+        }),
+    ),
     addCustomAsset: jest.fn(() => () => Promise.resolve()),
     addImportedTokens: jest.fn(() => () => Promise.resolve()),
     hideAsset: jest.fn(() => () => Promise.resolve()),
@@ -92,6 +99,7 @@ jest.mock('../../store/actions', () => {
 });
 
 type MockedTokenManagementActions = {
+  addNetwork: jest.Mock;
   addCustomAsset: jest.Mock;
   addImportedTokens: jest.Mock;
   hideAsset: jest.Mock;
@@ -361,6 +369,7 @@ describe('TokenManagementPage', () => {
     setBackgroundConnection(backgroundConnectionMock as never);
     resetTokenSearchState();
     const actions = getMockedActions();
+    actions.addNetwork.mockClear();
     actions.addCustomAsset.mockClear();
     actions.addImportedTokens.mockClear();
     actions.hideAsset.mockClear();
@@ -906,6 +915,22 @@ describe('TokenManagementPage', () => {
     );
   });
 
+  it('searches featured EVM networks for an address query', () => {
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: '0x0000000000000000000000000000000000000001' },
+    });
+
+    const { calls } = mockTokenSearch.spy.mock;
+    expect(calls[calls.length - 1][0]).toEqual(
+      expect.objectContaining({
+        query: '0x0000000000000000000000000000000000000001',
+        networks: expect.arrayContaining(['eip155:1', 'eip155:8453']),
+      }),
+    );
+  });
+
   it('renders API-backed results in place of the home-page list while a query is active', () => {
     setTokenSearchState({
       results: [
@@ -1178,6 +1203,53 @@ describe('TokenManagementPage', () => {
       }),
       expect.anything(),
     );
+  });
+
+  it('adds a featured network and shows its success toast when toggling on an address search result', async () => {
+    const baseTokenAddress = '0x0000000000000000000000000000000000000abc';
+    const baseTokenAssetId = `eip155:8453/erc20:${baseTokenAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: baseTokenAssetId,
+          symbol: 'BASE',
+          decimals: 18,
+          name: 'Base Token',
+        },
+      ],
+    });
+
+    const actions = getMockedActions();
+    actions.addNetwork.mockReturnValueOnce(
+      () =>
+        Promise.resolve({
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [{ networkClientId: 'base' }],
+        }),
+    );
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: baseTokenAddress },
+    });
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${baseTokenAssetId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    await waitFor(() =>
+      expect(actions.addNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          chainId: '0x2105',
+          name: 'Base',
+        }),
+        { setActive: false },
+      ),
+    );
+    expect(
+      await screen.findByTestId('token-management-custom-token-success-toast'),
+    ).toHaveTextContent('“Base” was successfully added!');
   });
 
   it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {

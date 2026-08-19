@@ -6,18 +6,19 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 
-import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
-import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
-import { getFeaturedEvmNetworks } from '../../selectors/config-registry/config-registry';
-import { addNetwork } from '../../store/actions';
-import { useDispatch } from '../../store/hooks';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
+import { convertCaipToHexChainId } from '../../shared/lib/network.utils';
+import { getFeaturedEvmNetworks } from '../selectors/config-registry/config-registry';
+import { addNetwork } from '../store/actions';
+import { useDispatch } from '../store/hooks';
 
 /**
- * Adds a missing popular EVM network for an asset and returns its name.
- * @returns A callback that resolves to the added network's name, or null when
- * no network was added.
+ * Adds an unconfigured featured EVM network for an asset.
+ *
+ * @returns A callback that resolves to the added network's display name and
+ * network client ID, or null when no network was added.
  */
-export const useEnableDiscoverAssetNetwork = () => {
+export const useEnableFeaturedEvmNetwork = () => {
   const dispatch = useDispatch();
   const evmNetworkConfigurations = useSelector(
     getNetworkConfigurationsByChainId,
@@ -25,7 +26,9 @@ export const useEnableDiscoverAssetNetwork = () => {
   const featuredEvmNetworks = useSelector(getFeaturedEvmNetworks);
 
   return useCallback(
-    async (assetId: CaipAssetType): Promise<string | null> => {
+    async (
+      assetId: CaipAssetType,
+    ): Promise<{ name: string; networkClientId?: string } | null> => {
       const { chainId } = parseCaipAssetType(assetId);
       const { namespace } = parseCaipChainId(chainId);
       if (namespace !== 'eip155') {
@@ -43,7 +46,18 @@ export const useEnableDiscoverAssetNetwork = () => {
       const addedNetwork = await dispatch(
         addNetwork(featuredEvmNetwork, { setActive: false }),
       );
-      return addedNetwork ? featuredEvmNetwork.name : null;
+      if (!addedNetwork) {
+        return null;
+      }
+
+      const endpoint =
+        addedNetwork.rpcEndpoints?.[
+          addedNetwork.defaultRpcEndpointIndex ?? 0
+        ];
+      return {
+        name: featuredEvmNetwork.name,
+        networkClientId: endpoint?.networkClientId,
+      };
     },
     [dispatch, evmNetworkConfigurations, featuredEvmNetworks],
   );
