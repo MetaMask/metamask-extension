@@ -13,9 +13,7 @@ import {
   renderWithProvider,
 } from '../../../../test/lib/render-helpers-navigate';
 import { SWAP_PATH } from '../../../helpers/constants/routes';
-import {
-  createBridgeMockStore,
-} from '../../../../test/data/bridge/mock-bridge-store';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import {
