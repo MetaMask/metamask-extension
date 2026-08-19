@@ -81,24 +81,6 @@ describe(`migration #${version}`, () => {
     expect(database.open).not.toHaveBeenCalled();
   });
 
-  it('updates the version when browser storage is unavailable', async () => {
-    const browserWithOptionalStorage = mockBrowser as unknown as {
-      storage?: typeof mockBrowser.storage;
-    };
-    const { storage } = browserWithOptionalStorage;
-    browserWithOptionalStorage.storage = undefined;
-    const oldStorage = buildVersionedData();
-
-    try {
-      await migrate(oldStorage, new Set());
-    } finally {
-      browserWithOptionalStorage.storage = storage;
-    }
-
-    expect(oldStorage.meta.version).toBe(version);
-    expect(database.open).not.toHaveBeenCalled();
-  });
-
   it('moves missing keys without replacing existing IndexedDB values', async () => {
     const existingValue = { sourceCode: 'indexeddb-source-code' };
     const missingValue = { sourceCode: 'legacy-source-code' };

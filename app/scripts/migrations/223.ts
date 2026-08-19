@@ -47,10 +47,7 @@ export const migrate = (async (versionedData, _changedKeys) => {
     return;
   }
 
-  const storageLocal = browser.storage?.local;
-  if (!storageLocal) {
-    return;
-  }
+  const storageLocal = browser.storage.local;
 
   let allStorage: Record<string, unknown>;
   if (typeof storageLocal.getKeys === 'function') {
