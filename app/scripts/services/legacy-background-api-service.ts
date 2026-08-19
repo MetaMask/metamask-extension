@@ -23,6 +23,7 @@ import {
   NetworkEnablementControllerState,
   NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
+import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import {
   add0x,
   bytesToHex,
@@ -681,6 +682,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | SelectedNetworkControllerGetNetworkClientIdForDomainAction
   | GetSignatureState
   | ShieldControllerClearStateAction
   | ShieldControllerStartAction
@@ -4613,6 +4615,25 @@ export class LegacyBackgroundApiService {
 
     if (hasPendingApproval) {
       return;
+    }
+
+    // If the partner requires a specific chain and user's chain doesn't match,
+    // return early to avoid the referral code potentially not being applied.
+    // Don't write any account status so that the prompt can show on the next
+    // trigger (NewConnection or OnNavigateConnectedTab) once the user has switched chain
+    if (partner.requiredChainId) {
+      const networkClientId = this.#messenger.call(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        partner.origin,
+      );
+      const networkConfig = this.#messenger.call(
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        networkClientId,
+      );
+      const currentChainId = networkConfig?.chainId;
+      if (currentChainId !== partner.requiredChainId) {
+        return;
+      }
     }
 
     const { activePermittedAddressOverride } = options;
