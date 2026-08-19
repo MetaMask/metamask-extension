@@ -2,21 +2,29 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 import {
-  Text,
-  Button,
-  ButtonVariant,
-  ButtonSize,
-  Box,
+  AvatarIcon,
+  AvatarIconSeverity,
+  AvatarIconSize,
+  Box as DsBox,
+  BoxAlignItems,
+  BoxFlexDirection,
   IconName,
-  IconSize,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  AvatarIcon,
-  AvatarIconSize,
+  Text as DsText,
+  TextColor as DsTextColor,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
+import {
+  Text,
+  Button,
+  ButtonVariant,
+  ButtonSize,
+  Box,
 } from '../../../../../components/component-library';
 import {
   TextColor,
@@ -25,8 +33,6 @@ import {
   FlexDirection,
   AlignItems,
   JustifyContent,
-  IconColor,
-  BackgroundColor,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { type Asset } from '../../../types/send';
@@ -203,36 +209,37 @@ export const AssetList = ({
         >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader onClose={() => setUnavailableMessage(null)}>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                alignItems={AlignItems.center}
+            <ModalHeader
+              onClose={() => setUnavailableMessage(null)}
+              closeButtonProps={{ ariaLabel: t('close') }}
+            >
+              <DsBox
+                flexDirection={BoxFlexDirection.Column}
+                alignItems={BoxAlignItems.Center}
                 gap={2}
               >
                 <AvatarIcon
                   iconName={IconName.Info}
                   size={AvatarIconSize.Md}
-                  color={IconColor.primaryDefault}
-                  backgroundColor={BackgroundColor.primaryMuted}
+                  severity={AvatarIconSeverity.Info}
                 />
-                <Text variant={TextVariant.headingSm}>
+                <DsText variant={DsTextVariant.HeadingSm}>
                   {t('tokenUnavailable')}
-                </Text>
-              </Box>
+                </DsText>
+              </DsBox>
             </ModalHeader>
             <ModalBody>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternative}
+              <DsText
+                variant={DsTextVariant.BodyMd}
+                color={DsTextColor.TextAlternative}
               >
                 {unavailableMessage}
-              </Text>
+              </DsText>
             </ModalBody>
             <ModalFooter
-              onSubmit={() => setUnavailableMessage(null)}
-              submitButtonProps={{
+              primaryButtonProps={{
                 children: t('gotIt'),
+                onClick: () => setUnavailableMessage(null),
                 'data-testid': 'asset-unavailable-modal-got-it',
               }}
             />

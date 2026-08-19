@@ -11,28 +11,16 @@ const mockUpdateAsset = jest.fn();
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
-jest.mock('../../../../../components/component-library', () => ({
+jest.mock('@metamask/design-system-react', () => ({
+  AvatarIcon: () => null,
+  AvatarIconSeverity: { Info: 'info' },
+  AvatarIconSize: { Md: 'md' },
   Box: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="box">{children}</div>
+    <div data-testid="ds-box">{children}</div>
   ),
-  Text: ({ children }: { children: React.ReactNode }) => (
-    <span data-testid="text">{children}</span>
-  ),
-  Button: ({
-    children,
-    onClick,
-    ...props
-  }: {
-    children: React.ReactNode;
-    onClick: () => void;
-    [key: string]: unknown;
-  }) => (
-    <button data-testid="button" onClick={onClick} {...props}>
-      {children}
-    </button>
-  ),
-  ButtonVariant: { Link: 'link' },
-  ButtonSize: { Sm: 'sm' },
+  BoxAlignItems: { Center: 'center' },
+  BoxFlexDirection: { Column: 'column' },
+  IconName: { Info: 'info' },
   Modal: ({
     children,
     isOpen: _isOpen,
@@ -55,20 +43,49 @@ jest.mock('../../../../../components/component-library', () => ({
     <div>{children}</div>
   ),
   ModalFooter: ({
-    onSubmit,
-    submitButtonProps,
+    primaryButtonProps,
   }: {
-    onSubmit: () => void;
-    submitButtonProps: { children: React.ReactNode; [key: string]: unknown };
+    primaryButtonProps: {
+      children: React.ReactNode;
+      onClick: () => void;
+      [key: string]: unknown;
+    };
+  }) => {
+    const { children, onClick, ...rest } = primaryButtonProps;
+    return (
+      <button onClick={onClick} {...rest}>
+        {children}
+      </button>
+    );
+  },
+  Text: ({ children }: { children: React.ReactNode }) => (
+    <span data-testid="ds-text">{children}</span>
+  ),
+  TextColor: { TextAlternative: 'text-alternative' },
+  TextVariant: { HeadingSm: 'heading-sm', BodyMd: 'body-md' },
+}));
+jest.mock('../../../../../components/component-library', () => ({
+  Box: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="box">{children}</div>
+  ),
+  Text: ({ children }: { children: React.ReactNode }) => (
+    <span data-testid="text">{children}</span>
+  ),
+  Button: ({
+    children,
+    onClick,
+    ...props
+  }: {
+    children: React.ReactNode;
+    onClick: () => void;
+    [key: string]: unknown;
   }) => (
-    <button onClick={onSubmit} {...submitButtonProps}>
-      {submitButtonProps.children}
+    <button data-testid="button" onClick={onClick} {...props}>
+      {children}
     </button>
   ),
-  AvatarIcon: () => null,
-  AvatarIconSize: { Md: 'md' },
-  IconName: { Info: 'info' },
-  IconSize: { Md: 'md' },
+  ButtonVariant: { Link: 'link' },
+  ButtonSize: { Sm: 'sm' },
 }));
 jest.mock('../../UI/asset', () => ({
   Asset: ({

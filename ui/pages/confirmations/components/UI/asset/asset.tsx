@@ -2,14 +2,17 @@ import React, { type ReactNode } from 'react';
 import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import {
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import {
   AvatarToken,
   AvatarNetwork,
   AvatarNetworkSize,
   BadgeWrapper,
   Box,
-  Icon,
-  IconName,
-  IconSize,
   Text,
   AvatarTokenSize,
 } from '../../../../../components/component-library';
@@ -18,7 +21,6 @@ import {
   BackgroundColor,
   Display,
   FlexDirection,
-  IconColor,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -250,8 +252,8 @@ const TokenAsset = ({
         <Icon
           name={IconName.Info}
           size={IconSize.Md}
-          color={IconColor.iconAlternative}
-          marginLeft={2}
+          color={IconColor.IconAlternative}
+          className="ml-2"
           data-testid={`token-asset-disabled-info-${chainId}-${symbol}`}
         />
       )}
