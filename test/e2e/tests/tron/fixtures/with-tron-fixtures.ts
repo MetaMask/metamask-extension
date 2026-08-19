@@ -81,6 +81,7 @@ export type WithTronFixturesOptions = Omit<
   afterLocalNodesStart?: (context: {
     localNodes: unknown[];
   }) => Promise<void> | void;
+  borrowedTronNode?: TronNode;
   fixtures?: unknown;
   ignoredConsoleErrors?: string[];
   includeAnvil?: boolean;
@@ -128,6 +129,42 @@ export function buildTronNodeOptions(
   };
 }
 
+export type TronFixtureLocalNodeOption =
+  | 'anvil'
+  | 'none'
+  | { type: 'tron'; options: TronLocalNodeOptions };
+
+/**
+ * Builds `withFixtures` local-node options. A borrowed Java-Tron node is not
+ * started again; pass `'none'` when nothing else needs to boot.
+ *
+ * @param options - Node reuse and Anvil flags
+ * @param options.borrowedTronNode - Suite-owned node started in `before`
+ * @param options.includeAnvil - Whether to start Anvil alongside Tron
+ * @param options.startupNodeOptions - Options used only when starting a new node
+ * @returns Local node descriptors for `withFixtures`
+ */
+export function resolveTronFixtureLocalNodeOptions({
+  borrowedTronNode,
+  includeAnvil = true,
+  startupNodeOptions,
+}: {
+  borrowedTronNode?: TronNode;
+  includeAnvil?: boolean;
+  startupNodeOptions: TronLocalNodeOptions;
+}): TronFixtureLocalNodeOption[] {
+  const localNodeOptions: TronFixtureLocalNodeOption[] = [
+    ...(includeAnvil ? (['anvil'] as const) : []),
+    ...(borrowedTronNode
+      ? []
+      : [{ type: 'tron' as const, options: startupNodeOptions }]),
+  ];
+  if (localNodeOptions.length === 0) {
+    localNodeOptions.push('none');
+  }
+  return localNodeOptions;
+}
+
 export async function withTronFixtures(
   options: WithTronFixturesOptions,
   testSuite: WithFixturesTestSuite,
@@ -135,6 +172,7 @@ export async function withTronFixtures(
   const {
     afterLocalNodesStart,
     accounts,
+    borrowedTronNode,
     includeAnvil = true,
     testSpecificMock,
     ...withFixtureOptions
@@ -150,20 +188,22 @@ export async function withTronFixtures(
   await withFixtures(
     {
       ...withFixtureOptions,
-      localNodeOptions: [
-        ...(includeAnvil ? ['anvil'] : []),
-        {
-          type: 'tron',
-          options: startupNodeOptions,
-        },
-      ],
+      localNodeOptions: resolveTronFixtureLocalNodeOptions({
+        borrowedTronNode,
+        includeAnvil,
+        startupNodeOptions,
+      }),
       afterLocalNodesStart: async (context: { localNodes: unknown[] }) => {
-        capturedLocalNodes = context.localNodes;
-        tronSeeder = await seedTronSmartContracts(
-          context.localNodes,
-          trc20Balances,
-        );
-        await afterLocalNodesStart?.(context);
+        capturedLocalNodes = borrowedTronNode
+          ? [...context.localNodes, borrowedTronNode]
+          : context.localNodes;
+        if (!borrowedTronNode) {
+          tronSeeder = await seedTronSmartContracts(
+            capturedLocalNodes,
+            trc20Balances,
+          );
+        }
+        await afterLocalNodesStart?.({ localNodes: capturedLocalNodes });
       },
       testSpecificMock: async (mockServer: Mockttp) => {
         const customEndpoints =

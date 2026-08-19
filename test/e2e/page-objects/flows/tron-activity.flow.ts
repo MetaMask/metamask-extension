@@ -3,7 +3,7 @@ import ActivityTab from '../pages/home/activity-tab';
 import NonEvmHomepage from '../pages/home/non-evm-homepage';
 import TransactionDetailsPage from '../pages/transaction-details-page';
 import { login } from './login.flow';
-import { selectTronNetwork } from './tron-network.flow';
+import { selectTronNetworkForActivity } from './tron-network.flow';
 
 export async function landOnTronHome(driver: Driver): Promise<NonEvmHomepage> {
   // Activity assertions use mocked transaction history, not live balances.
@@ -13,7 +13,7 @@ export async function landOnTronHome(driver: Driver): Promise<NonEvmHomepage> {
     validateBalance: false,
     waitForNonEvmAccounts: false,
   });
-  await selectTronNetwork(driver);
+  await selectTronNetworkForActivity(driver);
 
   const homePage = new NonEvmHomepage(driver);
   await homePage.checkPageIsLoaded();
