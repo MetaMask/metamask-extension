@@ -55,6 +55,7 @@ import {
 import { useNetworkFilterButtonLabel } from '../../components/app/assets/hooks/useNetworkFilterButtonLabel';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
+  addNetwork,
   addCustomAsset,
   addImportedTokens,
   hideAsset,
@@ -105,6 +106,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   AssetType,
   TokenStandard,
@@ -605,7 +607,6 @@ export const TokenManagementPage = () => {
       const endpoint =
         config?.rpcEndpoints?.[config.defaultRpcEndpointIndex ?? 0];
       return {
-        name: config?.name,
         networkClientId: endpoint?.networkClientId,
       };
     },
@@ -1118,6 +1119,39 @@ export const TokenManagementPage = () => {
           if (!payload.hexChainId) {
             return;
           }
+          const evmImportedKey = `${normalizeToHexChainId(
+            payload.hexChainId,
+          )}:${payload.assetReference.toLowerCase()}`;
+          const isImported =
+            importedAssetIds.has(stagedKey) ||
+            importedAssetIds.has(evmImportedKey);
+          const isIgnored =
+            ignoredEvmAssetIds.has(stagedKey) ||
+            ignoredEvmAssetIds.has(evmImportedKey);
+          const isNetworkConfigured = Boolean(
+            networkConfigurations?.[payload.hexChainId],
+          );
+          if (isImported && !isIgnored && !isNetworkConfigured) {
+            const featuredNetwork = FEATURED_RPCS.find(
+              (network) => network.chainId === payload.hexChainId,
+            );
+            if (!featuredNetwork) {
+              return;
+            }
+
+            const addedNetwork = await dispatch(
+              addNetwork(featuredNetwork, { setActive: false }),
+            );
+            if (!addedNetwork) {
+              return;
+            }
+
+            showPageToast({
+              type: 'networkAdded',
+              name: featuredNetwork.name,
+            });
+            return;
+          }
           const addedNetwork = await enableFeaturedEvmNetwork(payload.assetId);
           const { networkClientId } = getNetworkMeta(payload.hexChainId);
           const networkClientIdForImport =
@@ -1187,9 +1221,12 @@ export const TokenManagementPage = () => {
     [
       addPendingKey,
       dispatch,
+      networkConfigurations,
       enableFeaturedEvmNetwork,
       getAccountForChain,
       getNetworkMeta,
+      ignoredEvmAssetIds,
+      importedAssetIds,
       isAssetsUnifiedStateInBuild,
       createEventBuilder,
       removePendingKey,
@@ -1304,6 +1341,12 @@ export const TokenManagementPage = () => {
               (assetId) => String(assetId).toLowerCase() === lowerAssetId,
             ),
           );
+      const isUnconfiguredImportedEvmNetwork = Boolean(
+        isImported &&
+        payload.isEvm &&
+        payload.hexChainId &&
+        !networkConfigurations?.[payload.hexChainId],
+      );
       const isHidden =
         stagedHideKeys.has(lowerAssetId) ||
         committedHideKeys.has(lowerAssetId) ||
@@ -1330,7 +1373,11 @@ export const TokenManagementPage = () => {
                   ?.name ??
                 payload.caipChainId)
           }
-          isOn={isPending || (isImported && !isHidden) || payload.isNative}
+          isOn={
+            isPending ||
+            (!isUnconfiguredImportedEvmNetwork && isImported && !isHidden) ||
+            payload.isNative
+          }
           disabled={payload.isNative || isPending}
           isLoading={isPending}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
@@ -1724,7 +1771,7 @@ export const TokenManagementPage = () => {
           paddingHorizontal={4}
           paddingTop={3}
           paddingBottom={3}
-          className="sticky bottom-0 z-10 gap-3"
+          className="cta-footer sticky bottom-0 z-10 gap-3"
         >
           {canImportCustomTokens ? (
             <ButtonBase
