@@ -32,6 +32,7 @@
       "warn: Migration 139: typeof state.SelectedNetworkController is": 1,
       "warn: Migration 183.1: currencyRates not found": 1,
       "warn: Migration 186: Missing or invalid": 1,
+      "warn: Migration 223: No storage service": 1,
       "warn: newState.NftController must be present": 1
     },
     "app/scripts/lib/snap-keyring/snap-keyring.test.ts": {
