@@ -55,14 +55,20 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
   constructor(opts: MigratorOptions = {}) {
     super();
     const migrations = opts.migrations ?? [];
+    // sort migrations by version
     this.migrations = [...migrations].sort((a, b) => a.version - b.version);
+    // grab migration with highest version
     const lastMigration = this.migrations.slice(-1)[0];
+    // use specified defaultVersion or highest migration version
     this.defaultVersion = opts.defaultVersion ?? lastMigration?.version ?? 0;
   }
 
+  // run all pending migrations on meta in place
   async migrateData(
     initialData: MigrationState = this.generateInitialState(),
   ): Promise<MigrateDataResult> {
+    // legacy migrations (before MIGRATION_V2_START_VERSION) don't track changed controllers,
+    // so we assume all controllers changed
     const changedControllers =
       isObject(initialData.data) &&
       initialData.meta.version < MIGRATION_V2_START_VERSION
@@ -79,8 +85,12 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
       try {
         log.info(`Running migration ${migration.version}...`);
 
+        // attempt migration and validate
         let migratedData: MigrationState;
         if (isV2Migration(migration)) {
+          // when we have split state we require migrations to report which
+          // controllers changed, and to directly mutate the `versionedData`
+          // object
           migratedData = structuredClone(state);
           const localChangedControllers = new Set<string>();
           const returnValue = await migration.migrate(
@@ -89,12 +99,16 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
           );
           assertValidShape(migratedData, migration);
 
+          // migrations should mutate in place and must not return new state
+          // sanity check to ensure a migration isn't returning a state object
           if (typeof returnValue !== 'undefined') {
             throw new Error(
               'Migrator - migration returned value when none expected',
             );
           }
 
+          // a migration that doesn't change any controllers is valid, but it'd
+          // be nice to know
           if (localChangedControllers.size === 0) {
             log.debug(
               `Migrator - migration ${migration.version} did not report any changes`,
@@ -109,15 +123,19 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
           assertValidShape(migratedData, migration);
         }
 
+        // accept the migration as good
         state = migratedData;
 
         log.info(`Migration ${migration.version} complete`);
       } catch (error) {
+        // use an AggregateError to add context without clobbering stack
         const aggregateError = new AggregateError(
           [error],
           `MetaMask Migration Error #${migration.version}`,
         );
+        // emit error instead of throw so as to not break the run (gracefully fail)
         this.emit('error', aggregateError);
+        // stop migrating and use state as is
         break;
       }
     }
@@ -125,7 +143,8 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
     const changedKeys =
       initialData.meta.version < MIGRATION_V2_START_VERSION &&
       isObject(state.data)
-        ? new Set(Object.keys(state.data))
+        ? // we had to run older migrations, so assume all controllers changed
+          new Set(Object.keys(state.data))
         : new Set<string>();
 
     for (const controllerKey of changedControllers) {

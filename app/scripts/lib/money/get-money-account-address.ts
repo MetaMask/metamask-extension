@@ -8,10 +8,8 @@ import { encodeMnemonic } from '@metamask/keyring-sdk';
 import type { Messenger } from '@metamask/messenger';
 import type { Hex } from '@metamask/utils';
 
-const serviceName = 'MoneyAccountAddress';
-
 export type MoneyAccountAddressMessenger = Messenger<
-  typeof serviceName,
+  string,
   KeyringControllerWithKeyringUnsafeAction,
   never
 >;
@@ -42,7 +40,7 @@ async function getPrimarySeed(
   return (await messenger.call(
     'KeyringController:withKeyringUnsafe',
     { type: KeyringTypes.hd },
-    async ({ keyring, metadata }): Promise<PrimarySeed> => {
+    async ({ keyring, metadata }) => {
       // `mnemonic` holds wordlist indices as a byte view, not the phrase
       // itself; `encodeMnemonic` turns it into the UTF-8 bytes of the phrase.
       const { mnemonic } = keyring as HdKeyring;
@@ -58,7 +56,7 @@ async function getPrimarySeed(
         mnemonic: encodeMnemonic(mnemonic),
       };
     },
-  )) as PrimarySeed;
+  )) as unknown as PrimarySeed;
 }
 
 /**

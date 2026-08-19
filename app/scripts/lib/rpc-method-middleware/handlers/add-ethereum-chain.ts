@@ -174,6 +174,7 @@ async function addEthereumChainImplementation(
       )
     : undefined;
 
+  // If there's something to add or update
   const shouldAddOrUpdateNetwork =
     !existingNetwork ||
     rpcIndex !== existingNetwork.defaultRpcEndpointIndex ||
@@ -197,8 +198,11 @@ async function addEthereumChainImplementation(
       });
 
       if (existingNetwork) {
+        // A network for this chain id already exists.
+        // Update it with any new information.
         const clonedNetwork = cloneDeep(existingNetwork) as UpdateNetworkFields;
 
+        // If the RPC endpoint doesn't exist, add a new one
         if (rpcIndex === -1) {
           clonedNetwork.rpcEndpoints = [
             ...clonedNetwork.rpcEndpoints,
@@ -212,6 +216,7 @@ async function addEthereumChainImplementation(
         }
 
         if (firstValidBlockExplorerUrl) {
+          // If a block explorer was provided and it doesn't exist, add a new one
           if (blockExplorerIndex === -1) {
             clonedNetwork.blockExplorerUrls = [
               ...clonedNetwork.blockExplorerUrls,
@@ -220,6 +225,7 @@ async function addEthereumChainImplementation(
             blockExplorerIndex = clonedNetwork.blockExplorerUrls.length - 1;
           }
 
+          // The provided block explorer becomes the default
           clonedNetwork.defaultBlockExplorerUrlIndex = blockExplorerIndex;
         }
 
@@ -234,6 +240,9 @@ async function addEthereumChainImplementation(
             : undefined,
         );
       } else {
+        // A network for this chain id does not exist, so add a new network
+
+        // If a featured RPC endpoint exists for this chain, include it and keep it as default
         const featured = FEATURED_RPCS.find(
           (network: (typeof FEATURED_RPCS)[number]) => network.chainId === chainId,
         );
@@ -249,11 +258,17 @@ async function addEthereumChainImplementation(
             ? 0
             : undefined,
           chainId,
+          // Keep featured (if present) as the first and default endpoint
           defaultRpcEndpointIndex: 0,
           name: chainName,
           nativeCurrency: ticker,
           rpcEndpoints: [
-            ...(featuredEndpoint && !URI.equal(firstValidRPCUrl, featuredEndpoint.url)
+            // MetaMask may use a public RPC endpoint from FEATURED_RPCS,
+            // if the URL `firstValidRPCUrl` sent from the client is the same as the one in FEATURED_RPCS,
+            // it will fail validation due to duplication of the same URL.
+            // So we only add the featured endpoint if the URL is different.
+            ...(featuredEndpoint &&
+            !URI.equal(firstValidRPCUrl, featuredEndpoint.url)
               ? [featuredEndpoint]
               : []),
             {
@@ -277,6 +292,7 @@ async function addEthereumChainImplementation(
     updatedNetwork?.rpcEndpoints?.[updatedNetwork.defaultRpcEndpointIndex]
       ?.networkClientId;
 
+  // Determines the specific RPC endpoint to use
   const networkClientId = existingNetworkClientId ?? updatedNetworkClientId;
 
   if (!networkClientId) {
