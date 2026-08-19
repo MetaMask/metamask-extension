@@ -29,6 +29,7 @@ export function getMoneyAccountAvailabilityServiceMessenger(
     actions: [
       'KeyringController:withKeyringUnsafe',
       'RemoteFeatureFlagController:getState',
+      'GeolocationController:getGeolocation',
     ],
     events: ['KeyringController:unlock', 'KeyringController:lock'],
   });
