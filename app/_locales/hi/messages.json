@@ -152,6 +152,10 @@
   "accountsConnected": {
     "message": "अकाउंट्स कनेक्ट किए गए।"
   },
+  "accountsCount": {
+    "message": "$1 एकाउंट्स",
+    "description": "Label showing number of accounts selected, $1 is the count"
+  },
   "accountsPermissionsTitle": {
     "message": "आपके अकाउंट को देखकर ट्रांसेक्शन का सुझाव दें"
   },
@@ -1397,6 +1401,12 @@
   "alert": {
     "message": "एलर्ट"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "कोई फंड उपलब्ध नहीं है। कृपया किसी अन्य अकाउंट का इस्तेमाल करें।"
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "अपर्याप्त फंड"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "आप अपने अकाउंट को स्मार्ट अकाउंट में अपडेट कर रहे हैं। आप तेज़ ट्रांसेक्शन और कम नेटवर्क शुल्क अनलॉक करते हुए वही अकाउंट एड्रेस रखेंगे।$1"
   },
@@ -1423,6 +1433,10 @@
   },
   "alertContentMultipleApprovals": {
     "message": "आप किसी अन्य व्यक्ति को अपने टोकन निकालने की अनुमति दे रहे हैं, भले ही यह इस ट्रांसेक्शन के लिए आवश्यक न हो।"
+  },
+  "alertDepositLimit": {
+    "message": "अधिकतम डिपॉज़िट: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
   },
   "alertDisableTooltip": {
     "message": "इसे \"सेटिंग > अलर्ट\" में बदला जा सकता है"
@@ -1766,6 +1780,9 @@
   "back": {
     "message": "वापस जाएं"
   },
+  "backToSafety": {
+    "message": "सुरक्षा पर वापस जाएं"
+  },
   "backUpIncomplete": {
     "message": "बैकअप अधूरा है"
   },
@@ -1987,54 +2004,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertDescriptionBlur": {
-    "message": "अगर आप ऐसा करना जारी रखते हैं, तो Blur पर आपके द्वारा सूचीबद्ध सभी एसेट्स खतरे में पड़ सकती हैं।"
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "आप एक बुरी नीयत वाली साइट के साथ इंटरैक्ट कर रहे हैं। अगर आप ऐसा करना जारी रखेंगे, तो आप अपनी एसेट्स खो देंगे।"
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "अगर आप ऐसा करना जारी रखते हैं, तो OpenSea पर आपके द्वारा सूचीबद्ध सभी एसेट्स खतरे में पड़ सकती हैं।"
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो आप अपनी एसेट्स खो सकते हैं। हम सुझाव देते हैं कि आप इस अनुरोध को कैंसिल कर दें।"
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "आप अपनी एसेट्स किसी स्कैमर को भेज रहे हैं। अगर आप ऐसा करना जारी रखेंगे, तो आप उन एसेट्स को खो देंगे।"
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो आप एक स्कैमर को अपनी एसेट्स निकालने और खर्च करने की अनुमति दे रहे हैं। आपको वे वापस नहीं मिलेंगे।"
-  },
-  "blockaidDescriptionApproveFarming": {
-    "message": "यदि आप इस रिक्वेस्ट को एप्रूव करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है।"
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "यदि आप इस रिक्वेस्ट को स्वीकार करते हैं, तो कोई Blur पर लिस्टेड आपके सारे एसेट चुरा सकता है।"
-  },
-  "blockaidDescriptionErrored": {
-    "message": "किसी समस्या के कारण, हम सुरक्षा अलर्ट की जाँच नहीं कर सके। केवल तभी जारी रखें जब आपको इसमें शामिल प्रत्येक पते पर भरोसा हो।"
-  },
-  "blockaidDescriptionMaliciousDomain": {
-    "message": "आप एक बुरी नीयत वाले डोमेन से इंटरैक्ट कर रहे हैं। यदि आप इस रिक्वेस्ट को एप्रूव करते हैं, तो आप अपने सारे एसेट गंवा सकते हैं।"
-  },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "यदि आप इस अनुरोध को एप्रूव करते हैं, तो आप अपने सारे एसेट गंवा सकते हैं।"
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "यदि आप इस अनुरोध को एप्रूव करते हैं, तो कोई OpenSea पर लिस्टेड आपके सारे एसेट चुरा सकता है।"
-  },
-  "blockaidDescriptionTransferFarming": {
-    "message": "यदि आप इस रिक्वेस्ट को एप्रूव करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा लेगी।"
-  },
-  "blockaidTitleDeceptive": {
-    "message": "इस अनुरोध को धोखेबाजी के उद्देश्य से भेजा गया है"
-  },
-  "blockaidTitleMayNotBeSafe": {
-    "message": "सावधान रहें"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "इस रिक्वेस्ट पर एकदम से भरोसा नहीं किया जा सकता"
   },
   "blockies": {
     "message": "ब्लॉकी"
@@ -2768,9 +2737,6 @@
   "confirmationAlertDetails": {
     "message": "आपकी एसेट्स की सुरक्षा के लिए, हम आपको अनुरोध को रिजेक्ट करने का सुझाव देते हैं।"
   },
-  "confirmationAlertModalTitleDescription": {
-    "message": "आपके एसेट खतरे में हो सकते हैं"
-  },
   "confirmed": {
     "message": "कन्फर्म किया गया"
   },
@@ -2797,6 +2763,9 @@
   },
   "connectAccounts": {
     "message": "खातों को कनेक्ट करें"
+  },
+  "connectAnyway": {
+    "message": "कैसे भी कनेक्ट करें"
   },
   "connectHardwareDevice": {
     "message": "$1 को कनेक्ट करें",
@@ -2891,6 +2860,9 @@
   "connectionRequest": {
     "message": "कनेक्शन के लिए अनुरोध"
   },
+  "connections": {
+    "message": "कनेक्शन"
+  },
   "connectionsRemovedModalDescription": {
     "message": "कुछ कनेक्शन्स (जैसे हार्डवेयर वॉलेट्स और Snaps) इस डिवाइस पर निष्क्रियता के कारण हटा दिए गए। आप उन्हें कभी भी सेटिंग्स में जाकर दोबारा जोड़ सकते हैं।"
   },
@@ -2918,6 +2890,9 @@
   },
   "continue": {
     "message": "जारी रखें"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "अपने जोखिम पर आगे बढ़ें"
   },
   "contract": {
     "message": "कॉन्ट्रैक्ट"
@@ -3440,8 +3415,14 @@
   "disconnectAllSites": {
     "message": "सभी को डिस्कनेक्ट करें"
   },
+  "disconnectAllSitesDescriptionText": {
+    "message": "इससे आपके सभी अकाउंट्स सभी dapps से डिस्कनेक्ट हो जाएंगे। उनका दोबारा उपयोग करने के लिए आपको उन्हें फिर से कनेक्ट करना होगा।"
+  },
   "disconnectAllSitesError": {
     "message": "कुछ dapps डिसकनेक्ट नहीं किए जा सके। कृपया फिर से कोशिश करें।"
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "सभी को डिस्कनेक्ट करें?"
   },
   "disconnectAllSitesSuccess": {
     "message": "सभी dapps सही से डिसकनेक्ट किए गए।"
@@ -3451,6 +3432,13 @@
   },
   "disconnectPrompt": {
     "message": "$1 डिस्कनेक्ट करें"
+  },
+  "disconnectQuestion": {
+    "message": "डिसकनेक्ट करें?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "इससे आपके सभी अकाउंट्स $1 से डिस्कनेक्ट हो जाएंगे। इस dapp को दोबारा उपयोग करने के लिए आपको फिर से कनेक्ट करना होगा।",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "इस अकाउंट को डिस्कनेक्ट करें"
@@ -5077,6 +5065,9 @@
   "manage": {
     "message": "मैनेज करें"
   },
+  "manageConnectedAccounts": {
+    "message": "कनेक्टेड अकाउंट्स मैनेज करें"
+  },
   "manageDefaultSettings": {
     "message": "डिफॉल्ट सेटिंग्स मैनेज करें"
   },
@@ -5241,6 +5232,48 @@
   },
   "mmFee": {
     "message": "$1% MetaMask फीस"
+  },
+  "money": {
+    "message": "वित्त"
+  },
+  "moneyActivity": {
+    "message": "गतिविधि"
+  },
+  "moneyAdd": {
+    "message": "जोड़ें"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "बैलेंस अनुपलब्ध है"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "बिना किसी लॉकअप के पूरी लिक्विडिटी पाएं, इसलिए आप कभी भी ट्रेड कर सकते हैं या निकाल सकते हैं"
+  },
+  "moneyBenefitSend": {
+    "message": "MetaMask पर अपने किसी भी वॉलेट में भेजें"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "अपना पैसा mUSD में रखें, जो एक 1:1 डॉलर-बैक्ड स्टेबलकॉइन है"
+  },
+  "moneyBenefits": {
+    "message": "फ़ायदे"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "अपने क्रिप्टो पर कमाएं"
+  },
+  "moneyFundDescription": {
+    "message": "अपने Money Account में पैसे डालें और अपने बैलेंस को बढ़ते हुए देखें।"
+  },
+  "moneyHowItWorks": {
+    "message": "ये कैसे काम करता है"
+  },
+  "moneyLearnMore": {
+    "message": "ज्यादा जानें"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "भेजें"
   },
   "month": {
     "message": "महीना"
@@ -5872,6 +5905,10 @@
   "noDomainResolution": {
     "message": "डोमेन के लिए कोई रिज़ॉल्यूशन प्रदान नहीं किया गया।"
   },
+  "noFee": {
+    "message": "कोई शुल्क नहीं",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
+  },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap और अधिकांश हार्डवेयर वॉलेट, आपके वर्तमान ब्राउज़र वर्जन के साथ काम नहीं करेंगे।"
   },
@@ -6096,12 +6133,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "आपको अभी तक कोई नोटिफिकेशंस नहीं मिली है।"
-  },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "एजेंटिक के लिए CLI कनेक्शन रिक्वेस्ट, एप्रूवल और सेशन अपडेट"
-  },
-  "notificationsSettingsAgenticCliTitle": {
-    "message": "एजेंटिक CLI"
   },
   "notificationsSettingsBoxError": {
     "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें।"
@@ -6542,9 +6573,29 @@
     "message": "के साथ भुगतान करें",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "क्रिप्टो",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "भुगतान विधि चुनें",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "के साथ भुगतान करें",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "अन्य एसेट्स",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "अपने टोकन में से चुनें",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "पेई"
@@ -6577,6 +6628,10 @@
   "percentChange": {
     "message": "प्रतिशत परिवर्तन"
   },
+  "permissionCannotMoveFunds": {
+    "message": "आपकी अनुमति के बिना धनराशि ट्रांसफ़र नहीं की जा सकती",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "के लिए अनुमतियां"
   },
@@ -6596,6 +6651,14 @@
   "permissionRevokedForAccounts": {
     "message": "$1 के लिए इस अपडेट में हटाया गया",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "एड्रेस, बैलेंस और गतिविधि देखें",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "ट्रांसेक्शन के अनुरोध भेजें",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "$1 से कनेक्ट करें।",
@@ -6836,8 +6899,8 @@
   "permissions": {
     "message": "अनुमतियां"
   },
-  "permissionsPageEmptyDescription": {
-    "message": "कोई अनुमति नहीं पाई गई। जब आप किसी साइट को अनुमति देते हैं या Snap इनस्टॉल करते हैं, तो विवरण यहां दिखाई देंगे।"
+  "permissionsPageEmptyTitle": {
+    "message": "यहाँ देखने के लिए कुछ नहीं है।"
   },
   "permitSimulationChange_approve": {
     "message": "खर्च करने की लिमिट"
@@ -6983,6 +7046,9 @@
   },
   "perpsClosePosition": {
     "message": "पोज़िशन बंद करें"
+  },
+  "perpsClosePrice": {
+    "message": "क्लोज़ प्राइस"
   },
   "perpsClosePriceUnavailable": {
     "message": "वर्तमान प्राइस उपलब्ध नहीं है। कुछ देर बाद फिर से प्रयास करें।"
@@ -7301,6 +7367,15 @@
   "perpsOrderBookGroupBy": {
     "message": "के द्वारा समूह बनाएं"
   },
+  "perpsOrderBookLayout": {
+    "message": "ऑर्डर बुक का लेआउट"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "बायां"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "दायां"
+  },
   "perpsOrderBookListedBy": {
     "message": "के द्वारा लिस्ट किया गया"
   },
@@ -7360,6 +7435,9 @@
   "perpsOrderFailed": {
     "message": "ऑर्डर नहीं लग पाया। कृपया दोबारा कोशिश करें।"
   },
+  "perpsOrderFilled": {
+    "message": "भरा गया"
+  },
   "perpsOrderOriginalSize": {
     "message": "मूल आकार"
   },
@@ -7368,6 +7446,12 @@
   },
   "perpsOrderStatus": {
     "message": "स्टेटस"
+  },
+  "perpsOrderTotalFee": {
+    "message": "कुल फीस"
+  },
+  "perpsOrderType": {
+    "message": "ऑर्डर प्रकार"
   },
   "perpsOrderValue": {
     "message": "ऑर्डर वैल्यू"
@@ -9112,6 +9196,9 @@
   "securityTrustMalicious": {
     "message": "बुरी नीयत वाला"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "बुरी नीयत वाला— असुरक्षित के रूप में चिह्नित"
+  },
   "securityTrustMaliciousLabel": {
     "message": "बुरी नीयत वाला"
   },
@@ -9251,6 +9338,9 @@
   },
   "select": {
     "message": "चयन करें"
+  },
+  "selectAccounts": {
+    "message": "अकाउंट्स चुनें"
   },
   "selectAll": {
     "message": "सभी को चुनें"
@@ -10034,6 +10124,12 @@
   "showTestnetNetworks": {
     "message": "परीक्षण नेटवर्क दिखाएं"
   },
+  "showTickerWidget": {
+    "message": "X पर वेब विजेट दिखाएं"
+  },
+  "showTickerWidgetDescription": {
+    "message": "X.com ब्राउज़ करते समय टोकन की जानकारी वाला MetaMask विजेट दिखाता है।"
+  },
   "sidePanelMigrationToast": {
     "message": "MetaMask अब डिफ़ॉल्ट रूप से साइड पैनल में खुलता है। मेनू से किसी भी समय $1।",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -10134,6 +10230,10 @@
   },
   "singleNetwork": {
     "message": "1 नेटवर्क"
+  },
+  "sitePermissionsBanner": {
+    "message": "$1 आपके कनेक्ट किए गए अकाउंट्स देख सकता है और ट्रांसेक्शन के सुझाव दे सकता है।",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "जारी किया गया"
@@ -11404,6 +11504,9 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask को शुरू करने में परेशानी हुई।"
+  },
+  "trustSignalPhishingWarning": {
+    "message": "इस साइट पर फ़िशिंग या वॉलेट से पैसे निकालने वाली गतिविधि के संकेत दिख रहे हैं। यह ऐसे ट्रांसेक्शन के लिए कह सकती है जिनका मकसद आपके पैसे चुराना हो।"
   },
   "tryAgain": {
     "message": "फिर से प्रयास करें"

@@ -6,7 +6,9 @@ import { Driver } from '../../../webdriver/driver';
 class HardwareWalletSignaturesPage {
   private readonly driver: Driver;
 
-  private readonly pageRoot = '[data-testid="hardware-wallet-signatures"]';
+  private readonly pageRoot = {
+    testId: 'parent-selector-hardware-wallet-signatures-page',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;

@@ -22,7 +22,7 @@ const NOTIFICATION_PREFERENCE_SECTIONS: NotificationPreferenceSection[] = [
  * `SettingsPage.goToNotificationsSettings` or
  * `flows/notifications.flow.ts` `goToNotificationsSettingsPage`.
  * Owns: allow-notifications toggle, per-account toggles, preference section
- * navigation (wallet activity, perps, marketing, agentic CLI), and in-app
+ * navigation (wallet activity, perps, marketing, Agent wallet), and in-app
  * notification toggles within those sections.
  * Boundaries: notification preferences only. The notifications list / inbox
  * UI is outside this page object.
