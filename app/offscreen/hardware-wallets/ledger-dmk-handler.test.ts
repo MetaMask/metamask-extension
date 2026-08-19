@@ -85,22 +85,34 @@ installWebHidNavigator();
 
 // Mock chrome.runtime
 const mockSendMessage = jest.fn();
-const mockChromeRuntime = {
+const mockAddListener = jest.fn();
+const mockChromeRuntime: {
+  sendMessage: jest.Mock;
+  lastError: { message: string } | null;
+  onMessage?: { addListener: jest.Mock };
+} = {
   sendMessage: mockSendMessage,
-  lastError: null as { message: string } | null,
+  lastError: null,
 };
-Object.defineProperty(globalThis, 'chrome', {
-  value: {
-    ...globalThis.chrome,
-    runtime: mockChromeRuntime,
-  },
-  writable: true,
-});
+
+function installChromeRuntime(): void {
+  Object.defineProperty(globalThis, 'chrome', {
+    value: {
+      runtime: mockChromeRuntime,
+    },
+    writable: true,
+    configurable: true,
+  });
+}
+
+installChromeRuntime();
 
 describe('LedgerDmkBridgeHandler', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     installWebHidNavigator();
+    installChromeRuntime();
+    delete mockChromeRuntime.onMessage;
     mockOnSessionStateChangeSubject = new Subject();
     (LedgerDmkBridge as jest.Mock).mockImplementation(() => createMockBridge());
     mockListenToAvailableDevices.mockReturnValue(
@@ -493,23 +505,13 @@ describe('LedgerDmkBridgeHandler', () => {
 
   describe('init', () => {
     it('does not register a chrome.runtime.onMessage listener', async () => {
-      const addListener = jest.fn();
-      Object.defineProperty(globalThis, 'chrome', {
-        value: {
-          runtime: {
-            sendMessage: mockSendMessage,
-            onMessage: { addListener },
-          },
-        },
-        writable: true,
-        configurable: true,
-      });
+      mockChromeRuntime.onMessage = { addListener: mockAddListener };
       mockHidGetDevices.mockResolvedValue([]);
 
       const handler = new LedgerDmkBridgeHandler();
       await handler.init();
 
-      expect(addListener).not.toHaveBeenCalled();
+      expect(mockAddListener).not.toHaveBeenCalled();
       await handler.destroy();
     });
 
