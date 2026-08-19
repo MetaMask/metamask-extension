@@ -98,16 +98,6 @@ class EditConnectedAccountsPage {
   }
 
   /**
-   * Check that an account label is displayed in the edit accounts view.
-   *
-   * @param accountLabel - The account label to check for.
-   */
-  async checkAccountIsDisplayed(accountLabel: string): Promise<void> {
-    console.log(`Check that account ${accountLabel} is displayed`);
-    await this.driver.waitForSelector(this.accountName(accountLabel));
-  }
-
-  /**
    * Check that the account row for the given label is selected (checked).
    *
    * Account rows and their checkboxes render in the same order, so the
@@ -134,18 +124,6 @@ class EditConnectedAccountsPage {
       },
       { interval: 500, timeout: 10000 },
     );
-  }
-
-  /**
-   * Check that the given account labels are displayed in the edit accounts
-   * view.
-   *
-   * @param accountLabels - The account labels to check for.
-   */
-  async checkAccountsAreDisplayed(accountLabels: string[]): Promise<void> {
-    for (const accountLabel of accountLabels) {
-      await this.checkAccountIsDisplayed(accountLabel);
-    }
   }
 
   /**

@@ -12,10 +12,9 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsPage from '../../../page-objects/pages/permission/edit-connected-accounts-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import PermissionListPage from '../../../page-objects/pages/permission/permission-list-page';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { login } from '../../../page-objects/flows/login.flow';
-import { openPermissionsPageFlow } from '../../../page-objects/flows/permissions.flow';
+import { getEditConnectedAccountsPageForHost } from '../../../page-objects/flows/permissions.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
@@ -74,13 +73,11 @@ describe('Call `wallet_createSession`, then update the accounts in the permissio
         /**
          * We make sure to update selected accounts via wallet extension UI
          */
-        await openPermissionsPageFlow(driver);
-        const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.checkPageIsLoaded();
-        await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        const sitePermissionPage = new EditConnectedAccountsPage(driver);
-        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
-        await sitePermissionPage.editPermissionsForAccount(['Account 1']);
+        const sitePermissionsEditor = await getEditConnectedAccountsPageForHost(
+          driver,
+          DAPP_HOST_ADDRESS,
+        );
+        await sitePermissionsEditor.editPermissionsForAccount(['Account 1']);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
         await testDapp.checkPageIsLoaded();

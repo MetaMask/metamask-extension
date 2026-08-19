@@ -8,9 +8,8 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
-import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
+import { getEditConnectedAccountsPageForHost } from '../../page-objects/flows/permissions.flow';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
-import EditConnectedAccountsPage from '../../page-objects/pages/permission/edit-connected-accounts-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
@@ -68,20 +67,18 @@ describe('Edit Accounts Permissions', function () {
         await accountListPage.checkPageIsLoaded();
         await accountListPage.selectAccount(accountLabel1);
 
-        // go to connections permissions page
-        await openPermissionsPageFlow(driver);
-        const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.checkPageIsLoaded();
-        await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        const editConnectedAccountsPage = new EditConnectedAccountsPage(driver);
-        await editConnectedAccountsPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
+        // go to the site's connections permissions page
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
         await editConnectedAccountsPage.editPermissionsForAccount([
           accountLabel2,
           accountLabel3,
         ]);
 
-        // Re-open the site's permissions and verify all three accounts are
-        // now selected in the accounts editor
+        // Saving lands back on the permissions list; re-open the site's
+        // permissions and verify all three accounts are now selected in the
+        // accounts editor
+        const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
         await editConnectedAccountsPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
