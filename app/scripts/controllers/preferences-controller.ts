@@ -209,6 +209,7 @@ export const getDefaultPreferencesControllerState =
       [DefiReferralPartner.AsterDEX]: {},
       [DefiReferralPartner.GMX]: {},
       [DefiReferralPartner.Hyperliquid]: {},
+      [DefiReferralPartner.Variational]: {},
     },
   });
 
