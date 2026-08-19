@@ -149,15 +149,23 @@ describe(`migration #${version}`, () => {
       .mockResolvedValueOnce([undefined])
       .mockResolvedValueOnce([{ sourceCode: 'newer-indexeddb-source-code' }]);
 
+    // simulate a partially failed migration, where the first attempt to write
+    // to indexedDB succeeds, but the removal from storage.local _fails_
     await expect(migrate(buildVersionedData(), new Set())).rejects.toBe(
       cleanupError,
     );
-    await migrate(buildVersionedData(), new Set());
-
-    expect(database.set).toHaveBeenCalledTimes(1);
+    // indexedDB's `set` _should_ be called here
     expect(database.set).toHaveBeenCalledWith({
       [STORAGE_SERVICE_KEY]: legacyValue,
     });
+    // simulate a successful migration
+    await migrate(buildVersionedData(), new Set());
+
+    // check that `set` was only ever called the one time (by the first partially
+    // failed migration)
+    expect(database.set).toHaveBeenCalledTimes(1);
+
+    // finally, check that remove is called for _both_ migrations
     expect(mockBrowser.storage.local.remove).toHaveBeenCalledTimes(2);
   });
 
