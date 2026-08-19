@@ -60,7 +60,8 @@ class EditConnectedAccountsPage {
     testId: 'edit-accounts-modal-header',
   };
 
-  private readonly permissionListPage = '[data-testid="permissions-page"]';
+  private readonly permissionListPage =
+    '[data-testid="parent-selector-permission-list"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
