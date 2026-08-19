@@ -194,6 +194,10 @@ export class QrSyncController extends BaseController<
       QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
     ]);
 
+    if (selectedAccountGroupIds.length === 0) {
+      throw new Error(QrSyncErrorMessages.NO_ACCOUNT_GROUPS_SELECTED);
+    }
+
     let snapshot = await this.messenger.call(
       'AccountTreeController:exportState',
       { includeSecrets: true, password },

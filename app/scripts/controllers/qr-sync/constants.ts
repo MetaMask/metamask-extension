@@ -99,5 +99,6 @@ export const QrSyncErrorMessages = {
   SYNC_SESSION_CANCELLED_BY_PEER: 'Sync session cancelled by peer',
   SYNC_FAILED_TO_SEND_MESSAGE: 'Failed to send message to mobile wallet client',
   PREMATURE_SYNC_OFFER_RECEIVED: 'Premature sync offer received',
+  NO_ACCOUNT_GROUPS_SELECTED: 'At least one account group must be selected.',
   UNKNOWN: 'Unknown error',
 } as const;

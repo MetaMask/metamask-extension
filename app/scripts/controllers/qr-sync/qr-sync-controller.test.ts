@@ -884,6 +884,27 @@ describe('QrSyncController', () => {
       mockEmitSyncCompleted();
     });
 
+    it('rejects an empty account group selection before exporting secrets', async () => {
+      const { controller, mockExportState } = setupController();
+
+      await mockStartSession(controller);
+      await mockSetReviewingSyncOffer(controller);
+
+      await expect(
+        controller.syncAccounts(TEST_PASSWORD, []),
+      ).rejects.toThrow(QrSyncErrorMessages.NO_ACCOUNT_GROUPS_SELECTED);
+
+      expect(mockExportState).not.toHaveBeenCalled();
+      expect(mockMwp.dappClient?.sendRequest).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: QrSyncActionTypes.SYNC_READY,
+        }),
+      );
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
+      );
+    });
+
     it('fails the session when sync completion times out', async () => {
       const { controller, primaryGroupId } = setupController();
 
