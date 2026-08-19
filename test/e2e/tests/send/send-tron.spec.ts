@@ -53,7 +53,6 @@ describe('Send Tron', function () {
 
         const activityTab = new ActivityTab(driver);
         await activityTab.goToActivityList();
-        await activityTab.checkTransactionAmount('-1 TRX');
         await activityTab.checkTxAmountInActivity('-1 TRX', 1);
         await activityTab.checkNoFailedTransactions();
       },
