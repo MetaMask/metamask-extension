@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { SolScope } from '@metamask/keyring-api';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
@@ -8,7 +9,7 @@ import {
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { buildSolanaMainnetAndDevnetFixtureScopes } from '../../fixtures/permission-scopes';
+import { buildSolanaFixtureScopes } from '../../fixtures/permission-scopes';
 import { login } from '../../page-objects/flows/login.flow';
 import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
@@ -23,9 +24,10 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           // restored silently on connect.
           fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp({
-              scopes: buildSolanaMainnetAndDevnetFixtureScopes(
-                DEFAULT_FIXTURE_SOLANA_ACCOUNT,
-              ),
+              scopes: buildSolanaFixtureScopes(DEFAULT_FIXTURE_SOLANA_ACCOUNT, [
+                SolScope.Mainnet,
+                SolScope.Devnet,
+              ]),
             })
             .build(),
           title: this.test?.fullTitle(),

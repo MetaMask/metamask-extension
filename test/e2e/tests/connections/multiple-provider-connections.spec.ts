@@ -21,7 +21,7 @@ import { Driver } from '../../webdriver/driver';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { getEditConnectedAccountsPageForHost } from '../../page-objects/flows/permissions.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { buildSolanaMainnetFixtureScopes } from '../../fixtures/permission-scopes';
+import { buildSolanaFixtureScopes } from '../../fixtures/permission-scopes';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
 import { account1 as SOLANA_ADDRESS_ONE } from '../../flask/solana-wallet-standard/testHelpers';
@@ -37,7 +37,7 @@ const EVM_ADDRESS_TWO = ACCOUNT_2;
 const EVM_ACCOUNT_LABEL_ONE = 'Account 1';
 const EVM_ACCOUNT_LABEL_TWO = 'Account 2';
 
-const SOLANA_PERMISSIONS = buildSolanaMainnetFixtureScopes(SOLANA_ADDRESS_ONE);
+const SOLANA_PERMISSIONS = buildSolanaFixtureScopes(SOLANA_ADDRESS_ONE);
 
 /**
  * CAIP chain IDs granted by a default connect: every non-test network in the

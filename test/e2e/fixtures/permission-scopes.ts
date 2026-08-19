@@ -14,28 +14,6 @@ import {
  * instead of driving a post-connect edit flow.
  */
 
-export const EVM_AND_SOLANA_FIXTURE_SCOPES_WITH_EIP1193_COMPATIBLE = {
-  isMultichainOrigin: true,
-  requiredScopes: {},
-  optionalScopes: {
-    'eip155:1337': {
-      accounts: [`eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`],
-    },
-    'wallet:eip155': {
-      accounts: [`wallet:eip155:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`],
-    },
-    [SolScope.Mainnet]: {
-      accounts: [`${SolScope.Mainnet}:${DEFAULT_FIXTURE_SOLANA_ACCOUNT}`],
-    },
-  },
-  sessionProperties: { 'eip1193-compatible': true },
-};
-
-export const EVM_AND_SOLANA_FIXTURE_SCOPES_WITHOUT_EIP1193_COMPATIBLE = {
-  ...EVM_AND_SOLANA_FIXTURE_SCOPES_WITH_EIP1193_COMPATIBLE,
-  sessionProperties: {},
-};
-
 /**
  * Builds a CAIP-25 caveat value permitting the given EVM chains (plus the
  * `wallet:eip155` scope) for the default fixture account, marked
@@ -66,50 +44,49 @@ export function buildEvmEip1193FixtureScopes(chainIds: number[]) {
 }
 
 /**
- * Builds a CAIP-25 caveat value permitting only the Solana Mainnet scope for
- * the given Solana account address.
+ * Builds a CAIP-25 caveat value permitting the given Solana scopes for the
+ * given Solana account address.
+ *
+ * A default Solana Wallet Standard connect grants non-test networks only, so
+ * seeding is the only way for a dapp to hold the Devnet scope. The Wallet
+ * Standard restores a seeded session silently, so pair seeded scopes with
+ * `connectSolanaTestDapp(driver, testDapp, { expectExistingSession: true })`.
  *
  * @param solanaAccountAddress - The Solana account address to permit.
+ * @param scopes - The Solana CAIP chain IDs to permit. Defaults to Mainnet.
  * @returns A CAIP-25 caveat value for fixture seeding.
  */
-export function buildSolanaMainnetFixtureScopes(solanaAccountAddress: string) {
+export function buildSolanaFixtureScopes(
+  solanaAccountAddress: string,
+  scopes: string[] = [SolScope.Mainnet],
+) {
+  const optionalScopes: Record<string, { accounts: string[] }> = {};
+  for (const scope of scopes) {
+    optionalScopes[scope] = {
+      accounts: [`${scope}:${solanaAccountAddress}`],
+    };
+  }
   return {
     isMultichainOrigin: true,
     requiredScopes: {},
-    optionalScopes: {
-      [SolScope.Mainnet]: {
-        accounts: [`${SolScope.Mainnet}:${solanaAccountAddress}`],
-      },
-    },
+    optionalScopes,
     sessionProperties: {},
   };
 }
 
-/**
- * Builds a CAIP-25 caveat value permitting the Solana Mainnet and Devnet
- * scopes for the given Solana account address. Seeding both scopes is the
- * only way for a dapp to hold Devnet permission, since a default Solana
- * Wallet Standard connect grants non-test networks only. The Wallet Standard
- * restores a seeded session silently, so pair this with
- * `connectSolanaTestDapp(driver, testDapp, { expectExistingSession: true })`.
- *
- * @param solanaAccountAddress - The Solana account address to permit.
- * @returns A CAIP-25 caveat value for fixture seeding.
- */
-export function buildSolanaMainnetAndDevnetFixtureScopes(
-  solanaAccountAddress: string,
-) {
-  return {
-    isMultichainOrigin: true,
-    requiredScopes: {},
-    optionalScopes: {
-      [SolScope.Mainnet]: {
-        accounts: [`${SolScope.Mainnet}:${solanaAccountAddress}`],
-      },
-      [SolScope.Devnet]: {
-        accounts: [`${SolScope.Devnet}:${solanaAccountAddress}`],
-      },
-    },
-    sessionProperties: {},
-  };
-}
+const EVM_LOCALHOST_EIP1193_FIXTURE_SCOPES = buildEvmEip1193FixtureScopes([
+  1337,
+]);
+
+export const EVM_AND_SOLANA_FIXTURE_SCOPES_WITH_EIP1193_COMPATIBLE = {
+  ...EVM_LOCALHOST_EIP1193_FIXTURE_SCOPES,
+  optionalScopes: {
+    ...EVM_LOCALHOST_EIP1193_FIXTURE_SCOPES.optionalScopes,
+    ...buildSolanaFixtureScopes(DEFAULT_FIXTURE_SOLANA_ACCOUNT).optionalScopes,
+  },
+};
+
+export const EVM_AND_SOLANA_FIXTURE_SCOPES_WITHOUT_EIP1193_COMPATIBLE = {
+  ...EVM_AND_SOLANA_FIXTURE_SCOPES_WITH_EIP1193_COMPATIBLE,
+  sessionProperties: {},
+};

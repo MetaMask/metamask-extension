@@ -1,8 +1,9 @@
 import { strict as assert } from 'assert';
+import { SolScope } from '@metamask/keyring-api';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { buildSolanaMainnetAndDevnetFixtureScopes } from '../../fixtures/permission-scopes';
+import { buildSolanaFixtureScopes } from '../../fixtures/permission-scopes';
 import {
   DAPP_PATH,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
@@ -15,8 +16,10 @@ import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow
 
 // The dapp needs the Devnet scope, which a live connect cannot grant, so the
 // session is seeded with Mainnet + Devnet and restored silently on connect.
-const SOLANA_MAINNET_AND_DEVNET_PERMISSIONS =
-  buildSolanaMainnetAndDevnetFixtureScopes(DEFAULT_FIXTURE_SOLANA_ACCOUNT);
+const SOLANA_MAINNET_AND_DEVNET_PERMISSIONS = buildSolanaFixtureScopes(
+  DEFAULT_FIXTURE_SOLANA_ACCOUNT,
+  [SolScope.Mainnet, SolScope.Devnet],
+);
 
 describe('Solana Wallet Standard - Transfer SOL', function () {
   describe('Send a transaction', function () {

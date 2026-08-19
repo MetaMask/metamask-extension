@@ -12,11 +12,10 @@ import ConnectAccountConfirmation from '../pages/confirmations/connect-account-c
  * @param options
  * @param options.expectExistingSession - When true, the wallet is expected to
  * already hold a CAIP-25 session for the dapp (seeded via fixtures, e.g. with
- * `buildSolanaMainnetAndDevnetFixtureScopes`), so the Wallet Standard connect
+ * `buildSolanaFixtureScopes`), so the Wallet Standard connect
  * restores it silently and no MetaMask approval dialog appears. This is the
  * only way to connect with the Devnet scope: a live connect grants non-test
- * networks only, and a dapp's network permissions can no longer be edited
- * from the wallet UI afterwards.
+ * networks only.
  */
 export const connectSolanaTestDapp = async (
   driver: Driver,

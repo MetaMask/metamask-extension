@@ -90,10 +90,10 @@ class EditConnectedAccountsPage {
       },
       { interval: 500, timeout: 10000 },
     );
-    await this.driver.waitForSelector(this.accountName('Account 2'), {
-      timeout: 10000,
-    });
-    await this.driver.clickElement(this.accountName('Account 2'));
+    // The new account is appended as the last row, so select it by index
+    // rather than assuming a specific label; this keeps repeated calls (e.g.
+    // approveConnect with totalAccounts > 2) selecting the right account.
+    await this.selectAccount(initialCheckboxCount + 1);
     await this.clickOnConnect();
   }
 
