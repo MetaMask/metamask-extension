@@ -1,11 +1,13 @@
 import { jest } from '@jest/globals';
 import browser from 'webextension-polyfill';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
+import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 import {
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from '../../../shared/lib/stores/indexeddb-storage-constants';
 import { IndexedDBStore } from '../../../shared/lib/stores/indexeddb-store';
+import * as util from '../lib/util';
 import { migrate, version } from './223';
 
 jest.mock('webextension-polyfill', () => ({
@@ -184,12 +186,9 @@ describe(`migration #${version}`, () => {
   });
 
   it('skips migration on Firefox', async () => {
-    const oldStorage = buildVersionedData();
+    jest.spyOn(util, 'getPlatform').mockReturnValue(PLATFORM_FIREFOX);
 
-    jest
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      .spyOn(require('../lib/util'), 'getPlatform')
-      .mockReturnValue('Firefox');
+    const oldStorage = buildVersionedData();
 
     await migrate(oldStorage, new Set());
 

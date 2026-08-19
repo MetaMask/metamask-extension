@@ -10,8 +10,6 @@ import { getPlatform } from '../lib/util';
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 import type { Migrate } from './types';
 
-const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-
 export const version = 223;
 
 /**
@@ -43,7 +41,7 @@ export const migrate = (async (versionedData, _changedKeys) => {
   // if a user turns `indexedDB` back on later, the old "missing" data comes
   // back like it was never missing in the first place.
   // So, on FireFox, we report `indexedDb` as unavailable.
-  if (isFirefox) {
+  if (getPlatform() === PLATFORM_FIREFOX) {
     return;
   }
 
