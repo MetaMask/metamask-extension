@@ -4,6 +4,7 @@ import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
+import { installBlockingErrorToastMonitor } from '../../../helpers/blocking-error-toast-monitor';
 import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../../constants';
 import {
   BASE_ACCOUNT_SYNC_INTERVAL,
@@ -689,68 +690,7 @@ class HomePage {
    */
   async startMonitoringBlockingErrorToast(): Promise<void> {
     console.log('Start monitoring homepage for blocking error toasts');
-    await this.driver.executeScript(`
-      (function () {
-        if (window.__mmE2eBlockingErrorToasts) {
-          return;
-        }
-        window.__mmE2eBlockingErrorToasts = [];
-        const matchText = /cryptocurrencies|unsupported/i;
-        const toastRootSelector =
-          '.toast-container, .toasts-container, .toasts-container__banner-base, [data-testid="storage-error-toast"], [data-testid="survey-toast"]';
-
-        function isMatch(el) {
-          if (!el || el.nodeType !== 1) {
-            return false;
-          }
-          const testId = el.getAttribute('data-testid') || '';
-          if (testId === 'storage-error-toast' || testId === 'survey-toast') {
-            return true;
-          }
-          const isToastRoot =
-            el.classList.contains('toast-container') ||
-            el.classList.contains('toasts-container') ||
-            el.classList.contains('toasts-container__banner-base');
-          if (!isToastRoot) {
-            return false;
-          }
-          return matchText.test(el.textContent || '');
-        }
-
-        function record(node) {
-          if (!node) {
-            return;
-          }
-          const elements = [];
-          if (node.nodeType === 1) {
-            elements.push(node);
-            if (node.querySelectorAll) {
-              node.querySelectorAll(toastRootSelector).forEach(function (el) {
-                elements.push(el);
-              });
-            }
-          }
-          elements.forEach(function (el) {
-            if (isMatch(el)) {
-              window.__mmE2eBlockingErrorToasts.push(
-                (el.textContent || '').trim(),
-              );
-            }
-          });
-        }
-
-        const observer = new MutationObserver(function (mutations) {
-          mutations.forEach(function (mutation) {
-            mutation.addedNodes.forEach(record);
-          });
-        });
-        observer.observe(document.documentElement, {
-          childList: true,
-          subtree: true,
-        });
-        record(document.documentElement);
-      })();
-    `);
+    await this.driver.executeScript(installBlockingErrorToastMonitor);
   }
 
   async startSendFlow(): Promise<void> {
