@@ -15,8 +15,6 @@ const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const mockMaliciousAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
 
-const expectedMaliciousTitle = 'This is a deceptive request';
-
 const testBenignConfigs = [
   {
     logExpectedDetail: 'benign eth_sendTransaction with no value',
@@ -58,26 +56,30 @@ const testBenignConfigs = [
 const testMaliciousConfigs = [
   {
     btnSelector: '#maliciousPermit',
+    expectedTitle: 'High-risk approval',
     expectedDescription:
-      'If you approve this request, a third party known for scams might take all your assets.',
+      "You're giving an address flagged by security partners permission to move your assets.",
     expectedReason: 'permit_farming',
   },
   {
     btnSelector: '#maliciousRawEthButton',
+    expectedTitle: 'High-risk transfer',
     expectedDescription:
-      'If you approve this request, a third party known for scams will take all your assets.',
+      "You're sending assets to an address flagged by security partners. If this is a scam, your funds can't be recovered.",
     expectedReason: 'raw_native_token_transfer',
   },
   {
     btnSelector: '#maliciousSeaport',
+    expectedTitle: 'High-risk approval',
     expectedDescription:
-      'If you approve this request, someone can steal your assets listed on OpenSea.',
+      "You're giving an address flagged by security partners permission to move your assets listed on OpenSea.",
     expectedReason: 'seaport_farming',
   },
   {
     btnSelector: '#maliciousTradeOrder',
+    expectedTitle: 'High-risk signature',
     expectedDescription:
-      'If you approve this request, you might lose your assets.',
+      'Security partners flag this signature as high risk. Signing could authorize actions with your assets without your permission.',
     expectedReason: 'trade_order_farming',
   },
 ];
@@ -260,7 +262,12 @@ describe('Confirmation Security Alert - Blockaid', function () {
         await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         for (const config of testMaliciousConfigs) {
-          const { expectedDescription, expectedReason, btnSelector } = config;
+          const {
+            expectedTitle,
+            expectedDescription,
+            expectedReason,
+            btnSelector,
+          } = config;
           console.log('config', config);
 
           // Click TestDapp button to send JSON-RPC request
@@ -276,13 +283,13 @@ describe('Confirmation Security Alert - Blockaid', function () {
           // Find element by title
           const bannerAlertFoundByTitle = await driver.findElement({
             css: bannerAlertSelector,
-            text: expectedMaliciousTitle,
+            text: expectedTitle,
           });
           const bannerAlertText = await bannerAlertFoundByTitle.getText();
 
           assert(
             bannerAlertFoundByTitle,
-            `Banner alert not found. Expected Title: ${expectedMaliciousTitle} \nExpected reason: ${expectedReason}\n`,
+            `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: ${expectedReason}\n`,
           );
           assert(
             bannerAlertText.includes(expectedDescription),
@@ -298,7 +305,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show "Request may not be safe" if the PPOM request fails to check transaction', async function () {
+  it.skip('should show "Security check unavailable" if the PPOM request fails to check transaction', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -330,7 +337,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
         await driver.delay(500);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const expectedTitle = 'Request may not be safe';
+        const expectedTitle = 'Security check unavailable';
 
         await driver.assertElementNotPresent('.loading-indicator');
 

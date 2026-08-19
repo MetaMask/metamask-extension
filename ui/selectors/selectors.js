@@ -1,4 +1,3 @@
-import { toUnicode } from 'punycode/punycode.js';
 import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -203,7 +202,7 @@ import {
 import { getApprovalRequestsByType } from './approvals';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 import { getIsSocialLoginFlow } from './first-time-flow';
-import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
+import { getInternalAccounts } from './accounts';
 
 const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
@@ -794,7 +793,9 @@ export const getCrossChainMetaMaskCachedBalances = createSelector(
  * @returns {object} An object of tokens with balances for the given account. Data relationship will be chainId => balance
  */
 function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
-  const { accountsByChainId } = state.metamask;
+  // AccountTrackerController no longer holds balances once AssetsController owns
+  // them, so read through the selector that falls back to unified assets state.
+  const accountsByChainId = getAccountTrackerControllerAccountsByChainId(state);
   const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
   const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
@@ -1174,21 +1175,6 @@ export const getCompleteAddressBook = createShallowResultSelector(
       )
       .flat(),
 );
-
-export function getEnsResolutionByAddress(state, address) {
-  if (state.metamask.ensResolutionsByAddress[address]) {
-    const ensResolution = state.metamask.ensResolutionsByAddress[address];
-    // ensResolution is a punycode encoded string hence toUnicode is used to decode it from same package
-    const normalizedEnsResolution = toUnicode(ensResolution);
-    return normalizedEnsResolution;
-  }
-
-  const entry =
-    getAddressBookEntry(state, address) ||
-    getInternalAccountByAddress(state, address);
-
-  return entry?.name || '';
-}
 
 export function getAddressBookEntry(state, address) {
   const addressBook = getCompleteAddressBook(state);
@@ -3009,6 +2995,16 @@ export function getPasskeyDerivationMethod(state) {
 }
 
 /**
+ * Passkey authenticator AAGUID from the enrolled credential.
+ *
+ * @param {object} state - Redux state
+ * @returns {string | undefined}
+ */
+export function getPasskeyAuthenticatorId(state) {
+  return state.metamask?.passkeyRecord?.credential?.aaguid;
+}
+
+/**
  * True when the enrolled passkey's AAGUID is in the sidepanel-incompatible set
  * (defer passkey flows to a normal browser tab when also in sidepanel).
  *
@@ -4034,14 +4030,6 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
   (remoteFeatureFlags) =>
     remoteFeatureFlags?.nonZeroUnusedApprovals ?? EMPTY_ARRAY,
 );
-
-/**
- * @param {MetaMaskReduxState} state - The Redux state
- * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
- */
-export function getNetworkConnectionBanner(state) {
-  return state.metamask.networkConnectionBanner;
-}
 
 /**
  * Check if the device is offline.
