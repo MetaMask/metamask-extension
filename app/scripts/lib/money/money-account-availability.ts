@@ -4,10 +4,8 @@ import type {
   KeyringControllerWithKeyringUnsafeAction,
 } from '@metamask/keyring-controller';
 import type { Messenger } from '@metamask/messenger';
-import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger, type Hex } from '@metamask/utils';
 import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
-import { isMoneyAccountEnabled } from '../../../../shared/lib/money/feature-flags';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
 
 const log = createProjectLogger('money-account-availability');
@@ -15,8 +13,7 @@ const log = createProjectLogger('money-account-availability');
 const serviceName = 'MoneyAccountAvailabilityService';
 
 type MoneyAccountAvailabilityAllowedActions =
-  | KeyringControllerWithKeyringUnsafeAction
-  | RemoteFeatureFlagControllerGetStateAction;
+  KeyringControllerWithKeyringUnsafeAction;
 
 type MoneyAccountAvailabilityEvents =
   | KeyringControllerUnlockEvent
@@ -55,16 +52,15 @@ export type { MoneyAccountAvailability };
 const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
 
 /**
- * Resolves whether the Money Account surface should be shown at all.
- *
- * We look at the state of the `moneyEnableMoneyAccount` flag, and whether
- * a money address can be derived from an unlocked wallet.
+ * Resolves whether the Money Account surface should be shown at all, based
+ * on whether a money address can be derived from an unlocked wallet.
  *
  * A money account being available doesn’t mean that the account has been
  * upgraded yet.
  *
- * The flag is checked first and never cached because it can
- * change when remote feature flags update.
+ * Callers are responsible for checking the `moneyEnableMoneyAccount` flag
+ * themselves before calling this service — see `useMoneyAccountInfo` and
+ * `useMoneyAccountAvailability`.
  *
  * The derived address is cached as a promise until the next unlock,
  * so concurrent callers share one in-flight derivation; failures are not
@@ -104,18 +100,13 @@ export class MoneyAccountAvailabilityService {
    */
   async getAvailability(): Promise<MoneyAccountAvailability> {
     try {
-      if (!this.#isEnabled()) {
-        return UNAVAILABLE;
-      }
-
       const address = await this.getAddress();
 
       return { isAvailable: true, address };
     } catch (error) {
-      // A locked wallet, or a transient failure reading the feature flag or
-      // deriving the address, lands here. None of these are evidence that
-      // the user has no money account, so the surface is hidden without the
-      // answer being cached.
+      // A locked wallet, or a transient failure deriving the address, lands
+      // here. Neither is evidence that the user has no money account, so
+      // the surface is hidden without the answer being cached.
       log('Failed to resolve money account availability', error);
       return UNAVAILABLE;
     }
@@ -147,18 +138,5 @@ export class MoneyAccountAvailabilityService {
     }
 
     return await this.#address;
-  }
-
-  /**
-   * Read the `moneyEnableMoneyAccount` flag.
-   *
-   * @returns Whether the Money Account feature is enabled.
-   */
-  #isEnabled(): boolean {
-    const { remoteFeatureFlags } = this.#messenger.call(
-      'RemoteFeatureFlagController:getState',
-    );
-
-    return isMoneyAccountEnabled(remoteFeatureFlags);
   }
 }
