@@ -167,6 +167,8 @@ app/scripts/wallet-init/messengers/seedless-onboarding-controller*        @MetaM
 app/scripts/wallet-init/instance-options/passkey-controller*              @MetaMask/web3auth
 app/scripts/services/oauth                                                @MetaMask/web3auth
 ui/pages/onboarding-flow                                                  @MetaMask/web3auth
+ui/hooks/passkey                                                          @MetaMask/web3auth
+shared/lib/passkey                                                        @MetaMask/web3auth
 
 # Web3Auth / Shield
 shared/lib/shield.ts                                  @MetaMask/web3auth
