@@ -1,7 +1,4 @@
-import {
-  TransactionContainerType,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useConfirmContext } from '../../../../context/confirm';
 import { SimulationDetails } from '../../../simulation-details';
@@ -18,9 +15,8 @@ const TokenTransferInfo = () => {
     useConfirmContext<TransactionMeta>();
 
   const isWalletInitiated = transactionMeta.origin === 'metamask';
-  const isEnforcedSimulationsEnabled = transactionMeta.containerTypes?.includes(
-    TransactionContainerType.EnforcedSimulations,
-  );
+  const isEnforcedSimulationsDisplayed =
+    transactionMeta.containerTypes !== undefined;
 
   return (
     <>
@@ -31,7 +27,7 @@ const TokenTransferInfo = () => {
         isTransactionsRedesign
         enableMetrics
         metricsOnly={isWalletInitiated}
-        sectionMarginBottom={isEnforcedSimulationsEnabled ? 2 : undefined}
+        sectionMarginBottom={isEnforcedSimulationsDisplayed ? 2 : undefined}
       />
       <EnforcedSimulationsRow />
       <TokenDetailsSection />

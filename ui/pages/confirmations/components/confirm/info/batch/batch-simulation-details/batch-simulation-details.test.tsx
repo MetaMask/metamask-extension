@@ -313,6 +313,30 @@ describe('BatchSimulationDetails', () => {
     expect(container.firstChild).toBeNull();
   });
 
+  it('keeps an 8px gap below the section when enforced simulations are displayed but not enabled', () => {
+    const { getByTestId } = render(
+      genUnapprovedContractInteractionConfirmation({
+        containerTypes: [],
+        nestedTransactions: [NESTED_TRANSACTION_MOCK],
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
+      }),
+    );
+
+    expect(getByTestId('simulation-details-layout').parentElement).toHaveClass(
+      'mm-box--margin-bottom-2',
+    );
+  });
+
+  it('uses the default gap below the section when enforced simulations are not displayed', () => {
+    const { getByTestId } = render();
+
+    expect(getByTestId('simulation-details-layout').parentElement).toHaveClass(
+      'mm-box--margin-bottom-4',
+    );
+  });
+
   it('does not render SimulationDetails and EditSpendingCapModal while approvePending is true', () => {
     useBatchApproveBalanceChangesMock.mockReturnValue({
       pending: true,
