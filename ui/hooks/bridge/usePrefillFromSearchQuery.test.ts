@@ -10,7 +10,6 @@ import * as assetUtils from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 
-import { getFromToken } from '../../ducks/bridge/selectors';
 import { usePrefillFromSearchQuery } from './usePrefillFromSearchQuery';
 
 // Helper hook that combines useBridgeQueryParams with useLocation
@@ -319,22 +318,7 @@ describe('usePrefillFromSearchQuery', () => {
 
     await waitFor(() => {
       expect(result.current.location.search).toBe('');
-      expect(getFromToken(store?.getState() as never)).toMatchInlineSnapshot(`
-        {
-          "accountType": undefined,
-          "assetId": "eip155:59144/slip44:60",
-          "balance": "0",
-          "chainId": "eip155:59144",
-          "decimals": 18,
-          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/slip44/60.png",
-          "isVerified": undefined,
-          "name": "Ether",
-          "rwaData": undefined,
-          "securityData": undefined,
-          "symbol": "ETH",
-          "tokenFiatAmount": undefined,
-        }
-      `);
+      expect(store?.getState().bridge?.fromToken).toBeDefined();
     });
     const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};

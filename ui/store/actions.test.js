@@ -530,10 +530,25 @@ describe('Actions', () => {
       ).toBe(true);
     });
 
-    it('#generatePasskeyRegistrationOptions passes prfAvailable false when PRF support is false', async () => {
+    it('#generatePasskeyRegistrationOptions rejects when PRF support is false', async () => {
       jest
         .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
         .mockResolvedValue(false);
+      setBackgroundConnection(background);
+
+      await expect(
+        actions.generatePasskeyRegistrationOptions(),
+      ).rejects.toThrow('Passkey setup requires PRF support');
+
+      expect(background.generatePasskeyRegistrationOptions.notCalled).toBe(
+        true,
+      );
+    });
+
+    it('#generatePasskeyRegistrationOptions attempts registration when PRF support is unknown', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockResolvedValue(undefined);
       background.generatePasskeyRegistrationOptions.resolves({
         rp: { name: 'MM' },
       });
@@ -543,7 +558,25 @@ describe('Actions', () => {
 
       expect(
         background.generatePasskeyRegistrationOptions.calledOnceWith({
-          prfAvailable: false,
+          prfAvailable: true,
+        }),
+      ).toBe(true);
+    });
+
+    it('#generatePasskeyRegistrationOptions attempts registration when PRF detection fails', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockRejectedValue(new Error('capability detection failed'));
+      background.generatePasskeyRegistrationOptions.resolves({
+        rp: { name: 'MM' },
+      });
+      setBackgroundConnection(background);
+
+      await actions.generatePasskeyRegistrationOptions();
+
+      expect(
+        background.generatePasskeyRegistrationOptions.calledOnceWith({
+          prfAvailable: true,
         }),
       ).toBe(true);
     });
