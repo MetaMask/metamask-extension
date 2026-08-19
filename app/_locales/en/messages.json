@@ -8564,9 +8564,6 @@
   "rampsShowAllTokens": {
     "message": "Show all tokens"
   },
-  "rampsTokenUnavailableInRegion": {
-    "message": "This token isn’t available in your region."
-  },
   "rampsUnsupportedDescription": {
     "message": "Buying crypto isn’t supported in your region yet."
   },
@@ -11519,9 +11516,6 @@
   },
   "tokenTransfer": {
     "message": "Token transfer"
-  },
-  "tokenUnavailable": {
-    "message": "Token unavailable"
   },
   "tokens": {
     "message": "Tokens"

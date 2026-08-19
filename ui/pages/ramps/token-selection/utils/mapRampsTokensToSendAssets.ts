@@ -112,12 +112,11 @@ function resolveRampsTokenImage(
 export function mapRampsTokenToSendAsset(
   token: RampsToken,
   networkDetails: { networkName: string; networkImage: string },
-  disabledMessage?: string,
 ): AssetType {
   const isNative = token.assetId.includes('/slip44:');
   const chainId = normalizeSendAssetChainId(token.chainId);
 
-  const asset: AssetType = {
+  return {
     assetId: token.assetId,
     address: parseAddressFromAssetId(token.assetId),
     chainId,
@@ -131,18 +130,11 @@ export function mapRampsTokenToSendAsset(
     disabled: !token.tokenSupported,
     standard: isNative ? AssetStandard.Native : AssetStandard.ERC20,
   };
-
-  if (!token.tokenSupported && disabledMessage) {
-    asset.disabledMessage = disabledMessage;
-  }
-
-  return asset;
 }
 
 export function mapRampsTokensToSendAssets(
   tokens: RampsToken[],
   networksByCaipChainId: Record<string, { name?: string }>,
-  disabledMessage?: string,
 ): AssetType[] {
   return tokens.map((token) => {
     const configuredName =
@@ -152,6 +144,6 @@ export function mapRampsTokensToSendAssets(
       configuredName,
     );
 
-    return mapRampsTokenToSendAsset(token, networkDetails, disabledMessage);
+    return mapRampsTokenToSendAsset(token, networkDetails);
   });
 }

@@ -2,12 +2,6 @@ import React, { type ReactNode } from 'react';
 import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import {
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
-} from '@metamask/design-system-react';
-import {
   AvatarToken,
   AvatarNetwork,
   AvatarNetworkSize,
@@ -152,7 +146,6 @@ const TokenAsset = ({
     assetId,
     isNative,
     disabled,
-    disabledMessage,
   } = tokenData;
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
@@ -168,8 +161,7 @@ const TokenAsset = ({
       })
     : (image ?? '');
 
-  const isExplained = Boolean(disabled && disabledMessage);
-  const handleClick = disabled && !isExplained ? undefined : onClick;
+  const handleClick = disabled ? undefined : onClick;
   const tag = tagRenderers?.reduce<ReactNode>(
     (found, render) => found ?? render(asset),
     null,
@@ -191,14 +183,7 @@ const TokenAsset = ({
       paddingBottom={3}
       paddingLeft={4}
       paddingRight={4}
-      style={
-        disabled
-          ? {
-              opacity: 0.5,
-              ...(isExplained ? {} : { pointerEvents: 'none' }),
-            }
-          : undefined
-      }
+      style={disabled ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
     >
       <Box marginRight={4}>
         <BadgeWrapper
@@ -248,15 +233,6 @@ const TokenAsset = ({
           {symbol}
         </Text>
       </Box>
-      {isExplained && (
-        <Icon
-          name={IconName.Info}
-          size={IconSize.Md}
-          color={IconColor.IconAlternative}
-          className="ml-2"
-          data-testid={`token-asset-disabled-info-${chainId}-${symbol}`}
-        />
-      )}
       {!hideBalances && (
         <Box
           display={Display.Flex}

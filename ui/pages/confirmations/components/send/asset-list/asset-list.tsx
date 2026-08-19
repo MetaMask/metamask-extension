@@ -1,24 +1,6 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
-import {
-  AvatarIcon,
-  AvatarIconSeverity,
-  AvatarIconSize,
-  Box as DsBox,
-  BoxAlignItems,
-  BoxFlexDirection,
-  IconName,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text as DsText,
-  TextColor as DsTextColor,
-  TextVariant as DsTextVariant,
-} from '@metamask/design-system-react';
 import {
   Text,
   Button,
@@ -89,9 +71,6 @@ export const AssetList = ({
   const captureAssetSelected = disableMetrics
     ? noop
     : captureAssetSelectedFromMetrics;
-  const [unavailableMessage, setUnavailableMessage] = useState<string | null>(
-    null,
-  );
 
   const effectiveNfts = hideNfts ? [] : nfts;
   const effectiveAllNfts = hideNfts ? [] : allNfts;
@@ -102,9 +81,6 @@ export const AssetList = ({
   const handleAssetClick = useCallback(
     (asset: Asset) => {
       if (asset.disabled) {
-        if (asset.disabledMessage) {
-          setUnavailableMessage(asset.disabledMessage);
-        }
         return;
       }
 
@@ -200,96 +176,49 @@ export const AssetList = ({
   const virtualItems = virtualizer.getVirtualItems();
 
   return (
-    <>
-      {unavailableMessage && (
-        <Modal
-          isOpen
-          onClose={() => setUnavailableMessage(null)}
-          data-testid="asset-unavailable-modal"
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader
-              onClose={() => setUnavailableMessage(null)}
-              closeButtonProps={{ ariaLabel: t('close') }}
-            >
-              <DsBox
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-              >
-                <AvatarIcon
-                  iconName={IconName.Info}
-                  size={AvatarIconSize.Md}
-                  severity={AvatarIconSeverity.Info}
-                />
-                <DsText variant={DsTextVariant.HeadingSm}>
-                  {t('tokenUnavailable')}
-                </DsText>
-              </DsBox>
-            </ModalHeader>
-            <ModalBody>
-              <DsText
-                variant={DsTextVariant.BodyMd}
-                color={DsTextColor.TextAlternative}
-              >
-                {unavailableMessage}
-              </DsText>
-            </ModalBody>
-            <ModalFooter
-              primaryButtonProps={{
-                children: t('gotIt'),
-                onClick: () => setUnavailableMessage(null),
-                'data-testid': 'asset-unavailable-modal-got-it',
-              }}
-            />
-          </ModalContent>
-        </Modal>
-      )}
-      <div
-        className="relative w-full"
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-        }}
-      >
-        {virtualItems.map((virtualItem) => {
-          const item = items[virtualItem.index];
+    <div
+      className="relative w-full"
+      style={{
+        height: `${virtualizer.getTotalSize()}px`,
+      }}
+    >
+      {virtualItems.map((virtualItem) => {
+        const item = items[virtualItem.index];
 
-          return (
-            <div
-              key={
-                item.type === 'nft-header'
-                  ? String(virtualItem.key)
-                  : extractKey(item)
-              }
-              className="absolute top-0 left-0 w-full"
-              style={{
-                transform: `translateY(${virtualItem.start}px)`,
-              }}
-            >
-              {item.type === 'nft-header' ? (
-                <Text
-                  variant={TextVariant.bodyMdMedium}
-                  color={TextColor.textAlternative}
-                  marginInline={4}
-                  marginTop={2}
-                  marginBottom={2}
-                >
-                  NFTs
-                </Text>
-              ) : (
-                <AssetComponent
-                  asset={item.asset}
-                  onClick={() => handleAssetClick(item.asset)}
-                  hideBalances={hideBalances}
-                  tagRenderers={tagRenderers}
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </>
+        return (
+          <div
+            key={
+              item.type === 'nft-header'
+                ? String(virtualItem.key)
+                : extractKey(item)
+            }
+            className="absolute top-0 left-0 w-full"
+            style={{
+              transform: `translateY(${virtualItem.start}px)`,
+            }}
+          >
+            {item.type === 'nft-header' ? (
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.textAlternative}
+                marginInline={4}
+                marginTop={2}
+                marginBottom={2}
+              >
+                NFTs
+              </Text>
+            ) : (
+              <AssetComponent
+                asset={item.asset}
+                onClick={() => handleAssetClick(item.asset)}
+                hideBalances={hideBalances}
+                tagRenderers={tagRenderers}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
   );
 };
 
