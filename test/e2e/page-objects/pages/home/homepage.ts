@@ -169,6 +169,25 @@ class HomePage {
   }
 
   /**
+   * Fails if {@link startMonitoringBlockingErrorToast} recorded a matching
+   * toast, then re-checks that none is currently displayed.
+   */
+  async assertNoBlockingErrorToastWasObserved(): Promise<void> {
+    console.log(
+      'Assert no blocking error toast was observed during homepage load',
+    );
+    const seen = (await this.driver.executeScript(
+      'return window.__mmE2eBlockingErrorToasts || [];',
+    )) as string[];
+    if (Array.isArray(seen) && seen.length > 0) {
+      throw new Error(
+        `Blocking error toast was displayed: ${JSON.stringify(seen)}`,
+      );
+    }
+    await this.checkNoErrorToastIsDisplayed();
+  }
+
+  /**
    * Checks if the toaster message for adding a network is displayed on the homepage.
    *
    * @param networkName - The name of the network that was added.
@@ -660,6 +679,78 @@ class HomePage {
 
   async startBridgeFlow(): Promise<void> {
     await this.driver.clickElement(this.bridgeButton);
+  }
+
+  /**
+   * Installs a MutationObserver that records blocking error toasts as they
+   * appear, including ones that auto-dismiss before a later assertion.
+   * Idempotent on the current document; call again after unlock in case the
+   * document reloaded.
+   */
+  async startMonitoringBlockingErrorToast(): Promise<void> {
+    console.log('Start monitoring homepage for blocking error toasts');
+    await this.driver.executeScript(`
+      (function () {
+        if (window.__mmE2eBlockingErrorToasts) {
+          return;
+        }
+        window.__mmE2eBlockingErrorToasts = [];
+        const matchText = /cryptocurrencies|unsupported/i;
+        const toastRootSelector =
+          '.toast-container, .toasts-container, .toasts-container__banner-base, [data-testid="storage-error-toast"], [data-testid="survey-toast"]';
+
+        function isMatch(el) {
+          if (!el || el.nodeType !== 1) {
+            return false;
+          }
+          const testId = el.getAttribute('data-testid') || '';
+          if (testId === 'storage-error-toast' || testId === 'survey-toast') {
+            return true;
+          }
+          const isToastRoot =
+            el.classList.contains('toast-container') ||
+            el.classList.contains('toasts-container') ||
+            el.classList.contains('toasts-container__banner-base');
+          if (!isToastRoot) {
+            return false;
+          }
+          return matchText.test(el.textContent || '');
+        }
+
+        function record(node) {
+          if (!node) {
+            return;
+          }
+          const elements = [];
+          if (node.nodeType === 1) {
+            elements.push(node);
+            if (node.querySelectorAll) {
+              node.querySelectorAll(toastRootSelector).forEach(function (el) {
+                elements.push(el);
+              });
+            }
+          }
+          elements.forEach(function (el) {
+            if (isMatch(el)) {
+              window.__mmE2eBlockingErrorToasts.push(
+                (el.textContent || '').trim(),
+              );
+            }
+          });
+        }
+
+        const observer = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            mutation.addedNodes.forEach(record);
+          });
+        });
+        observer.observe(document.documentElement, {
+          childList: true,
+          subtree: true,
+        });
+        record(document.documentElement);
+      })();
+    `);
   }
 
   async startSendFlow(): Promise<void> {

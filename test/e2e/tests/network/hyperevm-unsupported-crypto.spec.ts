@@ -14,7 +14,7 @@
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import { prepareCustomNetwork } from '../../helpers/custom-network-harness';
-import { login } from '../../page-objects/flows/login.flow';
+import LoginPage from '../../page-objects/pages/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 
@@ -37,12 +37,20 @@ describe('HyperEVM unsupported crypto handling', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
 
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
 
+        // Watch for auto-dismissing toasts before homepage waits can hide them.
+        await homePage.startMonitoringBlockingErrorToast();
+        await loginPage.loginToHomepage();
+        await homePage.startMonitoringBlockingErrorToast();
+
         await homePage.checkPageIsLoaded();
+        await homePage.waitForNonEvmAccountsLoaded();
         await tokensTab.checkTokenListIsDisplayed();
         await tokensTab.checkTokenExistsInList(network.nativeSymbol);
 
@@ -50,7 +58,7 @@ describe('HyperEVM unsupported crypto handling', function () {
         // em-dash placeholder, not a recovered rate from spot-prices fallback.
         await tokensTab.checkNoConversionRateDisplayed();
 
-        await homePage.checkNoErrorToastIsDisplayed();
+        await homePage.assertNoBlockingErrorToastWasObserved();
       },
     );
   });
