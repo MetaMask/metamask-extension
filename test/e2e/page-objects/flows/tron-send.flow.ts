@@ -33,15 +33,24 @@ export async function landOnTronSendScreen({
   await selectTronNetwork(driver);
 
   const home = new NonEvmHomepage(driver);
+  await home.checkPageIsLoaded();
   if (expectedNativeBalance) {
     try {
-      await home.waitForLiveTronNativeBalance(15_000);
+      await home.checkExpectedTokenBalanceIsDisplayed(
+        expectedNativeBalance,
+        'TRX',
+        15_000,
+      );
     } catch {
       console.log(
         'Live TRX balance did not land after the first Tron select; switching away and back to retrigger AssetsController',
       );
       await retriggerTronNetworkSelect(driver);
-      await home.waitForLiveTronNativeBalance(30_000);
+      await home.checkExpectedTokenBalanceIsDisplayed(
+        expectedNativeBalance,
+        'TRX',
+        30_000,
+      );
     }
   }
 
