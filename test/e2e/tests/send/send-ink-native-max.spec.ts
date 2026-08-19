@@ -223,7 +223,10 @@ async function assertDecimalChainIdGasEstimatesWereRequested(
   mockedEndpoints: MockedEndpoint[],
 ): Promise<void> {
   const [suggestedGasFees] = mockedEndpoints;
-  assert.ok(suggestedGasFees, 'Decimal chainId gas-fee mock was not registered');
+  assert.ok(
+    suggestedGasFees,
+    'Decimal chainId gas-fee mock was not registered',
+  );
   const requests = await suggestedGasFees.getSeenRequests();
   assert.ok(
     requests.length > 0,
