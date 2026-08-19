@@ -54,12 +54,13 @@ const PermissionsPage = () => {
   const dispatch = useDispatch();
   const headerRef = useRef();
 
-  const fromPath = searchParams.get('from') ?? undefined;
+  const fromPath = searchParams.get('from') ?? DEFAULT_ROUTE;
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
       runCloseTransition(() => navigate(-1));
-      navigate(-1);
+    } else {
+      navigate(DEFAULT_ROUTE);
     }
   };
   const [totalConnections, setTotalConnections] = useState(0);
