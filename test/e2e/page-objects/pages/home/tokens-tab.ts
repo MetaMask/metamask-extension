@@ -248,18 +248,13 @@ class TokensTab extends HomePage {
    *
    * @param expectedTokenBalance - The expected balance to be displayed.
    * @param symbol - The symbol of the currency or token.
-   * @param timeout - Optional max wait in milliseconds for the amount text.
    */
   async checkExpectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
     symbol: string,
-    timeout?: number,
   ): Promise<void> {
     await this.expandLowValueAssetsIfPresent();
-    await this.checkTokenAmountIsDisplayed(
-      `${expectedTokenBalance} ${symbol}`,
-      timeout,
-    );
+    await this.checkTokenAmountIsDisplayed(`${expectedTokenBalance} ${symbol}`);
   }
 
   /**
@@ -375,20 +370,13 @@ class TokensTab extends HomePage {
    * Checks if the specified token amount is displayed in the token list.
    *
    * @param tokenAmount - The token amount to be checked for.
-   * @param timeout - Optional max wait in milliseconds for the amount text.
    */
-  async checkTokenAmountIsDisplayed(
-    tokenAmount: string,
-    timeout?: number,
-  ): Promise<void> {
+  async checkTokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
-    await this.driver.waitForSelector(
-      {
-        css: this.tokenAmountValue,
-        text: tokenAmount,
-      },
-      timeout === undefined ? undefined : { timeout },
-    );
+    await this.driver.waitForSelector({
+      css: this.tokenAmountValue,
+      text: tokenAmount,
+    });
     console.log(`Token amount ${tokenAmount} was found`);
   }
 
