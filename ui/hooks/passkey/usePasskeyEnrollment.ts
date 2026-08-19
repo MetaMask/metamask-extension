@@ -7,6 +7,10 @@ import {
 } from '../../../shared/lib/passkey';
 import type { RouteMessenger } from '../../messengers/route-messenger';
 import { useMessenger } from '../useMessenger';
+import {
+  hasPasskeyPRFResult,
+  PasskeyPRFRequiredError,
+} from '../../../shared/lib/passkey/passkey-capabilities';
 
 type PasskeyEnrollmentMessenger = RouteMessenger<
   | 'PasskeyController:generateRegistrationOptions'
@@ -51,6 +55,10 @@ export function usePasskeyEnrollment() {
       const authenticationResponse = await startPasskeyAuthentication(
         authenticationOptions,
       );
+
+      if (!hasPasskeyPRFResult(authenticationResponse)) {
+        throw new PasskeyPRFRequiredError();
+      }
 
       onStageChange?.('enroll');
       await messenger.call('PasskeyController:protectVaultKeyWithPasskey', {

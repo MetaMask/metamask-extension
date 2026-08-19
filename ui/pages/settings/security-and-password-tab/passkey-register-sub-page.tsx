@@ -39,6 +39,7 @@ import {
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { SECOND } from '../../../../shared/constants/time';
 import { useDispatch } from '../../../store/hooks';
+import { usePasskeyPRFSupport } from '../../../hooks/usePasskeyPRFSupport';
 import { usePasskeyEnrollment } from '../../../hooks/passkey/usePasskeyEnrollment';
 
 import {
@@ -47,6 +48,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   getIsPasskeyRegistered,
+  getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
 } from '../../../selectors';
 import {
@@ -111,6 +113,14 @@ export default function PasskeyRegisterSubPage() {
     );
   const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
 
+  usePasskeyPRFSupport({
+    enabled: !isPasskeyRegistered,
+    onUnsupported: useCallback(
+      () => navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
+      [navigate],
+    ),
+  });
+
   useEffect(() => {
     // Only redirect when a passkey already exists before enrollment UI. During
     // in-flight enrollment, `passkeyRecord` may be set mid-flow; do not redirect from RegisterPasskey.
@@ -174,6 +184,9 @@ export default function PasskeyRegisterSubPage() {
       const derivationMethod = getPasskeyDerivationMethod({
         metamask: newMetamaskState,
       });
+      const authenticatorId = getPasskeyAuthenticatorId({
+        metamask: newMetamaskState,
+      });
       trackEvent(
         createEventBuilder(MetaMetricsEventName.PasskeySetup)
           .addCategory(MetaMetricsEventCategory.Settings)
@@ -181,6 +194,8 @@ export default function PasskeyRegisterSubPage() {
             status: 'completed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             derivation_method: derivationMethod,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            authenticator_id: authenticatorId,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - enrollmentStartedAt,
           })

@@ -17,5 +17,6 @@ export function getSubscriptionServiceInstanceOptions(): SubscriptionServiceInst
   return {
     env: subscriptionEnv,
     captureException,
+    fetchFunction: globalThis.fetch.bind(globalThis),
   };
 }

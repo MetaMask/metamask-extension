@@ -73,7 +73,7 @@ export const MultichainAccountPrivateKeyListPage = ({
   );
 
   return (
-    <Page>
+    <Page data-testid="parent-selector-multichain-account-private-key-list-page">
       <Header
         textProps={{
           variant: TextVariant.headingSm,
