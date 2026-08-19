@@ -7117,10 +7117,7 @@ describe('LegacyBackgroundApiService', () => {
                 featureFlags: { [DefiReferralPartner.Variational]: true },
                 referrals: { [DefiReferralPartner.Variational]: {} },
               });
-              registerPartnerNetwork(
-                rootMessenger,
-                VARIATIONAL.requiredChainId,
-              );
+              registerPartnerNetwork(rootMessenger, '0xa4b1');
 
               await rootMessenger.call(
                 'LegacyBackgroundApiService:handleDefiReferral',
