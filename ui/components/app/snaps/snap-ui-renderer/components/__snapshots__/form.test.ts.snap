@@ -98,20 +98,30 @@ exports[`SnapUIForm will render with fields 1`] = `
               Checkbox
             </label>
             <label
-              class="mm-box mm-text mm-checkbox mm-text--body-md mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              class="inline-flex items-center self-start"
+              for="checkbox"
             >
-              <span
-                class="mm-checkbox__input-wrapper"
+              <div
+                class="relative inline-flex size-6 items-center justify-center"
               >
                 <input
-                  class="mm-box mm-checkbox__input mm-checkbox__input--checked mm-box--margin-0 mm-box--margin-right-0 mm-box--display-flex mm-box--background-color-primary-default mm-box--rounded-sm mm-box--border-color-border-muted mm-box--border-width-2 box--border-style-solid"
+                  aria-invalid="false"
+                  class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-icon-default enabled:hover:bg-icon-default-hover enabled:active:bg-icon-default-pressed border-icon-default"
+                  data-testid="snap-ui-checkbox-checkbox"
+                  id="checkbox"
                   type="checkbox"
                 />
-                <span
-                  class="mm-box mm-checkbox__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
-                  style="mask-image: url('./images/icons/check-bold.svg');"
-                />
-              </span>
+                <svg
+                  class="inline-block w-4 h-4 text-icon-inverse pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition peer-enabled:peer-active:scale-95 opacity-100"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                  />
+                </svg>
+              </div>
             </label>
           </div>
           <button

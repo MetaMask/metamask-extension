@@ -75,6 +75,16 @@ const FILE_SOURCES: Array<{
     file: 'shared/lib/assets/security-trust-feature-flags.ts',
     exportName: 'EXTENSION_TRUST_AND_SECURITY_TDP_FLAG',
   },
+  {
+    key: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
+    file: 'shared/lib/money/vault-config.ts',
+    exportName: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
+  },
 ];
 
 /**
