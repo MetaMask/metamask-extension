@@ -9,8 +9,10 @@ import {
   SECURITY_REGISTER_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import { SECOND } from '../../../../shared/constants/time';
+import { PasskeyPRFRequiredError } from '../../../../shared/lib/passkey';
 import { toast } from '../../../components/ui/toast/toast';
 import PasskeyRegisterSubPage from './passkey-register-sub-page';
+import { PASSKEY_REGISTRATION_ROUTE_CAPABILITIES } from './messenger';
 
 jest.mock('../../../components/ui/toast/toast', () => ({
   toast: {
@@ -21,29 +23,14 @@ jest.mock('../../../components/ui/toast/toast', () => ({
 
 const mockUseNavigate = jest.fn();
 const mockDispatch = jest.fn();
-const mockProtectVaultKeyWithPasskey = jest.fn().mockResolvedValue(undefined);
-const mockGeneratePasskeyRegistrationOptions = jest.fn().mockResolvedValue({
-  rp: { name: 'MetaMask' },
-  user: { id: 'AQ', name: 'MetaMask User', displayName: 'MetaMask' },
-  challenge: 'AQ',
-  pubKeyCredParams: [
-    { alg: -7, type: 'public-key' },
-    { alg: -257, type: 'public-key' },
-  ],
-  authenticatorSelection: {
-    residentKey: 'preferred',
-    userVerification: 'required',
-    authenticatorAttachment: 'platform',
-  },
-  extensions: { prf: { eval: { first: 'AQ' } } },
-});
-const mockGeneratePasskeyPostRegistrationAuthenticationOptions = jest
-  .fn()
-  .mockResolvedValue({
-    challenge: 'AQ',
-    allowCredentials: [],
-  });
+const mockEnrollWithPasskey = jest.fn();
 const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../../hooks/passkey/usePasskeyEnrollment', () => ({
+  usePasskeyEnrollment: () => ({
+    enrollWithPasskey: mockEnrollWithPasskey,
+  }),
+}));
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -103,12 +90,6 @@ const mockVerifyPassword = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  generatePasskeyRegistrationOptions: (...args: unknown[]) =>
-    mockGeneratePasskeyRegistrationOptions(...args),
-  generatePasskeyPostRegistrationAuthenticationOptions: (...args: unknown[]) =>
-    mockGeneratePasskeyPostRegistrationAuthenticationOptions(...args),
-  protectVaultKeyWithPasskey: (...args: unknown[]) =>
-    mockProtectVaultKeyWithPasskey(...args),
   forceUpdateMetamaskState: (...args: unknown[]) =>
     mockForceUpdateMetamaskState(...args),
   verifyPassword: (...args: unknown[]) => mockVerifyPassword(...args),
@@ -129,6 +110,17 @@ describe('PasskeyRegisterSubPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsPasskeyPRFSupported.mockResolvedValue(true);
+    mockEnrollWithPasskey.mockImplementation(
+      async ({
+        onStageChange,
+      }: {
+        onStageChange?: (stage: string) => void;
+      }) => {
+        onStageChange?.('register');
+        onStageChange?.('verify');
+        onStageChange?.('enroll');
+      },
+    );
   });
 
   it('redirects to security when biometrics is already registered', async () => {
@@ -223,22 +215,8 @@ describe('PasskeyRegisterSubPage', () => {
     });
 
     await waitFor(() => {
-      expect(mockGeneratePasskeyRegistrationOptions).toHaveBeenCalled();
-      expect(
-        mockGeneratePasskeyPostRegistrationAuthenticationOptions,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'public-key',
-        }),
-      );
-      expect(mockProtectVaultKeyWithPasskey).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'public-key',
-        }),
-        expect.objectContaining({
-          type: 'public-key',
-        }),
-        'test-password',
+      expect(mockEnrollWithPasskey).toHaveBeenCalledWith(
+        expect.objectContaining({ password: 'test-password' }),
       );
     });
 
@@ -260,21 +238,8 @@ describe('PasskeyRegisterSubPage', () => {
     );
   });
 
-  it('shows passkey not supported when authentication returns no PRF result', async () => {
-    const { startPasskeyAuthentication } = jest.requireMock<
-      typeof import('../../../../shared/lib/passkey')
-    >('../../../../shared/lib/passkey');
-    jest.mocked(startPasskeyAuthentication).mockResolvedValueOnce({
-      id: 'AQ',
-      rawId: 'AQ',
-      type: 'public-key',
-      response: {
-        clientDataJSON: 'e30',
-        authenticatorData: 'AA',
-        signature: 'AA',
-      },
-      clientExtensionResults: {},
-    });
+  it('shows passkey not supported when enrollment requires PRF', async () => {
+    mockEnrollWithPasskey.mockRejectedValueOnce(new PasskeyPRFRequiredError());
 
     const { getByTestId, getByText } = renderWithProvider(
       <PasskeyRegisterSubPage />,
@@ -291,12 +256,21 @@ describe('PasskeyRegisterSubPage', () => {
         getByText(messages.passkeyErrorNotSupported.message),
       ).toBeInTheDocument();
     });
-    expect(mockProtectVaultKeyWithPasskey).not.toHaveBeenCalled();
+    expect(mockForceUpdateMetamaskState).not.toHaveBeenCalled();
   });
 
   it('stays on register passkey when protectVaultKeyWithPasskey fails after ceremonies', async () => {
-    mockProtectVaultKeyWithPasskey.mockRejectedValueOnce(
-      new Error('vault error'),
+    mockEnrollWithPasskey.mockImplementationOnce(
+      async ({
+        onStageChange,
+      }: {
+        onStageChange?: (stage: string) => void;
+      }) => {
+        onStageChange?.('register');
+        onStageChange?.('verify');
+        onStageChange?.('enroll');
+        throw new Error('vault error');
+      },
     );
 
     const { getByTestId } = renderWithProvider(
@@ -319,13 +293,9 @@ describe('PasskeyRegisterSubPage', () => {
   });
 
   it('returns to idle with retry when registration is cancelled (silent error)', async () => {
-    const { startPasskeyRegistration } = jest.requireMock<
-      typeof import('../../../../shared/lib/passkey')
-    >('../../../../shared/lib/passkey');
-
     const err = new Error('not allowed');
     err.name = 'NotAllowedError';
-    jest.mocked(startPasskeyRegistration).mockRejectedValueOnce(err);
+    mockEnrollWithPasskey.mockRejectedValueOnce(err);
 
     const { getByTestId, queryByTestId } = renderWithProvider(
       <PasskeyRegisterSubPage />,
@@ -338,7 +308,7 @@ describe('PasskeyRegisterSubPage', () => {
     fireEvent.click(getByTestId('register-passkey-verify-continue-button'));
 
     await waitFor(() => {
-      expect(startPasskeyRegistration).toHaveBeenCalled();
+      expect(mockEnrollWithPasskey).toHaveBeenCalled();
     });
 
     await waitFor(() => {
@@ -350,13 +320,9 @@ describe('PasskeyRegisterSubPage', () => {
   });
 
   it('retries full ceremony from the single primary button', async () => {
-    const { startPasskeyRegistration } = jest.requireMock<
-      typeof import('../../../../shared/lib/passkey')
-    >('../../../../shared/lib/passkey');
-
     const err = new Error('not allowed');
     err.name = 'NotAllowedError';
-    jest.mocked(startPasskeyRegistration).mockRejectedValueOnce(err);
+    mockEnrollWithPasskey.mockRejectedValueOnce(err);
 
     const { getByTestId } = renderWithProvider(
       <PasskeyRegisterSubPage />,
@@ -372,24 +338,13 @@ describe('PasskeyRegisterSubPage', () => {
       expect(getByTestId('register-passkey-set-up-button')).toBeInTheDocument();
     });
 
-    jest.mocked(startPasskeyRegistration).mockResolvedValueOnce({
-      id: 'AQ',
-      rawId: 'AQ',
-      type: 'public-key',
-      response: {
-        clientDataJSON: 'e30',
-        attestationObject: 'e30',
-      },
-      clientExtensionResults: {},
-    });
-
     await act(async () => {
       fireEvent.click(getByTestId('register-passkey-set-up-button'));
     });
 
     await waitFor(
       () => {
-        expect(mockProtectVaultKeyWithPasskey).toHaveBeenCalled();
+        expect(mockEnrollWithPasskey).toHaveBeenCalledTimes(2);
       },
       { timeout: 4000 },
     );
