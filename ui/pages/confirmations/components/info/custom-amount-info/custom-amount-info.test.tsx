@@ -1,5 +1,9 @@
 import React from 'react';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
+import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import configureMockStore from 'redux-mock-store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -119,7 +123,9 @@ function render(
     accountNoFundsAlert?: { key: string }[];
     customAmountHookReturn?: typeof DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN;
     alertsHookReturn?: typeof DEFAULT_ALERTS_HOOK_RETURN;
+    transactionMeta?: TransactionMeta;
     isQuotesLoading?: boolean;
+    isPostQuote?: boolean;
     hasQuotes?: boolean;
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
@@ -134,7 +140,9 @@ function render(
     accountNoFundsAlert = [],
     customAmountHookReturn = DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
     alertsHookReturn = DEFAULT_ALERTS_HOOK_RETURN,
+    transactionMeta = MOCK_TRANSACTION_META,
     isQuotesLoading = false,
+    isPostQuote = false,
     hasQuotes = false,
     sourceAmounts = [],
     requiredTokens = [],
@@ -175,10 +183,17 @@ function render(
     .mockReturnValue(accountNoFundsAlert as never);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayQuotes)
-    .mockReturnValue(hasQuotes ? [{} as never] : undefined);
+    .mockReturnValue(
+      hasQuotes
+        ? [{ strategy: TransactionPayStrategy.Relay } as never]
+        : undefined,
+    );
   jest
     .mocked(useTransactionPayDataModule.useIsTransactionPayLoading)
     .mockReturnValue(isQuotesLoading);
+  jest
+    .mocked(useTransactionPayDataModule.useTransactionPayIsPostQuote)
+    .mockReturnValue(isPostQuote);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayRequiredTokens)
     .mockReturnValue(
@@ -201,7 +216,7 @@ function render(
       >,
     );
 
-  const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
+  const state = getMockConfirmStateForTransaction(transactionMeta);
 
   return renderWithConfirmContextProvider(
     <CustomAmountInfo
@@ -443,6 +458,40 @@ describe('CustomAmountInfo', () => {
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+    });
+
+    it('hides Perps Withdraw result rows before post-quote setup completes', () => {
+      const transactionMeta = {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.perpsWithdraw,
+      } as TransactionMeta;
+
+      const { queryByTestId } = render({
+        transactionMeta,
+        hasQuotes: true,
+        isPostQuote: false,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('bridge-time-row')).not.toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+
+    it('renders Perps Withdraw result rows when the post-quote route is ready', () => {
+      const transactionMeta = {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.perpsWithdraw,
+      } as TransactionMeta;
+
+      const { getByTestId } = render({
+        transactionMeta,
+        hasQuotes: true,
+        isPostQuote: true,
+      });
+
+      expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
+      expect(getByTestId('bridge-time-row')).toBeInTheDocument();
+      expect(getByTestId('receive-row')).toBeInTheDocument();
     });
   });
 

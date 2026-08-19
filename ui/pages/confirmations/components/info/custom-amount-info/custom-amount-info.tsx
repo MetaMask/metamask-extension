@@ -1,5 +1,6 @@
 import React, { ReactNode, useCallback } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   Display,
@@ -35,6 +36,7 @@ import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomatic
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
   useIsTransactionPayLoading,
+  useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
@@ -327,8 +329,18 @@ function BottomContainer({
 }
 
 function useIsResultReady() {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
+  const isPostQuote = useTransactionPayIsPostQuote();
+
+  if (isPerpsWithdrawTransaction(currentConfirmation)) {
+    const hasExecutableQuote = quotes?.some(
+      (quote) => quote.strategy !== TransactionPayStrategy.None,
+    );
+
+    return Boolean(isPostQuote && hasExecutableQuote);
+  }
 
   return isQuotesLoading || Boolean(quotes?.length);
 }
