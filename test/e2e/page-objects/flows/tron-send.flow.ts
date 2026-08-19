@@ -34,42 +34,31 @@ export async function landOnTronSendScreen({
   await selectTronNetwork(driver);
 
   const home = new NonEvmHomepage(driver);
-  await home.checkPageIsLoaded();
-  if (expectedNativeBalance) {
-    try {
-      await home.checkExpectedTokenBalanceIsDisplayed(
-        expectedNativeBalance,
-        'TRX',
-        15_000,
-      );
-    } catch {
-      console.log(
-        'Live TRX balance did not land after the first Tron select; switching away and back to retrigger AssetsController',
-      );
-      await retriggerTronNetworkSelect(driver);
-      await home.checkExpectedTokenBalanceIsDisplayed(
-        expectedNativeBalance,
-        'TRX',
-        30_000,
-      );
-    }
-  }
 
   // Refresh re-hydrates the UI from background state so asynchronously-fetched
   // Snap balances appear reliably in the token list (same pattern as assets.spec).
-  await driver.refresh();
+  const assertNativeBalance = async (timeout: number): Promise<void> => {
+    await driver.refresh();
+    await home.checkPageIsLoaded();
+    if (expectedNativeBalance) {
+      await home.checkExpectedTokenBalanceIsDisplayed(
+        expectedNativeBalance,
+        'TRX',
+        timeout,
+      );
+    }
+  };
 
-  await home.checkPageIsLoaded();
-  // Wait for the live TRX balance to land on the homepage before navigating to
-  // Send. Without this gate, Send opens with the cached "0 TRX available" and
-  // every amount renders "Insufficient funds", leaving the Continue button
-  // disabled. The local Tron node is seeded with 6.072 TRX in profiles.ts.
-  if (expectedNativeBalance) {
-    await home.checkExpectedTokenBalanceIsDisplayed(
-      expectedNativeBalance,
-      'TRX',
+  try {
+    await assertNativeBalance(10_000);
+  } catch {
+    console.log(
+      'Live TRX balance did not land after the first Tron select; switching away and back to retrigger AssetsController',
     );
+    await retriggerTronNetworkSelect(driver);
+    await assertNativeBalance(30_000);
   }
+
   if (expectedTokenBalance) {
     await home.checkExpectedTokenBalanceIsDisplayed(
       expectedTokenBalance,
