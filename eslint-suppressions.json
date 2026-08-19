@@ -508,11 +508,6 @@
       "count": 1
     }
   },
-  "ui/hooks/bridge/useCountdownTimer.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/hooks/bridge/useInitialBridgeTokens.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -893,16 +888,6 @@
       "count": 1
     }
   },
-  "ui/pages/bridge/hooks/useDestinationAccount.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/bridge/hooks/useDismissableBanners.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/bridge/hooks/useExternalAccountResolution.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -911,12 +896,6 @@
   "ui/pages/bridge/prepare/prepare-bridge-page.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 2
-    },
-    "react-hooks/preserve-manual-memoization": {
-      "count": 3
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
     }
   },
   "ui/pages/confirmations/components/confirm/dapp-swap-comparison-banner/dapp-swap-comparison-banner.tsx": {
