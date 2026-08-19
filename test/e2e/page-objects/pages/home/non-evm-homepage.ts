@@ -1,7 +1,6 @@
 import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import { TrxAccountType, TrxScope } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import { MultichainNativeAssets } from '../../../../../shared/constants/multichain/assets';
 import { TRON_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/tron-wallet-snap';
 import { getCleanAppState } from '../../../helpers';
 import {
@@ -10,8 +9,6 @@ import {
 } from '../../../tests/identity/account-syncing/helpers';
 import HomePage from './homepage';
 import TokensTab from './tokens-tab';
-
-type AssetsBalanceState = Record<string, Record<string, { amount?: string }>>;
 
 /**
  * Home account overview when a non-EVM account (Solana, Bitcoin, Tron, etc.)
@@ -31,52 +28,13 @@ class NonEvmHomepage extends HomePage {
   async checkExpectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
     symbol: string,
+    timeout?: number,
   ): Promise<void> {
     const tokensTab = new TokensTab(this.driver);
     await tokensTab.checkExpectedTokenBalanceIsDisplayed(
       expectedTokenBalance,
       symbol,
-    );
-  }
-
-  /**
-   * Waits until AssetsController has a non-zero native TRX balance for a Tron
-   * account. A `'0'` amount is the default placeholder written when a Snap
-   * fetch is skipped, so only a live fetch unblocks this wait.
-   *
-   * @param timeout - How long to poll, in milliseconds
-   */
-  async waitForLiveTronNativeBalance(
-    timeout: number = BASE_ACCOUNT_SYNC_TIMEOUT,
-  ): Promise<void> {
-    console.log('Wait for a live native TRX balance in AssetsController state');
-    await this.driver.waitUntil(
-      async () => {
-        const uiState = await getCleanAppState(this.driver);
-        const assetsBalance = uiState?.metamask?.assetsBalance as
-          | AssetsBalanceState
-          | undefined;
-        const internalAccounts = uiState?.metamask?.internalAccounts
-          ?.accounts as Record<string, InternalAccount> | undefined;
-
-        if (!assetsBalance || !internalAccounts) {
-          return false;
-        }
-
-        return Object.values(internalAccounts).some((account) => {
-          if (account?.type !== TrxAccountType.Eoa) {
-            return false;
-          }
-
-          const amount =
-            assetsBalance[account.id]?.[MultichainNativeAssets.TRON]?.amount;
-          return Boolean(amount) && amount !== '0';
-        });
-      },
-      {
-        interval: BASE_ACCOUNT_SYNC_INTERVAL,
-        timeout,
-      },
+      timeout,
     );
   }
 
