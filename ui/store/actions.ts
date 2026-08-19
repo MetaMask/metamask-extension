@@ -106,7 +106,10 @@ import {
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
-import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
+import {
+  isPasskeyPRFSupported,
+  PasskeyPRFRequiredError,
+} from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -1238,9 +1241,19 @@ export function submitPassword(password: string): Promise<void> {
  * @returns Passkey registration options.
  */
 export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
-  const prfSupported = await isPasskeyPRFSupported();
+  let prfSupported: boolean | undefined;
+  try {
+    prfSupported = await isPasskeyPRFSupported();
+  } catch {
+    // Capability detection is unavailable; let the PRF ceremony decide.
+  }
+  // SECURITY: PRF is required for passkey setup. Never allow userHandle-based
+  // key derivation as a fallback.
+  if (prfSupported === false) {
+    throw new PasskeyPRFRequiredError();
+  }
   return submitRequestToBackground('generatePasskeyRegistrationOptions', [
-    { prfAvailable: prfSupported !== false },
+    { prfAvailable: true },
   ]);
 }
 

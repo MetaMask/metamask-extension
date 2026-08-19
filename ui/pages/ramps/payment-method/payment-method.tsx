@@ -10,6 +10,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
+import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
@@ -56,6 +57,7 @@ export function RampsPaymentMethodScreen() {
   const fiatCurrency = userRegion?.country?.currency ?? 'USD';
   const regionCode = userRegion?.regionCode ?? '';
   const formatFiat = useFiatFormatter({ overrideCurrency: fiatCurrency });
+  useRampsScreenViewed('Payment Method');
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
 

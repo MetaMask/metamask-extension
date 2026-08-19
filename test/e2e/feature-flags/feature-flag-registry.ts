@@ -1154,12 +1154,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               gaslessEnabled: true,
             },
           },
+          depositLimit: {
+            moneyAccountDeposit: 500000,
+          },
           prefilledAmount: {
             default: {
               enabled: false,
             },
             overrides: {
               musdConversion: {
+                enabled: false,
+              },
+              moneyAccountDeposit: {
                 enabled: false,
               },
             },
@@ -1179,6 +1185,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               gaslessEnabled: true,
             },
           },
+          depositLimit: {
+            moneyAccountDeposit: 500000,
+          },
           prefilledAmount: {
             default: {
               enabled: false,
@@ -1186,6 +1195,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             overrides: {
               musdConversion: {
                 enabled: false,
+              },
+              moneyAccountDeposit: {
+                enabled: true,
               },
             },
           },
@@ -3515,6 +3527,13 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: true,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
+  },
+  productSafetyScamQuestionnaireDomainList: {
+    name: 'productSafetyScamQuestionnaireDomainList',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: [],
+    status: FeatureFlagStatus.Active,
   },
 };
 /* eslint-enable @typescript-eslint/naming-convention */
