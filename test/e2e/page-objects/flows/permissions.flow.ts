@@ -44,7 +44,7 @@ export const openPermissionsPageFlow = async (
 };
 
 /**
- * Navigate to the permissions page for a specific host origin and return an
+ * Navigate to the Edit Accounts page for a specific host origin and return an
  * EditConnectedAccountsPage PO ready for assertions.
  *
  * Assumes the extension is the active window before this function is called.
@@ -54,7 +54,7 @@ export const openPermissionsPageFlow = async (
  * e.g. '127.0.0.1:8080'.
  * @returns An EditConnectedAccountsPage already verified to be loaded.
  */
-export async function getPermissionsPageForHost(
+export async function getEditConnectedAccountsPageForHost(
   driver: Driver,
   hostname: string,
 ): Promise<EditConnectedAccountsPage> {
