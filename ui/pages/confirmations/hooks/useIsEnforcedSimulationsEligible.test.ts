@@ -79,6 +79,7 @@ describe('useIsEnforcedSimulationsEligible', () => {
       {
         addressSecurityAlertResponses: alertResponses,
         eip7702SupportedChains: [],
+        internalAddresses: expect.any(Array),
       },
     );
   });
