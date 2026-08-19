@@ -4,10 +4,7 @@ import {
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from '../../../shared/lib/stores/indexeddb-storage-constants';
-import {
-  IndexedDBStore,
-  isIndexedDBMutationBlockedError,
-} from '../../../shared/lib/stores/indexeddb-store';
+import { IndexedDBStore } from '../../../shared/lib/stores/indexeddb-store';
 
 import { getPlatform } from '../lib/util';
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
