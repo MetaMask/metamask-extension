@@ -271,7 +271,7 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    const headingText = tEn('blockaidTitleDeceptive');
+    const headingText = tEn('blockaidTitleHighRiskApproval');
     const bodyText = tEn('blockaidDescriptionApproveFarming');
     expect(await screen.findByText(headingText)).toBeInTheDocument();
     expect(await screen.findByText(bodyText)).toBeInTheDocument();
