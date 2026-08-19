@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "Yêu cầu kết nối"
   },
-  "connections": {
-    "message": "Kết nối"
-  },
   "connectionsRemovedModalDescription": {
     "message": "Một số kết nối (chẳng hạn như ví cứng và snap) đã bị xóa do không hoạt động trên thiết bị này. Bạn có thể thêm lại bất kỳ lúc nào trong phần Cài đặt."
   },
@@ -5243,48 +5240,6 @@
   "mmFee": {
     "message": "Phí MetaMask $1%"
   },
-  "money": {
-    "message": "Tài chính"
-  },
-  "moneyActivity": {
-    "message": "Hoạt động"
-  },
-  "moneyAdd": {
-    "message": "Thêm"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "Số dư không khả dụng"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "Có khả năng thanh khoản cao, không bị khóa vốn, cho phép giao dịch hoặc rút tiền bất cứ lúc nào"
-  },
-  "moneyBenefitSend": {
-    "message": "Gửi đến bất kỳ ví nào của bạn trên MetaMask"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "Giữ tiền của bạn an toàn dưới dạng mUSD, một đồng ổn định được bảo chứng 1:1 theo USD"
-  },
-  "moneyBenefits": {
-    "message": "Quyền lợi"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "Kiếm lợi nhuận từ tiền mã hóa của bạn"
-  },
-  "moneyFundDescription": {
-    "message": "Nạp tiền vào Money Account và theo dõi số dư tăng trưởng."
-  },
-  "moneyHowItWorks": {
-    "message": "Cách hoạt động"
-  },
-  "moneyLearnMore": {
-    "message": "Tìm hiểu thêm"
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "Gửi"
-  },
   "month": {
     "message": "tháng"
   },
@@ -5917,10 +5872,6 @@
   },
   "noDomainResolution": {
     "message": "Không có nội dung phân giải cho tên miền được cung cấp."
-  },
-  "noFee": {
-    "message": "Không tốn phí",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap và hầu hết các ví cứng sẽ không hoạt động với phiên bản trình duyệt hiện tại của bạn."
@@ -6911,9 +6862,6 @@
   },
   "permissions": {
     "message": "Quyền"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "Không có thông báo nào ở đây"
   },
   "permitSimulationChange_approve": {
     "message": "Hạn mức chi tiêu"

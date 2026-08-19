@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "Demande de connexion"
   },
-  "connections": {
-    "message": "Connexions"
-  },
   "connectionsRemovedModalDescription": {
     "message": "Certaines connexions (par exemple, les portefeuilles matériels et snaps) ont été supprimées en raison d’une inactivité sur cet appareil. Vous pouvez les rétablir à tout moment dans les « Paramètres »."
   },
@@ -5239,48 +5236,6 @@
   "mmFee": {
     "message": "Frais MetaMask de $1 %"
   },
-  "money": {
-    "message": "Money"
-  },
-  "moneyActivity": {
-    "message": "Activité"
-  },
-  "moneyAdd": {
-    "message": "Ajouter"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "Solde non disponible"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "Profitez d’une liquidité totale sans période de blocage, vous pourrez ainsi trader ou retirer des fonds à tout moment"
-  },
-  "moneyBenefitSend": {
-    "message": "Effectuez des transferts vers n’importe lequel de vos portefeuilles MetaMask"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "Sécurisez vos fonds en achetant des mUSD, un stablecoin adossé au dollar à un ratio de 1:1"
-  },
-  "moneyBenefits": {
-    "message": "Avantages"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "Gagnez de l’argent grâce à vos crypto-monnaies"
-  },
-  "moneyFundDescription": {
-    "message": "Approvisionnez votre Money Account et voyez votre solde augmenter."
-  },
-  "moneyHowItWorks": {
-    "message": "Comment ça marche "
-  },
-  "moneyLearnMore": {
-    "message": "En savoir plus."
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "Envoyer"
-  },
   "month": {
     "message": "mois"
   },
@@ -5913,10 +5868,6 @@
   },
   "noDomainResolution": {
     "message": "Aucune résolution n’a été fournie pour le domaine."
-  },
-  "noFee": {
-    "message": "Pas de frais",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Les Snaps et la plupart des portefeuilles matériels ne fonctionneront pas avec la version actuelle de votre navigateur."
@@ -6907,9 +6858,6 @@
   },
   "permissions": {
     "message": "Autorisations"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "Rien à voir ici"
   },
   "permitSimulationChange_approve": {
     "message": "Plafond de dépenses"

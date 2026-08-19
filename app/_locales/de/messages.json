@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "Verbindungsanfrage"
   },
-  "connections": {
-    "message": "Verbindungen"
-  },
   "connectionsRemovedModalDescription": {
     "message": "Einige Verbindungen (wie Hardware-Wallets und Snaps) wurden aufgrund von Inaktivität auf diesem Gerät entfernt. Sie können sie jederzeit in den Einstellungen erneut hinzufügen."
   },
@@ -5239,48 +5236,6 @@
   "mmFee": {
     "message": "$1 % MetaMask-Gebühr"
   },
-  "money": {
-    "message": "Money"
-  },
-  "moneyActivity": {
-    "message": "Aktivität"
-  },
-  "moneyAdd": {
-    "message": "Hinzufügen"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "Kontostand nicht verfügbar"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "Erhalten Sie volle Liquidität ohne Sperrfristen, sodass Sie jederzeit handeln oder auszahlen können"
-  },
-  "moneyBenefitSend": {
-    "message": "Senden Sie an jede Ihrer Wallets über MetaMask"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "Halten Sie Ihr Geld sicher in mUSD, einem 1:1 durch den Dollar gedeckten Stablecoin"
-  },
-  "moneyBenefits": {
-    "message": "Vorteile"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "Verdienen Sie an Ihrem Krypto"
-  },
-  "moneyFundDescription": {
-    "message": "Laden Sie Ihr Money Account auf und beobachten Sie, wie Ihr Saldo wächst."
-  },
-  "moneyHowItWorks": {
-    "message": "Wie es funktioniert"
-  },
-  "moneyLearnMore": {
-    "message": "Mehr erfahren"
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "Senden"
-  },
   "month": {
     "message": "Monat"
   },
@@ -5913,10 +5868,6 @@
   },
   "noDomainResolution": {
     "message": "Keine Auflösung für die Domain angegeben."
-  },
-  "noFee": {
-    "message": "Keine Gebühr",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps und die meisten Hardware-Wallets funktionieren nicht mit Ihrer aktuellen Browserversion."
@@ -6907,9 +6858,6 @@
   },
   "permissions": {
     "message": "Genehmigungen"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "Hier gibt es nichts zu sehen"
   },
   "permitSimulationChange_approve": {
     "message": "Ausgabenobergrenze"

@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "Solicitação de conexão"
   },
-  "connections": {
-    "message": "Conexões"
-  },
   "connectionsRemovedModalDescription": {
     "message": "Algumas conexões (como carteiras de hardware e Snaps) foram removidas devido à inatividade neste dispositivo. Você pode readicioná-las quando quiser nas Configurações."
   },
@@ -5239,48 +5236,6 @@
   "mmFee": {
     "message": "Taxa de $1% da MetaMask"
   },
-  "money": {
-    "message": "Money"
-  },
-  "moneyActivity": {
-    "message": "Atividade"
-  },
-  "moneyAdd": {
-    "message": "Adicionar"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "Saldo indisponível"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "Obtenha liquidez total sem períodos de bloqueio, permitindo que você possa negociar ou sacar quando quiser"
-  },
-  "moneyBenefitSend": {
-    "message": "Envie para qualquer uma de suas carteiras na MetaMask"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "Mantenha seu dinheiro seguro em mUSD, uma stablecoin lastreada em dólar na proporção de 1:1"
-  },
-  "moneyBenefits": {
-    "message": "Benefícios"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "Ganhe com suas criptomoedas"
-  },
-  "moneyFundDescription": {
-    "message": "Adicione fundos à sua Money Account e veja seu saldo crescer."
-  },
-  "moneyHowItWorks": {
-    "message": "Como funciona"
-  },
-  "moneyLearnMore": {
-    "message": "Saiba mais."
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "Enviar"
-  },
   "month": {
     "message": "mês"
   },
@@ -5913,10 +5868,6 @@
   },
   "noDomainResolution": {
     "message": "Nenhuma resolução fornecida para o domínio."
-  },
-  "noFee": {
-    "message": "Nenhuma taxa",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, e a maioria das carteiras de hardware, não funcionarão com a versão atual do navegador."
@@ -6907,9 +6858,6 @@
   },
   "permissions": {
     "message": "Permissões"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "Não há nada aqui"
   },
   "permitSimulationChange_approve": {
     "message": "Limite de gastos"

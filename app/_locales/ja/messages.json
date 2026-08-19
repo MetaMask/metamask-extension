@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "接続の要求"
   },
-  "connections": {
-    "message": "接続"
-  },
   "connectionsRemovedModalDescription": {
     "message": "このデバイス上で一定期間ご利用がなかったため、一部の接続 (ハードウェアウォレットやSnapなど) が解除されました。これらはいつでも「設定」から再追加できます。"
   },
@@ -5243,48 +5240,6 @@
   "mmFee": {
     "message": "$1%のMetaMask手数料"
   },
-  "money": {
-    "message": "マネー"
-  },
-  "moneyActivity": {
-    "message": "アクティビティ"
-  },
-  "moneyAdd": {
-    "message": "追加"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "残高が利用できません"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "ロックアップなしで完全な流動性が確保され、いつでも取引や引き出しが可能です"
-  },
-  "moneyBenefitSend": {
-    "message": "MetaMaskに登録した任意のウォレットに送金"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "ドルと1対1で裏付けられたステーブルコイン、mUSDで、資金を安全に守れます"
-  },
-  "moneyBenefits": {
-    "message": "特典"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "仮想通貨を収益化"
-  },
-  "moneyFundDescription": {
-    "message": "Money Accountに入金して、残高が増えていく様子を眺めましょう。"
-  },
-  "moneyHowItWorks": {
-    "message": "報酬獲得の仕組み"
-  },
-  "moneyLearnMore": {
-    "message": "詳細。"
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "送金"
-  },
   "month": {
     "message": "月"
   },
@@ -5917,10 +5872,6 @@
   },
   "noDomainResolution": {
     "message": "指定されたドメインの名前解決ができません。"
-  },
-  "noFee": {
-    "message": "手数料なし",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap、およびほとんどのハードウェアウォレットは、現在お使いのブラウザのバージョンで使用できません。"
@@ -6911,9 +6862,6 @@
   },
   "permissions": {
     "message": "アクセス許可"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "ここに表示する内容はありません"
   },
   "permitSimulationChange_approve": {
     "message": "使用上限"

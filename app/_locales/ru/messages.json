@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "Запрос подключения"
   },
-  "connections": {
-    "message": "Связи"
-  },
   "connectionsRemovedModalDescription": {
     "message": "Некоторые подключения (например, аппаратные кошельки и snaps) были удалены из-за отсутствия активности на этом устройстве. Вы можете добавить их снова в любое время в Настройках."
   },
@@ -5239,48 +5236,6 @@
   "mmFee": {
     "message": "Комиссия MetaMask в размере $1%"
   },
-  "money": {
-    "message": "Финансы"
-  },
-  "moneyActivity": {
-    "message": "Активность"
-  },
-  "moneyAdd": {
-    "message": "Добавить"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "Баланс недоступен"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "Получите полную ликвидность без блокировок, чтобы вы могли торговать или выводить средства в любое время"
-  },
-  "moneyBenefitSend": {
-    "message": "Отправляйте на любые ваши кошельки в MetaMask"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "Храните свои деньги в безопасности в mUSD, стейблкоине, обеспеченном долларом 1:1"
-  },
-  "moneyBenefits": {
-    "message": "Бонусы"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "Зарабатывайте на своей криптовалюте"
-  },
-  "moneyFundDescription": {
-    "message": "Пополните свой Money Account и наблюдайте за ростом баланса."
-  },
-  "moneyHowItWorks": {
-    "message": "Как это работает"
-  },
-  "moneyLearnMore": {
-    "message": "Узнайте подробнее."
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "Отправить"
-  },
   "month": {
     "message": "месяц"
   },
@@ -5913,10 +5868,6 @@
   },
   "noDomainResolution": {
     "message": "Разрешение для домена не предоставлено."
-  },
-  "noFee": {
-    "message": "Без платы",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps и большинство аппаратных кошельков не будут работать с вашей текущей версией браузера."
@@ -6907,9 +6858,6 @@
   },
   "permissions": {
     "message": "Разрешения"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "Здесь нечего смотреть"
   },
   "permitSimulationChange_approve": {
     "message": "Лимит расходов"

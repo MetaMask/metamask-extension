@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "Bağlantı talebi"
   },
-  "connections": {
-    "message": "Bağlantılar"
-  },
   "connectionsRemovedModalDescription": {
     "message": "Bu cihazdaki işlemsizlikten dolayı bazı bağlantılar (donanım cüzdanları ve snap'ler gibi) kaldırıldı. Dilediğiniz zaman Ayarlar kısmında tekrar ekleyebilirsiniz."
   },
@@ -5243,48 +5240,6 @@
   "mmFee": {
     "message": "%$1 MetaMask ücreti"
   },
-  "money": {
-    "message": "Bakiye"
-  },
-  "moneyActivity": {
-    "message": "İşlemler"
-  },
-  "moneyAdd": {
-    "message": "Ekle"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "Bakiye kullanılamıyor"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "Kilitleme olmadan tam likidite alarak dilediğiniz zaman işlem yapabilir veya para çekebilirsiniz"
-  },
-  "moneyBenefitSend": {
-    "message": "MetaMask’teki herhangi bir cüzdanınıza gönderin"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "Paranız 1:1 dolar destekli bir stabil kripto para olan mUSD'de güvende tutun"
-  },
-  "moneyBenefits": {
-    "message": "Faydalar"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "Kriptonuzdan kazanç sağlayın"
-  },
-  "moneyFundDescription": {
-    "message": "Money account hesabınıza fon ekleyin ve bakiyenizin yükselişini izleyin."
-  },
-  "moneyHowItWorks": {
-    "message": "Nasıl çalışır?"
-  },
-  "moneyLearnMore": {
-    "message": "Daha fazla bilgi edin"
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "Gönder"
-  },
   "month": {
     "message": "ay"
   },
@@ -5917,10 +5872,6 @@
   },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
-  },
-  "noFee": {
-    "message": "Ücret yok",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Geçerli tarayıcı sürümünüzle snap'ler ve çoğu donanım cüzdanı çalışmayacak."
@@ -6911,9 +6862,6 @@
   },
   "permissions": {
     "message": "İzinler"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "Burada gösterilecek bir şey yok"
   },
   "permitSimulationChange_approve": {
     "message": "Harcama üst limiti"

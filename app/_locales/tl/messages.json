@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "Kahilingan sa koneksyon"
   },
-  "connections": {
-    "message": "Mga Koneksyon"
-  },
   "connectionsRemovedModalDescription": {
     "message": "Inalis ang ilang koneksyon (gaya ng mga hardware wallet at snap) dahil sa kawalan ng aktibidad sa device na ito. Maaari mong muling idagdag ang mga iyon anumang oras sa Mga Setting."
   },
@@ -5239,48 +5236,6 @@
   "mmFee": {
     "message": "$1% bayad sa MetaMask"
   },
-  "money": {
-    "message": "Pera"
-  },
-  "moneyActivity": {
-    "message": "Aktibidad"
-  },
-  "moneyAdd": {
-    "message": "Idagdag"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "Hindi available ang balanse"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "Makakuha ng ganap na liquidity nang walang lockup, kaya maaari kang mag-trade o mag-withdraw anumang oras"
-  },
-  "moneyBenefitSend": {
-    "message": "Magpadala sa alinman sa mga wallet mo sa buong MetaMask"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "Itabi nang ligtas ang pera mo sa mUSD, isang stablecoin na sinusuportahan ng dolyar nang 1:1"
-  },
-  "moneyBenefits": {
-    "message": "Mga Benepisyo"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "Kumita sa crypto mo"
-  },
-  "moneyFundDescription": {
-    "message": "Pondohan ang iyong Money account at panoorin na lumaki ang balanse mo."
-  },
-  "moneyHowItWorks": {
-    "message": "Paano ito gumagana"
-  },
-  "moneyLearnMore": {
-    "message": "Matuto pa."
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "Ipadala"
-  },
   "month": {
     "message": "buwan"
   },
@@ -5913,10 +5868,6 @@
   },
   "noDomainResolution": {
     "message": "Walang resolusyon para sa ibinigay na domain."
-  },
-  "noFee": {
-    "message": "Walang bayarin",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Ang mga Snap, at karamihan sa mga hardware wallet, ay hindi gagana sa iyong kasalukuyang bersyon ng browser."
@@ -6907,9 +6858,6 @@
   },
   "permissions": {
     "message": "Mga Pahintulot"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "Walang makikita rito"
   },
   "permitSimulationChange_approve": {
     "message": "Limitasyon sa paggastos"

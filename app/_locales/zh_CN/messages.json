@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "连接请求"
   },
-  "connections": {
-    "message": "连接"
-  },
   "connectionsRemovedModalDescription": {
     "message": "由于此设备长期未使用，部分连接项（如硬件钱包和 Snap）已被移除。您可随时在“设置”中重新添加这些连接项。"
   },
@@ -5239,48 +5236,6 @@
   "mmFee": {
     "message": "$1% MetaMask 费用"
   },
-  "money": {
-    "message": "Money"
-  },
-  "moneyActivity": {
-    "message": "活动"
-  },
-  "moneyAdd": {
-    "message": "添加"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "余额不可用"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "享受完全流动性，无锁仓期限制，可随时交易或提现"
-  },
-  "moneyBenefitSend": {
-    "message": "转入您 MetaMask 中的任意钱包"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "将您的资金安全存放于 mUSD（一种 1:1 锚定美元的稳定币）"
-  },
-  "moneyBenefits": {
-    "message": "福利"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "用您的加密货币赚取收益"
-  },
-  "moneyFundDescription": {
-    "message": "为您的 Money Account 充值，见证余额增长。"
-  },
-  "moneyHowItWorks": {
-    "message": "如何运行"
-  },
-  "moneyLearnMore": {
-    "message": "了解更多。"
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "发送"
-  },
   "month": {
     "message": "月"
   },
@@ -5913,10 +5868,6 @@
   },
   "noDomainResolution": {
     "message": "没有提供域名解析。"
-  },
-  "noFee": {
-    "message": "不收费",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps 和大多数硬件钱包与您的当前浏览器版本不兼容。"
@@ -6907,9 +6858,6 @@
   },
   "permissions": {
     "message": "权限"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "此处无内容"
   },
   "permitSimulationChange_approve": {
     "message": "支出上限"

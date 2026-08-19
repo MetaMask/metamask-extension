@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "Solicitud de conexión"
   },
-  "connections": {
-    "message": "Conexiones"
-  },
   "connectionsRemovedModalDescription": {
     "message": "Algunas conexiones (como billeteras físicas y snaps) se eliminaron por inactividad en este dispositivo. Puedes volver a agregarlas en cualquier momento en Configuración."
   },
@@ -5243,48 +5240,6 @@
   "mmFee": {
     "message": "Tarifa de MetaMask del $1 %"
   },
-  "money": {
-    "message": "Money"
-  },
-  "moneyActivity": {
-    "message": "Actividad"
-  },
-  "moneyAdd": {
-    "message": "Añadir"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "Saldo no disponible"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "Obtén liquidez total sin bloqueos, para que puedas operar o retirar fondos en cualquier momento"
-  },
-  "moneyBenefitSend": {
-    "message": "Envía a cualquiera de tus billeteras en MetaMask"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "Mantén tu dinero seguro en mUSD, una moneda estable respaldada por el dólar en una proporción de 1:1"
-  },
-  "moneyBenefits": {
-    "message": "Beneficios"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "Gana con tus criptomonedas"
-  },
-  "moneyFundDescription": {
-    "message": "Deposita fondos en tu Money Account y observa cómo tu saldo crece."
-  },
-  "moneyHowItWorks": {
-    "message": "Cómo funciona"
-  },
-  "moneyLearnMore": {
-    "message": "Conozca más"
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "Enviar"
-  },
   "month": {
     "message": "mes"
   },
@@ -5917,10 +5872,6 @@
   },
   "noDomainResolution": {
     "message": "No se proporcionó resolución para el dominio."
-  },
-  "noFee": {
-    "message": "Sin tarifa",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, y la mayoría de los monederos físicos, no funcionarán con la versión actual de su navegador."
@@ -6911,9 +6862,6 @@
   },
   "permissions": {
     "message": "Permisos"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "No hay nada que ver aquí"
   },
   "permitSimulationChange_approve": {
     "message": "Límite de gasto"

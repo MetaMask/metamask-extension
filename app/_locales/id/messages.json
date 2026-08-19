@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "Permintaan koneksi"
   },
-  "connections": {
-    "message": "Koneksi"
-  },
   "connectionsRemovedModalDescription": {
     "message": "Beberapa koneksi (seperti dompet perangkat keras dan snap) telah dihapus karena tidak aktif di perangkat ini. Anda dapat menambahkannya kembali setiap saat di Pengaturan."
   },
@@ -5243,48 +5240,6 @@
   "mmFee": {
     "message": "$1% biaya MetaMask"
   },
-  "money": {
-    "message": "Dana"
-  },
-  "moneyActivity": {
-    "message": "Aktivitas"
-  },
-  "moneyAdd": {
-    "message": "Tambah"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "Saldo tidak tersedia"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "Dapatkan likuiditas penuh tanpa penguncian, sehingga Anda dapat melakukan perdagangan atau penarikan setiap saat"
-  },
-  "moneyBenefitSend": {
-    "message": "Kirim ke dompet Anda di MetaMask"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "Amankan uang Anda di mUSD, stablecoin yang didukung dolar dengan rasio 1:1"
-  },
-  "moneyBenefits": {
-    "message": "Manfaat"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "Raih pendapatan dari kripto"
-  },
-  "moneyFundDescription": {
-    "message": "Danai Money Account dan lihat saldo Anda bertambah."
-  },
-  "moneyHowItWorks": {
-    "message": "Cara kerjanya"
-  },
-  "moneyLearnMore": {
-    "message": "Selengkapnya"
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "Kirim"
-  },
   "month": {
     "message": "bulan"
   },
@@ -5917,10 +5872,6 @@
   },
   "noDomainResolution": {
     "message": "Tidak ada resolusi untuk domain yang tersedia."
-  },
-  "noFee": {
-    "message": "Tidak ada biaya",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap, dan sebagian besar dompet perangkat keras, tidak akan berfungsi dengan versi browser saat ini."
@@ -6911,9 +6862,6 @@
   },
   "permissions": {
     "message": "Izin"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "Tak ada apa pun di sini"
   },
   "permitSimulationChange_approve": {
     "message": "Batas penggunaan"

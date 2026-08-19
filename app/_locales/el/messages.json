@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "Αίτημα σύνδεσης"
   },
-  "connections": {
-    "message": "Συνδέσεις"
-  },
   "connectionsRemovedModalDescription": {
     "message": "Ορισμένες συνδέσεις (όπως τα πορτοφόλια υλικού και τα snap) αφαιρέθηκαν λόγω αδράνειας σε αυτήν τη συσκευή. Μπορείτε να τα προσθέσετε ξανά οποιαδήποτε στιγμή από τις Ρυθμίσεις."
   },
@@ -5239,48 +5236,6 @@
   "mmFee": {
     "message": "$1% τέλη στο MetaMask"
   },
-  "money": {
-    "message": "Οικονομικά"
-  },
-  "moneyActivity": {
-    "message": "Δραστηριότητα"
-  },
-  "moneyAdd": {
-    "message": "Προσθήκη"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "Το υπόλοιπο δεν είναι διαθέσιμο"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "Πλήρης ρευστότητα χωρίς δεσμεύσεις, ώστε να μπορείτε να κάνετε συναλλαγές ή ανάληψη οποιαδήποτε στιγμή"
-  },
-  "moneyBenefitSend": {
-    "message": "Στείλτε σε οποιοδήποτε από τα πορτοφόλια σας στο MetaMask"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "Κρατήστε τα χρήματά σας ασφαλή σε mUSD, ένα stablecoin με αναλογία 1:1 σε δολάρια"
-  },
-  "moneyBenefits": {
-    "message": "Ανταμοιβές"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "Κερδίστε από τα κρυπτονομίσματά σας"
-  },
-  "moneyFundDescription": {
-    "message": "Χρηματοδοτήστε τον Money Account σας και δείτε το υπόλοιπό σας να αυξάνεται."
-  },
-  "moneyHowItWorks": {
-    "message": "Πώς λειτουργεί"
-  },
-  "moneyLearnMore": {
-    "message": "Μάθετε περισσότερα"
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "Αποστολή"
-  },
   "month": {
     "message": "μήνας"
   },
@@ -5913,10 +5868,6 @@
   },
   "noDomainResolution": {
     "message": "Δεν παρέχεται ανάλυση για τον τομέα."
-  },
-  "noFee": {
-    "message": "Χωρίς τέλος συναλλαγής",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Τα Snaps και τα περισσότερα πορτοφόλια υλικού δεν θα λειτουργούν με την τρέχουσα έκδοση του προγράμματος περιήγησής σας."
@@ -6907,9 +6858,6 @@
   },
   "permissions": {
     "message": "Άδειες"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "Τίποτα το ιδιαίτερο εδώ"
   },
   "permitSimulationChange_approve": {
     "message": "Ανώτατο όριο δαπανών"

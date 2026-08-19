@@ -2863,9 +2863,6 @@
   "connectionRequest": {
     "message": "कनेक्शन के लिए अनुरोध"
   },
-  "connections": {
-    "message": "कनेक्शन"
-  },
   "connectionsRemovedModalDescription": {
     "message": "कुछ कनेक्शन्स (जैसे हार्डवेयर वॉलेट्स और Snaps) इस डिवाइस पर निष्क्रियता के कारण हटा दिए गए। आप उन्हें कभी भी सेटिंग्स में जाकर दोबारा जोड़ सकते हैं।"
   },
@@ -5239,48 +5236,6 @@
   "mmFee": {
     "message": "$1% MetaMask फीस"
   },
-  "money": {
-    "message": "वित्त"
-  },
-  "moneyActivity": {
-    "message": "गतिविधि"
-  },
-  "moneyAdd": {
-    "message": "जोड़ें"
-  },
-  "moneyBalanceUnavailable": {
-    "message": "बैलेंस अनुपलब्ध है"
-  },
-  "moneyBenefitLiquidity": {
-    "message": "बिना किसी लॉकअप के पूरी लिक्विडिटी पाएं, इसलिए आप कभी भी ट्रेड कर सकते हैं या निकाल सकते हैं"
-  },
-  "moneyBenefitSend": {
-    "message": "MetaMask पर अपने किसी भी वॉलेट में भेजें"
-  },
-  "moneyBenefitStablecoin": {
-    "message": "अपना पैसा mUSD में रखें, जो एक 1:1 डॉलर-बैक्ड स्टेबलकॉइन है"
-  },
-  "moneyBenefits": {
-    "message": "फ़ायदे"
-  },
-  "moneyEarnOnCrypto": {
-    "message": "अपने क्रिप्टो पर कमाएं"
-  },
-  "moneyFundDescription": {
-    "message": "अपने Money Account में पैसे डालें और अपने बैलेंस को बढ़ते हुए देखें।"
-  },
-  "moneyHowItWorks": {
-    "message": "ये कैसे काम करता है"
-  },
-  "moneyLearnMore": {
-    "message": "ज्यादा जानें"
-  },
-  "moneyMusd": {
-    "message": "mUSD"
-  },
-  "moneySend": {
-    "message": "भेजें"
-  },
   "month": {
     "message": "महीना"
   },
@@ -5913,10 +5868,6 @@
   },
   "noDomainResolution": {
     "message": "डोमेन के लिए कोई रिज़ॉल्यूशन प्रदान नहीं किया गया।"
-  },
-  "noFee": {
-    "message": "कोई शुल्क नहीं",
-    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap और अधिकांश हार्डवेयर वॉलेट, आपके वर्तमान ब्राउज़र वर्जन के साथ काम नहीं करेंगे।"
@@ -6907,9 +6858,6 @@
   },
   "permissions": {
     "message": "अनुमतियां"
-  },
-  "permissionsPageEmptyTitle": {
-    "message": "यहाँ देखने के लिए कुछ नहीं है।"
   },
   "permitSimulationChange_approve": {
     "message": "खर्च करने की लिमिट"
