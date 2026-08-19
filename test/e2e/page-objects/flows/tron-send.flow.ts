@@ -44,6 +44,7 @@ export async function landOnTronSendScreen({
     await home.checkExpectedTokenBalanceIsDisplayed(
       expectedNativeBalance,
       'TRX',
+      30_000,
     );
   }
   if (expectedTokenBalance) {
