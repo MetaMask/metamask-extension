@@ -137,6 +137,18 @@ function generateCaveats(
       }),
       args,
     });
+  } else {
+    log('Caveat - Native Balance Change - Enforce No Decrease', { recipient });
+
+    caveats.push({
+      enforcer: environment.caveatEnforcers.NativeBalanceChangeEnforcer,
+      terms: createNativeBalanceChangeTerms({
+        recipient,
+        balance: 1n,
+        changeType: BalanceChangeType.Increase,
+      }),
+      args,
+    });
   }
 
   for (const tokenChange of tokenBalanceChanges) {

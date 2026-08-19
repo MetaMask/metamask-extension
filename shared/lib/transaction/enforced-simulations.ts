@@ -1,5 +1,4 @@
 import {
-  SimulationData,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -146,7 +145,7 @@ export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, simulationData, type } = transactionMeta;
+  const { chainId, type } = transactionMeta;
 
   if (
     !state.eip7702SupportedChains?.some(
@@ -157,11 +156,6 @@ export function isEnforcedSimulationsEligible(
       chainId,
       type,
     });
-    return false;
-  }
-
-  if (!hasBalanceChanges(simulationData)) {
-    log('Not eligible - no simulated balance changes', { type });
     return false;
   }
 
@@ -262,9 +256,3 @@ function isTrusted(
   return trusted;
 }
 
-function hasBalanceChanges(simulationData?: SimulationData | null): boolean {
-  return (
-    Boolean(simulationData?.nativeBalanceChange) ||
-    Boolean(simulationData?.tokenBalanceChanges?.length)
-  );
-}

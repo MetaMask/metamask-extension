@@ -305,30 +305,48 @@ describe('Enforced Simulations Utils', () => {
       );
     });
 
-    it('throws when no caveats can be generated', async () => {
+    it('adds a no-decrease native caveat when simulationData has no native balance change', async () => {
       const transactionMeta = cloneDeep(TRANSACTION_META_MOCK);
       transactionMeta.simulationData = {
         tokenBalanceChanges: [],
       };
 
-      await expect(
-        enforceSimulations({
-          ...options,
-          transactionMeta,
-        }),
-      ).rejects.toThrow('No caveats generated for enforced simulations');
+      const { updateTransaction } = await enforceSimulations({
+        ...options,
+        transactionMeta,
+      });
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(
+          remove0x(
+            DELEGATOR_CONTRACTS['1.3.0']['1'].NativeBalanceChangeEnforcer,
+          ).toLowerCase(),
+        ),
+      );
     });
 
-    it('throws when simulation data is missing', async () => {
+    it('adds a no-decrease native caveat when simulation data is missing', async () => {
       const transactionMeta = cloneDeep(TRANSACTION_META_MOCK);
       transactionMeta.simulationData = undefined;
 
-      await expect(
-        enforceSimulations({
-          ...options,
-          transactionMeta,
-        }),
-      ).rejects.toThrow('No caveats generated for enforced simulations');
+      const { updateTransaction } = await enforceSimulations({
+        ...options,
+        transactionMeta,
+      });
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(
+          remove0x(
+            DELEGATOR_CONTRACTS['1.3.0']['1'].NativeBalanceChangeEnforcer,
+          ).toLowerCase(),
+        ),
+      );
     });
 
     describe('applies slippage', () => {
