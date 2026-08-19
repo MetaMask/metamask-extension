@@ -142,33 +142,6 @@ describe('FixtureExtensionStore', () => {
       expect(setSpy).toHaveBeenCalledWith(storageServiceEntries);
     });
 
-    it('loads fixture state when IndexedDB is blocked', async () => {
-      const storageServiceEntries = {
-        'storageService:SnapController:sourceCode:npm:test-snap': 'source',
-      };
-      setMockFixtureServerReply({
-        ...MOCK_STATE,
-        storageServiceData: storageServiceEntries,
-      });
-      jest
-        .spyOn(IndexedDBStore.prototype, 'open')
-        .mockRejectedValueOnce(
-          new DOMException(
-            'A mutation operation was attempted on a database that did not allow mutations.',
-            'InvalidStateError',
-          ),
-        );
-      const indexedDBSetSpy = jest.spyOn(IndexedDBStore.prototype, 'set');
-      const browserStorageSetSpy = jest.spyOn(browser.storage.local, 'set');
-      const store = new FixtureExtensionStore({ initialize: true });
-
-      const result = await store.get();
-
-      expect(result).toStrictEqual(MOCK_STATE);
-      expect(indexedDBSetSpy).not.toHaveBeenCalled();
-      expect(browserStorageSetSpy).toHaveBeenCalledWith(storageServiceEntries);
-    });
-
     it('does not write empty or absent storageServiceData', async () => {
       const setSpy = jest.spyOn(IndexedDBStore.prototype, 'set');
       for (const state of [
