@@ -20,6 +20,9 @@ class AccountAddressModal {
 
   private driver: Driver;
 
+  private readonly parentSelector =
+    '[data-testid="parent-selector-address-qr-code-modal"]';
+
   private readonly viewOnEtherscanButton = {
     css: 'button',
     text: 'View on Etherscan',
@@ -35,6 +38,7 @@ class AccountAddressModal {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.accountAddress,
         this.viewOnEtherscanLink,
       ]);

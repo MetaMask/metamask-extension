@@ -270,11 +270,9 @@ describe('Multichain API', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const confirmation = new TransactionConfirmation(driver);
           await confirmation.checkPageIsLoaded();
+          await confirmation.checkAlertMessageIsDisplayed('High-risk transfer');
           await confirmation.checkAlertMessageIsDisplayed(
-            'This is a deceptive request',
-          );
-          await confirmation.checkAlertMessageIsDisplayed(
-            'If you approve this request, a third party known for scams will take all your assets.',
+            "You're sending assets to an address flagged by security partners. If this is a scam, your funds can't be recovered.",
           );
         },
       );

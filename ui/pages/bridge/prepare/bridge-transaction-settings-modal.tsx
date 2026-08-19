@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BannerAlert,
@@ -59,6 +59,9 @@ export const BridgeTransactionSettingsModal = ({
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [inputValue, setInputValue] = useState<string>('');
   const [isDirty, setIsDirty] = useState(false);
+  const [draftSlippageValue, setDraftSlippageValue] = useState<
+    number | undefined
+  >(slippage);
 
   /**
    * AUTO option shows for Solana-to-Solana swaps and any swap involving an RWA token.
@@ -67,22 +70,31 @@ export const BridgeTransactionSettingsModal = ({
   const isRWASwap = useSelector(getIsRWASwap);
   const shouldShowAutoOption = isSolanaSwap || isRWASwap;
 
-  const [slippageValue, setSlippageValue] = useState<number | undefined>(
-    undefined,
-  );
+  // While clean, follow the store value; drafts only apply after the user edits.
+  let slippageValue: number | undefined;
+  if (isDirty) {
+    slippageValue = draftSlippageValue;
+  } else if (isOpen) {
+    slippageValue = slippage;
+  } else {
+    slippageValue = undefined;
+  }
 
+  // Reset local draft UI when the modal closes (not during render).
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      return undefined;
+    }
+    queueMicrotask(() => {
       setIsDirty(false);
-    } else if (!isDirty) {
-      setSlippageValue(slippage);
       setInputValue('');
       setShowCustomInput(false);
-    }
-  }, [isOpen, isDirty, slippage]);
+    });
+    return undefined;
+  }, [isOpen]);
 
   const selectSlippageOption = (value: number | undefined) => {
-    setSlippageValue(value);
+    setDraftSlippageValue(value);
     setIsDirty(true);
   };
 

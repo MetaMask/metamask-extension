@@ -84,6 +84,29 @@ describe('usePayWithMoneyAccountSection', () => {
     });
   });
 
+  it('returns a money account section for perpsWithdraw when enabled', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: 'tx-withdraw-1',
+        type: TransactionType.perpsWithdraw,
+      },
+    } as ReturnType<typeof useConfirmContext>);
+
+    const { result } = renderHook(() =>
+      usePayWithMoneyAccountSection({ onClose }),
+    );
+
+    expect(result.current).toMatchObject({
+      id: 'money-account',
+      rows: [
+        expect.objectContaining({
+          title: 'Money account',
+          testId: PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID,
+        }),
+      ],
+    });
+  });
+
   it('applies the money account override and closes on press', () => {
     const { result } = renderHook(() =>
       usePayWithMoneyAccountSection({ onClose }),

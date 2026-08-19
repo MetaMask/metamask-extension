@@ -824,9 +824,8 @@
     "needsProfilePairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
-    "networkConnectionBanner": {
-      "status": "string"
-    },
+    "networkConnectionBannerNetwork": "null",
+    "networkConnectionBannerStatus": "string",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": {
@@ -976,7 +975,8 @@
     "referrals": {
       "asterdex": {},
       "gmx": {},
-      "hyperliquid": {}
+      "hyperliquid": {},
+      "variational": {}
     },
     "region": "string",
     "requests": {
@@ -1258,6 +1258,9 @@
     "withdrawalRequests": [],
     "web3ShimUsageOrigins": {},
     "verifiedSnaps": {}
+  },
+  "moneyBalance": {
+    "lastKnownBalance": "null"
   },
   "perpsTutorial": {
     "tutorialModalOpen": "boolean",

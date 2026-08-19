@@ -347,7 +347,7 @@ export const MultichainReviewPermissions = () => {
 
   return pageMode === MultichainReviewPermissionsPageMode.Summary ? (
     <Page
-      data-testid="connections-page"
+      data-testid="parent-selector-site-permission"
       className="main-container connections-page"
     >
       <>
