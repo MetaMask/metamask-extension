@@ -15,6 +15,8 @@ export type MoneyVaultApyRemoteConfig = {
   vaultApyOverride: number | undefined;
 };
 
+export const FALLBACK_MONEY_DEPOSIT_MIN_BALANCE = 0.01;
+
 /**
  * Parses a raw flag value into a non-negative finite number.
  *
@@ -82,6 +84,19 @@ export const selectMoneyVaultApyRemoteConfig = createSelector(
       vaultApyOverride: parseNonNegativeFinite(control?.vaultApyOverride),
     };
   },
+);
+
+/**
+ * Selects the minimum wallet-asset balance required for Money deposits.
+ *
+ * @param state - The MetaMask state object.
+ * @returns The minimum fiat balance, defaulting to one cent.
+ */
+export const selectMoneyDepositMinBalance = createSelector(
+  getRemoteFeatureFlags,
+  (flags): number =>
+    parseNonNegativeFinite(flags?.earnMoneyDepositMinAssetBalance) ??
+    FALLBACK_MONEY_DEPOSIT_MIN_BALANCE,
 );
 
 /**
