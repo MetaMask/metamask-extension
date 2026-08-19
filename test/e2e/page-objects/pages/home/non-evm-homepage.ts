@@ -16,8 +16,8 @@ import TokensTab from './tokens-tab';
  *
  * Screen: `#/` (DEFAULT_ROUTE) with a non-EVM account active.
  * Owns: non-EVM token balance checks (delegates to `TokensTab`); Tron BIP44
- * stage-2 account-ready wait; Tron native token-list wait; inherits Send /
- * Receive and other home actions from `HomePage`.
+ * stage-2 account-ready wait; inherits Send / Receive and other home actions
+ * from `HomePage`.
  * Boundaries: EVM-specific overview and tab content stay on `HomePage` /
  * the tab page objects. Token-list import/sort/hide belong to `TokensTab`.
  * Related: `HomePage` (base), `TokensTab` (`checkExpectedTokenBalanceIsDisplayed`).
@@ -85,20 +85,6 @@ class NonEvmHomepage extends HomePage {
         timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
       },
     );
-  }
-
-  /**
-   * Waits until the native Tron token row is present in the asset list. The
-   * Tron Snap only starts its balance fetch when the network is switched while
-   * the Snap is fully ready; this wait is the deterministic signal that fetch
-   * actually ran.
-   *
-   * @param timeout - Max ms to wait for the token name cell.
-   */
-  async waitForTronNativeTokenToBeListed(timeout = 15_000): Promise<void> {
-    console.log('Wait for the Tron native token to appear in the token list');
-    const tokensTab = new TokensTab(this.driver);
-    await tokensTab.checkTokenExistsInList('Tron', undefined, { timeout });
   }
 
   // Receive is clicked via the inherited HomePage.clickOnReceiveButton
