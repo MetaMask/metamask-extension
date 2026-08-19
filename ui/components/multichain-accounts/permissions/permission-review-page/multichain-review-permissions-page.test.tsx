@@ -125,7 +125,7 @@ const generateCaipAccountIds = (
 };
 
 const TEST_IDS = {
-  CONNECTIONS_PAGE: 'connections-page',
+  CONNECTIONS_PAGE: 'parent-selector-site-permission',
   MODAL_PAGE: 'modal-page',
   EDIT_BUTTON: 'edit',
   CONNECT_MORE_ACCOUNTS_BUTTON: 'connect-more-accounts-button',
