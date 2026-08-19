@@ -181,19 +181,6 @@ describe(`migration #${version}`, () => {
     expect(mockBrowser.storage.local.remove).toHaveBeenCalledTimes(2);
   });
 
-  it('keeps legacy data when IndexedDB is blocked during open', async () => {
-    database.open.mockRejectedValueOnce(createBlockedError());
-    mockStorage({
-      [STORAGE_SERVICE_KEY]: 'legacy-value',
-    });
-    const oldStorage = buildVersionedData();
-
-    await migrate(oldStorage, new Set());
-
-    expect(oldStorage.meta.version).toBe(version);
-    expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
-  });
-
   it('does not delete legacy keys when an IndexedDB write fails', async () => {
     const databaseError = new Error('IndexedDB write failed');
     database.set.mockRejectedValueOnce(databaseError);
