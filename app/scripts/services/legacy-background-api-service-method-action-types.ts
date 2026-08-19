@@ -554,6 +554,23 @@ export type LegacyBackgroundApiServiceUnlockWithPasskeyAction = {
 };
 
 /**
+ * Exports the Secret Recovery Phrase after verifying a passkey assertion,
+ * used as a password-less alternative to {@link getSeedPhrase}.
+ *
+ * Assertion verification + vault-key export live in `PasskeyController`, which
+ * returns the raw wordlist-index bytes from `KeyringController`. The extension
+ * re-encodes them as UTF-8 codepoints for the UI.
+ *
+ * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+ * @param keyringId - The id of the HD keyring to export. Defaults to the primary keyring.
+ * @returns The seed phrase encoded as an array of UTF-8 bytes.
+ */
+export type LegacyBackgroundApiServiceExportSeedPhraseWithPasskeyAction = {
+  type: `LegacyBackgroundApiService:exportSeedPhraseWithPasskey`;
+  handler: LegacyBackgroundApiService['exportSeedPhraseWithPasskey'];
+};
+
+/**
  * Locks MetaMask
  *
  * @param options - The options for setting the locked state.
@@ -1052,6 +1069,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
   | LegacyBackgroundApiServiceChangePasswordWithPasskeyVerificationAction
   | LegacyBackgroundApiServiceUnlockWithPasskeyAction
+  | LegacyBackgroundApiServiceExportSeedPhraseWithPasskeyAction
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
   | LegacyBackgroundApiServiceExportAccountAction
