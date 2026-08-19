@@ -16,9 +16,11 @@ function createSidePanelMock() {
   };
 }
 
-function createSidePanelWithoutBehaviorMock() {
+function createSidePanelWithoutBehaviorMock(): {
+  sidePanel: SidePanelBehaviorApi;
+} {
   return {
-    sidePanel: {} satisfies SidePanelBehaviorApi,
+    sidePanel: {},
   };
 }
 

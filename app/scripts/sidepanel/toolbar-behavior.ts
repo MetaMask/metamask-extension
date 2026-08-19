@@ -88,7 +88,6 @@ export async function setupSidePanelToolbarBehavior(
   if (!sidePanelApi?.setPanelBehavior) {
     return;
   }
-  const { setPanelBehavior } = sidePanelApi;
 
   try {
     await deps.waitUntilInitialized;
@@ -98,11 +97,16 @@ export async function setupSidePanelToolbarBehavior(
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
       (useSidePanelAsDefault) => {
-        setPanelBehavior({
-          openPanelOnActionClick: useSidePanelAsDefault,
-        }).catch((error) =>
-          console.error('Error updating panel behavior:', error),
-        );
+        if (!sidePanelApi.setPanelBehavior) {
+          return;
+        }
+        sidePanelApi
+          .setPanelBehavior({
+            openPanelOnActionClick: useSidePanelAsDefault,
+          })
+          .catch((error) =>
+            console.error('Error updating panel behavior:', error),
+          );
       },
       (preferencesControllerState: PreferencesControllerState) =>
         preferencesControllerState.preferences?.useSidePanelAsDefault ?? true,
