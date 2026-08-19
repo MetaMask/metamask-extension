@@ -890,9 +890,9 @@ describe('QrSyncController', () => {
       await mockStartSession(controller);
       await mockSetReviewingSyncOffer(controller);
 
-      await expect(
-        controller.syncAccounts(TEST_PASSWORD, []),
-      ).rejects.toThrow(QrSyncErrorMessages.NO_ACCOUNT_GROUPS_SELECTED);
+      await expect(controller.syncAccounts(TEST_PASSWORD, [])).rejects.toThrow(
+        QrSyncErrorMessages.NO_ACCOUNT_GROUPS_SELECTED,
+      );
 
       expect(mockExportState).not.toHaveBeenCalled();
       expect(mockMwp.dappClient?.sendRequest).not.toHaveBeenCalledWith(
