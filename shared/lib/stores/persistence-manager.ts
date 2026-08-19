@@ -7,10 +7,7 @@ import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import { getManifestFlags } from '../manifestFlags';
 import { VaultCorruptionType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
-import {
-  IndexedDBStore,
-  isIndexedDBMutationBlockedError,
-} from './indexeddb-store';
+import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,
@@ -107,6 +104,22 @@ function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
 
     signal?.addEventListener('abort', handleAbort, { once: true });
   });
+}
+
+/**
+ * Checks whether IndexedDB mutations are blocked, as can happen for Firefox
+ * extensions in private browsing mode.
+ *
+ * @param error - The error thrown by IndexedDB.
+ * @returns Whether the error represents blocked IndexedDB mutations.
+ */
+export function isIndexedDBMutationBlockedError(error: unknown): boolean {
+  return (
+    error instanceof DOMException &&
+    error.name === 'InvalidStateError' &&
+    error.message ===
+      'A mutation operation was attempted on a database that did not allow mutations.'
+  );
 }
 
 /**

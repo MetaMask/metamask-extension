@@ -1,38 +1,5 @@
 import 'fake-indexeddb/auto';
-import {
-  IndexedDBStore,
-  isIndexedDBMutationBlockedError,
-} from './indexeddb-store';
-
-describe('isIndexedDBMutationBlockedError', () => {
-  it('identifies the Firefox mutation-blocked error', () => {
-    const error = new DOMException(
-      'A mutation operation was attempted on a database that did not allow mutations.',
-      'InvalidStateError',
-    );
-
-    expect(isIndexedDBMutationBlockedError(error)).toBe(true);
-  });
-
-  it('rejects other errors', () => {
-    expect(isIndexedDBMutationBlockedError(new Error('Other error'))).toBe(
-      false,
-    );
-    expect(
-      isIndexedDBMutationBlockedError(
-        new DOMException('Browser-provided message', 'InvalidStateError'),
-      ),
-    ).toBe(false);
-    expect(
-      isIndexedDBMutationBlockedError(
-        new DOMException(
-          'A mutation operation was attempted on a database that did not allow mutations.',
-          'QuotaExceededError',
-        ),
-      ),
-    ).toBe(false);
-  });
-});
+import { IndexedDBStore } from './indexeddb-store';
 
 describe('IndexedDBStore', () => {
   const dbName = 'test-db';

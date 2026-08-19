@@ -11,10 +11,7 @@ import {
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from './indexeddb-storage-constants';
-import {
-  IndexedDBStore,
-  isIndexedDBMutationBlockedError,
-} from './indexeddb-store';
+import { IndexedDBStore } from './indexeddb-store';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -39,7 +36,7 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
 
   readonly #fallbackStorage: StorageAdapter;
 
-  #openPromise?: Promise<boolean>;
+  #openPromise?: Promise<void>;
 
   constructor({
     database = new IndexedDBStore(),
@@ -53,25 +50,11 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
     return `${STORAGE_KEY_PREFIX}${namespace}:${key}`;
   }
 
-  async #selectStorage(): Promise<boolean> {
-    try {
-      await this.#database.open(
-        STORAGE_SERVICE_INDEXED_DB_NAME,
-        STORAGE_SERVICE_INDEXED_DB_VERSION,
-      );
-
-      return true;
-    } catch (error) {
-      if (!isIndexedDBMutationBlockedError(error)) {
-        throw error;
-      }
-
-      console.warn(
-        'StorageService: IndexedDB is unavailable; falling back to browser.storage.local.',
-      );
-
-      return false;
-    }
+  async #open(): Promise<void> {
+    await this.#database.open(
+      STORAGE_SERVICE_INDEXED_DB_NAME,
+      STORAGE_SERVICE_INDEXED_DB_VERSION,
+    );
   }
 
   async #canUseIndexedDB(): Promise<boolean> {
@@ -89,13 +72,11 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
     }
 
     if (!this.#openPromise) {
-      this.#openPromise = this.#selectStorage().catch((error) => {
-        this.#openPromise = undefined;
-        throw error;
-      });
+      this.#openPromise = this.#open();
     }
 
-    return this.#openPromise;
+    await this.#openPromise;
+    return true;
   }
 
   /**

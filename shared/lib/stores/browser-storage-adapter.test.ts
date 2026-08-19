@@ -33,6 +33,9 @@ describe('BrowserStorageAdapter', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     adapter = new BrowserStorageAdapter();
+
+    // ignore `console.error`, as these are expected, but noisy
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
   });
 
   describe('getItem', () => {
@@ -249,21 +252,13 @@ describe('BrowserStorageAdapter', () => {
     });
 
     it('does not call remove when key enumeration fails', async () => {
-      const consoleError = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
+      const error = new Error('Storage read error');
 
-      try {
-        const error = new Error('Storage read error');
+      mockGet.mockRejectedValue(error);
 
-        mockGet.mockRejectedValue(error);
+      await expect(adapter.clear(namespace)).rejects.toBe(error);
 
-        await expect(adapter.clear(namespace)).rejects.toBe(error);
-
-        expect(mockRemove).not.toHaveBeenCalled();
-      } finally {
-        consoleError.mockRestore();
-      }
+      expect(mockRemove).not.toHaveBeenCalled();
     });
 
     it('propagates remove failures', async () => {

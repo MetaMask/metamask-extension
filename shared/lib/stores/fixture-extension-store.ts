@@ -10,10 +10,7 @@ import {
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from './indexeddb-storage-constants';
-import {
-  IndexedDBStore,
-  isIndexedDBMutationBlockedError,
-} from './indexeddb-store';
+import { IndexedDBStore } from './indexeddb-store';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -61,21 +58,11 @@ async function setStorageServiceData(
     return;
   }
 
-  try {
-    await database.open(
-      STORAGE_SERVICE_INDEXED_DB_NAME,
-      STORAGE_SERVICE_INDEXED_DB_VERSION,
-    );
-    await database.set(storageServiceData);
-  } catch (error) {
-    if (!isIndexedDBMutationBlockedError(error)) {
-      throw error;
-    }
-
-    await browser.storage.local.set(storageServiceData);
-  } finally {
-    database.close();
-  }
+  await database.open(
+    STORAGE_SERVICE_INDEXED_DB_NAME,
+    STORAGE_SERVICE_INDEXED_DB_VERSION,
+  );
+  await database.set(storageServiceData);
 }
 
 /**
