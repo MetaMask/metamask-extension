@@ -44,7 +44,6 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
-import { serializeLedgerError } from './ledger-utils';
 
 function isWebHIDSupported(): boolean {
   return navigator?.hid !== undefined;
@@ -202,19 +201,13 @@ export class LedgerDmkBridgeHandler {
 
   #sessionStateSubscription: Subscription | null = null;
 
-  #messageListenerFn:
-    | Parameters<typeof chrome.runtime.onMessage.addListener>[0]
-    | null = null;
-
   // Stored references to `navigator.hid` listeners so `destroy()` can remove
   // them. Without these references the listeners leak for the lifetime of the
   // offscreen document when handlers are hot-swapped via `switchLedgerHandler`.
-  #hidConnectListener: ((event: { device: HIDDevice }) => void) | null =
-    null;
+  #hidConnectListener: ((event: { device: HIDDevice }) => void) | null = null;
 
-  #hidDisconnectListener:
-    | ((event: { device: HIDDevice }) => void)
-    | null = null;
+  #hidDisconnectListener: ((event: { device: HIDDevice }) => void) | null =
+    null;
 
   /**
    * Lazily creates and caches the `LedgerDmkBridge` instance.
@@ -428,53 +421,6 @@ export class LedgerDmkBridgeHandler {
   }
 
   /**
-   * Sets up the message listener for handling Ledger actions from the offscreen bridge.
-   */
-  #setupMessageListener(): void {
-    const listener: Parameters<
-      typeof chrome.runtime.onMessage.addListener
-    >[0] = (msg, _sender, sendResponse) => {
-      if (
-        msg.target !== OffscreenCommunicationTarget.ledgerOffscreen ||
-        typeof msg.action !== 'string'
-      ) {
-        return false;
-      }
-
-      const action = msg.action as LedgerAction;
-      const params =
-        msg.params && typeof msg.params === 'object'
-          ? (msg.params as Record<string, unknown>)
-          : undefined;
-
-      this.handleAction(action, params)
-        .then((result) => {
-          sendResponse({
-            success: true,
-            // `result` is handler-specific; ResponseType includes Record<string, unknown>.
-            payload: result as Record<string, unknown>,
-          });
-        })
-        .catch((error: unknown) => {
-          console.error('[LedgerDMK] Action failed:', error);
-          const serialized = serializeLedgerError(error);
-          sendResponse({
-            success: false,
-            payload: {
-              error: serialized,
-            },
-          });
-        });
-
-      // Return true to indicate we will send response asynchronously
-      return true;
-    };
-
-    this.#messageListenerFn = listener;
-    chrome.runtime.onMessage.addListener(listener);
-  }
-
-  /**
    * Handles a Ledger action and returns the result.
    *
    * @param action - The Ledger action to perform.
@@ -574,17 +520,15 @@ export class LedgerDmkBridgeHandler {
 
   /**
    * Initializes the handler.
-   * Sets up device event listeners and message handlers.
    *
-   * @param skipMessageListener - When true, the handler does NOT register its
-   * own chrome.runtime.onMessage listener.  This is used when a central
-   * router (ledger-router.ts) manages the listener instead.
+   * Wires up `navigator.hid` device event listeners and notifies the
+   * extension if a Ledger device is already permitted. The central router
+   * (`ledger-router.ts`) owns the `chrome.runtime.onMessage` listener and
+   * dispatches actions to `handleAction`, so this method does not register
+   * any message listener itself.
    */
-  async init(skipMessageListener = false): Promise<void> {
+  async init(): Promise<void> {
     this.#setupDeviceEventListeners();
-    if (!skipMessageListener) {
-      this.#setupMessageListener();
-    }
 
     // Notify extension if a Ledger is already permitted
     if (!isWebHIDSupported()) {
@@ -614,7 +558,7 @@ export class LedgerDmkBridgeHandler {
 
   /**
    * Tears down the cached bridge and session state without removing the
-   * HID device-event listeners or the chrome.runtime message listener.
+   * HID device-event listeners.
    *
    * Used on device disconnect: the router keeps the same handler instance,
    * so the HID listeners must stay registered to detect replug. Bumping
@@ -654,18 +598,13 @@ export class LedgerDmkBridgeHandler {
   /**
    * Destroys the cached bridge and cleans up subscriptions and listeners.
    *
-   * Removes the HID device-event listeners and the message listener in
-   * addition to the bridge teardown performed by `tearDownBridge()`. Use
-   * this when the handler is being retired (e.g. during `switchLedgerHandler`),
-   * not for a device disconnect — see `setupDisconnectMonitoring`.
-   * Safe to call multiple times.
+   * Removes the HID device-event listeners in addition to the bridge teardown
+   * performed by `tearDownBridge()`. Use this when the handler is being
+   * retired (e.g. during `switchLedgerHandler`), not for a device disconnect —
+   * see `setupDisconnectMonitoring`. Safe to call multiple times.
    */
   async destroy(): Promise<void> {
     this.#removeDeviceEventListeners();
-    if (this.#messageListenerFn) {
-      chrome.runtime.onMessage.removeListener(this.#messageListenerFn);
-      this.#messageListenerFn = null;
-    }
     await this.#tearDownBridge();
   }
 }
