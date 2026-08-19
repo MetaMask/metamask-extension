@@ -188,6 +188,26 @@ export const isSubsidizedSource = (
   );
 
 /**
+ * Returns true when {@link endpoint} appears as either the source or target of
+ * any route. Used by deposit amount prefill to treat relay fixed-spread
+ * tokens as "stable" (100% prefill) vs other tokens (50% prefill).
+ *
+ * @param config - Parsed relay fixed-spread config.
+ * @param endpoint - Token endpoint to match.
+ */
+export const isRouteToken = (
+  config: RelayFixedSpreadConfig,
+  endpoint: RouteEndpoint,
+): boolean =>
+  config.routes.some(
+    (route) =>
+      (addressesEqual(route.sourceChain, endpoint.chainId) &&
+        addressesEqual(route.sourceToken, endpoint.address)) ||
+      (addressesEqual(route.targetChain, endpoint.chainId) &&
+        addressesEqual(route.targetToken, endpoint.address)),
+  );
+
+/**
  * Returns true when {@link config} contains an exact `(source → target)` route.
  *
  * @param config - Parsed relay fixed-spread config.
