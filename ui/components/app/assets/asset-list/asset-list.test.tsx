@@ -216,7 +216,6 @@ describe('AssetList', () => {
       }
       return null;
     });
-
   });
 
   it('renders AssetList component and shows AssetList control bar', async () => {
