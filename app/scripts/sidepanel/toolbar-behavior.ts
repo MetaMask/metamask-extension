@@ -85,9 +85,10 @@ export async function setupSidePanelToolbarBehavior(
   sidePanel: SidePanelBehaviorApi | undefined = chrome.sidePanel,
 ): Promise<void> {
   const sidePanelApi = getSidePanelApi(sidePanel);
-  if (!sidePanelApi) {
+  if (!sidePanelApi?.setPanelBehavior) {
     return;
   }
+  const { setPanelBehavior } = sidePanelApi;
 
   try {
     await deps.waitUntilInitialized;
@@ -97,15 +98,11 @@ export async function setupSidePanelToolbarBehavior(
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
       (useSidePanelAsDefault) => {
-        if (getSidePanelApi(sidePanel)?.setPanelBehavior) {
-          getSidePanelApi(sidePanel)
-            ?.setPanelBehavior?.({
-              openPanelOnActionClick: useSidePanelAsDefault,
-            })
-            .catch((error) =>
-              console.error('Error updating panel behavior:', error),
-            );
-        }
+        setPanelBehavior({
+          openPanelOnActionClick: useSidePanelAsDefault,
+        }).catch((error) =>
+          console.error('Error updating panel behavior:', error),
+        );
       },
       (preferencesControllerState: PreferencesControllerState) =>
         preferencesControllerState.preferences?.useSidePanelAsDefault ?? true,
