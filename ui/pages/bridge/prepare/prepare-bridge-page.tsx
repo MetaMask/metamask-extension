@@ -246,8 +246,15 @@ const PrepareBridgePage = ({
   // from switching tokens within the debounce period
   const [isSwitchingTemporarilyDisabled, setIsSwitchingTemporarilyDisabled] =
     useState(false);
+  const isFirstRotateEffectRef = useRef(true);
   useEffect(() => {
-    setIsSwitchingTemporarilyDisabled(true);
+    if (isFirstRotateEffectRef.current) {
+      isFirstRotateEffectRef.current = false;
+      return undefined;
+    }
+    queueMicrotask(() => {
+      setIsSwitchingTemporarilyDisabled(true);
+    });
     const switchButtonTimer = setTimeout(() => {
       setIsSwitchingTemporarilyDisabled(false);
     }, SECOND);
@@ -271,44 +278,51 @@ const PrepareBridgePage = ({
   }, [isLoading]);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+  const fromTokenAssetId = fromToken?.assetId;
+  const toTokenAssetId = toToken?.assetId;
+  const fromTokenChainId = fromToken?.chainId;
+  const toTokenChainId = toToken?.chainId;
+  const selectedAccountAddress = selectedAccount?.address;
+  const selectedDestinationAccountAddress = selectedDestinationAccount?.address;
+  const providerConfigRpcUrl = providerConfig?.rpcUrl;
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
     | undefined = useMemo(() => {
-    if (!selectedAccount?.address) {
+    if (!selectedAccountAddress) {
       return undefined;
     }
     return {
-      srcTokenAddress: fromToken?.assetId
-        ? formatAddressToCaipReference(fromToken.assetId)
+      srcTokenAddress: fromTokenAssetId
+        ? formatAddressToCaipReference(fromTokenAssetId)
         : undefined,
-      destTokenAddress: toToken?.assetId
-        ? formatAddressToCaipReference(toToken.assetId)
+      destTokenAddress: toTokenAssetId
+        ? formatAddressToCaipReference(toTokenAssetId)
         : undefined,
       srcTokenAmount: validatedFromValue,
-      srcChainId: fromToken?.chainId,
-      destChainId: toToken?.chainId,
+      srcChainId: fromTokenChainId,
+      destChainId: toTokenChainId,
       // This override allows quotes to be returned when the rpcUrl is a forked network
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
-      insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
+      insufficientBal: providerConfigRpcUrl?.includes('localhost')
         ? true
         : isQuoteRequestInsufficientBal,
       ...(slippage === undefined ? {} : { slippage }),
-      walletAddress: selectedAccount.address,
-      destWalletAddress: selectedDestinationAccount?.address,
+      walletAddress: selectedAccountAddress,
+      destWalletAddress: selectedDestinationAccountAddress,
       gasIncluded,
       gasIncluded7702,
     };
   }, [
-    fromToken?.assetId,
-    toToken?.assetId,
+    fromTokenAssetId,
+    toTokenAssetId,
     validatedFromValue,
-    fromToken?.chainId,
-    toToken?.chainId,
+    fromTokenChainId,
+    toTokenChainId,
     slippage,
-    selectedAccount?.address,
-    selectedDestinationAccount?.address,
-    providerConfig?.rpcUrl,
+    selectedAccountAddress,
+    selectedDestinationAccountAddress,
+    providerConfigRpcUrl,
     gasIncluded,
     gasIncluded7702,
     isQuoteRequestInsufficientBal,
@@ -420,7 +434,11 @@ const PrepareBridgePage = ({
         onClose={() => setIsMarketClosedModalOpen(false)}
       />
 
-      <Column className="prepare-bridge-page" gap={4}>
+      <Column
+        className="prepare-bridge-page"
+        gap={4}
+        data-testid="parent-selector-bridge-quote"
+      >
         <BridgeInputGroup
           isAssetPickerOpen={isSrcAssetPickerOpen}
           setIsAssetPickerOpen={(isOpen) =>

@@ -11,7 +11,10 @@ import {
 } from './token-price-mock-catalog';
 
 export type CustomNetworkId =
+<<<<<<< HEAD
   | 'base'
+=======
+>>>>>>> origin/main
   | 'xdc'
   | 'injective'
   | 'chiliz'
@@ -48,6 +51,7 @@ const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 const MAINNET_CHAIN_ID_HEX = '0x1';
 
 const CUSTOM_NETWORKS: Record<CustomNetworkId, CustomNetworkConfig> = {
+<<<<<<< HEAD
   base: {
     id: 'base',
     name: 'Base',
@@ -61,6 +65,8 @@ const CUSTOM_NETWORKS: Record<CustomNetworkId, CustomNetworkConfig> = {
     clientId: 'base-local',
     inDefaultFixture: true,
   },
+=======
+>>>>>>> origin/main
   xdc: {
     id: 'xdc',
     name: 'XDC Network',
@@ -271,7 +277,10 @@ function applyScenarioState(
 ): FixtureBuilderV2 {
   switch (scenario) {
     case 'nativeSend':
+<<<<<<< HEAD
       return builder;
+=======
+>>>>>>> origin/main
     case 'conversionRate':
     case 'unsupportedPrice':
       return builder.withAssetsController({

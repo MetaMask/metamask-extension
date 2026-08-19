@@ -79,7 +79,7 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
-import { useOnClickOutside } from '../perps/hooks/useClickOutside';
+import { useOnClickOutside } from '../../../hooks/useClickOutside';
 import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
 import {
@@ -96,7 +96,9 @@ const NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN: { [key: string]: BridgeAsset } = {
   [ARC_HEX_CHAIN_ID]: ARC_ERC20_USDC_BRIDGE_ASSET,
 };
 
-function getSwapNativeTokenWithOverridesForChain(chainId: string): BridgeAsset {
+export function getSwapNativeTokenWithOverridesForChain(
+  chainId: string,
+): BridgeAsset {
   const override = NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN[chainId];
   return override ?? getNativeAssetForChainId(chainId);
 }
