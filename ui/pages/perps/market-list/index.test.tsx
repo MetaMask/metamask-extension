@@ -68,7 +68,9 @@ describe('MarketListView', () => {
     it('renders the market list view', () => {
       renderWithProvider(<MarketListView />, mockStore);
 
-      expect(screen.getByTestId('market-list-view')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-market-list'),
+      ).toBeInTheDocument();
     });
 
     it('displays search input', () => {
