@@ -32,6 +32,31 @@ import {
   useAssetPageSecurityTrustCtaGateReady,
 } from './security-trust';
 
+/** Fiat holding above this makes Swap the filled primary CTA instead of Buy. */
+const SWAP_PRIMARY_FIAT_THRESHOLD = 100;
+
+const STICKY_PRIMARY_BUTTON_CLASS_NAME =
+  'flex-1 bg-success-default text-success-inverse hover:bg-success-default-hover active:bg-success-default-pressed';
+
+const STICKY_SECONDARY_BUTTON_CLASS_NAME =
+  'flex-1 border border-success-default bg-transparent text-success-default hover:bg-success-muted-hover active:bg-success-muted-pressed';
+
+/**
+ * Whether the Token Detail Page fiat balance is high enough that Swap should
+ * be the primary (filled) sticky CTA.
+ *
+ * @param fiatBalance - Fiat amount as stored on `asset.balance.fiat`.
+ * @returns True when the parsed amount is a finite number greater than 100.
+ */
+export function shouldPreferStickySwapCta(fiatBalance?: string): boolean {
+  if (!fiatBalance) {
+    return false;
+  }
+
+  const parsedBalance = Number(fiatBalance.replace(/[$,]/gu, '').trim());
+  return Number.isFinite(parsedBalance) && parsedBalance > SWAP_PRIMARY_FIAT_THRESHOLD;
+}
+
 type AssetStickyActionsProps = {
   asset: Asset;
   /**
@@ -198,6 +223,8 @@ export const AssetStickyActions = ({
     isMarketClosed ||
     (isNative && !isSigningEnabled);
 
+  const preferSwapAsPrimary = shouldPreferStickySwapCta(asset.balance?.fiat);
+
   return (
     <Box
       // Sticky CTA footer: pinned to the bottom of the asset page scroll
@@ -209,10 +236,16 @@ export const AssetStickyActions = ({
       data-testid="asset-sticky-actions"
     >
       <Button
-        variant={ButtonVariant.Secondary}
+        variant={
+          preferSwapAsPrimary ? ButtonVariant.Primary : ButtonVariant.Secondary
+        }
         size={ButtonSize.Lg}
         startIconName={IconName.SwapVertical}
-        className="flex-1 border border-success-default bg-transparent text-success-default hover:bg-success-muted-hover active:bg-success-muted-pressed"
+        className={
+          preferSwapAsPrimary
+            ? STICKY_PRIMARY_BUTTON_CLASS_NAME
+            : STICKY_SECONDARY_BUTTON_CLASS_NAME
+        }
         onClick={handleSwapClick}
         disabled={isSwapDisabled}
         data-testid="asset-sticky-swap"
@@ -220,10 +253,16 @@ export const AssetStickyActions = ({
         {t('swap')}
       </Button>
       <Button
-        variant={ButtonVariant.Primary}
+        variant={
+          preferSwapAsPrimary ? ButtonVariant.Secondary : ButtonVariant.Primary
+        }
         size={ButtonSize.Lg}
         startIconName={IconName.Bank}
-        className="flex-1 bg-success-default text-success-inverse hover:bg-success-default-hover active:bg-success-default-pressed"
+        className={
+          preferSwapAsPrimary
+            ? STICKY_SECONDARY_BUTTON_CLASS_NAME
+            : STICKY_PRIMARY_BUTTON_CLASS_NAME
+        }
         onClick={handleBuyClick}
         disabled={Boolean(asset.isERC721) || !isCtaGateReady}
         data-testid="asset-sticky-buy"

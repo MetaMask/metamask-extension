@@ -8,7 +8,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
 import { Asset } from '../types/asset';
-import { AssetStickyActions } from './asset-sticky-actions';
+import { AssetStickyActions, shouldPreferStickySwapCta } from './asset-sticky-actions';
 
 const mockGoToBuy = jest.fn().mockResolvedValue(true);
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
@@ -149,5 +149,49 @@ describe('AssetStickyActions', () => {
     );
 
     expect(getByTestId('asset-sticky-swap')).toBeDisabled();
+  });
+
+  it('keeps Buy as the filled primary CTA when fiat balance is 100 or less', () => {
+    const lowBalanceToken = {
+      ...token,
+      balance: { value: '10', display: '10', fiat: '100' },
+    } as Asset & { type: AssetType.token };
+
+    const { getByTestId } = renderWithProvider(
+      <AssetStickyActions asset={lowBalanceToken} />,
+      store,
+    );
+
+    expect(getByTestId('asset-sticky-buy')).toHaveClass('bg-success-default');
+    expect(getByTestId('asset-sticky-swap')).toHaveClass('bg-transparent');
+  });
+
+  it('makes Swap the filled primary CTA when fiat balance is greater than 100', () => {
+    const highBalanceToken = {
+      ...token,
+      balance: { value: '200', display: '200', fiat: '100.01' },
+    } as Asset & { type: AssetType.token };
+
+    const { getByTestId } = renderWithProvider(
+      <AssetStickyActions asset={highBalanceToken} />,
+      store,
+    );
+
+    expect(getByTestId('asset-sticky-swap')).toHaveClass('bg-success-default');
+    expect(getByTestId('asset-sticky-buy')).toHaveClass('bg-transparent');
+  });
+});
+
+describe('shouldPreferStickySwapCta', () => {
+  it('returns false for missing, zero, or 100 fiat', () => {
+    expect(shouldPreferStickySwapCta()).toBe(false);
+    expect(shouldPreferStickySwapCta('0')).toBe(false);
+    expect(shouldPreferStickySwapCta('100')).toBe(false);
+  });
+
+  it('returns true for fiat above 100, including formatted strings', () => {
+    expect(shouldPreferStickySwapCta('100.01')).toBe(true);
+    expect(shouldPreferStickySwapCta('1,234.5')).toBe(true);
+    expect(shouldPreferStickySwapCta('$250')).toBe(true);
   });
 });
