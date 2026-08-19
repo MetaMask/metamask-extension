@@ -59,10 +59,11 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
   }
 
   /**
-   * Retrieve an item from the selected storage backend.
+   * Retrieve an item from indexedDB
    *
-   * @param namespace The namespace of the item.
-   * @param key The key of the item.
+   * @param namespace - Controller namespace
+   * @param key - Data key
+   * @returns StorageGetResult: { result } if found, {} if not found, { error } on failure
    */
   async getItem(namespace: string, key: string): Promise<StorageGetResult> {
     try {
@@ -80,51 +81,84 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
   }
 
   /**
-   * Store an item in the selected storage backend.
+   * Store an item in indexedDB.
    *
-   * @param namespace The namespace of the item.
-   * @param key The key of the item.
-   * @param value The value to store.
+   * @param namespace - Controller namespace
+   * @param key - Data key
+   * @param value - JSON value to store
    */
   async setItem(namespace: string, key: string, value: Json): Promise<void> {
-    await this.#open();
-    const fullKey = this.#makeKey(namespace, key);
-    await this.#database.set({ [fullKey]: value });
+    try {
+      await this.#open();
+      const fullKey = this.#makeKey(namespace, key);
+      await this.#database.set({ [fullKey]: value });
+    } catch (error) {
+      console.error(
+        `StorageService: Failed to set item: ${namespace}:${key}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   /**
-   * Remove an item from the selected storage backend.
+   * Remove an item from indexedDB.
    *
-   * @param namespace The namespace of the item.
-   * @param key The key of the item.
+   * @param namespace - Controller namespace
+   * @param key - Data key
    */
   async removeItem(namespace: string, key: string): Promise<void> {
-    await this.#open();
-    const fullKey = this.#makeKey(namespace, key);
-    await this.#database.remove([fullKey]);
+    try {
+      await this.#open();
+      const fullKey = this.#makeKey(namespace, key);
+      await this.#database.remove([fullKey]);
+    } catch (error) {
+      console.error(
+        `StorageService: Failed to remove item: ${namespace}:${key}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   /**
-   * Get all keys for a namespace from the selected storage backend.
+   * Get all keys for a namespace from indexedDB.
    *
-   * @param namespace The namespace of the items.
+   * @param namespace - Controller namespace
+   * @returns Array of keys without prefix
    */
   async getAllKeys(namespace: string): Promise<string[]> {
-    const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
+    try {
+      const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
 
-    await this.#open();
-    const indexedDbKeys = await this.#database.getKeys(prefix);
-    return indexedDbKeys.map((key) => key.slice(prefix.length));
+      await this.#open();
+      const indexedDbKeys = await this.#database.getKeys(prefix);
+      return indexedDbKeys.map((key) => key.slice(prefix.length));
+    } catch (error) {
+      console.error(
+        `StorageService: Failed to get keys for ${namespace}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   /**
-   * Clear a namespace in the selected storage backend.
+   * Clear a namespace in indexedDB.
    *
-   * @param namespace The namespace of the items.
+   * @param namespace - Controller namespace
    */
   async clear(namespace: string): Promise<void> {
-    await this.#open();
-    const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
-    await this.#database.remove(await this.#database.getKeys(prefix));
+    try {
+      await this.#open();
+      const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
+      await this.#database.remove(await this.#database.getKeys(prefix));
+    } catch (error) {
+      console.error(
+        `StorageService: Failed to clear namespace ${namespace}`,
+        error,
+      );
+      throw error;
+    }
   }
 }
