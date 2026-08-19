@@ -8,6 +8,7 @@ import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import {
   mockTronApis,
   TRON_RECIPIENT_ADDRESS,
@@ -46,6 +47,10 @@ describe('Send Tron', function () {
         await sendPage.pressContinueButton();
         await snapTransactionConfirmation.checkPageIsLoaded();
         await snapTransactionConfirmation.clickFooterConfirmButton();
+
+        const txToast = new TxToastNotification(driver);
+        await txToast.checkTxSubmittedToast();
+
         const activityTab = new ActivityTab(driver);
         await activityTab.goToActivityList();
         await activityTab.checkTransactionAmount('-1 TRX');
