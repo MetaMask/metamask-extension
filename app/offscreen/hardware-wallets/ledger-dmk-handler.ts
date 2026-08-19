@@ -47,7 +47,7 @@ import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets
 import { serializeLedgerError } from './ledger-utils';
 
 function isWebHIDSupported(): boolean {
-  return navigator !== undefined && navigator.hid !== undefined;
+  return navigator?.hid !== undefined;
 }
 
 /**
