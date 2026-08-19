@@ -56,6 +56,8 @@ class SelectNetworkModal {
   private readonly manageNetworksButton =
     '[data-testid="home-network-filter-manage-networks"]';
 
+  private readonly modalBackdrop = '.modal__backdrop';
+
   private readonly modalCloseButton = 'header button[aria-label="Close"]';
 
   private readonly networkListItem = (chainId: string) =>
@@ -167,6 +169,13 @@ class SelectNetworkModal {
   async close(): Promise<void> {
     console.log(`Closing the select network modal`);
     await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
+    await this.waitForModalToClose();
+  }
+
+  async closeIfOpen(): Promise<void> {
+    console.log('Close the select network modal if it is still open');
+    await this.driver.clickElementSafe(this.modalCloseButton, 500);
+    await this.waitForModalToClose();
   }
 
   async selectAllNetworks(): Promise<void> {
@@ -190,6 +199,13 @@ class SelectNetworkModal {
     await this.driver.clickElementAndWaitToDisappear(
       this.networkListItemByName(networkName),
     );
+  }
+
+  async waitForModalToClose(): Promise<void> {
+    console.log('Wait for the select network modal to close');
+    await this.driver.assertElementNotPresent(this.modalBackdrop, {
+      timeout: 15_000,
+    });
   }
 }
 
