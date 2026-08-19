@@ -94,7 +94,8 @@ async function mockAccountsApiWithEvmActivity(mockServer: Mockttp) {
   ];
 }
 
-describe('Tron - Activity', function (this: Suite) {
+// eslint-disable-next-line mocha/no-skipped-tests -- WPN-435: skip until the Tron activity cluster is ready to run in CI
+describe.skip('Tron - Activity', function (this: Suite) {
   this.timeout(180_000);
 
   describe('Mapping per type', function () {
