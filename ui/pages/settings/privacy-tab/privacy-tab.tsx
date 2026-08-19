@@ -69,27 +69,28 @@ export const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
   },
 ];
 
-export const CONSOLIDATED_BASIC_FUNCTIONALITY_PRIVACY_ITEMS: SettingItemConfig[] = [
-  { id: 'basic-functionality', component: BasicFunctionalityToggleItem },
-  { id: 'ipfs-gateway', component: IpfsGatewayItem },
-  { id: 'skip-link-confirmation', component: SkipLinkConfirmationToggleItem },
-  {
-    id: 'metametrics',
-    component: MetametricsToggleItem,
-    hasDividerBefore: true,
-  },
-  { id: 'data-collection', component: DataCollectionToggleItem },
-  { id: 'delete-metametrics-data', component: DeleteMetametricsDataItem },
-  {
-    id: 'download-state-logs',
-    component: DownloadStateLogsItem,
-    hasDividerBefore: true,
-  },
-  {
-    id: 'export-your-data',
-    component: ExportYourDataItem,
-  },
-];
+export const CONSOLIDATED_BASIC_FUNCTIONALITY_PRIVACY_ITEMS: SettingItemConfig[] =
+  [
+    { id: 'basic-functionality', component: BasicFunctionalityToggleItem },
+    { id: 'ipfs-gateway', component: IpfsGatewayItem },
+    { id: 'skip-link-confirmation', component: SkipLinkConfirmationToggleItem },
+    {
+      id: 'metametrics',
+      component: MetametricsToggleItem,
+      hasDividerBefore: true,
+    },
+    { id: 'data-collection', component: DataCollectionToggleItem },
+    { id: 'delete-metametrics-data', component: DeleteMetametricsDataItem },
+    {
+      id: 'download-state-logs',
+      component: DownloadStateLogsItem,
+      hasDividerBefore: true,
+    },
+    {
+      id: 'export-your-data',
+      component: ExportYourDataItem,
+    },
+  ];
 
 const PrivacyTab = () => {
   const isBasicFunctionalityConsolidationEnabled = useSelector(
