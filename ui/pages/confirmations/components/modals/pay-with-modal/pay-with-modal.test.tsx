@@ -82,7 +82,9 @@ jest.mock('../../send/asset', () => ({
         <span data-testid="has-tag-renderers">
           {String(Boolean(tagRenderers?.length))}
         </span>
-        <span data-testid="search-placeholder">{String(searchPlaceholder)}</span>
+        <span data-testid="search-placeholder">
+          {String(searchPlaceholder)}
+        </span>
         <button
           data-testid="select-token"
           onClick={() => onAssetSelect?.({ address: '0x123', chainId: '0x1' })}
