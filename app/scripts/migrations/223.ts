@@ -69,6 +69,7 @@ export const migrate = (async (versionedData, _changedKeys) => {
     return key.startsWith(STORAGE_KEY_PREFIX);
   });
   if (storageServiceEntries.length === 0) {
+    console.warn(`Migration ${version}: No storage service keys found.`);
     return;
   }
 
