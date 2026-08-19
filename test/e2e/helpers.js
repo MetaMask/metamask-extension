@@ -141,7 +141,7 @@ function normalizeSmartContracts(smartContract) {
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
- * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('anvil', 'none').
+ * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('anvil', 'bitcoin', 'solana', 'stellar', 'tron', 'none').
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
@@ -315,6 +315,14 @@ async function withFixtures(options, testSuite) {
           // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
           const { BitcoinNode } = require('./seeder/bitcoin/node');
           localNode = new BitcoinNode();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
+        case 'stellar':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const { StellarNode } = require('./seeder/stellar/node');
+          localNode = new StellarNode();
           await localNode.start(nodeOptions);
           localNodes.push(localNode);
           break;
