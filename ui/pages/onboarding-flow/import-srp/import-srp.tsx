@@ -98,9 +98,10 @@ export default function ImportSRP({
     submitSecretRecoveryPhrase,
   ]);
 
-  useEffect(() => {
+  const handleSecretRecoveryPhraseChange = useCallback((phrase: string) => {
+    setSecretRecoveryPhrase(phrase);
     setSrpError('');
-  }, [secretRecoveryPhrase]);
+  }, []);
 
   return (
     <Box
@@ -126,7 +127,7 @@ export default function ImportSRP({
         </Box>
         <SrpInputForm
           error={srpError}
-          setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+          setSecretRecoveryPhrase={handleSecretRecoveryPhraseChange}
           onClearCallback={() => setSrpError('')}
         />
       </Box>

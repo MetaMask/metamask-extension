@@ -38,7 +38,13 @@ import {
   createSnapsMethodMiddleware,
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
-import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  ERC1155,
+  ERC20,
+  ERC721,
+  toHex,
+} from '@metamask/controller-utils';
 
 import { BRIDGE_CONTROLLER_NAME } from '@metamask/bridge-controller';
 
@@ -216,6 +222,7 @@ import {
   trackPage,
 } from './controllers/analytics';
 import Backup from './lib/backup';
+import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
   addHexPrefix,
@@ -340,6 +347,7 @@ import { NameControllerInit } from './messenger-client-init/confirmations/name-c
 import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
 import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
 import { ConfigRegistryControllerInit } from './messenger-client-init/config-registry-controller-init';
+import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
 import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
@@ -649,6 +657,7 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsControllerV2: DeFiPositionsControllerV2Init,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
+      NetworkConnectionBannerController: NetworkConnectionBannerControllerInit,
       ShieldSubscriptionService: ShieldSubscriptionServiceInit,
       NetworkOrderController: NetworkOrderControllerInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
@@ -849,6 +858,15 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe('KeyringController:lock', () =>
       this._onLock(),
+    );
+
+    // Ramps buy-flow terminal-outcome KPIs (completed / failed). Fires in the
+    // background (not the UI) so the outcome is captured even when the popup is
+    // closed — the common case, since the order polls to a terminal status
+    // after the user finishes on the provider's page.
+    this.controllerMessenger.subscribe(
+      'RampsController:orderStatusChanged',
+      (event) => handleRampsOrderStatusChanged(event),
     );
 
     // on/off shield controller based on shield subscription
@@ -2932,11 +2950,7 @@ export default class MetamaskController extends EventEmitter {
         image,
         networkClientId,
       }) => {
-        if (
-          this.controllerMessenger.call(
-            'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-          )
-        ) {
+        if (getIsAssetsUnifiedStateIncludedInBuild()) {
           const selectedAccount = this.accountsController.getSelectedAccount();
           const chainId =
             this.networkController.getNetworkClientById(networkClientId)
@@ -3183,10 +3197,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       addMusdConversionDismissedCtaKey:
         appStateController.addMusdConversionDismissedCtaKey.bind(
-          appStateController,
-        ),
-      updateNetworkConnectionBanner:
-        appStateController.updateNetworkConnectionBanner.bind(
           appStateController,
         ),
       setShowShieldEntryModalOnce:
@@ -4464,11 +4474,52 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * After the user approves EIP-747, persist the token on the unified
-   * AssetsController. Must run only after `TokensController.watchAsset` succeeds
-   * so a rejected confirmation does not leave orphaned unified state.
+   * Requests the EIP-747 (`wallet_watchAsset`) confirmation for the unified
+   * assets path. Because the unified build no longer routes through
+   * `TokensController.watchAsset` (which owns the approval in the legacy path),
+   * the approval must be requested here so the user still confirms the import.
    *
-   * @param {object} asset - The asset descriptor (possibly enriched by TokensController).
+   * Resolves when the user approves and rejects (throwing) when the user
+   * declines, mirroring the legacy behavior so callers persist only on approval.
+   *
+   * @param {object} asset - The asset descriptor from the dapp request.
+   * @param {string} origin - The origin that initiated the request.
+   */
+  #requestUnifiedWatchAssetApproval = async (asset, origin) => {
+    const { address } = this.accountsController.getSelectedAccount();
+    const id = crypto.randomUUID();
+    const image =
+      typeof asset.image === 'string' && asset.image.trim() !== ''
+        ? asset.image
+        : null;
+
+    await this.controllerMessenger.call(
+      'ApprovalController:addRequest',
+      {
+        id,
+        origin: origin || ORIGIN_METAMASK,
+        type: ApprovalType.WatchAsset,
+        requestData: {
+          id,
+          interactingAddress: address,
+          asset: {
+            address: asset.address,
+            decimals: asset.decimals,
+            symbol: asset.symbol,
+            image,
+          },
+        },
+      },
+      true,
+    );
+  };
+
+  /**
+   * After the user approves EIP-747, persist the token on the unified
+   * AssetsController. Must run only after the confirmation is approved so a
+   * rejected confirmation does not leave orphaned unified state.
+   *
+   * @param {object} asset - The asset descriptor from the dapp request.
    * @param {string} networkClientId - The network client the request targets.
    */
   #persistUnifiedWatchAsset = async (asset, networkClientId) => {
@@ -4519,20 +4570,22 @@ export default class MetamaskController extends EventEmitter {
   }) => {
     switch (type) {
       case ERC20: {
-        const unifyWatchAsset = await this.controllerMessenger.call(
-          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        );
-
-        if (unifyWatchAsset) {
+        // Write operations (importing an asset) use the unified AssetsController
+        // whenever it is included in the build; the runtime rollout flag is
+        // treated as always-on for writes. The compile-time build gate still
+        // decides between the unified and legacy paths.
+        if (getIsAssetsUnifiedStateIncludedInBuild()) {
           this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
-        }
-        await this.tokensController.watchAsset({
-          asset,
-          type,
-          networkClientId,
-        });
-        if (unifyWatchAsset) {
+          // Show the EIP-747 confirmation and wait for the user. A rejection
+          // throws here, so we never reach the persist step below.
+          await this.#requestUnifiedWatchAssetApproval(asset, origin);
           await this.#persistUnifiedWatchAsset(asset, networkClientId);
+        } else {
+          await this.tokensController.watchAsset({
+            asset,
+            type,
+            networkClientId,
+          });
         }
         return undefined;
       }

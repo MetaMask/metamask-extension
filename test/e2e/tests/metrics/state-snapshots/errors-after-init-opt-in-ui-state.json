@@ -122,13 +122,7 @@
     "country": "string",
     "coverageResults": "object",
     "cryptocurrencies": ["btc", "sol"],
-    "currencyRates": {
-      "ETH": {
-        "conversionDate": "object",
-        "conversionRate": 1700,
-        "usdConversionRate": null
-      }
-    },
+    "currencyRates": {},
     "currentAppVersion": "string",
     "currentCurrency": "usd",
     "currentExtensionPopupId": "number",
@@ -263,7 +257,8 @@
     "needsProfilePairing": "boolean",
     "networkConfigurations": "object",
     "networkConfigurationsByChainId": "object",
-    "networkConnectionBanner": "object",
+    "networkConnectionBannerNetwork": null,
+    "networkConnectionBannerStatus": "string",
     "networksMetadata": "object",
     "networksWithTransactionActivity": "object",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -453,6 +448,7 @@
     "withdrawalProgress": "object",
     "withdrawalRequests": "object"
   },
+  "moneyBalance": "object",
   "perpsTutorial": "object",
   "rewards": "object",
   "smartAccounts": "object",
