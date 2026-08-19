@@ -112,6 +112,8 @@ import {
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { filterExcludedAssetList } from '../../components/app/assets/enablement/networks-customization';
 import { getFeaturedEvmNetworks } from '../../selectors/config-registry/config-registry';
+import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
+import { getFilteredFeaturedNetworks } from '../../../shared/lib/network.utils';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -552,6 +554,9 @@ export const TokenManagementPage = () => {
     getAllMultichainNetworkConfigurations,
   );
   const featuredEvmNetworks = useSelector(getFeaturedEvmNetworks);
+  const blacklistedChainIds = useSelector(
+    selectAdditionalNetworksBlacklistFeatureFlag,
+  );
   const allTokensByChain = useSelector(getTokensControllerAllTokens) as Record<
     string,
     Record<string, EvmToken[]>
@@ -685,7 +690,10 @@ export const TokenManagementPage = () => {
 
   const searchNetworks = useMemo(() => {
     if (isEvmAddress(tokenSearchQuery)) {
-      const featuredEvmChainIds = featuredEvmNetworks
+      const featuredEvmChainIds = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        featuredEvmNetworks,
+      )
         .map((network) => convertHexChainIdToCaipChainId(network.chainId))
         .filter((chainId): chainId is string => Boolean(chainId));
       return Array.from(
@@ -697,7 +705,12 @@ export const TokenManagementPage = () => {
       return undefined;
     }
     return enabledCaipChainIds;
-  }, [enabledCaipChainIds, featuredEvmNetworks, tokenSearchQuery]);
+  }, [
+    blacklistedChainIds,
+    enabledCaipChainIds,
+    featuredEvmNetworks,
+    tokenSearchQuery,
+  ]);
 
   const {
     data: searchResponse,

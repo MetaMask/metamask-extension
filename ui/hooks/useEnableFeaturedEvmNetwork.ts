@@ -7,8 +7,12 @@ import {
 } from '@metamask/utils';
 
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
-import { convertCaipToHexChainId } from '../../shared/lib/network.utils';
+import {
+  convertCaipToHexChainId,
+  getFilteredFeaturedNetworks,
+} from '../../shared/lib/network.utils';
 import { getFeaturedEvmNetworks } from '../selectors/config-registry/config-registry';
+import { selectAdditionalNetworksBlacklistFeatureFlag } from '../selectors/network-blacklist/network-blacklist';
 import { addNetwork } from '../store/actions';
 import { useDispatch } from '../store/hooks';
 
@@ -24,6 +28,9 @@ export const useEnableFeaturedEvmNetwork = () => {
     getNetworkConfigurationsByChainId,
   );
   const featuredEvmNetworks = useSelector(getFeaturedEvmNetworks);
+  const blacklistedChainIds = useSelector(
+    selectAdditionalNetworksBlacklistFeatureFlag,
+  );
 
   return useCallback(
     async (
@@ -36,9 +43,10 @@ export const useEnableFeaturedEvmNetwork = () => {
       }
 
       const chainIdHex = convertCaipToHexChainId(chainId);
-      const featuredEvmNetwork = featuredEvmNetworks.find(
-        (network) => network.chainId === chainIdHex,
-      );
+      const featuredEvmNetwork = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        featuredEvmNetworks,
+      ).find((network) => network.chainId === chainIdHex);
       if (!featuredEvmNetwork || evmNetworkConfigurations[chainIdHex]) {
         return null;
       }
@@ -57,6 +65,11 @@ export const useEnableFeaturedEvmNetwork = () => {
         networkClientId: endpoint?.networkClientId,
       };
     },
-    [dispatch, evmNetworkConfigurations, featuredEvmNetworks],
+    [
+      blacklistedChainIds,
+      dispatch,
+      evmNetworkConfigurations,
+      featuredEvmNetworks,
+    ],
   );
 };
