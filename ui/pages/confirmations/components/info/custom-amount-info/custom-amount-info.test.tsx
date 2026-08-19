@@ -189,8 +189,15 @@ function render(
         : undefined,
     );
   jest
-    .mocked(useTransactionPayDataModule.useIsTransactionPayLoading)
-    .mockReturnValue(isQuotesLoading);
+    .mocked(useTransactionPayDataModule.useIsTransactionPayQuotePending)
+    .mockReturnValue(
+      isQuotesLoading ||
+        (transactionMeta.type === TransactionType.perpsWithdraw &&
+          !isPostQuote),
+    );
+  jest
+    .mocked(useTransactionPayDataModule.useTransactionPayHasExecutableQuote)
+    .mockReturnValue(hasQuotes);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayIsPostQuote)
     .mockReturnValue(isPostQuote);
@@ -460,7 +467,7 @@ describe('CustomAmountInfo', () => {
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
     });
 
-    it('hides Perps Withdraw result rows before post-quote setup completes', () => {
+    it('renders Perps Withdraw result rows while post-quote setup is pending', () => {
       const transactionMeta = {
         ...genUnapprovedContractInteractionConfirmation(),
         type: TransactionType.perpsWithdraw,
@@ -472,8 +479,9 @@ describe('CustomAmountInfo', () => {
         isPostQuote: false,
       });
 
-      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
-      expect(queryByTestId('bridge-time-row')).not.toBeInTheDocument();
+      expect(queryByTestId('bridge-fee-row')).toBeInTheDocument();
+      expect(queryByTestId('bridge-time-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row-skeleton')).toBeInTheDocument();
       expect(queryByTestId('receive-row')).not.toBeInTheDocument();
     });
 
@@ -555,7 +563,7 @@ describe('CustomAmountInfo', () => {
         .mocked(useTransactionPayDataModule.useTransactionPayQuotes)
         .mockReturnValue([]);
       jest
-        .mocked(useTransactionPayDataModule.useIsTransactionPayLoading)
+        .mocked(useTransactionPayDataModule.useIsTransactionPayQuotePending)
         .mockReturnValue(false);
       jest
         .mocked(useTransactionPayDataModule.useTransactionPayRequiredTokens)

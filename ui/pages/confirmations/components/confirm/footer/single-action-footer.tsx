@@ -2,7 +2,6 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
-import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { Button, ButtonSize } from '@metamask/design-system-react';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
@@ -10,10 +9,10 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
   useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
-  useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
 
@@ -37,13 +36,10 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const transactionType = currentConfirmation?.type;
 
   const { alerts } = useAlerts(transactionId);
-  const isPayLoading = useIsTransactionPayLoading();
+  const isPayLoading = useIsTransactionPayQuotePending();
+  const hasExecutableQuote = useTransactionPayHasExecutableQuote();
   const isPostQuote = useTransactionPayIsPostQuote();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-  const quotes = useTransactionPayQuotes();
-  const hasExecutableQuote = quotes?.some(
-    (quote) => quote.strategy !== TransactionPayStrategy.None,
-  );
   const isPayReady =
     !isPerpsWithdrawTransaction(currentConfirmation) ||
     (isPostQuote && hasExecutableQuote);

@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   TransactionPayStrategy,
   TransactionPayQuote,
@@ -12,7 +13,9 @@ import {
 import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
 import {
+  useIsTransactionPayQuotePending,
   useIsTransactionPayLoading,
+  useTransactionPayHasExecutableQuote,
   useTransactionPayIsMaxAmount,
   useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
@@ -66,6 +69,7 @@ function createWrapper(
   stateOverrides?: Partial<
     (typeof STATE_MOCK)['metamask']['transactionData'][typeof TRANSACTION_ID_MOCK]
   >,
+  transactionType?: TransactionType,
 ) {
   const state = stateOverrides
     ? {
@@ -83,7 +87,7 @@ function createWrapper(
   const store = mockStore(state);
 
   const confirmContextValue = {
-    currentConfirmation: { id: TRANSACTION_ID_MOCK },
+    currentConfirmation: { id: TRANSACTION_ID_MOCK, type: transactionType },
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: jest.fn(),
   };
@@ -104,6 +108,47 @@ describe('useTransactionPayData', () => {
         wrapper: createWrapper(),
       });
       expect(result.current).toStrictEqual([QUOTE_MOCK]);
+    });
+  });
+
+  describe('useTransactionPayHasExecutableQuote', () => {
+    it('returns true when an executable quote exists', () => {
+      const { result } = renderHook(
+        () => useTransactionPayHasExecutableQuote(),
+        {
+          wrapper: createWrapper(),
+        },
+      );
+
+      expect(result.current).toBe(true);
+    });
+
+    it('returns false when quotes use the none strategy', () => {
+      const { result } = renderHook(
+        () => useTransactionPayHasExecutableQuote(),
+        {
+          wrapper: createWrapper({
+            quotes: [
+              {
+                strategy: TransactionPayStrategy.None,
+              } as TransactionPayQuote<Json>,
+            ],
+          }),
+        },
+      );
+
+      expect(result.current).toBe(false);
+    });
+
+    it('returns false when quotes are unavailable', () => {
+      const { result } = renderHook(
+        () => useTransactionPayHasExecutableQuote(),
+        {
+          wrapper: createWrapper({ quotes: undefined }),
+        },
+      );
+
+      expect(result.current).toBe(false);
     });
   });
 
@@ -158,6 +203,50 @@ describe('useTransactionPayData', () => {
         wrapper: createWrapper(),
       });
       expect(result.current).toBe(true);
+    });
+  });
+
+  describe('useIsTransactionPayQuotePending', () => {
+    it('returns true while Perps Withdraw post-quote setup is pending', () => {
+      const { result } = renderHook(
+        () => useIsTransactionPayQuotePending(),
+        {
+          wrapper: createWrapper(
+            { isLoading: false, isPostQuote: false },
+            TransactionType.perpsWithdraw,
+          ),
+        },
+      );
+
+      expect(result.current).toBe(true);
+    });
+
+    it('returns false after Perps Withdraw post-quote setup completes', () => {
+      const { result } = renderHook(
+        () => useIsTransactionPayQuotePending(),
+        {
+          wrapper: createWrapper(
+            { isLoading: false, isPostQuote: true },
+            TransactionType.perpsWithdraw,
+          ),
+        },
+      );
+
+      expect(result.current).toBe(false);
+    });
+
+    it('uses the existing loading state for other transaction types', () => {
+      const { result } = renderHook(
+        () => useIsTransactionPayQuotePending(),
+        {
+          wrapper: createWrapper(
+            { isLoading: false, isPostQuote: false },
+            TransactionType.musdConversion,
+          ),
+        },
+      );
+
+      expect(result.current).toBe(false);
     });
   });
 

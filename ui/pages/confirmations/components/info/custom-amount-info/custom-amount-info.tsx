@@ -1,6 +1,5 @@
 import React, { ReactNode, useCallback } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   Display,
@@ -35,7 +34,8 @@ import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/us
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
   useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
@@ -331,18 +331,15 @@ function BottomContainer({
 function useIsResultReady() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const quotes = useTransactionPayQuotes();
-  const isQuotesLoading = useIsTransactionPayLoading();
+  const isQuotePending = useIsTransactionPayQuotePending();
+  const hasExecutableQuote = useTransactionPayHasExecutableQuote();
   const isPostQuote = useTransactionPayIsPostQuote();
 
   if (isPerpsWithdrawTransaction(currentConfirmation)) {
-    const hasExecutableQuote = quotes?.some(
-      (quote) => quote.strategy !== TransactionPayStrategy.None,
-    );
-
-    return Boolean(isPostQuote && hasExecutableQuote);
+    return isQuotePending || Boolean(isPostQuote && hasExecutableQuote);
   }
 
-  return isQuotesLoading || Boolean(quotes?.length);
+  return isQuotePending || Boolean(quotes?.length);
 }
 
 function AlertMessage() {

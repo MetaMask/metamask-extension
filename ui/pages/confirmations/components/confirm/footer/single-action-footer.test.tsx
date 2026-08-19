@@ -1,11 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import {
-  TransactionPayQuote,
-  TransactionPayStrategy,
-} from '@metamask/transaction-pay-controller';
-import type { Json } from '@metamask/utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -13,10 +8,10 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
   useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
-  useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
 import { SingleActionFooter } from './single-action-footer';
 
@@ -90,13 +85,9 @@ function render({
 describe('<SingleActionFooter />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    jest.mocked(useIsTransactionPayLoading).mockReturnValue(false);
+    jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(false);
+    jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(true);
     jest.mocked(useTransactionPayIsPostQuote).mockReturnValue(true);
-    jest.mocked(useTransactionPayQuotes).mockReturnValue([
-      {
-        strategy: TransactionPayStrategy.Relay,
-      } as TransactionPayQuote<Json>,
-    ]);
     jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
       amountUsd: '10.00',
       skipIfBalance: false,
@@ -124,7 +115,7 @@ describe('<SingleActionFooter />', () => {
   });
 
   it('disables the button when pay token data is loading', () => {
-    jest.mocked(useIsTransactionPayLoading).mockReturnValue(true);
+    jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(true);
 
     const { getByTestId } = render();
 
@@ -274,11 +265,7 @@ describe('<SingleActionFooter />', () => {
   });
 
   it('disables perps withdrawal without an executable quote', () => {
-    jest.mocked(useTransactionPayQuotes).mockReturnValue([
-      {
-        strategy: TransactionPayStrategy.None,
-      } as TransactionPayQuote<Json>,
-    ]);
+    jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(false);
 
     const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
 

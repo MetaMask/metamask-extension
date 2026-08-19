@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -9,8 +8,8 @@ import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transac
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
-  useIsTransactionPayLoading,
-  useTransactionPayIsPostQuote,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
@@ -22,8 +21,8 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken } = useTransactionPayToken();
   const quotes = useTransactionPayQuotes();
-  const isQuotesLoading = useIsTransactionPayLoading();
-  const isPostQuote = useTransactionPayIsPostQuote();
+  const isQuotePending = useIsTransactionPayQuotePending();
+  const hasExecutableQuote = useTransactionPayHasExecutableQuote();
   const sourceAmounts = useTransactionPaySourceAmounts();
   const requiredTokens = useTransactionPayRequiredTokens();
 
@@ -33,14 +32,11 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
       Boolean(token.amountRaw) &&
       token.amountRaw !== '0',
   );
-  const hasExecutableQuote = quotes?.some(
-    (quote) => quote.strategy !== TransactionPayStrategy.None,
-  );
   const isPerpsWithdrawNotReady =
     isPerpsWithdrawTransaction(currentConfirmation) &&
     hasPositiveRequiredAmount &&
-    !isQuotesLoading &&
-    (!isPostQuote || !payToken || !hasExecutableQuote);
+    !isQuotePending &&
+    (!payToken || !hasExecutableQuote);
 
   const isOptionalOnly = (sourceAmounts ?? []).every(
     (sourceAmount) =>
@@ -52,7 +48,7 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
   const showAlert =
     isPerpsWithdrawNotReady ||
     (payToken &&
-      !isQuotesLoading &&
+      !isQuotePending &&
       sourceAmounts?.length &&
       !quotes?.length &&
       !isOptionalOnly);

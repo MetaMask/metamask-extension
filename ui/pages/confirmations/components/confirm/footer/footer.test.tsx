@@ -70,6 +70,8 @@ jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../hooks/gas/useIsGaslessSupported');
 jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
   useIsTransactionPayLoading: jest.fn(() => false),
+  useIsTransactionPayQuotePending: jest.fn(() => false),
+  useTransactionPayHasExecutableQuote: jest.fn(() => false),
   useTransactionPayIsPostQuote: jest.fn(() => false),
   useTransactionPayPrimaryRequiredToken: jest.fn(() => undefined),
   useTransactionPayQuotes: jest.fn(() => undefined),
