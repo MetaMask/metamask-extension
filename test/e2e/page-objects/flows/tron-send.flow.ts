@@ -8,10 +8,7 @@ import NonEvmHomepage from '../pages/home/non-evm-homepage';
 import SendPage from '../pages/send/send-page';
 import { TRON_CHAIN_ID } from '../../tests/tron/mocks/common-tron';
 import { login } from './login.flow';
-import {
-  retriggerTronNetworkSelect,
-  selectTronNetwork,
-} from './tron-network.flow';
+import { selectTronNetwork } from './tron-network.flow';
 
 const TRON_CONFIRM_TIMEOUT_MS = 30_000;
 const TRON_ACTIVITY_PENDING_OR_CONFIRMED_SELECTOR =
@@ -31,34 +28,24 @@ export async function landOnTronSendScreen({
   expectedTokenBalance?: string;
 }): Promise<SendPage> {
   await login(driver, { validateBalance: false });
-  await selectTronNetwork(driver);
-
-  const home = new NonEvmHomepage(driver);
+  await selectTronNetwork(driver, { waitForSnapReadyDelay: true });
 
   // Refresh re-hydrates the UI from background state so asynchronously-fetched
   // Snap balances appear reliably in the token list (same pattern as assets.spec).
-  const assertNativeBalance = async (timeout: number): Promise<void> => {
-    await driver.refresh();
-    await home.checkPageIsLoaded();
-    if (expectedNativeBalance) {
-      await home.checkExpectedTokenBalanceIsDisplayed(
-        expectedNativeBalance,
-        'TRX',
-        timeout,
-      );
-    }
-  };
+  await driver.refresh();
 
-  try {
-    await assertNativeBalance(10_000);
-  } catch {
-    console.log(
-      'Live TRX balance did not land after the first Tron select; switching away and back to retrigger AssetsController',
+  const home = new NonEvmHomepage(driver);
+  await home.checkPageIsLoaded();
+  // Wait for the live TRX balance to land on the homepage before navigating to
+  // Send. Without this gate, Send opens with the cached "0 TRX available" and
+  // every amount renders "Insufficient funds", leaving the Continue button
+  // disabled. The local Tron node is seeded with 6.072 TRX in profiles.ts.
+  if (expectedNativeBalance) {
+    await home.checkExpectedTokenBalanceIsDisplayed(
+      expectedNativeBalance,
+      'TRX',
     );
-    await retriggerTronNetworkSelect(driver);
-    await assertNativeBalance(30_000);
   }
-
   if (expectedTokenBalance) {
     await home.checkExpectedTokenBalanceIsDisplayed(
       expectedTokenBalance,
