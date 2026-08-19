@@ -145,7 +145,7 @@ function generateCaveats(
       terms: createNativeBalanceChangeTerms({
         recipient,
         balance: 1n,
-        changeType: BalanceChangeType.Increase,
+        changeType: BalanceChangeType.Decrease,
       }),
       args,
     });
@@ -229,6 +229,7 @@ function generateCaveats(
     }
   }
 
+  // Defensive invariant — unreachable since a native caveat is always emitted above
   if (caveats.length === 0) {
     throw new Error('No caveats generated for enforced simulations');
   }

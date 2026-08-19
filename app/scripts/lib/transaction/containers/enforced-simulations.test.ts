@@ -12,6 +12,10 @@ import {
 } from '@metamask/messenger';
 import { cloneDeep } from 'lodash';
 import { DELEGATOR_CONTRACTS } from '@metamask/delegation-deployments';
+import {
+  BalanceChangeType,
+  createNativeBalanceChangeTerms,
+} from '@metamask/delegation-core';
 import { Hex, remove0x } from '@metamask/utils';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { toHex } from '@metamask/controller-utils';
@@ -326,6 +330,16 @@ describe('Enforced Simulations Utils', () => {
           ).toLowerCase(),
         ),
       );
+
+      const expectedTerms = createNativeBalanceChangeTerms({
+        recipient: TX_PARAMS_MOCK.from as Hex,
+        balance: 1n,
+        changeType: BalanceChangeType.Decrease,
+      });
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(remove0x(expectedTerms).toLowerCase()),
+      );
     });
 
     it('adds a no-decrease native caveat when simulation data is missing', async () => {
@@ -346,6 +360,16 @@ describe('Enforced Simulations Utils', () => {
             DELEGATOR_CONTRACTS['1.3.0']['1'].NativeBalanceChangeEnforcer,
           ).toLowerCase(),
         ),
+      );
+
+      const expectedTerms = createNativeBalanceChangeTerms({
+        recipient: TX_PARAMS_MOCK.from as Hex,
+        balance: 1n,
+        changeType: BalanceChangeType.Decrease,
+      });
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(remove0x(expectedTerms).toLowerCase()),
       );
     });
 
