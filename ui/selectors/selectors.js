@@ -2995,6 +2995,16 @@ export function getPasskeyDerivationMethod(state) {
 }
 
 /**
+ * Passkey authenticator AAGUID from the enrolled credential.
+ *
+ * @param {object} state - Redux state
+ * @returns {string | undefined}
+ */
+export function getPasskeyAuthenticatorId(state) {
+  return state.metamask?.passkeyRecord?.credential?.aaguid;
+}
+
+/**
  * True when the enrolled passkey's AAGUID is in the sidepanel-incompatible set
  * (defer passkey flows to a normal browser tab when also in sidepanel).
  *
@@ -4020,14 +4030,6 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
   (remoteFeatureFlags) =>
     remoteFeatureFlags?.nonZeroUnusedApprovals ?? EMPTY_ARRAY,
 );
-
-/**
- * @param {MetaMaskReduxState} state - The Redux state
- * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
- */
-export function getNetworkConnectionBanner(state) {
-  return state.metamask.networkConnectionBanner;
-}
 
 /**
  * Check if the device is offline.

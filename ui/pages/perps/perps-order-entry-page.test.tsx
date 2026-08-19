@@ -712,6 +712,43 @@ describe('PerpsOrderEntryPage', () => {
       expect(divider).toHaveAttribute('aria-valuenow', '33');
     });
 
+    it('mounts the order book already open when the persisted preference is expanded', () => {
+      const state = createMockState();
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          proLayoutPreferences: { orderBookExpanded: true },
+        },
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('perps-order-book-toggle')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(screen.getByTestId('perps-order-book')).toBeInTheDocument();
+    });
+
+    it('persists the open state when the order book is toggled', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const toggle = screen.getByTestId('perps-order-book-toggle');
+
+      fireEvent.click(toggle);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetProLayoutPreferences',
+        [{ orderBookExpanded: true }],
+      );
+
+      fireEvent.click(toggle);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetProLayoutPreferences',
+        [{ orderBookExpanded: false }],
+      );
+    });
+
     it('resizes the split within bounds using the keyboard', () => {
       const store = mockStore(createMockStateWithOrderBookPosition('right'));
       renderWithProvider(<PerpsOrderEntryPage />, store);
