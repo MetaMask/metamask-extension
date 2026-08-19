@@ -3528,6 +3528,13 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
+  productSafetyScamQuestionnaireDomainList: {
+    name: 'productSafetyScamQuestionnaireDomainList',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: [],
+    status: FeatureFlagStatus.Active,
+  },
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
