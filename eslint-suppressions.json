@@ -452,11 +452,6 @@
       "count": 1
     }
   },
-  "ui/contexts/claims/claims.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/contexts/hardware-wallets/HardwareWalletContext.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -688,11 +683,6 @@
   "ui/hooks/rewards/useVipTier.ts": {
     "react-hooks/preserve-manual-memoization": {
       "count": 1
-    }
-  },
-  "ui/hooks/shield/useClaimState.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 2
     }
   },
   "ui/hooks/subscription/useSubscription.ts": {
@@ -1382,38 +1372,8 @@
       "count": 1
     }
   },
-  "ui/pages/notifications/notification-components/feature-announcement/annonucement-footer-buttons.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/onboarding-flow/import-srp/import-srp.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/onboarding-flow/metametrics/metametrics.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/onboarding-flow/onboarding-flow.tsx": {
     "react-hooks/immutability": {
-      "count": 1
-    }
-  },
-  "ui/pages/onboarding-flow/recovery-phrase/recovery-phrase-chips.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/onboarding-flow/welcome/metamask-wordmark-animation.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/onboarding-flow/welcome/welcome-login.tsx": {
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -1476,24 +1436,9 @@
       "count": 3
     }
   },
-  "ui/pages/settings/sync-accounts/sync-accounts-settings.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/shield/plan/shield-plan.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 3
-    }
-  },
   "ui/pages/shield/transaction-shield/shield-banner-animation.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 2
-    }
-  },
-  "ui/pages/shield/transaction-shield/transaction-shield.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
     }
   },
   "ui/pages/snaps/snap-view/snap-settings.js": {

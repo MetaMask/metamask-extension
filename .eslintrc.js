@@ -405,9 +405,6 @@ module.exports = defineConfig([
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
       ],
-      // v7 React Compiler rules — error severity with eslint-suppressions.json
-      // baseline (MetaMask-planning#6402). Do not downgrade to 'warn'; use
-      // suppressions for existing violations instead.
       'react-hooks/config': 'error',
       'react-hooks/error-boundaries': 'error',
       'react-hooks/gating': 'error',
@@ -437,8 +434,7 @@ module.exports = defineConfig([
   /**
    * TypeScript React-specific code
    *
-   * TypeScript React files share the same compiler-rule severity as JS React
-   * files above (error + suppressions). TODO: combine rulesets where possible.
+   * TODO: combine rulesets where possible.
    */
   {
     files: ['ui/**/*.ts', 'ui/**/*.tsx'],
@@ -476,9 +472,6 @@ module.exports = defineConfig([
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
       ],
-      // v7 React Compiler rules — error severity with eslint-suppressions.json
-      // baseline (MetaMask-planning#6402). Do not downgrade to 'warn'; use
-      // suppressions for existing violations instead.
       'react-hooks/config': 'error',
       'react-hooks/error-boundaries': 'error',
       'react-hooks/gating': 'error',
