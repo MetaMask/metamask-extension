@@ -114,6 +114,7 @@ import { filterExcludedAssetList } from '../../components/app/assets/enablement/
 import { getFeaturedEvmNetworks } from '../../selectors/config-registry/config-registry';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
 import { getFilteredFeaturedNetworks } from '../../../shared/lib/network.utils';
+import { toast, ToastContent } from '../../components/ui/toast/toast';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -125,7 +126,6 @@ type EvmToken = {
   image?: string;
 };
 
-const TOKEN_MANAGEMENT_PAGE_TOAST_DURATION_MS = 5000;
 const TOKEN_LIST_PAGINATION_THRESHOLD_PX = ASSET_CELL_HEIGHT * 4;
 const EMPTY_TOKEN_SEARCH_RESULTS: TokenSearchResult[] = [];
 const TOKEN_MANAGEMENT_SCREEN = 'manage_tokens';
@@ -176,14 +176,14 @@ const getTokenManagementToastFromRouteState = (state: unknown) => {
     return null;
   }
 
-  const toast = (state as TokenManagementRouteState).tokenManagementToast;
-  if (toast?.type !== 'customTokenAdded' || !toast.symbol) {
+  const routeToast = (state as TokenManagementRouteState).tokenManagementToast;
+  if (routeToast?.type !== 'customTokenAdded' || !routeToast.symbol) {
     return null;
   }
 
   return {
     type: 'customTokenAdded' as const,
-    symbol: toast.symbol,
+    symbol: routeToast.symbol,
   };
 };
 
@@ -414,16 +414,27 @@ export const TokenManagementPage = () => {
   const enableFeaturedEvmNetwork = useEnableFeaturedEvmNetwork();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [pageToast, setPageToast] = useState<TokenManagementPageToast | null>(
-    null,
-  );
   const [isNetworkFilterModalOpen, setIsNetworkFilterModalOpen] =
     useState(false);
   const [pendingKeys, setPendingKeys] = useState<ReadonlySet<string>>(
     () => new Set<string>(),
   );
 
-  const dismissPageToast = useCallback(() => setPageToast(null), []);
+  const showPageToast = useCallback(
+    (pageToast: TokenManagementPageToast) => {
+      const title =
+        pageToast.type === 'customTokenAdded'
+          ? t('newCustomTokenAdded', [pageToast.symbol])
+          : t('newNetworkAdded', [pageToast.name]);
+      toast.success(
+        <ToastContent
+          title={title}
+          dataTestId="token-management-custom-token-success-toast"
+        />,
+      );
+    },
+    [t],
+  );
 
   const addPendingKey = useCallback((key: string) => {
     setPendingKeys((prev) => {
@@ -888,27 +899,14 @@ export const TokenManagementPage = () => {
   }, []);
 
   useEffect(() => {
-    const toast = getTokenManagementToastFromRouteState(location.state);
-    if (!toast) {
+    const routeToast = getTokenManagementToastFromRouteState(location.state);
+    if (!routeToast) {
       return;
     }
 
-    setPageToast(toast);
+    showPageToast(routeToast);
     navigate(TOKEN_MANAGEMENT_ROUTE, { replace: true, state: null });
-  }, [location.state, navigate]);
-
-  useEffect(() => {
-    if (!pageToast) {
-      return undefined;
-    }
-
-    const timeoutId = setTimeout(
-      dismissPageToast,
-      TOKEN_MANAGEMENT_PAGE_TOAST_DURATION_MS,
-    );
-
-    return () => clearTimeout(timeoutId);
-  }, [dismissPageToast, pageToast]);
+  }, [location.state, navigate, showPageToast]);
 
   useEffect(() => {
     commitStagedHidesRef.current = async () => {
@@ -1161,7 +1159,7 @@ export const TokenManagementPage = () => {
 
           trackEvent(tokenAddedEvent);
           if (addedNetwork) {
-            setPageToast({ type: 'networkAdded', name: addedNetwork.name });
+            showPageToast({ type: 'networkAdded', name: addedNetwork.name });
           }
           return;
         }
@@ -1197,6 +1195,7 @@ export const TokenManagementPage = () => {
       removePendingKey,
       removeCommittedHideKey,
       stageHide,
+      showPageToast,
       trackEvent,
       unstageHide,
     ],
@@ -1717,7 +1716,7 @@ export const TokenManagementPage = () => {
         ) : null}
       </ScrollContainer>
 
-      {pageToast || canImportCustomTokens ? (
+      {canImportCustomTokens ? (
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
@@ -1727,29 +1726,6 @@ export const TokenManagementPage = () => {
           paddingBottom={3}
           className="sticky bottom-0 z-10 gap-3"
         >
-          {pageToast ? (
-            <Box
-              data-testid="token-management-custom-token-success-toast"
-              className="flex w-full items-center gap-3 rounded-xl border border-border-muted bg-background-section p-3"
-            >
-              <Icon
-                name={IconName.Confirmation}
-                size={IconSize.Md}
-                color={IconColor.SuccessDefault}
-              />
-              <Text variant={TextVariant.BodyMd} className="flex-1">
-                {pageToast.type === 'customTokenAdded'
-                  ? t('newCustomTokenAdded', [pageToast.symbol])
-                  : t('newNetworkAdded', [pageToast.name])}
-              </Text>
-              <ButtonIcon
-                ariaLabel={t('close')}
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                onClick={dismissPageToast}
-              />
-            </Box>
-          ) : null}
           {canImportCustomTokens ? (
             <ButtonBase
               data-testid="token-management-add-custom-token-button"

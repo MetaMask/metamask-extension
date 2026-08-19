@@ -52,6 +52,7 @@ const mockTokenManagementLocationState = {
   current: null as unknown,
 };
 const mockUseNavigate = jest.fn();
+const mockToastSuccess = jest.fn();
 
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
@@ -67,6 +68,19 @@ jest.mock('react-router-dom', () => {
     }),
   };
 });
+
+jest.mock('../../components/ui/toast/toast', () => ({
+  toast: {
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+  },
+  ToastContent: ({
+    title,
+    dataTestId,
+  }: {
+    title: string;
+    dataTestId?: string;
+  }) => <div data-testid={dataTestId}>{title}</div>,
+}));
 
 jest.mock('../../selectors/assets', () => ({
   ...jest.requireActual('../../selectors/assets'),
@@ -365,6 +379,7 @@ describe('TokenManagementPage', () => {
   beforeEach(() => {
     mockTokenManagementLocationState.current = null;
     mockUseNavigate.mockClear();
+    mockToastSuccess.mockClear();
     trackAnalyticsEventMock.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
     resetTokenSearchState();
@@ -621,7 +636,7 @@ describe('TokenManagementPage', () => {
     );
   });
 
-  it('shows and dismisses the custom token success toast from route state', async () => {
+  it('shows an animated custom token success toast from route state', async () => {
     renderPage(createState(), {
       tokenManagementToast: {
         type: 'customTokenAdded',
@@ -629,17 +644,15 @@ describe('TokenManagementPage', () => {
       },
     });
 
-    const toast = await screen.findByTestId(
-      'token-management-custom-token-success-toast',
-    );
-    expect(toast).toHaveTextContent('APE');
-
-    fireEvent.click(screen.getByLabelText(messages.close.message));
-
     await waitFor(() =>
-      expect(
-        screen.queryByTestId('token-management-custom-token-success-toast'),
-      ).not.toBeInTheDocument(),
+      expect(mockToastSuccess).toHaveBeenCalledWith(
+        expect.objectContaining({
+          props: expect.objectContaining({
+            dataTestId: 'token-management-custom-token-success-toast',
+            title: expect.stringContaining('APE'),
+          }),
+        }),
+      ),
     );
   });
 
@@ -1246,9 +1259,14 @@ describe('TokenManagementPage', () => {
         { setActive: false },
       ),
     );
-    expect(
-      await screen.findByTestId('token-management-custom-token-success-toast'),
-    ).toHaveTextContent('“Base” was successfully added!');
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          dataTestId: 'token-management-custom-token-success-toast',
+          title: '“Base” was successfully added!',
+        }),
+      }),
+    );
   });
 
   it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {
