@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added new field, `authenticator_id` to AppUnlocked and PasskeySetup metrics (#45623)
 - Added a maximum deposit limit for MetaMask Pay deposit flows based on remote feature flags (#45139)
 - Added 0G network icon and currency symbol (#45153)
 - Added trust signal pills to Dapp connection screen and updated trust signal modal (#45490)
