@@ -337,9 +337,7 @@ function useIsResultReady() {
     useTransactionPayHasPositiveRequiredAmount();
 
   if (isPerpsWithdrawTransaction(currentConfirmation)) {
-    return (
-      hasPositiveRequiredAmount && (isQuotePending || hasExecutableQuote)
-    );
+    return hasPositiveRequiredAmount && (isQuotePending || hasExecutableQuote);
   }
 
   return isQuotePending || Boolean(quotes?.length);
