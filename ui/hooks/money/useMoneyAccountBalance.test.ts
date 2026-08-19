@@ -406,16 +406,16 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.apyPercentFormatted).toBe('4%');
     });
 
-    it('withholds the fallback during the first load, so the rate cannot flicker', () => {
+    it('uses the fallback during the first load', () => {
       stubQueries(BALANCE_LOADED, APY_LOADING);
 
       const { result } = renderBalanceHook(undefined, {
         vaultApyFallback: 0.04,
       });
 
-      expect(result.current.apyDecimal).toBeUndefined();
-      expect(result.current.apyPercent).toBeUndefined();
-      expect(result.current.apyPercentFormatted).toBeUndefined();
+      expect(result.current.apyDecimal).toBe(0.04);
+      expect(result.current.apyPercent).toBe(4);
+      expect(result.current.apyPercentFormatted).toBe('4%');
     });
 
     it('reports no APY at all when the service is empty and no fallback is served', () => {

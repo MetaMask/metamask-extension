@@ -102,18 +102,20 @@ export const useTokenSearchResults = ({
           setIsSearchResultsLoading(false);
         });
     },
-    [ownedAssetsByAssetId, chainIds, abortControllerRef, jwt],
+    [ownedAssetsByAssetId, chainIds, jwt],
   );
 
-  const debouncedFetchSearchResults = useCallback(
-    // eslint-disable-next-line react-hooks/use-memo
-    debounce(
-      (query: string, assets: BridgeToken[]) =>
-        fetchSearchResults(query, assets),
-      300,
-    ),
-    [fetchSearchResults],
-  );
+  const fetchSearchResultsRef = useRef(fetchSearchResults);
+  // eslint-disable-next-line react-hooks/refs -- sync latest fetch impl for stable debounced caller
+  fetchSearchResultsRef.current = fetchSearchResults;
+
+  /* eslint-disable react-hooks/refs -- stable debounced caller; fetch impl synced via ref above */
+  const debouncedFetchSearchResults = useRef(
+    debounce((query: string, assets: BridgeToken[]) => {
+      fetchSearchResultsRef.current(query, assets);
+    }, 300),
+  ).current;
+  /* eslint-enable react-hooks/refs */
 
   /*
    * Placeholder assets while fetching search results
@@ -136,22 +138,43 @@ export const useTokenSearchResults = ({
     return filteredAssetsToInclude.map(({ assetId }) => assetId).join('|');
   }, [filteredAssetsToInclude]);
 
+  const searchResetKey = `${searchQuery}|${stableMinimalAssetsString}|${Array.from(chainIds).join(',')}|${jwt ?? ''}`;
+
+  const filteredAssetsToIncludeRef = useRef(filteredAssetsToInclude);
   useEffect(() => {
-    // Reset state on search query change
-    abortControllerRef.current.abort('Search query changed');
-    setSearchResultsWithBalance([]);
-    setSearchResultCursor(undefined);
-    setHasMoreResults(false);
-    if (searchQuery.length > 0) {
-      setSearchResultsWithBalance(filteredAssetsToInclude);
-      if (!jwt) {
+    filteredAssetsToIncludeRef.current = filteredAssetsToInclude;
+  }, [filteredAssetsToInclude]);
+
+  useEffect(() => {
+    const assetsToIncludeForSearch = filteredAssetsToIncludeRef.current;
+
+    abortControllerRef.current.abort('Search reset key changed');
+    debouncedFetchSearchResults.cancel();
+
+    queueMicrotask(() => {
+      setSearchResultCursor(undefined);
+      setHasMoreResults(false);
+
+      if (searchQuery.length === 0) {
+        setSearchResultsWithBalance([]);
+        setIsSearchResultsLoading(false);
         return;
       }
+
+      setSearchResultsWithBalance(assetsToIncludeForSearch);
+
+      if (!jwt) {
+        setIsSearchResultsLoading(false);
+        return;
+      }
+
       setIsSearchResultsLoading(true);
-      // Debounce the initial fetch until the user stops typing
-      debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
+    });
+
+    if (searchQuery.length > 0 && jwt) {
+      debouncedFetchSearchResults(searchQuery, assetsToIncludeForSearch);
     }
-  }, [searchQuery, stableMinimalAssetsString, chainIds, jwt]);
+  }, [searchResetKey, searchQuery, jwt, debouncedFetchSearchResults]);
 
   useEffect(() => {
     const debouncedFn = debouncedFetchSearchResults;
@@ -159,7 +182,7 @@ export const useTokenSearchResults = ({
       abortControllerRef.current.abort('Page unmounted');
       debouncedFn.cancel();
     };
-  }, []);
+  }, [debouncedFetchSearchResults]);
 
   return {
     searchResults: searchResultsWithBalance,

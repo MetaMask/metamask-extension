@@ -37,6 +37,9 @@ class AddressListModal {
 
   private driver: Driver;
 
+  private readonly parentSelector =
+    '[data-testid="parent-selector-multichain-account-address-list-page"]';
+
   private readonly qrButton =
     '[data-testid="multichain-address-row-qr-button"]';
 
@@ -98,7 +101,10 @@ class AddressListModal {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([this.qrButton]);
+      await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
+        this.qrButton,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for address list modal to be loaded',

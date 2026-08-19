@@ -3,13 +3,18 @@ import { screen, within } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
+import { getPrivacyMode } from '../../selectors/selectors';
 import { MoneyHomePage } from './money-home-page';
 
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyAccountBalance = jest.fn();
 const mockUseMoneyAccountInterest = jest.fn();
-const mockUseMultiChainAssets = jest.fn();
-const mockUseSelector = jest.fn();
+const mockUseMoneyDepositTokens = jest.fn();
+const mockSelectMoneyEarningSectionEnabled = jest.mocked(
+  selectMoneyEarningSectionEnabled,
+);
+const mockGetPrivacyMode = jest.mocked(getPrivacyMode);
 
 const interestResponse = (value: string) => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -17,10 +22,27 @@ const interestResponse = (value: string) => ({
 });
 
 jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: (...args: unknown[]) => mockUseSelector(...args),
+  useSelector: (selector: () => unknown) => selector(),
 }));
 
+jest.mock('../../selectors/money/money-account-feature-flags', () => ({
+  ...jest.requireActual('../../selectors/money/money-account-feature-flags'),
+  selectMoneyEarningSectionEnabled: jest.fn(),
+}));
+jest.mock('../../selectors/selectors', () => ({
+  ...jest.requireActual('../../selectors/selectors'),
+  getPrivacyMode: jest.fn(),
+}));
+jest.mock('../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number) =>
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+      }).format(value),
+  }),
+}));
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   Navigate: ({ to }: { to: string }) => (
@@ -37,16 +59,15 @@ jest.mock('../../hooks/money/useMoneyAccountInterest', () => ({
   useMoneyAccountInterest: (options: unknown) =>
     mockUseMoneyAccountInterest(options),
 }));
-jest.mock('../../components/app/assets/hooks/useMultichainAssets', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: () => mockUseMultiChainAssets(),
+jest.mock('../../hooks/money/use-money-deposit-tokens', () => ({
+  useMoneyDepositTokens: () => mockUseMoneyDepositTokens(),
 }));
 
 describe('MoneyHomePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseSelector.mockReturnValue(true);
+    mockSelectMoneyEarningSectionEnabled.mockReturnValue(true);
+    mockGetPrivacyMode.mockReturnValue(false);
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
         isAvailable: true,
@@ -74,7 +95,10 @@ describe('MoneyHomePage', () => {
         isInitialLoading: false,
       },
     });
-    mockUseMultiChainAssets.mockReturnValue([]);
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [],
+      isNoFeeToken: () => false,
+    });
   });
 
   it('renders the full empty-state composition with a live zero balance', () => {
@@ -99,9 +123,10 @@ describe('MoneyHomePage', () => {
         '4.2% APY',
       ),
     ).toHaveClass('text-success-default');
+    expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
     expect(
-      screen.queryByTestId('money-eligible-assets'),
-    ).not.toBeInTheDocument();
+      screen.getByText(messages.moneyEarnOnCrypto.message),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(messages.moneyBenefits.message),
     ).toBeInTheDocument();
@@ -148,16 +173,6 @@ describe('MoneyHomePage', () => {
       totalFiatRaw: '3475.45',
       vaultApyQuery: { isLoading: false },
     });
-    mockUseMultiChainAssets.mockReturnValue([
-      {
-        address: '0x1',
-        chainId: '0x1',
-        image: 'usdc.png',
-        secondary: '$12.00',
-        symbol: 'USDC',
-        tokenFiatAmount: 12,
-      },
-    ]);
 
     renderWithLocalization(<MoneyHomePage />);
 
@@ -202,7 +217,7 @@ describe('MoneyHomePage', () => {
       screen.queryByText(messages.moneyBenefits.message),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByTestId('money-eligible-assets'),
+      screen.queryByTestId('money-potential-earnings'),
     ).not.toBeInTheDocument();
     screen.getAllByRole('button').forEach((button) => {
       expect(button).toBeDisabled();
@@ -332,7 +347,7 @@ describe('MoneyHomePage', () => {
   });
 
   it('hides earnings and disables interest requests when the flag is off', () => {
-    mockUseSelector.mockReturnValue(false);
+    mockSelectMoneyEarningSectionEnabled.mockReturnValue(false);
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
       apyPercentFormatted: '4.2%',
@@ -444,6 +459,7 @@ describe('MoneyHomePage', () => {
   it('shows a configured APY override while the service query is loading', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyPercentFormatted: '5%',
+      apyDecimal: 0.05,
       isBalanceFetchError: false,
       isBalanceLoading: false,
       tokenTotal: new BigNumber(0),
@@ -461,29 +477,32 @@ describe('MoneyHomePage', () => {
   });
 
   it('previews eligible wallet assets using their existing balances', () => {
-    mockUseMultiChainAssets.mockReturnValue([
-      {
-        address: '0x1',
-        chainId: '0x1',
-        image: 'usdc.png',
-        secondary: '$12.00',
-        symbol: 'USDC',
-        tokenFiatAmount: 12,
-      },
-      {
-        address: '0x2',
-        chainId: '0x1',
-        image: 'other.png',
-        secondary: '$100.00',
-        symbol: 'OTHER',
-        tokenFiatAmount: 100,
-      },
-    ]);
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [
+        {
+          address: '0x0000000000000000000000000000000000000001',
+          chainId: '0x1',
+          decimals: 6,
+          image: 'usdc.png',
+          moneyFiatAmountUsd: 12,
+          secondary: '$12.00',
+          symbol: 'USDC',
+          title: 'USD Coin',
+          tokenFiatAmount: 12,
+        },
+      ],
+      isNoFeeToken: () => true,
+    });
 
     renderWithLocalization(<MoneyHomePage />);
 
-    expect(screen.getByTestId('money-eligible-assets')).toBeInTheDocument();
-    expect(screen.getByText('USDC')).toBeInTheDocument();
-    expect(screen.queryByText('OTHER')).not.toBeInTheDocument();
+    expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
+    expect(screen.getByText('USD Coin')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyEarnOnCryptoNoFee.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-potential-earnings-projection'),
+    ).toHaveTextContent('+$0.50');
   });
 });
