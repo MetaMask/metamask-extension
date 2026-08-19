@@ -45,7 +45,7 @@ CONVERSION_RATE_NETWORKS.forEach((id) => {
           const tokensTab = new TokensTab(driver);
 
           await tokensTab.checkTokenListIsDisplayed();
-          await tokensTab.checkTokenExistsInList(network.nativeSymbol);
+          await tokensTab.checkTokenExistsInList(network.name);
 
           // The fiat secondary value must be present (not an em dash). This is
           // the regression assertion: without the spot-prices mock the cell
