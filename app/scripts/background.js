@@ -75,6 +75,11 @@ import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
+import {
+  isPhishingWarningPageUrl,
+  loadPhishingWarningPage,
+  maybeDetectPhishing,
+} from './lib/phishing';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
@@ -243,16 +248,6 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
   );
 }
 
-const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
-
-// normalized (adds a trailing slash to the end of the domain if it's missing)
-// the URL once and reuse it:
-const phishingPageHref = phishingPageUrl.toString();
-
-const ONE_SECOND_IN_MILLISECONDS = 1_000;
-// Timeout for initializing phishing warning page.
-const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
-
 lazyListener.once('runtime', 'onInstalled').then((details) => {
   handleOnInstalled(details);
 });
@@ -357,189 +352,6 @@ const sendReadyMessageToTabs = async () => {
       });
   }
 };
-
-/**
- * Detects known phishing pages as soon as the browser begins to load the
- * page. If the page is a known phishing page, the user is redirected to the
- * phishing warning page.
- *
- * This detection works even if the phishing page is now a redirect to a new
- * domain that our phishing detection system is not aware of.
- *
- * @param {MetamaskController} theController
- */
-function maybeDetectPhishing(theController) {
-  /**
-   * Redirects a tab to the phishing warning page.
-   *
-   * @param {number} tabId - The ID of the tab to redirect
-   * @param {string} url - The URL to redirect to (phishing warning page)
-   * @returns {Promise<boolean>} Returns true if the redirect was successful, false otherwise.
-   *   Returns false for Google pre-fetch requests or if the redirect fails.
-   */
-  async function redirectTab(tabId, url) {
-    try {
-      const tab = await browser.tabs.get(tabId);
-
-      // Prevent redirect when due to Google pre-fetching
-      if (tab.url && tab.url.startsWith('https://www.google.com/search')) {
-        return false;
-      }
-
-      await browser.tabs.update(tabId, {
-        url,
-      });
-      return true;
-    } catch (error) {
-      sentry?.captureException(error);
-      return false;
-    }
-  }
-  // we can use the blocking API in MV2, but not in MV3
-  const isManifestV2 = !isManifestV3;
-  browser.webRequest.onBeforeRequest.addListener(
-    (details) => {
-      if (details.tabId === browser.tabs.TAB_ID_NONE) {
-        return {};
-      }
-
-      const { completedOnboarding } = theController.onboardingController.state;
-      if (!completedOnboarding) {
-        return {};
-      }
-
-      const prefState = theController.preferencesController.state;
-      if (!prefState.usePhishDetect) {
-        return {};
-      }
-
-      // ignore requests that come from our phishing warning page, as
-      // the requests may come from the "continue to site" link, so we'll
-      // actually _want_ to bypass the phishing detection. We shouldn't have to
-      // do this, because the phishing site does tell the extension that the
-      // domain it blocked it now "safe", but it does this _after_ the request
-      // begins (which would get blocked by this listener). So we have to bail
-      // on detection here.
-      // This check can be removed once  https://github.com/MetaMask/phishing-warning/issues/160
-      // is shipped.
-      if (
-        details.initiator &&
-        details.initiator !== 'null' &&
-        // compare normalized URLs
-        new URL(details.initiator).host === phishingPageUrl.host
-      ) {
-        return {};
-      }
-
-      const { hostname, href, searchParams } = new URL(details.url);
-      if (
-        process.env.IN_TEST &&
-        searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')
-      ) {
-        // this is a test page that needs to bypass early phishing detection
-        return {};
-      }
-
-      theController.phishingController.maybeUpdateState();
-
-      const blockedRequestResponse =
-        theController.phishingController.isBlockedRequest(details.url);
-
-      let phishingTestResponse;
-      if (details.type === 'main_frame' || details.type === 'sub_frame') {
-        phishingTestResponse = theController.phishingController.test(
-          details.url,
-        );
-      }
-
-      // if the request is not blocked, and the phishing test is not blocked, return and don't show the phishing screen
-      if (!phishingTestResponse?.result && !blockedRequestResponse.result) {
-        return {};
-      }
-
-      // Determine the block reason based on the type
-      let blockReason;
-      let blockedUrl = href;
-      if (phishingTestResponse?.result && blockedRequestResponse.result) {
-        blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
-      } else if (phishingTestResponse?.result) {
-        blockReason = phishingTestResponse.type;
-      } else {
-        // Override the blocked URL to the initiator URL if the request was flagged by c2 detection
-        blockReason = blockedRequestResponse.type;
-        blockedUrl = details.initiator;
-      }
-
-      let blockedHostname;
-      try {
-        blockedHostname = new URL(blockedUrl).hostname;
-      } catch {
-        // If blockedUrl is null or undefined, fall back to the original URL
-        blockedHostname = hostname;
-        blockedUrl = href;
-      }
-
-      const querystring = new URLSearchParams({
-        hostname: blockedHostname, // used for creating the EPD issue title (false positive report)
-        href: blockedUrl, // used for displaying the URL on the phsihing warning page + proceed anyway URL
-      });
-      const redirectUrl = new URL(phishingPageHref);
-      redirectUrl.hash = querystring.toString();
-      const redirectHref = redirectUrl.toString();
-
-      // Helper function to track phishing page metrics
-      const trackPhishingMetrics = () => {
-        if (!isFirefox) {
-          trackEvent(
-            createEventBuilder(MetaMetricsEventName.PhishingPageDisplayed)
-              .addCategory(MetaMetricsEventCategory.Phishing)
-              .addProperties({
-                url: blockedUrl,
-                referrer: {
-                  url: blockedUrl,
-                },
-                reason: blockReason,
-                requestDomain: blockedRequestResponse.result
-                  ? hostname
-                  : undefined,
-              })
-              .build({
-                excludeMetaMetricsId: true,
-              }),
-          );
-        }
-      };
-
-      // blocking is better than tab redirection, as blocking will prevent
-      // the browser from loading the page at all
-      if (isManifestV2) {
-        // We can redirect `main_frame` requests directly to the warning page.
-        // For non-`main_frame` requests (e.g. `sub_frame` or WebSocket), we cancel them
-        // and redirect the whole tab asynchronously so that the user sees the warning.
-        if (details.type === 'main_frame') {
-          trackPhishingMetrics();
-          return { redirectUrl: redirectHref };
-        }
-        redirectTab(details.tabId, redirectHref).then((redirected) => {
-          if (redirected) {
-            trackPhishingMetrics();
-          }
-        });
-        return { cancel: true };
-      }
-      redirectTab(details.tabId, redirectHref).then((redirected) => {
-        if (redirected) {
-          trackPhishingMetrics();
-        }
-      });
-      return {};
-    },
-    {
-      urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*'],
-    },
-    isManifestV2 ? ['blocking'] : [],
-  );
-}
 
 // These are set after initialization
 /**
@@ -934,70 +746,6 @@ async function loadPreinstalledSnaps() {
   });
 
   return Promise.all(promises);
-}
-
-/**
- * An error thrown if the phishing warning page takes too long to load.
- */
-class PhishingWarningPageTimeoutError extends Error {
-  constructor() {
-    super('Timeout failed');
-  }
-}
-
-/**
- * Load the phishing warning page temporarily to ensure the service
- * worker has been registered, so that the warning page works offline.
- */
-async function loadPhishingWarningPage() {
-  let iframe;
-  try {
-    const extensionStartupPhishingPageUrl = new URL(phishingPageHref);
-    // The `extensionStartup` hash signals to the phishing warning page that it should not bother
-    // setting up streams for user interaction. Otherwise this page load would cause a console
-    // error.
-    extensionStartupPhishingPageUrl.hash = '#extensionStartup';
-
-    iframe = window.document.createElement('iframe');
-    iframe.setAttribute('src', extensionStartupPhishingPageUrl.href);
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
-
-    // Create "deferred Promise" to allow passing resolve/reject to event handlers
-    let deferredResolve;
-    let deferredReject;
-    const loadComplete = new Promise((resolve, reject) => {
-      deferredResolve = resolve;
-      deferredReject = reject;
-    });
-
-    // The load event is emitted once loading has completed, even if the loading failed.
-    // If loading failed we can't do anything about it, so we don't need to check.
-    iframe.addEventListener('load', deferredResolve);
-
-    // This step initiates the page loading.
-    window.document.body.appendChild(iframe);
-
-    // This timeout ensures that this iframe gets cleaned up in a reasonable
-    // timeframe, and ensures that the "initialization complete" message
-    // doesn't get delayed too long.
-    setTimeout(
-      () => deferredReject(new PhishingWarningPageTimeoutError()),
-      PHISHING_WARNING_PAGE_TIMEOUT,
-    );
-    await loadComplete;
-  } catch (error) {
-    if (error instanceof PhishingWarningPageTimeoutError) {
-      console.warn(
-        'Phishing warning page timeout; page not guaranteed to work offline.',
-      );
-    } else {
-      console.error('Failed to initialize phishing warning page', error);
-    }
-  } finally {
-    if (iframe) {
-      iframe.remove();
-    }
-  }
 }
 
 //
@@ -1831,11 +1579,7 @@ export function setupController(
           );
         });
       }
-    } else if (
-      senderUrl &&
-      senderUrl.origin === phishingPageUrl.origin &&
-      senderUrl.pathname === phishingPageUrl.pathname
-    ) {
+    } else if (senderUrl && isPhishingWarningPageUrl(senderUrl)) {
       const portStreamForPhishingPage = new ExtensionPortStream(remotePort, {
         chunkSize: 0,
       });

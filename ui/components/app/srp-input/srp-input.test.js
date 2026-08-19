@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import { userEvent as userEventApi } from '@testing-library/user-event';
 import { enLocale } from '../../../../test/lib/i18n-helpers';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers';
 import SrpInput from '.';
@@ -33,6 +33,7 @@ const poorlyFormattedInputs = [
 ];
 
 const whitespaceCharacters = [' ', '  ', '\n', '\t'];
+const userEvent = userEventApi.setup();
 
 describe('srp-input', () => {
   beforeEach(() => {

@@ -1988,29 +1988,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Jika dilanjutkan, semua aset yang Anda daftarkan di Blur bisa berpotensi hilang."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Anda berinteraksi dengan situs berbahaya. Jika dilanjutkan, Anda akan kehilangan aset milik Anda."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Jika dilanjutkan, semua aset yang Anda daftarkan di OpenSea bisa berpotensi hilang."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Jika permintaan ini dikonfirmasi, Anda dapat kehilangan aset milik Anda. Sebaiknya batalkan permintaan ini."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Anda mengirimkan aset milik Anda ke penipu. Jika dilanjutkan, Anda akan kehilangan aset tersebut."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Jika permintaan ini dikonfirmasi, Anda mengizinkan penipu untuk menarik dan menggunakan aset Anda. Anda tidak akan mendapatkannya kembali."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan dapat mengambil semua aset Anda."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Jika Anda menyetujui permintaan ini, seseorang dapat mencuri aset Anda yang terdaftar di Blur."
   },
   "blockaidDescriptionErrored": {
     "message": "Karena terjadi kesalahan, kami tidak dapat memeriksa peringatan keamanan. Lanjutkan hanya jika Anda memercayai setiap alamat yang terlibat."
@@ -2018,23 +1997,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "Anda berinteraksi dengan domain berbahaya. Jika Anda menyetujui permintaan ini, aset Anda kemungkinan akan hilang."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Jika Anda menyetujui permintaan ini, aset Anda kemungkinan akan hilang."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Jika Anda menyetujui permintaan ini, seseorang dapat mencuri aset Anda yang terdaftar di OpenSea."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan akan mengambil semua aset Anda."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Ini adalah permintaan tipuan"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "Berhati-hatilah"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Ini adalah permintaan yang mencurigakan"
   },
   "blockies": {
     "message": "Blockies"

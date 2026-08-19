@@ -420,7 +420,11 @@ const PrepareBridgePage = ({
         onClose={() => setIsMarketClosedModalOpen(false)}
       />
 
-      <Column className="prepare-bridge-page" gap={4}>
+      <Column
+        className="prepare-bridge-page"
+        gap={4}
+        data-testid="parent-selector-bridge-quote"
+      >
         <BridgeInputGroup
           isAssetPickerOpen={isSrcAssetPickerOpen}
           setIsAssetPickerOpen={(isOpen) =>
