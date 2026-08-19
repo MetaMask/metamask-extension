@@ -143,8 +143,12 @@ export const NetworksForm = ({
   // failover URLs solely for Infura endpoints; applying them to custom RPCs
   // would leak requests to the failover, so it does not. Only surface failover
   // in the form for Infura endpoints so the UI matches the actual behaviour.
-  const failoverUrlsForEndpoint = (endpoint?: { type?: RpcEndpointType }) =>
-    endpoint?.type === RpcEndpointType.Infura ? chainFailoverUrls : [];
+  const failoverUrlsForEndpoint = (endpoint?: { url: string }) => {
+    return endpoint?.url &&
+      new URL(endpoint.url).hostname.endsWith('.infura.io')
+      ? chainFailoverUrls
+      : [];
+  };
 
   const defaultFailoverUrls = failoverUrlsForEndpoint(defaultRpcEndpoint);
 
@@ -567,12 +571,16 @@ export const NetworksForm = ({
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
-          renderItem={(item, isList) =>
-            isList || item?.name || item?.type === RpcEndpointType.Infura ? (
+          renderItem={(item, isList) => {
+            const failoverUrls = failoverUrlsForEndpoint(item);
+            return isList ||
+              item?.name ||
+              item?.type === RpcEndpointType.Infura ||
+              failoverUrls.length > 0 ? (
               <RpcListItem
                 rpcEndpoint={{
                   ...item,
-                  failoverUrls: failoverUrlsForEndpoint(item),
+                  failoverUrls,
                 }}
               />
             ) : (
@@ -590,8 +598,8 @@ export const NetworksForm = ({
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
               </Text>
-            )
-          }
+            );
+          }}
           renderTooltip={(item, isList) => {
             const url = stripKeyFromInfuraUrl(item.url);
             return url.length > (isList ? 37 : 35) ? url : undefined;

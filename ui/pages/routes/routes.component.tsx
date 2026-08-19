@@ -150,6 +150,10 @@ import { ToastListener } from '../../components/app/toast-listener/toast-listene
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
+import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
+import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-messenger';
+import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messenger';
+import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
 import BatchSell from '../batch-sell/batch-sell-page';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
@@ -331,10 +335,11 @@ export const routeConfig = [
       {
         element: <RequireOnboarded />,
         children: [
-          {
+          createRouteWithMessenger({
             path: UNLOCK_ROUTE,
             element: <UnlockPage />,
-          },
+            capabilities: UNLOCK_ROUTE_CAPABILITIES,
+          }),
         ],
       },
       {
@@ -345,19 +350,21 @@ export const routeConfig = [
         path: BASIC_FUNCTIONALITY_OFF_ROUTE,
         element: <BasicFunctionalityOff />,
       },
-      {
+      createRouteWithMessenger({
         path: RESTORE_VAULT_ROUTE,
         element: <RestoreVaultPage />,
-      },
+        capabilities: RESTORE_VAULT_ROUTE_CAPABILITIES,
+      }),
     ],
   },
   {
     element: <RequireAuthenticated />,
     children: [
-      {
+      createRouteWithMessenger({
         path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
         element: <RevealSeedConfirmation />,
-      },
+        capabilities: REVEAL_SEED_ROUTE_CAPABILITIES,
+      }),
       {
         path: HARDWARE_WALLET_REPAIR_ROUTE,
         element: <HardwareWalletRepair />,
@@ -502,10 +509,11 @@ export const routeConfig = [
         path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
         element: <MultichainAccountAddressListPage />,
       },
-      {
+      createRouteWithMessenger({
         path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
         element: <MultichainAccountPrivateKeyListPage />,
-      },
+        capabilities: PRIVATE_KEY_LIST_ROUTE_CAPABILITIES,
+      }),
       {
         path: ADD_WALLET_PAGE_ROUTE,
         element: <AddWalletPage />,
