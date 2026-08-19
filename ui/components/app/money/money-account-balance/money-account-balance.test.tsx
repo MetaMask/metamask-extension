@@ -101,7 +101,7 @@ describe('MoneyAccountBalance', () => {
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$2,384.34',
     );
-    expect(getByText('Money balance')).toBeInTheDocument();
+    expect(getByText('Money balance • mUSD')).toBeInTheDocument();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
   });
 

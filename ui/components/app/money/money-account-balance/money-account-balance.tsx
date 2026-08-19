@@ -2,8 +2,17 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
+  BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
+  BoxJustifyContent,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -25,6 +34,11 @@ export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =
   'money-account-balance-value';
 export const MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID =
   'money-account-balance-last-known';
+export const MONEY_ACCOUNT_BALANCE_APY_TEST_ID = 'money-account-balance-apy';
+
+// The vault APY isn't wired up to a data source yet, so this is shown as a
+// fixed placeholder until a hook for it exists.
+const PLACEHOLDER_APY = '4%';
 
 /**
  * The Money Account balance, or nothing.
@@ -75,37 +89,78 @@ const MoneyAccountBalanceContent = () => {
 
   return (
     <Box
-      flexDirection={BoxFlexDirection.Column}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       backgroundColor={BoxBackgroundColor.BackgroundSection}
       padding={4}
-      gap={1}
+      gap={4}
       className="rounded-2xl"
       data-testid={MONEY_ACCOUNT_BALANCE_TEST_ID}
     >
-      <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-        {t('moneyBalanceTitle')}
-      </Text>
-      {/*
-        Honours the privacy-mode setting, as every other balance on the account
-        overview does. Without it, turning balances off would leave the Money
-        row as the one figure still on screen.
-      */}
-      <SensitiveText
-        variant={LegacyTextVariant.headingLg}
-        isHidden={privacyMode}
-        data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
-      >
-        {balance}
-      </SensitiveText>
-      {isLastKnown ? (
-        <Text
-          variant={TextVariant.BodyXs}
-          color={TextColor.TextAlternative}
-          data-testid={MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID}
+      <Box flexDirection={BoxFlexDirection.Column} gap={1} className="min-w-0">
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
         >
-          {t('moneyBalanceLastKnown')}
-        </Text>
-      ) : null}
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('moneyBalanceTitle')} • {t('moneyMusd')}
+          </Text>
+          <Icon
+            name={IconName.Info}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+          />
+        </Box>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          {/*
+            Honours the privacy-mode setting, as every other balance on the
+            account overview does. Without it, turning balances off would
+            leave the Money row as the one figure still on screen.
+          */}
+          <SensitiveText
+            variant={LegacyTextVariant.headingLg}
+            isHidden={privacyMode}
+            data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
+          >
+            {balance}
+          </SensitiveText>
+          {/*
+            The vault APY isn't wired up to a data source yet, so this is
+            always shown alongside a live or last-known balance rather than
+            being gated on its own loading state.
+          */}
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.SuccessDefault}
+            data-testid={MONEY_ACCOUNT_BALANCE_APY_TEST_ID}
+          >
+            {t('moneyApy', [PLACEHOLDER_APY])}
+          </Text>
+        </Box>
+        {isLastKnown ? (
+          <Text
+            variant={TextVariant.BodyXs}
+            color={TextColor.TextAlternative}
+            data-testid={MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID}
+          >
+            {t('moneyBalanceLastKnown')}
+          </Text>
+        ) : null}
+      </Box>
+      <Button
+        size={ButtonSize.Md}
+        variant={ButtonVariant.Secondary}
+        disabled
+        className="shrink-0 rounded-full"
+      >
+        {t('moneyAdd')}
+      </Button>
     </Box>
   );
 };
