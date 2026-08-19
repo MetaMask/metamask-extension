@@ -32,6 +32,17 @@ export function useTransactionPayRequiredTokens() {
   return useTransactionPayData(selectTransactionPayTokensByTransactionId);
 }
 
+export function useTransactionPayHasPositiveRequiredAmount() {
+  const requiredTokens = useTransactionPayRequiredTokens();
+
+  return requiredTokens.some(
+    (token) =>
+      !token.skipIfBalance &&
+      Boolean(token.amountRaw) &&
+      token.amountRaw !== '0',
+  );
+}
+
 export function useTransactionPaySourceAmounts() {
   return useTransactionPayData(
     selectTransactionPaySourceAmountsByTransactionId,
@@ -58,11 +69,14 @@ export function useIsTransactionPayQuotePending() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isLoading = useIsTransactionPayLoading();
   const isPostQuote = useTransactionPayIsPostQuote();
+  const hasPositiveRequiredAmount =
+    useTransactionPayHasPositiveRequiredAmount();
 
-  return (
-    isLoading ||
-    (isPerpsWithdrawTransaction(currentConfirmation) && !isPostQuote)
-  );
+  if (isPerpsWithdrawTransaction(currentConfirmation)) {
+    return hasPositiveRequiredAmount && (isLoading || !isPostQuote);
+  }
+
+  return isLoading;
 }
 
 export function useTransactionPayPrimaryRequiredToken() {

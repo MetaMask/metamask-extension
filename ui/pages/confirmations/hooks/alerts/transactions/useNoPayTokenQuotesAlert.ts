@@ -10,6 +10,7 @@ import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
   useIsTransactionPayQuotePending,
   useTransactionPayHasExecutableQuote,
+  useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
@@ -23,15 +24,11 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
   const quotes = useTransactionPayQuotes();
   const isQuotePending = useIsTransactionPayQuotePending();
   const hasExecutableQuote = useTransactionPayHasExecutableQuote();
+  const hasPositiveRequiredAmount =
+    useTransactionPayHasPositiveRequiredAmount();
   const sourceAmounts = useTransactionPaySourceAmounts();
   const requiredTokens = useTransactionPayRequiredTokens();
 
-  const hasPositiveRequiredAmount = requiredTokens.some(
-    (token) =>
-      !token.skipIfBalance &&
-      Boolean(token.amountRaw) &&
-      token.amountRaw !== '0',
-  );
   const isPerpsWithdrawNotReady =
     isPerpsWithdrawTransaction(currentConfirmation) &&
     hasPositiveRequiredAmount &&

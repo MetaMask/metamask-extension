@@ -19,6 +19,7 @@ import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
   useIsTransactionPayQuotePending,
   useTransactionPayHasExecutableQuote,
+  useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
@@ -77,6 +78,9 @@ describe('useNoPayTokenQuotesAlert', () => {
   const useTransactionPayHasExecutableQuoteMock = jest.mocked(
     useTransactionPayHasExecutableQuote,
   );
+  const useTransactionPayHasPositiveRequiredAmountMock = jest.mocked(
+    useTransactionPayHasPositiveRequiredAmount,
+  );
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
@@ -92,6 +96,7 @@ describe('useNoPayTokenQuotesAlert', () => {
 
     useIsTransactionPayQuotePendingMock.mockReturnValue(false);
     useTransactionPayHasExecutableQuoteMock.mockReturnValue(false);
+    useTransactionPayHasPositiveRequiredAmountMock.mockReturnValue(true);
     useTransactionPayQuotesMock.mockReturnValue(undefined);
     useTransactionPaySourceAmountsMock.mockReturnValue([SOURCE_AMOUNT_MOCK]);
     useTransactionPayRequiredTokensMock.mockReturnValue([REQUIRED_TOKEN_MOCK]);

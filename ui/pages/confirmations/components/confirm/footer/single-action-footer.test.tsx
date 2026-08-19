@@ -254,6 +254,20 @@ describe('<SingleActionFooter />', () => {
     );
   });
 
+  it('does not show a loader before a Perps Withdraw amount is entered', () => {
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '0',
+      skipIfBalance: false,
+    } as never);
+    jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(false);
+
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).not.toHaveAttribute('aria-busy', 'true');
+  });
+
   it('disables perps withdrawal while post-quote setup is pending', () => {
     jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(true);
 

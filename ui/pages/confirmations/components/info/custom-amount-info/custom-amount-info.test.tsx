@@ -127,6 +127,7 @@ function render(
     isQuotesLoading?: boolean;
     isPostQuote?: boolean;
     hasQuotes?: boolean;
+    hasPositiveRequiredAmount?: boolean;
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
@@ -144,6 +145,7 @@ function render(
     isQuotesLoading = false,
     isPostQuote = false,
     hasQuotes = false,
+    hasPositiveRequiredAmount = true,
     sourceAmounts = [],
     requiredTokens = [],
   } = options;
@@ -191,13 +193,18 @@ function render(
   jest
     .mocked(useTransactionPayDataModule.useIsTransactionPayQuotePending)
     .mockReturnValue(
-      isQuotesLoading ||
-        (transactionMeta.type === TransactionType.perpsWithdraw &&
-          !isPostQuote),
+      transactionMeta.type === TransactionType.perpsWithdraw
+        ? hasPositiveRequiredAmount && (isQuotesLoading || !isPostQuote)
+        : isQuotesLoading,
     );
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayHasExecutableQuote)
     .mockReturnValue(hasQuotes);
+  jest
+    .mocked(
+      useTransactionPayDataModule.useTransactionPayHasPositiveRequiredAmount,
+    )
+    .mockReturnValue(hasPositiveRequiredAmount);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayRequiredTokens)
     .mockReturnValue(
@@ -480,6 +487,24 @@ describe('CustomAmountInfo', () => {
       expect(queryByTestId('bridge-time-row')).toBeInTheDocument();
       expect(queryByTestId('receive-row-skeleton')).toBeInTheDocument();
       expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+
+    it('does not render Perps Withdraw result rows before an amount is entered', () => {
+      const transactionMeta = {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.perpsWithdraw,
+      } as TransactionMeta;
+
+      const { queryByTestId } = render({
+        transactionMeta,
+        hasPositiveRequiredAmount: false,
+        hasQuotes: true,
+        isPostQuote: false,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('bridge-time-row')).not.toBeInTheDocument();
+      expect(queryByTestId('receive-row-skeleton')).not.toBeInTheDocument();
     });
 
     it('renders Perps Withdraw result rows when the post-quote route is ready', () => {

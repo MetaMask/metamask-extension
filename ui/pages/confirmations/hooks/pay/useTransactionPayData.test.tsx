@@ -16,6 +16,7 @@ import {
   useIsTransactionPayQuotePending,
   useIsTransactionPayLoading,
   useTransactionPayHasExecutableQuote,
+  useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayIsMaxAmount,
   useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
@@ -33,6 +34,7 @@ const QUOTE_MOCK = {
 
 const REQUIRED_TOKEN_MOCK = {
   address: '0x123',
+  amountRaw: '1000000',
   skipIfBalance: false,
 } as unknown as TransactionPayRequiredToken;
 
@@ -161,6 +163,32 @@ describe('useTransactionPayData', () => {
     });
   });
 
+  describe('useTransactionPayHasPositiveRequiredAmount', () => {
+    it('returns true when a required token has a positive amount', () => {
+      const { result } = renderHook(
+        () => useTransactionPayHasPositiveRequiredAmount(),
+        {
+          wrapper: createWrapper(),
+        },
+      );
+
+      expect(result.current).toBe(true);
+    });
+
+    it('returns false when the required amount is zero', () => {
+      const { result } = renderHook(
+        () => useTransactionPayHasPositiveRequiredAmount(),
+        {
+          wrapper: createWrapper({
+            tokens: [{ ...REQUIRED_TOKEN_MOCK, amountRaw: '0' }],
+          }),
+        },
+      );
+
+      expect(result.current).toBe(false);
+    });
+  });
+
   describe('useTransactionPaySourceAmounts', () => {
     it('returns source amounts', () => {
       const { result } = renderHook(() => useTransactionPaySourceAmounts(), {
@@ -207,6 +235,21 @@ describe('useTransactionPayData', () => {
   });
 
   describe('useIsTransactionPayQuotePending', () => {
+    it('returns false for Perps Withdraw before an amount is entered', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          {
+            isLoading: true,
+            isPostQuote: false,
+            tokens: [{ ...REQUIRED_TOKEN_MOCK, amountRaw: '0' }],
+          },
+          TransactionType.perpsWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(false);
+    });
+
     it('returns true while Perps Withdraw post-quote setup is pending', () => {
       const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
         wrapper: createWrapper(
