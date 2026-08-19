@@ -180,6 +180,7 @@ describe('Actions', () => {
     background.getAppNameAndVersion = sinon.stub();
     background.getLedgerAppConfiguration = sinon.stub();
     background.getLedgerPublicKey = sinon.stub();
+    background.getLedgerMode = sinon.stub();
     background.unlockHardwareWalletAccount = sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
@@ -529,10 +530,25 @@ describe('Actions', () => {
       ).toBe(true);
     });
 
-    it('#generatePasskeyRegistrationOptions passes prfAvailable false when PRF support is false', async () => {
+    it('#generatePasskeyRegistrationOptions rejects when PRF support is false', async () => {
       jest
         .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
         .mockResolvedValue(false);
+      setBackgroundConnection(background);
+
+      await expect(
+        actions.generatePasskeyRegistrationOptions(),
+      ).rejects.toThrow('Passkey setup requires PRF support');
+
+      expect(background.generatePasskeyRegistrationOptions.notCalled).toBe(
+        true,
+      );
+    });
+
+    it('#generatePasskeyRegistrationOptions attempts registration when PRF support is unknown', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockResolvedValue(undefined);
       background.generatePasskeyRegistrationOptions.resolves({
         rp: { name: 'MM' },
       });
@@ -542,7 +558,25 @@ describe('Actions', () => {
 
       expect(
         background.generatePasskeyRegistrationOptions.calledOnceWith({
-          prfAvailable: false,
+          prfAvailable: true,
+        }),
+      ).toBe(true);
+    });
+
+    it('#generatePasskeyRegistrationOptions attempts registration when PRF detection fails', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockRejectedValue(new Error('capability detection failed'));
+      background.generatePasskeyRegistrationOptions.resolves({
+        rp: { name: 'MM' },
+      });
+      setBackgroundConnection(background);
+
+      await actions.generatePasskeyRegistrationOptions();
+
+      expect(
+        background.generatePasskeyRegistrationOptions.calledOnceWith({
+          prfAvailable: true,
         }),
       ).toBe(true);
     });
@@ -1442,6 +1476,23 @@ describe('Actions', () => {
 
       expect(background.getLedgerPublicKey.callCount).toStrictEqual(1);
       expect(result).toStrictEqual(mockResponse);
+    });
+  });
+
+  describe('#getLedgerMode', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getLedgerMode in background and returns the active handler mode', async () => {
+      background.getLedgerMode.resolves('dmk');
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getLedgerMode();
+
+      expect(background.getLedgerMode.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual('dmk');
     });
   });
 

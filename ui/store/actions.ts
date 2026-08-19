@@ -106,7 +106,10 @@ import {
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
-import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
+import {
+  isPasskeyPRFSupported,
+  PasskeyPRFRequiredError,
+} from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -206,10 +209,7 @@ import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
-import {
-  ClaimSubmitToastType,
-  type NetworkConnectionBanner,
-} from '../../shared/constants/app-state';
+import { ClaimSubmitToastType } from '../../shared/constants/app-state';
 import {
   SeasonDtoState,
   SeasonStatusState,
@@ -232,6 +232,7 @@ import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscription
 import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
 import { PendingRedirectRoute } from '../../shared/lib/pending-redirect-state';
 import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
+import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -1240,9 +1241,19 @@ export function submitPassword(password: string): Promise<void> {
  * @returns Passkey registration options.
  */
 export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
-  const prfSupported = await isPasskeyPRFSupported();
+  let prfSupported: boolean | undefined;
+  try {
+    prfSupported = await isPasskeyPRFSupported();
+  } catch {
+    // Capability detection is unavailable; let the PRF ceremony decide.
+  }
+  // SECURITY: PRF is required for passkey setup. Never allow userHandle-based
+  // key derivation as a fallback.
+  if (prfSupported === false) {
+    throw new PasskeyPRFRequiredError();
+  }
   return submitRequestToBackground('generatePasskeyRegistrationOptions', [
-    { prfAvailable: prfSupported !== false },
+    { prfAvailable: true },
   ]);
 }
 
@@ -1411,18 +1422,6 @@ export function getSeedPhraseWithPasskey(
       ]);
     } finally {
       dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-export function tryReverseResolveAddress(
-  address: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('tryReverseResolveAddress', [address]);
-    } catch (err) {
-      logErrorWithMessage(err);
     }
   };
 }
@@ -3565,11 +3564,12 @@ export function createCancelTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createCancelTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
-    const newState = await submitRequestToBackground<
-      MetaMaskReduxState['metamask']
-    >('createCancelTransaction', [
+    await submitRequestToBackground('createCancelTransaction', [
       txId,
       customGasSettings,
       { ...options, actionId },
@@ -3577,9 +3577,7 @@ export function createCancelTransaction(
 
     await forceUpdateMetamaskState(dispatch);
 
-    const currentNetworkTxList = getCurrentNetworkTransactions({
-      metamask: newState,
-    });
+    const currentNetworkTxList = getCurrentNetworkTransactions(getState());
     const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
     return id;
   };
@@ -3592,11 +3590,12 @@ export function createSpeedUpTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createSpeedUpTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
-    const newState = await submitRequestToBackground<
-      MetaMaskReduxState['metamask']
-    >('createSpeedUpTransaction', [
+    await submitRequestToBackground('createSpeedUpTransaction', [
       txId,
       customGasSettings,
       { ...options, actionId },
@@ -3604,9 +3603,7 @@ export function createSpeedUpTransaction(
 
     await forceUpdateMetamaskState(dispatch);
 
-    const currentNetworkTxList = getCurrentNetworkTransactions({
-      metamask: newState,
-    });
+    const currentNetworkTxList = getCurrentNetworkTransactions(getState());
     const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
     return newTx;
@@ -4365,6 +4362,8 @@ export function toggleDefaultView(): ThunkAction<
         // closing the popup, and skip persisting the preference, leaving both
         // surfaces open and the next launch defaulting back to the popup.
         try {
+          // Persist the preference
+          await dispatch(setUseSidePanelAsDefault(true));
           await browserWithSidePanel.sidePanel.open({ windowId });
         } catch (error) {
           // Nothing was opened, so the popup stays and state is consistent.
@@ -4374,11 +4373,6 @@ export function toggleDefaultView(): ThunkAction<
           );
           return;
         }
-
-        // Persist the preference before closing the popup so a reopen always
-        // honors the side panel choice and the background toolbar-behavior
-        // subscription flips to open-on-click.
-        await dispatch(setUseSidePanelAsDefault(true));
         window.close();
       }
     } catch (error) {
@@ -5919,6 +5913,15 @@ export async function getLedgerPublicKey(
 }
 
 /**
+ * Get the active Ledger handler mode from the background.
+ *
+ * @returns Resolves to `LedgerHandlerMode.DMK` when the DMK bridge handler is active, or `LedgerHandlerMode.Legacy` otherwise.
+ */
+export async function getLedgerMode(): Promise<LedgerHandlerMode> {
+  return await submitRequestToBackground('getLedgerMode');
+}
+
+/**
  * Fetch the features/capabilities of the connected Trezor device.
  *
  * @returns The Trezor device features response including model, capabilities, and session info
@@ -6582,16 +6585,6 @@ export function fetchSmartTransactionsLiveness({
     }
   };
 }
-export function updateNetworkConnectionBanner(
-  networkConnectionBanner: NetworkConnectionBanner,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    await submitRequestToBackground('updateNetworkConnectionBanner', [
-      networkConnectionBanner,
-    ]);
-  };
-}
-
 /**
  * Sends the background state the networkClientId and domain upon network switch
  *

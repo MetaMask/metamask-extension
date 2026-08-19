@@ -19,8 +19,6 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/components/multichain/edit-networks-modal/edit-networks-modal.js
  */
 class NetworkPermissionSelectModal {
-  private readonly checkBox = 'input[type="checkbox"]';
-
   private readonly confirmEditButton = {
     text: 'Update',
     tag: 'button',
@@ -32,6 +30,10 @@ class NetworkPermissionSelectModal {
     text: 'Edit networks',
     tag: 'h4',
   };
+
+  private readonly networkCheckbox = (networkName: string) => ({
+    testId: `network-list-item-checkbox-${networkName}`,
+  });
 
   private readonly networkListItems = '.multichain-network-list-item';
 
@@ -55,7 +57,10 @@ class NetworkPermissionSelectModal {
         By.css('div[data-testid]'),
       );
       const networkName = await networkNameDiv.getAttribute('data-testid');
-      const checkbox = await networkItem.findElement(By.css(this.checkBox));
+      const checkbox = await this.driver.findNestedElement(
+        await this.driver.findElement(this.networkCheckbox(networkName)),
+        'input[type="checkbox"]',
+      );
       const isChecked = await checkbox.isSelected();
       if (expectedSelectedNetworks.includes(networkName)) {
         assert.strictEqual(
@@ -111,22 +116,13 @@ class NetworkPermissionSelectModal {
     console.log(
       `Selecting network ${networkName} on network permission select modal. Should be selected: ${shouldBeSelected}`,
     );
-    const networkItems = await this.driver.findElements(this.networkListItems);
-    for (const networkItem of networkItems) {
-      const networkNameDiv = await networkItem.findElement(
-        By.css('div[data-testid]'),
-      );
-      const network = await networkNameDiv.getAttribute('data-testid');
-      if (network === networkName) {
-        const checkbox = await networkItem.findElement(By.css(this.checkBox));
-        const isChecked = await checkbox.isSelected();
-        if (shouldBeSelected && !isChecked) {
-          await checkbox.click();
-        } else if (!shouldBeSelected && isChecked) {
-          await checkbox.click();
-        }
-        break;
-      }
+    const checkbox = await this.driver.findNestedElement(
+      await this.driver.findElement(this.networkCheckbox(networkName)),
+      'input[type="checkbox"]',
+    );
+    const isChecked = await checkbox.isSelected();
+    if (shouldBeSelected !== isChecked) {
+      await this.driver.clickElement(this.networkCheckbox(networkName));
     }
   }
 
@@ -144,7 +140,10 @@ class NetworkPermissionSelectModal {
         By.css('div[data-testid]'),
       );
       const networkName = await networkNameDiv.getAttribute('data-testid');
-      const checkbox = await networkItem.findElement(By.css(this.checkBox));
+      const checkbox = await this.driver.findNestedElement(
+        await this.driver.findElement(this.networkCheckbox(networkName)),
+        'input[type="checkbox"]',
+      );
       const isChecked = await checkbox.isSelected();
       const isSelectedNetwork = selectedNetworkNames.some(
         (selectedNetworkName) => networkName.includes(selectedNetworkName),
@@ -153,7 +152,7 @@ class NetworkPermissionSelectModal {
       const shouldBeChecked = !isChecked && isSelectedNetwork;
       const shouldNotBeChecked = isChecked && !isSelectedNetwork;
       if (shouldBeChecked || shouldNotBeChecked) {
-        await checkbox.click();
+        await this.driver.clickElement(this.networkCheckbox(networkName));
       }
     }
   }
