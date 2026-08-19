@@ -9,6 +9,7 @@ import {
   SECURITY_REGISTER_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import { SECOND } from '../../../../shared/constants/time';
+import { PasskeyPRFRequiredError } from '../../../../shared/lib/passkey';
 import { toast } from '../../../components/ui/toast/toast';
 import PasskeyRegisterSubPage from './passkey-register-sub-page';
 import { PASSKEY_REGISTRATION_ROUTE_CAPABILITIES } from './messenger';
@@ -237,21 +238,8 @@ describe('PasskeyRegisterSubPage', () => {
     );
   });
 
-  it('shows passkey not supported when authentication returns no PRF result', async () => {
-    const { startPasskeyAuthentication } = jest.requireMock<
-      typeof import('../../../../shared/lib/passkey')
-    >('../../../../shared/lib/passkey');
-    jest.mocked(startPasskeyAuthentication).mockResolvedValueOnce({
-      id: 'AQ',
-      rawId: 'AQ',
-      type: 'public-key',
-      response: {
-        clientDataJSON: 'e30',
-        authenticatorData: 'AA',
-        signature: 'AA',
-      },
-      clientExtensionResults: {},
-    });
+  it('shows passkey not supported when enrollment requires PRF', async () => {
+    mockEnrollWithPasskey.mockRejectedValueOnce(new PasskeyPRFRequiredError());
 
     const { getByTestId, getByText } = renderWithProvider(
       <PasskeyRegisterSubPage />,
@@ -268,7 +256,7 @@ describe('PasskeyRegisterSubPage', () => {
         getByText(messages.passkeyErrorNotSupported.message),
       ).toBeInTheDocument();
     });
-    expect(mockProtectVaultKeyWithPasskey).not.toHaveBeenCalled();
+    expect(mockForceUpdateMetamaskState).not.toHaveBeenCalled();
   });
 
   it('stays on register passkey when protectVaultKeyWithPasskey fails after ceremonies', async () => {

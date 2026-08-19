@@ -180,7 +180,7 @@ describe('SetupPasskey', () => {
     await waitFor(() => {
       expect(onNext).toHaveBeenCalledTimes(1);
     });
-    expect(generatePasskeyRegistrationOptions).not.toHaveBeenCalled();
+    expect(mockEnrollWithPasskey).not.toHaveBeenCalled();
   });
 
   it('renders the heading text', () => {
