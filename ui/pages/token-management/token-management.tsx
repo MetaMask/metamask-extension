@@ -106,7 +106,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
-import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   AssetType,
   TokenStandard,
@@ -569,6 +568,16 @@ export const TokenManagementPage = () => {
   const featuredEvmNetworks = useSelector(getFeaturedEvmNetworks);
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
+  );
+  const restorableFeaturedEvmChainIds = useMemo(
+    () =>
+      new Set(
+        getFilteredFeaturedNetworks(
+          blacklistedChainIds,
+          featuredEvmNetworks,
+        ).map((network) => normalizeToHexChainId(network.chainId)),
+      ),
+    [blacklistedChainIds, featuredEvmNetworks],
   );
   const allTokensByChain = useSelector(getTokensControllerAllTokens) as Record<
     string,
@@ -1132,9 +1141,10 @@ export const TokenManagementPage = () => {
             networkConfigurations?.[payload.hexChainId],
           );
           if (isImported && !isIgnored && !isNetworkConfigured) {
-            const featuredNetwork = FEATURED_RPCS.find(
-              (network) => network.chainId === payload.hexChainId,
-            );
+            const featuredNetwork = getFilteredFeaturedNetworks(
+              blacklistedChainIds,
+              featuredEvmNetworks,
+            ).find((network) => network.chainId === payload.hexChainId);
             if (!featuredNetwork) {
               return;
             }
@@ -1220,7 +1230,9 @@ export const TokenManagementPage = () => {
     },
     [
       addPendingKey,
+      blacklistedChainIds,
       dispatch,
+      featuredEvmNetworks,
       networkConfigurations,
       enableFeaturedEvmNetwork,
       getAccountForChain,
@@ -1347,6 +1359,12 @@ export const TokenManagementPage = () => {
         payload.hexChainId &&
         !networkConfigurations?.[payload.hexChainId],
       );
+      const isRestorableUnconfiguredEvmNetwork = Boolean(
+        payload.hexChainId &&
+          restorableFeaturedEvmChainIds.has(
+            normalizeToHexChainId(payload.hexChainId),
+          ),
+      );
       const isHidden =
         stagedHideKeys.has(lowerAssetId) ||
         committedHideKeys.has(lowerAssetId) ||
@@ -1378,7 +1396,12 @@ export const TokenManagementPage = () => {
             (!isUnconfiguredImportedEvmNetwork && isImported && !isHidden) ||
             payload.isNative
           }
-          disabled={payload.isNative || isPending}
+          disabled={
+            payload.isNative ||
+            isPending ||
+            (isUnconfiguredImportedEvmNetwork &&
+              !isRestorableUnconfiguredEvmNetwork)
+          }
           isLoading={isPending}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
           showToggle
@@ -1397,6 +1420,7 @@ export const TokenManagementPage = () => {
       managedAssetsByKey,
       networkConfigurations,
       pendingKeys,
+      restorableFeaturedEvmChainIds,
       stagedHideKeys,
     ],
   );
