@@ -32,7 +32,7 @@ describe('Permissions Page', function () {
     );
   });
 
-  it('should navigate back through Gator Permissions page to home route', async function () {
+  it('should navigate back from Permissions page to home route', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -45,16 +45,13 @@ describe('Permissions Page', function () {
         await login(driver, { validateBalance: false });
         await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
-        const gatorPermissionsPage = new GatorPermissionsPage(driver);
         const homePage = new HomePage(driver);
         await permissionListPage.checkPageIsLoaded();
 
-        // Click back from Permissions Page - goes to Gator Permissions Page
+        // Click back from Permissions Page - goes directly to Home
+        // (When only dapp connections exist without gator permissions,
+        // the Gator Permissions page auto-redirects, so back goes to Home)
         await permissionListPage.clickBackButton();
-        await gatorPermissionsPage.checkPageIsLoaded();
-
-        // Click back from Gator Permissions Page - goes to Home
-        await gatorPermissionsPage.clickBackButton();
         await homePage.checkPageIsLoaded();
       },
     );

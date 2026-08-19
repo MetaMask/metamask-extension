@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import {
   Button,
@@ -85,14 +85,14 @@ export const BridgeAlertModal = ({
    */
   const handleContinue = useCallback(async () => {
     const nextAlertIndex = activeAlertIndex + 1;
-    setActiveAlertIndex(nextAlertIndex);
-    if (
-      nextAlertIndex === alerts.length &&
-      shouldShowSubmitCTA &&
-      activeQuote
-    ) {
-      await submitBridgeTransaction(activeQuote);
+    if (nextAlertIndex === alerts.length && shouldShowSubmitCTA) {
+      if (activeQuote) {
+        await submitBridgeTransaction(activeQuote);
+      }
+      onClose();
+      return;
     }
+    setActiveAlertIndex(nextAlertIndex);
   }, [
     activeQuote,
     submitBridgeTransaction,
@@ -100,15 +100,45 @@ export const BridgeAlertModal = ({
     setActiveAlertIndex,
     shouldShowSubmitCTA,
     alerts.length,
+    onClose,
   ]);
 
-  // Reset the active alert index when the modal visibility changes
+  // Reset alert index only when the modal opens. Do not call onClose whenever
+  // isModalOpen is false — that races with alert/quote settling and clears
+  // parent isOpen before the modal can appear (and inline onClose in deps OOMs).
+  const onCloseRef = useRef(onClose);
   useEffect(() => {
-    setActiveAlertIndex(0);
-    if (!isModalOpen) {
-      onClose();
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const wasOpenRef = useRef(isOpen);
+  useEffect(() => {
+    const wasOpen = wasOpenRef.current;
+    wasOpenRef.current = isOpen;
+    if (isOpen && !wasOpen) {
+      queueMicrotask(() => {
+        setActiveAlertIndex(0);
+      });
     }
-  }, [isModalOpen]);
+  }, [isOpen, setActiveAlertIndex]);
+
+  // If the submit modal was open and the quote becomes unusable, close it.
+  useEffect(() => {
+    if (
+      isOpen &&
+      !isModalOpen &&
+      shouldShowSubmitCTA &&
+      (isQuoteExpired || isStockMarketClosed)
+    ) {
+      onCloseRef.current();
+    }
+  }, [
+    isOpen,
+    isModalOpen,
+    shouldShowSubmitCTA,
+    isQuoteExpired,
+    isStockMarketClosed,
+  ]);
 
   return activeAlert ? (
     <Modal
