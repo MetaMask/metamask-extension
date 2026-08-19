@@ -34,6 +34,7 @@ describe('Clear account activity', function (this: Suite) {
         });
 
         // Clear activity and nonce data
+        await homePage.goToHomePage();
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
