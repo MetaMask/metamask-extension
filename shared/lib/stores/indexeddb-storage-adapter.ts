@@ -60,8 +60,9 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
 
   /**
    * Retrieve an item from the selected storage backend.
-   * @param namespace
-   * @param key
+   *
+   * @param namespace The namespace of the item.
+   * @param key The key of the item.
    */
   async getItem(namespace: string, key: string): Promise<StorageGetResult> {
     try {
@@ -80,9 +81,10 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
 
   /**
    * Store an item in the selected storage backend.
-   * @param namespace
-   * @param key
-   * @param value
+   *
+   * @param namespace The namespace of the item.
+   * @param key The key of the item.
+   * @param value The value to store.
    */
   async setItem(namespace: string, key: string, value: Json): Promise<void> {
     await this.#open();
@@ -92,8 +94,9 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
 
   /**
    * Remove an item from the selected storage backend.
-   * @param namespace
-   * @param key
+   *
+   * @param namespace The namespace of the item.
+   * @param key The key of the item.
    */
   async removeItem(namespace: string, key: string): Promise<void> {
     await this.#open();
@@ -103,7 +106,8 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
 
   /**
    * Get all keys for a namespace from the selected storage backend.
-   * @param namespace
+   *
+   * @param namespace The namespace of the items.
    */
   async getAllKeys(namespace: string): Promise<string[]> {
     const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
@@ -115,7 +119,8 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
 
   /**
    * Clear a namespace in the selected storage backend.
-   * @param namespace
+   *
+   * @param namespace The namespace of the items.
    */
   async clear(namespace: string): Promise<void> {
     await this.#open();
