@@ -12,10 +12,6 @@ import {
 } from '@metamask/messenger';
 import { cloneDeep } from 'lodash';
 import { DELEGATOR_CONTRACTS } from '@metamask/delegation-deployments';
-import {
-  BalanceChangeType,
-  createNativeBalanceChangeTerms,
-} from '@metamask/delegation-core';
 import { Hex, remove0x } from '@metamask/utils';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { toHex } from '@metamask/controller-utils';
@@ -47,6 +43,11 @@ const TX_PARAMS_MOCK: TransactionParams = {
 
 const DELEGATION_ADDRESS_MOCK =
   '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' as Hex;
+
+// Expected `NativeBalanceChangeEnforcer` terms for a zero-tolerance decrease:
+// `0x01` (enforceDecrease) + recipient (from) + 32 zero bytes (amount = 0).
+const NO_NATIVE_DECREASE_TERMS_MOCK =
+  `0x01${remove0x(TX_PARAMS_MOCK.from as Hex)}${'00'.repeat(32)}`.toLowerCase() as Hex;
 
 const TRANSACTION_META_MOCK: TransactionMeta = {
   chainId: CHAIN_ID_MOCK,
@@ -331,14 +332,8 @@ describe('Enforced Simulations Utils', () => {
         ),
       );
 
-      const expectedTerms = createNativeBalanceChangeTerms({
-        recipient: TX_PARAMS_MOCK.from as Hex,
-        balance: 1n,
-        changeType: BalanceChangeType.Decrease,
-      });
-
       expect(newTransaction.txParams.data).toStrictEqual(
-        expect.stringContaining(remove0x(expectedTerms).toLowerCase()),
+        expect.stringContaining(remove0x(NO_NATIVE_DECREASE_TERMS_MOCK)),
       );
     });
 
@@ -362,14 +357,8 @@ describe('Enforced Simulations Utils', () => {
         ),
       );
 
-      const expectedTerms = createNativeBalanceChangeTerms({
-        recipient: TX_PARAMS_MOCK.from as Hex,
-        balance: 1n,
-        changeType: BalanceChangeType.Decrease,
-      });
-
       expect(newTransaction.txParams.data).toStrictEqual(
-        expect.stringContaining(remove0x(expectedTerms).toLowerCase()),
+        expect.stringContaining(remove0x(NO_NATIVE_DECREASE_TERMS_MOCK)),
       );
     });
 
