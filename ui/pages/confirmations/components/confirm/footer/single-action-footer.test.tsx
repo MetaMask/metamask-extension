@@ -10,7 +10,6 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   useIsTransactionPayQuotePending,
   useTransactionPayHasExecutableQuote,
-  useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
 import { SingleActionFooter } from './single-action-footer';
@@ -87,7 +86,6 @@ describe('<SingleActionFooter />', () => {
     jest.resetAllMocks();
     jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(false);
     jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(true);
-    jest.mocked(useTransactionPayIsPostQuote).mockReturnValue(true);
     jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
       amountUsd: '10.00',
       skipIfBalance: false,
@@ -256,8 +254,8 @@ describe('<SingleActionFooter />', () => {
     );
   });
 
-  it('disables perps withdrawal before post-quote mode is initialized', () => {
-    jest.mocked(useTransactionPayIsPostQuote).mockReturnValue(false);
+  it('disables perps withdrawal while post-quote setup is pending', () => {
+    jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(true);
 
     const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
 

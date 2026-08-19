@@ -199,9 +199,6 @@ function render(
     .mocked(useTransactionPayDataModule.useTransactionPayHasExecutableQuote)
     .mockReturnValue(hasQuotes);
   jest
-    .mocked(useTransactionPayDataModule.useTransactionPayIsPostQuote)
-    .mockReturnValue(isPostQuote);
-  jest
     .mocked(useTransactionPayDataModule.useTransactionPayRequiredTokens)
     .mockReturnValue(
       requiredTokens as ReturnType<

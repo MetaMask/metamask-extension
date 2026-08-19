@@ -36,7 +36,6 @@ import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
   useIsTransactionPayQuotePending,
   useTransactionPayHasExecutableQuote,
-  useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
@@ -333,10 +332,9 @@ function useIsResultReady() {
   const quotes = useTransactionPayQuotes();
   const isQuotePending = useIsTransactionPayQuotePending();
   const hasExecutableQuote = useTransactionPayHasExecutableQuote();
-  const isPostQuote = useTransactionPayIsPostQuote();
 
   if (isPerpsWithdrawTransaction(currentConfirmation)) {
-    return isQuotePending || Boolean(isPostQuote && hasExecutableQuote);
+    return isQuotePending || hasExecutableQuote;
   }
 
   return isQuotePending || Boolean(quotes?.length);

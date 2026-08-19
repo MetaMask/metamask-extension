@@ -11,7 +11,6 @@ import { useConfirmContext } from '../../../context/confirm';
 import {
   useIsTransactionPayQuotePending,
   useTransactionPayHasExecutableQuote,
-  useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
@@ -38,11 +37,9 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayQuotePending();
   const hasExecutableQuote = useTransactionPayHasExecutableQuote();
-  const isPostQuote = useTransactionPayIsPostQuote();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
   const isPayReady =
-    !isPerpsWithdrawTransaction(currentConfirmation) ||
-    (isPostQuote && hasExecutableQuote);
+    !isPerpsWithdrawTransaction(currentConfirmation) || hasExecutableQuote;
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
