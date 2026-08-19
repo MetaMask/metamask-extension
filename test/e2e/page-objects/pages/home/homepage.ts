@@ -156,6 +156,7 @@ class HomePage {
 
   protected readonly swapButton = { css: 'button', text: 'Swap' };
 
+  // Generic toaster close has no data-testid (ButtonIcon only sets aria-label).
   private readonly toastCloseButton =
     '.toast-container button[aria-label="Close"]';
 

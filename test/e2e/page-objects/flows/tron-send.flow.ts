@@ -27,7 +27,7 @@ export async function landOnTronSendScreen({
   expectedTokenBalance?: string;
 }): Promise<SendPage> {
   await login(driver, { validateBalance: false });
-  await selectTronNetwork(driver, { waitForSnapReadyDelay: true });
+  await selectTronNetwork(driver);
 
   // Refresh re-hydrates the UI from background state so asynchronously-fetched
   // Snap balances appear reliably in the token list (same pattern as assets.spec).

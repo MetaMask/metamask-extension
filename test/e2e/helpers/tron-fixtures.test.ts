@@ -1,3 +1,4 @@
+import { TronNode } from '../seeder/tron/node';
 import { TRON_ACCOUNT_ADDRESS } from '../tests/tron/mocks/common-tron';
 import {
   GAS_FREE,
@@ -7,7 +8,10 @@ import {
   USDD,
   USDT,
 } from '../tests/tron/fixtures/tokens';
-import { buildTronNodeOptions } from '../tests/tron/fixtures/with-tron-fixtures';
+import {
+  buildTronNodeOptions,
+  resolveTronFixtureLocalNodeOptions,
+} from '../tests/tron/fixtures/with-tron-fixtures';
 
 describe('withTronFixtures', () => {
   it('builds Tron local node options from explicit account assets', () => {
@@ -42,6 +46,47 @@ describe('withTronFixtures', () => {
           USDT: '2804595',
         },
       },
+    });
+  });
+
+  describe('resolveTronFixtureLocalNodeOptions', () => {
+    const startupNodeOptions = { initialBalances: { [TRON_ACCOUNT_ADDRESS]: 1 } };
+
+    it('starts Anvil and a new Tron process by default', () => {
+      expect(
+        resolveTronFixtureLocalNodeOptions({ startupNodeOptions }),
+      ).toStrictEqual([
+        'anvil',
+        { type: 'tron', options: startupNodeOptions },
+      ]);
+    });
+
+    it('starts only a new Tron process when Anvil is disabled', () => {
+      expect(
+        resolveTronFixtureLocalNodeOptions({
+          includeAnvil: false,
+          startupNodeOptions,
+        }),
+      ).toStrictEqual([{ type: 'tron', options: startupNodeOptions }]);
+    });
+
+    it('reuses a borrowed Tron node and still starts Anvil', () => {
+      expect(
+        resolveTronFixtureLocalNodeOptions({
+          borrowedTronNode: {} as TronNode,
+          startupNodeOptions,
+        }),
+      ).toStrictEqual(['anvil']);
+    });
+
+    it('does not start a local node when a borrowed Tron node is used without Anvil', () => {
+      expect(
+        resolveTronFixtureLocalNodeOptions({
+          borrowedTronNode: {} as TronNode,
+          includeAnvil: false,
+          startupNodeOptions,
+        }),
+      ).toStrictEqual(['none']);
     });
   });
 });
