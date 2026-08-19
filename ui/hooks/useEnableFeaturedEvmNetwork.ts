@@ -51,9 +51,7 @@ export const useEnableFeaturedEvmNetwork = () => {
       }
 
       const endpoint =
-        addedNetwork.rpcEndpoints?.[
-          addedNetwork.defaultRpcEndpointIndex ?? 0
-        ];
+        addedNetwork.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex ?? 0];
       return {
         name: featuredEvmNetwork.name,
         networkClientId: endpoint?.networkClientId,

@@ -81,8 +81,8 @@ jest.mock('../../store/actions', () => {
   const actual = jest.requireActual('../../store/actions');
   return {
     ...actual,
-    addNetwork: jest.fn(() =>
-      () =>
+    addNetwork: jest.fn(
+      () => () =>
         Promise.resolve({
           defaultRpcEndpointIndex: 0,
           rpcEndpoints: [],
@@ -1220,12 +1220,11 @@ describe('TokenManagementPage', () => {
     });
 
     const actions = getMockedActions();
-    actions.addNetwork.mockReturnValueOnce(
-      () =>
-        Promise.resolve({
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [{ networkClientId: 'base' }],
-        }),
+    actions.addNetwork.mockReturnValueOnce(() =>
+      Promise.resolve({
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'base' }],
+      }),
     );
     renderPage();
 
