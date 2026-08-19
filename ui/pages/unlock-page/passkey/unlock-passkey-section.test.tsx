@@ -85,6 +85,14 @@ const mockStore = configureMockStore([thunk])({
   },
 });
 
+function setMockPasskeyRecord(passkeyRecord: unknown) {
+  (
+    mockStore.getState() as {
+      metamask: { passkeyRecord?: unknown };
+    }
+  ).metamask.passkeyRecord = passkeyRecord;
+}
+
 describe('UnlockPasskeySection', () => {
   const baseProps = {
     logoSection: <div data-testid="logo-mock" />,
@@ -98,6 +106,7 @@ describe('UnlockPasskeySection', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    setMockPasskeyRecord(null);
     getEnvironmentTypeMock.mockImplementation((url?: string) => {
       const actual = jest.requireActual<
         typeof import('../../../../shared/lib/environment-type')
@@ -169,6 +178,33 @@ describe('UnlockPasskeySection', () => {
     fireEvent.click(getByTestId('unlock-use-password-button'));
 
     expect(onUsePassword).toHaveBeenCalledTimes(1);
+  });
+
+  it('tracks the authenticator AAGUID for unlock events', async () => {
+    setMockPasskeyRecord({
+      credential: {
+        aaguid: 'ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4',
+      },
+    });
+    const { getByTestId } = renderWithProvider(
+      <UnlockPasskeySection {...baseProps} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-passkey-button'));
+
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+    });
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          authenticator_id: 'ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4',
+        }),
+      }),
+    );
   });
 
   it('does not throw when unmounted while passkey authentication is pending', async () => {
