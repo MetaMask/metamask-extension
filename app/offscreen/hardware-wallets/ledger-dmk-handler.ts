@@ -552,8 +552,7 @@ export class LedgerDmkBridgeHandler {
             { hdPath: 'string', message: 'object' },
             'Missing hdPath or message parameter',
           );
-          const typedMessage =
-            message as LedgerSignTypedDataParams['message'];
+          const typedMessage = message as LedgerSignTypedDataParams['message'];
           console.log('[LedgerDMK] signTypedData start', {
             hdPath,
             primaryType: typedMessage.primaryType,
