@@ -179,7 +179,9 @@ describe('MultichainReviewPermissions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
-    jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue(undefined);
+    jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
+      tokenTransfer: { count: 0, chains: [] },
+    });
   });
 
   it('renders the edit accounts page', () => {
