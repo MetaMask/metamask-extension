@@ -7,7 +7,7 @@ import { Driver } from '../../../webdriver/driver';
  * Owns: page-loaded / displayed checks, navigating into Connections (Dapps) or Token
  * transfer (Assets), and back toward home.
  * Boundaries: the category hub only. Site list and per-site management are
- * `PermissionListPage` / `SitePermissionPage`.
+ * `PermissionListPage` / `EditConnectedAccountsPage`.
  * Related: `PermissionListPage`, `flows/permissions.flow.ts`.
  *
  * @see ui/components/multichain/pages/gator-permissions/gator-permissions-page.tsx

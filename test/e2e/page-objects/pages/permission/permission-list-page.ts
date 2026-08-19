@@ -7,8 +7,9 @@ import { Driver } from '../../../webdriver/driver';
  * Owns: page-loaded checks, counting connection list items, asserting a site
  * is listed, opening a site's permission page, and back navigation.
  * Boundaries: the list only. Per-site edit/disconnect is
- * `SitePermissionPage`; the Gator category hub is `GatorPermissionsPage`.
- * Related: `SitePermissionPage`, `GatorPermissionsPage`,
+ * `EditConnectedAccountsPage`; the Gator category hub is
+ * `GatorPermissionsPage`.
+ * Related: `EditConnectedAccountsPage`, `GatorPermissionsPage`,
  * `flows/permissions.flow.ts`.
  *
  * @see ui/components/multichain/pages/permissions-page/permissions-page.js

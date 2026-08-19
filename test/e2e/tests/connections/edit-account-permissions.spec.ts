@@ -10,7 +10,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
-import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
+import EditConnectedAccountsPage from '../../page-objects/pages/permission/edit-connected-accounts-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
@@ -73,13 +73,24 @@ describe('Edit Accounts Permissions', function () {
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        const sitePermissionPage = new SitePermissionPage(driver);
+        const sitePermissionPage = new EditConnectedAccountsPage(driver);
         await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
         await sitePermissionPage.editPermissionsForAccount([
           accountLabel2,
           accountLabel3,
         ]);
-        await sitePermissionPage.checkConnectedAccountsNumber(3);
+
+        // Re-open the site's permissions and verify all three accounts are
+        // now selected in the accounts editor
+        await permissionListPage.checkPageIsLoaded();
+        await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
+        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
+        await sitePermissionPage.checkSelectedAccountsNumber(3);
+        await sitePermissionPage.checkAccountsAreSelected([
+          accountLabel1,
+          accountLabel2,
+          accountLabel3,
+        ]);
       },
     );
   });

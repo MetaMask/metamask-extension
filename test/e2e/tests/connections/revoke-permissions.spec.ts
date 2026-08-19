@@ -3,7 +3,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_HOST_ADDRESS, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
-import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
+import EditConnectedAccountsPage from '../../page-objects/pages/permission/edit-connected-accounts-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 
@@ -27,7 +27,7 @@ describe('Revoke Permissions', function () {
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
 
         // click connect button to revoke permission
-        const sitePermissionPage = new SitePermissionPage(driver);
+        const sitePermissionPage = new EditConnectedAccountsPage(driver);
         await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
         await sitePermissionPage.disconnectAll();
 
