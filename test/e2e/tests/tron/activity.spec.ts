@@ -6,12 +6,9 @@ import { Driver } from '../../webdriver/driver';
 import {
   landOnTronActivity,
   landOnTronHome,
-  openAndCheckTronTransactionDetails,
+  openTronTransactionDetails,
 } from '../../page-objects/flows/tron-activity.flow';
-import {
-  selectAllNetworksFromNetworkSelect,
-  switchToNetworkFromNetworkSelect,
-} from '../../page-objects/flows/network.flow';
+import { selectAllNetworksFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import { TRON_PORTFOLIO_ACCOUNT } from './fixtures/environments';
 import { withTronFixtures } from './fixtures/with-tron-fixtures';
@@ -133,16 +130,16 @@ describe.skip('Tron - Activity', function (this: Suite) {
             confirmedTx: 1,
           });
           await activity.checkTxAmountInActivity('-10 USDT', 1);
-          await openAndCheckTronTransactionDetails({
+          const details = await openTronTransactionDetails({
             driver,
             activityTab: activity,
             transactionIndex: 1,
-            expected: {
-              title: 'Approved spending cap',
-              status: 'Confirmed',
-              amount: '-10 USDT',
-            },
           });
+          await details.checkTitle('Approved spending cap');
+          await details.checkStatus('Confirmed');
+          await details.checkAmount('-10 USDT');
+          await details.checkHashLinkPresent();
+          await details.checkViewDetailsLink();
         },
       );
     });
@@ -177,18 +174,19 @@ describe.skip('Tron - Activity', function (this: Suite) {
             confirmedTx: 1,
           });
           await activity.checkTxAmountInActivity('-1 TRX', 1);
-          await openAndCheckTronTransactionDetails({
+          const details = await openTronTransactionDetails({
             driver,
             activityTab: activity,
             transactionIndex: 1,
-            expected: {
-              title: 'Sent TRX',
-              status: 'Confirmed',
-              amount: '-1 TRX',
-              addresses: [A_RECIPIENT, TRON_ACCOUNT_ADDRESS],
-              checkTime: true,
-            },
           });
+          await details.checkTitle('Sent TRX');
+          await details.checkTime();
+          await details.checkStatus('Confirmed');
+          await details.checkAmount('-1 TRX');
+          await details.checkHashLinkPresent();
+          await details.checkViewDetailsLink();
+          await details.checkAddressInLog(A_RECIPIENT);
+          await details.checkAddressInLog(TRON_ACCOUNT_ADDRESS);
         },
       );
     });
@@ -222,21 +220,19 @@ describe.skip('Tron - Activity', function (this: Suite) {
             txIndex: 1,
             confirmedTx: 1,
           });
-          // useMultichainTransactionDisplay only adds a `-` prefix for sends; it
-          // never prefixes incoming amounts with `+`, so the rendered text is
-          // just the bare amount.
-          await activity.checkTxAmountInActivity('+2.5 TRX', 1);
-          await openAndCheckTronTransactionDetails({
+          await activity.checkTxAmountInActivity('2.5 TRX', 1);
+          const details = await openTronTransactionDetails({
             driver,
             activityTab: activity,
             transactionIndex: 1,
-            expected: {
-              title: 'Received TRX',
-              status: 'Confirmed',
-              amount: '+2.5 TRX',
-              addresses: [A_SENDER, TRON_ACCOUNT_ADDRESS],
-            },
           });
+          await details.checkTitle('Received TRX');
+          await details.checkStatus('Confirmed');
+          await details.checkAmount('2.5 TRX');
+          await details.checkHashLinkPresent();
+          await details.checkViewDetailsLink();
+          await details.checkAddressInLog(A_SENDER);
+          await details.checkAddressInLog(TRON_ACCOUNT_ADDRESS);
         },
       );
     });
@@ -246,7 +242,7 @@ describe.skip('Tron - Activity', function (this: Suite) {
         srcSymbol: 'TRX',
         srcAmount: '5',
         destSymbol: 'USDT',
-        destAmount: '1.42',
+        destAmount: '1420000',
         status: 'Confirmed',
       });
       await withTronFixtures(
@@ -272,17 +268,19 @@ describe.skip('Tron - Activity', function (this: Suite) {
             txIndex: 1,
             confirmedTx: 1,
           });
-          await activity.checkTxAmountInActivity('+<0.00001 USDT', 1);
-          await openAndCheckTronTransactionDetails({
+          // destAmount is USDT base units (6 decimals): 1420000 → 1.42 USDT.
+          // Incoming swap legs are not prefixed with `+`.
+          await activity.checkTxAmountInActivity('1.42 USDT', 1);
+          const details = await openTronTransactionDetails({
             driver,
             activityTab: activity,
             transactionIndex: 1,
-            expected: {
-              title: 'Swapped',
-              status: 'Confirmed',
-              amount: '-5 TRX',
-            },
           });
+          await details.checkTitle('Swapped');
+          await details.checkStatus('Confirmed');
+          await details.checkAmount('-5 TRX');
+          await details.checkHashLinkPresent();
+          await details.checkViewDetailsLink();
         },
       );
     });
@@ -323,16 +321,16 @@ describe.skip('Tron - Activity', function (this: Suite) {
             confirmedTx: 1,
           });
           await activity.checkTxAmountInActivity('-5 USDT', 1);
-          await openAndCheckTronTransactionDetails({
+          const details = await openTronTransactionDetails({
             driver,
             activityTab: activity,
             transactionIndex: 1,
-            expected: {
-              title: 'Approved spending cap',
-              status: 'Confirmed',
-              amount: '-5 USDT',
-            },
           });
+          await details.checkTitle('Approved spending cap');
+          await details.checkStatus('Confirmed');
+          await details.checkAmount('-5 USDT');
+          await details.checkHashLinkPresent();
+          await details.checkViewDetailsLink();
         },
       );
     });
@@ -369,16 +367,16 @@ describe.skip('Tron - Activity', function (this: Suite) {
             confirmedTx: 0,
           });
           await activity.checkTxAmountInActivity('-1 TRX', 1);
-          await openAndCheckTronTransactionDetails({
+          const details = await openTronTransactionDetails({
             driver,
             activityTab: activity,
             transactionIndex: 1,
-            expected: {
-              title: 'Sending TRX',
-              status: 'Pending',
-              amount: '-1 TRX',
-            },
           });
+          await details.checkTitle('Sending TRX');
+          await details.checkStatus('Pending');
+          await details.checkAmount('-1 TRX');
+          await details.checkHashLinkPresent();
+          await details.checkViewDetailsLink();
         },
       );
     });
@@ -413,16 +411,16 @@ describe.skip('Tron - Activity', function (this: Suite) {
             confirmedTx: 1,
           });
           await activity.checkTxAmountInActivity('-1 TRX', 1);
-          await openAndCheckTronTransactionDetails({
+          const details = await openTronTransactionDetails({
             driver,
             activityTab: activity,
             transactionIndex: 1,
-            expected: {
-              title: 'Sent TRX',
-              status: 'Confirmed',
-              amount: '-1 TRX',
-            },
           });
+          await details.checkTitle('Sent TRX');
+          await details.checkStatus('Confirmed');
+          await details.checkAmount('-1 TRX');
+          await details.checkHashLinkPresent();
+          await details.checkViewDetailsLink();
         },
       );
     });
@@ -457,16 +455,16 @@ describe.skip('Tron - Activity', function (this: Suite) {
             confirmedTx: 0,
           });
           await activity.checkTxAmountInActivity('-1 TRX', 1);
-          await openAndCheckTronTransactionDetails({
+          const details = await openTronTransactionDetails({
             driver,
             activityTab: activity,
             transactionIndex: 1,
-            expected: {
-              title: 'Send failed',
-              status: 'Failed',
-              amount: '-1 TRX',
-            },
           });
+          await details.checkTitle('Send failed');
+          await details.checkStatus('Failed');
+          await details.checkAmount('-1 TRX');
+          await details.checkHashLinkPresent();
+          await details.checkViewDetailsLink();
         },
       );
     });
@@ -530,7 +528,6 @@ describe.skip('Tron - Activity', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           const home = await landOnTronHome(driver);
-          await switchToNetworkFromNetworkSelect(driver, 'Tron');
           await home.goToActivityList();
 
           const activity = new ActivityTab(driver);
