@@ -98,6 +98,7 @@ export const GlobalMenuDrawer = ({
   const isLargeDrawer = isFullscreen || isSidepanel;
 
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const dialog = dialogRef.current;
@@ -113,6 +114,9 @@ export const GlobalMenuDrawer = ({
           // jsdom does not implement HTMLDialogElement.showModal
           dialog.setAttribute('open', '');
         }
+      }
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = 0;
       }
       return;
     }
@@ -181,6 +185,7 @@ export const GlobalMenuDrawer = ({
       )}
 
       <Box
+        ref={scrollRef}
         flexDirection={BoxFlexDirection.Column}
         className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
       >

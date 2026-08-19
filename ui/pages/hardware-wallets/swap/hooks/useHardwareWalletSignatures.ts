@@ -392,28 +392,20 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     };
   }, [setSigningInProgress]);
 
-  if (
-    !firstSignatureDone &&
-    (signatureState.status ===
-      HardwareWalletSignatureStatus.AwaitingFinalSignature ||
-      signatureState.status === HardwareWalletSignatureStatus.Submitted)
-  ) {
-    setFirstSignatureDone(true);
-  }
-
-  const [prevSignatureStatus, setPrevSignatureStatus] = useState(
-    signatureState.status,
-  );
-  if (signatureState.status !== prevSignatureStatus) {
-    setPrevSignatureStatus(signatureState.status);
-    if (!isAwaitingSignature(signatureState.status)) {
-      setHasSignatureTimedOut(false);
+  useEffect(() => {
+    if (
+      signatureState.status ===
+        HardwareWalletSignatureStatus.AwaitingFinalSignature ||
+      signatureState.status === HardwareWalletSignatureStatus.Submitted
+    ) {
+      setFirstSignatureDone(true);
     }
-  }
+  }, [signatureState.status]);
 
   useEffect(() => {
     if (!isAwaitingSignature(signatureState.status)) {
-      return undefined;
+      setHasSignatureTimedOut(false);
+      return;
     }
 
     const timer = setTimeout(() => {
@@ -426,13 +418,11 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   // Resets the stuck-timeout flag while a retry is in flight so the
   // "Resend transaction" button disappears and the timer effectively
   // restarts from zero once the state machine re-enters awaiting-signature.
-  const [prevIsRetrying, setPrevIsRetrying] = useState(isRetrying);
-  if (isRetrying !== prevIsRetrying) {
-    setPrevIsRetrying(isRetrying);
+  useEffect(() => {
     if (isRetrying) {
       setHasSignatureTimedOut(false);
     }
-  }
+  }, [isRetrying]);
 
   const {
     firstStepStatus,

@@ -297,12 +297,9 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    // Reset state when not a hardware wallet account (for auto-shown modals only).
-    // Defer setState so it is not synchronous inside the effect body.
+    // Reset state when not a hardware wallet account (for auto-shown modals only)
     if (!isHardwareWalletAccount && displayedError) {
-      queueMicrotask(() => {
-        resetModalState();
-      });
+      resetModalState();
       return;
     }
 
@@ -343,9 +340,7 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
       // OR if we haven't shown an error yet (displayedError is null)
       // Note: showErrorModalInternal will handle user rejections by dismissing the modal
       if (errorCode !== displayedErrorCode || !displayedError) {
-        queueMicrotask(() => {
-          showErrorModalInternal(error, false);
-        });
+        showErrorModalInternal(error, false);
       }
     }
   }, [

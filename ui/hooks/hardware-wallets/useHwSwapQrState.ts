@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
 
@@ -81,11 +81,9 @@ export function useHwSwapQrState({
   >(undefined);
   const [lastResetKey, setLastResetKey] = useState(stepTrackingResetKey);
 
-  const [prevQrRequestId, setPrevQrRequestId] = useState(currentQrRequestId);
-  if (currentQrRequestId !== prevQrRequestId) {
-    setPrevQrRequestId(currentQrRequestId);
+  useEffect(() => {
     setIsReadingQrSignature(false);
-  }
+  }, [currentQrRequestId]);
 
   if (lastResetKey !== stepTrackingResetKey) {
     setLastResetKey(stepTrackingResetKey);

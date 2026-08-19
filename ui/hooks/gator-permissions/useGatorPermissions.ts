@@ -40,24 +40,17 @@ export function useGatorPermissions(
 
   // Only show loading on initial load when no cache exists
   const [loading, setLoading] = useState(!hasCachedPermissions);
-  const [prevHasCachedPermissions, setPrevHasCachedPermissions] =
-    useState(hasCachedPermissions);
   const hasFetchedRef = useRef(false);
-
-  if (hasCachedPermissions !== prevHasCachedPermissions) {
-    setPrevHasCachedPermissions(hasCachedPermissions);
-    if (hasCachedPermissions && !refreshInBackground) {
-      setLoading(false);
-    } else if (!hasCachedPermissions) {
-      setLoading(true);
-    }
-  }
 
   useEffect(() => {
     let cancelled = false;
 
     const fetchGatorPermissions = async () => {
       try {
+        if (!hasCachedPermissions) {
+          setLoading(true);
+        }
+
         // Note: We don't need to manually update state here because:
         // 1. fetchAndUpdateGatorPermissions updates the controller state
         // 2. Controller state automatically syncs to Redux
@@ -74,12 +67,8 @@ export function useGatorPermissions(
 
     // Skip fetch if we have cached data and background refresh is disabled
     if (hasCachedPermissions && !refreshInBackground) {
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    if (!hasFetchedRef.current) {
+      setLoading(false);
+    } else if (!hasFetchedRef.current) {
       // Only fetch once on mount
       fetchGatorPermissions()
         .then(() => {

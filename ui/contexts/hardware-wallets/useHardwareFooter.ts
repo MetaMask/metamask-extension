@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { isCorrectDeveloperTransactionType } from '../../../shared/lib/confirmation.utils';
 import { isFirefoxBrowser } from '../../../shared/lib/browser-runtime.utils';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
@@ -114,37 +114,31 @@ export const useHardwareFooter = ({
     [currentConfirmation?.type],
   );
 
-  const [prevConnectionStatus, setPrevConnectionStatus] = useState(
-    connectionState.status,
-  );
-  const [prevIsHardwareWalletAccount, setPrevIsHardwareWalletAccount] =
-    useState(isHardwareWalletAccount);
-  const [prevCurrentConfirmationId, setPrevCurrentConfirmationId] = useState(
-    currentConfirmationId,
-  );
-
-  if (!inE2e) {
-    if (
-      connectionState.status !== prevConnectionStatus ||
-      isHardwareWalletAccount !== prevIsHardwareWalletAccount
-    ) {
-      setPrevConnectionStatus(connectionState.status);
-      setPrevIsHardwareWalletAccount(isHardwareWalletAccount);
-
-      if (
-        !isHardwareWalletAccount ||
-        connectionState.status === ConnectionStatus.Disconnected ||
-        connectionState.status === ConnectionStatus.ErrorState
-      ) {
-        setHasPreflightSucceeded(false);
-      }
+  useEffect(() => {
+    if (inE2e) {
+      return;
     }
 
-    if (currentConfirmationId !== prevCurrentConfirmationId) {
-      setPrevCurrentConfirmationId(currentConfirmationId);
+    if (!isHardwareWalletAccount) {
+      setHasPreflightSucceeded(false);
+      return;
+    }
+
+    if (
+      connectionState.status === ConnectionStatus.Disconnected ||
+      connectionState.status === ConnectionStatus.ErrorState
+    ) {
       setHasPreflightSucceeded(false);
     }
-  }
+  }, [connectionState.status, inE2e, isHardwareWalletAccount]);
+
+  useEffect(() => {
+    if (inE2e) {
+      return;
+    }
+
+    setHasPreflightSucceeded(false);
+  }, [currentConfirmationId, inE2e]);
 
   const isHardwareWalletReady = useMemo(() => {
     if (inE2e || !isHardwareWalletAccount || hasPreflightSucceeded) {
