@@ -47,7 +47,7 @@
 }
 
 /* Lift the toaster above fixed CTA footers */
-:root:has(.cta-footer, .multichain-page-footer, .dapp-connection-control-bar, .bottom-nav-bar) {
+:root:has(.cta-footer, .multichain-page-footer, .dapp-connection-control-bar, .bottom-nav-bar, .asset-page__sticky-actions) {
   --toaster-bottom-offset: 80px;
 }
 
