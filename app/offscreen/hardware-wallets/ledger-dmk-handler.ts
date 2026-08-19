@@ -346,9 +346,7 @@ export class LedgerDmkBridgeHandler {
    * @param bridge - The `LedgerDmkBridge` instance to discover through.
    * @returns The first discovered device.
    */
-  async #findPermittedDevice(
-    bridge: LedgerDmkBridge,
-  ): Promise<LedgerDevice> {
+  async #findPermittedDevice(bridge: LedgerDmkBridge): Promise<LedgerDevice> {
     return firstValueFrom(
       bridge.startDiscovering({}).pipe(
         timeoutOperator(LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS),
