@@ -7,6 +7,7 @@ export const VAULT_CONFIG_MOCK = {
   tellerAddress: '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117' as Hex,
   accountantAddress: '0x7382c5b8B51B8C4f127B3123C1039581BAA5A06B' as Hex,
   lensAddress: '0xA816ECd922de94c6879AD23B9A884dB257F20947' as Hex,
+  underlyingToken: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA' as Hex,
 };
 
 export const MONEY_ACCOUNT_ADDRESS_MOCK =
