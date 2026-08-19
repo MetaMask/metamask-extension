@@ -530,10 +530,7 @@
   },
   "ui/hooks/bridge/usePrefillFromSearchQuery.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 5
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 3
+      "count": 1
     }
   },
   "ui/hooks/bridge/useQuoteFetchEvents.ts": {
@@ -543,22 +540,6 @@
   },
   "ui/hooks/bridge/useRewards.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/hooks/bridge/useSelectedTokenSecurityData.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/hooks/bridge/useTokenSearchResults.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 3
-    },
-    "react-hooks/refs": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -924,32 +905,6 @@
   },
   "ui/pages/bridge/hooks/useExternalAccountResolution.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/bridge/hooks/useGasIncludedSupport.ts": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/bridge/hooks/useRWAToken.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/bridge/prepare/bridge-transaction-settings-modal.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/bridge/prepare/components/bridge-alert-modal.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
