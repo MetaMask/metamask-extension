@@ -211,10 +211,8 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const editConnectedAccountsPage = await getEditConnectedAccountsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
         await editConnectedAccountsPage.checkAccountsAreSelected([
           EVM_ACCOUNT_LABEL_ONE,
@@ -253,10 +251,8 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const editConnectedAccountsPage = await getEditConnectedAccountsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
         await editConnectedAccountsPage.checkAccountsAreSelected([
           EVM_ACCOUNT_LABEL_ONE,
@@ -316,10 +312,8 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const editConnectedAccountsPage = await getEditConnectedAccountsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
         await editConnectedAccountsPage.checkAccountsAreSelected([
           EVM_ACCOUNT_LABEL_ONE,
@@ -370,10 +364,8 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const editConnectedAccountsPage = await getEditConnectedAccountsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
         await editConnectedAccountsPage.checkAccountsAreSelected([
           EVM_ACCOUNT_LABEL_ONE,

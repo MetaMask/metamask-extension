@@ -26,10 +26,10 @@ describe('Revoke Permissions', function () {
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
 
-        // click connect button to revoke permission
-        const sitePermissionPage = new EditConnectedAccountsPage(driver);
-        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
-        await sitePermissionPage.disconnectAll();
+        // click disconnect button to revoke permission
+        const editConnectedAccountsPage = new EditConnectedAccountsPage(driver);
+        await editConnectedAccountsPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
+        await editConnectedAccountsPage.disconnectAll();
 
         // Switch to Dapp and check the dapp is disconnected
         const testDapp = new TestDapp(driver);

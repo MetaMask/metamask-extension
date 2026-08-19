@@ -73,9 +73,9 @@ describe('Edit Accounts Permissions', function () {
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        const sitePermissionPage = new EditConnectedAccountsPage(driver);
-        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
-        await sitePermissionPage.editPermissionsForAccount([
+        const editConnectedAccountsPage = new EditConnectedAccountsPage(driver);
+        await editConnectedAccountsPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
+        await editConnectedAccountsPage.editPermissionsForAccount([
           accountLabel2,
           accountLabel3,
         ]);
@@ -84,9 +84,9 @@ describe('Edit Accounts Permissions', function () {
         // now selected in the accounts editor
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
-        await sitePermissionPage.checkSelectedAccountsNumber(3);
-        await sitePermissionPage.checkAccountsAreSelected([
+        await editConnectedAccountsPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
+        await editConnectedAccountsPage.checkSelectedAccountsNumber(3);
+        await editConnectedAccountsPage.checkAccountsAreSelected([
           accountLabel1,
           accountLabel2,
           accountLabel3,

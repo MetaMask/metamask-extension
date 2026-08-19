@@ -313,7 +313,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
-          await connectSolanaTestDapp(driver, testDapp, {});
+          await connectSolanaTestDapp(driver, testDapp);
 
           // Refresh the page
           await driver.refresh();
