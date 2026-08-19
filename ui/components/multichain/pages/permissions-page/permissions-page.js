@@ -155,7 +155,10 @@ const PermissionsPage = () => {
     });
 
   return (
-    <Page className="main-container" data-testid="permissions-page">
+    <Page
+      className="main-container"
+      data-testid="parent-selector-permission-list"
+    >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={

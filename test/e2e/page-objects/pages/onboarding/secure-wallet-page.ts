@@ -38,6 +38,8 @@ class SecureWalletPage {
 
   private driver: Driver;
 
+  private readonly page = '[data-testid="parent-selector-secure-wallet"]';
+
   private readonly passwordInput = '#account-details-authenticate';
 
   private readonly recoveryPhraseChips =
@@ -63,7 +65,10 @@ class SecureWalletPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.secureWalletRecommendedButton);
+      await this.driver.waitForMultipleSelectors([
+        this.page,
+        this.secureWalletRecommendedButton,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for secure wallet page to be loaded',
