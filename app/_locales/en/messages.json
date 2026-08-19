@@ -5492,6 +5492,12 @@
   "moneyApy": {
     "message": "$1 APY"
   },
+  "moneyBalanceInfoBody": {
+    "message": "Your dollar-backed mUSD balance that's always available to spend, send, or trade anytime. We don't calculate this into your total account balance."
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "Withdrawals process immediately, subject to standard network confirmation times on the relevant blockchain. If liquidity is tight, there may be temporary delays."
+  },
   "moneyBalanceLastKnown": {
     "message": "Last known balance"
   },

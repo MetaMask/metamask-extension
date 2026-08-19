@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -8,7 +9,9 @@ import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo
 import type { UseMoneyAccountInfoResult } from '../../../../hooks/money/useMoneyAccountInfo';
 import {
   MoneyAccountBalance,
+  MONEY_ACCOUNT_BALANCE_INFO_TEST_ID,
   MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID,
+  MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID,
   MONEY_ACCOUNT_BALANCE_TEST_ID,
   MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID,
 } from './money-account-balance';
@@ -30,12 +33,13 @@ type ArrangeOptions = {
   hasMoneyAccount?: boolean;
   totalFiatFormatted?: string;
   lastKnownTotalFiatFormatted?: string;
+  isBalanceLoading?: boolean;
 };
 
 /**
  * Stubs the two hooks the component reads.
  *
- * Only the three fields the component consumes are stated; the rest of the
+ * Only the fields the component consumes are stated; the rest of the
  * 19-field balance result is irrelevant here and a partial cast keeps the test
  * about the component rather than about the hook.
  *
@@ -43,11 +47,13 @@ type ArrangeOptions = {
  * @param options.hasMoneyAccount - Whether a Money Account exists.
  * @param options.totalFiatFormatted - The live formatted balance, if any.
  * @param options.lastKnownTotalFiatFormatted - The last-known balance, if any.
+ * @param options.isBalanceLoading - Whether the balance fetch is in flight.
  */
 const arrange = ({
   hasMoneyAccount = true,
   totalFiatFormatted,
   lastKnownTotalFiatFormatted,
+  isBalanceLoading = false,
 }: ArrangeOptions = {}) => {
   mockUseMoneyAccountInfo.mockReturnValue({
     isMoneyAccountFeatureEnabled: hasMoneyAccount,
@@ -60,6 +66,7 @@ const arrange = ({
   mockUseMoneyAccountBalance.mockReturnValue({
     totalFiatFormatted,
     lastKnownTotalFiatFormatted,
+    isBalanceLoading,
   } as UseMoneyAccountBalanceResult);
 };
 
@@ -102,6 +109,7 @@ describe('MoneyAccountBalance', () => {
       '$2,384.34',
     );
     expect(getByText('Money balance')).toBeInTheDocument();
+    expect(getByText('• mUSD')).toBeInTheDocument();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
   });
 
@@ -152,5 +160,58 @@ describe('MoneyAccountBalance', () => {
     const { queryByTestId } = render();
 
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
+  });
+
+  it('shows a skeleton while the balance is loading with nothing to show', () => {
+    arrange({ isBalanceLoading: true });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID)).toBeInTheDocument();
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID),
+    ).toBeInTheDocument();
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toBeNull();
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
+  });
+
+  it('shows the info copy when the info icon is clicked', () => {
+    arrange({ totalFiatFormatted: '$2,384.34' });
+
+    const { getByTestId, getByText, queryByText } = render();
+
+    expect(queryByText(/Your dollar-backed mUSD balance/u)).toBeNull();
+
+    fireEvent.click(
+      getByTestId(`${MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}-button`),
+    );
+
+    expect(
+      getByText(
+        "Your dollar-backed mUSD balance that's always available to spend, send, or trade anytime. We don't calculate this into your total account balance.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      getByText(
+        'Withdrawals process immediately, subject to standard network confirmation times on the relevant blockchain. If liquidity is tight, there may be temporary delays.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('prefers the last-known balance over the skeleton while loading', () => {
+    arrange({
+      isBalanceLoading: true,
+      lastKnownTotalFiatFormatted: '$1,234.56',
+    });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
+      '$1,234.56',
+    );
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID),
+    ).toHaveTextContent('Last known balance');
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID)).toBeNull();
   });
 });
