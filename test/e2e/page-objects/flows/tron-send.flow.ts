@@ -8,7 +8,10 @@ import NonEvmHomepage from '../pages/home/non-evm-homepage';
 import SendPage from '../pages/send/send-page';
 import { TRON_CHAIN_ID } from '../../tests/tron/mocks/common-tron';
 import { login } from './login.flow';
-import { selectTronNetwork } from './tron-network.flow';
+import {
+  retriggerTronNetworkSelect,
+  selectTronNetwork,
+} from './tron-network.flow';
 
 const TRON_CONFIRM_TIMEOUT_MS = 30_000;
 const TRON_ACTIVITY_PENDING_OR_CONFIRMED_SELECTOR =
@@ -30,11 +33,23 @@ export async function landOnTronSendScreen({
   await login(driver, { validateBalance: false });
   await selectTronNetwork(driver);
 
+  const home = new NonEvmHomepage(driver);
+  if (expectedNativeBalance) {
+    try {
+      await home.waitForLiveTronNativeBalance(15_000);
+    } catch {
+      console.log(
+        'Live TRX balance did not land after the first Tron select; switching away and back to retrigger AssetsController',
+      );
+      await retriggerTronNetworkSelect(driver);
+      await home.waitForLiveTronNativeBalance(30_000);
+    }
+  }
+
   // Refresh re-hydrates the UI from background state so asynchronously-fetched
   // Snap balances appear reliably in the token list (same pattern as assets.spec).
   await driver.refresh();
 
-  const home = new NonEvmHomepage(driver);
   await home.checkPageIsLoaded();
   // Wait for the live TRX balance to land on the homepage before navigating to
   // Send. Without this gate, Send opens with the cached "0 TRX available" and
