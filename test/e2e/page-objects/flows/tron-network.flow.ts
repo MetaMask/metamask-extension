@@ -11,6 +11,10 @@ export type SelectTronNetworkOptions = {
    * AssetsController only fetches Snap balances for newly enabled chains, and
    * a too-early enable leaves the token list at 0 TRX. Activity tests omit it
    * because they assert mocked transactions, not live balances.
+   *
+   * Live-balance flows must not call {@link NonEvmHomepage.waitForTronAccountToBeReady}
+   * first. Waiting for the Tron account/Snap can let BIP44 alignment enable
+   * Tron before the Snap can answer balances, which skips the fetch.
    */
   waitForSnapReadyDelay?: boolean;
 };
@@ -39,9 +43,9 @@ async function selectNetworkFromFilter(
  * Selects the Tron network from the network filter modal and waits for any
  * leftover modal to close so subsequent clicks are not blocked.
  *
- * Waits for BIP44 stage-2 Tron account alignment and dismisses homepage toasts
- * before opening the picker. Send flows should pass `waitForSnapReadyDelay` so
- * the Snap is ready to start a balance fetch when Tron is enabled.
+ * Activity and derivation wait for BIP44 stage-2 Tron account alignment, then
+ * use the delay-free filter path. Send flows should pass `waitForSnapReadyDelay`
+ * so the Snap is ready to start a balance fetch when Tron is enabled.
  *
  * @param driver - WebDriver instance
  * @param options - Optional Snap-ready delay for live-balance flows
@@ -54,12 +58,13 @@ export async function selectTronNetwork(
   const homePage = new NonEvmHomepage(driver);
   const selectNetworkModal = new SelectNetworkModal(driver);
 
-  await homePage.waitForTronAccountToBeReady();
-  await homePage.dismissVisibleToast();
   if (waitForSnapReadyDelay) {
     await switchToNetworkFromNetworkSelect(driver, 'Tron');
     await selectNetworkModal.closeIfOpen();
     return;
   }
+
+  await homePage.waitForTronAccountToBeReady();
+  await homePage.dismissVisibleToast();
   await selectNetworkFromFilter(driver, 'Tron');
 }
