@@ -23,6 +23,21 @@ export type CheckExpectedBalanceOptions = {
 // past the default 10s wait.
 const NON_EVM_ICON_TIMEOUT = 20_000;
 
+/**
+ * Wallet home / account overview: balance, primary CTAs, and tab navigation.
+ *
+ * Screen: `#/` (DEFAULT_ROUTE), after unlock / onboarding.
+ * Owns: balance and empty-state checks, Send / Swap / Bridge / Receive,
+ * navigating to Tokens / NFTs / DeFi / Activity tabs, home notifications,
+ * shield entry modal, survey and SRP toasts, and page-ready waits.
+ * Boundaries: tab content belongs to `TokensTab`, `NftsTab`, `DeFiTab`,
+ * `ActivityTab`, and `PerpsTab`. The promotional carousel belongs to
+ * `CarouselPage`. Non-EVM account-specific helpers live on `NonEvmHomepage`.
+ * Related: `HeaderNavbar`, `TokensTab` / `NftsTab` / `DeFiTab` /
+ * `ActivityTab` / `PerpsTab` / `CarouselPage` / `NonEvmHomepage`.
+ *
+ * @see ui/pages/home/home.tsx
+ */
 class HomePage {
   protected readonly activityTab = {
     testId: 'account-overview__activity-tab',
@@ -33,15 +48,11 @@ class HomePage {
     text: 'Remind me later',
   };
 
-  private readonly backupSecretRecoveryPhraseButton = {
-    text: 'Back up now',
-    css: '.home-notification__accept-button',
-  };
+  private readonly backupSecretRecoveryPhraseButton =
+    '[data-testid="backup-srp-toast"] button';
 
-  private readonly backupSecretRecoveryPhraseNotification = {
-    text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
-    css: '.home-notification__text',
-  };
+  private readonly backupSecretRecoveryPhraseNotification =
+    '[data-testid="backup-srp-toast"]';
 
   // Matches both the EVM (`eth-overview__primary-currency`) and non-EVM
   // (`coin-overview__primary-currency`) balance containers.
