@@ -188,31 +188,31 @@ function normalizeDiscoveryError(reason: unknown): HardwareWalletError {
  * driven by the `LedgerDmkBridge` remote feature flag. See `initLedger(mode)`.
  */
 export class LedgerDmkBridgeHandler {
-  private bridge: LedgerDmkBridge | null = null;
+  #bridge: LedgerDmkBridge | null = null;
 
-  private bridgePromise: Promise<LedgerDmkBridge> | null = null;
+  #bridgePromise: Promise<LedgerDmkBridge> | null = null;
 
   /**
    * Bumped in `destroy()` so in-flight `constructBridge()` results are discarded
    * instead of resurrecting a torn-down handler.
    */
-  private bridgeGeneration = 0;
+  #bridgeGeneration = 0;
 
-  private sessionId: string | null = null;
+  #sessionId: string | null = null;
 
-  private sessionStateSubscription: Subscription | null = null;
+  #sessionStateSubscription: Subscription | null = null;
 
-  private messageListenerFn:
+  #messageListenerFn:
     | Parameters<typeof chrome.runtime.onMessage.addListener>[0]
     | null = null;
 
   // Stored references to `navigator.hid` listeners so `destroy()` can remove
   // them. Without these references the listeners leak for the lifetime of the
   // offscreen document when handlers are hot-swapped via `switchLedgerHandler`.
-  private hidConnectListener: ((event: { device: HIDDevice }) => void) | null =
+  #hidConnectListener: ((event: { device: HIDDevice }) => void) | null =
     null;
 
-  private hidDisconnectListener:
+  #hidDisconnectListener:
     | ((event: { device: HIDDevice }) => void)
     | null = null;
 
@@ -222,20 +222,20 @@ export class LedgerDmkBridgeHandler {
    *
    * @returns A connected `LedgerDmkBridge`.
    */
-  private async ensureBridge(): Promise<LedgerDmkBridge> {
-    if (this.bridge) {
-      return this.bridge;
+  async #ensureBridge(): Promise<LedgerDmkBridge> {
+    if (this.#bridge) {
+      return this.#bridge;
     }
-    if (this.bridgePromise !== null) {
-      return this.bridgePromise;
+    if (this.#bridgePromise !== null) {
+      return this.#bridgePromise;
     }
 
-    const generation = this.bridgeGeneration;
-    const pending = this.constructBridge()
+    const generation = this.#bridgeGeneration;
+    const pending = this.#constructBridge()
       .then(async (bridge) => {
         // `destroy()` may have cleared state while construction was in flight.
         // Discard the orphaned bridge instead of resurrecting a torn-down handler.
-        if (generation !== this.bridgeGeneration) {
+        if (generation !== this.#bridgeGeneration) {
           try {
             await bridge.destroy();
           } catch {
@@ -252,20 +252,20 @@ export class LedgerDmkBridgeHandler {
         // `bridge.destroy()` can emit `connected: false` and run
         // `tearDownBridge()`, bumping generation and clearing a newer
         // in-flight `bridgePromise`.
-        this.setupDisconnectMonitoring(bridge);
-        this.bridge = bridge;
+        this.#setupDisconnectMonitoring(bridge);
+        this.#bridge = bridge;
         return bridge;
       })
       .catch((error: unknown) => {
         console.error('[LedgerDMK] ensureBridge: connect failed', error);
-        if (generation === this.bridgeGeneration) {
-          this.bridgePromise = null;
-          this.sessionId = null;
+        if (generation === this.#bridgeGeneration) {
+          this.#bridgePromise = null;
+          this.#sessionId = null;
         }
         throw toHardwareWalletError(error, HardwareWalletType.Ledger);
       });
 
-    this.bridgePromise = pending;
+    this.#bridgePromise = pending;
     return pending;
   }
 
@@ -275,7 +275,7 @@ export class LedgerDmkBridgeHandler {
    *
    * @returns A connected `LedgerDmkBridge`.
    */
-  private async constructBridge(): Promise<LedgerDmkBridge> {
+  async #constructBridge(): Promise<LedgerDmkBridge> {
     console.log('[LedgerDMK] constructBridge: creating LedgerDmkBridge');
     const offscreenTransportFactory = createOffscreenTransportFactory(
       webHidTransportFactory,
@@ -289,9 +289,9 @@ export class LedgerDmkBridgeHandler {
 
     try {
       console.log('[LedgerDMK] constructBridge: finding permitted device');
-      const device = await this.findPermittedDevice(bridge);
+      const device = await this.#findPermittedDevice(bridge);
       console.log('[LedgerDMK] constructBridge: connecting to device');
-      this.sessionId = await bridge.connect({ device });
+      this.#sessionId = await bridge.connect({ device });
 
       // `connect()` sets isConnected synchronously and starts session monitoring.
       // The bridge's signing methods handle device-action completion internally
@@ -299,7 +299,7 @@ export class LedgerDmkBridgeHandler {
       // (onSessionStateChange is a Subject, not BehaviorSubject — subscribing
       // after connect() would miss the initial emission.)
       console.log('[LedgerDMK] constructBridge: session ready', {
-        sessionId: this.sessionId,
+        sessionId: this.#sessionId,
       });
 
       return bridge;
@@ -327,14 +327,14 @@ export class LedgerDmkBridgeHandler {
    * recreated. `tearDownBridge()` avoids that by preserving listeners.
    * @param bridge
    */
-  private setupDisconnectMonitoring(bridge: LedgerDmkBridge): void {
-    if (this.sessionStateSubscription) {
-      this.sessionStateSubscription.unsubscribe();
+  #setupDisconnectMonitoring(bridge: LedgerDmkBridge): void {
+    if (this.#sessionStateSubscription) {
+      this.#sessionStateSubscription.unsubscribe();
     }
-    this.sessionStateSubscription = bridge.onSessionStateChange.subscribe({
+    this.#sessionStateSubscription = bridge.onSessionStateChange.subscribe({
       next: ({ connected }) => {
         if (!connected) {
-          this.tearDownBridge().catch(() => {
+          this.#tearDownBridge().catch(() => {
             // Best-effort cleanup after disconnect
           });
         }
@@ -353,7 +353,7 @@ export class LedgerDmkBridgeHandler {
    * @param bridge - The `LedgerDmkBridge` instance to discover through.
    * @returns The first discovered device.
    */
-  private async findPermittedDevice(
+  async #findPermittedDevice(
     bridge: LedgerDmkBridge,
   ): Promise<LedgerDevice> {
     return firstValueFrom(
@@ -373,15 +373,15 @@ export class LedgerDmkBridgeHandler {
    * remove them when the handler is torn down (e.g., during
    * `switchLedgerHandler`).
    */
-  private setupDeviceEventListeners(): void {
+  #setupDeviceEventListeners(): void {
     if (!isWebHIDSupported()) {
       return;
     }
 
     // Avoid stacking duplicate listeners if init() is called more than once.
-    this.removeDeviceEventListeners();
+    this.#removeDeviceEventListeners();
 
-    this.hidConnectListener = ({ device }: { device: HIDDevice }) => {
+    this.#hidConnectListener = ({ device }: { device: HIDDevice }) => {
       if (device.vendorId === Number(LEDGER_USB_VENDOR_ID)) {
         chrome.runtime.sendMessage({
           target: OffscreenCommunicationTarget.extension,
@@ -391,7 +391,7 @@ export class LedgerDmkBridgeHandler {
       }
     };
 
-    this.hidDisconnectListener = ({ device }: { device: HIDDevice }) => {
+    this.#hidDisconnectListener = ({ device }: { device: HIDDevice }) => {
       if (device.vendorId === Number(LEDGER_USB_VENDOR_ID)) {
         chrome.runtime.sendMessage({
           target: OffscreenCommunicationTarget.extension,
@@ -401,36 +401,36 @@ export class LedgerDmkBridgeHandler {
       }
     };
 
-    navigator.hid.addEventListener('connect', this.hidConnectListener);
-    navigator.hid.addEventListener('disconnect', this.hidDisconnectListener);
+    navigator.hid.addEventListener('connect', this.#hidConnectListener);
+    navigator.hid.addEventListener('disconnect', this.#hidDisconnectListener);
   }
 
   /**
    * Removes HID connect/disconnect listeners registered by this handler.
    */
-  private removeDeviceEventListeners(): void {
+  #removeDeviceEventListeners(): void {
     if (!isWebHIDSupported()) {
       return;
     }
 
-    if (this.hidConnectListener) {
-      navigator.hid.removeEventListener('connect', this.hidConnectListener);
-      this.hidConnectListener = null;
+    if (this.#hidConnectListener) {
+      navigator.hid.removeEventListener('connect', this.#hidConnectListener);
+      this.#hidConnectListener = null;
     }
 
-    if (this.hidDisconnectListener) {
+    if (this.#hidDisconnectListener) {
       navigator.hid.removeEventListener(
         'disconnect',
-        this.hidDisconnectListener,
+        this.#hidDisconnectListener,
       );
-      this.hidDisconnectListener = null;
+      this.#hidDisconnectListener = null;
     }
   }
 
   /**
    * Sets up the message listener for handling Ledger actions from the offscreen bridge.
    */
-  private setupMessageListener(): void {
+  #setupMessageListener(): void {
     const listener: Parameters<
       typeof chrome.runtime.onMessage.addListener
     >[0] = (msg, _sender, sendResponse) => {
@@ -470,7 +470,7 @@ export class LedgerDmkBridgeHandler {
       return true;
     };
 
-    this.messageListenerFn = listener;
+    this.#messageListenerFn = listener;
     chrome.runtime.onMessage.addListener(listener);
   }
 
@@ -494,7 +494,7 @@ export class LedgerDmkBridgeHandler {
         return true;
       }
 
-      const bridge = await this.ensureBridge();
+      const bridge = await this.#ensureBridge();
 
       switch (action) {
         case LedgerAction.makeApp:
@@ -581,9 +581,9 @@ export class LedgerDmkBridgeHandler {
    * router (ledger-router.ts) manages the listener instead.
    */
   async init(skipMessageListener = false): Promise<void> {
-    this.setupDeviceEventListeners();
+    this.#setupDeviceEventListeners();
     if (!skipMessageListener) {
-      this.setupMessageListener();
+      this.#setupMessageListener();
     }
 
     // Notify extension if a Ledger is already permitted
@@ -626,19 +626,19 @@ export class LedgerDmkBridgeHandler {
    * That way `ensureBridge()` never returns a mid-destroy bridge, and a
    * hung `destroy()` cannot permanently stick callers on a dead instance.
    */
-  private async tearDownBridge(): Promise<void> {
-    this.bridgeGeneration += 1;
-    if (this.sessionStateSubscription) {
-      this.sessionStateSubscription.unsubscribe();
-      this.sessionStateSubscription = null;
+  async #tearDownBridge(): Promise<void> {
+    this.#bridgeGeneration += 1;
+    if (this.#sessionStateSubscription) {
+      this.#sessionStateSubscription.unsubscribe();
+      this.#sessionStateSubscription = null;
     }
 
-    const bridgeToDestroy = this.bridge;
+    const bridgeToDestroy = this.#bridge;
     // Clear synchronously before the first await so concurrent ensureBridge()
     // callers construct a fresh bridge instead of reusing one mid-destroy.
-    this.bridge = null;
-    this.bridgePromise = null;
-    this.sessionId = null;
+    this.#bridge = null;
+    this.#bridgePromise = null;
+    this.#sessionId = null;
 
     if (!bridgeToDestroy) {
       return;
@@ -661,11 +661,11 @@ export class LedgerDmkBridgeHandler {
    * Safe to call multiple times.
    */
   async destroy(): Promise<void> {
-    this.removeDeviceEventListeners();
-    if (this.messageListenerFn) {
-      chrome.runtime.onMessage.removeListener(this.messageListenerFn);
-      this.messageListenerFn = null;
+    this.#removeDeviceEventListeners();
+    if (this.#messageListenerFn) {
+      chrome.runtime.onMessage.removeListener(this.#messageListenerFn);
+      this.#messageListenerFn = null;
     }
-    await this.tearDownBridge();
+    await this.#tearDownBridge();
   }
 }
