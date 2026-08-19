@@ -255,4 +255,3 @@ function isTrusted(
 
   return trusted;
 }
-
