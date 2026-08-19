@@ -4,14 +4,14 @@ import NetworkFilter from '../pages/networks/network-filter';
 import SelectNetworkModal from '../pages/networks/select-network-modal';
 import NetworksPage from '../pages/networks/networks-page';
 
-// TODO: Replace this fixed delay with a deterministic wait. Non-EVM accounts (Tron, Bitcoin) are created
+// TODO: Replace this fixed delay with a deterministic wait. Non-EVM accounts (Tron, Bitcoin, Stellar) are created
 // asynchronously at runtime via BIP44 stage-2 alignment, and the Snap only kicks
 // off its balance fetch when the network is switched while it is fully ready. If
 // we switch too early, that trigger is missed and nothing re-fetches the balance
 // afterwards.
 // Solana is intentionally excluded as it's seeded in the fixtures vault
 const NON_EVM_SNAP_READY_DELAY_MS = 10_000;
-const NON_EVM_NETWORKS_NEEDING_DELAY = ['Tron', 'Bitcoin'];
+const NON_EVM_NETWORKS_NEEDING_DELAY = ['Tron', 'Bitcoin', 'Stellar'];
 
 /**
  * Opens the network filter from the asset list and enables every network,
