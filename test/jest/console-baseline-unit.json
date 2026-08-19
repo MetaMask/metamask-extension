@@ -155,14 +155,11 @@
     "shared/lib/bridge-utils/security-alerts-api.util.test.ts": {
       "warn: Missing token alert translation for": 1
     },
-<<<<<<< HEAD
-=======
     "shared/lib/metametrics.test.ts": {
       "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
->>>>>>> origin/main
     "shared/lib/selectors/index.test.ts": {
       "Reselect: Identity function warnings": 2
     },
@@ -179,12 +176,9 @@
       "error: StorageService: Failed to remove item:": 1,
       "error: StorageService: Failed to set item:": 1
     },
-<<<<<<< HEAD
-=======
     "ui/components/app/alert-system/contexts/alertActionHandler.test.ts": {
       "Test errors: Uncaught Errors": 1
     },
->>>>>>> origin/main
     "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.test.tsx": {
       "MetaMask: Background connection not initialized": 9,
       "React: PropTypes validation failures": 1
@@ -802,12 +796,9 @@
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
     },
-<<<<<<< HEAD
     "ui/pages/keychains/restore-vault.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6
     },
-=======
->>>>>>> origin/main
     "ui/pages/multi-srp/import-srp/import-srp.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 519
     },
