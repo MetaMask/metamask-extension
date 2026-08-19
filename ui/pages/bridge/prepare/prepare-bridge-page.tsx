@@ -14,7 +14,6 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
@@ -37,7 +36,6 @@ import {
   getSlippage,
   getIsSlippageUserOverride,
   getToChain,
-  getToChains,
   getToToken,
   getWasTxDeclined,
   getFromAmountInCurrency,
@@ -83,7 +81,6 @@ import {
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
-import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
 import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
 import { getTokenSecurityAssetKey } from '../utils/token-security';
 import { useDispatch } from '../../../store/hooks';
@@ -116,7 +113,6 @@ const PrepareBridgePage = ({
   );
 
   const fromChains = useSelector(getFromChains);
-  const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
@@ -232,8 +228,6 @@ const PrepareBridgePage = ({
   } = useDestinationAccount();
 
   useLatestBalance();
-
-  const ensureNetworkEnabled = useEnsureNetworkEnabled();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -425,20 +419,13 @@ const PrepareBridgePage = ({
           setIsAssetPickerOpen={(isOpen) =>
             dispatch(setIsSrcAssetPickerOpen(isOpen))
           }
-          header={t('swapSelectToken')}
           token={fromToken}
           tokenSecurityData={
             selectedTokenSecurityData[
               getTokenSecurityAssetKey(fromToken.assetId)
             ]
           }
-          accountAddress={selectedAccount?.address}
           onAmountChange={sourceInputAmount.handleAmountChange}
-          onAssetChange={async (token) => {
-            await ensureNetworkEnabled(token.chainId);
-            dispatch(setFromToken(token));
-          }}
-          networks={fromChains}
           onMaxButtonClick={
             shouldShowMaxButton
               ? (value: string) => {
@@ -588,28 +575,12 @@ const PrepareBridgePage = ({
             setIsAssetPickerOpen={(isOpen) =>
               dispatch(setIsDestAssetPickerOpen(isOpen))
             }
-            header={t('swapSelectToken')}
-            accountAddress={
-              selectedDestinationAccount?.address ?? selectedAccount.address
-            }
             token={toToken}
             tokenSecurityData={
               selectedTokenSecurityData[
                 getTokenSecurityAssetKey(toToken.assetId)
               ]
             }
-            // If the fromChain is a bridge-only chain, disable it in the toChain picker
-            disabledChainId={
-              fromChain?.chainId &&
-              BRIDGE_ONLY_CHAINS.includes(fromChain.chainId)
-                ? fromChain.chainId
-                : undefined
-            }
-            onAssetChange={async (newToToken) => {
-              await ensureNetworkEnabled(newToToken.chainId);
-              dispatch(setToToken(newToToken));
-            }}
-            networks={toChains}
             secondaryDisplay={destinationSecondaryDisplay}
             amountInputPrefix={
               isDestinationFiatPrimary ? getCurrencySymbol(currency) : undefined

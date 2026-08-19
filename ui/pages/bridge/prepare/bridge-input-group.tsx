@@ -41,12 +41,11 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import { CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
-import type { BridgeNetwork, BridgeToken } from '../../../ducks/bridge/types';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { useDispatch } from '../../../store/hooks';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { SelectedAssetButton } from '../asset-picker/selected-asset-button';
-import { BridgeAssetPicker } from '../asset-picker/modal';
 
 export const BridgeInputGroup = ({
   token,
@@ -77,18 +76,11 @@ export const BridgeInputGroup = ({
   >;
   onMaxButtonClick?: (value: string) => void;
   onBlockExplorerClick?: (token: BridgeToken) => void;
-  networks: BridgeNetwork[];
   containerProps?: React.ComponentProps<typeof Column>;
   showAmountSkeleton?: boolean;
   tokenSecurityData?: Pick<BridgeToken, 'isVerified' | 'securityData'>;
-} & Pick<
-  React.ComponentProps<typeof BridgeAssetPicker>,
-  | 'header'
-  | 'onAssetChange'
-  | 'accountAddress'
-  | 'disabledChainId'
-  | 'isDestination'
->) => {
+  isDestination: boolean;
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { navigateToBridgeAssetPickerPage } = useBridgeNavigation();

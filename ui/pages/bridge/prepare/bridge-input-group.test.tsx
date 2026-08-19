@@ -15,7 +15,6 @@ import {
 import { SWAP_PATH } from '../../../helpers/constants/routes';
 import {
   createBridgeMockStore,
-  MOCK_EVM_ACCOUNT,
 } from '../../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
@@ -29,12 +28,8 @@ import * as actions from '../../../ducks/bridge/actions';
 import configureStore from '../../../store/store';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
-import type { BridgeToken } from '../../../ducks/bridge/types';
 import BridgeAssetPickerPage from '../asset-picker';
 import { BridgeInputGroup } from './bridge-input-group';
-
-/** Matches `data-testid` on asset rows: `bridge-asset--${caipAssetId}` */
-const BRIDGE_ASSET_ROW_TEST_ID = /^bridge-asset--/u;
 
 const mockUseVirtualizer = jest.fn();
 const mockNavigate = jest.fn();
@@ -143,13 +138,7 @@ const InputGroup = ({
 } & Partial<React.ComponentProps<typeof BridgeInputGroup>>) => {
   return (
     <BridgeInputGroup
-      header={'Swap'}
       token={getFromToken(mockState)}
-      onAssetChange={(asset: BridgeToken) => {
-        actions.setFromToken(asset);
-      }}
-      networks={getFromChains(mockState)}
-      accountAddress={MOCK_EVM_ACCOUNT.address}
       buttonProps={{ testId: ASSET_PICKER_BUTTON_TEST_ID }}
       amountFieldProps={{
         testId: 'from-amount',
@@ -221,17 +210,6 @@ const setupFetchMock = (
     onFetchMoreResults: jest.fn(),
     hasMoreResults: hasNextPage,
   });
-};
-
-const openAssetPicker = async () => {
-  await act(async () => {
-    await userEvent.click(screen.getByTestId(ASSET_PICKER_BUTTON_TEST_ID));
-  });
-  await flushPromises();
-  await waitFor(() => {
-    expect(screen.getByTestId('bridge-asset-picker-modal')).toBeVisible();
-  });
-  await flushPromises();
 };
 
 const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
@@ -349,55 +327,6 @@ describe('BridgeInputGroup', () => {
     });
 
     expect(setSelectionRangeSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it.skip('should search for tokens', async () => {
-    setupFetchMock();
-    const { getByTestId } = renderBridgeInputGroup();
-
-    expect(getByTestId(ASSET_PICKER_BUTTON_TEST_ID)).toHaveTextContent('ETH');
-
-    await openAssetPicker();
-    expect(getByTestId('bridge-asset-picker-modal')).toMatchSnapshot();
-    expect(
-      screen
-        .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
-        .map(({ textContent }) => textContent),
-    ).toMatchInlineSnapshot(`
-      [
-        "USDCUSD Coin",
-        "USDTUSDT",
-      ]
-    `);
-
-    await fillSearchInput('U');
-    await fillSearchInput('SD', 'USD');
-    await waitFor(() => {
-      expect(
-        screen
-          .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
-          .map(({ textContent }) => textContent),
-      ).toMatchInlineSnapshot(`
-              [
-                "USDCUSD Coin",
-                "USDTUSDT",
-                "USDCUSDC",
-              ]
-          `);
-    });
-
-    expect(mockUseTokenSearchResults.mock.lastCall).toMatchSnapshot();
-
-    expect(getByTestId('bridge-asset-picker-modal')).toMatchSnapshot();
-    expect(mockUseVirtualizer).toHaveBeenCalledWith({
-      count: 3,
-      gap: 0,
-      estimateSize: expect.any(Function),
-      overscan: 10,
-      getScrollElement: expect.any(Function),
-      initialOffset: expect.any(Number),
-      onChange: expect.any(Function),
-    });
   });
 
   it('renders a destination amount skeleton while the quote is loading', () => {
