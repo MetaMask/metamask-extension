@@ -208,43 +208,34 @@ describe('useTransactionPayData', () => {
 
   describe('useIsTransactionPayQuotePending', () => {
     it('returns true while Perps Withdraw post-quote setup is pending', () => {
-      const { result } = renderHook(
-        () => useIsTransactionPayQuotePending(),
-        {
-          wrapper: createWrapper(
-            { isLoading: false, isPostQuote: false },
-            TransactionType.perpsWithdraw,
-          ),
-        },
-      );
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: false, isPostQuote: false },
+          TransactionType.perpsWithdraw,
+        ),
+      });
 
       expect(result.current).toBe(true);
     });
 
     it('returns false after Perps Withdraw post-quote setup completes', () => {
-      const { result } = renderHook(
-        () => useIsTransactionPayQuotePending(),
-        {
-          wrapper: createWrapper(
-            { isLoading: false, isPostQuote: true },
-            TransactionType.perpsWithdraw,
-          ),
-        },
-      );
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: false, isPostQuote: true },
+          TransactionType.perpsWithdraw,
+        ),
+      });
 
       expect(result.current).toBe(false);
     });
 
     it('uses the existing loading state for other transaction types', () => {
-      const { result } = renderHook(
-        () => useIsTransactionPayQuotePending(),
-        {
-          wrapper: createWrapper(
-            { isLoading: false, isPostQuote: false },
-            TransactionType.musdConversion,
-          ),
-        },
-      );
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: false, isPostQuote: false },
+          TransactionType.musdConversion,
+        ),
+      });
 
       expect(result.current).toBe(false);
     });
