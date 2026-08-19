@@ -40,7 +40,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getPasskeyDerivationMethod } from '../../../selectors';
+import {
+  getPasskeyAuthenticatorId,
+  getPasskeyDerivationMethod,
+} from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 
 export type UnlockPasskeySectionProps = {
@@ -68,6 +71,7 @@ export const UnlockPasskeySection = ({
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent, createEventBuilder } = useAnalytics();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
+  const passkeyAuthenticatorId = useSelector(getPasskeyAuthenticatorId);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
@@ -111,6 +115,7 @@ export const UnlockPasskeySection = ({
         /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
         is_auto_prompt: isAutoPrompt,
         derivation_method: passkeyDerivationMethod,
+        authenticator_id: passkeyAuthenticatorId,
         /* eslint-enable @typescript-eslint/naming-convention */
       };
       try {
@@ -214,6 +219,7 @@ export const UnlockPasskeySection = ({
       onUnlockWithPasskey,
       passkeyMethodLabel,
       passkeyDerivationMethod,
+      passkeyAuthenticatorId,
       t,
       trackEvent,
       createEventBuilder,
@@ -235,13 +241,20 @@ export const UnlockPasskeySection = ({
           status: 'use_password_selected',
           /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
           derivation_method: passkeyDerivationMethod,
+          authenticator_id: passkeyAuthenticatorId,
           /* eslint-enable @typescript-eslint/naming-convention */
         })
         .build(),
     );
     cancelPasskeyCeremony();
     onUsePassword();
-  }, [onUsePassword, trackEvent, createEventBuilder, passkeyDerivationMethod]);
+  }, [
+    onUsePassword,
+    trackEvent,
+    createEventBuilder,
+    passkeyDerivationMethod,
+    passkeyAuthenticatorId,
+  ]);
 
   const openUnlockInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();

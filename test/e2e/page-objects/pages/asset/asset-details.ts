@@ -9,22 +9,22 @@ const SECTION_TITLES = [
 type SectionTitle = (typeof SECTION_TITLES)[number];
 
 /**
- * Tron native / token asset details: sections, chart, CTAs, and daily resources.
+ * Native and token asset details: sections, chart, CTAs, and chain-specific
+ * content.
  *
- * Screen: `#/asset/:chainId/:asset?/:id?` for Tron assets.
+ * Screen: `#/asset/:chainId/:asset?/:id?`.
  * Owns: standard section titles, asset name, price chart/header, native and
  * token action buttons (including More-menu receive/batch-sell variants), and
- * the Tron daily resources (bandwidth/energy) section.
+ * chain-specific content such as Tron daily resources (bandwidth/energy).
  * Boundaries: the asset details surface only. Flows after Send/Swap/Receive
  * belong to those destination page objects.
- * Related: `BitcoinAssetDetailsPage` (same asset shell for Bitcoin).
  *
  * @see ui/pages/asset/asset.tsx
  * @see ui/pages/asset/components/asset-page.tsx
  * @see ui/pages/asset/components/tron-daily-resources.tsx
  * @see ui/components/app/wallet-overview/coin-overview.tsx
  */
-class TronAssetDetailsPage {
+class AssetDetailsPage {
   private readonly assetName = '[data-testid="asset-name"]';
 
   private driver: Driver;
@@ -46,9 +46,14 @@ class TronAssetDetailsPage {
   private readonly nativeOverflowSoleAction =
     '[data-testid="coin-overview-default"]';
 
+  private readonly nativeReceiveButton =
+    '[data-testid="coin-overview-default"], [data-testid="coin-overview-more"]';
+
   private readonly nativeSendButton = '[data-testid="coin-overview-send"]';
 
   private readonly nativeSwapButton = '[data-testid="coin-overview-swap"]';
+
+  private readonly page = '[data-testid="parent-selector-asset-details"]';
 
   private readonly priceChart = '[data-testid="asset-price-chart"]';
 
@@ -101,12 +106,9 @@ class TronAssetDetailsPage {
       await this.driver.assertElementNotPresent(this.nativeSwapButton);
     }
     if (options.receive === true) {
-      await this.checkNativeReceiveInOverflowMenu();
+      await this.driver.waitForSelector(this.nativeReceiveButton);
     } else if (options.receive === false) {
-      await this.driver.assertElementNotPresent(
-        this.nativeOverflowReceiveInMenu,
-      );
-      await this.driver.assertElementNotPresent(this.nativeOverflowSoleAction);
+      await this.driver.assertElementNotPresent(this.nativeReceiveButton);
     }
   }
 
@@ -143,6 +145,10 @@ class TronAssetDetailsPage {
     );
   }
 
+  async checkDailyResourcesSectionIsAbsent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.tronDailyResourcesSection);
+  }
+
   /**
    * Asserts Receive is available via the batch-sell-enabled More overflow menu.
    * Requires `batchSell: { enabled: true }` in test fixtures.
@@ -155,7 +161,7 @@ class TronAssetDetailsPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector({ text: 'Your balance' });
+    await this.driver.waitForSelector(this.page);
   }
 
   async checkPriceChart(): Promise<void> {
@@ -164,6 +170,10 @@ class TronAssetDetailsPage {
 
   async checkSection(name: SectionTitle): Promise<void> {
     await this.driver.waitForSelector({ text: name });
+  }
+
+  async checkStakedBalanceIsAbsent(): Promise<void> {
+    await this.driver.assertElementNotPresent({ text: 'Staked balance' });
   }
 
   async checkTokenActionButtons(): Promise<void> {
@@ -175,4 +185,4 @@ class TronAssetDetailsPage {
   }
 }
 
-export default TronAssetDetailsPage;
+export default AssetDetailsPage;

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { isMoneyAccountEnabled } from '../../../shared/lib/money/feature-flags';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { MoneyAccountAvailabilityServiceQueryKeys } from './query-keys';
 
 export type MoneyAccountAvailability =
   | { isAvailable: true; address: Hex }
@@ -22,10 +23,13 @@ export function useMoneyAccountAvailability() {
   const isEnabled = isMoneyAccountEnabled(remoteFeatureFlags);
 
   const query = useQuery({
-    queryKey: ['moneyAccountAvailability', isEnabled],
+    queryKey: [
+      MoneyAccountAvailabilityServiceQueryKeys.GetAvailability,
+      isEnabled,
+    ],
     queryFn: () =>
       submitRequestToBackground<MoneyAccountAvailability>('messengerCall', [
-        'MoneyAccountAvailabilityService:getAvailability',
+        MoneyAccountAvailabilityServiceQueryKeys.GetAvailability,
         [],
       ]),
     enabled: isEnabled,
