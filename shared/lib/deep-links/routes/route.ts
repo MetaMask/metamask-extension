@@ -31,8 +31,6 @@ export type Destination =
       redirectTo: URL;
     };
 
-export type HandlerSearchParams = 'canonical' | 'original';
-
 export type RouteOptions = {
   /**
    * The pathname of the route.
@@ -50,11 +48,6 @@ export type RouteOptions = {
    * @throws if the handler fails to process the params
    */
   handler: (params: URLSearchParams) => Destination;
-  /**
-   * Controls which search params are passed to the route handler.
-   * Defaults to canonical params, which removes unsigned params for signed links.
-   */
-  handlerSearchParams?: HandlerSearchParams;
 };
 
 export const SWAP_ROUTE = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
@@ -80,15 +73,9 @@ export class Route {
    */
   public readonly handler: RouteOptions['handler'];
 
-  /**
-   * @see {@link RouteOptions.handlerSearchParams}
-   */
-  public readonly handlerSearchParams: HandlerSearchParams;
-
   constructor(options: RouteOptions) {
     this.pathname = options.pathname.toLowerCase();
     this.getTitle = options.getTitle;
     this.handler = options.handler;
-    this.handlerSearchParams = options.handlerSearchParams ?? 'canonical';
   }
 }

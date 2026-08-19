@@ -93,12 +93,6 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
-import type {
-  PasskeyAuthenticationResponse,
-  PasskeyRegistrationOptions,
-  PasskeyAuthenticationOptions,
-  PasskeyRegistrationResponse,
-} from '@metamask/passkey-controller';
 import {
   toHardwareWalletError,
   isTrezorDesktopConnectionMissingError,
@@ -106,7 +100,6 @@ import {
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
-import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -206,10 +199,7 @@ import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
-import {
-  ClaimSubmitToastType,
-  type NetworkConnectionBanner,
-} from '../../shared/constants/app-state';
+import { ClaimSubmitToastType } from '../../shared/constants/app-state';
 import {
   SeasonDtoState,
   SeasonStatusState,
@@ -434,8 +424,7 @@ export function decodeSeedPhraseFromBackground(
 type SeedPhraseBackgroundMethod =
   | 'createNewVaultAndGetSeedPhrase'
   | 'unlockAndGetSeedPhrase'
-  | 'getSeedPhrase'
-  | 'exportSeedPhraseWithPasskey';
+  | 'getSeedPhrase';
 
 /**
  * Fetches and decodes a seed phrase from a background RPC method.
@@ -1046,28 +1035,6 @@ export function tryUnlockMetamask(
 }
 
 /**
- * Tries to unlock the metamask with the passkey.
- * @param authenticationResponse - The authentication response from the passkey.
- * @returns A promise that resolves when the unlock is successful or rejected when it fails.
- */
-export function tryUnlockMetamaskWithPasskey(
-  authenticationResponse: PasskeyAuthenticationResponse,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    try {
-      await submitRequestToBackground('unlockWithPasskey', [
-        authenticationResponse,
-      ]);
-      await forceUpdateMetamaskState(dispatch);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-/**
  * Checks if the seedless onboarding user is authenticated.
  *
  * @returns True if the seedless onboarding user is authenticated, false otherwise.
@@ -1236,114 +1203,6 @@ export function submitPassword(password: string): Promise<void> {
 }
 
 /**
- * Generates passkey registration options.
- *
- * @returns Passkey registration options.
- */
-export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
-  const prfSupported = await isPasskeyPRFSupported();
-  return submitRequestToBackground('generatePasskeyRegistrationOptions', [
-    { prfAvailable: prfSupported !== false },
-  ]);
-}
-
-/**
- * Generates passkey authentication options.
- *
- * @returns Passkey authentication options.
- */
-export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthenticationOptions> {
-  return submitRequestToBackground('generatePasskeyAuthenticationOptions');
-}
-
-/**
- * Generates passkey authentication options immediately after registration.
- *
- * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
- */
-export function generatePasskeyPostRegistrationAuthenticationOptions(
-  registrationResponse: PasskeyRegistrationResponse,
-): Promise<PasskeyAuthenticationOptions> {
-  return submitRequestToBackground(
-    'generatePasskeyPostRegistrationAuthenticationOptions',
-    [registrationResponse],
-  );
-}
-
-/**
- * Protects the vault key with a passkey.
- *
- * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
- * @param authenticationResponse - Post-registration `get()` response from the UI ceremony.
- * @param password - When onboarding is complete, the wallet password (step-up). Omit during onboarding.
- */
-export function protectVaultKeyWithPasskey(
-  registrationResponse: PasskeyRegistrationResponse,
-  authenticationResponse: PasskeyAuthenticationResponse,
-  password?: string,
-): Promise<void> {
-  return submitRequestToBackground('protectVaultKeyWithPasskey', [
-    {
-      registrationResponse,
-      authenticationResponse,
-      password,
-    },
-  ]);
-}
-
-/**
- * Removes the passkey from the vault using the passkey authentication response.
- *
- * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
- */
-export function removePasskeyWithPasskeyVerification(
-  authenticationResponse: PasskeyAuthenticationResponse,
-): Promise<void> {
-  return submitRequestToBackground('removePasskeyWithPasskeyVerification', [
-    authenticationResponse,
-  ]);
-}
-
-/**
- * Removes the passkey from the vault using the wallet password.
- *
- * @param password - The wallet password.
- */
-export function removePasskeyWithPasswordVerification(
-  password: string,
-): Promise<void> {
-  return submitRequestToBackground('removePasskeyWithPasswordVerification', [
-    password,
-  ]);
-}
-
-/**
- * Changes wallet password using a verified passkey assertion, then either re-wraps the
- * passkey record for the new vault encryption key or removes passkey enrollment.
- * (Non–social-login, passkey already enrolled.)
- *
- * @param newPassword - The new wallet password.
- * @param authenticationResponse - WebAuthn authentication response from `navigator.credentials.get`.
- * @param options - Settings forwarded to the background handler.
- * @param options.renewVaultKeyProtection - Whether to renew vault key protection. If `false`, removes passkey after the change instead of renewing vault key protection.
- */
-export function changePasswordWithPasskeyVerification(
-  newPassword: string,
-  authenticationResponse: PasskeyAuthenticationResponse,
-  options: { renewVaultKeyProtection: boolean },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('changePasswordWithPasskeyVerification', [
-      {
-        newPassword,
-        authenticationResponse,
-        options,
-      },
-    ]);
-  };
-}
-
-/**
  * Creates a seed phrase backup in the metadata store for seedless onboarding flow.
  *
  * @param password - The password.
@@ -1387,43 +1246,6 @@ export function requestRevealSeedWords(
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-/**
- * Returns the Secret Recovery Phrase using a verified passkey assertion instead
- * of the wallet password.
- *
- * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
- * @param keyringId - The id of the HD keyring to export. Defaults to the primary keyring.
- * @returns The decoded seed phrase.
- */
-export function getSeedPhraseWithPasskey(
-  authenticationResponse: PasskeyAuthenticationResponse,
-  keyringId?: string,
-): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      return fetchSeedPhraseFromBackground('exportSeedPhraseWithPasskey', [
-        authenticationResponse,
-        keyringId,
-      ]);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-export function tryReverseResolveAddress(
-  address: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('tryReverseResolveAddress', [address]);
-    } catch (err) {
-      logErrorWithMessage(err);
     }
   };
 }
@@ -4060,31 +3882,6 @@ export function exportAccounts(
   };
 }
 
-/**
- * Reveals the private keys of multiple accounts using a single verified passkey
- * assertion instead of the wallet password.
- *
- * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
- * @param addresses - The addresses whose private keys should be revealed.
- * @returns The private keys as hex strings, in the same order as `addresses`.
- */
-export function exportAccountsWithPasskey(
-  authenticationResponse: PasskeyAuthenticationResponse,
-  addresses: string[],
-): ThunkAction<Promise<string[]>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      return await submitRequestToBackground<string[]>(
-        'exportAccountsWithPasskey',
-        [authenticationResponse, addresses],
-      );
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 export function showPrivateKey(key: string): PayloadAction<string> {
   return {
     type: actionConstants.SHOW_PRIVATE_KEY,
@@ -4364,6 +4161,8 @@ export function toggleDefaultView(): ThunkAction<
         // closing the popup, and skip persisting the preference, leaving both
         // surfaces open and the next launch defaulting back to the popup.
         try {
+          // Persist the preference
+          await dispatch(setUseSidePanelAsDefault(true));
           await browserWithSidePanel.sidePanel.open({ windowId });
         } catch (error) {
           // Nothing was opened, so the popup stays and state is consistent.
@@ -4373,11 +4172,6 @@ export function toggleDefaultView(): ThunkAction<
           );
           return;
         }
-
-        // Persist the preference before closing the popup so a reopen always
-        // honors the side panel choice and the background toolbar-behavior
-        // subscription flips to open-on-click.
-        await dispatch(setUseSidePanelAsDefault(true));
         window.close();
       }
     } catch (error) {
@@ -6590,16 +6384,6 @@ export function fetchSmartTransactionsLiveness({
     }
   };
 }
-export function updateNetworkConnectionBanner(
-  networkConnectionBanner: NetworkConnectionBanner,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    await submitRequestToBackground('updateNetworkConnectionBanner', [
-      networkConnectionBanner,
-    ]);
-  };
-}
-
 /**
  * Sends the background state the networkClientId and domain upon network switch
  *

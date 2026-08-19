@@ -4134,54 +4134,78 @@ describe('LegacyBackgroundApiService', () => {
     });
 
     it('serializes the change through the shared seedless operation mutex', async () => {
-      const seedlessOperationMutex = new Mutex();
-      const runExclusiveSpy = jest.spyOn(
-        seedlessOperationMutex,
-        'runExclusive',
-      );
+      const runExclusiveSpy = jest.spyOn(Mutex.prototype, 'runExclusive');
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'PasskeyController:changePasswordWithPasskeyVerification',
-            jest.fn().mockResolvedValue(undefined),
-          );
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          jest.fn().mockResolvedValue(undefined),
+        );
 
-          await rootMessenger.call(
-            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
-            params,
-          );
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+          params,
+        );
 
-          expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
-          // The lock is released once the delegated call resolves.
-          expect(seedlessOperationMutex.isLocked()).toBe(false);
-        },
-      );
+        expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
+      });
+
+      runExclusiveSpy.mockRestore();
     });
 
     it('releases the mutex even when the passkey controller throws', async () => {
-      const seedlessOperationMutex = new Mutex();
+      const runExclusiveSpy = jest.spyOn(Mutex.prototype, 'runExclusive');
       const error = new Error('verification failed');
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'PasskeyController:changePasswordWithPasskeyVerification',
-            jest.fn().mockRejectedValue(error),
-          );
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          jest.fn().mockRejectedValue(error),
+        );
 
-          await expect(
-            rootMessenger.call(
-              'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
-              params,
-            ),
-          ).rejects.toThrow(error);
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+            params,
+          ),
+        ).rejects.toThrow(error);
 
-          expect(seedlessOperationMutex.isLocked()).toBe(false);
-        },
-      );
+        expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
+      });
+
+      runExclusiveSpy.mockRestore();
+    });
+  });
+
+  describe('exportSeedPhraseWithPasskey', () => {
+    it('returns JSON-safe UTF-8 bytes while preserving the keyring id', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const mnemonic = new Uint8Array(new Uint16Array([0, 1]).buffer);
+        const exportHandler = jest.fn().mockResolvedValue(mnemonic);
+        rootMessenger.registerActionHandler(
+          'PasskeyController:exportSeedPhraseWithPasskey',
+          exportHandler,
+        );
+        const params = {
+          authenticationResponse: {
+            id: 'credential-id',
+          },
+          keyringId: 'keyring-id',
+        } as unknown as Parameters<
+          LegacyBackgroundApiService['exportSeedPhraseWithPasskey']
+        >[0];
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:exportSeedPhraseWithPasskey',
+            params,
+          ),
+        ).resolves.toStrictEqual(Array.from(Buffer.from('abandon ability')));
+        expect(exportHandler).toHaveBeenCalledWith(
+          params.authenticationResponse,
+          'keyring-id',
+        );
+      });
     });
   });
 
@@ -4224,33 +4248,31 @@ describe('LegacyBackgroundApiService', () => {
 
     it('releases the seedless operation mutex after a successful change', async () => {
       const releaseLock = jest.fn();
-      const seedlessOperationMutex = new Mutex();
-      jest
-        .spyOn(seedlessOperationMutex, 'acquire')
+      const acquireSpy = jest
+        .spyOn(Mutex.prototype, 'acquire')
         .mockResolvedValue(releaseLock);
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'OnboardingController:getIsSocialLoginFlow',
-            jest.fn().mockReturnValue(false),
-          );
-          rootMessenger.registerActionHandler(
-            'KeyringController:changePassword',
-            jest.fn().mockResolvedValue(undefined),
-          );
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
 
-          await rootMessenger.call(
-            'LegacyBackgroundApiService:changePassword',
-            'new-password',
-            'old-password',
-          );
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:changePassword',
+          'new-password',
+          'old-password',
+        );
 
-          expect(seedlessOperationMutex.acquire).toHaveBeenCalledTimes(1);
-          expect(releaseLock).toHaveBeenCalledTimes(1);
-        },
-      );
+        expect(acquireSpy).toHaveBeenCalledTimes(1);
+        expect(releaseLock).toHaveBeenCalledTimes(1);
+      });
+
+      acquireSpy.mockRestore();
     });
 
     it('also changes the seedless onboarding password and stores the new keyring encryption key for a social login flow', async () => {
@@ -4376,36 +4398,34 @@ describe('LegacyBackgroundApiService', () => {
 
     it('releases the lock and rethrows when the keyring password change fails', async () => {
       const releaseLock = jest.fn();
-      const seedlessOperationMutex = new Mutex();
-      jest
-        .spyOn(seedlessOperationMutex, 'acquire')
+      const acquireSpy = jest
+        .spyOn(Mutex.prototype, 'acquire')
         .mockResolvedValue(releaseLock);
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          const error = new Error('keyring change failed');
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('keyring change failed');
 
-          rootMessenger.registerActionHandler(
-            'OnboardingController:getIsSocialLoginFlow',
-            jest.fn().mockReturnValue(false),
-          );
-          rootMessenger.registerActionHandler(
-            'KeyringController:changePassword',
-            jest.fn().mockRejectedValue(error),
-          );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          jest.fn().mockRejectedValue(error),
+        );
 
-          await expect(
-            rootMessenger.call(
-              'LegacyBackgroundApiService:changePassword',
-              'new-password',
-              'old-password',
-            ),
-          ).rejects.toThrow(error);
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          ),
+        ).rejects.toThrow(error);
 
-          expect(releaseLock).toHaveBeenCalledTimes(1);
-        },
-      );
+        expect(releaseLock).toHaveBeenCalledTimes(1);
+      });
+
+      acquireSpy.mockRestore();
     });
   });
 
@@ -6259,6 +6279,7 @@ describe('LegacyBackgroundApiService', () => {
   describe('DeFi referral', () => {
     const HYPERLIQUID = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
     const GMX = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX];
+    const VARIATIONAL = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Variational];
     const mockTabId = 140;
     const mockPermittedAccount = '0x123';
     const mockPermittedAccounts = [mockPermittedAccount, '0x456'];
@@ -6363,6 +6384,26 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger.registerActionHandler(
         'NetworkController:getNetworkClientById',
         jest.fn().mockReturnValue({ provider: { request: jest.fn() } }),
+      );
+    }
+
+    /**
+     * Registers the network handlers used by the requiredChainId gate.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @param chainId - The active chain ID for the partner's domain.
+     */
+    function registerPartnerNetwork(
+      rootMessenger: RootMessenger,
+      chainId: string,
+    ) {
+      rootMessenger.registerActionHandler(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        jest.fn().mockReturnValue('network-client-id'),
+      );
+      rootMessenger.registerActionHandler(
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        jest.fn().mockReturnValue({ chainId }),
       );
     }
 
@@ -7057,6 +7098,69 @@ describe('LegacyBackgroundApiService', () => {
           );
         });
       });
+
+      describe('requiredChainId gate', () => {
+        it('does not proceed when the active chain does not match requiredChainId', async () => {
+          const getPermittedAccounts = jest
+            .fn()
+            .mockResolvedValue(mockPermittedAccounts);
+          await withService(
+            { options: { getPermittedAccounts } },
+            async ({ rootMessenger }) => {
+              const handlers = registerReferralHandlers(rootMessenger, {
+                featureFlags: { [DefiReferralPartner.Variational]: true },
+                referrals: { [DefiReferralPartner.Variational]: {} },
+              });
+              registerPartnerNetwork(rootMessenger, '0x1');
+
+              await rootMessenger.call(
+                'LegacyBackgroundApiService:handleDefiReferral',
+                VARIATIONAL,
+                mockTabId,
+                ReferralTriggerType.NewConnection,
+              );
+
+              expect(handlers.add).not.toHaveBeenCalled();
+              expect(handlers.addReferralPassedAccount).not.toHaveBeenCalled();
+            },
+          );
+        });
+
+        it('proceeds when the active chain matches requiredChainId', async () => {
+          const getPermittedAccounts = jest
+            .fn()
+            .mockResolvedValue(mockPermittedAccounts);
+          await withService(
+            { options: { getPermittedAccounts } },
+            async ({ rootMessenger }) => {
+              const handlers = registerReferralHandlers(rootMessenger, {
+                featureFlags: { [DefiReferralPartner.Variational]: true },
+                referrals: { [DefiReferralPartner.Variational]: {} },
+              });
+              registerPartnerNetwork(rootMessenger, '0xa4b1');
+
+              await rootMessenger.call(
+                'LegacyBackgroundApiService:handleDefiReferral',
+                VARIATIONAL,
+                mockTabId,
+                ReferralTriggerType.NewConnection,
+              );
+
+              expect(handlers.add).toHaveBeenCalledWith({
+                origin: VARIATIONAL.origin,
+                type: VARIATIONAL.approvalType,
+                requestData: {
+                  learnMoreUrl: VARIATIONAL.learnMoreUrl,
+                  partnerId: DefiReferralPartner.Variational,
+                  partnerName: VARIATIONAL.name,
+                  selectedAddress: mockPermittedAccount,
+                },
+                shouldShowRequest: true,
+              });
+            },
+          );
+        });
+      });
     });
 
     describe('handleDefiReferralOnPermittedAccountsAdded', () => {
@@ -7329,6 +7433,7 @@ function getMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByNetworkClientId',
+      'SelectedNetworkController:getNetworkClientIdForDomain',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:addNetwork',
       'NetworkController:setActiveNetwork',
@@ -7393,6 +7498,7 @@ function getMessenger(
       'PreferencesController:setPasswordForgotten',
       'PasskeyController:unlockWithPasskey',
       'PasskeyController:changePasswordWithPasskeyVerification',
+      'PasskeyController:exportSeedPhraseWithPasskey',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
@@ -7518,7 +7624,6 @@ async function withService<ReturnValue>(
     markNotificationPopupAsAutomaticallyClosed: jest.fn(),
     requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
-    seedlessOperationMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,
   });
