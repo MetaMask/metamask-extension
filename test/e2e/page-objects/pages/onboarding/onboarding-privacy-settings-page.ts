@@ -79,6 +79,9 @@ class OnboardingPrivacySettingsPage {
   private readonly networkNameInput =
     '[data-testid="network-form-network-name"]';
 
+  private readonly page =
+    '[data-testid="parent-selector-onboarding-privacy-settings"]';
+
   private readonly privacySettingsBackButton =
     '[data-testid="privacy-settings-back-button"]';
 
@@ -132,6 +135,7 @@ class OnboardingPrivacySettingsPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.generalSettings,
         this.assetsSettings,
         this.securitySettings,

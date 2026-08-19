@@ -59,6 +59,8 @@ class StartOnboardingPage {
   private readonly onboardingLoginFooterTermsOfUseLink =
     '[data-testid="onboarding-login-footer-terms-of-use"]';
 
+  private readonly page = '[data-testid="parent-selector-onboarding-welcome"]';
+
   private readonly privacyNoticeUrl = 'https://consensys.io/privacy-notice';
 
   private readonly termsOfUseUrl = 'https://consensys.io/terms-of-use';
@@ -70,7 +72,7 @@ class StartOnboardingPage {
   async checkLoginPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
-        [this.createWalletButton, this.importWalletButton],
+        [this.page, this.createWalletButton, this.importWalletButton],
         { timeout: 20000 },
       );
     } catch (e) {
