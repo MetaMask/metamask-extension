@@ -27,6 +27,14 @@ jest.mock('../../../hooks/bridge/useBridging', () => ({
   default: () => ({ openBridgeExperience: mockOpenBridgeExperience }),
 }));
 
+const mockGetAssetsBySelectedAccountGroup = jest.fn(
+  () => ({}) as Record<string, unknown[]>,
+);
+jest.mock('../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../selectors/assets'),
+  getAssetsBySelectedAccountGroup: () => mockGetAssetsBySelectedAccountGroup(),
+}));
+
 const mockTrackEvent = jest.fn();
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -54,7 +62,10 @@ const store = configureMockStore()({
 });
 
 describe('AssetStickyActions', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockGetAssetsBySelectedAccountGroup.mockReturnValue({});
+  });
 
   it('routes the Buy button through goToBuy with the token as intent assetId', () => {
     const { getByTestId } = renderWithProvider(
@@ -82,16 +93,53 @@ describe('AssetStickyActions', () => {
   });
 
   it('opens the swap experience with the token as the source asset', () => {
+    const fundedToken = {
+      ...token,
+      balance: { value: '1', display: '1', fiat: '1' },
+    } as Asset & { type: AssetType.token };
+
     const { getByTestId } = renderWithProvider(
-      <AssetStickyActions asset={token} />,
+      <AssetStickyActions asset={fundedToken} />,
       store,
     );
 
     fireEvent.click(getByTestId('asset-sticky-swap'));
     expect(mockOpenBridgeExperience).toHaveBeenCalledWith(
       MetaMetricsSwapsEventSource.TokenView,
-      token,
+      fundedToken,
+      undefined,
     );
+  });
+
+  it('swaps from a funded token and into the current one when it has no balance', () => {
+    const usdcAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+    mockGetAssetsBySelectedAccountGroup.mockReturnValue({
+      [CHAIN_IDS.MAINNET]: [
+        {
+          assetId: usdcAddress,
+          address: usdcAddress,
+          chainId: CHAIN_IDS.MAINNET,
+          symbol: 'USDC',
+          name: 'USD Coin',
+          decimals: 6,
+          isNative: false,
+          fiat: { balance: 500 },
+        },
+      ],
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <AssetStickyActions asset={token} />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('asset-sticky-swap'));
+
+    const [source, sourceToken, destTokenAssetId] =
+      mockOpenBridgeExperience.mock.calls[0];
+    expect(source).toBe(MetaMetricsSwapsEventSource.TokenView);
+    expect(sourceToken.address).toBe(usdcAddress);
+    expect(destTokenAssetId).toBe(toAssetId(token.address, token.chainId));
   });
 
   it('disables swap while the stock market is closed', () => {

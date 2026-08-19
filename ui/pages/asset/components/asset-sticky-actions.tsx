@@ -6,8 +6,9 @@ import {
   ButtonVariant,
   IconName,
 } from '@metamask/design-system-react';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import type { CaipAssetType } from '@metamask/utils';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import {
@@ -24,6 +25,7 @@ import useBridging from '../../../hooks/bridge/useBridging';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getUseExternalServices } from '../../../selectors';
+import { useBalanceAwareSwapDefaults } from '../hooks/useBalanceAwareSwapDefaults';
 import { isNativeAsset, type Asset } from '../types/asset';
 import {
   useAssetPageSecurityTrustCtaGate,
@@ -69,6 +71,34 @@ export const AssetStickyActions = ({
 
   const isNative = isNativeAsset(asset);
   const { chainId, symbol } = asset;
+
+  const currentSwapToken = useMemo(() => {
+    if (!isNativeAsset(asset)) {
+      return asset;
+    }
+
+    if (!ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId)) {
+      return null;
+    }
+
+    // Native swaps start from the chain's default bridge asset, which some
+    // chains override (e.g. Arc swaps the ERC20 flavor of USDC).
+    const nativeSwapToken = getSwapNativeTokenWithOverridesForChain(chainId);
+    return {
+      symbol: nativeSwapToken.symbol,
+      address: nativeSwapToken.address,
+      // `getNativeAssetForChainId` reports the chain as a decimal number, which
+      // the bridge entry point does not recognize as a supported chain.
+      chainId: formatChainIdToCaip(chainId),
+      decimals: nativeSwapToken.decimals,
+      name: nativeSwapToken.name ?? nativeSwapToken.symbol,
+    };
+  }, [asset, chainId]);
+
+  const { sourceToken, destTokenAssetId } = useBalanceAwareSwapDefaults({
+    currentToken: currentSwapToken,
+    currentTokenBalance: asset.balance?.value ?? asset.balance?.display,
+  });
 
   const handleBuyClick = useCallback(async () => {
     const runBuy = async () => {
@@ -130,21 +160,22 @@ export const AssetStickyActions = ({
 
   const handleSwapClick = useCallback(() => {
     const runSwap = () => {
-      if (isNativeAsset(asset)) {
-        // Native swaps start from the chain's default bridge asset, which some
-        // chains override (e.g. Arc swaps the ERC20 flavor of USDC).
+      if (isNative) {
         transitionForward(() =>
           openBridgeExperience(
             MetaMetricsSwapsEventSource.MainView,
-            ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId)
-              ? getSwapNativeTokenWithOverridesForChain(chainId)
-              : undefined,
+            sourceToken,
+            destTokenAssetId,
           ),
         );
         return;
       }
 
-      openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, asset);
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.TokenView,
+        sourceToken,
+        destTokenAssetId,
+      );
     };
 
     if (gateCtaAction) {
@@ -153,7 +184,13 @@ export const AssetStickyActions = ({
     }
 
     runSwap();
-  }, [asset, chainId, gateCtaAction, openBridgeExperience]);
+  }, [
+    destTokenAssetId,
+    gateCtaAction,
+    isNative,
+    openBridgeExperience,
+    sourceToken,
+  ]);
 
   const isSwapDisabled =
     !isExternalServicesEnabled ||
