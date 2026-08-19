@@ -55,7 +55,10 @@ export function shouldPreferStickySwapCta(fiatBalance?: string): boolean {
   }
 
   const parsedBalance = Number(fiatBalance.replace(/[$,]/gu, '').trim());
-  return Number.isFinite(parsedBalance) && parsedBalance > SWAP_PRIMARY_FIAT_THRESHOLD;
+  return (
+    Number.isFinite(parsedBalance) &&
+    parsedBalance > SWAP_PRIMARY_FIAT_THRESHOLD
+  );
 }
 
 type AssetStickyActionsProps = {

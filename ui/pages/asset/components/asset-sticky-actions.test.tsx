@@ -11,7 +11,10 @@ import {
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
 import { Asset } from '../types/asset';
-import { AssetStickyActions, shouldPreferStickySwapCta } from './asset-sticky-actions';
+import {
+  AssetStickyActions,
+  shouldPreferStickySwapCta,
+} from './asset-sticky-actions';
 
 const mockGoToBuy = jest.fn().mockResolvedValue(true);
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
