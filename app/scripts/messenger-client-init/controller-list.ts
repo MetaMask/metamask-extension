@@ -62,7 +62,6 @@ import { EncryptionKey } from '@metamask/browser-passworder';
 import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
 import { ShieldController } from '@metamask/shield-controller';
 import { SubscriptionController } from '@metamask/subscription-controller';
-import { EnsController } from '@metamask/ens-controller';
 import { NameController } from '@metamask/name-controller';
 import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import { BridgeController } from '@metamask/bridge-controller';
@@ -93,6 +92,7 @@ import {
   ConfigRegistryController,
 } from '@metamask/config-registry-controller';
 import { ConnectivityController } from '@metamask/connectivity-controller';
+import { NetworkConnectionBannerController } from '@metamask/network-connection-banner-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
@@ -167,7 +167,6 @@ export type MessengerClient =
   | DeFiPositionsControllerV2
   | EncryptionPublicKeyController
   | EncryptionPublicKeyManager
-  | EnsController
   | StorageService
   | ExecutionService
   | GasFeeController
@@ -258,7 +257,8 @@ export type MessengerClient =
   | ProfileMetricsController
   | ProfileMetricsService
   | ProofOfOwnershipService
-  | ConnectivityController;
+  | ConnectivityController
+  | NetworkConnectionBannerController;
 
 /**
  * Flat state object for all messenger clients supporting or required by modular initialization.
@@ -287,7 +287,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   DeFiPositionsController['state'] &
   DeFiPositionsControllerV2['state'] &
   DelegationController['state'] &
-  EnsController['state'] &
   GasFeeController['state'] &
   GatorPermissionsController['state'] &
   GeolocationController['state'] &

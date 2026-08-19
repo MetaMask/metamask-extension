@@ -134,6 +134,7 @@ import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   PhishingControllerMaybeUpdateStateAction,
+  PhishingControllerScanAddressAction,
   PhishingControllerTestOriginAction,
 } from '@metamask/phishing-controller';
 import {
@@ -250,6 +251,7 @@ import type {
   PasskeyAuthenticationResponse,
   PasskeyControllerChangePasswordWithPasskeyVerificationAction,
   PasskeyControllerClearStateAction,
+  PasskeyControllerExportSeedPhraseWithPasskeyAction,
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
@@ -471,6 +473,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
+  'exportSeedPhraseWithPasskey',
   'forgetDevice',
   'getAccountsBySnapId',
   'getAppNameAndVersion',
@@ -641,6 +644,7 @@ type AllowedActions =
   | OnboardingControllerResetOnboardingAction
   | PasskeyControllerChangePasswordWithPasskeyVerificationAction
   | PasskeyControllerClearStateAction
+  | PasskeyControllerExportSeedPhraseWithPasskeyAction
   | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
@@ -648,6 +652,7 @@ type AllowedActions =
   | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PhishingControllerMaybeUpdateStateAction
+  | PhishingControllerScanAddressAction
   | PhishingControllerTestOriginAction
   | PreferencesControllerAddReferralApprovedAccountAction
   | PreferencesControllerAddReferralDeclinedAccountAction
@@ -731,7 +736,6 @@ export type LegacyBackgroundApiServiceMessenger = Messenger<
 type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
   infuraProjectId: string;
-  seedlessOperationMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   getPermittedAccounts: (origin: string) => Promise<string[]>;
@@ -796,7 +800,6 @@ export class LegacyBackgroundApiService {
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
-   * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
   constructor({
@@ -810,7 +813,6 @@ export class LegacyBackgroundApiService {
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
-    seedlessOperationMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
@@ -825,11 +827,7 @@ export class LegacyBackgroundApiService {
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
-    // Temporarily get the mutex from `MetamaskController` until
-    // changePasswordWithPasskeyVerification is migrated here (the only remaining
-    // MetamaskController user of this mutex).
-    // TODO: Remove this injection once that migration is complete.
-    this.#seedlessOperationMutex = seedlessOperationMutex;
+    this.#seedlessOperationMutex = new Mutex();
     this.#createVaultMutex = new Mutex();
     this.#offscreenPromise = offscreenPromise;
 
@@ -2437,6 +2435,27 @@ export class LegacyBackgroundApiService {
         params,
       ),
     );
+  }
+
+  /**
+   * Exports and JSON-encodes a seed phrase after passkey verification.
+   *
+   * @param params - Passkey seed export parameters.
+   * @param params.authenticationResponse - WebAuthn authentication response.
+   * @param params.keyringId - Optional HD keyring id.
+   * @returns UTF-8 seed phrase bytes as a JSON-safe number array.
+   */
+  async exportSeedPhraseWithPasskey(params: {
+    authenticationResponse: PasskeyAuthenticationResponse;
+    keyringId?: string;
+  }): Promise<number[]> {
+    const mnemonic = await this.#messenger.call(
+      'PasskeyController:exportSeedPhraseWithPasskey',
+      params.authenticationResponse,
+      params.keyringId,
+    );
+
+    return Array.from(convertEnglishWordlistIndicesToCodepoints(mnemonic));
   }
 
   /**

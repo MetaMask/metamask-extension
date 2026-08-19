@@ -271,7 +271,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
               >
                 <button
                   aria-label="Close"
-                  class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-alternative"
+                  class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                   data-testid="drawer-close-button"
                 >
                   <svg
@@ -407,7 +407,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                             <div
                               class="flex-1 min-w-0"
                             >
-                              Dapp connections
+                              Permissions
                             </div>
                             <div
                               class="flex flex-row items-center ml-2 flex-shrink-0"

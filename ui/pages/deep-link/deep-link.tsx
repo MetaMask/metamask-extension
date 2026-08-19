@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
+import { Checkbox } from '@metamask/design-system-react';
 import {
   Button,
   ButtonSize,
@@ -27,7 +28,6 @@ import { Text } from '../../components/component-library/text/text';
 import { Box } from '../../components/component-library/box/box';
 import { Container } from '../../components/component-library/container/container';
 import { ButtonLink, Label } from '../../components/component-library';
-import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import type { MetaMaskReduxState } from '../../store/types';
@@ -382,7 +382,7 @@ export const DeepLink = () => {
                   <Checkbox
                     id="dont-remind-me-checkbox"
                     data-testid="deep-link-checkbox"
-                    isChecked={skipDeepLinkInterstitialChecked}
+                    isSelected={skipDeepLinkInterstitialChecked}
                     onChange={onRemindMeStateChanged}
                   ></Checkbox>
                   <Label

@@ -6,7 +6,11 @@ import {
 } from '@metamask/transaction-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { Hex } from '@metamask/utils';
-import { CachedScanAddressResponse, ResultType } from '../trust-signals';
+import {
+  CachedScanAddressResponse,
+  createCacheKey,
+  ResultType,
+} from '../trust-signals';
 import {
   DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE,
   EnforcedSimulationsState,
@@ -20,7 +24,8 @@ const UNSUPPORTED_CHAIN_ID: Hex = '0xdeadbeef';
 const TO_ADDRESS = '0xRecipientAddress';
 const NESTED_ADDRESS_A = '0xNestedAddressA';
 const NESTED_ADDRESS_B = '0xNestedAddressB';
-const CACHE_KEY = `ethereum:${TO_ADDRESS.toLowerCase()}`;
+const UNMAPPED_CHAIN_ID: Hex = '0x1237';
+const CACHE_KEY = createCacheKey(ETHEREUM_CHAIN_ID, TO_ADDRESS);
 
 const BASE_TRANSACTION_META: TransactionMeta = {
   id: 'test-tx-id',
@@ -56,11 +61,12 @@ function buildCacheEntry(resultType: ResultType) {
 
 function buildState(
   resultType: ResultType,
-  eip7702SupportedChains = [ETHEREUM_CHAIN_ID],
+  eip7702SupportedChains: Hex[] = [ETHEREUM_CHAIN_ID],
+  chainId: Hex = ETHEREUM_CHAIN_ID,
 ): EnforcedSimulationsState {
   return {
     addressSecurityAlertResponses: {
-      [CACHE_KEY]: buildCacheEntry(resultType),
+      [createCacheKey(chainId, TO_ADDRESS)]: buildCacheEntry(resultType),
     },
     eip7702SupportedChains,
   };
@@ -68,12 +74,13 @@ function buildState(
 
 function buildStateForAddresses(
   entries: Record<string, ResultType>,
-  eip7702SupportedChains = [ETHEREUM_CHAIN_ID],
+  eip7702SupportedChains: Hex[] = [ETHEREUM_CHAIN_ID],
+  chainId: Hex = ETHEREUM_CHAIN_ID,
 ): EnforcedSimulationsState {
   const responses: Record<string, CachedScanAddressResponse> = {};
 
   for (const [address, resultType] of Object.entries(entries)) {
-    const key = `ethereum:${address.toLowerCase()}`;
+    const key = createCacheKey(chainId, address);
     responses[key] = buildCacheEntry(resultType);
   }
 
@@ -139,23 +146,56 @@ describe('enforced-simulations', () => {
       ).toBe(true);
     });
 
-    it('returns false when origin is undefined', () => {
-      expect(
-        isEnforcedSimulationsEligible(
-          { ...BASE_TRANSACTION_META, origin: undefined },
-          buildState(ResultType.Benign),
-        ),
-      ).toBe(false);
-    });
+    for (const { description, origin } of [
+      { description: 'no origin', origin: undefined },
+      { description: 'the MetaMask origin', origin: ORIGIN_METAMASK },
+    ]) {
+      describe(`with a wallet-initiated transaction using ${description}`, () => {
+        it('returns true when all conditions are met', () => {
+          expect(
+            isEnforcedSimulationsEligible(
+              { ...BASE_TRANSACTION_META, origin },
+              buildState(ResultType.Benign),
+            ),
+          ).toBe(true);
+        });
 
-    it('returns false when origin is MetaMask internal', () => {
-      expect(
-        isEnforcedSimulationsEligible(
-          { ...BASE_TRANSACTION_META, origin: ORIGIN_METAMASK },
-          buildState(ResultType.Benign),
-        ),
-      ).toBe(false);
-    });
+        it('returns false when the chain is unsupported', () => {
+          expect(
+            isEnforcedSimulationsEligible(
+              {
+                ...BASE_TRANSACTION_META,
+                origin,
+                chainId: UNSUPPORTED_CHAIN_ID,
+              },
+              buildState(ResultType.Benign),
+            ),
+          ).toBe(false);
+        });
+
+        it('returns false when there are no balance changes', () => {
+          expect(
+            isEnforcedSimulationsEligible(
+              {
+                ...BASE_TRANSACTION_META,
+                origin,
+                simulationData: { tokenBalanceChanges: [] },
+              },
+              buildState(ResultType.Benign),
+            ),
+          ).toBe(false);
+        });
+
+        it('returns false when the recipient is trusted', () => {
+          expect(
+            isEnforcedSimulationsEligible(
+              { ...BASE_TRANSACTION_META, origin },
+              buildState(ResultType.Trusted),
+            ),
+          ).toBe(false);
+        });
+      });
+    }
 
     it('returns false when chain is not in eip7702 supported chains', () => {
       expect(
@@ -265,16 +305,87 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
-      it('returns true when chain is not supported by trust signals', () => {
+      it('returns true when a chain with no slug mapping has a non-trusted cached result', () => {
         expect(
           isEnforcedSimulationsEligible(
             {
               ...BASE_TRANSACTION_META,
               chainId: UNSUPPORTED_CHAIN_ID,
             },
-            buildState(ResultType.Benign, [UNSUPPORTED_CHAIN_ID]),
+            buildState(
+              ResultType.Benign,
+              [UNSUPPORTED_CHAIN_ID],
+              UNSUPPORTED_CHAIN_ID,
+            ),
           ),
         ).toBe(true);
+      });
+
+      it('returns false when an unmapped chain recipient has a cached Trusted verdict', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNMAPPED_CHAIN_ID,
+            },
+            buildState(
+              ResultType.Trusted,
+              [UNMAPPED_CHAIN_ID],
+              UNMAPPED_CHAIN_ID,
+            ),
+          ),
+        ).toBe(false);
+      });
+
+      it('exempts a chain with no slug mapping when the recipient has never been scanned', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNMAPPED_CHAIN_ID,
+            },
+            {
+              addressSecurityAlertResponses: {},
+              eip7702SupportedChains: [UNMAPPED_CHAIN_ID],
+            },
+          ),
+        ).toBe(false);
+      });
+
+      it('still enforces when the cached verdict is ErrorResult', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNMAPPED_CHAIN_ID,
+            },
+            buildState(
+              ResultType.ErrorResult,
+              [UNMAPPED_CHAIN_ID],
+              UNMAPPED_CHAIN_ID,
+            ),
+          ),
+        ).toBe(true);
+      });
+
+      it('exempts a transaction with no recipient addresses on a chain with no slug mapping', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNMAPPED_CHAIN_ID,
+              txParams: {
+                ...BASE_TRANSACTION_META.txParams,
+                to: undefined,
+              },
+              nestedTransactions: undefined,
+            },
+            {
+              addressSecurityAlertResponses: {},
+              eip7702SupportedChains: [UNMAPPED_CHAIN_ID],
+            },
+          ),
+        ).toBe(false);
       });
 
       it('returns false when chainId is undefined', () => {
@@ -288,7 +399,10 @@ describe('enforced-simulations', () => {
 
       it('uses txParamsOriginal.to when container wrapping changed txParams.to', () => {
         const trustedDelegationManager = '0xTrustedDelegationManager';
-        const trustedCacheKey = `ethereum:${trustedDelegationManager.toLowerCase()}`;
+        const trustedCacheKey = createCacheKey(
+          ETHEREUM_CHAIN_ID,
+          trustedDelegationManager,
+        );
 
         expect(
           isEnforcedSimulationsEligible(
@@ -462,13 +576,13 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
-      it('still returns false when origin is MetaMask internal', () => {
+      it('returns true when origin is MetaMask internal', () => {
         expect(
           isEnforcedSimulationsEligible(
             { ...BASE_TRANSACTION_META, origin: ORIGIN_METAMASK },
             buildState(ResultType.Trusted),
           ),
-        ).toBe(false);
+        ).toBe(true);
       });
 
       it('is ignored when value is not the string "true"', () => {

@@ -370,6 +370,12 @@ const mockDefaultProLayoutPreferences = {
   chartExpanded: false,
   orderBookPosition: 'left',
   orderFormPosition: 'right',
+  positionsSideFilter: 'all',
+  positionsSortField: 'positionValue',
+  positionsSortDirection: 'desc',
+  ordersSideFilter: 'all',
+  ordersSortField: 'time',
+  ordersSortDirection: 'desc',
 };
 
 module.exports = {
