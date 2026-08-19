@@ -171,7 +171,7 @@
   },
   "ui/hooks/bridge/usePrefillFromSearchQuery.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 5
+      "count": 1
     }
   },
   "ui/hooks/bridge/useQuoteFetchEvents.ts": {
@@ -182,11 +182,6 @@
   "ui/hooks/bridge/useRewards.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
-    }
-  },
-  "ui/hooks/bridge/useTokenSearchResults.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 3
     }
   },
   "ui/hooks/bridge/useTxAlerts.ts": {
@@ -260,11 +255,6 @@
     }
   },
   "ui/pages/bridge/hooks/useExternalAccountResolution.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/bridge/prepare/components/bridge-alert-modal.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
     }
