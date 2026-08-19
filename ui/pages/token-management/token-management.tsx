@@ -1167,6 +1167,7 @@ export const TokenManagementPage = () => {
           const networkClientIdForImport =
             addedNetwork?.networkClientId ?? networkClientId;
           if (!networkClientIdForImport) {
+            toast.error(<ToastContent title={t('importTokensError')} />);
             return;
           }
           const evmAccount = getAccountForChain(payload.caipChainId);
@@ -1245,6 +1246,7 @@ export const TokenManagementPage = () => {
       removeCommittedHideKey,
       stageHide,
       showPageToast,
+      t,
       trackEvent,
       unstageHide,
     ],
@@ -1361,9 +1363,9 @@ export const TokenManagementPage = () => {
       );
       const isRestorableUnconfiguredEvmNetwork = Boolean(
         payload.hexChainId &&
-          restorableFeaturedEvmChainIds.has(
-            normalizeToHexChainId(payload.hexChainId),
-          ),
+        restorableFeaturedEvmChainIds.has(
+          normalizeToHexChainId(payload.hexChainId),
+        ),
       );
       const isHidden =
         stagedHideKeys.has(lowerAssetId) ||

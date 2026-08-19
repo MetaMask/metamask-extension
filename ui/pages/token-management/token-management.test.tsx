@@ -53,6 +53,7 @@ const mockTokenManagementLocationState = {
 };
 const mockUseNavigate = jest.fn();
 const mockToastSuccess = jest.fn();
+const mockToastError = jest.fn();
 
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
@@ -72,6 +73,7 @@ jest.mock('react-router-dom', () => {
 jest.mock('../../components/ui/toast/toast', () => ({
   toast: {
     success: (...args: unknown[]) => mockToastSuccess(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
   },
   ToastContent: ({
     title,
@@ -392,6 +394,7 @@ describe('TokenManagementPage', () => {
     actions.importCustomAssetsBatch.mockClear();
     actions.multichainAddAssets.mockClear();
     actions.multichainIgnoreAssets.mockClear();
+    mockToastError.mockClear();
     const originalWarn = console.warn;
     consoleWarnSpy = jest
       .spyOn(console, 'warn')
@@ -1267,6 +1270,49 @@ describe('TokenManagementPage', () => {
         }),
       }),
     );
+  });
+
+  it('shows an error toast when no network client is available for import', async () => {
+    const baseTokenAddress = '0x0000000000000000000000000000000000000abc';
+    const baseTokenAssetId = `eip155:8453/erc20:${baseTokenAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: baseTokenAssetId,
+          symbol: 'BASE',
+          decimals: 18,
+          name: 'Base Token',
+        },
+      ],
+    });
+    const actions = getMockedActions();
+    actions.addNetwork.mockReturnValueOnce(() =>
+      Promise.resolve({
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [],
+      }),
+    );
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: baseTokenAddress },
+    });
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${baseTokenAssetId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    await waitFor(() =>
+      expect(mockToastError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          props: expect.objectContaining({
+            title: messages.importTokensError.message,
+          }),
+        }),
+      ),
+    );
+    expect(actions.addImportedTokens).not.toHaveBeenCalled();
   });
 
   it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {
