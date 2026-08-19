@@ -4,16 +4,11 @@ import type {
   StorageGetResult,
 } from '@metamask/storage-service';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
-import { PLATFORM_FIREFOX } from '../../constants/app';
-import { getBrowserName } from '../browser-runtime.utils';
-import { BrowserStorageAdapter } from './browser-storage-adapter';
 import {
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from './indexeddb-storage-constants';
 import { IndexedDBStore } from './indexeddb-store';
-
-const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 type StorageDatabase = Pick<
   IndexedDBStore,
@@ -34,16 +29,12 @@ type IndexedDBStorageAdapterOptions = {
 export class IndexedDBStorageAdapter implements StorageAdapter {
   readonly #database: StorageDatabase;
 
-  readonly #fallbackStorage: StorageAdapter;
-
   #openPromise?: Promise<void>;
 
   constructor({
     database = new IndexedDBStore(),
-    fallbackStorage = new BrowserStorageAdapter(),
   }: IndexedDBStorageAdapterOptions = {}) {
     this.#database = database;
-    this.#fallbackStorage = fallbackStorage;
   }
 
   #makeKey(namespace: string, key: string): string {
@@ -51,32 +42,14 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
   }
 
   async #open(): Promise<void> {
-    await this.#database.open(
-      STORAGE_SERVICE_INDEXED_DB_NAME,
-      STORAGE_SERVICE_INDEXED_DB_VERSION,
-    );
-  }
-
-  async #canUseIndexedDB(): Promise<boolean> {
-    // Chrome has an issue with its `storage.local` implementation -- it doesn't
-    // like sharing the database with "large" keys, like Snaps source code.
-    // Firefox doesn't have any issues with storage stability in storage.local,
-    // but users are able to turn `indexedDB` completely _off_ in Firefox. We
-    // can reasonably fall back to storage.local in such cases, since we'd be
-    // missing data that once existed... and to make things more complicated,
-    // if a user turns `indexedDB` back on later, the old "missing" data comes
-    // back like it was never missing in the first place.
-    // So, on FireFox, we report `indexedDb` as unavailable.
-    if (isFirefox) {
-      return false;
-    }
-
     if (!this.#openPromise) {
-      this.#openPromise = this.#open();
+      this.#openPromise = this.#database.open(
+        STORAGE_SERVICE_INDEXED_DB_NAME,
+        STORAGE_SERVICE_INDEXED_DB_VERSION,
+      );
     }
 
-    await this.#openPromise;
-    return true;
+    return this.#openPromise;
   }
 
   /**
@@ -86,13 +59,10 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
    */
   async getItem(namespace: string, key: string): Promise<StorageGetResult> {
     try {
-      if (await this.#canUseIndexedDB()) {
-        const fullKey = this.#makeKey(namespace, key);
-        const [value] = await this.#database.get([fullKey]);
-        return value === undefined ? {} : { result: value as Json };
-      }
-
-      return await this.#fallbackStorage.getItem(namespace, key);
+      await this.#open();
+      const fullKey = this.#makeKey(namespace, key);
+      const [value] = await this.#database.get([fullKey]);
+      return value === undefined ? {} : { result: value as Json };
     } catch (error) {
       console.error(
         `StorageService: Failed to get item: ${namespace}:${key}`,
@@ -109,13 +79,9 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
    * @param value
    */
   async setItem(namespace: string, key: string, value: Json): Promise<void> {
-    if (await this.#canUseIndexedDB()) {
-      const fullKey = this.#makeKey(namespace, key);
-      await this.#database.set({ [fullKey]: value });
-      return;
-    }
-
-    await this.#fallbackStorage.setItem(namespace, key, value);
+    await this.#open();
+    const fullKey = this.#makeKey(namespace, key);
+    await this.#database.set({ [fullKey]: value });
   }
 
   /**
@@ -124,13 +90,9 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
    * @param key
    */
   async removeItem(namespace: string, key: string): Promise<void> {
-    if (await this.#canUseIndexedDB()) {
-      const fullKey = this.#makeKey(namespace, key);
-      await this.#database.remove([fullKey]);
-      return;
-    }
-
-    await this.#fallbackStorage.removeItem(namespace, key);
+    await this.#open();
+    const fullKey = this.#makeKey(namespace, key);
+    await this.#database.remove([fullKey]);
   }
 
   /**
@@ -140,12 +102,9 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
   async getAllKeys(namespace: string): Promise<string[]> {
     const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
 
-    if (await this.#canUseIndexedDB()) {
-      const indexedDbKeys = await this.#database.getKeys(prefix);
-      return indexedDbKeys.map((key) => key.slice(prefix.length));
-    }
-
-    return this.#fallbackStorage.getAllKeys(namespace);
+    await this.#open();
+    const indexedDbKeys = await this.#database.getKeys(prefix);
+    return indexedDbKeys.map((key) => key.slice(prefix.length));
   }
 
   /**
@@ -153,12 +112,8 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
    * @param namespace
    */
   async clear(namespace: string): Promise<void> {
-    if (await this.#canUseIndexedDB()) {
-      const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
-      await this.#database.remove(await this.#database.getKeys(prefix));
-      return;
-    }
-
-    await this.#fallbackStorage.clear(namespace);
+    await this.#open();
+    const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
+    await this.#database.remove(await this.#database.getKeys(prefix));
   }
 }
