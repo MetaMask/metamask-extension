@@ -5495,10 +5495,6 @@
   "musdGetMusd": {
     "message": "Nhận mUSD"
   },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
-  },
   "musdSymbol": {
     "message": "mUSD",
     "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
