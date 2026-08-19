@@ -68,8 +68,6 @@ describe(`migration #${version}`, () => {
     mockBrowser.storage.local.remove.mockResolvedValue(undefined);
   });
 
-  afterEach(() => jest.restoreAllMocks());
-
   it('updates the version without opening IndexedDB when no keys match', async () => {
     const oldStorage = buildVersionedData();
     mockBrowser.storage.local.getKeys.mockResolvedValueOnce(['unrelated']);
