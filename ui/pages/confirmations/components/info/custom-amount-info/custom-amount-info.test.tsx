@@ -15,6 +15,7 @@ import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAu
 import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
+import * as useTransactionPayWithdrawModule from '../../../hooks/pay/useTransactionPayWithdraw';
 import * as useAccountNoFundsAlertModule from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import {
   CustomAmountInfo,
@@ -24,6 +25,8 @@ import {
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
 jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
+jest.mock('../../../hooks/pay/useTransactionPayPostQuote');
+jest.mock('../../../hooks/pay/useTransactionPayWithdraw');
 jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
@@ -69,6 +72,9 @@ jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
 jest.mock('../../rows/total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row" />,
 }));
+// `ReceiveRow` is intentionally left unmocked: it renders either
+// `receive-row-skeleton` or `receive-row` depending on quote-pending state, and
+// the Perps Withdraw cases below assert on that distinction.
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -131,6 +137,7 @@ function render(
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
+    withdraw?: { isWithdraw: boolean; canSelectWithdrawToken: boolean };
   } = {},
 ) {
   const {
@@ -148,6 +155,7 @@ function render(
     hasPositiveRequiredAmount = true,
     sourceAmounts = [],
     requiredTokens = [],
+    withdraw = { isWithdraw: false, canSelectWithdrawToken: false },
   } = options;
   const primaryRequiredToken = Object.prototype.hasOwnProperty.call(
     options,
@@ -226,6 +234,9 @@ function render(
         typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
       >,
     );
+  jest
+    .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
+    .mockReturnValue(withdraw);
 
   const state = getMockConfirmStateForTransaction(transactionMeta);
 
@@ -481,6 +492,7 @@ describe('CustomAmountInfo', () => {
         transactionMeta,
         hasQuotes: true,
         isPostQuote: false,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
       });
 
       expect(queryByTestId('bridge-fee-row')).toBeInTheDocument();
@@ -500,6 +512,7 @@ describe('CustomAmountInfo', () => {
         hasPositiveRequiredAmount: false,
         hasQuotes: true,
         isPostQuote: false,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
@@ -517,11 +530,58 @@ describe('CustomAmountInfo', () => {
         transactionMeta,
         hasQuotes: true,
         isPostQuote: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
       });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
       expect(getByTestId('bridge-time-row')).toBeInTheDocument();
       expect(getByTestId('receive-row')).toBeInTheDocument();
+    });
+
+    it('renders the receive row for a withdraw when post-quote is enabled', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
+      });
+
+      expect(getByTestId('receive-row')).toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('renders the total row for a withdraw when post-quote is disabled', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('withdraw amount input', () => {
+    it('keeps the amount input enabled without wallet tokens when post-quote is disabled', () => {
+      const { getByTestId } = render({
+        availableTokens: [],
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getByTestId('custom-amount')).toHaveAttribute(
+        'data-disabled',
+        'false',
+      );
+    });
+
+    it('disables the amount input without wallet tokens for non-withdraw flows', () => {
+      const { getByTestId } = render({
+        availableTokens: [],
+        withdraw: { isWithdraw: false, canSelectWithdrawToken: false },
+      });
+
+      expect(getByTestId('custom-amount')).toHaveAttribute(
+        'data-disabled',
+        'true',
+      );
     });
   });
 
@@ -600,6 +660,12 @@ describe('CustomAmountInfo', () => {
         .mockReturnValue({ skipIfBalance: false } as ReturnType<
           typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
         >);
+      jest
+        .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
+        .mockReturnValue({
+          isWithdraw: false,
+          canSelectWithdrawToken: false,
+        });
 
       const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
