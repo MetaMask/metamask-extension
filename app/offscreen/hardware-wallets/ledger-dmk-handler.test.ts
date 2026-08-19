@@ -41,7 +41,6 @@ const mockBridgeGetPublicKey = jest.fn();
 const mockBridgeDeviceSignTransaction = jest.fn();
 const mockBridgeDeviceSignMessage = jest.fn();
 const mockBridgeDeviceSignTypedData = jest.fn();
-const mockBridgeDeviceSignDelegationAuthorization = jest.fn();
 const mockBridgeConnect = jest.fn();
 const mockBridgeStartDiscovering = jest.fn();
 let mockOnSessionStateChangeSubject = new Subject<{ connected: boolean }>();
@@ -54,8 +53,6 @@ const createMockBridge = () => ({
   deviceSignTransaction: mockBridgeDeviceSignTransaction,
   deviceSignMessage: mockBridgeDeviceSignMessage,
   deviceSignTypedData: mockBridgeDeviceSignTypedData,
-  deviceSignDelegationAuthorization:
-    mockBridgeDeviceSignDelegationAuthorization,
   connect: mockBridgeConnect,
   startDiscovering: mockBridgeStartDiscovering,
   onSessionStateChange: mockOnSessionStateChangeSubject.asObservable(),
@@ -437,41 +434,40 @@ describe('LedgerDmkBridgeHandler', () => {
           message: 'Missing hdPath or message parameter',
         });
       });
+
+      it('throws when message is null', async () => {
+        await expect(
+          handler.handleAction(LedgerAction.signTypedData, {
+            hdPath: "m/44'/60'/0'/0/0",
+            message: null,
+          }),
+        ).rejects.toMatchObject({
+          name: 'HardwareWalletError',
+          message: 'Missing hdPath or message parameter',
+        });
+      });
     });
 
-    describe('signDelegationAuthorization', () => {
-      it('routes to bridge.deviceSignDelegationAuthorization()', async () => {
-        const params = {
-          hdPath: "m/44'/60'/0'/0/0",
-          chainId: 1,
-          contractAddress: '0x1234',
-          nonce: 2,
-        };
-        mockBridgeDeviceSignDelegationAuthorization.mockResolvedValue({
-          v: '0x1c',
-          r: '0xabc',
-          s: '0xdef',
+    describe('requireActionParams', () => {
+      it('throws when params are omitted entirely', async () => {
+        await expect(
+          handler.handleAction(LedgerAction.getPublicKey),
+        ).rejects.toMatchObject({
+          name: 'HardwareWalletError',
+          message: 'Missing hdPath parameter',
         });
-
-        const result = await handler.handleAction(
-          LedgerAction.signDelegationAuthorization,
-          params,
-        );
-
-        expect(
-          mockBridgeDeviceSignDelegationAuthorization,
-        ).toHaveBeenCalledWith(params);
-        expect(result).toEqual({ v: '0x1c', r: '0xabc', s: '0xdef' });
       });
 
-      it('throws when a required parameter is missing', async () => {
+      it('throws when a required string field is empty', async () => {
         await expect(
-          handler.handleAction(LedgerAction.signDelegationAuthorization, {
+          handler.handleAction(LedgerAction.signTransaction, {
             hdPath: "m/44'/60'/0'/0/0",
-            chainId: 1,
-            contractAddress: '0x1234',
+            tx: '',
           }),
-        ).rejects.toThrow('Missing delegation authorization parameter');
+        ).rejects.toMatchObject({
+          name: 'HardwareWalletError',
+          message: 'Missing hdPath or tx parameter',
+        });
       });
     });
 
@@ -481,6 +477,21 @@ describe('LedgerDmkBridgeHandler', () => {
       ).rejects.toMatchObject({
         name: 'HardwareWalletError',
         message: 'Unknown Ledger action: not-a-real-action',
+        code: ErrorCode.Unknown,
+      });
+    });
+
+    it('throws for signDelegationAuthorization as an unknown action', async () => {
+      await expect(
+        handler.handleAction(LedgerAction.signDelegationAuthorization, {
+          hdPath: "m/44'/60'/0'/0/0",
+          chainId: 1,
+          contractAddress: '0x1234',
+          nonce: 2,
+        }),
+      ).rejects.toMatchObject({
+        name: 'HardwareWalletError',
+        message: `Unknown Ledger action: ${LedgerAction.signDelegationAuthorization}`,
         code: ErrorCode.Unknown,
       });
     });

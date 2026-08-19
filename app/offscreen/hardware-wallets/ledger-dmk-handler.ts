@@ -10,7 +10,6 @@
  */
 import {
   LedgerDmkBridge,
-  LedgerSignDelegationAuthorizationParams,
   LedgerSignTypedDataParams,
 } from '@metamask/eth-ledger-bridge-keyring';
 
@@ -102,6 +101,55 @@ function createLedgerError(
     category,
     userMessage: message,
   });
+}
+
+type ActionParamType = 'string' | 'number' | 'object';
+
+type ActionParamsFromShape<Shape extends Record<string, ActionParamType>> = {
+  [Key in keyof Shape]: Shape[Key] extends 'string'
+    ? string
+    : Shape[Key] extends 'number'
+      ? number
+      : object;
+};
+
+/**
+ * Validates that `params` includes every field in `shape` with the expected
+ * runtime type. String fields must also be non-empty; `null` is rejected for
+ * object fields.
+ *
+ * @param params - Action params bag from the offscreen message.
+ * @param shape - Map of required field name → expected `typeof` result.
+ * @param errorMessage - Error thrown when validation fails.
+ * @returns The same params object, narrowed to the required field types.
+ */
+function requireActionParams<
+  const Shape extends Record<string, ActionParamType>,
+>(
+  params: Record<string, unknown> | undefined,
+  shape: Shape,
+  errorMessage: string,
+): ActionParamsFromShape<Shape> {
+  if (!params) {
+    throw createLedgerError(errorMessage);
+  }
+
+  for (const key of Object.keys(shape) as (keyof Shape & string)[]) {
+    const expectedType = shape[key];
+    const value = params[key];
+
+    if (typeof value !== expectedType) {
+      throw createLedgerError(errorMessage);
+    }
+    if (expectedType === 'string' && value === '') {
+      throw createLedgerError(errorMessage);
+    }
+    if (expectedType === 'object' && value === null) {
+      throw createLedgerError(errorMessage);
+    }
+  }
+
+  return params as ActionParamsFromShape<Shape>;
 }
 
 /**
@@ -464,87 +512,57 @@ export class LedgerDmkBridgeHandler {
           return await bridge.getAppConfiguration();
 
         case LedgerAction.getPublicKey: {
-          if (!params?.hdPath || typeof params.hdPath !== 'string') {
-            throw createLedgerError('Missing hdPath parameter');
-          }
-          return await bridge.getPublicKey({ hdPath: params.hdPath });
+          const { hdPath } = requireActionParams(
+            params,
+            { hdPath: 'string' },
+            'Missing hdPath parameter',
+          );
+          return await bridge.getPublicKey({ hdPath });
         }
 
         case LedgerAction.signTransaction: {
-          if (
-            !params?.hdPath ||
-            typeof params.hdPath !== 'string' ||
-            !params?.tx ||
-            typeof params.tx !== 'string'
-          ) {
-            throw createLedgerError('Missing hdPath or tx parameter');
-          }
+          const { hdPath, tx } = requireActionParams(
+            params,
+            { hdPath: 'string', tx: 'string' },
+            'Missing hdPath or tx parameter',
+          );
           const result = await bridge.deviceSignTransaction({
-            tx: params.tx,
-            hdPath: params.hdPath,
+            tx,
+            hdPath,
           });
           return result;
         }
 
         case LedgerAction.signPersonalMessage: {
-          if (
-            !params?.hdPath ||
-            typeof params.hdPath !== 'string' ||
-            !params?.message ||
-            typeof params.message !== 'string'
-          ) {
-            throw createLedgerError('Missing hdPath or message parameter');
-          }
+          const { hdPath, message } = requireActionParams(
+            params,
+            { hdPath: 'string', message: 'string' },
+            'Missing hdPath or message parameter',
+          );
           const result = await bridge.deviceSignMessage({
-            hdPath: params.hdPath,
-            message: params.message,
+            hdPath,
+            message,
           });
           return result;
         }
 
         case LedgerAction.signTypedData: {
-          if (
-            !params?.hdPath ||
-            typeof params.hdPath !== 'string' ||
-            !params?.message ||
-            typeof params.message !== 'object'
-          ) {
-            throw createLedgerError('Missing hdPath or message parameter');
-          }
+          const { hdPath, message } = requireActionParams(
+            params,
+            { hdPath: 'string', message: 'object' },
+            'Missing hdPath or message parameter',
+          );
           const typedMessage =
-            params.message as LedgerSignTypedDataParams['message'];
+            message as LedgerSignTypedDataParams['message'];
           console.log('[LedgerDMK] signTypedData start', {
-            hdPath: params.hdPath,
+            hdPath,
             primaryType: typedMessage.primaryType,
           });
           const result = await bridge.deviceSignTypedData({
-            hdPath: params.hdPath,
+            hdPath,
             message: typedMessage,
           });
           return result;
-        }
-
-        case LedgerAction.signDelegationAuthorization: {
-          if (
-            !params?.hdPath ||
-            typeof params.hdPath !== 'string' ||
-            typeof params.chainId !== 'number' ||
-            typeof params.contractAddress !== 'string' ||
-            typeof params.nonce !== 'number'
-          ) {
-            throw createLedgerError(
-              'Missing delegation authorization parameter',
-            );
-          }
-          const delegationParams: LedgerSignDelegationAuthorizationParams = {
-            hdPath: params.hdPath,
-            chainId: params.chainId,
-            contractAddress: params.contractAddress,
-            nonce: params.nonce,
-          };
-          return await bridge.deviceSignDelegationAuthorization(
-            delegationParams,
-          );
         }
 
         default:
