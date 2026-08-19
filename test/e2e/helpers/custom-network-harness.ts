@@ -1,6 +1,5 @@
 import { Mockttp } from 'mockttp';
 import type { CaipAssetType, Hex } from '@metamask/utils';
-import type { Hex } from '@metamask/utils';
 import type { NativeAssetIdentifiersMap } from '@metamask/network-enablement-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../constants';
@@ -26,7 +25,6 @@ export type CustomNetworkScenario =
   | 'conversionRate'
   | 'unsupportedPrice'
   | 'wrongDecimals';
-  | 'unsupportedPrice';
 
 export type CustomNetworkConfig = {
   id: CustomNetworkId;
