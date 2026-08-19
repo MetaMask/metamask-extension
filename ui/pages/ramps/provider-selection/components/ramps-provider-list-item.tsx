@@ -17,6 +17,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getRampsListItemClassName } from '../../components/get-ramps-list-item-class-name';
 import RampsQuoteDisplay from '../../payment-method/components/ramps-quote-display';
 import type { ProviderTag } from '../utils/build-provider-list-items';
 
@@ -80,17 +81,11 @@ export default function RampsProviderListItem({
       ? formatCurrency(Number(quote.quote.amountOutInFiat), currency)
       : null;
 
-  // `ButtonBase` defaults to `bg-muted`, which would make every row read as a
-  // card. Only the selected row is tinted.
-  const rowClassName = `w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed ${
-    isSelected ? 'bg-background-muted' : 'bg-transparent'
-  }`;
-
   return (
     <ButtonBase
       onClick={onClick}
       isDisabled={isDisabled}
-      className={rowClassName}
+      className={getRampsListItemClassName(isSelected)}
       data-testid={`ramps-provider-item-${provider.id}`}
     >
       <Box

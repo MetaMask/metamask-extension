@@ -22,6 +22,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getRampsListItemClassName } from '../../components/get-ramps-list-item-class-name';
 import { formatPaymentMethodDelay } from '../utils/format-payment-method-delay';
 import { getPaymentMethodIconName } from '../utils/get-payment-method-icon';
 import RampsQuoteDisplay from './ramps-quote-display';
@@ -101,17 +102,11 @@ export default function RampsPaymentMethodListItem({
       ? formatCurrency(Number(quote.quote.amountOutInFiat), currency)
       : null;
 
-  // `ButtonBase` defaults to `bg-muted`, which would make every row read as a
-  // card. Only the selected row is tinted.
-  const rowClassName = `w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed ${
-    isSelected ? 'bg-background-muted' : 'bg-transparent'
-  }`;
-
   return (
     <ButtonBase
       onClick={onClick}
       isDisabled={isDisabled}
-      className={rowClassName}
+      className={getRampsListItemClassName(isSelected)}
       data-testid={`ramps-payment-method-item-${paymentMethod.id}`}
     >
       <Box
