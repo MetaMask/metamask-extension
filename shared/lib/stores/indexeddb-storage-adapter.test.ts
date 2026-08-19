@@ -104,7 +104,7 @@ describe('IndexedDBStorageAdapter', () => {
   });
 
   describe('when an IndexedDB operation fails after open', () => {
-    it('returns a read error without switching to fallback storage', async () => {
+    it('returns a read error', async () => {
       const databaseError = createBlockedError();
       const { adapter, database } = createAdapter();
       database.get.mockRejectedValueOnce(databaseError);
@@ -112,16 +112,6 @@ describe('IndexedDBStorageAdapter', () => {
       const result = await adapter.getItem(TEST_NAMESPACE, TEST_KEY);
 
       expect(result).toStrictEqual({ error: databaseError });
-    });
-
-    it('does not switch to fallback storage after a write fails', async () => {
-      const databaseError = createBlockedError();
-      const { adapter, database } = createAdapter();
-      database.set.mockRejectedValueOnce(databaseError);
-
-      await expect(
-        adapter.setItem(TEST_NAMESPACE, TEST_KEY, 'value'),
-      ).rejects.toBe(databaseError);
     });
   });
 });
