@@ -82,21 +82,40 @@ const useBridging = () => {
         startTime: Date.now(),
       });
       dispatch(setBridgeLocation(location));
+
+      const sourceChainId =
+        sourceToken?.chainId && isSupportedBridgeChain(sourceToken.chainId)
+          ? formatChainIdToCaip(sourceToken.chainId)
+          : undefined;
+      const sourceAssetId =
+        sourceToken && sourceChainId
+          ? toAssetId(sourceToken.address, sourceChainId)
+          : undefined;
+
+      const buttonClickedProperties = {
+        location: location as never,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id_source: sourceChainId,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        token_address_source: sourceAssetId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        token_symbol_source: sourceToken?.symbol ?? 'ETH',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        token_symbol_destination: '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        environment_type: getEnvironmentType(),
+      };
+
       dispatch(
-        trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
-          location: location as never,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_source: sourceToken?.symbol ?? 'ETH',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_destination: '',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: getEnvironmentType(),
-        }),
+        trackUnifiedSwapBridgeEvent(
+          UnifiedSwapBridgeEventName.ButtonClicked,
+          buttonClickedProperties,
+        ),
       );
 
       let tokenToUse: BridgeNavigationOptions['state']['token'] = null;
@@ -105,19 +124,11 @@ const useBridging = () => {
       /**
        * Defined if the token is a valid src or dest token
        */
-      const assetId =
-        sourceToken?.chainId && isSupportedBridgeChain(sourceToken.chainId)
-          ? toAssetId(
-              sourceToken.address,
-              formatChainIdToCaip(sourceToken.chainId),
-            )
-          : undefined;
-
-      if (sourceToken && assetId) {
+      if (sourceToken && sourceAssetId) {
         // If token is supported for bridging, propagate it to the bridge experience
         const tokenWithAssetId = {
           ...sourceToken,
-          assetId,
+          assetId: sourceAssetId,
           name: sourceToken.name ?? sourceToken.symbol,
           chainId: formatChainIdToCaip(sourceToken.chainId),
         };
@@ -130,7 +141,7 @@ const useBridging = () => {
           // If bridgeState is defined, it means the user is returning to the bridge page
           // If the token is not in an enabled chain then it can't be used as the source token
           // Otherwise, set the `from` query param to use the bridge page's deep linking logic
-          search.set(BridgeQueryParams.From, assetId);
+          search.set(BridgeQueryParams.From, sourceAssetId);
         }
       } else if (lastSelectedChainId !== fromChain.chainId) {
         // If an unsupported network is selected in the network filter, use bridge page's default fromChain

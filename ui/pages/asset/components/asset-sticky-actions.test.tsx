@@ -6,7 +6,10 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
-import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
+} from '../../../../shared/constants/metametrics';
 import { Asset } from '../types/asset';
 import { AssetStickyActions, shouldPreferStickySwapCta } from './asset-sticky-actions';
 
@@ -80,7 +83,7 @@ describe('AssetStickyActions', () => {
     });
   });
 
-  it('does not track a buy click when the ramps gate blocks the buy', async () => {
+  it('tracks the sticky Buy click when ramps blocks downstream navigation', async () => {
     mockGoToBuy.mockResolvedValueOnce(false);
     const { getByTestId } = renderWithProvider(
       <AssetStickyActions asset={token} />,
@@ -89,7 +92,22 @@ describe('AssetStickyActions', () => {
 
     fireEvent.click(getByTestId('asset-sticky-buy'));
     await waitFor(() => expect(mockGoToBuy).toHaveBeenCalled());
-    expect(mockTrackEvent).not.toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenDetailsCtaClicked,
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          cta_type: 'buy',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          usd_amount_range: '< 0.01',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_address: token.address,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: token.chainId,
+        }),
+      }),
+    );
   });
 
   it('opens the swap experience with the token as the source asset', () => {
@@ -108,6 +126,21 @@ describe('AssetStickyActions', () => {
       MetaMetricsSwapsEventSource.TokenView,
       fundedToken,
       undefined,
+    );
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenDetailsCtaClicked,
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          cta_type: 'swap',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          usd_amount_range: '1.00 - 9.99',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_address: fundedToken.address,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: fundedToken.chainId,
+        }),
+      }),
     );
   });
 

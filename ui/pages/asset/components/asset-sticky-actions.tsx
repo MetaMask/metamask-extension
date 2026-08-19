@@ -27,6 +27,7 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getUseExternalServices } from '../../../selectors';
 import { useBalanceAwareSwapDefaults } from '../hooks/useBalanceAwareSwapDefaults';
 import { isNativeAsset, type Asset } from '../types/asset';
+import { getUsdAmountRange } from '../utils/get-usd-amount-range';
 import {
   useAssetPageSecurityTrustCtaGate,
   useAssetPageSecurityTrustCtaGateReady,
@@ -125,7 +126,35 @@ export const AssetStickyActions = ({
     currentTokenBalance: asset.balance?.value ?? asset.balance?.display,
   });
 
+  const trackStickyCtaClick = useCallback(
+    (ctaType: 'buy' | 'swap') => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TokenDetailsCtaClicked)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            cta_type: ctaType,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            usd_amount_range: getUsdAmountRange(asset.balance?.fiat),
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_address: currentSwapToken?.address ?? '',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: chainId,
+          })
+          .build(),
+      );
+    },
+    [
+      asset.balance?.fiat,
+      chainId,
+      createEventBuilder,
+      currentSwapToken?.address,
+      trackEvent,
+    ],
+  );
+
   const handleBuyClick = useCallback(async () => {
+    trackStickyCtaClick('buy');
+
     const runBuy = async () => {
       const assetId = isNativeAsset(asset)
         ? buyAssetId
@@ -181,9 +210,12 @@ export const AssetStickyActions = ({
     symbol,
     t,
     trackEvent,
+    trackStickyCtaClick,
   ]);
 
   const handleSwapClick = useCallback(() => {
+    trackStickyCtaClick('swap');
+
     const runSwap = () => {
       if (isNative) {
         transitionForward(() =>
@@ -215,6 +247,7 @@ export const AssetStickyActions = ({
     isNative,
     openBridgeExperience,
     sourceToken,
+    trackStickyCtaClick,
   ]);
 
   const isSwapDisabled =
