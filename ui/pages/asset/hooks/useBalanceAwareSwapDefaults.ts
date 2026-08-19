@@ -36,9 +36,10 @@ export function useBalanceAwareSwapDefaults({
   currentToken,
   currentTokenBalance,
 }: UseBalanceAwareSwapDefaultsParams): BalanceAwareSwapDefaults {
-  const assetsByChain = useSelector(
-    getAssetsBySelectedAccountGroup,
-  ) as Record<string, BalanceAwareUserAsset[]>;
+  const assetsByChain = useSelector(getAssetsBySelectedAccountGroup) as Record<
+    string,
+    BalanceAwareUserAsset[]
+  >;
   const { state } = useLocation() as {
     state?: { bridgeState?: unknown } | null;
   };

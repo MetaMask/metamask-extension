@@ -208,7 +208,10 @@ function flattenAssets(
   assetsByChain: Record<string, BalanceAwareUserAsset[]>,
 ): ChainScopedUserAsset[] {
   return Object.entries(assetsByChain).flatMap(([chainId, assets]) =>
-    (assets ?? []).map((asset) => ({ ...asset, chainId: asset.chainId ?? chainId })),
+    (assets ?? []).map((asset) => ({
+      ...asset,
+      chainId: asset.chainId ?? chainId,
+    })),
   );
 }
 
@@ -307,7 +310,9 @@ function isCurrentTokenFunded(
     return false;
   }
 
-  return hasPositiveTokenBalance(match.balance) || hasEligibleFiatBalance(match);
+  return (
+    hasPositiveTokenBalance(match.balance) || hasEligibleFiatBalance(match)
+  );
 }
 
 /**

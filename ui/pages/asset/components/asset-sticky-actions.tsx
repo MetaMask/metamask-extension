@@ -200,7 +200,10 @@ export const AssetStickyActions = ({
 
   return (
     <Box
-      className="asset-page__sticky-actions"
+      // Sticky CTA footer: pinned to the bottom of the asset page scroll
+      // container, elevated above content, and padded for the device safe-area.
+      // Uses `.cta-footer` so the toaster lifts above it.
+      className="cta-footer sticky inset-x-0 bottom-0 z-[1] mt-auto shrink-0 border-t border-muted bg-default px-4 pt-3 pb-[calc(16px+env(safe-area-inset-bottom,0px))] shadow-[0_-4px_12px_var(--color-shadow-default)]"
       flexDirection={BoxFlexDirection.Row}
       gap={3}
       data-testid="asset-sticky-actions"
