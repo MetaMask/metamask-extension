@@ -33,7 +33,9 @@ import { useTransactionPayPostQuote } from '../../../hooks/pay/useTransactionPay
 import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
+  useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
@@ -334,10 +336,18 @@ function BottomContainer({
 }
 
 function useIsResultReady() {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const quotes = useTransactionPayQuotes();
-  const isQuotesLoading = useIsTransactionPayLoading();
+  const isQuotePending = useIsTransactionPayQuotePending();
+  const hasExecutableQuote = useTransactionPayHasExecutableQuote();
+  const hasPositiveRequiredAmount =
+    useTransactionPayHasPositiveRequiredAmount();
 
-  return isQuotesLoading || Boolean(quotes?.length);
+  if (isPerpsWithdrawTransaction(currentConfirmation)) {
+    return hasPositiveRequiredAmount && (isQuotePending || hasExecutableQuote);
+  }
+
+  return isQuotePending || Boolean(quotes?.length);
 }
 
 function AlertMessage() {
