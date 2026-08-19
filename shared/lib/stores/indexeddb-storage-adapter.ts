@@ -42,10 +42,17 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
 
   async #open(): Promise<void> {
     if (!this.#openPromise) {
-      this.#openPromise = this.#database.open(
-        STORAGE_SERVICE_INDEXED_DB_NAME,
-        STORAGE_SERVICE_INDEXED_DB_VERSION,
-      );
+      this.#openPromise = this.#database
+        .open(
+          STORAGE_SERVICE_INDEXED_DB_NAME,
+          STORAGE_SERVICE_INDEXED_DB_VERSION,
+        )
+        .catch((e) => {
+          // resetting the `openPromise` after a failure allows for retries
+          // if external callers ever want to retry the operation.
+          this.#openPromise = undefined;
+          throw e;
+        });
     }
 
     return this.#openPromise;
