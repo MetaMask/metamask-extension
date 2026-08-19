@@ -2,7 +2,6 @@ import React, {
   memo,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
 } from 'react';
@@ -35,6 +34,7 @@ import {
   muiPickerTheme,
 } from './utils';
 import { COMPONENT_MAPPING } from './components';
+import { PerformanceTracker } from './performance-tracker';
 
 // Renders snap UI with scroll refs passed as props so mapToTemplate receives a
 // real RefObject without crossing a parent useMemo closure (React Compiler safe).
@@ -48,18 +48,22 @@ const SnapUIContent = ({
   scrollableContainerRef,
   setScroll,
 }) => {
-  const sections = mapToTemplate({
-    map: {},
-    element: content,
-    onCancel,
-    useFooter,
-    promptLegacyProps,
-    t,
-    contentBackgroundColor: backgroundColor,
-    componentMap: COMPONENT_MAPPING,
-    setScroll,
-    scrollableContainerRef,
-  });
+  const sections = useMemo(
+    () =>
+      mapToTemplate({
+        map: {},
+        element: content,
+        onCancel,
+        useFooter,
+        promptLegacyProps,
+        t,
+        contentBackgroundColor: backgroundColor,
+        componentMap: COMPONENT_MAPPING,
+        setScroll,
+        scrollableContainerRef,
+      }),
+    [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor, setScroll, scrollableContainerRef],
+  );
 
   return <MetaMaskTemplateRenderer sections={sections} />;
 };
@@ -73,29 +77,6 @@ SnapUIContent.propTypes = {
   backgroundColor: PropTypes.string,
   scrollableContainerRef: PropTypes.object.isRequired,
   setScroll: PropTypes.func.isRequired,
-};
-
-// Component for tracking the number of re-renders
-// DO NOT USE IN PRODUCTION
-// Increments in layout effect (not during render) for React Compiler.
-// `renderSignal` must change with interface content so this child re-runs.
-const PerformanceTracker = ({ renderSignal }) => {
-  const elementRef = useRef(null);
-
-  useLayoutEffect(() => {
-    const node = elementRef.current;
-    if (!node) {
-      return;
-    }
-    const previous = Number(node.getAttribute('data-renders') || '0');
-    node.setAttribute('data-renders', String(previous + 1));
-  }, [renderSignal]);
-
-  return <span ref={elementRef} data-testid="performance" data-renders="0" />;
-};
-
-PerformanceTracker.propTypes = {
-  renderSignal: PropTypes.object.isRequired,
 };
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
@@ -120,6 +101,8 @@ const SnapUIRendererComponent = ({
     if (scrollableContainerRef.current) {
       scrollRef.current = scrollableContainerRef.current.scrollTop;
     }
+    // ref objects are stable across renders and we read
+    // `.current` when scroll fires, so the callback does not need to be recreated.
   }, []);
 
   const t = useI18nContext();
@@ -214,7 +197,7 @@ const SnapUIRendererComponent = ({
               scrollableContainerRef={scrollableContainerRef}
               setScroll={setScroll}
             />
-            {PERF_DEBUG && <PerformanceTracker renderSignal={content} />}
+            {PERF_DEBUG && <PerformanceTracker />}
           </Box>
         </LocalizationProvider>
       </ThemeProvider>
