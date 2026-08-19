@@ -212,6 +212,7 @@ describe(`migration #${version}`, () => {
     const oldStorage = buildVersionedData();
 
     jest
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       .spyOn(require('../lib/util'), 'getPlatform')
       .mockReturnValue('Firefox');
 

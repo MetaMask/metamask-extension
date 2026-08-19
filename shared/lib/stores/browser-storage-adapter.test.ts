@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill';
+// eslint-disable-next-line @typescript-eslint/no-shadow
 import { it } from '@jest/globals';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 

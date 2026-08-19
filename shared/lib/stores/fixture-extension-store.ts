@@ -2,8 +2,8 @@ import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import getFetchWithTimeout from '../fetch-with-timeout';
 import { getManifestFlags } from '../manifestFlags';
-import { getPlatform } from '../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../constants/app';
+import { getBrowserName } from '../browser-runtime.utils';
 import ExtensionStore from './extension-store';
 import type { MetaMaskStorageStructure } from './base-store';
 import {
@@ -15,7 +15,7 @@ import {
   isIndexedDBMutationBlockedError,
 } from './indexeddb-store';
 
-const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 const fetchWithTimeout = getFetchWithTimeout();
 

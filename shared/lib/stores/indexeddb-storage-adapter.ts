@@ -4,8 +4,8 @@ import type {
   StorageGetResult,
 } from '@metamask/storage-service';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
-import { getPlatform } from '../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../constants/app';
+import { getBrowserName } from '../browser-runtime.utils';
 import { BrowserStorageAdapter } from './browser-storage-adapter';
 import {
   STORAGE_SERVICE_INDEXED_DB_NAME,
@@ -16,7 +16,7 @@ import {
   isIndexedDBMutationBlockedError,
 } from './indexeddb-store';
 
-const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 type StorageDatabase = Pick<
   IndexedDBStore,
