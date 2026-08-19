@@ -70,7 +70,7 @@ function getOriginalGasLimit(
 ): Hex | undefined {
   // Compare like-for-like: the wrapped `txParams.gas` is a no-buffer estimate,
   // so the original must be too. `txParamsOriginal.gas` has the 1.5x gas buffer,
-  // which would understate the added fee (CONF-1827); prefer `gasLimitNoBuffer`.
+  // which would understate the added fee; prefer `gasLimitNoBuffer`.
   return (transactionMeta.gasUsed ||
     transactionMeta.gasLimitNoBuffer ||
     transactionMeta.txParamsOriginal?.gas ||
