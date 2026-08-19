@@ -79,21 +79,10 @@ export const migrate = (async (versionedData, _changedKeys) => {
 
   const database = new IndexedDBStore();
   try {
-    try {
-      await database.open(
-        STORAGE_SERVICE_INDEXED_DB_NAME,
-        STORAGE_SERVICE_INDEXED_DB_VERSION,
-      );
-    } catch (error) {
-      if (isIndexedDBMutationBlockedError(error)) {
-        console.warn(
-          `Migration #${version}: IndexedDB is unavailable; keeping StorageService data in browser.storage.local.`,
-        );
-        return;
-      }
-
-      throw error;
-    }
+    await database.open(
+      STORAGE_SERVICE_INDEXED_DB_NAME,
+      STORAGE_SERVICE_INDEXED_DB_VERSION,
+    );
 
     const storageServiceKeys = storageServiceEntries.map(([key]) => key);
     const existingValues = await database.get(storageServiceKeys);
