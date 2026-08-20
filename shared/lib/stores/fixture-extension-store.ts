@@ -3,7 +3,7 @@ import log from 'loglevel';
 import getFetchWithTimeout from '../fetch-with-timeout';
 import { getManifestFlags } from '../manifestFlags';
 import ExtensionStore from './extension-store';
-import type { MetaMaskStorageStructure } from './base-store';
+import type { MetaMaskStorageStructure, StoreResetOptions } from './base-store';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -129,10 +129,17 @@ export class FixtureExtensionStore extends ExtensionStore {
     return super.set(data);
   }
 
-  async reset(): Promise<void> {
+  async reset({ initialize = true }: StoreResetOptions = {}): Promise<void> {
     this.#initialized = false;
     await super.reset();
-    this.#initializing = this.#init();
-    await this.#initializing;
+
+    if (initialize) {
+      this.#initializing = this.#init();
+      await this.#initializing;
+      return;
+    }
+
+    this.#initializing = Promise.resolve();
+    this.#initialized = true;
   }
 }

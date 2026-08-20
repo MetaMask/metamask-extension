@@ -3,20 +3,28 @@ import type {
   SimulatorParams,
 } from '../helpers/qr-sync/mobile-wallet-simulator';
 
-export type MessageType = {
-  command:
-    | 'openTabs'
-    | 'notFound'
-    | 'queryTabs'
-    | 'waitUntilWindowWithProperty'
-    | 'qrSyncSimulate';
-  tabs?: chrome.tabs.Tab[];
-  title?: string;
-  property?: WindowProperties;
-  value?: string;
-  action?: QrSyncSimulatorAction;
-  params?: SimulatorParams;
-};
+export type MessageType =
+  | { command: 'fixtureStateReset' }
+  | { command: 'fixtureStateResetError'; error: string }
+  | { command: 'openTabs'; tabs: chrome.tabs.Tab[] }
+  | {
+      command: 'notFound';
+      property: WindowProperties;
+      value: string;
+      tabs: chrome.tabs.Tab[];
+    }
+  | { command: 'queryTabs'; title: string }
+  | {
+      command: 'qrSyncSimulate';
+      action?: QrSyncSimulatorAction;
+      params?: SimulatorParams;
+    }
+  | { command: 'resetFixtureState'; reloadServiceWorker: boolean }
+  | {
+      command: 'waitUntilWindowWithProperty';
+      property: WindowProperties;
+      value: string;
+    };
 
 export type Handle = {
   id: string;
@@ -27,7 +35,8 @@ export type Handle = {
 export type WindowProperties = 'title' | 'url';
 
 export type ServerMochaEventEmitterType = {
+  connection: [];
   error: [error: Error];
+  fixtureStateReset: [];
   openTabs: [openTabs: chrome.tabs.Tab[]];
-  notFound: [openTabs: chrome.tabs.Tab[]];
 };
