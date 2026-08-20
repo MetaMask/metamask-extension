@@ -27,9 +27,8 @@ const MUSD_ADDRESS = MUSD_TOKEN_ADDRESS_BY_CHAIN[VAULT_CONFIG_MOCK.chainId];
 
 const RECIPIENT_MOCK = '0x1234567890123456789012345678901234567890' as Hex;
 
-/** 2.0000005 mUSD: base units 2000000.5, so UP → 2000001 and DOWN → 2000000. */
+/** 2.0000005 mUSD: base units 2000000.5, rounded DOWN → 2000000. */
 const AMOUNT_HUMAN = '2.0000005';
-const AMOUNT_ROUNDED_UP = 2000001n;
 const AMOUNT_ROUNDED_DOWN = 2000000n;
 
 const SIGNATURE_MOCK = `0x${'12'.repeat(65)}` as Hex;
@@ -88,7 +87,7 @@ describe('getMoneyAccountPaymentOverrideData', () => {
   });
 
   describe('deposit (isPostQuote)', () => {
-    it('returns raw approve + deposit calls rounded UP when non-atomic', async () => {
+    it('returns raw approve + deposit calls rounded DOWN when non-atomic', async () => {
       const { messenger } = createMoneyPayMessengerMock();
 
       const result = await getMoneyAccountPaymentOverrideData(
@@ -106,7 +105,7 @@ describe('getMoneyAccountPaymentOverrideData', () => {
       expect(result.calls[0].to?.toLowerCase()).toBe(
         MUSD_ADDRESS.toLowerCase(),
       );
-      expect(approve.amount.toBigInt()).toBe(AMOUNT_ROUNDED_UP);
+      expect(approve.amount.toBigInt()).toBe(AMOUNT_ROUNDED_DOWN);
 
       const deposit = TELLER_INTERFACE.decodeFunctionData(
         'deposit',
@@ -115,7 +114,7 @@ describe('getMoneyAccountPaymentOverrideData', () => {
       expect(result.calls[1].to?.toLowerCase()).toBe(
         VAULT_CONFIG_MOCK.tellerAddress.toLowerCase(),
       );
-      expect(deposit.depositAmount.toBigInt()).toBe(AMOUNT_ROUNDED_UP);
+      expect(deposit.depositAmount.toBigInt()).toBe(AMOUNT_ROUNDED_DOWN);
     });
 
     it('wraps the calls in a single delegation transaction when atomic', async () => {
