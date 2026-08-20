@@ -28,27 +28,21 @@ import {
 } from './pay-context';
 
 /**
- * Converts a human-readable mUSD amount to base units with an explicit
- * rounding direction.
- *
- * Deliberately **not** shared with any other conversion site: the rounding
- * direction differs per flow on purpose (deposits round up so the user is
- * never shorted; the withdraw override rounds down so Max never requests more
- * than the withdrawable balance), and a helper that unifies them is how the
- * directions get silently swapped.
+ * Converts a human-readable mUSD amount to base units, rounding down — the
+ * direction mobile's equivalent commit sites use — so Max / near-Max never
+ * encodes more atomic units than the funding balance holds.
  *
  * Uses bignumber 4's `.round(0, mode)` — in this version `decimalPlaces(0,
  * mode)` is a getter that ignores its arguments and returns a count, so
  * porting mobile's call verbatim would encode a garbage amount.
  *
  * @param amountHuman - The human-readable amount.
- * @param roundingMode - The bignumber rounding mode.
  * @returns The amount in mUSD base units.
  */
-function toMusdBaseUnits(amountHuman: string, roundingMode: number): bigint {
+function toMusdBaseUnits(amountHuman: string): bigint {
   return BigInt(
     calcTokenValue(amountHuman, MUSD_DECIMALS)
-      .round(0, roundingMode)
+      .round(0, BigNumber.ROUND_DOWN)
       .toFixed(0),
   );
 }
@@ -108,9 +102,7 @@ async function getMoneyAccountWithdrawPaymentOverrideData(
     return [];
   }
 
-  // ROUND_DOWN so Max / near-Max never requests more atomic units than the
-  // withdrawable money-account balance (ROUND_UP was pushing past balance).
-  const amount = toMusdBaseUnits(amountHuman, BigNumber.ROUND_DOWN);
+  const amount = toMusdBaseUnits(amountHuman);
   if (amount === 0n) {
     return [];
   }
@@ -188,8 +180,7 @@ async function getMoneyAccountDepositPaymentOverrideData(
     return { calls: [] };
   }
 
-  // ROUND_UP: never short the user on a deposit.
-  const amount = toMusdBaseUnits(amountHuman, BigNumber.ROUND_UP);
+  const amount = toMusdBaseUnits(amountHuman);
   if (amount === 0n) {
     return { calls: [] };
   }
