@@ -50,7 +50,9 @@ describe('withTronFixtures', () => {
   });
 
   describe('resolveTronFixtureLocalNodeOptions', () => {
-    const startupNodeOptions = { initialBalances: { [TRON_ACCOUNT_ADDRESS]: 1 } };
+    const startupNodeOptions = {
+      initialBalances: { [TRON_ACCOUNT_ADDRESS]: 1 },
+    };
 
     it('starts Anvil and a new Tron process by default', () => {
       expect(
