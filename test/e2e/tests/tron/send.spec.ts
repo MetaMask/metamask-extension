@@ -84,7 +84,7 @@ function getTronTrc20AssetId(
 describe('Tron Send', function (this: Suite) {
   this.timeout(300_000);
 
-  // One held Chrome: form checks on Account 1 plus confirmed sends on Accounts 3–6.
+  // One held Chrome: form checks on Accounts 1–2 plus confirmed sends on Accounts 3–6.
 
   const sharedTronNode = new TronNode();
   let driver: Driver;
@@ -146,62 +146,59 @@ describe('Tron Send', function (this: Suite) {
     }
   });
 
-  describe('form validations', function () {
-    // Account 1 does not spend. Cases reopen Send on the same screen.
-    it('blocks Continue when a bad address is entered', async function () {
-      const sendPage = await openTronSendAmountRecipient({ driver });
-      await sendPage.fillRecipient({
-        recipientAddress: 'not-a-valid-address',
-        // The formatted recipient element never renders for an invalid
-        // address, so skip the post-paste re-render wait.
-        validAddress: false,
-      });
-      await sendPage.checkInvalidAddressError();
-      await sendPage.checkContinueButtonIsDisabled();
+  // Account 1 does not spend. Reopen Send between checks, then Account 2 for the
+  // uncovered-fee case so this `it` does not depend on leftover account state.
+  it('blocks Continue on invalid Tron send form input', async function () {
+    await switchToTronAccountForSend({
+      accountName: 'Account 1',
+      driver,
     });
 
-    it('blocks Continue when amount is empty', async function () {
-      const sendPage = await openTronSendAmountRecipient({ driver });
-      await sendPage.fillRecipient({
-        recipientAddress: TRON_RECIPIENT_ADDRESS,
-      });
-      // Empty amount leaves Continue enabled; Tron snap rejects on submit and
-      // surfaces transactionError on the Continue button.
-      await sendPage.pressContinueButton();
-      await sendPage.checkTransactionError();
-      await sendPage.checkContinueButtonIsDisabled();
+    let sendPage = await openTronSendAmountRecipient({ driver });
+    await sendPage.fillRecipient({
+      recipientAddress: 'not-a-valid-address',
+      // The formatted recipient element never renders for an invalid
+      // address, so skip the post-paste re-render wait.
+      validAddress: false,
     });
+    await sendPage.checkInvalidAddressError();
+    await sendPage.checkContinueButtonIsDisabled();
 
-    it('blocks Continue when amount exceeds balance', async function () {
-      const sendPage = await openTronSendAmountRecipient({ driver });
-      await sendPage.fillRecipient({
-        recipientAddress: TRON_RECIPIENT_ADDRESS,
-      });
-      await sendPage.fillAmount('999999');
-      await sendPage.checkInsufficientFundsError();
-      await sendPage.checkContinueButtonIsDisabled();
+    sendPage = await openTronSendAmountRecipient({ driver });
+    await sendPage.fillRecipient({
+      recipientAddress: TRON_RECIPIENT_ADDRESS,
     });
+    // Empty amount leaves Continue enabled; Tron snap rejects on submit and
+    // surfaces transactionError on the Continue button.
+    await sendPage.pressContinueButton();
+    await sendPage.checkTransactionError();
+    await sendPage.checkContinueButtonIsDisabled();
 
-    it('blocks USDT send when TRX balance cannot cover energy fee', async function () {
-      await switchToTronAccountForSend({
-        accountName: 'Account 2',
-        driver,
-        expectedNativeBalance: null,
-      });
-
-      const sendPage = await openTronSendAmountRecipient({
-        assetId: getTronTrc20AssetId(localNodes, 'USDT'),
-        driver,
-      });
-      await sendPage.fillRecipient({
-        recipientAddress: TRON_RECIPIENT_ADDRESS,
-      });
-      await sendPage.fillAmount('1');
-      // With 1 sun TRX, Continue builds the TRC20 transaction then fails fee cover.
-      await sendPage.pressContinueButton();
-      await sendPage.checkInsufficientBalanceToCoverFeesError();
-      await sendPage.checkContinueButtonIsDisabled();
+    sendPage = await openTronSendAmountRecipient({ driver });
+    await sendPage.fillRecipient({
+      recipientAddress: TRON_RECIPIENT_ADDRESS,
     });
+    await sendPage.fillAmount('999999');
+    await sendPage.checkInsufficientFundsError();
+    await sendPage.checkContinueButtonIsDisabled();
+
+    await switchToTronAccountForSend({
+      accountName: 'Account 2',
+      driver,
+      expectedNativeBalance: null,
+    });
+    sendPage = await openTronSendAmountRecipient({
+      assetId: getTronTrc20AssetId(localNodes, 'USDT'),
+      driver,
+    });
+    await sendPage.fillRecipient({
+      recipientAddress: TRON_RECIPIENT_ADDRESS,
+    });
+    await sendPage.fillAmount('1');
+    // With 1 sun TRX, Continue builds the TRC20 transaction then fails fee cover.
+    await sendPage.pressContinueButton();
+    await sendPage.checkInsufficientBalanceToCoverFeesError();
+    await sendPage.checkContinueButtonIsDisabled();
   });
 
   describe('confirmed sends', function () {
