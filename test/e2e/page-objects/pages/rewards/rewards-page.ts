@@ -4,7 +4,7 @@ import { Driver } from '../../../webdriver/driver';
  * Rewards onboarding modal shown after the rewards deep-link route.
  *
  * Screen: `#/rewards` redirects to home and surfaces the rewards modal
- * (`data-testid="rewards-modal"`).
+ * (`data-testid="parent-selector-rewards-page"`).
  * Owns: waiting for the rewards modal to be loaded.
  * Boundaries: modal presence only. Rewards deeplink routing and referral
  * handling live in the rewards page/container; home chrome is `HomePage`.
@@ -16,7 +16,9 @@ import { Driver } from '../../../webdriver/driver';
 export default class RewardsPage {
   protected readonly driver: Driver;
 
-  private readonly rewardsModal = '[data-testid="rewards-modal"]';
+  private readonly rewardsModal = {
+    testId: 'parent-selector-rewards-page',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;

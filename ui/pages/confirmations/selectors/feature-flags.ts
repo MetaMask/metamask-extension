@@ -6,6 +6,14 @@ import {
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { getIsPayAmountPrefillEnabled } from '../../../../shared/lib/transaction/pay-prefill';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
+import { getDepositLimits } from '../utils/pay-deposit-limit';
+import {
+  getRelayFixedSpreadFromConfig,
+  type RelayFixedSpreadConfig,
+} from '../utils/relay-fixed-spread';
+
+export const RELAY_FIXED_SPREAD_FEATURE_FLAG =
+  'confirmations_relay_fixed_spread';
 
 type ConfirmationsPayDappsFlag = {
   enabled?: boolean;
@@ -172,6 +180,16 @@ export const selectIsPayAmountPrefillEnabled = createSelector(
 );
 
 /**
+ * Per-transaction-type USD deposit limits from
+ * `confirmations_pay_extended.depositLimit`. Empty map when unset.
+ */
+export const selectDepositLimits = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags): Record<string, number> =>
+    getDepositLimits({ remoteFeatureFlags }),
+);
+
+/**
  * Preferred MM Pay tokens for a transaction type from
  * `confirmations_pay_tokens.preferredTokens`. Transaction-specific
  * `overrides[transactionType]` (or a direct `[transactionType]` key) take
@@ -279,6 +297,24 @@ export const selectIsMoneyAccountTransactionEnabled = createSelector(
   ],
   (enableMoneyAccountTransactions, transactionType): boolean =>
     Boolean(transactionType && enableMoneyAccountTransactions[transactionType]),
+);
+
+/**
+ * Parses the `confirmations_relay_fixed_spread` remote feature flag into a
+ * normalised route config used to identify no-fee Money Account deposit tokens.
+ */
+export const selectRelayFixedSpread = createSelector(
+  getRemoteFeatureFlags,
+  (flags): RelayFixedSpreadConfig =>
+    getRelayFixedSpreadFromConfig(
+      (
+        flags as unknown as {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          confirmations_relay_fixed_spread?: unknown;
+        }
+      ).confirmations_relay_fixed_spread,
+      RELAY_FIXED_SPREAD_FEATURE_FLAG,
+    ),
 );
 
 function getPreferredTokensForTransaction(
