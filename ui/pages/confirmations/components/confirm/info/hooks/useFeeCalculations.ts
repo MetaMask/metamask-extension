@@ -67,14 +67,15 @@ function shouldUseEthConversionRateFallback(chainId?: Hex): boolean {
 
 function getOriginalGasLimit(
   transactionMeta: TransactionMeta,
-  quotedGasLimit?: Hex,
 ): Hex | undefined {
-  return (transactionMeta.txParamsOriginal?.gas ||
+  // Compare like-for-like: the wrapped `txParams.gas` is a no-buffer estimate,
+  // so the original must be too. `txParamsOriginal.gas` has the 1.5x gas buffer,
+  // which would understate the added fee; prefer `gasLimitNoBuffer`.
+  return (transactionMeta.gasUsed ||
+    transactionMeta.gasLimitNoBuffer ||
+    transactionMeta.txParamsOriginal?.gas ||
     transactionMeta.defaultGasEstimates?.gas ||
-    transactionMeta.dappSuggestedGasFees?.gas ||
-    quotedGasLimit ||
-    transactionMeta.gasUsed ||
-    transactionMeta.gasLimitNoBuffer) as Hex | undefined;
+    transactionMeta.dappSuggestedGasFees?.gas) as Hex | undefined;
 }
 
 function getGasLimitDelta(gasLimit: Hex, originalGasLimit: string): Hex | null {
@@ -281,7 +282,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     ),
   );
 
-  const originalGasLimit = getOriginalGasLimit(transactionMeta, quotedGasLimit);
+  const originalGasLimit = getOriginalGasLimit(transactionMeta);
 
   const addedProtectionFee = useMemo(() => {
     if (!hasEnforcedSimulations || !originalGasLimit) {

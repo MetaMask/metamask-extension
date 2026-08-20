@@ -17,6 +17,7 @@ import {
 import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
 import { MusdClaimInfo } from '../../info/musd-claim-info';
 import { MusdConversionInfo } from '../../info/musd-conversion-info';
+import { MoneyAccountWithdrawInfo } from '../../info/money-account-withdraw-info';
 import { MoneyAccountDepositInfo } from './money-account-deposit-info';
 import { PerpsDepositInfo } from './perps-deposit-info';
 import { PerpsWithdrawInfo } from './perps-withdraw-info';
@@ -158,6 +159,7 @@ const Info = () => {
       [ApprovalType.AddEthereumChain]: () => AddEthereumChain,
 
       [TransactionType.moneyAccountDeposit]: () => MoneyAccountDepositInfo,
+      [TransactionType.moneyAccountWithdraw]: () => MoneyAccountWithdrawInfo,
       [TransactionType.musdClaim]: () => MusdClaimInfo,
       [TransactionType.musdConversion]: () => MusdConversionInfo,
       [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
