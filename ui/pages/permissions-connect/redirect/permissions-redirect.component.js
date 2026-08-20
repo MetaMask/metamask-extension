@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Box,
@@ -34,11 +34,9 @@ export default function PermissionsRedirect({ subjectMetadata }) {
 
   // While this redirecting screen is showing, the subject metadata will become invalidated
   // for that reason we cache the last seen valid subject metadata and show that.
-  useEffect(() => {
-    if (subjectMetadata && subjectMetadata.origin) {
-      setCachedSubjectMetadata(subjectMetadata);
-    }
-  }, [subjectMetadata]);
+  if (subjectMetadata?.origin && subjectMetadata !== cachedSubjectMetadata) {
+    setCachedSubjectMetadata(subjectMetadata);
+  }
 
   return (
     <Box

@@ -109,11 +109,6 @@
       "count": 1
     }
   },
-  "ui/components/multichain/network-list-menu/add-rpc-url-modal/add-rpc-url-modal.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/components/multichain/network-list-menu/popular-network-list/popular-network-list.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -122,11 +117,6 @@
   "ui/components/multichain/networks-form/networks-form-state.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
-    }
-  },
-  "ui/components/multichain/networks-form/networks-form.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 4
     }
   },
   "ui/components/multichain/toast/toast.tsx": {

@@ -98,9 +98,18 @@ const useIsSidepanelCompactSettingsLayout = (isSidepanel: boolean) => {
       : false,
   );
 
+  const [prevIsSidepanel, setPrevIsSidepanel] = useState(isSidepanel);
+  if (isSidepanel !== prevIsSidepanel) {
+    setPrevIsSidepanel(isSidepanel);
+    setIsCompact(
+      isSidepanel && typeof window !== 'undefined'
+        ? window.innerWidth <= SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH
+        : false,
+    );
+  }
+
   useEffect(() => {
     if (!isSidepanel) {
-      setIsCompact(false);
       return undefined;
     }
 
@@ -108,7 +117,6 @@ const useIsSidepanelCompactSettingsLayout = (isSidepanel: boolean) => {
       setIsCompact(window.innerWidth <= SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH);
     };
 
-    updateIsCompact();
     window.addEventListener('resize', updateIsCompact);
 
     return () => window.removeEventListener('resize', updateIsCompact);
@@ -180,16 +188,26 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
     isShieldFeatureEnabled && useExternalServices && !hasSubscribedToShield;
 
   // Handle ?showShieldEntryModal=true query param (e.g. from deep links)
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    if (searchParams.get(SHIELD_QUERY_PARAMS.showShieldEntryModal) === 'true') {
-      if (hasSubscribedToShield) {
-        navigate(TRANSACTION_SHIELD_ROUTE, { replace: true });
-      } else {
-        setShowShieldEntryModal(true);
-      }
+  const shouldShowShieldEntryFromQuery =
+    new URLSearchParams(location.search).get(
+      SHIELD_QUERY_PARAMS.showShieldEntryModal,
+    ) === 'true';
+  const [hasHandledShieldEntryQuery, setHasHandledShieldEntryQuery] = useState(
+    () => !shouldShowShieldEntryFromQuery,
+  );
+  if (!hasHandledShieldEntryQuery && shouldShowShieldEntryFromQuery) {
+    setHasHandledShieldEntryQuery(true);
+    if (!hasSubscribedToShield) {
+      setShowShieldEntryModal(true);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- mount only
+  }
+  useEffect(() => {
+    if (shouldShowShieldEntryFromQuery && hasSubscribedToShield) {
+      navigate(TRANSACTION_SHIELD_ROUTE, { replace: true });
+    }
+    // Mount-only navigation for deep-link entry; subscription status is read once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount only
+  }, []);
 
   // Intercept Transaction Shield tab click for non-subscribed users
   const handleTabClick = useCallback(

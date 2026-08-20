@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   createSearchParams,
   useNavigate,
@@ -64,7 +64,6 @@ const PermissionsPage = () => {
       navigate(-1);
     }
   };
-  const [totalConnections, setTotalConnections] = useState(0);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
 
   const mergedConnectionsList = useSelector((state) => {
@@ -75,10 +74,7 @@ const PermissionsPage = () => {
   });
 
   const subjects = useSelector(getPermissionSubjects);
-
-  useEffect(() => {
-    setTotalConnections(Object.keys(mergedConnectionsList).length);
-  }, [mergedConnectionsList]);
+  const totalConnections = Object.keys(mergedConnectionsList).length;
 
   const handleDisconnectAll = useCallback(() => {
     const errors = [];

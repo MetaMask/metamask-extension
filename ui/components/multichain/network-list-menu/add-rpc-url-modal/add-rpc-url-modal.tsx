@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Box,
   ButtonPrimary,
@@ -28,16 +28,19 @@ const AddRpcUrlModal = ({
   const t = useI18nContext();
 
   const [url, setUrl] = useState<string>();
-  const [error, setError] = useState<string>();
   const nameRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (url && !isWebUrl(url)) {
-      setError(isWebUrl(`https://${url}`) ? t('urlErrorMsg') : t('invalidRPC'));
-    } else {
-      setError(undefined);
+  const error = (() => {
+    if (!url) {
+      return undefined;
     }
-  }, [url]);
+    if (isWebUrl(url)) {
+      return undefined;
+    }
+    if (isWebUrl(`https://${url}`)) {
+      return t('urlErrorMsg');
+    }
+    return t('invalidRPC');
+  })();
 
   return (
     <Box
