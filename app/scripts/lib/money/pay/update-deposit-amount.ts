@@ -90,10 +90,12 @@ async function updateMoneyAccountDepositAmountInternal(
   }
   const { vaultConfig, provider } = context;
 
-  // ROUND_UP (never short the user), via `.round` — bignumber 4's
-  // `decimalPlaces(0, mode)` is a getter that would return a count here.
+  // ROUND_DOWN, matching mobile's deposit commit sites, so a fractional
+  // base-unit remainder never inflates the amount past the funding balance.
+  // Via `.round` — bignumber 4's `decimalPlaces(0, mode)` is a getter that
+  // would return a count here.
   const amountRaw = calcTokenValue(amountHuman, MUSD_DECIMALS)
-    .round(0, BigNumber.ROUND_UP)
+    .round(0, BigNumber.ROUND_DOWN)
     .toFixed(0);
 
   // A cleared amount field arrives as zero. The builder throws on zero rather

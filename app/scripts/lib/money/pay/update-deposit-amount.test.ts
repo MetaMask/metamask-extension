@@ -24,9 +24,9 @@ const TELLER_INTERFACE = new Interface(TELLER_ABI);
 
 const MUSD_ADDRESS = MUSD_TOKEN_ADDRESS_BY_CHAIN[VAULT_CONFIG_MOCK.chainId];
 
-/** 1.0000004 mUSD: base units 1000000.4, so ROUND_UP → 1000001. */
+/** 1.0000004 mUSD: base units 1000000.4, rounded DOWN → 1000000. */
 const AMOUNT_HUMAN = '1.0000004';
-const AMOUNT_ROUNDED_UP = '1000001';
+const AMOUNT_ROUNDED_DOWN = '1000000';
 
 let transactionIdCounter = 0;
 
@@ -115,16 +115,16 @@ describe('updateMoneyAccountDepositAmount', () => {
       'approve',
       meta.nestedTransactions?.[0].data as string,
     );
-    expect(approve.amount.toString()).toBe(AMOUNT_ROUNDED_UP);
+    expect(approve.amount.toString()).toBe(AMOUNT_ROUNDED_DOWN);
 
     const deposit = TELLER_INTERFACE.decodeFunctionData(
       'deposit',
       meta.nestedTransactions?.[1].data as string,
     );
-    expect(deposit.depositAmount.toString()).toBe(AMOUNT_ROUNDED_UP);
+    expect(deposit.depositAmount.toString()).toBe(AMOUNT_ROUNDED_DOWN);
 
     // The mUSD required asset carries the new amount; the other is untouched.
-    expect(meta.requiredAssets?.[0].amount).toBe(toHex(AMOUNT_ROUNDED_UP));
+    expect(meta.requiredAssets?.[0].amount).toBe(toHex(AMOUNT_ROUNDED_DOWN));
     expect(meta.requiredAssets?.[1].amount).toBe('0x1');
 
     // The re-encoded batch invalidates gas and simulation state.
