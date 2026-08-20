@@ -12,6 +12,7 @@ import {
 } from '@metamask/messenger';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../shared/lib/fetch-with-cache';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import type { StaticAssetsControllerMessenger } from './static-assets-controller';
 import { StaticAssetsController } from './static-assets-controller';
 
@@ -30,7 +31,13 @@ const mockTopAssets = [
   },
 ];
 
-const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
+const setupController = ({
+  supportedChains,
+  getIsAssetsUnifyStateEnabled = () => false,
+}: {
+  supportedChains: Hex[];
+  getIsAssetsUnifyStateEnabled?: () => boolean;
+}) => {
   const messenger = new Messenger<
     MockAnyNamespace,
     | MessengerActions<StaticAssetsControllerMessenger>
@@ -42,6 +49,8 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
   const tokensControllerAddTokensSpy = jest.fn();
   const networkControllerFindNetworkClientIdByChainIdSpy = jest.fn();
   const tokensControllerGetStateSpy = jest.fn();
+  const assetsControllerGetStateSpy = jest.fn();
+  const assetsControllerAddCustomAssetSpy = jest.fn();
   const fetchWithCacheSpy = jest.spyOn(fetchWithCacheModule, 'default');
 
   const staticAssetsControllerMessenger: StaticAssetsControllerMessenger =
@@ -56,6 +65,8 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
       'NetworkController:findNetworkClientIdByChainId',
       'TokensController:getState',
       'TokensController:addTokens',
+      'AssetsController:getState',
+      'AssetsController:addCustomAsset',
     ],
     events: [],
   });
@@ -75,11 +86,22 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
     tokensControllerAddTokensSpy,
   );
 
+  messenger.registerActionHandler(
+    'AssetsController:getState',
+    assetsControllerGetStateSpy,
+  );
+
+  messenger.registerActionHandler(
+    'AssetsController:addCustomAsset',
+    assetsControllerAddCustomAssetSpy,
+  );
+
   const controller = new StaticAssetsController({
     messenger: staticAssetsControllerMessenger,
     getSupportedChains: () => new Set(supportedChains),
     getCacheExpirationTime: () => 1000,
     getTopX: () => 10,
+    getIsAssetsUnifyStateEnabled,
   });
 
   return {
@@ -90,6 +112,8 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
       tokensControllerAddTokensSpy,
       networkControllerFindNetworkClientIdByChainIdSpy,
       tokensControllerGetStateSpy,
+      assetsControllerGetStateSpy,
+      assetsControllerAddCustomAssetSpy,
     },
   };
 };
@@ -116,7 +140,7 @@ describe('StaticAssetsController', () => {
       networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
         'mainnet',
       );
-      tokensControllerGetStateSpy.mockResolvedValue({
+      tokensControllerGetStateSpy.mockReturnValue({
         allIgnoredTokens: {},
       });
       tokensControllerAddTokensSpy.mockReturnThis();
@@ -125,6 +149,7 @@ describe('StaticAssetsController', () => {
       await controller._executePoll({
         chainIds: [CHAIN_IDS.MAINNET],
         selectedAccountAddress: '0x123',
+        selectedAccountId: 'mock-account-id',
       });
 
       const url = new URL(
@@ -176,6 +201,7 @@ describe('StaticAssetsController', () => {
         payload: {
           chainIds: [CHAIN_IDS.POLYGON],
           selectedAccountAddress: '0x123',
+          selectedAccountId: 'mock-account-id',
         },
         testCase: 'chain is not supported',
       },
@@ -183,13 +209,23 @@ describe('StaticAssetsController', () => {
         payload: {
           chainIds: [CHAIN_IDS.MAINNET],
           selectedAccountAddress: '',
+          selectedAccountId: 'mock-account-id',
         },
         testCase: 'the selected account address is not set',
       },
       {
         payload: {
+          chainIds: [CHAIN_IDS.MAINNET],
+          selectedAccountAddress: '0x123',
+          selectedAccountId: '',
+        },
+        testCase: 'the selected account id is not set',
+      },
+      {
+        payload: {
           chainIds: ['xychain'],
           selectedAccountAddress: '0x123',
+          selectedAccountId: 'mock-account-id',
         },
         testCase: 'the chain is not a valid hex string',
       },
@@ -201,6 +237,7 @@ describe('StaticAssetsController', () => {
         payload: {
           chainIds: string[];
           selectedAccountAddress: string;
+          selectedAccountId: string;
         };
       }) => {
         const {
@@ -246,6 +283,7 @@ describe('StaticAssetsController', () => {
       await controller._executePoll({
         chainIds: [CHAIN_IDS.MAINNET],
         selectedAccountAddress: '0x123',
+        selectedAccountId: 'mock-account-id',
       });
 
       expect(fetchWithCacheSpy).not.toHaveBeenCalled();
@@ -269,7 +307,7 @@ describe('StaticAssetsController', () => {
         networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
           'mainnet',
         );
-        tokensControllerGetStateSpy.mockResolvedValue({
+        tokensControllerGetStateSpy.mockReturnValue({
           allIgnoredTokens: {},
         });
         tokensControllerAddTokensSpy.mockReturnThis();
@@ -280,6 +318,7 @@ describe('StaticAssetsController', () => {
         await controller._executePoll({
           chainIds: [CHAIN_IDS.MAINNET],
           selectedAccountAddress: '0x123',
+          selectedAccountId: 'mock-account-id',
         });
 
         expect(tokensControllerAddTokensSpy).not.toHaveBeenCalled();
@@ -350,7 +389,7 @@ describe('StaticAssetsController', () => {
           networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
             'mainnet',
           );
-          tokensControllerGetStateSpy.mockResolvedValue({
+          tokensControllerGetStateSpy.mockReturnValue({
             allIgnoredTokens: {},
           });
           tokensControllerAddTokensSpy.mockReturnThis();
@@ -359,6 +398,7 @@ describe('StaticAssetsController', () => {
           await controller._executePoll({
             chainIds: [CHAIN_IDS.MAINNET],
             selectedAccountAddress: '0x123',
+            selectedAccountId: 'mock-account-id',
           });
 
           expect(
@@ -414,7 +454,7 @@ describe('StaticAssetsController', () => {
         networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
           'mainnet',
         );
-        tokensControllerGetStateSpy.mockResolvedValue({
+        tokensControllerGetStateSpy.mockReturnValue({
           allIgnoredTokens: {
             [CHAIN_IDS.MAINNET]: {
               '0x123': ['0xff20817765cb7f73d4bde2e66e067e58d11095c2'],
@@ -427,6 +467,7 @@ describe('StaticAssetsController', () => {
         await controller._executePoll({
           chainIds: [CHAIN_IDS.MAINNET],
           selectedAccountAddress: '0x123',
+          selectedAccountId: 'mock-account-id',
         });
 
         expect(
@@ -495,7 +536,7 @@ describe('StaticAssetsController', () => {
           networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
             'mainnet',
           );
-          tokensControllerGetStateSpy.mockResolvedValue({
+          tokensControllerGetStateSpy.mockReturnValue({
             allIgnoredTokens,
           });
           tokensControllerAddTokensSpy.mockReturnThis();
@@ -504,6 +545,7 @@ describe('StaticAssetsController', () => {
           await controller._executePoll({
             chainIds: [CHAIN_IDS.MAINNET],
             selectedAccountAddress: '0x123',
+            selectedAccountId: 'mock-account-id',
           });
 
           expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
@@ -531,6 +573,133 @@ describe('StaticAssetsController', () => {
           );
         },
       );
+    });
+
+    describe('with assetsUnifyState flag enabled', () => {
+      it('adds tokens to the AssetsController instead of TokensController', async () => {
+        const {
+          controller,
+          spies: {
+            assetsControllerGetStateSpy,
+            assetsControllerAddCustomAssetSpy,
+            networkControllerFindNetworkClientIdByChainIdSpy,
+            tokensControllerAddTokensSpy,
+            fetchWithCacheSpy,
+          },
+        } = setupController({
+          supportedChains: [CHAIN_IDS.MAINNET],
+          getIsAssetsUnifyStateEnabled: () => true,
+        });
+
+        networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
+          'mainnet',
+        );
+        assetsControllerGetStateSpy.mockReturnValue({ assetPreferences: {} });
+        assetsControllerAddCustomAssetSpy.mockResolvedValue(undefined);
+        fetchWithCacheSpy.mockResolvedValue(mockTopAssets);
+
+        await controller._executePoll({
+          chainIds: [CHAIN_IDS.MAINNET],
+          selectedAccountAddress: '0x123',
+          selectedAccountId: 'mock-account-id',
+        });
+
+        expect(tokensControllerAddTokensSpy).not.toHaveBeenCalled();
+        expect(assetsControllerAddCustomAssetSpy).toHaveBeenCalledTimes(
+          mockTopAssets.length,
+        );
+        expect(assetsControllerAddCustomAssetSpy).toHaveBeenCalledWith(
+          'mock-account-id',
+          toAssetId(
+            '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            CHAIN_IDS.MAINNET,
+          ),
+          expect.objectContaining({
+            address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            symbol: 'WETH',
+            decimals: 18,
+          }),
+        );
+      });
+
+      it('filters out hidden tokens using AssetsController assetPreferences', async () => {
+        const hiddenTokenAddress = '0xff20817765cb7f73d4bde2e66e067e58d11095c2';
+        const hiddenToken = {
+          assetId: `eip155:1/erc20:${hiddenTokenAddress}`,
+          symbol: 'AMP',
+          decimals: 18,
+          name: 'Amp',
+        };
+        // toAssetId checksums the address, so the key must use the checksummed form.
+        const hiddenTokenAssetId = toAssetId(
+          hiddenTokenAddress,
+          CHAIN_IDS.MAINNET,
+        ) as string;
+        const {
+          controller,
+          spies: {
+            assetsControllerGetStateSpy,
+            assetsControllerAddCustomAssetSpy,
+            networkControllerFindNetworkClientIdByChainIdSpy,
+            fetchWithCacheSpy,
+          },
+        } = setupController({
+          supportedChains: [CHAIN_IDS.MAINNET],
+          getIsAssetsUnifyStateEnabled: () => true,
+        });
+
+        networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
+          'mainnet',
+        );
+        assetsControllerGetStateSpy.mockReturnValue({
+          assetPreferences: {
+            [hiddenTokenAssetId]: { hidden: true },
+          },
+        });
+        assetsControllerAddCustomAssetSpy.mockResolvedValue(undefined);
+        fetchWithCacheSpy.mockResolvedValue([...mockTopAssets, hiddenToken]);
+
+        await controller._executePoll({
+          chainIds: [CHAIN_IDS.MAINNET],
+          selectedAccountAddress: '0x123',
+          selectedAccountId: 'mock-account-id',
+        });
+
+        expect(assetsControllerAddCustomAssetSpy).toHaveBeenCalledTimes(
+          mockTopAssets.length,
+        );
+        const calledAssetIds = assetsControllerAddCustomAssetSpy.mock.calls.map(
+          (call) => call[1],
+        );
+        expect(calledAssetIds).not.toContain(hiddenTokenAssetId);
+      });
+
+      it('does not add any tokens if selectedAccountId is empty', async () => {
+        const {
+          controller,
+          spies: {
+            assetsControllerAddCustomAssetSpy,
+            networkControllerFindNetworkClientIdByChainIdSpy,
+            fetchWithCacheSpy,
+          },
+        } = setupController({
+          supportedChains: [CHAIN_IDS.MAINNET],
+          getIsAssetsUnifyStateEnabled: () => true,
+        });
+
+        networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
+          'mainnet',
+        );
+        fetchWithCacheSpy.mockResolvedValue(mockTopAssets);
+
+        await controller._executePoll({
+          chainIds: [CHAIN_IDS.MAINNET],
+          selectedAccountAddress: '0x123',
+          selectedAccountId: '',
+        });
+
+        expect(assetsControllerAddCustomAssetSpy).not.toHaveBeenCalled();
+      });
     });
   });
 });

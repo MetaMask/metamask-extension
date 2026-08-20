@@ -5,7 +5,7 @@
  * Several dependencies are stubbed pending integration with extension services.
  */
 
-import { createProjectLogger } from '@metamask/utils';
+import { CaipAccountId, createProjectLogger } from '@metamask/utils';
 import type * as Sentry from '@sentry/browser';
 import type {
   PerpsPlatformDependencies,
@@ -27,34 +27,125 @@ import type {
 import {
   formatPerpsFiat,
   formatPercentage,
+  formatVolume,
   PRICE_RANGES_UNIVERSAL,
-} from '@metamask/perps-controller';
+} from '../../../../shared/lib/perps-formatters';
 import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
-import {
-  MetaMetricsEventCategory,
-  type MetaMetricsEventPayload,
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { createEventBuilder, trackEvent } from '../analytics';
 import { captureException } from '../../../../shared/lib/sentry';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
+import { isBeta } from '../../../../shared/lib/build-types';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
+import { isBenignDisconnectError } from './perps-error-utils';
+
+const TERMINAL_API_URLS = {
+  dev: 'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
+  uat: 'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+  prd: 'https://terminal.api.cx.metamask.io/v1/perpetuals',
+} as const;
+
+function getTerminalApiUrl(): string {
+  if (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+  ) {
+    return TERMINAL_API_URLS.dev;
+  }
+
+  // Beta builds target UAT for all non-dev/testing environments.
+  if (isBeta()) {
+    return TERMINAL_API_URLS.uat;
+  }
+
+  if (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PRODUCTION ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE
+  ) {
+    return TERMINAL_API_URLS.prd;
+  }
+
+  return TERMINAL_API_URLS.uat;
+}
 
 /**
  * Dependencies required to wire {@link createPerpsInfrastructure} to extension services.
  */
 export type InfrastructureDeps = {
-  trackEvent: (payload: MetaMetricsEventPayload) => void;
   getStorageItem: (key: string) => Promise<{
     result?: unknown;
     error?: Error;
   }>;
   setStorageItem: (key: string, value: string) => Promise<void>;
   removeStorageItem: (key: string) => Promise<void>;
+  /**
+   * Returns true while a self-initiated disconnect() is in progress (e.g.
+   * during an account switch). Used to suppress benign WS-race errors that
+   * are guaranteed to be side-effects of our own teardown rather than real
+   * failures.
+   */
+  isDisconnecting?: () => boolean;
+  /**
+   * Bridge to {@link RewardsController.getPerpsDiscountForAccount}. The
+   * rewards controller owns the fee-discount logic; perps just supplies the
+   * account and its own base fee in bips. The controller returns null when
+   * the discount is currently unknowable (unhydrated cache, fetch error, no
+   * subscription); this adapter collapses null to 0 before returning to the
+   * core perps-controller, which expects a numeric discount.
+   */
+  getPerpsDiscountForAccount: (
+    caipAccountId: `${string}:${string}:${string}`,
+    baseFeeBips: number,
+  ) => Promise<number | null>;
+  /**
+   * Merges controller-stored UTM attribution into event properties before
+   * MetaMetrics emission. Optional so unit tests can omit it;
+   * production wiring supplies PerpsController.mergeAttributionContext.
+   */
+  mergeAttributionContext?: (
+    properties?: PerpsAnalyticsProperties,
+  ) => PerpsAnalyticsProperties;
 };
 
 const debugLog = createProjectLogger('perps');
 
-function createLogger(): PerpsLogger {
+function createLogger(deps: InfrastructureDeps): PerpsLogger {
   return {
     error: (error, options) => {
+      // Suppress benign WS-close errors only while our own disconnect() is
+      // active (account switch in progress). Outside that window the same
+      // error shapes indicate real connectivity problems and must reach Sentry.
+      //
+      // KNOWN TRADEOFF: this guard intentionally suppresses every benign-shaped
+      // error during the disconnect window, including write-context errors
+      // (placeOrder, editOrder, cancelOrder, closePosition, updateMargin,
+      // flipPosition, withdraw, ...). We accept this for two reasons:
+      //
+      //   1. Account switches generate a high volume of in-flight read/stream
+      //      cancellations whose error shape is indistinguishable from a true
+      //      write race at this layer. Reporting them clutters both the dev
+      //      console (captureException -> console.error) and the Sentry inbox
+      //      enough to drown out real signal. We verified empirically that
+      //      gating on `options.context.data.method` to let write-path errors
+      //      through produced many false positives during normal account
+      //      switches without surfacing actionable failures.
+      //   2. Writes that genuinely race with `disconnect()` are observable to
+      //      the user via the UI (orders surface success/failure inline and
+      //      withdrawals via transaction state) and to the team via product
+      //      reports, so we are not relying on Sentry as the primary signal
+      //      for "did the order go through?" during account switches.
+      //
+      // If that invariant changes (e.g. writes start being issued from
+      // non-user-initiated paths during disconnect, or UI surfacing weakens),
+      // tighten this guard by gating on `options.context.data.method` against
+      // the upstream write-method names so write contexts bypass suppression.
+      if (
+        isBenignDisconnectError(error) &&
+        (deps.isDisconnecting?.() ?? false)
+      ) {
+        debugLog('Suppressed benign perps WS disconnect race', error, options);
+        return;
+      }
       const withScope = globalThis.sentry?.withScope;
       if (!withScope) {
         captureException(error);
@@ -83,25 +174,45 @@ function createDebugLogger(): PerpsDebugLogger {
   return { log: debugLog };
 }
 
-function createMetrics(deps: InfrastructureDeps): PerpsMetrics {
+function createMetrics(
+  mergeAttributionContext?: InfrastructureDeps['mergeAttributionContext'],
+): PerpsMetrics {
   return {
-    // isEnabled always true: the MetaMetricsController.trackEvent messenger action is a
-    // no-op when the user has not opted into analytics, so consent filtering is
-    // enforced at that layer rather than here. Mobile delegates this check to
+    // isEnabled always true: AnalyticsController.trackEvent is a no-op when the
+    // user has not opted into analytics, so consent filtering is enforced at
+    // that layer rather than here. Mobile delegates this check to
     // analytics.isEnabled() directly because it uses a different analytics stack.
     isEnabled: () => true,
     trackPerpsEvent: (
       event: PerpsAnalyticsEvent,
       properties: PerpsAnalyticsProperties,
     ) => {
-      deps.trackEvent({
-        event,
-        category: MetaMetricsEventCategory.Perps,
-        properties: {
-          ...properties,
-          [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
-        },
-      });
+      // Merge stored UTM context into every controller-emitted event so AC3
+      // attribution reaches MetaMetrics (TradingService only attaches
+      // entry/discovery/hlFeeRate from trackingData, not UTM).
+      const attributedProperties = mergeAttributionContext
+        ? mergeAttributionContext(properties)
+        : properties;
+      // NOTE: controller-emitted events (transaction events) are
+      // fired from the background PerpsController singleton, which has no
+      // knowledge of which UI surface (sidepanel/popup/fullscreen) initiated
+      // them. Stamping the real environment_type here is intentionally NOT
+      // done: it cannot be scoped per-request without controller support
+      // (TradingService forwards only entry/discovery/perpDiscovery/hlFeeRate
+      // from trackingData, and a shared background mutable would misattribute
+      // concurrent surfaces). It is deferred to the controller (9.2.2). Note
+      // client-emitted perps events (ScreenViewed, UiInteraction, PerpsError,
+      // TransactionConsidered) already carry the correct environment_type via
+      // useAnalytics, so only background transaction events are affected.
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(MetaMetricsEventCategory.Perps)
+          .addProperties({
+            ...attributedProperties,
+            [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
+          })
+          .build(),
+      );
     },
   };
 }
@@ -223,15 +334,12 @@ function createFeatureFlags(): PerpsPlatformDependencies['featureFlags'] {
 }
 
 function createMarketDataFormatters(): MarketDataFormatters {
-  const compactFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    notation: 'compact',
-    maximumFractionDigits: 1,
-  });
-
   return {
-    formatVolume: (value: number) => compactFormatter.format(value),
+    // Mobile-parity magnitude-aware volume formatter (2 decimals for B/M, 0 for
+    // K, 2 below $1K). Replaces the previous Intl.NumberFormat compact config,
+    // which dropped trailing `.0` on round billions (`$2B` instead of mobile's
+    // `$2.30B`). See shared/lib/perps-formatters.ts:formatVolume.
+    formatVolume: (value: number) => formatVolume(value),
     formatPerpsFiat: (
       value: number,
       options?: { ranges?: unknown[] },
@@ -296,16 +404,16 @@ function createDiskCache(
 /**
  * Create the complete PerpsPlatformDependencies for the extension.
  *
- * @param deps - Platform hooks (e.g. MetaMetrics `trackEvent`).
+ * @param deps - Platform hooks (storage, rewards, Sentry).
  * @returns PerpsPlatformDependencies object ready for PerpsController
  */
 export function createPerpsInfrastructure(
   deps: InfrastructureDeps,
 ): PerpsPlatformDependencies {
   return {
-    logger: createLogger(),
+    logger: createLogger(deps),
     debugLogger: createDebugLogger(),
-    metrics: createMetrics(deps),
+    metrics: createMetrics(deps.mergeAttributionContext),
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),
@@ -313,12 +421,31 @@ export function createPerpsInfrastructure(
     marketDataFormatters: createMarketDataFormatters(),
     cacheInvalidator: createCacheInvalidator(),
     diskCache: createDiskCache(deps),
+    terminalApiUrl: getTerminalApiUrl(),
     rewards: {
+      // The perps package only passes `caipAccountId`; the rewards controller
+      // additionally needs the perps MetaMask builder base fee in bips so it
+      // can convert the absolute reward fee into a discount fraction. We
+      // source the base fee from the perps package's own constants here so
+      // the rewards controller stays a pure transformer.
       getPerpsDiscountForAccount: async (
-        _caipAccountId: `${string}:${string}:${string}`,
+        caipAccountId: `${string}:${string}:${string}`,
+        baseFeeBips: number,
       ) => {
-        // TODO: Wire to RewardsController when available
-        return 0;
+        try {
+          const result = await deps.getPerpsDiscountForAccount(
+            caipAccountId,
+            baseFeeBips,
+          );
+          // The rewards controller returns null when the discount is
+          // currently unknowable; treat it the same as a thrown error so
+          // the core perps-controller (which expects a number) sees a
+          // safe "no discount" fallback.
+          return result ?? 0;
+        } catch {
+          // Never let a discount lookup failure block a trade — return 0.
+          return 0;
+        }
       },
     },
   };

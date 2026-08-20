@@ -88,8 +88,11 @@
   "addressSecurityAlertResponses": {},
   "advancedGasFee": {
     "0xaa36a7": {
-      "maxBaseFee": "75",
-      "priorityFee": "2"
+      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+        "userFeeLevel": "custom",
+        "maxBaseFee": "75",
+        "priorityFee": "2"
+      }
     }
   },
   "alertEnabledness": {
@@ -311,7 +314,40 @@
   },
   "announcements": [],
   "approvalFlows": [],
+  "assetsBalance": {
+    "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
+      "eip155:11155111/slip44:60": {
+        "amount": "1.582717"
+      }
+    }
+  },
+  "assetsInfo": {
+    "eip155:1/slip44:60": {
+      "type": "native",
+      "decimals": 18,
+      "symbol": "ETH"
+    },
+    "eip155:11155111/slip44:60": {
+      "type": "native",
+      "decimals": 18,
+      "symbol": "SepoliaETH"
+    }
+  },
   "assetsMetadata": {},
+  "assetsPrice": {
+    "eip155:1/slip44:60": {
+      "assetPriceType": "fungible",
+      "price": 556.12,
+      "usdPrice": 556.12,
+      "lastUpdated": 1721393858000
+    },
+    "eip155:11155111/slip44:60": {
+      "assetPriceType": "fungible",
+      "price": 556.12,
+      "usdPrice": 556.12,
+      "lastUpdated": 1721392020000
+    }
+  },
   "browserEnvironment": {
     "os": "mac",
     "browser": "chrome"
@@ -319,6 +355,7 @@
   "completedOnboarding": true,
   "confirmationExchangeRates": {},
   "connectedStatusPopoverHasBeenShown": true,
+  "consentDecisionMade": true,
   "contractExchangeRates": {
     "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": 0.00039345803819379796,
     "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049,
@@ -385,8 +422,6 @@
       "0xaa36a7": true
     }
   },
-  "ensEntries": {},
-  "ensResolutionsByAddress": {},
   "featureFlags": {},
   "firstTimeFlowType": "create",
   "forgottenPassword": false,
@@ -790,8 +825,8 @@
     }
   },
   "openSeaEnabled": false,
+  "optedIn": false,
   "orderedNetworkList": [],
-  "participateInMetaMetrics": false,
   "pendingApprovalCount": 0,
   "pendingApprovals": {},
   "permissionHistory": {
@@ -841,14 +876,10 @@
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
   "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+  "selectedCurrency": "usd",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
-  "showAccountBanner": false,
-  "showBetaHeader": false,
-  "showNetworkBanner": true,
-  "showPermissionsTour": true,
   "showProductTour": false,
-  "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
   "slides": [],
   "smartTransactionsState": {
@@ -2116,6 +2147,5 @@
   "userOperations": {},
   "versionFileETag": "W/\"598946a37f16c5b882a0bebbadf4509f\"",
   "versionInfo": [],
-  "web3ShimUsageOrigins": {},
-  "welcomeScreenSeen": false
+  "web3ShimUsageOrigins": {}
 }

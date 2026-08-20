@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du måste välja ett konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Lägg till de tokens du har skaffat med MetaMask"
-  },
   "addAlias": {
     "message": "Lägg till alias"
   },
@@ -78,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "Timer för automatisk utloggning (minuter)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Ställ in efter hur lång tids inaktivitet som MetaMask automatiskt loggar ut"
-  },
   "average": {
     "message": "Genomsnitt"
   },
   "back": {
     "message": "Bakåt"
-  },
-  "backupApprovalInfo": {
-    "message": "Den hemliga koden krävs för att komma åt din plånbok ifall du tappar bort din enhet, glömmer ditt lösenord, behöver installera om MetaMask eller om du vill komma åt din plånbok på en annan enhet."
   },
   "backupApprovalNotice": {
     "message": "Säkerhetskopiera din hemliga återställningskod för att se till att din plånbok och dina tillgångar är säkra."
@@ -175,23 +166,11 @@
   "createPassword": {
     "message": "Skapa lösenord"
   },
-  "currencyConversion": {
-    "message": "Valutaomvandling"
-  },
-  "currentLanguage": {
-    "message": "Aktuellt språk"
-  },
   "custom": {
     "message": "Avancerat"
   },
-  "customToken": {
-    "message": "Anpassad token"
-  },
   "decimal": {
     "message": "Decimalprecision"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalerna måste vara minst 0 och inte över 36."
   },
   "delete": {
     "message": "Radera"
@@ -201,9 +180,6 @@
   },
   "done": {
     "message": "Klart"
-  },
-  "downloadGoogleChrome": {
-    "message": "Ladda ner Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Ladda ner statusloggar"
@@ -262,9 +238,6 @@
   },
   "hardwareWallets": {
     "message": "Anslut en hårdvaruplånbok"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Välj en hårdvaruplånbok som du vill använda med MetaMask"
   },
   "here": {
     "message": "här",
@@ -333,12 +306,6 @@
   "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli testnätverk"
-  },
-  "links": {
-    "message": "Länkar"
-  },
   "loading": {
     "message": "Läser in..."
   },
@@ -357,9 +324,6 @@
   "metamaskVersion": {
     "message": "MetaMask-version"
   },
-  "mustSelectOne": {
-    "message": "Minst 1 token måste väljas."
-  },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",
     "description": "User is important an account and needs to add a file to continue"
@@ -369,12 +333,6 @@
   },
   "networks": {
     "message": "Nätverk"
-  },
-  "nevermind": {
-    "message": "Strunt i det"
-  },
-  "newAccount": {
-    "message": "Nytt konto"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -394,9 +352,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webbkamera hittades ej"
-  },
-  "notEnoughGas": {
-    "message": "Inte tillräckligt med gas"
   },
   "ofTextNofM": {
     "message": "av"
@@ -481,9 +436,6 @@
   "restore": {
     "message": "Återställ"
   },
-  "revealSeedWords": {
-    "message": "Visa seed-ord"
-  },
   "revealSeedWordsWarning": {
     "message": "De här orden kan användas för att stjäla alla dina konton.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -530,9 +482,6 @@
   "showFiatConversionInTestnets": {
     "message": "Visa omvandling på testnätverk"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Välj denna för att visa fiatomvandlingar på Testnätverk"
-  },
   "showHexData": {
     "message": "Visa hex-information"
   },
@@ -541,9 +490,6 @@
   },
   "sign": {
     "message": "Signera"
-  },
-  "signatureRequest": {
-    "message": "Signaturbegäran"
   },
   "signed": {
     "message": "Signerat"
@@ -562,9 +508,6 @@
   },
   "stateLogs": {
     "message": "Statushistorik"
-  },
-  "stateLogsDescription": {
-    "message": "Statusloggar innehåller dina publika kontoadresser och skickade transaktioner."
   },
   "submitted": {
     "message": "Inskickat"

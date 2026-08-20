@@ -1,9 +1,11 @@
 import {
+  PaymentOverride,
   TransactionPayController,
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -53,6 +55,46 @@ function getApi(
     ) => {
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.isMaxAmount = isMaxAmount;
+      });
+    },
+    setTransactionPayPostQuote: (
+      transactionId: string,
+      options: { isHyperliquidSource?: boolean } = {},
+    ) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        config.isPostQuote = true;
+        if (options.isHyperliquidSource) {
+          config.isHyperliquidSource = true;
+        }
+      });
+    },
+    setTransactionPayAccountOverride: (
+      transactionId: string,
+      accountOverride: Hex,
+    ) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        config.accountOverride = accountOverride;
+      });
+    },
+    setTransactionPayPaymentOverride: (
+      transactionId: string,
+      {
+        paymentOverride,
+        refundTo,
+      }: {
+        paymentOverride?: PaymentOverride;
+        refundTo?: Hex;
+      } = {},
+    ) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        config.paymentOverride = paymentOverride;
+        if (paymentOverride === undefined) {
+          config.refundTo = undefined;
+          return;
+        }
+        if (refundTo !== undefined) {
+          config.refundTo = refundTo;
+        }
       });
     },
     updateTransactionPaymentToken:

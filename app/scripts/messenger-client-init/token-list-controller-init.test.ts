@@ -1,4 +1,7 @@
-import { TokenListController } from '@metamask/assets-controllers';
+import {
+  TokenListController,
+  TokenListControllerMessenger,
+} from '@metamask/assets-controllers';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
@@ -16,17 +19,16 @@ import {
   getTokenListControllerInitMessenger,
   getTokenListControllerMessenger,
   TokenListControllerInitMessenger,
-  TokenListControllerMessenger,
 } from './messengers';
 import { TokenListControllerInit } from './token-list-controller-init';
 
 jest.mock('@metamask/assets-controllers', () => {
   return {
-    TokenListController: jest.fn().mockImplementation(function (this: {
-      initialize: jest.Mock;
-    }) {
-      this.initialize = jest.fn().mockResolvedValue(undefined);
-    }),
+    TokenListController: jest
+      .fn()
+      .mockImplementation(function (this: { initialize: jest.Mock }) {
+        this.initialize = jest.fn().mockResolvedValue(undefined);
+      }),
   };
 });
 
@@ -98,6 +100,7 @@ describe('TokenListControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       chainId: '0x1',
+      isDeprecated: expect.any(Function),
     });
   });
 });

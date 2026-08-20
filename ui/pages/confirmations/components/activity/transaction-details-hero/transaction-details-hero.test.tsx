@@ -9,7 +9,7 @@ const mockStore = configureMockStore([]);
 
 const mockState = {
   metamask: {
-    currentCurrency: 'usd',
+    currentCurrency: 'brl',
     currencyRates: {
       ETH: { conversionRate: 2000 },
     },
@@ -43,8 +43,10 @@ function render(targetFiat?: string) {
 
 describe('TransactionDetailsHero', () => {
   it('renders formatted fiat amount when targetFiat is provided', () => {
-    const { getByTestId } = render('100.50');
+    const { getByTestId, getByText } = render('100.50');
     expect(getByTestId('transaction-details-hero')).toBeInTheDocument();
+    // metamaskPay fiat values are USD; override currency so BRL preference does not show R$
+    expect(getByText(/\$100[.,]50/u)).toBeInTheDocument();
   });
 
   it('returns null when targetFiat is not provided', () => {

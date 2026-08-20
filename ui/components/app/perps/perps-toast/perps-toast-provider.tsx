@@ -7,6 +7,7 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
+import ReactDOM from 'react-dom';
 import { Box } from '@metamask/design-system-react';
 import { Toast } from '../../../multichain/toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -30,6 +31,11 @@ export type PerpsToastRouteState = {
   pendingOrderSymbol?: string;
   pendingOrderFilledDescription?: string;
 };
+
+export type PerpsPendingOrder = {
+  symbol: string;
+  filledDescription?: string;
+} | null;
 
 export type PerpsToastConfig = {
   autoHideTime?: number;
@@ -56,6 +62,8 @@ type PerpsToastContextValue = {
   hidePerpsToast: () => void;
   replacePerpsToast: (config: PerpsToastConfig) => void;
   replacePerpsToastByKey: (config: PerpsToastKeyConfig) => void;
+  pendingOrder: PerpsPendingOrder;
+  setPendingOrder: (order: PerpsPendingOrder) => void;
 };
 
 const DEFAULT_SUCCESS_AUTO_HIDE_TIME = 3000;
@@ -67,6 +75,8 @@ const PERPS_TOAST_CONTEXT_DEFAULT: PerpsToastContextValue = {
   hidePerpsToast: noop,
   replacePerpsToast: noop,
   replacePerpsToastByKey: noop,
+  pendingOrder: null,
+  setPendingOrder: noop,
 };
 
 export const PerpsToastContext = createContext<PerpsToastContextValue>(
@@ -94,6 +104,7 @@ type PerpsToastProviderProps = {
 export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
   const t = useI18nContext();
   const [activeToast, setActiveToast] = useState<PerpsToastState | null>(null);
+  const [pendingOrder, setPendingOrder] = useState<PerpsPendingOrder>(null);
   const toastIdRef = useRef(0);
 
   const hidePerpsToast = useCallback(() => {
@@ -145,29 +156,40 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
       hidePerpsToast,
       replacePerpsToast: upsertPerpsToast,
       replacePerpsToastByKey: upsertPerpsToastByKey,
+      pendingOrder,
+      setPendingOrder,
     }),
-    [hidePerpsToast, upsertPerpsToast, upsertPerpsToastByKey],
+    [
+      hidePerpsToast,
+      upsertPerpsToast,
+      upsertPerpsToastByKey,
+      pendingOrder,
+      setPendingOrder,
+    ],
   );
 
   return (
     <PerpsToastContext.Provider value={contextValue}>
       {children}
-      {activeToast ? (
-        <Box className="toasts-container bottom-20 w-[calc(100%-32px)] max-w-[408px]">
-          <Toast
-            key={activeToast.id}
-            startAdornment={getPerpsToastIcon(activeToast.presentation)}
-            text={activeToast.message}
-            description={activeToast.description}
-            className="perps-toast"
-            contentProps={{ className: 'items-center' }}
-            autoHideTime={activeToast.autoHideTime}
-            onClose={hidePerpsToast}
-            onAutoHideToast={hidePerpsToast}
-            dataTestId={activeToast.dataTestId ?? 'perps-toast'}
-          />
-        </Box>
-      ) : null}
+      {activeToast
+        ? ReactDOM.createPortal(
+            <Box className="toasts-container bottom-20 w-[calc(100%-32px)] max-w-[408px]">
+              <Toast
+                key={activeToast.id}
+                startAdornment={getPerpsToastIcon(activeToast.presentation)}
+                text={activeToast.message}
+                description={activeToast.description}
+                className="perps-toast"
+                contentProps={{ className: 'items-center' }}
+                autoHideTime={activeToast.autoHideTime}
+                onClose={hidePerpsToast}
+                onAutoHideToast={hidePerpsToast}
+                dataTestId={activeToast.dataTestId ?? 'perps-toast'}
+              />
+            </Box>,
+            document.body,
+          )
+        : null}
     </PerpsToastContext.Provider>
   );
 };

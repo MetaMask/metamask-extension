@@ -36,15 +36,58 @@ module.exports = {
     config.resolve.alias['webextension-polyfill'] = require.resolve(
       '../ui/__mocks__/webextension-polyfill.js',
     );
-    config.resolve.alias['../../../../store/actions'] = require.resolve(
+    config.resolve.alias['../../../../store/actions$'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
-    config.resolve.alias['../../../../../../store/actions'] = require.resolve(
+    config.resolve.alias['../../../../../../store/actions$'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
-    config.resolve.alias['../../../store/actions'] = require.resolve(
+    config.resolve.alias['../../../store/actions$'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
+    config.resolve.alias['../../hooks/useAnalytics$'] = require.resolve(
+      '../ui/__mocks__/useAnalytics.ts',
+    );
+    config.resolve.alias['../../../hooks/useAnalytics$'] = require.resolve(
+      '../ui/__mocks__/useAnalytics.ts',
+    );
+    config.resolve.alias['../../../../hooks/useAnalytics$'] = require.resolve(
+      '../ui/__mocks__/useAnalytics.ts',
+    );
+
+    const hwSwapHooksMock = require.resolve(
+      '../ui/__mocks__/hardware-wallet-swap/hooks.ts',
+    );
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapQuoteData$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapSubmission$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapConnectionMonitoring$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapConfirmationMonitoring$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapQrState$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapNavigation$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapActions$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSignTracker$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/bridge/useSubmitBridgeTransaction$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias['../../../../hooks/bridge/useBridgeNavigation$'] =
+      hwSwapHooksMock;
+
     config.resolve.fallback = {
       child_process: false,
       constants: false,
@@ -77,6 +120,7 @@ module.exports = {
           loader: 'postcss-loader',
           options: {
             postcssOptions: {
+              config: false,
               plugins: ['tailwindcss', 'autoprefixer'],
             },
           },
@@ -86,8 +130,16 @@ module.exports = {
           options: {
             sourceMap: true,
             implementation: require('sass-embedded'),
+            api: 'modern-compiler',
+            webpackImporter: false,
             sassOptions: {
-              includePaths: ['ui/css/', 'node_modules/'],
+              quietDeps: true,
+              // TODO: Remove after https://github.com/MetaMask/metamask-extension/issues/44725
+              silenceDeprecations: ['import'],
+              loadPaths: [
+                path.resolve(__dirname, '../ui/css'),
+                path.resolve(__dirname, '../node_modules'),
+              ],
             },
           },
         },

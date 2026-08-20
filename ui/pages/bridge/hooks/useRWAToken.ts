@@ -80,7 +80,7 @@ export const isStockRWAToken = (token?: RWATokenLike): boolean =>
  * re-render (e.g. the home token list or asset detail page).
  *
  * On the bridge page, prefer the selector-based `getIsStockMarketClosed`
- * (which uses `Date.now()` inline, like `getIsQuoteExpired`) because that
+ * (which uses `Date.now()` inline, because that
  * page already re-renders frequently from quote polling and user interaction.
  */
 export function useRWAToken() {
@@ -91,7 +91,9 @@ export function useRWAToken() {
     if (!isRWAEnabled) {
       return undefined;
     }
-    setNowMs(Date.now());
+    queueMicrotask(() => {
+      setNowMs(Date.now());
+    });
     const id = setInterval(() => setNowMs(Date.now()), RWA_TIME_TICK_MS);
     return () => clearInterval(id);
   }, [isRWAEnabled]);

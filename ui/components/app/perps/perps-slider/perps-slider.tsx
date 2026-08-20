@@ -1,6 +1,6 @@
 import React from 'react';
-import MaterialSlider from '@material-ui/core/Slider';
-import { withStyles } from '@material-ui/core/styles';
+import { Slider as MaterialSlider } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import {
   Box,
   Text,
@@ -17,84 +17,86 @@ import {
 } from '@metamask/design-system-react';
 import Tooltip from '../../../ui/tooltip';
 
-/**
- * Material UI styles for the slider - uses CSS variables for theming.
- * MUI v4's default Slider shrinks the thumb to 8×8 when disabled; we keep the
- * same size as enabled so $0 available / disabled sliders still look correct.
- */
-const sliderStyles = {
-  root: {
-    height: 6,
-    padding: 0,
-    overflow: 'visible',
-  },
-  /** Required for JSS `$disabled` references on root/thumb */
-  disabled: {},
-  rail: {
+const StyledMaterialSlider = styled(MaterialSlider)({
+  height: 4,
+  padding: 0,
+  overflow: 'visible',
+  '& .MuiSlider-rail': {
     borderRadius: 50,
     background: 'var(--color-border-muted)',
-    height: 6,
+    height: 4,
     opacity: 1,
   },
-  track: {
+  '& .MuiSlider-track': {
     borderRadius: 50,
     background: 'var(--color-text-default)',
-    height: 6,
+    height: 4,
+    border: 'none',
+    minHeight: 4,
   },
-  thumb: {
+  '& .MuiSlider-thumb': {
     height: 16,
     width: 16,
-    marginTop: -5,
-    marginLeft: -5,
-    backgroundColor: 'var(--color-icon-muted)',
+    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+    backgroundColor: '#414243',
     border: '2px solid var(--color-text-default)',
-    boxSizing: 'border-box' as const,
+    boxSizing: 'border-box',
     boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
-    '&:focus, &$active': {
+    '[data-theme="dark"] &': {
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      backgroundColor: '#CCCCCC',
+    },
+    '&::before': {
+      display: 'none',
+    },
+    '&:focus, &.Mui-active': {
       height: 16,
       width: 16,
-      marginTop: -5,
-      marginLeft: -5,
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
     '&:hover': {
       height: 18,
       width: 18,
-      marginTop: -6,
-      marginLeft: -6,
-      backgroundColor: 'var(--color-icon-muted)',
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      backgroundColor: '#414243',
       border: '2px solid var(--color-text-default)',
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      '[data-theme="dark"] &': {
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+        backgroundColor: '#CCCCCC',
+      },
     },
-    '&$disabled': {
+    '&.Mui-disabled': {
       height: 16,
       width: 16,
-      marginTop: -5,
-      marginLeft: -5,
-      backgroundColor: 'var(--color-icon-muted)',
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      backgroundColor: '#414243',
       border: '2px solid var(--color-text-default)',
-      boxSizing: 'border-box' as const,
+      boxSizing: 'border-box',
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      '[data-theme="dark"] &': {
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+        backgroundColor: '#CCCCCC',
+      },
       '&:hover': {
         boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
       },
     },
   },
-  active: {},
-  mark: {
+  '& .MuiSlider-mark': {
     width: 2,
     height: 2,
     borderRadius: '50%',
-    backgroundColor: 'var(--color-text-default)',
-    marginTop: 2,
+    backgroundColor: 'var(--color-icon-alternative)',
+    // MUI v5 default is translate(-1px, -50%) which shifts marks 1px left.
+    // Override to translate(1px, -50%) to correct horizontal alignment.
+    transform: 'translate(1px, -50%)',
   },
-  markActive: {
-    backgroundColor: 'var(--color-text-default)',
+  '& .MuiSlider-markActive': {
+    backgroundColor: 'var(--color-icon-alternative)',
     opacity: 1,
   },
-};
-
-const StyledMaterialSlider = withStyles(sliderStyles)(MaterialSlider);
+});
 
 export type PerpsSliderProps = {
   /** Minimum value */
@@ -107,12 +109,13 @@ export type PerpsSliderProps = {
   value: number;
   /** Change handler - fires continuously during drag */
   onChange: (
-    event: React.ChangeEvent<unknown>,
+    event: Event,
     value: number | number[],
+    activeThumb: number,
   ) => void;
   /** Committed change handler - fires only when drag ends or a discrete click occurs */
   onChangeCommitted?: (
-    event: React.ChangeEvent<unknown>,
+    event: React.SyntheticEvent | Event,
     value: number | number[],
   ) => void;
   /** Show edit text */
@@ -137,7 +140,7 @@ export type PerpsSliderProps = {
   markInterval?: number;
 };
 
-export const PerpsSlider: React.FC<PerpsSliderProps> = ({
+export const PerpsSlider = ({
   min,
   max,
   step,
@@ -154,7 +157,7 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
   'data-testid': dataTestId,
   disabled = false,
   markInterval,
-}) => {
+}: PerpsSliderProps) => {
   const hasHeader = titleText || tooltipText || valueText || titleDetail;
   const hasFooter = infoText || onEdit;
 

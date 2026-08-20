@@ -13,10 +13,12 @@ import type {
   WebVitalsSummary,
 } from '../../../../shared/constants/benchmarks';
 import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
+import type { Driver } from '../../webdriver/driver';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
   DEFAULT_NUM_PAGE_LOADS,
+  WARMUP_RUNS,
 } from './constants';
 import {
   aggregateWebVitals,
@@ -27,6 +29,7 @@ import {
   calcStdDevResult,
   calculateTimerStatistics,
   checkExclusionRate,
+  detectOutliersIQR,
   MAX_EXCLUSION_RATE,
   MAX_TOTAL_DURATION_MS,
   validateThresholds,
@@ -94,6 +97,56 @@ async function runWithRetries(
     });
   } catch {
     return lastResult;
+  }
+}
+
+type CdpInnerDriver = {
+  sendDevToolsCommand?: (
+    command: string,
+    params?: Record<string, unknown>,
+  ) => Promise<unknown>;
+};
+
+const invokeWindowGc = () => {
+  const windowWithGc = window as Window & { gc?: () => void };
+  if (typeof windowWithGc.gc === 'function') {
+    windowWithGc.gc();
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Force a GC cycle outside the measurement window so heap debt is less likely
+ * to spill into the next page-load iteration.
+ *
+ * Prefers `window.gc()` when Chrome is launched with `--expose-gc`, and falls
+ * back to ChromeDriver CDP heap collection when available.
+ *
+ * @param driver - MetaMask Selenium driver wrapper for the current benchmark page
+ */
+export async function collectGarbageBetweenIterations(
+  driver: Driver,
+): Promise<void> {
+  try {
+    const didRunWindowGc = await driver.executeScript(invokeWindowGc);
+
+    if (didRunWindowGc) {
+      return;
+    }
+  } catch {
+    // Fall back to CDP heap collection below.
+  }
+
+  const innerDriver = driver.driver as CdpInnerDriver | undefined;
+  if (!innerDriver?.sendDevToolsCommand) {
+    return;
+  }
+
+  try {
+    await innerDriver.sendDevToolsCommand('HeapProfiler.collectGarbage');
+  } catch {
+    // Best-effort normalization only.
   }
 }
 
@@ -264,6 +317,8 @@ export function convertTimerStatisticsToBenchmarkResults(
   const stdDev: StatisticalResult = {};
   const p75: StatisticalResult = {};
   const p95: StatisticalResult = {};
+  const trimmedCount: StatisticalResult = {};
+  const outliers: StatisticalResult = {};
 
   // timers already includes promoted web vitals from runBenchmarkWithIterations
   for (const timer of timers) {
@@ -273,7 +328,14 @@ export function convertTimerStatisticsToBenchmarkResults(
     stdDev[timer.id] = timer.stdDev;
     p75[timer.id] = timer.p75;
     p95[timer.id] = timer.p95;
+    if (timer.trimmedCount !== undefined) {
+      trimmedCount[timer.id] = timer.trimmedCount;
+    }
+    outliers[timer.id] = timer.outliers;
   }
+
+  const hasTrimmedCounts = Object.keys(trimmedCount).length > 0;
+  const hasOutliers = Object.keys(outliers).length > 0;
 
   return {
     testTitle,
@@ -287,6 +349,8 @@ export function convertTimerStatisticsToBenchmarkResults(
     stdDev,
     p75,
     p95,
+    ...(hasTrimmedCounts && { trimmedCount }),
+    ...(hasOutliers && { outliers }),
     ...(webVitals && { webVitals }),
   };
 }
@@ -321,6 +385,34 @@ export function convertSummaryToResults(
   );
 }
 
+/**
+ * Run the dApp page-load benchmark and aggregate results.
+ *
+ * Uses IQR-only outlier trimming (`trimmedCount`). Z-score is intentionally
+ * excluded for two reasons:
+ *
+ * 1. Serial correlation: page loads run serially within each browser session
+ * (shared JIT cache, extension state). A slow startup elevates all `pageLoads`
+ * measurements in a session as a correlated cluster. Z-score assumes i.i.d.
+ * samples and would flag the cluster as outliers even when the elevation has a
+ * real underlying cause. IQR is rank-based and distribution-free, making it
+ * robust to correlated samples.
+ *
+ * 2. Multimodal distributions: `longTask*`, `tbt`, and `numNetworkReqs` are
+ * zero or near-zero most runs with occasional real spikes. Z-score would flag
+ * those spikes as noise, removing genuine signal.
+ *
+ * `calculateTimerStatistics` (iteration-based benchmarks) applies both IQR and
+ * z-score because each run is an independent browser session.
+ *
+ * @param measurePageFn - Function that drives one browser session and returns metrics
+ * @param options - Benchmark configuration
+ * @param options.browserLoads - Number of full browser sessions to run
+ * @param options.pageLoads - Number of page loads per browser session
+ * @param options.retries - Number of retries per browser session on failure
+ * @param options.platform - Optional platform label written to results
+ * @param options.buildType - Optional build label written to results
+ */
 export async function runPageLoadBenchmark(
   measurePageFn: (
     pageName: string,
@@ -341,6 +433,12 @@ export async function runPageLoadBenchmark(
     platform,
     buildType,
   } = options;
+
+  if (browserLoads <= WARMUP_RUNS) {
+    throw new Error(
+      `browserLoads (${browserLoads}) must be greater than WARMUP_RUNS (${WARMUP_RUNS})`,
+    );
+  }
 
   const pageName = 'home';
   let runResults: Metrics[] = [];
@@ -366,10 +464,20 @@ export async function runPageLoadBenchmark(
     resultPersona = persona;
   }
 
-  if (runResults.some((result) => result.navigation.length > 1)) {
+  // Discard the first WARMUP_RUNS browser-load sessions before computing stats.
+  // Each session contributes exactly pageLoads metric objects to runResults.
+  const warmupSize = WARMUP_RUNS * pageLoads;
+  const measuredResults = runResults.slice(warmupSize);
+  // Web vitals entries are sparse (collection can fail silently), so filter by
+  // iteration index rather than slicing by position to avoid off-by-N errors.
+  const measuredWebVitalsRuns = allWebVitalsRuns.filter(
+    (wv) => wv.iteration >= warmupSize,
+  );
+
+  if (measuredResults.some((result) => result.navigation.length > 1)) {
     throw new Error(`Multiple navigations not supported`);
   }
-  const firstNonNavigate = runResults.find(
+  const firstNonNavigate = measuredResults.find(
     (result) => result.navigation[0].type !== 'navigate',
   );
   if (firstNonNavigate !== undefined) {
@@ -379,17 +487,19 @@ export async function runPageLoadBenchmark(
   }
 
   const result: Record<string, number[]> = {};
+  const trimmedCounts: StatisticalResult = {};
   for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
-    result[key] = runResults
-      .map((m) => get(m, tracePath) as number)
-      .sort((a, b) => a - b);
+    const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
+    const { filtered, outlierCount } = detectOutliersIQR(rawSamples);
+    result[key] = [...filtered].sort((a, b) => a - b);
+    trimmedCounts[key] = outlierCount;
   }
 
   let webVitals: WebVitalsSummary | undefined;
-  if (allWebVitalsRuns.length > 0) {
+  if (measuredWebVitalsRuns.length > 0) {
     webVitals = {
-      runs: allWebVitalsRuns,
-      aggregated: aggregateWebVitals(allWebVitalsRuns),
+      runs: measuredWebVitalsRuns,
+      aggregated: aggregateWebVitals(measuredWebVitalsRuns),
     };
   }
 
@@ -423,6 +533,8 @@ export async function runPageLoadBenchmark(
     stdDev: stdDevResult,
     p75,
     p95,
+    trimmedCount: trimmedCounts,
+    outliers: { ...trimmedCounts },
     ...(webVitals && { webVitals }),
   };
 }

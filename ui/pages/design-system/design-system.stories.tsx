@@ -49,7 +49,7 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-const WalletHome: React.FC = () => {
+const WalletHome = () => {
   return (
     <Box className="min-h-screen md:flex md:items-center md:justify-center md:bg-alternative md:py-4">
       {/* Container Expanded View */}
@@ -126,7 +126,7 @@ const WalletHome: React.FC = () => {
             Receive
           </ButtonBase>
           <ButtonBase className="h-auto flex-1 flex-col justify-center rounded-lg bg-muted py-4 hover:bg-muted-hover active:bg-muted-pressed">
-            <Icon name={IconName.Send} className="mb-2" />
+            <Icon name={IconName.Arrow2UpRight} className="mb-2" />
             Send
           </ButtonBase>
         </Box>

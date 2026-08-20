@@ -1,33 +1,32 @@
-import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../app/scripts/lib/util';
+import { getEnvironmentType } from '../shared/lib/environment-type';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/lib/object.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
+// TODO: Remove restricted import
+// eslint-disable-next-line import-x/no-restricted-paths
+import { sanitizeStateLogs } from '../app/scripts/lib/state-utils';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../shared/constants/app';
 import { getBrowserName } from '../shared/lib/browser-runtime.utils';
-import { COPY_OPTIONS } from '../shared/constants/copy';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
-import { PATCH_STORE_SUBSTREAM_METHODS } from '../shared/constants/patch-store-substream-methods';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/lib/selectors/networks';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
+import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
 import {
   setupLongTaskObserver,
   setupLongTaskSentryReporting,
@@ -36,7 +35,6 @@ import {
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
-  getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getAllPermittedAccountsForCurrentTab,
@@ -45,10 +43,10 @@ import {
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
-  getIsUnlocked,
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
+import { getIsUnlocked } from './ducks/metamask/base-selectors';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import {
@@ -59,7 +57,7 @@ import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { initWebVitals } from './helpers/utils/web-vitals';
 import { getPerpsStreamManager } from './providers/perps';
-import { setupPatchStoreSubstreamConnection } from './store/patch-store-substream-connection';
+import { createUIMessenger } from './messengers/ui-messenger';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
@@ -67,11 +65,18 @@ export {
   CriticalErrorTranslationKey,
 } from './helpers/utils/display-critical-error';
 
-/**
- * @typedef {import("@metamask/object-multiplex/dist/Substream").Substream} Substream
- */
-
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+
+const reactRoots = new WeakMap();
+
+function renderUi(element, container) {
+  let root = reactRoots.get(container);
+  if (!root) {
+    root = createRoot(container);
+    reactRoots.set(container, root);
+  }
+  root.render(element);
+}
 
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
@@ -91,47 +96,27 @@ export const connectToBackground = (
   setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification(async (data) => {
     const { method } = data;
-    if (method === START_UI_SYNC) {
+    if (method === 'sendUpdate') {
+      const store = await reduxStore.promise;
+      store.dispatch(actions.updateMetamaskState(data.params[0]));
+    } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
     } else if (method === 'perpsStreamUpdate') {
       getPerpsStreamManager().handleBackgroundUpdate(data.params[0]);
     } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
       throw new Error(
-        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
-          data,
-        )}`,
+        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(data)}`,
       );
     }
   });
 };
 
-/**
- * Handles messages coming through the patch store substream from the
- * background.
- *
- * @param {Substream} patchStoreSubstream - The connection with the background
- * process.
- */
-export const connectToBackgroundViaPatchStoreSubstream = (
-  patchStoreSubstream,
-) => {
-  setupPatchStoreSubstreamConnection(patchStoreSubstream, {
-    handleSendUpdate: async (notification) => {
-      const store = await reduxStore.promise;
-      store.dispatch(actions.updateMetamaskState(notification.params[0]));
-    },
-  });
-};
-
 export async function launchMetamaskUi(opts) {
-  const { patchSubstream, initialState } = opts;
+  const { backgroundConnection, initialState } = opts;
 
   const store = await startApp(initialState, opts);
 
-  patchSubstream.write({
-    jsonrpc: '2.0',
-    method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
-  });
+  await backgroundConnection.startSendingPatches();
 
   setupStateHooks(store);
 
@@ -269,8 +254,13 @@ async function startApp(metamaskState, opts) {
     () => runInitialActions(store),
   );
 
+  // UI messenger is created here in preparation for completely replacing
+  // `submitRequestToBackground` with it.
+  const uiMessenger = createUIMessenger();
+  // StrictMode is applied once in `ui/pages/index.js` (withStrictMode).
+  // Do not wrap again here — nested StrictMode doubles remounts and races Rive.
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} />, opts.container),
+    renderUi(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
   );
 
   return store;
@@ -351,10 +341,10 @@ export async function getCleanAppState(store) {
   state.browser = window.navigator.userAgent;
 
   // when JSON.stringiy, `undefined` value will be left out.
-  state.metamask = {
+  state.metamask = sanitizeStateLogs({
     ...state.metamask,
     socialLoginEmail: undefined,
-  };
+  });
 
   return state;
 }
@@ -432,7 +422,13 @@ function setupStateHooks(store) {
   };
   window.stateHooks.getSentryAppState = function () {
     const reduxState = store.getState();
-    return maskObject(reduxState, SENTRY_UI_STATE);
+    return maskObject(
+      {
+        ...reduxState,
+        metamask: sanitizeStateLogs(reduxState.metamask),
+      },
+      SENTRY_UI_STATE,
+    );
   };
   window.stateHooks.getLogs = function () {
     // These logs are logged by LoggingController
@@ -469,6 +465,13 @@ function setupStateHooks(store) {
     globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
     globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
   }
+
+  if (process.env.IN_TEST) {
+    // Load conditionally so this test-only package is excluded from production builds and policies.
+    window.stateHooks.hasConsoleAccess = () =>
+      // eslint-disable-next-line n/global-require
+      require('@metamask/dummy-package').hasConsoleAccess();
+  }
 }
 
 /**
@@ -488,7 +491,7 @@ window.logState = async function (toClipboard) {
   try {
     const result = await window.logStateString();
     if (toClipboard) {
-      copyToClipboard(result, COPY_OPTIONS);
+      await navigator.clipboard.writeText(result);
       console.log('State log copied');
     } else {
       console.log(result);

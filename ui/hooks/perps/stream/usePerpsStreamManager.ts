@@ -11,11 +11,12 @@
 
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getPerpsStreamManager,
   type PerpsStreamManager,
 } from '../../../providers/perps/PerpsStreamManager';
+import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
 
 export type UsePerpsStreamManagerReturn = {
   /** The stream manager instance (null while initializing) */
@@ -54,8 +55,13 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   // Get the selected account address from Redux
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address ?? null;
+  const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
 
   const streamManager = getPerpsStreamManager();
+  // Configure the singleton before any dependent hook reads its market cache.
+  // Discover is outside PerpsLayout, where this is otherwise configured, so
+  // this prevents a direct-provider cache from being used while Terminal is on.
+  streamManager.setUseTerminalApi(useTerminalApi);
 
   // Track whether streamManager is ready for this address.
   // Initialize synchronously in case init was already done by a previous call
@@ -63,26 +69,39 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
     () =>
       selectedAddress !== null && streamManager.isInitialized(selectedAddress),
   );
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<Error | null>(() =>
+    selectedAddress ? null : new Error('No account selected'),
+  );
+  // Start unset so the first address (including null) syncs on mount.
+  const [prevSelectedAddress, setPrevSelectedAddress] = useState<
+    string | null | undefined
+  >(undefined);
 
-  useEffect(() => {
+  if (selectedAddress !== prevSelectedAddress) {
+    setPrevSelectedAddress(selectedAddress);
     if (!selectedAddress) {
       setIsReady(false);
       setError(new Error('No account selected'));
+    } else if (streamManager.isInitialized(selectedAddress)) {
+      setIsReady(true);
+      setError(null);
+    } else {
+      setIsReady(false);
+      setError(null);
+    }
+  }
+
+  useEffect(() => {
+    if (!selectedAddress) {
       return undefined;
     }
 
     // Already initialized by a previous call
     if (streamManager.isInitialized(selectedAddress)) {
-      setIsReady(true);
-      setError(null);
       return undefined;
     }
 
     let cancelled = false;
-
-    setIsReady(false);
-    setError(null);
 
     // initForAddress deduplicates: multiple hooks sharing this singleton
     // only trigger a single perpsInit RPC + channel reset round-trip.

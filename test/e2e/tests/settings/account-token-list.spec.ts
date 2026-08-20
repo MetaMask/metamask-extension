@@ -3,13 +3,30 @@ import { withFixtures } from '../../helpers';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import {
+  getMainnet25EthAssetsControllerPatch,
+  MAINNET_NATIVE_ASSET_ID,
+} from '../tokens/utils/mocks';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
+import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
+
+const SEPOLIA_NATIVE_ASSET_ID = 'eip155:11155111/slip44:60';
+
+const SEPOLIA_NATIVE_ASSET_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image:
+    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/11155111/slip44/60.png',
+  name: 'Sepolia Ether',
+  symbol: 'SepoliaETH',
+  type: 'native' as const,
+};
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -31,36 +48,24 @@ async function mockInfura(mockServer: Mockttp): Promise<void> {
       },
     }));
 }
-
-async function mockInfuraResponses(mockServer: Mockttp): Promise<void> {
-  await mockInfura(mockServer);
-  await mockSpotPrices(mockServer, {
-    'eip155:1/slip44:60': {
-      price: 1700,
-      marketCap: 382623505141,
-      pricePercentChange1d: 0,
-    },
-  });
-}
+const ETH_CONVERSION_RATE_USD = 1700;
 
 async function mockPriceApi(mockServer: Mockttp) {
-  const spotPricesMockEth = await mockServer
+  const price = ETH_CONVERSION_RATE_USD;
+  await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         'eip155:1/slip44:60': {
-          id: 'ethereum',
-          price: 1,
-          marketCap: 112500000,
-          totalVolume: 4500000,
-          dilutedMarketCap: 120000000,
+          price,
+          marketCap: 382623505141,
           pricePercentChange1d: 0,
         },
       },
     }));
-  const mockExchangeRates = await mockServer
+  await mockServer
     .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
     .always()
     .thenCallback(() => ({
@@ -69,7 +74,7 @@ async function mockPriceApi(mockServer: Mockttp) {
         eth: {
           name: 'Ether',
           ticker: 'eth',
-          value: 1 / 1700,
+          value: 1 / ETH_CONVERSION_RATE_USD,
           currencyType: 'crypto',
         },
         usd: {
@@ -80,9 +85,8 @@ async function mockPriceApi(mockServer: Mockttp) {
         },
       },
     }));
-
-  return [spotPricesMockEth, mockExchangeRates];
 }
+
 describe('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
@@ -90,6 +94,7 @@ describe('Settings', function () {
         fixtures: new FixtureBuilderV2()
           .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch(1700))
           .build(),
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockPriceApi(mockServer);
@@ -116,18 +121,30 @@ describe('Settings', function () {
             preferences: { showFiatInTestnets: true, showTestNetworks: true },
           })
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController({
+            ...getMainnet25EthAssetsControllerPatch(1700),
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                [MAINNET_NATIVE_ASSET_ID]: { amount: '25' },
+                [SEPOLIA_NATIVE_ASSET_ID]: { amount: '25' },
+              },
+            },
+            assetsInfo: {
+              [SEPOLIA_NATIVE_ASSET_ID]: SEPOLIA_NATIVE_ASSET_INFO,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockPriceApi(mockServer);
-          await mockInfuraResponses(mockServer);
+          await mockInfura(mockServer);
         },
       },
       async ({ driver }) => {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
-        await new AssetListPage(driver).checkTokenFiatAmountIsDisplayed(
+        await new TokensTab(driver).checkTokenFiatAmountIsDisplayed(
           '$42,500.00',
         );
 
@@ -142,13 +159,13 @@ describe('Settings', function () {
         // it will show the total that the test is expecting.
 
         // I think we can slightly modify this test to switch to Sepolia network before checking the account List item value
-        await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Sepolia');
+        await switchToNetworkFromNetworkSelect(driver, 'Sepolia');
 
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
         await homePage.checkExpectedBalanceIsDisplayed('25', 'SepoliaETH');
       },
     );
@@ -161,11 +178,14 @@ describe('Settings', function () {
           .withPreferencesController({
             preferences: { showFiatInTestnets: true },
           })
+          .withAssetsController({
+            ...getMainnet25EthAssetsControllerPatch(1700),
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockPriceApi(mockServer);
-          await mockInfuraResponses(mockServer);
+          await mockInfura(mockServer);
         },
       },
       async ({ driver }) => {

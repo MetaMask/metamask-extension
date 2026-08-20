@@ -1,6 +1,6 @@
 import { ClientController } from '@metamask/client-controller';
+import type { ClientControllerMessenger } from '@metamask/client-controller';
 import { type MessengerClientInitFunction } from '../types';
-import type { ClientControllerMessenger } from '../messengers/assets';
 
 /**
  * Initialize the ClientController.

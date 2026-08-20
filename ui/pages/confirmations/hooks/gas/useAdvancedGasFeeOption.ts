@@ -13,6 +13,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
+import { useTransactionGasLimit } from './useTransactionGasLimit';
 
 const HEX_ZERO = '0x0';
 
@@ -30,7 +31,6 @@ export const useAdvancedGasFeeOption = ({
     userFeeLevel,
     txParams: {
       type: transactionEnvelopeType,
-      gas: txParamsGas,
       maxFeePerGas,
       maxPriorityFeePerGas,
       gasPrice: txParamsGasPrice,
@@ -38,6 +38,7 @@ export const useAdvancedGasFeeOption = ({
   } = transactionMeta;
 
   const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
+  const { gasLimit: displayGas } = useTransactionGasLimit(transactionMeta);
 
   const onAdvancedGasFeeClick = useCallback(() => {
     const newModalType =
@@ -87,13 +88,11 @@ export const useAdvancedGasFeeOption = ({
   if (isAdvancedGasFeeSelected) {
     const feePerGas = maxFeePerGas || HEX_ZERO;
     let gasPrice = HEX_ZERO;
-    let gas = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
     let shouldUseEIP1559FeeLogic = true;
     const priorityFeePerGas = maxPriorityFeePerGas || HEX_ZERO;
 
     if (transactionEnvelopeType === TransactionEnvelopeType.legacy) {
       gasPrice = txParamsGasPrice || HEX_ZERO;
-      gas = txParamsGas || HEX_ZERO;
       shouldUseEIP1559FeeLogic = false;
     }
 
@@ -101,7 +100,7 @@ export const useAdvancedGasFeeOption = ({
       calculateGasEstimate({
         feePerGas,
         priorityFeePerGas,
-        gas,
+        gas: displayGas,
         shouldUseEIP1559FeeLogic,
         gasPrice,
       });
@@ -129,10 +128,7 @@ export const useAdvancedGasFeeOption = ({
           maxPriorityFeePerGas: hexWEIToDecGWEI(
             maxPriorityFeePerGas || HEX_ZERO,
           ),
-          gasLimit: parseInt(
-            transactionMeta.gasLimitNoBuffer || txParamsGas || HEX_ZERO,
-            16,
-          ),
+          gasLimit: parseInt(displayGas, 16),
           transaction: transactionMeta as unknown as Record<string, unknown>,
         },
       },
@@ -147,7 +143,7 @@ export const useAdvancedGasFeeOption = ({
       maxFeePerGas,
       maxPriorityFeePerGas,
       transactionMeta,
-      txParamsGas,
+      displayGas,
     ],
   );
 

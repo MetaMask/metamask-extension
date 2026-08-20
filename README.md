@@ -78,6 +78,30 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
   - [How to add custom build to Chrome](./docs/add-to-chrome.md)
   - [How to add custom build to Firefox](./docs/add-to-firefox.md)
 
+## AI Agent Skills (`yarn skills`)
+
+AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [MetaMask/skills](https://github.com/MetaMask/skills) repo, with an optional private overlay from [Consensys/skills](https://github.com/Consensys/skills). Per [ADR #57](https://github.com/MetaMask/decisions/pull/162) this content is **not committed here** — `yarn skills` syncs it on demand into local-only paths under `.cursor/`, `.claude/`, and `.agents/`.
+
+Zero-config setup:
+
+```bash
+yarn install # refreshes the MetaMask/skills cache via the shared `@metamask/skills` CLI
+yarn skills  # syncs all default skills through the `metamask-skills sync` command
+```
+
+Optional local configuration:
+
+```bash
+cp .skills.local.example .skills.local
+# edit .skills.local to set SKILLS_DOMAINS or override skills source paths
+yarn skills --select                         # interactively pick domains
+SKILLS_DOMAINS=perps,testing yarn skills      # one-off domain override
+```
+
+Use `.skills.local` for persistent skills configuration. Shell environment variables with the same names are supported for one-off or CI overrides and take precedence.
+
+Skipping `yarn skills` is fine — it only affects agent tooling, not the app build. The repo uses the shared `@metamask/skills` package so sync/cache behavior stays uniform across MetaMask packages. To opt into best-effort regeneration during install/setup, set `SKILLS_AUTO_UPDATE=1` in your shell or `.skills.local`.
+
 ## Git Hooks
 
 To get quick feedback from our shared code quality fitness functions before committing the code, you can install our git hooks with Husky.
@@ -102,9 +126,11 @@ You can start a development build with a preloaded wallet state, by adding `TEST
 2. Check the list of available fixture flags, by running `yarn start:with-state --help`.
 3. Start the wallet with custom fixture flags, by running `yarn start:with-state --FIXTURE_NAME=VALUE` for example `yarn start:with-state --withAccounts=100`. You can pass as many flags as you want. The rest of the fixtures will take the default values.
 
-#### Development build with Webpack
+#### Advanced Webpack builds
 
-You can also start a development build using the `yarn webpack` command, or `yarn webpack --watch`. This uses an alternative build system that is much faster, but not yet production ready. See the [Webpack README](./development/webpack/README.md) for more information.
+`yarn start` is backed by Webpack. You can also call `yarn webpack` directly for advanced build-system debugging; see the [Webpack README](./development/webpack/README.md) for more information.
+
+`yarn start:lavamoat` is not currently supported because Webpack watch mode does not support LavaMoat. For production-like LavaMoat verification, use `yarn webpack:lavamoat:build` or `yarn build:test`.
 
 #### React and Redux DevTools
 
@@ -143,16 +169,16 @@ Our e2e test suite can be run on either Firefox or Chrome. Here's how to get sta
 Before running e2e tests, ensure you've run `yarn install` to download dependencies. Next, you'll need a test build. You have 3 options:
 
 1. Use `yarn download-builds --build-type test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
-2. Create a custom test build: for testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
+2. Create a custom production-like Webpack test build. This command allows you to generate test builds for various types, including:
    - `yarn build:test` for main build
    - `yarn build:test:flask` for flask build
    - `yarn build:test:mv2` for mv2 build
-3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
+3. Start a Webpack test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
    - `yarn start:test` for main build
    - `yarn start:test:flask` for flask build
    - `yarn start:test:mv2` for mv2 build
 
-Note: The `yarn start:test` command (which initiates the testDev build type) has LavaMoat disabled for both the build system and the application, offering a streamlined testing experience during development. On the other hand, `yarn build:test` enables LavaMoat for enhanced security in both the build system and application, mirroring production environments more closely.
+Note: The `yarn start:test` command has LavaMoat and Snow disabled for faster iteration. Use `yarn build:test` for production-like LavaMoat verification.
 
 #### Running Tests
 
@@ -163,6 +189,18 @@ Once you have your test build ready, choose the browser for your e2e tests:
 - For Chrome, run `yarn test:e2e:chrome`.
 
 These scripts support additional options for debugging. Use `--help`to see all available options.
+
+Specs that have been migrated from Selenium to Playwright (`*.pw.spec.ts`, see [test/e2e/playwright/README.md](test/e2e/playwright/README.md)) run through their own runner:
+
+- For Firefox, run `yarn test:e2e:playwright:firefox`.
+- For Chrome, run `yarn test:e2e:playwright:chrome`.
+
+One-time setup for the Playwright runner (per machine, and again whenever the Playwright version changes):
+
+```console
+yarn                                        # installs the Playwright package
+yarn playwright install chromium firefox   # downloads the browser binaries
+```
 
 #### Running a single e2e test
 
@@ -177,14 +215,27 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
   --retries           Set how many times the test should be retried upon failure.
                                                               [number] [default: 0]
   --leave-running     Leaves the browser running after a test fails, along with
-                      anything else that the test used (ganache, the test dapp,
-                      etc.)                              [boolean] [default: false]
+                      anything else that the test used (the local node, the
+                      test dapp, etc.)                   [boolean] [default: false]
   --update-snapshot   Update E2E test snapshots
                                              [alias: -u] [boolean] [default: false]
 ```
 
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
 `yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --leave-running`
+
+For migrated Playwright specs, pass the spec path as a positional filter to the Playwright runner instead:
+
+```console
+# Run a single spec
+yarn test:e2e:playwright:chrome test/e2e/tests/settings/terms-of-use.pw.spec.ts
+
+# Run headless
+PLAYWRIGHT_HEADLESS=1 yarn test:e2e:playwright:chrome test/e2e/tests/settings/terms-of-use.pw.spec.ts
+
+# Debug with the Playwright Inspector (step through each driver action)
+PWDEBUG=1 yarn test:e2e:playwright:chrome test/e2e/tests/settings/terms-of-use.pw.spec.ts
+```
 
 #### Running E2E tests with feature flags
 
@@ -237,7 +288,7 @@ For the full process of creating a remote feature flag (LaunchDarkly setup, code
 
 1. Look up the flag's current production value from the [client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod). If the flag is not yet in production, set `inProd: false` and `productionDefault` to the intended default.
 2. Add an entry to `test/e2e/feature-flags/feature-flag-registry.ts` in alphabetical order.
-3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to [`.github/scripts/known-feature-flag-constants.ts`](./.github/scripts/known-feature-flag-constants.ts) so the CI check can resolve it.
+3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to [`.github/scripts/known-feature-flag-constants.mts`](./.github/scripts/known-feature-flag-constants.mts) so the CI check can resolve it.
 
 ##### Override flags in E2E tests
 
@@ -270,10 +321,12 @@ Different build types have different e2e tests sets. In order to run them look i
 
 Running the full workflow on GitHub Actions can take 30 minutes or more, but there are ways to speed it up for faster iteration
 
-- **Automatic build reuse** — CI automatically detects when a PR's build-affecting source files haven't changed compared to a prior run (on the same branch or the base branch). When a match is found, it reuses the existing build artifacts instead of rebuilding, saving ~12 minutes for the browserify builds, and ~4 minutes for the webpack builds. This happens transparently with no action needed from you.
+- **Automatic build reuse** — CI automatically detects when a PR's build-affecting source files haven't changed compared to a prior run (on the same branch or the base branch). When a match is found, it reuses the existing build artifacts instead of rebuilding, saving ~4 minutes for the webpack builds. This happens transparently with no action needed from you.
   - `[force-builds]` in the last commit message, or a `force-builds` label on the PR — Forces fresh builds even when CI would otherwise reuse prior artifacts. Useful when you need to verify that builds work after changing only non-code files (CI configs, docs, etc.), or if the automatic system is making a mistake.
   - `[skip-builds]` in the last commit message, or a `skip-builds` label on the PR — Reuses builds from the most recent prior run **without** verifying the source hash. This is the fastest option for iterating on tests or non-build changes, but it **blocks merging** — you must remove the tag/label and push again before the PR can enter the merge queue.
-- `[skip-e2e]` in the last commit message - Skips the E2E test suite
+- **Automatic E2E skipping** — CI automatically skips E2E tests when the PR's changes don't require them (e.g., docs-only, CI-only, or test-only changes with reused builds). You can override this in both directions:
+  - `[skip-e2e]` in the last commit message, or a `skip-e2e` label on the PR — Forces E2E tests to be skipped regardless of what files changed.
+  - `[force-e2e]` in the last commit message, or a `force-e2e` label on the PR — Forces E2E tests to run even when CI would otherwise skip them. Useful for CI-only PRs that modify E2E workflow files.
 - `[skip-unit]` in the last commit message _(command not working yet, coming soon)_ - Skips the unit test suite
 - `trigger-ci-*` as the branch name - This allows you to run the CI workflow without attaching it to a PR. This is useful if you need to test some things that you know will never be merged. Please clean up after yourself when you're done, and delete the branch.
 
@@ -291,11 +344,8 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
   - If you are a MetaMask team member and your PR is on a repository branch, you can use the bot command `@metamaskbot update-policies` to ask the MetaMask bot to automatically update the policies for you.
   - If your PR is from a fork, you can ask a MetaMask team member to help with updating the policy files.
   - Manual update instructions: The _tl;dr_ is to run `yarn lavamoat:auto` to update these files, but there can be devils in the details:
-    - There are two sets of LavaMoat policy files:
-      - The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:webapp:auto`. Add `--help` for usage.
-        - These should be regenerated whenever the production dependencies for the webapp change.
-      - The build system LavaMoat policy file (`lavamoat/build-system/policy.json`), which is re-generated using `yarn lavamoat:build:auto`.
-        - This should be regenerated whenever the dependencies used by the build system itself change.
+    - The webpack app LavaMoat policy files live under `lavamoat/webpack/*/policy.json` and are re-generated by `yarn lavamoat:auto`.
+      - These should be regenerated whenever the production dependencies for the app change.
     - Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
     - Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms.
       macOS and Windows users may see extraneous changes relating to optional dependencies.

@@ -13,10 +13,10 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { useSelector } from 'react-redux';
 
-import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../../../../shared/lib/selectors/remote-feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 import { Tab, Tabs } from '../../../../../components/ui/tabs';
@@ -234,7 +234,7 @@ const DappSwapComparisonInner = ({
         <>
           <QuoteSwapSimulationDetails
             fiatRates={fiatRates}
-            quote={selectedQuote as QuoteResponse}
+            quote={selectedQuote as QuoteResponseV1}
             tokenDetails={tokenDetails}
             sourceTokenAmount={sourceTokenAmount}
             tokenAmountDifference={tokenAmountDifference}

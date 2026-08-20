@@ -39,7 +39,7 @@ async function main() {
           .option('leave-running', {
             default: false,
             description:
-              'Leaves the browser running after a test fails, along with anything else that the test used (ganache, the test dapp, etc.)',
+              'Leaves the browser running after a test fails, along with anything else that the test used (the local node, the test dapp, etc.)',
             type: 'boolean',
           })
           .option('update-snapshot', {
@@ -183,7 +183,6 @@ async function main() {
   const allBrowsers = ['chrome', 'firefox'];
   if (browser === 'all') {
     for (const currentBrowser of allBrowsers) {
-      console.log(`Running tests on ${currentBrowser}`);
       try {
         await runTestsOnSingleBrowser(currentBrowser);
       } catch (error) {
@@ -193,7 +192,6 @@ async function main() {
       }
     }
   } else {
-    console.log(`Running tests on ${browser}`);
     try {
       await runTestsOnSingleBrowser(browser);
     } catch (error) {

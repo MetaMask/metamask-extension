@@ -45,7 +45,7 @@ import {
   useSingleWalletAccountsBalanceCallback,
   useSingleWalletDisplayBalance,
 } from '../../../hooks/multichain-accounts/useWalletBalance';
-import { getPreferences } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 
 type WalletDetailsPageProps = {
   params?: { id: string };
@@ -112,7 +112,10 @@ export const WalletDetailsPage = ({
   }, [wallet?.metadata.name, t]);
 
   return (
-    <Page className="multichain-wallet-details-page">
+    <Page
+      className="multichain-wallet-details-page"
+      data-testid="parent-selector-multichain-wallet-details-page"
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,

@@ -1,16 +1,25 @@
 import { BigNumber } from 'bignumber.js';
-import { type QuoteResponse } from '@metamask/bridge-controller';
+import {
+  FeeType,
+  assetIdsMatch,
+  sumAmounts,
+  type QuoteResponse,
+} from '@metamask/bridge-controller';
+import { parseCaipAssetType } from '@metamask/utils';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
-import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import { formatAmount } from '../../../../shared/lib/format-amount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 
 export const formatTokenAmount = (
   locale: string,
-  amount: string,
+  amount: string | undefined | null = '',
   symbol: string = '',
   roundingMode?: number,
 ) => {
+  if (!amount) {
+    return '0';
+  }
   const stringifiedAmount = formatAmount(
     locale,
     new BigNumber(amount),
@@ -39,6 +48,47 @@ export const formatCurrencyAmount = (
     }
   }
   return formatCurrency(amount.toString(), currency, precision);
+};
+
+export const convertTokenAmountToFiat = (
+  tokenAmount: string | null | undefined,
+  conversionRate: number | null | undefined,
+) => {
+  if (!tokenAmount || !conversionRate) {
+    return;
+  }
+  if (!Number.isFinite(conversionRate) || conversionRate <= 0) {
+    return;
+  }
+
+  try {
+    const amount = new BigNumber(tokenAmount).times(conversionRate.toString());
+    return new BigNumber(amount.toFixed(2)).toString();
+  } catch {
+    return undefined;
+  }
+};
+
+export const convertFiatToTokenAmount = (
+  fiatAmount: string | null | undefined,
+  conversionRate: number | null | undefined,
+  tokenDecimals: number | undefined,
+) => {
+  if (!fiatAmount || !conversionRate || tokenDecimals === undefined) {
+    return;
+  }
+  if (!Number.isFinite(conversionRate) || conversionRate <= 0) {
+    return;
+  }
+
+  try {
+    const amount = new BigNumber(fiatAmount).div(conversionRate.toString());
+    return new BigNumber(
+      amount.toFixed(tokenDecimals, BigNumber.ROUND_DOWN),
+    ).toString();
+  } catch {
+    return undefined;
+  }
 };
 
 /**
@@ -97,11 +147,6 @@ export function formatNetworkFee(
   return formatCurrency(amount.toString(), currency, 2);
 }
 
-export const formatProviderLabel = (args?: {
-  bridgeId: QuoteResponse['quote']['bridgeId'];
-  bridges: QuoteResponse['quote']['bridges'];
-}): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
-
 export const sanitizeAmountInput = (
   textToSanitize: string,
   dropNumbersAfterSecondDecimal = true,
@@ -152,11 +197,85 @@ export const isQuoteExpiredOrInvalid = ({
 
   // 2. Ensure the quote still matches the currently selected destination asset / chain
   if (activeQuote && toToken) {
-    return (
-      activeQuote.quote.destAsset.assetId.toLowerCase() !==
-      toToken.assetId.toLowerCase()
+    return !assetIdsMatch(
+      activeQuote.quote.dest.asset.assetId,
+      toToken.assetId,
     );
   }
 
   return false;
+};
+
+/**
+ * Converts basis points (BPS) to percentage
+ * 1 BPS = 0.01%
+ *
+ * @param bps - The value in basis points (e.g., "87.5" or 87.5)
+ * @returns The percentage value as a string (e.g., "0.875")
+ */
+export const bpsToPercentage = (
+  bps: string | number | undefined,
+): string | undefined => {
+  if (bps === undefined || bps === null) {
+    return undefined;
+  }
+
+  const bpsValue = typeof bps === 'string' ? parseFloat(bps) : bps;
+
+  if (isNaN(bpsValue)) {
+    return undefined;
+  }
+
+  // BPS to percentage: divide by 100
+  return (bpsValue / 100).toString();
+};
+
+export const readMmFee = (quote: QuoteResponse) => {
+  // Get the fee percentage from the quote or fallback to default
+  const quoteBpsFee = quote.quote.feeData?.metabridge?.[0]?.quoteBpsFee;
+  const baseBpsFee = quote.quote.feeData?.metabridge?.[0]?.baseBpsFee;
+  const discountType = quote.quote.feeData?.metabridge?.[0]?.discountType;
+  const quoteFeePercentage = bpsToPercentage(quoteBpsFee);
+  const baseFeePercentage = bpsToPercentage(baseBpsFee);
+
+  const isDiscounted = Boolean(
+    discountType &&
+    quoteFeePercentage &&
+    baseFeePercentage &&
+    Number(baseBpsFee) > Number(quoteBpsFee),
+  );
+
+  return {
+    isDiscounted,
+    baseFeePercentage,
+    quoteFeePercentage,
+    discountType,
+  };
+};
+export const getGasFees = (quote?: QuoteResponse) => {
+  return sumAmounts(quote?.quote.feeData[FeeType.NETWORK]);
+};
+
+export const getTotalNetworkFee = (quote?: QuoteResponse | null) => {
+  return sumAmounts(
+    quote?.quote.feeData[FeeType.NETWORK],
+    quote?.quote.feeData[FeeType.RELAYER],
+  );
+};
+
+export const getIncludedTxFees = (quote?: QuoteResponse | null) => {
+  return sumAmounts(quote?.quote.feeData[FeeType.TX_FEE]);
+};
+
+export const getDestChainId = (quote: QuoteResponse) => {
+  const destAssetId = quote.quote.dest.asset.assetId;
+  return parseCaipAssetType(destAssetId).chainId;
+};
+
+export const getPriceImpactNumber = (quote?: QuoteResponse | null) => {
+  const priceImpactNumber = Number(quote?.quote.priceData?.priceImpact?.amount);
+  if (Number.isNaN(priceImpactNumber)) {
+    return null;
+  }
+  return priceImpactNumber;
 };

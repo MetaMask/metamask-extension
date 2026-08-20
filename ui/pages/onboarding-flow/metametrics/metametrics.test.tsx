@@ -12,6 +12,19 @@ import configureStore from '../../../store/store';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingMetametrics from './metametrics';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => {
@@ -36,6 +49,7 @@ jest.mock('../../../store/actions.ts', () => {
       });
       return Promise.resolve([value]);
     }),
+    setPna25Acknowledged: jest.fn(() => () => Promise.resolve()),
   };
 });
 
@@ -45,13 +59,26 @@ describe('Onboarding Metametrics Component', () => {
   const mockState = {
     metamask: {
       firstTimeFlowType: FirstTimeFlowType.create,
-      participateInMetaMetrics: null,
+      consentDecisionMade: false,
+      optedIn: false,
       internalAccounts: {
         accounts: {},
         selectedAccount: '',
       },
     },
   };
+
+  async function clickElement(element: HTMLElement) {
+    await act(async () => {
+      fireEvent.click(element);
+    });
+  }
+
+  async function keyDownElement(element: HTMLElement, key: string) {
+    await act(async () => {
+      fireEvent.keyDown(element, { key });
+    });
+  }
 
   beforeEach(() => {
     store = configureStore(mockState);
@@ -84,7 +111,7 @@ describe('Onboarding Metametrics Component', () => {
       messages.onboardingMetametricCheckboxTitleOne.message,
     );
     const description = queryByText(
-      messages.onboardingMetametricCheckboxDescriptionOne.message,
+      messages.onboardingMetametricCheckboxDescriptionOneUpdated.message,
     );
 
     expect(title).toBeInTheDocument();
@@ -99,7 +126,7 @@ describe('Onboarding Metametrics Component', () => {
 
     const continueButton = getByTestId('metametrics-i-agree');
 
-    fireEvent.click(continueButton);
+    await clickElement(continueButton);
 
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
@@ -119,7 +146,7 @@ describe('Onboarding Metametrics Component', () => {
       messages.onboardingMetametricCheckboxTitleOne.message,
     );
     const description = queryByText(
-      messages.onboardingMetametricCheckboxDescriptionOne.message,
+      messages.onboardingMetametricCheckboxDescriptionOneUpdated.message,
     );
 
     expect(title).toBeInTheDocument();
@@ -138,9 +165,7 @@ describe('Onboarding Metametrics Component', () => {
     expect(checkbox).toBeChecked();
     expect(checkbox).toBeInTheDocument();
 
-    await act(() => {
-      fireEvent.click(participateContainer);
-    });
+    await clickElement(participateContainer);
 
     await waitFor(() => {
       expect(checkbox).not.toBeChecked();
@@ -148,7 +173,7 @@ describe('Onboarding Metametrics Component', () => {
 
     const continueButton = getByTestId('metametrics-i-agree');
 
-    fireEvent.click(continueButton);
+    await clickElement(continueButton);
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
@@ -180,12 +205,10 @@ describe('Onboarding Metametrics Component', () => {
     ) as HTMLElement;
 
     // Opt out of MetaMetrics; this should clear marketing consent
-    await act(() => {
-      fireEvent.click(participateContainer);
-    });
+    await clickElement(participateContainer);
 
     const continueButton = getByTestId('metametrics-i-agree');
-    fireEvent.click(continueButton);
+    await clickElement(continueButton);
 
     await waitFor(() => {
       expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
@@ -202,7 +225,9 @@ describe('Onboarding Metametrics Component', () => {
       <OnboardingMetametrics />,
       store,
     );
-    expect(queryByTestId('onboarding-metametrics')).toBeInTheDocument();
+    expect(
+      queryByTestId('parent-selector-onboarding-metrics'),
+    ).toBeInTheDocument();
   });
 
   it('on uncheking the participate meatametric, checked datacollection marketing checkbox should be unchecked', async () => {
@@ -222,17 +247,13 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(marketingCheckbox).not.toBeChecked();
 
-    await act(() => {
-      fireEvent.click(marketingContainer);
-    });
+    await clickElement(marketingContainer);
 
     await waitFor(() => {
       expect(marketingCheckbox).toBeChecked();
     });
 
-    await act(() => {
-      fireEvent.click(participateContainer);
-    });
+    await clickElement(participateContainer);
 
     await waitFor(() => {
       expect(marketingCheckbox).not.toBeChecked();
@@ -252,12 +273,12 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(checkbox).toBeChecked();
 
-    fireEvent.click(participateCheckboxContainer);
+    await clickElement(participateCheckboxContainer);
     await waitFor(() => {
       expect(checkbox).not.toBeChecked();
     });
 
-    fireEvent.click(participateCheckboxContainer);
+    await clickElement(participateCheckboxContainer);
     await waitFor(() => {
       expect(checkbox).toBeChecked();
     });
@@ -276,12 +297,12 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(checkbox).toBeChecked();
 
-    fireEvent.keyDown(participateCheckboxContainer, { key: ' ' });
+    await keyDownElement(participateCheckboxContainer, ' ');
     await waitFor(() => {
       expect(checkbox).not.toBeChecked();
     });
 
-    fireEvent.keyDown(participateCheckboxContainer, { key: ' ' });
+    await keyDownElement(participateCheckboxContainer, ' ');
     await waitFor(() => {
       expect(checkbox).toBeChecked();
     });
@@ -300,7 +321,7 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(checkbox).toBeChecked();
 
-    fireEvent.keyDown(participateCheckboxContainer, { key: 'Enter' });
+    await keyDownElement(participateCheckboxContainer, 'Enter');
     await waitFor(() => {
       expect(checkbox).not.toBeChecked();
     });
@@ -381,12 +402,12 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(marketingCheckbox).not.toBeChecked();
 
-    fireEvent.click(marketingCheckboxContainer);
+    await clickElement(marketingCheckboxContainer);
     await waitFor(() => {
       expect(marketingCheckbox).toBeChecked();
     });
 
-    fireEvent.click(marketingCheckboxContainer);
+    await clickElement(marketingCheckboxContainer);
     await waitFor(() => {
       expect(marketingCheckbox).not.toBeChecked();
     });
@@ -405,7 +426,7 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(marketingCheckbox).not.toBeChecked();
 
-    fireEvent.keyDown(marketingCheckboxContainer, { key: ' ' });
+    await keyDownElement(marketingCheckboxContainer, ' ');
     await waitFor(() => {
       expect(marketingCheckbox).toBeChecked();
     });
@@ -424,7 +445,7 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(marketingCheckbox).not.toBeChecked();
 
-    fireEvent.keyDown(marketingCheckboxContainer, { key: 'Enter' });
+    await keyDownElement(marketingCheckboxContainer, 'Enter');
     await waitFor(() => {
       expect(marketingCheckbox).toBeChecked();
     });

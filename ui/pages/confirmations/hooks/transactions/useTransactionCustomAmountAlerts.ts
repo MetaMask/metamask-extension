@@ -1,5 +1,3 @@
-'use no memo';
-
 import { useMemo } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import useAlerts from '../../../../hooks/useAlerts';
@@ -7,12 +5,16 @@ import { useConfirmContext } from '../../context/confirm';
 import { AlertsName } from '../alerts/constants';
 
 const ALERTS_HIDE_RESULTS: string[] = [
+  AlertsName.AccountNoFunds,
+  AlertsName.DepositLimit,
   AlertsName.InsufficientPayTokenBalance,
   AlertsName.PayHardwareAccount,
+  AlertsName.PerpsWithdrawBalanceUnavailable,
   AlertsName.SigningOrSubmitting,
 ];
 
 const ALERTS_DISABLE_UPDATE: string[] = [
+  AlertsName.AccountNoFunds,
   AlertsName.PayHardwareAccount,
   AlertsName.SigningOrSubmitting,
 ];
@@ -50,11 +52,12 @@ export function useTransactionCustomAmountAlerts(): {
     };
   }
 
+  const { reason, message } = firstAlert;
   const alertMessage =
-    (firstAlert.message as string | undefined) ?? firstAlert.reason;
+    reason && message && reason !== message ? message : undefined;
 
   return {
-    alertMessage,
+    ...(alertMessage ? { alertMessage } : {}),
     hideResults,
     disableUpdate,
   };

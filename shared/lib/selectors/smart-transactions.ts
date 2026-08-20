@@ -8,22 +8,21 @@ import type { Hex, CaipChainId } from '@metamask/utils';
 import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
+  SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS_FLAG,
+  DEFAULT_SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS,
 } from '../../constants/smartTransactions';
-import { getBooleanFeatureFlag } from '../remote-feature-flag-utils';
+import { isProduction } from '../environment';
+import { accountSupportsSmartTx } from './keyring';
 import {
-  accountSupportsSmartTx,
-  getPreferences,
+  getCurrentChainId,
   selectDefaultRpcEndpointByChainId,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+  type NetworkState,
+} from './networks';
+import { getPreferences } from './preferences';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../../ui/selectors/remote-feature-flags';
-import { isProduction } from '../environment';
-import { getCurrentChainId, type NetworkState } from './networks';
+} from './remote-feature-flags';
 import { createDeepEqualSelector } from './selector-creators';
 
 export type SmartTransactionsMetaMaskState = {
@@ -127,7 +126,6 @@ export const getSmartTransactionsMigrationAppliedInternal = createSelector(
  * @returns true if the user has explicitly opted in, false if they have opted out,
  * or null if they have not explicitly opted in or out.
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsOptInStatusForMetrics = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => optInStatus,
@@ -140,7 +138,6 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
  * @param state
  * @returns
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsPreferenceEnabled = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => {
@@ -155,18 +152,27 @@ export const getChainSupportsSmartTransactions = (
   state: NetworkState,
   chainId?: string,
 ): boolean => {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = chainId || getCurrentChainId(state);
   return getAllowedSmartTransactionsChainIds().includes(effectiveChainId);
 };
 
+const getAllowedRpcHosts = (state: RemoteFeatureFlagsState): string[] => {
+  const flag =
+    getRemoteFeatureFlags(state)[SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS_FLAG];
+  if (
+    Array.isArray(flag) &&
+    flag.length > 0 &&
+    flag.every((host) => typeof host === 'string')
+  ) {
+    return flag;
+  }
+  return DEFAULT_SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS;
+};
+
 const getIsAllowedRpcUrlForSmartTransactions = (
-  state: NetworkState,
+  state: NetworkState & RemoteFeatureFlagsState,
   chainId?: string,
 ) => {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = chainId || getCurrentChainId(state);
   // Allow in non-production or if chain ID is on skip list.
   if (
@@ -184,10 +190,15 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   const rpcUrl = defaultRpcEndpoint?.url;
   const hostname = rpcUrl && new URL(rpcUrl).hostname;
 
-  return (
-    hostname?.endsWith('.infura.io') ||
-    hostname?.endsWith('.binance.org') ||
-    false
+  const allowedHosts = getAllowedRpcHosts(state);
+  return Boolean(
+    hostname &&
+    allowedHosts.some((host) =>
+      // A leading dot denotes a suffix/subdomain match (e.g. `.infura.io`
+      // matches `mainnet.infura.io`); otherwise require an exact host match
+      // so `mainnet.base.org` does not match `developer-access-mainnet.base.org`.
+      host.startsWith('.') ? hostname.endsWith(host) : hostname === host,
+    ),
   );
 };
 
@@ -195,8 +206,8 @@ export const getSmartTransactionsEnabled = (
   state: SmartTransactionsState,
   chainId?: string,
 ): boolean => {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = (chainId || getCurrentChainId(state)) as Hex;
+  // @ts-expect-error Smart transaction selector types does not match controller state
   const supportedAccount = accountSupportsSmartTx(state);
   const featureFlags = getSmartTransactionsFeatureFlagsForChain(
     state,
@@ -209,10 +220,10 @@ export const getSmartTransactionsEnabled = (
     ];
   return Boolean(
     getChainSupportsSmartTransactions(state, chainId) &&
-      getIsAllowedRpcUrlForSmartTransactions(state, chainId) &&
-      supportedAccount &&
-      smartTransactionsFeatureFlagEnabled &&
-      smartTransactionsLiveness,
+    getIsAllowedRpcUrlForSmartTransactions(state, chainId) &&
+    supportedAccount &&
+    smartTransactionsFeatureFlagEnabled &&
+    smartTransactionsLiveness,
   );
 };
 
@@ -230,19 +241,11 @@ export const getIsSmartTransaction = (
 
 export const getGaslessBridgeWith7702EnabledForChain = (
   state: SmartTransactionsState,
-  chainId: Hex,
+  chainId?: Hex,
 ): boolean => {
+  if (!chainId) {
+    return false;
+  }
   const featureFlags = getSmartTransactionsFeatureFlagsForChain(state, chainId);
   return featureFlags?.gaslessBridgeWith7702Enabled ?? false;
-};
-
-export const getExtensionSkipTransactionStatusPage = (
-  state: SmartTransactionsState,
-) => {
-  const remoteFeatureFlags = getRemoteFeatureFlags(state);
-
-  return getBooleanFeatureFlag(
-    remoteFeatureFlags?.extensionSkipTransactionStatusPage,
-    false,
-  );
 };

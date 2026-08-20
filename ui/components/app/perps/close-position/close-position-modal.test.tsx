@@ -1,11 +1,50 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions } from '../mocks';
 import { ClosePositionModal } from './close-position-modal';
+
+jest.mock('../../../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatNumber: (value: number) =>
+      value.toLocaleString('en-US', {
+        maximumFractionDigits: 6,
+      }),
+    formatPercentWithMinThreshold: (value: number) =>
+      `${(value * 100).toFixed(2)}%`,
+  }),
+}));
+
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
 
 jest.mock('../../../../../shared/lib/perps-formatters', () => ({
   PRICE_RANGES_UNIVERSAL: [],
@@ -19,6 +58,14 @@ jest.mock('../../../../../shared/lib/perps-formatters', () => ({
       .replace(/(\.\d*?[1-9])0+$/u, '$1')
       .replace(/\.0+$/u, '')}`;
   },
+  formatPnl: (value: number | string) => {
+    const amount = Number(value);
+    const abs = Math.abs(amount).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return amount >= 0 ? `+$${abs}` : `-$${abs}`;
+  },
   formatPositionSize: (value: number, decimals?: number) =>
     Number(value).toLocaleString('en-US', {
       minimumFractionDigits: 0,
@@ -27,6 +74,7 @@ jest.mock('../../../../../shared/lib/perps-formatters', () => ({
 }));
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -87,9 +135,10 @@ jest.mock('@metamask/perps-controller', () => ({
   },
 }));
 
-/** Matches rendered `perpsClosePartialMinNotional` after $1 is replaced with a formatted USD amount */
-const PARTIAL_MIN_NOTIONAL_PATTERN =
-  /Partial closes must be at least \$[\d,.]+ in USD value\. Increase the close amount or set the slider to 100%\./u;
+const PARTIAL_MIN_NOTIONAL_AMOUNT = '$10';
+const PARTIAL_MIN_NOTIONAL_MESSAGE = tEn('perpsClosePartialMinNotional', [
+  PARTIAL_MIN_NOTIONAL_AMOUNT,
+]);
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
@@ -99,22 +148,72 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('../../rewards/RewardsVipBadge', () => ({
+  RewardsVipBadge: () => null,
+}));
+
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
+type MockedUsePerpsOrderFeesReturn = {
+  feeRate: number | undefined;
+  undiscountedFeeRate: number | undefined;
+  isLoading: boolean;
+  metamaskFeeRateDiscountPercentage: number | undefined;
+};
+const mockUsePerpsOrderFees = jest.fn<
+  MockedUsePerpsOrderFeesReturn,
+  [Record<string, unknown>]
+>(() => ({
+  feeRate: 0.00145,
+  undiscountedFeeRate: 0.00145,
+  isLoading: false,
+  metamaskFeeRateDiscountPercentage: undefined,
+}));
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
-  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+  usePerpsOrderFees: (options: Record<string, unknown>) =>
+    mockUsePerpsOrderFees(options),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => input,
+  }),
+}));
+
+// Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
+// button_clicked / button_location props the modal forwards.
+const mockCloseScreenViewedOptions: {
+  eventName?: unknown;
+  properties?: Record<string, unknown>;
+}[] = [];
+const mockCloseImperativeTrack = jest.fn();
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
+  usePerpsEventTracking: (options?: {
+    eventName?: unknown;
+    properties?: Record<string, unknown>;
+  }) => {
+    if (options) {
+      mockCloseScreenViewedOptions.push(options);
+      return undefined;
+    }
+    return { track: mockCloseImperativeTrack };
+  },
 }));
 
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     CLOSE_FAILED: 'perpsToastCloseFailed',
     CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
+    LIMIT_CLOSE_FAILED: 'perpsToastLimitCloseFailed',
     PARTIAL_CLOSE_FAILED: 'perpsToastPartialCloseFailed',
     PARTIAL_CLOSE_IN_PROGRESS: 'perpsToastPartialCloseInProgress',
     PARTIAL_CLOSE_SUCCESS: 'perpsToastPartialCloseSuccess',
+    PARTIAL_LIMIT_CLOSE_FAILED: 'perpsToastPartialLimitCloseFailed',
+    ORDER_PLACED: 'perpsToastOrderPlaced',
+    ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
     TRADE_SUCCESS: 'perpsToastTradeSuccess',
   },
   usePerpsToast: () => ({
@@ -128,13 +227,268 @@ const mockStore = configureStore({
   },
 });
 
+const createCloseLimitEnabledStore = () =>
+  configureStore({
+    metamask: {
+      ...mockState.metamask,
+      remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
+        perpsClosePositionLimitOrderEnabled: true,
+      },
+    },
+  });
+
 const basePosition = mockPositions[0];
 
 describe('ClosePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockCloseScreenViewedOptions.length = 0;
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockUsePerpsOrderFees.mockReturnValue({
+      feeRate: 0.00145,
+      undiscountedFeeRate: 0.00145,
+      isLoading: false,
+      metamaskFeeRateDiscountPercentage: undefined,
+    });
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+  });
+
+  describe('header', () => {
+    it('renders the market identity, price, and 24-hour change', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          displayPrice="$2,901.25"
+          displayChange="-0.91%"
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-close-position-asset-symbol'),
+      ).toHaveTextContent('ETH');
+      expect(
+        screen.getByTestId('perps-close-position-price'),
+      ).toHaveTextContent('$2,901.25');
+      expect(
+        screen.getByTestId('perps-close-position-change'),
+      ).toHaveTextContent('-0.91%');
+    });
+
+    it('closes the modal when the back control is clicked', () => {
+      const onClose = jest.fn();
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={onClose}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-back-button'));
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('abandon tracking', () => {
+    it('reports leverage_used when the modal is dismissed without submitting', async () => {
+      const { unmount } = renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      // Dismissing without submitting is the real abandonment path: the host
+      // unmounts the modal and the hook's cleanup emits (deferred one macrotask
+      // so a StrictMode probe can cancel it).
+      unmount();
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      const abandonCall = mockCloseImperativeTrack.mock.calls.find(
+        ([event, properties]) =>
+          event === 'Perp UI Interaction' &&
+          properties?.action === 'abandon_order',
+      );
+      expect(abandonCall?.[1]).toEqual(
+        expect.objectContaining({
+          asset: basePosition.symbol,
+          leverage_used: basePosition.leverage.value,
+        }),
+      );
+    });
+  });
+
+  describe('position_close screen view', () => {
+    it('surfaces button_clicked and button_location from props', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          buttonClicked="reduce_exposure"
+          buttonLocation="asset_details"
+        />,
+        mockStore,
+      );
+
+      const screenView = mockCloseScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'position_close',
+      );
+
+      expect(screenView?.properties).toEqual(
+        expect.objectContaining({
+          button_clicked: 'reduce_exposure',
+          button_location: 'asset_details',
+        }),
+      );
+    });
+
+    it('defaults button_clicked to close when no trigger prop is passed', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      const screenView = mockCloseScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'position_close',
+      );
+
+      expect(screenView?.properties?.button_clicked).toBe('close');
+    });
+  });
+
+  describe('perpsClosePosition call', () => {
+    it('preserves the full market close request shape', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              symbol: basePosition.symbol,
+              orderType: 'market',
+              currentPrice: 2900,
+              position: basePosition,
+            }),
+          ],
+        );
+      });
+      const params = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsClosePosition',
+      )?.[1][0];
+      expect(params).not.toHaveProperty('size');
+      expect(params).not.toHaveProperty('price');
+    });
+
+    it('preserves formatted partial market close sizes', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              orderType: 'market',
+              currentPrice: 2900,
+              size: '1.2500',
+            }),
+          ],
+        );
+      });
+    });
+
+    it('includes trackingData with totalFee and marketPrice', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 2900,
+              }),
+            }),
+          ],
+        );
+      });
+    });
+  });
+
+  describe('auto-focus', () => {
+    it('auto-focuses the Close Position submit button on mount', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-close-position-modal-submit'),
+        ).toHaveFocus();
+      });
+    });
   });
 
   describe('ORDER_SIZE_MIN from background', () => {
@@ -158,7 +512,7 @@ describe('ClosePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
+          screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
         ).toBeInTheDocument();
       });
     });
@@ -184,9 +538,20 @@ describe('ClosePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
+          screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
         ).toBeInTheDocument();
       });
+
+      // The error is DISPLAYED on the success:false path, so the error screen
+      // view must fire there too — not only in the throw/catch path.
+      expect(mockCloseImperativeTrack).toHaveBeenCalledWith(
+        'Perp Screen Viewed',
+        expect.objectContaining({
+          screen_type: 'error',
+          error_type: 'backend',
+          screen_name: 'perps_market_details',
+        }),
+      );
     });
   });
 
@@ -220,9 +585,11 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
+      await act(async () => {
+        slider.focus();
+      });
       await user.keyboard('{ArrowLeft}');
 
       expect(
@@ -271,10 +638,9 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -341,10 +707,9 @@ describe('ClosePositionModal', () => {
 
       // Move slider left to get a partial close
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -369,10 +734,9 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -403,10 +767,9 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -463,10 +826,9 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -499,7 +861,7 @@ describe('ClosePositionModal', () => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
           expect.objectContaining({
             key: 'perpsToastCloseFailed',
-            description: expect.stringMatching(PARTIAL_MIN_NOTIONAL_PATTERN),
+            description: expect.stringContaining(PARTIAL_MIN_NOTIONAL_MESSAGE),
           }),
         );
       });
@@ -521,10 +883,9 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -539,7 +900,6 @@ describe('ClosePositionModal', () => {
 
   describe('partial close below minimum USD notional', () => {
     it('disables submit when partial notional is just under $10 even if rounded to cents it would be $10', async () => {
-      const user = userEvent.setup();
       const positionOneUnit = {
         ...basePosition,
         size: '1',
@@ -556,17 +916,14 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      await user.keyboard(
-        Array.from({ length: 50 }, () => '{ArrowLeft}').join(''),
-      );
+      fireEvent.change(slider, { target: { value: '50' } });
 
       await waitFor(() => {
-        expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
-        ).toBeInTheDocument();
+        const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE);
+        expect(warningMessage).toBeInTheDocument();
+        expect(warningMessage).not.toHaveTextContent(/slider|slide/u);
         expect(
           screen.getByTestId('perps-close-position-modal-submit'),
         ).toBeDisabled();
@@ -574,7 +931,6 @@ describe('ClosePositionModal', () => {
     });
 
     it('disables submit and shows warning when partial notional is under $10', async () => {
-      const user = userEvent.setup();
       const smallPosition = {
         ...basePosition,
         size: '0.01',
@@ -595,19 +951,648 @@ describe('ClosePositionModal', () => {
       ).not.toBeDisabled();
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      await user.keyboard('{ArrowLeft}');
+      fireEvent.change(slider, { target: { value: '99' } });
 
       await waitFor(() => {
-        expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
-        ).toBeInTheDocument();
+        const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE);
+        expect(warningMessage).toBeInTheDocument();
+        expect(warningMessage).not.toHaveTextContent(/slider|slide/u);
         expect(
           screen.getByTestId('perps-close-position-modal-submit'),
         ).toBeDisabled();
       });
+    });
+  });
+
+  describe('close limit orders', () => {
+    const enterLimitPrice = (price: string) => {
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+      const container = screen.getByTestId('limit-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: price },
+      });
+    };
+
+    const submitLimitClose = async ({ partial }: { partial: boolean }) => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('3000');
+      if (partial) {
+        const slider = within(
+          screen.getByTestId('close-amount-slider-pct-100'),
+        ).getByRole('slider');
+        fireEvent.change(slider, { target: { value: '50' } });
+      }
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalled();
+      });
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledTimes(2);
+      });
+    };
+
+    it('keeps the existing market-only UI when the flag is disabled', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('order-type-toggle')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          orderType: 'market',
+          isMaker: false,
+        }),
+      );
+    });
+
+    it('defaults to Market and exposes Limit when the flag is enabled', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      expect(screen.getByTestId('order-type-toggle')).toBeInTheDocument();
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+
+      const input = screen
+        .getByTestId('limit-price-input')
+        .querySelector('input');
+      expect(input).toHaveFocus();
+      expect(
+        screen.queryByText(tEn('perpsCloseLimitPriceRequired')),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('limit-price-liquidation-warning'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('keeps the required price error hidden when the empty input is blurred', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+      const input = screen
+        .getByTestId('limit-price-input')
+        .querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(
+        screen.queryByText(tEn('perpsCloseLimitPriceRequired')),
+      ).not.toBeInTheDocument();
+    });
+
+    it('accepts a valid price without showing the required price error', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('3000');
+
+      expect(
+        screen.queryByText(tEn('perpsCloseLimitPriceRequired')),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('limit-price-liquidation-warning'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeEnabled();
+    });
+
+    it('shows the required price error for a non-empty invalid price', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('0');
+
+      expect(
+        screen.getByText(tEn('perpsCloseLimitPriceRequired')),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('passes the opposite position direction to the warning behavior', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('2800');
+
+      expect(
+        screen.getByText(tEn('perpsLimitPriceBelowCurrentPrice')),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeEnabled();
+    });
+
+    it('warns above market when closing a short', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={mockPositions[1]}
+          currentPrice={45000}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('46000');
+
+      expect(
+        screen.getByText(tEn('perpsLimitPriceAboveCurrentPrice')),
+      ).toBeInTheDocument();
+    });
+
+    it('clears the limit price and restores market fees when Market is selected', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('3000');
+
+      fireEvent.click(screen.getByTestId('order-type-market'));
+
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          orderType: 'market',
+          isMaker: false,
+        }),
+      );
+    });
+
+    it('submits an exact full limit request without market-only fields', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+          sizeDecimals={4}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('3000.25');
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              symbol: basePosition.symbol,
+              orderType: 'limit',
+              price: '3000.25',
+              position: basePosition,
+            }),
+          ],
+        );
+      });
+      const params = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsClosePosition',
+      )?.[1][0];
+      expect(params).not.toHaveProperty('size');
+      expect(params).not.toHaveProperty('currentPrice');
+      expect(params).not.toHaveProperty('usdAmount');
+      expect(params).not.toHaveProperty('priceAtCalculation');
+      expect(params).not.toHaveProperty('maxSlippageBps');
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastOrderPlaced' }),
+      );
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastTradeSuccess' }),
+      );
+    });
+
+    it('submits a formatted partial size for limit closes', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+          sizeDecimals={4}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('3000');
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              orderType: 'limit',
+              price: '3000',
+              size: '1.2500',
+            }),
+          ],
+        );
+      });
+    });
+
+    it('shows a placement failure for a rejected full limit close', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'limit_order_failed',
+      });
+
+      await submitLimitClose({ partial: false });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenNthCalledWith(2, {
+        key: 'perpsToastLimitCloseFailed',
+        description: tEn('perpsToastPositionStillActive'),
+      });
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastCloseFailed' }),
+      );
+    });
+
+    it('shows a placement failure for a rejected partial limit close', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'limit_order_failed',
+      });
+
+      await submitLimitClose({ partial: true });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenNthCalledWith(2, {
+        key: 'perpsToastPartialLimitCloseFailed',
+        description: tEn('perpsToastPositionStillActive'),
+      });
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastPartialCloseFailed' }),
+      );
+    });
+
+    it('shows one placement failure when a full limit close throws', async () => {
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('network error'),
+      );
+
+      await submitLimitClose({ partial: false });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenNthCalledWith(2, {
+        key: 'perpsToastLimitCloseFailed',
+        description: tEn('perpsToastPositionStillActive'),
+      });
+    });
+
+    it('shows one placement failure when a partial limit close throws', async () => {
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('network error'),
+      );
+
+      await submitLimitClose({ partial: true });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenNthCalledWith(2, {
+        key: 'perpsToastPartialLimitCloseFailed',
+        description: tEn('perpsToastPositionStillActive'),
+      });
+    });
+
+    it('uses limit price for partial minimum notional validation', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={{ ...basePosition, size: '1' }}
+          currentPrice={100}
+          markPrice={100}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('5');
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
+
+      expect(
+        screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('shows oracle deviation errors and revalidates live mark prices', () => {
+      const store = createCloseLimitEnabledStore();
+      const { rerender } = renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        store,
+      );
+
+      enterLimitPrice('3000');
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeEnabled();
+
+      rerender(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={100000}
+        />,
+      );
+
+      expect(
+        screen.getByText(tEn('perpsCloseLimitPriceOutsideOracleBand')),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('shows price unavailable when no valid limit reference price exists', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={NaN}
+          markPrice={NaN}
+          midPrice={NaN}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('3000');
+
+      expect(
+        screen.getByText(tEn('perpsClosePriceUnavailable')),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(tEn('perpsCloseLimitPriceOutsideOracleBand')),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('forces Market behavior when the flag is disabled mid-session', async () => {
+      const store = createCloseLimitEnabledStore();
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        store,
+      );
+      enterLimitPrice('3000');
+
+      const currentState = store.getState();
+      await act(async () => {
+        store.dispatch({
+          type: 'UPDATE_METAMASK_STATE',
+          value: {
+            ...currentState.metamask,
+            remoteFeatureFlags: {
+              ...currentState.metamask.remoteFeatureFlags,
+              perpsClosePositionLimitOrderEnabled: false,
+            },
+          },
+        });
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('order-type-toggle'),
+        ).not.toBeInTheDocument();
+        expect(
+          screen.queryByTestId('limit-price-input'),
+        ).not.toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              orderType: 'market',
+              currentPrice: 2900,
+            }),
+          ],
+        );
+      });
+    });
+
+    it('recalculates long and short limit PnL and margin', () => {
+      const store = createCloseLimitEnabledStore();
+      const { unmount } = renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        store,
+      );
+      enterLimitPrice('3200');
+      expect(
+        screen.getByTestId('perps-close-summary-margin-value'),
+      ).toHaveTextContent('$2,875');
+      expect(screen.getByText('+$875.00')).toBeInTheDocument();
+      unmount();
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={mockPositions[1]}
+          currentPrice={45000}
+          markPrice={45000}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('46000');
+      expect(
+        screen.getByTestId('perps-close-summary-margin-value'),
+      ).toHaveTextContent('$1,250');
+      expect(screen.getByText('-$500.00')).toBeInTheDocument();
+    });
+
+    it('calculates losing long and profitable short limit PnL', () => {
+      const { unmount } = renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('2800');
+      expect(screen.getByText('-$125.00')).toBeInTheDocument();
+      unmount();
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={mockPositions[1]}
+          currentPrice={45000}
+          markPrice={45000}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('44000');
+      expect(screen.getByText('+$500.00')).toBeInTheDocument();
+    });
+
+    it('applies the close fraction to limit PnL, margin, fees, and receive', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('3200');
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
+
+      expect(
+        screen.getByTestId('perps-close-summary-margin-value'),
+      ).toHaveTextContent('$1,437.5');
+      expect(screen.getByText('+$437.50')).toBeInTheDocument();
+
+      const parseUsd = (element: HTMLElement) =>
+        Number.parseFloat(element.textContent?.replace(/[^0-9.]/gu, '') ?? '0');
+      const marginValue = parseUsd(
+        screen.getByTestId('perps-close-summary-margin-value'),
+      );
+      const feesValue = parseUsd(
+        screen.getByTestId('perps-close-summary-fees-value'),
+      );
+      const receiveValue = parseUsd(
+        screen.getByTestId('perps-close-summary-receive-value'),
+      );
+      expect(receiveValue).toBeCloseTo(marginValue - feesValue, 2);
+    });
+
+    it('uses stable maker fee-rate inputs while price and amount change', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          markPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+      enterLimitPrice('3200');
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
+
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: basePosition.symbol,
+        orderType: 'limit',
+        isMaker: true,
+      });
+      expect(
+        mockUsePerpsOrderFees.mock.calls.every(
+          ([options]) => !Object.hasOwn(options, 'amount'),
+        ),
+      ).toBe(true);
     });
   });
 
@@ -673,6 +1658,80 @@ describe('ClosePositionModal', () => {
       // sanity: margin must be positive and must NOT include an extra pnl on top
       // (basePosition: marginUsed=2375, unrealizedPnl=375 — receive should be ~2375-fees, not ~2750-fees)
       expect(marginValue).toBe(2375);
+    });
+  });
+
+  describe('MetaMask fee discount', () => {
+    it('does not show discounted fee when no discount is active', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.00145,
+        undiscountedFeeRate: 0.00145,
+        isLoading: false,
+        metamaskFeeRateDiscountPercentage: undefined,
+      });
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('perps-close-summary-fees-value-original'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows strikethrough original and discounted fee when a discount is active', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.00045 + 0.0005, // protocol + half-off builder (discounted)
+        undiscountedFeeRate: 0.00145, // protocol + full builder
+        isLoading: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-close-summary-fees-value-original'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-summary-fees-value'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not show discounted fee while feeRate is unavailable', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: undefined,
+        undiscountedFeeRate: undefined,
+        isLoading: true,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('perps-close-summary-fees-value-original'),
+      ).not.toBeInTheDocument();
     });
   });
 });

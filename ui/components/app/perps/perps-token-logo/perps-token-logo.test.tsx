@@ -10,6 +10,11 @@ import {
 } from '../constants';
 import { PerpsTokenLogo } from './perps-token-logo';
 
+const mockUseTheme = jest.fn();
+jest.mock('../../../../hooks/useTheme', () => ({
+  useTheme: () => mockUseTheme(),
+}));
+
 const mockStore = configureStore({
   metamask: { ...mockState.metamask },
 });
@@ -21,6 +26,7 @@ let mockImg: { onload?: () => void; onerror?: () => void; src: string } = {
 
 beforeEach(() => {
   mockImg = { src: '' };
+  mockUseTheme.mockReturnValue('light');
   jest
     .spyOn(window, 'Image')
     .mockImplementation(() => mockImg as unknown as HTMLImageElement);
@@ -150,6 +156,103 @@ describe('PerpsTokenLogo', () => {
     expect(screen.getByTestId('perps-token-logo-BTC')).toHaveClass(
       'custom-class',
     );
+    expect(screen.getByTestId('perps-token-logo-BTC')).not.toHaveClass(
+      'bg-white',
+    );
+  });
+
+  it('applies bg-white to ETH in dark mode', () => {
+    mockUseTheme.mockReturnValue('dark');
+    renderWithProvider(<PerpsTokenLogo symbol="ETH" />, mockStore);
+
+    act(() => {
+      mockImg.onload?.();
+    });
+
+    expect(screen.getByTestId('perps-token-logo-ETH')).toHaveClass('bg-white');
+  });
+
+  it('does not apply bg-white to ETH in light mode', () => {
+    renderWithProvider(<PerpsTokenLogo symbol="ETH" />, mockStore);
+
+    act(() => {
+      mockImg.onload?.();
+    });
+
+    expect(screen.getByTestId('perps-token-logo-ETH')).not.toHaveClass(
+      'bg-white',
+    );
+  });
+
+  it('applies bg-icon-default to S in light mode', () => {
+    renderWithProvider(<PerpsTokenLogo symbol="S" />, mockStore);
+
+    act(() => {
+      mockImg.onload?.();
+    });
+
+    expect(screen.getByTestId('perps-token-logo-S')).toHaveClass(
+      'bg-icon-default',
+    );
+  });
+
+  it('does not apply bg-icon-default to S in dark mode', () => {
+    mockUseTheme.mockReturnValue('dark');
+    renderWithProvider(<PerpsTokenLogo symbol="S" />, mockStore);
+
+    act(() => {
+      mockImg.onload?.();
+    });
+
+    expect(screen.getByTestId('perps-token-logo-S')).not.toHaveClass(
+      'bg-icon-default',
+    );
+  });
+
+  const expectOnlyLightModeDarkBackgroundOverride = (symbol: string) => {
+    const { rerender } = renderWithProvider(
+      <PerpsTokenLogo symbol={symbol} />,
+      mockStore,
+    );
+
+    act(() => {
+      mockImg.onload?.();
+    });
+
+    expect(screen.getByTestId(`perps-token-logo-${symbol}`)).toHaveClass(
+      'bg-icon-default',
+    );
+
+    mockUseTheme.mockReturnValue('dark');
+    rerender(<PerpsTokenLogo symbol={symbol} />);
+
+    expect(screen.getByTestId(`perps-token-logo-${symbol}`)).not.toHaveClass(
+      'bg-white',
+    );
+    expect(screen.getByTestId(`perps-token-logo-${symbol}`)).not.toHaveClass(
+      'bg-icon-default',
+    );
+  };
+
+  it('applies only the light-mode dark background override to RESOLV', () => {
+    expectOnlyLightModeDarkBackgroundOverride('RESOLV');
+  });
+
+  it('applies only the light-mode dark background override to USUAL', () => {
+    expectOnlyLightModeDarkBackgroundOverride('USUAL');
+  });
+
+  it('does not apply a background override to BTC', () => {
+    mockUseTheme.mockReturnValue('dark');
+    renderWithProvider(<PerpsTokenLogo symbol="BTC" />, mockStore);
+
+    act(() => {
+      mockImg.onload?.();
+    });
+
+    const logo = screen.getByTestId('perps-token-logo-BTC');
+    expect(logo).not.toHaveClass('bg-white');
+    expect(logo).not.toHaveClass('bg-icon-default');
   });
 
   it('renders with specified size', () => {

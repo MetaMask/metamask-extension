@@ -16,10 +16,6 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../../../hooks/useSuppressConfirmNavigate', () => ({
-  useSuppressNavigation: () => jest.fn(() => false),
-}));
-
 const STATE_MOCK = {
   ...mockState,
   metamask: {

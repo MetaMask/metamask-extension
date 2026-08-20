@@ -1,7 +1,9 @@
-import { PhishingController } from '@metamask/phishing-controller';
+import {
+  PhishingController,
+  PhishingControllerMessenger,
+} from '@metamask/phishing-controller';
 import { Duration, inMilliseconds } from '@metamask/utils';
 import { MessengerClientInitFunction } from './types';
-import { PhishingControllerMessenger } from './messengers';
 
 /**
  * Initialize the phishing controller.

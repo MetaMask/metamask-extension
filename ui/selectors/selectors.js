@@ -1,4 +1,3 @@
-import { toUnicode } from 'punycode/punycode.js';
 import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -6,9 +5,9 @@ import {
   getLocalizedSnapManifest,
   SnapStatus,
 } from '@metamask/snaps-utils';
-import { memoize } from 'lodash';
+import { cloneDeep, memoize } from 'lodash';
 import semver from 'semver';
-import { createSelector } from 'reselect';
+import { createSelector, lruMemoize } from 'reselect';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
@@ -25,21 +24,29 @@ import {
   getCaip25CaveatFromPermission,
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { selectBridgeFeatureFlags } from '@metamask/bridge-controller';
+import {
+  FeatureId,
+  selectBridgeFeatureFlags,
+} from '@metamask/bridge-controller';
 import {
   KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 
-import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
+import log from 'loglevel';
+import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
   getProviderConfig,
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
+  selectNetworkConfigurationByChainId,
+  selectDefaultRpcEndpointByChainId,
 } from '../../shared/lib/selectors/networks';
+import { getPreferences } from '../../shared/lib/selectors/preferences';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
@@ -49,11 +56,13 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
-// TODO: Fix circular dependency
-// To avoid import evaluating as `undefined` due to circular dependency,
-// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import-x/order
-import { getRemoteFeatureFlags } from './remote-feature-flags';
+import {
+  isWebAuthnSupported,
+  isPasskeyAaguidIncompatibleWithSidepanel,
+} from '../../shared/lib/passkey';
+import { getIsPasskeyFeatureEnabled } from '../../shared/lib/environment';
+import { isFirefoxBrowser } from '../../shared/lib/browser-runtime.utils';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
@@ -62,14 +71,19 @@ import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
+  getIsStellarSupportEnabled,
   getIsSolanaTestnetSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   getIsTronTestnetSupportEnabled,
 } from './multichain/feature-flags';
 
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 // TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
+import {
+  addHexPrefix,
+  getDeviceType,
+  // eslint-disable-next-line import-x/no-restricted-paths
+} from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
   MAINNET_DISPLAY_NAME,
@@ -128,11 +142,12 @@ import {
   sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates/approval-types';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
+  DEVICE_TYPE,
   ENVIRONMENT_TYPE_SIDEPANEL,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
@@ -143,7 +158,7 @@ import {
   getLedgerTransportType,
   isAddressLedger,
   getIsUnlocked,
-} from '../ducks/metamask/metamask';
+} from '../ducks/metamask/base-selectors';
 import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
@@ -161,33 +176,33 @@ import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   createDeepEqualSelector,
   createParameterizedSelector,
+  createParameterizedDeepEqualSelector,
   createParameterizedShallowEqualSelector,
   createResultEqualSelector,
+  createShallowResultSelector,
 } from '../../shared/lib/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   FeatureFlagNames,
   DEFAULT_FEATURE_FLAG_VALUES,
 } from '../../shared/lib/feature-flags';
-// eslint-disable-next-line import-x/order
-import {
-  getSelectedInternalAccount,
-  getInternalAccounts,
-  getInternalAccountByAddress,
-} from './accounts';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
-import { getHasShieldEntryModalShownOnce } from './subscription';
-import { getApprovalRequestsByType } from './approvals';
+import { UTM_PARAMETERS } from '../../shared/types/metametrics';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import {
+  getUnapprovedTransactions,
+  getCurrentNetworkTransactions,
+} from './transactions';
 import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
   getMultichainNetwork,
 } from './multichain/networks';
-import {
-  getUnapprovedTransactions,
-  getCurrentNetworkTransactions,
-} from './transactions';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import { getApprovalRequestsByType } from './approvals';
+import { getHasShieldEntryModalShownOnce } from './subscription';
+import { getIsSocialLoginFlow } from './first-time-flow';
+import { getInternalAccounts } from './accounts';
 
 const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
@@ -204,6 +219,7 @@ export {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
+  getIsStellarSupportEnabled,
   getIsSolanaTestnetSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   getIsTronTestnetSupportEnabled,
@@ -248,18 +264,6 @@ export function getCustomNonceValue(state) {
 
 export function getNextSuggestedNonce(state) {
   return Number(state.appState.nextNonce);
-}
-
-export function getShowPermittedNetworkToastOpen(state) {
-  return state.appState.showPermittedNetworkToastOpen;
-}
-
-export function getNewNftAddedMessage(state) {
-  return state.appState.newNftAddedMessage;
-}
-
-export function getRemoveNftMessage(state) {
-  return state.appState.removeNftMessage;
 }
 
 /**
@@ -311,6 +315,10 @@ export function getNewTokensImportedError(state) {
 }
 export function getExternalServicesOnboardingToggleState(state) {
   return state.appState.externalServicesOnboardingToggleState;
+}
+
+export function getBackupAndSyncOnboardingToggleState(state) {
+  return state.appState.backupAndSyncOnboardingToggleState;
 }
 
 export function getShowDeleteMetaMetricsDataModal(state) {
@@ -367,9 +375,9 @@ export function getNetworkIdentifier(state) {
   return nickname || rpcUrl || type;
 }
 
-export function getMetaMetricsId(state) {
-  const { metaMetricsId } = state.metamask;
-  return metaMetricsId;
+export function getAnalyticsId(state) {
+  const { analyticsId } = state.metamask;
+  return analyticsId;
 }
 
 export function isCurrentProviderCustom(state) {
@@ -384,22 +392,16 @@ export function getActiveQrCodeScanRequest(state) {
   return state.metamask.activeQrCodeScanRequest;
 }
 
+export function getLastQrScanCompletedSuccessfully(state) {
+  return state.metamask.lastQrScanCompletedSuccessfully;
+}
+
 export function getIsSigningQRHardwareTransaction(state) {
   const activeQrCodeScanRequest = getActiveQrCodeScanRequest(state);
   return (
     activeQrCodeScanRequest &&
     activeQrCodeScanRequest.type === QrScanRequestType.SIGN
   );
-}
-
-export function getCurrentKeyring(state) {
-  const internalAccount = getSelectedInternalAccount(state);
-
-  if (!internalAccount) {
-    return null;
-  }
-
-  return internalAccount.metadata?.keyring;
 }
 
 /**
@@ -423,67 +425,6 @@ export function checkNetworkAndAccountSupports1559(state, networkClientId) {
 export function checkNetworkOrAccountNotSupports1559(state) {
   const networkNotSupports1559 = isNotEIP1559Network(state);
   return networkNotSupports1559;
-}
-
-/**
- * Checks if the current wallet is a hardware wallet.
- *
- * @param {object} state
- * @returns {boolean}
- */
-export function isHardwareWallet(state) {
-  const keyring = getCurrentKeyring(state);
-  return Boolean(keyring?.type?.includes('Hardware'));
-}
-
-/**
- * Checks if the account supports smart transactions.
- *
- * @param {object} state - The state object.
- * @returns {boolean}
- */
-export function accountSupportsSmartTx(state) {
-  const accountType = getAccountType(state);
-  return Boolean(accountType !== 'snap');
-}
-
-/**
- * Get a HW wallet type, e.g. "Ledger Hardware"
- *
- * @param {object} state
- * @returns {string | undefined}
- */
-export function getHardwareWalletType(state) {
-  const keyring = getCurrentKeyring(state);
-  return isHardwareWallet(state) ? keyring.type : undefined;
-}
-
-export function getAccountType(state) {
-  const currentKeyring = getCurrentKeyring(state);
-  return getAccountTypeForKeyring(currentKeyring);
-}
-
-export function getAccountTypeForKeyring(keyring) {
-  if (!keyring) {
-    return '';
-  }
-
-  const { type } = keyring;
-
-  switch (type) {
-    case KeyringType.trezor:
-    case KeyringType.oneKey:
-    case KeyringType.ledger:
-    case KeyringType.lattice:
-    case KeyringType.qr:
-      return 'hardware';
-    case KeyringType.imported:
-      return 'imported';
-    case KeyringType.snap:
-      return 'snap';
-    default:
-      return 'default';
-  }
 }
 
 /**
@@ -554,6 +495,14 @@ export const getMetaMaskCachedBalances = createSelector(
  * @returns {Function} A parameterized selector.
  */
 const createChainIdSelector = createParameterizedShallowEqualSelector(10);
+// Cache recent per-chain NFT lookups for views that switch among a small set of
+// networks during a render cycle. Ten entries accommodate the current
+// multichain asset-view network fanout without expanding the LRU unnecessarily.
+const NFT_SELECTOR_CACHE_SIZE = 10;
+// Cache recent chainId + address-list combinations for token trust signal lookups
+// across asset pages and confirmation flows. Thirty entries supports several
+// address-list variants across a handful of active networks in a single view.
+const TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE = 30;
 
 /**
  * Get MetaMask accounts, including account name and balance.
@@ -651,6 +600,15 @@ export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
 }
 
+export function getMaybeSelectedInternalAccount(state) {
+  // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
+  // - This might happen during the onboarding
+  const accountId = state.metamask.internalAccounts?.selectedAccount;
+  return accountId
+    ? state.metamask.internalAccounts?.accounts[accountId]
+    : undefined;
+}
+
 export function checkIfMethodIsEnabled(state, methodName) {
   const internalAccount = getSelectedInternalAccount(state);
   return Boolean(internalAccount.methods.includes(methodName));
@@ -710,7 +668,11 @@ export const getInternalAccountsSortedByKeyring = createSelector(
     /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount[]>} */
     const entropySourceToAccountsMap = Object.values(accounts).reduce(
       (map, account) => {
-        if (account.metadata?.keyring?.type === KeyringTypes.snap) {
+        const keyringType = account.metadata?.keyring?.type;
+        if (
+          keyringType === KeyringTypes.snap ||
+          keyringType === KeyringTypeV2.Snap
+        ) {
           const { entropySource = thirdPartySnaps } = account.options || {};
           if (!map[entropySource]) {
             map[entropySource] = [];
@@ -727,10 +689,12 @@ export const getInternalAccountsSortedByKeyring = createSelector(
      * @type {import('@metamask/keyring-internal-api').InternalAccount[]}
      */
     const result = keyrings.reduce((internalAccounts, keyring) => {
-      // Get regular accounts for this keyring
-      const keyringAccounts = keyring.accounts.map(
-        (address) => accounts[address],
-      );
+      // Get regular accounts for this keyring, filtering out undefined entries
+      // that can occur when a keyring address has a case mismatch or is not yet
+      // synced to AccountsController.
+      const keyringAccounts = keyring.accounts
+        .map((address) => accounts[address])
+        .filter(Boolean);
 
       // If it's an HD keyring, add any snap accounts that belong to it
       if (keyring.type === KeyringTypes.hd) {
@@ -738,7 +702,10 @@ export const getInternalAccountsSortedByKeyring = createSelector(
           entropySourceToAccountsMap[keyring.metadata.id] || [];
         internalAccounts.push(...keyringAccounts, ...snapAccounts);
         return internalAccounts;
-      } else if (keyring.type === KeyringTypes.snap) {
+      } else if (
+        keyring.type === KeyringTypes.snap ||
+        keyring.type === KeyringTypeV2.Snap
+      ) {
         const thirdpartySnapAccounts =
           entropySourceToAccountsMap[thirdPartySnaps] || [];
         // In a scenario where there are multiple snap keyrings, which isn't the case for today
@@ -796,22 +763,28 @@ export function getHDEntropyIndex(state) {
   return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
-export function getCrossChainMetaMaskCachedBalances(state) {
-  const allAccountsByChainId =
-    getAccountTrackerControllerAccountsByChainId(state);
-  return Object.keys(allAccountsByChainId).reduce((acc, chainId) => {
-    acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
-      (innerAcc, address) => {
-        innerAcc[address.toLowerCase()] =
-          allAccountsByChainId[chainId][address].balance;
-        return innerAcc;
-      },
-      {},
-    );
+export const getCrossChainMetaMaskCachedBalances = createSelector(
+  getAccountTrackerControllerAccountsByChainId,
+  (allAccountsByChainId) => {
+    const chainIds = Object.keys(allAccountsByChainId);
+    if (chainIds.length === 0) {
+      return EMPTY_OBJECT;
+    }
 
-    return acc;
-  }, {});
-}
+    return chainIds.reduce((acc, chainId) => {
+      acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
+        (innerAcc, address) => {
+          innerAcc[address.toLowerCase()] =
+            allAccountsByChainId[chainId][address].balance;
+          return innerAcc;
+        },
+        {},
+      );
+
+      return acc;
+    }, {});
+  },
+);
 
 /**
  * Based on the current account address, return the balance for the native token of all chain networks on that account
@@ -820,7 +793,9 @@ export function getCrossChainMetaMaskCachedBalances(state) {
  * @returns {object} An object of tokens with balances for the given account. Data relationship will be chainId => balance
  */
 function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
-  const { accountsByChainId } = state.metamask;
+  // AccountTrackerController no longer holds balances once AssetsController owns
+  // them, so read through the selector that falls back to unified assets state.
+  const accountsByChainId = getAccountTrackerControllerAccountsByChainId(state);
   const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
   const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
@@ -1144,21 +1119,24 @@ export const getTokenExchangeRates = createSelector(
   },
 );
 
-export const getCrossChainTokenExchangeRates = (state) => {
-  const contractMarketData = getTokenRatesControllerMarketData(state) ?? {};
+export const getCrossChainTokenExchangeRates = createSelector(
+  getTokenRatesControllerMarketData,
+  (contractMarketData) => {
+    const marketData = contractMarketData ?? {};
 
-  return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
-    acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
-      (innerAcc, innerKey) => {
-        innerAcc[innerKey] = contractMarketData[topLevelKey][innerKey]?.price;
-        return innerAcc;
-      },
-      {},
-    );
+    return Object.keys(marketData).reduce((acc, topLevelKey) => {
+      acc[topLevelKey] = Object.keys(marketData[topLevelKey]).reduce(
+        (innerAcc, innerKey) => {
+          innerAcc[innerKey] = marketData[topLevelKey][innerKey]?.price;
+          return innerAcc;
+        },
+        {},
+      );
 
-    return acc;
-  }, {});
-};
+      return acc;
+    }, {});
+  },
+);
 
 /**
  * Get market data for tokens on the current chain
@@ -1173,42 +1151,30 @@ export const getTokensMarketData = (state) => {
 
 export { getTokenRatesControllerMarketData as getMarketData };
 
-export function getAddressBook(state) {
-  const chainId = getCurrentChainId(state);
-  if (!state.metamask.addressBook[chainId]) {
-    return [];
-  }
-  return Object.values(state.metamask.addressBook[chainId]);
-}
+export const getAddressBook = createSelector(
+  getCurrentChainId,
+  (state) => state.metamask.addressBook,
+  (chainId, addressBook) => {
+    if (!addressBook[chainId]) {
+      return EMPTY_ARRAY;
+    }
+    return Object.values(addressBook[chainId]);
+  },
+);
 
-export function getCompleteAddressBook(state) {
-  const addresses = state.metamask.addressBook;
-  const addressWithChainId = Object.entries(addresses)
-    .filter(([chainId, _]) => chainId !== '*')
-    .map(([chainId, addresse]) =>
-      Object.values(addresse).map((address) => ({
-        ...address,
-        chainId,
-      })),
-    )
-    .flat();
-  return addressWithChainId;
-}
-
-export function getEnsResolutionByAddress(state, address) {
-  if (state.metamask.ensResolutionsByAddress[address]) {
-    const ensResolution = state.metamask.ensResolutionsByAddress[address];
-    // ensResolution is a punycode encoded string hence toUnicode is used to decode it from same package
-    const normalizedEnsResolution = toUnicode(ensResolution);
-    return normalizedEnsResolution;
-  }
-
-  const entry =
-    getAddressBookEntry(state, address) ||
-    getInternalAccountByAddress(state, address);
-
-  return entry?.name || '';
-}
+export const getCompleteAddressBook = createShallowResultSelector(
+  (state) => state.metamask.addressBook,
+  (addresses) =>
+    Object.entries(addresses)
+      .filter(([chainId, _]) => chainId !== '*')
+      .map(([chainId, addresse]) =>
+        Object.values(addresse).map((address) => ({
+          ...address,
+          chainId,
+        })),
+      )
+      .flat(),
+);
 
 export function getAddressBookEntry(state, address) {
   const addressBook = getCompleteAddressBook(state);
@@ -1238,21 +1204,21 @@ export function getAccountName(accounts, accountAddress) {
   return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
 
-export function accountsWithSendEtherInfoSelector(state) {
-  const accounts = getMetaMaskAccounts(state);
-  const internalAccounts = getInternalAccounts(state);
-
-  const accountsWithSendEtherInfo = Object.values(internalAccounts).map(
-    (internalAccount) => {
-      return {
-        ...internalAccount,
-        ...accounts[internalAccount.address],
-      };
-    },
-  );
-
-  return accountsWithSendEtherInfo;
-}
+export const accountsWithSendEtherInfoSelector = createSelector(
+  getMetaMaskAccounts,
+  getInternalAccounts,
+  (accounts, internalAccounts) => {
+    const accountsWithSendEtherInfo = internalAccounts.map(
+      (internalAccount) => {
+        return {
+          ...internalAccount,
+          ...accounts[internalAccount.address],
+        };
+      },
+    );
+    return accountsWithSendEtherInfo;
+  },
+);
 
 export const getAccountsWithLabels = createSelector(
   getMetaMaskAccountsOrdered,
@@ -1277,22 +1243,28 @@ export const getAccountsWithLabels = createSelector(
   },
 );
 
-export function getCurrentAccountWithSendEtherInfo(state) {
-  const { address: currentAddress } = getSelectedInternalAccount(state);
-  const accounts = accountsWithSendEtherInfoSelector(state);
+export const getCurrentAccountWithSendEtherInfo = createSelector(
+  getSelectedInternalAccount,
+  accountsWithSendEtherInfoSelector,
+  ({ address: currentAddress }, accounts) => {
+    return getAccountByAddress(accounts, currentAddress);
+  },
+);
 
-  return getAccountByAddress(accounts, currentAddress);
-}
-export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
-  const accounts = accountsWithSendEtherInfoSelector(state);
-  return getAccountByAddress(accounts, targetAddress);
-}
+export const getTargetAccountWithSendEtherInfo =
+  createParameterizedShallowEqualSelector(10)(
+    accountsWithSendEtherInfoSelector,
+    (_, targetAddress) => targetAddress,
+    (accounts, targetAddress) => {
+      return getAccountByAddress(accounts, targetAddress);
+    },
+  );
 
 export function getCurrentEthBalance(state) {
   return getCurrentAccountWithSendEtherInfo(state)?.balance;
 }
 
-export const getNetworkConfigurationIdByChainId = createSelector(
+export const getNetworkConfigurationIdByChainId = createResultEqualSelector(
   (state) => state.metamask.networkConfigurationsByChainId,
   (networkConfigurationsByChainId) =>
     Object.entries(networkConfigurationsByChainId).reduce(
@@ -1304,28 +1276,6 @@ export const getNetworkConfigurationIdByChainId = createSelector(
       },
       {},
     ),
-);
-
-/**
- * @type (state: any, chainId: string) => import('@metamask/network-controller').NetworkConfiguration
- */
-export const selectNetworkConfigurationByChainId = createSelector(
-  getNetworkConfigurationsByChainId,
-  (_state, chainId) => chainId,
-  (networkConfigurationsByChainId, chainId) =>
-    networkConfigurationsByChainId[chainId],
-);
-
-export const selectDefaultRpcEndpointByChainId = createSelector(
-  selectNetworkConfigurationByChainId,
-  (networkConfiguration) => {
-    if (!networkConfiguration) {
-      return undefined;
-    }
-
-    const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
-    return rpcEndpoints[defaultRpcEndpointIndex];
-  },
 );
 
 /**
@@ -1353,7 +1303,9 @@ export const selectConversionRateByChainId = createSelector(
   },
 );
 
-export const selectNftsByChainId = createSelector(
+export const selectNftsByChainId = createParameterizedSelector(
+  NFT_SELECTOR_CACHE_SIZE,
+)(
   getSelectedInternalAccount,
   (state) => state.metamask.allNfts,
   (_state, chainId) => chainId,
@@ -1373,30 +1325,35 @@ export const selectNetworkIdentifierByChainId = createSelector(
   },
 );
 
-export function getRequestingNetworkInfo(state, chainIds) {
-  // If chainIds is undefined, set it to an empty array
-  let processedChainIds = chainIds === undefined ? [] : chainIds;
-
-  // If chainIds is a string, convert it to an array
-  if (typeof processedChainIds === 'string') {
-    processedChainIds = [processedChainIds];
+function normalizeRequestingChainIds(chainIds) {
+  if (chainIds === undefined) {
+    return EMPTY_ARRAY;
   }
 
-  // Ensure chainIds is flattened if it contains nested arrays
-  const flattenedChainIds = processedChainIds.flat();
+  if (typeof chainIds === 'string') {
+    return [chainIds];
+  }
 
-  // Filter the networks to include only those with chainId in flattenedChainIds
-  return Object.values(getNetworkConfigurationsByChainId(state)).filter(
-    (network) => flattenedChainIds.includes(network.chainId),
-  );
+  return chainIds.flat();
 }
+
+export const getRequestingNetworkInfo = createParameterizedShallowEqualSelector(
+  20,
+)(
+  getNetworkConfigurationsByChainId,
+  (_, chainIds) => normalizeRequestingChainIds(chainIds),
+  (networkConfigurationsByChainId, flattenedChainIds) =>
+    Object.values(networkConfigurationsByChainId).filter((network) =>
+      flattenedChainIds.includes(network.chainId),
+    ),
+);
 
 export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
 }
 
 export function getSlides(state) {
-  return state.metamask.slides || [];
+  return state.metamask.slides || EMPTY_ARRAY;
 }
 
 export function getUnapprovedTxCount(state) {
@@ -1404,8 +1361,8 @@ export function getUnapprovedTxCount(state) {
   return Object.keys(unapprovedTxs).length;
 }
 
-export const getUnapprovedConfirmations = createDeepEqualSelector(
-  (state) => state.metamask.pendingApprovals || {},
+export const getUnapprovedConfirmations = createShallowResultSelector(
+  (state) => state.metamask.pendingApprovals ?? EMPTY_OBJECT,
   (pendingApprovals) => Object.values(pendingApprovals),
 );
 
@@ -1417,27 +1374,27 @@ export const getUnapprovedTemplatedConfirmations = createResultEqualSelector(
     ),
 );
 
-export function getSuggestedTokens(state) {
-  return (
-    getUnapprovedConfirmations(state)?.filter(({ type, requestData }) => {
+export const getSuggestedTokens = createShallowResultSelector(
+  getUnapprovedConfirmations,
+  (unapprovedConfirmations) =>
+    unapprovedConfirmations.filter(({ type, requestData }) => {
       return (
         type === ApprovalType.WatchAsset &&
         requestData?.asset?.tokenId === undefined
       );
-    }) || []
-  );
-}
+    }),
+);
 
-export function getSuggestedNfts(state) {
-  return (
-    getUnapprovedConfirmations(state)?.filter(({ requestData, type }) => {
+export const getSuggestedNfts = createSelector(
+  getUnapprovedConfirmations,
+  (unapprovedConfirmations) =>
+    unapprovedConfirmations.filter(({ requestData, type }) => {
       return (
         type === ApprovalType.WatchAsset &&
         requestData?.asset?.tokenId !== undefined
       );
-    }) || []
-  );
-}
+    }),
+);
 
 export function getIsMainnet(state) {
   const chainId = getCurrentChainId(state);
@@ -1452,9 +1409,6 @@ export function getIsLineaMainnet(state) {
 export function getIsTestnet(state) {
   const chainId = getCurrentChainId(state);
   return TEST_CHAINS.includes(chainId);
-}
-export function getPreferences({ metamask }) {
-  return metamask.preferences ?? {};
 }
 
 export function getShowTestNetworks(state) {
@@ -1531,9 +1485,10 @@ export function getTokenSortConfig(state) {
 /**
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
+ *
  */
 // @deprecated('Use `getEnabledNetworks` instead')
-export const getTokenNetworkFilter = createDeepEqualSelector(
+export const getTokenNetworkFilter = createSelector(
   getCurrentChainId,
   getPreferences,
   getIsEvmMultichainNetworkSelected,
@@ -1607,6 +1562,16 @@ export function getShowExtensionInFullSizeView(state) {
   return Boolean(showExtensionInFullSizeView);
 }
 
+export function selectShowTickerWidget(state) {
+  const { showTickerWidget = true } = getPreferences(state);
+  return Boolean(showTickerWidget);
+}
+
+export function selectIsTickerWidgetFeatureEnabled(state) {
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+  return getBooleanFeatureFlag(remoteFeatureFlags?.cashtagInjection, false);
+}
+
 export function getTestNetworkBackgroundColor(state) {
   const currentNetwork = getProviderConfig(state).ticker;
   switch (true) {
@@ -1665,19 +1630,25 @@ const getEmbeddableSvg = memoize(
   (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
 );
 
-export function getTargetSubjectMetadata(state, origin) {
-  const metadata = getSubjectMetadata(state)[origin];
+export const getTargetSubjectMetadata = createParameterizedDeepEqualSelector(
+  30,
+)(
+  getSubjectMetadata,
+  (_state, origin) => origin,
+  (subjectMetadata, origin) => {
+    const metadata = subjectMetadata[origin];
 
-  if (metadata?.subjectType === SubjectType.Snap) {
-    const { svgIcon, ...remainingMetadata } = metadata;
-    return {
-      ...remainingMetadata,
-      iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
-    };
-  }
+    if (metadata?.subjectType === SubjectType.Snap) {
+      const { svgIcon, ...remainingMetadata } = metadata;
+      return {
+        ...remainingMetadata,
+        iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
+      };
+    }
 
-  return metadata;
-}
+    return metadata;
+  },
+);
 
 /**
  * Input selector for reusing the same state object.
@@ -1804,9 +1775,12 @@ export const getAnySnapUpdateAvailable = createSelector(
 
 /**
  * Return if the snap branding should show in the UI.
+ *
+ * Parameterized selector for snap-specific branding visibility.
  */
-export const getHideSnapBranding = createDeepEqualSelector(
-  [selectInstalledSnaps, selectSnapId],
+export const getHideSnapBranding = createParameterizedSelector(10)(
+  selectInstalledSnaps,
+  selectSnapId,
   (installedSnaps, snapId) => {
     return installedSnaps[snapId]?.hideSnapBranding;
   },
@@ -1860,6 +1834,8 @@ const selectOrigins = (_state, origins) => origins;
  * @param state - Redux state object.
  * @param origins - Object containing keys that represent subject's identification.
  * @returns Key:value object containing metadata attached to each subject key.
+ *
+ * Deep-equal memo: builds a new origins→metadata map each run; inputs can be referentially unstable.
  */
 export const getMultipleTargetsSubjectMetadata = createDeepEqualSelector(
   [rawStateSelector, selectOrigins],
@@ -1987,71 +1963,112 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * selected account's ETH balance, as expected by the Swaps API.
  */
 
-export function getSwapsDefaultToken(state, overrideChainId = null) {
-  const selectedAccount = getSelectedAccount(state);
-  const balance = selectedAccount?.balance;
-  const currentChainId = getCurrentChainId(state);
+export const getSwapsDefaultToken = createSelector(
+  (state) => getSelectedAccount(state),
+  (state) => getCurrentChainId(state),
+  (_state, overrideChainId = null) => overrideChainId,
+  (selectedAccount, currentChainId, overrideChainId) => {
+    const balance = selectedAccount?.balance;
+    const chainId = overrideChainId ?? currentChainId;
+    const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
-  const chainId = overrideChainId ?? currentChainId;
-  const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
-
-  return {
-    ...defaultTokenObject,
-    chainId,
-    balance: hexToDecimal(balance),
-    string: getValueFromWeiHex({
-      value: balance,
-      numberOfDecimals: 4,
-      toDenomination: 'ETH',
-    }),
-  };
-}
+    return {
+      ...defaultTokenObject,
+      chainId,
+      balance: hexToDecimal(balance),
+      string: getValueFromWeiHex({
+        value: balance,
+        numberOfDecimals: 4,
+        toDenomination: 'ETH',
+      }),
+    };
+  },
+);
 
 /**
  * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
  * @param state - The Redux state
  * @param {string} [overrideChainId] - (Optional) The chainId to check
  * @returns {boolean} Whether the chainId is a swaps chain
+ *
+ * Parameterized selector with per-chainId LRU cache to prevent cache thrashing
+ * when called with different chainIds during multi-chain operations.
  */
-export function getIsSwapsChain(state, overrideChainId) {
-  const currentChainId = getCurrentChainId(state);
-  const chainId = overrideChainId ?? currentChainId;
-  const isDevelopment =
-    process.env.METAMASK_ENVIRONMENT === 'development' ||
-    process.env.METAMASK_ENVIRONMENT === 'testing';
-  return isDevelopment
-    ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
-    : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
-}
+export const getIsSwapsChain = createParameterizedSelector(20)(
+  getCurrentChainId,
+  (_, overrideChainId) => overrideChainId,
+  (currentChainId, overrideChainId) => {
+    const chainId = overrideChainId ?? currentChainId;
+    const isDevelopment =
+      process.env.METAMASK_ENVIRONMENT === 'development' ||
+      process.env.METAMASK_ENVIRONMENT === 'testing';
+    return isDevelopment
+      ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
+      : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
+  },
+);
 
 export function selectHasBridgeQuotes(state) {
   return Boolean(Object.values(state.metamask.quotes || {}).length);
 }
 
 /**
- * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
+ * Batch sell fetches quotes through the same BridgeController state as a
+ * regular swap/bridge (`state.metamask.quotes`), so a lingering batch-sell
+ * quote also makes {@link selectHasBridgeQuotes} return `true`. Every quote
+ * fetched for batch sell carries `featureId: FeatureId.BATCH_SELL`, which
+ * lets callers tell the two apart, e.g. so a popup reopened with a stale
+ * batch-sell quote doesn't get redirected to the generic swap page.
+ *
  * @param state - The Redux state
- * @param overrideChainId - The chainId to check
- * @returns {boolean} Whether the chainId is a bridge chain
+ * @returns {boolean} Whether any bridge quote in state came from batch sell
  */
-export function getIsBridgeChain(state, overrideChainId) {
+export function selectHasBatchSellQuotes(state) {
+  return Object.values(state.metamask.quotes || {}).some(
+    (quote) => quote?.featureId === FeatureId.BATCH_SELL,
+  );
+}
+
+/**
+ * Internal helper that returns the effective default chain ID for bridge checks.
+ * For EVM networks, returns the Hex chainId. For non-EVM, returns the CAIP chainId.
+ *
+ * @param state - The Redux state
+ * @returns {string} The effective chain ID
+ */
+const getBridgeDefaultChainId = (state) => {
   const account = getSelectedInternalAccount(state);
   const { chainId: selectedMultiChainId, isEvmNetwork } = getMultichainNetwork(
     state,
     account,
   );
-
-  let currentChainId = selectedMultiChainId;
-
-  // While we do not support the multichain network on EVM chains (ex: mainnet is epi155:1), use the old chainId
+  // While we do not support the multichain network on EVM chains (ex: mainnet is eip155:1), use the old chainId
   if (isEvmNetwork) {
-    currentChainId = getCurrentChainId(state);
+    return getCurrentChainId(state);
   }
+  return selectedMultiChainId;
+};
 
-  const chainId = overrideChainId ?? currentChainId;
-  return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
-}
+/**
+ * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
+ * @param state - The Redux state
+ * @param overrideChainId - The chainId to check
+ * @returns {boolean} Whether the chainId is a bridge chain
+ *
+ * Parameterized selector with per-chainId LRU cache to prevent cache thrashing
+ * when called with different chainIds during multi-chain operations.
+ */
+export const getIsBridgeChain = createParameterizedSelector(20)(
+  getBridgeDefaultChainId,
+  (_, overrideChainId) => overrideChainId,
+  (defaultChainId, overrideChainId) => {
+    const chainId = overrideChainId ?? defaultChainId;
+    return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
+  },
+);
 
+// Deep-equal memo: getRemoteFeatureFlags returns a new merged object when any flag changes;
+// only bridgeConfig should invalidate consumers of bridge feature flags.
 const getBridgeFeatureFlags = createDeepEqualSelector(
   [(state) => getRemoteFeatureFlags(state).bridgeConfig],
   (bridgeConfig) => {
@@ -2078,13 +2095,13 @@ export function getNativeCurrencyForChain(chainId) {
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId] ?? undefined;
 }
 
-export function selectERC20TokensByChain(state) {
-  return state.metamask.tokensChainsCache;
-}
+export const selectERC20TokensByChain = (state) =>
+  state.metamask.tokensChainsCache;
 
+// Deep-equal memo: `|| {}` yields a new empty object when no cached token list for the chain.
 const selectERC20Tokens = createDeepEqualSelector(
   getCurrentChainId,
-  (state) => state.metamask.tokensChainsCache,
+  selectERC20TokensByChain,
   (chainId, erc20Tokens) => erc20Tokens?.[chainId]?.data || {},
 );
 
@@ -2120,14 +2137,18 @@ export const getMetadataContractName = createSelector(
 
 export const getTxData = (state) => state.confirmTransaction.txData;
 
-export const getUnapprovedTransaction = createDeepEqualSelector(
-  (state) => getUnapprovedTransactions(state),
+const unapprovedTransactionSelectorFactory =
+  createParameterizedDeepEqualSelector(20);
+
+export const getUnapprovedTransaction = unapprovedTransactionSelectorFactory(
+  getUnapprovedTransactions,
   (_, transactionId) => transactionId,
-  (unapprovedTxs, transactionId) =>
-    Object.values(unapprovedTxs).find(({ id }) => id === transactionId),
+  (unapprovedTxs, transactionId) => unapprovedTxs?.[transactionId],
 );
 
-export const getTransaction = createDeepEqualSelector(
+const transactionSelectorFactory = createParameterizedDeepEqualSelector(50);
+
+export const getTransaction = transactionSelectorFactory(
   getCurrentNetworkTransactions,
   (_, transactionId) => transactionId,
   (transactions, transactionId) => {
@@ -2135,25 +2156,31 @@ export const getTransaction = createDeepEqualSelector(
   },
 );
 
-export const getFullTxData = createDeepEqualSelector(
+const fullTxDataSelectorFactory = createParameterizedDeepEqualSelector(20);
+
+export const getFullTxData = fullTxDataSelectorFactory(
   getTxData,
   (state, transactionId, status) => {
-    if (status === TransactionStatus.unapproved) {
-      return getUnapprovedTransaction(state, transactionId) ?? {};
+    const transaction =
+      status === TransactionStatus.unapproved
+        ? getUnapprovedTransaction(state, transactionId)
+        : getTransaction(state, transactionId);
+    if (!transaction?.id) {
+      return EMPTY_OBJECT;
     }
-    return getTransaction(state, transactionId);
+    // Snapshot for memoization: child selectors may return live transaction
+    // objects that mutate in place, which reference/deep input checks miss.
+    return cloneDeep(transaction);
   },
+  (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
   (
     _state,
     _transactionId,
     _status,
-    customTxParamsData,
+    _customTxParamsData,
     hexTransactionAmount,
-  ) => ({
-    customTxParamsData,
-    hexTransactionAmount,
-  }),
-  (txData, transaction, { customTxParamsData, hexTransactionAmount }) => {
+  ) => hexTransactionAmount,
+  (txData, transaction, customTxParamsData, hexTransactionAmount) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       fullTxData.simulationFails = { ...transaction.simulationFails };
@@ -2178,6 +2205,16 @@ export const getFullTxData = createDeepEqualSelector(
     }
     return fullTxData;
   },
+  {
+    // Always re-run input selectors so in-place transaction mutations are visible.
+    // argsMemoize defaults to weakMapMemoize keyed by state reference, which skips
+    // input selectors when the Redux state object is unchanged.
+    argsMemoize: lruMemoize,
+    argsMemoizeOptions: {
+      maxSize: 1,
+      equalityCheck: () => false,
+    },
+  },
 );
 
 /**
@@ -2188,6 +2225,8 @@ export const getFullTxData = createDeepEqualSelector(
  * Retrieves the connected subjects for all addresses.
  *
  * @returns {AccountConnections}  The connected subjects for all addresses.
+ *
+ * Deep-equal memo: aggregates subjects + metadata into nested structures with unstable intermediate refs.
  */
 export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   getPermissionSubjects,
@@ -2212,14 +2251,14 @@ export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   },
 );
 
-const getAllConnectedAccounts = createSelector(
+const getAllConnectedAccounts = createShallowResultSelector(
   getConnectedSubjectsForAllAddresses,
   (connectedSubjects) => {
     return Object.keys(connectedSubjects);
   },
 );
 
-export const getConnectedSitesList = createSelector(
+export const getConnectedSitesList = createResultEqualSelector(
   getConnectedSubjectsForAllAddresses,
   getInternalAccounts,
   getAllConnectedAccounts,
@@ -2260,7 +2299,8 @@ export function getLocale(state) {
   return state.metamask.currentLocale;
 }
 
-export const getSnap = createDeepEqualSelector(
+// Parameterized selector with bounded snap ID cache.
+export const getSnap = createParameterizedSelector(20)(
   getSnaps,
   (_, snapId) => snapId,
   (snaps, snapId) => {
@@ -2273,6 +2313,8 @@ export const getSnap = createDeepEqualSelector(
  *
  * @param {object} state - The Redux state object.
  * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
+ *
+ * Deep-equal memo: reduce builds a fresh metadata map; locale/snaps inputs can be new refs.
  */
 export const getSnapsMetadata = createDeepEqualSelector(
   getLocale,
@@ -2305,20 +2347,26 @@ export const getSnapsMetadata = createDeepEqualSelector(
  * @param {object} state - The Redux state object.
  * @param {string} snapId - The snap ID to get the metadata for.
  * @returns {object} An object containing the snap name and description.
+ *
+ * Parameterized selector with bounded snap ID cache.
  */
-export const getSnapMetadata = createDeepEqualSelector(
+const SNAP_METADATA_FALLBACK = Object.freeze({ name: null });
+
+export const getSnapMetadata = createParameterizedSelector(20)(
   getSnapsMetadata,
   (_, snapId) => snapId,
   (metadata, snapId) => {
     return (
       metadata[snapId] ?? {
+        ...SNAP_METADATA_FALLBACK,
         name: snapId ? stripSnapPrefix(snapId) : null,
       }
     );
   },
 );
 
-const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
+// Selector for enabled snaps.
+const getEnabledSnaps = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).reduce((acc, cur) => {
     if (cur.enabled) {
       acc[cur.id] = cur;
@@ -2327,19 +2375,18 @@ const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
   }, {});
 });
 
-export const getPreinstalledSnaps = createDeepEqualSelector(
-  getSnaps,
-  (snaps) => {
-    return Object.values(snaps).reduce((acc, snap) => {
-      if (snap.preinstalled) {
-        acc[snap.id] = snap;
-      }
-      return acc;
-    }, {});
-  },
-);
+// Selector for preinstalled snaps.
+export const getPreinstalledSnaps = createSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).reduce((acc, snap) => {
+    if (snap.preinstalled) {
+      acc[snap.id] = snap;
+    }
+    return acc;
+  }, {});
+});
 
-const getSettingsPageSnaps = createDeepEqualSelector(
+// Selector for settings page snaps.
+const getSettingsPageSnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2352,7 +2399,8 @@ const getSettingsPageSnaps = createDeepEqualSelector(
   },
 );
 
-export const getNameLookupSnapsIds = createDeepEqualSelector(
+// Selector for name lookup snap IDs.
+export const getNameLookupSnapsIds = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2362,7 +2410,8 @@ export const getNameLookupSnapsIds = createDeepEqualSelector(
   },
 );
 
-export const getNameLookupSnaps = createDeepEqualSelector(
+// Selector for name lookup snaps and permissions.
+export const getNameLookupSnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2375,12 +2424,14 @@ export const getNameLookupSnaps = createDeepEqualSelector(
   },
 );
 
-export const getSettingsPageSnapsIds = createDeepEqualSelector(
+// Selector for settings page snap IDs.
+export const getSettingsPageSnapsIds = createSelector(
   getSettingsPageSnaps,
   (snaps) => snaps.map((snap) => snap.id),
 );
 
-export const getNotifySnaps = createDeepEqualSelector(
+// Selector for notify-enabled snaps.
+export const getNotifySnaps = createSelector(
   getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
@@ -2394,8 +2445,10 @@ export const getNotifySnaps = createDeepEqualSelector(
  *
  * @param {object} state - The Redux state object.
  * @returns {object[]} An array of notify snaps that are not preinstalled.
+ *
+ * Selector for non-preinstalled notify-enabled snaps.
  */
-export const getThirdPartyNotifySnaps = createDeepEqualSelector(
+export const getThirdPartyNotifySnaps = createSelector(
   getNotifySnaps,
   (snaps) => snaps.filter((snap) => !snap.preinstalled),
 );
@@ -2404,7 +2457,8 @@ function getAllSnapInsights(state) {
   return state.metamask.insights;
 }
 
-export const getSnapInsights = createDeepEqualSelector(
+// Parameterized selector with bounded insight ID cache.
+export const getSnapInsights = createParameterizedSelector(10)(
   getAllSnapInsights,
   (_, id) => id,
   (insights, id) => insights?.[id],
@@ -2466,6 +2520,7 @@ export const getNumberOfAllUnapprovedTransactionsAndMessages = createSelector(
     Object.keys(unapprovedTypedMessages ?? {}).length,
 );
 
+// Deep-equal memo: builds a new current-network view object from configs + chain id.
 export const getCurrentNetwork = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2514,6 +2569,7 @@ export const getCurrentNetwork = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: wraps selected network + client id in a new object each run.
 export const getSelectedNetwork = createDeepEqualSelector(
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
@@ -2691,6 +2747,7 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
   );
 }
 
+// Deep-equal memo: reduce filters configs into a new enabled-networks map each evaluation.
 export const getAllEnabledNetworks = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getShowTestNetworks,
@@ -2727,6 +2784,8 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
  *   - If `PORTFOLIO_VIEW` is not enabled, the selector returns only the `currentChainId`.
  *   - Otherwise, it includes all chains from `networkConfigurations`, excluding
  *     `TEST_CHAINS`, while ensuring the `currentChainId` is included.
+ *
+ * Deep-equal memo: returns a filtered chain-id array; keys/filter allocate new refs.
  */
 // @deprecated('Use `getEnabledChainIds` instead')
 export const getAllChainsToPoll = createDeepEqualSelector(
@@ -2745,6 +2804,7 @@ export const getAllChainsToPoll = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: same chain-id polling derivation; unstable array identity from filters.
 // @deprecated('Use `getEnabledChainIds` instead')
 export const getChainIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
@@ -2770,6 +2830,7 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: reduce returns new client-id array when configs are logically unchanged.
 // @deprecated('Use `getEnabledNetworkClientIds` instead')
 export const getNetworkClientIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
@@ -2814,26 +2875,17 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
  * @param {*} state
- * @returns {{maxBaseFee: string, priorityFee: string} | undefined}
+ * @returns {{userFeeLevel: string, maxBaseFee?: string, priorityFee?: string, gasPrice?: string} | undefined}
  */
 export function getAdvancedGasFeeValues(state) {
-  // This will not work when we switch to supporting multi-chain.
-  // There are four non-test files that use this selector.
-  // advanced-gas-fee-defaults
-  // base-fee-input
-  // priority-fee-input
-  // useGasItemFeeDetails
-  // The first three are part of the AdvancedGasFeePopover
-  // The latter is used by the EditGasPopover
-  // Both of those are used in Confirmations as well as transaction-list-item
-  // All of the call sites have access to the GasFeeContext, which has a
-  // transaction object set on it, but there are currently no guarantees that
-  // the transaction has a chainId associated with it. To have this method
-  // support multichain we'll need a reliable way for the chainId of the
-  // transaction being modified to be available to all callsites and either
-  // pass it in to the selector as a second parameter, or access it at the
-  // callsite.
-  return state.metamask.advancedGasFee[getCurrentChainId(state)];
+  const selectedAccount = getSelectedInternalAccount(state);
+  const account = selectedAccount?.address?.toLowerCase();
+
+  if (!account) {
+    return undefined;
+  }
+
+  return state.metamask.advancedGasFee[getCurrentChainId(state)]?.[account];
 }
 
 /**
@@ -2923,6 +2975,65 @@ export function getUsePhishDetect(state) {
 }
 
 /**
+ * Checks if a passkey is registered for unlock
+ *
+ * @param {*} state
+ * @returns {boolean}
+ */
+export function getIsPasskeyRegistered(state) {
+  return Boolean(state.metamask.passkeyRecord);
+}
+
+/**
+ * Passkey vault wrapping key derivation method from the enrolled record.
+ *
+ * @param {object} state - Redux state
+ * @returns {'prf' | 'userHandle' | undefined}
+ */
+export function getPasskeyDerivationMethod(state) {
+  return state.metamask?.passkeyRecord?.keyDerivation?.method;
+}
+
+/**
+ * Passkey authenticator AAGUID from the enrolled credential.
+ *
+ * @param {object} state - Redux state
+ * @returns {string | undefined}
+ */
+export function getPasskeyAuthenticatorId(state) {
+  return state.metamask?.passkeyRecord?.credential?.aaguid;
+}
+
+/**
+ * True when the enrolled passkey's AAGUID is in the sidepanel-incompatible set
+ * (defer passkey flows to a normal browser tab when also in sidepanel).
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsEnrolledPasskeyIncompatibleWithSidepanel(state) {
+  return isPasskeyAaguidIncompatibleWithSidepanel(
+    state.metamask.passkeyRecord?.credential?.aaguid,
+  );
+}
+
+/**
+ * Checks if the passkey feature is available
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsPasskeyFeatureAvailable(state) {
+  return Boolean(
+    getIsPasskeyFeatureEnabled() &&
+    isWebAuthnSupported() &&
+    !getIsSocialLoginFlow(state) &&
+    !isFirefoxBrowser() &&
+    getDeviceType() !== DEVICE_TYPE.MOBILE,
+  );
+}
+
+/**
  * Gets the cached address security alert response for a given address
  *
  * @param {*} state
@@ -2958,7 +3069,7 @@ export function getUrlScanCacheResult(state, hostname) {
  * @param {*} state
  * @returns The token scan cache object
  */
-function getTokenScanCache(state) {
+export function getTokenScanCache(state) {
   return state.metamask.tokenScanCache;
 }
 
@@ -2969,29 +3080,33 @@ function getTokenScanCache(state) {
  * @param {string} chainId
  * @param {string[]} tokenAddresses
  * @returns {Record<string, TokenScanCacheResult>}
+ *
  */
-export const getTokenScanResultsForAddresses = createDeepEqualSelector(
-  getTokenScanCache,
-  (_state, chainId) => chainId,
-  (_state, _chainId, tokenAddresses) => tokenAddresses,
-  (tokenScanCache, chainId, tokenAddresses) => {
-    if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
-      return {};
-    }
-
-    const results = {};
-    tokenAddresses.forEach((tokenAddress) => {
-      if (tokenAddress) {
-        const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
-        if (tokenScanCache?.[cacheKey]) {
-          results[cacheKey] = tokenScanCache[cacheKey];
-        }
+export const getTokenScanResultsForAddresses =
+  createParameterizedShallowEqualSelector(
+    TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE,
+  )(
+    getTokenScanCache,
+    (_state, chainId) => chainId,
+    (_state, _chainId, tokenAddresses) => tokenAddresses,
+    (tokenScanCache, chainId, tokenAddresses) => {
+      if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
+        return {};
       }
-    });
 
-    return results;
-  },
-);
+      const results = {};
+      tokenAddresses.forEach((tokenAddress) => {
+        if (tokenAddress) {
+          const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
+          if (tokenScanCache?.[cacheKey]) {
+            results[cacheKey] = tokenScanCache[cacheKey];
+          }
+        }
+      });
+
+      return results;
+    },
+  );
 
 /**
  * Get the state of the `addSnapAccountEnabled` flag.
@@ -3028,9 +3143,7 @@ export const getIsDefiPositionsEnabled = createSelector(
   (remoteFeatureFlags) =>
     Boolean(
       remoteFeatureFlags[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
-        DEFAULT_FEATURE_FLAG_VALUES[
-          FeatureFlagNames.AssetsDefiPositionsEnabled
-        ],
+      DEFAULT_FEATURE_FLAG_VALUES[FeatureFlagNames.AssetsDefiPositionsEnabled],
     ),
 );
 
@@ -3078,52 +3191,50 @@ export function getGasFeesSponsoredNetworkEnabled(state) {
   return gasFeesSponsoredNetwork;
 }
 
-export function getBlockExplorerLinkText(
-  state,
-  accountDetailsModalComponent = false,
-) {
-  const isCustomNetwork = getIsCustomNetwork(state);
-  const rpcPrefs = getRpcPrefsForCurrentProvider(state);
+export const getBlockExplorerLinkText = createParameterizedSelector(10)(
+  getIsCustomNetwork,
+  getRpcPrefsForCurrentProvider,
+  (_state, accountDetailsModalComponent = false) =>
+    accountDetailsModalComponent ?? false,
+  (isCustomNetwork, rpcPrefs, accountDetailsModalComponent) => {
+    let blockExplorerLinkText = {
+      firstPart: 'addBlockExplorer',
+      secondPart: '',
+    };
 
-  let blockExplorerLinkText = {
-    firstPart: 'addBlockExplorer',
-    secondPart: '',
-  };
+    if (rpcPrefs.blockExplorerUrl) {
+      blockExplorerLinkText = accountDetailsModalComponent
+        ? {
+            firstPart: 'blockExplorerView',
+            secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
+          }
+        : {
+            firstPart: 'viewinExplorer',
+            secondPart: 'blockExplorerAccountAction',
+          };
+    } else if (isCustomNetwork === false) {
+      blockExplorerLinkText = accountDetailsModalComponent
+        ? { firstPart: 'etherscanViewOn', secondPart: '' }
+        : {
+            firstPart: 'viewOnEtherscan',
+            secondPart: 'blockExplorerAccountAction',
+          };
+    }
 
-  if (rpcPrefs.blockExplorerUrl) {
-    blockExplorerLinkText = accountDetailsModalComponent
-      ? {
-          firstPart: 'blockExplorerView',
-          secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
-        }
-      : {
-          firstPart: 'viewinExplorer',
-          secondPart: 'blockExplorerAccountAction',
-        };
-  } else if (isCustomNetwork === false) {
-    blockExplorerLinkText = accountDetailsModalComponent
-      ? { firstPart: 'etherscanViewOn', secondPart: '' }
-      : {
-          firstPart: 'viewOnEtherscan',
-          secondPart: 'blockExplorerAccountAction',
-        };
-  }
-
-  return blockExplorerLinkText;
-}
-export function getUnconnectedAccounts(state, activeTab) {
-  const accounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(
-    state,
-    activeTab,
-  );
-  const unConnectedAccounts = accounts.filter((account) => {
-    return !connectedAccounts.some(
-      (connectedAccount) => connectedAccount.address === account.address,
-    );
-  });
-  return unConnectedAccounts;
-}
+    return blockExplorerLinkText;
+  },
+);
+export const getUnconnectedAccounts = createSelector(
+  getMetaMaskAccountsOrdered,
+  getOrderedConnectedAccountsForConnectedDapp,
+  (accounts, connectedAccounts) =>
+    accounts.filter(
+      (account) =>
+        !connectedAccounts.some(
+          (connectedAccount) => connectedAccount.address === account.address,
+        ),
+    ),
+);
 
 export const getOrderedConnectedAccountsForActiveTab = createSelector(
   getOriginOfCurrentTab,
@@ -3235,8 +3346,8 @@ export const getUpdatedAndSortedAccounts = createSelector(
       .filter((account) =>
         Boolean(
           account &&
-            pinnedAddresses.includes(account.address) &&
-            !hiddenAddresses?.includes(account.address),
+          pinnedAddresses.includes(account.address) &&
+          !hiddenAddresses?.includes(account.address),
         ),
       );
 
@@ -3293,10 +3404,10 @@ export function getUseCurrencyRateCheck(state) {
 }
 
 export function getNames(state) {
-  return state.metamask.names || {};
+  return state.metamask.names ?? EMPTY_OBJECT;
 }
 export function getNameSources(state) {
-  return state.metamask.nameSources || {};
+  return state.metamask.nameSources ?? EMPTY_OBJECT;
 }
 
 export function getMetaMetricsDataDeletionId(state) {
@@ -3443,7 +3554,7 @@ export const getHdKeyringOfSelectedAccountOrPrimaryKeyring = createSelector(
  * @returns {object} The permissions subjects object.
  */
 export function getPermissionSubjects(state) {
-  return state.metamask.subjects || {};
+  return state.metamask.subjects || EMPTY_OBJECT;
 }
 
 /**
@@ -3460,12 +3571,6 @@ function getPermittedEVMAccounts(state, origin) {
   );
 }
 
-function getPermittedEVMChains(state, origin) {
-  return getEVMChainsFromPermission(
-    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
-  );
-}
-
 export const getAllPermittedAccounts = createParameterizedSelector(
   PERMITTED_ACCOUNTS_LRU_CACHE_SIZE,
 )(
@@ -3476,16 +3581,9 @@ export const getAllPermittedAccounts = createParameterizedSelector(
     const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
     return caip25Caveat
       ? getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value)
-      : [];
+      : EMPTY_ARRAY;
   },
 );
-
-function getAllPermittedScopes(state, origin) {
-  const caip25Permission = getCaip25PermissionFromSubject(
-    subjectSelector(state, origin),
-  );
-  return caip25Permission ? getAllScopesFromPermission(caip25Permission) : [];
-}
 
 /**
  * Selects the permitted accounts from the eth_accounts permission for the
@@ -3511,25 +3609,39 @@ export function getAllPermittedAccountsForSelectedTab(state, activeTab) {
   return getAllPermittedAccounts(state, activeTab);
 }
 
-export function getPermittedEVMChainsForSelectedTab(state, activeTab) {
-  return getPermittedEVMChains(state, activeTab);
-}
+export const getPermittedEVMChainsForSelectedTab =
+  createParameterizedShallowEqualSelector(30)(
+    subjectSelector,
+    (_state, activeTab) => activeTab,
+    (subject) => {
+      const caip25Permission = getCaip25PermissionFromSubject(subject);
+      return getEVMChainsFromPermission(caip25Permission);
+    },
+  );
 
-export function getAllPermittedChainsForSelectedTab(state, activeTab) {
-  const permittedScopes = getAllPermittedScopes(state, activeTab);
-  // our `endowment:caip25` permission can include a special class of `wallet` scopes,
-  // see https://github.com/ChainAgnostic/namespaces/tree/main/wallet &
-  // https://github.com/ChainAgnostic/namespaces/blob/main/wallet/caip2.md
-  // amongs the other chainId scopes. We want to exclude the `wallet` scopes here.
-  return permittedScopes.filter((caipChainId) => {
-    try {
-      const { namespace } = parseCaipChainId(caipChainId);
-      return namespace !== KnownCaipNamespace.Wallet;
-    } catch (err) {
-      return false;
-    }
-  });
-}
+export const getAllPermittedChainsForSelectedTab =
+  createParameterizedShallowEqualSelector(30)(
+    subjectSelector,
+    (_state, activeTab) => activeTab,
+    (subject) => {
+      const caip25Permission = getCaip25PermissionFromSubject(subject);
+      const permittedScopes = caip25Permission
+        ? getAllScopesFromPermission(caip25Permission)
+        : EMPTY_ARRAY;
+      // our `endowment:caip25` permission can include a special class of `wallet` scopes,
+      // see https://github.com/ChainAgnostic/namespaces/tree/main/wallet &
+      // https://github.com/ChainAgnostic/namespaces/blob/main/wallet/caip2.md
+      // amongs the other chainId scopes. We want to exclude the `wallet` scopes here.
+      return permittedScopes.filter((caipChainId) => {
+        try {
+          const { namespace } = parseCaipChainId(caipChainId);
+          return namespace !== KnownCaipNamespace.Wallet;
+        } catch (err) {
+          return false;
+        }
+      });
+    },
+  );
 
 /**
  * Returns a map of permitted accounts by origin for all origins.
@@ -3615,6 +3727,8 @@ export function getSubjectsWithSnapPermission(state, snapId) {
  * @param {object} state - The current state.
  * @returns {object} A mapping of addresses to a mapping of origins to
  * connected subject info.
+ *
+ * Deep-equal memo: permitted accounts array can be a new ref with the same addresses.
  */
 export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
   getPermittedEVMAccountsForCurrentTab,
@@ -3642,10 +3756,12 @@ function getEVMAccountsFromPermission(caip25Permission) {
 
 function getEVMChainsFromPermission(caip25Permission) {
   if (!caip25Permission) {
-    return [];
+    return EMPTY_ARRAY;
   }
   const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
-  return caip25Caveat ? getPermittedEthChainIds(caip25Caveat.value) : [];
+  return caip25Caveat
+    ? getPermittedEthChainIds(caip25Caveat.value)
+    : EMPTY_ARRAY;
 }
 
 function subjectSelector(state, origin) {
@@ -3680,7 +3796,6 @@ function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
   } = state;
 
   const permissionHistoryByAccount =
-    // eslint-disable-next-line camelcase
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
   const connectedAccounts = getPermittedEVMAccountsForSelectedTab(
@@ -3917,14 +4032,6 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
 );
 
 /**
- * @param {MetaMaskReduxState} state - The Redux state
- * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
- */
-export function getNetworkConnectionBanner(state) {
-  return state.metamask.networkConnectionBanner;
-}
-
-/**
  * Check if the device is offline.
  *
  * @param {MetaMaskReduxState} state - The Redux state
@@ -3945,6 +4052,22 @@ export function getPendingRedirectRoute(state) {
 }
 
 /**
+ * Get the last visited Perps route and the timestamp it was recorded.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state
+ * @returns {{ path: string, timestamp: number } | null} The last visited Perps route, or null if none.
+ */
+export function getLastVisitedPerpsRoute(state) {
+  const lastVisitedRoute = state.metamask?.lastVisitedRoute;
+  return lastVisitedRoute?.name === 'perps'
+    ? {
+        path: lastVisitedRoute.path,
+        timestamp: lastVisitedRoute.timestamp,
+      }
+    : null;
+}
+
+/**
  * Retrieves the deferred deep link from the MetaMask state.
  *
  * @param {MetaMaskReduxState} state - The Redux state object.
@@ -3953,3 +4076,35 @@ export function getPendingRedirectRoute(state) {
 export function getDeferredDeepLink(state) {
   return state.metamask?.deferredDeepLink || null;
 }
+
+/**
+ * Retrieves the deferred deep link parameters from the MetaMask state.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state object.
+ * @returns {Record<string, string>} The deferred deep link parameters if available, empty object otherwise.
+ */
+export const getDeferredDeepLinkParameters = createResultEqualSelector(
+  getDeferredDeepLink,
+  (deferredDeepLink) => {
+    if (!deferredDeepLink?.referringLink) {
+      return null;
+    }
+
+    const utmProperties = {};
+    try {
+      const url = new URL(deferredDeepLink.referringLink);
+
+      for (const utmParam of UTM_PARAMETERS) {
+        const value = url.searchParams.get(utmParam);
+        if (value) {
+          utmProperties[utmParam] = value;
+        }
+      }
+    } catch (error) {
+      log.error('Failed to parse deferred deep link:', deferredDeepLink, error);
+      return null;
+    }
+
+    return utmProperties;
+  },
+);

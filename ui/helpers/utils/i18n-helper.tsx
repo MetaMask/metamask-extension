@@ -29,7 +29,7 @@ export const getMessage = (
   );
 
   const join = hasReactSubstitutions
-    ? (parts: I18NSubstitution[]) => <span> {parts} </span>
+    ? (parts: I18NSubstitution[]) => <span> {parts as React.ReactNode[]} </span>
     : undefined;
 
   const onError = (error: Error) => {

@@ -3,9 +3,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
 import { TransactionGroupStatus } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/lib/contract-utils';
 
@@ -75,8 +73,7 @@ export function isLegacyTransaction(txParams) {
  * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
  * txMeta.status because txMeta.status does not reflect on-chain errors.
  *
- * @param {object} transaction - The txMeta object of a transaction.
- * @param {object} transaction.txReceipt - The transaction receipt.
+ * @param {import('@metamask/transaction-controller').TransactionMeta} transaction - The txMeta object of a transaction.
  * @returns {string}
  */
 export function getStatusKey(transaction) {

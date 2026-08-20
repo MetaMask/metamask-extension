@@ -33,7 +33,7 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../confirmation/templates', () => ({
+jest.mock('../confirmation/templates/approval-types', () => ({
   TEMPLATED_CONFIRMATION_APPROVAL_TYPES: ['wallet_addEthereumChain'],
 }));
 

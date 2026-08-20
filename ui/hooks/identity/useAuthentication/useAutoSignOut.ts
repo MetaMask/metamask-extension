@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getIsUnlocked } from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { getUseExternalServices } from '../../../selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 import { useSignOut } from './useSignOut';

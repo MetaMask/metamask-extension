@@ -12,6 +12,7 @@ import type {
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
   DeFiPositionsControllerState,
+  DeFiPositionsControllerV2State,
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
@@ -21,7 +22,6 @@ import type { AddressBookControllerState } from '@metamask/address-book-controll
 import type { ApprovalControllerState } from '@metamask/approval-controller';
 import type { BridgeControllerState } from '@metamask/bridge-controller';
 import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
-import type { EnsControllerState } from '@metamask/ens-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type { NetworkState } from '@metamask/network-controller';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
@@ -45,6 +45,7 @@ import type {
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { SignatureControllerState } from '@metamask/signature-controller';
 import type { PPOMState } from '@metamask/ppom-validator';
+import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { NameControllerState } from '@metamask/name-controller';
 import type { UserOperationControllerState } from '@metamask/user-operation-controller';
 import type { TransactionControllerState } from '@metamask/transaction-controller';
@@ -58,6 +59,8 @@ import type {
 } from '@metamask/notification-services-controller';
 import type { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
 import type { ConnectivityControllerState } from '@metamask/connectivity-controller';
+import type { NetworkConnectionBannerControllerState } from '@metamask/network-connection-banner-controller';
+import type { AnalyticsControllerState } from '@metamask/analytics-controller';
 
 import type { ClaimsControllerState } from '@metamask/claims-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
@@ -104,19 +107,12 @@ export type ControllerStatePropertiesEnumerated = {
   recoveryPhraseReminderHasBeenShown: AppStateControllerState['recoveryPhraseReminderHasBeenShown'];
   recoveryPhraseReminderLastShown: AppStateControllerState['recoveryPhraseReminderLastShown'];
   outdatedBrowserWarningLastShown: AppStateControllerState['outdatedBrowserWarningLastShown'];
-  nftsDetectionNoticeDismissed: AppStateControllerState['nftsDetectionNoticeDismissed'];
-  showTestnetMessageInDropdown: AppStateControllerState['showTestnetMessageInDropdown'];
-  showBetaHeader: AppStateControllerState['showBetaHeader'];
-  showPermissionsTour: AppStateControllerState['showPermissionsTour'];
-  showNetworkBanner: AppStateControllerState['showNetworkBanner'];
-  showAccountBanner: AppStateControllerState['showAccountBanner'];
   productTour?: AppStateControllerState['productTour'];
   showDownloadMobileAppSlide: AppStateControllerState['showDownloadMobileAppSlide'];
   trezorModel: AppStateControllerState['trezorModel'];
   currentPopupId?: AppStateControllerState['currentPopupId'];
   onboardingDate: AppStateControllerState['onboardingDate'];
   lastViewedUserSurvey: AppStateControllerState['lastViewedUserSurvey'];
-  isRampCardClosed: AppStateControllerState['isRampCardClosed'];
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
   pna25Acknowledged: AppStateControllerState['pna25Acknowledged'];
@@ -125,8 +121,8 @@ export type ControllerStatePropertiesEnumerated = {
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
   canTrackWalletFundsObtained: AppStateControllerState['canTrackWalletFundsObtained'];
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
+  lastQrScanCompletedSuccessfully: AppStateControllerState['lastQrScanCompletedSuccessfully'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
-  surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
   shieldSubscriptionError: AppStateControllerState['shieldSubscriptionError'];
   shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
   shieldPausedToastLastClickedOrClosed: AppStateControllerState['shieldPausedToastLastClickedOrClosed'];
@@ -135,6 +131,7 @@ export type ControllerStatePropertiesEnumerated = {
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
   hasShownMultichainAccountsIntroModal: AppStateControllerState['hasShownMultichainAccountsIntroModal'];
+  perpsTabBadgeSeen: AppStateControllerState['perpsTabBadgeSeen'];
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
@@ -147,12 +144,13 @@ export type ControllerStatePropertiesEnumerated = {
   lastUpdatedFromVersion: AppStateControllerState['lastUpdatedFromVersion'];
   showShieldEntryModalOnce: AppStateControllerState['showShieldEntryModalOnce'];
   pendingRedirectRoute: AppStateControllerState['pendingRedirectRoute'];
+  lastVisitedRoute: AppStateControllerState['lastVisitedRoute'];
   pendingShieldCohort: AppStateControllerState['pendingShieldCohort'];
   pendingShieldCohortTxType: AppStateControllerState['pendingShieldCohortTxType'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
-  networkConnectionBanner: AppStateControllerState['networkConnectionBanner'];
   isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   sidePanelGasPollTokens: AppStateControllerState['sidePanelGasPollTokens'];
+  passkeyAutoUnlockSuppressed: AppStateControllerState['passkeyAutoUnlockSuppressed'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -163,8 +161,13 @@ export type ControllerStatePropertiesEnumerated = {
   quoteStreamComplete: BridgeControllerState['quoteStreamComplete'];
   minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
+  tokenSecurityTypeDestination: BridgeControllerState['tokenSecurityTypeDestination'];
+  inputPrimaryDenomination: BridgeControllerState['inputPrimaryDenomination'];
   tokenWarnings: BridgeControllerState['tokenWarnings'];
+  batchSellTrades: BridgeControllerState['batchSellTrades'];
+  batchSellTradesLoadingStatus: BridgeControllerState['batchSellTradesLoadingStatus'];
   txHistory: BridgeStatusControllerState['txHistory'];
+  quoteUpdateStatusStore: BridgeStatusControllerState['quoteUpdateStatusStore'];
   events: CronjobControllerState['events'];
   currentCurrency: CurrencyRateState['currentCurrency'];
   currencyRates: CurrencyRateState['currencyRates'];
@@ -172,10 +175,9 @@ export type ControllerStatePropertiesEnumerated = {
   unapprovedDecryptMsgCount: DecryptMessageControllerState['unapprovedDecryptMsgCount'];
   allDeFiPositions: DeFiPositionsControllerState['allDeFiPositions'];
   allDeFiPositionsCount: DeFiPositionsControllerState['allDeFiPositionsCount'];
+  allDeFiPositionsV2: DeFiPositionsControllerV2State['allDeFiPositionsV2'];
   unapprovedEncryptionPublicKeyMsgs: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgs'];
   unapprovedEncryptionPublicKeyMsgCount: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgCount'];
-  ensResolutionsByAddress: EnsControllerState['ensResolutionsByAddress'];
-  ensEntries: EnsControllerState['ensEntries'];
   gasFeeEstimatesByChainId?: GasFeeState['gasFeeEstimatesByChainId'];
   gasFeeEstimates: GasFeeState['gasFeeEstimates'];
   estimatedGasFeeTimeBounds: GasFeeState['estimatedGasFeeTimeBounds'];
@@ -187,16 +189,16 @@ export type ControllerStatePropertiesEnumerated = {
   encryptionKey?: KeyringControllerState['encryptionKey'];
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
-  eventsBeforeMetricsOptIn: MetaMetricsControllerState['eventsBeforeMetricsOptIn'];
   tracesBeforeMetricsOptIn: MetaMetricsControllerState['tracesBeforeMetricsOptIn'];
   fragments: MetaMetricsControllerState['fragments'];
-  metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
-  participateInMetaMetrics: MetaMetricsControllerState['participateInMetaMetrics'];
-  segmentApiCalls: MetaMetricsControllerState['segmentApiCalls'];
+  consentDecisionMade?: AnalyticsControllerState['consentDecisionMade'];
+  preConsentEventQueue?: AnalyticsControllerState['preConsentEventQueue'];
+  optedIn: AnalyticsControllerState['optedIn'];
+  analyticsId: AnalyticsControllerState['analyticsId'];
+  passkeyRecord: PasskeyControllerState['passkeyRecord'];
   traits: MetaMetricsControllerState['traits'];
   dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
   marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
-  latestNonAnonymousEventTimestamp: MetaMetricsControllerState['latestNonAnonymousEventTimestamp'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];
   metaMetricsDataDeletionStatus?: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];
@@ -236,6 +238,7 @@ export type ControllerStatePropertiesEnumerated = {
   fcmToken: NotificationServicesPushController.NotificationServicesPushControllerState['fcmToken'];
   isUpdatingFCMToken: NotificationServicesPushController.NotificationServicesPushControllerState['isUpdatingFCMToken'];
   completedOnboarding: OnboardingControllerState['completedOnboarding'];
+  hasSeenOnboardingCompletionPage: OnboardingControllerState['hasSeenOnboardingCompletionPage'];
   firstTimeFlowType: OnboardingControllerState['firstTimeFlowType'];
   onboardingTabs?: OnboardingControllerState['onboardingTabs'];
   seedPhraseBackedUp: OnboardingControllerState['seedPhraseBackedUp'];
@@ -275,7 +278,6 @@ export type ControllerStatePropertiesEnumerated = {
   theme: PreferencesControllerState['theme'];
   snapsAddSnapAccountModalDismissed?: PreferencesControllerState['snapsAddSnapAccountModalDismissed'];
   useExternalNameSources: PreferencesControllerState['useExternalNameSources'];
-  enableMV3TimestampSave: PreferencesControllerState['enableMV3TimestampSave'];
   useExternalServices: PreferencesControllerState['useExternalServices'];
   textDirection?: PreferencesControllerState['textDirection'];
   manageInstitutionalWallets: PreferencesControllerState['manageInstitutionalWallets'];
@@ -326,10 +328,13 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSeasonStatuses: RewardsControllerState['rewardsSeasonStatuses'];
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
   rewardsPointsEstimateHistory: RewardsControllerState['rewardsPointsEstimateHistory'];
+  rewardsVipPerpsFees: RewardsControllerState['rewardsVipPerpsFees'];
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
   connectivityStatus: ConnectivityControllerState['connectivityStatus'];
+  networkConnectionBannerStatus: NetworkConnectionBannerControllerState['networkConnectionBannerStatus'];
+  networkConnectionBannerNetwork: NetworkConnectionBannerControllerState['networkConnectionBannerNetwork'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &
@@ -349,13 +354,14 @@ type ControllerStateTypesMerged = AccountsControllerState &
   CurrencyRateState &
   DecryptMessageControllerState &
   DeFiPositionsControllerState &
-  EncryptionPublicKeyControllerState &
-  EnsControllerState & {
+  DeFiPositionsControllerV2State &
+  EncryptionPublicKeyControllerState & {
     // This is necessary due to the nested unions and intersections in the `GasFeeState` type definition
     [P in keyof GasFeeState]: GasFeeState[P];
   } & KeyringControllerState &
   LoggingControllerState &
   MetaMetricsControllerState &
+  AnalyticsControllerState &
   MetaMetricsDataDeletionState &
   MultichainBalancesControllerState &
   MultichainTransactionsControllerState &
@@ -370,6 +376,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   NotificationServicesController.NotificationServicesControllerState &
   NotificationServicesPushController.NotificationServicesPushControllerState &
   OnboardingControllerState &
+  PasskeyControllerState &
   PermissionControllerState<PermissionConstraint> &
   PermissionLogControllerState &
   PPOMState &
@@ -392,7 +399,8 @@ type ControllerStateTypesMerged = AccountsControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
-  ConnectivityControllerState;
+  ConnectivityControllerState &
+  NetworkConnectionBannerControllerState;
 
 /**
  * This type contains all controller state top-level properties, and

@@ -1,5 +1,3 @@
-'use no memo';
-
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -17,6 +15,7 @@ import { useHasInsufficientBalance } from '../../useHasInsufficientBalance';
 import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
 
 export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken,
@@ -27,7 +26,14 @@ export function useInsufficientBalanceAlerts({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { selectedGasFeeToken, gasFeeTokens, excludeNativeTokenForFee } =
     currentConfirmation ?? {};
-  const { hasInsufficientBalance, nativeCurrency } =
+  // Post-quote withdraw flows don't use the user's native balance for gas the
+  // same way as standard txs, so suppress the "insufficient balance" alert
+  // even when native balance is low. Gate on the post-quote flag rather than
+  // the transaction type: with post-quote disabled the withdraw falls back to
+  // a direct transfer, which does spend native balance on gas.
+  const { canSelectWithdrawToken: isPostQuoteWithdraw } =
+    useTransactionPayWithdraw();
+  const { hasInsufficientBalance, isNativeBalanceKnown, nativeCurrency } =
     useHasInsufficientBalance();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
   const isSponsored = currentConfirmation?.isGasFeeSponsored;
@@ -76,12 +82,14 @@ export function useInsufficientBalanceAlerts({
 
   const showAlert =
     hasInsufficientBalance &&
+    isNativeBalanceKnown &&
     !isUsingPay &&
     !isPayPendingInput &&
     isSimulationComplete &&
     hasNoGasFeeTokenSelected &&
     shouldCheckGaslessConditions &&
-    !isSponsoredTransaction;
+    !isSponsoredTransaction &&
+    !isPostQuoteWithdraw;
 
   return useMemo(() => {
     if (!showAlert) {

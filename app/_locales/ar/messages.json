@@ -30,9 +30,6 @@
   "accountSelectionRequired": {
     "message": "يجب عليك تحديد حساب!"
   },
-  "addAcquiredTokens": {
-    "message": "أضف العملات الرمزية التي اكتسبتها باستخدام MetaMask"
-  },
   "addAlias": {
     "message": "إضافة اسم مستعار"
   },
@@ -82,17 +79,11 @@
   "autoLockTimeLimit": {
     "message": "مؤقت تسجيل الخروج التلقائي (بالدقائق)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "اضبط مهلة السكون بالدقائق التي يقوم MetaMask بتسجيل الخروج بعدها تلقائيًا"
-  },
   "average": {
     "message": "المتوسط"
   },
   "back": {
     "message": "الرجوع إلى الوراء"
-  },
-  "backupApprovalInfo": {
-    "message": "هذا الرمز السري مطلوب لاسترداد محفظتك في حالة فقد جهازك أو نسيان كلمة مرورك أو إعادة تثبيت MetaMask أو الرغبة في الوصول إلى محفظتك عبر جهاز آخر."
   },
   "backupApprovalNotice": {
     "message": "قم بالنسخ الاحتياطي لرمز الاسترداد السري للحفاظ على محفظتك وأموالك بأمان."
@@ -185,23 +176,11 @@
   "createPassword": {
     "message": "إنشاء كلمة مرور"
   },
-  "currencyConversion": {
-    "message": "تحويل العملات"
-  },
-  "currentLanguage": {
-    "message": "اللغة الحالية"
-  },
   "custom": {
     "message": "إعدادات متقدمة"
   },
-  "customToken": {
-    "message": "عملة رمزية مخصصة"
-  },
   "decimal": {
     "message": "دقة بالكسور العشرية"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "يجب أن تكون الكسور العشرية صفراً على الأقل، وألا تزيد عن 36 كسراً."
   },
   "delete": {
     "message": "حذف"
@@ -211,9 +190,6 @@
   },
   "done": {
     "message": "تم"
-  },
-  "downloadGoogleChrome": {
-    "message": "تنزيل جوجل كروم"
   },
   "downloadStateLogs": {
     "message": "تنزيل سجلات الحالة"
@@ -272,9 +248,6 @@
   },
   "hardwareWallets": {
     "message": "الاتصال بمحفظة hardware wallet"
-  },
-  "hardwareWalletsMsg": {
-    "message": "حدد محفظة أجهزة ترغب في استخدامها مع MetaMask"
   },
   "here": {
     "message": "هنا",
@@ -343,12 +316,6 @@
   "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
-  "lineaGoerli": {
-    "message": "شبكة اختبار Linea Goerli"
-  },
-  "links": {
-    "message": "الروابط"
-  },
   "loading": {
     "message": "جارٍ التحميل..."
   },
@@ -370,9 +337,6 @@
   "metamaskVersion": {
     "message": "إصدار MetaMask "
   },
-  "mustSelectOne": {
-    "message": "يجب تحديد عملة رمزية واحدة على الأقل."
-  },
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",
     "description": "User is important an account and needs to add a file to continue"
@@ -382,12 +346,6 @@
   },
   "networks": {
     "message": "الشبكات"
-  },
-  "nevermind": {
-    "message": "لا يهم"
-  },
-  "newAccount": {
-    "message": "حساب جديد"
   },
   "newAccountNumberName": {
     "message": "حساب $1",
@@ -407,9 +365,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "لم يتم العثور على كاميرا متصلة بالإنترنت"
-  },
-  "notEnoughGas": {
-    "message": "لا توجد عملات جاس كافية"
   },
   "ofTextNofM": {
     "message": "من"
@@ -494,9 +449,6 @@
   "restore": {
     "message": "استعادة"
   },
-  "revealSeedWords": {
-    "message": "كشف كلمات عبارات الأمان"
-  },
   "revealSeedWordsWarning": {
     "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -543,9 +495,6 @@
   "showFiatConversionInTestnets": {
     "message": "عرض التحويل على Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "حدد هذا لإظهار تحويل fiat على Testnets"
-  },
   "showHexData": {
     "message": "إظهار بيانات Hex"
   },
@@ -554,9 +503,6 @@
   },
   "sign": {
     "message": "توقيع"
-  },
-  "signatureRequest": {
-    "message": "طلب التوقيع"
   },
   "signed": {
     "message": "مسجل الدخول"
@@ -575,9 +521,6 @@
   },
   "stateLogs": {
     "message": "سجلات الحالة"
-  },
-  "stateLogsDescription": {
-    "message": "تحتوي سجلات الحالة على عناوين حسابك العامة والمعاملات المرسلة."
   },
   "submitted": {
     "message": "المقدمة"

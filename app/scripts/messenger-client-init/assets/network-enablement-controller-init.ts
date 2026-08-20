@@ -1,6 +1,7 @@
 import {
   NetworkEnablementController,
   NetworkEnablementControllerState,
+  NetworkEnablementControllerMessenger,
 } from '@metamask/network-enablement-controller';
 import { NetworkState } from '@metamask/network-controller';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
@@ -17,10 +18,7 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
-import {
-  NetworkEnablementControllerMessenger,
-  NetworkEnablementControllerInitMessenger,
-} from '../messengers/assets';
+import { NetworkEnablementControllerInitMessenger } from '../messengers/assets';
 import { MessengerClientInitFunction } from '../types';
 import {
   CHAIN_IDS,
@@ -98,7 +96,7 @@ const generateDefaultNetworkEnablementControllerState = (
     };
   } else if (
     process.env.METAMASK_DEBUG ||
-    process.env.METAMASK_ENVIRONMENT === 'test'
+    process.env.METAMASK_ENVIRONMENT === 'testing'
   ) {
     return {
       enabledNetworkMap: {

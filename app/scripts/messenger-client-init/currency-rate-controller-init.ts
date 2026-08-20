@@ -1,11 +1,10 @@
 import {
   CodefiTokenPricesServiceV2,
   CurrencyRateController,
+  CurrencyRateMessenger,
 } from '@metamask/assets-controllers';
-import {
-  CurrencyRateControllerInitMessenger,
-  CurrencyRateControllerMessenger,
-} from './messengers';
+import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { CurrencyRateControllerInitMessenger } from './messengers';
 import { MessengerClientInitFunction } from './types';
 
 /**
@@ -19,10 +18,9 @@ import { MessengerClientInitFunction } from './types';
  */
 export const CurrencyRateControllerInit: MessengerClientInitFunction<
   CurrencyRateController,
-  CurrencyRateControllerMessenger,
+  CurrencyRateMessenger,
   CurrencyRateControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
-  // TODO: Fix CurrencyRateControllerMessenger type - add CurrencyRateControllerActions & CurrencyRateControllerEvents
   // TODO: Bump @metamask/network-controller to match assets-controllers
   const messengerClient = new CurrencyRateController({
     // @ts-expect-error - CurrencyRateController is persisted as 'CurrencyController' but init pattern expects 'CurrencyRateController'
@@ -32,6 +30,15 @@ export const CurrencyRateControllerInit: MessengerClientInitFunction<
     useExternalServices: () =>
       initMessenger.call('PreferencesController:getState').useExternalServices,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
+    isDeprecated: () => {
+      const { remoteFeatureFlags } = initMessenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+      return getIsDeprecatedController(
+        remoteFeatureFlags,
+        'CurrencyRateController',
+      );
+    },
   });
 
   return {

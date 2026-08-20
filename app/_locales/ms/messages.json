@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Anda perlu memilih akaun!"
   },
-  "addAcquiredTokens": {
-    "message": "Tambah token yang anda peroleh menggunakan MetaMask"
-  },
   "addAlias": {
     "message": "Tambah alias"
   },
@@ -78,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "Pemasa Logout Automatik (minit)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Tetapkan masa melahu dalam minit sebelum MetaMask log keluar secara automatik"
-  },
   "average": {
     "message": "Purata"
   },
   "back": {
     "message": "Kembali"
-  },
-  "backupApprovalInfo": {
-    "message": "Kod rahsia ini diperlukan untuk memulihkan dompet anda sekiranya anda kehilangan peranti anda, terlupa kata laluan anda, perlu memasang semua MetaMask, atau mahu mengakses dompet anda menggunakan peranti lain."
   },
   "backupApprovalNotice": {
     "message": "Sandarkan kod Pemulihan Rahsia anda untuk memastikan dompet dan dana anda sentiasa selamat."
@@ -181,23 +172,11 @@
   "createPassword": {
     "message": "Cipta Kata Laluan"
   },
-  "currencyConversion": {
-    "message": "Penukaran Mata Wang"
-  },
-  "currentLanguage": {
-    "message": "Bahasa Semasa"
-  },
   "custom": {
     "message": "Lanjutan"
   },
-  "customToken": {
-    "message": "Token Tersuai"
-  },
   "decimal": {
     "message": "Bilangan Perpuluhan Kejituan"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Perpuluhan mestilah sekurang-kurangnya 0, dan tidak melebihi 36."
   },
   "delete": {
     "message": "Padam"
@@ -207,9 +186,6 @@
   },
   "done": {
     "message": "Selesai"
-  },
-  "downloadGoogleChrome": {
-    "message": "Muat Turun Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Muat Turun Log Keadaan"
@@ -265,9 +241,6 @@
   },
   "hardwareWallets": {
     "message": "Sambungkan dompet perkakasan"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Pilih dompet perkakasan yang anda ingin gunakan dengan MetaMask"
   },
   "here": {
     "message": "di sini",
@@ -332,12 +305,6 @@
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
-  "lineaGoerli": {
-    "message": "Rangkaian Ujian Linea Goerli"
-  },
-  "links": {
-    "message": "Pautan"
-  },
   "loading": {
     "message": "Memuatkan..."
   },
@@ -356,9 +323,6 @@
   "metamaskVersion": {
     "message": "Versi MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Mesti memilih sekurang-kurangnya 1 token."
-  },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
     "description": "User is important an account and needs to add a file to continue"
@@ -368,12 +332,6 @@
   },
   "networks": {
     "message": "Rangkaian"
-  },
-  "nevermind": {
-    "message": "Tidak mengapa"
-  },
-  "newAccount": {
-    "message": "Akaun Baru"
   },
   "newAccountNumberName": {
     "message": "Akaun $1",
@@ -393,9 +351,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Kamera web tidak ditemui"
-  },
-  "notEnoughGas": {
-    "message": "Tidak Cukup Gas"
   },
   "ofTextNofM": {
     "message": "daripada"
@@ -477,9 +432,6 @@
   "restore": {
     "message": "Pulihkan"
   },
-  "revealSeedWords": {
-    "message": "Dedahkan Ungkapan Benih"
-  },
   "revealSeedWordsWarning": {
     "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -526,9 +478,6 @@
   "showFiatConversionInTestnets": {
     "message": "Tunjukkan Penukaran di Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Pilih ini untuk menunjukkan penukaran fiat di Testnets"
-  },
   "showHexData": {
     "message": "Tunjukkan Data Heks"
   },
@@ -537,9 +486,6 @@
   },
   "sign": {
     "message": "Tandatangan"
-  },
-  "signatureRequest": {
-    "message": "Permintaan Tandatangan"
   },
   "signed": {
     "message": "Ditandatangani"
@@ -558,9 +504,6 @@
   },
   "stateLogs": {
     "message": "Log Keadaan"
-  },
-  "stateLogsDescription": {
-    "message": "Log keadaan mengandungi alamat akaun awam anda dan transaksi dihantar."
   },
   "submitted": {
     "message": "Dihantar"

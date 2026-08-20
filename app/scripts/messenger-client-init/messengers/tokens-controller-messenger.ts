@@ -1,48 +1,16 @@
-import { ControllerStateChangeEvent } from '@metamask/base-controller';
-import { Messenger } from '@metamask/messenger';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { TokensControllerMessenger } from '@metamask/assets-controllers';
 import type {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
-  NetworkControllerNetworkDidChangeEvent,
-  NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
-import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
-import {
-  AccountsControllerGetAccountAction,
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerListAccountsAction,
-  AccountsControllerSelectedEvmAccountChangeEvent,
-} from '@metamask/accounts-controller';
-import { TokenListController } from '@metamask/assets-controllers';
-import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
-import { PreferencesControllerStateChangeEvent } from '../../controllers/preferences-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-// Not exported from `@metamask/assets-controllers`.
-type TokenListControllerStateChangeEvent = ControllerStateChangeEvent<
-  'TokenListController',
-  TokenListController['state']
->;
-
-type AllowedActions =
-  | AccountsControllerGetAccountAction
-  | AccountsControllerGetSelectedAccountAction
-  | AccountsControllerListAccountsAction
-  | ApprovalControllerAddRequestAction
-  | NetworkControllerGetNetworkClientByIdAction;
-
-type AllowedEvents =
-  | AccountsControllerSelectedEvmAccountChangeEvent
-  | KeyringControllerAccountRemovedEvent
-  | NetworkControllerNetworkDidChangeEvent
-  | NetworkControllerStateChangeEvent
-  | PreferencesControllerStateChangeEvent
-  | TokenListControllerStateChangeEvent;
-
-export type TokensControllerMessenger = ReturnType<
-  typeof getTokensControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -52,14 +20,12 @@ export type TokensControllerMessenger = ReturnType<
  * messenger.
  */
 export function getTokensControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
-) {
-  const controllerMessenger = new Messenger<
-    'TokensController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<TokensControllerMessenger>,
+    MessengerEvents<TokensControllerMessenger>
+  >,
+): TokensControllerMessenger {
+  const controllerMessenger: TokensControllerMessenger = new Messenger({
     namespace: 'TokensController',
     parent: messenger,
   });
@@ -77,8 +43,6 @@ export function getTokensControllerMessenger(
       'KeyringController:accountRemoved',
       'NetworkController:networkDidChange',
       'NetworkController:stateChange',
-      'PreferencesController:stateChange',
-      'TokenListController:stateChange',
     ],
   });
   return controllerMessenger;
@@ -87,7 +51,8 @@ export function getTokensControllerMessenger(
 type AllowedInitializationActions =
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetSelectedNetworkClientAction
-  | NetworkControllerGetStateAction;
+  | NetworkControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 export type TokensControllerInitMessenger = ReturnType<
   typeof getTokensControllerInitMessenger
@@ -117,6 +82,7 @@ export function getTokensControllerInitMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:getState',
+      'RemoteFeatureFlagController:getState',
     ],
   });
   return controllerInitMessenger;

@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
   TransactionMeta,
@@ -14,14 +15,29 @@ import {
 import { ScrollContainer } from '../../../../../contexts/scroll-container';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
-import { getAvailableTokens } from '../../../utils/transaction-pay';
+import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
+import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
+import {
+  clearPaymentOverride,
+  getAvailableTokens,
+} from '../../../utils/transaction-pay';
 import { Asset } from '../../send/asset';
 import { type Asset as AssetType } from '../../../types/send';
 import {
   useMusdConversionTokens,
   useMusdPaymentToken,
 } from '../../../../../hooks/musd';
+import { usePostQuoteWithdrawTokenFilter } from '../../../hooks/pay/useWithdrawTokenFilter';
 import { useConfirmContext } from '../../../context/confirm';
+import {
+  addToken,
+  findNetworkClientIdByChainId,
+} from '../../../../../store/actions';
+import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { useDispatch } from '../../../../../store/hooks';
+import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
+import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
+import { PayWithSection } from './pay-with-section';
 
 export type PayWithModalProps = {
   isOpen: boolean;
@@ -30,25 +46,66 @@ export type PayWithModalProps = {
 
 export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
+  const blockedTokens = useTransactionPayBlockedTokens();
+  const [showOtherAssets, setShowOtherAssets] = useState(false);
+
+  const isMoneyAccountPayEnabled = useSelector((state) =>
+    selectIsMoneyAccountTransactionEnabled(state, currentConfirmation?.type),
+  );
 
   const { filterTokens: musdTokenFilter } = useMusdConversionTokens({
     transactionType: currentConfirmation?.type,
   });
+  const {
+    filterTokens: postQuoteWithdrawTokenFilter,
+    isFilterApplied: isPostQuoteWithdrawTokenFilterApplied,
+  } = usePostQuoteWithdrawTokenFilter();
 
   // Use the mUSD-specific payment token handler for same-chain enforcement
   const { onPaymentTokenChange: onMusdPaymentTokenChange } =
     useMusdPaymentToken();
 
+  const isPostQuoteWithdraw =
+    isPostQuoteWithdrawTransaction(currentConfirmation);
+  const isMoneyAccountDeposit =
+    currentConfirmation?.type === TransactionType.moneyAccountDeposit;
+  const { renderNoFeeTag } = usePayWithNoFeeToken();
+  const tagRenderers = useMemo(
+    () => (isMoneyAccountDeposit ? [renderNoFeeTag] : undefined),
+    [isMoneyAccountDeposit, renderNoFeeTag],
+  );
+
   const handleClose = useCallback(() => {
+    setShowOtherAssets(false);
     onClose();
   }, [onClose]);
 
+  const handleOtherAssetsPress = useCallback(() => {
+    setShowOtherAssets(true);
+  }, []);
+
+  const { sections } = usePayWithSections({
+    onClose: handleClose,
+    onOtherAssetsPress: handleOtherAssetsPress,
+  });
+
   const handleTokenSelect = useCallback(
-    (token: AssetType) => {
+    async (token: AssetType) => {
       if (token.disabled) {
+        return;
+      }
+
+      if (
+        payToken &&
+        payToken.address.toLowerCase() === token.address?.toLowerCase() &&
+        payToken.chainId.toLowerCase() ===
+          (token.chainId as string)?.toLowerCase()
+      ) {
+        handleClose();
         return;
       }
 
@@ -64,35 +121,103 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         return;
       }
 
-      // Default behavior for other transaction types
+      // Withdraw flows (e.g. Perps Withdraw) let the user pick a destination
+      // token they don't necessarily hold. TransactionPayController requires
+      // the token to be tracked by TokensController before `updatePaymentToken`
+      // can resolve its metadata, otherwise it throws "Payment token not
+      // found" and the selection silently fails. Ensure the token is imported
+      // first, then update the pay token.
+      if (
+        isPostQuoteWithdraw &&
+        !token.isNative &&
+        (token.rawBalance === '0x0' || !token.rawBalance)
+      ) {
+        try {
+          const networkClientId = await findNetworkClientIdByChainId(
+            tokenSelection.chainId,
+          );
+          await dispatch(
+            addToken(
+              {
+                address: tokenSelection.address,
+                symbol: token.symbol,
+                decimals: Number(token.decimals ?? 18),
+                networkClientId,
+                image: token.image,
+              },
+              true,
+            ),
+          );
+        } catch (error) {
+          // `setPayToken` resolves the token via `TokensController`. If the
+          // import failed, the controller will throw "Payment token not
+          // found", leaving the user with a silently broken selection.
+          // Keep the modal open so they can retry or pick a different token.
+          console.error('Failed to import withdraw destination token', error);
+          return;
+        }
+      }
+
+      if (currentConfirmation?.id) {
+        clearPaymentOverride(currentConfirmation.id);
+      }
       setPayToken(tokenSelection);
       handleClose();
     },
     [
+      currentConfirmation,
+      dispatch,
       handleClose,
-      setPayToken,
+      isPostQuoteWithdraw,
       onMusdPaymentTokenChange,
-      currentConfirmation?.type,
+      payToken,
+      setPayToken,
     ],
   );
 
   const tokenFilter = useCallback(
     (tokens: AssetType[]) => {
-      let available = getAvailableTokens({ payToken, requiredTokens, tokens });
+      if (isPostQuoteWithdraw && isPostQuoteWithdrawTokenFilterApplied) {
+        return postQuoteWithdrawTokenFilter(tokens);
+      }
+
+      let available = getAvailableTokens({
+        payToken,
+        requiredTokens,
+        tokens,
+        blockedTokens,
+      });
 
       available = musdTokenFilter(available);
 
       return available;
     },
-    [payToken, requiredTokens, musdTokenFilter],
+    [
+      blockedTokens,
+      isPostQuoteWithdraw,
+      isPostQuoteWithdrawTokenFilterApplied,
+      musdTokenFilter,
+      payToken,
+      postQuoteWithdrawTokenFilter,
+      requiredTokens,
+    ],
   );
+
+  const showSections = isMoneyAccountPayEnabled && !showOtherAssets;
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} isClosedOnOutsideClick={false}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={handleClose}>
-          {t('payWithModalTitle')}
+        <ModalHeader
+          onClose={handleClose}
+          {...(showOtherAssets
+            ? {
+                onBack: () => setShowOtherAssets(false),
+              }
+            : {})}
+        >
+          {t(isPostQuoteWithdraw ? 'withdrawTo' : 'payWithModalTitle')}
         </ModalHeader>
         <ScrollContainer
           style={{
@@ -100,12 +225,24 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
             overflow: 'auto',
           }}
         >
-          <Asset
-            includeNoBalance
-            hideNfts
-            tokenFilter={tokenFilter}
-            onAssetSelect={handleTokenSelect}
-          />
+          {showSections ? (
+            <div data-testid="pay-with-sections">
+              {sections.map((section) => (
+                <PayWithSection key={section.id} config={section} />
+              ))}
+            </div>
+          ) : (
+            <Asset
+              includeNoBalance
+              hideNfts
+              tokenFilter={tokenFilter}
+              onAssetSelect={handleTokenSelect}
+              tagRenderers={tagRenderers}
+              searchPlaceholder={
+                isPostQuoteWithdraw ? t('searchTokens') : undefined
+              }
+            />
+          )}
         </ScrollContainer>
       </ModalContent>
     </Modal>

@@ -88,6 +88,43 @@ describe('useTransferRecipient', () => {
       }),
     ).toBe(ADDRESS_2_MOCK);
   });
+
+  it('prefers txParamsOriginal.to over txParams.to when container wrapping replaced it', () => {
+    expect(
+      runHook({
+        ...TRANSACTION_METADATA_MOCK,
+        type: TransactionType.simpleSend,
+        txParams: {
+          ...TRANSACTION_METADATA_MOCK.txParams,
+          to: ADDRESS_2_MOCK,
+        },
+        txParamsOriginal: {
+          ...TRANSACTION_METADATA_MOCK.txParams,
+          to: ADDRESS_MOCK,
+        },
+      }),
+    ).toBe(ADDRESS_MOCK);
+  });
+
+  it('prefers txParamsOriginal.data over txParams.data when container wrapping replaced it', () => {
+    const originalData = genUnapprovedTokenTransferConfirmation().txParams.data;
+
+    expect(
+      runHook({
+        ...TRANSACTION_METADATA_MOCK,
+        txParams: {
+          ...TRANSACTION_METADATA_MOCK.txParams,
+          to: ADDRESS_2_MOCK,
+          data: '0xdeadbeef',
+        },
+        txParamsOriginal: {
+          ...TRANSACTION_METADATA_MOCK.txParams,
+          to: ADDRESS_2_MOCK,
+          data: originalData,
+        },
+      }),
+    ).toBe(ADDRESS_MOCK);
+  });
 });
 
 describe('useNestedTransactionTransferRecipients', () => {

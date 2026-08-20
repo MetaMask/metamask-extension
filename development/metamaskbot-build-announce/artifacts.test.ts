@@ -12,8 +12,12 @@ describe('getArtifactLinks', () => {
       '42',
     );
 
-    expect(links.bundleSizeStats.url).toBe(
-      `${HOST}/bundle-size/bundle_size.json`,
+    expect(links.bundleSizeDebug.url).toBe(
+      `${HOST}/bundle-size/chrome.debug.json`,
+    );
+    expect(links.bundleSizeStats.url).toBe(`${HOST}/bundle-size/chrome.json`);
+    expect(links.interactionStats.url).toBe(
+      `${HOST}/benchmarks/benchmark-chrome-webpack-interactionUserActions.json`,
     );
     expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
@@ -43,8 +47,15 @@ describe('buildArtifactsBody', () => {
       buildsFromSha: 'abc1234',
     });
 
-    expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
-    expect(result).toContain('build-dist-webpack');
+    const webpackBuildsIndex = result.indexOf('Webpack builds');
+    const allArtifactsIndex = result.indexOf('all artifacts');
+
+    expect(webpackBuildsIndex).toBeGreaterThan(-1);
+    expect(allArtifactsIndex).toBeGreaterThan(webpackBuildsIndex);
+    expect(result).toContain(
+      `${HOST}/build-dist-webpack/builds/metamask-chrome-${VERSION}.zip`,
+    );
+    expect(result).not.toContain('build-experimental-webpack');
     expect(result).toContain('Builds ready [abc1234]');
     expect(result).not.toContain('reused from');
     expect(result).toContain(
@@ -85,7 +96,7 @@ describe('buildArtifactsBody', () => {
     expect(result).toContain('storybook:');
   });
 
-  it('includes a bundle analyzer link', () => {
+  it('includes bundle size and bundle analyzer links', () => {
     const result = buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
@@ -94,6 +105,9 @@ describe('buildArtifactsBody', () => {
       buildsFromSha: 'abc1234',
     });
 
+    expect(result).toContain(
+      `<a href="${HOST}/bundle-size/chrome.debug.json">Bundle Size Stats</a>`,
+    );
     expect(result).toContain(
       `<a href="${HOST}/build-dist-webpack/bundle-analyzer/report.html">Bundle Analyzer</a>`,
     );

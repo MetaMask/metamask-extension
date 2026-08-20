@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -31,24 +31,36 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { getIsSocialLoginFlow } from '../../selectors';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import {
+  getIsPasskeyFeatureAvailable,
+  getIsSocialLoginFlow,
+} from '../../selectors';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import SetupPasskeyContent from '../../components/app/setup-passkey-content';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../srp-input-form';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CreatePasswordForm } from '../create-password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useDispatch } from '../../store/hooks';
 
 function RestoreVaultPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { trackEvent } = React.useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
 
   const [srpError, setSrpError] = useState('');
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [toggleSrpDetailsModal, setToggleSrpDetailsModal] = useState(false);
   const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [showPasskeySetup, setShowPasskeySetup] = useState(false);
+  const [restorePassword, setRestorePassword] = useState<string | undefined>(
+    undefined,
+  );
   const [loading, setLoading] = useState(false);
 
   const handleImport = useCallback(
@@ -72,10 +84,22 @@ function RestoreVaultPage() {
           createNewVaultAndRestore(password, secretRecoveryPhrase),
         );
 
-        trackEvent({
-          category: MetaMetricsEventCategory.Retention,
-          event: MetaMetricsEventName.WalletRestored,
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.WalletRestored)
+            .addCategory(MetaMetricsEventCategory.Retention)
+            .build(),
+        );
+
+        setRestorePassword(password);
+        // clear SRP from state after restoring vault is successful
+        setSecretRecoveryPhrase('');
+
+        if (isPasskeyFeatureAvailable) {
+          setLoading(false);
+          setShowPasswordInput(false);
+          setShowPasskeySetup(true);
+          return;
+        }
 
         navigate(DEFAULT_ROUTE, { replace: true });
       } catch (error) {
@@ -84,7 +108,15 @@ function RestoreVaultPage() {
         console.error('[RestoreVault] Error during import:', error);
       }
     },
-    [isSocialLoginFlow, secretRecoveryPhrase, dispatch, trackEvent, navigate],
+    [
+      createEventBuilder,
+      isSocialLoginFlow,
+      isPasskeyFeatureAvailable,
+      secretRecoveryPhrase,
+      dispatch,
+      trackEvent,
+      navigate,
+    ],
   );
 
   const handleContinue = useCallback(() => {
@@ -109,6 +141,88 @@ function RestoreVaultPage() {
 
   const shouldShowPasswordForm = showPasswordInput || loading;
 
+  const handlePasskeySetupComplete = useCallback(() => {
+    navigate(DEFAULT_ROUTE, { replace: true });
+  }, [navigate]);
+
+  let content;
+  if (showPasskeySetup) {
+    content = (
+      <SetupPasskeyContent
+        onNext={handlePasskeySetupComplete}
+        password={restorePassword}
+      />
+    );
+  } else if (shouldShowPasswordForm) {
+    content = (
+      <CreatePasswordForm
+        isSocialLoginFlow={false}
+        onSubmit={handleImport}
+        onBack={handleBack}
+        loading={loading}
+      />
+    );
+  } else {
+    content = (
+      <>
+        <Box>
+          <Box marginBottom={4}>
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              color={IconColor.IconDefault}
+              size={ButtonIconSize.Md}
+              data-testid="import-srp-back-button"
+              onClick={handleBackButtonClick}
+              ariaLabel={t('back')}
+            />
+          </Box>
+          <Box className="text-left" marginBottom={2}>
+            <Text variant={TextVariant.HeadingLg}>{t('importAWallet')}</Text>
+          </Box>
+          <Box marginBottom={4}>
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              {t('restoreWalletDescription', [
+                <TextButton
+                  key="secret-recovery-phrase"
+                  onClick={() => setToggleSrpDetailsModal(true)}
+                >
+                  {t('secretRecoveryPhrase')}
+                </TextButton>,
+              ])}
+            </Text>
+          </Box>
+          <SrpInputForm
+            error={srpError}
+            setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+            onClearCallback={() => setSrpError('')}
+            showDescription={false}
+            toggleSrpDetailsModal={toggleSrpDetailsModal}
+            onSrpDetailsModalClose={() => setToggleSrpDetailsModal(false)}
+          />
+        </Box>
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
+          className="w-full text-left"
+        >
+          <Button
+            size={ButtonSize.Lg}
+            data-testid="import-srp-confirm"
+            onClick={handleContinue}
+            disabled={!secretRecoveryPhrase.trim() || Boolean(srpError)}
+            className="import-srp__continue-button w-full"
+          >
+            {t('continue')}
+          </Button>
+        </Box>
+      </>
+    );
+  }
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -119,71 +233,7 @@ function RestoreVaultPage() {
       borderColor={BoxBorderColor.BorderMuted}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
-      {shouldShowPasswordForm ? (
-        <CreatePasswordForm
-          isSocialLoginFlow={false}
-          onSubmit={handleImport}
-          onBack={handleBack}
-          loading={loading}
-        />
-      ) : (
-        <>
-          <Box>
-            <Box marginBottom={4}>
-              <ButtonIcon
-                iconName={IconName.ArrowLeft}
-                color={IconColor.IconDefault}
-                size={ButtonIconSize.Md}
-                data-testid="import-srp-back-button"
-                onClick={handleBackButtonClick}
-                ariaLabel={t('back')}
-              />
-            </Box>
-            <Box className="text-left" marginBottom={2}>
-              <Text variant={TextVariant.HeadingLg}>{t('importAWallet')}</Text>
-            </Box>
-            <Box marginBottom={4}>
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-              >
-                {t('restoreWalletDescription', [
-                  <TextButton
-                    key="secret-recovery-phrase"
-                    onClick={() => setToggleSrpDetailsModal(true)}
-                  >
-                    {t('secretRecoveryPhrase')}
-                  </TextButton>,
-                ])}
-              </Text>
-            </Box>
-            <SrpInputForm
-              error={srpError}
-              setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-              onClearCallback={() => setSrpError('')}
-              showDescription={false}
-              toggleSrpDetailsModal={toggleSrpDetailsModal}
-              onSrpDetailsModalClose={() => setToggleSrpDetailsModal(false)}
-            />
-          </Box>
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            justifyContent={BoxJustifyContent.Center}
-            alignItems={BoxAlignItems.Center}
-            className="w-full text-left"
-          >
-            <Button
-              size={ButtonSize.Lg}
-              data-testid="import-srp-confirm"
-              onClick={handleContinue}
-              disabled={!secretRecoveryPhrase.trim() || Boolean(srpError)}
-              className="import-srp__continue-button w-full"
-            >
-              {t('continue')}
-            </Button>
-          </Box>
-        </>
-      )}
+      {content}
     </Box>
   );
 }

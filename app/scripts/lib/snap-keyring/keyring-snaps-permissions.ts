@@ -27,12 +27,16 @@ const PORTFOLIO_ORIGINS: string[] = [
 const METAMASK_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
+  KeyringRpcMethod.CreateAccount,
+  KeyringRpcMethod.CreateAccounts,
   KeyringRpcMethod.FilterAccountChains,
   KeyringRpcMethod.DeleteAccount,
   KeyringRpcMethod.ListRequests,
   KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.SubmitRequest,
   KeyringRpcMethod.RejectRequest,
+  KeyringRpcMethod.ResolveAccountAddress,
+  KeyringRpcMethod.SetSelectedAccounts,
 ];
 
 /**

@@ -1,11 +1,11 @@
-import { PhishingController } from '@metamask/phishing-controller';
+import {
+  PhishingController,
+  PhishingControllerMessenger,
+} from '@metamask/phishing-controller';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import {
-  getPhishingControllerMessenger,
-  PhishingControllerMessenger,
-} from './messengers';
+import { getPhishingControllerMessenger } from './messengers';
 import { PhishingControllerInit } from './phishing-controller-init';
 
 jest.mock('@metamask/phishing-controller');

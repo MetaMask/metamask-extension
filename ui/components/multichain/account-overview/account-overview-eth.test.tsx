@@ -2,12 +2,18 @@ import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { createMockRouteMessenger } from '../../../../test/lib/mock-route-messenger';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { useBottomNavBar } from '../../../hooks/useBottomNavBar';
 import {
   AccountOverviewEth,
   AccountOverviewEthProps,
 } from './account-overview-eth';
+
+jest.mock('../../../hooks/useBottomNavBar', () => ({
+  useBottomNavBar: jest.fn().mockReturnValue(false),
+}));
 
 jest.mock('../../../store/actions', () => {
   return {
@@ -34,6 +40,7 @@ jest.mock('react-redux', () => {
 
 const render = (props: AccountOverviewEthProps) => {
   const store = configureStore({
+    activeTab: mockState.activeTab,
     metamask: {
       ...mockState.metamask,
       remoteFeatureFlags: { assetsDefiPositionsEnabled: true }, // this to be removed when the feature flag is removed
@@ -47,7 +54,15 @@ const render = (props: AccountOverviewEthProps) => {
     },
   });
 
-  return renderWithProvider(<AccountOverviewEth {...props} />, store);
+  return renderWithProvider(
+    <AccountOverviewEth {...props} />,
+    store,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    createMockRouteMessenger(),
+  );
 };
 
 describe('AccountOverviewEth', () => {
@@ -55,7 +70,9 @@ describe('AccountOverviewEth', () => {
     setBackgroundConnection({
       tokenBalancesStartPolling: jest.fn(),
     } as never);
+    (useBottomNavBar as jest.Mock).mockReturnValue(false);
   });
+
   it('shows all tabs', () => {
     const { queryByTestId } = render({
       setBasicFunctionalityModalOpen: jest.fn(),
@@ -66,5 +83,33 @@ describe('AccountOverviewEth', () => {
     expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__defi-tab')).toBeInTheDocument();
+  });
+
+  describe('when the bottom nav bar is shown', () => {
+    beforeEach(() => {
+      (useBottomNavBar as jest.Mock).mockReturnValue(true);
+    });
+
+    it('hides the activity tab', () => {
+      const { queryByTestId } = render({
+        setBasicFunctionalityModalOpen: jest.fn(),
+        onSupportLinkClick: jest.fn(),
+      });
+
+      expect(
+        queryByTestId('account-overview__activity-tab'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('hides the perps tab', () => {
+      const { queryByTestId } = render({
+        setBasicFunctionalityModalOpen: jest.fn(),
+        onSupportLinkClick: jest.fn(),
+      });
+
+      expect(
+        queryByTestId('account-overview__perps-tab'),
+      ).not.toBeInTheDocument();
+    });
   });
 });

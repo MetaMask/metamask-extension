@@ -15,7 +15,8 @@ import { DELEGATOR_CONTRACTS } from '@metamask/delegation-deployments';
 import { Hex, remove0x } from '@metamask/utils';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { toHex } from '@metamask/controller-utils';
-import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { enforceSimulations } from './enforced-simulations';
 
 const TOKEN_MOCK = '0x4567890abcdef1234567890abcdef1234567890a' as Hex;
@@ -43,6 +44,11 @@ const TX_PARAMS_MOCK: TransactionParams = {
 const DELEGATION_ADDRESS_MOCK =
   '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' as Hex;
 
+// Expected `NativeBalanceChangeEnforcer` terms for a zero-tolerance decrease:
+// `0x01` (enforceDecrease) + recipient (from) + 32 zero bytes (amount = 0).
+const NO_NATIVE_DECREASE_TERMS_MOCK =
+  `0x01${remove0x(TX_PARAMS_MOCK.from as Hex)}${'00'.repeat(32)}`.toLowerCase() as Hex;
+
 const TRANSACTION_META_MOCK: TransactionMeta = {
   chainId: CHAIN_ID_MOCK,
   delegationAddress: DELEGATION_ADDRESS_MOCK,
@@ -64,13 +70,18 @@ describe('Enforced Simulations Utils', () => {
     TransactionControllerIsAtomicBatchSupportedAction['handler']
   > = jest.fn();
 
+  const remoteFeatureFlagGetStateMock: jest.MockedFn<
+    RemoteFeatureFlagControllerGetStateAction['handler']
+  > = jest.fn();
+
   beforeEach(() => {
     jest.resetAllMocks();
 
     const baseMessenger = new Messenger<
       MockAnyNamespace,
       | DelegationControllerSignDelegationAction
-      | TransactionControllerIsAtomicBatchSupportedAction,
+      | TransactionControllerIsAtomicBatchSupportedAction
+      | RemoteFeatureFlagControllerGetStateAction,
       never
     >({
       namespace: MOCK_ANY_NAMESPACE,
@@ -86,10 +97,16 @@ describe('Enforced Simulations Utils', () => {
       isAtomicBatchSupportedMock,
     );
 
+    baseMessenger.registerActionHandler(
+      'RemoteFeatureFlagController:getState',
+      remoteFeatureFlagGetStateMock,
+    );
+
     messenger = new Messenger<
       'TransactionControllerInitMessenger',
       | DelegationControllerSignDelegationAction
-      | TransactionControllerIsAtomicBatchSupportedAction,
+      | TransactionControllerIsAtomicBatchSupportedAction
+      | RemoteFeatureFlagControllerGetStateAction,
       never,
       typeof baseMessenger
     >({
@@ -101,10 +118,15 @@ describe('Enforced Simulations Utils', () => {
       actions: [
         'DelegationController:signDelegation',
         'TransactionController:isAtomicBatchSupported',
+        'RemoteFeatureFlagController:getState',
       ],
     });
 
     signDelegationMock.mockResolvedValue(DELEGATION_SIGNATURE_MOCK);
+    remoteFeatureFlagGetStateMock.mockReturnValue({
+      cacheTimestamp: 0,
+      remoteFeatureFlags: {},
+    });
 
     options = {
       messenger,
@@ -235,6 +257,44 @@ describe('Enforced Simulations Utils', () => {
       );
     });
 
+    it('handles missing token balance changes', async () => {
+      options.transactionMeta.simulationData = {
+        nativeBalanceChange: BALANCE_CHANGE_MOCK,
+      } as SimulationData;
+
+      const { updateTransaction } = await enforceSimulations(options);
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(
+          remove0x(
+            DELEGATOR_CONTRACTS['1.3.0']['1'].NativeBalanceChangeEnforcer,
+          ).toLowerCase(),
+        ),
+      );
+    });
+
+    it('ignores unsupported token standards', async () => {
+      simulationData.tokenBalanceChanges = [
+        {
+          ...BALANCE_CHANGE_MOCK,
+          address: TOKEN_MOCK,
+          standard: 'unsupported' as SimulationTokenStandard,
+        },
+      ];
+
+      const { updateTransaction } = await enforceSimulations(options);
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).not.toStrictEqual(
+        expect.stringContaining(remove0x(TOKEN_MOCK).toLowerCase()),
+      );
+    });
+
     it('signs delegation if useRealSignature', async () => {
       options.useRealSignature = true;
 
@@ -250,12 +310,65 @@ describe('Enforced Simulations Utils', () => {
       );
     });
 
+    it('adds a no-decrease native caveat when simulationData has no native balance change', async () => {
+      const transactionMeta = cloneDeep(TRANSACTION_META_MOCK);
+      transactionMeta.simulationData = {
+        tokenBalanceChanges: [],
+      };
+
+      const { updateTransaction } = await enforceSimulations({
+        ...options,
+        transactionMeta,
+      });
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(
+          remove0x(
+            DELEGATOR_CONTRACTS['1.3.0']['1'].NativeBalanceChangeEnforcer,
+          ).toLowerCase(),
+        ),
+      );
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(remove0x(NO_NATIVE_DECREASE_TERMS_MOCK)),
+      );
+    });
+
+    it('adds a no-decrease native caveat when simulation data is missing', async () => {
+      const transactionMeta = cloneDeep(TRANSACTION_META_MOCK);
+      transactionMeta.simulationData = undefined;
+
+      const { updateTransaction } = await enforceSimulations({
+        ...options,
+        transactionMeta,
+      });
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(
+          remove0x(
+            DELEGATOR_CONTRACTS['1.3.0']['1'].NativeBalanceChangeEnforcer,
+          ).toLowerCase(),
+        ),
+      );
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(remove0x(NO_NATIVE_DECREASE_TERMS_MOCK)),
+      );
+    });
+
     describe('applies slippage', () => {
       it('if decrease', async () => {
         simulationData.tokenBalanceChanges = [
           {
             ...BALANCE_CHANGE_MOCK,
             difference: toHex(100000),
+            previousBalance: toHex(200000),
             address: TOKEN_MOCK,
             standard: SimulationTokenStandard.erc20,
           },
@@ -268,6 +381,50 @@ describe('Enforced Simulations Utils', () => {
 
         expect(newTransaction.txParams.data).toStrictEqual(
           expect.stringContaining(remove0x(toHex(110000)).toLowerCase()),
+        );
+      });
+
+      it('caps an ERC-20 decrease at the previous balance', async () => {
+        simulationData.tokenBalanceChanges = [
+          {
+            ...BALANCE_CHANGE_MOCK,
+            difference: toHex(100000),
+            previousBalance: toHex(105000),
+            address: TOKEN_MOCK,
+            standard: SimulationTokenStandard.erc20,
+          },
+        ];
+
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.stringContaining(remove0x(toHex(105000)).toLowerCase()),
+        );
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.not.stringContaining(remove0x(toHex(110000)).toLowerCase()),
+        );
+      });
+
+      it('caps a native decrease at the previous balance', async () => {
+        simulationData.nativeBalanceChange = {
+          ...BALANCE_CHANGE_MOCK,
+          difference: toHex(100000),
+          previousBalance: toHex(105000),
+        };
+
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.stringContaining(remove0x(toHex(105000)).toLowerCase()),
+        );
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.not.stringContaining(remove0x(toHex(110000)).toLowerCase()),
         );
       });
 

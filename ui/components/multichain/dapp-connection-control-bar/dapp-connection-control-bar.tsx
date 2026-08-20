@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { memo, useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
 import {
@@ -22,6 +22,7 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Tag,
   Text,
   TextColor,
   TextVariant,
@@ -39,20 +40,22 @@ import {
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
-import { getDappActiveNetwork } from '../../../selectors/dapp';
+import {
+  getDappActiveNetwork,
+  getIsEip1193CompatibleConnection,
+} from '../../../selectors/dapp';
 import {
   addPermittedAccounts,
-  hidePermittedNetworkToast,
   removePermissionsFor,
-  toggleNetworkMenu,
 } from '../../../store/actions';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { getURLHost } from '../../../helpers/utils/util';
-import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
+import { getCaip25CaveatValueFromPermissions } from '../../../helpers/utils/caip25-permissions';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
-import { Tag } from '../../component-library/tag/tag';
 import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal';
+import { useDispatch } from '../../../store/hooks';
+import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
 
 /**
  * DappConnectionControlBar - A contextual bar shown only during active dapp
@@ -64,11 +67,14 @@ import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal
  * Not-connected layout (active account is not among permitted accounts):
  * [Favicon+grey dot] [Origin / Account · Not connected] ... [Connect]
  */
-export const DappConnectionControlBar: React.FC = () => {
+export const DappConnectionControlBar = memo(() => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showDisconnectModal, setShowDisconnectModal] = useState(false);
+  const [isNetworkPopoverOpen, setIsNetworkPopoverOpen] = useState(false);
+  const [networkButtonElement, setNetworkButtonElement] =
+    useState<HTMLButtonElement | null>(null);
 
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const subjectMetadata = useSelector(getSubjectMetadata);
@@ -78,6 +84,7 @@ export const DappConnectionControlBar: React.FC = () => {
     { permissions: Record<string, { parentCapability: string }> }
   >;
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
+  const isEip1193Compatible = useSelector(getIsEip1193CompatibleConnection);
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupInternalAccounts = useSelector((state) =>
     getInternalAccountsFromGroupById(
@@ -151,14 +158,12 @@ export const DappConnectionControlBar: React.FC = () => {
     : undefined;
 
   const handleNetworkClick = useCallback(() => {
-    dispatch(
-      toggleNetworkMenu({
-        isAccessedFromDappConnectedSitePopover: true,
-        isAddingNewNetwork: false,
-        isMultiRpcOnboarding: false,
-      }),
-    );
-  }, [dispatch]);
+    setIsNetworkPopoverOpen((prev) => !prev);
+  }, []);
+
+  const handleCloseNetworkPopover = useCallback(() => {
+    setIsNetworkPopoverOpen(false);
+  }, []);
 
   const handlePermissionsClick = useCallback(() => {
     if (activeTabOrigin) {
@@ -184,7 +189,6 @@ export const DappConnectionControlBar: React.FC = () => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
-    dispatch(hidePermittedNetworkToast());
     setShowDisconnectModal(false);
   }, [dispatch, subjects, activeTabOrigin]);
 
@@ -277,11 +281,11 @@ export const DappConnectionControlBar: React.FC = () => {
                 </Text>
                 {showNotConnectedState && (
                   <Tag
-                    label={t('statusNotConnected')}
-                    textVariant={TextVariant.BodyXs}
                     className="dapp-connection-control-bar__not-connected-tag"
                     data-testid="dapp-connection-control-bar__not-connected-tag"
-                  />
+                  >
+                    {t('statusNotConnected')}
+                  </Tag>
                 )}
               </Box>
             )}
@@ -309,12 +313,15 @@ export const DappConnectionControlBar: React.FC = () => {
             )
           ) : (
             <>
-              {/* Network selector (icon-only, same size as action icons) */}
-              {dappActiveNetwork && (
+              {/* Network selector — only for EIP-1193-compatible (EVM) connections */}
+              {dappActiveNetwork && isEip1193Compatible && (
                 <button
+                  ref={setNetworkButtonElement}
                   className="dapp-connection-control-bar__network-button flex items-center gap-1"
                   onClick={handleNetworkClick}
                   data-testid="dapp-connection-control-bar__network-button"
+                  aria-haspopup="dialog"
+                  aria-expanded={isNetworkPopoverOpen}
                   type="button"
                 >
                   <AvatarNetwork
@@ -330,7 +337,7 @@ export const DappConnectionControlBar: React.FC = () => {
                   <Icon
                     name={IconName.ArrowDown}
                     size={IconSize.Xs}
-                    color={IconColor.IconDefault}
+                    color={IconColor.IconAlternative}
                   />
                 </button>
               )}
@@ -352,7 +359,7 @@ export const DappConnectionControlBar: React.FC = () => {
                   <Icon
                     name={IconName.Setting}
                     size={IconSize.Sm}
-                    color={IconColor.IconDefault}
+                    color={IconColor.IconAlternative}
                   />
                 </button>
 
@@ -384,8 +391,18 @@ export const DappConnectionControlBar: React.FC = () => {
         <DisconnectAllModal
           onClose={handleCloseDisconnectModal}
           onClick={handleDisconnect}
+          origin={activeTabOrigin}
+        />
+      )}
+
+      {/* Inline network selector popover anchored to the network button */}
+      {isNetworkPopoverOpen && (
+        <DappBarEVMNetworkSelectorPopover
+          referenceElement={networkButtonElement}
+          isOpen={isNetworkPopoverOpen}
+          onClose={handleCloseNetworkPopover}
         />
       )}
     </>
   );
-};
+});

@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import {
   TransactionMeta,
   TransactionType,
@@ -15,7 +15,11 @@ import {
 } from './rpcErrorUtils';
 import { useHardwareFooter } from './useHardwareFooter';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
-import { ConnectionStatus, HardwareWalletType } from './types';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+  HardwareWalletType,
+} from './types';
 
 jest.mock('./useHardwareWalletMetrics', () => ({
   useHardwareWalletMetrics: jest.fn(),
@@ -37,6 +41,9 @@ jest.mock('./rpcErrorUtils', () => ({
 }));
 
 const mockUseHardwareWalletMetrics = jest.mocked(useHardwareWalletMetrics);
+const HARDWARE_ACCOUNT_ADDRESS = '0x1111111111111111111111111111111111111111';
+const NON_HARDWARE_ACCOUNT_ADDRESS =
+  '0x2222222222222222222222222222222222222222';
 
 describe('useHardwareFooter', () => {
   let mockConnectionState: { status: ConnectionStatus };
@@ -74,6 +81,9 @@ describe('useHardwareFooter', () => {
     (useHardwareWalletConfig as jest.Mock).mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
+      accountAddress: HARDWARE_ACCOUNT_ADDRESS,
+      hardwareConnectionPermissionState:
+        HardwareConnectionPermissionState.Unknown,
     });
     (useHardwareWalletActions as jest.Mock).mockReturnValue({
       ensureDeviceReady: mockEnsureDeviceReady,
@@ -113,9 +123,11 @@ describe('useHardwareFooter', () => {
   const renderUseHardwareFooter = ({
     currentConfirmation = createConfirmation(TransactionType.simpleSend),
     currentConfirmationId = 'confirmation-id',
+    fromAddress = HARDWARE_ACCOUNT_ADDRESS,
   }: {
     currentConfirmation?: TransactionMeta;
     currentConfirmationId?: string;
+    fromAddress?: string;
   } = {}) =>
     renderHook(
       (props) =>
@@ -128,6 +140,7 @@ describe('useHardwareFooter', () => {
         initialProps: {
           currentConfirmation,
           currentConfirmationId,
+          fromAddress,
         },
       },
     );
@@ -137,10 +150,23 @@ describe('useHardwareFooter', () => {
       (useHardwareWalletConfig as jest.Mock).mockReturnValue({
         isHardwareWalletAccount: false,
         walletType: null,
+        accountAddress: null,
       });
       mockConnectionState.status = ConnectionStatus.Disconnected;
 
       const { result } = renderUseHardwareFooter();
+
+      expect(result.current.walletType).toBeNull();
+      expect(result.current.shouldRunHardwareWalletPreflight).toBe(false);
+      expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
+    it('returns preflight disabled when selected hardware account does not match confirmation sender', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+
+      const { result } = renderUseHardwareFooter({
+        fromAddress: NON_HARDWARE_ACCOUNT_ADDRESS,
+      });
 
       expect(result.current.walletType).toBeNull();
       expect(result.current.shouldRunHardwareWalletPreflight).toBe(false);
@@ -163,6 +189,14 @@ describe('useHardwareFooter', () => {
       expect(result.current.shouldRunHardwareWalletPreflight).toBe(true);
     });
 
+    it('treats Connected transport as ready for footer CTA before ensureDeviceReady', () => {
+      mockConnectionState.status = ConnectionStatus.Connected;
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
     it('returns preflight disabled in e2e mode', () => {
       process.env.IN_TEST = 'true';
       process.env.JEST_WORKER_ID = 'undefined';
@@ -171,6 +205,66 @@ describe('useHardwareFooter', () => {
 
       expect(result.current.shouldRunHardwareWalletPreflight).toBe(false);
       expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
+    it('returns ready for QR wallet when camera permission is already granted', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Granted,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
+    it('returns ready for the QR wallet footer when camera permission has not been granted yet', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Prompt,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
+    it('returns ready for the QR wallet footer when camera permission state is unknown', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Unknown,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(true);
+    });
+
+    it('returns not ready for Ledger even when camera permission is granted', () => {
+      mockConnectionState.status = ConnectionStatus.Disconnected;
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Granted,
+      });
+
+      const { result } = renderUseHardwareFooter();
+
+      expect(result.current.isHardwareWalletReady).toBe(false);
     });
   });
 
@@ -221,7 +315,8 @@ describe('useHardwareFooter', () => {
       });
 
       expect(isReady).toBe(false);
-      expect(result.current.isHardwareWalletReady).toBe(false);
+      // Transport remains connected; footer still shows Confirm so the user can retry.
+      expect(result.current.isHardwareWalletReady).toBe(true);
     });
 
     it('returns true without calling the device check in e2e mode', async () => {
@@ -247,6 +342,7 @@ describe('useHardwareFooter', () => {
         useHardwareFooter({
           currentConfirmation: createConfirmation(TransactionType.simpleSend),
           currentConfirmationId: 'confirmation-id',
+          fromAddress: HARDWARE_ACCOUNT_ADDRESS,
           onUserRejectedHardwareWalletError:
             mockOnUserRejectedHardwareWalletError,
         }),
@@ -268,6 +364,7 @@ describe('useHardwareFooter', () => {
         useHardwareFooter({
           currentConfirmation: createConfirmation(TransactionType.simpleSend),
           currentConfirmationId: 'confirmation-id',
+          fromAddress: HARDWARE_ACCOUNT_ADDRESS,
           onUserRejectedHardwareWalletError:
             mockOnUserRejectedHardwareWalletError,
         }),
@@ -300,10 +397,12 @@ describe('useHardwareFooter', () => {
         rerender({
           currentConfirmation: createConfirmation(TransactionType.simpleSend),
           currentConfirmationId: 'confirmation-2',
+          fromAddress: HARDWARE_ACCOUNT_ADDRESS,
         });
       });
 
-      expect(result.current.isHardwareWalletReady).toBe(false);
+      // Transport is still up; confirm CTA stays enabled and preflight runs again on submit.
+      expect(result.current.isHardwareWalletReady).toBe(true);
     });
 
     it('resets a successful preflight when the device disconnects', async () => {
@@ -324,6 +423,7 @@ describe('useHardwareFooter', () => {
         rerender({
           currentConfirmation: createConfirmation(TransactionType.simpleSend),
           currentConfirmationId: 'confirmation-id',
+          fromAddress: HARDWARE_ACCOUNT_ADDRESS,
         });
       });
 

@@ -18,6 +18,7 @@ import { Loader } from '../components/send/loader';
 import { SendPages } from '../constants/send';
 import { useSendContext } from '../context/send';
 import { useSendQueryParams } from '../hooks/send/useSendQueryParams';
+import { useHideToasts } from '../../../hooks/useHideToasts';
 
 const SendContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -30,6 +31,7 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
       height={BlockSize.Full}
       justifyContent={JustifyContent.center}
       style={{ flex: '1 0 auto', minHeight: 0 }}
+      data-testid="parent-selector-send-page"
       width={BlockSize.Full}
     >
       <Box
@@ -61,6 +63,7 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const SendInner = () => {
+  useHideToasts();
   useSendQueryParams();
   const { currentPage } = useSendContext();
 

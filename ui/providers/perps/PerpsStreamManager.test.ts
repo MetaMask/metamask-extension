@@ -270,6 +270,10 @@ describe('PerpsStreamManager', () => {
         // Advance past WS grace period to trigger REST fallback
         await jest.advanceTimersByTimeAsync(3_000);
 
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          [{ useTerminalApi: false }],
+        );
         expect(onData).toHaveBeenCalledWith([]);
         expect(consoleErrorSpy).toHaveBeenCalledWith(
           '[PerpsStreamManager] Failed to fetch markets',
@@ -279,6 +283,50 @@ describe('PerpsStreamManager', () => {
         consoleErrorSpy.mockRestore();
         jest.useRealTimers();
       }
+    });
+
+    it('passes useTerminalApi: true when setUseTerminalApi(true) has been called', async () => {
+      jest.useFakeTimers();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockResolvedValue([]);
+
+        manager.setUseTerminalApi(true);
+        manager.markets.subscribe(jest.fn());
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          [{ useTerminalApi: true }],
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+      }
+    });
+
+    it('clears cached markets when the terminal mode changes so the next fetch uses the new backend', () => {
+      manager.markets.pushData([{ symbol: 'BTC' }] as never[]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      manager.setUseTerminalApi(true);
+
+      expect(manager.markets.hasCachedData()).toBe(false);
+    });
+
+    it('keeps cached markets when the terminal mode is unchanged', () => {
+      manager.markets.pushData([{ symbol: 'BTC' }] as never[]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      // Default mode is already `false`; a no-op update must not wipe the
+      // warm cache on every remount that re-applies the same flag value.
+      manager.setUseTerminalApi(false);
+
+      expect(manager.markets.hasCachedData()).toBe(true);
     });
 
     it('skips REST fallback when WS delivers data within grace period', async () => {
@@ -706,6 +754,98 @@ describe('PerpsStreamManager', () => {
       manager.handleBackgroundUpdate({ channel: 'orderBook', data: orderBook });
 
       expect(cb).toHaveBeenCalledWith(orderBook);
+    });
+
+    it('routes orderBookAggregated channel to orderBookAggregated.pushData', () => {
+      const aggregatedCb = jest.fn();
+      const rawCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.orderBook.subscribe(rawCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-1');
+
+      const aggregated = { bids: [{ price: '1750' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: aggregated,
+        subscriptionId: 'agg-1',
+      });
+
+      expect(aggregatedCb).toHaveBeenCalledWith(aggregated);
+      // The raw channel must not receive aggregated data.
+      expect(rawCb).not.toHaveBeenCalled();
+    });
+
+    it('rejects aggregated packets when no subscription is active', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: { bids: [{ price: '1750' }], asks: [] },
+        subscriptionId: 'agg-closed',
+      });
+
+      expect(aggregatedCb).not.toHaveBeenCalled();
+      expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+    });
+
+    it('discards aggregated packets that do not match the active subscription identity', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      const staleBook = { bids: [{ price: '73775' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: staleBook,
+        subscriptionId: 'agg-1',
+      });
+
+      expect(aggregatedCb).not.toHaveBeenCalled();
+      expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+    });
+
+    it('accepts aggregated packets that match the active subscription identity', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      const book = { bids: [{ price: '73770' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: book,
+        subscriptionId: 'agg-2',
+      });
+
+      expect(aggregatedCb).toHaveBeenCalledWith(book);
+    });
+
+    it('discards aggregated status updates that do not match the active identity', () => {
+      const statusCb = jest.fn();
+      manager.orderBookAggregatedStatus.subscribe(statusCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'connected',
+        subscriptionId: 'agg-1',
+      });
+
+      expect(statusCb).not.toHaveBeenCalledWith('connected');
+    });
+
+    it('routes orderBookAggregatedStatus to orderBookAggregatedStatus.pushData', () => {
+      const statusCb = jest.fn();
+      manager.orderBookAggregatedStatus.subscribe(statusCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-status');
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'error',
+        subscriptionId: 'agg-status',
+      });
+
+      expect(statusCb).toHaveBeenLastCalledWith('error');
     });
 
     it('routes candles channel to candles.pushFromBackground', () => {
@@ -1297,6 +1437,98 @@ describe('PerpsStreamManager', () => {
       manager.reset();
 
       expect(manager.getLastStreamUpdateAt()).toBe(0);
+    });
+  });
+
+  describe('hydrateFromControllerCache', () => {
+    const ADDR = '0xABCDEF0000000000000000000000000000000001';
+
+    it('hydrates markets when channel has no cached data', () => {
+      const markets = [
+        { symbol: 'BTC', name: 'Bitcoin' } as unknown as Parameters<
+          typeof manager.markets.pushData
+        >[0][number],
+      ];
+
+      manager.hydrateFromControllerCache({ markets });
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+      expect(manager.markets.getCachedData()).toEqual(markets);
+    });
+
+    it('does not hydrate markets when an empty array is provided', () => {
+      manager.hydrateFromControllerCache({ markets: [] });
+
+      expect(manager.markets.hasCachedData()).toBe(false);
+    });
+
+    it('is a no-op when the live stream already populated the channel', () => {
+      manager.markets.pushData([{ symbol: 'ETH' } as never]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      manager.hydrateFromControllerCache({
+        markets: [{ symbol: 'BTC' } as never],
+      });
+
+      expect(manager.markets.getCachedData()).toEqual([{ symbol: 'ETH' }]);
+    });
+
+    it('only hydrates user-scoped channels when the cache address matches the selected account', () => {
+      const positions = [makePosition('BTC')];
+
+      manager.hydrateFromControllerCache({ positions, address: ADDR }, ADDR);
+
+      expect(manager.positions.hasCachedData()).toBe(true);
+      expect(manager.positions.getCachedData()).toEqual(positions);
+    });
+
+    it('refuses to hydrate user-scoped channels when the cache address does not match', () => {
+      const positions = [makePosition('BTC')];
+      const OTHER = '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+
+      manager.hydrateFromControllerCache({ positions, address: OTHER }, ADDR);
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('refuses to hydrate user-scoped channels when no selected address is provided', () => {
+      manager.hydrateFromControllerCache({
+        positions: [makePosition('BTC')],
+        address: ADDR,
+      });
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('does not flip positions cache when an empty array is supplied', () => {
+      manager.hydrateFromControllerCache(
+        { positions: [], address: ADDR },
+        ADDR,
+      );
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('skips account hydration when the snapshot value is null', () => {
+      manager.hydrateFromControllerCache(
+        { account: null, address: ADDR },
+        ADDR,
+      );
+
+      expect(manager.account.hasCachedData()).toBe(false);
+    });
+
+    it('hydrates markets even when the user scope does not match', () => {
+      const markets = [{ symbol: 'BTC' } as never];
+      const positions = [makePosition('BTC')];
+
+      manager.hydrateFromControllerCache(
+        { markets, positions, address: '0xwrong' },
+        ADDR,
+      );
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+      expect(manager.positions.hasCachedData()).toBe(false);
     });
   });
 });

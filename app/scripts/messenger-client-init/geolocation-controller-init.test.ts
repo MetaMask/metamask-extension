@@ -10,6 +10,9 @@ import { GeolocationControllerInit } from './geolocation-controller-init';
 
 const DEFAULT_STATE: GeolocationControllerState = {
   location: '',
+  country: null,
+  region: null,
+  timezone: null,
   status: 'idle',
   lastFetchedAt: null,
   error: null,
@@ -22,6 +25,7 @@ jest.mock('@metamask/geolocation-controller', () => ({
     .mockReturnValue({ ...DEFAULT_STATE }),
   GeolocationController: jest.fn().mockImplementation(() => ({
     getGeolocation: jest.fn().mockResolvedValue('US'),
+    refreshGeolocation: jest.fn().mockResolvedValue('US'),
   })),
 }));
 
@@ -76,5 +80,26 @@ describe('GeolocationControllerInit', () => {
   it('does not eagerly fetch geolocation', () => {
     const { messengerClient } = GeolocationControllerInit(getInitRequestMock());
     expect(messengerClient.getGeolocation).not.toHaveBeenCalled();
+  });
+
+  it('exposes getGeolocation and refreshGeolocation on the background API', () => {
+    const result = GeolocationControllerInit(getInitRequestMock());
+
+    expect(typeof result.api?.getGeolocation).toBe('function');
+    expect(typeof result.api?.refreshGeolocation).toBe('function');
+  });
+
+  it('delegates api.getGeolocation to the controller', async () => {
+    const result = GeolocationControllerInit(getInitRequestMock());
+
+    await expect(result.api?.getGeolocation()).resolves.toBe('US');
+    expect(result.messengerClient.getGeolocation).toHaveBeenCalledTimes(1);
+  });
+
+  it('delegates api.refreshGeolocation to the controller', async () => {
+    const result = GeolocationControllerInit(getInitRequestMock());
+
+    await expect(result.api?.refreshGeolocation()).resolves.toBe('US');
+    expect(result.messengerClient.refreshGeolocation).toHaveBeenCalledTimes(1);
   });
 });

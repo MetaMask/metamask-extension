@@ -6,10 +6,9 @@ import {
   type GasPriceGasFeeEstimates,
 } from '@metamask/transaction-controller';
 import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { useDispatch } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { updateTransactionGasFees } from '../../../../store/actions';
+import { updateTransactionGasFees } from '../../../../store/actions/update-transaction-gas-fees';
 import { useConfirmContext } from '../../context/confirm';
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
@@ -17,6 +16,9 @@ import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
+import { useDispatch } from '../../../../store/hooks';
+import { useTransactionGasLimit } from './useTransactionGasLimit';
+import { usePersistGasFeePreference } from './usePersistGasFeePreference';
 
 const HEX_ZERO = '0x0';
 
@@ -26,10 +28,12 @@ export const useGasPriceEstimateOption = ({
   handleCloseModals: () => void;
 }): GasOption[] => {
   const dispatch = useDispatch();
+  const persistGasFeePreference = usePersistGasFeePreference();
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
+  const { gasLimit: displayGas } = useTransactionGasLimit(transactionMeta);
   const nativeTicker = useTransactionNativeTicker();
 
   const {
@@ -81,6 +85,9 @@ export const useGasPriceEstimateOption = ({
         ...gasPropertiesToUpdate,
       }),
     );
+    await persistGasFeePreference(transactionMeta, {
+      userFeeLevel: 'medium',
+    });
     handleCloseModals();
   }, [
     id,
@@ -88,6 +95,8 @@ export const useGasPriceEstimateOption = ({
     transactionEnvelopeType,
     handleCloseModals,
     dispatch,
+    persistGasFeePreference,
+    transactionMeta,
   ]);
 
   const options = useMemo((): GasOption[] => {
@@ -97,7 +106,7 @@ export const useGasPriceEstimateOption = ({
 
     let feePerGas = HEX_ZERO;
     let gasPrice = HEX_ZERO;
-    const gas = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
+    const gas = displayGas || HEX_ZERO;
     let shouldUseEIP1559FeeLogic = false;
     let priorityFeePerGas = HEX_ZERO;
 
@@ -148,6 +157,7 @@ export const useGasPriceEstimateOption = ({
     onGasPriceEstimateLevelClick,
     t,
     nativeTicker,
+    displayGas,
   ]);
 
   return options;

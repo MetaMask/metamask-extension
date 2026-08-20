@@ -20,9 +20,9 @@ import { Text } from '../text';
 import { Icon } from './icon';
 import { IconName, IconSize } from './icon.types';
 
+import { TextFieldSearch } from '@metamask/design-system-react';
 import { Box } from '../box';
 import { Label } from '../label';
-import { TextFieldSearch } from '../text-field-search';
 import { TextField, TextFieldSize } from '../text-field';
 import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
@@ -35,7 +35,7 @@ export default {
     docs: {
       description: {
         component:
-          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [`Icon` from `@metamask/design-system-react`](https://metamask.github.io/metamask-design-system/?path=/docs/react-components-icon--docs) instead. See the [Migration Guide](https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#icon-component) for migration details.',
       },
     },
   },
@@ -85,7 +85,7 @@ export const DefaultStory: StoryFn<typeof Icon> = (args) => {
           <Label htmlFor="icon-search">IconName</Label>
           <TextFieldSearch
             id="icon-search"
-            marginBottom={4}
+            className="mb-4"
             onChange={handleSearch}
             clearButtonOnClick={handleOnClear}
             value={search}

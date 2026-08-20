@@ -5,7 +5,8 @@ import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 export const DECODING_E2E_API_URL =
@@ -42,8 +43,9 @@ export function withTransactionEnvelopeTypeFixtures(
       fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
-          metaMetricsId: MOCK_META_METRICS_ID,
-          participateInMetaMetrics: true,
+          analyticsId: MOCK_ANALYTICS_ID,
+          consentDecisionMade: true,
+          optedIn: true,
         })
         .build(),
       localNodeOptions:
@@ -52,6 +54,11 @@ export function withTransactionEnvelopeTypeFixtures(
           : {},
       ...(smartContract && { smartContract }),
       testSpecificMock: combinedMocks,
+      manifestFlags: {
+        remoteFeatureFlags: {
+          extensionUxTokenManagementFilter: true,
+        },
+      },
       title,
     },
     testFunction,
@@ -74,8 +81,9 @@ export function withSignatureFixtures(
       fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
-          metaMetricsId: MOCK_META_METRICS_ID,
-          participateInMetaMetrics: true,
+          analyticsId: MOCK_ANALYTICS_ID,
+          consentDecisionMade: true,
+          optedIn: true,
         })
         .build(),
       testSpecificMock: mocks,
@@ -227,6 +235,7 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -255,6 +264,11 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                   ],
                 },
                 supportedChains: ['0xaa36a7', '0x539', '0x1'],
+              },
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              confirmations_enforced_simulations: {
+                enabled: true,
               },
             },
           ],
@@ -599,6 +613,7 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               assetsDefiPositionsEnabled: true,
             },
@@ -641,6 +656,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               assetsDefiPositionsEnabled: true,
             },
@@ -669,6 +685,7 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               assetsDefiPositionsEnabled: true,
             },

@@ -5,6 +5,7 @@ export enum DefiReferralPartner {
   Hyperliquid = 'hyperliquid',
   GMX = 'gmx',
   AsterDEX = 'asterdex',
+  Variational = 'variational',
 }
 
 /**
@@ -26,12 +27,18 @@ export type DefiReferralPartnerConfig = {
   origin: string;
   /** Full referral URL including the referral code */
   referralUrl: string;
-  /** URL for "Learn more" link in the consent UI */
+  /** URL for link in the consent UI description */
   learnMoreUrl: string;
   /** Approval type string for ApprovalController */
   approvalType: string;
   /** Connection flow prior to showing the referral screen */
   connectionFlow: ConnectionFlow;
+  /**
+   * When set, the referral prompt is suppressed if the user's active chain
+   * doesn't match this hex chain ID. This is used in cases where the partner's
+   * code application logic only works when on the required chain (e.g. Variational)
+   */
+  requiredChainId?: string;
 };
 
 /**
@@ -70,6 +77,16 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     approvalType: 'asterdex_referral_consent',
     connectionFlow: 'permissions_then_signature',
   },
+  [DefiReferralPartner.Variational]: {
+    id: DefiReferralPartner.Variational,
+    name: 'Variational',
+    origin: 'https://omni.variational.io',
+    referralUrl: 'https://omni.variational.io?ref=OMNIMETAMASK',
+    learnMoreUrl: 'https://docs.variational.io/omni/rewards/referrals',
+    approvalType: 'variational_referral_consent',
+    connectionFlow: 'permissions',
+    requiredChainId: '0xa4b1', // Arbitrum
+  },
 };
 
 /**
@@ -85,3 +102,18 @@ export function getPartnerByOrigin(
     (partner) => origin === partner.origin,
   );
 }
+
+/**
+ * GMX ReferralStorage contract address on Arbitrum
+ * Used to check whether a wallet address already has a referral code set on-chain.
+ * See https://arbiscan.io/address/0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d
+ */
+export const GMX_REFERRAL_STORAGE_ADDRESS =
+  '0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d';
+
+/**
+ * Hyperliquid info API endpoint
+ * Used to check whether a wallet address already has a referral code set.
+ * See https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint
+ */
+export const HYPERLIQUID_INFO_API_URL = 'https://api.hyperliquid.xyz/info';

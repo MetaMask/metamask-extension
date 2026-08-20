@@ -1,10 +1,23 @@
-// ShieldClaimPage class for interacting with the Shield Claim form page
 import * as path from 'path';
 import { Driver } from '../../../../webdriver/driver';
 
+/**
+ * Transaction Shield claim form: new claim and edit draft.
+ *
+ * Screen: `#/settings/transaction-shield/claims/new-claim` and
+ * `#/settings/transaction-shield/claims/edit-draft`, reached from
+ * `ShieldClaimsListPage` (submit / open draft) after
+ * `SettingsPage.goToTransactionShieldPage`.
+ * Owns: claim form fields (email, description, tx hash, reimbursement
+ * address), account/network selectors, file upload, submit, save/delete
+ * draft, and success/error toasts.
+ * Boundaries: the claim form only. The claims list belongs to
+ * `ShieldClaimsListPage`; membership detail to `ShieldDetailPage`.
+ * Related: `ShieldClaimsListPage`, `ShieldDetailPage`, `SettingsPage`.
+ *
+ * @see ui/pages/shield/transaction-shield/claims-form/claims-form.tsx
+ */
 export default class ShieldClaimPage {
-  private readonly driver: Driver;
-
   private readonly accountSelectorButton =
     '[data-testid="account-selector-button"]';
 
@@ -15,8 +28,7 @@ export default class ShieldClaimPage {
     text: accountName,
   });
 
-  private readonly backButton =
-    '[data-testid="settings-v2-header-back-button"]';
+  private readonly backButton = '[data-testid="page-header-back-button"]';
 
   private readonly claimErrorToast = '[data-testid="claim-submit-toast-error"]';
 
@@ -32,6 +44,8 @@ export default class ShieldClaimPage {
     '[data-testid="shield-claim-description-textarea"]';
 
   private readonly draftSavedToast = '[data-testid="claim-draft-saved-toast"]';
+
+  private readonly driver: Driver;
 
   private readonly emailInput = '[data-testid="shield-claim-email-input"]';
 
@@ -63,6 +77,11 @@ export default class ShieldClaimPage {
     this.driver = driver;
   }
 
+  async checkDraftSavedToast(): Promise<void> {
+    console.log('Checking draft saved toast is displayed');
+    await this.driver.waitForSelector(this.draftSavedToast);
+  }
+
   /**
    * Check if the Shield Claim page is loaded
    */
@@ -83,24 +102,91 @@ export default class ShieldClaimPage {
     console.log('Shield Claim page is loaded in view mode');
   }
 
-  async selectImpactedWalletName(accountName: string): Promise<void> {
-    console.log(`Selecting impacted wallet address: ${accountName}`);
-    await this.driver.clickElement(this.accountSelectorButton);
-
-    await this.driver.clickElement(this.accountSelectorItemByName(accountName));
-
-    console.log(`Account ${accountName} selected`);
+  async checkSuccessMessageDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.claimSuccessToast);
   }
 
-  async selectNetwork(chainId: string): Promise<void> {
-    console.log(`Selecting network with chain ID: ${chainId}`);
-    await this.driver.clickElement(this.networkSelectorButton);
-    await this.driver.clickElement(this.networkListItem(chainId));
+  /**
+   * Click the back button to navigate back to the claims list
+   */
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button on claim detail page');
+    await this.driver.clickElement(this.backButton);
+  }
+
+  async clickDeleteDraftButton(): Promise<void> {
+    console.log('Clicking delete draft button');
+    await this.driver.clickElement(this.deleteDraftButton);
+  }
+
+  async clickSaveDraftButton(): Promise<void> {
+    console.log('Clicking save draft button');
+    await this.driver.clickElement(this.saveDraftButton);
+  }
+
+  /**
+   * Click the submit button
+   */
+  async clickSubmitButton(): Promise<void> {
+    console.log('Clicking submit button');
+    await this.driver.clickElement(this.submitButton);
+  }
+
+  /**
+   * Fill in the case description textarea
+   *
+   * @param description - The description text to fill
+   */
+  async fillDescription(description: string): Promise<void> {
+    console.log(`Filling description: ${description}`);
+    await this.driver.fill(this.descriptionTextarea, description);
   }
 
   async fillEmail(email: string): Promise<void> {
     console.log(`Filling email: ${email}`);
     await this.driver.fill(this.emailInput, email);
+  }
+
+  /**
+   * Fill the entire form with provided data
+   *
+   * @param formData - The form data object containing all required fields
+   * @param formData.email - The email address
+   * @param formData.impactedWalletName - The impacted wallet name
+   * @param formData.chainId - The chain ID (e.g., '0x1' for Mainnet)
+   * @param formData.impactedTxnHash - The impacted transaction hash
+   * @param formData.reimbursementWalletAddress - The reimbursement wallet address
+   * @param formData.description - The case description
+   * @param formData.uploadTestFile - Optional flag to upload and verify test file
+   * @param formData.files - Optional array of file paths to upload
+   */
+  async fillForm(formData: {
+    email: string;
+    reimbursementWalletAddress: string;
+    impactedWalletName: string;
+    chainId: string;
+    impactedTxnHash: string;
+    description: string;
+    uploadTestFile?: boolean;
+    files?: string[];
+  }): Promise<void> {
+    console.log('Filling entire claim form');
+
+    await this.fillEmail(formData.email);
+    await this.fillReimbursementWalletAddress(
+      formData.reimbursementWalletAddress,
+    );
+    await this.selectImpactedWalletName(formData.impactedWalletName);
+    await this.selectNetwork(formData.chainId);
+    await this.fillImpactedTransactionHash(formData.impactedTxnHash);
+    await this.fillDescription(formData.description);
+
+    if (formData.uploadTestFile) {
+      await this.uploadTestFile();
+      await this.verifyFileUploaded('test-document.pdf');
+    }
+
+    console.log('Claim form filled successfully');
   }
 
   /**
@@ -123,14 +209,48 @@ export default class ShieldClaimPage {
     await this.driver.fill(this.reimbursementWalletAddressInput, address);
   }
 
+  async selectImpactedWalletName(accountName: string): Promise<void> {
+    console.log(`Selecting impacted wallet address: ${accountName}`);
+    await this.driver.clickElement(this.accountSelectorButton);
+
+    await this.driver.clickElement(this.accountSelectorItemByName(accountName));
+
+    console.log(`Account ${accountName} selected`);
+  }
+
+  async selectNetwork(chainId: string): Promise<void> {
+    console.log(`Selecting network with chain ID: ${chainId}`);
+    await this.driver.clickElement(this.networkSelectorButton);
+    await this.driver.clickElement(this.networkListItem(chainId));
+  }
+
   /**
-   * Fill in the case description textarea
+   * Submit the form with provided data
    *
-   * @param description - The description text to fill
+   * @param formData - The form data object containing all required fields
+   * @param formData.email - The email address
+   * @param formData.reimbursementWalletAddress - The reimbursement wallet address
+   * @param formData.impactedWalletName - The impacted wallet name
+   * @param formData.chainId - The chain ID (e.g., '0x1' for Mainnet)
+   * @param formData.impactedTxnHash - The impacted transaction hash
+   * @param formData.description - The case description
+   * @param formData.files - Optional array of file paths to upload
    */
-  async fillDescription(description: string): Promise<void> {
-    console.log(`Filling description: ${description}`);
-    await this.driver.fill(this.descriptionTextarea, description);
+  async submitForm(formData: {
+    email: string;
+    reimbursementWalletAddress: string;
+    impactedWalletName: string;
+    chainId: string;
+    impactedTxnHash: string;
+    description: string;
+    files?: string[];
+  }): Promise<void> {
+    console.log('Submitting claim form');
+
+    await this.fillForm(formData);
+    await this.clickSubmitButton();
+
+    console.log('Claim form submitted');
   }
 
   /**
@@ -145,56 +265,6 @@ export default class ShieldClaimPage {
     );
     const inputField = await this.driver.findElement(this.fileUploaderInput);
     await inputField.sendKeys(testDataPath);
-  }
-
-  /**
-   * Verify that a file has been uploaded successfully
-   *
-   * @param fileName - The name of the file to verify
-   */
-  async verifyFileUploaded(fileName: string): Promise<void> {
-    console.log(`Verifying file uploaded: ${fileName}`);
-    await this.driver.waitForSelector({
-      text: fileName,
-    });
-  }
-
-  /**
-   * Click the submit button
-   */
-  async clickSubmitButton(): Promise<void> {
-    console.log('Clicking submit button');
-    await this.driver.clickElement(this.submitButton);
-  }
-
-  async checkSuccessMessageDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.claimSuccessToast);
-  }
-
-  /**
-   * Verify inline field error message is displayed
-   *
-   * @param errorMessage - The error message text to verify
-   */
-  async verifyFieldError(errorMessage: string): Promise<void> {
-    console.log(`Verifying field error message: ${errorMessage}`);
-    await this.driver.waitForSelector({
-      css: this.impactedTxHashError,
-      text: errorMessage,
-    });
-  }
-
-  /**
-   * Verify error toast message is displayed
-   *
-   * @param errorMessage - The error message text to verify
-   */
-  async verifyToastError(errorMessage: string): Promise<void> {
-    console.log(`Verifying toast error message: ${errorMessage}`);
-    await this.driver.waitForSelector({
-      css: this.claimErrorToast,
-      text: errorMessage,
-    });
   }
 
   async verifyClaimData(claimData: {
@@ -250,97 +320,41 @@ export default class ShieldClaimPage {
   }
 
   /**
-   * Fill the entire form with provided data
+   * Verify inline field error message is displayed
    *
-   * @param formData - The form data object containing all required fields
-   * @param formData.email - The email address
-   * @param formData.impactedWalletName - The impacted wallet name
-   * @param formData.chainId - The chain ID (e.g., '0x1' for Mainnet)
-   * @param formData.impactedTxnHash - The impacted transaction hash
-   * @param formData.reimbursementWalletAddress - The reimbursement wallet address
-   * @param formData.description - The case description
-   * @param formData.uploadTestFile - Optional flag to upload and verify test file
-   * @param formData.files - Optional array of file paths to upload
+   * @param errorMessage - The error message text to verify
    */
-  async fillForm(formData: {
-    email: string;
-    reimbursementWalletAddress: string;
-    impactedWalletName: string;
-    chainId: string;
-    impactedTxnHash: string;
-    description: string;
-    uploadTestFile?: boolean;
-    files?: string[];
-  }): Promise<void> {
-    console.log('Filling entire claim form');
-
-    await this.fillEmail(formData.email);
-    await this.fillReimbursementWalletAddress(
-      formData.reimbursementWalletAddress,
-    );
-    await this.selectImpactedWalletName(formData.impactedWalletName);
-    await this.selectNetwork(formData.chainId);
-    await this.fillImpactedTransactionHash(formData.impactedTxnHash);
-    await this.fillDescription(formData.description);
-
-    if (formData.uploadTestFile) {
-      await this.uploadTestFile();
-      await this.verifyFileUploaded('test-document.pdf');
-    }
-
-    console.log('Claim form filled successfully');
+  async verifyFieldError(errorMessage: string): Promise<void> {
+    console.log(`Verifying field error message: ${errorMessage}`);
+    await this.driver.waitForSelector({
+      css: this.impactedTxHashError,
+      text: errorMessage,
+    });
   }
 
   /**
-   * Submit the form with provided data
+   * Verify that a file has been uploaded successfully
    *
-   * @param formData - The form data object containing all required fields
-   * @param formData.email - The email address
-   * @param formData.reimbursementWalletAddress - The reimbursement wallet address
-   * @param formData.impactedWalletName - The impacted wallet name
-   * @param formData.chainId - The chain ID (e.g., '0x1' for Mainnet)
-   * @param formData.impactedTxnHash - The impacted transaction hash
-   * @param formData.description - The case description
-   * @param formData.files - Optional array of file paths to upload
+   * @param fileName - The name of the file to verify
    */
-  async submitForm(formData: {
-    email: string;
-    reimbursementWalletAddress: string;
-    impactedWalletName: string;
-    chainId: string;
-    impactedTxnHash: string;
-    description: string;
-    files?: string[];
-  }): Promise<void> {
-    console.log('Submitting claim form');
-
-    await this.fillForm(formData);
-    await this.clickSubmitButton();
-
-    console.log('Claim form submitted');
+  async verifyFileUploaded(fileName: string): Promise<void> {
+    console.log(`Verifying file uploaded: ${fileName}`);
+    await this.driver.waitForSelector({
+      text: fileName,
+    });
   }
 
   /**
-   * Click the back button to navigate back to the claims list
+   * Verify error toast message is displayed
+   *
+   * @param errorMessage - The error message text to verify
    */
-  async clickBackButton(): Promise<void> {
-    console.log('Clicking back button on claim detail page');
-    await this.driver.clickElement(this.backButton);
-  }
-
-  async clickDeleteDraftButton(): Promise<void> {
-    console.log('Clicking delete draft button');
-    await this.driver.clickElement(this.deleteDraftButton);
-  }
-
-  async clickSaveDraftButton(): Promise<void> {
-    console.log('Clicking save draft button');
-    await this.driver.clickElement(this.saveDraftButton);
-  }
-
-  async checkDraftSavedToast(): Promise<void> {
-    console.log('Checking draft saved toast is displayed');
-    await this.driver.waitForSelector(this.draftSavedToast);
+  async verifyToastError(errorMessage: string): Promise<void> {
+    console.log(`Verifying toast error message: ${errorMessage}`);
+    await this.driver.waitForSelector({
+      css: this.claimErrorToast,
+      text: errorMessage,
+    });
   }
 
   async waitForDraftSavedToastToDisappear(): Promise<void> {

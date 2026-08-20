@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du må velge en konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Legg til sjetongene du har kjøpt med MetaMask"
-  },
   "addAlias": {
     "message": "Legg til alias "
   },
@@ -78,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "Timer for automatisk utlogging (minutter) "
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Innstill hviletiden i minutter før MetaMask automatisk logger ut"
-  },
   "average": {
     "message": "Gjennomsnitt"
   },
   "back": {
     "message": "Tilbake"
-  },
-  "backupApprovalInfo": {
-    "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere MetaMask, eller ønsker å få tilgang til lommeboken din på en annen enhet."
   },
   "backupApprovalNotice": {
     "message": "Sikkerhetskopier den hemmelige gjenopprettingskoden for å sikre lommeboken og midlene."
@@ -178,23 +169,11 @@
   "createPassword": {
     "message": "Opprett passord "
   },
-  "currencyConversion": {
-    "message": "Valutakonvertering "
-  },
-  "currentLanguage": {
-    "message": "Nåværende språk "
-  },
   "custom": {
     "message": "Avansert"
   },
-  "customToken": {
-    "message": "Egendefinert token "
-  },
   "decimal": {
     "message": "Presisjonsdesimaler"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desimaler må være minst 0, og ikke flere enn 36."
   },
   "delete": {
     "message": "Slett"
@@ -204,9 +183,6 @@
   },
   "done": {
     "message": "Ferdig"
-  },
-  "downloadGoogleChrome": {
-    "message": "Last ned Google Chrome "
   },
   "downloadStateLogs": {
     "message": "Last ned tilstandslogg"
@@ -262,9 +238,6 @@
   },
   "hardwareWallets": {
     "message": "Koble til en hardware-lommebok"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Velg maskinvarelommeboken som du vil bruke med MetaMask"
   },
   "here": {
     "message": "her",
@@ -330,9 +303,6 @@
   "likeToImportTokens": {
     "message": "Ønsker du å legge til disse tokenene"
   },
-  "links": {
-    "message": "Lenker "
-  },
   "loading": {
     "message": "Laster inn ..."
   },
@@ -357,9 +327,6 @@
   "metamaskVersion": {
     "message": "MetaMask-versjon "
   },
-  "mustSelectOne": {
-    "message": "Må velge minst 1 token. "
-  },
   "needImportFile": {
     "message": "Du må velge en fil å importere.",
     "description": "User is important an account and needs to add a file to continue"
@@ -369,12 +336,6 @@
   },
   "networks": {
     "message": "Nettverk"
-  },
-  "nevermind": {
-    "message": "Bare glem det"
-  },
-  "newAccount": {
-    "message": "Ny konto "
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -394,9 +355,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webkamera ikke funnet"
-  },
-  "notEnoughGas": {
-    "message": "Ikke nok bensin"
   },
   "ofTextNofM": {
     "message": "av"
@@ -481,9 +439,6 @@
   "restore": {
     "message": "Gjenopprett"
   },
-  "revealSeedWords": {
-    "message": "Vis frøord"
-  },
   "revealSeedWordsWarning": {
     "message": "Disse ordene kan brukes for å stjele alle kontoene dine. ",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -527,9 +482,6 @@
   "showFiatConversionInTestnets": {
     "message": "Vis konvertering på Testnets "
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Velg dette for å vise fiat-konvertering på Testnets"
-  },
   "showHexData": {
     "message": "Vis hex data "
   },
@@ -538,9 +490,6 @@
   },
   "sign": {
     "message": "Undertegn"
-  },
-  "signatureRequest": {
-    "message": "Signaturforespørsel"
   },
   "signed": {
     "message": "Signert"
@@ -559,9 +508,6 @@
   },
   "stateLogs": {
     "message": "Tilstandslogg"
-  },
-  "stateLogsDescription": {
-    "message": "Tilstandslogger inneholder de offentlige kontoadressene og sendte transaksjoner."
   },
   "submitted": {
     "message": "Sendt inn"

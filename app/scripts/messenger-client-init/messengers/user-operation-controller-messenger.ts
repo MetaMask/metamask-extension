@@ -1,31 +1,14 @@
-import { Messenger } from '@metamask/messenger';
-import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
-import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import {
-  KeyringControllerPatchUserOperationAction,
-  KeyringControllerPrepareUserOperationAction,
-  KeyringControllerSignUserOperationAction,
-} from '@metamask/keyring-controller';
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { UserOperationControllerMessenger } from '@metamask/user-operation-controller';
 import type {
   TransactionControllerEmulateNewTransactionAction,
   TransactionControllerEmulateTransactionUpdateAction,
 } from '@metamask/transaction-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-type AllowedActions =
-  | ApprovalControllerAddRequestAction
-  | KeyringControllerPatchUserOperationAction
-  | KeyringControllerPrepareUserOperationAction
-  | KeyringControllerSignUserOperationAction
-  | NetworkControllerGetNetworkClientByIdAction;
-
-export type UserOperationControllerMessenger = ReturnType<
-  typeof getUserOperationControllerMessenger
->;
-
-export type UserOperationControllerInitMessenger = ReturnType<
-  typeof getUserOperationControllerInitMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -33,16 +16,15 @@ export type UserOperationControllerInitMessenger = ReturnType<
  *
  * @param messenger - The base messenger used to create the restricted
  * messenger.
+ * @returns The restricted messenger.
  */
 export function getUserOperationControllerMessenger(
-  messenger: RootMessenger<AllowedActions, never>,
-) {
-  const controllerMessenger = new Messenger<
-    'UserOperationController',
-    AllowedActions,
-    never,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<UserOperationControllerMessenger>,
+    MessengerEvents<UserOperationControllerMessenger>
+  >,
+): UserOperationControllerMessenger {
+  const controllerMessenger: UserOperationControllerMessenger = new Messenger({
     namespace: 'UserOperationController',
     parent: messenger,
   });
@@ -58,6 +40,10 @@ export function getUserOperationControllerMessenger(
   });
   return controllerMessenger;
 }
+
+export type UserOperationControllerInitMessenger = ReturnType<
+  typeof getUserOperationControllerInitMessenger
+>;
 
 type InitMessengerActions =
   | TransactionControllerEmulateNewTransactionAction

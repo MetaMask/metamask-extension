@@ -75,14 +75,8 @@
   "create": {
     "message": "Vytvořit"
   },
-  "customToken": {
-    "message": "Vlastní token"
-  },
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desetinných míst musí být od 0 do 36."
   },
   "details": {
     "message": "Podrobnosti"
@@ -163,9 +157,6 @@
   "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
-  "links": {
-    "message": "Odkazy"
-  },
   "loading": {
     "message": "Načítám..."
   },
@@ -175,18 +166,12 @@
   "message": {
     "message": "Zpráva"
   },
-  "mustSelectOne": {
-    "message": "Musíte zvolit aspoň 1 token."
-  },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"
   },
   "networks": {
     "message": "Sítě"
-  },
-  "newAccount": {
-    "message": "Nový účet"
   },
   "newAccountNumberName": {
     "message": "Účet $1",
@@ -239,9 +224,6 @@
   "required": {
     "message": "Povinné"
   },
-  "revealSeedWords": {
-    "message": "Zobrazit slova klíčové fráze"
-  },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -267,9 +249,6 @@
   "sign": {
     "message": "Podepsat"
   },
-  "signatureRequest": {
-    "message": "Požadavek podpisu"
-  },
   "signed": {
     "message": "Podepsáno"
   },
@@ -278,9 +257,6 @@
   },
   "stateLogs": {
     "message": "Stavové protokoly"
-  },
-  "stateLogsDescription": {
-    "message": "Stavové protokoly obsahují vaše veřejné adresy účtů a odeslané transakce."
   },
   "submitted": {
     "message": "Odesláno"

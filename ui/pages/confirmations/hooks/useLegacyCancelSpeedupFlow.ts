@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   TransactionMeta,
   CANCEL_RATE,
@@ -19,9 +18,10 @@ import { addTenPercentAndRound } from '../../../helpers/utils/gas';
 import {
   createCancelTransaction,
   createSpeedUpTransaction,
-  updateTransactionGasFees,
 } from '../../../store/actions';
+import { updateTransactionGasFees } from '../../../store/actions/update-transaction-gas-fees';
 import { decGWEIToHexWEI } from '../../../../shared/lib/conversion.utils';
+import { useDispatch } from '../../../store/hooks';
 
 type GasFeeEstimatesUnion =
   | EthGasPriceEstimate

@@ -90,7 +90,7 @@ export const MultichainAddressRow = ({
 
   const truncatedAddress = shortenAddress(address); // Shorten address for display
   const [subText, setSubText] = useState(truncatedAddress); // Message below the network name
-  const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
+  const [copyIcon, setCopyIcon] = useState<IconName>(IconName.Copy); // Default copy icon state
   const [addressCopied, setAddressCopied] = useState(false);
 
   // Track timeout ID for managing `setTimeout`

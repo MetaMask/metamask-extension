@@ -8,12 +8,20 @@ import {
   TextVariant,
   Text,
   BoxAlignItems,
+  Icon,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 
 import { Skeleton } from '../../../../component-library/skeleton';
+import Tooltip from '../../../../ui/tooltip';
 
 export const gatorPermissionDetailRowStyle = {
   flex: '1',
+  alignSelf: 'center',
+} as const;
+
+export const gatorPermissionDetailRowLabelStyle = {
   alignSelf: 'center',
 } as const;
 
@@ -22,6 +30,7 @@ type GatorPermissionDetailRowProps = {
   value: React.ReactNode;
   testId?: string;
   isLoading?: boolean;
+  tooltip?: string;
 };
 
 /**
@@ -31,12 +40,14 @@ type GatorPermissionDetailRowProps = {
  * @param options0.value
  * @param options0.testId
  * @param options0.isLoading
+ * @param options0.tooltip
  */
 export const GatorPermissionDetailRow = ({
   label,
   value,
   testId,
   isLoading = false,
+  tooltip,
 }: GatorPermissionDetailRowProps): JSX.Element => {
   return (
     <Box
@@ -46,13 +57,25 @@ export const GatorPermissionDetailRow = ({
       gap={4}
       marginTop={2}
     >
-      <Text
-        textAlign={TextAlign.Left}
-        color={TextColor.TextAlternative}
-        variant={TextVariant.BodyMd}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
+        style={gatorPermissionDetailRowLabelStyle}
       >
-        {label}
-      </Text>
+        <Text
+          textAlign={TextAlign.Left}
+          color={TextColor.TextAlternative}
+          variant={TextVariant.BodyMd}
+        >
+          {label}
+        </Text>
+        {tooltip ? (
+          <Tooltip title={tooltip} position="bottom">
+            <Icon name={IconName.Question} size={IconSize.Sm} />
+          </Tooltip>
+        ) : null}
+      </Box>
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.End}

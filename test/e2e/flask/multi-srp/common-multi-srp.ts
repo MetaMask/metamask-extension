@@ -1,76 +1,54 @@
 import { Mockttp } from 'mockttp';
-import { Driver } from '../../webdriver/driver';
+import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { WALLET_PASSWORD } from '../../constants';
-import { withFixtures } from '../../helpers';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import HomePage from '../../page-objects/pages/home/homepage';
-import { login } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
+import {
+  LOCALHOST_NATIVE_ASSET_ID,
+  MAINNET_NATIVE_ASSET_ID,
+} from '../../tests/tokens/utils/mocks';
 
-export const SECOND_TEST_E2E_SRP =
-  'bench top weekend buyer spoon side resist become detect gauge eye feed';
+export const ZERO_UNIFIED_EVM_BALANCES = {
+  mainnetNativeEthHuman: '0',
+  localhostNativeEthHuman: '0',
+  nativeBalance: '0',
+} as const;
 
-export async function withMultiSrp(
-  {
-    title,
-    testSpecificMock,
-  }: {
-    title?: string;
-    testSpecificMock: (mockServer: Mockttp) => Promise<MockedEndpoint>;
-  },
-  test: (driver: Driver) => Promise<void>,
-  srpToUse: string = SECOND_TEST_E2E_SRP,
-) {
-  await withFixtures(
-    {
-      dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilderV2().build(),
-      title,
-      testSpecificMock: async (mockServer: Mockttp) => [
-        await mockActiveNetworks(mockServer),
-        await testSpecificMock(mockServer),
-      ],
-    },
-    async ({ driver }) => {
-      await login(driver);
-      const homePage = new HomePage(driver);
-      await homePage.checkPageIsLoaded();
-      const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.openAccountMenu();
-      const accountListPage = new AccountListPage(driver);
-      await accountListPage.checkPageIsLoaded();
-      await accountListPage.startImportSecretPhrase(srpToUse);
-      await homePage.checkNewSrpAddedToastIsDisplayed();
-      await homePage.dismissSrpAddedToast();
-      await homePage.checkPageIsLoaded();
-      await test(driver);
-    },
-  );
+export function buildZeroBalanceMultiSrpFixture() {
+  return new FixtureBuilderV2()
+    .withAssetsController(
+      {
+        assetsBalance: {
+          [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+            [MAINNET_NATIVE_ASSET_ID]: { amount: '0' },
+            [LOCALHOST_NATIVE_ASSET_ID]: { amount: '0' },
+          },
+        },
+      },
+      { overwrite: true },
+    )
+    .build();
 }
 
-export const verifySrp = async (
-  driver: Driver,
-  srp: string,
-  srpIndex: number,
-) => {
-  await new HeaderNavbar(driver).openSettingsPage();
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToSecurityAndPasswordSettings();
+export async function mockActiveNetworks(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  // Localhost (1337) balances come from the Anvil RPC node, not the Accounts API.
+  // Exclude 1337 from supported networks so newly imported SRP accounts report
+  // their real on-chain balance (0 ETH) instead of inheriting the funded
+  // fixture account's 25 ETH from the v5 multiaccount balances mock.
+  await mockServer
+    .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
+        partialSupport: {
+          balances: [42220, 43114],
+        },
+      },
+    }));
 
-  const privacySettings = new PrivacySettings(driver);
-  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-  await privacySettings.openRevealSrpQuiz(srpIndex);
-  await privacySettings.completeRevealSrpQuiz();
-  await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
-  await privacySettings.checkSrpTextIsDisplayed(srp);
-};
-
-export async function mockActiveNetworks(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://accounts.api.cx.metamask.io/v2/activeNetworks')
     .thenCallback(() => {

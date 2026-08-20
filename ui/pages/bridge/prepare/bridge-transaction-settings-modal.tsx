@@ -1,5 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+} from '@metamask/design-system-react';
 import {
   Button,
   ButtonSize,
@@ -13,9 +18,6 @@ import {
   Text,
   TextField,
   TextFieldType,
-  BannerAlert,
-  BannerAlertSeverity,
-  Box,
   TextFieldSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -24,14 +26,18 @@ import {
   BorderColor,
   JustifyContent,
   TextVariant,
-  SEVERITIES,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import { getIsSolanaSwap, getSlippage } from '../../../ducks/bridge/selectors';
-import { setSlippage } from '../../../ducks/bridge/actions';
+import {
+  getIsSolanaSwap,
+  getIsRWASwap,
+  getSlippage,
+} from '../../../ducks/bridge/selectors';
+import { setSlippageUserOverride } from '../../../ducks/bridge/actions';
 import { SlippageValue } from '../utils/slippage-service';
 import { Column, Row, Tooltip } from '../layout';
 import { sanitizeAmountInput } from '../utils/quote';
+import { useDispatch } from '../../../store/hooks';
 
 const HARDCODED_SLIPPAGE_OPTIONS = [
   SlippageValue.EvmStablecoin,
@@ -52,24 +58,45 @@ export const BridgeTransactionSettingsModal = ({
 
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [inputValue, setInputValue] = useState<string>('');
+  const [isDirty, setIsDirty] = useState(false);
+  const [draftSlippageValue, setDraftSlippageValue] = useState<
+    number | undefined
+  >(slippage);
 
   /**
-   * AUTO option should only show for Solana-to-Solana swaps
+   * AUTO option shows for Solana-to-Solana swaps and any swap involving an RWA token.
    */
-  const shouldShowAutoOption = useSelector(getIsSolanaSwap);
+  const isSolanaSwap = useSelector(getIsSolanaSwap);
+  const isRWASwap = useSelector(getIsRWASwap);
+  const shouldShowAutoOption = isSolanaSwap || isRWASwap;
 
-  const [slippageValue, setSlippageValue] = useState<number | undefined>(
-    undefined,
-  );
+  // While clean, follow the store value; drafts only apply after the user edits.
+  let slippageValue: number | undefined;
+  if (isDirty) {
+    slippageValue = draftSlippageValue;
+  } else if (isOpen) {
+    slippageValue = slippage;
+  } else {
+    slippageValue = undefined;
+  }
 
-  // Initialize UI state when modal opens
+  // Reset local draft UI when the modal closes (not during render).
   useEffect(() => {
     if (isOpen) {
-      setSlippageValue(slippage);
+      return undefined;
+    }
+    queueMicrotask(() => {
+      setIsDirty(false);
       setInputValue('');
       setShowCustomInput(false);
-    }
-  }, [slippage, shouldShowAutoOption, isOpen]);
+    });
+    return undefined;
+  }, [isOpen]);
+
+  const selectSlippageOption = (value: number | undefined) => {
+    setDraftSlippageValue(value);
+    setIsDirty(true);
+  };
 
   const getNotificationConfig = () => {
     if (slippageValue === undefined) {
@@ -78,7 +105,7 @@ export const BridgeTransactionSettingsModal = ({
 
     if (slippageValue < 0.5) {
       return {
-        severity: SEVERITIES.WARNING,
+        severity: BannerAlertSeverity.Warning,
         text: t('swapSlippageLowDescription', [slippageValue]),
         title: t('swapSlippageLowTitle'),
       };
@@ -148,7 +175,7 @@ export const BridgeTransactionSettingsModal = ({
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setSlippageValue(undefined);
+                  selectSlippageOption(undefined);
                 }}
               >
                 {t('swapSlippageAutoDescription')}
@@ -166,7 +193,7 @@ export const BridgeTransactionSettingsModal = ({
                   onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setSlippageValue(hardcodedSlippage);
+                    selectSlippageOption(hardcodedSlippage);
                   }}
                 >
                   {hardcodedSlippage}%
@@ -219,7 +246,7 @@ export const BridgeTransactionSettingsModal = ({
                   setShowCustomInput(false);
                   const newSlippage = Number(inputValue);
                   if (!isNaN(newSlippage) && inputValue.length > 0) {
-                    setSlippageValue(newSlippage);
+                    selectSlippageOption(newSlippage);
                   }
                   setInputValue('');
                 }}
@@ -233,12 +260,11 @@ export const BridgeTransactionSettingsModal = ({
           {notificationConfig && (
             <Box marginTop={5}>
               <BannerAlert
-                severity={notificationConfig.severity as BannerAlertSeverity}
+                severity={notificationConfig.severity}
                 title={notificationConfig.title}
                 titleProps={{ 'data-testid': 'swaps-banner-title' }}
-              >
-                <Text>{notificationConfig.text}</Text>
-              </BannerAlert>
+                description={notificationConfig.text}
+              />
             </Box>
           )}
         </Column>
@@ -249,14 +275,12 @@ export const BridgeTransactionSettingsModal = ({
             variant={ButtonVariant.Primary}
             data-testid="bridge__tx-settings-modal-submit-button"
             disabled={
-              // Disable Submit if there is no change in slippage value
-              slippageValue === slippage ||
-              // Disable Submit if custom input is shown and value is invalid
+              !isDirty ||
               (showCustomInput &&
                 (isNaN(Number(inputValue)) || inputValue === ''))
             }
             onClick={() => {
-              dispatch(setSlippage(slippageValue));
+              dispatch(setSlippageUserOverride(slippageValue));
               onClose();
             }}
           >

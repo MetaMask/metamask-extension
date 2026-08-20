@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums reikia pasirinkti paskyrą!"
   },
-  "addAcquiredTokens": {
-    "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „MetaMask“"
-  },
   "addAlias": {
     "message": "Pridėti alternatyvųjį vardą"
   },
@@ -78,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "Automatinio atjungimo laikmatis (minutės)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Nustatykite laukimo  trukmę minutėmis iki „MetaMask“ automatinio atsijungimo"
-  },
   "average": {
     "message": "Vidurkis"
   },
   "back": {
     "message": "Grįžti"
-  },
-  "backupApprovalInfo": {
-    "message": "Šis slaptas kodas reikalingas norint atkurti jūsų slaptažodinę, jeigu pamestumėte savo įrenginį, pamirštumėte savo slaptažodį, iš naujo įdiegtumėte „MetaMask“, taip pat norint pasiekti slaptažodinę iš kito įrenginio."
   },
   "backupApprovalNotice": {
     "message": "Pasidarykite atsarginę savo slapto atkūrimo kodo kopiją, kad jūsų slaptažodinė ir fondai būtų saugūs."
@@ -181,23 +172,11 @@
   "createPassword": {
     "message": "Sukurti slaptažodį"
   },
-  "currencyConversion": {
-    "message": "Valiutos keitimas"
-  },
-  "currentLanguage": {
-    "message": "Dabartinė kalba"
-  },
   "custom": {
     "message": "Išplėstiniai"
   },
-  "customToken": {
-    "message": "Pritaikytas žetonas"
-  },
   "decimal": {
     "message": "Skaičiai po kablelio"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Turi būti bent 0 skaitmenų po kablelio, bet ne daugiau kaip 36."
   },
   "delete": {
     "message": "Ištrinti"
@@ -207,9 +186,6 @@
   },
   "done": {
     "message": "Atlikta"
-  },
-  "downloadGoogleChrome": {
-    "message": "Atsiunčiama „Google Chrome“"
   },
   "downloadStateLogs": {
     "message": "Atsisiųsti būsenos žurnalus"
@@ -268,9 +244,6 @@
   },
   "hardwareWallets": {
     "message": "Susieti aparatinės įrangos slaptažodinę"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Pasirinkite aparatinės įrangos slaptažodinę, kurią pageidaujate naudoti su „MetaTask“"
   },
   "here": {
     "message": "čia",
@@ -339,12 +312,6 @@
   "likeToImportTokens": {
     "message": "Ar norėtumėte pridėti šiuos žetonus?"
   },
-  "lineaGoerli": {
-    "message": "„Linea“ bandomasis tinklas"
-  },
-  "links": {
-    "message": "Nuorodos"
-  },
   "loading": {
     "message": "Įkeliama..."
   },
@@ -369,9 +336,6 @@
   "metamaskVersion": {
     "message": "„MetaMask“ versija"
   },
-  "mustSelectOne": {
-    "message": "Turite pasirinkti bent 1 žetoną."
-  },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
@@ -381,12 +345,6 @@
   },
   "networks": {
     "message": "Tinklai"
-  },
-  "nevermind": {
-    "message": "Nekreipti dėmesio"
-  },
-  "newAccount": {
-    "message": "Nauja paskyra"
   },
   "newAccountNumberName": {
     "message": "Paskyra $1",
@@ -406,9 +364,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Internetinė vaizdo kamera nerasta"
-  },
-  "notEnoughGas": {
-    "message": "Nepakanka dujų"
   },
   "ofTextNofM": {
     "message": "nuo"
@@ -493,9 +448,6 @@
   "restore": {
     "message": "Atkurti"
   },
-  "revealSeedWords": {
-    "message": "Atskleisti atkūrimo žodžius"
-  },
   "revealSeedWordsWarning": {
     "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -542,9 +494,6 @@
   "showFiatConversionInTestnets": {
     "message": "Rodyti keitimą „Testnet“"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Pasirinkite tai, kad būtų rodomas standartinės valiutos keitimas „Testnet“ programoje"
-  },
   "showHexData": {
     "message": "Rodyti šešioliktainius duomenis"
   },
@@ -553,9 +502,6 @@
   },
   "sign": {
     "message": "Prisijunkite"
-  },
-  "signatureRequest": {
-    "message": "Parašo užklausa"
   },
   "signed": {
     "message": "Pasirašyta"
@@ -574,9 +520,6 @@
   },
   "stateLogs": {
     "message": "Būsenos žurnalai"
-  },
-  "stateLogsDescription": {
-    "message": "Būsenos žurnaluose yra jūsų viešos paskyros adresų ir išsiųstų operacijų."
   },
   "submitted": {
     "message": "Pateikta"

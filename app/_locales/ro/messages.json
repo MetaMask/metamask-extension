@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Trebuie să selectați un cont!"
   },
-  "addAcquiredTokens": {
-    "message": "Adăugați token-urile pe care le-ați achiziționat folosind MetaMask"
-  },
   "addAlias": {
     "message": "Adăugare alias"
   },
@@ -78,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "Temporizator deconectare automată (minute)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Setați perioada de inactivitate în minute înainte ca MetaMask să se deconecteze automat"
-  },
   "average": {
     "message": "Mediu"
   },
   "back": {
     "message": "Înapoi"
-  },
-  "backupApprovalInfo": {
-    "message": "Acest cod secret este necesar pentru recuperarea portofelului în cazul în care pierdeți dispozitivul, uitați parola, trebuie să reinstalați MetaMask sau vreți să accesați portofelul de pe alt dispozitiv."
   },
   "backupApprovalNotice": {
     "message": "Creați o copie de rezervă a codului de recuperare secret pentru a vă menține portofelul și fondurile în siguranță."
@@ -181,23 +172,11 @@
   "createPassword": {
     "message": "Creare parolă"
   },
-  "currencyConversion": {
-    "message": "Schimb valutar"
-  },
-  "currentLanguage": {
-    "message": "Limba actuală"
-  },
   "custom": {
     "message": "Avansate"
   },
-  "customToken": {
-    "message": "Token personalizat"
-  },
   "decimal": {
     "message": "Zecimale de precizie"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
   },
   "delete": {
     "message": "Șterge"
@@ -207,9 +186,6 @@
   },
   "done": {
     "message": "Efectuat"
-  },
-  "downloadGoogleChrome": {
-    "message": "Descărcare Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Descărcați jurnalele de stare"
@@ -262,9 +238,6 @@
   },
   "hardwareWallets": {
     "message": "Conectați un portofel hardware"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Selectați un portofel hardware pe care doriți să îl folosiți cu MetaMask"
   },
   "here": {
     "message": "aici",
@@ -333,12 +306,6 @@
   "likeToImportTokens": {
     "message": "Adăugați aceste indicative?"
   },
-  "lineaGoerli": {
-    "message": "Rețea de test Linea Goerli"
-  },
-  "links": {
-    "message": "Link-uri"
-  },
   "loading": {
     "message": "Se încarcă…"
   },
@@ -360,9 +327,6 @@
   "metamaskVersion": {
     "message": "Versiune MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Trebuie să selectați cel puțin 1 simbol."
-  },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
     "description": "User is important an account and needs to add a file to continue"
@@ -372,12 +336,6 @@
   },
   "networks": {
     "message": "Rețele"
-  },
-  "nevermind": {
-    "message": "Nu mai contează"
-  },
-  "newAccount": {
-    "message": "Cont nou"
   },
   "newAccountNumberName": {
     "message": "Cont $1",
@@ -397,9 +355,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Camera web nu a fost găsită"
-  },
-  "notEnoughGas": {
-    "message": "Gas insuficient"
   },
   "ofTextNofM": {
     "message": "din"
@@ -484,9 +439,6 @@
   "restore": {
     "message": "Restabilește"
   },
-  "revealSeedWords": {
-    "message": "Arată cuvintele din seed"
-  },
   "revealSeedWordsWarning": {
     "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -533,9 +485,6 @@
   "showFiatConversionInTestnets": {
     "message": "Afișează conversiile pe rețelele de test (testnets)"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Selectați pentru a afișa conversia fiat pe Testnets"
-  },
   "showHexData": {
     "message": "Arată datele hex"
   },
@@ -544,9 +493,6 @@
   },
   "sign": {
     "message": "Semnați"
-  },
-  "signatureRequest": {
-    "message": "Cerere semnătură"
   },
   "signed": {
     "message": "Semnat"
@@ -565,9 +511,6 @@
   },
   "stateLogs": {
     "message": "Jurnale de stare"
-  },
-  "stateLogsDescription": {
-    "message": "Jurnalele de stare conțin adresele contului dvs. public și tranzacțiile trimise."
   },
   "submitted": {
     "message": "Trimis"

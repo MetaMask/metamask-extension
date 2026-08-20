@@ -4,15 +4,19 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import type { AuthenticationControllerProfileSignInEvent } from '@metamask/profile-sync-controller/auth';
+import type { SeedlessOnboardingControllerGetStateAction } from '@metamask/seedless-onboarding-controller';
 import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
-import { MetaMetricsControllerGetMetaMetricsIdAction } from '../../../controllers/metametrics-controller-method-action-types';
+import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 type MessengerActions =
   | KeyringControllerGetStateAction
+  | SeedlessOnboardingControllerGetStateAction
   | SnapControllerHandleRequestAction;
 
 type MessengerEvents =
+  | AuthenticationControllerProfileSignInEvent
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent;
 
@@ -41,14 +45,17 @@ export function getAuthenticationControllerMessenger(
   });
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: ['KeyringController:getState', 'SnapController:handleRequest'],
+    actions: [
+      'KeyringController:getState',
+      'SeedlessOnboardingController:getState',
+      'SnapController:handleRequest',
+    ],
     events: ['KeyringController:lock', 'KeyringController:unlock'],
   });
   return controllerMessenger;
 }
 
-export type AllowedInitializationActions =
-  MetaMetricsControllerGetMetaMetricsIdAction;
+export type AllowedInitializationActions = AnalyticsControllerGetStateAction;
 
 export type AuthenticationControllerInitMessenger = ReturnType<
   typeof getAuthenticationControllerInitMessenger
@@ -76,7 +83,7 @@ export function getAuthenticationControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['MetaMetricsController:getMetaMetricsId'],
+    actions: ['AnalyticsController:getState'],
   });
   return controllerInitMessenger;
 }

@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
+import { Box } from '@metamask/design-system-react';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   getIsMainnet,
   getUseNftDetection,
   getNftIsStillFetchingIndication,
-  getPreferences,
 } from '../../../../../selectors';
-import { Box } from '../../../../component-library';
+import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
@@ -19,10 +19,18 @@ import NftGrid from '../nft-grid/nft-grid';
 import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import { NftEmptyState } from '../nft-empty-state';
+import { transitionForward } from '../../../../ui/transition';
+import { useScreenViewedEvent } from '../../../../../hooks/useScreenViewedEvent';
+import {
+  MetaMetricsEventName,
+  ScreenViewedEntryPoint,
+} from '../../../../../../shared/constants/metametrics';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export default function NftsTab() {
+export default function NftsTab({
+  entryPoint,
+}: Readonly<{
+  entryPoint?: ScreenViewedEntryPoint;
+}>) {
   const navigate = useNavigate();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
@@ -30,7 +38,6 @@ export default function NftsTab() {
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
-
   const { collections } = useNftsCollections();
 
   const { currentlyOwnedNfts, previouslyOwnedNfts } = useNfts();
@@ -43,9 +50,13 @@ export default function NftsTab() {
     }
   }, [nftsStillFetchingIndication]);
 
+  useScreenViewedEvent(MetaMetricsEventName.NftScreenViewed, entryPoint);
+
   const handleNftClick = (nft: NFT) => {
-    navigate(
-      `${ASSET_ROUTE}/${toHex(nft.chainId)}/${nft.address}/${nft.tokenId}`,
+    transitionForward(() =>
+      navigate(
+        `${ASSET_ROUTE}/${toHex(nft.chainId)}/${nft.address}/${nft.tokenId}`,
+      ),
     );
   };
 
@@ -63,7 +74,7 @@ export default function NftsTab() {
 
       <Box className="nfts-tab">
         {isMainnet && !useNftDetection ? (
-          <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
+          <Box paddingTop={4} paddingHorizontal={4}>
             <NFTsDetectionNoticeNFTsTab />
           </Box>
         ) : null}

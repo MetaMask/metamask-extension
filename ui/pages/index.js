@@ -9,46 +9,61 @@ import {
 } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { captureException } from '../../shared/lib/sentry';
-import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
-import {
-  MetaMetricsProvider,
-  LegacyMetaMetricsProvider,
-} from '../contexts/metametrics';
+import { I18nProvider } from '../contexts/i18n';
+import { MetaMetricsProvider } from '../contexts/metametrics';
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { queryClient } from '../contexts/query-client';
+import RampsBootstrap from '../hooks/ramps/RampsBootstrap';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
+import { UIMessengerProvider } from '../contexts/ui-messenger';
+import { AppPureBlackProvider } from '../contexts/pure-black/pure-black-provider';
 import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
 
+const isStrictModeEnabled =
+  process.env.NODE_ENV === 'development' && !process.env.IN_TEST;
+
+/**
+ * Dev-only StrictMode in the app shell. Individual unit tests that need to
+ * exercise double-mount behavior can import `test/jest/strict-mode.js` helpers.
+ */
+
+function withStrictMode(children) {
+  return isStrictModeEnabled ? (
+    <React.StrictMode>{children}</React.StrictMode>
+  ) : (
+    children
+  );
+}
+
 function AppProviders() {
   return (
     <MetaMetricsProvider>
-      <LegacyMetaMetricsProvider>
-        <I18nProvider>
-          <LegacyI18nProvider>
-            <QueryClientProvider client={queryClient}>
-              <AssetPollingProvider>
-                <MetamaskIdentityProvider>
-                  <MetamaskNotificationsProvider>
-                    <HardwareWalletErrorProvider>
-                      <ShieldSubscriptionProvider>
-                        <RiveWasmProvider>
-                          <Routes />
-                        </RiveWasmProvider>
-                      </ShieldSubscriptionProvider>
-                    </HardwareWalletErrorProvider>
-                  </MetamaskNotificationsProvider>
-                </MetamaskIdentityProvider>
-              </AssetPollingProvider>
-            </QueryClientProvider>
-          </LegacyI18nProvider>
-        </I18nProvider>
-      </LegacyMetaMetricsProvider>
+      <I18nProvider>
+        <QueryClientProvider client={queryClient}>
+          <RampsBootstrap />
+          <AssetPollingProvider>
+            <MetamaskIdentityProvider>
+              <MetamaskNotificationsProvider>
+                <HardwareWalletErrorProvider>
+                  <ShieldSubscriptionProvider>
+                    <RiveWasmProvider>
+                      <AppPureBlackProvider>
+                        <Routes />
+                      </AppPureBlackProvider>
+                    </RiveWasmProvider>
+                  </ShieldSubscriptionProvider>
+                </HardwareWalletErrorProvider>
+              </MetamaskNotificationsProvider>
+            </MetamaskIdentityProvider>
+          </AssetPollingProvider>
+        </QueryClientProvider>
+      </I18nProvider>
     </MetaMetricsProvider>
   );
 }
@@ -57,9 +72,7 @@ function ErrorPage({ error }) {
   return (
     <MetaMetricsProvider>
       <I18nProvider>
-        <LegacyI18nProvider>
-          <ErrorPageBase error={error} />
-        </LegacyI18nProvider>
+        <ErrorPageBase error={error} />
       </I18nProvider>
     </MetaMetricsProvider>
   );
@@ -95,7 +108,7 @@ class Index extends PureComponent {
 
   render() {
     const { error } = this.state;
-    const { store } = this.props;
+    const { store, uiMessenger } = this.props;
 
     if (error) {
       return (
@@ -109,7 +122,9 @@ class Index extends PureComponent {
 
     return (
       <Provider store={store}>
-        <RouterProvider router={router} />
+        <UIMessengerProvider value={uiMessenger}>
+          {withStrictMode(<RouterProvider router={router} />)}
+        </UIMessengerProvider>
       </Provider>
     );
   }
@@ -117,6 +132,7 @@ class Index extends PureComponent {
 
 Index.propTypes = {
   store: PropTypes.object,
+  uiMessenger: PropTypes.object,
 };
 
 export default Index;

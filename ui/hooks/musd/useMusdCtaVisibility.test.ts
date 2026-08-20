@@ -1,17 +1,14 @@
 /**
  * @jest-environment jsdom
  */
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import React from 'react';
 import type { Hex } from '@metamask/utils';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
 import type { Asset } from '../../pages/confirmations/types/send';
-import {
-  useMusdCtaVisibility,
-  BuyGetMusdCtaVariant,
-} from './useMusdCtaVisibility';
+import { useMusdCtaVisibility } from './useMusdCtaVisibility';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 import type { UseMusdGeoBlockingResult } from './useMusdGeoBlocking';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
@@ -154,126 +151,11 @@ const wrapper = ({
 }: {
   children: React.ReactNode;
   store: ReturnType<typeof createMockStore>;
-}) => React.createElement(Provider, { store }, children);
+}) => React.createElement(Provider, { store, children });
 
 describe('useMusdCtaVisibility', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe('shouldShowBuyGetMusdCta', () => {
-    it('returns shouldShowCta: false when feature flag is disabled', () => {
-      const store = createMockStore({
-        metamask: {
-          remoteFeatureFlags: {
-            earnMusdConversionFlowEnabled: false,
-            earnMusdCtaEnabled: false,
-          },
-        },
-      });
-
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta();
-      expect(ctaState.shouldShowCta).toBe(false);
-    });
-
-    it('returns shouldShowCta: false when user is geo-blocked', () => {
-      jest
-        .mocked(useMusdGeoBlocking)
-        .mockReturnValue(
-          createGeoBlockingMock({ isBlocked: true, userCountry: 'GB' }),
-        );
-
-      const store = createMockStore();
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta();
-      expect(ctaState.shouldShowCta).toBe(false);
-    });
-
-    it('returns shouldShowCta: false while geo-blocking check is loading', () => {
-      jest
-        .mocked(useMusdGeoBlocking)
-        .mockReturnValue(
-          createGeoBlockingMock({ isBlocked: false, isLoading: true }),
-        );
-
-      const store = createMockStore();
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta({
-        hasConvertibleTokens: true,
-        hasMusdBalance: false,
-      });
-      expect(ctaState.shouldShowCta).toBe(false);
-    });
-
-    it('returns GET variant when user has convertible tokens', () => {
-      jest
-        .mocked(useMusdGeoBlocking)
-        .mockReturnValue(
-          createGeoBlockingMock({ isBlocked: false, userCountry: 'US' }),
-        );
-
-      const store = createMockStore();
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta({
-        hasConvertibleTokens: true,
-        hasMusdBalance: false,
-        selectedChainId: '0x1' as Hex,
-      });
-
-      expect(ctaState.shouldShowCta).toBe(true);
-      expect(ctaState.variant).toBe(BuyGetMusdCtaVariant.GET);
-    });
-
-    it('returns BUY variant when wallet is empty', () => {
-      jest
-        .mocked(useMusdGeoBlocking)
-        .mockReturnValue(
-          createGeoBlockingMock({ isBlocked: false, userCountry: 'US' }),
-        );
-
-      const store = createMockStore();
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta({
-        hasConvertibleTokens: false,
-        hasMusdBalance: false,
-        isEmptyWallet: true,
-        selectedChainId: '0x1' as Hex,
-      });
-
-      expect(ctaState.shouldShowCta).toBe(true);
-      expect(ctaState.variant).toBe(BuyGetMusdCtaVariant.BUY);
-    });
-
-    it('returns shouldShowCta: false when user already has mUSD balance', () => {
-      const store = createMockStore();
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta({
-        hasConvertibleTokens: true,
-        hasMusdBalance: true,
-        selectedChainId: '0x1' as Hex,
-      });
-
-      expect(ctaState.shouldShowCta).toBe(false);
-    });
   });
 
   describe('shouldShowTokenListItemCta', () => {
@@ -288,7 +170,8 @@ describe('useMusdCtaVisibility', () => {
       });
 
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowTokenListItemCta({
@@ -309,7 +192,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowTokenListItemCta({
@@ -330,22 +214,20 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
-      const shouldShow = result.current.shouldShowTokenListItemCta(
-        {
-          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
-          chainId: '0x1' as Hex,
-          symbol: 'USDC',
-        },
-        { hasMusdBalance: true },
-      );
+      const shouldShow = result.current.shouldShowTokenListItemCta({
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
+        chainId: '0x1' as Hex,
+        symbol: 'USDC',
+      });
 
       expect(shouldShow).toBe(false);
     });
 
-    it('returns true for eligible tokens on supported chains when user has mUSD balance', () => {
+    it('returns true for eligible tokens on supported chains', () => {
       jest
         .mocked(useMusdGeoBlocking)
         .mockReturnValue(
@@ -366,17 +248,15 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
-      const shouldShow = result.current.shouldShowTokenListItemCta(
-        {
-          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
-          chainId: '0x1' as Hex,
-          symbol: 'USDC',
-        },
-        { hasMusdBalance: true },
-      );
+      const shouldShow = result.current.shouldShowTokenListItemCta({
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
+        chainId: '0x1' as Hex,
+        symbol: 'USDC',
+      });
 
       expect(shouldShow).toBe(true);
     });
@@ -390,17 +270,15 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
-      const shouldShow = result.current.shouldShowTokenListItemCta(
-        {
-          address: '0x1234567890123456789012345678901234567890' as Hex,
-          chainId: '0x1' as Hex,
-          symbol: 'RANDOM',
-        },
-        { hasMusdBalance: true },
-      );
+      const shouldShow = result.current.shouldShowTokenListItemCta({
+        address: '0x1234567890123456789012345678901234567890' as Hex,
+        chainId: '0x1' as Hex,
+        symbol: 'RANDOM',
+      });
 
       expect(shouldShow).toBe(false);
     });
@@ -418,7 +296,8 @@ describe('useMusdCtaVisibility', () => {
       });
 
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowAssetOverviewCta({
@@ -439,7 +318,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowAssetOverviewCta({
@@ -461,7 +341,8 @@ describe('useMusdCtaVisibility', () => {
       });
 
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowAssetOverviewCta({
@@ -494,7 +375,8 @@ describe('useMusdCtaVisibility', () => {
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const shouldShow = result.current.shouldShowAssetOverviewCta({
@@ -511,7 +393,8 @@ describe('useMusdCtaVisibility', () => {
     it('returns true for tokens in the CTA allowlist', () => {
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       expect(result.current.isTokenWithCta('USDC', '0x1' as Hex)).toBe(true);
@@ -522,7 +405,8 @@ describe('useMusdCtaVisibility', () => {
     it('returns false for tokens not in the CTA allowlist', () => {
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       expect(result.current.isTokenWithCta('WETH', '0x1' as Hex)).toBe(false);
@@ -534,7 +418,8 @@ describe('useMusdCtaVisibility', () => {
     it('generates correct CTA key from chainId and address', () => {
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }) => wrapper({ children, store }),
+        wrapper: ({ children }: React.PropsWithChildren) =>
+          wrapper({ children, store }),
       });
 
       const key = result.current.getCtaKey(

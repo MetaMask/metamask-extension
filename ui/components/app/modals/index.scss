@@ -1,6 +1,4 @@
-@import 'cancel-transaction/index';
 @import 'hide-token-confirmation-modal/index';
-@import 'new-account-modal/index';
 @import 'qr-scanner/index';
 @import 'customize-nonce/index';
 @import 'convert-token-to-nft-modal/index';
@@ -18,7 +16,6 @@
 
   &__content {
     margin: 0;
-    background-color: var(--color-background-default);
     animation-fill-mode: forwards;
   }
 

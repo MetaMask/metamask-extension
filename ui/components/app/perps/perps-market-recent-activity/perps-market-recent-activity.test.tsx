@@ -1,9 +1,13 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_TRANSACTION_DETAILS_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { usePerpsMarketFills } from '../../../../hooks/perps';
 import { transformFillsToTransactions } from '../utils/transactionTransforms';
@@ -20,6 +24,7 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../../../../hooks/perps', () => ({
   usePerpsMarketFills: jest.fn(),
+  usePerpsEventTracking: () => ({ track: jest.fn() }),
 }));
 
 jest.mock('../utils/transactionTransforms', () => ({
@@ -85,7 +90,9 @@ describe('PerpsMarketRecentActivity', () => {
         mockStore,
       );
 
-      const skeletons = container.querySelectorAll('.mm-skeleton');
+      const skeletons = container.querySelectorAll(
+        '[data-testid="perps-recent-activity-skeleton"]',
+      );
       expect(skeletons.length).toBe(3);
     });
 
@@ -128,7 +135,7 @@ describe('PerpsMarketRecentActivity', () => {
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       expect(
-        screen.queryByText(messages.perpsSeeAll.message),
+        screen.queryByTestId('perps-market-detail-view-all-activity'),
       ).not.toBeInTheDocument();
     });
   });
@@ -195,7 +202,7 @@ describe('PerpsMarketRecentActivity', () => {
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       expect(
-        screen.getByText(messages.perpsSeeAll.message),
+        screen.getByTestId('perps-market-detail-view-all-activity'),
       ).toBeInTheDocument();
     });
 
@@ -208,7 +215,74 @@ describe('PerpsMarketRecentActivity', () => {
 
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
-      fireEvent.click(screen.getByText(messages.perpsSeeAll.message));
+      fireEvent.click(
+        screen.getByTestId('perps-market-detail-view-all-activity'),
+      );
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+    });
+
+    it('navigates to PERPS_ACTIVITY_ROUTE when the Recent Activity header text is clicked', async () => {
+      const user = userEvent.setup();
+      mockUsePerpsMarketFills.mockReturnValue({
+        fills: [],
+        isInitialLoading: false,
+      });
+      mockTransformFills.mockReturnValue([createTransaction('tx-1')]);
+
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
+
+      await user.click(screen.getByText(messages.perpsRecentActivity.message));
+
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+    });
+
+    it('navigates to the Perps transaction details page when a transaction row is tapped', () => {
+      const transaction = createTransaction('tx-1');
+      mockUsePerpsMarketFills.mockReturnValue({
+        fills: [],
+        isInitialLoading: false,
+      });
+      mockTransformFills.mockReturnValue([transaction]);
+
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
+
+      const card = screen.getByTestId('transaction-card-tx-1');
+      expect(card).toHaveClass('cursor-pointer');
+
+      fireEvent.click(card);
+      expect(mockNavigate).toHaveBeenCalledWith(
+        PERPS_TRANSACTION_DETAILS_ROUTE,
+        { state: { transaction } },
+      );
+    });
+
+    it('falls back to PERPS_ACTIVITY_ROUTE when a transaction has no valid destination', () => {
+      // Defensive case: a deposit/withdrawal without a tx hash has no valid
+      // destination, so the row click should fall back to "See all" rather
+      // than doing nothing.
+      const transaction = createTransaction('tx-1', {
+        type: 'deposit',
+        category: 'deposit',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '+$5.00',
+          amountNumber: 5,
+          isPositive: true,
+          asset: 'USDC',
+          txHash: '',
+          status: 'completed',
+          type: 'deposit',
+        },
+      });
+      mockUsePerpsMarketFills.mockReturnValue({
+        fills: [],
+        isInitialLoading: false,
+      });
+      mockTransformFills.mockReturnValue([transaction]);
+
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
+
+      fireEvent.click(screen.getByTestId('transaction-card-tx-1'));
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
   });

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Musíte si vybrať účet!"
   },
-  "addAcquiredTokens": {
-    "message": "Pridajte tokeny, ktoré ste získali pomocou MetaMask"
-  },
   "addAlias": {
     "message": "Pridať alias"
   },
@@ -75,17 +72,11 @@
   "autoLockTimeLimit": {
     "message": "Časovač automatického odhlásenia (minúty)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Nastavte čas nečinnosti v minútach skôr, než sa MetaMask automaticky odhlási"
-  },
   "average": {
     "message": "Priemerný"
   },
   "back": {
     "message": "Zpět"
-  },
-  "backupApprovalInfo": {
-    "message": "Tento tajný kód je potrebný na obnovenie peňaženky v prípade straty zariadenia, zabudnutia hesla, preinštalovania MetaMask alebo prístupu k peňaženke na inom zariadení."
   },
   "backupApprovalNotice": {
     "message": "Zálohujte si svoj tajný kód na obnovenie, aby bola vaša peňaženka a prostriedky bezpečné."
@@ -175,23 +166,11 @@
   "createPassword": {
     "message": "Vytvoriť heslo"
   },
-  "currencyConversion": {
-    "message": "Prepočet meny"
-  },
-  "currentLanguage": {
-    "message": "Aktuálny jazyk"
-  },
   "custom": {
     "message": "Rozšírené"
   },
-  "customToken": {
-    "message": "Vlastní token"
-  },
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desetinných míst musí být od 0 do 36."
   },
   "delete": {
     "message": "Odstrániť"
@@ -201,9 +180,6 @@
   },
   "done": {
     "message": "Hotovo"
-  },
-  "downloadGoogleChrome": {
-    "message": "Stiahnuť Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Stáhnout stavové protokoly"
@@ -262,9 +238,6 @@
   },
   "hardwareWallets": {
     "message": "Pripojiť hardvérovú peňaženku"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Vyberte hardvérovú peňaženku, ktorú chcete používať s MetaMask"
   },
   "here": {
     "message": "zde",
@@ -326,12 +299,6 @@
   "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
-  "lineaGoerli": {
-    "message": "Testovacia sieť Linea Goerli"
-  },
-  "links": {
-    "message": "Odkazy"
-  },
   "loading": {
     "message": "Načítám..."
   },
@@ -344,9 +311,6 @@
   "metamaskVersion": {
     "message": "Verzia MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Musíte zvolit aspoň 1 token."
-  },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"
@@ -356,12 +320,6 @@
   },
   "networks": {
     "message": "Sítě"
-  },
-  "nevermind": {
-    "message": "Nevadí"
-  },
-  "newAccount": {
-    "message": "Nový účet"
   },
   "newAccountNumberName": {
     "message": "Účet $1",
@@ -381,9 +339,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webová kamera sa nenašla"
-  },
-  "notEnoughGas": {
-    "message": "Nedostatok GAS"
   },
   "ofTextNofM": {
     "message": "z"
@@ -465,9 +420,6 @@
   "restore": {
     "message": "Obnoviť"
   },
-  "revealSeedWords": {
-    "message": "Zobrazit slova klíčové fráze"
-  },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -514,9 +466,6 @@
   "showFiatConversionInTestnets": {
     "message": "Zobraziť konverziu na Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Vyberte túto voľbu, ak chcete zobraziť konverziu fiat na Testnets"
-  },
   "showHexData": {
     "message": "Zobraziť údaje Hex"
   },
@@ -525,9 +474,6 @@
   },
   "sign": {
     "message": "Podepsat"
-  },
-  "signatureRequest": {
-    "message": "Požadavek podpisu"
   },
   "signed": {
     "message": "Podepsáno"
@@ -546,9 +492,6 @@
   },
   "stateLogs": {
     "message": "Stavové protokoly"
-  },
-  "stateLogsDescription": {
-    "message": "Stavové protokoly obsahují vaše veřejné adresy účtů a odeslané transakce."
   },
   "submitted": {
     "message": "Odesláno"

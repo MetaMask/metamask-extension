@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Icon,
@@ -8,7 +8,6 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useSelector } from 'react-redux';
 import { TokenPaymentInfo } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -19,8 +18,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { getBuyableChains } from '../../../../ducks/ramps';
-import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { ReceiveModal } from '../../../multichain/receive-modal';
 import useBridging from '../../../../hooks/bridge/useBridging';
 import {
@@ -28,9 +26,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
-import { AggregatorNetwork } from '../../../../ducks/ramps/types';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 
 const AddFundsModal = ({
@@ -45,60 +41,56 @@ const AddFundsModal = ({
   payerAddress: Hex;
 }) => {
   const t = useI18nContext();
-  const { openBuyCryptoInPdapp } = useRamps();
-  const { trackEvent } = useContext(MetaMetricsContext);
-
-  const buyableChains = useSelector(getBuyableChains);
+  const { goToBuy } = useRampsNavigation();
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const { openBridgeExperience } = useBridging();
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const isBuyableChain = useMemo(() => {
-    if (!chainId) {
-      return false;
+  const handleBuyAndSellOnClick = useCallback(async () => {
+    const opened = await goToBuy();
+    // The ramps gate can block the buy (e.g. service disruption, unsupported
+    // region) and show its own modal; don't report a buy click or close this
+    // modal in that case.
+    if (!opened) {
+      return;
     }
-    return buyableChains.some(
-      (network: AggregatorNetwork) =>
-        String(network.chainId) === hexToDecimal(chainId),
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'Transaction Shield',
+          text: 'Buy',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: token.symbol,
+        })
+        .build(),
     );
-  }, [buyableChains, chainId]);
-
-  const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp();
-    trackEvent({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'Transaction Shield',
-        text: 'Buy',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: token.symbol,
-      },
-    });
     onClose();
-  }, [chainId, onClose, openBuyCryptoInPdapp, token.symbol, trackEvent]);
+  }, [chainId, onClose, goToBuy, token.symbol, createEventBuilder, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
-    trackEvent({
-      event: MetaMetricsEventName.NavReceiveButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        text: 'Receive',
-        location: 'Transaction Shield',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavReceiveButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          text: 'Receive',
+          location: 'Transaction Shield',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+        })
+        .build(),
+    );
 
     setShowReceiveModal(true);
-  }, [chainId, trackEvent]);
+  }, [chainId, createEventBuilder, trackEvent]);
 
   const handleSwapOnClick = useCallback(async () => {
     openBridgeExperience(MetaMetricsSwapsEventSource.TransactionShield, {
@@ -160,7 +152,6 @@ const AddFundsModal = ({
             label: t('addFundsModalBuyCrypto'),
             iconName: IconName.Add,
             onClick: handleBuyAndSellOnClick,
-            disabled: !isBuyableChain,
           })}
           {buttonRow({
             id: 'add-funds-modal-receive-crypto-button',

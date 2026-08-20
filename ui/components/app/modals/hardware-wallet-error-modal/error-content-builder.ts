@@ -1,18 +1,27 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import { IconName } from '../../../component-library';
-import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
-import { IconColor } from '../../../../helpers/constants/design-system';
-import { getHardwareWalletErrorCode } from '../../../../contexts/hardware-wallets';
+import { IconName, IconColor } from '@metamask/design-system-react';
+import {
+  getHardwareWalletErrorCode,
+  HardwareWalletType,
+  isTrezorDesktopConnectionMissingError,
+} from '../../../../contexts/hardware-wallets';
+
+/** Discriminant values for {@link ErrorContent}; use for comparisons and `buildErrorContent` returns. */
+export const HardwareWalletErrorContentVariant = {
+  Recovery: 'recovery',
+  Description: 'description',
+} as const;
 
 /**
  * Error content structure
  */
 type ErrorContentBase = {
   title: string;
+  showRepairLink: boolean;
 };
 
 type ErrorContentWithRecovery = ErrorContentBase & {
-  variant: 'recovery';
+  variant: typeof HardwareWalletErrorContentVariant.Recovery;
   recoveryInstructions: string[];
 };
 
@@ -27,7 +36,7 @@ type ErrorContentWithoutIcon = ErrorContentWithRecovery & {
 };
 
 type ErrorContentWithDescription = ErrorContentBase & {
-  variant: 'description';
+  variant: typeof HardwareWalletErrorContentVariant.Description;
   description: string;
   icon: IconName;
   iconColor: IconColor;
@@ -54,6 +63,12 @@ function addRecoveryInstruction(
   return shouldAdd ? [...instructions, instruction] : instructions;
 }
 
+const REPAIR_LINK_ERROR_CODES = new Set([
+  ErrorCode.DeviceDisconnected,
+  ErrorCode.ConnectionClosed,
+  ErrorCode.ConnectionTransportMissing,
+]);
+
 /**
  * Build error content based on error code
  *
@@ -68,15 +83,33 @@ export function buildErrorContent(
   t: (key: string, substitutions?: string[]) => string,
 ): ErrorContent {
   const errorCode = getHardwareWalletErrorCode(error);
+  const showRepairLink =
+    errorCode !== null && REPAIR_LINK_ERROR_CODES.has(errorCode);
+
+  if (
+    (walletType === HardwareWalletType.Trezor ||
+      walletType === HardwareWalletType.OneKey) &&
+    isTrezorDesktopConnectionMissingError(error)
+  ) {
+    return {
+      variant: HardwareWalletErrorContentVariant.Description,
+      icon: IconName.Danger,
+      iconColor: IconColor.WarningDefault,
+      title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+      showRepairLink: true,
+      description: t('trezorDesktopAppRequiredError'),
+    };
+  }
 
   switch (errorCode) {
     // Locked device errors
     case ErrorCode.AuthenticationDeviceLocked:
       return {
-        variant: 'recovery',
+        variant: HardwareWalletErrorContentVariant.Recovery,
         icon: IconName.Lock,
-        iconColor: IconColor.iconDefault,
+        iconColor: IconColor.IconDefault,
         title: t('hardwareWalletErrorTitleDeviceLocked', [t(walletType)]),
+        showRepairLink,
         recoveryInstructions: addRecoveryInstruction(
           [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
           walletType === HardwareWalletType.Ledger,
@@ -87,15 +120,17 @@ export function buildErrorContent(
     // Device state - Wrong app
     case ErrorCode.DeviceStateEthAppClosed:
       return {
-        variant: 'recovery',
+        variant: HardwareWalletErrorContentVariant.Recovery,
         title: t('hardwareWalletTitleEthAppNotOpen'),
+        showRepairLink,
         recoveryInstructions: [t('hardwareWalletEthAppNotOpenDescription')],
       };
 
     case ErrorCode.DeviceStateBlindSignNotSupported:
       return {
-        variant: 'recovery',
+        variant: HardwareWalletErrorContentVariant.Recovery,
         title: t('hardwareWalletErrorTitleBlindSignNotSupported'),
+        showRepairLink,
         recoveryInstructions: [
           t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction1'),
           t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction2'),
@@ -104,9 +139,11 @@ export function buildErrorContent(
 
     // Device state - Disconnected/Connection issues
     case ErrorCode.DeviceDisconnected:
+    case ErrorCode.ConnectionTransportMissing:
       return {
-        variant: 'recovery',
+        variant: HardwareWalletErrorContentVariant.Recovery,
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+        showRepairLink,
         recoveryInstructions: addRecoveryInstruction(
           [
             t('hardwareWalletErrorRecoveryConnection1'),
@@ -121,8 +158,9 @@ export function buildErrorContent(
     // Usually bolos will yield this result
     case ErrorCode.ConnectionClosed:
       return {
-        variant: 'recovery',
+        variant: HardwareWalletErrorContentVariant.Recovery,
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+        showRepairLink,
         recoveryInstructions: addRecoveryInstruction(
           [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
           walletType === HardwareWalletType.Ledger,
@@ -133,10 +171,11 @@ export function buildErrorContent(
     // Unknown/default
     default:
       return {
-        variant: 'description',
+        variant: HardwareWalletErrorContentVariant.Description,
         icon: IconName.Danger,
-        iconColor: IconColor.warningDefault,
+        iconColor: IconColor.WarningDefault,
         title: t('hardwareWalletErrorUnknownErrorTitle'),
+        showRepairLink,
         description: t('hardwareWalletErrorUnknownErrorDescription', [
           t(walletType),
         ]),

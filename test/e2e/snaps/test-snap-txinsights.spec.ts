@@ -28,7 +28,7 @@ describe('Test Snap TxInsights', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
 

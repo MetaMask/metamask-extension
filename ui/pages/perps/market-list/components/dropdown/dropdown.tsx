@@ -75,9 +75,17 @@ export const Dropdown = <OptionId extends string>({
   }, [isOpen]);
 
   // Focus the selected option when dropdown opens
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const [prevSelectedIndex, setPrevSelectedIndex] = useState(selectedIndex);
+  if (isOpen !== prevIsOpen || selectedIndex !== prevSelectedIndex) {
+    setPrevIsOpen(isOpen);
+    setPrevSelectedIndex(selectedIndex);
     if (isOpen && selectedIndex >= 0) {
       setFocusedIndex(selectedIndex);
+    }
+  }
+  useEffect(() => {
+    if (isOpen && selectedIndex >= 0) {
       optionRefs.current[selectedIndex]?.focus();
     }
   }, [isOpen, selectedIndex]);
@@ -186,39 +194,40 @@ export const Dropdown = <OptionId extends string>({
           }
           data-testid={`${testId}-menu`}
         >
-          {options.map((option, index) => (
-            <ButtonBase
-              key={option.id}
-              ref={(el) => {
-                optionRefs.current[index] = el;
-              }}
-              onClick={() => handleSelect(option)}
-              onKeyDown={(e) => handleOptionKeyDown(e, index)}
-              className="w-full justify-between text-left rounded-none px-3 py-2 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-              role="option"
-              aria-selected={option.id === selectedId}
-              id={`${testId}-option-${option.id}`}
-              data-testid={`${testId}-option-${option.id}`}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={
-                  option.id === selectedId
-                    ? TextColor.TextDefault
-                    : TextColor.TextAlternative
-                }
+          {options.map((option, index) => {
+            const isSelected = option.id === selectedId;
+            return (
+              <ButtonBase
+                key={option.id}
+                ref={(el) => {
+                  optionRefs.current[index] = el;
+                }}
+                onClick={() => handleSelect(option)}
+                onKeyDown={(e) => handleOptionKeyDown(e, index)}
+                className={`w-full justify-between text-left rounded-none px-3 py-2 min-w-0 h-auto active:bg-pressed ${
+                  isSelected ? 'bg-hover' : 'bg-transparent hover:bg-hover'
+                }`}
+                role="option"
+                aria-selected={isSelected}
+                id={`${testId}-option-${option.id}`}
+                data-testid={`${testId}-option-${option.id}`}
               >
-                {option.label}
-              </Text>
-              {option.id === selectedId && (
-                <Icon
-                  name={IconName.Check}
-                  size={IconSize.Sm}
-                  color={IconColor.IconDefault}
-                />
-              )}
-            </ButtonBase>
-          ))}
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextDefault}
+                >
+                  {option.label}
+                </Text>
+                {isSelected && (
+                  <Icon
+                    name={IconName.Check}
+                    size={IconSize.Sm}
+                    color={IconColor.IconDefault}
+                  />
+                )}
+              </ButtonBase>
+            );
+          })}
         </Box>
       )}
     </Box>

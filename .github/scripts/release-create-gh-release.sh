@@ -147,24 +147,12 @@ fi
 
 printf '%s\n' "Creating GitHub Release for ${tag}..."
 
-# Collect and validate browserify artifacts
-browserify_artifacts=()
-for artifact in build-dist-browserify/builds/metamask-chrome-*.zip \
-                build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
-                build-flask-browserify/builds/metamask-flask-chrome-*.zip \
-                build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip; do
-    if ! compgen -G "${artifact}" > /dev/null; then
-        echo "::error::Required browserify artifact not found: ${artifact}"
-        exit 1
-    fi
-    while IFS= read -r file; do
-        browserify_artifacts+=("${file}")
-    done < <(compgen -G "${artifact}")
-done
+if [[ ! -f SHA256SUMS ]]; then
+    echo "::error::SHA256SUMS file not found — Generate SHA256SUMS workflow step may have failed"
+    exit 1
+fi
 
 # Collect and validate webpack artifacts
-# Also rename them to include "-webpack" suffix before the .zip extension
-# so they don't collide with browserify artifacts on the release.
 webpack_artifacts=()
 for artifact in build-dist-webpack/builds/metamask-chrome-*.zip \
                 build-dist-mv2-webpack/builds/metamask-firefox-*.zip \
@@ -175,16 +163,28 @@ for artifact in build-dist-webpack/builds/metamask-chrome-*.zip \
         exit 1
     fi
     while IFS= read -r file; do
-        renamed="${file%.zip}-webpack.zip"
-        mv "${file}" "${renamed}"
-        webpack_artifacts+=("${renamed}")
+        webpack_artifacts+=("${file}")
     done < <(compgen -G "${artifact}")
+done
+
+# Sigstore bundles produced by the Collect attestation bundles workflow step.
+# Published alongside the zips so downstream submission jobs can verify build
+# provenance without a GitHub token (INFRA-3786).
+attestation_bundles=()
+for artifact in "${webpack_artifacts[@]}"; do
+    bundle="$(basename "${artifact}").sigstore.json"
+    if [[ ! -f "${bundle}" ]]; then
+        echo "::error::Attestation bundle not found: ${bundle} — Collect attestation bundles workflow step may have failed"
+        exit 1
+    fi
+    attestation_bundles+=("${bundle}")
 done
 
 release_body="$(awk -v version="[${VERSION}]" -f .github/scripts/show-changelog.awk CHANGELOG.md)"
 gh release create "${tag}" \
-    "${browserify_artifacts[@]}" \
     "${webpack_artifacts[@]}" \
+    "${attestation_bundles[@]}" \
+    SHA256SUMS \
     --title "Version ${VERSION}" \
     --notes "${release_body}" \
     --target "${RELEASE_SHA}"

@@ -66,9 +66,6 @@
   "decimal": {
     "message": "Decimalen van precisie"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
-  },
   "done": {
     "message": "Gedaan"
   },
@@ -152,18 +149,12 @@
   "message": {
     "message": "Bericht"
   },
-  "mustSelectOne": {
-    "message": "Moet ten minste één token selecteren."
-  },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
     "description": "User is important an account and needs to add a file to continue"
   },
   "networks": {
     "message": "netwerken"
-  },
-  "newAccount": {
-    "message": "Nieuw account"
   },
   "newContract": {
     "message": "Nieuw contract"
@@ -206,9 +197,6 @@
   "required": {
     "message": "Verplicht"
   },
-  "revealSeedWords": {
-    "message": "Onthul back-up woorden"
-  },
   "revealSeedWordsWarning": {
     "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen).",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -234,14 +222,8 @@
   "sign": {
     "message": "Teken"
   },
-  "signatureRequest": {
-    "message": "Ondertekeningsverzoek"
-  },
   "stateLogs": {
     "message": "Staatslogboeken"
-  },
-  "stateLogsDescription": {
-    "message": "Staatslogboeken bevatten uw openbare accountadressen en verzonden transacties."
   },
   "supportCenter": {
     "message": "Bezoek ons ​​ondersteuningscentrum"

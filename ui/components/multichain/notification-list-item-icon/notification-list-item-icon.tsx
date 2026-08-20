@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
+import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import { isIpfsURL } from '../../../helpers/utils/notification.util';
@@ -7,8 +8,6 @@ import { isIpfsURL } from '../../../helpers/utils/notification.util';
 import {
   AvatarIcon,
   AvatarIconSize,
-  AvatarToken,
-  AvatarTokenSize,
   BadgeWrapper,
   BadgeWrapperPosition,
   Box,
@@ -19,7 +18,6 @@ import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  BorderStyle,
   Display,
   IconColor,
   JustifyContent,
@@ -56,10 +54,8 @@ const AvatarTokenComponent = ({ src }: { src: string }): JSX.Element => (
   <AvatarToken
     data-testid="avatar-token"
     src={src}
-    padding={1}
-    backgroundColor={BackgroundColor.transparent}
-    borderStyle={BorderStyle.none}
     size={AvatarTokenSize.Md}
+    className="bg-transparent border-none p-1"
   />
 );
 
@@ -102,8 +98,6 @@ const getBadge = (badge: BadgeProps, children: JSX.Element): JSX.Element => {
   return (
     <BadgeWrapper
       data-testid="badge-wrapper"
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       position={badge.position || BadgeWrapperPosition.bottomRight}
       badge={
         <AvatarIcon
@@ -142,11 +136,11 @@ const iconComponents = {
  * @param props.badge - The badge of the notification item icon.
  * @returns A JSX element.
  */
-export const NotificationListItemIcon: FC<NotificationListItemIconProps> = ({
+export const NotificationListItemIcon = ({
   type,
   value,
   badge,
-}): JSX.Element => {
+}: NotificationListItemIconProps): JSX.Element => {
   const IconComponent = iconComponents[type] || iconComponents.default;
   const NotificationIcon = <IconComponent src={value} />;
 

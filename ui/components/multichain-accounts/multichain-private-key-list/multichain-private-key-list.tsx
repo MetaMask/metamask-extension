@@ -1,18 +1,26 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, {
+  useMemo,
+  useCallback,
+  useState,
+  useEffect,
+  useContext,
+} from 'react';
+import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
-  Display,
-  FlexDirection,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
-import {
+  Text,
+  TextColor,
+  TextVariant,
   Box,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { BlockSize } from '../../../helpers/constants/design-system';
+import {
   Button,
   ButtonSize,
   ButtonVariant,
@@ -28,12 +36,38 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { verifyPassword, exportAccounts } from '../../../store/actions';
 import {
+  useIsPasskeyActive,
+  useIsPasskeyIncompatibleInSidepanel,
+} from '../../../hooks/usePasskeyAvailability';
+import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey';
+import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+import {
+  createSentryError,
+  getErrorMessage,
+} from '../../../../shared/lib/error';
+import { captureException } from '../../../../shared/lib/sentry';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+  MetaMetricsEventVerificationMethod,
+} from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
+import {
   endTrace,
   trace,
   TraceName,
   TraceOperation,
 } from '../../../../shared/lib/trace';
 import { MINUTE } from '../../../../shared/constants/time';
+import { MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import { PasskeyVerification } from '../../app/passkey-verification';
+import { useDispatch } from '../../../store/hooks';
+import { usePasskeyPrivateKeyExport } from '../../../hooks/passkey/usePasskeyPrivateKeyExport';
+
+const VERIFY_PASSKEY_SCREEN = 'VERIFY_PASSKEY_SCREEN';
+const VERIFY_PASSWORD_SCREEN = 'VERIFY_PASSWORD_SCREEN';
 
 /**
  * Check if the account has the private key available according to its keyring type.
@@ -63,16 +97,30 @@ const MultichainPrivateKeyList = ({
 }: MultichainPrivateKeyListProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const exportAccountsWithPasskey = usePasskeyPrivateKeyExport();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [password, setPassword] = useState<string>('');
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
   const [reveal, setReveal] = useState<boolean>(false);
   const [privateKeys, setPrivateKeys] = useState<Record<string, string>>({});
+
+  const isPasskeyActive = useIsPasskeyActive();
+  const isPasskeyIncompatibleInSidepanel =
+    useIsPasskeyIncompatibleInSidepanel();
+
+  const [screen, setScreen] = useState<string>(
+    isPasskeyActive && !isPasskeyIncompatibleInSidepanel
+      ? VERIFY_PASSKEY_SCREEN
+      : VERIFY_PASSWORD_SCREEN,
+  );
 
   const cleanStateVariables = useCallback(() => {
     setPrivateKeys({});
     setPassword('');
     setWrongPassword(false);
     setReveal(false);
+    setScreen(VERIFY_PASSWORD_SCREEN);
   }, []);
 
   useEffect(
@@ -101,56 +149,214 @@ const MultichainPrivateKeyList = ({
     [setPassword],
   );
 
-  const validatePassword = useCallback(async () => {
+  const exportableAddresses = useMemo(
+    () =>
+      accounts
+        .filter((account: InternalAccount) => hasPrivateKeyAvailable(account))
+        .map((account) => account.address),
+    [accounts],
+  );
+
+  const buildPrivateKeyMap = useCallback(
+    (privateKeysList: string[]) =>
+      exportableAddresses.reduce(
+        (acc, address, index) => {
+          acc[address] = privateKeysList[index];
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
+    [exportableAddresses],
+  );
+
+  const onSubmit = useCallback(async () => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.KeyExportRequested)
+        .addCategory(MetaMetricsEventCategory.Keys)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Pkey,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Password,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
+
     try {
       await verifyPassword(password);
       setWrongPassword(false);
-      setReveal(true);
       trace({
         name: TraceName.ShowAccountPrivateKeyList,
         op: TraceOperation.AccountUi,
       });
+
+      const pks = (await dispatch(
+        exportAccounts(password, exportableAddresses),
+      )) as unknown as string[];
+
+      setPrivateKeys(buildPrivateKeyMap(pks));
+      setReveal(true);
+
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Password,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
+          .build(),
+      );
     } catch (error) {
       setWrongPassword(true);
       setReveal(false);
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.KeyExportFailed)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Password,
+            reason: getErrorMessage(error),
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
+          .build(),
+      );
     }
-  }, [password]);
+  }, [
+    buildPrivateKeyMap,
+    createEventBuilder,
+    dispatch,
+    exportableAddresses,
+    hdEntropyIndex,
+    password,
+    trackEvent,
+  ]);
 
-  const unlockPrivateKeys = useCallback(async () => {
-    const pkAccounts = accounts.filter((account: InternalAccount) =>
-      hasPrivateKeyAvailable(account),
+  const handleRevealWithPasskey = useCallback(
+    async (authenticationResponse: PasskeyAuthenticationResponse) => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.KeyExportRequested)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Passkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
+          .build(),
+      );
+
+      try {
+        trace({
+          name: TraceName.ShowAccountPrivateKeyList,
+          op: TraceOperation.AccountUi,
+        });
+        const pks = await exportAccountsWithPasskey(
+          authenticationResponse,
+          exportableAddresses,
+        );
+
+        setPrivateKeys(buildPrivateKeyMap(pks));
+        setReveal(true);
+
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
+            .addCategory(MetaMetricsEventCategory.Keys)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Pkey,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Passkey,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: hdEntropyIndex,
+            })
+            .build(),
+        );
+      } catch (error) {
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.KeyExportFailed)
+            .addCategory(MetaMetricsEventCategory.Keys)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Pkey,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Passkey,
+              reason: getPasskeyErrorCode(error),
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: hdEntropyIndex,
+            })
+            .build(),
+        );
+        captureException(
+          createSentryError('Export private keys with passkey failed', error),
+        );
+        endTrace({
+          name: TraceName.ShowAccountPrivateKeyList,
+        });
+        // Fall back to password verification on any passkey reveal failure.
+        setScreen(VERIFY_PASSWORD_SCREEN);
+      }
+    },
+    [
+      buildPrivateKeyMap,
+      createEventBuilder,
+      exportAccountsWithPasskey,
+      exportableAddresses,
+      hdEntropyIndex,
+      trackEvent,
+    ],
+  );
+
+  const handleUsePassword = useCallback(() => {
+    setScreen(VERIFY_PASSWORD_SCREEN);
+  }, []);
+
+  const openInFullScreen = useCallback(() => {
+    cancelPasskeyCeremony();
+    globalThis.platform?.openExtensionInBrowser?.(
+      MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
+      `accountGroupId=${encodeURIComponent(groupId)}`,
     );
-
-    const addresses = pkAccounts.map((account) => account.address);
-
-    const pks = (await dispatch(
-      exportAccounts(password, addresses),
-    )) as unknown as string[];
-
-    const privateKeyMap = await addresses.reduce(
-      (acc, address, index) => {
-        acc[address] = pks[index];
-        return acc;
-      },
-      {} as Record<string, string>,
-    );
-
-    setPrivateKeys(privateKeyMap);
-  }, [accounts, dispatch, password]);
-
-  const onSubmit = useCallback(async () => {
-    await validatePassword();
-    await unlockPrivateKeys();
-  }, [validatePassword, unlockPrivateKeys]);
+  }, [groupId]);
 
   const onCancel = useCallback(() => {
+    if (!reveal) {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.KeyExportCanceled)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
+          .build(),
+      );
+    }
     cleanStateVariables();
     goBack();
-  }, [cleanStateVariables, goBack]);
+  }, [
+    cleanStateVariables,
+    createEventBuilder,
+    goBack,
+    hdEntropyIndex,
+    reveal,
+    trackEvent,
+  ]);
 
   const renderedPasswordInput = useMemo(
     () => (
-      <Box paddingTop={8} paddingBottom={4}>
+      <Box paddingTop={8} paddingBottom={4} paddingHorizontal={4}>
         <Box>
           <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
             {t('enterYourPassword')}
@@ -176,8 +382,8 @@ const MultichainPrivateKeyList = ({
           ) : null}
         </Box>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
+          className="flex"
+          flexDirection={BoxFlexDirection.Row}
           gap={4}
           paddingBottom={2}
           paddingTop={8}
@@ -214,7 +420,7 @@ const MultichainPrivateKeyList = ({
         networkName: string;
       },
       index: number,
-    ): React.JSX.Element => {
+    ): JSX.Element => {
       const privateKey = privateKeys[item.account.address];
       if (!privateKey) {
         return <></>;
@@ -222,6 +428,19 @@ const MultichainPrivateKeyList = ({
 
       const handleCopyClick = () => {
         handleCopy(privateKey);
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.KeyExportCopied)
+            .addCategory(MetaMetricsEventCategory.Keys)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Pkey,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              copy_method: 'clipboard',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: hdEntropyIndex,
+            })
+            .build(),
+        );
       };
 
       return (
@@ -237,7 +456,14 @@ const MultichainPrivateKeyList = ({
         />
       );
     },
-    [handleCopy, privateKeys, t],
+    [
+      createEventBuilder,
+      handleCopy,
+      hdEntropyIndex,
+      privateKeys,
+      t,
+      trackEvent,
+    ],
   );
 
   const renderedRows = useMemo(() => {
@@ -254,13 +480,29 @@ const MultichainPrivateKeyList = ({
     }
   }, [reveal]);
 
+  const renderUnrevealedContent = () => {
+    if (screen === VERIFY_PASSKEY_SCREEN) {
+      return (
+        <PasskeyVerification
+          flow="export-private-keys"
+          troubleshootLocation="export-private-keys"
+          onOpenFullScreen={openInFullScreen}
+          onVerified={handleRevealWithPasskey}
+          onCeremonyFailed={handleUsePassword}
+          onUsePassword={handleUsePassword}
+        />
+      );
+    }
+    return renderedPasswordInput;
+  };
+
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex"
+      flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-private-keyring-list"
     >
-      {reveal ? renderedRows : renderedPasswordInput}
+      {reveal ? renderedRows : renderUnrevealedContent()}
     </Box>
   );
 };

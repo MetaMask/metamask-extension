@@ -63,6 +63,7 @@ describe('BridgeControllerInit', () => {
       getLayer1GasFee: expect.any(Function),
       trackMetaMetricsFn: expect.any(Function),
       traceFn: expect.any(Function),
+      getUseAssetsControllerForRates: expect.any(Function),
     });
   });
 });

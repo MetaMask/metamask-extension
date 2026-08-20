@@ -17,10 +17,10 @@ import {
   sumDecimals,
 } from '../../shared/lib/conversion.utils';
 import {
-  getConversionRate,
   getNativeCurrency,
   getCurrentCurrency,
 } from '../ducks/metamask/metamask';
+import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';

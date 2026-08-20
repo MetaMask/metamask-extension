@@ -3,12 +3,8 @@ import { useSelector } from 'react-redux';
 import { getMultichainSelectedAccountCachedBalance } from '../../../selectors/multichain';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import {
-  getIsSwapsChain,
-  getIsBridgeChain,
-  getSelectedInternalAccount,
-} from '../../../selectors';
+import { getIsSwapsChain, getIsBridgeChain } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { CoinOverview } from './coin-overview';
 
 type NonEvmOverviewProps = {
@@ -19,7 +15,6 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   const { chainId } = useSelector(getSelectedMultichainNetworkConfiguration);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const account = useSelector(getSelectedInternalAccount);
-  const isNativeTokenBuyable = useSelector(getIsNativeTokenBuyable);
 
   let isSwapsChain = false;
   let isBridgeChain = false;
@@ -37,7 +32,6 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
       isSigningEnabled={true}
       isSwapsChain={isSwapsChain}
       isBridgeChain={isBridgeChain}
-      isBuyableChain={isNativeTokenBuyable}
     />
   );
 };

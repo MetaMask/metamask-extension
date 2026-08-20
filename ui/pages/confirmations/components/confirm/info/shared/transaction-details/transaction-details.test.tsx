@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Hex } from '@metamask/utils';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 import {
   getMockConfirmState,
@@ -206,6 +207,77 @@ describe('Transaction Details', () => {
         const amountRow = getByTestId('transaction-details-amount-row');
         expect(amountRow).toBeInTheDocument();
       });
+
+      it('renders using txParamsOriginal.value when container wrapping zeroed txParams.value', () => {
+        const contractInteraction =
+          genUnapprovedContractInteractionConfirmation({
+            chainId: CHAIN_IDS.GOERLI,
+          }) as TransactionMeta;
+        const wrappedContractInteraction = {
+          ...contractInteraction,
+          txParamsOriginal: { ...contractInteraction.txParams },
+          txParams: {
+            ...contractInteraction.txParams,
+            value: '0x0',
+          },
+        };
+        const state = getMockConfirmStateForTransaction(
+          wrappedContractInteraction,
+          {
+            metamask: {
+              preferences: {
+                showConfirmationAdvancedDetails: true,
+              },
+            },
+          },
+        );
+        const mockStore = configureMockStore(middleware)(state);
+        const { getByTestId } = renderWithConfirmContextProvider(
+          <TransactionDetails />,
+          mockStore,
+        );
+
+        expect(
+          getByTestId('transaction-details-amount-row'),
+        ).toBeInTheDocument();
+      });
+
+      it('does not render when both txParamsOriginal.value and txParams.value are zero', () => {
+        const contractInteraction =
+          genUnapprovedContractInteractionConfirmation({
+            chainId: CHAIN_IDS.GOERLI,
+          }) as TransactionMeta;
+        const wrappedContractInteraction = {
+          ...contractInteraction,
+          txParamsOriginal: {
+            ...contractInteraction.txParams,
+            value: '0x0',
+          },
+          txParams: {
+            ...contractInteraction.txParams,
+            value: '0x0',
+          },
+        };
+        const state = getMockConfirmStateForTransaction(
+          wrappedContractInteraction,
+          {
+            metamask: {
+              preferences: {
+                showConfirmationAdvancedDetails: true,
+              },
+            },
+          },
+        );
+        const mockStore = configureMockStore(middleware)(state);
+        const { queryByTestId } = renderWithConfirmContextProvider(
+          <TransactionDetails />,
+          mockStore,
+        );
+
+        expect(
+          queryByTestId('transaction-details-amount-row'),
+        ).not.toBeInTheDocument();
+      });
     });
 
     it('display network info if there is an alert on that field', () => {
@@ -278,6 +350,44 @@ describe('Transaction Details', () => {
         expect(
           getByTestId('transaction-details-recipient-row'),
         ).toBeInTheDocument();
+      });
+
+      it('renders the txParamsOriginal.to address when container wrapping replaced txParams.to', () => {
+        const originalTo = '0x1111111111111111111111111111111111111111';
+        const delegationManager = '0x2222222222222222222222222222222222222222';
+        const contractInteraction =
+          genUnapprovedContractInteractionConfirmation() as TransactionMeta;
+        const wrappedContractInteraction = {
+          ...contractInteraction,
+          txParamsOriginal: {
+            ...contractInteraction.txParams,
+            to: originalTo,
+          },
+          txParams: {
+            ...contractInteraction.txParams,
+            to: delegationManager,
+          },
+        };
+        const state = getMockConfirmStateForTransaction(
+          wrappedContractInteraction,
+          {
+            metamask: {
+              preferences: {
+                showConfirmationAdvancedDetails: true,
+              },
+            },
+          },
+        );
+        const mockStore = configureMockStore(middleware)(state);
+        const { getByTestId } = renderWithConfirmContextProvider(
+          <TransactionDetails />,
+          mockStore,
+        );
+
+        const recipientRow = getByTestId('transaction-details-recipient-row');
+        expect(recipientRow).toBeInTheDocument();
+        expect(recipientRow).toHaveTextContent('0x11111...11111');
+        expect(recipientRow).not.toHaveTextContent('0x22222...22222');
       });
     });
 

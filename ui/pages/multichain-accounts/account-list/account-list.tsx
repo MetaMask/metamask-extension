@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
@@ -19,15 +19,11 @@ import {
   IconSize,
   Text,
   TextColor,
+  TextFieldSearch,
   TextVariant as DsrTextVariant,
 } from '@metamask/design-system-react';
+import { TextVariant } from '../../../helpers/constants/design-system';
 
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
@@ -41,13 +37,12 @@ import {
   getIsDefaultAddressEnabled,
   getShowDefaultAddressPreference,
 } from '../../../selectors';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
-import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
-import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../components/component-library';
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+  CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
+import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
   Footer,
   Header,
@@ -61,6 +56,7 @@ import { filterWalletsByGroupNameOrAddress } from './utils';
 export const AccountList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
@@ -115,19 +111,27 @@ export const AccountList = () => {
     [filteredWallets],
   );
 
-  const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
+  const handleNavigateToChooseNewWalletType = useCallback(() => {
+    navigate(CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE);
+  }, [navigate]);
 
-  const handleOpenAddWalletModal = useCallback(() => {
-    setIsAddWalletModalOpen(true);
-  }, [setIsAddWalletModalOpen]);
-
-  const handleCloseAddWalletModal = useCallback(() => {
-    setIsAddWalletModalOpen(false);
-  }, [setIsAddWalletModalOpen]);
+  // When opened in a fresh tab (e.g. redirected from side panel/popup for
+  // hardware wallet onboarding), there is no browser history to go back to.
+  // Detect this via location.key being 'default' (initial entry) or
+  // fromFreshTab state propagated from downstream pages, then navigate
+  // directly to home instead of using history-based back navigation.
+  const isFreshTab =
+    location.key === 'default' ||
+    (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===
+      true;
 
   const handleBack = useCallback(() => {
-    transitionBack(() => navigate(PREVIOUS_ROUTE));
-  }, [navigate]);
+    if (isFreshTab) {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    } else {
+      transitionBack(() => navigate(PREVIOUS_ROUTE));
+    }
+  }, [isFreshTab, navigate]);
 
   return (
     <Page className="account-list-page">
@@ -141,6 +145,7 @@ export const AccountList = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={handleBack}
+            data-testid="account-list-page-back-button"
           />
         }
       >
@@ -155,16 +160,12 @@ export const AccountList = () => {
           paddingBottom={2}
         >
           <TextFieldSearch
-            size={TextFieldSearchSize.Lg}
+            className="w-full"
+            clearButtonOnClick={() => setSearchPattern('')}
+            data-testid="multichain-account-list-search"
+            onChange={onSearchBarChange}
             placeholder={t('searchYourAccounts')}
             value={searchPattern}
-            onChange={onSearchBarChange}
-            clearButtonOnClick={() => setSearchPattern('')}
-            width={BlockSize.Full}
-            borderWidth={0}
-            backgroundColor={BackgroundColor.backgroundMuted}
-            borderRadius={BorderRadius.LG}
-            data-testid="multichain-account-list-search"
           />
         </Box>
         <ScrollContainer className="multichain-account-menu-popover__list flex flex-col overflow-auto">
@@ -199,7 +200,7 @@ export const AccountList = () => {
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
-          onClick={handleOpenAddWalletModal}
+          onClick={handleNavigateToChooseNewWalletType}
           isDisabled={isAccountTreeSyncingInProgress}
           isFullWidth
           data-testid="account-list-add-wallet-button"
@@ -226,10 +227,6 @@ export const AccountList = () => {
           </Box>
         </Button>
       </Footer>
-      <AddWalletModal
-        isOpen={isAddWalletModalOpen}
-        onClose={handleCloseAddWalletModal}
-      />
     </Page>
   );
 };

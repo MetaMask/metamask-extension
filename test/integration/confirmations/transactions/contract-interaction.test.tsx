@@ -178,9 +178,10 @@ describe('Contract Interaction Confirmation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
-          participateInMetaMetrics: true,
+          analyticsId: 'test-metametrics-id',
+          consentDecisionMade: true,
+          optedIn: true,
           dataCollectionForMarketing: false,
-          metaMetricsId: 'test-metametrics-id',
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -218,20 +219,21 @@ describe('Contract Interaction Confirmation', () => {
       confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'trackMetaMetricsEvent' &&
-            call[1]?.[0].category === MetaMetricsEventCategory.Confirmations,
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.properties?.category ===
+              MetaMetricsEventCategory.Confirmations,
         );
 
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
-        'trackMetaMetricsEvent',
+        'trackAnalyticsEvent',
       );
 
       expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            category: MetaMetricsEventCategory.Confirmations,
-            event: MetaMetricsEventName.AccountDetailsOpened,
-            properties: {
+            name: MetaMetricsEventName.AccountDetailsOpened,
+            properties: expect.objectContaining({
+              category: MetaMetricsEventCategory.Confirmations,
               action: 'Confirm Screen',
               location: MetaMetricsEventLocation.Transaction,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -240,8 +242,9 @@ describe('Contract Interaction Confirmation', () => {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: 0,
-            },
+            }),
           }),
+          expect.anything(),
         ]),
       );
     });
@@ -314,7 +317,7 @@ describe('Contract Interaction Confirmation', () => {
 
     const firstGasField =
       await within(editGasFeesRow).findByTestId('first-gas-field');
-    expect(firstGasField).toHaveTextContent('0.0001');
+    expect(firstGasField).toHaveTextContent('0.0023');
     expect(editGasFeesRow).toContainElement(
       await screen.findByTestId('edit-gas-fee-icon'),
     );
@@ -461,7 +464,7 @@ describe('Contract Interaction Confirmation', () => {
       });
     });
 
-    const headingText = tEn('blockaidTitleDeceptive');
+    const headingText = tEn('blockaidTitleHighRiskTransfer');
     const bodyText = tEn('blockaidDescriptionTransferFarming');
     expect(await screen.findByText(headingText)).toBeInTheDocument();
     expect(await screen.findByText(bodyText)).toBeInTheDocument();

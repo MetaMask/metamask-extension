@@ -1,11 +1,61 @@
 import BigNumber from 'bignumber.js';
 import { capitalize } from 'lodash';
-import type { Order, Position } from '@metamask/perps-controller';
+import {
+  type Order,
+  type OrderParams,
+  type Position,
+} from '@metamask/perps-controller';
 
 const FULL_POSITION_SIZE_TOLERANCE = new BigNumber('0.00000001');
 const ORDER_PRICE_MATCH_TOLERANCE = new BigNumber('0.00000001');
 const SYNTHETIC_TP_ID_SUFFIX = '-synthetic-tp';
 const SYNTHETIC_SL_ID_SUFFIX = '-synthetic-sl';
+const TP_SL_DETAILED_ORDER_TYPES = new Set([
+  'Stop Limit',
+  'Stop Market',
+  'Take Profit Limit',
+  'Take Profit Market',
+]);
+/**
+ * HyperLiquid rejects a cancel for an order it no longer holds open with this
+ * status text (surfaced by the SDK as `<type> <index>: <error>`).
+ *
+ * Protocol-specific prose, like `API_ERROR_PATTERNS` in
+ * `utils/translate-perps-error.ts`, and it should stay in sync with mobile the
+ * same way. It lives here instead of in that list because it maps to a benign
+ * end state the UI closes out on, not to a `PerpsErrorCode` to display.
+ */
+const ORDER_NO_LONGER_OPEN_PATTERN =
+  /never placed, already canceled, or filled/iu;
+
+/**
+ * Maps a lowercased `PerpsOrderTransactionStatus` string (e.g. `'filled'`,
+ * `'canceled'`) to the i18n key used to render its translated label.
+ */
+const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
+  open: 'perpsStatusOpen',
+  filled: 'perpsStatusFilled',
+  canceled: 'perpsStatusCanceled',
+  queued: 'perpsStatusQueued',
+  rejected: 'perpsStatusRejected',
+  triggered: 'perpsStatusTriggered',
+};
+
+/**
+ * Resolves the i18n key for a Perps order's status text.
+ *
+ * `order.text` is the raw `PerpsOrderTransactionStatus` enum value from the
+ * provider (e.g. `'Filled'`, `'Canceled'`, title-cased), which must not be
+ * rendered directly since it's unlocalized English. This looks up the
+ * matching translated i18n key, defaulting to the "open" status when the
+ * status text is missing or unrecognized.
+ *
+ * @param statusText - The raw order status text (e.g. `order.text`)
+ * @returns The i18n key to pass to `t()`
+ */
+export const getOrderStatusI18nKey = (statusText: string | undefined) =>
+  ORDER_STATUS_TO_I18N_KEY[statusText?.toLowerCase() ?? ''] ??
+  'perpsStatusOpen';
 
 /**
  * Safely creates a BigNumber, returning null for empty/invalid values.
@@ -52,6 +102,10 @@ const getOrderTriggerPrice = (order: Order): BigNumber | null => {
   return parsedPrice;
 };
 
+const isDetailedTpSlOrder = (detailedOrderType?: string): boolean =>
+  detailedOrderType !== undefined &&
+  TP_SL_DETAILED_ORDER_TYPES.has(detailedOrderType);
+
 const isClosingSideForPosition = (
   order: Order,
   position: Position,
@@ -82,12 +136,12 @@ const hasMatchingRealReduceOnlyTrigger = (
 
     const isSameParentByChildLink = Boolean(
       order.parentOrderId &&
-        order.parentOrderId === syntheticOrder.parentOrderId,
+      order.parentOrderId === syntheticOrder.parentOrderId,
     );
     const isSameParentByParentReference = Boolean(
       parentOrder &&
-        (parentOrder.takeProfitOrderId === order.orderId ||
-          parentOrder.stopLossOrderId === order.orderId),
+      (parentOrder.takeProfitOrderId === order.orderId ||
+        parentOrder.stopLossOrderId === order.orderId),
     );
 
     if (!isSameParentByChildLink && !isSameParentByParentReference) {
@@ -153,13 +207,27 @@ export const isOrderAssociatedWithFullPosition = (
     return false;
   }
 
+  // Only fall back to size matching when the provider did not send the flag.
+  // An explicit `isPositionTpsl: false` (e.g. normalTpsl grouping from a
+  // limit-order's TP/SL children) is authoritative — do not size-match,
+  // otherwise a limit-order TP/SL whose size coincidentally equals the
+  // current position would be misclassified as full-position.
   if (order.isPositionTpsl === false) {
     return false;
   }
 
   const orderSize = getAbsoluteOrderSize(order);
   const positionSize = getAbsolutePositionSize(position);
-  if (!orderSize || !positionSize) {
+
+  // Hyperliquid positionTPSL trigger orders may also be placed with size 0
+  // (the trigger acts on whatever the current position size is). When the
+  // adapter cannot back-fill the size, treat a reduce-only trigger on a
+  // matching position+closing-side as position-bound.
+  if (!orderSize) {
+    return order.isTrigger === true;
+  }
+
+  if (!positionSize) {
     return false;
   }
 
@@ -167,21 +235,121 @@ export const isOrderAssociatedWithFullPosition = (
 };
 
 /**
+ * Returns true when a non-reduce-only market order is large enough to flip the
+ * current position (close the existing side and open the opposite side).
+ * Mirrors `app/components/UI/Perps/utils/orderUtils.ts:willFlipPosition` on
+ * mobile so the order-entry page can replicate the two-step market+TPSL
+ * flow that yields `grouping: 'positionTpsl'` on Hyperliquid.
+ *
+ * @param currentPosition - The existing position
+ * @param orderParams - The order about to be submitted
+ * @returns Whether the order will flip the position
+ */
+export const willFlipPosition = (
+  currentPosition: Position,
+  orderParams: OrderParams,
+): boolean => {
+  if (orderParams.reduceOnly === true) {
+    return false;
+  }
+  if (orderParams.orderType !== 'market') {
+    return false;
+  }
+  // Hyperliquid position/order size strings can carry thousand separators
+  // (e.g. `'1,234.5'`); strip commas before parseFloat so the magnitude
+  // comparison stays correct for large positions.
+  const currentPositionSize = parseFloat(
+    currentPosition.size.replaceAll(',', ''),
+  );
+  // A zero-size position is not a position — short-circuit so a sell market
+  // does not match the phantom `'short'` direction below and falsely report
+  // "no flip". The caller also guards on size === 0, but keep this safe in
+  // isolation.
+  if (currentPositionSize === 0 || !Number.isFinite(currentPositionSize)) {
+    return false;
+  }
+  const positionDirection = currentPositionSize > 0 ? 'long' : 'short';
+  const orderDirection = orderParams.isBuy ? 'long' : 'short';
+  if (positionDirection === orderDirection) {
+    return false;
+  }
+  const orderSize = parseFloat(orderParams.size.replaceAll(',', ''));
+  return orderSize > Math.abs(currentPositionSize);
+};
+
+/**
+ * Derives the take-profit and stop-loss prices for the active position by
+ * inspecting full-position reduce-only trigger orders. Used as a UI fallback
+ * when the controller fails to populate `position.takeProfitPrice` /
+ * `position.stopLossPrice` (e.g. Hyperliquid WebSocket order updates that
+ * omit `isPositionTpsl`).
+ *
+ * @param orders - The orders to inspect
+ * @param position - The current position
+ * @returns Object with takeProfitPrice / stopLossPrice when discoverable
+ */
+export const derivePositionTpslPricesFromOrders = (
+  orders: Order[],
+  position?: Position,
+): { takeProfitPrice?: string; stopLossPrice?: string } => {
+  if (!position) {
+    return {};
+  }
+
+  const result: { takeProfitPrice?: string; stopLossPrice?: string } = {};
+  for (const order of orders) {
+    if (
+      !order.isTrigger ||
+      !isOrderAssociatedWithFullPosition(order, position)
+    ) {
+      continue;
+    }
+
+    const triggerPrice = getOrderTriggerPrice(order)?.toFixed();
+    if (!triggerPrice) {
+      continue;
+    }
+
+    const detailedType = (order.detailedOrderType ?? '').toLowerCase();
+    if (!result.takeProfitPrice && detailedType.includes('take profit')) {
+      result.takeProfitPrice = triggerPrice;
+    } else if (!result.stopLossPrice && detailedType.includes('stop')) {
+      result.stopLossPrice = triggerPrice;
+    }
+  }
+  return result;
+};
+
+/**
  * Determines whether an order should be shown in Market Details > Orders
  * (the perps asset / position detail screen).
  *
- * Full-position TP/SL and `isPositionTpsl` rows are included here so users can
- * see and act on them alongside other open orders, in addition to the position
- * summary. `isOrderAssociatedWithFullPosition` remains for other call sites.
+ * All non-reduce-only orders and plain reduce-only close orders are shown.
+ * Only full-position TP/SL orders are hidden because those are surfaced in the
+ * auto-close section instead.
  *
- * @param _order - The order to check (reserved for future filtering)
- * @param _position - The current position (reserved for future filtering)
+ * @param order - The order to check
+ * @param position - The current position (if any)
  * @returns Whether the order should be displayed
  */
 export const shouldDisplayOrderInMarketDetailsOrders = (
-  _order: Order,
-  _position?: Position,
-): boolean => true;
+  order: Order,
+  position?: Position,
+): boolean => {
+  if (!order.reduceOnly) {
+    return true;
+  }
+
+  const isTpSlOrder =
+    order.isPositionTpsl === true ||
+    order.isTrigger === true ||
+    isDetailedTpSlOrder(order.detailedOrderType);
+  if (!isTpSlOrder) {
+    return true;
+  }
+
+  return !isOrderAssociatedWithFullPosition(order, position);
+};
 
 const buildSyntheticTriggerOrder = (
   parentOrder: Order,
@@ -303,11 +471,13 @@ export const buildDisplayOrdersWithSyntheticTpsl = (
  * Normalizes orders for the Perps Market Details > Orders section.
  *
  * Composes display-order enrichment (synthetic TP/SL rows) with visibility
- * filtering (currently all enriched orders are shown, including full-position TP/SL).
+ * filtering: full-position TP/SL orders are excluded because they are surfaced
+ * in the auto-close section instead. Plain reduce-only close orders remain.
  *
  * @param options0 - Options object
  * @param options0.orders - The orders to normalize
- * @param options0.existingPosition - The current position (if any)
+ * @param options0.existingPosition - The current position (if any), used to
+ * detect full-position reduce-only orders that should be excluded.
  * @returns Normalized orders for display
  */
 export const normalizeMarketDetailsOrders = ({
@@ -325,8 +495,35 @@ export const normalizeMarketDetailsOrders = ({
 };
 
 /**
+ * Determines whether an order closes an existing position.
+ *
+ * Trigger status controls when an order activates and does not imply closing
+ * intent. Reduce-only and position-bound TP/SL orders are closing orders.
+ *
+ * @param order - The order to classify.
+ * @returns Whether the order closes a position.
+ */
+export const isClosingOrder = (
+  order: Pick<Order, 'reduceOnly' | 'isPositionTpsl'>,
+): boolean => Boolean(order.reduceOnly || order.isPositionTpsl);
+
+/**
+ * Determines whether a failed cancel means the order is already off the book.
+ *
+ * The order is gone — filled, cancelled elsewhere, or removed with its position
+ * — which is the outcome the user asked for, so the UI treats it as a benign
+ * end state instead of a failure the user has to react to.
+ *
+ * @param error - The error surfaced by the cancel request.
+ * @returns Whether the order is no longer open on the provider.
+ */
+export const isOrderNoLongerOpenError = (error: unknown): boolean => {
+  const message = error instanceof Error ? error.message : String(error ?? '');
+  return ORDER_NO_LONGER_OPEN_PATTERN.test(message);
+};
+
+/**
  * Formats an order label following the pattern: [Type] [close?] [direction]
- * Matches the mobile canonical formatter in app/components/UI/Perps/utils/orderUtils.ts.
  *
  * Examples:
  * - "Market long" / "Limit short"
@@ -334,7 +531,7 @@ export const normalizeMarketDetailsOrders = ({
  * - "Stop market close long" / "Take profit limit close short"
  *
  * Rules:
- * - isClosing = reduceOnly || isTrigger
+ * - isClosing = reduceOnly || isPositionTpsl
  * - direction for closing: sell → long, buy → short
  * - direction for opening: buy → long, sell → short
  * - typeString = detailedOrderType if present, otherwise "Limit" or "Market"
@@ -344,8 +541,8 @@ export const normalizeMarketDetailsOrders = ({
  * @returns Formatted label string in sentence case
  */
 export const formatOrderLabel = (order: Order): string => {
-  const { side, detailedOrderType, orderType, reduceOnly, isTrigger } = order;
-  const isClosing = Boolean(reduceOnly || isTrigger);
+  const { side, detailedOrderType, orderType } = order;
+  const isClosing = isClosingOrder(order);
 
   let direction: string;
   if (isClosing) {

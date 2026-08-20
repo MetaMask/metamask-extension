@@ -30,7 +30,7 @@ describe('Test Snap networkAccess', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
 

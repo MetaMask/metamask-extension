@@ -1,0 +1,884 @@
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import nock from 'nock';
+import thunk from 'redux-thunk';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+  NETWORK_TYPES,
+  getRpcUrl,
+} from '../../../../shared/constants/network';
+import * as fetchWithCacheModule from '../../../../shared/lib/fetch-with-cache';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import {
+  addNetwork,
+  setTokenNetworkFilter,
+  updateNetwork,
+} from '../../../store/actions';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { NetworksForm } from './networks-form';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  updateNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+  addNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+  setTokenNetworkFilter: jest
+    .fn()
+    .mockReturnValue(jest.fn().mockResolvedValue()),
+}));
+
+jest.mock('../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../store/background-connection'),
+  submitRequestToBackground: jest.fn().mockImplementation((method, args) => {
+    if (method === 'isPublicEndpointUrl') {
+      const url = args[0];
+      // Return true for Infura URLs, false for everything else
+      return Promise.resolve(url?.includes('infura.io') ?? false);
+    }
+    return Promise.resolve();
+  }),
+}));
+
+const renderComponent = ({ isRpcFailoverEnabled, ...props } = {}) => {
+  const store = configureMockStore([thunk])({
+    metamask: {
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      useSafeChainsListValidation: true,
+      orderedNetworkList: {
+        networkId: '0x1',
+        networkRpcUrl: 'https://mainnet.infura.io/v3/',
+      },
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: 'eip155:1',
+      isEvmSelected: true,
+      remoteFeatureFlags: {
+        walletFrameworkRpcFailoverEnabled: isRpcFailoverEnabled ?? false,
+      },
+    },
+  });
+  return renderWithProvider(<NetworksForm {...props} />, store);
+};
+
+const propNetworkDisplay = {
+  networkFormState: {
+    chainId: '100',
+    blockExplorers: {
+      blockExplorerUrls: [],
+    },
+    clear: () => ({}),
+    name: MAINNET_DISPLAY_NAME,
+    rpcUrls: {
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          url: getRpcUrl({
+            network: NETWORK_TYPES.MAINNET,
+            excludeProjectId: true,
+          }),
+        },
+      ],
+    },
+    setBlockExplorers: () => ({}),
+    setChainId: () => ({}),
+    setName: () => ({}),
+    setRpcUrls: () => ({}),
+    setTicker: () => ({}),
+    ticker: 'ETH',
+  },
+  onRpcAdd: () => ({}),
+  onBlockExplorerAdd: () => ({}),
+};
+
+describe('NetworkForm Component', () => {
+  beforeAll(() => {
+    nock.disableNetConnect();
+  });
+
+  afterAll(() => {
+    nock.enableNetConnect();
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockTrackEvent.mockClear();
+
+    nock('https://chainid.network:443', { encodedQueryParams: true })
+      .get('/chains.json')
+      .reply(200, [
+        {
+          name: 'Polygon',
+          chain: 'Polygon',
+          rpc: [
+            'https://polygon-rpc.com/',
+            'https://rpc-mainnet.matic.network',
+            'https://matic-mainnet.chainstacklabs.com',
+            'https://rpc-mainnet.maticvigil.com',
+            'https://rpc-mainnet.matic.quiknode.pro',
+            'https://matic-mainnet-full-rpc.bwarelabs.com',
+          ],
+          nativeCurrency: {
+            name: 'MATIC',
+            symbol: 'MATIC',
+            decimals: 18,
+          },
+          shortName: 'MATIC',
+          chainId: 137,
+        },
+      ]);
+
+    nock('https://bsc-dataseed.binance.org:443', {
+      encodedQueryParams: true,
+    })
+      .post('/')
+      .reply(200, { jsonrpc: '2.0', result: '0x38' });
+
+    nock('https://rpc.flashbots.net:443', {
+      encodedQueryParams: true,
+    })
+      .post('/')
+      .reply(200, { jsonrpc: '2.0', result: '0x1' });
+  });
+
+  afterEach(() => {
+    nock.cleanAll();
+    delete process.env.QUICKNODE_BSC_URL;
+  });
+
+  it('should render add new network form correctly', async () => {
+    const { queryByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '1',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: getRpcUrl({
+                network: NETWORK_TYPES.MAINNET,
+                excludeProjectId: true,
+              }),
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'ETH',
+      },
+    });
+    expect(queryByText(messages.networkName.message)).toBeInTheDocument();
+    expect(queryByText(messages.defaultRpcUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.chainId.message)).toBeInTheDocument();
+    expect(queryByText(messages.currencySymbol.message)).toBeInTheDocument();
+    expect(queryByText(messages.blockExplorerUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.save.message)).toBeInTheDocument();
+
+    expect(
+      await screen.findByText(
+        'This Chain ID is currently used by the Ethereum network.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('starts the Chainlist flow from the add network form', () => {
+    const onAddFromChainlist = jest.fn();
+
+    renderComponent({
+      ...propNetworkDisplay,
+      onAddFromChainlist,
+    });
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: messages.addFromChainlist.message,
+      }),
+    );
+
+    expect(onAddFromChainlist).toHaveBeenCalledTimes(1);
+  });
+
+  it('should render network form correctly', () => {
+    const { queryByText, getByDisplayValue } =
+      renderComponent(propNetworkDisplay);
+    expect(queryByText(messages.networkName.message)).toBeInTheDocument();
+    expect(queryByText(messages.defaultRpcUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.chainId.message)).toBeInTheDocument();
+    expect(queryByText(messages.currencySymbol.message)).toBeInTheDocument();
+    expect(queryByText(messages.blockExplorerUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.save.message)).toBeInTheDocument();
+
+    expect(
+      getByDisplayValue(propNetworkDisplay.networkFormState.chainId),
+    ).toBeInTheDocument();
+    expect(
+      getByDisplayValue(propNetworkDisplay.networkFormState.ticker),
+    ).toBeInTheDocument();
+    expect(
+      getByDisplayValue(propNetworkDisplay.networkFormState.name),
+    ).toBeInTheDocument();
+  });
+
+  it('should validate chain id field correctly', async () => {
+    renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '1',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://bsc-dataseed.binance.org/',
+              type: 'custom',
+              name: undefined,
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'ETH',
+      },
+    });
+
+    expect(
+      await screen.findByText(
+        'This Chain ID is currently used by the Ethereum network.',
+      ),
+    ).toBeInTheDocument();
+
+    const expectedWarning =
+      'The RPC URL you have entered returned a different chain ID (56).';
+    expect(await screen.findByText(expectedWarning)).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', { name: messages.save.message }),
+    ).toBeDisabled();
+  });
+
+  it('should chainID be a valid number', async () => {
+    renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: 'a',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://bsc-dataseed.binance.org/',
+              type: 'custom',
+              name: undefined,
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'ETH',
+      },
+    });
+
+    expect(
+      await screen.findByText(messages.invalidNumber.message),
+    ).toBeInTheDocument();
+  });
+
+  it('should chainID not be leading zeros', async () => {
+    renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '00000012314',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://bsc-dataseed.binance.org/',
+              type: 'custom',
+              name: undefined,
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'ETH',
+      },
+    });
+
+    expect(
+      await screen.findByText(messages.invalidNumberLeadingZeros.message),
+    ).toBeInTheDocument();
+  });
+
+  it('should not show suggested ticker and duplicating the exact symbol', async () => {
+    const safeChainsList = [
+      {
+        chainId: 42161,
+        nativeCurrency: {
+          symbol: 'ETH',
+        },
+      },
+    ];
+
+    // Mock the fetchWithCache function to return the safeChainsList
+    jest
+      .spyOn(fetchWithCacheModule, 'default')
+      .mockResolvedValue(safeChainsList);
+
+    renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '42161',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://bsc-dataseed.binance.org/',
+              type: 'custom',
+              name: undefined,
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'abcd',
+      },
+    });
+
+    const expectedSymbolWarning = 'Suggested currency symbol:';
+    expect(await screen.findByText(expectedSymbolWarning)).toBeInTheDocument();
+
+    expect(
+      await screen.findByText(
+        messages.chainListReturnedDifferentTickerSymbol.message,
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('should validate currency symbol field for ZYN network', async () => {
+    const safeChainsList = [
+      {
+        chainId: 78,
+        nativeCurrency: {
+          symbol: 'PETH',
+        },
+      },
+    ];
+
+    // Mock the fetchWithCache function to return the safeChainsList
+    jest
+      .spyOn(fetchWithCacheModule, 'default')
+      .mockResolvedValue(safeChainsList);
+
+    renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '78',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://bsc-dataseed.binance.org/',
+              type: 'custom',
+              name: undefined,
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'ZYN',
+      },
+    });
+
+    expect(
+      await screen.queryByTestId('network-form-ticker-suggestion'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('should call addNetwork when saving a new network', async () => {
+    const { getByText } = renderComponent(propNetworkDisplay);
+    const saveButton = getByText(messages.save.message);
+    fireEvent.click(saveButton);
+    await waitFor(() => {
+      expect(addNetwork).toHaveBeenCalledTimes(1);
+      expect(addNetwork).toHaveBeenCalledWith(
+        {
+          chainId: '0x64',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://mainnet.infura.io/v3/',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+          blockExplorerUrls: [],
+          defaultBlockExplorerUrlIndex: undefined,
+        },
+        { setActive: true },
+      );
+    });
+  });
+
+  it('should call updateNetwork when saving an existing network', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      existingNetwork: {},
+    });
+    const saveButton = getByText(messages.save.message);
+    fireEvent.click(saveButton);
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalledTimes(1);
+      expect(updateNetwork).toHaveBeenCalledWith(
+        {
+          chainId: '0x64',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://mainnet.infura.io/v3/',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+          blockExplorerUrls: [],
+          defaultBlockExplorerUrlIndex: undefined,
+        },
+        {
+          replacementSelectedRpcEndpointIndex: undefined,
+        },
+      );
+      expect(setTokenNetworkFilter).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('should track RPC update event when trackRpcUpdateFromBanner is true', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://monad-mainnet.infura.io/v3/',
+              type: 'custom',
+            },
+          ],
+        },
+      },
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+      },
+      trackRpcUpdateFromBanner: true,
+    });
+
+    const saveButton = getByText(messages.save.message);
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalled();
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Connection Banner RPC Updated',
+          properties: expect.objectContaining({
+            category: 'Network',
+            chain_id_caip: 'eip155:100',
+            from_rpc_domain: 'mainnet.infura.io',
+            to_rpc_domain: 'monad-mainnet.infura.io',
+          }),
+        }),
+      );
+    });
+  });
+
+  it('should not track RPC update event when trackRpcUpdateFromBanner is not set', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+      },
+    });
+
+    const saveButton = getByText(messages.save.message);
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalled();
+      // Should not have called the banner tracking event
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Connection Banner RPC Updated',
+        }),
+      );
+    });
+  });
+
+  it('should track custom RPC URL when endpoint is not public', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://custom-rpc.example.com',
+              type: 'custom',
+            },
+          ],
+        },
+      },
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://custom-rpc.example.com',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+      },
+      trackRpcUpdateFromBanner: true,
+    });
+
+    const saveButton = getByText(messages.save.message);
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalled();
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Connection Banner RPC Updated',
+          properties: expect.objectContaining({
+            category: 'Network',
+            chain_id_caip: 'eip155:100',
+            from_rpc_domain: 'custom',
+            to_rpc_domain: 'custom',
+          }),
+        }),
+      );
+    });
+  });
+
+  it('should handle corrupted state with missing rpcEndpoints gracefully', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://monad-mainnet.infura.io/v3/',
+              type: 'custom',
+            },
+          ],
+        },
+      },
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        // rpcEndpoints is undefined (corrupted state)
+      },
+      trackRpcUpdateFromBanner: true,
+    });
+
+    const saveButton = getByText(messages.save.message);
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalled();
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Connection Banner RPC Updated',
+          properties: expect.objectContaining({
+            category: 'Network',
+            chain_id_caip: 'eip155:100',
+            from_rpc_domain: 'unknown',
+            to_rpc_domain: 'monad-mainnet.infura.io',
+          }),
+        }),
+      );
+    });
+  });
+
+  it('shows failover from shared config for a map chain with empty persisted failoverUrls', () => {
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          type: 'infura',
+          url: 'https://bsc-mainnet.infura.io/v3/test',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { getByLabelText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(getByLabelText(messages.failoverRpcUrl.message)).toHaveValue(
+      'failover.example',
+    );
+  });
+
+  it('shows the failover tag on the rpc list item from shared config when persisted failoverUrls is empty', () => {
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          // An Infura endpoint renders through RpcListItem rather than the
+          // inline custom branch.
+          type: 'infura',
+          url: 'https://bsc-mainnet.infura.io/v3/test',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { getByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(getByText(messages.failover.message)).toBeInTheDocument();
+  });
+
+  it('does not show failover for a custom endpoint even when the chain has a shared config failover', () => {
+    // Failover only applies to Infura endpoints, so a custom endpoint shows no
+    // failover even though this chain (BSC) has a shared config failover.
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          type: 'custom',
+          url: 'https://bsc.example/rpc',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { queryByLabelText, queryByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(queryByLabelText(messages.failoverRpcUrl.message)).toBeNull();
+    expect(queryByText(messages.failover.message)).toBeNull();
+  });
+
+  it('does not show failover for a chain not in the shared config', () => {
+    // 0x2328 (9000) is not in the shared failover map, so even an Infura
+    // endpoint gets no failover.
+    const existingNetwork = {
+      chainId: '0x2328',
+      name: 'Some Custom Network',
+      nativeCurrency: 'CUSTOM',
+      blockExplorerUrls: ['https://explorer.example/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'custom',
+          type: 'infura',
+          url: 'https://custom.example/rpc',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { queryByLabelText, queryByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '9000',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(queryByLabelText(messages.failoverRpcUrl.message)).toBeNull();
+    expect(queryByText(messages.failover.message)).toBeNull();
+  });
+});

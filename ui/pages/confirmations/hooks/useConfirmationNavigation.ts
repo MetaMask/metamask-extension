@@ -2,11 +2,10 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
-import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates/approval-types';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -44,7 +43,7 @@ export type ConfirmationNavigationOptions = {
 
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
-  const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const approvalFlows = useSelector(getApprovalFlows);
   const navigate = useNavigate();
   const { search: queryString } = useLocation();
   const count = confirmations.length;
@@ -154,7 +153,11 @@ export function getConfirmationRoute(
 
   const type = nextConfirmation.type as ApprovalType;
 
-  if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
+  if (
+    TEMPLATED_CONFIRMATION_APPROVAL_TYPES.find(
+      (approvalType) => approvalType === type,
+    ) !== undefined
+  ) {
     return `${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`;
   }
 

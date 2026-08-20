@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -13,9 +14,35 @@ import {
   mockHip3Markets,
   mockTransactions,
 } from '../../components/app/perps/mocks';
-import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
+import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
+import {
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
+
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../components/app/compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -74,6 +101,15 @@ jest.mock('@metamask/perps-controller', () => ({
     SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
     NETWORK_ERROR: 'NETWORK_ERROR',
   },
+  MARKET_CATEGORIES: [
+    'crypto',
+    'stock',
+    'pre-ipo',
+    'index',
+    'etf',
+    'commodity',
+    'forex',
+  ],
 }));
 
 // Mock lightweight-charts to prevent DOM rendering issues in tests
@@ -194,6 +230,7 @@ jest.mock('../../providers/perps', () => ({
 }));
 
 const mockReplacePerpsToastByKey = jest.fn();
+const mockSetPendingOrder = jest.fn();
 jest.mock('../../components/app/perps/perps-toast', () => {
   const { PERPS_TOAST_KEYS } = jest.requireActual(
     '../../components/app/perps/perps-toast/perps-toast-provider',
@@ -203,6 +240,8 @@ jest.mock('../../components/app/perps/perps-toast', () => {
     PERPS_TOAST_KEYS,
     usePerpsToast: () => ({
       replacePerpsToastByKey: mockReplacePerpsToastByKey,
+      setPendingOrder: mockSetPendingOrder,
+      pendingOrder: null,
     }),
   };
 });
@@ -219,15 +258,44 @@ const mockLiveAccount = jest.fn(() => ({
 }));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+// Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
+// properties the page constructs.
+const mockPerpsScreenViewedOptions: {
+  eventName?: unknown;
+  properties?: Record<string, unknown>;
+}[] = [];
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
-  usePerpsEventTracking: () => ({ track: jest.fn() }),
+  usePerpsEventTracking: (options?: {
+    eventName?: unknown;
+    properties?: Record<string, unknown>;
+  }) => {
+    if (options) {
+      mockPerpsScreenViewedOptions.push(options);
+      return undefined;
+    }
+    return { track: jest.fn() };
+  },
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
   usePerpsMarginCalculations: jest.fn(),
   usePerpsMarketFills: (...args: unknown[]) => mockUsePerpsMarketFills(...args),
   usePerpsMarketInfo: jest.fn(),
+}));
+// Cancel/close/reverse/TP-SL modals call usePerpsAttribution; keep them
+// renderable without mounting PerpsAttributionProvider in this page suite.
+const mockSetFlowAttribution = jest.fn();
+jest.mock('../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => ({
+      ...input,
+      entryPoint: 'homescreen_tab',
+      discoverySource: 'market_list',
+    }),
+    buildTpslTrackingData: (input: Record<string, unknown>) => input,
+    setFlowAttribution: mockSetFlowAttribution,
+  }),
 }));
 jest.mock(
   '../../components/app/perps/hooks/usePerpsDepositConfirmation',
@@ -243,6 +311,10 @@ const mockLivePositions = jest.fn(() => ({
   positions: mockPositions,
   isInitialLoading: false,
 }));
+const mockLiveMarketData = jest.fn(() => ({
+  markets: [...mockCryptoMarkets, ...mockHip3Markets],
+  isInitialLoading: false,
+}));
 
 // Mock the perps stream hooks
 jest.mock('../../hooks/perps/stream', () => ({
@@ -252,10 +324,7 @@ jest.mock('../../hooks/perps/stream', () => ({
     isInitialLoading: false,
   }),
   usePerpsLiveAccount: () => mockLiveAccount(),
-  usePerpsLiveMarketData: () => ({
-    markets: [...mockCryptoMarkets, ...mockHip3Markets],
-    isInitialLoading: false,
-  }),
+  usePerpsLiveMarketData: () => mockLiveMarketData(),
   usePerpsLiveCandles: () => ({
     candleData: {
       symbol: 'ETH',
@@ -364,12 +433,14 @@ describe('PerpsMarketDetailPage', () => {
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
+        perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
       },
     },
   });
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockPerpsScreenViewedOptions.length = 0;
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockReplacePerpsToastByKey.mockReset();
     mockTriggerDeposit.mockClear();
@@ -379,6 +450,10 @@ describe('PerpsMarketDetailPage', () => {
     });
     mockLivePositions.mockReturnValue({
       positions: mockPositions,
+      isInitialLoading: false,
+    });
+    mockLiveMarketData.mockReturnValue({
+      markets: [...mockCryptoMarkets, ...mockHip3Markets],
       isInitialLoading: false,
     });
     mockUsePerpsMarketFills.mockReturnValue({
@@ -395,12 +470,132 @@ describe('PerpsMarketDetailPage', () => {
   });
 
   describe('when perps feature is enabled', () => {
+    it('reports watchlisted false on the asset_detail screen view for an unwatchlisted market', async () => {
+      await renderPage(mockStore(createMockState(true)));
+
+      const assetDetailView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'asset_details',
+      );
+
+      expect(assetDetailView?.properties?.watchlisted).toBe(false);
+    });
+
+    it('reports watchlisted true when the market is in the watchlist', async () => {
+      const state = createMockState(true);
+      (state.metamask as Record<string, unknown>).watchlistMarkets = {
+        testnet: [],
+        mainnet: ['ETH'],
+      };
+
+      await renderPage(mockStore(state));
+
+      const assetDetailView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'asset_details',
+      );
+
+      expect(assetDetailView?.properties?.watchlisted).toBe(true);
+    });
+
+    it('emits the error screen view when the market is not found', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [mockCryptoMarkets[0]],
+        isInitialLoading: false,
+      });
+      await renderPage(mockStore(createMockState(true)));
+
+      const errorView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'error',
+      ) as
+        | { conditions?: boolean; properties?: Record<string, unknown> }
+        | undefined;
+
+      expect(errorView).toBeDefined();
+      expect(errorView?.conditions).toBe(true);
+      expect(errorView?.properties).toMatchObject({
+        error_type: 'market_not_found',
+        screen_name: 'perps_market_details',
+      });
+    });
+
+    it('emits exactly one error screen view and no asset_details view for an unknown symbol', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [mockCryptoMarkets[0]],
+        isInitialLoading: false,
+      });
+      mockUseParams.mockReturnValue({ symbol: 'DOESNOTEXIST' });
+      await renderPage(mockStore(createMockState(true)));
+
+      type ScreenViewOption = {
+        conditions?: boolean;
+        properties?: Record<string, unknown>;
+      };
+      const activeErrorViews = (
+        mockPerpsScreenViewedOptions as ScreenViewOption[]
+      ).filter(
+        (option) =>
+          option.properties?.screen_type === 'error' &&
+          option.conditions === true,
+      );
+      const activeAssetDetailViews = (
+        mockPerpsScreenViewedOptions as ScreenViewOption[]
+      ).filter(
+        (option) =>
+          option.properties?.screen_type === 'asset_details' &&
+          option.conditions === true,
+      );
+
+      expect(activeErrorViews).toHaveLength(1);
+      // asset_details is gated on `market`, so an unknown symbol must not also
+      // fire it (one rendered error screen => one screen-view event).
+      expect(activeAssetDetailViews).toHaveLength(0);
+    });
+
+    it('does not emit a market-not-found view for an empty initial snapshot', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      await renderPage(mockStore(createMockState(true)));
+
+      const errorView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'error',
+      ) as { conditions?: boolean } | undefined;
+
+      expect(errorView?.conditions).toBe(false);
+    });
+
+    it('re-arms the error screen view per symbol via resetKey', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [mockCryptoMarkets[0]],
+        isInitialLoading: false,
+      });
+      mockUseParams.mockReturnValue({ symbol: 'BADONE' });
+      await renderPage(mockStore(createMockState(true)));
+
+      const errorView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'error',
+      ) as { resetKey?: unknown } | undefined;
+
+      // resetKey keyed on the symbol lets consecutive invalid symbols each track.
+      expect(errorView?.resetKey).toBe('BADONE');
+    });
+
+    it('re-asserts the asset_details entry point on mount', async () => {
+      await renderPage(mockStore(createMockState(true)));
+
+      expect(mockSetFlowAttribution).toHaveBeenCalledWith({
+        entryPoint: 'asset_detail_screen',
+      });
+    });
+
     it('renders market detail page for ETH', async () => {
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
 
-      expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-perps-market-detail'),
+      ).toBeInTheDocument();
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsActivatePriceStream',
         [{ symbols: ['ETH'], includeMarketData: true }],
@@ -412,6 +607,102 @@ describe('PerpsMarketDetailPage', () => {
       await renderPage(store);
 
       expect(screen.getByText(/15\.79%/u)).toBeInTheDocument();
+    });
+
+    it('masks position P&L, return, size, and margin when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-position-pnl-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(
+        screen.getByTestId('perps-position-return-value'),
+      ).toHaveTextContent('••••••');
+      expect(screen.getByTestId('perps-position-size-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(
+        screen.getByTestId('perps-position-margin-value'),
+      ).toHaveTextContent('••••••');
+    });
+
+    it('uses the default text color instead of green/red for P&L and return when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      const pnl = screen.getByTestId('perps-position-pnl-value');
+      const returnValue = screen.getByTestId('perps-position-return-value');
+      expect(pnl).toHaveClass('text-default');
+      expect(pnl).not.toHaveClass('text-success-default');
+      expect(pnl).not.toHaveClass('text-error-default');
+      expect(returnValue).toHaveClass('text-default');
+      expect(returnValue).not.toHaveClass('text-success-default');
+      expect(returnValue).not.toHaveClass('text-error-default');
+    });
+
+    it('uses the success color for a profitable P&L outside of privacy mode', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-position-pnl-value')).toHaveClass(
+        'text-success-default',
+      );
+    });
+
+    it('masks entry price, liquidation price, funding payments, and auto close TP/SL when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(
+        screen.getByTestId('perps-position-entry-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-liquidation-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-funding-value'),
+      ).toHaveTextContent('••••••');
+      expect(screen.getByTestId('perps-auto-close-tp-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(screen.getByTestId('perps-auto-close-sl-value')).toHaveTextContent(
+        '••••••',
+      );
     });
 
     it('shows order filled toast when route state has pendingOrderSymbol and matching position exists', async () => {
@@ -549,20 +840,86 @@ describe('PerpsMarketDetailPage', () => {
     it('displays market symbol and price', async () => {
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-market-detail-price')).toBeInTheDocument();
-      expect(getByText('ETH-USD')).toBeInTheDocument();
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Ethereum',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'ETH-USDC perp',
+      );
+    });
+
+    it('displays the market max leverage pill in the header', async () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-market-max-leverage')).toHaveTextContent('20x');
+    });
+
+    it('omits the market max leverage pill when max leverage is unavailable', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [
+          {
+            ...mockCryptoMarkets[1],
+            maxLeverage: '',
+          },
+        ],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(
+        screen.queryByTestId('perps-market-max-leverage'),
+      ).not.toBeInTheDocument();
     });
 
     it('renders market detail page for BTC', async () => {
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
-      expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
-      expect(getByText('BTC-USD')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-perps-market-detail'),
+      ).toBeInTheDocument();
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Bitcoin',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'BTC-USDC perp',
+      );
+    });
+
+    it('shows the ticker instead of the full name in the header when the full asset names flag is disabled', async () => {
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const state = createMockState(true);
+      state.metamask.remoteFeatureFlags.perpsShowFullAssetNames = {
+        enabled: false,
+        minimumVersion: '99.99.99',
+      };
+      const store = mockStore(state);
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent('BTC');
+      expect(getByTestId('perps-market-detail-name')).not.toHaveTextContent(
+        'Bitcoin',
+      );
+    });
+
+    it('navigates to the market list when the header chevron is clicked', async () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      getByTestId('perps-market-detail-market-list-button').click();
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_MARKET_LIST_ROUTE);
     });
 
     it('displays back button', async () => {
@@ -576,6 +933,12 @@ describe('PerpsMarketDetailPage', () => {
     });
 
     it('navigates back in history when back button is clicked', async () => {
+      const originalLength = window.history.length;
+      Object.defineProperty(window.history, 'length', {
+        value: 2,
+        configurable: true,
+      });
+
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -583,7 +946,37 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+
+      Object.defineProperty(window.history, 'length', {
+        value: originalLength,
+        configurable: true,
+      });
+    });
+
+    it('falls back to Perps tab when history is empty', async () => {
+      const originalLength = window.history.length;
+      Object.defineProperty(window.history, 'length', {
+        value: 1,
+        configurable: true,
+      });
+
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      const backButton = getByTestId('perps-market-detail-back-button');
+      backButton.click();
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        { pathname: '/', search: 'tab=perps' },
+        { replace: true },
+      );
+
+      Object.defineProperty(window.history, 'length', {
+        value: originalLength,
+        configurable: true,
+      });
     });
 
     it('uses market 24h change as fallback when no live percent update exists', async () => {
@@ -690,6 +1083,20 @@ describe('PerpsMarketDetailPage', () => {
       expect(priceLines.find((l) => l.label === 'Liq')).toBeUndefined();
     });
 
+    it('displays a fallback when the position liquidationPrice is not positive', async () => {
+      mockLivePositions.mockReturnValue({
+        positions: [{ ...mockPositions[0], liquidationPrice: '-1' }],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-position-liquidation-value')).toHaveTextContent(
+        PERPS_LIQUIDATION_PRICE_FALLBACK,
+      );
+    });
+
     it('displays favorite button', async () => {
       const store = mockStore(createMockState(true));
 
@@ -700,15 +1107,22 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders HIP-3 equity market (TSLA)', async () => {
+    it('renders HIP-3 stock market (TSLA)', async () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:TSLA' });
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
-      expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
-      // Should display "TSLA-USD" with the stripped display name
-      expect(getByText('TSLA-USD')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-perps-market-detail'),
+      ).toBeInTheDocument();
+      // Should display the full name and the ticker-collateral pair (stripped display name)
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Tesla',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'TSLA-USDC perp',
+      );
     });
 
     it('displays position section when user has a position', async () => {
@@ -813,9 +1227,6 @@ describe('PerpsMarketDetailPage', () => {
         'perps-market-detail-view-all-activity',
       );
       expect(viewAllButton).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsSeeAll.message),
-      ).toBeInTheDocument();
 
       fireEvent.click(viewAllButton);
       expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
@@ -829,7 +1240,7 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText(messages.perpsLearnBasics.message)).toBeInTheDocument();
     });
 
-    it('opens Modify menu with Add margin, Remove margin, and Reverse position when Modify button is clicked', async () => {
+    it('opens Modify menu with Add exposure, Reduce exposure, and Reverse position when Modify button is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       await renderPage(store);
@@ -853,9 +1264,6 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsReduceExposure.message),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsReversePosition.message),
       ).toBeInTheDocument();
     });
 
@@ -947,12 +1355,17 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('opens Reverse position modal when Reverse position is clicked', async () => {
+    it('opens Reverse position modal when Reverse position is clicked in Modify menu', async () => {
       const store = mockStore(createMockState(true));
 
       await renderPage(store);
 
       fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+
+      expect(
+        screen.getByTestId('perps-modify-menu-reverse-position'),
+      ).toBeInTheDocument();
+
       fireEvent.click(screen.getByTestId('perps-modify-menu-reverse-position'));
 
       expect(
@@ -1028,13 +1441,133 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-candle-period-more'));
       fireEvent.click(screen.getByTestId('perps-candle-period-modal-1M'));
 
-      expect(screen.getByText('1M')).toBeInTheDocument();
+      expect(screen.getByText('1m')).toBeInTheDocument();
       expect(screen.getByTestId('perps-candle-period-more')).toHaveClass(
         'bg-muted',
       );
       expect(screen.getByTestId('perps-candle-period-1m')).not.toHaveClass(
         'bg-muted',
       );
+    });
+
+    it('restores persisted candle period from preferences on mount', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            perpsSelectedCandlePeriod: '15m',
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-candle-period-15m')).toHaveClass(
+        'bg-muted',
+      );
+      expect(screen.getByTestId('perps-candle-period-5m')).not.toHaveClass(
+        'bg-muted',
+      );
+    });
+
+    it('restores a non-default persisted period and highlights More button', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            perpsSelectedCandlePeriod: '1h',
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-candle-period-more')).toHaveClass(
+        'bg-muted',
+      );
+      expect(screen.getByTestId('perps-candle-period-5m')).not.toHaveClass(
+        'bg-muted',
+      );
+    });
+
+    it('defaults to 5min when persisted candle period is invalid', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            perpsSelectedCandlePeriod: 'invalid-period',
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-candle-period-5m')).toHaveClass(
+        'bg-muted',
+      );
+    });
+
+    it('defaults to 5min when perpsSelectedCandlePeriod is not set', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-candle-period-5m')).toHaveClass(
+        'bg-muted',
+      );
+    });
+
+    it('persists candle period selection via setPreference background call', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+      fireEvent.click(screen.getByTestId('perps-candle-period-modal-30m'));
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setPreference',
+        ['perpsSelectedCandlePeriod', '30m'],
+      );
+    });
+
+    it('persists candle period when selecting a default period button', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-15m'));
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setPreference',
+        ['perpsSelectedCandlePeriod', '15m'],
+      );
+    });
+
+    it('updates chart even if preference save fails', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'setPreference') {
+          return Promise.reject(new Error('save failed'));
+        }
+        return Promise.resolve({ success: true });
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
+      fireEvent.click(screen.getByTestId('perps-candle-period-modal-30m'));
+
+      expect(screen.getByText('30min')).toBeInTheDocument();
     });
 
     it('closes the candle period modal when the close button is clicked', async () => {
@@ -1085,9 +1618,6 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.getByText(messages.perpsReduceExposureDescriptionShort.message),
       ).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsReversePositionDescriptionShort.message),
-      ).toBeInTheDocument();
     });
 
     it('displays disclaimer text', async () => {
@@ -1125,10 +1655,12 @@ describe('PerpsMarketDetailPage', () => {
 
       // ETH is long, entry=2850, leverage=3.
       // RoE formula: targetPrice = 2850 * (1 + 25/(3*100)) = 2850 * 1.08333 = 3087.50
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL caps $1k-$10k range at 1 decimal
+      // (5 sig digs) and strips the comma for input display → "3087.5".
       const presetButton = screen.getByText('+25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('3087.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('3087.5')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for long position', async () => {
@@ -1142,10 +1674,11 @@ describe('PerpsMarketDetailPage', () => {
 
       // ETH is long, entry=2850, leverage=3.
       // RoE formula: targetPrice = 2850 * (1 - 25/(3*100)) = 2850 * 0.91667 = 2612.50
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL (1 decimal for $1k-$10k).
       const presetButton = screen.getByText('-25%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('2612.50')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('2612.5')).toBeInTheDocument();
     });
 
     it('populates TP price from preset button for short position', async () => {
@@ -1157,10 +1690,11 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
       // RoE formula (short TP): targetPrice = 45000 * (1 - 10/(15*100)) = 45000 * 0.99333 = 44700.00
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL (0 decimals for > $10k).
       const presetButton = screen.getByText('+10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('44700.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('44700')).toBeInTheDocument();
     });
 
     it('populates SL price from preset button for short position', async () => {
@@ -1172,10 +1706,11 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
 
       // RoE formula (short SL): targetPrice = 45000 * (1 + 10/(15*100)) = 45000 * 1.00667 = 45300.00
+      // formatPerpsFiat/PRICE_RANGES_UNIVERSAL (0 decimals for > $10k).
       const presetButton = screen.getByText('-10%').closest('[class]');
       fireEvent.click(presetButton as HTMLElement);
 
-      expect(screen.getByDisplayValue('45300.00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('45300')).toBeInTheDocument();
     });
 
     it('shows TP/SL success toast without in-progress toast when saving', async () => {
@@ -1265,7 +1800,8 @@ describe('PerpsMarketDetailPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
+          spendableBalance: '0',
+          withdrawableBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,
@@ -1465,7 +2001,16 @@ describe('PerpsMarketDetailPage', () => {
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsCancelOrder',
-          [{ orderId: 'order-001', symbol: 'ETH' }],
+          [
+            expect.objectContaining({
+              orderId: 'order-001',
+              symbol: 'ETH',
+              trackingData: expect.objectContaining({
+                entryPoint: 'homescreen_tab',
+                discoverySource: 'market_list',
+              }),
+            }),
+          ],
         );
       });
     });
@@ -1545,6 +2090,44 @@ describe('PerpsMarketDetailPage', () => {
       await waitFor(() => {
         expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('orders section spacing (TAT-3264)', () => {
+    it('renders the orders section header with the same top spacing token as the stats section header', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      const ordersHeader = screen.getByTestId('perps-orders-section-header');
+      const statsHeader = screen.getByTestId('perps-stats-section-header');
+
+      // Both adjacent section headers must use the page's section-spacing token
+      // (paddingTop={4} → 16px → `pt-4`). Before the fix the orders header had no
+      // paddingTop, so it sat flush against the preceding block.
+      expect(ordersHeader).toHaveClass('pt-4');
+      expect(statsHeader).toHaveClass('pt-4');
+    });
+
+    it('does not render the orders section when there are no open orders (empty-state, no regression)', () => {
+      const savedOrders = mockOrders.splice(0, mockOrders.length);
+      mockLivePositions.mockReturnValue({
+        positions: [],
+        isInitialLoading: false,
+      });
+      try {
+        const store = mockStore(createMockState(true));
+        renderWithProvider(<PerpsMarketDetailPage />, store);
+
+        expect(
+          screen.queryByTestId('perps-orders-section-header'),
+        ).not.toBeInTheDocument();
+        // The rest of the page still renders correctly.
+        expect(
+          screen.getByTestId('perps-stats-section-header'),
+        ).toBeInTheDocument();
+      } finally {
+        mockOrders.push(...savedOrders);
+      }
     });
   });
 });
