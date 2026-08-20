@@ -1,3 +1,5 @@
+/* eslint-disable import-x/no-useless-path-segments */
+/* eslint-disable import-x/extensions */
 export type LazyRouteLoader = () => Promise<unknown>;
 
 export const lazyRouteLoaders = {
