@@ -642,31 +642,31 @@ flowchart LR
 
 ### Failure Containment Table
 
-| Corruption target | Previous behavior | Proposed behavior |
-| --- | --- | --- |
-| `data` fixed key | Startup could repeatedly fail when solid fallback requested `data` | Generated metadata suppresses fixed-key fallback once generated ownership exists |
-| `meta` fixed key | Startup could repeatedly fail when solid fallback requested `meta` | Same as `data`; only read if no generated signal exists |
-| `manifest` fixed key | Split-state reads could repeatedly fail before individual state keys were considered | Legacy manifest is lazy and only read when generated metadata cannot determine ownership |
-| One split-state key | Batched reads could fail the whole read | Reads are individual; critical keys fail closed, non-critical keys can be skipped/captured, but controller resilience must be audited before default reinitialization is assumed safe |
-| Root generated manifest copy | Could block if single metadata key were authoritative | Four manifest copies plus key lists plus per-key pointers |
-| All root manifest copies | Previous design had no generated fallback layer | Values can still be recovered through key lists and pointers |
-| Pointer slot | Single pointer corruption could lose latest value | Eight pointer slots per logical key |
-| Large value chunk | Large value corruption is scoped to generated chunk keys | Chunk read errors are tagged and scoped to the owning value |
-| Legacy auxiliary key | Fixed auxiliary keys could continue to be requested | Cronjob, critical-error, and dev override paths move to generated pointers/tombstones |
+| Corruption target            | Previous behavior                                                                    | Proposed behavior                                                                                                                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data` fixed key             | Startup could repeatedly fail when solid fallback requested `data`                   | Generated metadata suppresses fixed-key fallback once generated ownership exists                                                                                                      |
+| `meta` fixed key             | Startup could repeatedly fail when solid fallback requested `meta`                   | Same as `data`; only read if no generated signal exists                                                                                                                               |
+| `manifest` fixed key         | Split-state reads could repeatedly fail before individual state keys were considered | Legacy manifest is lazy and only read when generated metadata cannot determine ownership                                                                                              |
+| One split-state key          | Batched reads could fail the whole read                                              | Reads are individual; critical keys fail closed, non-critical keys can be skipped/captured, but controller resilience must be audited before default reinitialization is assumed safe |
+| Root generated manifest copy | Could block if single metadata key were authoritative                                | Four manifest copies plus key lists plus per-key pointers                                                                                                                             |
+| All root manifest copies     | Previous design had no generated fallback layer                                      | Values can still be recovered through key lists and pointers                                                                                                                          |
+| Pointer slot                 | Single pointer corruption could lose latest value                                    | Eight pointer slots per logical key                                                                                                                                                   |
+| Large value chunk            | Large value corruption is scoped to generated chunk keys                             | Chunk read errors are tagged and scoped to the owning value                                                                                                                           |
+| Legacy auxiliary key         | Fixed auxiliary keys could continue to be requested                                  | Cronjob, critical-error, and dev override paths move to generated pointers/tombstones                                                                                                 |
 
 ## Decision Scorecard
 
 Scores use 1 as weakest and 5 as strongest.
 
-| Option | Corruption resilience | Local-only privacy | Avoids IndexedDB dependence | Storage overhead control | Implementation risk | Observability |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Status quo | 1 | 5 | 5 | 5 | 5 | 2 |
-| More backup reliance | 3 | 4 | 1 | 2 | 3 | 3 |
-| Browser/LevelDB repair | 2 | 5 | 5 | 5 | 1 | 2 |
-| Narrow split-state reads only | 2 | 5 | 5 | 5 | 4 | 3 |
-| Read-after-write verification | 2 | 5 | 5 | 3 | 4 | 3 |
-| Generated keys, selective reuse, and mirrored metadata | 5 | 5 | 5 | 4 | 3 | 5 |
-| Remote recovery | 4 | 1 | 5 | 3 | 2 | 4 |
+| Option                                                 | Corruption resilience | Local-only privacy | Avoids IndexedDB dependence | Storage overhead control | Implementation risk | Observability |
+| ------------------------------------------------------ | --------------------: | -----------------: | --------------------------: | -----------------------: | ------------------: | ------------: |
+| Status quo                                             |                     1 |                  5 |                           5 |                        5 |                   5 |             2 |
+| More backup reliance                                   |                     3 |                  4 |                           1 |                        2 |                   3 |             3 |
+| Browser/LevelDB repair                                 |                     2 |                  5 |                           5 |                        5 |                   1 |             2 |
+| Narrow split-state reads only                          |                     2 |                  5 |                           5 |                        5 |                   4 |             3 |
+| Read-after-write verification                          |                     2 |                  5 |                           5 |                        3 |                   4 |             3 |
+| Generated keys, selective reuse, and mirrored metadata |                     5 |                  5 |                           5 |                        4 |                   3 |             5 |
+| Remote recovery                                        |                     4 |                  1 |                           5 |                        3 |                   2 |             4 |
 
 ```mermaid
 quadrantChart
@@ -825,17 +825,17 @@ Move some wallet state recovery responsibility to a remote service.
 
 An initial implementation of the proposed option touches these areas:
 
-| Area | Files | Summary |
-| --- | --- | --- |
-| Core state persistence | `shared/lib/stores/extension-store.ts` and tests | Generated state keys, mirrored root manifests, mirrored key lists, per-key pointers, tombstones, chunking, individual reads, serialized writes, Sentry key-class tags |
-| StorageService adapter | `shared/lib/stores/browser-storage-adapter.ts` and tests | Generated namespace value keys, mirrored indexes/key lists, per-item pointers, namespace clear markers, generated-only reads |
-| Persistence manager | `shared/lib/stores/persistence-manager.ts` and tests | Hot runtime in-memory snapshot fallback when local store read fails after vault state has been loaded |
-| Critical-error handoff | `app/scripts/lib/critical-error/critical-error-tab-handoff.ts` and tests | Generated restore records, primary/secondary pointer slots, tombstone clears, no fixed-key remove |
-| Cronjob storage | `app/scripts/lib/CronjobControllerStorageManager.ts` and tests | Generated cronjob storage values, eight pointer slots, no fixed-key fallback when pointers are unreadable |
-| Split-state dev overrides | `shared/lib/split-state-migration-dev-overrides.ts`, `app/scripts/lib/use-split-state-storage.ts`, debug UI, and tests | Generated StorageService-backed override state with legacy read-only fallback only before generated ownership |
-| Migration 190 | `app/scripts/migrations/190.ts` and tests | Writes through `BrowserStorageAdapter` instead of direct `browser.storage.local` writes |
-| Fixture store | `shared/lib/stores/fixture-extension-store.ts` and tests | Fixture `storageServiceData` follows production adapter behavior |
-| E2E coverage | `test/e2e/tests/state-persistence/state-persistence.spec.ts` and page object updates | Verifies default split-state persistence and migration from data state |
+| Area                      | Files                                                                                                                  | Summary                                                                                                                                                               |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Core state persistence    | `shared/lib/stores/extension-store.ts` and tests                                                                       | Generated state keys, mirrored root manifests, mirrored key lists, per-key pointers, tombstones, chunking, individual reads, serialized writes, Sentry key-class tags |
+| StorageService adapter    | `shared/lib/stores/browser-storage-adapter.ts` and tests                                                               | Generated namespace value keys, mirrored indexes/key lists, per-item pointers, namespace clear markers, generated-only reads                                          |
+| Persistence manager       | `shared/lib/stores/persistence-manager.ts` and tests                                                                   | Hot runtime in-memory snapshot fallback when local store read fails after vault state has been loaded                                                                 |
+| Critical-error handoff    | `app/scripts/lib/critical-error/critical-error-tab-handoff.ts` and tests                                               | Generated restore records, primary/secondary pointer slots, tombstone clears, no fixed-key remove                                                                     |
+| Cronjob storage           | `app/scripts/lib/CronjobControllerStorageManager.ts` and tests                                                         | Generated cronjob storage values, eight pointer slots, no fixed-key fallback when pointers are unreadable                                                             |
+| Split-state dev overrides | `shared/lib/split-state-migration-dev-overrides.ts`, `app/scripts/lib/use-split-state-storage.ts`, debug UI, and tests | Generated StorageService-backed override state with legacy read-only fallback only before generated ownership                                                         |
+| Migration 190             | `app/scripts/migrations/190.ts` and tests                                                                              | Writes through `BrowserStorageAdapter` instead of direct `browser.storage.local` writes                                                                               |
+| Fixture store             | `shared/lib/stores/fixture-extension-store.ts` and tests                                                               | Fixture `storageServiceData` follows production adapter behavior                                                                                                      |
+| E2E coverage              | `test/e2e/tests/state-persistence/state-persistence.spec.ts` and page object updates                                   | Verifies default split-state persistence and migration from data state                                                                                                |
 
 ## Performance and Storage Cost
 

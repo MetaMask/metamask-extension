@@ -150,7 +150,8 @@ describe('FixtureExtensionStore', () => {
 
   describe('storageServiceData', () => {
     it('writes storageServiceData through generated BrowserStorageAdapter keys when present', async () => {
-      const legacyKey = 'storageService:TokenListController:tokensChainsCache:0x1';
+      const legacyKey =
+        'storageService:TokenListController:tokensChainsCache:0x1';
       const storageServiceEntries = {
         [legacyKey]: {
           timestamp: 1000,

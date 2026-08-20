@@ -610,10 +610,7 @@ describe('PersistenceManager', () => {
           tags: {
             'persistence.event': 'get-memory-fallback-after-error',
           },
-          fingerprint: [
-            'persistence-event',
-            'get-memory-fallback-after-error',
-          ],
+          fingerprint: ['persistence-event', 'get-memory-fallback-after-error'],
         },
       );
     });

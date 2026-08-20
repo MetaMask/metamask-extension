@@ -22,8 +22,9 @@ const oldVersion = VERSION - 1;
 const CONTROLLER_NAME = 'TokenListController';
 const CACHE_KEY_PREFIX = 'tokensChainsCache';
 const mockBrowser = jest.mocked(browser);
-const MockedBrowserStorageAdapter =
-  BrowserStorageAdapter as jest.MockedClass<typeof BrowserStorageAdapter>;
+const MockedBrowserStorageAdapter = BrowserStorageAdapter as jest.MockedClass<
+  typeof BrowserStorageAdapter
+>;
 type StorageGetResult = Awaited<ReturnType<BrowserStorageAdapter['getItem']>>;
 
 describe(`migration #${version}`, () => {
