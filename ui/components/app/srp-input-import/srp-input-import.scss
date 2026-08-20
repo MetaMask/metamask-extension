@@ -2,7 +2,8 @@
 
 .srp-input-import {
   &__container {
-    min-height: 218px;
+    // Keep empty and filled (12-word) states at the same height to avoid layout jump on paste
+    min-height: 184px;
   }
 
   &__initial-input {

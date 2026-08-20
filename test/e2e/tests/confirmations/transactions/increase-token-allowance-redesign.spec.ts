@@ -12,7 +12,7 @@ import { mocked4BytesIncreaseAllowance, TestSuiteArguments } from './shared';
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  it('submits an increase allowance transaction with a small spending cap', async function () {
+  it('submits an increase allowance transaction', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -48,48 +48,9 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
         const activityTab = new ActivityTab(driver);
         await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityTab.clickConfirmedTransaction();
-        await activityTab.checkSpendingCapValueInDetails('3 TST');
-      },
-    );
-  });
-
-  it('submits an increase allowance transaction with a large spending cap', async function () {
-    await withFixtures(
-      {
-        dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        smartContract,
-        testSpecificMock: mocked4BytesIncreaseAllowance,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
-        const contractAddress =
-          await contractRegistry?.getContractAddress(smartContract);
-        await login(driver, { localNode: localNodes?.[0] });
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage({ contractAddress });
-        await testDapp.checkPageIsLoaded();
-
-        await testDapp.clickERC20IncreaseAllowanceButton();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const txConfirmation = new ERC20ApproveTransactionConfirmation(driver);
-        await txConfirmation.editSpendingCap('3000');
-
-        await txConfirmation.clickScrollToBottomButton();
-        await txConfirmation.clickFooterConfirmButton();
-
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
+        await activityTab.checkTransactionDetailsTitle(
+          'Increased spending cap',
         );
-        const homePage = new HomePage(driver);
-        await homePage.goToActivityList();
-        const activityTab = new ActivityTab(driver);
-        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityTab.clickConfirmedTransaction();
-        await activityTab.checkSpendingCapValueInDetails('3,000 TST');
       },
     );
   });

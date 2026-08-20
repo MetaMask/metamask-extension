@@ -50,7 +50,7 @@ describe('Marketing cookieId', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
             dataCollectionForMarketing: true,
           })
@@ -97,7 +97,7 @@ describe('Marketing cookieId', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -135,7 +135,7 @@ describe('Marketing cookieId', function (this: Suite) {
       },
     );
   });
-  it('should not be send to segment when participateInMetaMetrics is never toggled on ', async function () {
+  it('should not send to segment when optedIn is never toggled on', async function () {
     await withFixtures(
       {
         dappOptions: {
@@ -183,7 +183,7 @@ describe('Marketing cookieId', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
             dataCollectionForMarketing: true,
           })

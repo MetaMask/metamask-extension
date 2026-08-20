@@ -1,10 +1,22 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Expanded notification detail for a single notification (including snaps).
+ *
+ * Screen: `#/notifications/:uuid`, reached from `NotificationsListPage`.
+ * Owns: back button, snap avatar/name/title/markdown content checks, and
+ * full-page expanded-view layout assertion.
+ * Boundaries: detail view only. The notifications list and notifications
+ * settings belong to their own page objects.
+ * Related: `NotificationsListPage`, `NotificationsSettingsPage`.
+ *
+ * @see ui/pages/notification-details/notification-details.tsx
+ */
 class NotificationDetailsPage {
-  private driver: Driver;
-
   private readonly detailsPageBackButton =
     '[data-testid="notification-details-back-button"]';
+
+  private driver: Driver;
 
   private readonly multichainPage =
     '[data-testid="multichain-page"].mm-box--width-full.mm-box--height-full';
@@ -33,19 +45,6 @@ class NotificationDetailsPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([this.detailsPageBackButton]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for Notifications Details page to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Notifications Details page is loaded');
-  }
-
   async checkExpandedViewIsFullPage(): Promise<void> {
     console.log('Validating expanded view notification');
     await this.driver.waitForSelector(this.multichainPage);
@@ -71,6 +70,19 @@ class NotificationDetailsPage {
     await this.driver.waitForSelector(this.snapName(snapName));
 
     await this.driver.waitForSelector(this.snapUiMarkdownText(markdownText));
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([this.detailsPageBackButton]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Notifications Details page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Notifications Details page is loaded');
   }
 
   async clickBackButton(): Promise<void> {

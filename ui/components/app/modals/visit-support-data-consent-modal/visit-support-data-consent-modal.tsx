@@ -1,9 +1,6 @@
-import React, { useCallback, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useRef, useState } from 'react';
 import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { selectSessionData } from '../../../../selectors/identity/authentication';
-import { getAnalyticsId } from '../../../../selectors/selectors';
 import { openWindow } from '../../../../helpers/utils/window';
 import {
   Modal,
@@ -27,9 +24,15 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../../hooks/useSegmentContext';
+import {
+  buildSupportLinkWithUserData,
+  type SupportLinkUserData,
+} from '../../../../../shared/lib/build-support-link';
 import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
+import { getCustomerServiceToken } from '../../../../store/actions';
 
 type VisitSupportDataConsentModalProps = {
   onClose: () => void;
@@ -42,73 +45,100 @@ const VisitSupportDataConsentModal = ({
 }: VisitSupportDataConsentModalProps) => {
   const version = process.env.METAMASK_VERSION as string;
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile?.profileId;
-  const analyticsId = useSelector(getAnalyticsId);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const { customerId: shieldCustomerId } = useUserSubscriptions();
+  const [isLoading, setIsLoading] = useState(false);
+  const wasCancelledRef = useRef(false);
 
-  const handleClickContactSupportButton = useCallback(
-    (params: {
-      version: string;
-      profileId?: string;
-      analyticsId?: string;
-      shieldCustomerId?: string;
-    }) => {
-      onClose();
-      const url = new URL(SUPPORT_LINK as string);
-      url.searchParams.append('metamask_version', params.version);
-      if (params.profileId) {
-        url.searchParams.append('metamask_profile_id', params.profileId);
-      }
-      if (params.analyticsId) {
-        url.searchParams.append('metamask_metametrics_id', params.analyticsId);
-      }
-      if (params.shieldCustomerId) {
-        url.searchParams.append('shield_id', params.shieldCustomerId);
-      }
-
-      const supportLinkWithUserId = url.toString();
+  const openSupportLink = useCallback(
+    (customerServiceToken?: string) => {
+      const params: SupportLinkUserData = {
+        version,
+        customerServiceToken,
+        shieldCustomerId,
+      };
+      const supportLinkWithUserId = buildSupportLinkWithUserData(
+        SUPPORT_LINK as string,
+        params,
+      );
 
       trackEvent(
-        {
-          category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.SupportLinkClicked,
-          properties: {
+        createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
             url: supportLinkWithUserId,
-          },
-        },
-        {
-          contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-        },
+            [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
+          })
+          .build(),
       );
       openWindow(supportLinkWithUserId);
     },
-    [onClose, trackEvent],
+    [
+      version,
+      shieldCustomerId,
+      trackEvent,
+      createEventBuilder,
+      segmentContext.page?.title,
+    ],
   );
 
+  const handleModalClose = useCallback(() => {
+    // Escape / outside-click during Accept must cancel sharing, matching Reject.
+    if (isLoading) {
+      wasCancelledRef.current = true;
+    }
+    onClose();
+  }, [isLoading, onClose]);
+
+  const handleClickContactSupportButton = useCallback(async () => {
+    if (isLoading) {
+      return;
+    }
+
+    wasCancelledRef.current = false;
+    setIsLoading(true);
+    try {
+      const customerServiceToken = await getCustomerServiceToken();
+      if (wasCancelledRef.current) {
+        return;
+      }
+      onClose();
+      openSupportLink(customerServiceToken);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isLoading, onClose, openSupportLink]);
+
   const handleClickNoShare = useCallback(() => {
+    if (isLoading) {
+      return;
+    }
+
     onClose();
 
     trackEvent(
-      {
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
+      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
           url: SUPPORT_LINK,
-        },
-      },
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
+          [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
+        })
+        .build(),
     );
     openWindow(SUPPORT_LINK as string);
-  }, [onClose, trackEvent]);
+  }, [
+    isLoading,
+    onClose,
+    trackEvent,
+    createEventBuilder,
+    segmentContext.page?.title,
+  ]);
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleModalClose}
       data-testid="visit-support-data-consent-modal"
       className="visit-support-data-consent-modal"
     >
@@ -131,6 +161,7 @@ const VisitSupportDataConsentModal = ({
               size={ButtonSecondarySize.Lg}
               width={BlockSize.Half}
               onClick={handleClickNoShare}
+              disabled={isLoading}
               data-testid="visit-support-data-consent-modal-reject-button"
             >
               {t('visitSupportDataConsentModalReject')}
@@ -138,14 +169,9 @@ const VisitSupportDataConsentModal = ({
             <ButtonPrimary
               size={ButtonPrimarySize.Lg}
               width={BlockSize.Half}
-              onClick={() =>
-                handleClickContactSupportButton({
-                  version,
-                  profileId,
-                  analyticsId,
-                  shieldCustomerId,
-                })
-              }
+              onClick={handleClickContactSupportButton}
+              loading={isLoading}
+              disabled={isLoading}
               data-testid="visit-support-data-consent-modal-accept-button"
             >
               {t('visitSupportDataConsentModalAccept')}

@@ -1,6 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { useLocation, useParams } from 'react-router-dom';
-import { useAppSelector } from '../store/store';
+import { useAppSelector } from '../store/hooks';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../shared/constants/metametrics';
 import {
   CONFIRM_TRANSACTION_ROUTE,

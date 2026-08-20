@@ -1,10 +1,12 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   FontWeight,
@@ -22,6 +24,7 @@ import {
   PRICE_RANGES_MINIMAL_VIEW,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
@@ -45,12 +48,13 @@ import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
-import { getDisplayName } from '../utils';
+import { getDisplaySymbol } from '../utils';
 import {
   formatPerpsLiquidationPrice,
   isPerpsLiquidationPriceValid,
   PERPS_LIQUIDATION_PRICE_FALLBACK,
 } from '../utils/formatPerpsDisplayPrice';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
 const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
@@ -59,6 +63,35 @@ const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
   /^unknown error$/iu,
   /^error$/iu,
 ];
+
+/**
+ * Build the margin-adjustment failure toast, swapping unhelpful backend strings
+ * ("unknown error", empty) for the localized fallback copy. Shared by the
+ * `{ success: false }` branch and the transport `catch`.
+ *
+ * @param errorMessage - The raw error text from the controller or transport.
+ * @param fallbackDescription - Localized copy used when the raw text is empty
+ * or one of the known unhelpful strings.
+ * @returns The toast key and description to display.
+ */
+const getMarginAdjustmentFailedToast = (
+  errorMessage: string,
+  fallbackDescription: string,
+) => {
+  const normalizedErrorMessage = errorMessage.trim();
+  const shouldUseFallbackDescription =
+    normalizedErrorMessage.length === 0 ||
+    MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+      pattern.test(normalizedErrorMessage),
+    );
+
+  return {
+    key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
+    description: shouldUseFallbackDescription
+      ? fallbackDescription
+      : normalizedErrorMessage,
+  };
+};
 
 export type EditMarginModalContentProps = {
   position: Position;
@@ -107,6 +140,7 @@ export const EditMarginModalContent = ({
   const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { track } = usePerpsEventTracking();
+  const { privacyMode } = useSelector(getPreferences);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   const [marginAmount, setMarginAmount] = useState<string>('');
@@ -146,13 +180,14 @@ export const EditMarginModalContent = ({
     const displayAnchorLiquidationPrice = anchorLiquidationPrice ?? 0;
     if (!hasValidAnchorLiquidationPrice) {
       return (
-        <Text
+        <SensitiveText
           variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
+          isHidden={privacyMode}
           data-testid="perps-edit-margin-liquidation-price-value"
         >
           {PERPS_LIQUIDATION_PRICE_FALLBACK}
-        </Text>
+        </SensitiveText>
       );
     }
     if (showLiquidationComparison && hasValidEstimatedLiquidationPrice) {
@@ -163,30 +198,36 @@ export const EditMarginModalContent = ({
           gap={1}
           className="max-w-[65%] flex-wrap justify-end"
         >
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          <SensitiveText
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            isHidden={privacyMode}
+          >
             {formatPerpsFiat(displayAnchorLiquidationPrice, {
               ranges: PRICE_RANGES_UNIVERSAL,
             })}
-          </Text>
+          </SensitiveText>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             →
           </Text>
-          <Text
+          <SensitiveText
             variant={TextVariant.BodySm}
             color={TextColor.TextDefault}
             fontWeight={FontWeight.Medium}
+            isHidden={privacyMode}
             data-testid="perps-edit-margin-liquidation-price-value"
           >
             {formatPerpsLiquidationPrice(estimatedLiquidationPrice)}
-          </Text>
+          </SensitiveText>
         </Box>
       );
     }
     return (
-      <Text
+      <SensitiveText
         variant={TextVariant.BodySm}
         color={TextColor.TextDefault}
         fontWeight={FontWeight.Medium}
+        isHidden={privacyMode}
         data-testid="perps-edit-margin-liquidation-price-value"
       >
         {formatPerpsLiquidationPrice(
@@ -194,7 +235,7 @@ export const EditMarginModalContent = ({
             ? estimatedLiquidationPrice
             : anchorLiquidationPrice,
         )}
-      </Text>
+      </SensitiveText>
     );
   }, [
     anchorLiquidationPrice,
@@ -202,6 +243,7 @@ export const EditMarginModalContent = ({
     hasValidAnchorLiquidationPrice,
     hasValidEstimatedLiquidationPrice,
     showLiquidationComparison,
+    privacyMode,
   ]);
 
   const marginPercent = useMemo(() => {
@@ -281,6 +323,10 @@ export const EditMarginModalContent = ({
         const signedAmount =
           marginMode === 'add' ? rawMarginAmount : `-${rawMarginAmount}`;
 
+        // The controller's UpdateMarginParams only accepts { symbol, amount,
+        // providerId } — it does not take trackingData, so (unlike the order /
+        // close / TP-SL flows) margin risk events can't carry client fee/VIP
+        // attribution until the controller adds it.
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsUpdateMargin',
           [
@@ -292,19 +338,48 @@ export const EditMarginModalContent = ({
         );
 
         if (!result.success) {
-          throw new Error(result.error || 'Failed to update margin');
-        }
+          const errorMessage = result.error || 'Failed to update margin';
 
-        const riskType =
-          marginMode === 'add'
-            ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
-            : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
-        track(MetaMetricsEventName.PerpsRiskManagement, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.TYPE]: riskType,
-          [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
-        });
+          // Client fallback, deliberately kept: perps-controller 9.2.1 tracks
+          // RiskManagement only inside `if (result.success)` and in its catch,
+          // and HyperLiquidProvider.updateMargin RETURNS `{ success: false }`
+          // instead of throwing — so every provider-rejected margin adjustment
+          // ("No position found", "Insufficient balance") would otherwise emit
+          // no terminal risk event at all. Shaped like the controller's own
+          // margin event so the two line up if core ever covers this path.
+          //
+          // TAT-3134 says the submitted/terminal pattern should extend to
+          // PERPS_RISK_MANAGEMENT, but the non-throwing `{ success: false }`
+          // branch is not covered by the shipped 9.2.1. Re-check that branch
+          // against the controller when bumping: if it starts emitting, this
+          // becomes a double-emit and must be deleted in the same PR.
+          track(MetaMetricsEventName.PerpsRiskManagement, {
+            [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+            [PERPS_EVENT_PROPERTY.ACTION]:
+              marginMode === 'add'
+                ? PERPS_EVENT_VALUE.ACTION.ADD_MARGIN
+                : PERPS_EVENT_VALUE.ACTION.REMOVE_MARGIN,
+            [PERPS_EVENT_PROPERTY.MARGIN_USED]: Math.abs(
+              Number.parseFloat(rawMarginAmount) || 0,
+            ),
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+          });
+
+          replacePerpsToastByKey(
+            getMarginAdjustmentFailedToast(
+              errorMessage,
+              t('perpsToastMarginAdjustmentFailedDescriptionFallback'),
+            ),
+          );
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
+          return;
+        }
 
         const streamManager = getPerpsStreamManager();
         const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
@@ -312,7 +387,7 @@ export const EditMarginModalContent = ({
           [{ skipCache: true }],
         );
         streamManager.pushPositionsWithOverrides(freshPositions);
-        const displaySymbol = getDisplayName(position.symbol);
+        const displaySymbol = getDisplaySymbol(position.symbol);
 
         replacePerpsToastByKey({
           key:
@@ -328,37 +403,28 @@ export const EditMarginModalContent = ({
         const errorMessage =
           error instanceof Error ? error.message : 'An unknown error occurred';
 
-        const riskType =
-          marginMode === 'add'
-            ? PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.ADD_MARGIN
-            : PERPS_EVENT_VALUE.RISK_MANAGEMENT_TYPE.REMOVE_MARGIN;
-        track(MetaMetricsEventName.PerpsRiskManagement, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errorMessage,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-          [PERPS_EVENT_PROPERTY.TYPE]: riskType,
-          [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
-        });
+        // Transport/background throws never reach the controller margin
+        // pipeline — keep client PerpsError for that gap. Unlike the
+        // `{ success: false }` branch above, no client PerpsRiskManagement is
+        // needed here: a throw that DOES reach the controller is caught by
+        // TradingService.updateMargin, which emits the failed risk event itself.
         track(MetaMetricsEventName.PerpsError, {
           [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
         });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
 
-        const normalizedErrorMessage = errorMessage.trim();
-        const shouldUseFallbackDescription =
-          normalizedErrorMessage.length === 0 ||
-          MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
-            pattern.test(normalizedErrorMessage),
-          );
-
-        replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
-          description: shouldUseFallbackDescription
-            ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
-            : normalizedErrorMessage,
-        });
+        replacePerpsToastByKey(
+          getMarginAdjustmentFailedToast(
+            errorMessage,
+            t('perpsToastMarginAdjustmentFailedDescriptionFallback'),
+          ),
+        );
       } finally {
         setIsSaving(false);
         onSavingChange?.(false);
@@ -418,16 +484,17 @@ export const EditMarginModalContent = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {availableLabel}
         </Text>
-        <Text
+        <SensitiveText
           variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           color={TextColor.TextAlternative}
+          isHidden={privacyMode}
           data-testid="perps-edit-margin-available-value"
         >
           {`${formatPerpsFiat(maxAmount, {
             ranges: PRICE_RANGES_MINIMAL_VIEW,
           })} USDC`}
-        </Text>
+        </SensitiveText>
       </Box>
 
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>

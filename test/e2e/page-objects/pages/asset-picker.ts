@@ -1,11 +1,24 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Shared asset picker modal chrome for choosing tokens or NFTs.
+ *
+ * Screen: overlay modal chrome (not a full page route), opened from send/swap/
+ * bridge and similar flows via the asset-picker button.
+ * Owns: opening source/dest pickers, NFT tab, search, token-list selection, and
+ * empty/disabled NFT or token assertions inside the modal.
+ * Boundaries: the picker modal only. Parent flow pages own amount entry,
+ * quotes, and submit; confirmation pages own post-selection approvals.
+ * Related: `SendPage`, `SwapPage`, `BridgeQuotePage` (hosts that open this).
+ *
+ * @see ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx
+ */
 class AssetPicker {
-  private driver: Driver;
-
   // Selectors
   private readonly assetPickerButton = '[data-testid="asset-picker-button"]';
+
+  private driver: Driver;
 
   private readonly nftTab = { css: 'button', text: 'NFTs' };
 
@@ -19,6 +32,34 @@ class AssetPicker {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Checks if the NFT item with the specified name is displayed in the asset picker.
+   *
+   * @param nftName - The name of the NFT to check for.
+   */
+  async checkNftNameIsDisplayed(nftName: string): Promise<void> {
+    console.log(`Check that NFT item ${nftName} is displayed in asset picker`);
+    await this.driver.waitForSelector({
+      tag: 'p',
+      text: nftName,
+    });
+  }
+
+  async checkNoNftInfoIsDisplayed(): Promise<void> {
+    console.log('Check that no NFT info is displayed on asset picker');
+    await this.driver.waitForSelector(this.noNftInfo);
+  }
+
+  /**
+   * Checks if a token is disabled (not selectable)
+   */
+  async checkTokenIsDisabled(): Promise<void> {
+    const [token] = await this.driver.findElements(this.tokenListButton);
+    await token.click();
+    const isSelected = await token.isSelected();
+    assert.equal(isSelected, false);
   }
 
   /**
@@ -52,34 +93,6 @@ class AssetPicker {
     await this.driver.pasteIntoField(this.searchInput, searchInput);
 
     await this.driver.elementCountBecomesN(this.tokenListButton, expectedCount);
-  }
-
-  /**
-   * Checks if the NFT item with the specified name is displayed in the asset picker.
-   *
-   * @param nftName - The name of the NFT to check for.
-   */
-  async checkNftNameIsDisplayed(nftName: string): Promise<void> {
-    console.log(`Check that NFT item ${nftName} is displayed in asset picker`);
-    await this.driver.waitForSelector({
-      tag: 'p',
-      text: nftName,
-    });
-  }
-
-  async checkNoNftInfoIsDisplayed(): Promise<void> {
-    console.log('Check that no NFT info is displayed on asset picker');
-    await this.driver.waitForSelector(this.noNftInfo);
-  }
-
-  /**
-   * Checks if a token is disabled (not selectable)
-   */
-  async checkTokenIsDisabled(): Promise<void> {
-    const [token] = await this.driver.findElements(this.tokenListButton);
-    await token.click();
-    const isSelected = await token.isSelected();
-    assert.equal(isSelected, false);
   }
 }
 

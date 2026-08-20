@@ -1,8 +1,25 @@
 import LoginPage from '../pages/login-page';
 import HomePage from '../pages/home/homepage';
 import HeaderNavbar from '../pages/header-navbar';
-import { Driver } from '../../webdriver/driver';
+import { WALLET_PASSWORD } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
+import { Driver } from '../../webdriver/driver';
+import { reloadExtension } from '../../tests/state-persistence/helpers';
+
+/**
+ * Reloads the extension, unlocks with the wallet password, and waits for home readiness.
+ * Does not use {@link login} (which navigates and runs balance checks).
+ *
+ * @param driver - WebDriver instance.
+ */
+export const reloadAndUnlock = async (driver: Driver): Promise<void> => {
+  await reloadExtension(driver);
+  const loginPage = new LoginPage(driver);
+  await loginPage.checkPageIsLoaded();
+  await loginPage.loginToHomepage(WALLET_PASSWORD);
+  const homePage = new HomePage(driver);
+  await homePage.ensurePageIsReady();
+};
 
 /**
  * Unlocks the wallet and lands the user on the homepage.
