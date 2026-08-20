@@ -28,8 +28,6 @@ import { EMPTY_ARRAY } from '../shared';
 import {
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForActiveTab,
-  getPinnedAccountsList,
-  getHiddenAccountsList,
 } from '../selectors';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { MergedInternalAccount } from '../selectors.types';
@@ -85,20 +83,12 @@ export const getWalletsWithAccounts = createSelector(
   getAccountTree,
   getOrderedConnectedAccountsForActiveTab,
   getSelectedInternalAccount,
-  getPinnedAccountsList,
-  getHiddenAccountsList,
   (
     internalAccounts: MergedInternalAccount[],
     accountTree: AccountTreeState,
     connectedAccounts: InternalAccount[],
     selectedAccount: InternalAccount,
-    pinnedAccounts: string[],
-    hiddenAccounts: string[],
   ): ConsolidatedWallets => {
-    // Precompute lookups for pinned and hidden accounts
-    const pinnedAccountsSet = new Set(pinnedAccounts);
-    const hiddenAccountsSet = new Set(hiddenAccounts);
-
     // Precompute connected account IDs for faster lookup
     const connectedAccountIdsSet = new Set(
       connectedAccounts.map((account) => account.id),
@@ -135,13 +125,9 @@ export const getWalletsWithAccounts = createSelector(
             .map((accountId) => {
               const accountWithMetadata = { ...accountsById[accountId] };
 
-              // Set flags for pinned, hidden, and active accounts
-              accountWithMetadata.pinned = pinnedAccountsSet.has(
-                accountWithMetadata.address,
-              );
-              accountWithMetadata.hidden = hiddenAccountsSet.has(
-                accountWithMetadata.address,
-              );
+              // Derive pin/hide from AccountTree group metadata.
+              accountWithMetadata.pinned = Boolean(group.metadata?.pinned);
+              accountWithMetadata.hidden = Boolean(group.metadata?.hidden);
               accountWithMetadata.active =
                 selectedAccount.id === accountWithMetadata.id &&
                 connectedAccountIdsSet.has(accountWithMetadata.id);

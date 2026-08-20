@@ -169,7 +169,6 @@
     "hasPlacedFirstOrder": "object",
     "hasSeenOnboardingCompletionPage": true,
     "hasShownMultichainAccountsIntroModal": "boolean",
-    "hiddenAccountList": "object",
     "hip3ConfigVersion": "number",
     "historicalPrices": "object",
     "ignoredNfts": "object",
@@ -289,7 +288,6 @@
     "permissionHistory": "object",
     "perpsBalances": "object",
     "perpsTabBadgeSeen": "boolean",
-    "pinnedAccountList": "object",
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "preferences": {

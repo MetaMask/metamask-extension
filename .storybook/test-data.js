@@ -49,8 +49,6 @@ const state = {
         '0x539': true,
       },
     },
-    pinnedAccountList: [],
-    hiddenAccountList: [],
     tokensChainsCache: {
       [CHAIN_IDS.MAINNET]: {
         data: {
