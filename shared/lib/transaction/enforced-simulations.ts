@@ -1,7 +1,4 @@
-import {
-  SimulationData,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { Hex } from '@metamask/utils';
@@ -137,7 +134,7 @@ export function isEnforcedSimulationsEligible(
     return false;
   }
 
-  if (!hasBalanceChanges(simulationData)) {
+  if (!simulationData) {
     return false;
   }
 
@@ -217,11 +214,4 @@ function getToAddresses(
   }
 
   return addresses;
-}
-
-function hasBalanceChanges(simulationData?: SimulationData | null): boolean {
-  return (
-    Boolean(simulationData?.nativeBalanceChange) ||
-    Boolean(simulationData?.tokenBalanceChanges?.length)
-  );
 }
