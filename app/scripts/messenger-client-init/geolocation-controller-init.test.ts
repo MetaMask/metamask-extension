@@ -10,6 +10,9 @@ import { GeolocationControllerInit } from './geolocation-controller-init';
 
 const DEFAULT_STATE: GeolocationControllerState = {
   location: '',
+  country: null,
+  region: null,
+  timezone: null,
   status: 'idle',
   lastFetchedAt: null,
   error: null,

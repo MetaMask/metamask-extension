@@ -278,9 +278,6 @@
   "decimal": {
     "message": "小數點位數"
   },
-  "decimalsMustZerotoTen": {
-    "message": "小數點位數至少為 0，至多為 36。"
-  },
   "decrypt": {
     "message": "解密"
   },
@@ -647,9 +644,6 @@
   },
   "networks": {
     "message": "網路"
-  },
-  "nevermind": {
-    "message": "算了"
   },
   "newAccountNumberName": {
     "message": "帳戶 $1",

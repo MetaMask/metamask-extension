@@ -11,6 +11,10 @@ import { RampsBuildQuoteScreen } from './build-quote';
 const QUOTE_DEBOUNCE_MS = 500;
 
 const mockNavigate = jest.fn();
+const mockGetBuyWidgetData = jest.fn();
+const mockOpenTab = jest.fn();
+const mockWatchRampsCheckoutTab = jest.fn();
+const mockShowBuyTabOpenedToast = jest.fn();
 let mockLocationState: { assetId?: string } | null = null;
 
 jest.mock('react-router-dom', () => ({
@@ -35,6 +39,16 @@ jest.mock('../../../hooks/ramps/useRampsController', () => ({
 
 jest.mock('../../../hooks/ramps/useRampsQuotes', () => ({
   useRampsQuotes: jest.fn(),
+}));
+
+jest.mock('../../../store/controller-actions/ramps-controller', () => ({
+  watchRampsCheckoutTab: (...args: unknown[]) =>
+    mockWatchRampsCheckoutTab(...args),
+}));
+
+jest.mock('../../../helpers/utils/show-buy-tab-opened-toast', () => ({
+  showBuyTabOpenedToast: (...args: unknown[]) =>
+    mockShowBuyTabOpenedToast(...args),
 }));
 
 const { useRampsController } = jest.requireMock(
@@ -110,12 +124,16 @@ const mockControllerState = ({
   selectedPaymentMethod: { id: 'debit-credit-card', name: 'Debit card' },
   paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
   paymentMethodsStatus: 'success',
+  getBuyWidgetData: mockGetBuyWidgetData,
 });
 
 describe('RampsBuildQuoteScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocationState = null;
+    (global as unknown as { platform: { openTab: jest.Mock } }).platform = {
+      openTab: mockOpenTab,
+    };
     useRampsController.mockReturnValue(mockControllerState());
     useRampsQuotes.mockReturnValue({
       data: {
@@ -154,12 +172,6 @@ describe('RampsBuildQuoteScreen', () => {
       '/ramps/build-quote',
     );
 
-    expect(
-      screen.getByTestId('ramps-build-quote-provider-label'),
-    ).toHaveTextContent(
-      messages.rampsBuyingViaProvider.message.replace('$1', 'Transak'),
-    );
-    expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
     expect(container).toMatchSnapshot();
   });
 
@@ -218,6 +230,132 @@ describe('RampsBuildQuoteScreen', () => {
     expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
   });
 
+  it('opens the provider widget via background watch and returns home on continue', async () => {
+    mockGetBuyWidgetData.mockResolvedValue({
+      url: 'https://provider.example/checkout',
+      orderId: 'order-123',
+    });
+    mockWatchRampsCheckoutTab.mockResolvedValue(undefined);
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockGetBuyWidgetData).toHaveBeenCalledWith({
+      provider: 'transak',
+      id: 'quote-1',
+    });
+    expect(mockOpenTab).not.toHaveBeenCalled();
+    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
+      url: 'https://provider.example/checkout',
+      providerCode: 'transak',
+      walletAddress: '0xabc123',
+      orderCode: 'order-123',
+    });
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('watches redirect-only checkouts without a widget order id', async () => {
+    mockGetBuyWidgetData.mockResolvedValue({
+      url: 'https://provider.example/checkout',
+    });
+    mockWatchRampsCheckoutTab.mockResolvedValue(undefined);
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
+      url: 'https://provider.example/checkout',
+      providerCode: 'transak',
+      walletAddress: '0xabc123',
+      orderCode: undefined,
+    });
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('normalizes a full-path orderId before watching checkout', async () => {
+    mockGetBuyWidgetData.mockResolvedValue({
+      url: 'https://provider.example/checkout',
+      orderId: 'providers/moonpay-staging/orders/c-abc123',
+    });
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
+      url: 'https://provider.example/checkout',
+      providerCode: 'transak',
+      walletAddress: '0xabc123',
+      orderCode: 'c-abc123',
+    });
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('surfaces an error and does not navigate when background openAndWatch fails', async () => {
+    mockGetBuyWidgetData.mockResolvedValue({
+      url: 'https://provider.example/checkout',
+    });
+    mockWatchRampsCheckoutTab.mockRejectedValue(
+      new Error('Failed to open ramps checkout tab'),
+    );
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockShowBuyTabOpenedToast).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+      'Failed to open ramps checkout tab',
+    );
+  });
+
+  it('surfaces an error and does not navigate when the widget has no url', async () => {
+    mockGetBuyWidgetData.mockResolvedValue(null);
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockOpenTab).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+      messages.rampsBuyWidgetError.message,
+    );
+  });
+
   it('matches snapshot with provider quote error', () => {
     useRampsQuotes.mockReturnValue({
       data: {
@@ -254,7 +392,7 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('matches snapshot while waiting when intent token has not settled after load', () => {
+  it('matches snapshot redirecting when intent token never settles after load', () => {
     mockLocationState = {
       assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
     };
@@ -274,7 +412,7 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('matches snapshot while waiting when settled token mismatches intent after load', () => {
+  it('matches snapshot redirecting when settled token mismatches intent after load', () => {
     mockLocationState = {
       assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
     };
@@ -408,6 +546,8 @@ describe('RampsBuildQuoteScreen', () => {
 
     fireEvent.click(screen.getByTestId('ramps-payment-method-pill'));
 
-    expect(mockNavigate).toHaveBeenCalledWith('/ramps/payment-method');
+    expect(mockNavigate).toHaveBeenCalledWith('/ramps/payment-method', {
+      state: { amount: expect.any(Number) },
+    });
   });
 });

@@ -276,6 +276,13 @@ describe('Add account', function () {
 
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
 
+        // Wait for the runtime-created non-EVM (Solana/Bitcoin) accounts to finish
+        // loading before locking. Otherwise account creation is still in-flight in
+        // the background when the wallet locks, which slows the service-worker restart
+        // and makes the post-lock navigate time out waiting for `.controller-loaded`.
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Lock and unlock wallet
         await lockAndWaitForLoginPage(driver);
         await login(driver, { validateBalance: false });

@@ -5,20 +5,20 @@ import { WINDOW_TITLES } from '../../constants';
 class CriticalErrorPage {
   protected readonly driver: Driver;
 
+  protected readonly errorMessage = '.critical-error__details';
+
   // Locators
   protected readonly errorPageTitle: object = {
     text: 'MetaMask had trouble starting.',
     css: 'h1',
   };
 
-  protected readonly errorMessage = '.critical-error__details';
-
-  protected readonly troubleStartingDescription =
-    'This error could be intermittent, so try restarting the extension.';
+  protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
 
   protected readonly restoreAccountsLink = '#critical-error-restore-link';
 
-  protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
+  protected readonly troubleStartingDescription =
+    'This error could be intermittent, so try restarting the extension.';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -43,35 +43,6 @@ class CriticalErrorPage {
       throw e;
     }
     console.log('Critical error page is loaded');
-  }
-
-  /**
-   * Validate that the description on the page is for the "trouble starting" scenario.
-   */
-  async validateTroubleStartingDescription(): Promise<void> {
-    await this.driver.waitForSelector({
-      text: this.troubleStartingDescription,
-    });
-  }
-
-  /**
-   * Validate that the given error message is shown.
-   *
-   * @param errorMessage - The error message to check for.
-   */
-  async validateErrorMessage(errorMessage: string): Promise<void> {
-    await this.driver.waitForSelector({
-      text: errorMessage,
-      css: this.errorMessage,
-    });
-  }
-
-  /**
-   * Validate that the "Reinstall MetaMask" link is present on the page and
-   * points to the SRP recovery support article.
-   */
-  async validateReinstallMetamaskLink(): Promise<void> {
-    await this.driver.waitForSelector(this.reinstallMetamaskLink);
   }
 
   /**
@@ -118,13 +89,13 @@ class CriticalErrorPage {
       await this.driver.waitUntil(
         async () => {
           const cleared = await this.driver.executeScript(`
-            return new Promise(resolve => {
-              const b = globalThis.browser ?? globalThis.chrome;
-              b.storage.local.get('criticalErrorRestore', (data) => {
-                resolve(!data.criticalErrorRestore);
+              return new Promise(resolve => {
+                const b = globalThis.browser ?? globalThis.chrome;
+                b.storage.local.get('criticalErrorRestore', (data) => {
+                  resolve(!data.criticalErrorRestore);
+                });
               });
-            });
-          `);
+            `);
           return Boolean(cleared);
         },
         { interval: 300, timeout: 30_000 },
@@ -138,6 +109,35 @@ class CriticalErrorPage {
     } else {
       await alert.dismiss();
     }
+  }
+
+  /**
+   * Validate that the given error message is shown.
+   *
+   * @param errorMessage - The error message to check for.
+   */
+  async validateErrorMessage(errorMessage: string): Promise<void> {
+    await this.driver.waitForSelector({
+      text: errorMessage,
+      css: this.errorMessage,
+    });
+  }
+
+  /**
+   * Validate that the "Reinstall MetaMask" link is present on the page and
+   * points to the SRP recovery support article.
+   */
+  async validateReinstallMetamaskLink(): Promise<void> {
+    await this.driver.waitForSelector(this.reinstallMetamaskLink);
+  }
+
+  /**
+   * Validate that the description on the page is for the "trouble starting" scenario.
+   */
+  async validateTroubleStartingDescription(): Promise<void> {
+    await this.driver.waitForSelector({
+      text: this.troubleStartingDescription,
+    });
   }
 
   /**

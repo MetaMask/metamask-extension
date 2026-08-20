@@ -38,7 +38,17 @@ export function getDisplaySignPrefix(
 export function getHumanReadableTokenAmount(
   token: TokenAmount,
 ): string | undefined {
-  if (!token.amount) {
+  if (
+    token.amount === undefined ||
+    token.amount === null ||
+    token.amount === ''
+  ) {
+    // `@metamask/client-utils` omits zero native `txParams.value` from mapped
+    // tokens but still provides symbol/asset metadata. Treat that as 0 so
+    // Activity can render "-0 ETH" for zero-value contract calls / sends.
+    if (token.symbol || token.assetId) {
+      return '0';
+    }
     return undefined;
   }
 

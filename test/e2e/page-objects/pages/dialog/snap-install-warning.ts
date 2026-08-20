@@ -1,12 +1,12 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SnapInstallWarning {
-  private driver: Driver;
+  private readonly buttonConfirm =
+    '[data-testid="snap-install-warning-modal-confirm"]';
 
   private readonly checkBoxPermission = '.mm-checkbox__input';
 
-  private readonly buttonConfirm =
-    '[data-testid="snap-install-warning-modal-confirm"]';
+  private driver: Driver;
 
   private readonly permissionConnect = '.permissions-connect';
 

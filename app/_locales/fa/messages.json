@@ -181,9 +181,6 @@
   "decimal": {
     "message": "اعشاریه های دقت"
   },
-  "decimalsMustZerotoTen": {
-    "message": "اعشاریه ها باید حد اقل 0، و بیشتر از 36 نباشند."
-  },
   "delete": {
     "message": "حذف"
   },
@@ -351,9 +348,6 @@
   },
   "networks": {
     "message": "شبکه ها"
-  },
-  "nevermind": {
-    "message": "توجه نکنید"
   },
   "newAccountNumberName": {
     "message": "حساب $1",

@@ -181,9 +181,6 @@
   "decimal": {
     "message": "רמת דיוק עשרוני"
   },
-  "decimalsMustZerotoTen": {
-    "message": "מספרים עשרוניים חייבים להיות לפחות 0 ולא מעל 36."
-  },
   "delete": {
     "message": "מחיקה"
   },
@@ -348,9 +345,6 @@
   },
   "networks": {
     "message": "רשתות"
-  },
-  "nevermind": {
-    "message": "לא משנה"
   },
   "newAccountNumberName": {
     "message": "חשבון $1",

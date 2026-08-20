@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Знаків після коми"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Кількість розрядів після коми: від 0 до 36."
-  },
   "delete": {
     "message": "Видалити"
   },
@@ -351,9 +348,6 @@
   },
   "networks": {
     "message": "Мережі"
-  },
-  "nevermind": {
-    "message": "Не зважати"
   },
   "newAccountNumberName": {
     "message": "Обліковий запис $1",

@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import browser from 'webextension-polyfill';
 import {
   Button,
   ButtonSize,
@@ -33,14 +32,11 @@ import {
 } from '../../../ducks/metamask/metamask';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
-import type { BrowserWithSidePanel } from '../../../../shared/types';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { useOnboardingCompletion } from '../hooks/useOnboardingCompletion';
 import WalletReadyAnimation from './wallet-ready-animation';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function CreationSuccessful() {
   const navigate = useNavigate();
   const t = useI18nContext();
@@ -86,8 +82,8 @@ export default function CreationSuccessful() {
   ]);
 
   useEffect(() => {
-    const browserWithSidePanel = browser as BrowserWithSidePanel;
-    const handleSidePanelClosed = (_args: unknown) => {
+    const browserWithSidePanel = chrome;
+    const handleSidePanelClosed = () => {
       setIsSidePanelOpen(false);
     };
 

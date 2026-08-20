@@ -39,10 +39,12 @@ export type {
   UsePerpsEstimatedSlippageReturn,
 } from './usePerpsEstimatedSlippage';
 export { usePerpsEventTracking } from './usePerpsEventTracking';
+export { usePerpsAttribution } from './usePerpsAttribution';
 export type {
   PerpsTrackEventFn,
   UsePerpsEventTrackingDeclarativeOptions,
 } from './usePerpsEventTracking';
+export { usePerpsBottomNavSource } from './usePerpsBottomNavSource';
 export {
   estimateLiquidationPrice,
   liquidationDistancePercent,

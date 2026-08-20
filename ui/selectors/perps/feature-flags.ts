@@ -105,6 +105,36 @@ export const getIsPerpsSlippageConfigEnabled = createSelector(
 );
 
 /**
+ * Whether the perps order-book panel is enabled.
+ *
+ * Gated behind the dedicated `perpsOrderBookEnabled` remote rollout flag
+ * (LaunchDarkly key `perps-order-book-enabled`, default OFF) so the new
+ * order-book surface can be shipped dark and rolled out independently of the
+ * broader perps experience. Follows the same `{ enabled, minimumVersion }`
+ * rollout shape as `perpsEnabledVersion`.
+ */
+export const getIsPerpsOrderBookEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    isPerpsRemoteConfigSatisfied(remoteFeatureFlags.perpsOrderBookEnabled),
+);
+
+/**
+ * Whether limit orders are enabled in the single-position close flow.
+ *
+ * Remote flag `perpsClosePositionLimitOrderEnabled` — the camel-cased form of
+ * `perps-close-position-limit-order-enabled`. The flag defaults to disabled
+ * and supports the standard boolean or version-gated rollout shape.
+ */
+export const getIsPerpsCloseLimitOrderEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    isPerpsRemoteConfigSatisfied(
+      remoteFeatureFlags.perpsClosePositionLimitOrderEnabled,
+    ),
+);
+
+/**
  * Whether perps surfaces should render full asset names (e.g. "Bitcoin")
  * instead of just the ticker (e.g. "BTC").
  *

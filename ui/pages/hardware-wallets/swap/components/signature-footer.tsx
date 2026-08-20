@@ -11,8 +11,6 @@ import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-sta
 import { getQrScanButtonLabelKey } from '../hardware-wallet-signatures.utils';
 import type { SignatureFooterProps } from './signature-footer.types';
 
-const FOOTER_STYLE = { width: '100%', marginTop: 'auto' } as const;
-
 /**
  * Pure presentational footer for the hardware wallet signing-progress screen.
  *
@@ -46,10 +44,9 @@ const SignatureFooter = ({
 
   return (
     <Box
-      className="hardware-wallet-signatures__footer"
+      className="hardware-wallet-signatures__footer w-full mt-auto"
       flexDirection={BoxFlexDirection.Column}
       gap={4}
-      style={FOOTER_STYLE}
       padding={4}
     >
       {isRetryable && (

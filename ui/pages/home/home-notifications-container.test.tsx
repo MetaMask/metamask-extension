@@ -31,9 +31,13 @@ jest.mock('../../ducks/metamask/metamask', () => ({
   getWeb3ShimUsageAlertEnabledness: () => false,
 }));
 
-jest.mock('../../../shared/lib/selectors/accounts', () => ({
-  getSelectedInternalAccount: () => ({ address: '0x1' }),
-}));
+jest.mock('../../../shared/lib/selectors/accounts', () => {
+  // Stable reference — react-redux warns if a selector returns a new object each call.
+  const mockSelectedInternalAccount = { address: '0x1' };
+  return {
+    getSelectedInternalAccount: () => mockSelectedInternalAccount,
+  };
+});
 
 jest.mock('../../selectors/multi-srp/multi-srp', () => ({
   getShouldShowSeedPhraseReminder: () => false,

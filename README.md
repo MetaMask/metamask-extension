@@ -190,6 +190,18 @@ Once you have your test build ready, choose the browser for your e2e tests:
 
 These scripts support additional options for debugging. Use `--help`to see all available options.
 
+Specs that have been migrated from Selenium to Playwright (`*.pw.spec.ts`, see [test/e2e/playwright/README.md](test/e2e/playwright/README.md)) run through their own runner:
+
+- For Firefox, run `yarn test:e2e:playwright:firefox`.
+- For Chrome, run `yarn test:e2e:playwright:chrome`.
+
+One-time setup for the Playwright runner (per machine, and again whenever the Playwright version changes):
+
+```console
+yarn                                        # installs the Playwright package
+yarn playwright install chromium firefox   # downloads the browser binaries
+```
+
 #### Running a single e2e test
 
 Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
@@ -211,6 +223,19 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
 
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
 `yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --leave-running`
+
+For migrated Playwright specs, pass the spec path as a positional filter to the Playwright runner instead:
+
+```console
+# Run a single spec
+yarn test:e2e:playwright:chrome test/e2e/tests/settings/terms-of-use.pw.spec.ts
+
+# Run headless
+PLAYWRIGHT_HEADLESS=1 yarn test:e2e:playwright:chrome test/e2e/tests/settings/terms-of-use.pw.spec.ts
+
+# Debug with the Playwright Inspector (step through each driver action)
+PWDEBUG=1 yarn test:e2e:playwright:chrome test/e2e/tests/settings/terms-of-use.pw.spec.ts
+```
 
 #### Running E2E tests with feature flags
 

@@ -38,3 +38,13 @@ export async function setPostQuote(
     options,
   ]);
 }
+
+export async function setAccountOverride(
+  transactionId: string,
+  accountOverride: Hex,
+): Promise<void> {
+  return await submitRequestToBackground('setTransactionPayAccountOverride', [
+    transactionId,
+    accountOverride,
+  ]);
+}

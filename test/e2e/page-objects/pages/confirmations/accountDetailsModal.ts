@@ -6,11 +6,11 @@ import Confirmation from './confirmation';
 class AccountDetailsModal extends Confirmation {
   private accountBalanceInfo: RawLocator;
 
-  private addressCopyButton: RawLocator;
+  private accountDetailsModalCloseButton: RawLocator;
 
   private addressCopiedButton: RawLocator;
 
-  private accountDetailsModalCloseButton: RawLocator;
+  private addressCopyButton: RawLocator;
 
   constructor(driver: Driver) {
     super(driver);
@@ -31,6 +31,13 @@ class AccountDetailsModal extends Confirmation {
       '[data-testid="confirmation-account-details-modal__close-button"]';
   }
 
+  async assertHeaderInfoBalance(balance: string) {
+    await this.driver.waitForSelector({
+      css: this.accountBalanceInfo.toString(),
+      text: `${balance} ETH`,
+    });
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -47,25 +54,18 @@ class AccountDetailsModal extends Confirmation {
     }
   }
 
-  async clickAddressCopyButton() {
-    await this.driver.clickElement(this.addressCopyButton);
-  }
-
-  async waitForAddressCopied() {
-    await this.driver.waitForSelector(this.addressCopiedButton);
-  }
-
   async clickAccountDetailsModalCloseButton() {
     await this.driver.clickElementAndWaitToDisappear(
       this.accountDetailsModalCloseButton,
     );
   }
 
-  async assertHeaderInfoBalance(balance: string) {
-    await this.driver.waitForSelector({
-      css: this.accountBalanceInfo.toString(),
-      text: `${balance} ETH`,
-    });
+  async clickAddressCopyButton() {
+    await this.driver.clickElement(this.addressCopyButton);
+  }
+
+  async waitForAddressCopied() {
+    await this.driver.waitForSelector(this.addressCopiedButton);
   }
 }
 

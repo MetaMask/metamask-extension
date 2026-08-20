@@ -1,8 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
 class AccountDetailsModal {
-  private driver: Driver;
-
   private readonly accountAddressText =
     '[data-testid="account-address-shortened"]';
 
@@ -17,6 +15,11 @@ class AccountDetailsModal {
   private readonly copyAddressButton =
     '[data-testid="address-copy-button-text"]';
 
+  private readonly copyPrivateKeyButton =
+    '[data-testid="multichain-address-row-copy-button"]';
+
+  private driver: Driver;
+
   private readonly editableLabelButton =
     '[data-testid="editable-label-button"]';
 
@@ -25,9 +28,6 @@ class AccountDetailsModal {
   private readonly saveAccountLabelButton =
     '[data-testid="save-account-label-input"]';
 
-  private readonly copyPrivateKeyButton =
-    '[data-testid="multichain-address-row-copy-button"]';
-
   private readonly showPrivateKeyButton = {
     css: 'button',
     text: 'Show private key',
@@ -35,41 +35,6 @@ class AccountDetailsModal {
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.editableLabelButton,
-        this.copyAddressButton,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for account details modal to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Account details modal is loaded');
-  }
-
-  async goToDetailsTab(): Promise<void> {
-    await this.driver.clickElementSafe({ text: 'Details', tag: 'button' });
-  }
-
-  async closeAccountDetailsModal(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.closeAccountModalButton,
-    );
-  }
-
-  /**
-   * Click on copy private key button.
-   *
-   */
-  async clickCopyPrivateKeyButton(): Promise<void> {
-    console.log(`Click on copy private key button`);
-    await this.driver.clickElement(this.copyPrivateKeyButton);
   }
 
   /**
@@ -85,16 +50,6 @@ class AccountDetailsModal {
     await this.driver.fill(this.editableLabelInput, newLabel);
     await this.driver.clickElement(this.saveAccountLabelButton);
     await this.closeAccountDetailsModal();
-  }
-
-  async getAccountAddress(): Promise<string> {
-    console.log(`Get account address in account details modal`);
-    await this.driver.waitForSelector(this.accountAddressText);
-    const accountAddress = await (
-      await this.driver.findElement(this.accountAddressText)
-    ).getText();
-    await this.closeAccountDetailsModal();
-    return accountAddress;
   }
 
   /**
@@ -127,9 +82,54 @@ class AccountDetailsModal {
     });
   }
 
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.editableLabelButton,
+        this.copyAddressButton,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for account details modal to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Account details modal is loaded');
+  }
+
   async checkShowPrivateKeyButtonIsNotDisplayed(): Promise<void> {
     console.log('Check that show private key button is not displayed');
     await this.driver.assertElementNotPresent(this.showPrivateKeyButton);
+  }
+
+  /**
+   * Click on copy private key button.
+   *
+   */
+  async clickCopyPrivateKeyButton(): Promise<void> {
+    console.log(`Click on copy private key button`);
+    await this.driver.clickElement(this.copyPrivateKeyButton);
+  }
+
+  async closeAccountDetailsModal(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.closeAccountModalButton,
+    );
+  }
+
+  async getAccountAddress(): Promise<string> {
+    console.log(`Get account address in account details modal`);
+    await this.driver.waitForSelector(this.accountAddressText);
+    const accountAddress = await (
+      await this.driver.findElement(this.accountAddressText)
+    ).getText();
+    await this.closeAccountDetailsModal();
+    return accountAddress;
+  }
+
+  async goToDetailsTab(): Promise<void> {
+    await this.driver.clickElementSafe({ text: 'Details', tag: 'button' });
   }
 
   async triggerAccountSwitch(): Promise<void> {

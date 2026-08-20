@@ -68,7 +68,7 @@
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
-    "completedMetaMetricsOnboarding": true,
+    "consentDecisionMade": true,
     "optedIn": false,
     "gasEstimateType": "fee-market",
     "gasFeeEstimates": {

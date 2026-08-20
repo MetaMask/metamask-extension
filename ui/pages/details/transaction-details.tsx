@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react';
-import { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { useSelector } from 'react-redux';
 import { mapApiTransaction } from '@metamask/client-utils';
+import { isValidTransactionHash } from '../../../shared/lib/transactions.utils';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
-import { useCachedEvmTransaction } from '../../hooks/activity/useCachedEvmTransaction';
+import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
-import { useTransactionQuery } from './useTransactionQuery';
+import { useRampsDetailsItem } from './templates/ramps/hooks';
 
 type Props = {
   chainId: string | undefined;
@@ -23,11 +23,9 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   const selectedAddress = useSelector(selectEvmAddress);
   const isEvm = chainId?.startsWith('eip155:');
 
-  const localActivityItemsByIdentifier = useSelector(
-    selectLocalActivityItemsByIdentifier,
-  );
+  const localActivityItems = useSelector(selectLocalActivityItemsByIdentifier);
   const localActivityItem = txIdentifier
-    ? localActivityItemsByIdentifier.get(txIdentifier.toLowerCase())
+    ? localActivityItems.get(txIdentifier.toLowerCase())
     : undefined;
 
   const nonEvmActivityItems = useSelector(selectNonEvmActivityItemsById);
@@ -36,28 +34,31 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       ? nonEvmActivityItems.get(txIdentifier.toLowerCase())
       : undefined;
 
-  const cachedApiTransaction = useCachedEvmTransaction({
-    chainId,
-    txHash: txIdentifier,
-  });
+  const rampsActivityItem = useRampsDetailsItem(txIdentifier);
 
-  const { data: apiTransaction } = useTransactionQuery({
+  const apiTransaction = useApiTransaction({
     chainId,
-    txHash: txIdentifier,
-    enabled: Boolean(
-      isEvm && selectedAddress && txIdentifier && !cachedApiTransaction,
-    ),
+    txHash:
+      isEvm &&
+      selectedAddress &&
+      txIdentifier &&
+      isValidTransactionHash(txIdentifier)
+        ? txIdentifier
+        : undefined,
   });
 
   const transaction = useMemo(() => {
-    const evmTransaction = (cachedApiTransaction ??
-      apiTransaction) as V1TransactionByHashResponse;
+    // Ramps first so settled orders keep the ramp classification over the
+    // generic transaction that shares their settlement hash.
+    if (rampsActivityItem) {
+      return rampsActivityItem;
+    }
 
     const apiActivityItem =
-      evmTransaction && selectedAddress
+      apiTransaction && selectedAddress
         ? mapApiTransaction({
             subjectAddress: selectedAddress,
-            transaction: evmTransaction,
+            transaction: apiTransaction,
           })
         : undefined;
 
@@ -89,9 +90,9 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     return undefined;
   }, [
     apiTransaction,
-    cachedApiTransaction,
     localActivityItem,
     nonEvmActivityItem,
+    rampsActivityItem,
     selectedAddress,
   ]);
 

@@ -5,21 +5,21 @@ import { Driver } from '../../../webdriver/driver';
  * This page allows users to select accounts to connect.
  */
 class SelectHardwareWalletAccountPage {
-  protected driver: Driver;
+  protected readonly accountCheckbox = '.hw-account-list__item__checkbox';
 
   protected readonly cancelButton = {
     testId: 'connect-hardware-account-list-cancel-btn',
   };
 
+  protected driver: Driver;
+
+  protected readonly forgetDeviceButton =
+    '[data-testid="hardware-forget-device-button"]';
+
   protected readonly selectAccountPageTitle = {
     text: 'Select an account',
     tag: 'h3',
   };
-
-  protected readonly accountCheckbox = '.hw-account-list__item__checkbox';
-
-  protected readonly forgetDeviceButton =
-    '[data-testid="hardware-forget-device-button"]';
 
   protected readonly unlockButton = {
     testId: 'connect-hardware-account-list-unlock-btn',
@@ -27,6 +27,35 @@ class SelectHardwareWalletAccountPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * This function checks if the specified number of account items is displayed in the account list.
+   *
+   * @param expectedNumber - The number of account items expected to be displayed. Defaults to 5.
+   * @returns A promise that resolves if the expected number of account items is displayed.
+   */
+  async checkAccountNumber(expectedNumber: number = 5): Promise<void> {
+    console.log(`Waiting for ${expectedNumber} account items to be displayed`);
+    await this.driver.wait(async () => {
+      const accountItems = await this.driver.findElements(this.accountCheckbox);
+      return accountItems.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `Expected number of account items ${expectedNumber} is displayed.`,
+    );
+  }
+
+  /**
+   * Check that the specified address is displayed in the list of accounts.
+   *
+   * @param address - The address to check for.
+   */
+  async checkAddressIsDisplayed(address: string): Promise<void> {
+    console.log(
+      `Check that account address ${address} is displayed on select account page`,
+    );
+    await this.driver.waitForSelector({ text: address });
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -45,14 +74,14 @@ class SelectHardwareWalletAccountPage {
     console.log('Select account page is loaded');
   }
 
-  async clickUnlockButton(): Promise<void> {
-    console.log(`Click unlock button on select account page`);
-    await this.driver.clickElement(this.unlockButton);
-  }
-
   async clickForgetDeviceButton(): Promise<void> {
     console.log(`Click forget device button on select account page`);
     await this.driver.clickElement(this.forgetDeviceButton);
+  }
+
+  async clickUnlockButton(): Promise<void> {
+    console.log(`Click unlock button on select account page`);
+    await this.driver.clickElement(this.unlockButton);
   }
 
   async selectAccount(accountIndex: number): Promise<void> {
@@ -64,35 +93,6 @@ class SelectHardwareWalletAccountPage {
     console.log(`Unlock account ${accountIndex}`);
     await this.selectAccount(accountIndex);
     await this.clickUnlockButton();
-  }
-
-  /**
-   * Check that the specified address is displayed in the list of accounts.
-   *
-   * @param address - The address to check for.
-   */
-  async checkAddressIsDisplayed(address: string): Promise<void> {
-    console.log(
-      `Check that account address ${address} is displayed on select account page`,
-    );
-    await this.driver.waitForSelector({ text: address });
-  }
-
-  /**
-   * This function checks if the specified number of account items is displayed in the account list.
-   *
-   * @param expectedNumber - The number of account items expected to be displayed. Defaults to 5.
-   * @returns A promise that resolves if the expected number of account items is displayed.
-   */
-  async checkAccountNumber(expectedNumber: number = 5): Promise<void> {
-    console.log(`Waiting for ${expectedNumber} account items to be displayed`);
-    await this.driver.wait(async () => {
-      const accountItems = await this.driver.findElements(this.accountCheckbox);
-      return accountItems.length === expectedNumber;
-    }, 10000);
-    console.log(
-      `Expected number of account items ${expectedNumber} is displayed.`,
-    );
   }
 }
 

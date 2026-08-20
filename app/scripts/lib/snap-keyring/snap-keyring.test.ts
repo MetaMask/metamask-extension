@@ -173,6 +173,7 @@ const createControllerMessenger = ({
           id: mockSnapId,
           manifest: {
             proposedName: mockSnapName,
+            initialPermissions: {},
           },
         })(params);
 
