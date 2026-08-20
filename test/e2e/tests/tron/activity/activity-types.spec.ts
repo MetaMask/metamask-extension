@@ -40,7 +40,7 @@ const BRIDGE_DEST_AMOUNT = '5000000';
 const CONFIRMED_TRON_ACTIVITY_COUNT = 5;
 
 describe('Tron - Activity types', function (this: Suite) {
-  this.timeout(300_000);
+  this.timeout(120_000);
 
   const sharedTronNode = new TronNode();
   const approve = trc20ApproveTx({

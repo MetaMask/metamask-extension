@@ -18,7 +18,7 @@ import {
 const ACTIVITY_TIMESTAMP = 1_700_000_000_000;
 
 describe('Tron - Activity status', function (this: Suite) {
-  this.timeout(300_000);
+  this.timeout(120_000);
 
   const sharedTronNode = new TronNode();
   const pending = trxSendTx({
