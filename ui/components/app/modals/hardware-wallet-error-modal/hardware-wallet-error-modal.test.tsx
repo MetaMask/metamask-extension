@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention, camelcase -- Segment analytics payload keys use snake_case */
+/* eslint-disable @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case */
 import React from 'react';
 import { render, fireEvent, waitFor, act } from '@testing-library/react';
 import { Provider } from 'react-redux';

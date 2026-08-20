@@ -12,10 +12,6 @@ export default class TransactionsSettingsPage {
     this.driver = driver;
   }
 
-  async waitForSecurityAlertsSection(): Promise<void> {
-    await this.driver.waitForSelector(this.securityAlertSection);
-  }
-
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check transactions settings page is loaded');
     await this.driver.waitForSelector(this.hexDataToggle);
@@ -24,5 +20,9 @@ export default class TransactionsSettingsPage {
   async toggleOnHexData(): Promise<void> {
     console.log('Toggling on hex data in transactions settings');
     await this.driver.clickElement(this.hexDataToggle);
+  }
+
+  async waitForSecurityAlertsSection(): Promise<void> {
+    await this.driver.waitForSelector(this.securityAlertSection);
   }
 }

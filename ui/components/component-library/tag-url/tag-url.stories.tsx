@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { Meta, StoryFn } from '@storybook/react';
 import {
   Display,
@@ -12,11 +11,6 @@ export default {
   title: 'Components/ComponentLibrary/TagUrl',
   component: TagUrl,
   tags: ['autodocs'],
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     label: {
       control: 'text',

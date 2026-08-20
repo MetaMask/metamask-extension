@@ -42,9 +42,7 @@ describe('transaction controller utils', () => {
       // BigNumber#div in the past when the value that was passed into it was not a BigNumber.
       [123456, 36, '1.23456e-31'],
       [3000123456789678, 6, '3000123456.789678'],
-      // eslint-disable-next-line no-loss-of-precision
       [3000123456789123456789123456789, 3, '3.0001234567891233e+27'], // expected precision lost
-      // eslint-disable-next-line no-loss-of-precision
       [3000123456789123456789123456789, 6, '3.0001234567891233e+24'], // expected precision lost
       // string values
       ['0', 5, '0'],

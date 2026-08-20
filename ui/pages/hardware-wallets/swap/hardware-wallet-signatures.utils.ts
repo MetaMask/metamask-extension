@@ -689,3 +689,195 @@ export function getAllStepStatuses(
     ),
   };
 }
+
+/**
+ * Checks whether the current state machine status represents a step where the
+ * user is expected to sign on their hardware device.
+ *
+ * @param status - The current signature state machine status.
+ * @returns True when the status is AwaitingFirstSignature or AwaitingFinalSignature.
+ */
+export function isAwaitingSignature(
+  status: HardwareWalletSignatureStatus,
+): boolean {
+  return (
+    status === HardwareWalletSignatureStatus.AwaitingFirstSignature ||
+    status === HardwareWalletSignatureStatus.AwaitingFinalSignature
+  );
+}
+
+export type HardwareWalletSignatureViewModelParams = {
+  signatureState: HardwareWalletSignaturesState;
+  isSendBundleFlow: boolean;
+  needsTwoConfirmations: boolean;
+  toAddress?: string;
+  spenderAddress?: string;
+  fromAmount?: string;
+  fromTokenSymbol?: string;
+  sendAmount?: string;
+  sendSymbol?: string;
+  gasSymbol?: string;
+  hasSigningRequest: boolean;
+  hasSignatureTimedOut: boolean;
+  isRetrying: boolean;
+  hasRetried: boolean;
+  showInlineQrSigning: boolean;
+  isReadingQrSignature: boolean;
+  activeQrStep?: HardwareWalletSignatureStatus;
+  t: ReturnType<typeof useI18nContext>;
+};
+
+export type HardwareWalletSignatureViewModel = {
+  firstStepStatus: SignatureStepStatus;
+  finalStepStatus: SignatureStepStatus;
+  firstStepLabel: string;
+  finalStepLabel: string;
+  firstStepDescription?: string;
+  finalStepDescription?: string;
+  isRetryable: boolean;
+  showStuckRetryButton: boolean;
+  showFooter: boolean;
+  showInlineQrCode: boolean;
+  showQrSigningPage: boolean;
+  qrSigningPageTitle: string | null;
+  isFinalSignature: boolean;
+  title: string;
+  hasSigningRequest: boolean;
+};
+
+/**
+ * Derives all presentational values for the hardware-wallet signing screen
+ * from the current signature state and related inputs.
+ *
+ * Pure: same inputs always produce the same view-model output. Pass
+ * `hasRetried` as a boolean snapshot rather than reading a ref.
+ *
+ * @param params - View-model inputs.
+ * @param params.signatureState
+ * @param params.isSendBundleFlow
+ * @param params.needsTwoConfirmations
+ * @param params.toAddress
+ * @param params.spenderAddress
+ * @param params.fromAmount
+ * @param params.fromTokenSymbol
+ * @param params.sendAmount
+ * @param params.sendSymbol
+ * @param params.gasSymbol
+ * @param params.hasSigningRequest
+ * @param params.hasSignatureTimedOut
+ * @param params.isRetrying
+ * @param params.hasRetried
+ * @param params.showInlineQrSigning
+ * @param params.isReadingQrSignature
+ * @param params.activeQrStep
+ * @param params.t
+ * @returns Labels, flags, and titles used by the signing UI shell.
+ */
+export function getHardwareWalletSignatureViewModel({
+  signatureState,
+  isSendBundleFlow,
+  needsTwoConfirmations,
+  toAddress,
+  spenderAddress,
+  fromAmount,
+  fromTokenSymbol,
+  sendAmount,
+  sendSymbol,
+  gasSymbol,
+  hasSigningRequest,
+  hasSignatureTimedOut,
+  isRetrying,
+  hasRetried,
+  showInlineQrSigning,
+  isReadingQrSignature,
+  activeQrStep,
+  t,
+}: HardwareWalletSignatureViewModelParams): HardwareWalletSignatureViewModel {
+  const { first: firstStepStatus, final: finalStepStatus } =
+    getAllStepStatuses(signatureState);
+  const { firstStepLabel, finalStepLabel } = getStepLabels({
+    isSendBundleFlow,
+    needsTwoConfirmations,
+    status: signatureState.status,
+    firstStepStatus,
+    finalStepStatus,
+    fromAmount,
+    fromTokenSymbol,
+    sendAmount,
+    sendSymbol,
+    gasSymbol,
+    t,
+  });
+  const { firstStepDescription, finalStepDescription } = getStepDescriptions({
+    isSendBundleFlow,
+    needsTwoConfirmations,
+    firstStepStatus,
+    spenderAddress,
+    toAddress,
+    t,
+  });
+  const isRetryable =
+    signatureState.status === HardwareWalletSignatureStatus.Rejected ||
+    signatureState.status === HardwareWalletSignatureStatus.Failed ||
+    signatureState.status === HardwareWalletSignatureStatus.Disconnected;
+  // "Resend transaction" button: only visible after the user has retried at
+  // least once (`hasRetried`), the signature has been stuck for longer than
+  // the stuck timeout, and we are still awaiting a signature.
+  const showStuckRetryButton =
+    hasSignatureTimedOut &&
+    isAwaitingSignature(signatureState.status) &&
+    !isRetrying &&
+    hasRetried;
+  const showFooter =
+    signatureState.status !== HardwareWalletSignatureStatus.Submitted;
+  const showInlineQrCode = showInlineQrSigning && !isReadingQrSignature;
+  const showQrSigningPage = Boolean(
+    showInlineQrSigning && activeQrStep && isReadingQrSignature,
+  );
+  const qrSigningPageTitle = activeQrStep
+    ? getQrHardwareSigningPageTitle({
+        activeQrStep,
+        needsTwoConfirmations,
+        t,
+      })
+    : null;
+  const isFinalSignature =
+    activeQrStep === HardwareWalletSignatureStatus.AwaitingFinalSignature;
+  // During the inline QR display phase (the QR code is shown for the user to
+  // scan with their wallet), replace the generic heading with a step-numbered
+  // QR instruction such as "Step 1 of 4: Scan this QR code with your wallet".
+  const qrInlineTitle =
+    showInlineQrCode && activeQrStep
+      ? getQrHardwareSigningPageTitle({
+          activeQrStep,
+          isDisplayPhase: true,
+          needsTwoConfirmations,
+          t,
+        })
+      : undefined;
+  const title =
+    qrInlineTitle ??
+    getTitle({
+      status: signatureState.status,
+      needsTwoConfirmations,
+      t,
+    });
+
+  return {
+    firstStepStatus,
+    finalStepStatus,
+    firstStepLabel,
+    finalStepLabel,
+    firstStepDescription,
+    finalStepDescription,
+    isRetryable,
+    showStuckRetryButton,
+    showFooter,
+    showInlineQrCode,
+    showQrSigningPage,
+    qrSigningPageTitle,
+    isFinalSignature,
+    title,
+    hasSigningRequest,
+  };
+}

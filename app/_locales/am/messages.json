@@ -172,9 +172,6 @@
   "decimal": {
     "message": "የትክክለኛነት አስርዮሽ"
   },
-  "decimalsMustZerotoTen": {
-    "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
-  },
   "delete": {
     "message": "ሰርዝ"
   },
@@ -336,9 +333,6 @@
   },
   "networks": {
     "message": "አውታረ መረቦች"
-  },
-  "nevermind": {
-    "message": "ምንም አይደል"
   },
   "newAccountNumberName": {
     "message": "መለያ $1",

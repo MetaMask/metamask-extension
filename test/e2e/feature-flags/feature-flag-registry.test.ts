@@ -73,11 +73,11 @@ describe('Feature Flag Registry', () => {
             permissions: [
               'native-token-stream',
               'native-token-periodic',
+              'native-token-allowance',
               'erc20-token-stream',
               'erc20-token-periodic',
-              'token-approval-revocation',
-              'native-token-allowance',
               'erc20-token-allowance',
+              'token-approval-revocation',
             ],
           },
           status: FeatureFlagStatus.Active,

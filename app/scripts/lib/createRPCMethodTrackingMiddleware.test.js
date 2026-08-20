@@ -75,6 +75,7 @@ messenger.registerActionHandler(
 const analyticsControllerState = {
   analyticsId: '00000000-0000-4000-8000-000000000001',
   optedIn: false,
+  consentDecisionMade: false,
 };
 
 messenger.registerActionHandler('AnalyticsController:getState', () => ({
@@ -83,11 +84,21 @@ messenger.registerActionHandler('AnalyticsController:getState', () => ({
 
 messenger.registerActionHandler('AnalyticsController:optIn', () => {
   analyticsControllerState.optedIn = true;
+  analyticsControllerState.consentDecisionMade = true;
 });
 
 messenger.registerActionHandler('AnalyticsController:optOut', () => {
   analyticsControllerState.optedIn = false;
+  analyticsControllerState.consentDecisionMade = true;
 });
+
+messenger.registerActionHandler(
+  'AnalyticsController:resetConsentDecision',
+  () => {
+    analyticsControllerState.optedIn = false;
+    analyticsControllerState.consentDecisionMade = false;
+  },
+);
 
 const trackEventSpy = jest.fn();
 messenger.registerActionHandler(
@@ -108,6 +119,7 @@ messenger.delegate({
     'AnalyticsController:getState',
     'AnalyticsController:optIn',
     'AnalyticsController:optOut',
+    'AnalyticsController:resetConsentDecision',
     'AnalyticsController:trackEvent',
     'AnalyticsController:identify',
     'AnalyticsController:trackView',
@@ -513,6 +525,43 @@ describe('createRPCMethodTrackingMiddleware', () => {
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
           location: 'some_location',
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it(`should track a ${MetaMetricsEventName.EncryptionPublicKeyRejected} event if the user rejects`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+        origin: 'some.dapp',
+      };
+
+      const res = {
+        error: {
+          code: errorCodes.provider.userRejectedRequest,
+        },
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(getTrackedEventCall(0)).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.EncryptionPublicKeyRequested,
+        properties: {
+          method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+          api_source: MetaMetricsRequestedThrough.EthereumProvider,
+        },
+        referrer: { url: 'some.dapp' },
+      });
+      expect(getTrackedEventCall(1)).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.EncryptionPublicKeyRejected,
+        properties: {
+          method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+          api_source: MetaMetricsRequestedThrough.EthereumProvider,
         },
         referrer: { url: 'some.dapp' },
       });

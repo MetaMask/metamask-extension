@@ -25,7 +25,8 @@ type UsePerpsOrderFeesOptions = {
 type UsePerpsOrderFeesReturn = {
   /**
    * Combined fee rate (protocol + MetaMask) **after** any VIP discount.
-   * `undefined` while loading or when the call failed entirely (error state).
+   * `undefined` during the initial load. Refetches retain the last resolved rate
+   * until the replacement request completes.
    * When the call succeeds, the provider's own internal fallback to base rates
    * guarantees a numeric value even if the fee-tier API is down.
    */
@@ -136,7 +137,6 @@ export function usePerpsOrderFees({
       }
     }, 1500);
 
-    setFeeResult(undefined);
     setIsLoading(true);
     setHasError(false);
 

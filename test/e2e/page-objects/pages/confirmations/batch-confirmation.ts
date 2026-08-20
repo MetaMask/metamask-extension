@@ -2,20 +2,20 @@ import { Driver } from '../../../webdriver/driver';
 import TransactionConfirmation from './transaction-confirmation';
 
 export default class Eip7702AndSendCalls extends TransactionConfirmation {
-  constructor(driver: Driver) {
-    super(driver);
-
-    this.driver = driver;
-  }
+  private readonly batchTxList = '[data-testid="batch-txs=]';
 
   protected driver: Driver;
-
-  private readonly batchTxList = '[data-testid="batch-txs=]';
 
   private readonly interactingWith =
     '[data-testid="transaction-details-section"]';
 
   private readonly txType = '[data-testid="tx-type"]';
+
+  constructor(driver: Driver) {
+    super(driver);
+
+    this.driver = driver;
+  }
 
   async checkBatchTxListIsPresent(): Promise<void> {
     await this.driver.isElementPresent(this.batchTxList);

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { type CaipChainId } from '@metamask/utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
@@ -28,6 +28,7 @@ import {
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { useDispatch } from '../../../../store/hooks';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

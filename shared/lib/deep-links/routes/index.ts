@@ -17,6 +17,7 @@ import type { Route } from './route';
 import { sell } from './sell';
 import { shield } from './shield';
 import { swap } from './swap';
+import { topTraders } from './top-traders';
 import { trending } from './trending';
 
 export type { Route } from './route';
@@ -43,7 +44,7 @@ export function addRoute(route: Route) {
 }
 
 if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   addRoute(require('./test-route').test);
 }
 
@@ -65,4 +66,5 @@ addRoute(predict);
 addRoute(rewards);
 addRoute(shield);
 addRoute(asset);
+addRoute(topTraders);
 addRoute(trending);

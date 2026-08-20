@@ -35,21 +35,49 @@
         "devicePixelRatio": true
       }
     },
+    "@sentry/browser": {
+      "globals": {
+        "importScripts": false
+      }
+    },
     "@sentry/core": {
       "globals": {
         "performance.now": true,
         "performance.timeOrigin": true,
+        "performance.getEntries": true,
+        "performance.getEntriesByType": true,
+        "performance.mark": true,
         "devicePixelRatio": true,
         "navigator.userAgent": true,
         "navigator.language": true,
         "navigator.userAgentData": true,
+        "navigator.connection.effectiveType": true,
+        "navigator.connection.type": true,
+        "navigator.connection.rtt": true,
+        "navigator.deviceMemory": true,
+        "navigator.hardwareConcurrency": true,
         "crypto": true,
+        "WeakRef": true,
+        "console": true,
+        "EventTarget.prototype": true,
+        "fetch": "write",
+        "Node.prototype": true,
+        "requestAnimationFrame": "write",
+        "setInterval": "write",
+        "setTimeout": "write",
+        "XMLHttpRequest.prototype": true,
         "onerror": "write",
         "onunhandledrejection": "write",
         "addEventListener": true,
+        "removeEventListener": true,
         "PerformanceObserver": true,
-        "location": false,
+        "requestIdleCallback": true,
+        "chrome.app": true,
+        "chrome.runtime": true,
+        "history": true,
         "location.href": true,
+        "location.origin": true,
+        "location.pathname": true,
         "top": true
       }
     },
@@ -262,6 +290,13 @@
         "addEventListener": false
       }
     },
+    "@metamask/react-data-query>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": false,
+        "addEventListener": false
+      }
+    },
     "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
         "document": false,
@@ -309,9 +344,10 @@
         "localStorage": false
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>zod": {
+    "openai>zod": {
       "globals": {
-        "__zod_globalRegistry": "write"
+        "__zod_globalRegistry": "write",
+        "__zod_globalConfig": "write"
       }
     }
   }

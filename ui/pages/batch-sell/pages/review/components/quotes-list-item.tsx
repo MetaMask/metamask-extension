@@ -34,6 +34,7 @@ import { BackgroundColor } from '../../../../../helpers/constants/design-system'
 import {
   MAX_SEND_PERCENT,
   MIN_SEND_PERCENT,
+  SEND_PERCENTS_MARK_INTERVAL,
   SEND_PERCENTS_STEPS,
 } from '../../../../../constants/batch-sell';
 
@@ -168,7 +169,7 @@ export const QuotesListItem = ({
           max={MAX_SEND_PERCENT}
           step={SEND_PERCENTS_STEPS}
           value={sendAmountPercent}
-          markInterval={1}
+          markInterval={SEND_PERCENTS_MARK_INTERVAL}
           onChange={(_, value) =>
             onSendAmountPercentChange(
               asset,

@@ -1,12 +1,11 @@
 import React, { ReactNode, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   Display,
   TextVariant,
@@ -22,6 +21,7 @@ import { getTokenSortConfig } from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
+import { useDispatch } from '../../../../../store/hooks';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -56,7 +56,6 @@ export const SelectableListItem = ({
         variant={TextVariant.bodySmMedium}
         as="button"
         width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
         display={Display.Flex}
         alignItems={AlignItems.center}
       >

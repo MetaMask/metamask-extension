@@ -3,14 +3,14 @@ import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class NetworkPermissionSelectModal {
-  driver: Driver;
-
   private readonly checkBox = 'input[type="checkbox"]';
 
   private readonly confirmEditButton = {
     text: 'Update',
     tag: 'button',
   };
+
+  driver: Driver;
 
   private readonly editNetworksModalTitle = {
     text: 'Edit networks',
@@ -21,6 +21,40 @@ class NetworkPermissionSelectModal {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Validates that the specified networks are selected and all others are unselected
+   *
+   * @param expectedSelectedNetworks - Array of network names that should be selected
+   */
+  async checkNetworkStatus(expectedSelectedNetworks: string[]): Promise<void> {
+    console.log(
+      'Validating network selection in edit network permission modal',
+    );
+    const networkItems = await this.driver.findElements(this.networkListItems);
+
+    for (const networkItem of networkItems) {
+      const networkNameDiv = await networkItem.findElement(
+        By.css('div[data-testid]'),
+      );
+      const networkName = await networkNameDiv.getAttribute('data-testid');
+      const checkbox = await networkItem.findElement(By.css(this.checkBox));
+      const isChecked = await checkbox.isSelected();
+      if (expectedSelectedNetworks.includes(networkName)) {
+        assert.strictEqual(
+          isChecked,
+          true,
+          `Expected ${networkName} to be selected.`,
+        );
+      } else {
+        assert.strictEqual(
+          isChecked,
+          false,
+          `Expected ${networkName} to NOT be selected.`,
+        );
+      }
+    }
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -104,40 +138,6 @@ class NetworkPermissionSelectModal {
       const shouldNotBeChecked = isChecked && !isSelectedNetwork;
       if (shouldBeChecked || shouldNotBeChecked) {
         await checkbox.click();
-      }
-    }
-  }
-
-  /**
-   * Validates that the specified networks are selected and all others are unselected
-   *
-   * @param expectedSelectedNetworks - Array of network names that should be selected
-   */
-  async checkNetworkStatus(expectedSelectedNetworks: string[]): Promise<void> {
-    console.log(
-      'Validating network selection in edit network permission modal',
-    );
-    const networkItems = await this.driver.findElements(this.networkListItems);
-
-    for (const networkItem of networkItems) {
-      const networkNameDiv = await networkItem.findElement(
-        By.css('div[data-testid]'),
-      );
-      const networkName = await networkNameDiv.getAttribute('data-testid');
-      const checkbox = await networkItem.findElement(By.css(this.checkBox));
-      const isChecked = await checkbox.isSelected();
-      if (expectedSelectedNetworks.includes(networkName)) {
-        assert.strictEqual(
-          isChecked,
-          true,
-          `Expected ${networkName} to be selected.`,
-        );
-      } else {
-        assert.strictEqual(
-          isChecked,
-          false,
-          `Expected ${networkName} to NOT be selected.`,
-        );
       }
     }
   }

@@ -1,12 +1,18 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import {
+  createMemoryRouter,
+  matchRoutes,
+  RouterProvider,
+} from 'react-router-dom';
 import { render as rtlRender, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -16,7 +22,8 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
-import Routes, { TokenManagementFeatureRoute } from '.';
+import { RequireAuthenticated } from '../../layouts/require-authenticated';
+import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
 
 const middlewares = [thunk];
 
@@ -222,6 +229,17 @@ describe('Routes Component', () => {
   afterEach(() => {
     mockShowNetworkDropdown.mockClear();
     mockHideNetworkDropdown.mockClear();
+  });
+
+  it('registers the hardware wallet signing page outside guarded swap routes', () => {
+    const path = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
+    const matches = matchRoutes(routeConfig, path);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      path,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
   });
 
   describe('render during send flow', () => {

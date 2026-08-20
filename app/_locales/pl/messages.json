@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Dokładność liczb po przecinku"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Liczb po przecinku musi być co najmniej 0 i nie więcej niż 36."
-  },
   "delete": {
     "message": "Usuń"
   },
@@ -348,9 +345,6 @@
   },
   "networks": {
     "message": "Sieci"
-  },
-  "nevermind": {
-    "message": "Nie ważne"
   },
   "newAccountNumberName": {
     "message": "Konto $1",

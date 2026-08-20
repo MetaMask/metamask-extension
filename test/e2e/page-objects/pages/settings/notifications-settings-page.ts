@@ -16,14 +16,6 @@ const NOTIFICATION_PREFERENCE_SECTIONS: NotificationPreferenceSection[] = [
 ];
 
 class NotificationsSettingsPage {
-  private driver: Driver;
-
-  private readonly allowNotificationsToggle =
-    '[data-testid="notifications-settings-allow-toggle-box"]';
-
-  private readonly allowNotificationsInput =
-    '[data-testid="notifications-settings-allow-toggle-input"]';
-
   private readonly allowNotificationsAddressToggle = (
     address: string,
     elementType: 'input' | 'box',
@@ -34,22 +26,15 @@ class NotificationsSettingsPage {
     )}-notifications-settings-toggle-${elementType}"]`;
   };
 
-  private readonly sectionButton = (section: NotificationPreferenceSection) =>
-    `[data-testid="notifications-settings-section-${section}"]`;
+  private readonly allowNotificationsInput =
+    '[data-testid="notifications-settings-allow-toggle-input"]';
 
-  private readonly sectionContent = (section: NotificationPreferenceSection) =>
-    `[data-testid="notifications-settings-section-content-${section}"]`;
+  private readonly allowNotificationsToggle =
+    '[data-testid="notifications-settings-allow-toggle-box"]';
 
-  private readonly sectionInAppNotificationsToggle = (
-    section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
-  ) => `[data-testid="${section}-in-app-notifications-toggle-box"]`;
+  private driver: Driver;
 
-  private readonly sectionInAppNotificationsInput = (
-    section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
-  ) => `[data-testid="${section}-in-app-notifications-toggle-input"]`;
-
-  private readonly headerBackButton =
-    '[data-testid="settings-header-back-button"]';
+  private readonly headerBackButton = '[data-testid="page-header-back-button"]';
 
   private readonly notificationsPerAccountSection =
     '[data-testid="notifications-settings-per-account"]';
@@ -60,29 +45,82 @@ class NotificationsSettingsPage {
   private readonly notificationToggleOff =
     '.toggle-button--off.notifications-settings-box__toggle';
 
+  private readonly sectionButton = (section: NotificationPreferenceSection) =>
+    `[data-testid="notifications-settings-section-${section}"]`;
+
+  private readonly sectionContent = (section: NotificationPreferenceSection) =>
+    `[data-testid="notifications-settings-section-content-${section}"]`;
+
+  private readonly sectionInAppNotificationsInput = (
+    section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
+  ) => `[data-testid="${section}-in-app-notifications-toggle-input"]`;
+
+  private readonly sectionInAppNotificationsToggle = (
+    section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
+  ) => `[data-testid="${section}-in-app-notifications-toggle-box"]`;
+
+  private readonly shortPresenceTimeoutMs = 1000;
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.allowNotificationsToggle,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for notifications settings page to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Notifications Settings page is loaded');
+  async assertMainNotificationSettingsTogglesState(
+    driver: Driver,
+    {
+      generalExpectedState = 'enabled',
+      marketingInAppExpectedState = 'enabled',
+    }: {
+      generalExpectedState?: 'enabled' | 'disabled';
+      marketingInAppExpectedState?: 'enabled' | 'disabled';
+    } = {},
+  ) {
+    const notificationsSettingsPage = new NotificationsSettingsPage(driver);
+    await notificationsSettingsPage.checkPageIsLoaded();
+    await notificationsSettingsPage.waitForNotificationPreferenceSections();
+    await notificationsSettingsPage.checkNotificationState({
+      toggleType: 'general',
+      expectedState: generalExpectedState,
+    });
+    await notificationsSettingsPage.checkNotificationState({
+      toggleType: 'product',
+      expectedState: marketingInAppExpectedState,
+    });
+    return notificationsSettingsPage;
   }
 
-  async disableNotifications(): Promise<void> {
-    console.log('Clicking on the disable notifications toggle');
-    await this.driver.clickElement(this.allowNotificationsToggle);
-    await this.driver.waitForSelector(this.notificationToggleOff);
+  private async assertToggleInputState({
+    selector,
+    description,
+    expectedState,
+  }: {
+    selector: string;
+    description: string;
+    expectedState: 'enabled' | 'disabled';
+  }): Promise<void> {
+    console.log(`Checking if ${description} are ${expectedState}`);
+    const expectedValue = expectedState === 'enabled' ? 'true' : 'false';
+
+    try {
+      await this.driver.waitForElementToStopMoving(selector);
+      await this.driver.waitUntil(
+        async () => {
+          const toggle = await this.driver.findElement(selector);
+          return (await toggle.getAttribute('value')) === expectedValue;
+        },
+        { interval: 500, timeout: this.driver.timeout },
+      );
+      console.log(
+        `Successfully verified ${description} to be ${expectedState}`,
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(
+          `Failed to verify ${description} state: ${error.message}`,
+        );
+      }
+      throw error;
+    }
   }
 
   async checkNotificationSectionIsHidden(): Promise<void> {
@@ -106,90 +144,6 @@ class NotificationsSettingsPage {
       );
       throw error;
     }
-  }
-
-  private readonly shortPresenceTimeoutMs = 1000;
-
-  /**
-   * Waits for the notification preference section list to render. The section
-   * rows appear as soon as notifications are enabled; note that selecting a row
-   * only opens the section once the authenticated user storage preferences have
-   * finished loading (otherwise the app redirects back to the list), which is
-   * handled by `goToNotificationSection`.
-   */
-  async waitForNotificationPreferenceSections(): Promise<void> {
-    console.log('Waiting for notification preference section list to render');
-    await this.driver.waitForSelector(this.notificationsPerTypesSection, {
-      timeout: 30000,
-    });
-
-    for (const section of NOTIFICATION_PREFERENCE_SECTIONS) {
-      await this.driver.waitForSelector(this.sectionButton(section));
-    }
-    console.log('Notification preference section list is rendered');
-  }
-
-  private async goToMainSettings(): Promise<void> {
-    for (const section of NOTIFICATION_PREFERENCE_SECTIONS) {
-      if (
-        await this.driver.isElementPresentAndVisible(
-          this.sectionContent(section),
-          this.shortPresenceTimeoutMs,
-        )
-      ) {
-        await this.driver.clickElement(this.headerBackButton);
-        await this.driver.waitForSelector(this.notificationsPerTypesSection);
-        return;
-      }
-    }
-  }
-
-  private async goToNotificationSection(
-    section: NotificationPreferenceSection,
-  ): Promise<void> {
-    if (
-      await this.driver.isElementPresentAndVisible(
-        this.sectionContent(section),
-        this.shortPresenceTimeoutMs,
-      )
-    ) {
-      return;
-    }
-
-    await this.goToMainSettings();
-    await this.waitForNotificationPreferenceSections();
-
-    // Section rows render as soon as notifications are enabled, but selecting
-    // one only opens the section once the authenticated user storage
-    // preferences have finished loading; until then the app redirects back to
-    // the list. Retry the selection until the section content is shown.
-    await this.driver.waitUntil(
-      async () => {
-        if (
-          await this.driver.isElementPresentAndVisible(
-            this.sectionContent(section),
-            this.shortPresenceTimeoutMs,
-          )
-        ) {
-          return true;
-        }
-
-        if (
-          await this.driver.isElementPresentAndVisible(
-            this.sectionButton(section),
-            this.shortPresenceTimeoutMs,
-          )
-        ) {
-          await this.driver.clickElement(this.sectionButton(section));
-        }
-
-        return this.driver.isElementPresentAndVisible(
-          this.sectionContent(section),
-          this.shortPresenceTimeoutMs,
-        );
-      },
-      { interval: 500, timeout: this.driver.timeout },
-    );
   }
 
   /**
@@ -245,16 +199,19 @@ class NotificationsSettingsPage {
     });
   }
 
-  async getSectionInAppNotificationState(
-    section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
-  ): Promise<'enabled' | 'disabled'> {
-    await this.goToNotificationSection(section);
-    const selector = this.sectionInAppNotificationsInput(section);
-    await this.driver.waitForElementToStopMoving(selector);
-    const toggle = await this.driver.findElement(selector);
-    return (await toggle.getAttribute('value')) === 'true'
-      ? 'enabled'
-      : 'disabled';
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.allowNotificationsToggle,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for notifications settings page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Notifications Settings page is loaded');
   }
 
   async checkSectionInAppNotificationState({
@@ -270,40 +227,6 @@ class NotificationsSettingsPage {
       description: `${section} in-app notifications`,
       expectedState,
     });
-  }
-
-  private async assertToggleInputState({
-    selector,
-    description,
-    expectedState,
-  }: {
-    selector: string;
-    description: string;
-    expectedState: 'enabled' | 'disabled';
-  }): Promise<void> {
-    console.log(`Checking if ${description} are ${expectedState}`);
-    const expectedValue = expectedState === 'enabled' ? 'true' : 'false';
-
-    try {
-      await this.driver.waitForElementToStopMoving(selector);
-      await this.driver.waitUntil(
-        async () => {
-          const toggle = await this.driver.findElement(selector);
-          return (await toggle.getAttribute('value')) === expectedValue;
-        },
-        { interval: 500, timeout: this.driver.timeout },
-      );
-      console.log(
-        `Successfully verified ${description} to be ${expectedState}`,
-      );
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(
-          `Failed to verify ${description} state: ${error.message}`,
-        );
-      }
-      throw error;
-    }
   }
 
   /**
@@ -375,28 +298,104 @@ class NotificationsSettingsPage {
     }
   }
 
-  async assertMainNotificationSettingsTogglesState(
-    driver: Driver,
-    {
-      generalExpectedState = 'enabled',
-      marketingInAppExpectedState = 'enabled',
-    }: {
-      generalExpectedState?: 'enabled' | 'disabled';
-      marketingInAppExpectedState?: 'enabled' | 'disabled';
-    } = {},
-  ) {
-    const notificationsSettingsPage = new NotificationsSettingsPage(driver);
-    await notificationsSettingsPage.checkPageIsLoaded();
-    await notificationsSettingsPage.waitForNotificationPreferenceSections();
-    await notificationsSettingsPage.checkNotificationState({
-      toggleType: 'general',
-      expectedState: generalExpectedState,
+  async disableNotifications(): Promise<void> {
+    console.log('Clicking on the disable notifications toggle');
+    await this.driver.clickElement(this.allowNotificationsToggle);
+    await this.driver.waitForSelector(this.notificationToggleOff);
+  }
+
+  async getSectionInAppNotificationState(
+    section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
+  ): Promise<'enabled' | 'disabled'> {
+    await this.goToNotificationSection(section);
+    const selector = this.sectionInAppNotificationsInput(section);
+    await this.driver.waitForElementToStopMoving(selector);
+    const toggle = await this.driver.findElement(selector);
+    return (await toggle.getAttribute('value')) === 'true'
+      ? 'enabled'
+      : 'disabled';
+  }
+
+  private async goToMainSettings(): Promise<void> {
+    for (const section of NOTIFICATION_PREFERENCE_SECTIONS) {
+      if (
+        await this.driver.isElementPresentAndVisible(
+          this.sectionContent(section),
+          this.shortPresenceTimeoutMs,
+        )
+      ) {
+        await this.driver.clickElement(this.headerBackButton);
+        await this.driver.waitForSelector(this.notificationsPerTypesSection);
+        return;
+      }
+    }
+  }
+
+  private async goToNotificationSection(
+    section: NotificationPreferenceSection,
+  ): Promise<void> {
+    if (
+      await this.driver.isElementPresentAndVisible(
+        this.sectionContent(section),
+        this.shortPresenceTimeoutMs,
+      )
+    ) {
+      return;
+    }
+
+    await this.goToMainSettings();
+    await this.waitForNotificationPreferenceSections();
+
+    // Section rows render as soon as notifications are enabled, but selecting
+    // one only opens the section once the authenticated user storage
+    // preferences have finished loading; until then the app redirects back to
+    // the list. Retry the selection until the section content is shown.
+    await this.driver.waitUntil(
+      async () => {
+        if (
+          await this.driver.isElementPresentAndVisible(
+            this.sectionContent(section),
+            this.shortPresenceTimeoutMs,
+          )
+        ) {
+          return true;
+        }
+
+        if (
+          await this.driver.isElementPresentAndVisible(
+            this.sectionButton(section),
+            this.shortPresenceTimeoutMs,
+          )
+        ) {
+          await this.driver.clickElement(this.sectionButton(section));
+        }
+
+        return this.driver.isElementPresentAndVisible(
+          this.sectionContent(section),
+          this.shortPresenceTimeoutMs,
+        );
+      },
+      { interval: 500, timeout: this.driver.timeout },
+    );
+  }
+
+  /**
+   * Waits for the notification preference section list to render. The section
+   * rows appear as soon as notifications are enabled; note that selecting a row
+   * only opens the section once the authenticated user storage preferences have
+   * finished loading (otherwise the app redirects back to the list), which is
+   * handled by `goToNotificationSection`.
+   */
+  async waitForNotificationPreferenceSections(): Promise<void> {
+    console.log('Waiting for notification preference section list to render');
+    await this.driver.waitForSelector(this.notificationsPerTypesSection, {
+      timeout: 30000,
     });
-    await notificationsSettingsPage.checkNotificationState({
-      toggleType: 'product',
-      expectedState: marketingInAppExpectedState,
-    });
-    return notificationsSettingsPage;
+
+    for (const section of NOTIFICATION_PREFERENCE_SECTIONS) {
+      await this.driver.waitForSelector(this.sectionButton(section));
+    }
+    console.log('Notification preference section list is rendered');
   }
 }
 

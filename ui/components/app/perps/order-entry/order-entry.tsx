@@ -4,23 +4,17 @@ import {
   twMerge,
   Box,
   BoxFlexDirection,
-  BoxAlignItems,
   Button,
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Tag } from '../../../component-library';
 import { usePerpsOrderForm } from '../../../../hooks/perps';
 import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
-import {
-  BackgroundColor,
-  BorderRadius,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
 import { getDisplaySymbol } from '../utils';
+import type { OrderType } from '../types';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -29,6 +23,7 @@ import { LeverageSlider } from './components/leverage-slider';
 import { OrderSummary } from './components/order-summary';
 import { AutoCloseSection } from './components/auto-close-section';
 import { CloseAmountSection } from './components/close-amount-section';
+import { OrderTypeToggle } from './components/order-type-toggle';
 /**
  * OrderEntry - Main component for creating perps orders
  *
@@ -66,6 +61,8 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.autoFocusUsd
  * @param props.autoFocusLimitPrice
  * @param props.usdPlaceholder
+ * @param props.limitPricePrefill
+ * @param props.onInputMethodChange
  */
 export const OrderEntry = ({
   asset,
@@ -75,6 +72,7 @@ export const OrderEntry = ({
   initialDirection = 'long',
   onSubmit,
   onFormStateChange,
+  onInputMethodChange,
   onCalculationsChange,
   showSubmitButton = true,
   showOrderSummary = true,
@@ -90,6 +88,7 @@ export const OrderEntry = ({
   autoFocusUsd = false,
   autoFocusLimitPrice = false,
   usdPlaceholder,
+  limitPricePrefill,
 }: OrderEntryProps) => {
   const t = useI18nContext();
   const activeProvider = useSelector(selectPerpsActiveProvider);
@@ -141,6 +140,7 @@ export const OrderEntry = ({
     szDecimals: marketInfo?.szDecimals,
     markPrice,
     feeRate,
+    limitPricePrefill,
   });
 
   const isLong = formState.direction === 'long';
@@ -191,7 +191,7 @@ export const OrderEntry = ({
     }
   }, [calculations, hasCalculationsChanged]);
 
-  const handleOrderTypeClick = (type: 'market' | 'limit') => {
+  const handleOrderTypeClick = (type: OrderType) => {
     handleOrderTypeChange(type);
     onOrderTypeChange?.(type);
   };
@@ -280,63 +280,10 @@ export const OrderEntry = ({
       >
         {/* Order Type: Market and Limit as separate pills (Tag component) — hidden in close mode */}
         {mode !== 'close' && (
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={2}
-            className="w-full"
-          >
-            <Tag
-              as="button"
-              type="button"
-              label={t('perpsMarket')}
-              onClick={() => handleOrderTypeClick('market')}
-              backgroundColor={
-                formState.type === 'market'
-                  ? BackgroundColor.backgroundMuted
-                  : BackgroundColor.backgroundDefault
-              }
-              borderWidth={0}
-              className={twMerge(
-                'cursor-pointer transition-colors',
-                formState.type !== 'market' && 'hover:opacity-80',
-              )}
-              borderRadius={BorderRadius.pill}
-              labelProps={{
-                color:
-                  formState.type === 'market'
-                    ? TextColor.textDefault
-                    : TextColor.textAlternative,
-              }}
-              padding={4}
-              data-testid="order-type-market"
-            />
-            <Tag
-              as="button"
-              type="button"
-              label={t('perpsLimit')}
-              onClick={() => handleOrderTypeClick('limit')}
-              backgroundColor={
-                formState.type === 'limit'
-                  ? BackgroundColor.backgroundMuted
-                  : BackgroundColor.backgroundDefault
-              }
-              borderWidth={0}
-              borderRadius={BorderRadius.pill}
-              className={twMerge(
-                'cursor-pointer transition-colors',
-                formState.type !== 'limit' && 'hover:opacity-80',
-              )}
-              labelProps={{
-                color:
-                  formState.type === 'limit'
-                    ? TextColor.textDefault
-                    : TextColor.textAlternative,
-              }}
-              padding={4}
-              data-testid="order-type-limit"
-            />
-          </Box>
+          <OrderTypeToggle
+            orderType={formState.type}
+            onOrderTypeChange={handleOrderTypeClick}
+          />
         )}
 
         {/* Close Mode: Show CloseAmountSection */}
@@ -369,6 +316,7 @@ export const OrderEntry = ({
           <AmountInput
             amount={formState.amount}
             onAmountChange={handleAmountChange}
+            onInputMethodChange={onInputMethodChange}
             balancePercent={formState.balancePercent}
             onBalancePercentChange={handleBalancePercentChange}
             availableBalance={availableBalance}

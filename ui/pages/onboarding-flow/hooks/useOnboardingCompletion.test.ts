@@ -6,10 +6,17 @@ import {
 } from '../../../helpers/constants/routes';
 import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
 import * as deepLinkUtils from '../../../../shared/lib/deep-links/utils';
+import {
+  INVALID,
+  MISSING,
+  VALID,
+} from '../../../../shared/lib/deep-links/verify';
 import * as useSidePanelEnabledHook from '../../../hooks/useSidePanelEnabled';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useOnboardingCompletion } from './useOnboardingCompletion';
+
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -18,7 +25,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
   return {
     useAnalytics: () => ({
-      trackEvent: jest.fn(),
+      trackEvent: mockTrackEvent,
       createEventBuilder,
     }),
   };
@@ -45,6 +52,10 @@ jest.mock('webextension-polyfill', () => ({
     },
   },
 }));
+
+Object.assign(globalThis, {
+  chrome: jest.requireMock('webextension-polyfill'),
+});
 
 jest.mock('../../../../shared/lib/deep-links/utils');
 jest.mock('../../../hooks/useSidePanelEnabled');
@@ -340,6 +351,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Redirect,
         url: externalUrl,
+        signature: VALID,
       });
 
       const mockAssign = jest.fn();
@@ -416,6 +428,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Redirect,
         url: externalUrl,
+        signature: VALID,
       });
 
       const mockAssign = jest.fn();
@@ -494,11 +507,32 @@ describe('useOnboardingCompletion', () => {
       consoleErrorSpy.mockRestore();
     });
 
+    it('falls through to popup completion when no active tabs are found', async () => {
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([]);
+
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        mockState,
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+        expect(mockCompleteOnboarding).toHaveBeenCalled();
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+    });
+
     it('skips side panel opening when deferred deep link with Navigate type is present', async () => {
       const testRoute = '/home';
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Navigate,
         route: testRoute,
+        signature: VALID,
       });
 
       const browserMock = jest.requireMock('webextension-polyfill');
@@ -574,6 +608,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Interstitial,
         urlPathAndQuery,
+        signature: INVALID,
       });
       (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
         `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
@@ -633,6 +668,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Redirect,
         url: externalUrl,
+        signature: VALID,
       });
 
       const { result } = renderHookWithProvider(
@@ -664,6 +700,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Navigate,
         route: testRoute,
+        signature: VALID,
       });
 
       const { result } = renderHookWithProvider(
@@ -688,6 +725,52 @@ describe('useOnboardingCompletion', () => {
         expect(mockUseNavigate).toHaveBeenCalledWith(testRoute);
         expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
       });
+    });
+
+    it('waits for deep link tracking before navigating', async () => {
+      let resolveTrackEvent: () => void = () => undefined;
+      mockTrackEvent.mockReturnValueOnce(
+        new Promise<void>((resolve) => {
+          resolveTrackEvent = resolve;
+        }),
+      );
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Navigate,
+        route: '/swap',
+        signature: MISSING,
+      });
+
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            completedOnboarding: true,
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink: 'https://link.metamask.io/swap',
+            },
+          },
+        },
+      );
+
+      let completionPromise!: Promise<void>;
+      act(() => {
+        completionPromise = result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+
+      await act(async () => {
+        resolveTrackEvent();
+        await completionPromise;
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/swap');
     });
 
     it('navigates to DEFAULT_ROUTE when deferred deep link result is null and side panel is disabled', async () => {
@@ -748,6 +831,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Interstitial,
         urlPathAndQuery,
+        signature: INVALID,
       });
       (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
         `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,

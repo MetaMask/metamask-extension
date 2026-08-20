@@ -1,5 +1,4 @@
 import { asset, AssetQueryParams } from './asset';
-import { isDeepLinkRouteAllowedToBypassInterstitial } from './interstitial-bypass';
 import { Destination } from './route';
 
 function assertPathDestination(
@@ -9,10 +8,6 @@ function assertPathDestination(
 }
 
 describe('assetRoute', () => {
-  it('is whitelisted to skip the deep link interstitial', () => {
-    expect(isDeepLinkRouteAllowedToBypassInterstitial(asset)).toBe(true);
-  });
-
   type TestCase = {
     assetIdParam: string | undefined;
     expectedPath: string;

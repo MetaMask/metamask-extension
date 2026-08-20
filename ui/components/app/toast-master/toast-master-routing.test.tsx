@@ -11,7 +11,7 @@ jest.mock('../perps/perps-withdraw-toast', () => ({
   ),
 }));
 
-jest.mock('../../ui/survey-toast', () => ({
+jest.mock('../../ui/survey-toast/survey-toast', () => ({
   SurveyToast: () => null,
 }));
 

@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
 import {
   formatChainIdToCaip,
-  QuoteResponse,
   QuoteStreamCompleteReason,
   RequestStatus,
 } from '@metamask/bridge-controller';
@@ -13,7 +11,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import mockBridgeQuotesErc20Erc20 from '../../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import mockBridgeQuotesErc20Erc20 from '../../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createTestProviderTools } from '../../../../../test/stub/provider';
 import { setBackgroundConnection } from '../../../../store/background-connection';
 import configureStore from '../../../../store/store';
@@ -26,12 +24,11 @@ import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import PrepareBridgePage from '../prepare-bridge-page';
 
 // Mock the bridge hooks
-jest.mock('../../hooks/useGasIncluded7702', () => ({
-  useGasIncluded7702: jest.fn().mockReturnValue(false),
-}));
-
-jest.mock('../../hooks/useIsSendBundleSupported', () => ({
-  useIsSendBundleSupported: jest.fn().mockReturnValue(false),
+jest.mock('../../hooks/useGasIncludedSupport', () => ({
+  useGasIncludedSupport: jest.fn().mockReturnValue({
+    gasIncluded: false,
+    gasIncluded7702: false,
+  }),
 }));
 
 const mockUseHardwareWalletConfig = jest.fn();
@@ -77,6 +74,18 @@ describe('BridgeAlertBannerList', () => {
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Disconnected },
     });
+  });
+
+  it('renders nothing when there are no alerts and no hardware wallet warning', () => {
+    const mockStore = createBridgeMockStore({});
+    const { queryByTestId } = renderWithProvider(
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
+      configureStore(mockStore),
+    );
+
+    expect(queryByTestId('bridge-banner-alerts')).not.toBeInTheDocument();
   });
 
   // @ts-expect-error: each is a valid test function in jest
@@ -210,12 +219,12 @@ describe('BridgeAlertBannerList', () => {
           quotesInitialLoadTime: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
           quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesErc20Erc20,
           quoteRequest: {
             srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
             destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-            srcChainId: 1,
-            destChainId: 10,
+            srcChainId: 10,
+            destChainId: 137,
             walletAddress: '0x123',
             slippage: 0.5,
             srcTokenAmount: '1',
@@ -282,7 +291,7 @@ describe('BridgeAlertBannerList', () => {
           quotesInitialLoadTime: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
           quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesErc20Erc20,
           quoteRequest: {
             srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
             destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -320,89 +329,4 @@ describe('BridgeAlertBannerList', () => {
       ).toMatchSnapshot();
     });
   });
-
-  // @ts-expect-error: each is a valid test function in jest
-  it.each([
-    [
-      'price impact error',
-      {
-        isPriceImpactError: true,
-      },
-    ],
-    [
-      'price impact warning',
-      {
-        isPriceImpactWarning: true,
-      },
-    ],
-  ])(
-    'should render the %s alert',
-    async (_: string, validationErrors: Record<string, boolean>) => {
-      jest
-        .spyOn(reactRouterUtils, 'useSearchParams')
-        .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
-      validationErrors &&
-        jest
-          .spyOn(bridgeSelectors, 'getValidationErrors')
-          .mockReturnValue(validationErrors as never);
-      // Provide price data so the price-data-unavailable banner does not appear
-      // (mockBridgeQuotesErc20Erc20 has no priceData field)
-      jest
-        .spyOn(bridgeSelectors, 'getActiveQuotePriceData')
-        .mockReturnValue({ priceImpact: 0 } as never);
-      const mockStore = createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromTokenInputValue: '1',
-          fromToken: {
-            assetId: 'eip155:10/slip44:60',
-            address: '0x0000000000000000000000000000000000000000',
-            symbol: 'ETH',
-            name: 'Ethereum',
-            chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM),
-            decimals: 18,
-          },
-          toToken: {
-            assetId: toAssetId(
-              '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-              formatChainIdToCaip(CHAIN_IDS.POLYGON),
-            ),
-            chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
-            address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-            symbol: 'USDC',
-            name: 'Native USD Coin (POS)',
-            decimals: 6,
-          },
-        },
-        bridgeStateOverrides: {
-          quotesInitialLoadTime: Date.now(),
-          quotesLoadingStatus: RequestStatus.FETCHED,
-          quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
-            ...quote,
-            quote: {
-              ...quote.quote,
-              priceData: { priceImpact: '0.05' },
-            },
-          })) as unknown as QuoteResponse[],
-          quoteRequest: {
-            srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-            destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-            srcChainId: 1,
-            destChainId: 10,
-            walletAddress: '0x123',
-            slippage: 0.5,
-            srcTokenAmount: '1',
-          },
-        },
-      });
-      const { getByTestId } = renderWithProvider(
-        <HardwareWalletProvider>
-          <PrepareBridgePage onOpenSettings={jest.fn()} />
-        </HardwareWalletProvider>,
-        configureStore(mockStore),
-      );
-
-      expect(getByTestId('bridge-banner-alerts')).toHaveTextContent('');
-    },
-  );
 });

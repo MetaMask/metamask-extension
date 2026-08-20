@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   type INotification,
@@ -40,6 +40,7 @@ import {
   getNotificationPreferences,
 } from '../../store/actions';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
+import { useDispatch } from '../../store/hooks';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
@@ -163,8 +164,6 @@ export const filterNotifications = (
   return notifications;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Notifications() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();

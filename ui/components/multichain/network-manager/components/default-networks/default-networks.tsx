@@ -1,7 +1,13 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { useSelector } from 'react-redux';
+import {
+  BtcScope,
+  EthScope,
+  SolScope,
+  TrxScope,
+  XlmScope,
+} from '@metamask/keyring-api';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
   getFeaturedEvmNetworks,
@@ -62,6 +68,7 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import { useIsNetworkGasSponsored } from '../../../../../hooks/useIsNetworkGasSponsored';
+import { useDispatch } from '../../../../../store/hooks';
 
 const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
   const t = useI18nContext();
@@ -165,6 +172,10 @@ const DefaultNetworks = memo(() => {
 
   const trxAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
+  );
+
+  const xlmAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, XlmScope.Pubnet),
   );
 
   // Get blacklisted chain IDs from feature flag
@@ -304,6 +315,9 @@ const DefaultNetworks = memo(() => {
         if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
           return true;
         }
+        if (xlmAccountGroup && network.chainId === XlmScope.Pubnet) {
+          return true;
+        }
         return false;
       });
     };
@@ -376,6 +390,7 @@ const DefaultNetworks = memo(() => {
     btcAccountGroup,
     solAccountGroup,
     trxAccountGroup,
+    xlmAccountGroup,
     evmAccountGroup,
     dispatch,
     enabledChainIds,

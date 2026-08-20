@@ -23,13 +23,18 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 
-import { isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
+import type { Json } from '@metamask/utils';
 import chalk from 'chalk';
 import {
   FEATURE_FLAG_REGISTRY,
+  FeatureFlagStatus,
+  FeatureFlagType,
   getProductionRemoteFlagDefaults,
 } from './feature-flag-registry';
+import type { FeatureFlagRegistryEntry } from './feature-flag-registry';
 
 const PRODUCTION_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod';
@@ -328,12 +333,45 @@ function formatSyncReport(result: SyncResult): string {
 
 const REGISTRY_FILE_PATH = path.resolve(__dirname, 'feature-flag-registry.ts');
 
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+/**
+ * Registry keys that use computed property syntax instead of string literals.
+ */
+const COMPUTED_REGISTRY_KEYS: Readonly<Record<string, string>> = {
+  enabledAdvancedPermissions: '[ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]',
+  extensionUxActiveDomainMetrics: '[ACTIVE_TAB_DOMAIN_METRICS_FLAG]',
+};
+
+const COMPUTED_KEY_TO_NAME: Readonly<Record<string, string>> =
+  Object.fromEntries(
+    Object.entries(COMPUTED_REGISTRY_KEYS).map(([name, keySyntax]) => [
+      keySyntax.slice(1, -1),
+      name,
+    ]),
+  );
+
+/**
+ * Recursively sorts object keys alphabetically for deterministic serialization.
+ * Arrays preserve element order; only object keys are sorted.
+ *
+ * @param value - Value to normalize
+ * @returns Copy with sorted object keys at every nesting level
+ */
+export function sortKeysDeep(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(sortKeysDeep);
+  }
+  if (value !== null && typeof value === 'object') {
+    const sorted: Record<string, unknown> = {};
+    for (const key of Object.keys(value as Record<string, unknown>).sort()) {
+      sorted[key] = sortKeysDeep((value as Record<string, unknown>)[key]);
+    }
+    return sorted;
+  }
+  return value;
 }
 
 function serializeValue(value: unknown, indent = 0): string {
-  const json = JSON.stringify(value, null, 2);
+  const json = JSON.stringify(sortKeysDeep(value), null, 2);
   if (indent <= 0) {
     return json;
   }
@@ -397,12 +435,362 @@ function findBalancedEnd(content: string, openIndex: number): number {
   return -1;
 }
 
+type RegistryEntryBlock = {
+  sortKey: string;
+  text: string;
+};
+
+const REGISTRY_START =
+  'export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {';
+const REGISTRY_ESLINT_DISABLE =
+  '/* eslint-disable @typescript-eslint/naming-convention -- production API flag names */';
+const REGISTRY_ESLINT_ENABLE =
+  '/* eslint-enable @typescript-eslint/naming-convention */';
+const REGISTRY_END_MARKER = '\n};';
+const REGISTRY_HELPER_MARKER = '// Helper Functions';
+
+function findRegistryBodyEnd(content: string, openBrace: number): number {
+  const helperIndex = content.indexOf(REGISTRY_HELPER_MARKER, openBrace);
+  if (helperIndex !== -1) {
+    return content.lastIndexOf(REGISTRY_END_MARKER, helperIndex);
+  }
+  return content.indexOf(REGISTRY_END_MARKER, openBrace);
+}
+
+function getRegistryKeyLine(name: string): string {
+  return COMPUTED_REGISTRY_KEYS[name] ?? name;
+}
+
+/**
+ * Returns the `name:` field source for a registry entry.
+ * Computed-key flags keep the imported constant identifier; others use a quoted string.
+ *
+ * @param name - Flag name used as the registry map key
+ * @param entry - Registry entry metadata
+ */
+function getRegistryNameField(
+  name: string,
+  entry: FeatureFlagRegistryEntry,
+): string {
+  const computedKeySyntax = COMPUTED_REGISTRY_KEYS[name];
+  if (computedKeySyntax) {
+    return `name: ${computedKeySyntax.slice(1, -1)},`;
+  }
+  return `name: '${entry.name.replace(/'/gu, "\\'")}',`;
+}
+
+function buildRegistryEntryBlockFromEntry(
+  name: string,
+  entry: FeatureFlagRegistryEntry,
+): string {
+  const serialized = serializeValue(entry.productionDefault, 4);
+  const keyLine = getRegistryKeyLine(name);
+  const typeName = entry.type === FeatureFlagType.Remote ? 'Remote' : 'Build';
+  const statusName =
+    entry.status === FeatureFlagStatus.Active ? 'Active' : 'Deprecated';
+
+  return [
+    `  ${keyLine}: {`,
+    `    inProd: ${entry.inProd},`,
+    `    ${getRegistryNameField(name, entry)}`,
+    `    productionDefault: ${serialized},`,
+    `    status: FeatureFlagStatus.${statusName},`,
+    `    type: FeatureFlagType.${typeName},`,
+    '  },',
+  ].join('\n');
+}
+
+/**
+ * Applies drift changes from a sync result onto a copy of the in-memory registry.
+ *
+ * @param result - Drift detected between production and the registry
+ * @param baseRegistry
+ * @returns Updated registry entries keyed by flag name
+ */
+export function applySyncResultToRegistry(
+  result: SyncResult,
+  baseRegistry: Record<
+    string,
+    FeatureFlagRegistryEntry
+  > = FEATURE_FLAG_REGISTRY,
+): Record<string, FeatureFlagRegistryEntry> {
+  const merged: Record<string, FeatureFlagRegistryEntry> = {};
+
+  for (const [name, entry] of Object.entries(baseRegistry)) {
+    merged[name] = cloneDeep(entry);
+  }
+
+  for (const { name, productionValue } of result.valueMismatches) {
+    if (merged[name]) {
+      merged[name] = {
+        ...merged[name],
+        productionDefault: productionValue as Json,
+      };
+    }
+  }
+
+  for (const { name, productionValue } of result.inProdMismatches) {
+    if (merged[name]) {
+      merged[name] = {
+        ...merged[name],
+        inProd: true,
+        productionDefault: productionValue as Json,
+      };
+    }
+  }
+
+  for (const { name } of result.removedFromProduction) {
+    delete merged[name];
+  }
+
+  for (const { name, value } of result.newInProduction) {
+    merged[name] = {
+      name,
+      type: FeatureFlagType.Remote,
+      inProd: true,
+      productionDefault: value as Json,
+      status: FeatureFlagStatus.Active,
+    };
+  }
+
+  return merged;
+}
+
+/**
+ * Extracts leading comment lines attached to registry entries.
+ *
+ * @param content - Full registry file source
+ */
+function extractEntryComments(content: string): Map<string, string> {
+  const commentByFlag = new Map<string, string>();
+  for (const block of extractRegistryEntryBlocks(content)) {
+    const commentMatch = block.text.match(/^((?:[ \t]*\/\/[^\n]*\n)+)/u);
+    if (commentMatch) {
+      commentByFlag.set(block.sortKey, commentMatch[1]);
+    }
+  }
+  return commentByFlag;
+}
+
+/**
+ * Extracts comment lines that appear *inside* an entry block (between the
+ * opening `{` and closing `},`). These are distinct from the leading comments
+ * captured by `extractEntryComments`.
+ *
+ * @param content - Full registry file source
+ */
+function extractIntraEntryComments(content: string): Map<string, string[]> {
+  const result = new Map<string, string[]>();
+  for (const block of extractRegistryEntryBlocks(content)) {
+    const braceIndex = block.text.indexOf('{');
+    if (braceIndex === -1) {
+      continue;
+    }
+    const inner = block.text.slice(braceIndex + 1);
+    const comments: string[] = [];
+    for (const line of inner.split('\n')) {
+      if (line.trim().startsWith('//')) {
+        comments.push(line);
+      }
+    }
+    if (comments.length > 0) {
+      result.set(block.sortKey, comments);
+    }
+  }
+  return result;
+}
+
+/**
+ * Rebuilds the registry block with sorted entries and deep-sorted productionDefault keys.
+ *
+ * @param content - Full registry file source
+ * @param registry - Registry entries to render
+ */
+export function rebuildRegistryContent(
+  content: string,
+  registry: Record<string, FeatureFlagRegistryEntry>,
+): string {
+  const commentByFlag = extractEntryComments(content);
+  const intraCommentByFlag = extractIntraEntryComments(content);
+  const sortedNames = Object.keys(registry).sort((a, b) => a.localeCompare(b));
+  const blocks = sortedNames.map((name) => {
+    let entryBlock = buildRegistryEntryBlockFromEntry(name, registry[name]);
+    const intraComments = intraCommentByFlag.get(name);
+    if (intraComments) {
+      const braceIdx = entryBlock.indexOf('{');
+      entryBlock = `${entryBlock.slice(0, braceIdx + 1)}\n${intraComments.join('\n')}${entryBlock.slice(braceIdx + 1)}`;
+    }
+    const comment = commentByFlag.get(name);
+    return comment ? `${comment}${entryBlock}` : entryBlock;
+  });
+
+  const registryStart = content.indexOf(REGISTRY_START);
+  if (registryStart === -1) {
+    throw new Error('Could not locate FEATURE_FLAG_REGISTRY block');
+  }
+  const openBrace = content.indexOf('{', registryStart);
+  const registryEnd = findRegistryBodyEnd(content, openBrace);
+  if (openBrace === -1 || registryEnd === -1) {
+    throw new Error('Could not locate FEATURE_FLAG_REGISTRY block');
+  }
+
+  return `${content.slice(0, openBrace + 1)}\n${blocks.join('\n\n')}\n${content.slice(registryEnd)}`;
+}
+
+/**
+ * Extracts the sort key (`name` field) from a registry entry block.
+ *
+ * @param blockText - Source text for a single registry entry
+ */
+function extractEntrySortKey(blockText: string): string {
+  const quotedNameMatch = blockText.match(/^\s*name:\s*'([^']+)'/mu);
+  if (quotedNameMatch) {
+    return quotedNameMatch[1];
+  }
+
+  const unquotedNameMatch = blockText.match(/^\s*name:\s*(\w+)/mu);
+  if (unquotedNameMatch) {
+    const resolvedName = COMPUTED_KEY_TO_NAME[unquotedNameMatch[1]];
+    if (resolvedName) {
+      return resolvedName;
+    }
+  }
+
+  const computedKeyMatch = blockText.match(/^\s*\[([^\]]+)\]:/mu);
+  if (computedKeyMatch) {
+    const resolvedName = COMPUTED_KEY_TO_NAME[computedKeyMatch[1]];
+    if (resolvedName) {
+      return resolvedName;
+    }
+  }
+
+  const literalKeyMatch = blockText.match(/^\s*([\w]+):\s*\{/mu);
+  return literalKeyMatch?.[1] ?? '';
+}
+
+/**
+ * Parses registry entry blocks from the registry file content.
+ *
+ * @param content - Full registry file source
+ */
+function extractRegistryEntryBlocks(content: string): RegistryEntryBlock[] {
+  const registryStart = content.indexOf(REGISTRY_START);
+  if (registryStart === -1) {
+    return [];
+  }
+
+  const openBrace = content.indexOf('{', registryStart);
+  const registryEnd = findRegistryBodyEnd(content, openBrace);
+  if (openBrace === -1 || registryEnd === -1) {
+    return [];
+  }
+
+  const blocks: RegistryEntryBlock[] = [];
+  let index = openBrace + 1;
+
+  while (index < registryEnd) {
+    while (index < registryEnd && /\s/u.test(content[index])) {
+      index += 1;
+    }
+    if (index >= registryEnd) {
+      break;
+    }
+
+    let commentStart = -1;
+    let scanIndex = index;
+    while (
+      scanIndex < registryEnd &&
+      content.slice(scanIndex, scanIndex + 2) === '//'
+    ) {
+      if (commentStart === -1) {
+        commentStart = scanIndex;
+      }
+      const lineEnd = content.indexOf('\n', scanIndex);
+      scanIndex = lineEnd === -1 ? registryEnd : lineEnd + 1;
+      while (
+        scanIndex < registryEnd &&
+        /\s/u.test(content[scanIndex]) &&
+        content[scanIndex] !== '\n'
+      ) {
+        scanIndex += 1;
+      }
+      if (scanIndex < registryEnd && content[scanIndex] === '\n') {
+        scanIndex += 1;
+      }
+      while (scanIndex < registryEnd && /[ \t]/u.test(content[scanIndex])) {
+        scanIndex += 1;
+      }
+    }
+    index = scanIndex;
+
+    const entryMatch = content
+      .slice(index)
+      .match(/^(\s*(?:\[[^\]]+\]|[A-Za-z_][\w]*):\s*\{)/u);
+    if (!entryMatch) {
+      index += 1;
+      continue;
+    }
+
+    const blockStart = commentStart === -1 ? index : commentStart;
+
+    const entryOpenBrace = content.indexOf('{', index);
+    const entryEnd = findBalancedEnd(content, entryOpenBrace);
+    if (entryEnd === -1) {
+      break;
+    }
+
+    let blockEnd = entryEnd;
+    if (blockEnd < content.length && content[blockEnd] === ',') {
+      blockEnd += 1;
+    }
+
+    const blockText = content.slice(blockStart, blockEnd);
+    blocks.push({
+      sortKey: extractEntrySortKey(blockText),
+      text: blockText,
+    });
+
+    index = blockEnd;
+  }
+
+  return blocks;
+}
+
+export function ensureRegistryEslintWrappers(content: string): string {
+  let updated = content.replace(
+    /\s*\/\* eslint-disable @typescript-eslint\/naming-convention[^\n]*\*\/\s*\nexport const FEATURE_FLAG_REGISTRY/u,
+    '\nexport const FEATURE_FLAG_REGISTRY',
+  );
+  updated = updated.replace(
+    /\n\/\* eslint-enable @typescript-eslint\/naming-convention \*\/\n/gu,
+    '\n',
+  );
+
+  updated = updated.replace(
+    /export const FEATURE_FLAG_REGISTRY/u,
+    `${REGISTRY_ESLINT_DISABLE}\nexport const FEATURE_FLAG_REGISTRY`,
+  );
+
+  const helperMarker = REGISTRY_HELPER_MARKER;
+  const helperIndex = updated.indexOf(helperMarker);
+  if (helperIndex === -1) {
+    return updated;
+  }
+
+  const registryEnd = updated.lastIndexOf(REGISTRY_END_MARKER, helperIndex);
+  if (registryEnd !== -1) {
+    updated = `${updated.slice(0, registryEnd + 3)}\n${REGISTRY_ESLINT_ENABLE}${updated.slice(registryEnd + 3)}`;
+  }
+
+  return updated;
+}
+
 /**
  * Updates the feature-flag-registry.ts file with production values.
- * Handles value mismatches, new flags, and removed flags.
- * Uses brace-depth counting (not regex) to correctly handle nested objects.
- * Formats the file with Prettier before writing.
- * @param result
+ * Rebuilds the full registry from merged in-memory state so every entry
+ * is alphabetically ordered and productionDefault keys are deep-sorted.
+ *
+ * @param result - Drift detected between production and the registry
  */
 async function updateRegistryFile(result: SyncResult): Promise<void> {
   let content = fs.readFileSync(REGISTRY_FILE_PATH, 'utf-8');
@@ -413,208 +801,21 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
     `Production defaults last synced: ${today}`,
   );
 
-  // Replace mismatched productionDefault values using brace-depth counting
-  for (const { name, productionValue } of result.valueMismatches) {
-    const serialized = serializeValue(productionValue, 4);
-    const entryPattern = new RegExp(`^  ${escapeRegex(name)}:\\s*\\{`, 'mu');
-    const entryMatch = entryPattern.exec(content);
-    if (!entryMatch) {
-      continue;
-    }
+  const mergedRegistry = applySyncResultToRegistry(result);
+  content = rebuildRegistryContent(content, mergedRegistry);
+  content = ensureRegistryEslintWrappers(content);
 
-    const entryOpenBrace = content.indexOf('{', entryMatch.index + name.length);
-    const entryEnd = findBalancedEnd(content, entryOpenBrace);
-    if (entryEnd === -1) {
-      continue;
-    }
-
-    const pdNeedle = 'productionDefault:';
-    const pdIndex = content.indexOf(pdNeedle, entryMatch.index);
-    if (pdIndex === -1 || pdIndex >= entryEnd) {
-      continue;
-    }
-
-    let valueStart = pdIndex + pdNeedle.length;
-    while (valueStart < entryEnd && /\s/u.test(content[valueStart])) {
-      valueStart += 1;
-    }
-
-    let valueEnd: number;
-    const firstChar = content[valueStart];
-    if (firstChar === '{' || firstChar === '[') {
-      valueEnd = findBalancedEnd(content, valueStart);
-      if (valueEnd === -1) {
-        continue;
-      }
-    } else {
-      valueEnd = valueStart;
-      while (valueEnd < entryEnd && content[valueEnd] !== ',') {
-        const ch = content[valueEnd];
-        if (ch === "'" || ch === '"') {
-          valueEnd += 1;
-          while (valueEnd < entryEnd && content[valueEnd] !== ch) {
-            if (content[valueEnd] === '\\') {
-              valueEnd += 1;
-            }
-            valueEnd += 1;
-          }
-          if (valueEnd < entryEnd) {
-            valueEnd += 1;
-          }
-        } else {
-          valueEnd += 1;
-        }
-      }
-    }
-
-    content = `${content.slice(0, valueStart)}${serialized}${content.slice(valueEnd)}`;
+  const original = fs.readFileSync(REGISTRY_FILE_PATH, 'utf-8');
+  fs.writeFileSync(REGISTRY_FILE_PATH, content, 'utf-8');
+  try {
+    execSync(`yarn oxfmt -c oxfmt.config.mts "${REGISTRY_FILE_PATH}"`, {
+      cwd: path.resolve(__dirname, '../../..'),
+      stdio: 'pipe',
+    });
+  } catch (error) {
+    fs.writeFileSync(REGISTRY_FILE_PATH, original, 'utf-8');
+    throw error;
   }
-
-  // Flip inProd: false → true and update productionDefault for inProdMismatches
-  for (const { name, productionValue } of result.inProdMismatches) {
-    const entryPattern = new RegExp(`^  ${escapeRegex(name)}:\\s*\\{`, 'mu');
-    const entryMatch = entryPattern.exec(content);
-    if (!entryMatch) {
-      continue;
-    }
-
-    const entryOpenBrace = content.indexOf('{', entryMatch.index + name.length);
-    const entryEnd = findBalancedEnd(content, entryOpenBrace);
-    if (entryEnd === -1) {
-      continue;
-    }
-
-    // 1. Replace inProd: false with inProd: true within this entry
-    const inProdNeedle = 'inProd:';
-    const inProdIdx = content.indexOf(inProdNeedle, entryMatch.index);
-    if (inProdIdx !== -1 && inProdIdx < entryEnd) {
-      let tokenStart = inProdIdx + inProdNeedle.length;
-      while (tokenStart < entryEnd && /\s/u.test(content[tokenStart])) {
-        tokenStart += 1;
-      }
-      if (content.slice(tokenStart, tokenStart + 5) === 'false') {
-        content = `${content.slice(0, tokenStart)}true${content.slice(tokenStart + 5)}`;
-      }
-    }
-
-    // 2. Update productionDefault (re-find entryEnd after possible content change)
-    const entryEnd2 = findBalancedEnd(
-      content,
-      content.indexOf('{', entryMatch.index + name.length),
-    );
-    if (entryEnd2 === -1) {
-      continue;
-    }
-    const pdNeedle = 'productionDefault:';
-    const pdIndex = content.indexOf(pdNeedle, entryMatch.index);
-    if (pdIndex === -1 || pdIndex >= entryEnd2) {
-      continue;
-    }
-    const serialized = serializeValue(productionValue, 4);
-    let valueStart = pdIndex + pdNeedle.length;
-    while (valueStart < entryEnd2 && /\s/u.test(content[valueStart])) {
-      valueStart += 1;
-    }
-    let valueEnd: number;
-    const firstChar = content[valueStart];
-    if (firstChar === '{' || firstChar === '[') {
-      valueEnd = findBalancedEnd(content, valueStart);
-      if (valueEnd === -1) {
-        continue;
-      }
-    } else {
-      valueEnd = valueStart;
-      while (valueEnd < entryEnd2 && content[valueEnd] !== ',') {
-        const ch = content[valueEnd];
-        if (ch === "'" || ch === '"') {
-          valueEnd += 1;
-          while (valueEnd < entryEnd2 && content[valueEnd] !== ch) {
-            if (content[valueEnd] === '\\') {
-              valueEnd += 1;
-            }
-            valueEnd += 1;
-          }
-          if (valueEnd < entryEnd2) {
-            valueEnd += 1;
-          }
-        } else {
-          valueEnd += 1;
-        }
-      }
-    }
-    content =
-      content.slice(0, valueStart) + serialized + content.slice(valueEnd);
-  }
-
-  // Remove entries no longer in production using brace-depth counting
-  for (const { name } of result.removedFromProduction) {
-    const entryPattern = new RegExp(`^  ${escapeRegex(name)}:\\s*\\{`, 'mu');
-    const entryMatch = entryPattern.exec(content);
-    if (!entryMatch) {
-      continue;
-    }
-
-    const openBrace = content.indexOf('{', entryMatch.index + name.length);
-    const balancedEnd = findBalancedEnd(content, openBrace);
-    if (balancedEnd === -1) {
-      continue;
-    }
-
-    let removeEnd = balancedEnd;
-    if (removeEnd < content.length && content[removeEnd] === ',') {
-      removeEnd += 1;
-    }
-    if (removeEnd < content.length && content[removeEnd] === '\n') {
-      removeEnd += 1;
-    }
-
-    let removeStart = entryMatch.index;
-    // Include preceding eslint-disable comment if present
-    const beforeEntry = content.lastIndexOf('\n', removeStart - 1);
-    if (beforeEntry >= 0) {
-      const prevLineStart = content.lastIndexOf('\n', beforeEntry - 1) + 1;
-      const prevLine = content.slice(prevLineStart, beforeEntry).trim();
-      if (prevLine.startsWith('// eslint-disable')) {
-        removeStart = prevLineStart;
-      }
-    }
-    // Include leading blank line to avoid double blank lines
-    if (removeStart > 0 && content[removeStart - 1] === '\n') {
-      removeStart -= 1;
-    }
-
-    content = content.slice(0, removeStart) + content.slice(removeEnd);
-  }
-
-  if (result.newInProduction.length > 0) {
-    const newEntries = result.newInProduction
-      .map(({ name, value }) => {
-        const serialized = serializeValue(value, 4);
-        return [
-          `  ${name}: {`,
-          `    name: '${name.replace(/'/gu, "\\'")}',`,
-          '    type: FeatureFlagType.Remote,',
-          '    inProd: true,',
-          `    productionDefault: ${serialized},`,
-          '    status: FeatureFlagStatus.Active,',
-          '  },',
-        ].join('\n');
-      })
-      .join('\n\n');
-
-    content = content.replace(
-      /(\n)(\};[\s\n]*\/\/ =+\s*\n\/\/ Helper Functions)/u,
-      (_, g1, g2) => `\n${newEntries}\n${g1}${g2}`,
-    );
-  }
-
-  const prettier = (await import('prettier')).default;
-  const prettierOptions = await prettier.resolveConfig(REGISTRY_FILE_PATH);
-  const formatted = await prettier.format(content, {
-    ...prettierOptions,
-    filepath: REGISTRY_FILE_PATH,
-  });
-  fs.writeFileSync(REGISTRY_FILE_PATH, formatted ?? content, 'utf-8');
   console.log(chalk.green(`\n✓ Registry file updated: ${REGISTRY_FILE_PATH}`));
   console.log(chalk.yellow('Run `yarn feature-flags:sync` to verify.'));
 }
@@ -656,7 +857,11 @@ async function main(): Promise<void> {
   }
 }
 
-// Only run when executed directly (not when imported for tests)
-if (typeof jest === 'undefined') {
+// Only run when executed directly (not when imported for tests or scripts)
+const isDirectExecution =
+  typeof jest === 'undefined' &&
+  Boolean(process.argv[1]?.includes('sync-production-flags'));
+
+if (isDirectExecution) {
   main();
 }

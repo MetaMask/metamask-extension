@@ -61,14 +61,15 @@ describe('Deep Link - Rewards Route', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        // navigate to the route
+        // navigate to the route and make sure it
+        // redirects to the deep link interstitial page
         const preparedUrl = await prepareDeepLinkUrl({
           route: REWARDS_ROUTE,
           signed: 'signed with sig_params',
           privateKey: keyPair.privateKey,
         });
 
-        // Navigate through the deep link flow and verify the rewards page has been loaded.
+        // Navigate through deep link interstitial and verify the rewards page has been loaded!
         await navigateDeepLinkToDestination(
           driver,
           preparedUrl,

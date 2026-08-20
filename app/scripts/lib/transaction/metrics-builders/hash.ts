@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionStatus } from '@metamask/transaction-controller';
 import type { MetricsProperties, TransactionMetricsBuilder } from './types';
 

@@ -5,8 +5,6 @@ import { Driver } from '../../../webdriver/driver';
  * This page allows users to view and manage permissions for a connected site.
  */
 class SitePermissionPage {
-  private driver: Driver;
-
   private readonly confirmDisconnectButton = '[data-testid="disconnect-all"]';
 
   private readonly confirmEditAccountsButton =
@@ -30,9 +28,10 @@ class SitePermissionPage {
     tag: 'h4',
   };
 
-  private readonly editAccountsModalTitle = {
-    text: 'Edit accounts',
-    tag: 'h4',
+  private driver: Driver;
+
+  private readonly editAccountsModalHeader = {
+    testId: 'edit-accounts-modal-header',
   };
 
   private readonly editButton = '[data-testid="edit"]';
@@ -49,6 +48,37 @@ class SitePermissionPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Check if the number of connected accounts is correct
+   *
+   * @param number - Expected number of connected accounts
+   */
+  async checkConnectedAccountsNumber(number: number): Promise<void> {
+    console.log(`Check that the number of connected accounts is: ${number}`);
+    const text =
+      number === 1
+        ? `Connected with Account 1`
+        : `${number} accounts connected`;
+
+    await this.driver.waitForSelector({
+      text,
+      tag: 'span',
+    });
+  }
+
+  /**
+   * Check if the number of connected networks is correct
+   *
+   * @param number - Expected number of connected networks
+   */
+  async checkConnectedNetworksNumber(number: number): Promise<void> {
+    console.log(`Check that the number of connected networks is: ${number}`);
+    await this.driver.waitForSelector({
+      text: `${number} networks connected`,
+      tag: 'span',
+    });
   }
 
   /**
@@ -82,24 +112,6 @@ class SitePermissionPage {
       this.confirmDisconnectButton,
     );
     await this.driver.waitForSelector(this.disconnectConfirmMessage);
-  }
-
-  /**
-   * Open the account edit permissions modal
-   */
-  async openAccountPermissionsModal(): Promise<void> {
-    const editButtons = await this.driver.findElements(this.editButton);
-    await editButtons[0].click();
-    await this.driver.waitForSelector(this.editAccountsModalTitle);
-  }
-
-  /**
-   * Open the network edit permissions modal
-   */
-  async openNetworkPermissionsModal(): Promise<void> {
-    const editButtons = await this.driver.findElements(this.editButton);
-    await editButtons[1].click();
-    await this.driver.waitForSelector(this.editNetworksModalTitle);
   }
 
   /**
@@ -144,34 +156,21 @@ class SitePermissionPage {
   }
 
   /**
-   * Check if the number of connected accounts is correct
-   *
-   * @param number - Expected number of connected accounts
+   * Open the account edit permissions modal
    */
-  async checkConnectedAccountsNumber(number: number): Promise<void> {
-    console.log(`Check that the number of connected accounts is: ${number}`);
-    const text =
-      number === 1
-        ? `Connected with Account 1`
-        : `${number} accounts connected`;
-
-    await this.driver.waitForSelector({
-      text,
-      tag: 'span',
-    });
+  async openAccountPermissionsModal(): Promise<void> {
+    const editButtons = await this.driver.findElements(this.editButton);
+    await editButtons[0].click();
+    await this.driver.waitForSelector(this.editAccountsModalHeader);
   }
 
   /**
-   * Check if the number of connected networks is correct
-   *
-   * @param number - Expected number of connected networks
+   * Open the network edit permissions modal
    */
-  async checkConnectedNetworksNumber(number: number): Promise<void> {
-    console.log(`Check that the number of connected networks is: ${number}`);
-    await this.driver.waitForSelector({
-      text: `${number} networks connected`,
-      tag: 'span',
-    });
+  async openNetworkPermissionsModal(): Promise<void> {
+    const editButtons = await this.driver.findElements(this.editButton);
+    await editButtons[1].click();
+    await this.driver.waitForSelector(this.editNetworksModalTitle);
   }
 }
 

@@ -35,15 +35,24 @@ const mockSetNetworkClientIdForDomain = jest.fn(
 const mockAddPermittedChain = jest.fn(
   (_origin: string, _chainId: string) => () => Promise.resolve(),
 );
-const mockShowPermittedNetworkToast = jest.fn(() => ({
-  type: 'SHOW_PERMITTED_NETWORK_TOAST',
-}));
+const mockShowPermittedNetworkToast = jest.fn();
 const mockUpdateCustomNonce = jest.fn(() => ({ type: 'UPDATE_CUSTOM_NONCE' }));
 const mockSetNextNonce = jest.fn(() => ({ type: 'SET_NEXT_NONCE' }));
 const mockDetectNfts = jest.fn((_) => () => Promise.resolve());
 const mockSetTokenNetworkFilter = jest.fn((_) => ({
   type: 'SET_TOKEN_NETWORK_FILTER',
 }));
+
+jest.mock(
+  '../../../hooks/multichain-accounts/usePermittedNetworkToast',
+  () => ({
+    usePermittedNetworkToast: () => ({
+      showPermittedNetworkToast: (...args: unknown[]) =>
+        mockShowPermittedNetworkToast(...args),
+      dismissPermittedNetworkToast: jest.fn(),
+    }),
+  }),
+);
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -52,7 +61,6 @@ jest.mock('../../../store/actions', () => ({
     mockSetNetworkClientIdForDomain(origin, id),
   addPermittedChain: (origin: string, chainId: string) =>
     mockAddPermittedChain(origin, chainId),
-  showPermittedNetworkToast: () => mockShowPermittedNetworkToast(),
   updateCustomNonce: () => mockUpdateCustomNonce(),
   setNextNonce: () => mockSetNextNonce(),
   detectNfts: (chainIds: string[]) => mockDetectNfts(chainIds),

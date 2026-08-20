@@ -21,7 +21,6 @@ const DEPRECATED_COMPONENT_PATHS = [
   'component-library/modal-content/deprecated/modal-content',
   'component-library/modal-header/deprecated/modal-header',
   'component-library/text',
-  'component-library/text-field-search/deprecated',
   // Deprecated ui/components/ui paths
   'ui/actionable-message',
   'ui/box',

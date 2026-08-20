@@ -84,7 +84,7 @@ describe('BTC Account - Send with local bitcoind', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         // Refresh re-hydrates the UI from background state so the
         // asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
@@ -98,7 +98,7 @@ describe('BTC Account - Send with local bitcoind', function (this: Suite) {
         await sendPage.selectToken(BITCOIN_CHAIN_ID, 'BTC');
         await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
         await sendPage.fillAmount('0.5');
-        await sendPage.isContinueButtonEnabled();
+        await sendPage.checkContinueButton({ state: 'enabled' });
         await sendPage.pressContinueButton();
 
         const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);

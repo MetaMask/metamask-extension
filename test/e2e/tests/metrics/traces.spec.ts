@@ -26,6 +26,7 @@ async function mockSentryAutomatedTrace(mockServer: MockttpServer) {
     await mockServer
       .forPost(/sentry/u)
       .withBodyIncluding('"transaction":"/home.html"')
+      .withBodyIncluding('"performance.timeOrigin":')
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -41,7 +42,7 @@ describe('Traces', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -63,7 +64,7 @@ describe('Traces', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: false,
           })
           .build(),
@@ -85,7 +86,7 @@ describe('Traces', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -107,7 +108,7 @@ describe('Traces', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: false,
           })
           .build(),

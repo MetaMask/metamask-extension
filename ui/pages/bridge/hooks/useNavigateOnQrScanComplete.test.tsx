@@ -34,8 +34,7 @@ jest.mock('react-redux', () => {
       ) {
         return mockUseSelectorOverrides[key];
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const state = (original.useStore as any)?.()?.getState?.() || {};
+      const state = original.useStore?.()?.getState?.() || {};
       return selector(state);
     },
   };

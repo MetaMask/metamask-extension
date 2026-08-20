@@ -6,14 +6,14 @@ import {
 } from '../../constants';
 
 class DebugOptions {
+  private readonly developerOptionsRemoteFeatureFlagsState: string =
+    '[data-testid="developer-options-remote-feature-flags"]';
+
   private readonly driver: Driver;
 
   // Locators
   private readonly generatePageCrashButton: string =
     '[data-testid="developer-options-generate-page-crash-button"]';
-
-  private readonly developerOptionsRemoteFeatureFlagsState: string =
-    '[data-testid="developer-options-remote-feature-flags"]';
 
   private readonly remoteFeatureFlagsDetailsToggle: string =
     '[data-testid="remote-feature-flags-toggle"]';
