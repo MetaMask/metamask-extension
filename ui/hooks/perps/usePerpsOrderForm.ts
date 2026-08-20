@@ -72,7 +72,13 @@ function buildDefaultNewOrderAmountFields(
 
   return {
     amount: amountValue,
-    balancePercent: Math.round(initialBalancePercent * 100) / 100,
+    // Round to a whole percent, not to 2 decimals. This value is rendered
+    // verbatim in the narrow percentage pill next to the size slider and drives
+    // that slider's `step={1}` thumb, so a fractional seed like 0.44 overflowed
+    // the field and the user saw a clipped "0..." on initial load. Every other
+    // writer of balancePercent (slider, size input, percent field, leverage)
+    // already yields a whole number, which is why only initial load was wrong.
+    balancePercent: Math.round(initialBalancePercent),
   };
 }
 
