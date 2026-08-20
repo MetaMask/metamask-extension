@@ -59,8 +59,12 @@ export const useDisplayName = (
 
   const hexChainId = `0x${decimalToHex(isEip155 ? reference : `0`)}` as Hex;
 
-  const addressBookEntry = useSelector((state: AddressBookMetaMaskState) =>
-    getAddressBookEntryByNetwork(state, parsedAddress, hexChainId),
+  const addressBookEntry = useSelector((state) =>
+    getAddressBookEntryByNetwork(
+      state as AddressBookMetaMaskState,
+      parsedAddress,
+      hexChainId,
+    ),
   );
 
   const contractNames = Object.keys(
@@ -75,8 +79,6 @@ export const useDisplayName = (
       );
     });
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   return (
     accountGroupName ||
     accountName ||

@@ -5,42 +5,33 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetFilterInput } from './asset-filter-input';
 
 jest.mock('../../../../../hooks/useI18nContext');
-jest.mock('../../../../../components/component-library', () => ({
-  Box: ({
-    children,
-    ...props
-  }: {
-    children: React.ReactNode;
-    [key: string]: unknown;
-  }) => (
-    <div data-testid="box" {...props}>
-      {children}
-    </div>
-  ),
+jest.mock('@metamask/design-system-react', () => ({
   TextFieldSearch: ({
     value,
     onChange,
     clearButtonOnClick,
     placeholder,
     inputProps,
-    ...props
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }: any) => (
+  }: {
+    value: string;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    clearButtonOnClick: () => void;
+    placeholder?: string;
+    inputProps?: { 'data-testid'?: string };
+  }) => (
     <div data-testid="text-field-search">
       <input
         {...inputProps}
         value={value}
         placeholder={placeholder}
         onChange={onChange}
-        {...props}
       />
       <button data-testid="clear-button" onClick={clearButtonOnClick}>
         Clear
       </button>
     </div>
   ),
-  ButtonIconSize: { Sm: 'sm' },
-  TextFieldSearchSize: { Lg: 'lg' },
+  TextFieldSize: { Lg: 'lg' },
 }));
 
 describe('AssetFilterInput', () => {
@@ -60,7 +51,6 @@ describe('AssetFilterInput', () => {
       <AssetFilterInput searchQuery="" onChange={mockOnChange} />,
     );
 
-    expect(getByTestId('box')).toBeInTheDocument();
     expect(getByTestId('text-field-search')).toBeInTheDocument();
     expect(getByTestId('asset-filter-search-input')).toBeInTheDocument();
   });

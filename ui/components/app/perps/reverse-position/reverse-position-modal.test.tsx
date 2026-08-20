@@ -28,6 +28,7 @@ jest.mock('../../compliance', () => ({
 
 const mockUsePerpsOrderFees = jest.fn();
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockTrack = jest.fn();
 
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
   usePerpsOrderFees: () => mockUsePerpsOrderFees(),
@@ -35,7 +36,13 @@ jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
 
 jest.mock('../../../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
-  usePerpsEventTracking: () => ({ track: jest.fn() }),
+  usePerpsEventTracking: () => ({ track: mockTrack }),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => input,
+  }),
 }));
 
 jest.mock('../../../../hooks/useFormatters', () => ({
@@ -63,6 +70,7 @@ jest.mock('../../../../../shared/lib/perps-formatters', () => ({
 }));
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -179,6 +187,8 @@ describe('ReversePositionModal', () => {
     mockUseVipTier.mockReturnValue(null);
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.0001,
+      metamaskFeeRate: 0.00005,
+      protocolFeeRate: 0.00005,
       undiscountedFeeRate: 0.0001,
       isLoading: false,
       hasError: false,
@@ -288,6 +298,8 @@ describe('ReversePositionModal', () => {
     it('shows strikethrough original and discounted fee when fees are available', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.0001,
+        metamaskFeeRate: 0.00005,
+        protocolFeeRate: 0.00005,
         undiscountedFeeRate: 0.0002,
         isLoading: false,
         hasError: false,
@@ -315,6 +327,20 @@ describe('ReversePositionModal', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
       expect(screen.getByText('2.5 ETH')).toBeInTheDocument();
+    });
+
+    it('strips the DEX prefix from a HIP-3 market symbol in the estimated size label', () => {
+      const hip3Position = { ...longPosition, symbol: 'xyz:TSLA' };
+
+      renderWithProvider(
+        <ReversePositionModal {...defaultProps} position={hip3Position} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-reverse-est-size-value'),
+      ).toHaveTextContent('2.5 TSLA');
+      expect(screen.queryByText(/xyz:/u)).not.toBeInTheDocument();
     });
   });
 
@@ -389,7 +415,9 @@ describe('ReversePositionModal', () => {
               }),
               trackingData: expect.objectContaining({
                 totalFee: expect.any(Number),
+                metamaskFee: 0.7250000000000001,
                 marketPrice: 2900,
+                hlFeeRate: 0.00005,
               }),
             }),
           ],
@@ -429,6 +457,7 @@ describe('ReversePositionModal', () => {
       mockUseVipTier.mockReturnValue(2);
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.0001,
+        protocolFeeRate: 0.00005,
         undiscountedFeeRate: 0.0002,
         isLoading: false,
         hasError: false,
@@ -449,6 +478,7 @@ describe('ReversePositionModal', () => {
                 marketPrice: 2900,
                 vipTier: 2,
                 vipDiscount: 50,
+                hlFeeRate: 0.00005,
               }),
             }),
           ],
@@ -482,6 +512,7 @@ describe('ReversePositionModal', () => {
               trackingData: expect.objectContaining({
                 totalFee: expect.any(Number),
                 marketPrice: 45000,
+                hlFeeRate: 0.00005,
               }),
             }),
           ],
@@ -511,6 +542,10 @@ describe('ReversePositionModal', () => {
           screen.getByText(messages.perpsInsufficientMargin.message),
         ).toBeInTheDocument();
       });
+      // Controller terminal failure — UI only; no duplicate client PerpsError.
+      expect(
+        mockTrack.mock.calls.some(([event]) => event === 'Perp Error'),
+      ).toBe(false);
     });
 
     it('does not call perpsClosePosition or perpsPlaceOrder when flip fails', async () => {
@@ -584,6 +619,10 @@ describe('ReversePositionModal', () => {
           screen.getByText(messages.perpsNetworkError.message),
         ).toBeInTheDocument();
       });
+      // Transport throws never reach controller pipeline — keep client PerpsError.
+      expect(
+        mockTrack.mock.calls.some(([event]) => event === 'Perp Error'),
+      ).toBe(true);
     });
   });
 
@@ -704,6 +743,7 @@ describe('ReversePositionModal', () => {
               trackingData: expect.objectContaining({
                 totalFee: expect.any(Number),
                 marketPrice: expect.any(Number),
+                hlFeeRate: 0.00005,
               }),
             }),
           ],

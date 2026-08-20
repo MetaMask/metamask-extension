@@ -81,6 +81,13 @@ describe('Numeric', () => {
         const numeric = new Numeric(-10.4375, 16);
         expect(numeric.value).toStrictEqual(new BigNumber(-10.4375, 10));
       });
+
+      it('should create a new Numeric from a number with more than 15 significant digits', () => {
+        const numeric = new Numeric(0.07086574003221964, 10);
+        expect(numeric.value).toStrictEqual(
+          new BigNumber('0.07086574003221964', 10),
+        );
+      });
     });
 
     describe('From BigNumbers or BN-like values', () => {
@@ -446,6 +453,17 @@ describe('Numeric', () => {
             .applyConversionRate(new BigNumber(1e40, 10), true)
             .toString(),
         ).toStrictEqual('0');
+      });
+
+      it('should not throw when conversionRate has more than 15 significant digits', () => {
+        expect(() =>
+          new Numeric(10, 10).applyConversionRate(0.07086574003221964),
+        ).not.toThrow();
+        expect(
+          new Numeric(10, 10)
+            .applyConversionRate(0.07086574003221964)
+            .toString(),
+        ).toStrictEqual('0.7086574003221964');
       });
     });
   });

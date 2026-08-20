@@ -5,7 +5,11 @@ import type {
   BaseQrReaderProps,
   WebcamError,
 } from '../../base-qr-reader/base-qr-reader.types';
-import { classifyScanResult, ScanErrorCategory } from '../../qr-utils/qr-utils';
+import {
+  classifyScanResult,
+  isQrMismatchedTransactionError,
+  ScanErrorCategory,
+} from '../../qr-utils/qr-utils';
 import type { DecoderCallbacks } from '../qr-hooks.types';
 
 /**
@@ -107,9 +111,16 @@ export function useDecoderLifecycle(
             return;
           }
 
-          handleSuccess(result).catch((successError: WebcamError) =>
-            setError(successError),
-          );
+          handleSuccess(result).catch((successError: unknown) => {
+            if (isQrMismatchedTransactionError(successError)) {
+              setScanError({
+                category: ScanErrorCategory.MismatchedSignId,
+                isUrFormat: true,
+              });
+              return;
+            }
+            setError(successError as WebcamError);
+          });
           return;
         }
 

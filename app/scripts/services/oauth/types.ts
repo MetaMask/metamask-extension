@@ -5,10 +5,11 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
+import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import type {
-  MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
-} from '../../../../shared/constants/metametrics';
+  AnalyticsEvent,
+  AnalyticsEventBuildOptions,
+} from '../../../../shared/lib/analytics/create-event-builder';
 import type {
   TraceRequest,
   EndTraceRequest,
@@ -38,7 +39,8 @@ export type OAuthServiceAction =
   | OAuthServiceMethodActions
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerGetAccessTokenAction
-  | OnboardingControllerGetStateAction;
+  | OnboardingControllerGetStateAction
+  | GeolocationControllerGetGeolocationAction;
 
 /**
  * All possible events that the OAuthService can emit.
@@ -160,27 +162,12 @@ export type OAuthServiceOptions = {
   bufferedEndTrace: (request: EndTraceRequest) => void;
 
   /**
-   * Track a MetaMetrics event
+   * Track an analytics event built with createEventBuilder.
    */
   trackEvent: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
+    built: AnalyticsEvent,
+    options?: AnalyticsEventBuildOptions,
   ) => void;
-
-  /**
-   * Add an event before metrics opt-in (for buffering before user consent)
-   */
-  addEventBeforeMetricsOptIn: (event: MetaMetricsEventPayload) => void;
-
-  /**
-   * Get whether the user has completed the analytics onboarding prompt
-   */
-  getCompletedMetaMetricsOnboarding: () => boolean;
-
-  /**
-   * Get whether the user has opted into analytics
-   */
-  getOptedIn: () => boolean;
 
   /**
    * Persist the temporary Telegram profile-sync JWT until the SRP profile is

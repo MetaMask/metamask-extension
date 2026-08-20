@@ -2,31 +2,30 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
+  FeatureId,
   formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
   isNonEvmChainId,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
 import { Skeleton } from '@metamask/design-system-react';
 import {
+  IconName,
   Text,
   TextField,
   TextFieldType,
   ButtonLink,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  sanitizeAmountInput,
-} from '../utils/quote';
+import { formatTokenAmount, sanitizeAmountInput } from '../utils/quote';
 import { Column, Row } from '../layout';
 import {
   Display,
   FontWeight,
+  IconColor,
   TextAlign,
   JustifyContent,
   TextVariant,
@@ -42,32 +41,57 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import { CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
-import type { BridgeNetwork, BridgeToken } from '../../../ducks/bridge/types';
-import { SelectedAssetButton } from './components/bridge-asset-picker/selected-asset-button';
-import { BridgeAssetPicker } from './components/bridge-asset-picker';
+import type { BridgeToken } from '../../../ducks/bridge/types';
+import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
+import { useDispatch } from '../../../store/hooks';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
+import { SelectedAssetButton } from '../asset-picker/selected-asset-button';
+
+const getBlockExplorerUrl = (
+  chainId: BridgeToken['chainId'],
+  assetReference: string,
+): string | null => {
+  const caipChainId = formatChainIdToCaip(chainId);
+
+  if (isNonEvmChainId(chainId)) {
+    const blockExplorerUrls =
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
+    return blockExplorerUrls
+      ? formatBlockExplorerAddressUrl(blockExplorerUrls, assetReference)
+      : null;
+  }
+
+  const explorerUrl = CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[caipChainId];
+  return explorerUrl
+    ? getAccountLink(
+        assetReference,
+        formatChainIdToHex(chainId),
+        { blockExplorerUrl: explorerUrl },
+        undefined,
+      )
+    : null;
+};
 
 export const BridgeInputGroup = ({
-  header,
   token,
-  onAssetChange,
   onAmountChange,
-  networks,
   amountFieldProps,
-  amountInFiat,
+  secondaryDisplay,
+  amountInputPrefix,
+  onAmountTypeToggle,
   onMaxButtonClick,
   onBlockExplorerClick,
   buttonProps,
-  accountAddress,
-  disabledChainId,
   containerProps = {},
   isDestination,
   showAmountSkeleton = false,
-  isAssetPickerOpen,
   setIsAssetPickerOpen,
+  tokenSecurityData,
 }: {
-  isAssetPickerOpen: boolean;
   setIsAssetPickerOpen: (isOpen: boolean) => void;
-  amountInFiat?: string;
+  secondaryDisplay?: string;
+  amountInputPrefix?: React.ReactNode;
+  onAmountTypeToggle?: () => void;
   onAmountChange?: (value: string) => void;
   token: BridgeToken;
   buttonProps: { testId: string };
@@ -77,43 +101,50 @@ export const BridgeInputGroup = ({
   >;
   onMaxButtonClick?: (value: string) => void;
   onBlockExplorerClick?: (token: BridgeToken) => void;
-  networks: BridgeNetwork[];
   containerProps?: React.ComponentProps<typeof Column>;
   showAmountSkeleton?: boolean;
-} & Pick<
-  React.ComponentProps<typeof BridgeAssetPicker>,
-  | 'header'
-  | 'onAssetChange'
-  | 'accountAddress'
-  | 'disabledChainId'
-  | 'isDestination'
->) => {
+  tokenSecurityData?: Pick<BridgeToken, 'isVerified' | 'securityData'>;
+  isDestination: boolean;
+}) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
+  const { navigateToBridgeAssetPickerPage } = useBridgeNavigation();
 
   const { isInsufficientBalance, isEstimatedReturnLow } = useSelector(
     getValidationErrors,
     shallowEqual,
   );
-  const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
   const selectedChainId = token?.chainId;
+  const selectedButtonAsset = useMemo(
+    () =>
+      tokenSecurityData
+        ? {
+            ...token,
+            isVerified: token.isVerified ?? tokenSecurityData.isVerified,
+            securityData: token.securityData ?? tokenSecurityData.securityData,
+          }
+        : token,
+    [token, tokenSecurityData],
+  );
 
   // useCopyToClipboard analysis: Copies a public address
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { assetReference } = token ? parseCaipAssetType(token.assetId) : {};
+  const assetReference = token
+    ? parseCaipAssetType(token.assetId).assetReference
+    : undefined;
   const balanceAmount = useSelector(getFromTokenBalance);
 
   const isAmountReadOnly =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     amountFieldProps?.readOnly || amountFieldProps?.disabled;
   const shouldShowAmountSkeleton = Boolean(
     showAmountSkeleton && isAmountReadOnly,
   );
-
+  const hasAmountInputPrefix = Boolean(amountInputPrefix);
+  const previousHasAmountInputPrefix = useRef(hasAmountInputPrefix);
   const formattedTokenAmount = useMemo(() => {
     if (!balanceAmount) {
       return null;
@@ -147,11 +178,22 @@ export const BridgeInputGroup = ({
   }, [amountFieldProps?.value]);
 
   useEffect(() => {
+    const hasAmountInputPrefixChanged =
+      previousHasAmountInputPrefix.current !== hasAmountInputPrefix;
+
     if (!isAmountReadOnly && inputRef.current) {
       inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
       inputRef.current.focus();
+      if (hasAmountInputPrefixChanged) {
+        inputRef.current.setSelectionRange(
+          inputRef.current.value.length,
+          inputRef.current.value.length,
+        );
+      }
     }
-  }, [amountFieldProps?.value, isAmountReadOnly, token]);
+
+    previousHasAmountInputPrefix.current = hasAmountInputPrefix;
+  }, [amountFieldProps?.value, hasAmountInputPrefix, isAmountReadOnly, token]);
 
   useEffect(() => {
     return () => {
@@ -160,40 +202,17 @@ export const BridgeInputGroup = ({
   }, []);
 
   const handleAddressClick = () => {
-    if (token && selectedChainId && assetReference) {
-      const caipChainId = formatChainIdToCaip(selectedChainId);
+    if (!token || !selectedChainId || !assetReference) {
+      return;
+    }
 
-      let blockExplorerUrl = '';
-      if (isNonEvmChainId(selectedChainId)) {
-        const blockExplorerUrls =
-          MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
-        if (blockExplorerUrls) {
-          blockExplorerUrl = formatBlockExplorerAddressUrl(
-            blockExplorerUrls,
-            assetReference,
-          );
-        }
-      } else {
-        const explorerUrl =
-          CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[
-            formatChainIdToCaip(token.chainId)
-          ];
-        if (explorerUrl) {
-          blockExplorerUrl = getAccountLink(
-            assetReference,
-            formatChainIdToHex(selectedChainId),
-            {
-              blockExplorerUrl: explorerUrl,
-            },
-            undefined,
-          );
-        }
-      }
-
-      if (blockExplorerUrl) {
-        handleCopy(blockExplorerUrl);
-        onBlockExplorerClick?.(token);
-      }
+    const blockExplorerUrl = getBlockExplorerUrl(
+      selectedChainId,
+      assetReference,
+    );
+    if (blockExplorerUrl) {
+      handleCopy(blockExplorerUrl);
+      onBlockExplorerClick?.(token);
     }
   };
 
@@ -209,6 +228,20 @@ export const BridgeInputGroup = ({
           />
         ) : (
           <TextField
+            startAccessory={
+              amountInputPrefix ? (
+                <Text
+                  variant={TextVariant.bodyMd}
+                  style={{
+                    fontSize: inputFontSize,
+                    fontWeight: 400,
+                    lineHeight: 1,
+                  }}
+                >
+                  {amountInputPrefix}
+                </Text>
+              ) : undefined
+            }
             inputProps={{
               disableStateStyles: true,
               textAlign: TextAlign.Start,
@@ -259,40 +292,61 @@ export const BridgeInputGroup = ({
             {...amountFieldProps}
           />
         )}
-        <BridgeAssetPicker
-          disabledChainId={disabledChainId}
-          selectedAsset={token}
-          header={header}
-          isOpen={isAssetPickerOpen}
-          onClose={() => setIsAssetPickerOpen(false)}
-          onAssetChange={(asset) => {
-            onAssetChange?.(asset);
-          }}
-          chains={networks}
-          accountAddress={accountAddress}
-          isDestination={isDestination}
-        />
         <SelectedAssetButton
-          onClick={() => setIsAssetPickerOpen(true)}
-          asset={token}
+          onClick={() => {
+            dispatch(
+              trackUnifiedSwapBridgeEvent(
+                UnifiedSwapBridgeEventName.AssetPickerOpened,
+                {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  asset_location: isDestination ? 'destination' : 'source',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+                },
+              ),
+            );
+            setIsAssetPickerOpen(true);
+            navigateToBridgeAssetPickerPage(isDestination ? 'dest' : 'src');
+          }}
+          asset={selectedButtonAsset}
           data-testid={buttonProps.testId}
         />
       </Row>
 
       <Row justifyContent={JustifyContent.spaceBetween} style={{ height: 24 }}>
-        <Text
-          variant={TextVariant.bodyMd}
-          fontWeight={FontWeight.Normal}
-          color={
-            isAmountReadOnly && isEstimatedReturnLow
-              ? TextColor.warningDefault
-              : TextColor.textAlternative
-          }
-          textAlign={TextAlign.End}
-          ellipsis
-        >
-          {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
-        </Text>
+        {onAmountTypeToggle ? (
+          <ButtonLink
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            endIconName={IconName.SwapVertical}
+            endIconProps={{ color: IconColor.iconAlternative }}
+            ellipsis
+            style={{ textDecoration: 'none' }}
+            data-testid="bridge-input-denomination-toggle"
+            aria-label={`Toggle input denomination${
+              secondaryDisplay ? `, ${secondaryDisplay}` : ''
+            }`}
+            onClick={onAmountTypeToggle}
+          >
+            {secondaryDisplay}
+          </ButtonLink>
+        ) : (
+          <Text
+            variant={TextVariant.bodyMd}
+            fontWeight={FontWeight.Normal}
+            color={
+              isAmountReadOnly && isEstimatedReturnLow
+                ? TextColor.warningDefault
+                : TextColor.textAlternative
+            }
+            textAlign={TextAlign.End}
+            ellipsis
+          >
+            {secondaryDisplay}
+          </Text>
+        )}
         {!isAmountReadOnly && balanceAmount && token && (
           <Text
             display={Display.Flex}

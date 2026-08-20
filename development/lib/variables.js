@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-tag-names */
 const assert = require('assert');
 
 const DeclaredOnly = Symbol(

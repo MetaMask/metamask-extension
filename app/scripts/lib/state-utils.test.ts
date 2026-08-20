@@ -5,7 +5,11 @@ import {
 import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { KeyringControllerState } from '@metamask/keyring-controller';
 import { Patch } from 'immer';
-import { sanitizePatches, sanitizeUIState } from './state-utils';
+import {
+  sanitizePatches,
+  sanitizeStateLogs,
+  sanitizeUIState,
+} from './state-utils';
 
 describe('State Utils', () => {
   describe('sanitizeUIState', () => {
@@ -417,6 +421,27 @@ describe('State Utils', () => {
           },
         },
       ]);
+    });
+  });
+
+  describe('sanitizeStateLogs', () => {
+    it('removes QR sync controller state from downloaded state logs', () => {
+      const state = {
+        completedOnboarding: true,
+        qrSyncPhase: 'displaying-qr',
+        qrSyncConnectionStatus: 'connected',
+        qrSyncSessionId: 'session-123',
+        qrSyncQrPayload: 'qr-payload',
+        syncOffer: { isOnboardingCompleted: true },
+        qrSyncSelectedAccountGroupIds: ['account-group-1'],
+        qrSyncError: { code: 'SYNC_FAILED', message: 'failed' },
+        qrSyncCreatedAt: 1,
+        qrSyncUpdatedAt: 2,
+      };
+
+      expect(sanitizeStateLogs(state)).toStrictEqual({
+        completedOnboarding: true,
+      });
     });
   });
 });

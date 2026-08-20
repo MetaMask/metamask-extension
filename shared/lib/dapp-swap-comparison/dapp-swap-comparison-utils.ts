@@ -3,7 +3,7 @@ import { Hex } from '@metamask/utils';
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import {
   isNativeAddress,
-  QuoteResponse,
+  QuoteResponseV1,
   TxData,
 } from '@metamask/bridge-controller';
 import {
@@ -82,13 +82,13 @@ export function getDataFromSwap(
 }
 
 export function getBestQuote(
-  quotes: QuoteResponse[],
+  quotes: QuoteResponseV1[],
   amountMin: string,
   getUSDValueForToken: (tokenAmount: string) => string,
   getGasUSDValue: (gasValue: BigNumber) => string,
 ): {
-  bestQuote: QuoteResponse | undefined;
-  bestFilteredQuote: QuoteResponse | undefined;
+  bestQuote: QuoteResponseV1 | undefined;
+  bestFilteredQuote: QuoteResponseV1 | undefined;
 } {
   let selectedQuoteIndex = -1;
   let bestFilteredQuoteIndex = -1;
@@ -117,7 +117,7 @@ export function getBestQuote(
     );
     const quoteValue = destTokenAmountInQuote.minus(totalGasInQuote);
     const quoteMinGreaterThanAmountMin = new BigNumber(
-      quote.minDestTokenAmount,
+      quote.minDestTokenAmount ?? quote.destTokenAmount,
       10,
     ).greaterThanOrEqualTo(new BigNumber(amountMin, 16));
 

@@ -16,7 +16,10 @@ import {
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getInternalAccountByAddress } from '../../selectors';
-import { getAddressBookEntryByNetwork } from '../../selectors/snaps/address-book';
+import {
+  AddressBookMetaMaskState,
+  getAddressBookEntryByNetwork,
+} from '../../selectors/snaps/address-book';
 import { EditContactForm } from './components/edit-contact-form';
 
 export function EditContactPage() {
@@ -28,7 +31,11 @@ export function EditContactPage() {
   }>();
   const contact = useSelector((state) =>
     address && chainId
-      ? getAddressBookEntryByNetwork(state, address, chainId as `0x${string}`)
+      ? getAddressBookEntryByNetwork(
+          state as AddressBookMetaMaskState,
+          address,
+          chainId as Hex,
+        )
       : null,
   );
   const internalAccount = useSelector((state) =>

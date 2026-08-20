@@ -5,6 +5,19 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import SimulationErrorMessage from './simulation-error-message';
 
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 describe('Simulation Error Message', () => {
   const store = configureMockStore()({});
   let props = {};

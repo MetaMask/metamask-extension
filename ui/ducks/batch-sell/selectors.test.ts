@@ -17,6 +17,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { getBridgeAssetsByAssetId } from '../bridge/asset-selectors';
 import {
   getAvailableBatchSellNetworks,
+  getAvailableBatchSellReceiveAssetsForNetwork,
   getBatchSellDestStablecoinsForNetwork,
   getAvailableBatchSellSwapAssetsForNetwork,
 } from './selectors';
@@ -162,6 +163,24 @@ describe('batch-sell selectors', () => {
     jest.clearAllMocks();
   });
 
+  // Non-stablecoin, eligible holding used to satisfy the "network must have
+  // at least one sellable asset" requirement in the tests below. Accepts an
+  // optional fiat amount since network ranking is based on the fiat value of
+  // eligible holdings only (tokenFiatAmount), not total chain balance.
+  const eligibleHolding = (
+    chainId: CaipChainId,
+    assetSuffix: string,
+    tokenFiatAmount?: number,
+  ) => ({
+    assetId: `${chainId}/erc20:0x${assetSuffix.padStart(40, '0')}`,
+    chainId,
+    symbol: 'TOK',
+    name: 'Test Token',
+    decimals: 18,
+    balance: '1',
+    tokenFiatAmount,
+  });
+
   describe('getAvailableBatchSellNetworksSelector', () => {
     beforeEach(() => {
       // Provide at least one stablecoin for every supported chain so the
@@ -200,9 +219,20 @@ describe('batch-sell selectors', () => {
           },
         },
       } as never);
+      // Default: every supported chain has an eligible, non-stablecoin
+      // holding, so the "has sellable assets" filter does not strip a
+      // network unless a test explicitly overrides this mock.
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [CAIP_MAINNET]: eligibleHolding(CAIP_MAINNET, '1'),
+        [CAIP_BASE]: eligibleHolding(CAIP_BASE, '2'),
+        [CAIP_BSC]: eligibleHolding(CAIP_BSC, '3'),
+        [CAIP_ARBITRUM]: eligibleHolding(CAIP_ARBITRUM, '4'),
+        [CAIP_POLYGON]: eligibleHolding(CAIP_POLYGON, '5'),
+        [CAIP_LINEA]: eligibleHolding(CAIP_LINEA, '6'),
+      } as never);
     });
 
-    it('returns supported networks with positive balance, sorted by fiat balance descending', () => {
+    it('returns supported networks with positive balance, sorted by eligible-asset fiat balance descending', () => {
       mockGetAllMultichainNetworkConfigurations.mockReturnValue({
         [CAIP_MAINNET]: MOCK_MAINNET_NETWORK,
         [CAIP_BASE]: MOCK_BASE_NETWORK,
@@ -210,9 +240,15 @@ describe('batch-sell selectors', () => {
       });
       mockGetSelectedInternalAccount.mockReturnValue(MOCK_EVM_ACCOUNT as never);
       mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [CHAIN_IDS.MAINNET]: [{ rawBalance: '0x1', fiat: { balance: 500 } }],
-        [CHAIN_IDS.BASE]: [{ rawBalance: '0x1', fiat: { balance: 1000 } }],
-        '0xa': [{ rawBalance: '0x1', fiat: { balance: 300 } }],
+        [CHAIN_IDS.MAINNET]: [{ rawBalance: '0x1' }],
+        [CHAIN_IDS.BASE]: [{ rawBalance: '0x1' }],
+        '0xa': [{ rawBalance: '0x1' }],
+      } as never);
+      // Ranking is based on the fiat value of eligible (sellable) holdings,
+      // not the total chain balance.
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [CAIP_MAINNET]: eligibleHolding(CAIP_MAINNET, '1', 500),
+        [CAIP_BASE]: eligibleHolding(CAIP_BASE, '2', 1000),
       } as never);
 
       const result = getAvailableBatchSellNetworks(buildState());
@@ -224,13 +260,15 @@ describe('batch-sell selectors', () => {
       expect(chainIds).toStrictEqual([CAIP_BASE, CAIP_MAINNET]);
     });
 
-    it('returns empty array when no supported networks have positive balance', () => {
+    it('returns empty array when no supported network has a sellable asset', () => {
       mockGetAllMultichainNetworkConfigurations.mockReturnValue({
         [CAIP_OPTIMISM]: MOCK_OPTIMISM_NETWORK,
       });
       mockGetSelectedInternalAccount.mockReturnValue(MOCK_EVM_ACCOUNT as never);
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        '0xa': [{ rawBalance: '0x1', fiat: { balance: 300 } }],
+      // The only holding sits on an unsupported chain (Optimism), so no
+      // supported network has an eligible, sellable asset.
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [CAIP_OPTIMISM]: eligibleHolding(CAIP_OPTIMISM, 'a', 300),
       } as never);
 
       const result = getAvailableBatchSellNetworks(buildState());
@@ -301,6 +339,36 @@ describe('batch-sell selectors', () => {
             ],
           },
           [CAIP_BASE]: { batchSellDestStablecoins: [] },
+        },
+      } as never);
+
+      const result = getAvailableBatchSellNetworks(buildState());
+
+      expect(result.map((n) => n.chainId)).toStrictEqual([CAIP_MAINNET]);
+    });
+
+    it('excludes a network whose only holdings are ineligible (e.g. all stablecoins)', () => {
+      mockGetAllMultichainNetworkConfigurations.mockReturnValue({
+        [CAIP_MAINNET]: MOCK_MAINNET_NETWORK,
+        [CAIP_BASE]: MOCK_BASE_NETWORK,
+      });
+      mockGetSelectedInternalAccount.mockReturnValue(MOCK_EVM_ACCOUNT as never);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
+        [CHAIN_IDS.MAINNET]: [{ rawBalance: '0x1', fiat: { balance: 500 } }],
+        [CHAIN_IDS.BASE]: [{ rawBalance: '0x1', fiat: { balance: 1000 } }],
+      } as never);
+      // Base's only holding is its own destination stablecoin, so there is
+      // nothing sellable on Base even though it has a positive balance.
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [CAIP_MAINNET]: eligibleHolding(CAIP_MAINNET, '1'),
+        [CAIP_BASE]: {
+          assetId:
+            'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+          chainId: CAIP_BASE,
+          symbol: 'USDC',
+          name: 'USD Coin',
+          decimals: 6,
+          balance: '100',
         },
       } as never);
 
@@ -675,17 +743,198 @@ describe('batch-sell selectors', () => {
     });
   });
 
-  describe('selectFiatBalanceByChain (asset without fiat)', () => {
-    it('treats missing fiat.balance as 0 when computing chain fiat total', () => {
+  describe('getAvailableBatchSellReceiveAssetsForNetwork', () => {
+    // USDC on Mainnet – present in BATCH_SELL_DEST_STABLECOIN_METADATA (lowercase key)
+    const USDC_MAINNET_ASSET_ID =
+      'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+
+    // The selector reads state.metamask.tokensChainsCache directly, so every
+    // test needs a state object that at least has metamask.tokensChainsCache.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const buildReceiveState = (tokensChainsCache: any = {}): any => ({
+      metamask: { tokensChainsCache },
+    });
+
+    beforeEach(() => {
+      mockGetBridgeFeatureFlags.mockReturnValue({
+        chains: {
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [USDC_MAINNET_ASSET_ID],
+          },
+        },
+      } as never);
+      mockGetBridgeAssetsByAssetId.mockReturnValue({});
+    });
+
+    it('returns empty array when chainId is undefined', () => {
+      const result = getAvailableBatchSellReceiveAssetsForNetwork(
+        buildReceiveState(),
+        undefined,
+      );
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns the held asset when the user holds the stablecoin', () => {
+      const heldToken = {
+        assetId: USDC_MAINNET_ASSET_ID as CaipChainId,
+        chainId: CAIP_MAINNET,
+        symbol: 'USDC',
+        name: 'USD Coin',
+        decimals: 6,
+        balance: '250',
+        tokenFiatAmount: 250,
+        iconUrl: 'https://held.example/usdc.png',
+      };
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [USDC_MAINNET_ASSET_ID]: heldToken,
+      } as never);
+
+      const result = getAvailableBatchSellReceiveAssetsForNetwork(
+        buildReceiveState(),
+        CAIP_MAINNET,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toMatchObject({
+        assetId: USDC_MAINNET_ASSET_ID,
+        balance: '250',
+        iconUrl: 'https://held.example/usdc.png',
+      });
+    });
+
+    it('returns static metadata when the stablecoin is not held by the user', () => {
+      const result = getAvailableBatchSellReceiveAssetsForNetwork(
+        buildReceiveState(),
+        CAIP_MAINNET,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toMatchObject({
+        assetId: USDC_MAINNET_ASSET_ID,
+        symbol: 'USDC',
+        name: 'USD Coin',
+        decimals: 6,
+        balance: '0',
+      });
+      // iconUrl comes from the static CDN URL in BATCH_SELL_DEST_STABLECOIN_METADATA
+      expect(result[0].iconUrl).toContain('metamask.io');
+    });
+
+    it('falls back to tokensChainsCache when stablecoin is absent from static metadata', () => {
+      // A token address not present in BATCH_SELL_DEST_STABLECOIN_METADATA
+      const UNKNOWN_ASSET_ID =
+        'eip155:1/erc20:0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+      mockGetBridgeFeatureFlags.mockReturnValue({
+        chains: {
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [UNKNOWN_ASSET_ID],
+          },
+        },
+      } as never);
+
+      const state = buildReceiveState({
+        '0x1': {
+          data: {
+            '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa': {
+              symbol: 'UNKN',
+              name: 'Unknown Token',
+              decimals: 18,
+              iconUrl: 'https://example.com/unkn.png',
+            },
+          },
+        },
+      });
+
+      const result = getAvailableBatchSellReceiveAssetsForNetwork(
+        state,
+        CAIP_MAINNET,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toMatchObject({
+        assetId: UNKNOWN_ASSET_ID,
+        symbol: 'UNKN',
+        name: 'Unknown Token',
+        decimals: 18,
+        balance: '0',
+        iconUrl: 'https://example.com/unkn.png',
+      });
+    });
+
+    it('filters out stablecoins absent from both static metadata and cache', () => {
+      const UNKNOWN_ASSET_ID =
+        'eip155:1/erc20:0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+      mockGetBridgeFeatureFlags.mockReturnValue({
+        chains: {
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [UNKNOWN_ASSET_ID],
+          },
+        },
+      } as never);
+
+      const result = getAvailableBatchSellReceiveAssetsForNetwork(
+        buildReceiveState(),
+        CAIP_MAINNET,
+      );
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('static metadata path sets balance to "0" and supplies an iconUrl', () => {
+      const [asset] = getAvailableBatchSellReceiveAssetsForNetwork(
+        buildReceiveState(),
+        CAIP_MAINNET,
+      );
+
+      expect(asset.balance).toBe('0');
+      expect(asset.iconUrl).toBeTruthy();
+    });
+
+    it('cache path applies a fallback iconUrl when the cache entry has none', () => {
+      const UNKNOWN_ASSET_ID =
+        'eip155:1/erc20:0xcccccccccccccccccccccccccccccccccccccccc';
+      mockGetBridgeFeatureFlags.mockReturnValue({
+        chains: {
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [UNKNOWN_ASSET_ID],
+          },
+        },
+      } as never);
+
+      const state = buildReceiveState({
+        '0x1': {
+          data: {
+            // no iconUrl property
+            '0xcccccccccccccccccccccccccccccccccccccccc': {
+              symbol: 'CCCC',
+              name: 'CToken',
+              decimals: 6,
+            },
+          },
+        },
+      });
+
+      const [asset] = getAvailableBatchSellReceiveAssetsForNetwork(
+        state,
+        CAIP_MAINNET,
+      );
+
+      // The selector applies getAssetImageUrl as a final fallback
+      expect(asset.iconUrl).toBeTruthy();
+    });
+  });
+
+  describe('getAvailableBatchSellNetworks (fiat ranking based on eligible assets)', () => {
+    it('treats a missing tokenFiatAmount as 0 when computing chain fiat total', () => {
       mockGetAllMultichainNetworkConfigurations.mockReturnValue({
         [CAIP_MAINNET]: MOCK_MAINNET_NETWORK,
         [CAIP_BASE]: MOCK_BASE_NETWORK,
       });
       mockGetSelectedInternalAccount.mockReturnValue(MOCK_EVM_ACCOUNT as never);
       mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        // Asset has no fiat property at all
         [CHAIN_IDS.MAINNET]: [{ rawBalance: '0x1' }],
-        [CHAIN_IDS.BASE]: [{ rawBalance: '0x1', fiat: { balance: 100 } }],
+        [CHAIN_IDS.BASE]: [{ rawBalance: '0x1' }],
       } as never);
       mockGetBridgeFeatureFlags.mockReturnValue({
         chains: {
@@ -701,12 +950,68 @@ describe('batch-sell selectors', () => {
           },
         },
       } as never);
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        // Mainnet's eligible holding has no tokenFiatAmount property at all
+        [CAIP_MAINNET]: eligibleHolding(CAIP_MAINNET, '1'),
+        [CAIP_BASE]: eligibleHolding(CAIP_BASE, '2', 100),
+      } as never);
 
       const result = getAvailableBatchSellNetworks(buildState());
 
       // Base ($100) should appear before Mainnet ($0)
       expect(result[0].chainId).toBe(CAIP_BASE);
       expect(result[1].chainId).toBe(CAIP_MAINNET);
+    });
+
+    it('ignores an ineligible asset with a large balance when ranking chains', () => {
+      mockGetAllMultichainNetworkConfigurations.mockReturnValue({
+        [CAIP_MAINNET]: MOCK_MAINNET_NETWORK,
+        [CAIP_BASE]: MOCK_BASE_NETWORK,
+      });
+      mockGetSelectedInternalAccount.mockReturnValue(MOCK_EVM_ACCOUNT as never);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
+        [CHAIN_IDS.MAINNET]: [{ rawBalance: '0x1' }],
+        [CHAIN_IDS.BASE]: [{ rawBalance: '0x1' }],
+      } as never);
+      mockGetBridgeFeatureFlags.mockReturnValue({
+        chains: {
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [
+              'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            ],
+          },
+          [CAIP_BASE]: {
+            batchSellDestStablecoins: [
+              'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            ],
+          },
+        },
+      } as never);
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        // Base's large balance is entirely its own destination stablecoin,
+        // so it must not count towards Base's ranking.
+        [CAIP_BASE]: {
+          assetId:
+            'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+          chainId: CAIP_BASE,
+          symbol: 'USDC',
+          name: 'USD Coin',
+          decimals: 6,
+          balance: '100',
+          tokenFiatAmount: 100,
+        },
+        [`${CAIP_BASE}-eligible`]: eligibleHolding(CAIP_BASE, '2', 10),
+        [CAIP_MAINNET]: eligibleHolding(CAIP_MAINNET, '1', 50),
+      } as never);
+
+      const result = getAvailableBatchSellNetworks(buildState());
+
+      // Mainnet's eligible $50 outranks Base's eligible $10 (its $100
+      // stablecoin holding is excluded from the ranking).
+      expect(result.map((n) => n.chainId)).toStrictEqual([
+        CAIP_MAINNET,
+        CAIP_BASE,
+      ]);
     });
   });
 });

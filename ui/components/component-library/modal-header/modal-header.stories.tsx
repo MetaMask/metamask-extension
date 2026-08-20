@@ -1,27 +1,18 @@
 import React from 'react';
-import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
-import {
-  TextVariant,
-  TextAlign,
-  Display,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
 
 import { ModalHeader } from './modal-header';
-import { Text } from '../text';
-import { AvatarAccount } from '@metamask/design-system-react';
-import { Button, ButtonSize } from '../button';
 
 export default {
-  title: 'Components/ComponentLibrary/ModalHeader',
+  title: 'Components/ComponentLibrary/ModalHeader (deprecated)',
   component: ModalHeader,
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [ModalHeader from @metamask/design-system-react](https://metamask.github.io/metamask-design-system/?path=/docs/components-modalheader--docs) instead.',
+      },
     },
   },
   argTypes: {
@@ -41,47 +32,3 @@ const Template: StoryFn<typeof ModalHeader> = (args) => {
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-
-export const Children: StoryFn<typeof ModalHeader> = (args) => (
-  <>
-    <ModalHeader {...args} marginBottom={4}>
-      Children as string
-    </ModalHeader>
-    <ModalHeader
-      {...args}
-      childrenWrapperProps={{
-        display: Display.Flex,
-        flexDirection: FlexDirection.Column,
-        alignItems: AlignItems.center,
-        justifyContent: JustifyContent.center,
-      }}
-    >
-      <AvatarAccount address="0x1234" />
-      <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-        Custom header using multiple components
-      </Text>
-    </ModalHeader>
-  </>
-);
-
-export const OnBack = Template.bind({});
-OnBack.args = {
-  children: 'OnBack demo',
-};
-
-export const OnClose = Template.bind({});
-OnClose.args = {
-  children: 'OnClose demo',
-};
-
-export const StartAccessory = Template.bind({});
-StartAccessory.args = {
-  children: 'StartAccessory demo',
-  startAccessory: <Button size={ButtonSize.Sm}>Demo</Button>,
-};
-
-export const EndAccessory = Template.bind({});
-EndAccessory.args = {
-  children: 'EndAccessory demo',
-  endAccessory: <Button size={ButtonSize.Sm}>Demo</Button>,
-};

@@ -20,6 +20,7 @@ export type AlertMetricsProperties = {
 
 export const ALERTS_NAME_METRICS: Record<AlertsName | string, string> = {
   [AlertsName.AddressPoisoning]: 'address_poisoning',
+  [AlertsName.DepositLimit]: 'deposit_limit',
   [AlertsName.GasEstimateFailed]: 'gas_estimate_failed',
   [AlertsName.GasFeeLow]: 'gas_fee_low',
   [AlertsName.GasTooLow]: 'gas_too_low',
@@ -27,6 +28,8 @@ export const ALERTS_NAME_METRICS: Record<AlertsName | string, string> = {
   [AlertsName.NetworkBusy]: 'network_busy',
   [AlertsName.NoGasPrice]: 'no_gas_price',
   [AlertsName.PendingTransaction]: 'pending_transaction',
+  [AlertsName.PerpsWithdrawBalanceUnavailable]:
+    'perps_withdraw_balance_unavailable',
   [AlertsName.SigningOrSubmitting]: 'signing_or_submitting',
   [AlertsName.Blockaid]: 'blockaid',
 };

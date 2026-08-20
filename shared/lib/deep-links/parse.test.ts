@@ -1,8 +1,8 @@
 import log from 'loglevel';
-import { parse } from './parse';
+import { NavigationOrigin, parse } from './parse';
 import { VALID, INVALID, MISSING, verify } from './verify';
 import { type Route, routes } from './routes';
-import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
+import { SIG_PARAM } from './constants';
 
 const mockVerify = verify as jest.MockedFunction<typeof verify>;
 const mockRoutes = routes as jest.Mocked<Map<string, Route>>;
@@ -139,7 +139,7 @@ describe('parse', () => {
     );
   });
 
-  it('skips signature verification when verify is false', async () => {
+  it('skips signature verification when `navigationOrigin` is `NavigationOrigin.INTERNAL`', async () => {
     mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
     mockHandler.mockReturnValue({
       path: 'destination-value',
@@ -147,7 +147,9 @@ describe('parse', () => {
     });
 
     const urlStr = 'https://example.com/test?sig=bar';
-    const result = await parse(new URL(urlStr), { verify: false });
+    const result = await parse(new URL(urlStr), {
+      navigationOrigin: NavigationOrigin.INTERNAL,
+    });
 
     expect(result).toStrictEqual({
       destination: {
@@ -193,27 +195,6 @@ describe('parse', () => {
     // because it is not listed in `sig_params`
     expect(mockHandler).toHaveBeenCalledWith(
       new URLSearchParams([['value', '123']]),
-    );
-  });
-
-  it('passes original query parameters to routes that opt in', async () => {
-    mockRoutes.set('/test', {
-      handler: mockHandler,
-      handlerSearchParams: 'original',
-    } as unknown as Route);
-    mockVerify.mockResolvedValue(VALID);
-
-    const urlStr =
-      `https://example.com/test?marketId=30615&${SIG_PARAMS_PARAM}=marketId` +
-      `&${SIG_PARAM}=signature&utm_source=twitter&_hsenc=value&attributionId=attr`;
-
-    await parse(new URL(urlStr));
-
-    expect(mockHandler).toHaveBeenCalledWith(
-      new URLSearchParams(
-        `marketId=30615&${SIG_PARAMS_PARAM}=marketId&${SIG_PARAM}=signature` +
-          '&utm_source=twitter&_hsenc=value&attributionId=attr',
-      ),
     );
   });
 });

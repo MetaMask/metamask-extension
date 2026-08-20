@@ -4,6 +4,7 @@ import {
   type MessengerEvents,
 } from '@metamask/messenger';
 import { CurrencyRateMessenger } from '@metamask/assets-controllers';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
 
@@ -34,7 +35,9 @@ export function getCurrencyRateControllerMessenger(
   return controllerMessenger;
 }
 
-type AllowedInitializationActions = PreferencesControllerGetStateAction;
+type AllowedInitializationActions =
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 export type CurrencyRateControllerInitMessenger = ReturnType<
   typeof getCurrencyRateControllerInitMessenger
@@ -61,7 +64,10 @@ export function getCurrencyRateControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['PreferencesController:getState'],
+    actions: [
+      'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
+    ],
   });
   return controllerInitMessenger;
 }

@@ -307,6 +307,9 @@ describe('Selectors', () => {
     jestIt(
       'returns false if feature flag is enabled, not a HW and is BSC network with a non-default RPC URL',
       () => {
+        // RPC host allowlisting only applies in production-like environments.
+        jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
         const state = createSwapsMockStore();
         const newState = {
           ...state,
@@ -351,6 +354,9 @@ describe('Selectors', () => {
     jestIt(
       'returns false if feature flag is enabled, not a HW and is Linea network with a non-default RPC URL',
       () => {
+        // RPC host allowlisting only applies in production-like environments.
+        jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
         const state = createSwapsMockStore();
         (
           state.metamask.remoteFeatureFlags.smartTransactionsNetworks as Record<

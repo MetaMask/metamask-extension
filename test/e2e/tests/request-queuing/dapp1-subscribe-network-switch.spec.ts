@@ -68,11 +68,7 @@ describe('Request Queueing', function () {
         );
 
         // Switch networks
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          'Localhost 8546',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
 
         // Navigate back to the test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

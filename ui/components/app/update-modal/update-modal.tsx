@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -24,49 +24,59 @@ import {
   openUpdateTabAndReload,
   setUpdateModalLastDismissedAt,
 } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function UpdateModal() {
   const t = useI18nContext();
   const [isLoading, setIsLoading] = useState(false);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const hasTrackedView = useRef(false);
 
   // Track when modal is viewed
   useEffect(() => {
-    trackEvent({
-      event: MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
-      category: MetaMetricsEventCategory.App,
-    });
-  }, [trackEvent]);
+    if (hasTrackedView.current) {
+      return;
+    }
+    hasTrackedView.current = true;
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
+      )
+        .addCategory(MetaMetricsEventCategory.App)
+        .build(),
+    );
+  }, [createEventBuilder, trackEvent]);
 
   const handleClose = useCallback(async () => {
-    trackEvent({
-      event: MetaMetricsEventName.ForceUpgradeSkipped,
-      category: MetaMetricsEventCategory.App,
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ForceUpgradeSkipped)
+        .addCategory(MetaMetricsEventCategory.App)
+        .build(),
+    );
     await setUpdateModalLastDismissedAt(Date.now());
-  }, [trackEvent]);
+  }, [createEventBuilder, trackEvent]);
 
   const handleUpdate = useCallback(async () => {
     try {
       setIsLoading(true);
-      trackEvent({
-        event: MetaMetricsEventName.ForceUpgradeClickedUpdateToLatestVersion,
-        category: MetaMetricsEventCategory.App,
-      });
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.ForceUpgradeClickedUpdateToLatestVersion,
+        )
+          .addCategory(MetaMetricsEventCategory.App)
+          .build(),
+      );
       await openUpdateTabAndReload();
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
     }
-  }, [trackEvent]);
+  }, [createEventBuilder, trackEvent]);
 
   return (
     <Modal

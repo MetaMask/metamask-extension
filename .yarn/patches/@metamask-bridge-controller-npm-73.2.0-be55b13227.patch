@@ -111,11 +111,11 @@ index 57f207adbd3a0323a50c5288a2971ad785c29501..4c485411f0c44507ed1aa1877cbcc000
      ...ETH_SWAPS_TOKEN_OBJECT,
  };
 +const ARC_SWAPS_TOKEN_OBJECT = {
-+    symbol: 'USDC-native',
-+    name: 'USDC-native',
++    symbol: 'USDC',
++    name: 'USDC',
 +    address: '0x0000000000000000000000000000000000000000',
 +    decimals: 18,
-+    iconUrl: '',
++    iconUrl: 'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/5042/erc20/0x0000000000000000000000000000000000000000.png',
 +};
  exports.SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
      [chains_1.CHAIN_IDS.MAINNET]: ETH_SWAPS_TOKEN_OBJECT,
@@ -132,7 +132,7 @@ index 57f207adbd3a0323a50c5288a2971ad785c29501..4c485411f0c44507ed1aa1877cbcc000
      TRX: 'slip44:195',
      MON: 'slip44:268435779',
      HYPE: 'slip44:2457',
-+    'USDC-native': 'erc20:0x0000000000000000000000000000000000000000',
++    USDC: 'erc20:0x0000000000000000000000000000000000000000',
  };
  //# sourceMappingURL=tokens.cjs.map
 \ No newline at end of file
@@ -153,11 +153,11 @@ index 8764f757f3e41a6614dac2095038e26eba641d9a..3038e2d005c0c040ef11993da1551c44
      ...ETH_SWAPS_TOKEN_OBJECT,
  };
 +const ARC_SWAPS_TOKEN_OBJECT = {
-+    symbol: 'USDC-native',
-+    name: 'USDC-native',
++    symbol: 'USDC',
++    name: 'USDC',
 +    address: '0x0000000000000000000000000000000000000000',
 +    decimals: 18,
-+    iconUrl: '',
++    iconUrl: 'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/5042/erc20/0x0000000000000000000000000000000000000000.png',
 +};
  export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
      [CHAIN_IDS.MAINNET]: ETH_SWAPS_TOKEN_OBJECT,
@@ -174,7 +174,7 @@ index 8764f757f3e41a6614dac2095038e26eba641d9a..3038e2d005c0c040ef11993da1551c44
      TRX: 'slip44:195',
      MON: 'slip44:268435779',
      HYPE: 'slip44:2457',
-+    'USDC-native': 'erc20:0x0000000000000000000000000000000000000000',
++    USDC: 'erc20:0x0000000000000000000000000000000000000000',
  };
  //# sourceMappingURL=tokens.mjs.map
 \ No newline at end of file

@@ -4,10 +4,10 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import { mapLocalTransaction } from '@metamask/client-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { mapLocalTransaction } from '../../../shared/lib/activity/adapters/local-transaction';
-import { toAssetId } from '../../../shared/lib/asset-utils';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import {
   DISTRIBUTOR_CLAIM_ABI,
@@ -143,8 +143,8 @@ describe('enrichLocalMusdClaimActivity', () => {
       chainId: 'eip155:59144',
       status: 'pending',
       timestamp: 1778633325000,
+      hash: '0xmusdclaim',
       data: {
-        hash: '0xmusdclaim',
         from,
         token: {
           amount: '5000000',
@@ -222,8 +222,8 @@ describe('enrichLocalMusdClaimActivity', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1778633400000,
+      hash: '0xmusdclaimconfirmed',
       data: {
-        hash: '0xmusdclaimconfirmed',
         from,
         token: {
           amount: '5000000',
@@ -299,8 +299,8 @@ describe('enrichLocalMusdClaimActivity', () => {
       chainId: 'eip155:59144' as const,
       status: 'success' as const,
       timestamp: 1,
+      hash: '0xapi',
       data: {
-        hash: '0xapi',
         token: {
           direction: 'in' as const,
           symbol: 'mUSD',

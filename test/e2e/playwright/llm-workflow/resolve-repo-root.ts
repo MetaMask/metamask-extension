@@ -17,7 +17,6 @@ const REPO_PACKAGE_NAME = 'metamask-crx';
 export function resolveRepoRoot(startDir: string = __dirname): string {
   let dir = path.resolve(startDir);
 
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const candidate = path.join(dir, 'package.json');
     if (existsSync(candidate)) {
