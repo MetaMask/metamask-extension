@@ -12,6 +12,10 @@ export const INTERACTION_PRESETS = {
   USER_ACTIONS: 'interactionUserActions',
 } as const;
 
+export const SCRATCH_7550_PRESETS = {
+  REACT18_CONCURRENT_PERF: 'react18ConcurrentPerf7550',
+} as const;
+
 export const USER_JOURNEY_PRESETS = {
   ONBOARDING_IMPORT: 'userJourneyOnboardingImport',
   ONBOARDING_NEW: 'userJourneyOnboardingNew',
