@@ -1423,9 +1423,6 @@
   "ui/pages/token-management/token-management.tsx": {
     "react-hooks/refs": {
       "count": 2
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
     }
   }
 }
