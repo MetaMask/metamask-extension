@@ -1,7 +1,5 @@
 import path from 'path';
 import { withFixtures } from '../helpers';
-import { E2E_SRP, WALLET_PASSWORD, WINDOW_TITLES } from '../constants';
-import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
 import {
   computeSchemaDiff,
   formatSchemaDiff,
@@ -9,16 +7,9 @@ import {
   readFixtureFile,
 } from '../fixtures/fixture-validation';
 import {
-  addCustomNetworkInOnboardingPrivacySettings,
-  handleSidepanelPostOnboarding,
-  importSRPOnboardingFlow,
-} from '../page-objects/flows/onboarding.flow';
-import {
-  enableNativeTokenAsMainBalance,
-  enableTestNetworks,
-} from '../page-objects/flows/settings.flow';
-import HomePage from '../page-objects/pages/home/homepage';
-import { switchToNetworkFromNetworkSelect } from '../page-objects/flows/network.flow';
+  generateDefaultFixtureState,
+  generateOnboardingFixtureState,
+} from '../page-objects/flows/wallet-fixture.flow';
 
 const ONBOARDING_FIXTURE_PATH = path.resolve(
   __dirname,
@@ -45,32 +36,7 @@ describe('Wallet State', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        // we don't need to use navigate since MM will automatically open a new window in prod build
-        await driver.waitAndSwitchToWindowWithTitle(
-          2,
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.checkLoginPageIsLoaded();
-
-        // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
-        await driver.delay(10000);
-
-        const persistedState = await driver.executeScript(
-          'return window.stateHooks.getPersistedState()',
-        );
-
-        if (
-          persistedState === null ||
-          persistedState === undefined ||
-          typeof persistedState !== 'object'
-        ) {
-          throw new Error(
-            `Expected getPersistedState() to return an object, but got: ${typeof persistedState}`,
-          );
-        }
-
-        const validatedState = persistedState as Record<string, unknown>;
+        const validatedState = await generateOnboardingFixtureState(driver);
 
         const existingFixture = await readFixtureFile(ONBOARDING_FIXTURE_PATH);
         const schemaDiff = computeSchemaDiff(existingFixture, validatedState);
@@ -105,97 +71,13 @@ describe('Wallet State', function () {
       this.skip();
     }
 
-    const networkName = 'Localhost 8545';
-    const networkUrl = 'http://localhost:8545';
-    const currencySymbol = 'ETH';
-    const chainId = 1337;
-
     await withFixtures(
       {
         disableServerMochaToBackground: true,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        // we don't need to use navigate since MM will automatically open a new window in prod build
-        await driver.waitAndSwitchToWindowWithTitle(
-          2,
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-
-        // Perform the onboarding manual steps with e2e SRP and password to generate the logged in state
-        await importSRPOnboardingFlow({
-          driver,
-          seedPhrase: E2E_SRP,
-          password: WALLET_PASSWORD,
-          participateInMetaMetrics: false,
-          dataCollectionForMarketing: true,
-          needNavigateToNewPage: false,
-        });
-
-        // Add custom network during onboarding privacy settings
-        await addCustomNetworkInOnboardingPrivacySettings({
-          driver,
-          networkName,
-          chainId,
-          currencySymbol,
-          networkUrl,
-        });
-
-        // Handle sidepanel navigation if needed
-        await handleSidepanelPostOnboarding(driver);
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        // Headless Chrome defaults to 800×600 which is too short for the
-        // settings-v2 content pane — the native-balance toggle is below the
-        // fold and waitForSelector's visibility check times out.  Resize to
-        // a height that keeps the toggle visible without scrolling.
-        await driver.driver.manage().window().setRect({
-          width: 1280,
-          height: 960,
-        });
-
-        // Set the settings to match the desired fixture state:
-        // 1. enabled native balance and 2. enabled test networks
-        await enableNativeTokenAsMainBalance(driver);
-
-        // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          'All popular networks',
-        );
-
-        await enableTestNetworks(driver);
-
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          'Localhost 8545',
-        );
-
-        // Fiat value should be displayed as we mock the price and that is not a 'test network'
-        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
-
-        // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
-        await driver.delay(10000);
-
-        const persistedState = await driver.executeScript(
-          'return window.stateHooks.getPersistedState()',
-        );
-
-        if (
-          persistedState === null ||
-          persistedState === undefined ||
-          typeof persistedState !== 'object'
-        ) {
-          throw new Error(
-            `Expected getPersistedState() to return an object, but got: ${typeof persistedState}`,
-          );
-        }
-
-        const validatedState = persistedState as Record<string, unknown>;
+        const validatedState = await generateDefaultFixtureState(driver);
 
         const existingFixture = await readFixtureFile(DEFAULT_FIXTURE_PATH);
         const schemaDiff = computeSchemaDiff(existingFixture, validatedState);

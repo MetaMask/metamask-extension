@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -36,14 +36,17 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import { getPositionDirection, buildPerpsVipTrackingData } from '../utils';
+import { getPositionDirection, getDisplaySymbol } from '../utils';
+import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { handlePerpsError } from '../utils/translate-perps-error';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsFeesDisplay } from '../perps-fees-display';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
+import { useSelectedAccountComplianceGate } from '../../compliance';
 
 export type ReversePositionModalProps = {
   isOpen: boolean;
@@ -74,13 +77,17 @@ export const ReversePositionModal = ({
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const { buildTrackingData } = usePerpsAttribution();
+  const { gate } = useSelectedAccountComplianceGate();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
     if (isOpen) {
       setIsGeoBlockModalOpen(false);
     }
-  }, [isOpen]);
+  }
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -103,10 +110,12 @@ export const ReversePositionModal = ({
       ? `${t('perpsLong')} → ${t('perpsShort')}`
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
-  const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${position.symbol}`;
+  const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${getDisplaySymbol(position.symbol)}`;
 
   const {
     feeRate,
+    protocolFeeRate,
+    metamaskFeeRate,
     undiscountedFeeRate,
     isLoading: isFeeLoading,
     hasError: hasFeeError,
@@ -130,6 +139,14 @@ export const ReversePositionModal = ({
     [sizeNum, currentPrice, undiscountedFeeRate],
   );
 
+  const estimatedMetamaskFee = useMemo(
+    () =>
+      metamaskFeeRate === undefined
+        ? undefined
+        : 2 * sizeNum * currentPrice * metamaskFeeRate,
+    [sizeNum, currentPrice, metamaskFeeRate],
+  );
+
   const shouldShowFeePlaceholder =
     isFeeLoading || hasFeeError || estimatedFees === undefined;
 
@@ -139,61 +156,89 @@ export const ReversePositionModal = ({
   );
 
   const handleSave = useCallback(async () => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError(null);
-
-    replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS });
-
-    try {
-      const flipResult = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsFlipPosition', [
-        {
-          symbol: position.symbol,
-          position: positionForFlip,
-          trackingData: buildPerpsVipTrackingData({
-            totalFee: estimatedFees ?? 0,
-            marketPrice: currentPrice,
-            vipTier,
-            vipDiscount: metamaskFeeRateDiscountPercentage,
-          }),
-        },
-      ]);
-      if (flipResult?.success !== true) {
-        throw new Error(flipResult?.error || 'Failed to flip position');
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
       }
-      const streamManager = getPerpsStreamManager();
-      const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
-        'perpsGetPositions',
-        [{ skipCache: true }],
-      );
-      streamManager.pushPositionsWithOverrides(freshPositions);
 
-      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
-      onClose();
-    } catch (err) {
-      const raw =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
-      });
-      const message = handlePerpsError(err, t as (key: string) => string);
-      setError(message);
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.REVERSE_FAILED,
-        description: message,
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+      setIsSubmitting(true);
+      setError(null);
+
+      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS });
+
+      try {
+        const flipResult = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsFlipPosition', [
+          {
+            symbol: position.symbol,
+            position: positionForFlip,
+            trackingData: buildTrackingData({
+              totalFee: estimatedFees ?? 0,
+              metamaskFee: estimatedMetamaskFee,
+              marketPrice: currentPrice,
+              vipTier,
+              vipDiscount: metamaskFeeRateDiscountPercentage,
+              hlFeeRate: protocolFeeRate,
+            }),
+          },
+        ]);
+        if (flipResult?.success !== true) {
+          // Controller already emitted flip submitted/terminal analytics —
+          // surface UI only; do not throw into catch (would duplicate PerpsError).
+          const err = new Error(flipResult?.error || 'Failed to flip position');
+          const message = handlePerpsError(err, t as (key: string) => string);
+          setError(message);
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.REVERSE_FAILED,
+            description: message,
+          });
+          return;
+        }
+        const streamManager = getPerpsStreamManager();
+        const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
+          'perpsGetPositions',
+          [{ skipCache: true }],
+        );
+        streamManager.pushPositionsWithOverrides(freshPositions);
+
+        replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
+        onClose();
+      } catch (err) {
+        // Transport/background throws never reach the controller flip
+        // submitted/terminal pipeline — keep client PerpsError for that gap.
+        const raw =
+          err instanceof Error ? err.message : 'An unknown error occurred';
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
+        });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
+        const message = handlePerpsError(err, t as (key: string) => string);
+        setError(message);
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.REVERSE_FAILED,
+          description: message,
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    });
   }, [
+    gate,
     isEligible,
     onClose,
     position.symbol,
@@ -202,9 +247,12 @@ export const ReversePositionModal = ({
     track,
     t,
     estimatedFees,
+    estimatedMetamaskFee,
     currentPrice,
     vipTier,
     metamaskFeeRateDiscountPercentage,
+    protocolFeeRate,
+    buildTrackingData,
   ]);
 
   return (

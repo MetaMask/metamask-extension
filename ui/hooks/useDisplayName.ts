@@ -1,7 +1,8 @@
 import { NameOrigin, NameType } from '@metamask/name-controller';
 import { Hex, isStrictHexString } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import isEqual from 'lodash/isEqual';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
@@ -48,7 +49,8 @@ export function useDisplayNames(
   const nameEntries = useNames(requests);
   const firstPartyContractNames = useFirstPartyContractNames(requests);
   const trustSignals = useTrustSignals(
-    requests.map((req) => ({ ...req, chainId: req.variation })),
+    // For ETHEREUM_ADDRESS name requests the variation is a hex chain ID.
+    requests.map((req) => ({ ...req, chainId: req.variation as Hex })),
   );
   const erc20Tokens = useERC20Tokens(requests);
   const watchedNFTNames = useWatchedNFTNames(requests);
@@ -67,16 +69,8 @@ export function useDisplayNames(
 
     let name =
       accountGroupName ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       nameEntry?.name ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       firstPartyContractName ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       erc20Token?.name ||
       watchedNftName ||
       ensName ||
@@ -86,8 +80,6 @@ export function useDisplayNames(
 
     const displayState = getDisplayState(trustSignal?.state, hasPetname, name);
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const image = erc20Token?.image;
 
     const trustSignalIcon = getTrustSignalIcon(displayState);
@@ -293,25 +285,30 @@ function useAccountGroupNames(
       .filter((item) => item.address !== null);
   }, [requests]);
 
-  const namesByAddress = useSelector((state: MultichainAccountsState) => {
-    const result: Record<string, UseAccountGroupNamesResponse> = {};
-    ethereumAddresses.forEach(({ address }) => {
-      if (address) {
-        const accountGroupName = selectAccountGroupNameByInternalAccount(
-          state,
-          address,
-        );
-        const walletInfo = getWalletIdAndNameByAccountAddress(state, address);
-        const walletName = walletInfo?.name || null;
+  const selectNamesByAddress = useCallback(
+    (state: MultichainAccountsState) => {
+      const result: Record<string, UseAccountGroupNamesResponse> = {};
+      ethereumAddresses.forEach(({ address }) => {
+        if (address) {
+          const accountGroupName = selectAccountGroupNameByInternalAccount(
+            state,
+            address,
+          );
+          const walletInfo = getWalletIdAndNameByAccountAddress(state, address);
+          const walletName = walletInfo?.name || null;
 
-        result[address] = {
-          accountGroupName,
-          walletName,
-        };
-      }
-    });
-    return result;
-  });
+          result[address] = {
+            accountGroupName,
+            walletName,
+          };
+        }
+      });
+      return result;
+    },
+    [ethereumAddresses],
+  );
+
+  const namesByAddress = useSelector(selectNamesByAddress, isEqual);
 
   return useMemo(() => {
     return requests.map(({ type, value }, index) => {

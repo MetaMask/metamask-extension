@@ -10,7 +10,11 @@ jest.mock('@zxing/browser', () => ({
 
 jest.mock('@zxing/library', () => ({
   BarcodeFormat: { QR_CODE: 'QR_CODE' },
-  DecodeHintType: { POSSIBLE_FORMATS: 'POSSIBLE_FORMATS' },
+  DecodeHintType: {
+    POSSIBLE_FORMATS: 'POSSIBLE_FORMATS',
+    TRY_HARDER: 'TRY_HARDER',
+    CHARACTER_SET: 'CHARACTER_SET',
+  },
 }));
 
 const MockBrowserQRCodeReader = BrowserQRCodeReader as jest.MockedClass<
@@ -18,17 +22,17 @@ const MockBrowserQRCodeReader = BrowserQRCodeReader as jest.MockedClass<
 >;
 
 describe('EnhancedQrReader', () => {
-  let mockDecodeFromVideoDevice: jest.Mock;
+  let mockDecodeFromConstraints: jest.Mock;
   let mockControls: { stop: jest.Mock };
 
   beforeEach(() => {
     mockControls = { stop: jest.fn() };
-    mockDecodeFromVideoDevice = jest.fn().mockResolvedValue(mockControls);
+    mockDecodeFromConstraints = jest.fn().mockResolvedValue(mockControls);
 
     MockBrowserQRCodeReader.mockImplementation(
       () =>
         ({
-          decodeFromVideoDevice: mockDecodeFromVideoDevice,
+          decodeFromConstraints: mockDecodeFromConstraints,
         }) as unknown as BrowserQRCodeReader,
     );
   });
@@ -62,23 +66,38 @@ describe('EnhancedQrReader', () => {
   });
 
   describe('QR reader initialization', () => {
-    it('configures BrowserQRCodeReader with scan interval options', () => {
+    it('configures BrowserQRCodeReader with optimized scan intervals', () => {
       render(<EnhancedQrReader onFrame={jest.fn()} />);
 
       expect(MockBrowserQRCodeReader).toHaveBeenCalledWith(
         expect.any(Map),
         expect.objectContaining({
-          delayBetweenScanAttempts: 100,
-          delayBetweenScanSuccess: 100,
+          delayBetweenScanAttempts: 80,
+          delayBetweenScanSuccess: 50,
         }),
       );
     });
 
-    it('starts decoding from the video element ref', () => {
+    it('enables TRY_HARDER and CHARACTER_SET decode hints', () => {
       render(<EnhancedQrReader onFrame={jest.fn()} />);
 
-      expect(mockDecodeFromVideoDevice).toHaveBeenCalledWith(
-        undefined,
+      const [hintsArg] = MockBrowserQRCodeReader.mock.calls[0] ?? [];
+      const hints = hintsArg as unknown as Map<string, unknown>;
+      expect(hints.get('TRY_HARDER')).toBe(true);
+      expect(hints.get('CHARACTER_SET')).toBe('UTF-8');
+    });
+
+    it('starts decoding with HD video constraints', () => {
+      render(<EnhancedQrReader onFrame={jest.fn()} />);
+
+      expect(mockDecodeFromConstraints).toHaveBeenCalledWith(
+        expect.objectContaining({
+          audio: false,
+          video: expect.objectContaining({
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          }),
+        }),
         expect.any(HTMLVideoElement),
         expect.any(Function),
       );
@@ -88,8 +107,8 @@ describe('EnhancedQrReader', () => {
   describe('onFrame callback', () => {
     it('invokes onFrame with decoded text on successful scan', () => {
       const onFrame = jest.fn();
-      mockDecodeFromVideoDevice.mockImplementation(
-        (_device, _elem, callback) => {
+      mockDecodeFromConstraints.mockImplementation(
+        (_constraints, _elem, callback) => {
           callback({ getText: () => 'decoded-payload' });
           return Promise.resolve(mockControls);
         },
@@ -102,8 +121,8 @@ describe('EnhancedQrReader', () => {
 
     it('does not invoke onFrame when result is undefined', () => {
       const onFrame = jest.fn();
-      mockDecodeFromVideoDevice.mockImplementation(
-        (_device, _elem, callback) => {
+      mockDecodeFromConstraints.mockImplementation(
+        (_constraints, _elem, callback) => {
           callback(undefined);
           return Promise.resolve(mockControls);
         },
@@ -129,7 +148,7 @@ describe('EnhancedQrReader', () => {
     });
 
     it('handles gracefully when controls resolve to undefined', async () => {
-      mockDecodeFromVideoDevice.mockResolvedValue(undefined);
+      mockDecodeFromConstraints.mockResolvedValue(undefined);
 
       const { unmount } = render(<EnhancedQrReader onFrame={jest.fn()} />);
 
@@ -144,7 +163,7 @@ describe('EnhancedQrReader', () => {
 
     it('logs rejection instead of throwing when cleanup fails', async () => {
       const logDebugSpy = jest.spyOn(log, 'debug');
-      mockDecodeFromVideoDevice.mockRejectedValue(new Error('cleanup failed'));
+      mockDecodeFromConstraints.mockRejectedValue(new Error('cleanup failed'));
 
       const { unmount } = render(<EnhancedQrReader onFrame={jest.fn()} />);
 

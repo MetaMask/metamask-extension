@@ -1,40 +1,27 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import type { Hex } from 'viem';
-import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
-import { CHAIN_IDS } from '../../../constants/network';
 import {
-  IN_PROGRESS_TRANSACTION_STATUSES,
-  NATIVE_TOKEN_ADDRESS,
-  SmartTransactionStatus,
-  TransactionGroupStatus,
-} from '../../../constants/transaction';
+  BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+  BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
+} from '../../../constants/bridge';
+import { CHAIN_IDS } from '../../../constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
+import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { TransactionGroup } from '../../multichain/types';
-import type { Status, TokenAmount } from '../types';
+import type { ActivityFee, TokenAmount } from '../types';
 
-export type ValueTransfer = NonNullable<
+type ValueTransfer = NonNullable<
   V1TransactionByHashResponse['valueTransfers']
 >[number];
 
-export function isNftStandard(value?: string) {
+function isNftStandard(value?: string) {
   return value === 'erc721' || value === 'erc1155';
 }
 
-/**
- * Looks up the native asset for a chain, returning `undefined` instead of
- * throwing when the chain is outside the bridge swaps registry
- *
- * @param chainId - Hex, numeric, or CAIP chain id.
- * @returns The native asset metadata, or `undefined` if unsupported.
- */
-export function getNativeAssetSafe(chainId: string | number) {
+function getNativeAssetSafe(chainId: string | number) {
   try {
     return getNativeAssetForChainId(chainId);
   } catch {
@@ -42,103 +29,56 @@ export function getNativeAssetSafe(chainId: string | number) {
   }
 }
 
-const resolveAssetId = (
-  chainId: CaipChainId,
-  {
-    contractAddress,
-    transferType,
-  }: {
-    contractAddress?: string;
-    transferType?: string;
-  },
-): string | undefined => {
-  if (contractAddress) {
-    return toAssetId(contractAddress, chainId);
+const nativeTokenDecimals = 18;
+
+function toNetworkFeeAmount(
+  gasUsed: string | number | undefined,
+  gasPrice: string | number | undefined,
+): string | undefined {
+  if (gasUsed === undefined || gasPrice === undefined) {
+    return undefined;
   }
 
-  if (transferType === 'normal' || transferType === 'internal') {
-    return toAssetId(NATIVE_TOKEN_ADDRESS, chainId);
+  try {
+    return String(BigInt(gasUsed) * BigInt(gasPrice));
+  } catch {
+    return undefined;
   }
-
-  return undefined;
-};
-
-function getTransactionStatusKey(
-  transaction: TransactionGroup['primaryTransaction'],
-): string {
-  const {
-    txReceipt: { status: receiptStatus } = {},
-    type,
-    status,
-  } = transaction;
-
-  if (receiptStatus === '0x0') {
-    return TransactionStatus.failed;
-  }
-
-  if (
-    status === TransactionStatus.confirmed &&
-    type === TransactionType.cancel
-  ) {
-    return TransactionGroupStatus.cancelled;
-  }
-
-  return transaction.status;
 }
 
-export function getLocalTransactionStatus({
-  primaryTransaction,
-  initialTransaction,
-}: {
-  primaryTransaction: TransactionGroup['primaryTransaction'];
-  initialTransaction: TransactionGroup['initialTransaction'];
-}): Status {
-  if (initialTransaction.isSmartTransaction) {
-    const smartStatus = initialTransaction.status as string | undefined;
+function buildBaseNetworkFee(
+  amount: string,
+  chainId: string | number,
+): ActivityFee {
+  const nativeAsset = getNativeAssetSafe(chainId);
 
-    if (smartStatus === SmartTransactionStatus.pending) {
-      return 'pending';
-    }
-
-    if (smartStatus === SmartTransactionStatus.success) {
-      return 'success';
-    }
-
-    if (smartStatus === SmartTransactionStatus.cancelled) {
-      return 'failed';
-    }
-
-    return 'pending';
-  }
-
-  const statusKey = getTransactionStatusKey(primaryTransaction);
-
-  if (statusKey === TransactionStatus.confirmed) {
-    return 'success';
-  }
-
-  if (
-    statusKey === TransactionStatus.cancelled ||
-    statusKey === TransactionGroupStatus.cancelled ||
-    statusKey === TransactionStatus.dropped ||
-    statusKey === TransactionStatus.failed ||
-    statusKey === TransactionStatus.rejected
-  ) {
-    return 'failed';
-  }
-
-  if (
-    IN_PROGRESS_TRANSACTION_STATUSES.includes(
-      statusKey as (typeof IN_PROGRESS_TRANSACTION_STATUSES)[number],
-    )
-  ) {
-    return 'pending';
-  }
-
-  return 'pending';
+  return {
+    type: 'base',
+    amount,
+    ...(nativeAsset?.decimals === undefined
+      ? { decimals: nativeTokenDecimals }
+      : { decimals: nativeAsset.decimals }),
+    ...(nativeAsset?.symbol ? { symbol: nativeAsset.symbol } : {}),
+    ...(nativeAsset?.assetId ? { assetId: nativeAsset.assetId } : {}),
+  };
 }
 
-export function getKnownTokenMetadata(
+export function getLocalTransactionFees(
+  transactionGroup: Pick<TransactionGroup, 'primaryTransaction'>,
+): ActivityFee[] | undefined {
+  const { primaryTransaction } = transactionGroup;
+  const amount = toNetworkFeeAmount(
+    primaryTransaction.txReceipt?.gasUsed,
+    primaryTransaction.txReceipt?.effectiveGasPrice ??
+      primaryTransaction.txParams?.gasPrice,
+  );
+
+  return amount
+    ? [buildBaseNetworkFee(amount, primaryTransaction.chainId)]
+    : undefined;
+}
+
+function getKnownTokenMetadata(
   chainId: CaipChainId | Hex,
   contractAddress?: string,
 ) {
@@ -151,9 +91,10 @@ export function getKnownTokenMetadata(
     (chainId === CHAIN_IDS.MAINNET || assetId?.startsWith('eip155:1/')
       ? STATIC_MAINNET_TOKEN_LIST[contractAddress.toLowerCase()]
       : undefined) ??
-    Object.values(BRIDGE_CHAINID_COMMON_TOKEN_PAIR).find(
-      (token) => token?.assetId === assetId,
-    );
+    [
+      ...Object.values(BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN),
+      ...Object.values(BRIDGE_CHAINID_COMMON_TOKEN_PAIR),
+    ].find((token) => token?.assetId === assetId);
 
   return tokenMetadata
     ? { ...tokenMetadata, ...(assetId ? { assetId } : {}) }
@@ -181,73 +122,45 @@ export function getTokenMetadataFromKnownToken(
   };
 }
 
-export function getTokenAmountFromTransfer(
-  transfer: ValueTransfer | undefined,
-  direction: TokenAmount['direction'],
-  chainId: CaipChainId,
-) {
-  if (!transfer) {
-    return undefined;
-  }
+export function parseValueTransfers(
+  valueTransfers: ValueTransfer[] | undefined,
+  subjectAddress: string,
+): {
+  sentTransfer: ValueTransfer | undefined;
+  receivedTransfer: ValueTransfer | undefined;
+  sentNativeTransfer: ValueTransfer | undefined;
+  sentNftTransfer: ValueTransfer | undefined;
+  receivedNftTransfer: ValueTransfer | undefined;
+} {
+  const sent = valueTransfers?.filter(({ from }) =>
+    equalsIgnoreCase(from, subjectAddress),
+  );
+  const received = valueTransfers?.filter(({ to }) =>
+    equalsIgnoreCase(to, subjectAddress),
+  );
 
-  const { transferType, amount } = transfer;
-  const isNftTransfer = isNftStandard(transferType);
-  const symbol = isNftTransfer
-    ? transfer.name || transfer.symbol
-    : transfer.symbol;
+  const sentTransfer = sent?.[0];
 
-  if (!symbol && amount === undefined) {
-    return undefined;
-  }
+  const receivedTransfer =
+    received?.find(({ symbol }) => symbol !== sentTransfer?.symbol) ??
+    received?.[0];
 
-  const assetId =
-    transfer && !isNftTransfer
-      ? resolveAssetId(chainId, {
-          contractAddress: transfer.contractAddress,
-          transferType: transfer.transferType,
-        })
-      : undefined;
+  const sentNativeTransfer = sent?.find(
+    ({ transferType }) => transferType === 'normal',
+  );
 
-  const hasTransferAmount =
-    !isNftTransfer && amount !== null && amount !== undefined;
+  const sentNftTransfer = sent?.find(({ transferType }) =>
+    isNftStandard(transferType),
+  );
+  const receivedNftTransfer = received?.find(({ transferType }) =>
+    isNftStandard(transferType),
+  );
 
   return {
-    direction,
-    ...(hasTransferAmount ? { amount: String(amount) } : {}),
-    ...(transfer.decimal === undefined ? {} : { decimals: transfer.decimal }),
-    ...(symbol ? { symbol } : {}),
-    ...(assetId ? { assetId } : {}),
+    sentTransfer,
+    receivedTransfer,
+    sentNativeTransfer,
+    sentNftTransfer,
+    receivedNftTransfer,
   };
-}
-
-/**
- * When the transfer omits contractAddress, fall back to the indexed tx `to` field.
- *
- * @param token - Parsed token amount from the value transfer.
- * @param fallbackContractAddress - Indexed transaction `to` address used as ERC-20 fallback.
- * @param transferType - Value transfer type; native (`normal`) transfers skip the fallback.
- * @param chainId - CAIP-2 chain id for asset id encoding.
- * @returns Token amount with `assetId` set when a fallback address applies.
- */
-export function withFallbackTokenAssetId(
-  token: TokenAmount | undefined,
-  fallbackContractAddress: string | undefined,
-  transferType: string | undefined,
-  chainId: CaipChainId,
-): TokenAmount | undefined {
-  if (
-    !token ||
-    token.assetId ||
-    transferType === 'normal' ||
-    !fallbackContractAddress
-  ) {
-    return token;
-  }
-
-  const assetId = toAssetId(fallbackContractAddress, chainId);
-  if (!assetId) {
-    return token;
-  }
-
-  return { ...token, assetId };
 }

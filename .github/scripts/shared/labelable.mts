@@ -1,11 +1,13 @@
-import { GitHub } from '@actions/github/lib/utils';
+import type { GitHub } from '@actions/github/lib/utils';
 
-import { Label, createOrRetrieveLabel } from './label.mts';
+import { type Label, createOrRetrieveLabel } from './label.mts';
 
-export enum LabelableType {
-  Issue,
-  PullRequest,
-}
+export const LabelableType = {
+  Issue: 0,
+  PullRequest: 1,
+} as const;
+
+export type LabelableType = (typeof LabelableType)[keyof typeof LabelableType];
 
 // A labelable object can be a pull request or an issue
 export interface Labelable {
@@ -52,6 +54,7 @@ export async function addLabelToLabelable(
   );
 
   await addLabelByIdToLabelable(octokit, labelable, labelId);
+  addLabelToCachedLabelable(labelable, labelId, label.name);
 }
 
 // This function adds label by id to a labelable object (i.e. a pull request or an issue)
@@ -92,6 +95,7 @@ export async function removeLabelFromLabelable(
     labelableId: labelable?.id,
     labelIds: [labelId],
   });
+  removeLabelFromCachedLabelable(labelable, labelId);
 }
 
 // This function removes a label from a labelable object (i.e. a pull request or an issue) if present
@@ -107,4 +111,26 @@ export async function removeLabelFromLabelableIfPresent(
     // Remove label from labelable
     await removeLabelFromLabelable(octokit, labelable, labelFound?.id);
   }
+}
+
+function addLabelToCachedLabelable(
+  labelable: Labelable,
+  labelId: string,
+  labelName: string,
+): void {
+  if (labelable.labels.some(({ name }) => name === labelName)) {
+    return;
+  }
+
+  labelable.labels.push({
+    id: labelId,
+    name: labelName,
+  });
+}
+
+function removeLabelFromCachedLabelable(
+  labelable: Labelable,
+  labelId: string,
+): void {
+  labelable.labels = labelable.labels.filter(({ id }) => id !== labelId);
 }

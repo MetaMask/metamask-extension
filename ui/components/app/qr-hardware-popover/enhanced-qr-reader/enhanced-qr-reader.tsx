@@ -6,8 +6,23 @@ import { MILLISECOND } from '../../../../../shared/constants/time';
 import Spinner from '../../../ui/spinner';
 import type { EnhancedQrReaderProps } from './enhanced-qr-reader.types';
 
-// Delay between ZXing scan attempts and successes to avoid CPU thrashing.
-const SCAN_INTERVAL_MS = MILLISECOND * 100;
+// Delay after a failed decode attempt. Kept moderate to prevent CPU
+// thrashing while still retrying promptly.
+const SCAN_ATTEMPT_DELAY_MS = MILLISECOND * 80;
+
+// Delay after a successful decoding. Lower than the attempt delay so
+// animated multi-part UR QR codes are captured faster.
+const SCAN_SUCCESS_DELAY_MS = MILLISECOND * 50;
+
+// Request HD resolution for clearer QR detection. Uses `ideal` rather
+// than `min` so cameras that cannot deliver 720p still work.
+const VIDEO_CONSTRAINTS: MediaStreamConstraints = {
+  audio: false,
+  video: {
+    width: { ideal: 1280 },
+    height: { ideal: 720 },
+  },
+};
 
 /**
  * Continuous QR code scanner using ZXing.
@@ -27,9 +42,13 @@ const EnhancedQrReader = ({ onFrame }: EnhancedQrReaderProps) => {
   const codeReader = useMemo(() => {
     const hints = new Map();
     hints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.QR_CODE]);
+    // Multi-pass detection for blurry or angled frames.
+    hints.set(DecodeHintType.TRY_HARDER, true);
+    // Explicit encoding to avoid heuristic guessing across platforms.
+    hints.set(DecodeHintType.CHARACTER_SET, 'UTF-8');
     return new BrowserQRCodeReader(hints, {
-      delayBetweenScanAttempts: SCAN_INTERVAL_MS,
-      delayBetweenScanSuccess: SCAN_INTERVAL_MS,
+      delayBetweenScanAttempts: SCAN_ATTEMPT_DELAY_MS,
+      delayBetweenScanSuccess: SCAN_SUCCESS_DELAY_MS,
     });
   }, []);
 
@@ -49,16 +68,16 @@ const EnhancedQrReader = ({ onFrame }: EnhancedQrReaderProps) => {
     };
   }, []);
 
-  // Starts the camera stream and continuous QR decoding.
-  // Cleanup stops the stream when the component unmounts or deps change.
+  // Starts the camera stream with explicit resolution constraints and
+  // continuous QR decoding. Cleanup stops the stream on unmounting.
   useEffect(() => {
     const videoElem = videoRef.current;
     if (!videoElem) {
       return undefined;
     }
 
-    const promise = codeReader.decodeFromVideoDevice(
-      undefined,
+    const promise = codeReader.decodeFromConstraints(
+      VIDEO_CONSTRAINTS,
       videoElem,
       (result) => {
         if (result) {
@@ -66,6 +85,10 @@ const EnhancedQrReader = ({ onFrame }: EnhancedQrReaderProps) => {
         }
       },
     );
+
+    // Prevent unhandled rejection if the stream fails to start (e.g.
+    // camera disconnected between the permission probe and here).
+    promise.catch(log.debug);
 
     return () => {
       promise.then((controls) => controls?.stop()).catch(log.debug);
@@ -79,6 +102,8 @@ const EnhancedQrReader = ({ onFrame }: EnhancedQrReaderProps) => {
         style={{
           display: canPlay ? 'block' : 'none',
           width: '100%',
+          aspectRatio: '1',
+          objectFit: 'cover',
           filter: 'blur(4px)',
         }}
       />

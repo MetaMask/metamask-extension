@@ -13,6 +13,7 @@ import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionP
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import * as useIsPaidByMetaMaskModule from '../../../hooks/pay/useIsPaidByMetaMask';
 import * as useMusdConversionTokensModule from '../../../../../hooks/musd';
+import * as confirmationsFeatureFlagsModule from '../../../selectors/feature-flags';
 import { MusdConversionInfo } from './musd-conversion-info';
 
 const mockEndTrace = jest.fn();
@@ -26,6 +27,11 @@ jest.mock('../../../../../../shared/lib/trace', () => ({
   TraceOperation: {
     MusdConversionDataFetch: 'musd.conversion.data_fetch',
   },
+}));
+
+jest.mock('../../../selectors/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/feature-flags'),
+  selectIsPayAmountPrefillEnabled: jest.fn(),
 }));
 
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
@@ -74,9 +80,6 @@ jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
 jest.mock('../../rows/total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row" />,
 }));
-jest.mock('../../rows/claimable-bonus-row/claimable-bonus-row', () => ({
-  ClaimableBonusRow: () => <div data-testid="claimable-bonus-row" />,
-}));
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -109,6 +112,12 @@ function setupDefaultMocks({
   hasQuotes = false,
   hideResults = false,
   isPaidByMetaMask = false,
+  prefillMax = false,
+  hasAmount = true,
+  hasInput = false,
+  payToken = undefined as
+    | { address: string; chainId: `0x${string}` }
+    | undefined,
   defaultPaymentToken = null as {
     address: string;
     chainId: `0x${string}`;
@@ -118,15 +127,26 @@ function setupDefaultMocks({
   hasQuotes?: boolean;
   hideResults?: boolean;
   isPaidByMetaMask?: boolean;
+  prefillMax?: boolean;
+  hasAmount?: boolean;
+  hasInput?: boolean;
+  payToken?: { address: string; chainId: `0x${string}` } | undefined;
   defaultPaymentToken?: { address: string; chainId: `0x${string}` } | null;
 } = {}) {
+  jest
+    .mocked(confirmationsFeatureFlagsModule.selectIsPayAmountPrefillEnabled)
+    .mockReturnValue(prefillMax);
   jest
     .mocked(useTransactionCustomAmountModule.useTransactionCustomAmount)
     .mockReturnValue({
       amountFiat: '100',
       amountHuman: '50',
       amountHumanDebounced: '50',
-      hasInput: false,
+      hasAmount,
+      hasInput,
+      isDepositPrefillEnabled: false,
+      isDepositPrefillLoading: false,
+      isDepositPrefilled: false,
       isInputChanged: false,
       updatePendingAmount: jest.fn(),
       updatePendingAmountPercentage: jest.fn(),
@@ -179,7 +199,9 @@ function setupDefaultMocks({
     .mocked(useTransactionPayTokenModule.useTransactionPayToken)
     .mockReturnValue({
       isNative: false,
-      payToken: undefined,
+      payToken: payToken as ReturnType<
+        typeof useTransactionPayTokenModule.useTransactionPayToken
+      >['payToken'],
       setPayToken: jest.fn(),
     });
   jest
@@ -274,6 +296,28 @@ describe('MusdConversionInfo', () => {
     expect(getByTestId('custom-amount')).toBeInTheDocument();
   });
 
+  describe('pre-filled max amount', () => {
+    it('does not pre-fill the amount when the flag is disabled', () => {
+      render();
+
+      expect(
+        useTransactionCustomAmountModule.useTransactionCustomAmount,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({ prefillMaxOnLoad: false }),
+      );
+    });
+
+    it('pre-fills the max amount when the flag is enabled', () => {
+      render({ prefillMax: true });
+
+      expect(
+        useTransactionCustomAmountModule.useTransactionCustomAmount,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({ prefillMaxOnLoad: true }),
+      );
+    });
+  });
+
   it('renders the override content with amountHuman', () => {
     const { getByTestId } = render();
 
@@ -343,7 +387,6 @@ describe('MusdConversionInfo', () => {
       const { getByTestId } = render({ isQuotesLoading: true });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-      expect(getByTestId('claimable-bonus-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
     });
 
@@ -351,7 +394,6 @@ describe('MusdConversionInfo', () => {
       const { getByTestId } = render({ hasQuotes: true });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-      expect(getByTestId('claimable-bonus-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
     });
 
@@ -362,7 +404,6 @@ describe('MusdConversionInfo', () => {
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
-      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
       expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
 
@@ -373,7 +414,6 @@ describe('MusdConversionInfo', () => {
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
-      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
       expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
 
@@ -384,7 +424,6 @@ describe('MusdConversionInfo', () => {
       });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-      expect(getByTestId('claimable-bonus-row')).toBeInTheDocument();
       expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
 
@@ -395,8 +434,55 @@ describe('MusdConversionInfo', () => {
       });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-      expect(getByTestId('claimable-bonus-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
+    });
+
+    it('does not render bottom content rows before an amount is entered', () => {
+      const { queryByTestId } = render({
+        hasAmount: false,
+        hasQuotes: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('does not render bottom content rows before an amount is entered while quotes load', () => {
+      const { queryByTestId } = render({
+        hasAmount: false,
+        isQuotesLoading: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('hides bottom content rows again when the amount is reset to zero with a stale quote', () => {
+      const { queryByTestId } = render({
+        hasAmount: false,
+        hasQuotes: true,
+        isPaidByMetaMask: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('bottom pay with row', () => {
+    it('renders the bottom pay with row in the empty state', () => {
+      const { getByTestId } = render({ hasInput: false });
+
+      expect(getByTestId('pay-with-row')).toBeInTheDocument();
+    });
+
+    it('keeps the bottom pay with row once an amount is entered', () => {
+      const { getByTestId } = render({ hasInput: true });
+
+      expect(getByTestId('pay-with-row')).toBeInTheDocument();
     });
   });
 });

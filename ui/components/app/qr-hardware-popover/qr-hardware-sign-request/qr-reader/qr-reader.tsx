@@ -6,7 +6,7 @@ import BaseQrReader, {
   CBOR_ENCODING,
   SIGNING_EXPECTED_UR_TYPES,
 } from '../../base-qr-reader';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { QrMismatchedTransactionError } from '../../qr-utils/qr-utils';
 import type { QrReaderProps } from './qr-reader.types';
 
 /**
@@ -22,6 +22,8 @@ import type { QrReaderProps } from './qr-reader.types';
  * @param props.requestId - Expected signing request ID.
  * @param props.setErrorTitle - Sets the popover error heading.
  * @param props.setErrorActive - Signals the parent that the scanner is showing error content.
+ * @param props.setCameraPermissionErrorCode - Reports the camera-permission
+ * ErrorCode for the current recovery state.
  */
 const QrReader = ({
   submitQRHardwareSignature,
@@ -29,9 +31,8 @@ const QrReader = ({
   requestId,
   setErrorTitle,
   setErrorActive,
+  setCameraPermissionErrorCode,
 }: QrReaderProps) => {
-  const t = useI18nContext();
-
   const handleSuccess = useCallback(
     async (ur: UR) => {
       const ethSignature = ETHSignature.fromCBOR(ur.cbor);
@@ -39,8 +40,7 @@ const QrReader = ({
       const signId = uuid.stringify(buffer as Uint8Array);
 
       if (signId !== requestId) {
-        setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
-        throw new Error(t('QRHardwareMismatchedSignId'));
+        throw new QrMismatchedTransactionError();
       }
 
       return await submitQRHardwareSignature({
@@ -48,7 +48,7 @@ const QrReader = ({
         cbor: ur.cbor.toString(CBOR_ENCODING),
       });
     },
-    [submitQRHardwareSignature, requestId, setErrorTitle, t],
+    [submitQRHardwareSignature, requestId],
   );
 
   return (
@@ -59,6 +59,7 @@ const QrReader = ({
       handleSuccess={handleSuccess}
       setErrorTitle={setErrorTitle}
       setErrorActive={setErrorActive}
+      setCameraPermissionErrorCode={setCameraPermissionErrorCode}
     />
   );
 };

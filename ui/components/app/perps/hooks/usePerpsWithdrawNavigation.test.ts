@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
@@ -79,10 +79,9 @@ function renderUsePerpsWithdrawNavigation(
 ) {
   const store = createMockStore(state);
   const wrapper = ({ children }: { children: React.ReactNode }) =>
-    React.createElement(
-      Provider,
-      { store: store as never },
-      React.createElement(
+    React.createElement(Provider, {
+      store: store as never,
+      children: React.createElement(
         MemoryRouter,
         {
           initialEntries: [pathname],
@@ -95,7 +94,7 @@ function renderUsePerpsWithdrawNavigation(
         },
         children,
       ),
-    );
+    });
 
   return renderHook(hook, { wrapper });
 }

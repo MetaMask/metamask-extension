@@ -28,6 +28,7 @@
   },
   "AnalyticsController": {
     "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
+    "consentDecisionMade": true,
     "eventQueue": "object",
     "optedIn": true
   },
@@ -52,12 +53,12 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
     "isWalletResetInProgress": "boolean",
+    "lastQrScanCompletedSuccessfully": null,
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
-    "networkConnectionBanner": "object",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDropdownState": {},
@@ -67,8 +68,8 @@
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
-    "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
+    "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
@@ -96,13 +97,13 @@
   "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "needsProfilePairing": "boolean",
-    "srpSessionData": "object"
+    "needsProfilePairing": "boolean"
   },
   "BridgeController": {
     "assetExchangeRates": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
+    "inputPrimaryDenomination": "string",
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
     "quoteRequest": "object",
@@ -115,7 +116,10 @@
     "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object"
   },
-  "BridgeStatusController": { "txHistory": "object" },
+  "BridgeStatusController": {
+    "quoteUpdateStatusStore": "object",
+    "txHistory": "object"
+  },
   "ClaimsController": "object",
   "ClaimsService": "undefined",
   "ClientController": "object",
@@ -123,19 +127,20 @@
     "lastCheckedAt": null,
     "walletComplianceStatusMap": "object"
   },
+  "ConfigRegistryController": {
+    "configs": "object",
+    "etag": null,
+    "lastFetched": null,
+    "version": null
+  },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
-    "currencyRates": {
-      "ETH": {
-        "conversionDate": "object",
-        "conversionRate": 1700,
-        "usdConversionRate": null
-      }
-    },
+    "currencyRates": {},
     "currentCurrency": "usd"
   },
   "DeFiPositionsController": "object",
+  "DeFiPositionsControllerV2": "object",
   "DecryptMessageController": {
     "unapprovedDecryptMsgCount": 0,
     "unapprovedDecryptMsgs": "object"
@@ -144,10 +149,6 @@
   "EncryptionPublicKeyController": {
     "unapprovedEncryptionPublicKeyMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object"
-  },
-  "EnsController": {
-    "ensEntries": "object",
-    "ensResolutionsByAddress": "object"
   },
   "GasFeeController": {
     "estimatedGasFeeTimeBounds": {},
@@ -168,9 +169,7 @@
   },
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
-    "completedMetaMetricsOnboarding": true,
     "dataCollectionForMarketing": "boolean",
-    "eventsBeforeMetricsOptIn": "object",
     "fragments": "object",
     "marketingCampaignCookieId": null,
     "tracesBeforeMetricsOptIn": "object",
@@ -201,6 +200,7 @@
   },
   "MultichainTransactionsController": "object",
   "NameController": { "nameSources": "object", "names": "object" },
+  "NetworkConnectionBannerController": "object",
   "NetworkController": {
     "networkConfigurationsByChainId": "object",
     "networksMetadata": "object",
@@ -211,6 +211,7 @@
       "bip122": "object",
       "eip155": "object",
       "solana": "object",
+      "stellar": "object",
       "tron": "object"
     },
     "nativeAssetIdentifiers": "object"
@@ -242,6 +243,7 @@
   "OnboardingController": {
     "completedOnboarding": true,
     "firstTimeFlowType": "import",
+    "hasSeenOnboardingCompletionPage": true,
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
@@ -263,7 +265,6 @@
     "advancedGasFee": {},
     "currentLocale": "en",
     "dismissSeedBackUpReminder": false,
-    "enableMV3TimestampSave": true,
     "featureFlags": {},
     "forgottenPassword": false,
     "ipfsGateway": "string",
@@ -278,7 +279,9 @@
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
+      "gasSponsorshipOptOutByChainId": "object",
       "hideZeroBalanceTokens": false,
+      "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
       "showConfirmationAdvancedDetails": false,
       "showDefaultAddress": "boolean",
@@ -287,6 +290,7 @@
       "showMultiRpcModal": "boolean",
       "showNativeTokenAsMainBalance": true,
       "showTestNetworks": true,
+      "showTickerWidget": "boolean",
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,
@@ -315,14 +319,27 @@
     "watchEthereumAccountEnabled": "boolean"
   },
   "ProfileMetricsController": "object",
+  "QrSyncController": "object",
+  "RampsController": {
+    "countries": "object",
+    "nativeProviders": "object",
+    "orders": "object",
+    "paymentMethods": "object",
+    "providerAutoSelected": "boolean",
+    "providers": "object",
+    "requests": "object",
+    "tokens": "object",
+    "userRegion": null
+  },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
+    "featureFlagThresholdGroups": "object",
     "localOverrides": "object",
     "rawRemoteFeatureFlags": "object",
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupA", "value": "valueA" }
+      "feature3": "valueA"
     },
     "thresholdCache": "object"
   },

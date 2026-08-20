@@ -9,12 +9,12 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import {
   getChromiumExtensionCameraSiteSettingsUrl,
   getMozExtensionOriginForDisplay,
   isFirefoxBrowser,
 } from '../../../../../shared/lib/browser-runtime.utils';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -32,6 +32,7 @@ import EnhancedQrReader from '../enhanced-qr-reader';
 import {
   cameraReadyStateToErrorCode,
   buildQrCameraRecoveryTrackEventArgs,
+  buildQrScanFailedTrackEventArgs,
 } from './base-qr-reader-utils';
 import {
   CameraReadyState,
@@ -67,6 +68,9 @@ import {
  * @param options0.setErrorTitle - Sets the popover title to an error-specific heading.
  * @param options0.setErrorActive - Signals the parent that BaseQrReader is
  * showing error content so the flow-specific title can be hidden.
+ * @param options0.setCameraPermissionErrorCode - Reports the camera-permission
+ * ErrorCode for the current recovery state so cancel can reject with the
+ * matching hardware-wallet error.
  */
 const BaseQrReader = ({
   isReadingWallet,
@@ -75,9 +79,10 @@ const BaseQrReader = ({
   handleSuccess,
   setErrorTitle,
   setErrorActive,
+  setCameraPermissionErrorCode,
 }: BaseQrReaderProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const {
     state: {
@@ -111,6 +116,17 @@ const BaseQrReader = ({
     // Clear the stale error flag when unmounting so the parent title reappears
     return () => setErrorActive(false);
   }, [isErrorActive, setErrorActive]);
+
+  // Signal camera-permission screens to the parent so modal dismiss can reject
+  // with the matching HardwareWalletError (denied vs prompt dismissed) rather
+  // than a generic "Scan cancelled".
+  useEffect(() => {
+    if (!setCameraPermissionErrorCode) {
+      return undefined;
+    }
+    setCameraPermissionErrorCode(cameraReadyStateToErrorCode(readyState));
+    return () => setCameraPermissionErrorCode(null);
+  }, [readyState, setCameraPermissionErrorCode]);
 
   // ---- MetaMetrics tracking -----------------------------------------------
 
@@ -176,6 +192,22 @@ const BaseQrReader = ({
       ),
     );
   }, [readyState, trackEvent]);
+
+  // ---- QR scan-failed tracking --------------------------------------------
+
+  // Guards against duplicate events when trackEvent is recreated by context changes.
+  const lastTrackedScanErrorRef = useRef<typeof scanError>(null);
+
+  useEffect(() => {
+    if (!scanError || scanError === lastTrackedScanErrorRef.current) {
+      return;
+    }
+    lastTrackedScanErrorRef.current = scanError;
+    const flow = isReadingWallet
+      ? QrErrorFlowContext.Pairing
+      : QrErrorFlowContext.Signing;
+    trackEvent(buildQrScanFailedTrackEventArgs(scanError, flow));
+  }, [scanError, isReadingWallet, trackEvent]);
 
   // ---- Decoder lifecycle --------------------------------------------------
 
@@ -252,8 +284,6 @@ const BaseQrReader = ({
     if (error.type === WebcamErrorType.NoWebcamFound) {
       title = t('noWebcamFoundTitle');
       message = t('noWebcamFound');
-    } else if (error.message === t('QRHardwareMismatchedSignId')) {
-      message = t('QRHardwareMismatchedSignId');
     } else {
       title = t('generalCameraErrorTitle');
       message = t('generalCameraError');

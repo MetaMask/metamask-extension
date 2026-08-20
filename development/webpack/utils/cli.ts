@@ -21,6 +21,7 @@ import {
   resolveAutoJobs,
   resolveAutoThreads,
 } from './loaders/threadLoader';
+import { getDefaultZipMtime } from './plugins/ManifestPlugin/zip-mtime';
 
 const ENV_PREFIX = 'BUNDLE_';
 const addFeat = 'addFeature' as const;
@@ -529,7 +530,8 @@ function getOptions(
       alias: 'z',
       array: false,
       default: false,
-      description: 'Generate a zip file of the build',
+      description:
+        'Generate a zip file of the build. Zip entry mtimes use SOURCE_DATE_EPOCH when set, otherwise the latest git commit timestamp, falling back to a deterministic default.',
       group: toOrange('Build options:'),
       type: 'boolean',
     },
@@ -689,6 +691,13 @@ function getOptions(
  * @param features - The active and available features
  */
 export function getDryRunMessage(args: Args, features: Features) {
+  const zipMtime = args.zip ? getDefaultZipMtime() : null;
+  const zipMtimeMessage =
+    zipMtime === null
+      ? ''
+      : `Zip mtime: ${zipMtime} (${new Date(zipMtime).toISOString()})
+`;
+
   return `🦊 Build Config 🦊
 
 Mode: ${args.mode}
@@ -698,7 +707,7 @@ Watch: ${args.watch}
 Cache: ${args.cache}
 Progress: ${args.progress}
 Zip: ${args.zip}
-LavaMoat: ${args.lavamoat}
+${zipMtimeMessage}LavaMoat: ${args.lavamoat}
 LavaMoat debug: ${args.lavamoatDebug}
 Generate policy: ${args.generatePolicy}
 Snow: ${args.snow}

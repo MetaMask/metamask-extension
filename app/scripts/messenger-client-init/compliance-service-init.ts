@@ -2,7 +2,7 @@ import {
   ComplianceService,
   type ComplianceServiceMessenger,
 } from '@metamask/compliance-controller';
-import { MessengerClientInitFunction } from './types';
+import type { MessengerClientInitFunction } from './types';
 
 /**
  * Initialize the ComplianceService.

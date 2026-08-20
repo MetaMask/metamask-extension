@@ -1,4 +1,12 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
+import { useSelector } from 'react-redux';
+import type { Json } from '@metamask/utils';
 import {
   Box,
   BoxBackgroundColor,
@@ -15,7 +23,10 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import type { ClosePositionParams } from '@metamask/perps-controller';
+import type {
+  ClosePositionParams,
+  OrderType,
+} from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   formatPnl,
@@ -24,7 +35,6 @@ import {
 import {
   Modal,
   ModalContent,
-  ModalHeader,
   ModalOverlay,
   ModalContentSize,
   ModalBody,
@@ -42,25 +52,39 @@ import {
   usePerpsEligibility,
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
+import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
+import { usePerpsAbandonOrderTracking } from '../../../../hooks/perps/usePerpsAbandonOrderTracking';
 import {
-  getDisplayName,
+  getDisplaySymbol,
   getPositionDirection,
   getPositionPnlRatio,
-  buildPerpsVipTrackingData,
 } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { PerpsFeesDisplay } from '../perps-fees-display';
-import { CloseAmountSection } from '../order-entry';
+import {
+  CloseAmountSection,
+  LimitPriceInput,
+  OrderEntryHeader,
+  OrderTypeToggle,
+} from '../order-entry';
 import {
   PERPS_TOAST_KEYS,
   usePerpsToast,
   type PerpsToastKeyConfig,
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position } from '../types';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
+import { getIsPerpsCloseLimitOrderEnabled } from '../../../../selectors/perps/feature-flags';
+import {
+  getCloseLimitReferencePrice,
+  isCloseLimitPriceOutsideDeviation,
+  parsePositivePrice,
+} from './close-position-utils';
 
 type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
 
@@ -83,19 +107,31 @@ const buildCloseRequestParams = ({
   currentPrice,
   isPartialClose,
   closeSize,
+  sizeDecimals,
+  orderType,
+  limitPrice,
   position,
 }: {
   symbol: string;
   currentPrice: number;
   isPartialClose: boolean;
   closeSize: number;
+  sizeDecimals?: number;
+  orderType: OrderType;
+  limitPrice?: string;
   position: Position;
 }): ClosePositionParams => {
-  if (!isPartialClose) {
+  const size =
+    sizeDecimals === undefined
+      ? closeSize.toString()
+      : closeSize.toFixed(sizeDecimals);
+
+  if (orderType === 'limit') {
     return {
       symbol,
-      orderType: 'market',
-      currentPrice,
+      orderType: 'limit',
+      price: limitPrice,
+      ...(isPartialClose ? { size } : {}),
       position,
     };
   }
@@ -104,7 +140,7 @@ const buildCloseRequestParams = ({
     symbol,
     orderType: 'market',
     currentPrice,
-    size: closeSize.toString(),
+    ...(isPartialClose ? { size } : {}),
     position,
   };
 };
@@ -199,11 +235,13 @@ const getCloseSuccessToastConfig = ({
 const getCloseFailureToastConfig = ({
   error,
   isPartialClose,
+  orderType,
   t,
   formatFiat,
 }: {
   error: unknown;
   isPartialClose: boolean;
+  orderType: OrderType;
   t: CloseToastTranslation;
   formatFiat: FormatPerpsFiat;
 }): { errorMessage: string; toast: CloseToastConfig } => {
@@ -215,6 +253,18 @@ const getCloseFailureToastConfig = ({
         formatFiat(PERPS_MIN_MARKET_ORDER_USD),
       ])
     : handlePerpsError(error, t as (key: string) => string);
+
+  if (orderType === 'limit') {
+    return {
+      errorMessage,
+      toast: {
+        key: isPartialClose
+          ? PERPS_TOAST_KEYS.PARTIAL_LIMIT_CLOSE_FAILED
+          : PERPS_TOAST_KEYS.LIMIT_CLOSE_FAILED,
+        description: t('perpsToastPositionStillActive'),
+      },
+    };
+  }
 
   if (isPartialClose) {
     return {
@@ -240,7 +290,18 @@ export type ClosePositionModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
+  markPrice?: number | string;
+  midPrice?: number;
   sizeDecimals?: number;
+  /**
+   * The CTA that opened this modal (close vs reduce_exposure) and where it was
+   * clicked, surfaced on the position_close PERPS_SCREEN_VIEWED event.
+   * Defaults to the plain close CTA on the asset detail screen.
+   */
+  buttonClicked?: string;
+  buttonLocation?: string;
+  displayPrice?: string;
+  displayChange?: string;
 };
 
 export const ClosePositionModal = ({
@@ -248,10 +309,18 @@ export const ClosePositionModal = ({
   onClose,
   position,
   currentPrice,
+  markPrice,
+  midPrice,
   sizeDecimals,
+  buttonClicked = PERPS_EVENT_VALUE.BUTTON_CLICKED.CLOSE,
+  buttonLocation = PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+  displayPrice,
+  displayChange,
 }: ClosePositionModalProps) => {
   const t = useI18nContext() as CloseToastTranslation;
   const { isEligible } = usePerpsEligibility();
+  const { gate } = useSelectedAccountComplianceGate();
+  const { buildTrackingData } = usePerpsAttribution();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   usePerpsEventTracking({
@@ -262,6 +331,9 @@ export const ClosePositionModal = ({
         PERPS_EVENT_VALUE.SCREEN_TYPE.POSITION_CLOSE,
       [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+      // Which CTA opened this modal — close vs reduce_exposure.
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]: buttonClicked,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
     },
   });
   const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
@@ -277,18 +349,60 @@ export const ClosePositionModal = ({
   const [closePercent, setClosePercent] = useState(100);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedOrderType, setSelectedOrderType] =
+    useState<OrderType>('market');
+  const [limitPrice, setLimitPrice] = useState('');
+  const isCloseLimitOrderEnabled = useSelector(
+    getIsPerpsCloseLimitOrderEnabled,
+  );
+  const effectiveOrderType: OrderType = isCloseLimitOrderEnabled
+    ? selectedOrderType
+    : 'market';
 
-  useEffect(() => {
+  // Abandon-order tracking state: latest form snapshot, a stable reader for it,
+  // and the commit flag that suppresses the event once a close is submitted.
+  const latestAbandonPropsRef = useRef<Record<string, Json>>({});
+  const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
+  const hasConfirmedCloseRef = useRef(false);
+
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
     if (isOpen) {
       setClosePercent(100);
       setIsSubmitting(false);
       setError(null);
       setIsGeoBlockModalOpen(false);
+      setSelectedOrderType('market');
+      setLimitPrice('');
+    }
+  }
+
+  // Reopening starts a fresh close session: a commit from the previous one
+  // must not suppress abandon tracking for this one.
+  useEffect(() => {
+    if (isOpen) {
+      hasConfirmedCloseRef.current = false;
     }
   }, [isOpen]);
 
-  const displayName = getDisplayName(position.symbol);
+  const [prevIsCloseLimitOrderEnabled, setPrevIsCloseLimitOrderEnabled] =
+    useState(isCloseLimitOrderEnabled);
+  if (isCloseLimitOrderEnabled !== prevIsCloseLimitOrderEnabled) {
+    setPrevIsCloseLimitOrderEnabled(isCloseLimitOrderEnabled);
+    if (!isCloseLimitOrderEnabled) {
+      setSelectedOrderType('market');
+      setLimitPrice('');
+    }
+  }
+
+  const displayName = getDisplaySymbol(position.symbol);
+  const headerDisplayPrice = displayPrice ?? formatFiat(currentPrice);
   const isPartialClose = closePercent < 100;
+  const closeFraction = closePercent / 100;
+  const positionDirection = getPositionDirection(position.size);
+  const isLong = positionDirection === 'long';
+  const closeDirection = isLong ? 'short' : 'long';
 
   const positionSize = useMemo(
     () => Math.abs(parseFloat(position.size)) || 0,
@@ -296,30 +410,130 @@ export const ClosePositionModal = ({
   );
 
   const closeSize = useMemo(
-    () => (positionSize * closePercent) / 100,
-    [positionSize, closePercent],
+    () => positionSize * closeFraction,
+    [positionSize, closeFraction],
   );
+
+  const parsedLimitPrice = useMemo(
+    () => parsePositivePrice(limitPrice),
+    [limitPrice],
+  );
+
+  const validCurrentPrice = useMemo(
+    () => parsePositivePrice(currentPrice),
+    [currentPrice],
+  );
+
+  const referencePrice = useMemo(
+    () =>
+      getCloseLimitReferencePrice({
+        markPrice,
+        currentPrice,
+        midPrice,
+      }),
+    [markPrice, currentPrice, midPrice],
+  );
+
+  const isLimitPriceOutsideDeviation =
+    effectiveOrderType === 'limit' &&
+    isCloseLimitPriceOutsideDeviation(parsedLimitPrice, referencePrice);
+
+  const effectivePrice =
+    effectiveOrderType === 'limit' && parsedLimitPrice !== null
+      ? parsedLimitPrice
+      : (validCurrentPrice ?? 0);
 
   const closeNotionalUsd = useMemo(
-    () => closeSize * currentPrice,
-    [closeSize, currentPrice],
+    () => closeSize * effectivePrice,
+    [closeSize, effectivePrice],
   );
 
-  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
-    usePerpsOrderFees({
-      symbol: position.symbol,
-      orderType: 'market',
-    });
+  // Emit when the modal closes without a confirmed close. Snapshot refreshed
+  // after each render so the emit carries the latest size. Written in an effect
+  // rather than during render to keep the render body pure.
+  useEffect(() => {
+    latestAbandonPropsRef.current = {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+      [PERPS_EVENT_PROPERTY.ACTION]: PERPS_EVENT_VALUE.ACTION.ABANDON_ORDER,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.DIRECTION]:
+        getPositionDirection(position.size) === 'long'
+          ? PERPS_EVENT_VALUE.DIRECTION.LONG
+          : PERPS_EVENT_VALUE.DIRECTION.SHORT,
+      [PERPS_EVENT_PROPERTY.ORDER_SIZE]: closeNotionalUsd,
+      // Omitted rather than zeroed when leverage is unknown: a real position
+      // never has 0x, so a fallback would be indistinguishable from a reading.
+      // Matches mobile, which passes `leverage?.value` through undefined.
+      ...(position.leverage?.value === undefined
+        ? {}
+        : { [PERPS_EVENT_PROPERTY.LEVERAGE_USED]: position.leverage.value }),
+    };
+  }, [
+    position.symbol,
+    position.size,
+    position.leverage?.value,
+    closeNotionalUsd,
+  ]);
+  usePerpsAbandonOrderTracking({
+    getAbandonProperties: getAbandonProperties.current,
+    hasCommittedRef: hasConfirmedCloseRef,
+    active: isOpen,
+  });
+
+  const {
+    feeRate,
+    protocolFeeRate,
+    undiscountedFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: effectiveOrderType,
+    isMaker: effectiveOrderType === 'limit',
+  });
+
+  const liveUnrealizedPnl = useMemo(
+    () => Number.parseFloat(position.unrealizedPnl) || 0,
+    [position.unrealizedPnl],
+  );
+
+  const effectiveTotalPnl = useMemo(() => {
+    if (effectiveOrderType === 'market') {
+      return liveUnrealizedPnl;
+    }
+
+    const entryPrice = parsePositivePrice(position.entryPrice);
+    if (entryPrice === null || parsedLimitPrice === null) {
+      return liveUnrealizedPnl;
+    }
+
+    return isLong
+      ? (parsedLimitPrice - entryPrice) * positionSize
+      : (entryPrice - parsedLimitPrice) * positionSize;
+  }, [
+    effectiveOrderType,
+    liveUnrealizedPnl,
+    position.entryPrice,
+    parsedLimitPrice,
+    isLong,
+    positionSize,
+  ]);
+
+  const effectivePnl = useMemo(
+    () => effectiveTotalPnl * closeFraction,
+    [effectiveTotalPnl, closeFraction],
+  );
 
   const margin = useMemo(() => {
-    const totalMargin = parseFloat(position.marginUsed) || 0;
-    return (totalMargin * closePercent) / 100;
-  }, [position.marginUsed, closePercent]);
-
-  const unrealizedPnl = useMemo(() => {
-    const pnl = parseFloat(position.unrealizedPnl) || 0;
-    return (pnl * closePercent) / 100;
-  }, [position.unrealizedPnl, closePercent]);
+    const marginUsed = Number.parseFloat(position.marginUsed) || 0;
+    const effectiveMargin = marginUsed - liveUnrealizedPnl + effectiveTotalPnl;
+    return effectiveMargin * closeFraction;
+  }, [
+    position.marginUsed,
+    liveUnrealizedPnl,
+    effectiveTotalPnl,
+    closeFraction,
+  ]);
 
   const estimatedFees = useMemo(
     () => closeNotionalUsd * (feeRate ?? 0),
@@ -329,11 +543,6 @@ export const ClosePositionModal = ({
   const originalEstimatedFees = useMemo(
     () => closeNotionalUsd * (undiscountedFeeRate ?? 0),
     [closeNotionalUsd, undiscountedFeeRate],
-  );
-
-  const isPriceValid = useMemo(
-    () => Number.isFinite(currentPrice) && currentPrice > 0,
-    [currentPrice],
   );
 
   const isPartialCloseBelowMinNotional = useMemo(() => {
@@ -359,15 +568,43 @@ export const ClosePositionModal = ({
     [originalEstimatedFees],
   );
 
-  // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
-  // add unrealizedPnl separately (that would double-count).
   const youWillReceive = useMemo(
     () => roundedMargin - roundedFees,
     [roundedMargin, roundedFees],
   );
 
+  const formError = useMemo(() => {
+    if (
+      effectiveOrderType === 'market' &&
+      (validCurrentPrice === null || referencePrice === null)
+    ) {
+      return t('perpsClosePriceUnavailable');
+    }
+    if (effectiveOrderType === 'limit' && parsedLimitPrice === null) {
+      return t('perpsCloseLimitPriceRequired');
+    }
+    if (effectiveOrderType === 'limit' && referencePrice === null) {
+      return t('perpsClosePriceUnavailable');
+    }
+    if (isLimitPriceOutsideDeviation) {
+      return t('perpsCloseLimitPriceOutsideOracleBand');
+    }
+    if (youWillReceive < 0) {
+      return t('perpsInsufficientMargin');
+    }
+    return null;
+  }, [
+    effectiveOrderType,
+    validCurrentPrice,
+    referencePrice,
+    parsedLimitPrice,
+    isLimitPriceOutsideDeviation,
+    youWillReceive,
+    t,
+  ]);
+
   const isSubmitDisabled =
-    !isPriceValid ||
+    formError !== null ||
     closePercent <= 0 ||
     isSubmitting ||
     closeSize <= 0 ||
@@ -377,113 +614,144 @@ export const ClosePositionModal = ({
     if (isSubmitDisabled) {
       return;
     }
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
+    if (
+      effectiveOrderType === 'limit' &&
+      (parsedLimitPrice === null ||
+        isCloseLimitPriceOutsideDeviation(parsedLimitPrice, referencePrice))
+    ) {
+      setError(
+        parsedLimitPrice === null
+          ? t('perpsCloseLimitPriceRequired')
+          : t('perpsCloseLimitPriceOutsideOracleBand'),
+      );
       return;
     }
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
 
-    setIsSubmitting(true);
-    setError(null);
+      setIsSubmitting(true);
+      setError(null);
+      // The user committed: closing the modal after this is not an abandonment.
+      hasConfirmedCloseRef.current = true;
 
-    replacePerpsToastByKey(
-      getCloseInProgressToastConfig({
-        isPartialClose,
+      const orderDescription = getPartialCloseDescription({
         positionSize: position.size,
         closeSize,
         displayName,
         t,
         formatNumber,
-      }),
-    );
+      });
+      replacePerpsToastByKey(
+        effectiveOrderType === 'limit'
+          ? {
+              key: PERPS_TOAST_KEYS.ORDER_SUBMITTED,
+              description: orderDescription,
+            }
+          : getCloseInProgressToastConfig({
+              isPartialClose,
+              positionSize: position.size,
+              closeSize,
+              displayName,
+              t,
+              formatNumber,
+            }),
+      );
 
-    try {
-      onClose();
-      const closeRequestParams = buildCloseRequestParams({
-        symbol: position.symbol,
-        currentPrice,
-        isPartialClose,
-        closeSize,
-        position,
-      });
-      closeRequestParams.trackingData = buildPerpsVipTrackingData({
-        totalFee: estimatedFees,
-        marketPrice: currentPrice,
-        vipTier,
-        vipDiscount: metamaskFeeRateDiscountPercentage,
-      });
-      const result = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsClosePosition', [closeRequestParams]);
-      if (!result.success) {
-        const message = result.error || 'Failed to close position';
-        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
-          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
+      try {
+        onClose();
+        const closeRequestParams = buildCloseRequestParams({
+          symbol: position.symbol,
+          currentPrice,
+          isPartialClose,
+          closeSize,
+          sizeDecimals,
+          orderType: effectiveOrderType,
+          limitPrice:
+            effectiveOrderType === 'limit'
+              ? limitPrice.replaceAll(/[$,]/gu, '')
+              : undefined,
+          position,
         });
+        closeRequestParams.trackingData = buildTrackingData({
+          totalFee: estimatedFees,
+          marketPrice: currentPrice,
+          vipTier,
+          vipDiscount: metamaskFeeRateDiscountPercentage,
+          hlFeeRate: protocolFeeRate,
+        });
+        const result = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsClosePosition', [closeRequestParams]);
+        if (!result.success) {
+          const message = result.error || 'Failed to close position';
+          const { errorMessage, toast } = getCloseFailureToastConfig({
+            error: new Error(message),
+            isPartialClose,
+            orderType: effectiveOrderType,
+            t,
+            formatFiat,
+          });
+          setError(errorMessage);
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
+          replacePerpsToastByKey(toast);
+          return;
+        }
+        replacePerpsToastByKey(
+          effectiveOrderType === 'limit'
+            ? {
+                key: PERPS_TOAST_KEYS.ORDER_PLACED,
+                description: orderDescription,
+              }
+            : getCloseSuccessToastConfig({
+                isPartialClose,
+                position,
+                t,
+                formatPercentWithMinThreshold,
+              }),
+        );
+      } catch (err) {
+        // Transport/background throws never reach the controller close
+        // submitted/terminal pipeline — keep client PerpsError for that gap.
+        const raw =
+          err instanceof Error ? err.message : t('somethingWentWrong');
         track(MetaMetricsEventName.PerpsError, {
           [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
         });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
         const { errorMessage, toast } = getCloseFailureToastConfig({
-          error: new Error(message),
+          error: err,
           isPartialClose,
+          orderType: effectiveOrderType,
           t,
           formatFiat,
         });
         setError(errorMessage);
         replacePerpsToastByKey(toast);
-        return;
+      } finally {
+        setIsSubmitting(false);
       }
-      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
-        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-      });
-      replacePerpsToastByKey(
-        getCloseSuccessToastConfig({
-          isPartialClose,
-          position,
-          t,
-          formatPercentWithMinThreshold,
-        }),
-      );
-    } catch (err) {
-      const errMessage =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errMessage,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
-        [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-        [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-      });
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
-      });
-
-      const { errorMessage, toast } = getCloseFailureToastConfig({
-        error: err,
-        isPartialClose,
-        t,
-        formatFiat,
-      });
-      setError(errorMessage);
-      replacePerpsToastByKey(toast);
-    } finally {
-      setIsSubmitting(false);
-    }
+    });
   }, [
     isSubmitDisabled,
+    effectiveOrderType,
+    parsedLimitPrice,
+    referencePrice,
+    gate,
     isEligible,
     replacePerpsToastByKey,
     isPartialClose,
@@ -493,21 +761,50 @@ export const ClosePositionModal = ({
     t,
     formatNumber,
     currentPrice,
-    closeNotionalUsd,
+    sizeDecimals,
+    limitPrice,
     estimatedFees,
-    track,
-    closePercent,
+    protocolFeeRate,
+    buildTrackingData,
     onClose,
     formatPercentWithMinThreshold,
     formatFiat,
     vipTier,
     metamaskFeeRateDiscountPercentage,
+    track,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {
     setClosePercent(percent);
     setError(null);
   }, []);
+
+  const handleOrderTypeChange = useCallback(
+    (orderType: OrderType) => {
+      setSelectedOrderType(orderType);
+      setError(null);
+      if (orderType === 'market') {
+        setLimitPrice('');
+      }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.ORDER_TYPE_SELECTED,
+        [PERPS_EVENT_PROPERTY.SELECTED_ORDER_TYPE]: orderType,
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      });
+    },
+    [position.symbol, track],
+  );
+
+  const handleLimitPriceChange = useCallback((price: string) => {
+    setLimitPrice(price);
+    setError(null);
+  }, []);
+
+  const isEmptyLimitPrice =
+    effectiveOrderType === 'limit' && limitPrice.trim() === '';
+  const visibleFormError = isEmptyLimitPrice ? null : formError;
+  const visibleError = visibleFormError ?? error;
 
   return (
     <>
@@ -518,30 +815,40 @@ export const ClosePositionModal = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
-          <ModalHeader onClose={onClose}>
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              alignItems={BoxAlignItems.Center}
-              gap={2}
-            >
-              <Icon name={IconName.CircleX} size={IconSize.Xl} />
-              <Text
-                variant={TextVariant.HeadingSm}
-                textAlign={TextAlign.Center}
-              >
-                {t('perpsClosePosition')}
-              </Text>
-            </Box>
-          </ModalHeader>
+          <OrderEntryHeader
+            displayName={displayName}
+            displayPrice={headerDisplayPrice}
+            displayChange={displayChange}
+            onBack={onClose}
+            testIdPrefix="perps-close-position"
+          />
           <ModalBody>
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+              {isCloseLimitOrderEnabled ? (
+                <OrderTypeToggle
+                  orderType={effectiveOrderType}
+                  onOrderTypeChange={handleOrderTypeChange}
+                />
+              ) : null}
+
+              {effectiveOrderType === 'limit' ? (
+                <LimitPriceInput
+                  limitPrice={limitPrice}
+                  onLimitPriceChange={handleLimitPriceChange}
+                  currentPrice={currentPrice}
+                  midPrice={midPrice}
+                  direction={closeDirection}
+                  autoFocus
+                />
+              ) : null}
+
               {/* Close Amount Section (input + slider) */}
               <CloseAmountSection
                 positionSize={position.size}
                 closePercent={closePercent}
                 onClosePercentChange={handlePercentChange}
                 asset={displayName}
-                currentPrice={currentPrice}
+                currentPrice={effectivePrice}
                 sizeDecimals={sizeDecimals}
               />
 
@@ -607,13 +914,13 @@ export const ClosePositionModal = ({
                           key="perps-close-margin-pnl"
                           variant={TextVariant.BodyXs}
                           color={
-                            unrealizedPnl >= 0
+                            effectivePnl >= 0
                               ? TextColor.SuccessDefault
                               : TextColor.ErrorDefault
                           }
                           asChild
                         >
-                          <span>{formatPnl(unrealizedPnl)}</span>
+                          <span>{formatPnl(effectivePnl)}</span>
                         </Text>,
                       ])}
                     </Text>
@@ -662,13 +969,13 @@ export const ClosePositionModal = ({
                     fontWeight={FontWeight.Medium}
                     data-testid="perps-close-summary-receive-value"
                   >
-                    {formatFiat(Math.max(youWillReceive, 0))}
+                    {formatFiat(youWillReceive)}
                   </Text>
                 </Box>
               </Box>
 
               {/* Error */}
-              {error && (
+              {visibleError && (
                 <Box
                   backgroundColor={BoxBackgroundColor.ErrorMuted}
                   className="rounded-lg"
@@ -686,7 +993,7 @@ export const ClosePositionModal = ({
                     variant={TextVariant.BodySm}
                     color={TextColor.ErrorDefault}
                   >
-                    {error}
+                    {visibleError}
                   </Text>
                 </Box>
               )}

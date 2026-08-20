@@ -1,6 +1,5 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
-import README from './README.mdx';
 import { Text } from '../text';
 import {
   Display,
@@ -23,11 +22,6 @@ export default {
   title: 'Components/ComponentLibrary/SelectButton',
   component: SelectButton,
   tags: ['autodocs'],
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {},
   args: {
     startAccessory: <AvatarBase size={AvatarBaseSize.Sm} />,

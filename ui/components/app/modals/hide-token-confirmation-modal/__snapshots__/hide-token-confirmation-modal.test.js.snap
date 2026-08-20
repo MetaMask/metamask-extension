@@ -11,7 +11,7 @@ exports[`Hide Token Confirmation Modal should match snapshot 1`] = `
       Hide token?
     </div>
     <div
-      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-12 w-12 hide-token-confirmation__identicon"
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-12 w-12 hide-token-confirmation__identicon"
     >
       <span
         class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"

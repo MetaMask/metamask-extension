@@ -3,10 +3,12 @@ import type {
   V1TransactionByHashResponse,
   V4MultiAccountTransactionsResponse,
 } from '@metamask/core-backend';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { mapApiEvmTransactions } from '../../../../shared/lib/activity/adapters/api-evm-transactions';
+import { mapApiTransaction } from '@metamask/client-utils';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { selectProtectedLocalTransactions } from '../../../selectors/activity';
+import { selectRampsSettlementHashes } from '../../../selectors/rampsController';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { activityMatchesAssetId, type ActivityListFilter } from '../helpers';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
@@ -20,7 +22,12 @@ type Props = ActivityListFilter & { subjectAddress: string };
 
 export function useQueryFilters(queryFilters: Props) {
   const { subjectAddress } = queryFilters;
-  const excludedHashes = useSelector(selectRequiredTransactionHashes);
+  const requiredHashes = useSelector(selectRequiredTransactionHashes);
+  const rampHashes = useSelector(selectRampsSettlementHashes);
+  const excludedHashes = useMemo(
+    () => new Set([...requiredHashes, ...rampHashes]),
+    [requiredHashes, rampHashes],
+  );
   const protectedLocalTransactions = useSelector(
     selectProtectedLocalTransactions,
   );
@@ -38,9 +45,7 @@ export function useQueryFilters(queryFilters: Props) {
         (tx) => !isExcludedTransactionHash(tx, excludedHashes),
       ];
       // This really should be moved to the API
-      const activityFilters: ((
-        activity: ReturnType<typeof mapApiEvmTransactions>,
-      ) => boolean)[] = [
+      const activityFilters: ((activity: ActivityListItem) => boolean)[] = [
         (activity) => !assetId || activityMatchesAssetId(activity, assetId),
       ];
 
@@ -53,10 +58,10 @@ export function useQueryFilters(queryFilters: Props) {
               txFilters.every((filter) => filter(transaction)),
             )
             .map((transaction) =>
-              mapApiEvmTransactions({ subjectAddress, transaction }),
+              mapApiTransaction({ subjectAddress, transaction }),
             )
             .map((activity) => {
-              const hash = activity.data.hash?.toLowerCase();
+              const hash = activity.hash?.toLowerCase();
 
               return activity.status === 'failed' &&
                 hash &&

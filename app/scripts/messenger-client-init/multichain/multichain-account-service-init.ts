@@ -37,7 +37,6 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     },
     createAccounts: {
       timeoutMs: 3000,
-      batched: false,
     },
     resyncAccounts: {
       autoRemoveExtraSnapAccounts: false,
@@ -47,13 +46,7 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
   const messengerClient = new MultichainAccountService({
     messenger: controllerMessenger,
     providerConfigs: {
-      [SOL_ACCOUNT_PROVIDER_NAME]: {
-        ...snapAccountProviderConfig,
-        createAccounts: {
-          ...snapAccountProviderConfig.createAccounts,
-          batched: true,
-        },
-      },
+      [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
       [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
       [TRX_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
     },

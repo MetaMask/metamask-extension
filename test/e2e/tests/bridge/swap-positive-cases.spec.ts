@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
@@ -55,7 +54,6 @@ describe('Swap tests', function (this: Suite) {
           ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           refreshRate: 30000,
         },
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -77,6 +75,7 @@ describe('Swap tests', function (this: Suite) {
           },
           submitDelay: 10000,
           expectedDestAmount: '3,839',
+          expectedDetailsDestAmount: '3,839.4478',
           expectedActivityAmount: '+3,839.4478',
         });
 
@@ -137,7 +136,6 @@ describe('Swap tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -158,6 +156,7 @@ describe('Swap tests', function (this: Suite) {
             tokenTo: 'MUSD',
           },
           expectedDestAmount: '0.369',
+          expectedDetailsDestAmount: '0.3695',
           expectedActivityAmount: '+0.3695',
           skipStatusPage: true,
         });
@@ -256,8 +255,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved token alert modal and submitted swap');
 
-        await bridgePage.dismissStatusPageIfPresent();
-
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -269,7 +266,7 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
-          expectedDestAmount: '0.369',
+          expectedDestAmount: '0.3695',
           expectedActivityAmount: '+0.3695',
         });
       },
@@ -351,8 +348,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved all confirmation alerts and submitted swap');
 
-        await bridgePage.dismissStatusPageIfPresent();
-
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -364,7 +359,7 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
-          expectedDestAmount: '3,839',
+          expectedDestAmount: '3,839.4478',
           expectedActivityAmount: '+3,839.4478',
         });
       },
@@ -435,8 +430,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved all alerts and submitted swap');
 
-        await bridgePage.dismissStatusPageIfPresent();
-
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -448,7 +441,7 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
-          expectedDestAmount: '0.369',
+          expectedDestAmount: '0.3695',
           expectedActivityAmount: '+0.3695',
         });
       },

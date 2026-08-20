@@ -38,9 +38,9 @@ import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 import {
   getSafeChainsListFromCacheOnly,
   getIsMetaMaskInfuraEndpointUrl,
-  getIsQuicknodeEndpointUrl,
   KNOWN_CUSTOM_ENDPOINT_URLS,
 } from '../../../shared/lib/network-utils';
+import { getIsQuicknodeEndpointUrl } from '../../../shared/constants/network-failover';
 import { isLocalhostOrIPAddress } from '../../../shared/lib/url-utils';
 // Re-export install type utilities from dedicated module to avoid circular dependencies
 // and keep the sentry bundle lightweight
@@ -411,23 +411,21 @@ export function previousValueComparator<A>(
 }
 
 /**
- * Determines whether to emit a MetaMetrics event for a given metaMetricsId.
- * Relies on the last 4 characters of the metametricsId. Assumes the IDs are evenly distributed.
- * If metaMetricsIds are distributed evenly, this should be a 1% sample rate
+ * Determines whether to emit a MetaMetrics event for a given analytics ID.
+ * Relies on the last 4 characters of the analytics ID. Assumes the IDs are evenly distributed.
+ * If analytics IDs are distributed evenly, this should be a 1% sample rate
  *
- * @param metaMetricsId - The metametricsId to use for the event.
+ * @param analyticsId - The analytics ID to use for the event.
  * @returns Whether to emit the event or not.
  */
-export function shouldEmitDappViewedEvent(
-  metaMetricsId: string | null,
-): boolean {
+export function shouldEmitDappViewedEvent(analyticsId: string | null): boolean {
   const isFireFox = getPlatform() === PLATFORM_FIREFOX;
 
-  if (metaMetricsId === null || isFireFox) {
+  if (analyticsId === null || isFireFox) {
     return false;
   }
 
-  const lastFourCharacters = metaMetricsId.slice(-4);
+  const lastFourCharacters = analyticsId.slice(-4);
   const lastFourCharactersAsNumber = parseInt(lastFourCharacters, 16);
 
   return lastFourCharactersAsNumber % 100 === 0;
@@ -480,23 +478,11 @@ export function formatTxMetaForRpcResult(
     from,
     hash,
     nonce: nonce ? `${nonce}` : '0x0',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     input: data || '0x',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     value: value || '0x0',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     accessList: accessList || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     blockHash: txReceipt?.blockHash || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     blockNumber: txReceipt?.blockNumber || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     transactionIndex: txReceipt?.transactionIndex || null,
     type:
       maxFeePerGas && maxPriorityFeePerGas

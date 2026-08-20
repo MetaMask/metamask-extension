@@ -62,29 +62,33 @@ background-safe shared module, for example
 pattern for extension A/B tests because the same config must be safe to import
 from both UI code and background analytics code.
 
+For a standard two-variant test, reuse the shared `control`/`treatment` variant
+names from `shared/lib/ab-testing/variants.ts` instead of redefining them per
+experiment. Experiments with more than two arms can define their own names.
+
 ```typescript
 import type { ABTestAnalyticsMapping } from '../../../shared/lib/ab-testing/ab-test-analytics';
+import {
+  ABTestVariant,
+  type ABTestVariantName,
+} from '../../../shared/lib/ab-testing/variants';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 
 export const FEATURE_AB_TEST_KEY = 'swapsSWAPS4135AbtestButtonColor';
-
-export enum FeatureVariant {
-  Control = 'control',
-  Treatment = 'treatment',
-}
 
 type FeatureVariantConfig = {
   color: string;
 };
 
-export const FEATURE_VARIANTS: Record<FeatureVariant, FeatureVariantConfig> = {
-  [FeatureVariant.Control]: { color: 'green' },
-  [FeatureVariant.Treatment]: { color: 'blue' },
-};
+export const FEATURE_VARIANTS: Record<ABTestVariantName, FeatureVariantConfig> =
+  {
+    [ABTestVariant.Control]: { color: 'green' },
+    [ABTestVariant.Treatment]: { color: 'blue' },
+  };
 
 export const FEATURE_AB_TEST_ANALYTICS_MAPPING: ABTestAnalyticsMapping = {
   flagKey: FEATURE_AB_TEST_KEY,
-  validVariants: Object.values(FeatureVariant),
+  validVariants: [ABTestVariant.Control, ABTestVariant.Treatment],
   eventNames: [MetaMetricsEventName.TransactionSubmitted],
 };
 ```
@@ -205,8 +209,8 @@ There are two analytics mechanisms, and new tests usually need both:
 
 Events are auto-enriched when:
 
-- the event flows through `MetaMetricsContext.trackEvent` or
-  `MetaMetricsController:trackEvent`
+- the event flows through `useAnalytics().trackEvent`, or `createEventBuilder` +
+  `trackEvent` from `app/scripts/controllers/analytics`
 - and the event name is registered in background-safe shared analytics mapping
   code
 
