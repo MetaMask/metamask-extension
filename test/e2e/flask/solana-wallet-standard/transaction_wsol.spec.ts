@@ -2,10 +2,7 @@ import { strict as assert } from 'assert';
 import { SolScope } from '@metamask/keyring-api';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import {
-  DAPP_PATH,
-  WINDOW_TITLES,
-} from '../../constants';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { buildSolanaFixtureScopes } from '../../fixtures/permission-scopes';

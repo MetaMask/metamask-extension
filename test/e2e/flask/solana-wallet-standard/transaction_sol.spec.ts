@@ -4,10 +4,7 @@ import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { buildSolanaFixtureScopes } from '../../fixtures/permission-scopes';
-import {
-  DAPP_PATH,
-  WINDOW_TITLES,
-} from '../../constants';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
