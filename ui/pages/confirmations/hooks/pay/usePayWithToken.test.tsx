@@ -165,7 +165,7 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.label).toBe('Withdraw to');
-    expect(result.current.isPerpsWithdraw).toBe(true);
+    expect(result.current.isPostQuoteWithdraw).toBe(true);
   });
 
   it('opens the pay with modal when editable', () => {

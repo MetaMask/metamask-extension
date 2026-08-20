@@ -4,7 +4,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
 <div>
   <div
     class="flex flex-col gap-4 onboarding-metametrics"
-    data-testid="onboarding-metametrics"
+    data-testid="parent-selector-onboarding-metrics"
   >
     <h2
       class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default text-left"
@@ -145,7 +145,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
 <div>
   <div
     class="flex flex-col gap-4 onboarding-metametrics"
-    data-testid="onboarding-metametrics"
+    data-testid="parent-selector-onboarding-metrics"
   >
     <h2
       class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default text-left"

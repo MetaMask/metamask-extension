@@ -240,7 +240,7 @@ export default function OnboardingMetametrics() {
   return (
     <Box
       className="onboarding-metametrics"
-      data-testid="onboarding-metametrics"
+      data-testid="parent-selector-onboarding-metrics"
       flexDirection={BoxFlexDirection.Column}
       gap={4}
     >

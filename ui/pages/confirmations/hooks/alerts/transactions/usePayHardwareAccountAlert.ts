@@ -16,6 +16,7 @@ import { selectIsPayHardwareEnabled } from '../../../selectors/feature-flags';
 
 const PAY_HARDWARE_ALERT_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,
   TransactionType.predictDeposit,

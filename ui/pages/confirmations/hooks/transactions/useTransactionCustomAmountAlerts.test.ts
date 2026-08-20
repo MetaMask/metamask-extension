@@ -166,6 +166,33 @@ describe('useTransactionCustomAmountAlerts', () => {
     });
   });
 
+  it('sets hideResults to true when PerpsWithdrawBalanceUnavailable alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.PerpsWithdrawBalanceUnavailable,
+            message: "Couldn't check your Perps balance. Try again.",
+            reason: 'Balance unavailable',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertMessage: "Couldn't check your Perps balance. Try again.",
+      disableUpdate: false,
+      hideResults: true,
+    });
+  });
+
   it('sets hideResults to true when SigningOrSubmitting alert exists', () => {
     useAlertsMock.mockReturnValue(
       createMockUseAlertsReturnValue({
