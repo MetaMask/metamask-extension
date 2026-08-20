@@ -5457,18 +5457,6 @@
     "message": "보너스 수령",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "청구 가능한 보너스",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "mUSD를 보유하여 받은 연 환산 보너스입니다. 보너스는 Linea에서 매일 수령할 수 있습니다. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "수령 가능한 보너스 정보",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 환전 수수료에는 네트워크 비용이 포함되며 제공업체 수수료가 포함될 수 있습니다. mUSD로 환전할 때 MetaMask 수수료는 적용되지 않습니다.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5493,10 +5481,6 @@
   "musdConvert": {
     "message": "전환"
   },
-  "musdEarnBonusPercentage": {
-    "message": "$1% 보너스 받기",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "시작하기"
   },
@@ -5509,10 +5493,6 @@
   },
   "musdGetMusd": {
     "message": "mUSD 받기"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -9330,9 +9310,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "NFT 자동 감기 지능 켜기"
-  },
-  "selectNetworkToFilter": {
-    "message": "필터링할 네트워크 선택"
   },
   "selectPathHelp": {
     "message": "원하는 계정이 표시되지 않으면 HD 경로나 현재 선택한 네트워크를 바꿔 보세요."
