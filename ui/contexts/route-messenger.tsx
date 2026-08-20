@@ -67,6 +67,7 @@ export const RouteMessengerProvider = ({
 
   // `useMemo` doesn't work here because `capabilities` is an object, so we use
   // a ref instead to ensure that we only create the route messenger once.
+  // eslint-disable-next-line react-hooks/refs
   if (!routeMessengerRef.current) {
     routeMessengerRef.current = createRouteMessenger({
       path,
@@ -75,6 +76,8 @@ export const RouteMessengerProvider = ({
     });
   }
 
+  // See above.
+  // eslint-disable-next-line react-hooks/refs
   const routeMessenger = routeMessengerRef.current;
 
   return (
