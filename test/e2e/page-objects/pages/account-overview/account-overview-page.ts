@@ -29,20 +29,6 @@ class AccountOverviewPage {
   }
 
   /**
-   * Opens the settings page from the account overview.
-   */
-  async openSettingsFromOverview(): Promise<void> {
-    const headerNavbar = new HeaderNavbar(this.driver);
-    await headerNavbar.openSettingsPage();
-
-    try {
-      await this.driver.waitForSelector(this.settingsTitle);
-    } catch (error) {
-      await this.driver.delay(2000);
-    }
-  }
-
-  /**
    * Locks the wallet and confirms the homepage is gone.
    */
   async lockWalletFromOverview(): Promise<void> {
@@ -55,6 +41,20 @@ class AccountOverviewPage {
       await this.driver.delay(3000);
     } catch (error) {
       console.log('Homepage was already dismissed', error);
+    }
+  }
+
+  /**
+   * Opens the settings page from the account overview.
+   */
+  async openSettingsFromOverview(): Promise<void> {
+    const headerNavbar = new HeaderNavbar(this.driver);
+    await headerNavbar.openSettingsPage();
+
+    try {
+      await this.driver.waitForSelector(this.settingsTitle);
+    } catch (error) {
+      await this.driver.delay(2000);
     }
   }
 }
