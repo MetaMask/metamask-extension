@@ -86,4 +86,14 @@ export const useQuoteFetchEvents = () => {
       });
     }
   }, [quoteFetchError]);
+
+  useEffect(() => {
+    return () => {
+      endTrace({
+        name: TraceName.SwapQuoteFetch,
+        timestamp: Date.now(),
+        data: { success: false },
+      });
+    };
+  }, []);
 };

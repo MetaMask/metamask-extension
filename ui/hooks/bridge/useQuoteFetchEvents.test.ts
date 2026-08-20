@@ -226,4 +226,24 @@ describe('useQuoteFetchEvents', () => {
       data: { success: false },
     });
   });
+
+  it('ends the quote fetch trace as unsuccessful when the hook unmounts', () => {
+    const { unmount } = renderUseQuoteFetchEvents(
+      createBridgeMockStore({
+        bridgeStateOverrides: {
+          quotesRefreshCount: 0,
+          quotesLoadingStatus: RequestStatus.LOADING,
+        },
+      }),
+    );
+
+    mockEndTrace.mockClear();
+    unmount();
+
+    expect(mockEndTrace).toHaveBeenCalledWith({
+      name: TraceName.SwapQuoteFetch,
+      timestamp: expect.any(Number),
+      data: { success: false },
+    });
+  });
 });

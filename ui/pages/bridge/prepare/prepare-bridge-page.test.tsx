@@ -31,6 +31,7 @@ import { TraceName } from '../../../../shared/lib/trace';
 import PrepareBridgePage from './prepare-bridge-page';
 
 const mockTrace = jest.fn();
+const mockEndTrace = jest.fn();
 
 jest.mock('../../../../shared/lib/trace', () => {
   const actual = jest.requireActual('../../../../shared/lib/trace');
@@ -39,6 +40,10 @@ jest.mock('../../../../shared/lib/trace', () => {
     trace: (...args: unknown[]) => {
       mockTrace(...args);
       return actual.trace(...args);
+    },
+    endTrace: (...args: unknown[]) => {
+      mockEndTrace(...args);
+      return actual.endTrace(...args);
     },
   };
 });
@@ -674,9 +679,25 @@ describe('PrepareBridgePage', () => {
         await Promise.resolve();
       });
 
+      expect(mockEndTrace).toHaveBeenCalledWith({
+        name: TraceName.SwapQuoteFetch,
+      });
       expect(mockTrace).toHaveBeenCalledWith({
         name: TraceName.SwapQuoteFetch,
       });
+      const quoteFetchEndIndex = mockEndTrace.mock.calls.findIndex(
+        ([request]) =>
+          (request as { name: string }).name === TraceName.SwapQuoteFetch,
+      );
+      const quoteFetchStartIndex = mockTrace.mock.calls.findIndex(
+        ([request]) =>
+          (request as { name: string }).name === TraceName.SwapQuoteFetch,
+      );
+      expect(quoteFetchEndIndex).toBeGreaterThanOrEqual(0);
+      expect(quoteFetchStartIndex).toBeGreaterThanOrEqual(0);
+      expect(
+        mockEndTrace.mock.invocationCallOrder[quoteFetchEndIndex],
+      ).toBeLessThan(mockTrace.mock.invocationCallOrder[quoteFetchStartIndex]);
     });
 
     it('starts a trace when quotes are manually refreshed', async () => {
@@ -692,6 +713,7 @@ describe('PrepareBridgePage', () => {
         await Promise.resolve();
       });
       mockTrace.mockClear();
+      mockEndTrace.mockClear();
 
       await act(async () => {
         fireEvent.click(getByTestId('bridge-cta-button'));
@@ -701,6 +723,9 @@ describe('PrepareBridgePage', () => {
         await Promise.resolve();
       });
 
+      expect(mockEndTrace).toHaveBeenCalledWith({
+        name: TraceName.SwapQuoteFetch,
+      });
       expect(mockTrace).toHaveBeenCalledWith({
         name: TraceName.SwapQuoteFetch,
       });
@@ -722,6 +747,9 @@ describe('PrepareBridgePage', () => {
       expect(mockTrace).not.toHaveBeenCalledWith(
         expect.objectContaining({ name: TraceName.SwapQuoteFetch }),
       );
+      expect(mockEndTrace).not.toHaveBeenCalledWith({
+        name: TraceName.SwapQuoteFetch,
+      });
     });
   });
 

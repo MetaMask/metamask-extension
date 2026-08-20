@@ -325,6 +325,7 @@ const PrepareBridgePage = ({
     debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
       const [params] = args;
       if (isValidQuoteRequest(params)) {
+        endTrace({ name: TraceName.SwapQuoteFetch });
         trace({ name: TraceName.SwapQuoteFetch });
       }
       dispatch(updateQuoteRequestParams(...args));
