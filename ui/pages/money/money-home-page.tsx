@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import BigNumber from 'bignumber.js';
 import {
   Button,
   ButtonIcon,
@@ -20,6 +21,9 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
+import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
+import { moneyFormatUsd } from '../../helpers/money/format';
+import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { MoneyActivityPlaceholder } from './components/money-activity-placeholder';
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
@@ -28,6 +32,33 @@ import { MoneyPositionPlaceholder } from './components/money-position-placeholde
 
 const MONEY_FUNDED_BALANCE_THRESHOLD = 0.01;
 const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
+const FORMATTED_ZERO = moneyFormatUsd(new BigNumber(0));
+
+const formatInterestEarned = (value: string | undefined) => {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  let earnings: BigNumber;
+  try {
+    earnings = new BigNumber(value);
+  } catch {
+    return undefined;
+  }
+
+  if (earnings.isNaN() || !earnings.isFinite()) {
+    return undefined;
+  }
+
+  const formatted = moneyFormatUsd(earnings.abs());
+  if (formatted === FORMATTED_ZERO) {
+    return formatted;
+  }
+  if (earnings.greaterThan(0)) {
+    return `+${formatted}`;
+  }
+  return earnings.lessThan(0) ? `-${formatted}` : formatted;
+};
 
 type ActionCardProps = {
   icon: IconName;
@@ -58,14 +89,51 @@ export function MoneyHomePage() {
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
   const {
-    apyPercentFormatted,
     apyDecimal,
+    apyPercentFormatted,
     isBalanceFetchError,
     isBalanceLoading,
     tokenTotal,
     totalFiatFormatted,
+    totalFiatRaw,
     vaultApyQuery,
   } = useMoneyAccountBalance({ enabled: availability.isAvailable });
+  const isMoneyEarningSectionEnabled = useSelector(
+    selectMoneyEarningSectionEnabled,
+  );
+  const isFunded =
+    tokenTotal?.abs().gte(MONEY_FUNDED_BALANCE_THRESHOLD) === true;
+  const { last30DaysQuery, sinceInceptionQuery } = useMoneyAccountInterest({
+    enabled:
+      availability.isAvailable && isMoneyEarningSectionEnabled && isFunded,
+  });
+  const projectedMonthlyEarnings = useMemo(() => {
+    if (totalFiatRaw === undefined || apyDecimal === undefined) {
+      return FORMATTED_ZERO;
+    }
+
+    const earnings = new BigNumber(totalFiatRaw)
+      .times(apyDecimal.toString())
+      .dividedBy(12);
+    if (earnings.isNaN() || !earnings.isFinite()) {
+      return FORMATTED_ZERO;
+    }
+
+    const formatted = moneyFormatUsd(earnings);
+    return formatted === FORMATTED_ZERO ? formatted : `+${formatted}`;
+  }, [apyDecimal, totalFiatRaw]);
+  const monthlyEarnings =
+    formatInterestEarned(last30DaysQuery.data?.interest_earned_usd) ??
+    projectedMonthlyEarnings;
+  const lifetimeEarnings =
+    formatInterestEarned(sinceInceptionQuery.data?.interest_earned_usd) ??
+    FORMATTED_ZERO;
+  const isMonthlyEarningsLoading =
+    last30DaysQuery.isInitialLoading ||
+    (formatInterestEarned(last30DaysQuery.data?.interest_earned_usd) ===
+      undefined &&
+      (vaultApyQuery.isLoading || isBalanceLoading));
+  const isLifetimeEarningsLoading = sinceInceptionQuery.isInitialLoading;
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
   const privacyMode = useSelector(getPrivacyMode);
 
@@ -92,8 +160,6 @@ export function MoneyHomePage() {
       ? t('moneyBalanceUnavailable')
       : totalFiatFormatted;
   const apyDisplay = apyPercentFormatted;
-  const isFunded =
-    tokenTotal?.abs().gte(MONEY_FUNDED_BALANCE_THRESHOLD) === true;
 
   return (
     <main
@@ -193,8 +259,17 @@ export function MoneyHomePage() {
       <div className={`mx-auto w-full max-w-[816px] ${isFunded ? '' : 'mt-3'}`}>
         {isFunded ? (
           <>
-            <MoneyPositionPlaceholder />
-            <MoneySectionDivider />
+            {isMoneyEarningSectionEnabled ? (
+              <>
+                <MoneyPositionPlaceholder
+                  monthlyEarnings={monthlyEarnings}
+                  lifetimeEarnings={lifetimeEarnings}
+                  isMonthlyLoading={isMonthlyEarningsLoading}
+                  isLifetimeLoading={isLifetimeEarningsLoading}
+                />
+                <MoneySectionDivider />
+              </>
+            ) : null}
             <MoneyActivityPlaceholder />
             <MoneySectionDivider />
             <MoneyCondensedInfoCards />
