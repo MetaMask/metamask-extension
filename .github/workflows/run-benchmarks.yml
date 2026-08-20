@@ -249,9 +249,12 @@ jobs:
             tsconfig.json
             development/metamaskbot-build-announce
             shared/constants/benchmarks.ts
+            shared/lib/string-utils.ts
+            test/e2e/benchmarks/utils/constants.ts
             test/e2e/benchmarks/utils/gated-metrics.ts
-            test/e2e/benchmarks/utils/thresholds.ts
+            test/e2e/benchmarks/utils/presets.ts
             test/e2e/benchmarks/utils/statistics.ts
+            test/e2e/benchmarks/utils/thresholds.ts
           sparse-checkout-cone-mode: false
 
       - name: Setup Node.js
