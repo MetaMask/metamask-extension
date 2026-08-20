@@ -84,9 +84,10 @@ type ActiveTab = {
 
 type BackgroundConnection = {
   onNotification: (
-    handler: (
-      data: { method?: string; params?: unknown[] },
-    ) => Promise<void> | void,
+    handler: (data: {
+      method?: string;
+      params?: unknown[];
+    }) => Promise<void> | void,
   ) => void;
   startSendingPatches: () => Promise<void>;
 };
@@ -381,10 +382,12 @@ async function queryCurrentActiveTab(
  * Establishes a connections between the PortStream (background) and various UI
  * streams.
  *
- * @param {ExtensionPortStream} connectionStream - PortStream instance establishing a background connection
+ * @param connectionStream - PortStream instance establishing a background connection
  * @returns The multiplexed streams
  */
-function connectSubstreams(connectionStream: ExtensionPortStream): UiSubstreams {
+function connectSubstreams(
+  connectionStream: ExtensionPortStream,
+): UiSubstreams {
   const mx = setupMultiplex(connectionStream);
 
   const controllerSubstream = mx.createStream('controller');
@@ -401,7 +404,7 @@ function connectSubstreams(connectionStream: ExtensionPortStream): UiSubstreams 
 /**
  * Establishes a streamed connection to a Web3 provider
  *
- * @param {Substream} connectionStream - PortStream instance establishing a background connection
+ * @param connectionStream - PortStream instance establishing a background connection
  */
 async function setupProviderConnection(
   connectionStream: Substream,

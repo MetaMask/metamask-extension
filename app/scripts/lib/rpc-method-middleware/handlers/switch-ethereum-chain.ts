@@ -127,8 +127,6 @@ async function switchEthereumChainImplementation(
     currentChainIdForOrigin,
   );
 
-  const toNetworkConfiguration = getNetworkConfigurationByChainId(chainId);
-
   return switchChain(res, end, chainId, networkClientIdToSwitchTo, {
     origin,
     isSwitchFlow: true,
@@ -142,7 +140,7 @@ async function switchEthereumChainImplementation(
     getEnabledNetworks,
     requestUserApproval,
     hasApprovalRequestsForOrigin,
-    toNetworkConfiguration,
+    toNetworkConfiguration: networkConfigurationForRequestedChainId,
     fromNetworkConfiguration,
   });
 }

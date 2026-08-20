@@ -85,7 +85,9 @@ describe('switchEthereumChainHandler', () => {
   beforeEach(() => {
     MockEthChainUtils.validateSwitchEthereumChainParams.mockImplementation(
       (request) => {
-        const firstParam = request.params?.[0] as { chainId?: string } | undefined;
+        const firstParam = request.params?.[0] as
+          | { chainId?: string }
+          | undefined;
         return (firstParam?.chainId ?? CHAIN_IDS.MAINNET) as Hex;
       },
     );
@@ -116,9 +118,11 @@ describe('switchEthereumChainHandler', () => {
 
   it('should return an error if request params validation fails', async () => {
     const { end, handler } = createMockedHandler();
-    MockEthChainUtils.validateSwitchEthereumChainParams.mockImplementation(() => {
-      throw new Error('failed to validate params');
-    });
+    MockEthChainUtils.validateSwitchEthereumChainParams.mockImplementation(
+      () => {
+        throw new Error('failed to validate params');
+      },
+    );
 
     await handler({
       origin: 'example.com',
@@ -147,7 +151,9 @@ describe('switchEthereumChainHandler', () => {
   it('throws an error and does not try to switch the network if unable to find a network matching the chainId in the params', async () => {
     const { mocks, end, handler } = createMockedHandler();
     mocks.getCurrentChainIdForDomain = jest.fn().mockReturnValue('0x1');
-    mocks.getNetworkConfigurationByChainId = jest.fn().mockReturnValue(undefined);
+    mocks.getNetworkConfigurationByChainId = jest
+      .fn()
+      .mockReturnValue(undefined);
 
     await handler({
       origin: 'example.com',

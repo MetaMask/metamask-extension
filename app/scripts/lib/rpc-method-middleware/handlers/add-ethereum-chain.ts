@@ -180,7 +180,7 @@ async function addEthereumChainImplementation(
     rpcIndex !== existingNetwork.defaultRpcEndpointIndex ||
     Boolean(
       firstValidBlockExplorerUrl &&
-        blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex,
+      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex,
     );
 
   if (shouldAddOrUpdateNetwork) {
@@ -244,7 +244,8 @@ async function addEthereumChainImplementation(
 
         // If a featured RPC endpoint exists for this chain, include it and keep it as default
         const featured = FEATURED_RPCS.find(
-          (network: (typeof FEATURED_RPCS)[number]) => network.chainId === chainId,
+          (network: (typeof FEATURED_RPCS)[number]) =>
+            network.chainId === chainId,
         );
         const featuredEndpoint = featured
           ? featured.rpcEndpoints[featured.defaultRpcEndpointIndex]

@@ -7,7 +7,11 @@ import {
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import { KnownCaipNamespace, parseCaipChainId, type Hex } from '@metamask/utils';
+import {
+  KnownCaipNamespace,
+  parseCaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   isPrefixedFormattedHexString,
@@ -88,7 +92,7 @@ export function validateChainId(chainId: unknown): Hex {
     typeof chainId === 'string' ? chainId.toLowerCase() : null;
   if (!isPrefixedFormattedHexString(lowercasedChainId)) {
     throw rpcErrors.invalidParams({
-      message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
+      message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${JSON.stringify(chainId)}`,
     });
   }
 
@@ -96,7 +100,7 @@ export function validateChainId(chainId: unknown): Hex {
 
   if (!isSafeChainId(parseInt(validatedChainId, 16))) {
     throw rpcErrors.invalidParams({
-      message: `Invalid chain ID "${lowercasedChainId}": numerical value greater than max safe value. Received:\n${chainId}`,
+      message: `Invalid chain ID "${lowercasedChainId}": numerical value greater than max safe value. Received:\n${JSON.stringify(chainId)}`,
     });
   }
 
@@ -114,13 +118,13 @@ export function validateSwitchEthereumChainParams(req: {
     });
   }
 
-  const { chainId, ...otherParams } = req.params[0] as SwitchEthereumChainParams &
-    Record<string, unknown>;
+  const { chainId, ...otherParams } = req
+    .params[0] as SwitchEthereumChainParams & Record<string, unknown>;
 
   if (Object.keys(otherParams).length > 0) {
     throw rpcErrors.invalidParams({
-      message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
-        otherParams,
+      message: `Received unexpected keys on object parameter. Unsupported keys:\n${JSON.stringify(
+        Object.keys(otherParams),
       )}`,
     });
   }
@@ -155,14 +159,14 @@ export function validateAddEthereumChainParams(
 
   if (otherKeys.length > 0) {
     throw rpcErrors.invalidParams({
-      message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
+      message: `Received unexpected keys on object parameter. Unsupported keys:\n${JSON.stringify(otherKeys)}`,
     });
   }
 
   const validatedChainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
     throw rpcErrors.invalidParams({
-      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
+      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${JSON.stringify(rpcUrls)}`,
     });
   }
 
@@ -178,14 +182,14 @@ export function validateAddEthereumChainParams(
 
   const firstValidRPCUrl = rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl));
   const firstValidBlockExplorerUrl = Array.isArray(blockExplorerUrls)
-    ? blockExplorerUrls.find((blockExplorerUrl) =>
+    ? (blockExplorerUrls.find((blockExplorerUrl) =>
         isLocalhostOrHttps(blockExplorerUrl),
-      ) ?? null
+      ) ?? null)
     : null;
 
   if (!firstValidRPCUrl) {
     throw rpcErrors.invalidParams({
-      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
+      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${JSON.stringify(rpcUrls)}`,
     });
   }
 
@@ -201,7 +205,7 @@ export function validateAddEthereumChainParams(
   if (nativeCurrency !== null) {
     if (typeof nativeCurrency !== 'object' || Array.isArray(nativeCurrency)) {
       throw rpcErrors.invalidParams({
-        message: `Expected null or object 'nativeCurrency'. Received:\n${nativeCurrency}`,
+        message: `Expected null or object 'nativeCurrency'. Received:\n${JSON.stringify(nativeCurrency)}`,
       });
     }
     if (nativeCurrency.decimals !== 18) {
@@ -241,10 +245,26 @@ export function validateAddEthereumChainParams(
  * otherwise requests approval to update permission first.
  *
  * @param response - The JSON RPC request's response object.
+ * @param response.result
  * @param end - The JSON RPC request's end callback.
  * @param chainId - The chainId being switched to.
  * @param networkClientId - The network client being switched to.
  * @param hooks - The hooks object.
+ * @param hooks.origin
+ * @param hooks.isAddFlow
+ * @param hooks.isSwitchFlow
+ * @param hooks.autoApprove
+ * @param hooks.setActiveNetwork
+ * @param hooks.getCaveat
+ * @param hooks.requestPermittedChainsPermissionIncrementalForOrigin
+ * @param hooks.setTokenNetworkFilter
+ * @param hooks.setEnabledNetworks
+ * @param hooks.getEnabledNetworks
+ * @param hooks.rejectApprovalRequestsForOrigin
+ * @param hooks.requestUserApproval
+ * @param hooks.hasApprovalRequestsForOrigin
+ * @param hooks.toNetworkConfiguration
+ * @param hooks.fromNetworkConfiguration
  * @returns A null response on success or an error on failure.
  */
 export async function switchChain(

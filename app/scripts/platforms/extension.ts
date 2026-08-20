@@ -127,7 +127,7 @@ export default class ExtensionPlatform {
   ): void {
     const extensionURL = this.getExtensionURL(route, queryString);
 
-    void this.openTab({ url: extensionURL });
+    this.openTab({ url: extensionURL });
 
     if (
       getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND &&
@@ -258,7 +258,11 @@ export default class ExtensionPlatform {
     const errorMessageText = errorMessage ?? txMeta.error?.message ?? '';
     const message = Number.isNaN(nonce)
       ? t('notificationTransactionWithoutNonceFailedMessage', errorMessageText)
-      : t('notificationTransactionFailedMessage', String(nonce), errorMessageText);
+      : t(
+          'notificationTransactionFailedMessage',
+          String(nonce),
+          errorMessageText,
+        );
     await this._showNotification(title ?? '', message ?? '');
   }
 
@@ -295,7 +299,7 @@ export default class ExtensionPlatform {
 
   _viewOnEtherscan(url: string): void {
     if (url.startsWith('https://')) {
-      void browser.tabs.create({ url });
+      browser.tabs.create({ url });
     }
   }
 }

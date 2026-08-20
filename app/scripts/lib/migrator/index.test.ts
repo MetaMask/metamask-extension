@@ -4,6 +4,25 @@ import liveMigrations from '../../migrations';
 import data from '../../first-time-state';
 import Migrator, { type Migration, type MigrationState } from '.';
 
+jest.mock('webextension-polyfill', () => ({
+  runtime: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Chrome manifest field name
+    getManifest: () => ({ manifest_version: 2 }),
+    sendMessage: jest.fn(() => Promise.resolve()),
+    onMessage: {
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+    },
+  },
+  storage: {
+    local: {
+      get: jest.fn().mockResolvedValue({}),
+      getKeys: jest.fn().mockResolvedValue([]),
+      remove: jest.fn().mockResolvedValue(undefined),
+    },
+  },
+}));
+
 const createLegacyMigration = (version: number): Migration => ({
   version,
   async migrate(state: MigrationState): Promise<MigrationState> {

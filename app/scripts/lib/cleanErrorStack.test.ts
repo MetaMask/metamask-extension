@@ -35,4 +35,3 @@ describe('Clean Error Stack', () => {
     expect(cleanErrorStack(blankMsgError).toString()).toStrictEqual('Error');
   });
 });
-
