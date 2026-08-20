@@ -152,8 +152,9 @@
   "accountsConnected": {
     "message": "Счета подключены"
   },
-  "accountsPermissionsTitle": {
-    "message": "Просматривать ваши счета и предлагать транзакции"
+  "accountsCount": {
+    "message": "$1 счета(-ов)",
+    "description": "Label showing number of accounts selected, $1 is the count"
   },
   "accountsSmallCase": {
     "message": "счета"
@@ -1397,6 +1398,12 @@
   "alert": {
     "message": "Оповещение"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "Нет доступных средств. Используйте другой счет."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "Недостаточно средств"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "Вы обновляете свой счет до смарт-счета. Вы сохраните тот же адрес счета, одновременно получив доступ к более быстрым транзакциям и более низким комиссиям сети. $1"
   },
@@ -1423,6 +1430,10 @@
   },
   "alertContentMultipleApprovals": {
     "message": "Вы даете кому-то другому разрешение на списание ваших токенов, даже если это не является необходимым для данной транзакции."
+  },
+  "alertDepositLimit": {
+    "message": "Макс. депозит: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
   },
   "alertDisableTooltip": {
     "message": "Это можно изменить в разделе «Настройки» > «Оповещения»"
@@ -1574,9 +1585,6 @@
   },
   "allNetworks": {
     "message": "Все сети"
-  },
-  "allPermissions": {
-    "message": "Соединения dapp"
   },
   "allPopularNetworks": {
     "message": "Все популярные сети"
@@ -1768,6 +1776,9 @@
   },
   "back": {
     "message": "Назад"
+  },
+  "backToSafety": {
+    "message": "Назад в безопасное место"
   },
   "backUpIncomplete": {
     "message": "Резервное копирование не завершено"
@@ -1990,54 +2001,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Если вы продолжите, все активы, которые вы разместили на Blur, могут оказаться под угрозой."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Вы взаимодействуете с вредоносным сайтом. Если вы продолжите, вы потеряете свои активы."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Если вы продолжите, все активы, которые вы разместили на OpenSea, могут оказаться под угрозой."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Если вы подтвердите этот запрос, вы можете потерять свои активы. Мы рекомендуем вам отменить запрос."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Вы отправляете свои активы мошеннику. Если вы продолжите, вы потеряете эти активы."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Если вы подтвердите этот запрос, вы позволите мошеннику снять и потратить ваши активы. Вы не получите их обратно."
-  },
-  "blockaidDescriptionApproveFarming": {
-    "message": "Если вы одобрите этот запрос, третья сторона, которая, как известно, совершала мошеннические действия, может похитить все ваши активы."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Если вы одобрите этот запрос, кто-то может украсть ваши активы, зарегистрированные в Blur."
-  },
-  "blockaidDescriptionErrored": {
-    "message": "Из-за ошибки этот запрос не был подтвержден поставщиком услуг безопасности. Действуйте осторожно."
-  },
-  "blockaidDescriptionMaliciousDomain": {
-    "message": "Вы взаимодействуете с вредоносным доменом. Если вы одобрите этот запрос, вы можете потерять свои активы."
-  },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Если вы одобрите этот запрос, вы можете потерять свои активы."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Если вы одобрите этот запрос, кто-то может украсть ваши активы, указанные в OpenSea."
-  },
-  "blockaidDescriptionTransferFarming": {
-    "message": "Если вы одобрите этот запрос, третья сторона, известная мошенничеством, похитит все ваши активы."
-  },
-  "blockaidTitleDeceptive": {
-    "message": "Это запрос с целью обмана"
-  },
-  "blockaidTitleMayNotBeSafe": {
-    "message": "Будьте осторожны"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Это подозрительный запрос"
   },
   "blockies": {
     "message": "Blockies"
@@ -2771,9 +2734,6 @@
   "confirmationAlertDetails": {
     "message": "Чтобы защитить свои активы, рекомендуем отклонить запрос."
   },
-  "confirmationAlertModalTitleDescription": {
-    "message": "Ваши активы могут быть в опасности"
-  },
   "confirmed": {
     "message": "Подтверждено"
   },
@@ -2798,8 +2758,8 @@
   "connectAHardwareWalletDescription": {
     "message": "Использование USB или QR-кода"
   },
-  "connectAccounts": {
-    "message": "Подключить счета"
+  "connectAnyway": {
+    "message": "Все равно подключиться"
   },
   "connectHardwareDevice": {
     "message": "Подключиться к $1",
@@ -2845,18 +2805,6 @@
   "connectedSnaps": {
     "message": "Подключенные Snaps"
   },
-  "connectedWithAccount": {
-    "message": "Счета ($1) не подключены",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Подключено с помощью $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "Сети ($1) не подключены",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Подключение"
   },
@@ -2894,6 +2842,9 @@
   "connectionRequest": {
     "message": "Запрос подключения"
   },
+  "connections": {
+    "message": "Связи"
+  },
   "connectionsRemovedModalDescription": {
     "message": "Некоторые подключения (например, аппаратные кошельки и snaps) были удалены из-за отсутствия активности на этом устройстве. Вы можете добавить их снова в любое время в Настройках."
   },
@@ -2921,6 +2872,9 @@
   },
   "continue": {
     "message": "Продолжить"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "Продолжить на свой страх и риск"
   },
   "contract": {
     "message": "Контракт"
@@ -3096,9 +3050,6 @@
   },
   "customerSupport": {
     "message": "поддержка пользователя"
-  },
-  "dappConnections": {
-    "message": "Соединения dapp"
   },
   "dappSuggested": {
     "message": "Рекомендовано сайтом"
@@ -3446,6 +3397,9 @@
   "disconnectAllSites": {
     "message": "Отключить все"
   },
+  "disconnectAllSitesDescriptionText": {
+    "message": "Это отключит все ваши счета от всех dApp. Вам потребуется переподключиться, чтобы снова ими пользоваться."
+  },
   "disconnectAllSitesError": {
     "message": "Не удалось отключить приложения dapp. Повторите попытку."
   },
@@ -3455,14 +3409,15 @@
   "disconnectAllSitesSuccess": {
     "message": "Все приложения dapp успешно отключены."
   },
-  "disconnectMessage": {
-    "message": "Это отключит вас от этого сайта"
-  },
   "disconnectPrompt": {
     "message": "Отключить $1"
   },
   "disconnectQuestion": {
     "message": "Отключить?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "Это отключит все ваши счета от $1. Вам потребуется переподключиться, чтобы снова использовать это dApp.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "Отключить этот счет"
@@ -3633,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "изменить исходную сеть"
-  },
-  "editNetworksTitle": {
-    "message": "Изменить сети"
   },
   "editNonceField": {
     "message": "Изменить одноразовый номер"
@@ -5089,6 +5041,9 @@
   "manage": {
     "message": "Управление"
   },
+  "manageConnectedAccounts": {
+    "message": "Управление подключенными счетами"
+  },
   "manageDefaultSettings": {
     "message": "Управление настройками конфиденциальности по умолчанию"
   },
@@ -5254,6 +5209,48 @@
   "mmFee": {
     "message": "Комиссия MetaMask в размере $1%"
   },
+  "money": {
+    "message": "Финансы"
+  },
+  "moneyActivity": {
+    "message": "Активность"
+  },
+  "moneyAdd": {
+    "message": "Добавить"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Баланс недоступен"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Получите полную ликвидность без блокировок, чтобы вы могли торговать или выводить средства в любое время"
+  },
+  "moneyBenefitSend": {
+    "message": "Отправляйте на любые ваши кошельки в MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Храните свои деньги в безопасности в mUSD, стейблкоине, обеспеченном долларом 1:1"
+  },
+  "moneyBenefits": {
+    "message": "Бонусы"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Зарабатывайте на своей криптовалюте"
+  },
+  "moneyFundDescription": {
+    "message": "Пополните свой Money Account и наблюдайте за ростом баланса."
+  },
+  "moneyHowItWorks": {
+    "message": "Как это работает"
+  },
+  "moneyLearnMore": {
+    "message": "Узнайте подробнее."
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Отправить"
+  },
   "month": {
     "message": "месяц"
   },
@@ -5262,10 +5259,6 @@
   },
   "more": {
     "message": "больше"
-  },
-  "moreAccounts": {
-    "message": "+ еще $1 счета(-ов)",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Еще"
@@ -5460,18 +5453,6 @@
     "message": "Получить бонус",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Встребуемый бонус",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "Годовой бонус, который вы заработали за владение mUSD. Его можно получать ежедневно на Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Детали доступного для получения бонуса",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "В стоимость конвертации mUSD входят расходы сети, а также могут входить комиссии поставщика. При обмене на mUSD комиссия MetaMask не взимается.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5496,10 +5477,6 @@
   "musdConvert": {
     "message": "Конвертировать"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Заработайте бонус $1%",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "С чего начать"
   },
@@ -5512,10 +5489,6 @@
   },
   "musdGetMusd": {
     "message": "Получить mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5723,9 +5696,6 @@
   "networkOptions": {
     "message": "Параметры сети"
   },
-  "networkPermissionToast": {
-    "message": "Сетевые разрешения обновлены"
-  },
   "networkStatus": {
     "message": "Статус сети"
   },
@@ -5761,9 +5731,6 @@
   },
   "networks": {
     "message": "Сети"
-  },
-  "networksSmallCase": {
-    "message": "сети"
   },
   "new": {
     "message": "Новые!"
@@ -5877,15 +5844,16 @@
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
   },
-  "noConnectionDescription": {
-    "message": "Для подключения к сайту найдите и нажмите кнопку «подключиться». Помните, что MetaMask может подключаться только к сайтам в web3"
-  },
   "noDefaultAddress": {
     "message": "Адрес № $1",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Разрешение для домена не предоставлено."
+  },
+  "noFee": {
+    "message": "Без платы",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps и большинство аппаратных кошельков не будут работать с вашей текущей версией браузера."
@@ -6111,12 +6079,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Вы еще не получили ни одного уведомления."
-  },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "Запросы на подключение к CLI, одобрения и обновления сессий для Agentic"
-  },
-  "notificationsSettingsAgenticCliTitle": {
-    "message": "Agentic CLI"
   },
   "notificationsSettingsBoxError": {
     "message": "Возникла какая-то проблема. Повторите попытку позже."
@@ -6557,9 +6519,29 @@
     "message": "Оплатить с помощью",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "Крипто",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "Выбрать способ оплаты",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "Оплатить с помощью",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "Другие активы",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "Выберите из ваших токенов",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "Получатель"
@@ -6592,6 +6574,10 @@
   "percentChange": {
     "message": "Процентное изменение"
   },
+  "permissionCannotMoveFunds": {
+    "message": "Не может перемещать средства без вашего разрешения",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "Разрешение для"
   },
@@ -6611,6 +6597,14 @@
   "permissionRevokedForAccounts": {
     "message": "Отменено в этом обновлении для $1",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "Просматривать адреса, балансы и активность",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "Отправлять запросы на транзакции",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "Подключиться к $1.",
@@ -6851,8 +6845,8 @@
   "permissions": {
     "message": "Разрешения"
   },
-  "permissionsPageEmptyDescription": {
-    "message": "Разрешения не обнаружены. После предоставления разрешений сайту или установки Snap подробности появятся здесь."
+  "permissionsPageEmptyTitle": {
+    "message": "Здесь нечего смотреть"
   },
   "permitSimulationChange_approve": {
     "message": "Лимит расходов"
@@ -6998,6 +6992,9 @@
   },
   "perpsClosePosition": {
     "message": "Закрыть позицию"
+  },
+  "perpsClosePrice": {
+    "message": "Цена закрытия"
   },
   "perpsClosePriceUnavailable": {
     "message": "Текущая цена недоступна. Повторите попытку через минуту."
@@ -7316,6 +7313,15 @@
   "perpsOrderBookGroupBy": {
     "message": "Группировать по"
   },
+  "perpsOrderBookLayout": {
+    "message": "Макет книги ордеров"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "Слева"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "Справа"
+  },
   "perpsOrderBookListedBy": {
     "message": "Размещено"
   },
@@ -7375,6 +7381,9 @@
   "perpsOrderFailed": {
     "message": "Нельзя разместить ордер. Попробуйте снова."
   },
+  "perpsOrderFilled": {
+    "message": "Выполнен"
+  },
   "perpsOrderOriginalSize": {
     "message": "Исходный размер"
   },
@@ -7383,6 +7392,12 @@
   },
   "perpsOrderStatus": {
     "message": "Статус"
+  },
+  "perpsOrderTotalFee": {
+    "message": "Итого комиссий"
+  },
+  "perpsOrderType": {
+    "message": "Тип ордера"
   },
   "perpsOrderValue": {
     "message": "Стоимость ордера"
@@ -8245,9 +8260,6 @@
     "message": "Успешная покупка",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Другие варианты"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "рабочий день"
   },
@@ -8465,9 +8477,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Это сайт, запрашивающий ваше подтверждение."
-  },
-  "requestingFor": {
-    "message": "Запрашивается для"
   },
   "required": {
     "message": "Требуется"
@@ -9127,6 +9136,9 @@
   "securityTrustMalicious": {
     "message": "Вредоносный"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "Вредоносный — помечен как небезопасный"
+  },
   "securityTrustMaliciousLabel": {
     "message": "Вредоносный"
   },
@@ -9267,6 +9279,9 @@
   "select": {
     "message": "Выбрать"
   },
+  "selectAccounts": {
+    "message": "Выбрать счета"
+  },
   "selectAll": {
     "message": "Выбрать все"
   },
@@ -9284,9 +9299,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Включите автоопределение NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Выберите сеть для фильтрации"
   },
   "selectPathHelp": {
     "message": "Если вы не видите ожидаемые счета, попробуйте переключиться на путь HD или текущую выбранную сеть."
@@ -10049,6 +10061,12 @@
   "showTestnetNetworks": {
     "message": "Показать тестовые сети"
   },
+  "showTickerWidget": {
+    "message": "Показывать веб-виджет в X"
+  },
+  "showTickerWidgetDescription": {
+    "message": "Отображает виджет MetaMask с информацией о токене во время просмотра X.com."
+  },
   "sidePanelMigrationToast": {
     "message": "Теперь MetaMask по умолчанию открывается в боковой панели. $1 в любое время из меню.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -10150,8 +10168,9 @@
   "singleNetwork": {
     "message": "1 сеть"
   },
-  "sites": {
-    "message": "Сайты"
+  "sitePermissionsBanner": {
+    "message": "$1 может видеть ваши подключенные счета и предлагать транзакции.",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "Выпущено"
@@ -11422,6 +11441,9 @@
   },
   "troubleStartingTitle": {
     "message": "У MetaMask возникли проблемы с запуском."
+  },
+  "trustSignalPhishingWarning": {
+    "message": "Этот сайт демонстрирует признаки фишинга или активности, направленной на опустошение кошелька. Он может запрашивать транзакции, предназначенные для кражи ваших средств."
   },
   "tryAgain": {
     "message": "Повторить попытку"

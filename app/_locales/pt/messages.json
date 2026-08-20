@@ -152,8 +152,9 @@
   "accountsConnected": {
     "message": "Contas conectadas"
   },
-  "accountsPermissionsTitle": {
-    "message": "Ver suas contas e sugerir transações"
+  "accountsCount": {
+    "message": "$1 contas",
+    "description": "Label showing number of accounts selected, $1 is the count"
   },
   "accountsSmallCase": {
     "message": "contas"
@@ -1397,6 +1398,12 @@
   "alert": {
     "message": "Alerta"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "Não há fundos disponíveis. Use outra conta."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "Fundos insuficientes"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "Você está atualizando sua conta para uma conta inteligente. O endereço de conta continuará o mesmo, mas você terá acesso a transações mais rápidas e tarifas de rede mais baixas. $1"
   },
@@ -1423,6 +1430,10 @@
   },
   "alertContentMultipleApprovals": {
     "message": "Você está concedendo permissão para que outra pessoa retire seus tokens, mesmo que isso não seja necessário para esta transação."
+  },
+  "alertDepositLimit": {
+    "message": "Depósito máximo: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
   },
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
@@ -1574,9 +1585,6 @@
   },
   "allNetworks": {
     "message": "Todas as redes"
-  },
-  "allPermissions": {
-    "message": "Conexões de dapps"
   },
   "allPopularNetworks": {
     "message": "Todas as redes populares"
@@ -1768,6 +1776,9 @@
   },
   "back": {
     "message": "Voltar"
+  },
+  "backToSafety": {
+    "message": "Voltar para a segurança"
   },
   "backUpIncomplete": {
     "message": "Backup incompleto"
@@ -1990,54 +2001,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Se você continuar, todos os ativos que você listou na Blur podem estar em risco."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Você está interagindo com um site mal-intencionado. Se você continuar, perderá seus ativos."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Se você continuar, todos os ativos listados na OpenSea podem estar em risco."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Se você confirmar essa solicitação, poderá perder seus ativos. Recomendamos que você cancele esta solicitação."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Você está enviando seus ativos para um golpista. Se você continuar, perderá esses ativos."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Se você confirmar essa solicitação, estará permitindo que um golpista saque e gaste seus ativos. Você não os receberá de volta."
-  },
-  "blockaidDescriptionApproveFarming": {
-    "message": "Se você aprovar esta solicitação, um terceiro conhecido por aplicar golpes poderá se apropriar de todos os seus ativos."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Se você aprovar essa solicitação, alguém poderá roubar seus ativos listados na Blur."
-  },
-  "blockaidDescriptionErrored": {
-    "message": "Devido a um erro, não foi possível verificar os alertas de segurança. Prossiga somente se você confiar em todos os endereços envolvidos."
-  },
-  "blockaidDescriptionMaliciousDomain": {
-    "message": "Você está interagindo com um domínio mal-intencionado. Se você aprovar essa solicitação, poderá perder seus ativos."
-  },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Se você aprovar essa solicitação, poderá perder seus ativos."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Se você aprovar essa solicitação, alguém poderá roubar seus ativos listados na OpenSea."
-  },
-  "blockaidDescriptionTransferFarming": {
-    "message": "Se você aprovar essa solicitação, algum terceiro conhecido por aplicar golpes tomará todos os seus ativos."
-  },
-  "blockaidTitleDeceptive": {
-    "message": "Essa solicitação é enganosa"
-  },
-  "blockaidTitleMayNotBeSafe": {
-    "message": "Tenha cuidado"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Essa solicitação é suspeita"
   },
   "blockies": {
     "message": "Blockies"
@@ -2771,9 +2734,6 @@
   "confirmationAlertDetails": {
     "message": "Para proteger seus ativos, é recomendável que você recuse a solicitação."
   },
-  "confirmationAlertModalTitleDescription": {
-    "message": "Seus ativos podem estar em risco"
-  },
   "confirmed": {
     "message": "Confirmado"
   },
@@ -2798,8 +2758,8 @@
   "connectAHardwareWalletDescription": {
     "message": "Utilização de USB ou de um código QR"
   },
-  "connectAccounts": {
-    "message": "Conectar contas"
+  "connectAnyway": {
+    "message": "Conectar mesmo assim"
   },
   "connectHardwareDevice": {
     "message": "Conectar $1",
@@ -2845,18 +2805,6 @@
   "connectedSnaps": {
     "message": "Snaps conectados"
   },
-  "connectedWithAccount": {
-    "message": "$1 contas conectadas",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Conectado com $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 redes conectadas",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Conectando"
   },
@@ -2894,6 +2842,9 @@
   "connectionRequest": {
     "message": "Solicitação de conexão"
   },
+  "connections": {
+    "message": "Conexões"
+  },
   "connectionsRemovedModalDescription": {
     "message": "Algumas conexões (como carteiras de hardware e Snaps) foram removidas devido à inatividade neste dispositivo. Você pode readicioná-las quando quiser nas Configurações."
   },
@@ -2921,6 +2872,9 @@
   },
   "continue": {
     "message": "Continuar"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "Continue por sua conta e risco"
   },
   "contract": {
     "message": "Contrato"
@@ -3096,9 +3050,6 @@
   },
   "customerSupport": {
     "message": "suporte ao cliente"
-  },
-  "dappConnections": {
-    "message": "Conexões de dapps"
   },
   "dappSuggested": {
     "message": "Site sugerido"
@@ -3446,6 +3397,9 @@
   "disconnectAllSites": {
     "message": "Desconectar todas"
   },
+  "disconnectAllSitesDescriptionText": {
+    "message": "Isso desconectará todas as suas contas de todos os dApps. Será necessário se reconectar para usá-los novamente."
+  },
   "disconnectAllSitesError": {
     "message": "Não foi possível desconectar alguns dos dapps. Tente novamente."
   },
@@ -3455,14 +3409,15 @@
   "disconnectAllSitesSuccess": {
     "message": "Todos os dapps foram desconectados com sucesso."
   },
-  "disconnectMessage": {
-    "message": "Isso desconectará você deste site"
-  },
   "disconnectPrompt": {
     "message": "Desconectar $1"
   },
   "disconnectQuestion": {
     "message": "Desconectar?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "Isso desconectará todas as suas contas de $1. Será necessário se reconectar para usar este dApp novamente.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "Desconectar esta conta"
@@ -3633,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "editar a rede original"
-  },
-  "editNetworksTitle": {
-    "message": "Editar redes"
   },
   "editNonceField": {
     "message": "Editar nonce"
@@ -5089,6 +5041,9 @@
   "manage": {
     "message": "Gerenciar"
   },
+  "manageConnectedAccounts": {
+    "message": "Gerenciar contas conectadas"
+  },
   "manageDefaultSettings": {
     "message": "Gerenciar configurações padrão"
   },
@@ -5254,6 +5209,48 @@
   "mmFee": {
     "message": "Taxa de $1% da MetaMask"
   },
+  "money": {
+    "message": "Money"
+  },
+  "moneyActivity": {
+    "message": "Atividade"
+  },
+  "moneyAdd": {
+    "message": "Adicionar"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Saldo indisponível"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Obtenha liquidez total sem períodos de bloqueio, permitindo que você possa negociar ou sacar quando quiser"
+  },
+  "moneyBenefitSend": {
+    "message": "Envie para qualquer uma de suas carteiras na MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Mantenha seu dinheiro seguro em mUSD, uma stablecoin lastreada em dólar na proporção de 1:1"
+  },
+  "moneyBenefits": {
+    "message": "Benefícios"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Ganhe com suas criptomoedas"
+  },
+  "moneyFundDescription": {
+    "message": "Adicione fundos à sua Money Account e veja seu saldo crescer."
+  },
+  "moneyHowItWorks": {
+    "message": "Como funciona"
+  },
+  "moneyLearnMore": {
+    "message": "Saiba mais."
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Enviar"
+  },
   "month": {
     "message": "mês"
   },
@@ -5262,10 +5259,6 @@
   },
   "more": {
     "message": "mais"
-  },
-  "moreAccounts": {
-    "message": "Mais $1 contas adicionais",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Mais"
@@ -5460,18 +5453,6 @@
     "message": "Resgatar bônus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Bônus resgatável",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "O bônus anualizado que você ganhou por manter mUSD. Seu bônus pode ser resgatado diariamente na Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Detalhes do bônus resgatável",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "As taxas de conversão de mUSD incluem custos de rede e podem incluir taxas do provedor. A MetaMask não aplica taxas quando você converte para mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5496,10 +5477,6 @@
   "musdConvert": {
     "message": "Converter"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Ganhe um bônus de $1%",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Comece já"
   },
@@ -5512,10 +5489,6 @@
   },
   "musdGetMusd": {
     "message": "Obter mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "USD MetaMask",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5723,9 +5696,6 @@
   "networkOptions": {
     "message": "Opções da rede"
   },
-  "networkPermissionToast": {
-    "message": "Permissões de rede atualizadas"
-  },
   "networkStatus": {
     "message": "Status da rede"
   },
@@ -5761,9 +5731,6 @@
   },
   "networks": {
     "message": "Redes"
-  },
-  "networksSmallCase": {
-    "message": "redes"
   },
   "new": {
     "message": "Nova!"
@@ -5877,15 +5844,16 @@
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
   },
-  "noConnectionDescription": {
-    "message": "Para se conectar a um site, encontre e selecione o botão \"conectar\". Lembre-se de que a MetaMask só pode se conectar a sites na web3"
-  },
   "noDefaultAddress": {
     "message": "Nenhum endereço $1",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Nenhuma resolução fornecida para o domínio."
+  },
+  "noFee": {
+    "message": "Nenhuma taxa",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, e a maioria das carteiras de hardware, não funcionarão com a versão atual do navegador."
@@ -6111,12 +6079,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Você ainda não recebeu nenhuma notificação."
-  },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "Solicitações de conexão CLI, aprovações e atualizações de sessão para a Agentic"
-  },
-  "notificationsSettingsAgenticCliTitle": {
-    "message": "CLI da Agentic"
   },
   "notificationsSettingsBoxError": {
     "message": "Algo deu errado. Tente novamente."
@@ -6557,9 +6519,29 @@
     "message": "Pagar com",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "Cripto",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "Selecione o método de pagamento",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "Pagar com",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "Outros ativos",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "Selecione um de seus tokens",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "Beneficiário"
@@ -6592,6 +6574,10 @@
   "percentChange": {
     "message": "Variação percentual"
   },
+  "permissionCannotMoveFunds": {
+    "message": "Não é possível movimentar fundos sem a sua permissão",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "Permissão para"
   },
@@ -6611,6 +6597,14 @@
   "permissionRevokedForAccounts": {
     "message": "Revogada nessa atualização para $1",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "Ver endereços, saldos e atividades",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "Enviar solicitações para transações",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "Conectar-se a $1.",
@@ -6851,8 +6845,8 @@
   "permissions": {
     "message": "Permissões"
   },
-  "permissionsPageEmptyDescription": {
-    "message": "Nenhuma permissão detectada. Após você conceder permissões a um site ou instalar um Snap, os detalhes serão mostrados aqui."
+  "permissionsPageEmptyTitle": {
+    "message": "Não há nada aqui"
   },
   "permitSimulationChange_approve": {
     "message": "Limite de gastos"
@@ -6998,6 +6992,9 @@
   },
   "perpsClosePosition": {
     "message": "Encerrar posição"
+  },
+  "perpsClosePrice": {
+    "message": "Preço de encerramento"
   },
   "perpsClosePriceUnavailable": {
     "message": "O preço atual não está disponível. Tente novamente em instantes."
@@ -7316,6 +7313,15 @@
   "perpsOrderBookGroupBy": {
     "message": "Agrupar por"
   },
+  "perpsOrderBookLayout": {
+    "message": "Layout do livro de ordens"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "Esquerda"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "Direita"
+  },
   "perpsOrderBookListedBy": {
     "message": "Listado por"
   },
@@ -7375,6 +7381,9 @@
   "perpsOrderFailed": {
     "message": "Não foi possível executar a ordem. Tente novamente."
   },
+  "perpsOrderFilled": {
+    "message": "Executada"
+  },
   "perpsOrderOriginalSize": {
     "message": "Tamanho original"
   },
@@ -7383,6 +7392,12 @@
   },
   "perpsOrderStatus": {
     "message": "Status"
+  },
+  "perpsOrderTotalFee": {
+    "message": "Taxa total"
+  },
+  "perpsOrderType": {
+    "message": "Tipo de ordem"
   },
   "perpsOrderValue": {
     "message": "Valor da ordem"
@@ -8245,9 +8260,6 @@
     "message": "Compra realizada com sucesso",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Outras opções"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "dia útil"
   },
@@ -8465,9 +8477,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Este é o site solicitando sua confirmação."
-  },
-  "requestingFor": {
-    "message": "Solicitando para"
   },
   "required": {
     "message": "Obrigatório"
@@ -9127,6 +9136,9 @@
   "securityTrustMalicious": {
     "message": "Malicioso"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "Malicioso — sinalizado como não seguro"
+  },
   "securityTrustMaliciousLabel": {
     "message": "Malicioso"
   },
@@ -9267,6 +9279,9 @@
   "select": {
     "message": "Selecione"
   },
+  "selectAccounts": {
+    "message": "Selecionar contas"
+  },
   "selectAll": {
     "message": "Selecionar tudo"
   },
@@ -9284,9 +9299,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Ativar detecção automática de NFTs"
-  },
-  "selectNetworkToFilter": {
-    "message": "Selecionar rede para filtrar"
   },
   "selectPathHelp": {
     "message": "Se as contas que você esperava não forem exibidas, tente mudar o caminho do HD ou a rede atualmente selecionada."
@@ -10049,6 +10061,12 @@
   "showTestnetNetworks": {
     "message": "Exibir redes de teste"
   },
+  "showTickerWidget": {
+    "message": "Mostrar widget da web no X"
+  },
+  "showTickerWidgetDescription": {
+    "message": "Exibe um widget da MetaMask com detalhes do token ao navegar pelo X.com."
+  },
   "sidePanelMigrationToast": {
     "message": "A MetaMask agora abre no painel lateral por padrão. $1 a qualquer momento pelo menu.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -10150,8 +10168,9 @@
   "singleNetwork": {
     "message": "1 rede"
   },
-  "sites": {
-    "message": "Sites"
+  "sitePermissionsBanner": {
+    "message": "$1 pode ver suas contas conectadas e sugerir transações.",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "Emitida"
@@ -11422,6 +11441,9 @@
   },
   "troubleStartingTitle": {
     "message": "A MetaMask teve problemas para iniciar."
+  },
+  "trustSignalPhishingWarning": {
+    "message": "Este site apresenta sinais de atividade de phishing ou de drenagem de carteiras. Ele pode solicitar transações destinadas a roubar seus fundos."
   },
   "tryAgain": {
     "message": "Tente novamente"

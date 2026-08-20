@@ -1134,9 +1134,6 @@ describe('AppStateController', () => {
               "lastVisitedRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
-              "networkConnectionBanner": {
-                "status": "unknown",
-              },
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDropdownState": {},

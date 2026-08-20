@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -16,6 +16,7 @@ import { ScrollContainer } from '../../../../../contexts/scroll-container';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
+import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import {
   clearPaymentOverride,
   getAvailableTokens,
@@ -70,6 +71,13 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
 
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
+  const isMoneyAccountDeposit =
+    currentConfirmation?.type === TransactionType.moneyAccountDeposit;
+  const { renderNoFeeTag } = usePayWithNoFeeToken();
+  const tagRenderers = useMemo(
+    () => (isMoneyAccountDeposit ? [renderNoFeeTag] : undefined),
+    [isMoneyAccountDeposit, renderNoFeeTag],
+  );
 
   const handleClose = useCallback(() => {
     setShowOtherAssets(false);
@@ -195,8 +203,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
     ],
   );
 
-  const showSections =
-    isMoneyAccountPayEnabled && !showOtherAssets && !isPostQuoteWithdraw;
+  const showSections = isMoneyAccountPayEnabled && !showOtherAssets;
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} isClosedOnOutsideClick={false}>
@@ -210,7 +217,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
               }
             : {})}
         >
-          {t('payWithModalTitle')}
+          {t(isPostQuoteWithdraw ? 'withdrawTo' : 'payWithModalTitle')}
         </ModalHeader>
         <ScrollContainer
           style={{
@@ -230,6 +237,10 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
               hideNfts
               tokenFilter={tokenFilter}
               onAssetSelect={handleTokenSelect}
+              tagRenderers={tagRenderers}
+              searchPlaceholder={
+                isPostQuoteWithdraw ? t('searchTokens') : undefined
+              }
             />
           )}
         </ScrollContainer>

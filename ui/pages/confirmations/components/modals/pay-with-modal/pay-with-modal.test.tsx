@@ -61,11 +61,15 @@ jest.mock('../../send/asset', () => ({
     tokenFilter,
     hideNfts,
     includeNoBalance,
+    tagRenderers,
+    searchPlaceholder,
   }: {
     onAssetSelect?: (token: Record<string, unknown>) => void;
     tokenFilter?: (tokens: unknown[]) => unknown[];
     hideNfts?: boolean;
     includeNoBalance?: boolean;
+    tagRenderers?: unknown[];
+    searchPlaceholder?: string;
   }) => {
     if (tokenFilter) {
       tokenFilter([]);
@@ -75,6 +79,12 @@ jest.mock('../../send/asset', () => ({
       <div data-testid="asset-component">
         <span data-testid="hide-nfts">{String(hideNfts)}</span>
         <span data-testid="include-no-balance">{String(includeNoBalance)}</span>
+        <span data-testid="has-tag-renderers">
+          {String(Boolean(tagRenderers?.length))}
+        </span>
+        <span data-testid="search-placeholder">
+          {String(searchPlaceholder)}
+        </span>
         <button
           data-testid="select-token"
           onClick={() => onAssetSelect?.({ address: '0x123', chainId: '0x1' })}
@@ -204,6 +214,21 @@ describe('PayWithModal', () => {
     expect(
       screen.getByText(messages.payWithModalTitle.message),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('search-placeholder')).toHaveTextContent(
+      'undefined',
+    );
+  });
+
+  it('renders Receive header for money account withdraw', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        type: TransactionType.moneyAccountWithdraw,
+      },
+    } as ReturnType<typeof useConfirmContext>);
+
+    renderModal({ isOpen: true, onClose: onCloseMock });
+
+    expect(screen.getByText(messages.withdrawTo.message)).toBeInTheDocument();
   });
 
   it('renders Asset component with correct props', () => {
@@ -212,6 +237,19 @@ describe('PayWithModal', () => {
     expect(screen.getByTestId('asset-component')).toBeInTheDocument();
     expect(screen.getByTestId('hide-nfts')).toHaveTextContent('true');
     expect(screen.getByTestId('include-no-balance')).toHaveTextContent('true');
+    expect(screen.getByTestId('has-tag-renderers')).toHaveTextContent('false');
+  });
+
+  it('passes no-fee tag renderers for money account deposits', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        type: TransactionType.moneyAccountDeposit,
+      },
+    } as ReturnType<typeof useConfirmContext>);
+
+    renderModal({ isOpen: true, onClose: onCloseMock });
+
+    expect(screen.getByTestId('has-tag-renderers')).toHaveTextContent('true');
   });
 
   it('calls onClose when close button is clicked', () => {
@@ -327,6 +365,33 @@ describe('PayWithModal', () => {
 
       expect(setPayTokenMock).not.toHaveBeenCalled();
       expect(onCloseMock).toHaveBeenCalled();
+    });
+  });
+
+  describe('withdrawal receive-token picker copy', () => {
+    beforeEach(() => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+    });
+
+    it('shows the receive title instead of pay with', () => {
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByText(messages.withdrawTo.message)).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.payWithModalTitle.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('passes the search tokens placeholder to the asset picker', () => {
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByTestId('search-placeholder')).toHaveTextContent(
+        messages.searchTokens.message,
+      );
     });
   });
 
@@ -480,6 +545,36 @@ describe('PayWithModal', () => {
 
     it('keeps the token asset picker when money account transactions are disabled', () => {
       selectIsMoneyAccountTransactionEnabledMock.mockReturnValue(false);
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByTestId('asset-component')).toBeInTheDocument();
+      expect(screen.queryByTestId('pay-with-sections')).not.toBeInTheDocument();
+    });
+
+    it('renders sectioned pay options for perpsWithdraw when enabled', () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(screen.getByTestId('pay-with-sections')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('pay-with-money-account-row'),
+      ).toBeInTheDocument();
+      expect(screen.queryByTestId('asset-component')).not.toBeInTheDocument();
+    });
+
+    it('keeps the token asset picker for perpsWithdraw when money account is disabled', () => {
+      selectIsMoneyAccountTransactionEnabledMock.mockReturnValue(false);
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
 
       renderModal({ isOpen: true, onClose: onCloseMock });
 

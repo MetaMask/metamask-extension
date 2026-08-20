@@ -78,6 +78,7 @@ import {
   PERPS_WITHDRAW_ROUTE,
   ACTIVITY_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
+  MONEY_HOME_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -147,7 +148,13 @@ import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/se
 import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
+import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
+import { ALLOWED_CAPABILITIES as MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES } from '../money/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
+import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
+import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-messenger';
+import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messenger';
+import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
 import BatchSell from '../batch-sell/batch-sell-page';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
@@ -269,6 +276,7 @@ const PerpsTransactionDetailsPage = mmLazy(
 );
 const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
 const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
+const MoneyHomePage = mmLazy(() => import('../money/index.ts'));
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -328,10 +336,11 @@ export const routeConfig = [
       {
         element: <RequireOnboarded />,
         children: [
-          {
+          createRouteWithMessenger({
             path: UNLOCK_ROUTE,
             element: <UnlockPage />,
-          },
+            capabilities: UNLOCK_ROUTE_CAPABILITIES,
+          }),
         ],
       },
       {
@@ -342,19 +351,21 @@ export const routeConfig = [
         path: BASIC_FUNCTIONALITY_OFF_ROUTE,
         element: <BasicFunctionalityOff />,
       },
-      {
+      createRouteWithMessenger({
         path: RESTORE_VAULT_ROUTE,
         element: <RestoreVaultPage />,
-      },
+        capabilities: RESTORE_VAULT_ROUTE_CAPABILITIES,
+      }),
     ],
   },
   {
     element: <RequireAuthenticated />,
     children: [
-      {
+      createRouteWithMessenger({
         path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
         element: <RevealSeedConfirmation />,
-      },
+        capabilities: REVEAL_SEED_ROUTE_CAPABILITIES,
+      }),
       {
         path: HARDWARE_WALLET_REPAIR_ROUTE,
         element: <HardwareWalletRepair />,
@@ -499,10 +510,11 @@ export const routeConfig = [
         path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
         element: <MultichainAccountAddressListPage />,
       },
-      {
+      createRouteWithMessenger({
         path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
         element: <MultichainAccountPrivateKeyListPage />,
-      },
+        capabilities: PRIVATE_KEY_LIST_ROUTE_CAPABILITIES,
+      }),
       {
         path: ADD_WALLET_PAGE_ROUTE,
         element: <AddWalletPage />,
@@ -532,10 +544,11 @@ export const routeConfig = [
         ),
         children: contactsRoutes,
       },
-      {
+      createRouteWithMessenger({
         path: DEFAULT_ROUTE,
+        capabilities: HOME_ROUTE_ALLOWED_CAPABILITIES,
         element: <Home />,
-      },
+      }),
       {
         path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
         element: <TransactionDetailsRoute />,
@@ -649,6 +662,11 @@ export const routeConfig = [
             path: PERPS_HOME_PAGE_ROUTE,
             element: <PerpsPage />,
           },
+          createRouteWithMessenger({
+            path: MONEY_HOME_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <MoneyHomePage />,
+          }),
         ],
       },
     ],

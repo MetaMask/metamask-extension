@@ -19,7 +19,10 @@ import {
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useBalanceChanges } from '../../../../pages/confirmations/components/simulation-details/useBalanceChanges';
 import { useTransactionMetadataRequest } from '../../../../pages/confirmations/hooks/transactions/useTransactionMetadataRequest';
-import { Q1_OPTIONS } from './scam-questionnaire.constants';
+import {
+  Q1_OPTIONS,
+  ScamQuestionnaireTrigger,
+} from './scam-questionnaire.constants';
 import { useScamQuestionnaireMetrics } from './useScamQuestionnaireMetrics';
 
 jest.mock('../../../../hooks/useAnalytics');
@@ -67,7 +70,9 @@ function setup(balanceChanges: BalanceChange[] = []) {
   });
   useTransactionMetadataRequestMock.mockReturnValue(TRANSACTION_META);
 
-  const { result } = renderHook(() => useScamQuestionnaireMetrics());
+  const { result } = renderHook(() =>
+    useScamQuestionnaireMetrics(ScamQuestionnaireTrigger.SecurityAlert),
+  );
   return { metrics: result.current, trackEvent };
 }
 

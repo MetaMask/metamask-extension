@@ -8,7 +8,6 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 
-import { NetworkManager } from '../../multichain/network-manager';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../../contexts/hardware-wallets/constants';
 import {
   CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
@@ -217,16 +216,6 @@ const MODALS: Record<string, ModalConfig> = {
     },
     contentStyle: {
       borderRadius: '8px',
-    },
-  },
-
-  NETWORK_MANAGER: {
-    contents: <NetworkManager />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
     },
   },
 

@@ -152,8 +152,9 @@
   "accountsConnected": {
     "message": "账户已连接"
   },
-  "accountsPermissionsTitle": {
-    "message": "查看您的账户并建议交易"
+  "accountsCount": {
+    "message": "$1 个账户",
+    "description": "Label showing number of accounts selected, $1 is the count"
   },
   "accountsSmallCase": {
     "message": "账户"
@@ -1397,6 +1398,12 @@
   "alert": {
     "message": "提醒"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "无可用资金。请使用其他账户。"
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "资金不足"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "您正在将账户升级为智能账户。您将保留原账户地址，同时拥有更快的交易速度和更低的网络费用。$1"
   },
@@ -1423,6 +1430,10 @@
   },
   "alertContentMultipleApprovals": {
     "message": "您正在授权他人提取您的代币，尽管本次交易无需要此操作。"
+  },
+  "alertDepositLimit": {
+    "message": "最大存款金额：$1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
   },
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
@@ -1574,9 +1585,6 @@
   },
   "allNetworks": {
     "message": "所有网络"
-  },
-  "allPermissions": {
-    "message": "去中心化应用连接"
   },
   "allPopularNetworks": {
     "message": "所有热门网络"
@@ -1768,6 +1776,9 @@
   },
   "back": {
     "message": "返回"
+  },
+  "backToSafety": {
+    "message": "返回以确保安全"
   },
   "backUpIncomplete": {
     "message": "备份未完成"
@@ -1990,54 +2001,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertDescriptionBlur": {
-    "message": "如果继续，您在 Blur 上列出的全部资产都将面临风险。"
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "您正在与恶意网站交互。如果继续，您可能会损失资产。"
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "如果继续，您在 OpenSea 上列出的全部资产都将面临风险。"
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "如果您确认此请求，您可能会损失资产。我们建议您取消此请求。"
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "您正在将您的资产发送给欺诈方。如果继续，您将会损失这部分资产。"
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "如果您确认此请求，则表示您允许欺诈方提取并花费您的资产。您将无法收回资产。"
-  },
-  "blockaidDescriptionApproveFarming": {
-    "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "如果您批准此请求，则有人可以窃取您列于Blur上的资产。"
-  },
-  "blockaidDescriptionErrored": {
-    "message": "由于出现错误，安全提供程序无法验证此请求。请谨慎操作。"
-  },
-  "blockaidDescriptionMaliciousDomain": {
-    "message": "您正在与恶意网域交互。如果您批准此请求，可能会遭受资产损失。"
-  },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "如果您批准此请求，可能会遭受资产损失。"
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "如果您批准此请求，则有人可以窃取您列于OpenSea上的资产。"
-  },
-  "blockaidDescriptionTransferFarming": {
-    "message": "如果您批准此请求，因欺诈而恶名昭彰的第三方会拿走您的所有资产。"
-  },
-  "blockaidTitleDeceptive": {
-    "message": "此请求属欺骗性质"
-  },
-  "blockaidTitleMayNotBeSafe": {
-    "message": "保持谨慎"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "此请求很可疑"
   },
   "blockies": {
     "message": "Blockies"
@@ -2771,9 +2734,6 @@
   "confirmationAlertDetails": {
     "message": "为了保护您的资产，我们建议您拒绝该请求。"
   },
-  "confirmationAlertModalTitleDescription": {
-    "message": "您的资产可能面临风险"
-  },
   "confirmed": {
     "message": "已确认"
   },
@@ -2798,8 +2758,8 @@
   "connectAHardwareWalletDescription": {
     "message": "使用 USB 或二维码"
   },
-  "connectAccounts": {
-    "message": "连接账户"
+  "connectAnyway": {
+    "message": "仍然连接"
   },
   "connectHardwareDevice": {
     "message": "连接$1",
@@ -2845,18 +2805,6 @@
   "connectedSnaps": {
     "message": "连接的 Snap"
   },
-  "connectedWithAccount": {
-    "message": "已连接 $1 账户",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "已与 $1 连接",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "已连接 $1 网络",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "连接中……"
   },
@@ -2894,6 +2842,9 @@
   "connectionRequest": {
     "message": "连接请求"
   },
+  "connections": {
+    "message": "连接"
+  },
   "connectionsRemovedModalDescription": {
     "message": "由于此设备长期未使用，部分连接项（如硬件钱包和 Snap）已被移除。您可随时在“设置”中重新添加这些连接项。"
   },
@@ -2921,6 +2872,9 @@
   },
   "continue": {
     "message": "继续"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "继续操作，风险自负"
   },
   "contract": {
     "message": "合约"
@@ -3096,9 +3050,6 @@
   },
   "customerSupport": {
     "message": "客户支持团队"
-  },
-  "dappConnections": {
-    "message": "去中心化应用连接"
   },
   "dappSuggested": {
     "message": "建议的网站"
@@ -3446,6 +3397,9 @@
   "disconnectAllSites": {
     "message": "断开所有连接"
   },
+  "disconnectAllSitesDescriptionText": {
+    "message": "这将断开您的所有账户与所有 dapp 的连接。您需要重新连接后才能再次使用它们。"
+  },
   "disconnectAllSitesError": {
     "message": "部分去中心化应用无法断开连接。请重试。"
   },
@@ -3455,14 +3409,15 @@
   "disconnectAllSitesSuccess": {
     "message": "所有去中心化应用均已成功断开连接。"
   },
-  "disconnectMessage": {
-    "message": "这将断开您与此站点的连接"
-  },
   "disconnectPrompt": {
     "message": "断开连接 $1"
   },
   "disconnectQuestion": {
     "message": "断开连接?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "这将断开您的所有账户与 $1 的连接。您需要重新连接后才能再次使用此 dapp。",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "断开此账户的连接"
@@ -3633,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "编辑原始网络"
-  },
-  "editNetworksTitle": {
-    "message": "编辑网络"
   },
   "editNonceField": {
     "message": "编辑 nonce"
@@ -5089,6 +5041,9 @@
   "manage": {
     "message": "管理"
   },
+  "manageConnectedAccounts": {
+    "message": "管理已连接的账户"
+  },
   "manageDefaultSettings": {
     "message": "管理默认隐私设置"
   },
@@ -5254,6 +5209,48 @@
   "mmFee": {
     "message": "$1% MetaMask 费用"
   },
+  "money": {
+    "message": "Money"
+  },
+  "moneyActivity": {
+    "message": "活动"
+  },
+  "moneyAdd": {
+    "message": "添加"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "余额不可用"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "享受完全流动性，无锁仓期限制，可随时交易或提现"
+  },
+  "moneyBenefitSend": {
+    "message": "转入您 MetaMask 中的任意钱包"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "将您的资金安全存放于 mUSD（一种 1:1 锚定美元的稳定币）"
+  },
+  "moneyBenefits": {
+    "message": "福利"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "用您的加密货币赚取收益"
+  },
+  "moneyFundDescription": {
+    "message": "为您的 Money Account 充值，见证余额增长。"
+  },
+  "moneyHowItWorks": {
+    "message": "如何运行"
+  },
+  "moneyLearnMore": {
+    "message": "了解更多。"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "发送"
+  },
   "month": {
     "message": "月"
   },
@@ -5262,10 +5259,6 @@
   },
   "more": {
     "message": "展开"
-  },
-  "moreAccounts": {
-    "message": "+ 另外 $1 个账户",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "展开"
@@ -5460,18 +5453,6 @@
     "message": "领取奖励",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "可领取奖励",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "您因持有 mUSD 而获得的年化奖励。您可以在 Linea 上每日领取奖励。$1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "可领取奖励详情",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 兑换费用包含网络费用，并可能包含提供商费用。兑换为 mUSD 时，MetaMask 不收取任何费用。",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5496,10 +5477,6 @@
   "musdConvert": {
     "message": "兑换"
   },
-  "musdEarnBonusPercentage": {
-    "message": "获得 $1% 的奖励",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "开始使用"
   },
@@ -5512,10 +5489,6 @@
   },
   "musdGetMusd": {
     "message": "获取 mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5723,9 +5696,6 @@
   "networkOptions": {
     "message": "网络选项"
   },
-  "networkPermissionToast": {
-    "message": "网络许可已更新"
-  },
   "networkStatus": {
     "message": "网络状态"
   },
@@ -5760,9 +5730,6 @@
     "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
-    "message": "网络"
-  },
-  "networksSmallCase": {
     "message": "网络"
   },
   "new": {
@@ -5877,15 +5844,16 @@
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
   },
-  "noConnectionDescription": {
-    "message": "要连接到网站，请找到并选择“连接”按钮。记住，MetaMask 仅限连接到 Web3 上的网站"
-  },
   "noDefaultAddress": {
     "message": "无 $1 地址",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "没有提供域名解析。"
+  },
+  "noFee": {
+    "message": "不收费",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps 和大多数硬件钱包与您的当前浏览器版本不兼容。"
@@ -6111,12 +6079,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "您尚未收到任何通知。"
-  },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "智能体 CLI 的连接请求、批准和会话更新"
-  },
-  "notificationsSettingsAgenticCliTitle": {
-    "message": "智能体 CLI"
   },
   "notificationsSettingsBoxError": {
     "message": "出错了。请重试。"
@@ -6557,9 +6519,29 @@
     "message": "支付方式：",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "加密货币",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "选择付款方式",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "支付方式：",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "其他资产",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "从您的代币中选择",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "收款人"
@@ -6592,6 +6574,10 @@
   "percentChange": {
     "message": "变化百分比"
   },
+  "permissionCannotMoveFunds": {
+    "message": "未经您的许可，无法转移资金",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "权限用于"
   },
@@ -6611,6 +6597,14 @@
   "permissionRevokedForAccounts": {
     "message": "此更新中已为 $1 撤销",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "查看地址、余额和活动",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "发送交易请求",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "连接到 $1.",
@@ -6851,8 +6845,8 @@
   "permissions": {
     "message": "权限"
   },
-  "permissionsPageEmptyDescription": {
-    "message": "未检测到许可。一旦您授予网站许可或安装了 MetaMask Snap，详细信息将显示在这里。"
+  "permissionsPageEmptyTitle": {
+    "message": "此处无内容"
   },
   "permitSimulationChange_approve": {
     "message": "支出上限"
@@ -6998,6 +6992,9 @@
   },
   "perpsClosePosition": {
     "message": "平仓"
+  },
+  "perpsClosePrice": {
+    "message": "平仓价格"
   },
   "perpsClosePriceUnavailable": {
     "message": "暂时无法获取当前价格，请稍后重试。"
@@ -7316,6 +7313,15 @@
   "perpsOrderBookGroupBy": {
     "message": "分组依据"
   },
+  "perpsOrderBookLayout": {
+    "message": "订单簿布局"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "左"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "右"
+  },
   "perpsOrderBookListedBy": {
     "message": "排序依据"
   },
@@ -7375,6 +7381,9 @@
   "perpsOrderFailed": {
     "message": "无法下单。请重试。"
   },
+  "perpsOrderFilled": {
+    "message": "已成交"
+  },
   "perpsOrderOriginalSize": {
     "message": "原始规模"
   },
@@ -7383,6 +7392,12 @@
   },
   "perpsOrderStatus": {
     "message": "状态"
+  },
+  "perpsOrderTotalFee": {
+    "message": "总费用"
+  },
+  "perpsOrderType": {
+    "message": "订单类型"
   },
   "perpsOrderValue": {
     "message": "订单价值"
@@ -8245,9 +8260,6 @@
     "message": "买入成功",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "其他选项"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "工作日"
   },
@@ -8465,9 +8477,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "这是要求您确认的网站。"
-  },
-  "requestingFor": {
-    "message": "请求"
   },
   "required": {
     "message": "必需"
@@ -9127,6 +9136,9 @@
   "securityTrustMalicious": {
     "message": "恶意"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "恶意——已标记为不安全"
+  },
   "securityTrustMaliciousLabel": {
     "message": "恶意"
   },
@@ -9267,6 +9279,9 @@
   "select": {
     "message": "选择"
   },
+  "selectAccounts": {
+    "message": "选择账户"
+  },
   "selectAll": {
     "message": "全部选择"
   },
@@ -9284,9 +9299,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "在设置中打开 NFT 检测"
-  },
-  "selectNetworkToFilter": {
-    "message": "选择要筛选的网络"
   },
   "selectPathHelp": {
     "message": "如果您没有看到期望的账户，请尝试切换 HD 路径或当前选定的网络。"
@@ -10049,6 +10061,12 @@
   "showTestnetNetworks": {
     "message": "显示测试网络"
   },
+  "showTickerWidget": {
+    "message": "在 X 上显示 Web 小部件"
+  },
+  "showTickerWidgetDescription": {
+    "message": "在浏览 X.com 时，显示包含代币详情的 MetaMask 小部件。"
+  },
   "sidePanelMigrationToast": {
     "message": "MetaMask 现在默认在侧边栏中打开。可随时通过菜单 $1。",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -10150,8 +10168,9 @@
   "singleNetwork": {
     "message": "1 个网络"
   },
-  "sites": {
-    "message": "网站"
+  "sitePermissionsBanner": {
+    "message": "$1 可以查看您已连接的账户并建议交易。",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "已签发"
@@ -11422,6 +11441,9 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask 启动时出现问题。"
+  },
+  "trustSignalPhishingWarning": {
+    "message": "该网站显示出网络钓鱼或清空钱包活动的迹象。它可能会请求旨在窃取您资金的交易。"
   },
   "tryAgain": {
     "message": "重试"

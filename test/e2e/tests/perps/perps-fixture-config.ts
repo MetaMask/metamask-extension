@@ -1,7 +1,10 @@
 import type { Hex, Json } from '@metamask/utils';
 import type { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+} from '../../constants';
 import {
   getProductionRemoteFlagApiResponse,
   getProductionRemoteFlagDefaults,
@@ -31,6 +34,9 @@ const {
 const ARBITRUM_CHAIN_ID = '0xa4b1';
 const ARBITRUM_CHAIN_ID_DECIMAL = Number(ARBITRUM_CHAIN_ID);
 const ARBITRUM_USDC_ADDRESS: Hex = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831';
+const ARBITRUM_USDC_ASSET_ID =
+  'eip155:42161/erc20:0xaf88d065e77c8cc2239327c5edb3a432268e5831';
+const ARBITRUM_NATIVE_ASSET_ID = 'eip155:42161/slip44:60';
 const ARBITRUM_USDC_PRICE_IN_ETH = 1 / 1700;
 const HYPERCORE_CHAIN_ID = '0x539';
 const HYPERCORE_CHAIN_ID_DECIMAL = Number(HYPERCORE_CHAIN_ID);
@@ -55,13 +61,6 @@ const PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG = {
     },
   },
 };
-
-// TransactionPayController resolves the Perps withdraw required token (Arbitrum
-// USDC) from the seeded legacy Tokens/TokenRates/Currency controllers. The
-// production-default `assetsUnifyState` rollout instead routes those reads
-// through the unified AssetsController (unseeded here), leaving the required
-// token unresolved and the confirmation stuck on its loading skeleton.
-const ASSETS_UNIFY_STATE_DISABLED_FLAG = { enabled: false };
 
 const ARBITRUM_USDC_MARKET_DATA = {
   tokenAddress: ARBITRUM_USDC_ADDRESS,
@@ -130,7 +129,6 @@ export const PERPS_WITHDRAW_CONFIRMATION_FLAG = {
     ...PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG,
-    assetsUnifyState: ASSETS_UNIFY_STATE_DISABLED_FLAG,
   },
 };
 
@@ -329,6 +327,51 @@ async function mockArbitrumUsdcPriceData(server: Mockttp): Promise<void> {
         },
       },
     }));
+
+  await server
+    .forGet(`${PRICE_API_BASE_URL}/v3/spot-prices`)
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const vsCurrency =
+        url.searchParams.get('vsCurrency')?.toLowerCase() ?? 'usd';
+      const includeMarketData =
+        url.searchParams.get('includeMarketData') === 'true';
+      const requestedAssetIds = (url.searchParams.get('assetIds') ?? '')
+        .split(',')
+        .filter(Boolean);
+      const assetIds =
+        requestedAssetIds.length > 0
+          ? requestedAssetIds
+          : [ARBITRUM_USDC_ASSET_ID, ARBITRUM_NATIVE_ASSET_ID];
+      const priceByAssetId: Record<string, number> = {
+        [ARBITRUM_USDC_ASSET_ID]: 1,
+        [ARBITRUM_NATIVE_ASSET_ID]: 1700,
+      };
+      const prices = Object.fromEntries(
+        assetIds.flatMap((assetId) => {
+          const price = priceByAssetId[assetId];
+          if (price === undefined) {
+            return [];
+          }
+          return [
+            [
+              assetId,
+              includeMarketData
+                ? {
+                    assetPriceType: 'fungible',
+                    id: assetId,
+                    price,
+                    pricePercentChange1d: 0,
+                  }
+                : { [vsCurrency]: price },
+            ],
+          ];
+        }),
+      );
+
+      return { statusCode: 200, json: prices };
+    });
 }
 
 function getArbitrumUsdcRawAmount(sourceRawAmount: string): string {
@@ -587,6 +630,46 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
           },
         },
       })
+      .withAssetsController({
+        customAssets: {
+          [DEFAULT_FIXTURE_ACCOUNT_ID]: [ARBITRUM_USDC_ASSET_ID],
+        },
+        assetsBalance: {
+          [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+            [ARBITRUM_USDC_ASSET_ID]: { amount: '0' },
+          },
+        },
+        assetsInfo: {
+          [ARBITRUM_USDC_ASSET_ID]: {
+            type: 'erc20',
+            symbol: 'USDC',
+            name: 'USD Coin',
+            decimals: 6,
+          },
+          [ARBITRUM_NATIVE_ASSET_ID]: {
+            type: 'native',
+            symbol: 'ETH',
+            name: 'Ether',
+            decimals: 18,
+          },
+        },
+        assetsPrice: {
+          [ARBITRUM_USDC_ASSET_ID]: {
+            assetPriceType: 'fungible',
+            id: 'usd-coin',
+            lastUpdated: 0,
+            price: 1,
+            usdPrice: 1,
+          },
+          [ARBITRUM_NATIVE_ASSET_ID]: {
+            assetPriceType: 'fungible',
+            id: 'ethereum',
+            lastUpdated: 0,
+            price: 1700,
+            usdPrice: 1700,
+          },
+        },
+      })
       .withCurrencyController({
         currencyRates: {
           ETH: {
@@ -603,7 +686,6 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
       await mockEligibleFeatureFlags(server, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG,
-        assetsUnifyState: ASSETS_UNIFY_STATE_DISABLED_FLAG,
       });
       await mockArbitrumUsdcPriceData(server);
       await mockRelayWithdrawData(server);

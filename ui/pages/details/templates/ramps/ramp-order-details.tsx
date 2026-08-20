@@ -16,6 +16,7 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { useRampsOrders } from '../../../../hooks/ramps/useRampsOrders';
+import { useRampsScreenViewed } from '../../../../hooks/ramps/useRampsScreenViewed';
 import { hasPositiveNumericAmount } from '../../../../hooks/ramps/utils/hasPositiveNumericAmount';
 import { BlockExplorerButton } from '../../components/block-explorer-button';
 import { Footer, Row, Section } from '../../components/shared';
@@ -42,6 +43,10 @@ export function RampOrderDetails({
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const { goToBuy } = useRampsNavigation();
   const { getOrderById } = useRampsOrders();
+
+  // Reached from the activity list rather than the buy flow, so no region is
+  // ever fetched here — fire on mount instead of waiting for one.
+  useRampsScreenViewed('Order Details', { waitForRegion: false });
 
   const { fiat, token, provider, statusDescription, paymentDetails } =
     item.data;

@@ -48,7 +48,6 @@ export const PermissionsHeader = ({
           size={ButtonIconSize.Md}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
-          className="connections-header__start-accessory"
           color={IconColor.iconDefault}
           onClick={() => navigate(PREVIOUS_ROUTE)}
           data-testid="back-button"
@@ -60,7 +59,6 @@ export const PermissionsHeader = ({
         alignItems={AlignItems.center}
         gap={2}
         justifyContent={JustifyContent.center}
-        className="connections-header__title"
       >
         {connectedSubjectsMetadata?.iconUrl ? (
           <AvatarFavicon

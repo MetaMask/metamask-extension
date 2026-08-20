@@ -112,7 +112,10 @@ export const WalletDetailsPage = ({
   }, [wallet?.metadata.name, t]);
 
   return (
-    <Page className="multichain-wallet-details-page">
+    <Page
+      className="multichain-wallet-details-page"
+      data-testid="parent-selector-multichain-wallet-details-page"
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,
