@@ -10,13 +10,17 @@ import {
 } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { Driver } from '../../webdriver/driver';
-import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import {
+  getMainnet25EthAssetsControllerPatch,
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+} from '../tokens/utils/mocks';
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const SECOND_ACCOUNT_NAME = 'Account 2';
@@ -24,6 +28,8 @@ const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
 const CUSTOM_ACCOUNT_NAME = 'Custom 1';
 const TEST_PRIVATE_KEY =
   '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
+// Matches mock-e2e default `ethConversionInUsd`; 25 ETH × 3010 = $75,250.00
+const ETH_USD_CONVERSION_RATE = 3010;
 
 const importedAccount = {
   name: 'Imported Account 1',
@@ -40,15 +46,9 @@ describe('Add account', function () {
           .withShowNativeTokenAsMainBalanceDisabled()
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_CONVERSION_RATE,
-                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
-              },
-            },
-          })
+          .withAssetsController(
+            getMainnet25EthAssetsControllerPatch(MOCK_ETH_CONVERSION_RATE),
+          )
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -81,9 +81,9 @@ describe('Add account', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAmountInActivity('-2.8 ETH');
-        await activityList.waitPendingTxToNotBeVisible();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAmountInActivity('-2.8 ETH');
+        await activityTab.waitPendingTxToNotBeVisible();
         await headerNavbar.openAccountMenu();
         await accountListPage.checkMultichainAccountBalanceDisplayed({
           wallet: 'Wallet 1',
@@ -130,11 +130,17 @@ describe('Add account', function () {
           .withShowNativeTokenAsMainBalanceDisabled()
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(
+            getMainnet25EthAssetsControllerPatch(ETH_USD_CONVERSION_RATE),
+          )
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return [await mockPriceApi(mockServer, ETH_USD_CONVERSION_RATE)];
+        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, { expectedBalance: '$75,250.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -171,15 +177,9 @@ describe('Add account', function () {
           .withShowNativeTokenAsMainBalanceDisabled()
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_CONVERSION_RATE,
-                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
-              },
-            },
-          })
+          .withAssetsController(
+            getMainnet25EthAssetsControllerPatch(MOCK_ETH_CONVERSION_RATE),
+          )
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -187,7 +187,7 @@ describe('Add account', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, { expectedBalance: '$85,025.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -252,11 +252,17 @@ describe('Add account', function () {
           .withShowNativeTokenAsMainBalanceDisabled()
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(
+            getMainnet25EthAssetsControllerPatch(ETH_USD_CONVERSION_RATE),
+          )
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return [await mockPriceApi(mockServer, ETH_USD_CONVERSION_RATE)];
+        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, { expectedBalance: '$75,250.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -275,6 +281,13 @@ describe('Add account', function () {
         await accountListPage.switchToAccount(CUSTOM_ACCOUNT_NAME);
 
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
+
+        // Wait for the runtime-created non-EVM (Solana/Bitcoin) accounts to finish
+        // loading before locking. Otherwise account creation is still in-flight in
+        // the background when the wallet locks, which slows the service-worker restart
+        // and makes the post-lock navigate time out waiting for `.controller-loaded`.
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
 
         // Lock and unlock wallet
         await lockAndWaitForLoginPage(driver);

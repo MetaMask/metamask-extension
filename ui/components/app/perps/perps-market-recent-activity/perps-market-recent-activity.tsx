@@ -11,32 +11,37 @@ import {
   IconName,
   IconSize,
   IconColor,
+  Skeleton,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsMarketFills } from '../../../../hooks/perps';
 import { transformFillsToTransactions } from '../utils/transactionTransforms';
+import { getPerpsTransactionDestination } from '../utils/getPerpsTransactionDestination';
 import { TransactionCard } from '../transaction-card';
 import { PERPS_CONSTANTS } from '../constants';
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
-import { Skeleton } from '../../../component-library/skeleton';
 import type { PerpsTransaction } from '../types';
 
 const SKELETON_ITEMS = [1, 2, 3];
 
-const RecentActivitySkeleton: React.FC = () => (
+const RecentActivitySkeleton = () => (
   <Box
     flexDirection={BoxFlexDirection.Column}
     className="overflow-hidden rounded-xl"
   >
     {SKELETON_ITEMS.map((i) => (
-      <Skeleton key={i} className="h-[72px] w-full rounded-none" />
+      <Skeleton
+        key={i}
+        className="h-[72px] w-full rounded-none"
+        data-testid="perps-recent-activity-skeleton"
+      />
     ))}
   </Box>
 );
 
-const RecentActivityEmpty: React.FC = () => {
+const RecentActivityEmpty = () => {
   const t = useI18nContext();
   return (
     <Box paddingBottom={4}>
@@ -47,10 +52,13 @@ const RecentActivityEmpty: React.FC = () => {
   );
 };
 
-const RecentActivityList: React.FC<{
+const RecentActivityList = ({
+  transactions,
+  onTransactionClick,
+}: {
   transactions: PerpsTransaction[];
-  onTransactionClick: () => void;
-}> = ({ transactions, onTransactionClick }) => (
+  onTransactionClick: (transaction: PerpsTransaction) => void;
+}) => (
   <Box
     flexDirection={BoxFlexDirection.Column}
     className="overflow-hidden rounded-xl"
@@ -62,7 +70,7 @@ const RecentActivityList: React.FC<{
         variant="muted"
         showTopBorder={index > 0}
         onClick={onTransactionClick}
-        screenName={PERPS_EVENT_VALUE.SCREEN_NAME.MARKET_DETAIL}
+        screenName={PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS}
       />
     ))}
   </Box>
@@ -72,9 +80,9 @@ export type PerpsMarketRecentActivityProps = {
   symbol: string;
 };
 
-export const PerpsMarketRecentActivity: React.FC<
-  PerpsMarketRecentActivityProps
-> = ({ symbol }) => {
+export const PerpsMarketRecentActivity = ({
+  symbol,
+}: PerpsMarketRecentActivityProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 
@@ -94,6 +102,17 @@ export const PerpsMarketRecentActivity: React.FC<
   const showSkeleton = isInitialLoading && !hasTransactions;
 
   const handleSeeAll = () => navigate(PERPS_ACTIVITY_ROUTE);
+
+  // Navigate to the transaction's details view instead of falling back to
+  // the general activity list (see `getPerpsTransactionDestination`).
+  const handleTransactionClick = (transaction: PerpsTransaction) => {
+    const destination = getPerpsTransactionDestination(transaction);
+    if (destination) {
+      navigate(destination.pathname, { state: destination.state });
+      return;
+    }
+    handleSeeAll();
+  };
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
@@ -126,7 +145,7 @@ export const PerpsMarketRecentActivity: React.FC<
         {!showSkeleton && hasTransactions && (
           <RecentActivityList
             transactions={transactions}
-            onTransactionClick={handleSeeAll}
+            onTransactionClick={handleTransactionClick}
           />
         )}
       </Box>

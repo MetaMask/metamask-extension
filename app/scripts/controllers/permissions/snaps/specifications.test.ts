@@ -1,14 +1,32 @@
+import { SnapMessage } from '@metamask/eth-snap-keyring';
+import { SnapId } from '@metamask/snaps-sdk';
 import { ASSETS_UNIFY_STATE_FLAG } from '../../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
 import { getSnapPermissionSpecifications } from './specifications';
 
-// Use the real implementation instead of the global mock in test/jest/setup.js
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// and provide the pure flag-evaluation logic without the IN_TEST bypass
+// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
+// so using jest.requireActual here would make the function always return true,
+// breaking tests that exercise the disabled-flag path).
 jest.mock(
   '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
-  () =>
-    jest.requireActual(
+  () => ({
+    ...jest.requireActual(
       '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
     ),
+    isAssetsUnifyStateFeatureEnabled: jest.fn(
+      (
+        featureFlag:
+          | { enabled: boolean; featureVersion: string }
+          | undefined
+          | null,
+        featureVersion: string,
+      ) =>
+        Boolean(featureFlag?.enabled) &&
+        featureFlag?.featureVersion === featureVersion,
+    ),
+  }),
 );
 
 jest.mock('../../../../../shared/lib/environment', () => ({
@@ -114,6 +132,40 @@ describe('getSnapPermissionSpecifications', () => {
       const result = capturedHooks.getPreferences();
 
       expect(result).toMatchObject({ currency: 'usd' });
+    });
+  });
+
+  describe('getSnapKeyring', () => {
+    it('returns a keyring whose handleKeyringSnapMessage delegates to the messenger', async () => {
+      jest
+        .mocked(getIsAssetsUnifiedStateIncludedInBuild)
+        .mockReturnValue(false);
+
+      const messenger = buildMessenger();
+      getSnapPermissionSpecifications(messenger as never);
+
+      const keyring = await (
+        capturedHooks.getSnapKeyring as () => Promise<{
+          handleKeyringSnapMessage: (
+            snapId: SnapId,
+            message: SnapMessage,
+          ) => unknown;
+        }>
+      )();
+
+      const snapId = 'npm:@metamask/test-snap' as SnapId;
+      const message = {
+        method: 'keyring_createAccount',
+        params: {},
+      } as SnapMessage;
+
+      keyring.handleKeyringSnapMessage(snapId, message);
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapAccountService:handleKeyringSnapMessage',
+        snapId,
+        message,
+      );
     });
   });
 });

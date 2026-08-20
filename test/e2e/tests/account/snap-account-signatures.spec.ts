@@ -4,9 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
@@ -19,7 +17,10 @@ import {
   signTypedDataV4WithSnapAccount,
   signTypedDataWithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
-import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
+import {
+  mockSnapSimpleKeyringAndSite,
+  SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
+} from './snap-keyring-site-mocks';
 
 describe('Snap Account Signatures', function (this: Suite) {
   this.timeout(500000); // This test is very long, so we need an unusually high timeout
@@ -40,13 +41,9 @@ describe('Snap Account Signatures', function (this: Suite) {
           fixtures: new FixtureBuilderV2()
             .withSnapsPrivacyWarningAlreadyShown()
             .build(),
-          testSpecificMock: async (mockServer: Mockttp) => {
-            const snapMocks = await mockSnapSimpleKeyringAndSite(
-              mockServer,
-              8081,
-            );
-            return snapMocks;
-          },
+          manifestFlags: SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
+          testSpecificMock: (mockServer: Mockttp) =>
+            mockSnapSimpleKeyringAndSite(mockServer, 8081),
           title,
         },
         async ({ driver }: { driver: Driver }) => {
@@ -57,22 +54,12 @@ describe('Snap Account Signatures', function (this: Suite) {
           const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
           const newPublicKey = await snapSimpleKeyringPage.createNewAccount();
 
-          // Check snap account is displayed after adding the snap account.
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           const headerNavbar = new HeaderNavbar(driver);
-          // BUG #37591 - With BIP44 the account mame is not retained.
+          // BUG #37591 - With BIP44 the account name is not retained.
           await headerNavbar.checkAccountLabel('Snap Account 1');
-
-          // Navigate to experimental settings and disable redesigned signature.
-          await headerNavbar.openSettingsPage();
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.checkPageIsLoaded();
-          await settingsPage.goToExperimentalSettings();
-
-          const experimentalSettings = new ExperimentalSettings(driver);
-          await experimentalSettings.checkPageIsLoaded();
 
           // Connect the SSK account
           const testDapp = new TestDapp(driver);

@@ -9,20 +9,14 @@ import {
   Text,
   TextAlign,
   TextColor,
+  TextFieldSearch,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-} from '../../../helpers/constants/design-system';
-import { TextFieldSearch, TextFieldSearchSize } from '../../component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 
 // Priority networks that should appear first (using CAIP chain IDs)
 const PRIORITY_CHAIN_IDS: CaipChainId[] = [
@@ -130,7 +124,7 @@ export const MultichainAddressRowsList = ({
         normalizedAddress: string;
       },
       index: number,
-    ): React.JSX.Element => {
+    ): JSX.Element => {
       const handleCopyClick = () => {
         handleCopy(item.normalizedAddress);
       };
@@ -165,17 +159,12 @@ export const MultichainAddressRowsList = ({
     >
       <Box paddingLeft={4} paddingRight={4}>
         <TextFieldSearch
-          size={TextFieldSearchSize.Lg}
+          className="w-full"
+          clearButtonOnClick={handleClearSearch}
+          data-testid="multichain-address-rows-list-search"
+          onChange={handleSearchChange}
           placeholder={t('searchNetworks')}
           value={searchPattern}
-          onChange={handleSearchChange}
-          clearButtonOnClick={handleClearSearch}
-          width={BlockSize.Full}
-          borderWidth={0}
-          marginBottom={2}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          borderRadius={BorderRadius.LG}
-          data-testid="multichain-address-rows-list-search"
         />
       </Box>
 

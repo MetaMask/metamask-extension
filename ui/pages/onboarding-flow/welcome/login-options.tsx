@@ -25,7 +25,6 @@ import classnames from 'clsx';
 import { PolymorphicRef } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { getIsTelegramLoginFeatureEnabled } from '../../../../shared/lib/environment';
 import { useTheme } from '../../../hooks/useTheme';
 import { LOGIN_TYPE, LoginType, LoginOptionType, LOGIN_OPTION } from './types';
 
@@ -66,8 +65,6 @@ export const SocialButton = React.forwardRef(
   },
 );
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function LoginOptions({
   loginOption,
   handleLogin,
@@ -77,7 +74,6 @@ export default function LoginOptions({
 }) {
   const t = useI18nContext();
   const theme = useTheme();
-  const isTelegramLoginFeatureEnabled = getIsTelegramLoginFeatureEnabled();
 
   const backgroundColorForLoginOptions = useMemo(() => {
     return theme === ThemeType.light
@@ -102,7 +98,7 @@ export default function LoginOptions({
       testIdSuffix: 'google',
       icon: (
         <img
-          src="images/icons/google.svg"
+          src="images/google.svg"
           className="options-modal__social-icon"
           alt=""
         />
@@ -122,23 +118,20 @@ export default function LoginOptions({
       ),
       btnClass: 'mb-4',
     },
-  ];
-
-  if (isTelegramLoginFeatureEnabled) {
-    socialOptions.push({
+    {
       name: 'Telegram',
       loginType: LOGIN_TYPE.TELEGRAM,
       testIdSuffix: 'telegram',
       icon: (
-        <img
-          src="images/icons/telegram.svg"
-          className="options-modal__social-icon"
-          alt=""
+        <Icon
+          name={IconName.Telegram}
+          style={{ color: 'var(--color-telegram-blue)' }}
+          size={IconSize.Lg}
         />
       ),
       btnClass: 'mb-2',
-    });
-  }
+    },
+  ];
 
   return (
     <Box>
@@ -212,6 +205,7 @@ export default function LoginOptions({
               aria-label={`${t('onboardingLoginFooterTermsOfUse')} (${t(
                 'opensInNewTab',
               )})`}
+              data-testid="onboarding-login-footer-terms-of-use"
             >
               {t('onboardingLoginFooterTermsOfUse')}
             </a>
@@ -228,6 +222,7 @@ export default function LoginOptions({
               aria-label={`${t('onboardingLoginFooterPrivacyNotice')} (${t(
                 'opensInNewTab',
               )})`}
+              data-testid="onboarding-login-footer-privacy-notice"
             >
               {t('onboardingLoginFooterPrivacyNotice')}
             </a>

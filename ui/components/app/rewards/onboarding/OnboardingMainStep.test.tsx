@@ -2,7 +2,7 @@ import React, { Ref } from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ButtonProps } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { setErrorToast } from '../../../../ducks/rewards';
 import {
@@ -11,13 +11,21 @@ import {
   selectOptinAllowedForGeo,
   selectOptinAllowedForGeoError,
   selectOptinAllowedForGeoLoading,
+  selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
+import { useDispatch, useAppSelector } from '../../../../store/hooks';
 import OnboardingMainStep from './OnboardingMainStep';
+
 import {
   REWARDS_ONBOARD_HERO_IMAGE_URL,
   REWARDS_ONBOARD_OPTIN_LEGAL_LEARN_MORE_URL,
   REWARDS_ONBOARD_TERMS_URL,
 } from './constants';
+
+jest.mock('../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+  useAppSelector: jest.fn(),
+}));
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(
@@ -98,7 +106,6 @@ jest.mock('../../../../hooks/rewards/useCandidateSubscriptionId', () => ({
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock(
@@ -118,7 +125,8 @@ const mockedUseValidateReferralCode = jest.requireMock(
   '../../../../hooks/rewards/useValidateReferralCode',
 ).useValidateReferralCode as jest.Mock;
 const mockedUseSelector = useSelector as jest.Mock;
-const mockedUseDispatch = useDispatch as jest.Mock;
+const mockedUseAppDispatch = useDispatch as jest.Mock;
+const mockedUseAppSelector = useAppSelector as jest.Mock;
 
 type SelectorState = {
   candidateSubscriptionId?: unknown;
@@ -127,11 +135,13 @@ type SelectorState = {
   optinAllowedForGeoError?: boolean;
   optinAllowedForGeoLoading?: boolean;
   rewardsActiveAccountSubscriptionId?: string | null;
+  vipProgramEnabled?: boolean;
 };
 
 function setup({
   referralCode = '',
   isValid = false,
+  isVipCode = false,
   isValidating = false,
   isUnknownError = false,
   optinLoading = false,
@@ -147,6 +157,7 @@ function setup({
     setReferralCode,
     isValidating,
     isValid,
+    isVipCode,
     isUnknownError,
   });
 
@@ -156,7 +167,7 @@ function setup({
     optin,
   });
 
-  mockedUseDispatch.mockReturnValue(dispatch);
+  mockedUseAppDispatch.mockReturnValue(dispatch);
 
   const fullState = {
     candidateSubscriptionId: null,
@@ -165,12 +176,16 @@ function setup({
     optinAllowedForGeoError: false,
     optinAllowedForGeoLoading: false,
     rewardsActiveAccountSubscriptionId: null,
+    vipProgramEnabled: false,
     ...state,
   };
 
   mockedUseSelector.mockImplementation((selector: unknown) => {
     if (selector === selectCandidateSubscriptionId) {
       return fullState.candidateSubscriptionId;
+    }
+    if (selector === selectVipProgramEnabled) {
+      return fullState.vipProgramEnabled;
     }
     if (selector === selectOnboardingReferralCode) {
       return fullState.onboardingReferralCode;
@@ -184,7 +199,10 @@ function setup({
     if (selector === selectOptinAllowedForGeoLoading) {
       return fullState.optinAllowedForGeoLoading;
     }
-    // useAppSelector path: select by callback against fake state
+    return undefined;
+  });
+
+  mockedUseAppSelector.mockImplementation((selector: unknown) => {
     if (typeof selector === 'function') {
       return (selector as (s: unknown) => unknown)({
         metamask: {
@@ -316,6 +334,32 @@ describe('OnboardingMainStep', () => {
     expect(
       screen.getByPlaceholderText('rewardsOnboardingReferralCodePlaceholder'),
     ).toBeInTheDocument();
+  });
+
+  it('shows the VIP referral tag for a valid VIP code when the VIP program is enabled', () => {
+    setup({
+      state: { onboardingReferralCode: 'vipcode', vipProgramEnabled: true },
+      referralCode: 'VIPCODE',
+      isValid: true,
+      isVipCode: true,
+    });
+    render(<OnboardingMainStep />);
+
+    expect(screen.getByTestId('rewards-vip-referral-tag')).toBeInTheDocument();
+  });
+
+  it('does not show the VIP referral tag when the VIP program flag is off', () => {
+    setup({
+      state: { onboardingReferralCode: 'vipcode', vipProgramEnabled: false },
+      referralCode: 'VIPCODE',
+      isValid: true,
+      isVipCode: true,
+    });
+    render(<OnboardingMainStep />);
+
+    expect(
+      screen.queryByTestId('rewards-vip-referral-tag'),
+    ).not.toBeInTheDocument();
   });
 
   it('seeds validation with the trimmed + uppercased referral from the store', () => {

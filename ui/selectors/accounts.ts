@@ -6,6 +6,7 @@ import {
   EthScope,
   TrxAccountType,
   isEvmAccountType,
+  XlmAccountType,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
@@ -35,11 +36,17 @@ export function isTronAccount(account: InternalAccount) {
   return Boolean(account && account.type === Eoa);
 }
 
+export function isStellarAccount(account: InternalAccount) {
+  const { Account } = XlmAccountType;
+  return Boolean(account && account.type === Account);
+}
+
 export function isNonEvmAccount(account: InternalAccount) {
   return (
     isBitcoinAccount(account) ||
     isSolanaAccount(account) ||
-    isTronAccount(account)
+    isTronAccount(account) ||
+    isStellarAccount(account)
   );
 }
 
@@ -88,11 +95,6 @@ export const selectEvmAddress = createSelector(
 export const isSelectedInternalAccountSolana = createSelector(
   getSelectedInternalAccount,
   (account) => isSolanaAccount(account),
-);
-
-export const hasCreatedSolanaAccount = createSelector(
-  getInternalAccounts,
-  (accounts) => accounts.some((account) => isSolanaAccount(account)),
 );
 
 /**

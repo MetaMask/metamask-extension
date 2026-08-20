@@ -24,7 +24,7 @@ import { IconName } from '../../icon';
  * @param options0.onBack
  * @param options0.backButtonProps
  */
-export const ModalHeader: React.FC<ModalHeaderProps> = ({
+export const ModalHeader = ({
   children,
   className = '',
   startAccessory,
@@ -34,34 +34,30 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   onBack,
   backButtonProps,
   ...props
-}) => {
+}: React.PropsWithChildren<ModalHeaderProps>) => {
   const t = useI18nContext();
   return (
     <HeaderBase
       className={classnames('mm-modal-header', className)}
       startAccessory={
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         startAccessory ||
         (onBack && (
           <ButtonIcon
             iconName={IconName.ArrowLeft}
             ariaLabel={t('back')}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={onBack}
             {...backButtonProps}
           />
         ))
       }
       endAccessory={
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         endAccessory ||
         (onClose && (
           <ButtonIcon
             iconName={IconName.Close}
             ariaLabel={t('close')}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={onClose}
             {...closeButtonProps}
           />

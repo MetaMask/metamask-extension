@@ -2,11 +2,10 @@ import React, { useMemo, useState, useEffect } from 'react';
 import {
   AvatarToken,
   AvatarTokenSize,
+  Skeleton,
   twMerge,
 } from '@metamask/design-system-react';
 import { getDisplaySymbol, getAssetIconUrls } from '../utils';
-import { Skeleton } from '../../../component-library/skeleton';
-import { BorderRadius } from '../../../../helpers/constants/design-system';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
@@ -32,11 +31,11 @@ const AVATAR_SIZE_CLASS: Record<AvatarTokenSize, string> = {
   [AvatarTokenSize.Xl]: 'h-12 w-12',
 };
 
-export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
+export const PerpsTokenLogo = ({
   symbol,
   size = AvatarTokenSize.Md,
   className,
-}) => {
+}: PerpsTokenLogoProps) => {
   const displaySymbol = useMemo(() => getDisplaySymbol(symbol), [symbol]);
   const sanitizedSymbol = symbol.replace(/:/gu, '-');
   const theme = useTheme();
@@ -60,24 +59,27 @@ export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
     return '';
   }, [displaySymbol, theme]);
   const [resolvedSrc, setResolvedSrc] = useState<string | undefined>(undefined);
-  const [isResolving, setIsResolving] = useState(true);
+  const [isResolving, setIsResolving] = useState(() =>
+    Boolean(symbol && getAssetIconUrls(symbol)),
+  );
+  const [prevSymbol, setPrevSymbol] = useState(symbol);
+
+  if (symbol !== prevSymbol) {
+    setPrevSymbol(symbol);
+    setResolvedSrc(undefined);
+    setIsResolving(Boolean(symbol && getAssetIconUrls(symbol)));
+  }
 
   useEffect(() => {
     if (!symbol) {
-      setResolvedSrc(undefined);
-      setIsResolving(false);
       return undefined;
     }
 
     const iconUrls = getAssetIconUrls(symbol);
     if (!iconUrls) {
-      setResolvedSrc(undefined);
-      setIsResolving(false);
       return undefined;
     }
 
-    setResolvedSrc(undefined);
-    setIsResolving(true);
     let cancelled = false;
     const urls = [iconUrls.primary, iconUrls.fallback];
     let idx = 0;
@@ -112,8 +114,7 @@ export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
   if (isResolving) {
     return (
       <Skeleton
-        className={`shrink-0 ${AVATAR_SIZE_CLASS[size]} ${className ?? ''}`}
-        borderRadius={BorderRadius.full}
+        className={`shrink-0 rounded-full ${AVATAR_SIZE_CLASS[size]} ${className ?? ''}`}
         data-testid={`perps-token-logo-${sanitizedSymbol}`}
       />
     );

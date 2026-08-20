@@ -13,8 +13,7 @@ import {
   NameType,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
-import { useDispatch, useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
+import { useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
   Box,
@@ -58,6 +57,7 @@ import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
+import { useDispatch } from '../../../../store/hooks';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
@@ -205,8 +205,6 @@ function useProposedNames(value: string, type: NameType, variation: string) {
     reset();
     update();
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     updateInterval.current = setInterval(update, UPDATE_DELAY);
     return reset;
   }, [value, type, variation, dispatch]);
@@ -214,8 +212,6 @@ function useProposedNames(value: string, type: NameType, variation: string) {
   return { proposedNames, initialSources };
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NameDetails({
   onClose,
   type,
@@ -239,7 +235,7 @@ export default function NameDetails({
     variation,
   });
 
-  const nameSources = useSelector(getNameSources, isEqual);
+  const nameSources = useSelector(getNameSources);
   const [name, setName] = useState('');
   const [openMetricSent, setOpenMetricSent] = useState(false);
   const [selectedSourceId, setSelectedSourceId] = useState<string>();
@@ -473,8 +469,6 @@ export default function NameDetails({
               variant={ButtonVariant.Primary}
               startIconName={IconName.Save}
               width={BlockSize.Full}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={handleSaveClick}
               size={ButtonSize.Lg}
             >

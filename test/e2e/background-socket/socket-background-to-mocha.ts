@@ -1,5 +1,6 @@
 import log from 'loglevel';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
+import { handleQrSyncSimulateMessage } from '../helpers/qr-sync/qr-sync-e2e-bridge';
 import { MessageType, WindowProperties } from './types';
 
 type FixtureStateResetHandler = () => Promise<void>;
@@ -23,7 +24,6 @@ class SocketBackgroundToMocha {
 
     this.client.onmessage = (ev: MessageEvent) => {
       let message: MessageType;
-
       try {
         message = JSON.parse(ev.data);
       } catch (e) {
@@ -133,6 +133,8 @@ class SocketBackgroundToMocha {
       this.waitUntilWindowWithProperty(message.property, message.value);
     } else if (message.command === 'resetFixtureState') {
       await this.resetFixtureState(message.reloadServiceWorker);
+    } else if (message.command === 'qrSyncSimulate') {
+      handleQrSyncSimulateMessage(message);
     }
   }
 

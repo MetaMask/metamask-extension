@@ -1,21 +1,21 @@
 import { useLayoutEffect } from 'react';
 import { useCssVar } from './useCssVar';
 
-const toastCssVariable = '--toast-display';
+const toastCssVariable = '--toast-visibility';
 
 export function useHideToasts() {
-  const toastDisplay = useCssVar({ name: toastCssVariable });
+  const toastVisibility = useCssVar({ name: toastCssVariable });
 
   useLayoutEffect(() => {
-    const previousValue = toastDisplay.get();
-    toastDisplay.set('none');
+    const previousValue = toastVisibility.get();
+    toastVisibility.set('hidden');
 
     return () => {
       if (previousValue) {
-        toastDisplay.set(previousValue);
+        toastVisibility.set(previousValue);
       } else {
-        toastDisplay.remove();
+        toastVisibility.remove();
       }
     };
-  }, [toastDisplay]);
+  }, [toastVisibility]);
 }

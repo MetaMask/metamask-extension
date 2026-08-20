@@ -1,8 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import classnames from 'clsx';
+import { usePureBlack } from '@metamask/design-system-react';
 
 import {
   BackgroundColor,
+  BorderColor,
   BorderRadius,
   BlockSize,
   Display,
@@ -21,6 +23,13 @@ import {
   ModalContentComponent,
 } from './modal-content.types';
 
+/**
+ * @deprecated This component is deprecated and will be removed in a future release.
+ * Please use the ModalContent component from @metamask/design-system-react instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#modalcontent-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-modalcontent--docs | Storybook Documentation}
+ * @see {@link https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components/ModalContent | Component Source}
+ */
 export const ModalContent: ModalContentComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -34,6 +43,8 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
     }: ModalContentProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+    const isPureBlack = usePureBlack();
     const {
       onClose,
       isClosedOnEscapeKey,
@@ -105,7 +116,13 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             as="section"
             role="dialog"
             aria-modal="true"
-            backgroundColor={BackgroundColor.backgroundDefault}
+            backgroundColor={
+              isPureBlack
+                ? BackgroundColor.backgroundAlternative
+                : BackgroundColor.backgroundDefault
+            }
+            borderColor={isPureBlack ? BorderColor.borderMuted : undefined}
+            borderWidth={isPureBlack ? 1 : undefined}
             borderRadius={BorderRadius.LG}
             width={BlockSize.Full}
             display={Display.Flex}

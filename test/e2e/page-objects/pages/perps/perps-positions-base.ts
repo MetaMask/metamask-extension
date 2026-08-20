@@ -1,23 +1,31 @@
-import { Driver } from '../../../webdriver/driver';
+import HomePage from '../home/homepage';
 
 /**
- * Base class with shared position-related selectors and methods
- * used by both PerpsTabPage and PerpsHomePage.
+ * Shared position-card helpers for Perps surfaces that list open positions.
+ *
+ * Screen: not a route by itself — mixed into `PerpsTab` (and subclasses) on
+ * `#/perps` / `#/perps-home`.
+ * Owns: waiting for and clicking `position-card-*` rows and size/text
+ * assertions on those cards.
+ * Boundaries: everything outside the positions list (balance dropdown,
+ * watchlist, explore, tutorial) stays on `PerpsTab`. Navigating via
+ * `clickPositionCard` hands off to `PerpsMarketDetailPage`.
+ * Related: `PerpsTab` (concrete owner), `PerpsMarketDetailPage` (opened by
+ * clicking a position card).
+ *
+ * @see ui/components/app/perps/position-card/position-card.tsx
+ * @see ui/components/app/perps/perps-positions-orders/perps-positions-orders.tsx
  */
-export class PerpsPositionsBase {
-  protected readonly driver: Driver;
-
+export class PerpsPositionsBase extends HomePage {
   protected readonly accountOverviewPerpsTab = {
     testId: 'account-overview__perps-tab',
   };
 
+  protected readonly bottomNavPerpsButton = '[data-testid="bottom-nav-perps"]';
+
   private readonly perpsPositionsSection = {
     testId: 'perps-positions-section',
   };
-
-  constructor(driver: Driver) {
-    this.driver = driver;
-  }
 
   /**
    * Clicks the position card for the given symbol (navigates to market detail).

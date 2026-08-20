@@ -17,6 +17,7 @@ jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
+    # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
     strategy:
       fail-fast: false
@@ -56,18 +57,13 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Restore .metamask folder
-        id: restore-metamask
-        uses: actions/cache/restore@v5
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
         with:
-          path: .metamask
-          key: .metamask-${{ hashFiles('yarn.lock') }}
-          fail-on-cache-miss: false
-
-      - name: Install anvil if cache missed
-        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true' }}
-        run: yarn mm-foundryup
-        shell: bash
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
 
       - name: Download build artifact
         uses: actions/download-artifact@v7
@@ -76,7 +72,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ inputs.builds-from-run }}
 
+      - name: Pin geckodriver 0.36.0 (Firefox only)
+        if: ${{ matrix.browser == 'firefox' }}
+        run: .github/scripts/pin-geckodriver.sh
+
       - name: Run the benchmark
+        id: run-benchmark
         run: >-
           ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
         shell: bash
@@ -121,9 +122,15 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+      - name: Gate this benchmark leg
+        if: ${{ steps.run-benchmark.outcome == 'success' }}
+        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
+        shell: bash
+
   benchmarks-page-load:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: chrome-webpack-pageLoadBenchmark
+    # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -154,9 +161,12 @@ jobs:
           run-id: ${{ inputs.builds-from-run }}
 
       - name: Install Playwright browsers
-        run: yarn playwright install chromium
+        uses: ./.github/actions/install-playwright-browsers
+        with:
+          browsers: chromium
 
       - name: Run dapp page load benchmarks
+        id: run-page-load
         run: yarn test:e2e:benchmark --preset=pageLoadBenchmark
 
       - name: Send benchmark results to Sentry (main/release only)
@@ -198,6 +208,11 @@ jobs:
           path: test-artifacts/benchmarks/${{ env.DAPP_BENCHMARK_JSON }}
           retention-days: 7
           if-no-files-found: ignore
+
+      - name: Gate this benchmark leg
+        if: ${{ steps.run-page-load.outcome == 'success' }}
+        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
+        shell: bash
 
   # Evaluates benchmark results against constant thresholds (THRESHOLD_REGISTRY).
   # Rollout across 4 phases:
@@ -250,23 +265,38 @@ jobs:
           merge-multiple: true
 
       # skip-benchmark-gate label: convenience escape hatch for Phase 2–3.
+      # Honored on pull_request runs and on release/* push runs (RC validation)
+      # by resolving the open PR(s) containing the commit; never on main pushes.
+      # Labels are read at run time, so re-running this job picks up a label
+      # added after the failure.
       # Remove when graduating to Phase 4 (required check) — at that point,
       # use admin bypass or update thresholds instead.
       - name: Check for skip label
         id: skip-check
         continue-on-error: true
-        if: >-
-          ${{
-            steps.download-benchmarks.outcome == 'success' &&
-            github.event_name == 'pull_request'
-          }}
+        if: ${{ steps.download-benchmarks.outcome == 'success' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          EVENT_REF: ${{ github.ref }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
-          LABELS=$(gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels --jq '.[].name')
-          if echo "$LABELS" | grep -qx 'skip-benchmark-gate'; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
+          if [ "$EVENT_NAME" = 'pull_request' ]; then
+            PR_NUMBERS="$EVENT_PR_NUMBER"
+          elif [[ "$EVENT_REF" == refs/heads/release/* ]]; then
+            PR_NUMBERS=$(gh api "repos/$REPO/commits/$COMMIT_SHA/pulls" --jq '.[] | select(.state == "open") | .number')
+          else
+            PR_NUMBERS=''
           fi
+          for pr in $PR_NUMBERS; do
+            LABELS=$(gh api "repos/$REPO/issues/$pr/labels" --jq '.[].name')
+            if echo "$LABELS" | grep -qx 'skip-benchmark-gate'; then
+              echo "skip-benchmark-gate label found on PR #$pr — skipping quality gate"
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+            fi
+          done
         shell: bash
 
       - name: Run quality gate
@@ -298,7 +328,6 @@ jobs:
     timeout-minutes: 10
     environment: ${{ github.ref_name == github.event.repository.default_branch && 'default-branch' || 'release-ci' }}
     env:
-      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
       HEAD_COMMIT_HASH: ${{ github.sha }}
       OWNER: ${{ github.repository_owner }}
       BRANCH_NAME: ${{ github.ref_name }}
@@ -315,6 +344,16 @@ jobs:
           path: benchmark-results/
           merge-multiple: true
 
+      - name: Get token
+        id: token
+        if: steps.download-perf-benchmark.outcome == 'success'
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/extension_benchmark_stats
+          permissions: |
+            contents: write
+
       - name: Commit performance stats to extension_benchmark_stats
         if: steps.download-perf-benchmark.outcome == 'success'
         continue-on-error: true
@@ -322,3 +361,4 @@ jobs:
         env:
           BENCHMARK_DATA_TYPE: performance
           BENCHMARK_RESULTS_DIR: benchmark-results
+          EXTENSION_BENCHMARK_STATS_TOKEN: ${{ steps.token.outputs.token }}

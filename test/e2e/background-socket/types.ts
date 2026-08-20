@@ -1,3 +1,8 @@
+import type {
+  QrSyncSimulatorAction,
+  SimulatorParams,
+} from '../helpers/qr-sync/mobile-wallet-simulator';
+
 export type MessageType =
   | { command: 'fixtureStateReset' }
   | { command: 'fixtureStateResetError'; error: string }
@@ -9,6 +14,11 @@ export type MessageType =
       tabs: chrome.tabs.Tab[];
     }
   | { command: 'queryTabs'; title: string }
+  | {
+      command: 'qrSyncSimulate';
+      action?: QrSyncSimulatorAction;
+      params?: SimulatorParams;
+    }
   | { command: 'resetFixtureState'; reloadServiceWorker: boolean }
   | {
       command: 'waitUntilWindowWithProperty';
