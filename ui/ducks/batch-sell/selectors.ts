@@ -41,9 +41,9 @@ import {
   BATCH_SELL_SUPPORTED_CHAIN_IDS,
   ONDO_TOKENIZED_TOKEN_NAME,
 } from '../../../shared/constants/batch-sell';
+import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 import { isStockRWAToken } from '../../pages/bridge/hooks/useRWAToken';
 import { BatchSellAsset } from './types';
-import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 
 /**
  * Determines whether a held asset can be offered as a batch-sell source

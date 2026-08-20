@@ -3,14 +3,14 @@ import {
   UnifiedSwapBridgeEventName,
   type RequiredEventContextFromClient,
   type InputPrimaryDenomination,
+  type MetaMetricsSwapsEventSource,
 } from '@metamask/bridge-controller';
+import type { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { type MetaMetricsSwapsEventSource } from '@metamask/bridge-controller';
 import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 import type { ActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
-import type { BridgeStatusController } from '@metamask/bridge-status-controller';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
