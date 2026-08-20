@@ -160,6 +160,7 @@ function getRowStatus({
 
 function buildUnavailableComparisonContent(
   currentSizes: Record<BundlePart, number>,
+  currentUnzippedSize: number,
   currentZipSize: number,
   reason: string,
 ): string {
@@ -170,6 +171,10 @@ function buildUnavailableComparisonContent(
     }),
   );
   currentSizeRows.push(
+    buildSizeRow({
+      label: 'unzipped',
+      currentSize: currentUnzippedSize,
+    }),
     buildSizeRow({
       label: 'zip',
       currentSize: currentZipSize,
@@ -238,6 +243,7 @@ function buildBundleSizeSection({
   }
 
   const currentSizes = getBundlePartSizes(currentSummary);
+  const currentUnzippedSize = currentSummary.unzipped ?? 0;
   const currentZipSize = currentSummary.zip ?? 0;
 
   if (baselineCommitHashes.length === 0) {
@@ -245,6 +251,7 @@ function buildBundleSizeSection({
       'Bundle Size Diffs',
       buildUnavailableComparisonContent(
         currentSizes,
+        currentUnzippedSize,
         currentZipSize,
         'No bundle-size baseline commit was available for this build, so diff values are omitted.',
       ),
@@ -256,6 +263,7 @@ function buildBundleSizeSection({
       'Bundle Size Diffs',
       buildUnavailableComparisonContent(
         currentSizes,
+        currentUnzippedSize,
         currentZipSize,
         'Bundle-size history data could not be loaded, so diff values are omitted.',
       ),
@@ -272,6 +280,7 @@ function buildBundleSizeSection({
       'Bundle Size Diffs',
       buildUnavailableComparisonContent(
         currentSizes,
+        currentUnzippedSize,
         currentZipSize,
         'No matching bundle-size baseline was found in the history data, so diff values are omitted.',
       ),
@@ -290,6 +299,15 @@ function buildBundleSizeSection({
     }),
   );
   sizeDiffRows.push(
+    buildSizeRow({
+      label: 'unzipped',
+      currentSize: currentUnzippedSize,
+      baselineSize: baselineSummary.unzipped,
+      status: getRowStatus({
+        currentSize: currentUnzippedSize,
+        baselineSize: baselineSummary.unzipped,
+      }),
+    }),
     buildSizeRow({
       label: 'zip',
       currentSize: currentZipSize,

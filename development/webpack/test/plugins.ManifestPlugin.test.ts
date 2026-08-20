@@ -496,6 +496,7 @@ describe('ManifestPlugin', () => {
       'offscreen.css': 15,
       'scripts/contentscript.js': 400,
       'scripts/inpage.js': 500,
+      'ignored.js.map': 800,
     } as const;
     const debugStatsAssets = {
       'runtime.js': 100,
@@ -645,15 +646,25 @@ describe('ManifestPlugin', () => {
         compilation,
         chromeSummaryAssetPath,
       );
+      const zipEntries = await readZipEntries(
+        compilation.assets['chrome/extension.zip'],
+      );
+      const unzipped = [...zipEntries.values()].reduce(
+        (total, asset) => total + asset.length,
+        0,
+      );
+
       assert.deepStrictEqual(summary, {
         background: 650,
         ui: 550,
         common: 150,
         other: 140,
         contentScripts: 400,
+        unzipped,
         zip: compilation.assets['chrome/extension.zip'].size(),
         timestamp: summary.timestamp,
       });
+      assert.strictEqual(zipEntries.has('ignored.js.map'), false);
       assert.strictEqual(
         compilation.getAsset(chromeDebugAssetPath),
         undefined,
