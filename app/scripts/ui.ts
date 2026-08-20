@@ -16,14 +16,11 @@ import './development/wdyr';
 import '../../shared/constants/infura-project-id';
 
 import type { Duplex } from 'stream';
+import * as reactDevtoolsCore from 'react-devtools-core';
 import type { Substream } from '@metamask/object-multiplex/dist/Substream';
 
-if (process.env.METAMASK_REACT_REDUX_DEVTOOLS) {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { initialize, connectToDevTools } = require('react-devtools-core') as {
-    initialize: () => void;
-    connectToDevTools: () => void;
-  };
+if (reactDevtoolsCore && process.env.METAMASK_REACT_REDUX_DEVTOOLS) {
+  const { initialize, connectToDevTools } = reactDevtoolsCore;
   initialize();
   connectToDevTools();
 }

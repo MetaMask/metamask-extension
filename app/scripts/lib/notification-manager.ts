@@ -65,7 +65,7 @@ export default class NotificationManager extends EventEmitter {
     if (popup && typeof popup.id === 'number') {
       // bring focus to existing chrome popup
       await this.platform.focusWindow(popup.id);
-    } else if (!popup) {
+    } else {
       // create new notification popup
       let left = 0;
       let top = 0;
