@@ -63,8 +63,7 @@ class OnboardingPrivacySettingsPage {
   };
 
   private readonly confirmAddRpcUrlButton = {
-    text: 'Add URL',
-    tag: 'button',
+    testId: 'page-container-footer-next',
   };
 
   private readonly currencySymbolInput =

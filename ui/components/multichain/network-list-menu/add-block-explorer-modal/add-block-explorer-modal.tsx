@@ -80,6 +80,7 @@ const AddBlockExplorerModal = ({
           isDisabled={Boolean(error)}
           size={ButtonSize.Lg}
           variant={ButtonVariant.Primary}
+          data-testid="add-block-explorer-url-button"
           onClick={async () => {
             if (url) {
               onAdded(url);
