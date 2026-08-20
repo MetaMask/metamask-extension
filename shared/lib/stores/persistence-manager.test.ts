@@ -431,9 +431,7 @@ describe('PersistenceManager', () => {
         set: jest.fn(),
         reset: jest.fn(),
       };
-      const shouldUseIndexedDBForNewUsers = jest
-        .fn()
-        .mockResolvedValue(true);
+      const shouldUseIndexedDBForNewUsers = jest.fn().mockResolvedValue(true);
       manager = new PersistenceManager({
         localStore,
         indexedDBStore,
@@ -468,9 +466,7 @@ describe('PersistenceManager', () => {
         setKeyValues: jest.fn(),
         reset: jest.fn(),
       };
-      const shouldUseIndexedDBForNewUsers = jest
-        .fn()
-        .mockResolvedValue(false);
+      const shouldUseIndexedDBForNewUsers = jest.fn().mockResolvedValue(false);
       manager = new PersistenceManager({
         localStore,
         indexedDBStore,

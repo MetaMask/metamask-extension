@@ -562,10 +562,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     try {
       return (await this.#shouldUseIndexedDBForNewUsers()) === true;
     } catch (error) {
-      log.warn(
-        'Error resolving IndexedDB storage remote feature flag:',
-        error,
-      );
+      log.warn('Error resolving IndexedDB storage remote feature flag:', error);
       return false;
     }
   }
@@ -1037,9 +1034,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                 localStoreError,
               );
             } else if (localStoreError) {
-              log.error(
-                'No backup vault available, cannot recover',
-              );
+              log.error('No backup vault available, cannot recover');
             } else {
               log.info('No backup vault available');
             }

@@ -45,7 +45,10 @@ const indexedDBStore = new IndexedDBPersistenceStore();
 const localBackupStore = new ChromeStorageLocalBackupStore();
 
 function hasRemoteFeatureFlag(remoteFeatureFlags, flagName) {
-  return Object.prototype.hasOwnProperty.call(remoteFeatureFlags ?? {}, flagName);
+  return Object.prototype.hasOwnProperty.call(
+    remoteFeatureFlags ?? {},
+    flagName,
+  );
 }
 
 function isFirefoxBrowser() {

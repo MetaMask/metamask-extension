@@ -43,12 +43,9 @@ describe('ChromeStorageLocalBackupStore', () => {
       },
     });
 
-    await expect(store.get(['meta', 'missing', 'KeyringController'])).resolves
-      .toStrictEqual([
-        { version: 1 },
-        undefined,
-        { vault: 'vault' },
-      ]);
+    await expect(
+      store.get(['meta', 'missing', 'KeyringController']),
+    ).resolves.toStrictEqual([{ version: 1 }, undefined, { vault: 'vault' }]);
   });
 
   it('removes the backup key on reset', async () => {
