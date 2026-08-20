@@ -80,9 +80,6 @@ jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
 jest.mock('../../rows/total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row" />,
 }));
-jest.mock('../../rows/claimable-bonus-row/claimable-bonus-row', () => ({
-  ClaimableBonusRow: () => <div data-testid="claimable-bonus-row" />,
-}));
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -390,7 +387,6 @@ describe('MusdConversionInfo', () => {
       const { getByTestId } = render({ isQuotesLoading: true });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-      expect(getByTestId('claimable-bonus-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
     });
 
@@ -398,7 +394,6 @@ describe('MusdConversionInfo', () => {
       const { getByTestId } = render({ hasQuotes: true });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-      expect(getByTestId('claimable-bonus-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
     });
 
@@ -409,7 +404,6 @@ describe('MusdConversionInfo', () => {
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
-      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
       expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
 
@@ -420,7 +414,6 @@ describe('MusdConversionInfo', () => {
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
-      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
       expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
 
@@ -431,7 +424,6 @@ describe('MusdConversionInfo', () => {
       });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-      expect(getByTestId('claimable-bonus-row')).toBeInTheDocument();
       expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
 
@@ -442,7 +434,6 @@ describe('MusdConversionInfo', () => {
       });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-      expect(getByTestId('claimable-bonus-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
     });
 
