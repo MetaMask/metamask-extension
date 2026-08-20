@@ -34,8 +34,7 @@ export function build(onComplete: () => void = noop) {
     const server = new WebpackDevServer(options.devServer, compiler);
     setupGracefulWatchShutdown({
       compiler,
-      onShutdownStart:
-        options.cache.type === 'filesystem' ? onComplete : noop,
+      onShutdownStart: options.cache.type === 'filesystem' ? onComplete : noop,
       server,
     });
     server.start().catch((error: unknown) => {

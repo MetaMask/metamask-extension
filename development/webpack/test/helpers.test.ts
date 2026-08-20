@@ -581,9 +581,11 @@ async function waitForAsyncShutdown() {
 
 function createSignalProcess({ hasIpc = false } = {}) {
   const listeners = new Map<string, (...args: unknown[]) => void>();
-  const on = mock.fn((event: string, listener: (...args: unknown[]) => void) => {
-    listeners.set(event, listener);
-  });
+  const on = mock.fn(
+    (event: string, listener: (...args: unknown[]) => void) => {
+      listeners.set(event, listener);
+    },
+  );
   const removeListener = mock.fn(
     (event: string, listener: (...args: unknown[]) => void) => {
       if (listeners.get(event) === listener) {
