@@ -320,7 +320,7 @@ describe('setupSidePanelToolbarBehavior', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it('waits for initialization, applies preference, and subscribes to changes', async () => {
+  it('applies early toolbar behavior before init, then preference and subscription', async () => {
     const { sidePanel, setPanelBehavior } = createSidePanelMock();
     const subscribe = jest.fn();
     let resolveInitialization: () => void = () => undefined;
@@ -342,13 +342,15 @@ describe('setupSidePanelToolbarBehavior', () => {
       sidePanel,
     );
 
-    expect(setPanelBehavior).not.toHaveBeenCalled();
-    resolveInitialization();
-    await setupPromise;
-
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
+    expect(getController).not.toHaveBeenCalled();
+
+    resolveInitialization();
+    await setupPromise;
+
+    expect(setPanelBehavior).toHaveBeenCalledTimes(2);
     expect(subscribe).toHaveBeenCalledWith(
       'PreferencesController:stateChange',
       expect.any(Function),

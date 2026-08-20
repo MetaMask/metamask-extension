@@ -219,6 +219,8 @@ export async function setupSidePanelToolbarBehavior(
     return;
   }
 
+  applyEarlySidePanelToolbarBehavior(sidePanelApi);
+
   try {
     await deps.waitUntilInitialized;
     await applyToolbarSidePanelBehavior(deps.getController, sidePanelApi);
@@ -245,5 +247,3 @@ export async function setupSidePanelToolbarBehavior(
     console.error('Error setting side panel toolbar behavior:', error);
   }
 }
-
-applyEarlySidePanelToolbarBehavior();
