@@ -2,7 +2,10 @@ import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
-import { useTransactionPayTotals } from './useTransactionPayData';
+import {
+  useTransactionPayHasPositiveRequiredAmount,
+  useTransactionPayTotals,
+} from './useTransactionPayData';
 
 const SUPPORTED_TYPES: TransactionType[] = [TransactionType.musdConversion];
 
@@ -16,8 +19,18 @@ const SUPPORTED_TYPES: TransactionType[] = [TransactionType.musdConversion];
 export function useIsPaidByMetaMask(): boolean {
   const transactionMeta = useTransactionMetadataRequestOptional();
   const totals = useTransactionPayTotals();
+  const hasPositiveRequiredAmount =
+    useTransactionPayHasPositiveRequiredAmount();
 
-  if (!hasTransactionType(transactionMeta, SUPPORTED_TYPES) || !totals?.fees) {
+  // Every fee is zero before an amount is entered, which is indistinguishable
+  // from genuine sponsorship. Requiring a positive amount stops the empty state
+  // from claiming the transaction is "Paid by MetaMask" and then contradicting
+  // itself with real fees once the user types.
+  if (
+    !hasTransactionType(transactionMeta, SUPPORTED_TYPES) ||
+    !totals?.fees ||
+    !hasPositiveRequiredAmount
+  ) {
     return false;
   }
 

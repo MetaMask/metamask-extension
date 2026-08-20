@@ -124,6 +124,7 @@ export const MultichainEditNetworksPage = ({
         <Box padding={4}>
           <Checkbox
             id="edit-networks-select-all"
+            data-testid="network-list-item-checkbox-select-all"
             label={t('selectAll')}
             isSelected={checked || isIndeterminate}
             onChange={() => (allAreSelected ? deselectAll() : selectAll())}
@@ -143,6 +144,7 @@ export const MultichainEditNetworksPage = ({
             startAccessory={
               <Checkbox
                 id={`edit-networks-checkbox-${network.caipChainId}`}
+                data-testid={`network-list-item-checkbox-${network.name}`}
                 isSelected={selectedChainIds.includes(network.caipChainId)}
                 onChange={() => handleNetworkClick(network.caipChainId)}
                 onClick={(event) => event.stopPropagation()}
@@ -166,6 +168,7 @@ export const MultichainEditNetworksPage = ({
             startAccessory={
               <Checkbox
                 id={`edit-networks-checkbox-${network.caipChainId}`}
+                data-testid={`network-list-item-checkbox-${network.name}`}
                 isSelected={selectedChainIds.includes(network.caipChainId)}
                 onChange={() => handleNetworkClick(network.caipChainId)}
                 onClick={(event) => event.stopPropagation()}

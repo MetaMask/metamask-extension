@@ -36,10 +36,7 @@ import {
   TextFieldType,
 } from '../../../components/component-library';
 import { FontWeight as DesignSystemFontWeight } from '../../../helpers/constants/design-system';
-import {
-  getSeedPhrase,
-  getSeedPhraseWithPasskey,
-} from '../../../store/actions';
+import { getSeedPhrase } from '../../../store/actions';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -58,7 +55,7 @@ import { getHDEntropyIndex } from '../../../selectors';
 import { PasskeyVerification } from '../../../components/app/passkey-verification';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
-import { useDispatch } from '../../../store/hooks';
+import { usePasskeySeedPhraseExport } from '../../../hooks/passkey/usePasskeySeedPhraseExport';
 
 type RevealRecoveryPhraseScreen =
   | 'VERIFY_PASSKEY_SCREEN'
@@ -90,7 +87,7 @@ export default function RevealRecoveryPhrase({
 }: {
   setSecretRecoveryPhrase: (seedPhrase: string) => void;
 }) {
-  const dispatch = useDispatch();
+  const exportSeedPhraseWithPasskey = usePasskeySeedPhraseExport();
   const navigate = useNavigate();
   const t = useI18nContext();
   const isFirefox = useIsFirefox();
@@ -201,7 +198,7 @@ export default function RevealRecoveryPhrase({
     async (authenticationResponse: PasskeyAuthenticationResponse) => {
       await revealSeedPhrase(
         MetaMetricsEventVerificationMethod.Passkey,
-        () => dispatch(getSeedPhraseWithPasskey(authenticationResponse)),
+        () => exportSeedPhraseWithPasskey(authenticationResponse),
         (error) => {
           captureException(
             createSentryError('Reveal SRP backup with passkey failed', error),
@@ -210,7 +207,7 @@ export default function RevealRecoveryPhrase({
         },
       );
     },
-    [dispatch, revealSeedPhrase],
+    [exportSeedPhraseWithPasskey, revealSeedPhrase],
   );
 
   const handleUsePassword = useCallback(() => {

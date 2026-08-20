@@ -69,6 +69,8 @@ class HomePage {
   private readonly bottomNavActivityButton =
     '[data-testid="bottom-nav-activity"]';
 
+  private readonly bottomNavHomeButton = '[data-testid="bottom-nav-home"]';
+
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -367,6 +369,38 @@ class HomePage {
     });
   }
 
+  async checkNoErrorToastIsDisplayed(): Promise<void> {
+    console.log('Check no blocking error toast is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.storageErrorToast, {
+      waitAtLeastGuard: regularDelayMs,
+      timeout: 5000,
+    });
+    await this.driver.assertElementNotPresent(this.surveyToast, {
+      waitAtLeastGuard: regularDelayMs,
+      timeout: 5000,
+    });
+    await this.driver.assertElementNotPresent(
+      {
+        css: '.toast-container',
+        text: 'cryptocurrencies',
+      },
+      {
+        waitAtLeastGuard: regularDelayMs,
+        timeout: 5000,
+      },
+    );
+    await this.driver.assertElementNotPresent(
+      {
+        css: '.toast-container',
+        text: 'unsupported',
+      },
+      {
+        waitAtLeastGuard: regularDelayMs,
+        timeout: 5000,
+      },
+    );
+  }
+
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
     console.log('Check no shield entry modal is displayed on homepage');
     await this.driver.assertElementNotPresent(this.shieldEntryModal, {
@@ -576,13 +610,46 @@ class HomePage {
     await this.driver.clickElement(this.defiTab);
   }
 
+  async goToHomePage(): Promise<void> {
+    console.log('Go to home page');
+    const alreadyOnHome = await this.driver.isElementPresentAndVisible(
+      this.balance,
+      1000,
+    );
+    if (alreadyOnHome) {
+      return;
+    }
+    const isBottomNav = await this.driver.isElementPresentAndVisible(
+      this.bottomNavHomeButton,
+      1000,
+    );
+    if (isBottomNav) {
+      await this.driver.clickElement(this.bottomNavHomeButton);
+      await this.checkPageIsLoaded();
+    }
+  }
+
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
+    const isBottomNav = await this.driver.isElementPresentAndVisible(
+      this.bottomNavHomeButton,
+      3000,
+    );
+    if (isBottomNav) {
+      await this.driver.clickElement(this.bottomNavHomeButton);
+      await this.checkPageIsLoaded();
+    }
     await this.driver.clickElement(this.nftTab);
   }
 
   async goToTokensTab(): Promise<void> {
     console.log(`Go to tokens tab on homepage`);
+    // With the bottom nav bar, activity is its own route instead of a home
+    // tab, so the tab strip is absent and we have to return home first.
+    const currentUrl = await this.driver.getCurrentUrl();
+    if (currentUrl.includes(`#${ACTIVITY_ROUTE}`)) {
+      await this.driver.clickElement(this.bottomNavHomeButton);
+    }
     await this.driver.clickElement(this.tokensTab);
   }
 
