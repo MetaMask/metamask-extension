@@ -10,7 +10,10 @@ import PropTypes from 'prop-types';
 import {
   ButtonIcon as DsButtonIcon,
   ButtonIconSize as DsButtonIconSize,
-  IconName as DsIconName,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import {
   AlignItems,
@@ -20,7 +23,6 @@ import {
   FlexDirection,
   JustifyContent,
   TextColor,
-  IconColor,
   TextVariant,
   BorderColor,
 } from '../../../helpers/constants/design-system';
@@ -28,9 +30,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
-  Icon,
-  IconName,
-  IconSize,
   SuccessPill,
   Text,
 } from '../../component-library';
@@ -139,7 +138,7 @@ export const NetworkListItem = ({
   const renderButton = useCallback(() => {
     return onDeleteClick || onEditClick || onDiscoverClick ? (
       <DsButtonIcon
-        iconName={DsIconName.MoreVertical}
+        iconName={IconName.MoreVertical}
         ref={setNetworkListItemMenuRef}
         data-testid={`network-list-item-options-button-${chainId}`}
         ariaLabel={t('networkOptions')}
@@ -293,8 +292,8 @@ export const NetworkListItem = ({
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>
             <Icon
-              marginLeft={1}
-              color={IconColor.iconAlternative}
+              className="ml-1"
+              color={IconColor.IconAlternative}
               name={IconName.ArrowDown}
               size={IconSize.Xs}
             />

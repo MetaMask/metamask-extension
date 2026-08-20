@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { IconName } from '../../../../component-library';
 import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 
 describe('SiteCellConnectionListItem', () => {
@@ -10,7 +9,7 @@ describe('SiteCellConnectionListItem', () => {
     const rendered = render(
       <SiteCellConnectionListItem
         title="Title"
-        iconName={IconName.Wallet}
+        iconName="wallet"
         connectedMessage="Connected Message"
         unconnectedMessage="Unconnected Message"
         isConnectFlow
