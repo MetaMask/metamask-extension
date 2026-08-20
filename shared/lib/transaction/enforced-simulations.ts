@@ -1,5 +1,4 @@
 import {
-  SimulationData,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -166,8 +165,7 @@ export function isEnforcedSimulationsEligible(
     return false;
   }
 
-  if (!hasBalanceChanges(simulationData)) {
-    log('Not eligible - no simulated balance changes', { type });
+  if (!simulationData) {
     return false;
   }
 
@@ -263,11 +261,4 @@ function isTrusted(
   }
 
   return trusted;
-}
-
-function hasBalanceChanges(simulationData?: SimulationData | null): boolean {
-  return (
-    Boolean(simulationData?.nativeBalanceChange) ||
-    Boolean(simulationData?.tokenBalanceChanges?.length)
-  );
 }
