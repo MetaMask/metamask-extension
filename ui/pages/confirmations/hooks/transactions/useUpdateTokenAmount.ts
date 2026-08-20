@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
@@ -39,7 +39,8 @@ export function useUpdateTokenAmount() {
   const {
     currentConfirmation: transactionMeta,
     isMoneyAccountAmountCommitPending: isMoneyAmountCommitPending,
-    setMoneyAccountAmountCommitPending,
+    setMoneyAccountDisplayedAmount,
+    setMoneyAccountCommittedAmount,
   } = useConfirmContext<TransactionMeta>();
 
   const transactionId = transactionMeta?.id ?? '';
@@ -90,30 +91,23 @@ export function useUpdateTokenAmount() {
     [transactionMeta],
   );
 
-  // Guards the pending count against double-counting: the debounce that
-  // schedules a commit (see `useTransactionCustomAmount`) and the commit
-  // itself both mark pending, but only one +1/-1 pair should ever reach
-  // `setMoneyAccountAmountCommitPending` per edit cycle. Without this, N
-  // keystrokes scheduling N debounced calls that coalesce into a single
-  // eventual commit would push the count positive and never bring it back
-  // to zero.
-  const isPendingRef = useRef(false);
-
-  const markAmountCommitPending = useCallback(() => {
-    if (moneyAccountFlow === undefined || isPendingRef.current) {
-      return;
-    }
-    isPendingRef.current = true;
-    setMoneyAccountAmountCommitPending(true, transactionId);
-  }, [moneyAccountFlow, setMoneyAccountAmountCommitPending, transactionId]);
-
-  const clearAmountCommitPending = useCallback(() => {
-    if (!isPendingRef.current) {
-      return;
-    }
-    isPendingRef.current = false;
-    setMoneyAccountAmountCommitPending(false, transactionId);
-  }, [setMoneyAccountAmountCommitPending, transactionId]);
+  // Records the amount the user currently sees, the moment an edit is
+  // scheduled (see `useTransactionCustomAmount`). Confirm stays disabled
+  // until the same amount comes back through
+  // `setMoneyAccountCommittedAmount`, so a dropped debounce, a failed
+  // commit, or overlapping edits all leave Confirm disabled instead of
+  // signable against stale calldata. Idempotent for repeated identical
+  // values, so the scheduling call and the eventual commit recording the
+  // same amount is harmless.
+  const markAmountAsDisplayed = useCallback(
+    (amountHuman: string) => {
+      if (moneyAccountFlow === undefined) {
+        return;
+      }
+      setMoneyAccountDisplayedAmount(amountHuman, transactionId);
+    },
+    [moneyAccountFlow, setMoneyAccountDisplayedAmount, transactionId],
+  );
 
   const updateTokenAmount = useCallback(
     (amountHuman: string) => {
@@ -125,16 +119,21 @@ export function useUpdateTokenAmount() {
       // legacy per-call updater as the fallback; that legacy pipeline was
       // deliberately not ported, so this is the extension's only path.
       if (moneyAccountFlow === MoneyAccountFlow.Deposit) {
-        markAmountCommitPending();
+        setMoneyAccountDisplayedAmount(amountHuman, transactionId);
         updateMoneyAccountDepositAmount(transactionId, amountHuman)
+          .then((didCommit) => {
+            if (didCommit) {
+              setMoneyAccountCommittedAmount(amountHuman, transactionId);
+            }
+          })
           .catch((error) => {
+            // Deliberately no committed-amount update: displayed !==
+            // committed keeps Confirm disabled rather than signable against
+            // calldata that still encodes the previous amount.
             console.error(
               'Failed to update money account deposit amount',
               error,
             );
-          })
-          .finally(() => {
-            clearAmountCommitPending();
           });
         return;
       }
@@ -143,16 +142,19 @@ export function useUpdateTokenAmount() {
       // no calldata to parse, and the background commit path resolves the
       // recipient (the selected account) and the vault rate.
       if (moneyAccountFlow === MoneyAccountFlow.Withdraw) {
-        markAmountCommitPending();
+        setMoneyAccountDisplayedAmount(amountHuman, transactionId);
         updateMoneyAccountWithdrawAmount(transactionId, amountHuman)
+          .then((didCommit) => {
+            if (didCommit) {
+              setMoneyAccountCommittedAmount(amountHuman, transactionId);
+            }
+          })
           .catch((error) => {
+            // Deliberately no committed-amount update; see the deposit path.
             console.error(
               'Failed to update money account withdrawal amount',
               error,
             );
-          })
-          .finally(() => {
-            clearAmountCommitPending();
           });
         return;
       }
@@ -204,13 +206,13 @@ export function useUpdateTokenAmount() {
     },
     [
       amountRaw,
-      clearAmountCommitPending,
       data,
       decimals,
       dispatch,
-      markAmountCommitPending,
       moneyAccountFlow,
       nestedCallIndex,
+      setMoneyAccountCommittedAmount,
+      setMoneyAccountDisplayedAmount,
       to,
       transactionId,
     ],
@@ -218,7 +220,7 @@ export function useUpdateTokenAmount() {
 
   return {
     isUpdating,
-    markAmountCommitPending,
+    markAmountAsDisplayed,
     updateTokenAmount,
   };
 }
