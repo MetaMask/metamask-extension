@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Peate valima konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Lisage load, mis olete MetaMaskiga saanud"
-  },
   "addAlias": {
     "message": "Lisage alias"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Tagasi"
-  },
-  "backupApprovalInfo": {
-    "message": "See salakood on vajalik teie rahakoti taastamiseks, kui kaotate oma seadme, unustate parooli, peate MetaMaski uuesti alla laadima, või kui soovite avada oma rahakoti mõnel teisel seadmel."
   },
   "backupApprovalNotice": {
     "message": "Varundage oma salajane taastamisvõti, et oma rahakott ja vahendid turvalisena hoida."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Täpsemad"
   },
-  "customToken": {
-    "message": "Kohandatud luba"
-  },
   "decimal": {
     "message": "Täpsuse kümnendkohad"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Kümnendkohad peavad olema vähemalt 0 ja mitte üle 36."
   },
   "delete": {
     "message": "Kustuta"
@@ -342,9 +330,6 @@
   "metamaskVersion": {
     "message": "MetaMaski versioon"
   },
-  "mustSelectOne": {
-    "message": "Peate valima vähemalt 1 loa."
-  },
   "needImportFile": {
     "message": "Peate importimiseks faili valima.",
     "description": "User is important an account and needs to add a file to continue"
@@ -354,9 +339,6 @@
   },
   "networks": {
     "message": "Võrgud"
-  },
-  "nevermind": {
-    "message": "Unusta"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -514,9 +496,6 @@
   },
   "sign": {
     "message": "Allkirjasta"
-  },
-  "signatureRequest": {
-    "message": "Allkirja taotlus"
   },
   "signed": {
     "message": "Allkirjastatud"

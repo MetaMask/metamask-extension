@@ -30,7 +30,7 @@ describe('sentry-get-state', () => {
       const snapshot = {
         ...emptySentrySnapshot(),
         state: {
-          metamask: { completedMetaMetricsOnboarding: true, optedIn: true },
+          metamask: { consentDecisionMade: true, optedIn: true },
         },
       };
       globalThis.stateHooks = {
@@ -70,27 +70,30 @@ describe('sentry-get-state', () => {
     });
 
     it('resolves participation from persisted state when snapshot has no state keys', async () => {
+      const getPersistedState = jest.fn().mockResolvedValue({
+        data: {
+          AnalyticsController: {
+            analyticsId: 'id-123',
+            optedIn: true,
+            consentDecisionMade: true,
+          },
+        },
+      });
+
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
         getSentryState: () => emptySentrySnapshot(),
-        getPersistedState: async () => ({
-          data: {
-            AnalyticsController: {
-              analyticsId: 'id-123',
-              optedIn: true,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
-            },
-          },
-        }),
+        getPersistedState,
         getBackupState: async () => ({}),
       };
 
       await expect(getAnalyticsState()).resolves.toStrictEqual({
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         analyticsId: 'id-123',
+      });
+      expect(getPersistedState).toHaveBeenCalledWith({
+        reportErrors: false,
       });
     });
 
@@ -103,9 +106,7 @@ describe('sentry-get-state', () => {
             AnalyticsController: {
               analyticsId: 'id-123',
               optedIn: false,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),
@@ -113,7 +114,7 @@ describe('sentry-get-state', () => {
       };
 
       await expect(getAnalyticsState()).resolves.toStrictEqual({
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: false,
         analyticsId: 'id-123',
       });
@@ -128,7 +129,7 @@ describe('sentry-get-state', () => {
       };
 
       await expect(getAnalyticsState()).resolves.toStrictEqual({
-        completedMetaMetricsOnboarding: false,
+        consentDecisionMade: false,
         optedIn: false,
         analyticsId: undefined,
       });
@@ -141,7 +142,7 @@ describe('sentry-get-state', () => {
       };
 
       await expect(getAnalyticsState()).resolves.toStrictEqual({
-        completedMetaMetricsOnboarding: false,
+        consentDecisionMade: false,
         optedIn: false,
         analyticsId: undefined,
       });
@@ -158,15 +159,13 @@ describe('sentry-get-state', () => {
           AnalyticsController: {
             analyticsId: 'backup-id',
             optedIn: true,
-          },
-          MetaMetricsController: {
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
           },
         }),
       };
 
       await expect(getAnalyticsState()).resolves.toStrictEqual({
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         analyticsId: 'backup-id',
       });
@@ -183,15 +182,13 @@ describe('sentry-get-state', () => {
           AnalyticsController: {
             analyticsId: 'backup-id',
             optedIn: false,
-          },
-          MetaMetricsController: {
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
           },
         }),
       };
 
       await expect(getAnalyticsState()).resolves.toStrictEqual({
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: false,
         analyticsId: 'backup-id',
       });
@@ -208,7 +205,7 @@ describe('sentry-get-state', () => {
       };
 
       await expect(getAnalyticsState()).resolves.toStrictEqual({
-        completedMetaMetricsOnboarding: false,
+        consentDecisionMade: false,
         optedIn: false,
         analyticsId: undefined,
       });
@@ -223,7 +220,7 @@ describe('sentry-get-state', () => {
       };
 
       await expect(getAnalyticsState()).resolves.toStrictEqual({
-        completedMetaMetricsOnboarding: false,
+        consentDecisionMade: false,
         optedIn: false,
         analyticsId: undefined,
       });
@@ -241,14 +238,12 @@ describe('sentry-get-state', () => {
           AnalyticsController: {
             analyticsId: 'persisted-id',
             optedIn: true,
-          },
-          MetaMetricsController: {
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
           },
         },
       };
       expect(getAnalyticsStateFromAppState({ persistedState })).toStrictEqual({
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         analyticsId: 'persisted-id',
       });
@@ -260,13 +255,13 @@ describe('sentry-get-state', () => {
           state: {
             metamask: {
               analyticsId: 'metamask-id',
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               optedIn: true,
             },
           },
         }),
       ).toStrictEqual({
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         analyticsId: 'metamask-id',
       });
@@ -278,13 +273,13 @@ describe('sentry-get-state', () => {
           state: {
             metamask: {
               analyticsId: 'metamask-id',
-              completedMetaMetricsOnboarding: false,
+              consentDecisionMade: false,
               optedIn: true,
             },
           },
         }),
       ).toStrictEqual({
-        completedMetaMetricsOnboarding: false,
+        consentDecisionMade: false,
         optedIn: true,
         analyticsId: 'metamask-id',
       });
@@ -297,14 +292,12 @@ describe('sentry-get-state', () => {
             AnalyticsController: {
               analyticsId: 'controller-id',
               optedIn: true,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),
       ).toStrictEqual({
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         analyticsId: 'controller-id',
       });
@@ -317,14 +310,12 @@ describe('sentry-get-state', () => {
             AnalyticsController: {
               analyticsId: 'controller-id',
               optedIn: false,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),
       ).toStrictEqual({
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: false,
         analyticsId: 'controller-id',
       });
@@ -337,14 +328,12 @@ describe('sentry-get-state', () => {
             AnalyticsController: {
               analyticsId: 'controller-id',
               optedIn: true,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: false,
+              consentDecisionMade: false,
             },
           },
         }),
       ).toStrictEqual({
-        completedMetaMetricsOnboarding: false,
+        consentDecisionMade: false,
         optedIn: true,
         analyticsId: 'controller-id',
       });

@@ -66,6 +66,7 @@ describe('Add wallet', function () {
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           '$',
         );
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         // Open account details modal and check displayed account address
         const headerNavbar = new HeaderNavbar(driver);
@@ -104,8 +105,6 @@ describe('Add wallet', function () {
         const accountListPage = new AccountListPage(driver);
         // Extended timeout: AccountTreeController sync (triggered by the
         // multi-SRP vault) can take longer than the default 10s on Firefox CI.
-        // The button label stays "Syncing…" until sync resolves; only then
-        // does the locator's "Add account" text match.
         await accountListPage.checkPageIsLoaded(30000);
         await accountListPage.startImportSecretPhrase(E2E_SRP);
         await headerNavbar.openAccountMenu();

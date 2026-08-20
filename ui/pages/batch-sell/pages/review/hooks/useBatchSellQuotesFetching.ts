@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import { CaipAssetType } from '@metamask/utils';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   resetBridgeController,
   setSelectedQuote,
   updateQuoteRequestParams,
 } from '../../../../../ducks/bridge/actions';
-import {
-  type BridgeAppState,
-  getFromAccount,
-  getIsStxEnabled,
-} from '../../../../../ducks/bridge/selectors';
+import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
+import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
+import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import {
   BatchSellQuotesConfig,
   BatchSellQuotesResults,
@@ -27,6 +27,7 @@ import { buildResults } from '../utils/buildResults';
 import { buildQuoteRequestForEntry } from '../utils/buildQuoteRequest';
 import { buildQuoteRequestContext } from '../utils/buildQuoteRequestContext';
 import { QUOTE_REQUEST_DEBOUNCE_MS } from '../../../../../constants/batch-sell';
+import { useDispatch } from '../../../../../store/hooks';
 
 type Options = {
   enabled: boolean;
@@ -38,8 +39,33 @@ export const useBatchSellQuotesFetching = (
 ) => {
   const dispatch = useDispatch();
 
-  const selectedAccount = useSelector(getFromAccount);
-  const smartTransactionsEnabled = useSelector(getIsStxEnabled);
+  // Batch sell is same-chain, so every entry (and the received asset) shares
+  // one network. Resolve the wallet address from the account in the selected
+  // account group that matches THAT chain's namespace, rather than the bridge's
+  // global `fromAccount`. The latter is driven by chain ranking / the group's
+  // selected internal account, which can be non-EVM (e.g. Solana) even when the
+  // user is selling EVM assets, producing a wallet address whose namespace
+  // doesn't match `srcChainId` and a rejected quote request.
+  const batchSellCaipChainId = useMemo(
+    () => formatChainIdToCaip(receivedAsset.chainId),
+    [receivedAsset.chainId],
+  );
+  const selectedAccount = useSelector((state: BridgeAppState) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(
+      state,
+      batchSellCaipChainId,
+    ),
+  );
+
+  const batchSellHexChainId = useMemo(
+    () => getMaybeHexChainId(receivedAsset.chainId),
+    [receivedAsset.chainId],
+  );
+  const smartTransactionsEnabled = useSelector((state: BridgeAppState) =>
+    batchSellHexChainId
+      ? getIsSmartTransaction(state, batchSellHexChainId)
+      : false,
+  );
 
   const entries = useMemo<SendAssetEntry[]>(
     () =>

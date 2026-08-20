@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -18,6 +18,20 @@ const mockSafeChains = [
     explorers: [{ url: 'https://gnosisscan.io' }],
   },
   {
+    name: 'Cronos Mainnet',
+    chainId: 25,
+    nativeCurrency: { symbol: 'CRO' },
+    rpc: ['https://evm.cronos.org'],
+    explorers: [{ url: 'https://cronoscan.com' }],
+  },
+  {
+    name: 'Sepolia',
+    chainId: 11155111,
+    nativeCurrency: { symbol: 'SepoliaETH' },
+    rpc: ['https://sepolia.infura.io/v3/123'],
+    explorers: [{ url: 'https://sepolia.etherscan.io' }],
+  },
+  {
     name: 'HTTP Only Network',
     chainId: 200,
     nativeCurrency: { symbol: 'HTTP' },
@@ -31,6 +45,17 @@ const mockSafeChains = [
     rpc: [`https://rpc-${index + 1}.example.com`],
     explorers: [{ url: `https://explorer-${index + 1}.example.com` }],
   })),
+  {
+    name: 'Multi RPC Network',
+    chainId: 300,
+    nativeCurrency: { symbol: 'MULTI' },
+    rpc: [
+      'https://rpc-primary.example.com',
+      'https://rpc-secondary.example.com',
+      'https://rpc-tertiary.example.com',
+    ],
+    explorers: [{ url: 'https://explorer-multi.example.com' }],
+  },
 ];
 
 jest.mock('../../components/multichain/networks-form/use-safe-chains', () => ({
@@ -38,6 +63,11 @@ jest.mock('../../components/multichain/networks-form/use-safe-chains', () => ({
     '../../components/multichain/networks-form/use-safe-chains',
   ),
   useSafeChains: () => ({ safeChains: mockSafeChains }),
+}));
+
+const mockJsonRpcRequest = jest.fn().mockResolvedValue('0x1');
+jest.mock('../../../shared/lib/rpc.utils', () => ({
+  jsonRpcRequest: (...args: unknown[]) => mockJsonRpcRequest(...args),
 }));
 
 jest.mock('../../components/ui/toggle-button', () => {
@@ -106,7 +136,7 @@ const customNetworkConfiguration = {
 const gnosisNetworkConfiguration = {
   '0x64': {
     chainId: '0x64',
-    name: 'Gnosis',
+    name: 'Gnosis Custom',
     rpcEndpoints: [
       {
         url: 'https://rpc.gnosischain.com',
@@ -246,9 +276,9 @@ describe('NetworksPage', () => {
     expect(testnetToggle).toBeChecked();
     expect(testnetToggle).toBeDisabled();
 
-    await userEvent.click(screen.getByTestId('settings-header-search-button'));
+    await userEvent.click(screen.getByTestId('page-header-search-button'));
     await userEvent.type(
-      screen.getByTestId('settings-header-search-input'),
+      screen.getByTestId('page-header-search-input'),
       'ugtfvh',
     );
 
@@ -279,7 +309,9 @@ describe('NetworksPage', () => {
       screen.getByTestId('networks-page-add-custom-network-button'),
     );
 
-    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
   });
 
   it('renders the Chainlist entry point when the remote feature flag is enabled', () => {
@@ -319,6 +351,16 @@ describe('NetworksPage', () => {
         messages.searchNetworkNameOrChainId.message,
       ),
     ).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId('networks-page-chainlist-network-list')
+        .contains(screen.getByTestId('networks-page-chainlist-search')),
+    ).toBe(false);
+    expect(
+      screen
+        .getByTestId('networks-page-chainlist-network-list')
+        .contains(screen.getByTestId('networks-page-chainlist-source-banner')),
+    ).toBe(true);
     expect(screen.getByText('Gnosis')).toBeInTheDocument();
     expect(screen.queryByText('HTTP Only Network')).not.toBeInTheDocument();
     expect(
@@ -352,6 +394,108 @@ describe('NetworksPage', () => {
     expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
   });
 
+  it('hides built-in test networks from Chainlist when test networks are hidden', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      networkConfigurationsByChainId: {
+        ...mockNetworkConfigurations,
+        ...testNetworkConfiguration,
+      },
+      remoteFeatureFlags: { extensionUxChainlist: true },
+      showTestNetworks: false,
+    });
+
+    await userEvent.type(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      'Sepolia',
+    );
+
+    expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('networks-page-chainlist-added-pill'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows built-in test networks in Chainlist when test networks are shown', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      networkConfigurationsByChainId: {
+        ...mockNetworkConfigurations,
+        ...testNetworkConfiguration,
+      },
+      remoteFeatureFlags: { extensionUxChainlist: true },
+      showTestNetworks: true,
+    });
+
+    await userEvent.type(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      'Sepolia',
+    );
+
+    expect(await screen.findByText('Sepolia')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('networks-page-chainlist-added-pill'),
+    ).toHaveTextContent(messages.added.message);
+  });
+
+  it('prefills only the top Chainlist RPC URL in the add network form', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+    });
+
+    await userEvent.type(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      'Multi RPC',
+    );
+
+    const multiRpcButton = (
+      await screen.findByText('Multi RPC Network')
+    ).closest('button');
+    expect(multiRpcButton).toBeInTheDocument();
+
+    fireEvent.click(multiRpcButton as HTMLButtonElement);
+
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText('rpc-primary.example.com')).toBeInTheDocument();
+    expect(
+      screen.queryByText('rpc-secondary.example.com'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('rpc-tertiary.example.com'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('prefills Chainlist network name from the canonical network name when available', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+    });
+
+    const cronosButton = (await screen.findByText('Cronos Mainnet')).closest(
+      'button',
+    );
+    expect(cronosButton).toBeInTheDocument();
+
+    fireEvent.click(cronosButton as HTMLButtonElement);
+
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Cronos',
+    );
+    expect(screen.queryByTestId('network-form-name-suggestion')).toBeNull();
+  });
+
   it('renders an empty state when the Chainlist search has no results', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
@@ -383,8 +527,8 @@ describe('NetworksPage', () => {
       remoteFeatureFlags: { extensionUxChainlist: true },
     });
 
-    expect(await screen.findByText('Chainlist Network 99')).toBeInTheDocument();
-    expect(screen.queryByText('Chainlist Network 100')).not.toBeInTheDocument();
+    expect(await screen.findByText('Chainlist Network 98')).toBeInTheDocument();
+    expect(screen.queryByText('Chainlist Network 99')).not.toBeInTheDocument();
 
     const networkList = screen.getByTestId(
       'networks-page-chainlist-network-list',
@@ -404,9 +548,7 @@ describe('NetworksPage', () => {
 
     fireEvent.scroll(networkList);
 
-    expect(
-      await screen.findByText('Chainlist Network 100'),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Chainlist Network 99')).toBeInTheDocument();
   });
 
   it('shows an Added pill for already configured Chainlist networks', async () => {
@@ -419,9 +561,9 @@ describe('NetworksPage', () => {
       },
     });
 
-    expect(await screen.findByText('Gnosis')).toBeInTheDocument();
-    const gnosisButton = screen.getByText('Gnosis').closest('button');
-    expect(gnosisButton).toHaveClass('bg-muted');
+    expect(await screen.findByText('Gnosis Custom')).toBeInTheDocument();
+    expect(screen.queryByText('Gnosis')).not.toBeInTheDocument();
+    const gnosisButton = screen.getByText('Gnosis Custom').closest('button');
     expect(
       screen.getByTestId('networks-page-chainlist-added-pill'),
     ).toHaveTextContent(messages.added.message);
@@ -443,12 +585,16 @@ describe('NetworksPage', () => {
       'Add URL',
     );
 
-    await userEvent.type(
-      screen.getByTestId('rpc-url-input-test'),
-      'https://new-rpc.example.com',
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://new-rpc.example.com' },
+    });
+    await waitFor(() =>
+      expect(screen.getByTestId('page-container-footer-next')).toBeEnabled(),
     );
     await userEvent.click(screen.getByTestId('page-container-footer-next'));
 
-    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
+    expect(
+      await screen.findByText(messages.editNetwork.message),
+    ).toBeInTheDocument();
   });
 });

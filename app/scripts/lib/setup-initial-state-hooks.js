@@ -37,6 +37,18 @@ function createLocalStore() {
 
 const localStore = createLocalStore();
 
+function getStateForEarlySegmentEvent(manager) {
+  if (globalThis.stateHooks.getSentryAppState) {
+    return globalThis.stateHooks.getSentryAppState();
+  }
+
+  const persistedState =
+    manager.mostRecentRetrievedState ||
+    globalThis.stateHooks.getMostRecentPersistedState?.();
+
+  return persistedState?.data ?? null;
+}
+
 // Single PersistenceManager per context: one in background, one per UI context.
 export const persistenceManager = new PersistenceManager({ localStore })
   .on('vaultCorruptionDetected', (payload) => {
@@ -59,15 +71,31 @@ export const persistenceManager = new PersistenceManager({ localStore })
       event: MetaMetricsEventName.StateMigrationFailed,
       category: MetaMetricsEventCategory.StateMigration,
     });
+  })
+  .on('writeRetryRecovered', (payload) => {
+    trackEarlySegmentEvent({
+      state: getStateForEarlySegmentEvent(persistenceManager),
+      event: MetaMetricsEventName.DataPersistenceWriteRetryRecovered,
+      category: MetaMetricsEventCategory.Error,
+      properties: {
+        persistence_event: payload.event,
+        first_error_message: payload.firstErrorMessage,
+        first_error_name: payload.firstErrorName,
+        retry_delay_ms: payload.retryDelayMs,
+      },
+    });
   });
 
 /**
  * Get the persisted wallet state.
  *
+ * @param options - Options for retrieving persisted state.
+ * @param options.reportErrors - Whether read errors should be reported to Sentry.
  * @returns The persisted wallet state.
  */
-globalThis.stateHooks.getPersistedState = async function () {
-  return await persistenceManager.get({ validateVault: false });
+globalThis.stateHooks.getPersistedState = async function (options = {}) {
+  const { reportErrors = true } = options;
+  return await persistenceManager.get({ validateVault: false, reportErrors });
 };
 
 /**

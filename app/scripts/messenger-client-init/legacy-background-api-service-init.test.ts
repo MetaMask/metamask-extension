@@ -39,9 +39,11 @@ describe('LegacyBackgroundApiServiceInit', () => {
       messenger: expect.any(Object),
       getOpenMetamaskTabsIds: undefined,
       getRequestAccountTabIds: undefined,
+      getPermittedAccounts: expect.any(Function),
+      getTabUrl: undefined,
+      updateTabUrl: undefined,
       infuraProjectId: undefined,
       offscreenPromise: expect.any(Promise),
-      seedlessOperationMutex: undefined,
       sendUpdate: undefined,
     });
   });

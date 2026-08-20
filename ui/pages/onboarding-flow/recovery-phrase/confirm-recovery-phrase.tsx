@@ -6,15 +6,12 @@ import React, {
   useState,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Box,
-  Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonSize,
-  ButtonVariant,
   IconName,
   Text,
   TextVariant,
@@ -28,6 +25,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -44,6 +42,7 @@ import { TraceName } from '../../../../shared/lib/trace';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { useDispatch } from '../../../store/hooks';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -74,8 +73,6 @@ const generateQuizWords = (
   return quizWords;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const dispatch = useDispatch();
 
@@ -84,7 +81,8 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const isFirefox = useIsFirefox();
   const { isFromReminder, isFromSettingsSecurity, nextRouteQueryString } =
     useOnboardingSearchParams();
-  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 
@@ -98,7 +96,6 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const [quizWords, setQuizWords] = useState(
     generateQuizWords(splitSecretRecoveryPhrase),
   );
-  const [answerSrp, setAnswerSrp] = useState('');
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {
@@ -137,34 +134,33 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         (answer: { word: string }) => !answer.word,
       );
       if (isNotAnswered) {
-        setAnswerSrp('');
-      } else {
-        const copySplitSrp = [...splitSecretRecoveryPhrase];
-        inputValue.forEach((answer: { index: number; word: string }) => {
-          copySplitSrp[answer.index] = answer.word;
-        });
-        setAnswerSrp(copySplitSrp.join(' '));
+        return;
       }
-    },
-    [splitSecretRecoveryPhrase],
-  );
 
-  const onContinue = useCallback(() => {
-    const isMatching = answerSrp === secretRecoveryPhrase;
-    setMatching(isMatching);
-    setShowConfirmModal(true);
-  }, [answerSrp, secretRecoveryPhrase]);
+      const copySplitSrp = [...splitSecretRecoveryPhrase];
+      inputValue.forEach((answer: { index: number; word: string }) => {
+        copySplitSrp[answer.index] = answer.word;
+      });
+      const nextAnswerSrp = copySplitSrp.join(' ');
+      setMatching(nextAnswerSrp === secretRecoveryPhrase);
+      setShowConfirmModal(true);
+    },
+    [secretRecoveryPhrase, splitSecretRecoveryPhrase],
+  );
 
   const handleConfirmedPhrase = useCallback(() => {
     dispatch(setSeedPhraseBackedUp(true));
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
+      )
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
     bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
     bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
 
@@ -182,6 +178,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     hdEntropyIndex,
     isFirefox,
     navigate,
+    createEventBuilder,
     trackEvent,
     isFromReminder,
     nextRouteQueryString,
@@ -195,7 +192,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
-      justifyContent={BoxJustifyContent.Between}
+      justifyContent={BoxJustifyContent.Start}
       gap={6}
       className="recovery-phrase recovery-phrase__confirm h-full"
       data-testid="confirm-recovery-phrase"
@@ -280,18 +277,6 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
             setInputValue={handleQuizInput}
           />
         )}
-      </Box>
-      <Box className="w-full">
-        <Button
-          variant={ButtonVariant.Primary}
-          data-testid="recovery-phrase-confirm"
-          size={ButtonSize.Lg}
-          className="recovery-phrase__footer__confirm--button w-full"
-          onClick={() => onContinue()}
-          disabled={answerSrp.trim() === ''}
-        >
-          {t('continue')}
-        </Button>
       </Box>
     </Box>
   );

@@ -132,7 +132,6 @@ const store = configureStore({
       mockState.metamask.networkConfigurationsByChainId,
     permissionHistory: {
       'https://test.dapp': {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_accounts: {
           accounts: {
             '0x123': 1709225290848,

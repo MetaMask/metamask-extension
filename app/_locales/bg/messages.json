@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Трябва да изберете акаунт!"
   },
-  "addAcquiredTokens": {
-    "message": "Добавете жетоните, които сте придобили с помощта на MetaMask"
-  },
   "addAlias": {
     "message": "Добавете псевдоним"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Назад"
-  },
-  "backupApprovalInfo": {
-    "message": "Този секретен код е необходим за възстановяване на портфейла ви, в случай че загубите устройството си, забравите паролата си, трябва да инсталирате отново MetaMask или искате да получите достъп до портфейла си на друго устройство."
   },
   "backupApprovalNotice": {
     "message": "Раправете резервно копие на вашия Secret Recovery код, за да запазите портфейла и средствата си."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Разширени"
   },
-  "customToken": {
-    "message": "Персонализиран маркер"
-  },
   "decimal": {
     "message": "Точност до десетични знаци"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Десетичните знаци трябва да бъдат най-малко 0 и не повече от 36."
   },
   "delete": {
     "message": "Изтриване"
@@ -348,9 +336,6 @@
   "metamaskVersion": {
     "message": "Версия на MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Трябва да изберете поне 1 жетон."
-  },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",
     "description": "User is important an account and needs to add a file to continue"
@@ -360,9 +345,6 @@
   },
   "networks": {
     "message": "Mрежи"
-  },
-  "nevermind": {
-    "message": "Няма значение"
   },
   "newAccountNumberName": {
     "message": "Акаунт $1",
@@ -520,9 +502,6 @@
   },
   "sign": {
     "message": "Подпис"
-  },
-  "signatureRequest": {
-    "message": "Заявка за подпис"
   },
   "signed": {
     "message": "Подписан"

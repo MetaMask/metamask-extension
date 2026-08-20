@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Trebuie să selectați un cont!"
   },
-  "addAcquiredTokens": {
-    "message": "Adăugați token-urile pe care le-ați achiziționat folosind MetaMask"
-  },
   "addAlias": {
     "message": "Adăugare alias"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Înapoi"
-  },
-  "backupApprovalInfo": {
-    "message": "Acest cod secret este necesar pentru recuperarea portofelului în cazul în care pierdeți dispozitivul, uitați parola, trebuie să reinstalați MetaMask sau vreți să accesați portofelul de pe alt dispozitiv."
   },
   "backupApprovalNotice": {
     "message": "Creați o copie de rezervă a codului de recuperare secret pentru a vă menține portofelul și fondurile în siguranță."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Avansate"
   },
-  "customToken": {
-    "message": "Token personalizat"
-  },
   "decimal": {
     "message": "Zecimale de precizie"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
   },
   "delete": {
     "message": "Șterge"
@@ -339,9 +327,6 @@
   "metamaskVersion": {
     "message": "Versiune MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Trebuie să selectați cel puțin 1 simbol."
-  },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
     "description": "User is important an account and needs to add a file to continue"
@@ -351,9 +336,6 @@
   },
   "networks": {
     "message": "Rețele"
-  },
-  "nevermind": {
-    "message": "Nu mai contează"
   },
   "newAccountNumberName": {
     "message": "Cont $1",
@@ -511,9 +493,6 @@
   },
   "sign": {
     "message": "Semnați"
-  },
-  "signatureRequest": {
-    "message": "Cerere semnătură"
   },
   "signed": {
     "message": "Semnat"

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 import {
@@ -20,8 +20,8 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { type Asset } from '../../../types/send';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
-import { useSendContext } from '../../../context/send';
-import { Asset as AssetComponent } from '../../UI/asset';
+import { SendContext } from '../../../context/send';
+import { Asset as AssetComponent, type TokenTagRenderer } from '../../UI/asset';
 import { useScrollContainer } from '../../../../../contexts/scroll-container';
 
 type AssetListProps = {
@@ -31,7 +31,11 @@ type AssetListProps = {
   allNfts: Asset[];
   onClearFilters?: () => void;
   hideNfts?: boolean;
+  hideBalances?: boolean;
   onAssetSelect?: (asset: Asset) => void;
+  emptyStateMessage?: string;
+  disableMetrics?: boolean;
+  tagRenderers?: TokenTagRenderer[];
 };
 
 type ListItem =
@@ -41,6 +45,7 @@ type ListItem =
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 40;
+const noop = () => undefined;
 
 export const AssetList = ({
   tokens,
@@ -49,13 +54,23 @@ export const AssetList = ({
   allNfts,
   onClearFilters,
   hideNfts = false,
+  hideBalances = false,
   onAssetSelect,
+  emptyStateMessage,
+  disableMetrics = false,
+  tagRenderers,
 }: AssetListProps) => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
   const { goToAmountRecipientPage } = useNavigateSendPage();
-  const { updateAsset } = useSendContext();
-  const { captureAssetSelected } = useAssetSelectionMetrics();
+  // Use context directly so catalog pickers (e.g. ramps) can reuse this list
+  // outside SendContextProvider when `onAssetSelect` is provided.
+  const sendContext = useContext(SendContext);
+  const { captureAssetSelected: captureAssetSelectedFromMetrics } =
+    useAssetSelectionMetrics();
+  const captureAssetSelected = disableMetrics
+    ? noop
+    : captureAssetSelectedFromMetrics;
 
   const effectiveNfts = hideNfts ? [] : nfts;
   const effectiveAllNfts = hideNfts ? [] : allNfts;
@@ -65,16 +80,20 @@ export const AssetList = ({
 
   const handleAssetClick = useCallback(
     (asset: Asset) => {
+      if (asset.disabled) {
+        return;
+      }
+
       if (onAssetSelect) {
         onAssetSelect(asset);
         return;
       }
 
-      updateAsset(asset);
+      sendContext.updateAsset(asset);
       goToAmountRecipientPage();
       captureAssetSelected(asset);
     },
-    [updateAsset, goToAmountRecipientPage, captureAssetSelected, onAssetSelect],
+    [captureAssetSelected, goToAmountRecipientPage, onAssetSelect, sendContext],
   );
 
   const items: ListItem[] = [];
@@ -113,7 +132,7 @@ export const AssetList = ({
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textAlternative}
         >
-          {t('noTokensMatchingYourFilters')}
+          {emptyStateMessage ?? t('noTokensMatchingYourFilters')}
         </Text>
         {onClearFilters && (
           <Button
@@ -130,7 +149,28 @@ export const AssetList = ({
   }
 
   if (items.length === 0) {
-    return null;
+    if (!emptyStateMessage) {
+      return null;
+    }
+
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        margin={4}
+        gap={3}
+        data-testid="asset-list-empty"
+      >
+        <Text
+          variant={TextVariant.bodyMdMedium}
+          color={TextColor.textAlternative}
+        >
+          {emptyStateMessage}
+        </Text>
+      </Box>
+    );
   }
 
   const virtualItems = virtualizer.getVirtualItems();
@@ -171,6 +211,8 @@ export const AssetList = ({
               <AssetComponent
                 asset={item.asset}
                 onClick={() => handleAssetClick(item.asset)}
+                hideBalances={hideBalances}
+                tagRenderers={tagRenderers}
               />
             )}
           </div>

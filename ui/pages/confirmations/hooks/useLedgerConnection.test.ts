@@ -1,6 +1,7 @@
 import type { KeyringObject } from '@metamask/keyring-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+import { act } from '@testing-library/react';
 import { cloneDeep } from 'lodash';
 import {
   HardwareTransportStates,
@@ -16,6 +17,12 @@ import { flushPromises } from '../../../../test/lib/timer-helpers';
 import * as appActions from '../../../ducks/app/app';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
 import useLedgerConnection from './useLedgerConnection';
+
+async function flushAsyncUpdates() {
+  await act(async () => {
+    await flushPromises();
+  });
+}
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -115,7 +122,7 @@ describe('useLedgerConnection', () => {
 
       renderHookWithConfirmContextProvider(useLedgerConnection, state);
 
-      await flushPromises();
+      await flushAsyncUpdates();
 
       expect(spyOnSetLedgerWebHidConnectedStatus).toHaveBeenCalledWith(
         WebHIDConnectedStatuses.connected,
@@ -137,7 +144,7 @@ describe('useLedgerConnection', () => {
 
       renderHookWithConfirmContextProvider(useLedgerConnection, state);
 
-      await flushPromises();
+      await flushAsyncUpdates();
 
       expect(spyOnSetLedgerWebHidConnectedStatus).toHaveBeenCalledWith(
         WebHIDConnectedStatuses.notConnected,
@@ -160,7 +167,7 @@ describe('useLedgerConnection', () => {
 
       renderHookWithConfirmContextProvider(useLedgerConnection, state);
 
-      await flushPromises();
+      await flushAsyncUpdates();
 
       expect(spyOnSetLedgerTransportStatus).toHaveBeenCalledWith(
         HardwareTransportStates.verified,
@@ -181,7 +188,7 @@ describe('useLedgerConnection', () => {
 
       renderHookWithConfirmContextProvider(useLedgerConnection, state);
 
-      await flushPromises();
+      await flushAsyncUpdates();
 
       expect(spyOnSetLedgerTransportStatus).toHaveBeenCalledWith(
         HardwareTransportStates.unknownFailure,
@@ -204,7 +211,7 @@ describe('useLedgerConnection', () => {
 
       renderHookWithConfirmContextProvider(useLedgerConnection, state);
 
-      await flushPromises();
+      await flushAsyncUpdates();
 
       expect(spyOnSetLedgerTransportStatus).toHaveBeenCalledWith(
         HardwareTransportStates.deviceOpenFailure,
@@ -227,7 +234,7 @@ describe('useLedgerConnection', () => {
 
       renderHookWithConfirmContextProvider(useLedgerConnection, state);
 
-      await flushPromises();
+      await flushAsyncUpdates();
 
       expect(spyOnSetLedgerTransportStatus).toHaveBeenCalledWith(
         HardwareTransportStates.verified,
@@ -250,7 +257,7 @@ describe('useLedgerConnection', () => {
 
       renderHookWithConfirmContextProvider(useLedgerConnection, state);
 
-      await flushPromises();
+      await flushAsyncUpdates();
 
       expect(spyOnSetLedgerTransportStatus).toHaveBeenCalledWith(
         HardwareTransportStates.unknownFailure,
@@ -269,7 +276,9 @@ describe('useLedgerConnection', () => {
       state,
     );
 
-    unmount();
+    act(() => {
+      unmount();
+    });
 
     expect(spyOnSetLedgerTransportStatus).toHaveBeenCalledWith(
       HardwareTransportStates.none,
@@ -292,7 +301,7 @@ describe('useLedgerConnection', () => {
 
       renderHookWithConfirmContextProvider(useLedgerConnection, state);
 
-      await flushPromises();
+      await flushAsyncUpdates();
 
       expect(spyOnSetLedgerWebHidConnectedStatus).not.toHaveBeenCalled();
       expect(spyOnSetLedgerTransportStatus).not.toHaveBeenCalled();
@@ -314,7 +323,7 @@ describe('useLedgerConnection', () => {
 
       renderHookWithConfirmContextProvider(useLedgerConnection, tempState);
 
-      await flushPromises();
+      await flushAsyncUpdates();
 
       expect(spyOnSetLedgerWebHidConnectedStatus).not.toHaveBeenCalled();
       expect(spyOnSetLedgerTransportStatus).not.toHaveBeenCalled();

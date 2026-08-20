@@ -23,36 +23,36 @@ import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { useMusdConversionTokens } from '../../../../../hooks/musd';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
-import { ClaimableBonusRow } from '../../rows/claimable-bonus-row/claimable-bonus-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
 import { useMusdConversionQuoteTrace } from '../../../hooks/musd/useMusdConversionQuoteTrace';
 import { MusdOverrideContent } from './musd-override-content';
 
-const MusdBottomContent = ({ hasInput }: { hasInput: boolean }) => {
+const MusdBottomContent = ({ hasAmount }: { hasAmount: boolean }) => {
   const t = useI18nContext();
   const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
   const { hideResults } = useTransactionCustomAmountAlerts();
   const isPaidByMetaMask = useIsPaidByMetaMask();
 
-  const isResultReady = isQuotesLoading || Boolean(quotes?.length);
+  // The fee, bonus and total rows describe a conversion that has not been
+  // specified yet while the amount is empty or zero, so they stay hidden until
+  // the user enters an amount. Gating on `hasAmount` also clears them
+  // immediately when the amount is reset, rather than leaving the previous
+  // quote's numbers on screen.
+  const isResultReady =
+    hasAmount && (isQuotesLoading || Boolean(quotes?.length));
   const showResults = isResultReady && !hideResults;
-
-  if (!hasInput && !showResults) {
-    return null;
-  }
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingBottom={4}>
-      {hasInput && <PayWithRow />}
+      <PayWithRow />
       {showResults && (
         <>
           <BridgeFeeRow
             variant={ConfirmInfoRowSize.Small}
             tooltipDescription={t('musdConversionFeeTooltipDescription')}
           />
-          <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
           {!isPaidByMetaMask && <TotalRow variant={ConfirmInfoRowSize.Small} />}
         </>
       )}
@@ -67,8 +67,8 @@ const MusdBottomContent = ({ hasInput }: { hasInput: boolean }) => {
  * Displays the amount input interface for conversion with custom override content
  * that shows the expected mUSD output amount.
  *
- * The heading with "Convert and get 3%" and info tooltip is rendered
- * by the MusdConversionHeader in the confirmation header area.
+ * The heading with "Convert" is rendered by the MusdConversionHeader
+ * in the confirmation header area.
  *
  * Token filtering is handled by the PayWithModal component which detects
  * mUSD conversion transactions and applies the appropriate filter.
@@ -134,14 +134,12 @@ export const MusdConversionInfo = () => {
   }, [defaultPaymentToken, existingPayToken]);
 
   const renderOverrideContent = useCallback(
-    (amountHuman: string, hasInput: boolean) => (
-      <MusdOverrideContent amountHuman={amountHuman} hasInput={hasInput} />
-    ),
+    (amountHuman: string) => <MusdOverrideContent amountHuman={amountHuman} />,
     [],
   );
 
   const renderBottomContent = useCallback(
-    (hasInput: boolean) => <MusdBottomContent hasInput={hasInput} />,
+    (hasAmount: boolean) => <MusdBottomContent hasAmount={hasAmount} />,
     [],
   );
 

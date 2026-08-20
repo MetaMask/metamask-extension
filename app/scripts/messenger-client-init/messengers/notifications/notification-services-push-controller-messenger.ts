@@ -8,7 +8,6 @@ import type {
   NotificationServicesPushControllerPushNotificationClickedEvent,
   NotificationServicesPushControllerMessenger,
 } from '@metamask/notification-services-controller/push-services';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -37,8 +36,6 @@ export function getNotificationServicesPushControllerMessenger(
   return controllerMessenger;
 }
 
-type AllowedInitializationActions = MetaMetricsControllerTrackEventAction;
-
 type AllowedInitializationEvents =
   | NotificationServicesPushControllerOnNewNotificationEvent
   | NotificationServicesPushControllerPushNotificationClickedEvent;
@@ -56,14 +53,11 @@ export type NotificationServicesPushControllerInitMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getNotificationServicesPushControllerInitMessenger(
-  messenger: RootMessenger<
-    AllowedInitializationActions,
-    AllowedInitializationEvents
-  >,
+  messenger: RootMessenger<never, AllowedInitializationEvents>,
 ) {
   const controllerInitMessenger = new Messenger<
     'NotificationServicesPushControllerInit',
-    AllowedInitializationActions,
+    never,
     AllowedInitializationEvents,
     typeof messenger
   >({
@@ -72,7 +66,6 @@ export function getNotificationServicesPushControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['MetaMetricsController:trackEvent'],
     events: [
       'NotificationServicesPushController:onNewNotifications',
       'NotificationServicesPushController:pushNotificationClicked',

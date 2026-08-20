@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { render, renderHook, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -112,47 +112,92 @@ describe('HardwareWalletContext', () => {
 
   describe('useHardwareWallet', () => {
     it('throws error when used outside provider', () => {
-      const { result } = renderHook(() => useHardwareWallet());
+      const HookConsumer = () => {
+        useHardwareWallet();
+        return null;
+      };
 
-      expect(result.error?.message).toContain(
-        'useHardwareWallet must be used within HardwareWalletProvider',
-      );
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        expect(() => render(<HookConsumer />)).toThrow(
+          'useHardwareWallet must be used within HardwareWalletProvider',
+        );
+      } finally {
+        consoleError.mockRestore();
+      }
     });
   });
 
   describe('useHardwareWalletConfig', () => {
     it('throws error when used outside provider', () => {
-      const { result } = renderHook(() => useHardwareWalletConfig());
+      const HookConsumer = () => {
+        useHardwareWalletConfig();
+        return null;
+      };
 
-      expect(result.error?.message).toContain(
-        'useHardwareWalletConfig must be used within HardwareWalletProvider',
-      );
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        expect(() => render(<HookConsumer />)).toThrow(
+          'useHardwareWalletConfig must be used within HardwareWalletProvider',
+        );
+      } finally {
+        consoleError.mockRestore();
+      }
     });
   });
 
   describe('useHardwareWalletState', () => {
     it('throws error when used outside provider', () => {
-      const { result } = renderHook(() => useHardwareWalletState());
+      const HookConsumer = () => {
+        useHardwareWalletState();
+        return null;
+      };
 
-      expect(result.error?.message).toContain(
-        'useHardwareWalletState must be used within HardwareWalletProvider',
-      );
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        expect(() => render(<HookConsumer />)).toThrow(
+          'useHardwareWalletState must be used within HardwareWalletProvider',
+        );
+      } finally {
+        consoleError.mockRestore();
+      }
     });
   });
 
   describe('useHardwareWalletActions', () => {
     it('throws error when used outside provider', () => {
-      const { result } = renderHook(() => useHardwareWalletActions());
+      const HookConsumer = () => {
+        useHardwareWalletActions();
+        return null;
+      };
 
-      expect(result.error?.message).toContain(
-        'useHardwareWalletActions must be used within HardwareWalletProvider',
-      );
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        expect(() => render(<HookConsumer />)).toThrow(
+          'useHardwareWalletActions must be used within HardwareWalletProvider',
+        );
+      } finally {
+        consoleError.mockRestore();
+      }
     });
   });
 
   describe('HardwareWalletProvider', () => {
     it('provides initial state for non-hardware wallet account', () => {
-      const store = mockStore(createMockState(KeyringTypes.hd));
+      const accountAddress = '0xabc';
+      const store = mockStore(createMockState(KeyringTypes.hd, accountAddress));
 
       const { result } = renderHook(() => useHardwareWallet(), {
         wrapper: createWrapper(store),
@@ -160,6 +205,7 @@ describe('HardwareWalletContext', () => {
 
       expect(result.current.isHardwareWalletAccount).toBe(false);
       expect(result.current.walletType).toBe(null);
+      expect(result.current.accountAddress).toBe(accountAddress);
       expect(result.current.connectionState.status).toBe(
         ConnectionStatus.Disconnected,
       );
@@ -306,7 +352,10 @@ describe('HardwareWalletContext', () => {
 
   describe('useHardwareWalletConfig hook', () => {
     it('provides config context with correct values', () => {
-      const store = mockStore(createMockState(KeyringTypes.ledger));
+      const accountAddress = '0xabc';
+      const store = mockStore(
+        createMockState(KeyringTypes.ledger, accountAddress),
+      );
 
       const { result } = renderHook(() => useHardwareWalletConfig(), {
         wrapper: createWrapper(store),
@@ -314,6 +363,7 @@ describe('HardwareWalletContext', () => {
 
       expect(result.current.isHardwareWalletAccount).toBe(true);
       expect(result.current.walletType).toBe(HardwareWalletType.Ledger);
+      expect(result.current.accountAddress).toBe(accountAddress);
       expect(result.current.hardwareConnectionPermissionState).toBe(
         HardwareConnectionPermissionState.Unknown,
       );

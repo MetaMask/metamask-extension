@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import log from 'loglevel';
 import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
+import { useDispatch } from '../../store/hooks';
+
 import {
   getNotificationPreferences,
   putNotificationPreferences,
@@ -91,7 +92,7 @@ export function useNotificationPreferences() {
 
       if (!latestCachedPreferences) {
         log.error(
-          `No notification preferences found when updating ${type} section, enable notifications first`,
+          `No notification preferences found when updating ${String(type)} section, enable notifications first`,
         );
         return;
       }
