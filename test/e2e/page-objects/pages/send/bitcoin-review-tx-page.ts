@@ -18,6 +18,10 @@ class BitcoinReviewTxPage {
   private readonly cancelButton =
     '[data-testid="confirmation-cancel-snap-footer-button"]';
 
+  private readonly confirmationPage = {
+    testId: 'parent-selector-snap-confirmation-page',
+  };
+
   private readonly confirmButton =
     '[data-testid="confirmation-confirm-snap-footer-button"]';
 
@@ -42,6 +46,7 @@ class BitcoinReviewTxPage {
       await this.driver.waitForMultipleSelectors([
         this.cancelButton,
         this.confirmButton,
+        this.confirmationPage,
       ]);
       await this.driver.waitForSelector({
         text: 'Transaction request',
