@@ -870,10 +870,7 @@ describe('Sentry errors', function () {
               const controllerState =
                 'data' in storage ? storage.data : storage;
               assert.ok(
-                has(
-                  controllerState,
-                  'AppMetadataController.currentAppVersion',
-                ),
+                has(controllerState, 'AppMetadataController.currentAppVersion'),
                 'App metadata state has not persisted',
               );
               assert.ok(
