@@ -8302,9 +8302,6 @@
     "message": "매수 성공",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "기타 옵션"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "영업일"
   },

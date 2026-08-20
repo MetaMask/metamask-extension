@@ -8302,9 +8302,6 @@
     "message": "Mua thành công",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Tùy chọn khác"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "ngày làm việc"
   },

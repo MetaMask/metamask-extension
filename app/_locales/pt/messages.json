@@ -8294,9 +8294,6 @@
     "message": "Compra realizada com sucesso",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Outras opções"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "dia útil"
   },
