@@ -6,6 +6,10 @@ import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan
 import HomePage from '../../page-objects/pages/home/homepage';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
 import { NETWORK_CLIENT_ID } from '../../constants';
+import {
+  getLocalhost25EthAssetsControllerPatch,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 
 describe('Shield Entry Modal', function () {
   it('should show the shield entry modal if user does not have a shield subscription and has a balance greater than the minimum fiat balance threshold', async function () {
@@ -33,6 +37,7 @@ describe('Shield Entry Modal', function () {
               },
             },
           })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
@@ -61,6 +66,7 @@ describe('Shield Entry Modal', function () {
           .withPreferencesController({
             useExternalServices: false,
           })
+          .withAssetsController(getLocalhost25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
@@ -105,6 +111,7 @@ describe('Shield Entry Modal', function () {
               },
             },
           })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {

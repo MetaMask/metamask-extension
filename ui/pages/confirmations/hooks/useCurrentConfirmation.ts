@@ -46,7 +46,6 @@ const useCurrentConfirmation = (providedConfirmationId?: string) => {
 
   // TODO: Migrate to selectUnapprovedSignatureRequestById once all consumers
   // of currentConfirmation are updated from msgParams to messageParams.
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const signatureMessage = useSelector((state) =>
     selectUnapprovedMessage(state, confirmationIdForSelectors),
   );

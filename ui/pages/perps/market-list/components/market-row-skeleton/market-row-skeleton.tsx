@@ -15,7 +15,7 @@ export const MarketRowSkeleton = () => {
   return (
     <Box
       className="px-4 py-3"
-      backgroundColor={BoxBackgroundColor.BackgroundMuted}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={3}

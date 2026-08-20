@@ -171,6 +171,13 @@ export const U2F_ERROR = 'U2F';
 export const TREZOR_DESKTOP_CONNECTION_MISSING_CODE =
   'Desktop_ConnectionMissing';
 
+/**
+ * Timeout (in milliseconds) for Trezor bridge operations that require a
+ * response back from the device. Prevents requests from hanging indefinitely
+ * when the device never responds (e.g. it is disconnected mid-operation).
+ */
+export const TREZOR_DEVICE_OPERATION_TIMEOUT_MS = 2 * 60 * 1000;
+
 export const LEDGER_ERRORS_CODES = {
   '0x650f': 'ledgerErrorConnectionIssue',
   '0x5515': 'ledgerErrorDevicedLocked',

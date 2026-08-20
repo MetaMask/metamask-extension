@@ -15,7 +15,6 @@ import {
 
 const POPOVER_STYLE = {
   zIndex: 3,
-  backgroundColor: 'var(--color-text-default)',
   paddingTop: '6px',
   paddingBottom: '6px',
   paddingLeft: '16px',

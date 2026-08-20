@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { render, renderHook } from '@testing-library/react';
 import { useAlertMetrics } from './alertMetricsContext';
 
 jest.mock('react', () => ({
@@ -36,9 +36,23 @@ describe('useAlertMetrics', () => {
   });
 
   it('throws an error if used outside of AlertMetricsProvider', () => {
-    const { result } = renderHook(() => useAlertMetrics());
-    expect(result.error).toEqual(
-      new Error('useAlertMetrics must be used within an AlertMetricsProvider'),
-    );
+    (React.useContext as jest.Mock).mockReturnValue(undefined);
+
+    const HookConsumer = () => {
+      useAlertMetrics();
+      return null;
+    };
+
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    try {
+      expect(() => render(<HookConsumer />)).toThrow(
+        'useAlertMetrics must be used within an AlertMetricsProvider',
+      );
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 });

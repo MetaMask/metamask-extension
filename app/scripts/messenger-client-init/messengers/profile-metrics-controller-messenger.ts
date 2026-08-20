@@ -28,6 +28,8 @@ export function getProfileMetricsControllerMessenger(
     actions: [
       'AccountsController:getState',
       'ProfileMetricsService:submitMetrics',
+      'ProfileMetricsService:fetchNonces',
+      'ProofOfOwnershipService:sign',
     ],
     events: [
       'AccountsController:accountAdded',

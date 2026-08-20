@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, cleanup } from '@testing-library/react-hooks';
+import { renderHook, cleanup, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CaipAssetId } from '@metamask/keyring-api';
 import { Asset } from '@metamask/assets-controllers';
@@ -591,10 +591,7 @@ describe('useTronResources', () => {
         [maxBandwidthAssetId]: { amount: '600', unit: 'bandwidth' },
       });
 
-      const { result, waitFor } = renderTronResourcesHook(
-        mockSnapAccount,
-        chainId,
-      );
+      const { result } = renderTronResourcesHook(mockSnapAccount, chainId);
 
       await waitFor(() => expect(result.current.energy.current).toBe(500));
 
@@ -633,10 +630,7 @@ describe('useTronResources', () => {
 
       mockGetAccountBalances.mockRejectedValue(new Error('snap blew up'));
 
-      const { result, waitFor } = renderTronResourcesHook(
-        mockSnapAccount,
-        chainId,
-      );
+      const { result } = renderTronResourcesHook(mockSnapAccount, chainId);
 
       await waitFor(() => expect(mockGetAccountBalances).toHaveBeenCalled());
 

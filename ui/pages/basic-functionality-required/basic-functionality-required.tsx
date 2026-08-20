@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -27,8 +27,13 @@ import { Container } from '../../components/component-library/container/containe
 import ToggleButton from '../../components/ui/toggle-button';
 import { DEFAULT_ROUTE, PRIVACY_ROUTE } from '../../helpers/constants/routes';
 import { getUseExternalServices } from '../../selectors';
-import { toggleExternalServices } from '../../store/actions';
+import {
+  toggleBasicFunctionality,
+  toggleExternalServices,
+} from '../../store/actions';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../selectors/multichain/feature-flags';
 import type { BasicFunctionalityOffState } from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
+import { useDispatch } from '../../store/hooks';
 
 const CONTAINER_STYLE = { marginTop: '111px' } as const;
 const CARD_BOX_STYLE = { width: '446px', minHeight: '592px' } as const;
@@ -56,6 +61,9 @@ export const BasicFunctionalityOff = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const useExternalServices = useSelector(getUseExternalServices);
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
 
   const state = location.state as BasicFunctionalityOffState | undefined;
   const blockedRoutePath = state?.blockedRoutePath ?? '';
@@ -64,7 +72,11 @@ export const BasicFunctionalityOff = () => {
   const hasFeatureContext = Boolean(blockedRoutePath && openPageCtaMessageKey);
 
   const handleToggleBasicFunctionality = (currentValue: boolean) => {
-    dispatch(toggleExternalServices(!currentValue));
+    dispatch(
+      isBasicFunctionalityConsolidationEnabled
+        ? toggleBasicFunctionality(!currentValue)
+        : toggleExternalServices(!currentValue),
+    );
   };
 
   const handleOpenFeaturePage = () => {

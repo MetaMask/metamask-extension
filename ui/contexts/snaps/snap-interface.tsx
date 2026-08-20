@@ -7,12 +7,12 @@ import {
 } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
 import React, { createContext, useContext, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   handleSnapRequest as handleSnapRequestFunction,
   updateInterfaceState,
   forceUpdateMetamaskState,
 } from '../../store/actions';
+import { useDispatch } from '../../store/hooks';
 import { mergeValue } from './utils';
 
 export type HandleEvent = <Type extends State>(args: {
