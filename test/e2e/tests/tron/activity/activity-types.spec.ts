@@ -101,7 +101,6 @@ describe('Tron - Activity types', function (this: Suite) {
   let driver: Driver;
   let activity: ActivityTab;
 
-   
   before(async function () {
     await sharedTronNode.start(buildTronNodeOptions(TRON_ACTIVITY_ACCOUNTS));
     driver = await chromeSession.start(this.test?.fullTitle());
@@ -124,7 +123,6 @@ describe('Tron - Activity types', function (this: Suite) {
       await returnToTronActivityList(driver);
     }
   });
-    
 
   it('Approve transaction is rendered as a spending cap approval', async function () {
     await activity.checkTransactionActivityByText('Approved spending cap');

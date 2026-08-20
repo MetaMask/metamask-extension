@@ -44,7 +44,6 @@ describe('Tron - Activity status', function (this: Suite) {
   let driver: Driver;
   let activity: ActivityTab;
 
-   
   before(async function () {
     await sharedTronNode.start(buildTronNodeOptions(TRON_ACTIVITY_ACCOUNTS));
     driver = await chromeSession.start(this.test?.fullTitle());
@@ -66,7 +65,6 @@ describe('Tron - Activity status', function (this: Suite) {
       await returnToTronActivityList(driver);
     }
   });
-    
 
   it('Pending status: shows pending counter', async function () {
     await activity.checkTransactionActivityByText('Sending TRX');
