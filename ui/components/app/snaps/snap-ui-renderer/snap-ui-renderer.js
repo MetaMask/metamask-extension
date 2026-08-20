@@ -1,10 +1,4 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
@@ -62,7 +56,16 @@ const SnapUIContent = ({
         setScroll,
         scrollableContainerRef,
       }),
-    [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor, setScroll, scrollableContainerRef],
+    [
+      content,
+      onCancel,
+      useFooter,
+      promptLegacyProps,
+      t,
+      backgroundColor,
+      setScroll,
+      scrollableContainerRef,
+    ],
   );
 
   return <MetaMaskTemplateRenderer sections={sections} />;
@@ -197,7 +200,7 @@ const SnapUIRendererComponent = ({
               scrollableContainerRef={scrollableContainerRef}
               setScroll={setScroll}
             />
-            {PERF_DEBUG && <PerformanceTracker />}
+            {PERF_DEBUG && <PerformanceTracker content={rawContent} />}
           </Box>
         </LocalizationProvider>
       </ThemeProvider>

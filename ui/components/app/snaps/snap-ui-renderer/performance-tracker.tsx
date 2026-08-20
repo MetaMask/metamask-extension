@@ -12,7 +12,5 @@ export const PerformanceTracker = () => {
   const rendersRef = useRef(0);
   rendersRef.current += 1;
 
-  return (
-    <span data-testid="performance" data-renders={rendersRef.current} />
-  );
+  return <span data-testid="performance" data-renders={rendersRef.current} />;
 };
