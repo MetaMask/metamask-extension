@@ -14,15 +14,17 @@ import {
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
+import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { BridgeFeeRow, BridgeFeeRowProps } from './bridge-fee-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useIsPaidByMetaMask');
 
 const mockStore = configureMockStore([]);
 
@@ -49,9 +51,11 @@ function getPerpsWithdrawState() {
 describe('BridgeFeeRow', () => {
   const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
   const useTransactionPayQuotesMock = jest.mocked(useTransactionPayQuotes);
-  const useIsTransactionPayLoadingMock = jest.mocked(
-    useIsTransactionPayLoading,
+  const useIsTransactionPayQuotePendingMock = jest.mocked(
+    useIsTransactionPayQuotePending,
   );
+  const useIsPaidByMetaMaskMock = jest.mocked(useIsPaidByMetaMask);
+
   beforeEach(() => {
     jest.resetAllMocks();
 
@@ -63,7 +67,8 @@ describe('BridgeFeeRow', () => {
       },
     } as TransactionPayTotals);
 
-    useIsTransactionPayLoadingMock.mockReturnValue(false);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(false);
+    useIsPaidByMetaMaskMock.mockReturnValue(false);
 
     useTransactionPayQuotesMock.mockReturnValue([
       {} as TransactionPayQuote<Json>,
@@ -71,7 +76,7 @@ describe('BridgeFeeRow', () => {
   });
 
   it('renders skeleton with label when loading (Default variant)', () => {
-    useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(true);
 
     const { getByTestId, queryByTestId, getByText } = render();
 
@@ -81,7 +86,7 @@ describe('BridgeFeeRow', () => {
   });
 
   it('renders bridge fee skeleton only when loading (Small variant)', () => {
-    useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(true);
 
     const { getByTestId, queryByTestId, queryByText } = render({
       variant: ConfirmInfoRowSize.Small,
@@ -115,7 +120,7 @@ describe('BridgeFeeRow', () => {
     const user = userEvent.setup();
     const { getByTestId, findByText } = render();
 
-    await user.hover(getByTestId('bridge-fee-row-tooltip'));
+    await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
     const tooltip = await findByText((content) =>
       content.includes(`${messages.networkFee.message}:`),
@@ -135,7 +140,7 @@ describe('BridgeFeeRow', () => {
       variant: ConfirmInfoRowSize.Small,
     });
 
-    await user.hover(getByTestId('bridge-fee-row-tooltip'));
+    await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
     const tooltip = await findByText((content) =>
       content.includes(`${messages.networkFee.message}:`),
@@ -151,14 +156,15 @@ describe('BridgeFeeRow', () => {
       tooltipDescription: messages.musdConversionFeeTooltipDescription.message,
     });
 
-    await user.hover(getByTestId('bridge-fee-row-tooltip'));
+    await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
     const tooltip = await findByText((content) =>
       content.includes(messages.musdConversionFeeTooltipDescription.message),
     );
     expect(tooltip.textContent).toContain(
-      `${messages.musdConversionFeeTooltipDescription.message}\n\n${messages.networkFee.message}:`,
+      messages.musdConversionFeeTooltipDescription.message,
     );
+    expect(tooltip.textContent).toContain(`${messages.networkFee.message}:`);
     expect(tooltip.textContent).toContain(`${messages.bridgeFee.message}:`);
     expect(tooltip.textContent).toContain(`${messages.metamaskFee.message}:`);
   });
@@ -180,7 +186,9 @@ describe('BridgeFeeRow', () => {
     const { getByTestId, queryByTestId } = render();
 
     expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-    expect(queryByTestId('bridge-fee-row-tooltip')).not.toBeInTheDocument();
+    expect(
+      queryByTestId('bridge-fee-tooltip-popover-button'),
+    ).not.toBeInTheDocument();
   });
 
   it('always renders fee in USD even when user currency is EUR', () => {
@@ -238,13 +246,48 @@ describe('BridgeFeeRow', () => {
       getPerpsWithdrawState(),
     );
 
-    await user.hover(getByTestId('bridge-fee-row-tooltip'));
+    await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
     const tooltip = await findByText((content) =>
       content.includes(`${messages.networkFee.message}:`),
     );
     expect(tooltip.textContent).toContain(`${messages.providerFee.message}:`);
     expect(tooltip.textContent).not.toContain(`${messages.bridgeFee.message}:`);
+  });
+
+  describe('Paid by MetaMask (sponsored)', () => {
+    beforeEach(() => {
+      useIsPaidByMetaMaskMock.mockReturnValue(true);
+    });
+
+    it('renders SuccessPill with "Paid by MetaMask" label', () => {
+      const { getByTestId } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      expect(getByTestId('paid-by-metamask')).toBeInTheDocument();
+      expect(getByTestId('paid-by-metamask')).toHaveTextContent(
+        messages.paidByMetaMask.message,
+      );
+    });
+
+    it('does not render fee value when sponsored', () => {
+      const { queryByTestId } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      expect(queryByTestId('transaction-fee-value')).not.toBeInTheDocument();
+    });
+
+    it('does not render tooltip when sponsored', () => {
+      const { queryByTestId } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      expect(
+        queryByTestId('bridge-fee-tooltip-popover-button'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('MetaMask fee value', () => {
@@ -263,7 +306,7 @@ describe('BridgeFeeRow', () => {
         variant: ConfirmInfoRowSize.Small,
       });
 
-      await user.hover(getByTestId('bridge-fee-row-tooltip'));
+      await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
       const tooltip = await findByText((content) =>
         content.includes(`${messages.metamaskFee.message}:`),
@@ -288,7 +331,7 @@ describe('BridgeFeeRow', () => {
         variant: ConfirmInfoRowSize.Small,
       });
 
-      await user.hover(getByTestId('bridge-fee-row-tooltip'));
+      await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
       const tooltip = await findByText((content) =>
         content.includes(`${messages.metamaskFee.message}:`),
@@ -313,7 +356,7 @@ describe('BridgeFeeRow', () => {
         variant: ConfirmInfoRowSize.Small,
       });
 
-      await user.hover(getByTestId('bridge-fee-row-tooltip'));
+      await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
       const tooltip = await findByText((content) =>
         content.includes(`${messages.metamaskFee.message}:`),

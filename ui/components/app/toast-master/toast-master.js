@@ -1,13 +1,8 @@
-/* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
-
-import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { memo, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-} from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { SECOND } from '../../../../shared/constants/time';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -21,25 +16,16 @@ import {
   DEFAULT_ROUTE,
   PERPS_ROUTE,
   REVEAL_SEED_ROUTE,
-  REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import {
-  hidePermittedNetworkToast,
-  toggleDefaultView,
-} from '../../../store/actions';
+import { toggleDefaultView } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
-import { SurveyToast } from '../../ui/survey-toast';
+import { SurveyToast } from '../../ui/survey-toast/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
-import { MerklClaimToast, MusdConversionToast } from '../musd';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
-import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -55,7 +41,8 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/shield/transaction-shield/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -67,6 +54,7 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import {
   selectShowPrivacyPolicyToast,
+  selectNewPrivacyPolicyToastShownDate,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
@@ -83,6 +71,16 @@ import {
   dismissSidePanelMigrationToast,
 } from './utils';
 
+// Memoized to prevent re-renders when ToastMaster re-renders due to location changes.
+const MemoizedSurveyToast = memo(SurveyToast);
+const MemoizedPrivacyPolicyToast = memo(PrivacyPolicyToast);
+const MemoizedInfuraSwitchToast = memo(InfuraSwitchToast);
+const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
+const MemoizedShieldPausedToast = memo(ShieldPausedToast);
+const MemoizedShieldEndingToast = memo(ShieldEndingToast);
+const MemoizedSidePanelMigrationToast = memo(SidePanelMigrationToast);
+const MemoizedStorageErrorToast = memo(StorageErrorToast);
+
 export function ToastMaster() {
   const location = useLocation();
 
@@ -96,23 +94,17 @@ export function ToastMaster() {
   const onPerpsScreen = currentPathname.startsWith(PERPS_ROUTE);
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
-  // Storage error toast should show on ALL screens
-  const storageErrorToast = <StorageErrorToast />;
-
   if (onHomeScreen) {
     return (
       <ToastContainer>
-        {storageErrorToast}
-        <SurveyToast />
-        <PrivacyPolicyToast />
-        <PermittedNetworkToast />
-        <InfuraSwitchToast />
-        <MerklClaimToast />
-        <MusdConversionToast />
-        <PerpsWithdrawToast />
-        <ShieldPausedToast />
-        <ShieldEndingToast />
-        <SidePanelMigrationToast />
+        <MemoizedStorageErrorToast />
+        <MemoizedSurveyToast />
+        <MemoizedPrivacyPolicyToast />
+        <MemoizedInfuraSwitchToast />
+        <MemoizedPerpsWithdrawToast />
+        <MemoizedShieldPausedToast />
+        <MemoizedShieldEndingToast />
+        <MemoizedSidePanelMigrationToast />
       </ToastContainer>
     );
   }
@@ -120,20 +112,28 @@ export function ToastMaster() {
   if (onPerpsScreen) {
     return (
       <ToastContainer>
-        {storageErrorToast}
-        <PerpsWithdrawToast />
+        <MemoizedStorageErrorToast />
+        <MemoizedPerpsWithdrawToast />
       </ToastContainer>
     );
   }
 
   if (onSettingsScreen) {
-    return <ToastContainer>{storageErrorToast}</ToastContainer>;
+    return (
+      <ToastContainer>
+        <MemoizedStorageErrorToast />
+      </ToastContainer>
+    );
   }
 
   // On other screens, only render ToastContainer if storage error toast should show
   // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
   if (shouldShowStorageErrorToast) {
-    return <ToastContainer>{storageErrorToast}</ToastContainer>;
+    return (
+      <ToastContainer>
+        <MemoizedStorageErrorToast />
+      </ToastContainer>
+    );
   }
 
   return null;
@@ -142,8 +142,10 @@ export function ToastMaster() {
 function PrivacyPolicyToast() {
   const t = useI18nContext();
 
-  const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
-    useSelector(selectShowPrivacyPolicyToast);
+  const showPrivacyPolicyToast = useSelector(selectShowPrivacyPolicyToast);
+  const newPrivacyPolicyToastShownDate = useSelector(
+    selectNewPrivacyPolicyToastShownDate,
+  );
 
   // If the privacy policy toast is shown, and there is no date set, set it
   if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
@@ -166,64 +168,6 @@ function PrivacyPolicyToast() {
           setNewPrivacyPolicyToastClickedOrClosed();
         }}
         onClose={setNewPrivacyPolicyToastClickedOrClosed}
-      />
-    )
-  );
-}
-
-function PermittedNetworkToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const isPermittedNetworkToastOpen = useSelector(
-    (state) => state.appState.showPermittedNetworkToastOpen,
-  );
-
-  const currentNetwork = useSelector(getCurrentNetwork);
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const dappActiveNetwork = useSelector(getDappActiveNetwork);
-  const safeEncodedHost = encodeURIComponent(activeTabOrigin);
-  const navigate = useNavigate();
-
-  // Use dapp's active network if available, otherwise fall back to global network
-  const displayNetwork = dappActiveNetwork || currentNetwork;
-
-  // Get the correct image URL - dapp network structure is different
-  const getNetworkImageUrl = () => {
-    if (dappActiveNetwork) {
-      // For dapp networks, check rpcPrefs.imageUrl first, then fallback to CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      return (
-        dappActiveNetwork.rpcPrefs?.imageUrl ||
-        (dappActiveNetwork.chainId &&
-          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[dappActiveNetwork.chainId])
-      );
-    }
-    // For global network, use existing logic
-    return currentNetwork?.rpcPrefs?.imageUrl || '';
-  };
-
-  return (
-    isPermittedNetworkToastOpen && (
-      <Toast
-        key="switched-permitted-network-toast"
-        startAdornment={
-          <AvatarNetwork
-            size={AvatarNetworkSize.Md}
-            className="border-transparent"
-            src={getNetworkImageUrl()}
-            name={displayNetwork?.name || displayNetwork?.nickname}
-          />
-        }
-        text={t('permittedChainToastUpdate', [
-          getURLHost(activeTabOrigin),
-          displayNetwork?.name || displayNetwork?.nickname,
-        ])}
-        actionText={t('editPermissions')}
-        onActionClick={() => {
-          dispatch(hidePermittedNetworkToast());
-          navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
-        }}
-        onClose={() => dispatch(hidePermittedNetworkToast())}
       />
     )
   );
@@ -388,7 +332,7 @@ function ShieldEndingToast() {
 function StorageErrorToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [isDismissed, setIsDismissed] = useState(false);
   const [hasTrackedView, setHasTrackedView] = useState(false);
 
@@ -409,28 +353,33 @@ function StorageErrorToast() {
   // Track "Viewed" event when toast becomes visible
   useEffect(() => {
     if (shouldShow && !hasTrackedView) {
-      trackEvent({
-        event: MetaMetricsEventName.StorageErrorToastViewed,
-        category: MetaMetricsEventCategory.Error,
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.StorageErrorToastViewed)
+          .addCategory(MetaMetricsEventCategory.Error)
+          .build(),
+      );
       setHasTrackedView(true);
     }
-  }, [shouldShow, hasTrackedView, trackEvent]);
+  }, [shouldShow, hasTrackedView, trackEvent, createEventBuilder]);
 
   const handleRevealSrpClick = () => {
-    trackEvent({
-      event: MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
-      category: MetaMetricsEventCategory.Error,
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
+      )
+        .addCategory(MetaMetricsEventCategory.Error)
+        .build(),
+    );
     setIsDismissed(true);
     navigate(REVEAL_SEED_ROUTE, { state: { skipQuiz: true } });
   };
 
   const handleClose = () => {
-    trackEvent({
-      event: MetaMetricsEventName.StorageErrorToastDismissed,
-      category: MetaMetricsEventCategory.Error,
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.StorageErrorToastDismissed)
+        .addCategory(MetaMetricsEventCategory.Error)
+        .build(),
+    );
     setIsDismissed(true);
   };
 

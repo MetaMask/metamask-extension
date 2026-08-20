@@ -7,13 +7,55 @@ import {
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
+import BottomNavBar from '../../page-objects/pages/bottom-nav-bar-page';
+import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
   checkQuoteRequestsAreNotMadeAfterTimestamp,
   getBridgeFixtures,
 } from './bridge-test-utils';
+
+/**
+ * Returns bridge fixtures layered with the bottom nav AB test treatment flags:
+ * - `RemoteFeatureFlagController.remoteFeatureFlags` with treatment variant
+ * - `manifestFlags.remoteFeatureFlags` with treatment variant
+ *
+ * This means the bottom nav bar is shown. When bottom nav bar is shown,
+ * the back button is removed on Swap/Bridge pages so tests must accommodate for this.
+ * @param options
+ */
+function getBridgeFixturesWithBottomNavTreatment(
+  options: Parameters<typeof getBridgeFixtures>[0],
+) {
+  const base = getBridgeFixtures(options);
+  return {
+    ...base,
+    fixtures: {
+      ...base.fixtures,
+      data: {
+        ...base.fixtures.data,
+        RemoteFeatureFlagController: {
+          ...base.fixtures.data.RemoteFeatureFlagController,
+          remoteFeatureFlags: {
+            ...(base.fixtures.data.RemoteFeatureFlagController
+              ?.remoteFeatureFlags ?? {}),
+            [BOTTOM_NAV_AB_TEST_KEY]: 'treatment',
+          },
+        },
+      },
+    },
+    manifestFlags: {
+      ...base.manifestFlags,
+      remoteFeatureFlags: {
+        ...(base.manifestFlags?.remoteFeatureFlags ?? {}),
+        [BOTTOM_NAV_AB_TEST_KEY]: 'treatment',
+      },
+    },
+  };
+}
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -22,7 +64,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         // the balance has been fixed now , we show native balance when currency controller is set
@@ -41,6 +82,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 2,
           expectedDestAmount: '0.0157',
+          expectedActivityAmount: '+0.01567',
         });
 
         await bridgeTransaction({
@@ -54,6 +96,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 3,
           expectedDestAmount: '1,642',
+          expectedActivityAmount: '+1,642.0043',
         });
         await bridgeTransaction({
           driver,
@@ -66,6 +109,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 4,
           expectedDestAmount: '0.991',
+          expectedActivityAmount: '+0.9912',
         });
 
         await homePage.goToTokensTab();
@@ -83,6 +127,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 6,
           expectedDestAmount: '9.9',
+          expectedActivityAmount: '+9.8996',
         });
       },
     );
@@ -93,11 +138,11 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
-        const networkManager = new NetworkManager(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
@@ -122,10 +167,10 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         // check if the Linea network is selected
-        await networkManager.openNetworkManager();
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await driver.delay(veryLargeDelayMs);
-
-        await networkManager.checkAllPopularNetworksIsSelected();
+        await selectNetworkModal.checkAllPopularNetworksIsSelected();
       },
     );
   });
@@ -135,7 +180,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -156,6 +200,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 2,
           expectedDestAmount: '9.9',
+          expectedActivityAmount: '+9.8996',
         });
         const finalQuoteRequestTimestamp = Date.now();
         const bridgePage = new BridgeQuotePage(driver);
@@ -178,7 +223,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -210,7 +254,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -245,7 +288,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -272,7 +314,7 @@ describe('Bridge tests', function (this: Suite) {
         await tokenOverviewPage.clickBack();
         console.log('Navigated back to Swap page from asset page');
 
-        await bridgePage.checkAssetPickerModalIsReopened();
+        await bridgePage.checkAssetPickerIsReopened();
         await bridgePage.checkAssetsAreSelected('mUSD', 'ETH');
       },
     );
@@ -283,7 +325,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        withErc20: false,
       }),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -314,7 +355,7 @@ describe('Bridge tests', function (this: Suite) {
         });
         await tokenOverviewPage.clickBack();
 
-        await bridgePage.checkAssetPickerModalIsReopened();
+        await bridgePage.checkAssetPickerIsReopened();
         await bridgePage.checkAssetsAreSelected('DAI', 'USDC');
 
         console.log(
@@ -322,6 +363,99 @@ describe('Bridge tests', function (this: Suite) {
         );
         await bridgePage.goBack();
         await homePage.startSwapFlow();
+        await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
+      },
+    );
+  });
+
+  it('Execute bridge transactions on non enabled networks - with bottom nav treatment', async function () {
+    await withFixtures(
+      getBridgeFixturesWithBottomNavTreatment({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      }),
+      async ({ driver, mockedEndpoint }) => {
+        await login(driver, { expectedBalance: '$225,730.11' });
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+
+        const bottomNav = new BottomNavBar(driver);
+        await bottomNav.checkPageIsLoaded();
+        await bottomNav.clickSwaps();
+
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.checkPageIsLoaded();
+        await bridgePage.enterBridgeQuote({
+          amount: '25',
+          tokenFrom: 'ETH',
+          tokenTo: 'DAI',
+          fromChain: 'Linea',
+          toChain: 'Ethereum',
+        });
+        const finalQuoteRequestTimestamp = Date.now();
+
+        // Navigate back via bottom nav (back button is hidden in treatment)
+        await bottomNav.clickHome();
+        await checkQuoteRequestsAreNotMadeAfterTimestamp(
+          driver,
+          finalQuoteRequestTimestamp,
+          mockedEndpoint,
+        );
+
+        // check if the Linea network is selected
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await driver.delay(veryLargeDelayMs);
+
+        await selectNetworkModal.checkAllPopularNetworksIsSelected();
+      },
+    );
+  });
+
+  it('Resets bridge state when reopening the page - with bottom nav treatment', async function () {
+    await withFixtures(
+      getBridgeFixturesWithBottomNavTreatment({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      }),
+      async ({ driver }) => {
+        await login(driver, { expectedBalance: '$225,730.11' });
+
+        const bottomNav = new BottomNavBar(driver);
+        await bottomNav.checkPageIsLoaded();
+        const bridgePage = new BridgeQuotePage(driver);
+        const tokenOverviewPage = new TokenOverviewPage(driver);
+
+        await bottomNav.clickSwaps();
+        await bridgePage.checkPageIsLoaded();
+        await bridgePage.searchForAssetAndSelect('DAI');
+        console.log('Selected source asset DAI');
+
+        await bridgePage.searchForAssetAndSelect(
+          'USDC',
+          bridgePage.destinationAssetPickerButton,
+        );
+        console.log('Selected dest asset USDC');
+
+        await goToAssetPage({
+          driver,
+          token: 'DAI',
+          chainId: '0x1',
+          address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          assetPicker: bridgePage.destinationAssetPickerButton,
+        });
+        await tokenOverviewPage.clickBack();
+
+        await bridgePage.checkAssetPickerIsReopened();
+        await bridgePage.checkAssetsAreSelected('DAI', 'USDC');
+
+        console.log(
+          'Checking that selected assets are reset after reopening Swap page via bottom nav',
+        );
+        // Navigate home via bottom nav (back button is hidden in treatment)
+        await bottomNav.clickHome();
+        // Navigate back to bridge via bottom nav swaps tab
+        await bottomNav.clickSwaps();
         await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
       },
     );

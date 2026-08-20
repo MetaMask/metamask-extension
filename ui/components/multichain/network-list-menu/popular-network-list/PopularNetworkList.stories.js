@@ -36,7 +36,7 @@ const customNetworkStore = configureStore({
         'test-networkConfigurationId-2': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,
           nickname: ZK_SYNC_ERA_DISPLAY_NAME,
-          rpcUrl: `https://mainnet.era.zksync.io`,
+          rpcUrl: `https://zksync-mainnet.infura.io/v3`,
           ticker: CURRENCY_SYMBOLS.ETH,
           rpcPrefs: {
             blockExplorerUrl: 'https://explorer.zksync.io/',

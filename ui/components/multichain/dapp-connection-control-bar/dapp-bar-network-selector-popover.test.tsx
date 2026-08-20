@@ -6,8 +6,22 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const MAINNET_CLIENT_ID = 'mainnet-client';
 const BNB_CLIENT_ID = 'bnb-client';
@@ -21,9 +35,6 @@ const mockSetNetworkClientIdForDomain = jest.fn(
 const mockAddPermittedChain = jest.fn(
   (_origin: string, _chainId: string) => () => Promise.resolve(),
 );
-const mockShowPermittedNetworkToast = jest.fn(() => ({
-  type: 'SHOW_PERMITTED_NETWORK_TOAST',
-}));
 const mockUpdateCustomNonce = jest.fn(() => ({ type: 'UPDATE_CUSTOM_NONCE' }));
 const mockSetNextNonce = jest.fn(() => ({ type: 'SET_NEXT_NONCE' }));
 const mockDetectNfts = jest.fn((_) => () => Promise.resolve());
@@ -38,7 +49,6 @@ jest.mock('../../../store/actions', () => ({
     mockSetNetworkClientIdForDomain(origin, id),
   addPermittedChain: (origin: string, chainId: string) =>
     mockAddPermittedChain(origin, chainId),
-  showPermittedNetworkToast: () => mockShowPermittedNetworkToast(),
   updateCustomNonce: () => mockUpdateCustomNonce(),
   setNextNonce: () => mockSetNextNonce(),
   detectNfts: (chainIds: string[]) => mockDetectNfts(chainIds),
@@ -191,11 +201,9 @@ const setupSelectors = ({
 const renderPopover = ({
   isOpen = true,
   onClose = jest.fn(),
-  trackEvent = jest.fn(),
 }: {
   isOpen?: boolean;
   onClose?: jest.Mock;
-  trackEvent?: jest.Mock;
 } = {}) => {
   const anchor = document.createElement('button');
   document.body.appendChild(anchor);
@@ -203,29 +211,21 @@ const renderPopover = ({
   const store = configureStore({ metamask: {}, activeTab: {} });
 
   const utils = renderWithProvider(
-    <MetaMetricsContext.Provider
-      value={{
-        trackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      }}
-    >
-      <DappBarEVMNetworkSelectorPopover
-        referenceElement={anchor}
-        isOpen={isOpen}
-        onClose={onClose}
-      />
-    </MetaMetricsContext.Provider>,
+    <DappBarEVMNetworkSelectorPopover
+      referenceElement={anchor}
+      isOpen={isOpen}
+      onClose={onClose}
+    />,
     store,
   );
 
-  return { ...utils, onClose, trackEvent, anchor };
+  return { ...utils, onClose, trackEvent: mockTrackEvent, anchor };
 };
 
 describe('DappBarNetworkSelectorPopover', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockClear();
     setupSelectors();
   });
 
@@ -303,10 +303,6 @@ describe('DappBarNetworkSelectorPopover', () => {
       expect(mockAddPermittedChain).not.toHaveBeenCalled();
     });
 
-    it('does not surface the permitted-network toast', () => {
-      expect(mockShowPermittedNetworkToast).not.toHaveBeenCalled();
-    });
-
     it('activates the selected network client', () => {
       expect(mockSetActiveNetwork).toHaveBeenCalledWith(BNB_CLIENT_ID);
     });
@@ -328,19 +324,21 @@ describe('DappBarNetworkSelectorPopover', () => {
     });
 
     it('tracks a network-switched MetaMetrics event', () => {
-      expect(trackEvent).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.NavNetworkSwitched,
-        category: MetaMetricsEventCategory.Network,
-        properties: {
-          location: 'Dapp Connection Control Bar',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x38',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          from_network: '0x1',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          to_network: '0x38',
-        },
-      });
+      expect(trackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.NavNetworkSwitched,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Network,
+            location: 'Dapp Connection Control Bar',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: '0x38',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            from_network: '0x1',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            to_network: '0x38',
+          }),
+        }),
+      );
     });
 
     it('closes the popover', () => {
@@ -365,10 +363,6 @@ describe('DappBarNetworkSelectorPopover', () => {
         DAPP_ORIGIN,
         'eip155:56',
       );
-    });
-
-    it('surfaces the permitted-network toast', () => {
-      expect(mockShowPermittedNetworkToast).toHaveBeenCalledTimes(1);
     });
 
     it('persists the per-origin network client', () => {
@@ -415,7 +409,6 @@ describe('DappBarNetworkSelectorPopover', () => {
     });
     expect(mockSetNetworkClientIdForDomain).not.toHaveBeenCalled();
     expect(mockAddPermittedChain).not.toHaveBeenCalled();
-    expect(mockShowPermittedNetworkToast).not.toHaveBeenCalled();
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 

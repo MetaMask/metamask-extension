@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
@@ -12,6 +12,8 @@ import {
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getBridgeQuotes, getFromChains } from '../../ducks/bridge/selectors';
+import { useDispatch } from '../../store/hooks';
+import { useEventListener } from '../useEventListener';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 /**
@@ -75,15 +77,8 @@ export const usePrefillFromBridgeState = () => {
     } else if (shouldRestoreInputsFromQuote) {
       dispatch(restoreQuoteRequestFromState(activeQuote));
     }
-
-    // Reset controller and inputs before unloading the page
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    window.addEventListener('beforeunload', resetControllerAndCache);
-    return () => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      window.removeEventListener('beforeunload', resetControllerAndCache);
-    };
   }, []);
+
+  // Reset controller and inputs before unloading the page
+  useEventListener('beforeunload', resetControllerAndCache);
 };

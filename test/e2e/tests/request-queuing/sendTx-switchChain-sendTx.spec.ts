@@ -9,7 +9,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import AlertModal from '../../page-objects/pages/confirmations/alert-modal';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 
 describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Suite) {
   it('switching network should reject pending confirmations', async function () {
@@ -89,8 +89,8 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkNoTxInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkNoTxInActivity();
       },
     );
   });

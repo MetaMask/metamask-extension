@@ -165,10 +165,7 @@ describe('DeFiDetailsPage', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByAltText('stETH logo')).toHaveAttribute(
-        'src',
-        'logo.png',
-      );
+      expect(screen.getByAltText('stETH')).toHaveAttribute('src', 'logo.png');
       expect(screen.getByText('Lido')).toBeInTheDocument();
       expect(screen.getByText('$20,000.00')).toBeInTheDocument();
       expect(screen.getByText('stETH only')).toBeInTheDocument();
@@ -180,10 +177,7 @@ describe('DeFiDetailsPage', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByAltText('USDC logo')).toHaveAttribute(
-        'src',
-        'logo.png',
-      );
+      expect(screen.getByAltText('USDC')).toHaveAttribute('src', 'logo.png');
       expect(screen.getByText('mountain-protocol')).toBeInTheDocument();
       const marketValueElement = screen.getByTestId('defi-list-market-value');
       expect(marketValueElement).toBeInTheDocument();

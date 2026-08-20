@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -34,14 +33,16 @@ import { useHardwareWalletRecoveryLocation } from '../../../../hooks/useHardware
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsHardwareWalletRecoveryLocation,
 } from '../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
+import type { AnalyticsEvent } from '../../../../../shared/lib/analytics/create-event-builder';
 import {
   buildHardwareWalletRecoverySegmentProperties,
   getHardwareWalletMetricDeviceModel,
   mapHardwareWalletRecoveryErrorType,
   mapHardwareWalletTypeToMetricDeviceType,
 } from '../../../../../shared/lib/hardware-wallet-recovery-metrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   HardwareWalletType,
   handleContinueWithPermissionCheck,
@@ -123,7 +124,7 @@ function renderQrCameraFlowContent({
   onRetry: () => Promise<void>;
   isLoading: boolean;
   redirectQueryString?: string | null;
-}): React.JSX.Element {
+}): JSX.Element {
   const handleOpenSettings = () => {
     globalThis.platform.openTab({
       url: getChromiumExtensionCameraSiteSettingsUrl(),
@@ -160,7 +161,6 @@ function renderQrCameraFlowContent({
 }
 
 type HardwareWalletErrorModalProps = {
-  isOpen?: boolean;
   error?: HardwareWalletError;
   onCancel?: () => void;
   onClose?: () => void;
@@ -170,15 +170,62 @@ type HardwareWalletErrorModalProps = {
 
 const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
 
+type CreateEventBuilder = ReturnType<typeof useAnalytics>['createEventBuilder'];
+
 /**
- * Modal component to display hardware wallet errors with recovery instructions
+ * Fires a hardware wallet recovery MetaMetrics event when both `error` and
+ * `trackableMetricDeviceType` are present; otherwise no-ops.
  *
- * @param props - The component props
+ * @param error - The current hardware wallet error.
+ * @param trackableMetricDeviceType - MetaMetrics device type derived from the wallet type.
+ * @param eventName - The MetaMetrics event name to fire.
+ * @param recoveryLocation - Where in the UI the recovery was triggered.
+ * @param errorTypeViewCount - How many times this error type has been viewed.
+ * @param trackEvent - Analytics `trackEvent` from {@link useAnalytics}.
+ * @param createEventBuilder - Analytics `createEventBuilder` from {@link useAnalytics}.
  */
-export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
-  React.memo((props) => {
+function trackHwRecoveryEvent(
+  error: HardwareWalletError | undefined,
+  trackableMetricDeviceType: ReturnType<
+    typeof mapHardwareWalletTypeToMetricDeviceType
+  >,
+  eventName: MetaMetricsEventName,
+  recoveryLocation: MetaMetricsHardwareWalletRecoveryLocation,
+  errorTypeViewCount: number,
+  trackEvent: (built: AnalyticsEvent) => void,
+  createEventBuilder: CreateEventBuilder,
+): void {
+  if (!error || !trackableMetricDeviceType) {
+    return;
+  }
+  const deviceModel = getHardwareWalletMetricDeviceModel(error);
+  trackEvent(
+    createEventBuilder(eventName)
+      .addCategory(MetaMetricsEventCategory.Accounts)
+      .addProperties(
+        buildHardwareWalletRecoverySegmentProperties({
+          location: recoveryLocation,
+          deviceType: trackableMetricDeviceType,
+          deviceModel,
+          errorType: mapHardwareWalletRecoveryErrorType(error),
+          errorTypeViewCount,
+          error,
+        }),
+      )
+      .build(),
+  );
+}
+
+export const HardwareWalletErrorModal = React.memo(
+  ({
+    error: errorProp,
+    onClose: onCloseProp,
+    onCancel: onCancelProp,
+    onRetry: onRetryProp,
+    onRepairDevice: onRepairDeviceProp,
+  }: HardwareWalletErrorModalProps) => {
     const t = useI18nContext();
-    const { trackEvent } = useContext(MetaMetricsContext);
+    const { trackEvent, createEventBuilder } = useAnalytics();
     const recoveryLocation = useHardwareWalletRecoveryLocation();
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
@@ -192,7 +239,11 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const successModalMetricSentRef = useRef(false);
     const { error, onClose, onCancel, onRetry, onRepairDevice } = {
       ...modalProps,
-      ...props,
+      error: errorProp ?? modalProps?.error,
+      onClose: onCloseProp ?? modalProps?.onClose,
+      onCancel: onCancelProp ?? modalProps?.onCancel,
+      onRetry: onRetryProp ?? modalProps?.onRetry,
+      onRepairDevice: onRepairDeviceProp ?? modalProps?.onRepairDevice,
     };
 
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
@@ -278,19 +329,25 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       lastTrackedErrorKeyRef.current = errorIdentityKey;
       errorTypeViewCountRef.current += 1;
       const deviceModel = getHardwareWalletMetricDeviceModel(error);
-      trackEvent({
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
-        properties: buildHardwareWalletRecoverySegmentProperties({
-          location: recoveryLocation,
-          deviceType: trackableMetricDeviceType,
-          deviceModel,
-          errorType: mapHardwareWalletRecoveryErrorType(error),
-          errorTypeViewCount: errorTypeViewCountRef.current,
-          error,
-        }),
-      });
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+        )
+          .addCategory(MetaMetricsEventCategory.Accounts)
+          .addProperties(
+            buildHardwareWalletRecoverySegmentProperties({
+              location: recoveryLocation,
+              deviceType: trackableMetricDeviceType,
+              deviceModel,
+              errorType: mapHardwareWalletRecoveryErrorType(error),
+              errorTypeViewCount: errorTypeViewCountRef.current,
+              error,
+            }),
+          )
+          .build(),
+      );
     }, [
+      createEventBuilder,
       error,
       errorIdentityKey,
       isUserRejectedError,
@@ -301,21 +358,15 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
     const handleRetry = async () => {
       onRetry?.();
-      if (error && trackableMetricDeviceType) {
-        const deviceModel = getHardwareWalletMetricDeviceModel(error);
-        trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
-          properties: buildHardwareWalletRecoverySegmentProperties({
-            location: recoveryLocation,
-            deviceType: trackableMetricDeviceType,
-            deviceModel,
-            errorType: mapHardwareWalletRecoveryErrorType(error),
-            errorTypeViewCount: errorTypeViewCountRef.current,
-            error,
-          }),
-        });
-      }
+      trackHwRecoveryEvent(
+        error,
+        trackableMetricDeviceType,
+        MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+        recoveryLocation,
+        errorTypeViewCountRef.current,
+        trackEvent,
+        createEventBuilder,
+      );
 
       setIsLoading(true);
       try {
@@ -325,19 +376,15 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
           setRecovered(true);
         } else if (error && trackableMetricDeviceType) {
           errorTypeViewCountRef.current += 1;
-          const deviceModel = getHardwareWalletMetricDeviceModel(error);
-          trackEvent({
-            category: MetaMetricsEventCategory.Accounts,
-            event: MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
-            properties: buildHardwareWalletRecoverySegmentProperties({
-              location: recoveryLocation,
-              deviceType: trackableMetricDeviceType,
-              deviceModel,
-              errorType: mapHardwareWalletRecoveryErrorType(error),
-              errorTypeViewCount: errorTypeViewCountRef.current,
-              error,
-            }),
-          });
+          trackHwRecoveryEvent(
+            error,
+            trackableMetricDeviceType,
+            MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+            recoveryLocation,
+            errorTypeViewCountRef.current,
+            trackEvent,
+            createEventBuilder,
+          );
         }
       } finally {
         setIsLoading(false);
@@ -353,21 +400,27 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const handleRepairDevice = useCallback(() => {
       if (error && trackableMetricDeviceType) {
         const deviceModel = getHardwareWalletMetricDeviceModel(error);
-        trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
-          properties: buildHardwareWalletRecoverySegmentProperties({
-            location: recoveryLocation,
-            deviceType: trackableMetricDeviceType,
-            deviceModel,
-            errorType: mapHardwareWalletRecoveryErrorType(error),
-            errorTypeViewCount: errorTypeViewCountRef.current,
-            error,
-          }),
-        });
+        trackEvent(
+          createEventBuilder(
+            MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
+          )
+            .addCategory(MetaMetricsEventCategory.Accounts)
+            .addProperties(
+              buildHardwareWalletRecoverySegmentProperties({
+                location: recoveryLocation,
+                deviceType: trackableMetricDeviceType,
+                deviceModel,
+                errorType: mapHardwareWalletRecoveryErrorType(error),
+                errorTypeViewCount: errorTypeViewCountRef.current,
+                error,
+              }),
+            )
+            .build(),
+        );
       }
       onRepairDevice?.(displayWalletType);
     }, [
+      createEventBuilder,
       displayWalletType,
       error,
       onRepairDevice,
@@ -408,22 +461,28 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       }
       successModalMetricSentRef.current = true;
       const deviceModel = getHardwareWalletMetricDeviceModel(error);
-      trackEvent({
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.HardwareWalletRecoverySuccessModalViewed,
-        properties: buildHardwareWalletRecoverySegmentProperties({
-          location: recoveryLocation,
-          deviceType: trackableMetricDeviceType,
-          deviceModel,
-          errorType: mapHardwareWalletRecoveryErrorType(error),
-          errorTypeViewCount: errorTypeViewCountRef.current,
-          error,
-        }),
-      });
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.HardwareWalletRecoverySuccessModalViewed,
+        )
+          .addCategory(MetaMetricsEventCategory.Accounts)
+          .addProperties(
+            buildHardwareWalletRecoverySegmentProperties({
+              location: recoveryLocation,
+              deviceType: trackableMetricDeviceType,
+              deviceModel,
+              errorType: mapHardwareWalletRecoveryErrorType(error),
+              errorTypeViewCount: errorTypeViewCountRef.current,
+              error,
+            }),
+          )
+          .build(),
+      );
       lastTrackedErrorKeyRef.current = null;
       errorTypeViewCountRef.current = 0;
       prevNonNullErrorIdentityKeyRef.current = null;
     }, [
+      createEventBuilder,
       error,
       recovered,
       recoveryLocation,
@@ -653,4 +712,5 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
         </ModalContent>
       </Modal>
     );
-  });
+  },
+);

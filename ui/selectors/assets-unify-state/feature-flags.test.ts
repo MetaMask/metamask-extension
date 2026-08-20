@@ -1,8 +1,12 @@
-import { ASSETS_UNIFY_STATE_FLAG } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
+import {
+  ASSETS_UNIFY_STATE_FLAG,
+  isAssetsUnifyStateFeatureEnabled,
+} from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import {
   getAssetsUnifyStateRemoteFeatureFlag,
   getIsAssetsUnifyStateEnabled,
+  getIsTokenListControllerDeprecated,
 } from './feature-flags';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -169,6 +173,86 @@ describe('Assets Unify State Feature Flags', () => {
       const result = getIsAssetsUnifyStateEnabled(state);
 
       expect(result).toBe(false);
+    });
+  });
+
+  describe('getIsTokenListControllerDeprecated', () => {
+    const buildState = (
+      deprecatedControllers: string[] = ['TokenListController'],
+    ) => ({
+      metamask: {
+        remoteFeatureFlags: {
+          [ASSETS_UNIFY_STATE_FLAG]: {
+            enabled: true,
+            featureVersion: '1',
+            minimumVersion: '13.33.0',
+            deprecatedControllers,
+          },
+        },
+      },
+    });
+
+    const setAssetsUnifyStateEnabled = (enabled: boolean) => {
+      jest
+        .mocked(getIsAssetsUnifiedStateIncludedInBuild)
+        .mockReturnValue(enabled);
+      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(enabled);
+    };
+
+    it('returns true in test environments regardless of flag state', () => {
+      // process.env.IN_TEST is always true in Jest (set by test/helpers/setup-helper.js)
+      setAssetsUnifyStateEnabled(false);
+
+      expect(getIsTokenListControllerDeprecated(buildState())).toBe(true);
+    });
+
+    describe('outside test environments', () => {
+      let originalInTest: string | undefined;
+
+      beforeEach(() => {
+        originalInTest = process.env.IN_TEST;
+        delete process.env.IN_TEST;
+      });
+
+      afterEach(() => {
+        process.env.IN_TEST = originalInTest;
+      });
+
+      it('returns true when assets-unify-state is enabled and the controller is deprecated', () => {
+        setAssetsUnifyStateEnabled(true);
+
+        expect(getIsTokenListControllerDeprecated(buildState())).toBe(true);
+      });
+
+      it('returns false when assets-unify-state is disabled', () => {
+        setAssetsUnifyStateEnabled(false);
+
+        expect(getIsTokenListControllerDeprecated(buildState())).toBe(false);
+      });
+
+      it('returns false when the controller is not in the deprecated list', () => {
+        setAssetsUnifyStateEnabled(true);
+
+        expect(
+          getIsTokenListControllerDeprecated(
+            buildState(['SomeOtherController']),
+          ),
+        ).toBe(false);
+      });
+
+      it('returns false when deprecatedControllers is absent from the flag', () => {
+        setAssetsUnifyStateEnabled(true);
+
+        const state = {
+          metamask: {
+            remoteFeatureFlags: {
+              [ASSETS_UNIFY_STATE_FLAG]: { enabled: true, featureVersion: '1' },
+            },
+          },
+        };
+
+        expect(getIsTokenListControllerDeprecated(state)).toBe(false);
+      });
     });
   });
 });

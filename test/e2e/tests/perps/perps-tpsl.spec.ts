@@ -17,7 +17,7 @@ import WebSocketRegistry from '../../websocket/registry';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
+import { PerpsTab } from '../../page-objects/pages/home/perps-tab';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { assertPerpsActivityShowsCloseFill } from '../../page-objects/flows/perps-activity-close-fill.flow';
 import { getPerpsConfigEligible } from './perps-fixture-config';
@@ -39,11 +39,11 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('ETH');
-        await perpsHomePage.clickPositionCard('ETH');
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCard('ETH');
+        await perpsTab.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();
@@ -92,11 +92,11 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForPositionsSection();
-        await perpsHomePage.waitForPositionCard('ETH');
-        await perpsHomePage.clickPositionCard('ETH');
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForPositionsSection();
+        await perpsTab.waitForPositionCard('ETH');
+        await perpsTab.clickPositionCard('ETH');
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.checkPageIsLoaded();

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { validateRewardsReferralCode } from '../../store/actions';
+import { useDispatch } from '../../store/hooks';
 
 export const REFERRAL_CODE_DEBOUNCE_MS = 1000;
 export const REFERRAL_CODE_MIN_LENGTH = 3;
@@ -38,6 +38,12 @@ export type UseValidateReferralCodeResult = {
   isValid: boolean;
 
   /**
+   * Whether the current referral code is a VIP referral code. Already gated by
+   * the controller on both the rewards and VIP feature flags.
+   */
+  isVipCode: boolean;
+
+  /**
    * Whether an unknown error occurred while validating the referral code
    */
   isUnknownError: boolean;
@@ -62,7 +68,8 @@ export const useValidateReferralCode = (
   const [isValidating, setIsValidating] = useState(
     isReferralCodeFormatValid(initialReferralCode),
   );
-  const hasInitialized = useRef(false);
+  const [isVipCode, setIsVipCode] = useState(false);
+  const [trackedInitialValue, setTrackedInitialValue] = useState(initialValue);
   const requestIdRef = useRef(0);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dispatch = useDispatch();
@@ -74,6 +81,35 @@ export const useValidateReferralCode = (
     }
   }, []);
 
+  const invalidatePendingValidation = useCallback(() => {
+    requestIdRef.current += 1;
+    clearDebounceTimer();
+  }, [clearDebounceTimer]);
+
+  // Sync local state when the controlled initialValue prop changes (during render).
+  // Always invalidate in-flight/debounced work here — the effect early-return for
+  // short/invalid codes does not schedule a new request, so without this a late
+  // response can still apply and flip isUnknownError after the prop was cleared.
+  if (initialValue !== trackedInitialValue) {
+    setTrackedInitialValue(initialValue);
+    invalidatePendingValidation();
+    const normalized = normalizeReferralCode(initialValue);
+    setReferralCodeState(normalized);
+    if (normalized.length < REFERRAL_CODE_MIN_LENGTH) {
+      setIsValidating(false);
+      setError('');
+      setIsVipCode(false);
+    } else if (isReferralCodeFormatValid(normalized)) {
+      setIsValidating(true);
+      setError('');
+      setIsVipCode(false);
+    } else {
+      setIsValidating(false);
+      setError(REFERRAL_CODE_INVALID_ERROR);
+      setIsVipCode(false);
+    }
+  }
+
   const validateCode = useCallback(
     async (code: string): Promise<string> => {
       const refinedCode = normalizeReferralCode(code);
@@ -83,7 +119,9 @@ export const useValidateReferralCode = (
       }
 
       try {
-        const valid = await dispatch(validateRewardsReferralCode(refinedCode));
+        const { valid } = (await dispatch(
+          validateRewardsReferralCode(refinedCode),
+        )) as unknown as { valid: boolean; isVipCode: boolean };
 
         if (!valid) {
           return REFERRAL_CODE_INVALID_ERROR;
@@ -96,27 +134,64 @@ export const useValidateReferralCode = (
     [dispatch],
   );
 
-  const triggerValidation = useCallback(
+  const scheduleValidation = useCallback(
     (code: string) => {
       requestIdRef.current += 1;
       const currentRequestId = requestIdRef.current;
 
       clearDebounceTimer();
-      setError('');
-      setIsValidating(true);
 
       debounceTimerRef.current = setTimeout(async () => {
-        const validationError = await validateCode(code);
+        const refinedCode = normalizeReferralCode(code);
 
-        if (currentRequestId !== requestIdRef.current) {
+        if (!isReferralCodeFormatValid(refinedCode)) {
+          if (currentRequestId !== requestIdRef.current) {
+            return;
+          }
+          setError(REFERRAL_CODE_INVALID_ERROR);
+          setIsVipCode(false);
+          setIsValidating(false);
           return;
         }
 
-        setError(validationError);
+        try {
+          const result = (await dispatch(
+            validateRewardsReferralCode(refinedCode),
+          )) as unknown as { valid: boolean; isVipCode: boolean };
+
+          if (currentRequestId !== requestIdRef.current) {
+            return;
+          }
+
+          if (result.valid) {
+            setError('');
+            setIsVipCode(result.isVipCode ?? false);
+          } else {
+            setError(REFERRAL_CODE_INVALID_ERROR);
+            setIsVipCode(false);
+          }
+        } catch {
+          if (currentRequestId !== requestIdRef.current) {
+            return;
+          }
+          setError(REFERRAL_CODE_UNKNOWN_ERROR);
+          setIsVipCode(false);
+        }
+
         setIsValidating(false);
       }, debounceMs);
     },
-    [clearDebounceTimer, debounceMs, validateCode],
+    [clearDebounceTimer, debounceMs, dispatch],
+  );
+
+  const triggerValidation = useCallback(
+    (code: string) => {
+      setError('');
+      setIsValidating(true);
+      setIsVipCode(false);
+      scheduleValidation(code);
+    },
+    [scheduleValidation],
   );
 
   // Function to update referral code and trigger validation
@@ -126,37 +201,39 @@ export const useValidateReferralCode = (
       setReferralCodeState(refinedCode);
       // If below minimum length, do NOT validate; clear error/validating state
       if (refinedCode.length < REFERRAL_CODE_MIN_LENGTH) {
-        requestIdRef.current += 1;
-        clearDebounceTimer();
+        invalidatePendingValidation();
         setIsValidating(false);
         setError('');
+        setIsVipCode(false);
         return;
       }
 
       if (!isReferralCodeFormatValid(refinedCode)) {
-        requestIdRef.current += 1;
-        clearDebounceTimer();
+        invalidatePendingValidation();
         setIsValidating(false);
         setError(REFERRAL_CODE_INVALID_ERROR);
+        setIsVipCode(false);
         return;
       }
 
       triggerValidation(refinedCode);
     },
-    [clearDebounceTimer, triggerValidation],
+    [invalidatePendingValidation, triggerValidation],
   );
 
+  // Kick off debounced validation when initialValue is valid. Synchronous
+  // validating state is already set from useState / render-time prop sync.
+  // Short/invalid values are handled by the render-time sync (which invalidates
+  // pending work); do not invalidate here or we can cancel setReferralCode work
+  // while the controlled initialValue is still empty/unchanged.
   useEffect(() => {
-    if (!hasInitialized.current) {
-      setReferralCode(initialValue);
-      hasInitialized.current = true;
-    } else if (initialValue !== referralCode) {
-      // Only update if initialValue actually changed from current referralCode
-      setReferralCode(initialValue);
+    const normalized = normalizeReferralCode(initialValue);
+    if (!isReferralCodeFormatValid(normalized)) {
+      return undefined;
     }
-    // eslint-disable-next-line react-compiler/react-compiler
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValue]);
+    scheduleValidation(normalized);
+    return clearDebounceTimer;
+  }, [initialValue, scheduleValidation, clearDebounceTimer]);
 
   useEffect(
     () => () => {
@@ -176,6 +253,7 @@ export const useValidateReferralCode = (
     validateCode,
     isValidating,
     isValid,
+    isVipCode: isValid && isVipCode,
     isUnknownError,
   };
 };

@@ -8,7 +8,7 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
@@ -18,6 +18,7 @@ import {
 } from '../../store/actions';
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
 import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
+import { useDispatch } from '../../store/hooks';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
@@ -33,6 +34,7 @@ import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
+import { isInE2eTest } from './is-in-e2e-test';
 import { isHardwareWalletRoute } from './utils';
 
 /**
@@ -86,9 +88,7 @@ type HardwareWalletErrorProviderProps = {
  * @param options0 - The component props
  * @param options0.children - Child components to render
  */
-const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const isHardwareWalletErrorModalVisible = useSelector(
@@ -311,6 +311,12 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       return;
     }
 
+    // E2E has no physical device; auto-shown connection modals block flows that
+    // already skip ensureDeviceReady (same policy as useHardwareFooter).
+    if (isInE2eTest()) {
+      return;
+    }
+
     // Only auto-show errors on transaction, signing, and bridge pages.
     // Other pages (e.g. home) should not show auto-triggered error modals.
     if (!isOnErrorModalRoute) {
@@ -394,9 +400,9 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
  * @param options0 - The component props
  * @param options0.children - Child components to render
  */
-export const HardwareWalletErrorProvider: React.FC<
-  HardwareWalletErrorProviderProps
-> = ({ children }) => {
+export const HardwareWalletErrorProvider = ({
+  children,
+}: HardwareWalletErrorProviderProps) => {
   return (
     <HardwareWalletProvider>
       <HardwareWalletErrorMonitor>{children}</HardwareWalletErrorMonitor>

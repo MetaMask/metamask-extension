@@ -72,12 +72,12 @@ const getContainerStyle = (
   };
 };
 
-const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({
+const PerpsTutorialAnimation = ({
   artboardName,
   className,
   fit: fitProp,
   alignment = Alignment.Center,
-}) => {
+}: PerpsTutorialAnimationProps) => {
   const theme = useTheme();
   const isDarkTheme = theme === ThemeType.dark;
   const environmentType = getEnvironmentType();
@@ -141,15 +141,6 @@ const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({
       rive.play();
     }
   }, [rive, isWasmReady, bufferLoading, buffer]);
-
-  // Cleanup Rive animation resources on unmount to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      if (rive) {
-        rive.cleanup();
-      }
-    };
-  }, [rive]);
 
   if (
     !isWasmReady ||

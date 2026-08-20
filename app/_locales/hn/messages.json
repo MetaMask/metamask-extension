@@ -66,9 +66,6 @@
   "decimal": {
     "message": "दशमलव परिशुद्धता"
   },
-  "decimalsMustZerotoTen": {
-    "message": "दशमलव कम से कम 0 होनी चाहिए, और 36 से अधिक नहीं होनी चाहिए।"
-  },
   "details": {
     "message": "संदेश विवरण"
   },
@@ -157,9 +154,6 @@
   },
   "message": {
     "message": "संदेश"
-  },
-  "mustSelectOne": {
-    "message": "कम से कम 1 टोकन का चयन करना आवश्यक है।"
   },
   "needImportFile": {
     "message": "आयात करने के लिए आपको एक फ़ाइल का चयन करना होगा।",

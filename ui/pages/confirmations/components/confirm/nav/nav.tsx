@@ -1,6 +1,4 @@
 import React, { useCallback } from 'react';
-
-import { useDispatch } from 'react-redux';
 import {
   Box,
   Button,
@@ -27,6 +25,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { rejectAllApprovals } from '../../../../../store/actions';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { useConfirmContext } from '../../../context/confirm';
+import { useDispatch } from '../../../../../store/hooks';
 
 export type NavProps = {
   confirmationId?: string;
@@ -108,8 +107,6 @@ export const Nav = ({ confirmationId }: NavProps) => {
         className="confirm_nav__reject_all"
         data-testid="confirm-nav__reject-all"
         fontWeight={FontWeight.Normal}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={onRejectAll}
         paddingLeft={3}
         paddingRight={3}

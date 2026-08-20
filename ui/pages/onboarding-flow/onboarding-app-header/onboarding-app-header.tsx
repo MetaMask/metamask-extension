@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { Location as RouterLocation } from 'react-router-dom';
 import classnames from 'clsx';
 import {
@@ -34,20 +34,20 @@ import {
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
+import { useDispatch } from '../../../store/hooks';
 
 type OnboardingAppHeaderProps = {
   isWelcomePage: boolean;
   location: RouterLocation;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingAppHeader({
   isWelcomePage = false,
   location,
 }: OnboardingAppHeaderProps) {
   const dispatch = useDispatch();
-  const { pathname, search } = location;
+  const { pathname } = location;
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
   const localeOptions = locales.map((locale) => {
@@ -57,9 +57,8 @@ export default function OnboardingAppHeader({
     };
   });
 
-  const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
-  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+  const { isFromReminder, isFromSettingsSecurity } =
+    useOnboardingSearchParams();
   const isFromSettingsSRPBackup = isFromReminder || isFromSettingsSecurity;
 
   // We don't wanna show the logo and locale dropdown in the sidepanel view

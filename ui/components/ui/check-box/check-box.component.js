@@ -11,17 +11,15 @@ const CHECKBOX_STATE = {
 export const { CHECKED, INDETERMINATE, UNCHECKED } = CHECKBOX_STATE;
 
 /**
- * @deprecated The `<CheckBox />` component has been deprecated in favor of the new `<Checkbox>` component from the component-library.
- * Please update your code to use the new `<Checkbox>` component instead, which can be found at ui/components/component-library/checkbox/checkbox.tsx.
- * You can find documentation for the new Checkbox component in the MetaMask Storybook:
- * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-checkbox--docs}
+ * @deprecated The `<CheckBox />` component has been deprecated in favor of the `Checkbox` component from `@metamask/design-system-react`.
+ * Please update your code to use the `Checkbox` component from `@metamask/design-system-react`.
  * If you would like to help with the replacement of the old CheckBox component, please submit a pull request against this GitHub issue:
  * {@link https://github.com/MetaMask/metamask-extension/issues/20163}
  */
 
 const CheckBox = ({
   className,
-  disabled,
+  disabled = false,
   id,
   onClick,
   checked,
@@ -37,8 +35,16 @@ const CheckBox = ({
     ref.current.indeterminate = checked === CHECKBOX_STATE.INDETERMINATE;
   }, [checked]);
 
+  let ariaChecked = 'false';
+  if (checked === CHECKBOX_STATE.INDETERMINATE) {
+    ariaChecked = 'mixed';
+  } else if (checked === CHECKBOX_STATE.CHECKED) {
+    ariaChecked = 'true';
+  }
+
   return (
     <input
+      aria-checked={ariaChecked}
       checked={checked === CHECKBOX_STATE.CHECKED}
       className={classnames('check-box', className, {
         'far fa-square': checked === CHECKBOX_STATE.UNCHECKED,
@@ -96,12 +102,6 @@ CheckBox.propTypes = {
    * Data test ID for checkbox Component
    */
   dataTestId: PropTypes.string,
-};
-
-CheckBox.defaultProps = {
-  className: undefined,
-  disabled: false,
-  id: undefined,
 };
 
 export default CheckBox;

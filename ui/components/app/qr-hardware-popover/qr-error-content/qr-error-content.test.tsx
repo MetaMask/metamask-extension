@@ -111,4 +111,24 @@ describe('QrErrorContent', () => {
 
     expect(onTryAgain).not.toHaveBeenCalled();
   });
+
+  it('renders mismatched transaction copy in the signing flow', () => {
+    renderWithLocalization(
+      <QrErrorContent
+        errorType={QrErrorType.MismatchedTransaction}
+        flowContext={QrErrorFlowContext.Signing}
+        onTryAgain={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('qr-error-mismatchedTransaction-signing'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.qrErrorMismatchedTransactionTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.qrErrorMismatchedTransactionBody.message),
+    ).toBeInTheDocument();
+  });
 });

@@ -30,10 +30,8 @@ export const AuthenticationControllerInit: MessengerClientInitFunction<
     state:
       persistedState.AuthenticationController as AuthenticationControllerState,
     metametrics: {
-      getMetaMetricsId: initMessenger.call.bind(
-        initMessenger,
-        'MetaMetricsController:getMetaMetricsId',
-      ),
+      getMetaMetricsId: () =>
+        initMessenger.call('AnalyticsController:getState').analyticsId,
       agent: Platform.EXTENSION,
       getAppVersion: () => process.env.METAMASK_VERSION,
     },

@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
-import { DefaultRootState } from 'react-redux';
 import {
   SignatureRequestStatus,
   type SignatureControllerState,
   type SignatureRequest,
 } from '@metamask/signature-controller';
+import type { MetaMaskReduxState } from '../store/store';
 import {
   unapprovedPersonalMsgsSelector,
   unapprovedTypedMessagesSelector,
@@ -31,12 +31,12 @@ export const selectSignatureRequestById = createSelector(
  * Returns the unapproved {@link SignatureRequest} for a given ID, or
  * `undefined` if the request does not exist or is not in the unapproved state.
  *
- * The input selector casts `DefaultRootState` to `SignatureState` so callers
+ * The input selector casts `MetaMaskReduxState` to `SignatureState` so callers
  * inside `useSelector` need no type cast at the call site.
  */
 export const selectUnapprovedSignatureRequestById = createSelector(
-  (state: DefaultRootState, id: string | undefined) =>
-    selectSignatureRequestById(state as SignatureState, id),
+  (state: MetaMaskReduxState, id: string | undefined) =>
+    selectSignatureRequestById(state as unknown as SignatureState, id),
   (request) =>
     request?.status === SignatureRequestStatus.Unapproved ? request : undefined,
 );
@@ -54,6 +54,6 @@ const selectUnapprovedMessages = createSelector(
 /** @deprecated Use {@link selectSignatureRequestById} or {@link selectUnapprovedSignatureRequestById} instead. */
 export const selectUnapprovedMessage = createSelector(
   selectUnapprovedMessages,
-  (_state: DefaultRootState, messageId: string) => messageId,
+  (_state: MetaMaskReduxState, messageId: string) => messageId,
   (messages, messageId) => messages[messageId],
 );

@@ -11,8 +11,8 @@
 
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Mockttp } from 'mockttp';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -94,8 +94,8 @@ describe('Send ERC20', function () {
 
           const tokenAddress =
             await contractRegistry?.getContractAddress(smartContract);
-          const assetListPage = new AssetListPage(driver);
-          await assetListPage.importCustomTokenByChain(
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.importCustomTokenByChain(
             '0x539',
             tokenAddress as string,
           );
@@ -103,11 +103,11 @@ describe('Send ERC20', function () {
           const homePage = new HomePage(driver);
           const sendPage = new SendPage(driver);
           const confirmation = new Confirmation(driver);
-          const activityListPage = new ActivityListPage(driver);
+          const activityTab = new ActivityTab(driver);
 
           await homePage.startSendFlow();
           await sendPage.selectToken('0x539', 'TST');
-          await sendPage.fillRecipient(DEFAULT_RECIPIENT);
+          await sendPage.fillRecipient({ recipientAddress: DEFAULT_RECIPIENT });
           await sendPage.fillAmount('1');
           await sendPage.pressContinueButton();
 
@@ -115,8 +115,8 @@ describe('Send ERC20', function () {
           await confirmation.clickFooterConfirmButton();
 
           await homePage.goToActivityList();
-          await activityListPage.checkTransactionActivityByText('Sent');
-          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
+          await activityTab.checkTransactionActivityByText('Sent');
+          await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
         },
         erc20Mocks,
         smartContract,
@@ -144,7 +144,7 @@ describe('Send ERC20', function () {
             await contractRegistry?.getContractAddress(smartContract);
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);
-          const activityListPage = new ActivityListPage(driver);
+          const activityTab = new ActivityTab(driver);
 
           await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
@@ -173,7 +173,7 @@ describe('Send ERC20', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await homePage.goToActivityList();
-          await activityListPage.checkTransactionActivityByText('Sent');
+          await activityTab.checkTransactionActivityByText('Sent');
         },
         erc20Mocks,
         smartContract,

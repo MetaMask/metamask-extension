@@ -78,6 +78,9 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RemoteFeatureFlagController.remoteFeatureFlags',
   'data.RemoteFeatureFlagController.thresholdCache',
   'data.RemoteFeatureFlagController.rawRemoteFeatureFlags',
+  // Threshold group selection is derived from the (random) analyticsId, so it
+  // is non-deterministic per run, like the other flags above.
+  'data.RemoteFeatureFlagController.featureFlagThresholdGroups',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
@@ -92,9 +95,13 @@ const getFixtureIgnoredKeys = (): string[] => [
   // E2E runs in full-screen / toolbar-popup flows, not the extension side panel.
   // Dist builds still persist `useSidePanelAsDefault: true` while fixtures use `false`.
   'data.PreferencesController.preferences.useSidePanelAsDefault',
+  // Dist build sets this to false despite being true when onboarding with localhost (bug #45237)
+  'data.PreferencesController.preferences.showTestNetworks',
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
   // Random ids
+  'data.AnalyticsController.analyticsId',
+  'data.AnalyticsController.preConsentEventQueue',
   'data.MultichainBalancesController',
   'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',
@@ -112,6 +119,11 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.KeyringController.vault',
   // PerpsController is conditionally included in build via PERPS_ENABLED env var
   'data.PerpsController',
+  'data.RewardsController.rewardsAccounts.bip122:000000000019d6689c085ae165831e93:bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252.lastFreshOptInStatusCheck',
+  'data.RewardsController.rewardsAccounts.eip155:0:0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastFreshOptInStatusCheck',
+  'data.RewardsController.rewardsActiveAccount.lastFreshOptInStatusCheck',
+  'data.RewardsController.rewardsAccounts.solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer.lastFreshOptInStatusCheck',
+  'data.RewardsController.rewardsAccounts.tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3.lastFreshOptInStatusCheck',
 ];
 
 /**

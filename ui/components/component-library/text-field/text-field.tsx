@@ -17,6 +17,13 @@ import {
   TextFieldType,
 } from './text-field.types';
 
+/**
+ * @deprecated This component is deprecated and will be removed in a future release.
+ * Please use the TextField component from @metamask/design-system-react instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#textfield-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-textfield--docs | Storybook Documentation}
+ * @see {@link https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components/TextField | Component Source}
+ */
 export const TextField: TextFieldComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -94,7 +101,6 @@ export const TextField: TextFieldComponent = React.forwardRef(
       if (inputRef && 'current' in inputRef) {
         // Assign the input element reference to the external ref
         // TODO: Use `ref` prop instead. `forwardRef` is deprecated in React v19.
-        // eslint-disable-next-line react-compiler/react-compiler
         inputRef.current = inputElementRef;
       }
       // Check if an external ref (inputRef) is a callback function

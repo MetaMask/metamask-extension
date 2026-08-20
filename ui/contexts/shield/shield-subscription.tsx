@@ -1,11 +1,5 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useCallback, useContext, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import {
   PRODUCT_TYPES,
   COHORT_NAMES,
@@ -19,21 +13,33 @@ import {
   assignUserToCohort,
   setPendingShieldCohort,
   setShowShieldEntryModalOnce,
-  subscriptionsStartPolling,
 } from '../../store/actions';
 import { getUseExternalServices } from '../../selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
+import { SUBSCRIPTIONS_POLLING_INPUT } from '../../../shared/constants/subscriptions';
 import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
-import { MetaMaskReduxDispatch } from '../../store/store';
+import { useDispatch } from '../../store/hooks';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
+import usePolling from '../../hooks/usePolling';
+import {
+  subscriptionsStartPolling,
+  subscriptionsStopPolling,
+} from './subscriptionsPollingActions';
+
+const evaluatedShieldCohortsThisSession = new Set<string>();
+
+/** @internal */
+export function resetEvaluatedShieldCohortsForTesting(): void {
+  evaluatedShieldCohortsThisSession.clear();
+}
 
 export const ShieldSubscriptionContext = React.createContext<{
   evaluateCohortEligibility: (entrypointCohort: string) => Promise<void>;
@@ -68,8 +74,10 @@ export const useShieldSubscriptionContext = () => {
  * @param props - Component props
  * @param props.children - Child elements to render
  */
-export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+export const ShieldSubscriptionProvider = ({
+  children,
+}: React.PropsWithChildren<unknown>) => {
+  const dispatch = useDispatch();
   const isBasicFunctionalityEnabled = Boolean(
     useSelector(getUseExternalServices),
   );
@@ -154,16 +162,21 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     // eslint-disable-next-line no-empty-function
   >(async () => {});
 
-  // eslint-disable-next-line react-compiler/react-compiler
+  // eslint-disable-next-line react-hooks/refs
   evaluateCohortEligibilityRef.current = async (
     entrypointCohort: string,
   ): Promise<void> => {
+    if (evaluatedShieldCohortsThisSession.has(entrypointCohort)) {
+      return;
+    }
+
     try {
       if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
         return;
       }
 
       if (isShieldSubscriptionActive) {
+        evaluatedShieldCohortsThisSession.add(entrypointCohort);
         dispatch(
           setShowShieldEntryModalOnce({
             show: false,
@@ -175,6 +188,8 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       if (!isSignedIn || !isUnlocked || hasShieldEntryModalShownOnce) {
         return;
       }
+
+      evaluatedShieldCohortsThisSession.add(entrypointCohort);
 
       // Clear the pending cohort before any async work to prevent a race
       // condition: if #assignPostTxCohort sets POST_TX while the eligibility
@@ -267,6 +282,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         }
       }
     } catch (error) {
+      evaluatedShieldCohortsThisSession.delete(entrypointCohort);
       // Restore the pending cohort so it can be retried on the next
       // componentDidUpdate cycle instead of being silently lost.
       try {
@@ -295,23 +311,22 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     [],
   );
 
-  useEffect(() => {
-    if (
-      isMetaMaskShieldFeatureEnabled &&
-      isBasicFunctionalityEnabled &&
-      isSignedIn &&
-      isUnlocked
-    ) {
-      // start polling for the subscriptions
-      dispatch(subscriptionsStartPolling());
-    }
-  }, [
-    isMetaMaskShieldFeatureEnabled,
-    isSignedIn,
-    dispatch,
-    isUnlocked,
-    isBasicFunctionalityEnabled,
-  ]);
+  const shouldPoll =
+    isMetaMaskShieldFeatureEnabled &&
+    isBasicFunctionalityEnabled &&
+    isSignedIn &&
+    isUnlocked;
+
+  usePolling({
+    startPolling: subscriptionsStartPolling,
+    stopPollingByPollingToken: (pollingToken: string) => {
+      subscriptionsStopPolling(pollingToken).catch((error) => {
+        log.warn('[subscriptionsStopPolling] error', error);
+      });
+    },
+    input: SUBSCRIPTIONS_POLLING_INPUT,
+    enabled: shouldPoll,
+  });
 
   /**
    * Memoize the context value to prevent creating a new object reference

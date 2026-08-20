@@ -20,10 +20,17 @@ import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import { NftEmptyState } from '../nft-empty-state';
 import { transitionForward } from '../../../../ui/transition';
+import { useScreenViewedEvent } from '../../../../../hooks/useScreenViewedEvent';
+import {
+  MetaMetricsEventName,
+  ScreenViewedEntryPoint,
+} from '../../../../../../shared/constants/metametrics';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export default function NftsTab() {
+export default function NftsTab({
+  entryPoint,
+}: Readonly<{
+  entryPoint?: ScreenViewedEntryPoint;
+}>) {
   const navigate = useNavigate();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
@@ -31,7 +38,6 @@ export default function NftsTab() {
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
-
   const { collections } = useNftsCollections();
 
   const { currentlyOwnedNfts, previouslyOwnedNfts } = useNfts();
@@ -43,6 +49,8 @@ export default function NftsTab() {
       endTrace({ name: TraceName.AccountOverviewNftsTab });
     }
   }, [nftsStillFetchingIndication]);
+
+  useScreenViewedEvent(MetaMetricsEventName.NftScreenViewed, entryPoint);
 
   const handleNftClick = (nft: NFT) => {
     transitionForward(() =>

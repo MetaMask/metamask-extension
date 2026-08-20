@@ -6,6 +6,7 @@ import {
   SignatureRequestStatus,
   SignatureRequestType,
 } from '@metamask/signature-controller';
+import type { MetaMaskReduxState } from '../store/store';
 import { EMPTY_OBJECT } from './shared';
 import {
   selectSignatureRequests,
@@ -108,7 +109,10 @@ describe('signature selectors', () => {
       const state = createMockState({ 'sig-1': request });
 
       expect(
-        selectUnapprovedSignatureRequestById(state, 'sig-1'),
+        selectUnapprovedSignatureRequestById(
+          state as unknown as MetaMaskReduxState,
+          'sig-1',
+        ),
       ).toStrictEqual(request);
     });
 
@@ -120,7 +124,10 @@ describe('signature selectors', () => {
       const state = createMockState({ 'sig-1': request });
 
       expect(
-        selectUnapprovedSignatureRequestById(state, 'sig-1'),
+        selectUnapprovedSignatureRequestById(
+          state as unknown as MetaMaskReduxState,
+          'sig-1',
+        ),
       ).toBeUndefined();
     });
 
@@ -132,7 +139,10 @@ describe('signature selectors', () => {
       const state = createMockState({ 'sig-1': request });
 
       expect(
-        selectUnapprovedSignatureRequestById(state, 'non-existent'),
+        selectUnapprovedSignatureRequestById(
+          state as unknown as MetaMaskReduxState,
+          'non-existent',
+        ),
       ).toBeUndefined();
     });
 
@@ -140,7 +150,10 @@ describe('signature selectors', () => {
       const state = createMockState({});
 
       expect(
-        selectUnapprovedSignatureRequestById(state, 'sig-1'),
+        selectUnapprovedSignatureRequestById(
+          state as unknown as MetaMaskReduxState,
+          'sig-1',
+        ),
       ).toBeUndefined();
     });
 
@@ -152,7 +165,10 @@ describe('signature selectors', () => {
       const state = createMockState({ 'sig-1': request });
 
       expect(
-        selectUnapprovedSignatureRequestById(state, undefined),
+        selectUnapprovedSignatureRequestById(
+          state as unknown as MetaMaskReduxState,
+          undefined,
+        ),
       ).toBeUndefined();
     });
   });

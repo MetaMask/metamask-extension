@@ -1,5 +1,4 @@
-import { act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   REFERRAL_CODE_DEBOUNCE_MS,
@@ -9,7 +8,10 @@ import {
 jest.useFakeTimers();
 
 jest.mock('../../store/actions', () => ({
-  validateRewardsReferralCode: jest.fn(() => async () => true),
+  validateRewardsReferralCode: jest.fn(() => async () => ({
+    valid: true,
+    isVipCode: false,
+  })),
 }));
 
 const { validateRewardsReferralCode } = jest.requireMock(
@@ -192,7 +194,10 @@ describe('useValidateReferralCode', () => {
   });
 
   it('sets isValid=false when validation returns false', async () => {
-    validateRewardsReferralCode.mockReturnValueOnce(async () => false);
+    validateRewardsReferralCode.mockReturnValueOnce(async () => ({
+      valid: false,
+      isVipCode: false,
+    }));
 
     const { result } = renderHookWithProvider(
       () => useValidateReferralCode('', 1000),
@@ -247,7 +252,10 @@ describe('useValidateReferralCode', () => {
     expect(msg).toBe('');
 
     // Invalid
-    validateRewardsReferralCode.mockReturnValueOnce(async () => false);
+    validateRewardsReferralCode.mockReturnValueOnce(async () => ({
+      valid: false,
+      isVipCode: false,
+    }));
     msg = await result.current.validateCode('abcdef');
     expect(msg).toBe('Invalid code');
 
@@ -307,14 +315,16 @@ describe('useValidateReferralCode', () => {
   });
 
   it('discards stale responses when a newer validation has completed', async () => {
-    let resolveFirst: (value: boolean) => void;
-    const firstPromise = new Promise<boolean>((resolve) => {
-      resolveFirst = resolve;
-    });
+    let resolveFirst: (value: { valid: boolean; isVipCode: boolean }) => void;
+    const firstPromise = new Promise<{ valid: boolean; isVipCode: boolean }>(
+      (resolve) => {
+        resolveFirst = resolve;
+      },
+    );
 
     validateRewardsReferralCode
       .mockReturnValueOnce(async () => firstPromise)
-      .mockReturnValueOnce(async () => true);
+      .mockReturnValueOnce(async () => ({ valid: true, isVipCode: false }));
 
     const { result } = renderHookWithProvider(
       () => useValidateReferralCode('', 1000),
@@ -338,10 +348,123 @@ describe('useValidateReferralCode', () => {
     });
 
     await act(async () => {
-      resolveFirst?.(false);
+      resolveFirst?.({ valid: false, isVipCode: false });
     });
 
     expect(result.current.referralCode).toBe('GHJKMN');
     expect(result.current.isValid).toBe(true);
+  });
+
+  it('exposes isVipCode=true when validation returns a VIP code', async () => {
+    validateRewardsReferralCode.mockReturnValueOnce(async () => ({
+      valid: true,
+      isVipCode: true,
+    }));
+
+    const { result } = renderHookWithProvider(
+      () => useValidateReferralCode('', 1000),
+      {},
+    );
+
+    act(() => {
+      result.current.setReferralCode('vipcode');
+    });
+
+    await advanceReferralCodeDebounce(1000);
+
+    await waitFor(() => {
+      expect(result.current.isValidating).toBe(false);
+    });
+
+    expect(result.current.isValid).toBe(true);
+    expect(result.current.isVipCode).toBe(true);
+  });
+
+  it('does not expose isVipCode for a valid non-VIP code', async () => {
+    const { result } = renderHookWithProvider(
+      () => useValidateReferralCode('', 1000),
+      {},
+    );
+
+    act(() => {
+      result.current.setReferralCode('abcdef');
+    });
+
+    await advanceReferralCodeDebounce(1000);
+
+    await waitFor(() => {
+      expect(result.current.isValidating).toBe(false);
+    });
+
+    expect(result.current.isValid).toBe(true);
+    expect(result.current.isVipCode).toBe(false);
+  });
+
+  it('clears isVipCode when the code becomes too short', async () => {
+    validateRewardsReferralCode.mockReturnValueOnce(async () => ({
+      valid: true,
+      isVipCode: true,
+    }));
+
+    const { result } = renderHookWithProvider(
+      () => useValidateReferralCode('', 1000),
+      {},
+    );
+
+    act(() => {
+      result.current.setReferralCode('vipcode');
+    });
+
+    await advanceReferralCodeDebounce(1000);
+
+    await waitFor(() => {
+      expect(result.current.isVipCode).toBe(true);
+    });
+
+    act(() => {
+      result.current.setReferralCode('ab');
+    });
+
+    expect(result.current.isVipCode).toBe(false);
+  });
+
+  it('ignores stale validation errors after initialValue is cleared', async () => {
+    let rejectValidation: (error: Error) => void = () => undefined;
+    const pendingValidation = new Promise<{
+      valid: boolean;
+      isVipCode: boolean;
+    }>((_resolve, reject) => {
+      rejectValidation = reject;
+    });
+
+    validateRewardsReferralCode.mockReturnValueOnce(
+      async () => pendingValidation,
+    );
+
+    let initialCode = 'ABCDEF';
+    const { result, rerender } = renderHookWithProvider(
+      () => useValidateReferralCode(initialCode, 1000),
+      {},
+    );
+
+    expect(result.current.isValidating).toBe(true);
+
+    await advanceReferralCodeDebounce(1000);
+
+    expect(validateRewardsReferralCode).toHaveBeenCalledWith('ABCDEF');
+
+    initialCode = '';
+    rerender();
+
+    expect(result.current.referralCode).toBe('');
+    expect(result.current.isValidating).toBe(false);
+    expect(result.current.isUnknownError).toBe(false);
+
+    await act(async () => {
+      rejectValidation(new Error('boom'));
+    });
+
+    expect(result.current.isUnknownError).toBe(false);
+    expect(result.current.isValidating).toBe(false);
   });
 });
