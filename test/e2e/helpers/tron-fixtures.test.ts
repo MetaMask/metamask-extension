@@ -57,10 +57,7 @@ describe('withTronFixtures', () => {
     it('starts Anvil and a new Tron process by default', () => {
       expect(
         resolveTronFixtureLocalNodeOptions({ startupNodeOptions }),
-      ).toStrictEqual([
-        'anvil',
-        { type: 'tron', options: startupNodeOptions },
-      ]);
+      ).toStrictEqual(['anvil', { type: 'tron', options: startupNodeOptions }]);
     });
 
     it('starts only a new Tron process when Anvil is disabled', () => {
