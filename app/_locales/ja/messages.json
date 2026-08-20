@@ -8304,9 +8304,6 @@
     "message": "購入成功",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "その他のオプション"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "営業日"
   },

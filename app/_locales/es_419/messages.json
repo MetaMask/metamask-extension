@@ -8308,9 +8308,6 @@
     "message": "Compra exitosa",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Otras opciones"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "día hábil"
   },

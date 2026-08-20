@@ -230,13 +230,48 @@ describe('RampsProviderSelectionScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('matches snapshot with provider quotes', () => {
+  it('matches snapshot with only providers that returned quotes', () => {
     mockLocationState = { amount: 100 };
     mockUseRampsQuotes.mockReturnValue({
       data: {
         success: [transakQuote],
         sorted: [{ sortBy: 'reliability', ids: [transak.id, moonpay.id] }],
         error: [
+          {
+            provider: moonpay.id,
+            error: 'Quote unavailable',
+          },
+        ],
+        customActions: [],
+      },
+      loading: false,
+      status: 'success',
+      isSuccess: true,
+      error: null,
+      getQuotes: jest.fn(),
+      getBuyWidgetData: jest.fn(),
+    });
+
+    const { container } = renderWithProvider(
+      <RampsProviderSelectionScreen />,
+      createStore(),
+      '/ramps/provider-selection',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot when no providers return quotes', () => {
+    mockLocationState = { amount: 100 };
+    mockUseRampsQuotes.mockReturnValue({
+      data: {
+        success: [],
+        sorted: [],
+        error: [
+          {
+            provider: transak.id,
+            error: 'Quote unavailable',
+          },
           {
             provider: moonpay.id,
             error: 'Quote unavailable',

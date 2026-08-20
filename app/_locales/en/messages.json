@@ -8542,9 +8542,6 @@
     "message": "Buy successful",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Other options"
-  },
   "rampsPayWith": {
     "message": "Pay with"
   },

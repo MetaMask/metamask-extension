@@ -8300,9 +8300,6 @@
     "message": "खरीद सफल रही",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "अन्य विकल्प"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "व्यावसायिक दिन"
   },
