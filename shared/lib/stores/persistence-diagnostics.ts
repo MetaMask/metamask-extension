@@ -150,10 +150,7 @@ export class SplitStatePersistenceDiagnostics {
    * @param readDiagnostics
    * @param now
    */
-  getSnapshot(
-    readDiagnostics?: SplitStateReadDiagnostics,
-    now = Date.now(),
-  ) {
+  getSnapshot(readDiagnostics?: SplitStateReadDiagnostics, now = Date.now()) {
     const config = this.#config;
 
     if (!config) {
@@ -211,8 +208,7 @@ export class SplitStatePersistenceDiagnostics {
 
     if (
       this.#lastPersistedAt !== 0 &&
-      now - this.#lastPersistedAt <
-        PERSIST_INTERVAL_MS
+      now - this.#lastPersistedAt < PERSIST_INTERVAL_MS
     ) {
       return;
     }
@@ -253,15 +249,12 @@ export class SplitStatePersistenceDiagnostics {
       return undefined;
     }
 
-    const [baselineMetadata] = await this.#db.get([
-      BASELINE_KEY,
-    ]);
+    const [baselineMetadata] = await this.#db.get([BASELINE_KEY]);
 
     if (
       isObject(baselineMetadata) &&
       typeof baselineMetadata.lastSentAt === 'number' &&
-      now - baselineMetadata.lastSentAt <
-        BASELINE_INTERVAL_MS
+      now - baselineMetadata.lastSentAt < BASELINE_INTERVAL_MS
     ) {
       return undefined;
     }
@@ -353,9 +346,7 @@ export class SplitStatePersistenceDiagnostics {
 
     this.#hydrated = true;
 
-    const [persistedSnapshot] = await this.#db.get([
-      DIAGNOSTICS_KEY,
-    ]);
+    const [persistedSnapshot] = await this.#db.get([DIAGNOSTICS_KEY]);
 
     if (
       !isObject(persistedSnapshot) ||
