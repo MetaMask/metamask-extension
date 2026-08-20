@@ -1,11 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useMemo,
-  useCallback,
-  forwardRef,
-  useImperativeHandle,
-} from 'react';
+import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import {
   useRive,
   useRiveFile,
@@ -16,22 +9,18 @@ import {
   ImageAsset,
 } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
-import {
-  useRiveWasmContext,
-  useRiveWasmFile,
-} from '../../../contexts/rive-wasm';
+import { useRiveWasmContext, useRiveWasmFile } from '../../../contexts/rive-wasm';
 
 const CONNECTION_RIV_URL = './images/riv_animations/connection.riv';
 const STATE_MACHINE_NAME = 'State Machine 1';
 const IMAGE_PLACEHOLDER_NAME = 'DEX Img-6574022.jpeg';
 const FALLBACK_ICON_URL = './images/eth_logo.svg';
 
-export type ConnectionAnimationHandle = {
-  triggerConnected: () => void;
-};
+const ANIMATION_SIZE = 200;
 
 type ConnectionAnimationProps = {
   iconUrl?: string | null;
+  isConnected?: boolean;
   onConnectedAnimationComplete?: () => void;
 };
 
@@ -39,10 +28,12 @@ type ConnectionAnimationInnerProps = ConnectionAnimationProps & {
   buffer: ArrayBuffer;
 };
 
-const ConnectionAnimationInner = forwardRef<
-  ConnectionAnimationHandle,
-  ConnectionAnimationInnerProps
->(({ buffer, iconUrl, onConnectedAnimationComplete }, ref) => {
+const ConnectionAnimationInner = ({
+  buffer,
+  iconUrl,
+  isConnected,
+  onConnectedAnimationComplete,
+}: ConnectionAnimationInnerProps) => {
   const { isWasmReady } = useRiveWasmContext();
   const containerRef = useRef<HTMLDivElement>(null);
   const connectedTriggeredRef = useRef(false);
@@ -87,10 +78,7 @@ const ConnectionAnimationInner = forwardRef<
   const assetLoader = useCallback(
     (asset: { isImage: boolean; name: string }, bytes: Uint8Array) => {
       if (asset.isImage && asset.name === IMAGE_PLACEHOLDER_NAME) {
-        loadImageWithFallback(
-          asset as unknown as ImageAsset,
-          imageUrlToLoad,
-        );
+        loadImageWithFallback(asset as unknown as ImageAsset, imageUrlToLoad);
         return true;
       }
 
@@ -118,34 +106,29 @@ const ConnectionAnimationInner = forwardRef<
     }),
   });
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      triggerConnected: () => {
-        if (!rive || connectedTriggeredRef.current) {
-          return;
-        }
+  // Fire 'connected' trigger when isConnected becomes true (like status-icon.tsx pattern)
+  useEffect(() => {
+    if (!rive || !isConnected || connectedTriggeredRef.current) {
+      return;
+    }
 
-        try {
-          const inputs = rive.stateMachineInputs(STATE_MACHINE_NAME);
-          const connectedTrigger = inputs?.find(
-            (input) => input.name === 'connected',
-          );
-          if (connectedTrigger) {
-            connectedTrigger.fire();
-            connectedTriggeredRef.current = true;
+    try {
+      const inputs = rive.stateMachineInputs(STATE_MACHINE_NAME);
+      const connectedTrigger = inputs?.find(
+        (input) => input.name === 'connected',
+      );
+      if (connectedTrigger) {
+        connectedTrigger.fire();
+        connectedTriggeredRef.current = true;
 
-            if (onConnectedAnimationComplete) {
-              setTimeout(onConnectedAnimationComplete, 800);
-            }
-          }
-        } catch {
-          // Rive WASM runtime may have been cleaned up
+        if (onConnectedAnimationComplete) {
+          setTimeout(onConnectedAnimationComplete, 800);
         }
-      },
-    }),
-    [rive, onConnectedAnimationComplete],
-  );
+      }
+    } catch {
+      // Rive WASM runtime may have been cleaned up
+    }
+  }, [rive, isConnected, onConnectedAnimationComplete]);
 
   useEffect(() => {
     if (!rive || !containerRef.current) {
@@ -193,12 +176,19 @@ const ConnectionAnimationInner = forwardRef<
     };
   }, [rive]);
 
-  if (!isWasmReady || riveFileStatus === 'loading' || riveFileStatus === 'failed') {
+  if (
+    !isWasmReady ||
+    riveFileStatus === 'loading' ||
+    riveFileStatus === 'failed'
+  ) {
     return (
       <Box
         ref={containerRef}
         className="connection-animation"
-        style={{ width: '100%', height: '100%' }}
+        style={{
+          width: `${ANIMATION_SIZE}px`,
+          height: `${ANIMATION_SIZE}px`,
+        }}
       />
     );
   }
@@ -207,19 +197,21 @@ const ConnectionAnimationInner = forwardRef<
     <Box
       ref={containerRef}
       className="connection-animation"
-      style={{ width: '100%', height: '100%' }}
+      style={{
+        width: `${ANIMATION_SIZE}px`,
+        height: `${ANIMATION_SIZE}px`,
+      }}
     >
       <RiveComponent style={{ width: '100%', height: '100%' }} />
     </Box>
   );
-});
+};
 
-ConnectionAnimationInner.displayName = 'ConnectionAnimationInner';
-
-const ConnectionAnimation = forwardRef<
-  ConnectionAnimationHandle,
-  ConnectionAnimationProps
->(({ iconUrl, onConnectedAnimationComplete }, ref) => {
+export default function ConnectionAnimation({
+  iconUrl,
+  isConnected,
+  onConnectedAnimationComplete,
+}: ConnectionAnimationProps) {
   const { isWasmReady, error: wasmError } = useRiveWasmContext();
   const {
     buffer,
@@ -240,21 +232,20 @@ const ConnectionAnimation = forwardRef<
     return (
       <Box
         className="connection-animation"
-        style={{ width: '100%', height: '100%' }}
+        style={{
+          width: `${ANIMATION_SIZE}px`,
+          height: `${ANIMATION_SIZE}px`,
+        }}
       />
     );
   }
 
   return (
     <ConnectionAnimationInner
-      ref={ref}
       buffer={buffer}
       iconUrl={iconUrl}
+      isConnected={isConnected}
       onConnectedAnimationComplete={onConnectedAnimationComplete}
     />
   );
-});
-
-ConnectionAnimation.displayName = 'ConnectionAnimation';
-
-export default ConnectionAnimation;
+}

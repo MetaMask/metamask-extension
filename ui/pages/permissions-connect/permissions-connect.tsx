@@ -88,9 +88,7 @@ import {
 } from '../../helpers/utils/caip25-permissions';
 import { useDispatch } from '../../store/hooks';
 import { ConnectionTrustSignalGate } from './connection-trust-signal-gate';
-import PermissionsRedirect, {
-  PermissionsRedirectHandle,
-} from './redirect';
+import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
@@ -337,7 +335,8 @@ function PermissionsConnect() {
   const prevLastConnectedInfoRef = useRef<typeof lastConnectedInfo | null>(
     null,
   );
-  const connectionAnimationRef = useRef<PermissionsRedirectHandle>(null);
+  const [isConnectionAnimationConnected, setIsConnectionAnimationConnected] =
+    useState(false);
 
   const handleAnimationComplete = useCallback(() => {
     navigate(DEFAULT_ROUTE);
@@ -362,10 +361,8 @@ function PermissionsConnect() {
       }
 
       if (approved) {
-        // Trigger the connected animation after a short delay to ensure the component is mounted
-        setTimeout(() => {
-          connectionAnimationRef.current?.triggerConnected();
-        }, 100);
+        // Trigger the connected animation state
+        setIsConnectionAnimationConnected(true);
         return;
       }
       navigate(DEFAULT_ROUTE);
@@ -661,8 +658,8 @@ function PermissionsConnect() {
           renderTopBar(permissionsRequestId)}
         {redirecting && permissionsApproved ? (
           <PermissionsRedirect
-            ref={connectionAnimationRef}
             subjectMetadata={targetSubjectMetadata}
+            isConnected={isConnectionAnimationConnected}
             onAnimationComplete={handleAnimationComplete}
           />
         ) : (

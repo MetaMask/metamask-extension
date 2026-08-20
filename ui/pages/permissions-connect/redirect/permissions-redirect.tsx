@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  forwardRef,
-  useImperativeHandle,
-} from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -12,9 +6,7 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import ConnectionAnimation, {
-  ConnectionAnimationHandle,
-} from './connection-animation';
+import ConnectionAnimation from './connection-animation';
 
 type SubjectMetadata = {
   extensionId?: string | null;
@@ -26,40 +18,19 @@ type SubjectMetadata = {
 
 type PermissionsRedirectProps = {
   subjectMetadata?: SubjectMetadata;
+  isConnected?: boolean;
   onAnimationComplete?: () => void;
 };
 
-export type PermissionsRedirectHandle = {
-  triggerConnected: () => void;
-};
-
-const PermissionsRedirect = forwardRef<
-  PermissionsRedirectHandle,
-  PermissionsRedirectProps
->(({ subjectMetadata, onAnimationComplete }, ref) => {
-  const animationRef = useRef<ConnectionAnimationHandle>(null);
-  const [cachedSubjectMetadata, setCachedSubjectMetadata] = useState<
-    SubjectMetadata | undefined
-  >(subjectMetadata);
-  const hasTriggeredConnectedRef = useRef(false);
-
-  useEffect(() => {
-    if (subjectMetadata && subjectMetadata.origin) {
-      setCachedSubjectMetadata(subjectMetadata);
-    }
-  }, [subjectMetadata]);
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      triggerConnected: () => {
-        if (hasTriggeredConnectedRef.current) {
-          return;
-        }
-        hasTriggeredConnectedRef.current = true;
-        animationRef.current?.triggerConnected();
-      },
-    }),
+export default function PermissionsRedirect({
+  subjectMetadata,
+  isConnected = false,
+  onAnimationComplete,
+}: PermissionsRedirectProps) {
+  // Capture the icon URL from metadata - this won't change once the component is mounted
+  const iconUrl = useMemo(
+    () => subjectMetadata?.iconUrl,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -72,16 +43,13 @@ const PermissionsRedirect = forwardRef<
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
       <ConnectionAnimation
-        ref={animationRef}
-        iconUrl={cachedSubjectMetadata?.iconUrl}
+        iconUrl={iconUrl}
+        isConnected={isConnected}
         onConnectedAnimationComplete={onAnimationComplete}
       />
     </Box>
   );
-});
+}
 
-PermissionsRedirect.displayName = 'PermissionsRedirect';
-
-export default PermissionsRedirect;
 export { PermissionsRedirect };
 export type { PermissionsRedirectProps, SubjectMetadata };

@@ -77,7 +77,7 @@ describe('ConnectionAnimation', () => {
     expect(container.querySelector('.connection-animation')).toBeInTheDocument();
   });
 
-  it('exposes triggerConnected via ref', () => {
+  it('fires connected trigger when isConnected becomes true', () => {
     const mockedWasm = jest.requireMock('../../../contexts/rive-wasm');
     mockedWasm.useRiveWasmContext.mockReturnValue({
       isWasmReady: true,
@@ -89,20 +89,66 @@ describe('ConnectionAnimation', () => {
       error: undefined,
     });
 
+    const mockFire = jest.fn();
     const mockRiveInstance = {
-      stateMachineInputs: jest.fn(() => [
-        { name: 'connected', fire: jest.fn() },
-      ]),
+      stateMachineInputs: jest.fn(() => [{ name: 'connected', fire: mockFire }]),
+      resizeToCanvas: jest.fn(),
     };
     mockedRive.useRive.mockReturnValue({
       rive: mockRiveInstance,
       RiveComponent: () => <div data-testid="rive-component" />,
     } as unknown as ReturnType<typeof riveReactCanvas.useRive>);
 
-    const ref = React.createRef<{ triggerConnected: () => void }>();
-    render(<ConnectionAnimation ref={ref} />);
+    const { rerender } = render(<ConnectionAnimation isConnected={false} />);
 
-    expect(ref.current).toBeDefined();
-    expect(ref.current?.triggerConnected).toBeDefined();
+    expect(mockFire).not.toHaveBeenCalled();
+
+    rerender(<ConnectionAnimation isConnected />);
+
+    expect(mockRiveInstance.stateMachineInputs).toHaveBeenCalledWith(
+      'State Machine 1',
+    );
+    expect(mockFire).toHaveBeenCalled();
+  });
+
+  it('calls onConnectedAnimationComplete after 800ms when connected', () => {
+    jest.useFakeTimers();
+
+    const mockedWasm = jest.requireMock('../../../contexts/rive-wasm');
+    mockedWasm.useRiveWasmContext.mockReturnValue({
+      isWasmReady: true,
+      error: undefined,
+    });
+    mockedWasm.useRiveWasmFile.mockReturnValue({
+      buffer: new ArrayBuffer(8),
+      loading: false,
+      error: undefined,
+    });
+
+    const mockFire = jest.fn();
+    const mockRiveInstance = {
+      stateMachineInputs: jest.fn(() => [{ name: 'connected', fire: mockFire }]),
+      resizeToCanvas: jest.fn(),
+    };
+    mockedRive.useRive.mockReturnValue({
+      rive: mockRiveInstance,
+      RiveComponent: () => <div data-testid="rive-component" />,
+    } as unknown as ReturnType<typeof riveReactCanvas.useRive>);
+
+    const onComplete = jest.fn();
+    render(
+      <ConnectionAnimation
+        isConnected
+        onConnectedAnimationComplete={onComplete}
+      />,
+    );
+
+    expect(onComplete).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(800);
+
+    expect(onComplete).toHaveBeenCalled();
+
+    jest.useRealTimers();
   });
 });
