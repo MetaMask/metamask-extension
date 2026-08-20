@@ -144,10 +144,7 @@ class AddEditNetworkPage {
       } displayed on the edit network page`,
     );
     if (
-      !(await this.driver.isElementPresentAndVisible(
-        this.rpcDropDownItem,
-        100,
-      ))
+      !(await this.driver.isElementPresentAndVisible(this.rpcDropDownItem, 100))
     ) {
       await this.driver.clickElement(this.rpcDropDownButton);
       await this.driver.waitForSelector(this.rpcDropDownItem);
