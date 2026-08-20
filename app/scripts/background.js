@@ -117,9 +117,9 @@ import {
 import { requestRepair } from './lib/repair';
 import {
   createSidepanelOpener,
+  setupSidePanelToolbarBehavior,
   shouldUseSidepanel,
 } from './sidepanel/background';
-import { setupSidePanelToolbarBehavior } from './sidepanel/toolbar-behavior';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
