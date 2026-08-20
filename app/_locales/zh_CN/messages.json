@@ -8294,9 +8294,6 @@
     "message": "买入成功",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "其他选项"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "工作日"
   },
