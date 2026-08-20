@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import {
   Box,
-  ButtonPrimary,
-  ButtonPrimarySize,
   FormTextField,
   FormTextFieldSize,
   HelpText,
@@ -72,12 +75,12 @@ const AddBlockExplorerModal = ({
         padding={4}
         width={BlockSize.Full}
       >
-        <ButtonPrimary
-          width={BlockSize.Full}
-          disabled={Boolean(error)}
-          size={ButtonPrimarySize.Lg}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        <Button
+          isFullWidth
+          isDisabled={Boolean(error)}
+          size={ButtonSize.Lg}
+          variant={ButtonVariant.Primary}
+          data-testid="add-block-explorer-url-button"
           onClick={async () => {
             if (url) {
               onAdded(url);
@@ -85,7 +88,7 @@ const AddBlockExplorerModal = ({
           }}
         >
           {t('addUrl')}
-        </ButtonPrimary>
+        </Button>
       </Box>
     </Box>
   );

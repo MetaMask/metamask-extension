@@ -81,9 +81,6 @@
   "back": {
     "message": "Назад"
   },
-  "backupApprovalInfo": {
-    "message": "Този секретен код е необходим за възстановяване на портфейла ви, в случай че загубите устройството си, забравите паролата си, трябва да инсталирате отново MetaMask или искате да получите достъп до портфейла си на друго устройство."
-  },
   "backupApprovalNotice": {
     "message": "Раправете резервно копие на вашия Secret Recovery код, за да запазите портфейла и средствата си."
   },
@@ -180,9 +177,6 @@
   },
   "decimal": {
     "message": "Точност до десетични знаци"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Десетичните знаци трябва да бъдат най-малко 0 и не повече от 36."
   },
   "delete": {
     "message": "Изтриване"
@@ -352,9 +346,6 @@
   "networks": {
     "message": "Mрежи"
   },
-  "nevermind": {
-    "message": "Няма значение"
-  },
   "newAccountNumberName": {
     "message": "Акаунт $1",
     "description": "Default name of next account to be created on create account screen"
@@ -511,9 +502,6 @@
   },
   "sign": {
     "message": "Подпис"
-  },
-  "signatureRequest": {
-    "message": "Заявка за подпис"
   },
   "signed": {
     "message": "Подписан"

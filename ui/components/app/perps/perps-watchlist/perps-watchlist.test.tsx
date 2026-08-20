@@ -70,8 +70,8 @@ describe('PerpsWatchlist', () => {
     expect(
       screen.getByText(messages.networkNameEthereum.message),
     ).toBeInTheDocument();
-    expect(screen.getByText('$1.2B')).toBeInTheDocument();
-    expect(screen.getByText('$850M')).toBeInTheDocument();
+    expect(screen.getByText(/\$1\.2B Vol/u)).toBeInTheDocument();
+    expect(screen.getByText(/\$850M Vol/u)).toBeInTheDocument();
     expect(screen.getByText('$45,250.00')).toBeInTheDocument();
     expect(screen.getByText('$3,025.50')).toBeInTheDocument();
   });

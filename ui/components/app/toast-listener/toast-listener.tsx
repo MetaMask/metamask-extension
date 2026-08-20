@@ -8,14 +8,8 @@ import {
 } from '../../../hooks/musd';
 import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
-import { usePerpsWithdrawTransactionToasts } from './usePerpsWithdrawTransactionToasts';
+import { RampsOrderToastListener } from '../ramps/ramps-order-toast-listener';
 import { TransactionEventToastListener } from './transaction-event-toast-listener';
-
-const PerpsWithdrawTransactionToastListener = () => {
-  usePerpsWithdrawTransactionToasts();
-
-  return null;
-};
 
 // Carried over from custom mUSD toasts. Should move telemetry out of toasts into a more appropriate location.
 const MusdTelemetry = () => {
@@ -36,9 +30,9 @@ export function ToastListener() {
   return (
     <>
       {isUnlocked ? <PerpsDepositToast /> : null}
-      <PerpsWithdrawTransactionToastListener />
       <MusdTelemetry />
       <TransactionEventToastListener />
+      {isUnlocked ? <RampsOrderToastListener /> : null}
     </>
   );
 }

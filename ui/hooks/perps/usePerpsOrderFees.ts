@@ -25,7 +25,8 @@ type UsePerpsOrderFeesOptions = {
 type UsePerpsOrderFeesReturn = {
   /**
    * Combined fee rate (protocol + MetaMask) **after** any VIP discount.
-   * `undefined` while loading or when the call failed entirely (error state).
+   * `undefined` during the initial load. Refetches retain the last resolved rate
+   * until the replacement request completes.
    * When the call succeeds, the provider's own internal fallback to base rates
    * guarantees a numeric value even if the fee-tier API is down.
    */
@@ -124,6 +125,14 @@ export function usePerpsOrderFees({
   const [hasError, setHasError] = useState(false);
 
   const requestIdRef = useRef(0);
+  const feeRequestKey = `${symbol}|${orderType}|${amount ?? ''}|${isMaker}`;
+  const [prevFeeRequestKey, setPrevFeeRequestKey] = useState(feeRequestKey);
+
+  if (feeRequestKey !== prevFeeRequestKey) {
+    setPrevFeeRequestKey(feeRequestKey);
+    setIsLoading(true);
+    setHasError(false);
+  }
 
   useEffect(() => {
     requestIdRef.current += 1;
@@ -135,10 +144,6 @@ export function usePerpsOrderFees({
         setIsLoading(false);
       }
     }, 1500);
-
-    setFeeResult(undefined);
-    setIsLoading(true);
-    setHasError(false);
 
     submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
       { orderType, isMaker, amount, symbol },

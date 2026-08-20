@@ -75,9 +75,6 @@
   "back": {
     "message": "ተመለስ"
   },
-  "backupApprovalInfo": {
-    "message": "መሳሪያዎ ቢጠፋ፣ የይለፍ ቃልዎን ቢረሱ፣ MetaMask እንደገና መጫን ቢያስፈልግዎ ወይም በሌላ መሳሪያ ወደ ቋትዎ ለመድረስ ቢፈልጉ ይህ ሚስጥራዊ ኮድ ቋትዎን መልሶ ለማግኘት ያስፈልጋል።"
-  },
   "backupApprovalNotice": {
     "message": "የቋትዎንና የገነዘብዎን ደህንነት ለማስጠበቅ ሚስጥራዊ የማስመለሻ ኮድዎን መጠባበቂያ ይያዙ።"
   },
@@ -171,9 +168,6 @@
   },
   "decimal": {
     "message": "የትክክለኛነት አስርዮሽ"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
   },
   "delete": {
     "message": "ሰርዝ"
@@ -337,9 +331,6 @@
   "networks": {
     "message": "አውታረ መረቦች"
   },
-  "nevermind": {
-    "message": "ምንም አይደል"
-  },
   "newAccountNumberName": {
     "message": "መለያ $1",
     "description": "Default name of next account to be created on create account screen"
@@ -496,9 +487,6 @@
   },
   "sign": {
     "message": "ፈርም"
-  },
-  "signatureRequest": {
-    "message": "የፊርማ ጥያቄ"
   },
   "signed": {
     "message": "ተፈርሟል"

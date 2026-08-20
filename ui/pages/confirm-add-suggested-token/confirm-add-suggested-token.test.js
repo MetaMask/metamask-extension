@@ -83,12 +83,6 @@ jest.mock('../../store/actions', () => ({
   rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
 }));
 
-jest.mock('../../hooks/useIsOriginalTokenSymbol', () => {
-  return {
-    useIsOriginalTokenSymbol: jest.fn(),
-  };
-});
-
 const renderComponent = (tokens = []) => {
   mockNavigate.mockClear();
   mockUseLocation.mockReturnValue({

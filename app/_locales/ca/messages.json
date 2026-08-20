@@ -81,9 +81,6 @@
   "back": {
     "message": "Enrere"
   },
-  "backupApprovalInfo": {
-    "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar MetaMask, o vulguis accedir al teu moneder des d'un altre dispositiu."
-  },
   "backupApprovalNotice": {
     "message": "Fes una còpia de seguretat del teu codi Secret de Recuperació per mantenir el teu moneder i els teus fons segurs."
   },
@@ -177,9 +174,6 @@
   },
   "decimal": {
     "message": "Decimals de precisió"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Els decimals han de ser al menys 0, i no més de 36."
   },
   "delete": {
     "message": "Suprimeix"
@@ -340,9 +334,6 @@
   "networks": {
     "message": "Xarxes"
   },
-  "nevermind": {
-    "message": "No importa"
-  },
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
@@ -496,9 +487,6 @@
   },
   "sign": {
     "message": "Signar"
-  },
-  "signatureRequest": {
-    "message": "Sol·licitud de Signatura"
   },
   "signed": {
     "message": "Signat"

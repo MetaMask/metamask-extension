@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -39,6 +39,7 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
+import { useDispatch } from '../../../../../store/hooks';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -117,8 +118,6 @@ const NetworkFilter = ({
     [allNetworks, allOpts],
   );
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const filter = useMemo(
     () => networkFilter || enabledNetworksByNamespace,
     [enabledNetworksByNamespace, networkFilter],
@@ -235,8 +234,6 @@ const NetworkFilter = ({
           </Box>
           <AvatarNetwork
             size={AvatarNetworkSize.Sm}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             name={currentNetwork?.nickname || ''}
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />

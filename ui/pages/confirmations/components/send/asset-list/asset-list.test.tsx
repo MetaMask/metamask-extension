@@ -360,6 +360,44 @@ describe('AssetList', () => {
       expect(mockCaptureAssetSelected).not.toHaveBeenCalled();
     });
 
+    it('calls onAssetSelect when using default SendContext outside a provider', () => {
+      const mockOnAssetSelect = jest.fn();
+      const sendContext = (
+        jest.requireMock('../../../context/send') as Record<
+          string,
+          React.Context<{
+            updateAsset: (...args: unknown[]) => void;
+          }>
+        >
+      ).SendContext;
+      const localUpdateAsset = jest.fn();
+
+      const { getAllByTestId } = render(
+        React.createElement(
+          sendContext.Provider,
+          {
+            value: {
+              updateAsset: localUpdateAsset,
+            },
+          },
+          <AssetList
+            tokens={mockTokens}
+            nfts={[]}
+            allTokens={mockTokens}
+            allNfts={[]}
+            onAssetSelect={mockOnAssetSelect}
+          />,
+        ),
+      );
+
+      fireEvent.click(getAllByTestId('asset-component')[0]);
+
+      expect(mockOnAssetSelect).toHaveBeenCalledWith(mockTokens[0]);
+      expect(mockUpdateAsset).not.toHaveBeenCalled();
+      expect(localUpdateAsset).not.toHaveBeenCalled();
+      expect(mockGoToAmountRecipientPage).not.toHaveBeenCalled();
+    });
+
     it('calls default handlers when onAssetSelect is not provided', () => {
       const { getAllByTestId } = render(
         <AssetList

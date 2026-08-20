@@ -68,7 +68,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
@@ -95,7 +95,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
@@ -137,7 +137,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
@@ -175,7 +175,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
@@ -214,7 +214,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
@@ -244,15 +244,12 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         // Submit the swap quote
         await bridgePage.submitQuote();
 
-        // Navigate to activity list and verify the bridge transaction
+        // Navigate to activity list and verify the pending row.
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkPendingBridgeTransactionActivity(1);
-
-        // Verify the transaction shows as "Bridge to Ethereum"
         await activityTab.checkTxAction({
-          action: 'Bridge to Ethereum',
-          confirmedTx: 1,
+          action: 'Bridging BTC',
+          confirmedTx: 0,
         });
       },
     );
@@ -269,7 +266,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
@@ -299,15 +296,12 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         // Submit the swap quote
         await bridgePage.submitQuote();
 
-        // Navigate to activity list and verify the bridge transaction
+        // Navigate to activity list and verify the pending row.
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkPendingBridgeTransactionActivity(1);
-
-        // Verify the transaction shows as "Bridge to Ethereum"
         await activityTab.checkTxAction({
-          action: 'Bridge to Ethereum',
-          confirmedTx: 1,
+          action: 'Bridging BTC',
+          confirmedTx: 0,
         });
       },
     );

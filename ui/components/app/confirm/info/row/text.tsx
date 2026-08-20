@@ -55,8 +55,6 @@ export const ConfirmInfoRowText = ({
     >
       {isEditable ? (
         <ButtonIcon
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           className={editIconClassName || undefined}
           color={IconColor.primaryDefault}
           ariaLabel={t('edit')}

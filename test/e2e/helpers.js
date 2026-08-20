@@ -4,6 +4,8 @@ const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
+// TODO: Fix environment or rename
+// eslint-disable-next-line no-redeclare
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
@@ -11,6 +13,9 @@ const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
+const {
+  buildPlaywrightDriver,
+} = require('./webdriver/build-playwright-driver');
 const { PAGES } = require('./webdriver/driver');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
@@ -18,6 +23,7 @@ const { setManifestFlags } = require('./set-manifest-flags');
 const {
   DAPP_PATHS,
   ERC_4337_ACCOUNT,
+  E2E_DRIVER,
   HARDWARE_WALLET_ACCOUNT_ID,
   HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
 } = require('./constants');
@@ -208,6 +214,7 @@ async function withFixtures(options, testSuite) {
     fixtures,
     localNodeOptions = 'anvil',
     smartContract,
+    driverType = E2E_DRIVER.SELENIUM,
     driverOptions,
     dappOptions,
     staticServerOptions,
@@ -265,6 +272,10 @@ async function withFixtures(options, testSuite) {
   let driver;
   let extensionId;
   let failed = false;
+  // Hoisted so the `finally` block can run Playwright-specific cleanup
+  // (user-data-dir removal) regardless of whether the try body returned
+  // early.
+  let playwrightCleanup;
 
   let localNode;
   const localNodes = [];
@@ -296,6 +307,14 @@ async function withFixtures(options, testSuite) {
           // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
           const { TronNode } = require('./seeder/tron/node');
           localNode = new TronNode();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
+        case 'bitcoin':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const { BitcoinNode } = require('./seeder/bitcoin/node');
+          localNode = new BitcoinNode();
           await localNode.start(nodeOptions);
           localNodes.push(localNode);
           break;
@@ -524,23 +543,48 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    const wd = await buildWebDriver({
-      ...driverOptions,
-      disableServerMochaToBackground,
-      isBenchmark,
-    });
+    if (driverType === E2E_DRIVER.PLAYWRIGHT) {
+      if (virtualAuthenticator) {
+        throw new Error(
+          'withFixtures: virtualAuthenticator is not supported on the Playwright path yet.',
+        );
+      }
+      const pwBrowser =
+        process.env.SELENIUM_BROWSER === 'firefox' ||
+        process.env.PLAYWRIGHT_BROWSER === 'firefox'
+          ? 'firefox'
+          : 'chrome';
+      const pwHarness = await buildPlaywrightDriver({
+        browser: pwBrowser,
+        ...driverOptions,
+      });
+      driver = pwHarness.driver;
+      driver.timeout =
+        extendedTimeoutMultiplier > 1
+          ? driver.timeout * extendedTimeoutMultiplier
+          : driver.timeout;
+      extensionId = driver.extensionId;
+      webDriver = driver.driver;
+      playwrightCleanup = pwHarness.cleanup;
+    } else {
+      const wd = await buildWebDriver({
+        ...driverOptions,
+        disableServerMochaToBackground,
+        isBenchmark,
+      });
 
-    driver = wd.driver;
-    driver.timeout =
-      extendedTimeoutMultiplier > 1
-        ? driver.timeout * extendedTimeoutMultiplier
-        : driver.timeout;
-    extensionId = wd.extensionId;
-    webDriver = driver.driver;
+      driver = wd.driver;
+      driver.timeout =
+        extendedTimeoutMultiplier > 1
+          ? driver.timeout * extendedTimeoutMultiplier
+          : driver.timeout;
+      extensionId = wd.extensionId;
+      webDriver = driver.driver;
 
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions(ignoredConsoleErrors);
-      await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
+      if (process.env.SELENIUM_BROWSER === 'chrome') {
+        await driver.checkBrowserForExceptions(ignoredConsoleErrors);
+        await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
+      }
     }
 
     let driverProxy;
@@ -673,7 +717,14 @@ async function withFixtures(options, testSuite) {
         shutdownTasks.push(bundlerServer.stop());
       }
 
-      if (webDriver) {
+      if (playwrightCleanup) {
+        // Closes the context and then removes the temporary user-data-dir
+        // created by the Playwright harness. It performs the `driver.quit()`
+        // itself, so it must not be paired with a separate concurrent
+        // `driver.quit()`: profile removal would race with context shutdown
+        // and leak temp profiles or browser processes.
+        shutdownTasks.push(playwrightCleanup());
+      } else if (webDriver) {
         shutdownTasks.push(driver.quit());
       }
       if (numberOfDapps > 0) {

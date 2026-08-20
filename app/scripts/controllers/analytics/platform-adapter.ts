@@ -44,6 +44,7 @@ export type PlatformAdapterEnrichmentContext = {
   hasMarketingConsent: () => boolean;
   hasBasicFunctionalityEnabled: () => boolean;
   getRemoteFeatureFlags: () => Record<string, unknown>;
+  getFeatureFlagThresholdGroups: () => Record<string, string>;
   appVersion: string;
   userAgent: string;
 };
@@ -115,6 +116,10 @@ export function createEnrichmentContext(
         messenger.call('RemoteFeatureFlagController:getState')
           ?.remoteFeatureFlags as Record<string, unknown> | undefined,
       ),
+    getFeatureFlagThresholdGroups: () =>
+      (messenger.call('RemoteFeatureFlagController:getState')
+        ?.featureFlagThresholdGroups as Record<string, string> | undefined) ??
+      {},
     appVersion,
     userAgent: typeof window === 'undefined' ? '' : window.navigator.userAgent,
   };
@@ -147,12 +152,8 @@ export function enrichEventProperties(
     'chain_id_caip' in enrichedProperties &&
     typeof enrichedProperties.chain_id_caip === 'string'
   ) {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     enrichedProperties.chain_id = null;
   } else if (typeof enrichedProperties.chain_id !== 'string') {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     enrichedProperties.chain_id = ctx.getDefaultChainId();
   }
 
@@ -162,11 +163,7 @@ export function enrichEventProperties(
 
   if (isAnonymousEvent) {
     const anonymousProperties = { ...enrichedProperties };
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     delete anonymousProperties.profile_id;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     delete anonymousProperties.canonical_profile_id;
     delete anonymousProperties[ANONYMOUS_EVENT_PROPERTY];
     return anonymousProperties;
@@ -191,10 +188,7 @@ export function enrichWithABTestAnalytics(
 ): AnalyticsEventProperties {
   let enrichedProperties = properties;
 
-  if (
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    properties.active_ab_tests !== undefined
-  ) {
+  if (properties.active_ab_tests !== undefined) {
     try {
       enrichedProperties =
         enrichWithABTests(
@@ -216,6 +210,8 @@ export function enrichWithABTestAnalytics(
       enrichWithABTests(
         { name: eventName, properties: enrichedProperties },
         ctx.getRemoteFeatureFlags(),
+        undefined,
+        ctx.getFeatureFlagThresholdGroups(),
       ).properties ?? enrichedProperties
     );
   } catch {
@@ -397,8 +393,6 @@ export function createPlatformAdapter(
       const pageChainProperties = enrichmentContext.getPageChainProperties();
       Object.assign(enrichedProperties, pageChainProperties);
       if (!('chain_id_caip' in pageChainProperties)) {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         delete enrichedProperties.chain_id_caip;
       }
       const enrichedContext = enrichEventContext(context, enrichmentContext);

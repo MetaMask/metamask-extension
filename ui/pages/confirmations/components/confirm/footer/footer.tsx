@@ -3,7 +3,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -41,19 +40,22 @@ import {
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
 import ScamQuestionnaire from '../../../../../components/app/product-safety/scam-questionnaire/scam-questionnaire';
-import { useSendScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useSendScamQuestionnaire';
+import { useScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useScamQuestionnaire';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {
   useHardwareFooter,
   useHardwareWalletError,
 } from '../../../../../contexts/hardware-wallets';
+import { useDispatch } from '../../../../../store/hooks';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
 import { SingleActionFooter } from './single-action-footer';
 
 const SINGLE_ACTION_FOOTER_TYPES = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,
@@ -142,7 +144,7 @@ const ConfirmButton = ({
     isScamQuestionnaireVisible,
     showScamQuestionnaire,
     scamQuestionnaireProps,
-  } = useSendScamQuestionnaire({ ownerId: alertOwnerId, onCancel });
+  } = useScamQuestionnaire({ ownerId: alertOwnerId, onCancel });
 
   const handleSubmitConfirmModal = useCallback(async () => {
     if (currentConfirmation?.id && alertOwnerId === currentConfirmation.id) {
@@ -206,7 +208,9 @@ const ConfirmButton = ({
           block
           data-testid="confirm-footer-button"
           disabled={disabled}
-          onClick={onSubmit}
+          onClick={
+            isScamQuestionnaireRequired ? showScamQuestionnaire : onSubmit
+          }
           size={ButtonSize.Lg}
         >
           {currentConfirmation?.type ===

@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
 import {
@@ -29,9 +29,10 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
+  usePureBlack,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { useAppSelector } from '../../../store/store';
+import { useAppSelector, useDispatch } from '../../../store/hooks';
 import { ChainId } from '../../../../shared/constants/network';
 import { transitionForward } from '../../ui/transition';
 
@@ -66,7 +67,7 @@ import IconButton from '../../ui/icon-button';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
-import { Toast, ToastContainer } from '../../multichain/toast';
+import { showBuyTabOpenedToast } from '../../../helpers/utils/show-buy-tab-opened-toast';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
@@ -78,14 +79,13 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
-import { useOnClickOutside } from '../perps/hooks/useClickOutside';
+import { useOnClickOutside } from '../../../hooks/useClickOutside';
 import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
 import {
   ARC_ERC20_USDC_BRIDGE_ASSET,
   ARC_HEX_CHAIN_ID,
 } from '../assets/enablement/arc';
-import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 
 /**
  * Allows to manually set the default Swap token when clicking on the Swap CTA from
@@ -96,7 +96,9 @@ const NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN: { [key: string]: BridgeAsset } = {
   [ARC_HEX_CHAIN_ID]: ARC_ERC20_USDC_BRIDGE_ASSET,
 };
 
-function getSwapNativeTokenWithOverridesForChain(chainId: string): BridgeAsset {
+export function getSwapNativeTokenWithOverridesForChain(
+  chainId: string,
+): BridgeAsset {
   const override = NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN[chainId];
   return override ?? getNativeAssetForChainId(chainId);
 }
@@ -123,6 +125,8 @@ const MoreButtonsGroup = ({
   modalIsOpen,
 }: MoreButtonsGroupProps) => {
   const t = useContext(I18nContext);
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const isPureBlack = usePureBlack();
   const hasOnlyOneEnabledAction =
     actions.filter(({ enabled }) => enabled).length === 1;
   const onlyEnabledAction = actions.filter(({ enabled }) => enabled)[0];
@@ -164,7 +168,9 @@ const MoreButtonsGroup = ({
         onClick={onClick}
       />
       {modalIsOpen && (
-        <Box className="flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg">
+        <Box
+          className={`flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg${isPureBlack ? ' bg-background-alternative' : ' bg-background-default'}`}
+        >
           {actions.map((action) => (
             <ButtonBase
               key={action.label}
@@ -193,25 +199,6 @@ const MoreButtonsGroup = ({
         </Box>
       )}
     </>
-  );
-};
-
-const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
-  const t = useContext(I18nContext);
-
-  return (
-    <ToastContainer>
-      <Toast
-        startAdornment={
-          <Icon name={IconName.Export} color={IconColor.IconDefault} />
-        }
-        text={t('buyTabOpenedToastText')}
-        description={t('buyTabOpenedToastDescription')}
-        onClose={onClose}
-        autoHideTime={3000}
-        onAutoHideToast={onClose}
-      />
-    </ToastContainer>
   );
 };
 
@@ -246,7 +233,6 @@ const CoinButtons = ({
 
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [showReceiveModal, setShowReceiveModal] = useState(false);
-  const [showTabOpenedToast, setShowTabOpenedToast] = useState(false);
 
   const { address: selectedAddress } = account;
   const navigate = useNavigate();
@@ -269,8 +255,6 @@ const CoinButtons = ({
   if (isSwapsChain && defaultSwapsToken === undefined) {
     throw new Error('defaultSwapsToken is required');
   }
-
-  const handleSendNonEvm = useHandleSendNonEvm();
 
   const location = useLocation();
 
@@ -362,7 +346,7 @@ const CoinButtons = ({
     return {};
   };
 
-  const { goToBuy, isRampsEnabled } = useRampsNavigation();
+  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
 
   const { openBridgeExperience } = useBridging();
 
@@ -416,7 +400,7 @@ const CoinButtons = ({
     const params =
       trackingLocation === 'home' ? undefined : { chainId: chainId.toString() };
     transitionForward(() => navigateToSendRoute(navigate, params));
-  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
+  }, [chainId, account, setCorrectChain, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
     const opened = await goToBuy({
@@ -426,11 +410,13 @@ const CoinButtons = ({
     if (!opened) {
       return;
     }
-    // Only the flag-off path opens a Portfolio browser tab; with the ramps
-    // flow enabled, goToBuy navigates in-app, so the "tab opened" toast would
-    // be misleading.
-    if (!isRampsEnabled) {
-      setShowTabOpenedToast(true);
+    // Only the Portfolio paths open a browser tab; when goToBuy navigates
+    // in-app the "tab opened" toast would be misleading.
+    if (opensBuyInPortfolioTab) {
+      showBuyTabOpenedToast(
+        t('buyTabOpenedToastText'),
+        t('buyTabOpenedToastDescription'),
+      );
     }
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
@@ -451,7 +437,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, isRampsEnabled]);
+  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, opensBuyInPortfolioTab]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url
@@ -571,7 +557,7 @@ const CoinButtons = ({
         data-testid={`${classPrefix}-overview-send`}
         Icon={
           <Icon
-            name={IconName.Send}
+            name={IconName.Arrow2UpRight}
             color={IconColor.IconAlternative}
             size={IconSize.Md}
           />
@@ -623,10 +609,6 @@ const CoinButtons = ({
           },
         ]}
       />
-
-      {showTabOpenedToast && (
-        <TabOpenedToast onClose={() => setShowTabOpenedToast(false)} />
-      )}
     </Box>
   );
 };

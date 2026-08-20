@@ -81,9 +81,6 @@
   "back": {
     "message": "Înapoi"
   },
-  "backupApprovalInfo": {
-    "message": "Acest cod secret este necesar pentru recuperarea portofelului în cazul în care pierdeți dispozitivul, uitați parola, trebuie să reinstalați MetaMask sau vreți să accesați portofelul de pe alt dispozitiv."
-  },
   "backupApprovalNotice": {
     "message": "Creați o copie de rezervă a codului de recuperare secret pentru a vă menține portofelul și fondurile în siguranță."
   },
@@ -180,9 +177,6 @@
   },
   "decimal": {
     "message": "Zecimale de precizie"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
   },
   "delete": {
     "message": "Șterge"
@@ -343,9 +337,6 @@
   "networks": {
     "message": "Rețele"
   },
-  "nevermind": {
-    "message": "Nu mai contează"
-  },
   "newAccountNumberName": {
     "message": "Cont $1",
     "description": "Default name of next account to be created on create account screen"
@@ -502,9 +493,6 @@
   },
   "sign": {
     "message": "Semnați"
-  },
-  "signatureRequest": {
-    "message": "Cerere semnătură"
   },
   "signed": {
     "message": "Semnat"

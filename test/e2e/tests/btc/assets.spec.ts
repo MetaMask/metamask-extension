@@ -5,8 +5,8 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import AssetDetailsPage from '../../page-objects/pages/asset/asset-details';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import BitcoinAssetDetailsPage from '../../page-objects/pages/asset/bitcoin-asset-details';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   mockBtcSpotPrices,
@@ -64,7 +64,7 @@ describe('BTC Account - Assets', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         await homePage.checkPageIsLoaded();
 
         const tokensTab = new TokensTab(driver);
@@ -87,7 +87,7 @@ describe('BTC Account - Assets', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         await homePage.checkPageIsLoaded();
 
         const tokensTab = new TokensTab(driver);
@@ -102,7 +102,7 @@ describe('BTC Account - Assets', function (this: Suite) {
         );
         await tokensTab.clickOnAsset('Bitcoin');
 
-        const details = new BitcoinAssetDetailsPage(driver);
+        const details = new AssetDetailsPage(driver);
         await details.checkPageIsLoaded();
         await details.checkCurrentPriceHeader();
         await details.checkPriceChart();

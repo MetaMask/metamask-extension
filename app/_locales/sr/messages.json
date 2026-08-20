@@ -81,9 +81,6 @@
   "back": {
     "message": "Назад"
   },
-  "backupApprovalInfo": {
-    "message": "Potreban je tajni kôd za oporavak vašeg novčanika u slučaju da izgubite uređaj, zaboravite lozinku, morate ponovo da instalirate MetaMask ili želite da pristupite novčaniku sa drugog uređaja."
-  },
   "backupApprovalNotice": {
     "message": "Napravite rezervnu kopiju tajnog kôda za oporavak da bi vaš novčanik i sredstva bili bezbedni."
   },
@@ -177,9 +174,6 @@
   },
   "decimal": {
     "message": "Decimale preciznosti"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalni broj mora biti najmanje 0, a ne veći od 36."
   },
   "delete": {
     "message": "Избриши"
@@ -343,9 +337,6 @@
   "networks": {
     "message": "Mreže"
   },
-  "nevermind": {
-    "message": "Nema veze"
-  },
   "newAccountNumberName": {
     "message": "Nalog $1",
     "description": "Default name of next account to be created on create account screen"
@@ -502,9 +493,6 @@
   },
   "sign": {
     "message": "Potpišite"
-  },
-  "signatureRequest": {
-    "message": "Zahtev za potpis"
   },
   "signed": {
     "message": "Potpisan"

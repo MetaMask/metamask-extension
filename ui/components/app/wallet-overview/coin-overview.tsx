@@ -1,5 +1,11 @@
-import React, { useContext, useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {
+  useContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import { CaipChainId } from '@metamask/utils';
@@ -11,6 +17,7 @@ import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -52,9 +59,14 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useRewardsModal } from '../../../hooks/rewards/useRewardsModal';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { BalanceEmptyState } from '../balance-empty-state';
-import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
+import {
+  selectAccountGroupBalanceForEmptyState,
+  selectAccountGroupBalanceIsLoadedForEmptyState,
+  selectBalanceBySelectedAccountGroup,
+} from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
+import { useDispatch } from '../../../store/hooks';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
@@ -69,6 +81,20 @@ export type CoinOverviewProps = {
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
 };
+
+const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
+
+const BalanceOverviewSkeleton = () => (
+  <Box
+    className="wallet-overview__balance-skeleton flex w-full max-w-[400px] items-center gap-[10px] px-2 pb-4 pt-6 [.wallet-overview-fullscreen_&]:px-4"
+    data-testid="coin-overview-balance-skeleton"
+  >
+    <Box className="wallet-overview__balance-skeleton-lines flex w-full max-w-[368px] flex-col items-start justify-center gap-[2px]">
+      <Skeleton className="h-[50px] w-full rounded-lg" />
+      <Skeleton className="h-6 w-[180px] rounded-lg" />
+    </Box>
+  </Box>
+);
 
 export const LegacyAggregatedBalance = ({
   classPrefix,
@@ -198,32 +224,109 @@ export const CoinOverview = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { privacyMode } = useSelector(getPreferences);
+  const { privacyMode, showNativeTokenAsMainBalance } =
+    useSelector(getPreferences);
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+  const showNativeTokenAsMain = useMemo(
+    () =>
+      Boolean(
+        showNativeTokenAsMainBalance &&
+        Object.keys(enabledNetworks).length === 1,
+      ),
+    [showNativeTokenAsMainBalance, enabledNetworks],
+  );
 
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
+  const balanceIsLoaded = useSelector(
+    selectAccountGroupBalanceIsLoadedForEmptyState,
+  );
+  const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const isTestnet = useSelector(getMultichainIsTestnet);
+  const isEvm = isEvmChainId(chainId);
 
   const period = '1d';
   const { isLoading: balanceIsLoading } = useAccountGroupBalanceDisplay(period);
 
   useRewardsModal();
 
-  const shouldShowBalanceEmptyState = useMemo(
+  const aggregateFiatBalanceIsZero = isZeroAmount(
+    selectedGroupBalance?.totalBalanceInUserCurrency ?? 0,
+  );
+
+  const shouldCheckBalanceState =
+    Boolean(selectedAccountGroup) && !isTestnet && !balanceIsCached;
+
+  const shouldDelayZeroFiatBalance =
+    shouldCheckBalanceState &&
+    !showNativeTokenAsMain &&
+    hasBalance &&
+    aggregateFiatBalanceIsZero;
+
+  const enabledNetworksDelayKey = useMemo(
     () =>
-      Boolean(selectedAccountGroup) &&
-      !isTestnet &&
-      !balanceIsCached &&
-      !hasBalance &&
-      !balanceIsLoading,
+      Object.entries(enabledNetworks)
+        .map(([namespace, networks]) => {
+          const enabledChainIds = Object.entries(networks)
+            .filter(([, isEnabled]) => isEnabled)
+            .map(([enabledChainId]) => enabledChainId)
+            .sort((firstChainId, secondChainId) =>
+              firstChainId.localeCompare(secondChainId),
+            )
+            .join(',');
+
+          return `${namespace}:${enabledChainIds}`;
+        })
+        .sort((firstNetwork, secondNetwork) =>
+          firstNetwork.localeCompare(secondNetwork),
+        )
+        .join('|'),
+    [enabledNetworks],
+  );
+
+  const [hasZeroFiatBalanceDelayElapsed, setHasZeroFiatBalanceDelayElapsed] =
+    useState(false);
+
+  useEffect(() => {
+    if (!shouldDelayZeroFiatBalance) {
+      setHasZeroFiatBalanceDelayElapsed(false);
+      return undefined;
+    }
+
+    setHasZeroFiatBalanceDelayElapsed(false);
+    const timeoutId = setTimeout(() => {
+      setHasZeroFiatBalanceDelayElapsed(true);
+    }, ZERO_FIAT_BALANCE_DELAY_MS);
+
+    return () => clearTimeout(timeoutId);
+  }, [enabledNetworksDelayKey, shouldDelayZeroFiatBalance]);
+
+  const shouldShowBalanceLoadingState = useMemo(
+    () =>
+      isEvm &&
+      ((shouldDelayZeroFiatBalance && !hasZeroFiatBalanceDelayElapsed) ||
+        (shouldCheckBalanceState &&
+          !hasBalance &&
+          (balanceIsLoading || !balanceIsLoaded))),
     [
-      selectedAccountGroup,
-      isTestnet,
-      balanceIsCached,
+      isEvm,
+      shouldDelayZeroFiatBalance,
+      hasZeroFiatBalanceDelayElapsed,
+      shouldCheckBalanceState,
       hasBalance,
       balanceIsLoading,
+      balanceIsLoaded,
     ],
+  );
+
+  const shouldShowBalanceEmptyState = useMemo(
+    () =>
+      isEvm &&
+      shouldCheckBalanceState &&
+      !hasBalance &&
+      !shouldShowBalanceLoadingState,
+    [isEvm, shouldCheckBalanceState, hasBalance, shouldShowBalanceLoadingState],
   );
 
   const handleSensitiveToggle = useCallback(() => {
@@ -248,7 +351,13 @@ export const CoinOverview = ({
         })
         .build(),
     );
-  }, [isMarketingEnabled, isMetaMetricsEnabled, analyticsId, trackEvent]);
+  }, [
+    isMarketingEnabled,
+    isMetaMetricsEnabled,
+    analyticsId,
+    trackEvent,
+    createEventBuilder,
+  ]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
@@ -271,7 +380,7 @@ export const CoinOverview = ({
         getMultichainAccountAddressListReceivePagePath(selectedAccountGroup),
       );
     }
-  }, [selectedAccountGroup, navigate, trackEvent, chainId]);
+  }, [selectedAccountGroup, navigate, trackEvent, chainId, createEventBuilder]);
 
   const renderPercentageAndAmountChange = () => {
     const renderPercentageAndAmountChangeTrail = () => {
@@ -308,39 +417,40 @@ export const CoinOverview = ({
     />
   );
 
+  let balanceContent = (
+    <Tooltip
+      position="top"
+      title={t('balanceOutdated')}
+      disabled={!balanceIsCached}
+    >
+      <div className={`${classPrefix}-overview__balance`}>
+        <div className={`${classPrefix}-overview__primary-container`}>
+          {balanceSection}
+          {balanceIsCached && !shouldShowBalanceEmptyState && (
+            <span className={`${classPrefix}-overview__cached-star`}>*</span>
+          )}
+        </div>
+        {!shouldShowBalanceEmptyState && renderPercentageAndAmountChange()}
+      </div>
+    </Tooltip>
+  );
+
+  if (shouldShowBalanceLoadingState) {
+    balanceContent = <BalanceOverviewSkeleton />;
+  } else if (shouldShowBalanceEmptyState) {
+    balanceContent = (
+      <BalanceEmptyState
+        className="w-full max-w-[460px] self-center"
+        data-testid="coin-overview-balance-empty-state"
+        onClickReceive={handleReceiveOnClick}
+      />
+    );
+  }
+
   return (
     <WalletOverview
       // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
-      balance={
-        shouldShowBalanceEmptyState ? (
-          <BalanceEmptyState
-            className="w-full max-w-[460px] self-center"
-            data-testid="coin-overview-balance-empty-state"
-            onClickReceive={handleReceiveOnClick}
-          />
-        ) : (
-          <Tooltip
-            position="top"
-            title={t('balanceOutdated')}
-            disabled={!balanceIsCached}
-          >
-            <div
-              className={`${classPrefix}-overview__balance [.wallet-overview-fullscreen_&]:items-center`}
-            >
-              <div className={`${classPrefix}-overview__primary-container`}>
-                {balanceSection}
-                {balanceIsCached && !shouldShowBalanceEmptyState && (
-                  <span className={`${classPrefix}-overview__cached-star`}>
-                    *
-                  </span>
-                )}
-              </div>
-              {!shouldShowBalanceEmptyState &&
-                renderPercentageAndAmountChange()}
-            </div>
-          </Tooltip>
-        )
-      }
+      balance={balanceContent}
       // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       buttons={
         <CoinButtons

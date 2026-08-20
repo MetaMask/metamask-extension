@@ -84,9 +84,6 @@
   "decimal": {
     "message": "ตำแหน่งของทศนิยม"
   },
-  "decimalsMustZerotoTen": {
-    "message": "จำนวนต้องมากกว่า 0 และไม่เกิน 36"
-  },
   "delete": {
     "message": "ลบ"
   },
@@ -279,9 +276,6 @@
   },
   "sign": {
     "message": "เซ็นชื่อ"
-  },
-  "signatureRequest": {
-    "message": "ขอลายเซ็น"
   },
   "signed": {
     "message": "ลงชื่อแล้ว"

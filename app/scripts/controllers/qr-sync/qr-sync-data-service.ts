@@ -15,6 +15,7 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 
+import { createSentryError } from '../../../../shared/lib/error';
 import { convertEnglishWordlistIndicesToCodepoints } from '../../lib/util';
 import {
   type QrSyncDataServiceMessenger,
@@ -83,56 +84,66 @@ export class QrSyncDataService {
     password: string,
     selectedAccountGroupIds: AccountGroupId[],
   ): Promise<WalletExportEntry[]> {
-    const uniqueGroupIds = [...new Set(selectedAccountGroupIds)];
+    try {
+      const uniqueGroupIds = [...new Set(selectedAccountGroupIds)];
 
-    if (uniqueGroupIds.length === 0) {
-      throw new Error('At least one account group must be selected.');
+      if (uniqueGroupIds.length === 0) {
+        throw new Error('At least one account group must be selected.');
+      }
+
+      const primaryEntropyId = await this.#getPrimaryEntropyId();
+      const mnemonicEntriesByEntropyId = new Map<
+        EntropySourceId,
+        MnemonicWalletExport
+      >();
+      const mnemonicEntropyOrder: EntropySourceId[] = [];
+      const privateKeyEntries: PrivateKeyAccountExport[] = [];
+
+      for (const groupId of uniqueGroupIds) {
+        const { group, wallet } = this.#getAccountGroupAndWalletObject(groupId);
+        const context: WalletExportContext = {
+          password,
+          primaryEntropyId,
+          mnemonicEntriesByEntropyId,
+          mnemonicEntropyOrder,
+          privateKeyEntries,
+        };
+
+        if (wallet.type === AccountWalletType.Entropy) {
+          await this.#appendEntropyWallet(groupId, group, wallet, context);
+          continue;
+        }
+
+        if (wallet.type === AccountWalletType.Keyring) {
+          await this.#appendKeyringWallet(groupId, group, wallet, context);
+          continue;
+        }
+
+        throw new Error(`Account group "${groupId}" cannot be synced.`);
+      }
+
+      const mnemonicEntries = mnemonicEntropyOrder.map((entropyId) => {
+        const entry = mnemonicEntriesByEntropyId.get(entropyId);
+        if (!entry) {
+          throw new Error(`Mnemonic export for "${entropyId}" not found.`);
+        }
+
+        return {
+          ...entry,
+          groups: [...entry.groups].sort((a, b) => a.groupIndex - b.groupIndex),
+        };
+      });
+
+      return [...mnemonicEntries, ...privateKeyEntries];
+    } catch (error) {
+      this.#messenger.captureException?.(
+        createSentryError(
+          'Failed to build QR sync wallet export entries',
+          error,
+        ),
+      );
+      throw error;
     }
-
-    const primaryEntropyId = await this.#getPrimaryEntropyId();
-    const mnemonicEntriesByEntropyId = new Map<
-      EntropySourceId,
-      MnemonicWalletExport
-    >();
-    const mnemonicEntropyOrder: EntropySourceId[] = [];
-    const privateKeyEntries: PrivateKeyAccountExport[] = [];
-
-    for (const groupId of uniqueGroupIds) {
-      const { group, wallet } = this.#getAccountGroupAndWalletObject(groupId);
-      const context: WalletExportContext = {
-        password,
-        primaryEntropyId,
-        mnemonicEntriesByEntropyId,
-        mnemonicEntropyOrder,
-        privateKeyEntries,
-      };
-
-      if (wallet.type === AccountWalletType.Entropy) {
-        await this.#appendEntropyWallet(groupId, group, wallet, context);
-        continue;
-      }
-
-      if (wallet.type === AccountWalletType.Keyring) {
-        await this.#appendKeyringWallet(groupId, group, wallet, context);
-        continue;
-      }
-
-      throw new Error(`Account group "${groupId}" cannot be synced.`);
-    }
-
-    const mnemonicEntries = mnemonicEntropyOrder.map((entropyId) => {
-      const entry = mnemonicEntriesByEntropyId.get(entropyId);
-      if (!entry) {
-        throw new Error(`Mnemonic export for "${entropyId}" not found.`);
-      }
-
-      return {
-        ...entry,
-        groups: [...entry.groups].sort((a, b) => a.groupIndex - b.groupIndex),
-      };
-    });
-
-    return [...mnemonicEntries, ...privateKeyEntries];
   }
 
   #getAccountGroupAndWalletObject(groupId: AccountGroupId): {

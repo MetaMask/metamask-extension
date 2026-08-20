@@ -78,9 +78,6 @@
   "back": {
     "message": "Zpět"
   },
-  "backupApprovalInfo": {
-    "message": "Tento tajný kód je potrebný na obnovenie peňaženky v prípade straty zariadenia, zabudnutia hesla, preinštalovania MetaMask alebo prístupu k peňaženke na inom zariadení."
-  },
   "backupApprovalNotice": {
     "message": "Zálohujte si svoj tajný kód na obnovenie, aby bola vaša peňaženka a prostriedky bezpečné."
   },
@@ -174,9 +171,6 @@
   },
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desetinných míst musí být od 0 do 36."
   },
   "delete": {
     "message": "Odstrániť"
@@ -326,9 +320,6 @@
   },
   "networks": {
     "message": "Sítě"
-  },
-  "nevermind": {
-    "message": "Nevadí"
   },
   "newAccountNumberName": {
     "message": "Účet $1",
@@ -483,9 +474,6 @@
   },
   "sign": {
     "message": "Podepsat"
-  },
-  "signatureRequest": {
-    "message": "Požadavek podpisu"
   },
   "signed": {
     "message": "Podepsáno"

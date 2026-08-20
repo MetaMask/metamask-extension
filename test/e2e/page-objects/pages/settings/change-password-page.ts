@@ -1,5 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Change-password flow under Security and password.
+ *
+ * Screen: `#/settings/security-and-password/password`, reached from
+ * `PrivacySettings.openChangePassword` (after
+ * `SettingsPage.goToSecurityAndPasswordSettings` /
+ * `flows/settings.flow.ts` `navigateToSecurityAndPassword`).
+ * Owns: current-password verify, new/confirm password inputs, terms, save,
+ * and the cross-device lock warning confirm.
+ * Boundaries: password change only. Passkey register/turn-off and SRP reveal
+ * stay on `PrivacySettings`; login after change belongs to `LoginPage`.
+ * Related: `PrivacySettings`, `SettingsPage`, `flows/settings.flow.ts`.
+ *
+ * @see ui/components/app/change-password/change-password.tsx
+ * @see ui/pages/settings/security-and-password-tab/password-sub-page.tsx
+ */
 export default class ChangePasswordPage {
   private readonly confirmNewPasswordInput =
     '[data-testid="change-password-confirm-input"]';
@@ -26,6 +42,9 @@ export default class ChangePasswordPage {
   private readonly verifyCurrentPasswordButton =
     '[data-testid="verify-current-password-button"]';
 
+  private readonly verifyPasskeyUsePasswordButton =
+    '[data-testid="change-password-verify-passkey-use-password"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -46,6 +65,15 @@ export default class ChangePasswordPage {
   async checkPasswordChangedWarning(): Promise<void> {
     console.log('Check password changed warning');
     await this.driver.waitForSelector(this.passwordChangedWarning);
+  }
+
+  async clickUsePasswordForPasskeyVerification(): Promise<void> {
+    console.log(
+      'Switch change-password verification from passkey to current password',
+    );
+    await this.driver.waitForSelector(this.verifyPasskeyUsePasswordButton);
+    await this.driver.clickElement(this.verifyPasskeyUsePasswordButton);
+    await this.driver.waitForSelector(this.currentPasswordInput);
   }
 
   async confirmChangePasswordWarning(): Promise<void> {

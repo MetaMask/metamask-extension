@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useContext,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -34,11 +34,7 @@ import {
   getInternalAccountListSpreadByScopesByGroupId,
   getInternalAccountsFromGroupById,
 } from '../../../selectors/multichain-accounts/account-tree';
-import {
-  verifyPassword,
-  exportAccounts,
-  exportAccountsWithPasskey,
-} from '../../../store/actions';
+import { verifyPassword, exportAccounts } from '../../../store/actions';
 import {
   useIsPasskeyActive,
   useIsPasskeyIncompatibleInSidepanel,
@@ -67,6 +63,8 @@ import {
 import { MINUTE } from '../../../../shared/constants/time';
 import { MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { PasskeyVerification } from '../../app/passkey-verification';
+import { useDispatch } from '../../../store/hooks';
+import { usePasskeyPrivateKeyExport } from '../../../hooks/passkey/usePasskeyPrivateKeyExport';
 
 const VERIFY_PASSKEY_SCREEN = 'VERIFY_PASSKEY_SCREEN';
 const VERIFY_PASSWORD_SCREEN = 'VERIFY_PASSWORD_SCREEN';
@@ -99,6 +97,7 @@ const MultichainPrivateKeyList = ({
 }: MultichainPrivateKeyListProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const exportAccountsWithPasskey = usePasskeyPrivateKeyExport();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [password, setPassword] = useState<string>('');
@@ -262,12 +261,10 @@ const MultichainPrivateKeyList = ({
           name: TraceName.ShowAccountPrivateKeyList,
           op: TraceOperation.AccountUi,
         });
-        const pks = (await dispatch(
-          exportAccountsWithPasskey(
-            authenticationResponse,
-            exportableAddresses,
-          ),
-        )) as unknown as string[];
+        const pks = await exportAccountsWithPasskey(
+          authenticationResponse,
+          exportableAddresses,
+        );
 
         setPrivateKeys(buildPrivateKeyMap(pks));
         setReveal(true);
@@ -313,7 +310,7 @@ const MultichainPrivateKeyList = ({
     [
       buildPrivateKeyMap,
       createEventBuilder,
-      dispatch,
+      exportAccountsWithPasskey,
       exportableAddresses,
       hdEntropyIndex,
       trackEvent,
@@ -359,7 +356,7 @@ const MultichainPrivateKeyList = ({
 
   const renderedPasswordInput = useMemo(
     () => (
-      <Box paddingTop={8} paddingBottom={4}>
+      <Box paddingTop={8} paddingBottom={4} paddingHorizontal={4}>
         <Box>
           <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
             {t('enterYourPassword')}

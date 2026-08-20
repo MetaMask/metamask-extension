@@ -13,7 +13,6 @@ import React, {
 import PropTypes from 'prop-types';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
-import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   TextVariant,
   TextColor,
@@ -79,9 +78,6 @@ type UnlockPageProps = UnlockPageContext & {
   onSubmit: (password: string) => Promise<void>;
   navigateAfterUnlock: () => Promise<void>;
   isPasskeyActive: boolean;
-  onUnlockWithPasskey: (
-    authenticationResponse: PasskeyAuthenticationResponse,
-  ) => Promise<void>;
   checkIsSeedlessPasswordOutdated: () => Promise<void>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
   forceUpdateMetamaskState: () => Promise<void>;
@@ -229,7 +225,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     /**
      * Completes passkey unlock and navigates after success (same redirect rules as password onSubmit).
      */
-    onUnlockWithPasskey: PropTypes.func,
   };
 
   state: UnlockPageState = {
@@ -355,8 +350,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: accountTypeForMetrics,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             biometrics: false,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -582,13 +575,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
       return;
     }
     this.setPasswordUnlockMode(false);
-  };
-
-  handleUnlockWithPasskey = async (
-    authenticationResponse: PasskeyAuthenticationResponse,
-  ) => {
-    await this.props.onUnlockWithPasskey(authenticationResponse);
-    await this.props.navigateAfterUnlock();
   };
 
   onForgotPasswordOrLoginWithDiffMethods = async () => {
@@ -849,7 +835,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
                 this.props.mustDeferPasskeyToBrowserTab
               }
               isPasswordInProgress={isSubmitting}
-              onUnlockWithPasskey={this.handleUnlockWithPasskey}
+              onUnlockSuccess={this.props.navigateAfterUnlock}
               onUsePassword={() => this.setPasswordUnlockMode(true)}
             />
           )}

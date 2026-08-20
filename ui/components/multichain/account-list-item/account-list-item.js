@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useSelector } from 'react-redux';
@@ -14,6 +14,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  Tag,
   Text,
   TextColor,
   TextVariant,
@@ -22,7 +23,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '../account-list-item-menu';
-import { Tag } from '../../component-library';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
@@ -32,7 +32,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   isAccountConnectedToCurrentTab,
   getShouldHideZeroBalanceTokens,
@@ -173,7 +173,7 @@ const AccountListItem = ({
     }
   }, [itemRef, selected, shouldScrollToWhenSelected]);
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
@@ -327,10 +327,10 @@ const AccountListItem = ({
                   <Tag
                     data-testid={`account-list-item-tag-${account.id}-${label}`}
                     key={label}
-                    label={label}
-                    textVariant={TextVariant.BodyXs}
-                    startIconName={icon}
-                  />
+                    startIconName={icon ? IconName.Snaps : undefined}
+                  >
+                    {label}
+                  </Tag>
                 );
               })}
             </Box>
@@ -352,14 +352,17 @@ const AccountListItem = ({
             onClick={(e) => {
               e.stopPropagation();
               if (!accountOptionsMenuOpen) {
-                trackEvent({
-                  event: MetaMetricsEventName.AccountDetailMenuOpened,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Account Options',
-                    hd_entropy_index: hdEntropyIndex,
-                  },
-                });
+                trackEvent(
+                  createEventBuilder(
+                    MetaMetricsEventName.AccountDetailMenuOpened,
+                  )
+                    .addCategory(MetaMetricsEventCategory.Navigation)
+                    .addProperties({
+                      location: 'Account Options',
+                      hd_entropy_index: hdEntropyIndex,
+                    })
+                    .build(),
+                );
               }
               setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
             }}

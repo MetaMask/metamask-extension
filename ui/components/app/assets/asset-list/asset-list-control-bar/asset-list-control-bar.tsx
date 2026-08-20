@@ -5,13 +5,14 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   ButtonIcon as DsButtonIcon,
   ButtonIconSize as DsButtonIconSize,
   IconName as DsIconName,
 } from '@metamask/design-system-react';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -51,6 +52,7 @@ import {
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import { useBoolean } from '../../../../../hooks/useBoolean';
 import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
@@ -69,9 +71,9 @@ import {
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
   showImportNftsModal,
-  showModal,
   updateBalancesFoAccounts,
 } from '../../../../../store/actions';
+import type { MetaMaskReduxState } from '../../../../../store/store';
 import Tooltip from '../../../../ui/tooltip';
 import {
   getMultichainIsEvm,
@@ -83,8 +85,13 @@ import {
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
-import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
+import {
+  getInternalAccountsFromGroupById,
+  getSelectedAccountGroup,
+} from '../../../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../../../selectors/multichain-accounts/account-tree.types';
+import { useDispatch } from '../../../../../store/hooks';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
 type AssetListControlBarProps = {
@@ -92,6 +99,11 @@ type AssetListControlBarProps = {
   showImportTokenButton?: boolean;
   showSortControl?: boolean;
   onNetworkSelect?: (networks: string[]) => void;
+  /**
+   * When provided with `showImportTokenButton={false}`, shows the more-options
+   * menu containing only a "Refresh list" action that invokes this callback.
+   */
+  onRefresh?: () => void;
 };
 
 const AssetListControlBar = ({
@@ -99,6 +111,7 @@ const AssetListControlBar = ({
   showImportTokenButton = true,
   showSortControl = true,
   onNetworkSelect,
+  onRefresh,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -117,8 +130,27 @@ const AssetListControlBar = ({
     selectAccountSupportsEnabledNetworks,
   );
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
+  const isEvmOnlySelectedAccountGroup = useSelector(
+    (state: MetaMaskReduxState) => {
+      const multichainAccountsState =
+        state as unknown as MultichainAccountsState;
+      const selectedAccountGroup = getSelectedAccountGroup(
+        multichainAccountsState,
+      );
+      const selectedAccountGroupAccounts = getInternalAccountsFromGroupById(
+        multichainAccountsState,
+        selectedAccountGroup,
+      );
+
+      return (
+        selectedAccountGroupAccounts.length > 0 &&
+        selectedAccountGroupAccounts.every((account) =>
+          isEvmAccountType(account.type),
+        )
+      );
+    },
+  );
 
   const { collections } = useNftsCollections();
 
@@ -130,10 +162,14 @@ const AssetListControlBar = ({
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isNetworkFilterModalOpen, setIsNetworkFilterModalOpen] =
     useState(false);
+  const { value: isNetworkSwitchPending, setValue: setIsNetworkSwitchPending } =
+    useBoolean();
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
+  const [isRefreshListPopoverOpen, setIsRefreshListPopoverOpen] =
+    useState(false);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -216,10 +252,19 @@ const AssetListControlBar = ({
   ]);
 
   useEffect(() => {
-    if (!accountSupportsEnabledNetworks && totalEnabledNetworkCount > 0) {
+    if (
+      isEvmOnlySelectedAccountGroup &&
+      !accountSupportsEnabledNetworks &&
+      totalEnabledNetworkCount > 0
+    ) {
       dispatch(setEnabledAllPopularNetworks());
     }
-  }, [accountSupportsEnabledNetworks, totalEnabledNetworkCount, dispatch]);
+  }, [
+    accountSupportsEnabledNetworks,
+    dispatch,
+    isEvmOnlySelectedAccountGroup,
+    totalEnabledNetworkCount,
+  ]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
@@ -230,6 +275,7 @@ const AssetListControlBar = ({
     setIsNetworkFilterModalOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
     setIsTokenSortPopoverOpen(!isTokenSortPopoverOpen);
   };
 
@@ -237,6 +283,7 @@ const AssetListControlBar = ({
     setIsNetworkFilterModalOpen(false);
     setIsTokenSortPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
     setIsImportTokensPopoverOpen(!isImportTokensPopoverOpen);
   };
 
@@ -244,7 +291,16 @@ const AssetListControlBar = ({
     setIsNetworkFilterModalOpen(false);
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
     setIsImportNftPopoverOpen(!isImportNftPopoverOpen);
+  };
+
+  const toggleRefreshListPopover = () => {
+    setIsNetworkFilterModalOpen(false);
+    setIsTokenSortPopoverOpen(false);
+    setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(!isRefreshListPopoverOpen);
   };
 
   const closePopover = () => {
@@ -252,17 +308,14 @@ const AssetListControlBar = ({
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
   };
 
   const handleNetworkFilterClick = () => {
-    if (!isNetworkManagementEnabled) {
-      dispatch(showModal({ name: 'NETWORK_MANAGER' }));
-      return;
-    }
-
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
     setIsNetworkFilterModalOpen(!isNetworkFilterModalOpen);
   };
 
@@ -278,7 +331,11 @@ const AssetListControlBar = ({
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
-    navigate(TOKEN_MANAGEMENT_ROUTE);
+    navigate(TOKEN_MANAGEMENT_ROUTE, {
+      state: {
+        globalMenuTransition: 'forward',
+      },
+    });
   }, [createEventBuilder, navigate, trackEvent]);
 
   const handleNftImportModal = () => {
@@ -302,6 +359,11 @@ const AssetListControlBar = ({
     closePopover();
   };
 
+  const handleRefreshListOnly = () => {
+    onRefresh?.();
+    closePopover();
+  };
+
   const onEnableAutoDetect = () => {
     navigate(`${ASSETS_ROUTE}#autodetect-tokens`);
   };
@@ -314,6 +376,7 @@ const AssetListControlBar = ({
     allNetworkClientIds.forEach((networkClientId) => {
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
     });
+    closePopover();
   };
 
   return (
@@ -327,6 +390,8 @@ const AssetListControlBar = ({
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
           startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
+          loading={isNetworkSwitchPending}
+          disabled={isNetworkSwitchPending}
           backgroundColor={
             isNetworkFilterModalOpen
               ? BackgroundColor.backgroundPressed
@@ -411,15 +476,22 @@ const AssetListControlBar = ({
                 />
               </Tooltip>
             ))}
+
+          {!showImportTokenButton && onRefresh ? (
+            <ImportControl
+              ref={importButtonRef}
+              showTokensLinks
+              onClick={toggleRefreshListPopover}
+            />
+          ) : null}
         </Box>
       </Box>
 
-      {isNetworkManagementEnabled && (
-        <HomeNetworkFilterModal
-          isOpen={isNetworkFilterModalOpen}
-          onClose={closePopover}
-        />
-      )}
+      <HomeNetworkFilterModal
+        isOpen={isNetworkFilterModalOpen}
+        onClose={closePopover}
+        onPendingChange={setIsNetworkSwitchPending}
+      />
 
       <Popover
         onClickOutside={closePopover}
@@ -526,6 +598,34 @@ const AssetListControlBar = ({
             </SelectableListItem>
           )}
         </Box>
+      </Popover>
+
+      {/* Refresh-only Popover (e.g. DeFi) */}
+      <Popover
+        onClickOutside={closePopover}
+        isOpen={isRefreshListPopoverOpen}
+        position={PopoverPosition.BottomEnd}
+        referenceElement={importButtonRef.current}
+        matchWidth={false}
+        style={{
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+          minWidth: isFullScreen ? '158px' : '',
+        }}
+      >
+        <SelectableListItem
+          onClick={handleRefreshListOnly}
+          testId="refreshList"
+        >
+          <Icon
+            name={IconName.Refresh}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
+          {t('refreshList')}
+        </SelectableListItem>
       </Popover>
     </Box>
   );

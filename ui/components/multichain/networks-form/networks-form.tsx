@@ -1,10 +1,10 @@
 import log from 'loglevel';
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
-  Button as DSButton,
-  ButtonSize as DSButtonSize,
-  ButtonVariant as DSButtonVariant,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   IconName,
 } from '@metamask/design-system-react';
 import {
@@ -25,6 +25,7 @@ import {
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
 import {
   decimalToHex,
   hexToDecimal,
@@ -49,13 +50,10 @@ import {
 import {
   Box,
   ButtonLink,
-  ButtonPrimary,
-  ButtonPrimarySize,
   FormTextField,
   FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
-  Tag,
   Text,
 } from '../../component-library';
 import {
@@ -82,6 +80,7 @@ import {
   getTokenNetworkFilter,
 } from '../../../selectors';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
+import { useDispatch } from '../../../store/hooks';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -132,6 +131,24 @@ export const NetworksForm = ({
     rpcUrls.defaultRpcEndpointIndex === undefined
       ? undefined
       : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
+
+  const networkChainIdHex = chainId === '' ? undefined : toHex(chainId);
+  const chainFailoverUrls = networkChainIdHex
+    ? getFailoverUrlsForChainId(networkChainIdHex)
+    : [];
+
+  // Failover only applies to Infura RPC endpoints. NetworkController wires
+  // failover URLs solely for Infura endpoints; applying them to custom RPCs
+  // would leak requests to the failover, so it does not. Only surface failover
+  // in the form for Infura endpoints so the UI matches the actual behaviour.
+  const failoverUrlsForEndpoint = (endpoint?: { url: string }) => {
+    return endpoint?.url &&
+      new URL(endpoint.url).hostname.endsWith('.infura.io')
+      ? chainFailoverUrls
+      : [];
+  };
+
+  const defaultFailoverUrls = failoverUrlsForEndpoint(defaultRpcEndpoint);
 
   const { safeChains } = useSafeChains();
 
@@ -468,9 +485,9 @@ export const NetworksForm = ({
         paddingBottom={2}
       >
         {onAddFromChainlist && !existingNetwork ? (
-          <DSButton
-            variant={DSButtonVariant.Secondary}
-            size={DSButtonSize.Lg}
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
             startIconName={IconName.FlashFilled}
             isFullWidth
             onClick={onAddFromChainlist}
@@ -478,7 +495,7 @@ export const NetworksForm = ({
             data-testid="network-form-add-from-chainlist"
           >
             {t('addFromChainlist')}
-          </DSButton>
+          </Button>
         ) : null}
 
         <FormTextField
@@ -488,8 +505,6 @@ export const NetworksForm = ({
           data-testid="network-form-name-input"
           autoFocus
           helpText={
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ((name && warnings?.name?.msg) || suggestedName) && (
               <>
                 {name && warnings?.name?.msg && (
@@ -554,13 +569,23 @@ export const NetworksForm = ({
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
-          renderItem={(item, isList) =>
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            isList || item?.name || item?.type === RpcEndpointType.Infura ? (
-              <RpcListItem rpcEndpoint={item} />
+          renderItem={(item, isList) => {
+            const failoverUrls = failoverUrlsForEndpoint(item);
+            return isList ||
+              item?.name ||
+              item?.type === RpcEndpointType.Infura ||
+              failoverUrls.length > 0 ? (
+              <RpcListItem
+                rpcEndpoint={{
+                  ...item,
+                  failoverUrls,
+                }}
+              />
             ) : (
+              // A custom (non Infura) endpoint never has a failover, so it just
+              // renders the URL with no failover tag.
               <Text
+                as="span"
                 ellipsis
                 variant={TextVariant.bodyMd}
                 paddingTop={3}
@@ -570,20 +595,17 @@ export const NetworksForm = ({
                 gap={1}
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-                {isRpcFailoverEnabled &&
-                item.failoverUrls &&
-                item.failoverUrls.length > 0 ? (
-                  <Tag label={t('failover')} display={Display.Inline} />
-                ) : null}
               </Text>
-            )
-          }
+            );
+          }}
           renderTooltip={(item, isList) => {
             const url = stripKeyFromInfuraUrl(item.url);
             return url.length > (isList ? 37 : 35) ? url : undefined;
           }}
           addButtonText={t('addRpcUrl')}
-          itemIsDeletable={(item) => item.type !== RpcEndpointType.Infura}
+          itemIsDeletable={(item, items) =>
+            items.length > 1 && item.type !== RpcEndpointType.Infura
+          }
           onItemAdd={onRpcAdd}
           onItemSelected={(index) =>
             setRpcUrls((state) => ({
@@ -613,11 +635,7 @@ export const NetworksForm = ({
           </Box>
         )}
 
-        {isRpcFailoverEnabled &&
-        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-        defaultRpcEndpoint &&
-        defaultRpcEndpoint.failoverUrls &&
-        defaultRpcEndpoint.failoverUrls.length > 0 ? (
+        {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}
@@ -630,7 +648,7 @@ export const NetworksForm = ({
             textFieldProps={{
               borderRadius: BorderRadius.LG,
             }}
-            value={onlyKeepHost(defaultRpcEndpoint.failoverUrls[0])}
+            value={onlyKeepHost(defaultFailoverUrls[0])}
             disabled={true}
           />
         ) : null}
@@ -817,30 +835,27 @@ export const NetworksForm = ({
         width={BlockSize.Full}
       >
         {usePageFooterStyle ? (
-          <DSButton
-            variant={DSButtonVariant.Primary}
-            size={DSButtonSize.Lg}
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
             isDisabled={isSaveDisabled}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSubmit}
             className="w-full rounded-xl"
             data-testid="page-container-footer-next"
           >
             {t('save')}
-          </DSButton>
+          </Button>
         ) : (
-          <ButtonPrimary
-            disabled={isSaveDisabled}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          <Button
+            variant={ButtonVariant.Primary}
+            isDisabled={isSaveDisabled}
             onClick={onSubmit}
-            size={ButtonPrimarySize.Lg}
-            width={BlockSize.Full}
+            size={ButtonSize.Lg}
+            isFullWidth
             data-testid="page-container-footer-next"
           >
             {t('save')}
-          </ButtonPrimary>
+          </Button>
         )}
       </Box>
     </Box>

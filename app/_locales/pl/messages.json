@@ -81,9 +81,6 @@
   "back": {
     "message": "Wstecz"
   },
-  "backupApprovalInfo": {
-    "message": "Ten tajny kod jest wymagany do odzyskania portfela w przypadku zgubienia urządzenia, zapomnienia hasła, ponownego zainstalowania MetaMask lub potrzeby uzyskania dostępu do portfela na innym urządzeniu."
-  },
   "backupApprovalNotice": {
     "message": "Utwórz kopię zapasową tajnego kodu odzyskiwania, aby zapewnić bezpieczeństwo swojego portfela i środków."
   },
@@ -180,9 +177,6 @@
   },
   "decimal": {
     "message": "Dokładność liczb po przecinku"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Liczb po przecinku musi być co najmniej 0 i nie więcej niż 36."
   },
   "delete": {
     "message": "Usuń"
@@ -349,9 +343,6 @@
   "networks": {
     "message": "Sieci"
   },
-  "nevermind": {
-    "message": "Nie ważne"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -505,9 +496,6 @@
   },
   "sign": {
     "message": "Podpisz"
-  },
-  "signatureRequest": {
-    "message": "Prośba o podpis"
   },
   "signed": {
     "message": "Podpisane"

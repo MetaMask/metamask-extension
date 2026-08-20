@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import {
@@ -29,6 +29,8 @@ import { useFormatters } from '../../../../../hooks/useFormatters';
 import { AccountTypeLabel } from '../account-type-label';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
 
+export type TokenTagRenderer = (token: AssetType) => ReactNode;
+
 type AssetRowProps = {
   asset: AssetType;
   onClick?: () => void;
@@ -37,13 +39,16 @@ type AssetRowProps = {
 
 type TokenAssetProps = AssetRowProps & {
   hideBalances?: boolean;
+  tagRenderers?: TokenTagRenderer[];
 };
 
 const NftAsset = ({ asset, onClick, isSelected }: AssetRowProps) => {
   const nftData = asset;
-  const { collection, name, tokenId, image, standard, balance } = nftData;
+  const { collection, name, tokenId, image, standard, balance, disabled } =
+    nftData;
 
   const nftItemSrc = useNftImageUrl(image as string);
+  const handleClick = disabled ? undefined : onClick;
 
   // Calculate ERC1155 display text
   let erc1155Text = null;
@@ -64,11 +69,12 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetRowProps) => {
       className="send-asset"
       data-testid="nft-asset"
       display={Display.Flex}
-      onClick={onClick}
+      onClick={handleClick}
       paddingTop={3}
       paddingBottom={3}
       paddingLeft={4}
       paddingRight={4}
+      style={disabled ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
     >
       <Box marginRight={4} display={Display.Flex} style={{ minWidth: 32 }}>
         <BadgeWrapper
@@ -127,6 +133,7 @@ const TokenAsset = ({
   onClick,
   isSelected,
   hideBalances = false,
+  tagRenderers,
 }: TokenAssetProps) => {
   const tokenData = asset;
   const {
@@ -155,6 +162,10 @@ const TokenAsset = ({
     : (image ?? '');
 
   const handleClick = disabled ? undefined : onClick;
+  const tag = tagRenderers?.reduce<ReactNode>(
+    (found, render) => found ?? render(asset),
+    null,
+  );
 
   return (
     <Box
@@ -211,6 +222,7 @@ const TokenAsset = ({
           >
             {name}
           </Text>
+          {tag}
           <AccountTypeLabel label={typeLabel} />
         </Box>
         <Text
@@ -251,6 +263,7 @@ export const Asset = ({
   onClick,
   isSelected,
   hideBalances,
+  tagRenderers,
 }: TokenAssetProps) => {
   if (NFT_STANDARDS.includes(asset.standard as AssetStandard)) {
     return <NftAsset asset={asset} onClick={onClick} isSelected={isSelected} />;
@@ -261,6 +274,7 @@ export const Asset = ({
       onClick={onClick}
       isSelected={isSelected}
       hideBalances={hideBalances}
+      tagRenderers={tagRenderers}
     />
   );
 };

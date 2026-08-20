@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { produce } from 'immer';
 import log from 'loglevel';
@@ -54,8 +54,10 @@ import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';
+import { useDispatch } from '../../../store/hooks';
 import { TemplateAlertContextProvider } from './alerts/TemplateAlertContext';
 import ConfirmationFooter from './components/confirmation-footer';
+
 import {
   getTemplateValues,
   getTemplateAlerts,
@@ -559,7 +561,14 @@ export default function ConfirmationPage({
         confirmationId={pendingConfirmation.id}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
       >
-        <div className="confirmation-page h-full">
+        <div
+          className="confirmation-page h-full"
+          data-testid={
+            isSnapCustomUIDialog
+              ? 'parent-selector-snap-confirmation-page'
+              : undefined
+          }
+        >
           <Header
             confirmation={pendingConfirmation}
             isSnapCustomUIDialog={isSnapCustomUIDialog}

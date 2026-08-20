@@ -70,9 +70,24 @@ jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../hooks/gas/useIsGaslessSupported');
 jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
   useIsTransactionPayLoading: jest.fn(() => false),
+  useIsTransactionPayQuotePending: jest.fn(() => false),
+  useTransactionPayHasExecutableQuote: jest.fn(() => false),
+  useTransactionPayHasPositiveRequiredAmount: jest.fn(() => false),
+  useTransactionPayIsPostQuote: jest.fn(() => false),
   useTransactionPayPrimaryRequiredToken: jest.fn(() => undefined),
+  useTransactionPayQuotes: jest.fn(() => undefined),
   useTransactionPayRequiredTokens: jest.fn(() => []),
 }));
+jest.mock(
+  '../../../../../components/app/product-safety/scam-questionnaire/useScamQuestionnaireMetrics',
+  () => ({
+    useScamQuestionnaireMetrics: () => ({
+      trackViewed: jest.fn(),
+      trackContactSupport: jest.fn(),
+      trackCompleted: jest.fn(),
+    }),
+  }),
+);
 
 const mockOnTransactionConfirm = jest.fn();
 const ensureDeviceReadyMock = jest.fn();
@@ -595,7 +610,11 @@ describe('ConfirmFooter', () => {
 
     const { getByTestId, getByText, queryByTestId } = render(
       getMockConfirmStateForTransaction(transaction, {
-        metamask: {},
+        metamask: {
+          remoteFeatureFlags: {
+            productSafetyScamQuestionnaireEnabled: 'treatment',
+          },
+        },
         confirmAlerts: {
           alerts: {
             [transaction.id]: [

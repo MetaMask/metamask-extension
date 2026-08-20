@@ -4,7 +4,11 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import type { PerpsControllerState } from '@metamask/perps-controller';
+import {
+  type PerpsControllerState,
+  DEFAULT_PRO_LAYOUT_PREFERENCES,
+  type ProLayoutPreferences,
+} from '@metamask/perps-controller';
 
 /**
  * The PerpsController state is flattened into state.metamask by
@@ -208,6 +212,44 @@ export const selectPerpsPerpsBalances = (state: PerpsState) =>
 
 export const selectPerpsMarketFilterPreferences = (state: PerpsState) =>
   state.metamask.marketFilterPreferences ?? null;
+
+/**
+ * Pro-mode layout preferences, with the controller defaults filled in for
+ * persisted state that predates a field. Memoized because the merge builds a
+ * fresh object: unmemoized, `useSelector` would re-render every consumer on
+ * every dispatch.
+ */
+export const selectProLayoutPreferences = createSelector(
+  (state: PerpsState) => state.metamask.proLayoutPreferences,
+  (proLayoutPreferences): ProLayoutPreferences => ({
+    ...DEFAULT_PRO_LAYOUT_PREFERENCES,
+    ...proLayoutPreferences,
+  }),
+);
+
+/**
+ * Which side of the pro-mode trading view the order book is pinned to. Returns
+ * a primitive, so prefer it over `selectProLayoutPreferences` in components
+ * that only need the position.
+ *
+ * @param state - Perps controller state.
+ * @returns 'left' or 'right'.
+ */
+export const selectOrderBookPosition = (state: PerpsState) =>
+  state.metamask.proLayoutPreferences?.orderBookPosition ??
+  DEFAULT_PRO_LAYOUT_PREFERENCES.orderBookPosition;
+
+/**
+ * Whether the order book panel was left open. Global across markets (the
+ * preference object is flat, not per-market), so the panel opens in the same
+ * state on every symbol.
+ *
+ * @param state - Perps controller state.
+ * @returns True when the panel should start open.
+ */
+export const selectOrderBookExpanded = (state: PerpsState) =>
+  state.metamask.proLayoutPreferences?.orderBookExpanded ??
+  DEFAULT_PRO_LAYOUT_PREFERENCES.orderBookExpanded;
 
 export const selectPerpsTradeConfigurations = (state: PerpsState) =>
   state.metamask.tradeConfigurations ?? EMPTY_TRADE_CONFIGURATIONS;

@@ -133,6 +133,8 @@ type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
   analyticsId?: string | null;
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   optedIn?: boolean;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  consentDecisionMade?: boolean;
 };
 
 type StorageServiceNamespaceMap = {
@@ -297,11 +299,20 @@ class FixtureBuilderV2 {
   }
 
   withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
-    const { analyticsId, optedIn, ...metaMetricsControllerPatch } = data;
+    const {
+      analyticsId,
+      optedIn,
+      consentDecisionMade,
+      ...metaMetricsControllerPatch
+    } = data;
 
     merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
 
-    if (analyticsId !== undefined || optedIn !== undefined) {
+    if (
+      analyticsId !== undefined ||
+      optedIn !== undefined ||
+      consentDecisionMade !== undefined
+    ) {
       const fixtureData = this.fixture.data as Record<string, unknown>;
       if (!fixtureData.AnalyticsController) {
         fixtureData.AnalyticsController = {};
@@ -316,6 +327,9 @@ class FixtureBuilderV2 {
       }
       if (optedIn !== undefined) {
         analyticsPatch.optedIn = optedIn;
+      }
+      if (consentDecisionMade !== undefined) {
+        analyticsPatch.consentDecisionMade = consentDecisionMade;
       }
       merge(analyticsController, analyticsPatch);
     }
@@ -899,6 +913,38 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withNetworkControllerOnPulseChain(): this {
+    const pulseChainId = '0x171';
+    const pulseChainClientId = 'pulsechain';
+
+    return this.withNetworkController({
+      selectedNetworkClientId: pulseChainClientId,
+      networkConfigurationsByChainId: {
+        [pulseChainId]: {
+          blockExplorerUrls: ['https://scan.pulsechain.com'],
+          chainId: pulseChainId,
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'PulseChain',
+          nativeCurrency: 'PLS',
+          rpcEndpoints: [
+            {
+              networkClientId: pulseChainClientId,
+              type: RpcEndpointType.Custom,
+              url: 'https://rpc.pulsechain.com',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [pulseChainClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    }).withEnabledNetworks({ eip155: { [pulseChainId]: true } });
+  }
+
   // We cannot simply use withSelectedNetwork because Sei is not enabled by default
   withNetworkControllerOnSei(): this {
     const seiChainId = '0x531';
@@ -925,6 +971,60 @@ class FixtureBuilderV2 {
       },
       networksMetadata: {
         [seiClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    });
+  }
+
+  /**
+   * Injects and selects a custom EVM network that is absent from the default
+   * fixture, pointing its RPC endpoint at the local Anvil node on port 8545.
+   *
+   * Chains that ship in the default fixture should use
+   * {@link withNetworkRpcUrlOnLocalhost} instead; this method throws nothing
+   * when the chain is missing — it injects the config. Prefer
+   * `prepareCustomNetwork` from `test/e2e/helpers/custom-network-harness.ts`
+   * for custom-network E2E specs so enablement, native asset ids, and Token/Price
+   * mocks stay behind one interface.
+   *
+   * @param config - Custom network configuration.
+   * @param config.chainId - Hex chain id (e.g. `0x6f0` for Injective).
+   * @param config.clientId - Network client id used as the rpc endpoint key.
+   * @param config.name - Display name shown in the network picker.
+   * @param config.nativeCurrency - Native currency ticker (e.g. `INJ`).
+   * @param config.blockExplorerUrl - Block explorer URL for the chain.
+   * @returns The builder for further chaining.
+   */
+  withNetworkControllerOnCustomNetwork(config: {
+    chainId: Hex;
+    clientId: string;
+    name: string;
+    nativeCurrency: string;
+    blockExplorerUrl: string;
+  }): this {
+    return this.withNetworkController({
+      selectedNetworkClientId: config.clientId,
+      networkConfigurationsByChainId: {
+        [config.chainId]: {
+          blockExplorerUrls: [config.blockExplorerUrl],
+          chainId: config.chainId,
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: config.name,
+          nativeCurrency: config.nativeCurrency,
+          rpcEndpoints: [
+            {
+              networkClientId: config.clientId,
+              type: RpcEndpointType.Custom,
+              url: 'http://localhost:8545',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [config.clientId]: {
           EIPS: {},
           status: NetworkStatus.Available,
         },

@@ -81,9 +81,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backupApprovalInfo": {
-    "message": "Kod rahsia ini diperlukan untuk memulihkan dompet anda sekiranya anda kehilangan peranti anda, terlupa kata laluan anda, perlu memasang semua MetaMask, atau mahu mengakses dompet anda menggunakan peranti lain."
-  },
   "backupApprovalNotice": {
     "message": "Sandarkan kod Pemulihan Rahsia anda untuk memastikan dompet dan dana anda sentiasa selamat."
   },
@@ -180,9 +177,6 @@
   },
   "decimal": {
     "message": "Bilangan Perpuluhan Kejituan"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Perpuluhan mestilah sekurang-kurangnya 0, dan tidak melebihi 36."
   },
   "delete": {
     "message": "Padam"
@@ -339,9 +333,6 @@
   "networks": {
     "message": "Rangkaian"
   },
-  "nevermind": {
-    "message": "Tidak mengapa"
-  },
   "newAccountNumberName": {
     "message": "Akaun $1",
     "description": "Default name of next account to be created on create account screen"
@@ -495,9 +486,6 @@
   },
   "sign": {
     "message": "Tandatangan"
-  },
-  "signatureRequest": {
-    "message": "Permintaan Tandatangan"
   },
   "signed": {
     "message": "Ditandatangani"

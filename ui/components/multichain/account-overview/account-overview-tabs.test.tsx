@@ -4,7 +4,6 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -15,6 +14,21 @@ import { clearABTestExposureTrackingForTest } from '../../../hooks/useABTest';
 import { setPerpsTabBadgeSeen } from '../../../store/actions';
 import { PERPS_TAB_BADGE_AB_KEY } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { AccountOverviewTabs } from './account-overview-tabs';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
@@ -32,15 +46,11 @@ jest.mock('../../app/assets/asset-list', () => ({
   default: () => null,
 }));
 
-jest.mock('../activity-v2/activity-list', () => ({
-  ActivityList: () => null,
-}));
-
 jest.mock('../../../pages/activity/activity-list', () => ({
   ActivityList: () => null,
 }));
 
-jest.mock('../activity-v2/useTransactionsQuery', () => ({
+jest.mock('../../../pages/activity/useTransactionsQuery', () => ({
   usePrefetchTransactions: () => jest.fn(),
 }));
 
@@ -65,144 +75,10 @@ beforeEach(() => {
   (useTokenBalances as jest.Mock).mockReturnValue({ tokenBalances: {} });
 });
 
-describe('AccountOverviewTabs - event metrics', () => {
-  const mockTrackEvent = jest.fn();
-  const mockMetaMetricsContext = {
-    trackEvent: mockTrackEvent,
-    bufferedTrace: jest.fn(),
-    bufferedEndTrace: jest.fn(),
-    onboardingParentContext: { current: null },
-  };
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('does not fire trackEvent when clicking the Activity tab (V3 mode)', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
-        remoteFeatureFlags: { extensionUxActivityListRedesign: true },
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <AccountOverviewTabs
-          showTokens={true}
-          showNfts={false}
-          showActivity={true}
-          setBasicFunctionalityModalOpen={jest.fn()}
-          onSupportLinkClick={jest.fn()}
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
-
-    fireEvent.click(getByText(messages.activity.message));
-
-    // ActivityScreenOpened is deferred to ActivityListV3; tab click must not
-    // fire any metric.
-    expect(mockTrackEvent).not.toHaveBeenCalled();
-  });
-
-  it('fires ActivityScreenOpened when clicking the Activity tab (V2 mode)', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
-        remoteFeatureFlags: { extensionUxActivityListRedesign: false },
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <AccountOverviewTabs
-          showTokens={true}
-          showNfts={false}
-          showActivity={true}
-          setBasicFunctionalityModalOpen={jest.fn()}
-          onSupportLinkClick={jest.fn()}
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
-
-    fireEvent.click(getByText(messages.activity.message));
-
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.ActivityScreenOpened,
-        properties: expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          network_filter: ['eip155:1'],
-        }),
-      }),
-    );
-  });
-
-  it('includes network_filter property with both EVM and non-EVM networks in CAIP format', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.POLYGON]: true,
-          },
-          solana: {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
-          },
-        },
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <AccountOverviewTabs
-          showTokens={true}
-          showNfts={false}
-          showActivity={true}
-          setBasicFunctionalityModalOpen={jest.fn()}
-          onSupportLinkClick={jest.fn()}
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-      '/?tab=activity',
-    );
-
-    // Click a tab to trigger event
-    fireEvent.click(getByText(messages.tokens.message));
-
-    // Verify network_filter property is included in correct format
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.TokenScreenOpened,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        network_filter: [
-          'eip155:1',
-          'eip155:137',
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        ],
-      },
-    });
-  });
-});
-
 describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
   const BADGE_TESTID = 'perps-tab-new-badge';
   const PERPS_TAB_TESTID = 'account-overview__perps-tab';
   let originalPerpsEnabled: string | undefined;
-
-  const trackEvent = jest.fn(() => Promise.resolve());
-  const metaMetricsContext = {
-    trackEvent,
-    bufferedTrace: jest.fn(),
-    bufferedEndTrace: jest.fn(),
-    onboardingParentContext: { current: null },
-  };
 
   const renderTabs = ({
     variantFlag,
@@ -234,15 +110,13 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     });
 
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={metaMetricsContext}>
-        <AccountOverviewTabs
-          showTokens={showTokens}
-          showNfts={false}
-          showActivity={false}
-          setBasicFunctionalityModalOpen={jest.fn()}
-          onSupportLinkClick={jest.fn()}
-        />
-      </MetaMetricsContext.Provider>,
+      <AccountOverviewTabs
+        showTokens={showTokens}
+        showNfts={false}
+        showActivity={false}
+        setBasicFunctionalityModalOpen={jest.fn()}
+        onSupportLinkClick={jest.fn()}
+      />,
       store,
       route,
     );
@@ -339,9 +213,9 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
 
     fireEvent.click(getByText(messages.perps.message));
 
-    expect(trackEvent).not.toHaveBeenCalledWith(
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
       expect.objectContaining({
-        event: MetaMetricsEventName.PerpsScreenViewed,
+        name: MetaMetricsEventName.PerpsScreenViewed,
       }),
     );
   });
@@ -359,10 +233,11 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
   it('fires the Experiment Viewed event with the treatment assignment', () => {
     renderTabs({ variantFlag: { name: 'treatment' } });
 
-    expect(trackEvent).toHaveBeenCalledWith(
+    expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        event: MetaMetricsEventName.ExperimentViewed,
+        name: MetaMetricsEventName.ExperimentViewed,
         properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Analytics,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           experiment_id: PERPS_TAB_BADGE_AB_KEY,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -383,10 +258,11 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
   it('records exposure for control symmetrically with treatment', () => {
     renderTabs({ variantFlag: { name: 'control' } });
 
-    expect(trackEvent).toHaveBeenCalledWith(
+    expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        event: MetaMetricsEventName.ExperimentViewed,
+        name: MetaMetricsEventName.ExperimentViewed,
         properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Analytics,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           variation_id: 'control',
         }),
@@ -397,9 +273,9 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
   it('still records exposure after the badge has been dismissed (symmetric per session)', () => {
     renderTabs({ variantFlag: { name: 'treatment' }, perpsTabBadgeSeen: true });
 
-    expect(trackEvent).toHaveBeenCalledWith(
+    expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        event: MetaMetricsEventName.ExperimentViewed,
+        name: MetaMetricsEventName.ExperimentViewed,
       }),
     );
   });
@@ -407,9 +283,9 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
   it('does not record exposure when the perps experience is unavailable', () => {
     renderTabs({ variantFlag: { name: 'treatment' }, perpsAvailable: false });
 
-    expect(trackEvent).not.toHaveBeenCalledWith(
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
       expect.objectContaining({
-        event: MetaMetricsEventName.ExperimentViewed,
+        name: MetaMetricsEventName.ExperimentViewed,
       }),
     );
   });

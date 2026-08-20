@@ -179,7 +179,7 @@ describe('Contract Interaction Confirmation', () => {
         preloadedState: {
           ...mockedMetaMaskState,
           analyticsId: 'test-metametrics-id',
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           dataCollectionForMarketing: false,
         },
@@ -464,7 +464,7 @@ describe('Contract Interaction Confirmation', () => {
       });
     });
 
-    const headingText = tEn('blockaidTitleDeceptive');
+    const headingText = tEn('blockaidTitleHighRiskTransfer');
     const bodyText = tEn('blockaidDescriptionTransferFarming');
     expect(await screen.findByText(headingText)).toBeInTheDocument();
     expect(await screen.findByText(bodyText)).toBeInTheDocument();

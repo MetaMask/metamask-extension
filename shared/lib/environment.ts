@@ -60,7 +60,7 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
  * Add Device tab is shown in Settings, allowing users to pair a second device
  * via QR code scan and verification code.
  */
-export const getIsAddDeviceSyncEnabled = (): boolean => {
+export const getIsQrSyncEnabled = (): boolean => {
   return process.env.QR_SYNC_ENABLED?.toString() === 'true';
 };
 
@@ -103,4 +103,17 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
 
 export const getIsPasskeyFeatureEnabled = (): boolean => {
   return process.env.PASSKEY_ENABLED?.toString() === 'true';
+};
+
+/**
+ * Compile-time gate (`MM_PURE_BLACK_PREVIEW`): when true, OLED pure-black
+ * dark mode is enabled locally without requiring the `extensionUxPureBlack`
+ * remote feature flag. Intended for development and QA only.
+ *
+ * NOTE: This is temporary. Once pure-black and dark theme tokens are
+ * consolidated, this env var and all callers should be removed. Tracked in
+ * TMCU-1083.
+ */
+export const getIsPureBlackPreviewEnabled = (): boolean => {
+  return process.env.MM_PURE_BLACK_PREVIEW?.toString() === 'true';
 };

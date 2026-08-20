@@ -81,9 +81,6 @@
   "back": {
     "message": "חזור"
   },
-  "backupApprovalInfo": {
-    "message": "קוד סודי זה נדרש כדי לשחזר את הארנק שלך במקרה שתאבד/י את מכשירך, תשכח/י את הססמה, תצטרכ/י להתקין מחדש את MetaMask או שתרצה/י לגשת לארנק שלך במכשיר אחר."
-  },
   "backupApprovalNotice": {
     "message": "גבה/י את קוד השחזור הסודי שלך כדי לשמור את בטיחות הארנק והכספים שלך."
   },
@@ -180,9 +177,6 @@
   },
   "decimal": {
     "message": "רמת דיוק עשרוני"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "מספרים עשרוניים חייבים להיות לפחות 0 ולא מעל 36."
   },
   "delete": {
     "message": "מחיקה"
@@ -349,9 +343,6 @@
   "networks": {
     "message": "רשתות"
   },
-  "nevermind": {
-    "message": "לא משנה"
-  },
   "newAccountNumberName": {
     "message": "חשבון $1",
     "description": "Default name of next account to be created on create account screen"
@@ -508,9 +499,6 @@
   },
   "sign": {
     "message": "חתימה"
-  },
-  "signatureRequest": {
-    "message": "בקשת חתימה"
   },
   "signed": {
     "message": "חתום"

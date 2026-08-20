@@ -1,4 +1,3 @@
-/* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { fireEvent, waitFor } from '@testing-library/react';
@@ -29,7 +28,6 @@ const mockSetNextNonce = jest.fn();
 const mockSetTokenNetworkFilter = jest.fn();
 const mockDetectNfts = jest.fn();
 const mockAddPermittedChain = jest.fn();
-const mockShowPermittedNetworkToast = jest.fn();
 const mockSetEnabledNetworks = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
@@ -68,10 +66,6 @@ jest.mock('../../../store/actions.ts', () => ({
   addPermittedChain: (...args: unknown[]) => {
     mockAddPermittedChain(...args);
     return { type: 'MOCK_ADD_PERMITTED_CHAIN' };
-  },
-  showPermittedNetworkToast: () => {
-    mockShowPermittedNetworkToast();
-    return { type: 'MOCK_SHOW_PERMITTED_NETWORK_TOAST' };
   },
   setEnabledNetworks: () => {
     mockSetEnabledNetworks();
@@ -560,7 +554,6 @@ describe('NetworkListMenu', () => {
             MOCK_ORIGIN,
             'eip155:1',
           );
-          expect(mockShowPermittedNetworkToast).toHaveBeenCalled();
           expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
             MOCK_ORIGIN,
             NETWORK_TYPES.MAINNET,
@@ -626,9 +619,6 @@ describe('NetworkListMenu', () => {
           MOCK_ORIGIN,
           'eip155:1337',
         ),
-      );
-      await waitFor(() =>
-        expect(mockShowPermittedNetworkToast).toHaveBeenCalled(),
       );
       await waitFor(() =>
         expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(

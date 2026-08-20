@@ -3,7 +3,9 @@ import { PerpsFeatureFlag } from '../../../shared/lib/perps-feature-flags';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import {
+  getIsPerpsCloseLimitOrderEnabled,
   getIsPerpsExperienceAvailable,
+  getIsPerpsOrderBookEnabled,
   getIsPerpsShowFullAssetNamesEnabled,
   getIsPerpsTerminalBackendEnabled,
   getIsVipProgramEnabled,
@@ -182,6 +184,124 @@ describe('Perps Feature Flags', () => {
         expect(getIsPerpsExperienceAvailable(state)).toBe(true);
         expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0-beta.1');
       });
+    });
+  });
+
+  describe('getIsPerpsOrderBookEnabled', () => {
+    it('returns false when the perpsOrderBookEnabled flag is absent (default OFF)', () => {
+      const state = { metamask: { remoteFeatureFlags: {} } };
+      expect(getIsPerpsOrderBookEnabled(state)).toBe(false);
+      expect(semverGteMock).not.toHaveBeenCalled();
+    });
+
+    it('returns false when the flag is disabled', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsOrderBookEnabled: { enabled: false, minimumVersion: '0.0.0' },
+          },
+        },
+      };
+      expect(getIsPerpsOrderBookEnabled(state)).toBe(false);
+      expect(semverGteMock).not.toHaveBeenCalled();
+    });
+
+    it('returns true when enabled and the version check passes', () => {
+      semverGteMock.mockReturnValue(true);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsOrderBookEnabled: { enabled: true, minimumVersion: '12.0.0' },
+          },
+        },
+      };
+      expect(getIsPerpsOrderBookEnabled(state)).toBe(true);
+      expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.0.0');
+    });
+
+    it('returns false when enabled but the version check fails', () => {
+      semverGteMock.mockReturnValue(false);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsOrderBookEnabled: { enabled: true, minimumVersion: '99.0.0' },
+          },
+        },
+      };
+      expect(getIsPerpsOrderBookEnabled(state)).toBe(false);
+    });
+  });
+
+  describe('getIsPerpsCloseLimitOrderEnabled', () => {
+    it('returns false when the flag is absent', () => {
+      const state = { metamask: { remoteFeatureFlags: {} } };
+
+      expect(getIsPerpsCloseLimitOrderEnabled(state)).toBe(false);
+      expect(semverGteMock).not.toHaveBeenCalled();
+    });
+
+    it('supports boolean flags', () => {
+      const enabledState = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsClosePositionLimitOrderEnabled: true,
+          },
+        },
+      };
+      const disabledState = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsClosePositionLimitOrderEnabled: false,
+          },
+        },
+      };
+
+      expect(getIsPerpsCloseLimitOrderEnabled(enabledState)).toBe(true);
+      expect(getIsPerpsCloseLimitOrderEnabled(disabledState)).toBe(false);
+    });
+
+    it('returns true when enabled and the version check passes', () => {
+      semverGteMock.mockReturnValue(true);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsClosePositionLimitOrderEnabled: {
+              enabled: true,
+              minimumVersion: '12.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsCloseLimitOrderEnabled(state)).toBe(true);
+      expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.0.0');
+    });
+
+    it('returns false when disabled or the version check fails', () => {
+      const disabledState = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsClosePositionLimitOrderEnabled: {
+              enabled: false,
+              minimumVersion: '12.0.0',
+            },
+          },
+        },
+      };
+      const futureVersionState = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsClosePositionLimitOrderEnabled: {
+              enabled: true,
+              minimumVersion: '99.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsCloseLimitOrderEnabled(disabledState)).toBe(false);
+      semverGteMock.mockReturnValue(false);
+      expect(getIsPerpsCloseLimitOrderEnabled(futureVersionState)).toBe(false);
     });
   });
 

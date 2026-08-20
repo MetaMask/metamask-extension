@@ -477,6 +477,7 @@ describe('preferences controller', () => {
         showExtensionInFullSizeView: false,
         privacyMode: false,
         showFiatInTestnets: false,
+        showTickerWidget: true,
         showTestNetworks: false,
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
@@ -510,6 +511,7 @@ describe('preferences controller', () => {
         avatarType: 'maskicon',
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
+        showTickerWidget: true,
         showTestNetworks: false,
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
@@ -725,6 +727,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -795,6 +798,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -811,6 +815,7 @@ describe('preferences controller', () => {
             "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
+            "variational": {},
           },
           "securityAlertsEnabled": true,
           "snapRegistryList": {},
@@ -878,6 +883,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -894,6 +900,7 @@ describe('preferences controller', () => {
             "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
+            "variational": {},
           },
           "securityAlertsEnabled": true,
           "showSidePanelMigrationToast": false,
@@ -962,6 +969,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -978,6 +986,7 @@ describe('preferences controller', () => {
             "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
+            "variational": {},
           },
           "securityAlertsEnabled": true,
           "showSidePanelMigrationToast": false,
@@ -1114,6 +1123,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1138,6 +1148,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1179,6 +1190,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1202,6 +1214,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1225,6 +1238,9 @@ describe('preferences controller', () => {
         ).toStrictEqual({});
         expect(
           controller.state.referrals[DefiReferralPartner.AsterDEX],
+        ).toStrictEqual({});
+        expect(
+          controller.state.referrals[DefiReferralPartner.Variational],
         ).toStrictEqual({});
       });
 
@@ -1277,6 +1293,7 @@ describe('preferences controller', () => {
             showExtensionInFullSizeView: true,
             privacyMode: true,
             showFiatInTestnets: true,
+            showTickerWidget: true,
             showTestNetworks: true,
             smartTransactionsMigrationApplied: false,
             smartTransactionsOptInStatus: true,

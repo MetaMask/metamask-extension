@@ -10,7 +10,17 @@ import {
   isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
 import { TraceName, trace, endTrace } from '../../../../shared/lib/trace';
+import { useDispatch } from '../../../store/hooks';
 import { MultichainPrivateKeyList } from './multichain-private-key-list';
+
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn().mockReturnValue((action: unknown) => {
+    if (typeof action === 'function') {
+      return action(jest.fn(), jest.fn());
+    }
+    return action;
+  }),
+}));
 
 const mockTrackEvent = jest.fn();
 
@@ -292,9 +302,17 @@ const mockExportAccountsWithPasskey = jest
     },
   );
 
-const mockGeneratePasskeyAuthenticationOptions = jest
-  .fn()
-  .mockResolvedValue({ challenge: 'challenge' });
+const mockAuthenticateWithPasskey = jest.fn(() =>
+  mockStartPasskeyAuthentication({} as never),
+);
+
+jest.mock('../../../hooks/passkey/usePasskeyAuthentication', () => ({
+  usePasskeyAuthentication: () => mockAuthenticateWithPasskey,
+}));
+
+jest.mock('../../../hooks/passkey/usePasskeyPrivateKeyExport', () => ({
+  usePasskeyPrivateKeyExport: () => mockExportAccountsWithPasskey,
+}));
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -311,14 +329,6 @@ jest.mock('../../../store/actions', () => ({
   exportAccounts: (_pwd: string, _addresses: string[]) => {
     return mockExportAccounts(_pwd, _addresses);
   },
-  exportAccountsWithPasskey: (
-    authenticationResponse: unknown,
-    addresses: string[],
-  ) => {
-    return mockExportAccountsWithPasskey(authenticationResponse, addresses);
-  },
-  generatePasskeyAuthenticationOptions: () =>
-    mockGeneratePasskeyAuthenticationOptions(),
 }));
 
 const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
@@ -367,11 +377,14 @@ describe('MultichainPrivateKeyList', () => {
         name: TraceName.ShowAccountPrivateKeyList,
       }),
     );
-    expect(mockEndTrace).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: TraceName.ShowAccountPrivateKeyList,
-      }),
-    );
+    // endTrace runs in a useEffect after reveal becomes true
+    await waitFor(() => {
+      expect(mockEndTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.ShowAccountPrivateKeyList,
+        }),
+      );
+    });
   });
 
   describe('passkey reveal', () => {
