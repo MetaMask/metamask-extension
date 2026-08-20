@@ -22,13 +22,16 @@ export function useSingleWalletAccountsBalanceCallback(walletId: string) {
   const getDisplayBalance = useCallback(
     (groupId: string) => {
       const balance = walletBalance.groups?.[groupId];
-      if (!balance) {
+      // A group whose balance has not been fetched yet aggregates to 0, exactly
+      // like a genuinely empty one, so return nothing rather than a misleading
+      // "$0.00". See `getAccountGroupDisplayBalance`.
+      if (!balance?.totalBalanceInUserCurrency) {
         return undefined;
       }
 
       const displayBalance = displayBalanceCalc(
-        balance?.totalBalanceInUserCurrency,
-        balance?.userCurrency,
+        balance.totalBalanceInUserCurrency,
+        balance.userCurrency,
       );
 
       return displayBalance;

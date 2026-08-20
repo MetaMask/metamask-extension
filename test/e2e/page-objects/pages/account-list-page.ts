@@ -630,6 +630,52 @@ class AccountListPage {
     }
   }
 
+  /**
+   * Checks that no balance at all is rendered for a specific account on the
+   * multichain account list page.
+   *
+   * Balances are only fetched eagerly for the selected account group. Groups
+   * whose balance has not been fetched yet are indistinguishable from genuinely
+   * empty ones, so the cell renders nothing rather than a misleading "$0.00".
+   *
+   * @param options - The account and optional wallet to check.
+   * @param options.wallet - The wallet name. Only pass when multiple wallets are present.
+   * @param options.account - The account name (default: 'Account 1').
+   */
+  async checkMultichainAccountBalanceNotDisplayed({
+    wallet,
+    account = 'Account 1',
+  }: {
+    wallet?: string;
+    account?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Check that no multichain account balance is displayed for ${account}${wallet ? ` under ${wallet}` : ''}`,
+    );
+
+    if (wallet) {
+      // Throws if the wallet header never renders, so the assertion below can
+      // never pass just because the list is still empty.
+      await this.driver.waitForSelector({
+        css: this.walletHeader,
+        text: wallet,
+      });
+      await this.driver.assertElementNotPresent({
+        xpath: `//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]/../following-sibling::*//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]//*[@data-testid='balance-display']`,
+      });
+    } else {
+      // Throws if the account cell never renders, so the assertion below can
+      // never pass just because the list is still empty.
+      await this.driver.waitForSelector({
+        css: this.multichainAccountListItem,
+        text: account,
+      });
+      await this.driver.assertElementNotPresent({
+        xpath: `//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]//*[@data-testid='balance-display']`,
+      });
+    }
+  }
+
   async checkMultiChainAccountMenuIsDisplayed(): Promise<void> {
     console.log(`Check that multichain account menu is displayed`);
     await this.driver.waitForMultipleSelectors([
