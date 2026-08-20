@@ -69,8 +69,7 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
 
   const shouldFlushPersistImmediately = (
     changedControllerKeys: readonly string[],
-  ) =>
-    changedControllerKeys.some((key) => immediatePersistenceKeySet.has(key));
+  ) => changedControllerKeys.some((key) => immediatePersistenceKeySet.has(key));
 
   const operationSafener = new OperationSafener({
     op: async (state?: MetaMaskStateType) => {
