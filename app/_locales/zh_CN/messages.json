@@ -9340,9 +9340,6 @@
   "selectNFTPrivacyPreference": {
     "message": "在设置中打开 NFT 检测"
   },
-  "selectNetworkToFilter": {
-    "message": "选择要筛选的网络"
-  },
   "selectPathHelp": {
     "message": "如果您没有看到期望的账户，请尝试切换 HD 路径或当前选定的网络。"
   },

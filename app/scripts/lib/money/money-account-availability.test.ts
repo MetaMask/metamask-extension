@@ -1,7 +1,10 @@
 import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
-import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../../shared/lib/money/feature-flags';
+import {
+  MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME,
+  MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
+} from '../../../../shared/lib/money/feature-flags';
 import { MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME } from '../../../../shared/lib/money/vault-config';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
 import {
@@ -33,10 +36,16 @@ function createMockMessenger({
   moneyFlag = ENABLED_FLAG as unknown,
   vaultConfig = VAULT_CONFIG as unknown,
   networkConfigured = true,
+  geoFlag,
+  location = 'US',
+  getGeolocation,
 }: {
   moneyFlag?: unknown;
   vaultConfig?: unknown;
   networkConfigured?: boolean;
+  geoFlag?: unknown;
+  location?: string;
+  getGeolocation?: () => Promise<string> | string;
 } = {}) {
   const addNetwork = jest.fn().mockResolvedValue(MONAD_NETWORK_CONFIGURATION);
   const call = jest.fn((action: string, ...args: unknown[]) => {
@@ -45,6 +54,9 @@ function createMockMessenger({
         remoteFeatureFlags: {
           [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: moneyFlag,
           [MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME]: vaultConfig,
+          ...(geoFlag === undefined
+            ? {}
+            : { [MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME]: geoFlag }),
         },
       };
     }
@@ -57,6 +69,12 @@ function createMockMessenger({
     }
     if (action === 'LegacyBackgroundApiService:addNetwork') {
       return addNetwork(...args);
+    }
+    if (action === 'GeolocationController:getGeolocation') {
+      if (getGeolocation) {
+        return getGeolocation();
+      }
+      return location;
     }
     throw new Error(`Unexpected action: ${action}`);
   });
@@ -137,7 +155,7 @@ describe('MoneyAccountAvailabilityService', () => {
     expect(addNetwork).not.toHaveBeenCalled();
   });
 
-  it('answers unavailable when the flag is off, without touching the seed', async () => {
+  it('answers unavailable when the flag is off, without touching the seed, geolocation, or networks', async () => {
     const { service, addNetwork, call } = createService({
       moneyFlag: DISABLED_FLAG,
     });
@@ -148,6 +166,9 @@ describe('MoneyAccountAvailabilityService', () => {
     expect(deriveMoneyAccountAddressMock).not.toHaveBeenCalled();
     expect(addNetwork).not.toHaveBeenCalled();
     expect(call).not.toHaveBeenCalledWith('NetworkController:getState');
+    expect(call).not.toHaveBeenCalledWith(
+      'GeolocationController:getGeolocation',
+    );
   });
 
   it('answers unavailable when the flag is absent or malformed', async () => {
@@ -171,6 +192,9 @@ describe('MoneyAccountAvailabilityService', () => {
             [MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME]: VAULT_CONFIG,
           },
         };
+      }
+      if (action === 'GeolocationController:getGeolocation') {
+        return 'US';
       }
       if (action === 'NetworkController:getState') {
         return {
@@ -198,6 +222,49 @@ describe('MoneyAccountAvailabilityService', () => {
       isAvailable: false,
     });
     expect(addNetwork).not.toHaveBeenCalled();
+  });
+
+  it('answers unavailable when the user is in a blocked region, without touching the seed', async () => {
+    const { service } = createService({ location: 'GB' });
+
+    expect(await service.getAvailability()).toStrictEqual({
+      isAvailable: false,
+    });
+    expect(deriveMoneyAccountAddressMock).not.toHaveBeenCalled();
+  });
+
+  it('answers unavailable when geolocation is unknown', async () => {
+    const { service } = createService({ location: 'UNKNOWN' });
+
+    expect(await service.getAvailability()).toStrictEqual({
+      isAvailable: false,
+    });
+    expect(deriveMoneyAccountAddressMock).not.toHaveBeenCalled();
+  });
+
+  it('answers unavailable when geolocation throws', async () => {
+    const { service } = createService({
+      getGeolocation: () => {
+        throw new Error('geolocation failed');
+      },
+    });
+
+    expect(await service.getAvailability()).toStrictEqual({
+      isAvailable: false,
+    });
+    expect(deriveMoneyAccountAddressMock).not.toHaveBeenCalled();
+  });
+
+  it('answers available when blockedRegions is empty, even in an otherwise blocked country', async () => {
+    const { service } = createService({
+      location: 'GB',
+      geoFlag: { blockedRegions: [] },
+    });
+
+    expect(await service.getAvailability()).toStrictEqual({
+      isAvailable: true,
+      address: MONEY_ADDRESS,
+    });
   });
 
   it('answers unavailable when the address cannot be derived, and retries next call', async () => {

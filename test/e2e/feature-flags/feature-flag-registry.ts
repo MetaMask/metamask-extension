@@ -2831,6 +2831,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  moneyAccountGeoBlockedCountries: {
+    inProd: true,
+    name: 'moneyAccountGeoBlockedCountries',
+    productionDefault: {
+      blockedRegions: ['GB'],
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   moneyAccountVaultConfig: {
     inProd: true,
     name: 'moneyAccountVaultConfig',

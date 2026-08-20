@@ -31,6 +31,7 @@ export function getMoneyAccountAvailabilityServiceMessenger(
       'LegacyBackgroundApiService:addNetwork',
       'NetworkController:getState',
       'RemoteFeatureFlagController:getState',
+      'GeolocationController:getGeolocation',
     ],
     events: ['KeyringController:unlock', 'KeyringController:lock'],
   });
