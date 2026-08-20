@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  Checkbox,
-  IconName,
-} from '@metamask/design-system-react';
+import { Checkbox, IconName } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
@@ -27,6 +21,8 @@ import {
   Text,
   Box,
   ModalFooter,
+  ButtonPrimary,
+  ButtonPrimarySize,
   ModalBody,
   Icon,
   IconSize,
@@ -199,7 +195,7 @@ export const EditNetworksModal = ({
                   {t('disconnectMessage')}
                 </Text>
               </Box>
-              <Button
+              <ButtonPrimary
                 data-testid="disconnect-chains-button"
                 onClick={() => {
                   onSubmit(selectedChainIds);
@@ -227,27 +223,25 @@ export const EditNetworksModal = ({
                   );
                   onClose();
                 }}
-                size={ButtonSize.Lg}
-                variant={ButtonVariant.Primary}
-                isFullWidth
-                isDanger
+                size={ButtonPrimarySize.Lg}
+                block
+                danger
               >
                 {t('disconnect')}
-              </Button>
+              </ButtonPrimary>
             </Box>
           ) : (
-            <Button
+            <ButtonPrimary
               data-testid="connect-more-chains-button"
               onClick={() => {
                 onSubmit(selectedChainIds);
                 onClose();
               }}
-              size={ButtonSize.Lg}
-              variant={ButtonVariant.Primary}
-              isFullWidth
+              size={ButtonPrimarySize.Lg}
+              block
             >
               {t('update')}
-            </Button>
+            </ButtonPrimary>
           )}
         </ModalFooter>
       </ModalContent>
