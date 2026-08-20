@@ -221,7 +221,6 @@ jobs:
           }
 
           {
-            compare_policies "lavamoat/browserify/main/" "lavamoat/browserify/"
             compare_policies "lavamoat/webpack/mv2/main/" "lavamoat/webpack/mv2/"
             compare_policies "lavamoat/webpack/mv3/main/" "lavamoat/webpack/mv3/"
           } > does_diff_diff.txt

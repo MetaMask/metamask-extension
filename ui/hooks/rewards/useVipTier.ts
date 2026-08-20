@@ -10,7 +10,7 @@ import log from 'loglevel';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { selectVipProgramEnabled } from '../../ducks/rewards/selectors';
-import { useAppSelector } from '../../store/store';
+import { useAppSelector } from '../../store/hooks';
 
 /**
  * Derives the selected account's CAIP-10 ID and fetches its VIP tier from the

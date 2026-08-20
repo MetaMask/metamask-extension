@@ -1,5 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { act } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useSpinDelay } from './useSpinDelay';
 
 describe('useSpinDelay', () => {

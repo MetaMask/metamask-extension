@@ -520,15 +520,17 @@ export class ShieldMockttpService {
             cohort: 'wallet_home',
             eligible: true,
             eligibilityRate: 1.0,
+            priority: 1,
           },
           {
             cohort: 'post_tx',
             eligible: true,
             eligibilityRate: 1.0,
+            priority: 2,
           },
         ],
         assignedCohort: null,
-        hasAssignedCohortExpired: null,
+        hasAssignedCohortExpired: false,
       },
     ];
 
@@ -572,13 +574,16 @@ export class ShieldMockttpService {
         this.#selectedInterval =
           body.recurringInterval === 'month' ? 'month' : 'year';
       }
+      const subscription =
+        this.#selectedInterval === 'month'
+          ? BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY
+          : BASE_SHIELD_SUBSCRIPTION_CRYPTO;
       return {
         statusCode: 200,
-        json: [
-          this.#selectedInterval === 'month'
-            ? BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY
-            : BASE_SHIELD_SUBSCRIPTION_CRYPTO,
-        ],
+        json: {
+          subscriptionId: subscription.id,
+          status: subscription.status,
+        },
       };
     };
 

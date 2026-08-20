@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "نیاز به انتخاب یک حساب دارید!"
   },
-  "addAcquiredTokens": {
-    "message": "رمزیاب های را که با استفاده از MetaMask بدست آورده اید، اضافه کنید"
-  },
   "addAlias": {
     "message": "نام مستعار اضافه کنید"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "بازگشت"
-  },
-  "backupApprovalInfo": {
-    "message": "در صورت مفقود شدن دستگاه، فراموش شدن رمز عبور، لزوم نصب-دوباره MetaMask، یا اقدام دسترسی به کیف تان از دستگاه دیگر، کود مخفی جهت بازیابی کیف تان، لازم خواهد بود."
   },
   "backupApprovalNotice": {
     "message": "کود مخفی بازیابی تان را بخاطر امنیت کیف و پول های تان، پشتیبانی بگیرید."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "پیشرفته"
   },
-  "customToken": {
-    "message": "رمزیاب دلخواه"
-  },
   "decimal": {
     "message": "اعشاریه های دقت"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "اعشاریه ها باید حد اقل 0، و بیشتر از 36 نباشند."
   },
   "delete": {
     "message": "حذف"
@@ -348,9 +336,6 @@
   "metamaskVersion": {
     "message": "نسخه MetaMask"
   },
-  "mustSelectOne": {
-    "message": "باید حداقل 1 رمزیاب را انتخاب کنید."
-  },
   "needImportFile": {
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",
     "description": "User is important an account and needs to add a file to continue"
@@ -360,9 +345,6 @@
   },
   "networks": {
     "message": "شبکه ها"
-  },
-  "nevermind": {
-    "message": "توجه نکنید"
   },
   "newAccountNumberName": {
     "message": "حساب $1",
@@ -520,9 +502,6 @@
   },
   "sign": {
     "message": "علامت"
-  },
-  "signatureRequest": {
-    "message": "درخواست امضاء"
   },
   "signed": {
     "message": "وارد شد"

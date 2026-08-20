@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+import { matchesBackendTarget } from './sentry-trace-propagation';
 import {
   dropLowValueMarkSpans,
   removeUrlsFromBreadCrumb,
@@ -521,6 +522,25 @@ describe('Setup Sentry', () => {
       expect(
         shouldCreateSpanForRequest('https://token.api.cx.metamask.io/tokens/1'),
       ).toStrictEqual(true);
+    });
+
+    it('never filters a backend trace-propagation target', () => {
+      // Filtering these spans client-side orphans the backend's subtree of
+      // the trace — see the constraint note on `shouldCreateSpanForRequest`.
+      const backendUrls = [
+        'https://price.api.cx.metamask.io/v3/spot-prices?assetIds=abc',
+        'https://bridge.api.cx.metamask.io/getQuoteStream?walletAddress=0x0',
+        'https://accounts.api.cx.metamask.io/v5/multiaccount/balances',
+        'https://authentication.api.cx.metamask.io/api/v2/srp/login',
+        'https://oidc.api.cx.metamask.io/oauth2/token',
+        'https://tokens.api.cx.metamask.io/v2/supportedNetworks',
+        'https://gas.api.cx.metamask.io/networks/1/suggestedGasFees',
+        'https://subscription.api.cx.metamask.io/v1/subscriptions',
+      ];
+      for (const url of backendUrls) {
+        expect(matchesBackendTarget(url)).toStrictEqual(true);
+        expect(shouldCreateSpanForRequest(url)).toStrictEqual(true);
+      }
     });
   });
 

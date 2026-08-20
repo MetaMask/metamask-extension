@@ -47,6 +47,9 @@ export function getRewardsControllerMessenger(
     events: [
       'AccountTreeController:selectedAccountGroupChange',
       'KeyringController:unlock',
+      // Retry silent auth when remote flags hydrate after onboarding (fresh
+      // install unlocks during onboarding while `rewardsEnabled` is unavailable).
+      'RemoteFeatureFlagController:stateChange',
     ],
   });
   return controllerMessenger;

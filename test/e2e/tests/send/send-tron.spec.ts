@@ -2,12 +2,13 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
-import NetworkManager from '../../page-objects/pages/network-manager';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import {
   mockTronApis,
   TRON_RECIPIENT_ADDRESS,
@@ -26,10 +27,7 @@ describe('Send Tron', function () {
 
         // Switch to Tron via the UI. Enabling it through fixtures causes a redirect
         // back to the default network because the snap is not yet initialized
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
@@ -49,8 +47,13 @@ describe('Send Tron', function () {
         await sendPage.pressContinueButton();
         await snapTransactionConfirmation.checkPageIsLoaded();
         await snapTransactionConfirmation.clickFooterConfirmButton();
+
+        const txToast = new TxToastNotification(driver);
+        await txToast.checkTxSubmittedToast();
+
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkTxAmountInActivity('-50,000 HTX', 1); // mocked activity
+        await activityTab.goToActivityList();
+        await activityTab.checkTxAmountInActivity('-1 TRX', 1);
         await activityTab.checkNoFailedTransactions();
       },
     );

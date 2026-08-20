@@ -574,6 +574,15 @@ export class RewardsController extends BaseController<
     this.messenger.subscribe('KeyringController:unlock', () =>
       this.handleAuthenticationTrigger('KeyringController unlocked'),
     );
+
+    // On a fresh install the first keyring unlock happens during onboarding,
+    // before remote feature flags (and thus `rewardsEnabled`) are available, so
+    // the unlock-triggered silent auth returns early. Retry when remote flags
+    // hydrate after onboarding completes — `handleAuthenticationTrigger` is a
+    // no-op while rewards is still disabled.
+    this.messenger.subscribe('RemoteFeatureFlagController:stateChange', () =>
+      this.handleAuthenticationTrigger('RemoteFeatureFlag changed'),
+    );
   }
 
   /**

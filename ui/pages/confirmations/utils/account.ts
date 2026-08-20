@@ -88,3 +88,25 @@ export const isTronAccountForSend = (account: InternalAccount): boolean => {
 
   return false;
 };
+
+/**
+ * Checks if an account is Stellar-compatible for send operations.
+ *
+ * @param account - The internal account object to check
+ * @returns true if the account can be used for Stellar transactions
+ */
+export const isStellarAccountForSend = (account: InternalAccount): boolean => {
+  if (!account) {
+    return false;
+  }
+
+  if (account.type.startsWith('stellar:')) {
+    return true;
+  }
+
+  if (account.scopes?.some((scope) => scope.startsWith('stellar:'))) {
+    return true;
+  }
+
+  return false;
+};
