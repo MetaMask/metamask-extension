@@ -804,11 +804,6 @@
       "count": 1
     }
   },
-  "ui/layouts/route-with-messenger.tsx": {
-    "react-hooks/refs": {
-      "count": 2
-    }
-  },
   "ui/pages/activity/activity-list.tsx": {
     "react-hooks/refs": {
       "count": 3
