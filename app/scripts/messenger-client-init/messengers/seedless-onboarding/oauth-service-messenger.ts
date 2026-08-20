@@ -29,6 +29,7 @@ export function getOAuthServiceMessenger(
       'SeedlessOnboardingController:getState',
       'OnboardingController:getState',
       'SeedlessOnboardingController:getAccessToken',
+      'GeolocationController:getGeolocation',
     ],
   });
   return oauthMessenger;

@@ -1,6 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../constants';
 import AccountListPage from '../pages/account-list-page';
+import TokensTab from '../pages/home/tokens-tab';
 import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import PrivacySettings from '../pages/settings/privacy-settings';
@@ -34,7 +35,8 @@ export async function importAdditionalSecretRecoveryPhrase(
   await homePage.checkNewSrpAddedToastIsDisplayed();
   await homePage.dismissSrpAddedToast();
   await homePage.checkPageIsLoaded();
-  await homePage.checkExpectedTokenBalanceIsDisplayed(expectedBalance, 'ETH');
+  const tokensTab = new TokensTab(driver);
+  await tokensTab.checkExpectedTokenBalanceIsDisplayed(expectedBalance, 'ETH');
 }
 
 export async function verifySrp(
@@ -53,4 +55,28 @@ export async function verifySrp(
   await privacySettings.completeRevealSrpQuiz();
   await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
   await privacySettings.checkSrpTextIsDisplayed(srp);
+}
+
+/**
+ * Verifies that an account belongs to a given Secret Recovery Phrase by
+ * navigating to the SRP list in Security & Privacy settings.
+ *
+ * @param driver - The webdriver instance.
+ * @param options - Options for the verification.
+ * @param options.accountName - The name of the account expected under the SRP.
+ * @param options.srpIndex - The 1-based index of the Secret Recovery Phrase.
+ */
+export async function verifyAccountBelongsToSrp(
+  driver: Driver,
+  { accountName, srpIndex }: { accountName: string; srpIndex: number },
+): Promise<void> {
+  await new HeaderNavbar(driver).openSettingsPage();
+  const settingsPage = new SettingsPage(driver);
+  await settingsPage.checkPageIsLoaded();
+  await settingsPage.goToSecurityAndPasswordSettings();
+
+  const privacySettings = new PrivacySettings(driver);
+  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
+  await privacySettings.openSrpList();
+  await privacySettings.checkAccountBelongsToSrp({ accountName, srpIndex });
 }

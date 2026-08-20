@@ -1,5 +1,5 @@
 import React from 'react';
-import { act } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -16,7 +16,16 @@ jest.mock('./perps-view-stream-boundary', () => ({
 }));
 
 jest.mock('./perps-view', () => ({
-  PerpsView: () => <div data-testid="perps-view-mock">Perps</div>,
+  PerpsView: () => {
+    const { useAccessRestrictedModal } = jest.requireActual('../compliance');
+    const { showAccessRestrictedModal } = useAccessRestrictedModal();
+
+    return (
+      <button data-testid="perps-view-mock" onClick={showAccessRestrictedModal}>
+        Perps
+      </button>
+    );
+  },
 }));
 
 jest.mock('./perps-toast', () => ({
@@ -59,6 +68,21 @@ describe('PerpsTab', () => {
 
     expect(queryByTestId('perps-basic-functionality-off')).toBeNull();
     expect(queryByTestId('perps-view-mock')).not.toBeNull();
+  });
+
+  it('provides access restricted modal context to the perps view', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        useExternalServices: true,
+      },
+    });
+
+    renderWithProvider(<PerpsTab />, store);
+
+    fireEvent.click(screen.getByTestId('perps-view-mock'));
+
+    expect(screen.getByTestId('access-restricted-modal')).toBeInTheDocument();
   });
 
   it('calls perpsDisconnect when useExternalServices toggles from true to false', () => {

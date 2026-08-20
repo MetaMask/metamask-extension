@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent, waitFor } from '@testing-library/react';
-import { ExtensionPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
@@ -13,7 +13,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import {
-  SECURITY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
 } from '../../../helpers/constants/routes';
 import * as selectors from '../../../selectors';
@@ -32,6 +32,7 @@ jest.mock('../../ui/toast/toast', () => {
       error: jest.fn(),
       success: jest.fn(),
     },
+    ToastContent: actual.ToastContent,
   };
 });
 
@@ -40,6 +41,13 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
     typeof import('../../../../shared/lib/environment-type')
   >('../../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
+    '../../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
 }));
 
 const mockUseNavigate = jest.fn();
@@ -51,20 +59,28 @@ const mockChangePassword = jest
 const mockVerifyPassword = jest.fn().mockImplementation((_pwd: string) => {
   return Promise.resolve();
 });
-const mockGeneratePasskeyAuthenticationOptions = jest.fn(() =>
-  Promise.resolve({}),
+const mockAuthenticateWithPasskey = jest.fn(() =>
+  startPasskeyAuthentication({} as never),
 );
-const mockChangePasswordWithPasskeyVerification = jest.fn(
-  (
-    _newPassword: string,
-    _authenticationResponse: unknown,
-    _options?: unknown,
-  ) => Promise.resolve(),
-);
+const mockChangePasswordWithPasskeyVerification = jest
+  .fn()
+  .mockResolvedValue(undefined);
 const mockForceUpdateMetamaskState = jest.fn(() => Promise.resolve());
 const mockRemovePasskeyWithPasswordVerification = jest.fn((_password: string) =>
   Promise.resolve(),
 );
+
+jest.mock('../../../hooks/passkey/usePasskeyPasswordChange', () => ({
+  usePasskeyPasswordChange: () => mockChangePasswordWithPasskeyVerification,
+}));
+
+jest.mock('../../../hooks/passkey/usePasskeyRemoval', () => ({
+  useRemovePasskeyWithPassword: () => mockRemovePasskeyWithPasswordVerification,
+}));
+
+jest.mock('../../../hooks/passkey/usePasskeyAuthentication', () => ({
+  usePasskeyAuthentication: () => mockAuthenticateWithPasskey,
+}));
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -103,21 +119,7 @@ jest.mock('../../../store/actions', () => ({
   verifyPassword: (_pwd: string) => {
     return mockVerifyPassword(_pwd);
   },
-  generatePasskeyAuthenticationOptions: () =>
-    mockGeneratePasskeyAuthenticationOptions(),
-  changePasswordWithPasskeyVerification: (
-    newPassword: string,
-    authenticationResponse: unknown,
-    options: { renewVaultKeyProtection: boolean },
-  ) =>
-    mockChangePasswordWithPasskeyVerification(
-      newPassword,
-      authenticationResponse,
-      options,
-    ),
   forceUpdateMetamaskState: async () => mockForceUpdateMetamaskState(),
-  removePasskeyWithPasswordVerification: (password: string) =>
-    mockRemovePasskeyWithPasswordVerification(password),
 }));
 
 jest.mock('../../../../shared/lib/passkey', () => ({
@@ -155,7 +157,6 @@ describe('ChangePassword', () => {
     (startPasskeyAuthentication as jest.Mock).mockResolvedValue({
       id: 'mock-credential',
     });
-    mockGeneratePasskeyAuthenticationOptions.mockResolvedValue({});
   });
 
   async function advanceToChangePasswordStep(
@@ -167,6 +168,20 @@ describe('ChangePassword', () => {
     fireEvent.click(getByTestId('verify-current-password-button'));
     await waitFor(() => {
       expect(mockVerifyPassword).toHaveBeenCalledWith(mockPassword);
+    });
+  }
+
+  async function fillNewPasswordForm(getByTestId: (id: string) => HTMLElement) {
+    fireEvent.change(getByTestId('change-password-input'), {
+      target: { value: mockNewPassword },
+    });
+    fireEvent.change(getByTestId('change-password-confirm-input'), {
+      target: { value: mockNewPassword },
+    });
+    fireEvent.click(getByTestId('change-password-terms'));
+
+    await waitFor(() => {
+      expect(getByTestId('change-password-button')).toBeEnabled();
     });
   }
 
@@ -255,7 +270,9 @@ describe('ChangePassword', () => {
       expect(saveButton).toBeDisabled();
 
       fireEvent.click(getByTestId('change-password-terms'));
-      expect(saveButton).toBeEnabled();
+      await waitFor(() => {
+        expect(saveButton).toBeEnabled();
+      });
     });
 
     it('changes the password and navigates to security settings on save', async () => {
@@ -263,13 +280,7 @@ describe('ChangePassword', () => {
 
       await advanceToChangePasswordStep(getByTestId);
 
-      fireEvent.change(getByTestId('change-password-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.change(getByTestId('change-password-confirm-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.click(getByTestId('change-password-terms'));
+      await fillNewPasswordForm(getByTestId);
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
@@ -277,7 +288,9 @@ describe('ChangePassword', () => {
           mockNewPassword,
           mockPassword,
         );
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
   });
@@ -295,13 +308,7 @@ describe('ChangePassword', () => {
 
       await advanceToChangePasswordStep(getByTestId);
 
-      fireEvent.change(getByTestId('change-password-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.change(getByTestId('change-password-confirm-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.click(getByTestId('change-password-terms'));
+      await fillNewPasswordForm(getByTestId);
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
@@ -320,13 +327,7 @@ describe('ChangePassword', () => {
 
       await advanceToChangePasswordStep(getByTestId);
 
-      fireEvent.change(getByTestId('change-password-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.change(getByTestId('change-password-confirm-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.click(getByTestId('change-password-terms'));
+      await fillNewPasswordForm(getByTestId);
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
@@ -354,13 +355,7 @@ describe('ChangePassword', () => {
 
       await advanceToChangePasswordStep(getByTestId);
 
-      fireEvent.change(getByTestId('change-password-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.change(getByTestId('change-password-confirm-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.click(getByTestId('change-password-terms'));
+      await fillNewPasswordForm(getByTestId);
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
@@ -376,7 +371,9 @@ describe('ChangePassword', () => {
           mockNewPassword,
           mockPassword,
         );
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
   });
@@ -435,16 +432,18 @@ describe('ChangePassword', () => {
         ).toBeInTheDocument();
       });
 
-      resolveAuth?.({
-        id: 'mock-credential',
-        rawId: 'mock-credential',
-        type: 'public-key',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'AA',
-        },
-        clientExtensionResults: {},
+      await act(async () => {
+        resolveAuth?.({
+          id: 'mock-credential',
+          rawId: 'mock-credential',
+          type: 'public-key',
+          response: {
+            clientDataJSON: 'e30',
+            authenticatorData: 'AA',
+            signature: 'AA',
+          },
+          clientExtensionResults: {},
+        });
       });
     });
 
@@ -471,7 +470,7 @@ describe('ChangePassword', () => {
       const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
       await waitFor(() => {
-        expect(mockGeneratePasskeyAuthenticationOptions).toHaveBeenCalled();
+        expect(mockAuthenticateWithPasskey).toHaveBeenCalled();
       });
       await waitFor(() => {
         expect(startPasskeyAuthentication).toHaveBeenCalled();
@@ -805,17 +804,19 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
-        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith(
-          mockNewPassword,
-          mockAssertion,
-          { renewVaultKeyProtection: false },
-        );
+        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith({
+          newPassword: mockNewPassword,
+          authenticationResponse: mockAssertion,
+          options: { renewVaultKeyProtection: false },
+        });
         expect(mockChangePassword).not.toHaveBeenCalled();
         expect(
           mockRemovePasskeyWithPasswordVerification,
         ).not.toHaveBeenCalled();
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
 
@@ -865,7 +866,9 @@ describe('ChangePassword', () => {
           mockRemovePasskeyWithPasswordVerification.mock.invocationCallOrder[0],
         ).toBeLessThan(mockChangePassword.mock.invocationCallOrder[0]);
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
 
@@ -886,13 +889,15 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
-        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith(
-          mockNewPassword,
-          mockAssertion,
-          { renewVaultKeyProtection: true },
-        );
+        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith({
+          newPassword: mockNewPassword,
+          authenticationResponse: mockAssertion,
+          options: { renewVaultKeyProtection: true },
+        });
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
 
@@ -924,17 +929,19 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
-        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith(
-          mockNewPassword,
-          mockAssertion,
-          { renewVaultKeyProtection: false },
-        );
+        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith({
+          newPassword: mockNewPassword,
+          authenticationResponse: mockAssertion,
+          options: { renewVaultKeyProtection: false },
+        });
         expect(mockChangePassword).not.toHaveBeenCalled();
         expect(
           mockRemovePasskeyWithPasswordVerification,
         ).not.toHaveBeenCalled();
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
 
@@ -943,7 +950,7 @@ describe('ChangePassword', () => {
         data: {
           cause: {
             name: 'PasskeyControllerError',
-            code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+            code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
           },
         },
       });
@@ -977,7 +984,7 @@ describe('ChangePassword', () => {
         ]),
       );
       expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_AND_PASSWORD_ROUTE);
     });
   });
 });

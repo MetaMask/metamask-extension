@@ -30,6 +30,7 @@ const typeHash = {
  * If you would like to help with the replacement of the old Button component, please submit a pull request against this GitHub issue:
  * {@link https://github.com/MetaMask/metamask-extension/issues/18896}
  * @see {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-button--default-story#button}
+ * @param {{ [x: string]: any, type?: string, submit?: boolean, large?: boolean, children?: import('react').ReactNode, icon?: import('react').ReactNode, className?: string, rounded?: boolean }} props
  */
 
 const Button = ({

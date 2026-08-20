@@ -6,7 +6,7 @@ import {
   useTransactionPayRequiredTokens,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
-import { PayWithRow } from '../pay-with-row/pay-with-row';
+import { ConfirmInfoRowSize, PayWithRow } from '../pay-with-row/pay-with-row';
 import { BridgeFeeRow } from '../bridge-fee-row/bridge-fee-row';
 import { TotalRow } from '../total-row/total-row';
 import { RequiredTokensRow } from '../required-tokens-row';
@@ -34,7 +34,7 @@ export const TransactionPaySection = () => {
   return (
     <ConfirmInfoSection data-testid="transaction-pay-section">
       <RequiredTokensRow />
-      <PayWithRow />
+      <PayWithRow variant={ConfirmInfoRowSize.Default} />
       {hasPaymentToken && (
         <>
           <BridgeFeeRow />

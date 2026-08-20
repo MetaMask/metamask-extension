@@ -1,8 +1,11 @@
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import * as BackgroundConnectionModule from '../background-connection';
 import {
   updateTransactionPaymentToken,
   setIsMaxAmount,
   setPostQuote,
+  setAccountOverride,
+  setPaymentOverride,
 } from './transaction-pay-controller';
 
 jest.mock('../background-connection');
@@ -99,6 +102,55 @@ describe('transaction-pay-controller actions', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'setTransactionPayPostQuote',
         ['tx-100', {}],
+      );
+    });
+  });
+
+  describe('setAccountOverride', () => {
+    it('calls submitRequestToBackground with setTransactionPayAccountOverride', async () => {
+      const transactionId = 'tx-override';
+      const accountOverride =
+        '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+
+      await setAccountOverride(transactionId, accountOverride);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setTransactionPayAccountOverride',
+        [transactionId, accountOverride],
+      );
+    });
+  });
+
+  describe('setPaymentOverride', () => {
+    it('calls submitRequestToBackground with setTransactionPayPaymentOverride', async () => {
+      const transactionId = 'tx-pay-override';
+      const refundTo = '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+
+      await setPaymentOverride(transactionId, {
+        paymentOverride: PaymentOverride.MoneyAccount,
+        refundTo,
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setTransactionPayPaymentOverride',
+        [
+          transactionId,
+          {
+            paymentOverride: PaymentOverride.MoneyAccount,
+            refundTo,
+          },
+        ],
+      );
+    });
+
+    it('defaults options to an empty object when omitted', async () => {
+      await setPaymentOverride('tx-clear');
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setTransactionPayPaymentOverride',
+        ['tx-clear', { paymentOverride: undefined, refundTo: undefined }],
       );
     });
   });

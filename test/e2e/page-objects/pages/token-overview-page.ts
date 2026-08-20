@@ -1,14 +1,27 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Token / coin asset overview: send, swap, receive, and explorer actions.
+ *
+ * Screen: `#/asset/:chainId/:asset?...` asset details page.
+ * Owns: send/swap/receive/more actions, view-in-explorer, and back navigation
+ * on the token overview.
+ * Boundaries: the asset overview only. Send/swap destinations and confirmation
+ * flows belong to their page objects after leaving this screen.
+ * Related: `TokensTab` (entry), `SendPage`, `SwapPage`.
+ *
+ * @see ui/pages/asset/components/asset-page.tsx
+ */
 class TokenOverviewPage {
-  private driver: Driver;
-
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 
-  private readonly receiveButton = {
-    text: 'Receive',
-    css: '.icon-button',
-  };
+  private readonly backButton = '.asset-page__back-button';
+
+  private driver: Driver;
+
+  private readonly moreButton = '[data-testid="coin-overview-more"]';
+
+  private readonly receiveButton = '[data-testid="coin-overview-receive"]';
 
   private readonly sendButton = {
     text: 'Send',
@@ -24,8 +37,6 @@ class TokenOverviewPage {
     text: 'View Asset in explorer',
     tag: 'div',
   };
-
-  private readonly backButton = '.asset-page__back-button';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -64,7 +75,13 @@ class TokenOverviewPage {
     }
   }
 
+  async clickBack(): Promise<void> {
+    await this.driver.clickElement(this.backButton);
+  }
+
   async clickReceive(): Promise<void> {
+    await this.driver.clickElement(this.moreButton);
+    await this.driver.waitForSelector(this.receiveButton);
     await this.driver.clickElement(this.receiveButton);
   }
 
@@ -85,10 +102,6 @@ class TokenOverviewPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.viewAssetInExplorerButton,
     );
-  }
-
-  async clickBack(): Promise<void> {
-    await this.driver.clickElement(this.backButton);
   }
 }
 

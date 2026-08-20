@@ -11,9 +11,11 @@ import { Box, Text } from '../../../../components/component-library';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   getGasEstimateType,
+  getGasEstimateTypeByChainId,
   getGasFeeEstimates,
   getGasFeeEstimatesByChainId,
   getIsGasEstimatesLoading,
+  getIsGasEstimatesLoadingByChainId,
 } from '../../../../ducks/metamask/metamask';
 import {
   Display,
@@ -41,17 +43,31 @@ const PRESET_ESTIMATES = new Set(['low', 'medium', 'high']);
 
 export default function GasTiming({
   chainId,
+  networkClientId,
   maxFeePerGas = '0',
   maxPriorityFeePerGas = '0',
   gasWarnings,
   userFeeLevelOverride,
 }) {
-  const gasEstimateType = useSelector(getGasEstimateType);
+  const chainGasEstimateType = useSelector((state) =>
+    getGasEstimateTypeByChainId(state, chainId),
+  );
+  const rootGasEstimateType = useSelector(getGasEstimateType);
+  const gasEstimateType = chainGasEstimateType ?? rootGasEstimateType;
+
   const chainGasFeeEstimates = useSelector((state) =>
     getGasFeeEstimatesByChainId(state, chainId),
   );
   const gasFeeEstimatesFromRoot = useSelector(getGasFeeEstimates);
-  const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
+
+  const chainIsGasEstimatesLoading = useSelector((state) =>
+    chainId
+      ? getIsGasEstimatesLoadingByChainId(state, { chainId, networkClientId })
+      : undefined,
+  );
+  const rootIsGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
+  const isGasEstimatesLoading =
+    chainIsGasEstimatesLoading ?? rootIsGasEstimatesLoading;
 
   const gasFeeEstimates = chainGasFeeEstimates || gasFeeEstimatesFromRoot;
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
@@ -214,6 +230,7 @@ export default function GasTiming({
 
 GasTiming.propTypes = {
   chainId: PropTypes.string,
+  networkClientId: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
   maxFeePerGas: PropTypes.string,
   gasWarnings: PropTypes.object,

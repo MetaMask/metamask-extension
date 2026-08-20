@@ -3,16 +3,14 @@ import {
   Box,
   BoxFlexDirection,
   BoxAlignItems,
+  Skeleton,
 } from '@metamask/design-system-react';
-
-import { Skeleton } from '../../../component-library/skeleton';
-import { BorderRadius } from '../../../../helpers/constants/design-system';
 
 /**
  * PerpsCardSkeleton component displays a loading skeleton for position/order/market cards
  * Matches the layout of PositionCard, OrderCard, and market list items
  */
-export const PerpsCardSkeleton: React.FC = () => {
+export const PerpsCardSkeleton = () => {
   return (
     <Box
       className="pt-2 pb-2 px-4 h-[62px] bg-default"
@@ -22,7 +20,7 @@ export const PerpsCardSkeleton: React.FC = () => {
       data-testid="perps-card-skeleton"
     >
       {/* Token Logo Skeleton - matches AvatarTokenSize.Md (32px) */}
-      <Skeleton className="h-8 w-8 shrink-0" borderRadius={BorderRadius.pill} />
+      <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
 
       {/* Left side: Symbol and info */}
       <Box

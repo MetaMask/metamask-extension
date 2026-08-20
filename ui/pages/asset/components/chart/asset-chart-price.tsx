@@ -1,14 +1,13 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { Skeleton } from '@metamask/design-system-react';
+import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
 import {
   BorderRadius,
   Display,
-  FlexDirection,
   FontWeight,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library';
 import { loadingOpacity, getDynamicShortDate } from '../../util';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { TokenCellPercentChange } from '../../../../components/app/assets/token-cell/cells';
@@ -119,8 +118,8 @@ const AssetChartPrice = forwardRef(
         {(shouldShowDelta || shouldShowDeltaMuted) && (
           <Box
             style={{ opacity: loading ? loadingOpacity : 1 }}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
+            className="flex"
+            flexDirection={BoxFlexDirection.Row}
           >
             {props.asset && (
               <TokenCellPercentChange

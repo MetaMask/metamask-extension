@@ -2,6 +2,7 @@ import {
   TokenBalancesController,
   TokenBalancesControllerMessenger,
 } from '@metamask/assets-controllers';
+import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import { MessengerClientInitFunction } from './types';
 import { TokenBalancesControllerInitMessenger } from './messengers';
@@ -41,6 +42,15 @@ export const TokenBalancesControllerInit: MessengerClientInitFunction<
         'OnboardingController:getState',
       );
       return completedOnboarding;
+    },
+    isDeprecated: () => {
+      const { remoteFeatureFlags } = initMessenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+      return getIsDeprecatedController(
+        remoteFeatureFlags,
+        'TokenBalancesController',
+      );
     },
   });
 

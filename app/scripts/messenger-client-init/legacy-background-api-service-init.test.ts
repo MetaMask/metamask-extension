@@ -37,6 +37,14 @@ describe('LegacyBackgroundApiServiceInit', () => {
     const serviceMock = jest.mocked(LegacyBackgroundApiService);
     expect(serviceMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
+      getOpenMetamaskTabsIds: undefined,
+      getRequestAccountTabIds: undefined,
+      getPermittedAccounts: expect.any(Function),
+      getTabUrl: undefined,
+      updateTabUrl: undefined,
+      infuraProjectId: undefined,
+      offscreenPromise: expect.any(Promise),
+      sendUpdate: undefined,
     });
   });
 });

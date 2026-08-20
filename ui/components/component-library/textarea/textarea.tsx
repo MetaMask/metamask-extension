@@ -16,6 +16,13 @@ import {
   TextareaResize,
 } from './textarea.types';
 
+/**
+ * @deprecated This component is deprecated and will be removed in a future release.
+ * Please use the TextArea component from @metamask/design-system-react instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#textarea-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-textarea--docs | Storybook Documentation}
+ * @see {@link https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components/TextArea | Component Source}
+ */
 export const Textarea: TextareaComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -65,8 +72,6 @@ export const Textarea: TextareaComponent = React.forwardRef(
           'mm-textarea',
           `mm-textarea--resize-${resize}`,
           {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             'mm-textarea--disabled': Boolean(isDisabled || disabled),
           },
           className,
@@ -78,8 +83,6 @@ export const Textarea: TextareaComponent = React.forwardRef(
         required={required}
         autoFocus={autoFocus}
         defaultValue={defaultValue}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         disabled={isDisabled || disabled}
         {...(error && { 'aria-invalid': error })}
         id={id}

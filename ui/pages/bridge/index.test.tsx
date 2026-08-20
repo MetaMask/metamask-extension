@@ -15,6 +15,10 @@ import {
 import * as bridgeActions from '../../ducks/bridge/actions';
 import CrossChainSwap from '.';
 
+jest.mock('../../hooks/useBottomNavBar', () => ({
+  useBottomNavBar: jest.fn().mockReturnValue(false),
+}));
+
 const mockResetBridgeStore = jest.spyOn(bridgeActions, 'resetInputFields');
 const mockResetBridgeState = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();

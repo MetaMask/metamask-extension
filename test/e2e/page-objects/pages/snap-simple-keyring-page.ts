@@ -1,10 +1,23 @@
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
-import { regularDelayMs } from '../../helpers';
+import { getCleanAppState, regularDelayMs } from '../../helpers';
 
+const SIMPLE_KEYRING_SNAP_ID = 'npm:@metamask/snap-simple-keyring-snap';
+
+/**
+ * External Snap Simple Keyring test site for create/import/approve accounts.
+ *
+ * Screen: hosted simple-keyring site
+ * (`TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL`), not a MetaMask route.
+ * Owns: connect, create/import account, approve/reject request sections, and
+ * related MetaMask confirmation submit/cancel on that flow.
+ * Boundaries: the keyring site + its snap confirmations only. Extension
+ * account list after accounts are added belongs to `AccountListPage`.
+ * Related: confirmation page objects; `AccountListPage`.
+ *
+ * @see node_modules/@metamask/snap-simple-keyring-site/public/index.html
+ */
 class SnapSimpleKeyringPage {
-  private readonly driver: Driver;
-
   private readonly accountCreatedMessage = {
     text: 'Account created',
     tag: 'h3',
@@ -62,6 +75,8 @@ class SnapSimpleKeyringPage {
     text: 'Create account',
     tag: 'div',
   };
+
+  private readonly driver: Driver;
 
   private readonly errorRequestMessage = {
     text: 'Error request',
@@ -134,22 +149,6 @@ class SnapSimpleKeyringPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.pageTitle,
-        this.useSyncApprovalToggle,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for Snap Simple Keyring page to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Snap Simple Keyring page is loaded');
-  }
-
   /**
    * Approves or rejects a transaction from a snap account on Snap Simple Keyring page.
    *
@@ -218,6 +217,55 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmationCancelButton,
     );
+  }
+
+  async checkErrorRequestMessageDisplayed(): Promise<void> {
+    console.log(
+      'Check error request message is displayed on snap simple keyring page',
+    );
+    await this.driver.waitForSelector(this.errorRequestMessage);
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.pageTitle,
+        this.useSyncApprovalToggle,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Snap Simple Keyring page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Snap Simple Keyring page is loaded');
+  }
+
+  async checkSimpleKeyringSnapConnected(): Promise<void> {
+    console.log('Check simple keyring snap is connected');
+    await this.driver.waitForSelector(this.snapConnectedMessage);
+  }
+
+  /**
+   * Waits until the Simple Keyring Snap has finished installing in the
+   * extension background state and is ready to handle keyring requests.
+   *
+   */
+  async checkSnapIsReady(): Promise<void> {
+    console.log('Wait for Simple Keyring Snap to be ready');
+    await this.driver.switchToWindowWithTitle(
+      WINDOW_TITLES.ExtensionInFullScreenView,
+    );
+    await this.driver.waitUntil(
+      async () => {
+        const state = await getCleanAppState(this.driver);
+        const snap = state?.metamask?.snaps?.[SIMPLE_KEYRING_SNAP_ID];
+        return Boolean(snap?.enabled && snap.status !== 'installing');
+      },
+      { interval: regularDelayMs, timeout: 10000 },
+    );
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   }
 
   async confirmCreateSnapOnConfirmationScreen(): Promise<void> {
@@ -298,6 +346,7 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElement(this.confirmAddtoMetamask);
 
     await this.driver.waitForSelector(this.installationCompleteMessage);
+    await this.checkSnapIsReady();
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmCompleteButton,
     );
@@ -330,18 +379,6 @@ class SnapSimpleKeyringPage {
   async toggleUseSyncApproval() {
     console.log('Toggle Use Synchronous Approval');
     await this.driver.clickElement(this.useSyncApprovalToggle);
-  }
-
-  async checkErrorRequestMessageDisplayed(): Promise<void> {
-    console.log(
-      'Check error request message is displayed on snap simple keyring page',
-    );
-    await this.driver.waitForSelector(this.errorRequestMessage);
-  }
-
-  async checkSimpleKeyringSnapConnected(): Promise<void> {
-    console.log('Check simple keyring snap is connected');
-    await this.driver.waitForSelector(this.snapConnectedMessage);
   }
 }
 

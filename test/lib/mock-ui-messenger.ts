@@ -56,7 +56,10 @@ export function createMockUIMessenger<
             );
           });
 
-        messenger._internalRegisterDelegatedActionHandler(actionType, handler);
+        messenger._internalRegisterDelegatedActionHandler(
+          actionType,
+          handler as ActionHandler<ActionConstraint, typeof actionType>,
+        );
       }
 
       // No background connection in tests — events are not subscribed to.

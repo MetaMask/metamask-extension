@@ -10,7 +10,7 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { createInternalTransactionWithMaxAmount } from '../../page-objects/flows/transaction';
+import { createInternalTransactionWithMaxAmount } from '../../page-objects/flows/transaction.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import { login } from '../../page-objects/flows/login.flow';
@@ -184,15 +184,12 @@ describe('Send ETH - Max Amount', function () {
           await transactionConfirmation.checkGasFeeFiat('$0.73');
 
           // verify max amount after gas fee changes
-          await driver.waitForSelector({
-            text: '$42,499.27',
-            tag: 'p',
-          });
+          await transactionConfirmation.checkSendAmountConversion('$42,499.27');
 
           // confirms the transaction
           await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
-          await validateTransaction(driver, '-24.99957065');
+          await validateTransaction(driver, '-24.9996');
         },
       );
     });
@@ -265,7 +262,7 @@ describe('Send ETH - Max Amount', function () {
 
         // confirms the transaction
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
-        await validateTransaction(driver, '-24.99893303');
+        await validateTransaction(driver, '-24.9989');
       },
     );
   });

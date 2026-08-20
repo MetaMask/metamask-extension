@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 
 import { AccountSelectorState, State } from '@metamask/snaps-sdk';
@@ -15,6 +15,7 @@ import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import AccountListItem from '../../../multichain/account-list-item/account-list-item';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
+import { useDispatch } from '../../../../store/hooks';
 
 export type SnapUIAccountSelectorProps = {
   name: string;
@@ -41,15 +42,13 @@ export type SnapUIAccountSelectorProps = {
  * @param props.disabled - Whether the selector is disabled.
  * @returns The AccountSelector component.
  */
-export const SnapUIAccountSelector: FunctionComponent<
-  SnapUIAccountSelectorProps
-> = ({
+export const SnapUIAccountSelector = ({
   chainIds,
   switchGlobalAccount,
   hideExternalAccounts,
   disabled,
   ...props
-}) => {
+}: SnapUIAccountSelectorProps) => {
   const t = useI18nContext();
   const { snapId } = useSnapInterfaceContext();
   const dispatch = useDispatch();

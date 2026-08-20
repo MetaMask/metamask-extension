@@ -1,14 +1,27 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Multichain wallet details: accounts in a wallet and add-account entry.
+ *
+ * Screen: `#/multichain-wallet-details-page`, reached from the account list.
+ * Owns: wallet details container, account items/balances, and add-account
+ * type modal (Ethereum / Solana options).
+ * Boundaries: wallet details only. Account list and per-account details
+ * belong to `AccountListPage` / `MultichainAccountDetailsPage`.
+ * Related: `AccountListPage`, `MultichainAccountDetailsPage`.
+ *
+ * @see ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.tsx
+ */
 class WalletDetailsPage {
-  private readonly driver: Driver;
+  private readonly accountItems =
+    '[data-testid^="wallet-details-account-item-"]';
 
-  private readonly walletDetailsPage = '.wallet-details-page';
+  private readonly accountTypeModal = '.multichain-account-menu-popover';
 
   private readonly addAccountButton =
     '.wallet-details-page__add-account-button';
 
-  private readonly accountTypeModal = '.multichain-account-menu-popover';
+  private readonly driver: Driver;
 
   private readonly ethereumAccountOption = {
     text: 'Ethereum account',
@@ -20,32 +33,10 @@ class WalletDetailsPage {
     tag: 'button',
   };
 
-  private readonly accountItems =
-    '[data-testid^="wallet-details-account-item-"]';
+  private readonly walletDetailsPage = '.wallet-details-page';
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    console.log('Check wallet details page is loaded');
-    await this.driver.waitForSelector(this.walletDetailsPage);
-  }
-
-  async checkWalletNameIsDisplayed(walletName: string): Promise<void> {
-    console.log(`Check wallet name "${walletName}" is displayed`);
-    await this.driver.waitForSelector({
-      text: walletName,
-      tag: 'p',
-    });
-  }
-
-  async checkBalanceIsDisplayed(balance: string): Promise<void> {
-    console.log(`Check balance "${balance}" is displayed`);
-    await this.driver.waitForSelector({
-      text: balance,
-      tag: 'span',
-    });
   }
 
   async checkAccountIsDisplayed(accountName: string): Promise<void> {
@@ -56,34 +47,27 @@ class WalletDetailsPage {
     });
   }
 
-  async checkAddAccountButtonIsDisplayed(): Promise<void> {
-    console.log('Check add account button is displayed');
-    await this.driver.waitForSelector(this.addAccountButton);
-  }
-
-  async clickAddAccountButton(): Promise<void> {
-    console.log('Click add account button');
-    await this.driver.clickElement(this.addAccountButton);
-  }
-
   async checkAccountTypeModalIsDisplayed(): Promise<void> {
     console.log('Check account type selection modal is displayed');
     await this.driver.waitForSelector(this.accountTypeModal);
   }
 
+  async checkAddAccountButtonIsDisplayed(): Promise<void> {
+    console.log('Check add account button is displayed');
+    await this.driver.waitForSelector(this.addAccountButton);
+  }
+
+  async checkBalanceIsDisplayed(balance: string): Promise<void> {
+    console.log(`Check balance "${balance}" is displayed`);
+    await this.driver.waitForSelector({
+      text: balance,
+      tag: 'span',
+    });
+  }
+
   async checkEthereumAccountOptionIsDisplayed(): Promise<void> {
     console.log('Check Ethereum account option is displayed');
     await this.driver.waitForSelector(this.ethereumAccountOption);
-  }
-
-  async checkSolanaAccountOptionIsDisplayed(): Promise<void> {
-    console.log('Check Solana account option is displayed');
-    await this.driver.waitForSelector(this.solanaAccountOption);
-  }
-
-  async clickEthereumAccountOption(): Promise<void> {
-    console.log('Click Ethereum account option');
-    await this.driver.clickElement(this.ethereumAccountOption);
   }
 
   async checkNumberOfAccountsDisplayed(expectedCount: number): Promise<void> {
@@ -108,6 +92,34 @@ class WalletDetailsPage {
         `Expected ${expectedCount} accounts, but found ${accountItemElements.length}`,
       );
     }
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    console.log('Check wallet details page is loaded');
+    await this.driver.waitForSelector(this.walletDetailsPage);
+  }
+
+  async checkSolanaAccountOptionIsDisplayed(): Promise<void> {
+    console.log('Check Solana account option is displayed');
+    await this.driver.waitForSelector(this.solanaAccountOption);
+  }
+
+  async checkWalletNameIsDisplayed(walletName: string): Promise<void> {
+    console.log(`Check wallet name "${walletName}" is displayed`);
+    await this.driver.waitForSelector({
+      text: walletName,
+      tag: 'p',
+    });
+  }
+
+  async clickAddAccountButton(): Promise<void> {
+    console.log('Click add account button');
+    await this.driver.clickElement(this.addAccountButton);
+  }
+
+  async clickEthereumAccountOption(): Promise<void> {
+    console.log('Click Ethereum account option');
+    await this.driver.clickElement(this.ethereumAccountOption);
   }
 }
 

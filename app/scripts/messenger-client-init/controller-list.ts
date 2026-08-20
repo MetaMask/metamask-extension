@@ -1,4 +1,5 @@
 import { MultichainAccountService } from '@metamask/multichain-account-service';
+import { SnapAccountService } from '@metamask/snap-account-service';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { NetworkController } from '@metamask/network-controller';
@@ -18,6 +19,7 @@ import {
   AssetsContractController,
   CurrencyRateController,
   DeFiPositionsController,
+  DeFiPositionsControllerV2,
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,
@@ -60,7 +62,6 @@ import { EncryptionKey } from '@metamask/browser-passworder';
 import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
 import { ShieldController } from '@metamask/shield-controller';
 import { SubscriptionController } from '@metamask/subscription-controller';
-import { EnsController } from '@metamask/ens-controller';
 import { NameController } from '@metamask/name-controller';
 import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import { BridgeController } from '@metamask/bridge-controller';
@@ -83,19 +84,36 @@ import {
   AccountActivityService,
   BackendWebSocketService,
 } from '@metamask/core-backend';
+import { AuthenticatedUserStorageService } from '@metamask/authenticated-user-storage';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import { ClientController } from '@metamask/client-controller';
+import {
+  ConfigRegistryApiService,
+  ConfigRegistryController,
+} from '@metamask/config-registry-controller';
 import { ConnectivityController } from '@metamask/connectivity-controller';
+import { NetworkConnectionBannerController } from '@metamask/network-connection-banner-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
+  ProofOfOwnershipService,
 } from '@metamask/profile-metrics-controller';
 import {
   GeolocationApiService,
   GeolocationController,
 } from '@metamask/geolocation-controller';
+import {
+  ComplianceController,
+  ComplianceService,
+} from '@metamask/compliance-controller';
 import { PerpsController } from '@metamask/perps-controller';
+import { RampsController, RampsService } from '@metamask/ramps-controller';
 import { PasskeyController } from '@metamask/passkey-controller';
+import { AnalyticsController } from '@metamask/analytics-controller';
+import { SentinelApiService } from '@metamask/sentinel-api-service';
+import { MoneyAccountApiDataService } from '@metamask/money-account-api-data-service';
+import { MoneyAccountBalanceService } from '@metamask/money-account-balance-service';
+import { MoneyAccountAvailabilityService } from '../lib/money/money-account-availability';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -104,8 +122,7 @@ import { MetaMetricsController } from '../controllers/metametrics-controller';
 import { OAuthService } from '../services/oauth/oauth-service';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
-import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
-import { SubscriptionService } from '../services/subscription/subscription-service';
+import { ShieldSubscriptionService } from '../services/subscription/shield-subscription-service';
 import { AccountOrderController } from '../controllers/account-order';
 import { AlertController } from '../controllers/alert-controller';
 import { MetaMetricsDataDeletionController } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
@@ -115,6 +132,8 @@ import { EncryptionPublicKeyController } from '../controllers/encryption-public-
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
+import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
+import { QrSyncDataService } from '../controllers/qr-sync/qr-sync-data-service';
 import { DataDeletionService } from '../services/data-deletion-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
 
@@ -127,12 +146,14 @@ export type MessengerClient =
   | AccountsController
   | AddressBookController
   | AlertController
+  | AnalyticsController
   | AnnouncementController
   | AppMetadataController
   | ApprovalController
   | AppStateController
   | AssetsController
   | AuthenticationController
+  | AuthenticatedUserStorageService
   | BridgeController
   | BridgeStatusController
   | ClaimsController
@@ -143,9 +164,9 @@ export type MessengerClient =
   | DecryptMessageManager
   | DelegationController
   | DeFiPositionsController
+  | DeFiPositionsControllerV2
   | EncryptionPublicKeyController
   | EncryptionPublicKeyManager
-  | EnsController
   | StorageService
   | ExecutionService
   | GasFeeController
@@ -157,6 +178,9 @@ export type MessengerClient =
   | LoggingController
   | MetaMetricsController
   | MetaMetricsDataDeletionController
+  | MoneyAccountApiDataService
+  | MoneyAccountAvailabilityService
+  | MoneyAccountBalanceService
   | MultichainAssetsController
   | MultichainAssetsRatesController
   | MultichainBalancesController
@@ -180,6 +204,10 @@ export type MessengerClient =
   | PhishingController
   | PPOMController
   | PreferencesController
+  | QrSyncController
+  | QrSyncDataService
+  | RampsController
+  | RampsService
   | RateLimitController<RateLimitedApiMap>
   | RatesController
   | RemoteFeatureFlagController
@@ -187,18 +215,18 @@ export type MessengerClient =
   | RewardsDataService
   | SeedlessOnboardingController<EncryptionKey>
   | SelectedNetworkController
+  | SentinelApiService
   | ShieldController
   | SignatureController
   | SmartTransactionsController
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
-  | SnapKeyringBuilder
   | SnapRegistryController
   | SubscriptionController
   | SnapsNameProvider
   | SubjectMetadataController
-  | SubscriptionService
+  | ShieldSubscriptionService
   | TokenBalancesController
   | TokenDetectionController
   | TokenListController
@@ -216,14 +244,21 @@ export type MessengerClient =
   | WebSocketService
   | BackendWebSocketService
   | AccountActivityService
+  | SnapAccountService
   | MultichainAccountService
   | NetworkEnablementController
   | ClaimsService
   | ClientController
+  | ComplianceController
+  | ComplianceService
+  | ConfigRegistryController
+  | ConfigRegistryApiService
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
-  | ConnectivityController;
+  | ProofOfOwnershipService
+  | ConnectivityController
+  | NetworkConnectionBannerController;
 
 /**
  * Flat state object for all messenger clients supporting or required by modular initialization.
@@ -238,17 +273,20 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   AppMetadataController['state'] &
   ApprovalController['state'] &
   AppStateController['state'] &
+  AnalyticsController['state'] &
   AssetsController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &
   BridgeStatusController['state'] &
   ClaimsController['state'] &
   ClientController['state'] &
+  ComplianceController['state'] &
+  ConfigRegistryController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
+  DeFiPositionsControllerV2['state'] &
   DelegationController['state'] &
-  EnsController['state'] &
   GasFeeController['state'] &
   GatorPermissionsController['state'] &
   GeolocationController['state'] &
@@ -275,6 +313,8 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
+  QrSyncController['state'] &
+  RampsController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
   RewardsController['state'] &

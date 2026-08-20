@@ -1,13 +1,11 @@
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
   type ReactNode,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Box,
   Text,
@@ -21,26 +19,30 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
-  startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
   translatePasskeyError,
   getPasskeyErrorCode,
 } from '../../../../shared/lib/passkey';
+import { captureException } from '../../../../shared/lib/sentry';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
-import { generatePasskeyAuthenticationOptions } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getPasskeyDerivationMethod } from '../../../selectors';
+import {
+  getPasskeyAuthenticatorId,
+  getPasskeyDerivationMethod,
+} from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
+import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
@@ -48,9 +50,7 @@ export type UnlockPasskeySectionProps = {
   passkeyAutoUnlockSuppressed: boolean;
   mustDeferPasskeyToBrowserTab: boolean;
   isPasswordInProgress: boolean;
-  onUnlockWithPasskey: (
-    authenticationResponse: PasskeyAuthenticationResponse,
-  ) => Promise<void>;
+  onUnlockSuccess: () => Promise<void>;
   onUsePassword: () => void;
 };
 
@@ -60,13 +60,15 @@ export const UnlockPasskeySection = ({
   passkeyAutoUnlockSuppressed,
   mustDeferPasskeyToBrowserTab,
   isPasswordInProgress,
-  onUnlockWithPasskey,
+  onUnlockSuccess,
   onUsePassword,
 }: UnlockPasskeySectionProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const unlockWithPasskey = usePasskeyUnlock();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
+  const passkeyAuthenticatorId = useSelector(getPasskeyAuthenticatorId);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
@@ -87,7 +89,6 @@ export const UnlockPasskeySection = ({
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
-      cancelPasskeyCeremony();
     };
   }, []);
 
@@ -110,39 +111,39 @@ export const UnlockPasskeySection = ({
         /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
         is_auto_prompt: isAutoPrompt,
         derivation_method: passkeyDerivationMethod,
+        authenticator_id: passkeyAuthenticatorId,
         /* eslint-enable @typescript-eslint/naming-convention */
       };
       try {
-        trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.PasskeyUnlockInteracted,
-          properties: {
-            ...baseProperties,
-            status: 'started',
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.PasskeyUnlockInteracted)
+            .addCategory(MetaMetricsEventCategory.Navigation)
+            .addProperties({
+              ...baseProperties,
+              status: 'started',
+            })
+            .build(),
+        );
 
-        const authOptions = await generatePasskeyAuthenticationOptions();
-        const authenticationResponse =
-          await startPasskeyAuthentication(authOptions);
+        await unlockWithPasskey();
+        await onUnlockSuccess();
 
-        await onUnlockWithPasskey(authenticationResponse);
-
-        trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.AppUnlocked,
-          properties: {
-            ...baseProperties,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            failed_attempts: passkeyFailedAttemptCount.current,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            unlock_type: 'passkey',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            passkey_enabled: isPasskeyActive,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - startedAt,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.AppUnlocked)
+            .addCategory(MetaMetricsEventCategory.Navigation)
+            .addProperties({
+              ...baseProperties,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              failed_attempts: passkeyFailedAttemptCount.current,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              unlock_type: 'passkey',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              passkey_enabled: isPasskeyActive,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              duration_ms: Date.now() - startedAt,
+            })
+            .build(),
+        );
         passkeyFailedAttemptCount.current = 0;
       } catch (err) {
         if (!isMountedRef.current) {
@@ -153,37 +154,46 @@ export const UnlockPasskeySection = ({
         const durationMs = Date.now() - startedAt;
 
         if (isPasskeyCeremonySilentError(err)) {
-          trackEvent({
-            category: MetaMetricsEventCategory.Navigation,
-            event: MetaMetricsEventName.PasskeyUnlockInteracted,
-            properties: {
-              ...baseProperties,
-              status: 'cancelled',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              duration_ms: durationMs,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              reason: errorCode,
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.PasskeyUnlockInteracted)
+              .addCategory(MetaMetricsEventCategory.Navigation)
+              .addProperties({
+                ...baseProperties,
+                status: 'cancelled',
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                duration_ms: durationMs,
+                reason: errorCode,
+              })
+              .build(),
+          );
           setPasskeyError(null);
         } else {
           passkeyFailedAttemptCount.current += 1;
-          trackEvent({
-            category: MetaMetricsEventCategory.Navigation,
-            event: MetaMetricsEventName.AppUnlockedFailed,
-            properties: {
+          captureException(createSentryError('Passkey unlock failed', err), {
+            extra: {
               ...baseProperties,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              failed_attempts: passkeyFailedAttemptCount.current,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              unlock_type: 'passkey',
-              reason: errorCode,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              passkey_enabled: isPasskeyActive,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              duration_ms: durationMs,
+              failedAttempts: passkeyFailedAttemptCount.current,
+              durationMs,
+              errorCode,
             },
           });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.AppUnlockedFailed)
+              .addCategory(MetaMetricsEventCategory.Navigation)
+              .addProperties({
+                ...baseProperties,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                failed_attempts: passkeyFailedAttemptCount.current,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                unlock_type: 'passkey',
+                reason: errorCode,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                passkey_enabled: isPasskeyActive,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                duration_ms: durationMs,
+              })
+              .build(),
+          );
           setPasskeyError(
             translatePasskeyError(err, t, passkeyMethodLabel) ??
               t('passkeyUnlockFailed', [passkeyMethodLabel]),
@@ -199,11 +209,14 @@ export const UnlockPasskeySection = ({
       isPasswordInProgress,
       passkeyInProgress,
       isPasskeyActive,
-      onUnlockWithPasskey,
+      onUnlockSuccess,
       passkeyMethodLabel,
       passkeyDerivationMethod,
+      passkeyAuthenticatorId,
       t,
       trackEvent,
+      createEventBuilder,
+      unlockWithPasskey,
     ],
   );
 
@@ -215,19 +228,27 @@ export const UnlockPasskeySection = ({
   }, [mountAutoUnlockEligible, runPasskeyUnlock]);
 
   const handleUsePassword = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PasskeyUnlockInteracted,
-      properties: {
-        status: 'use_password_selected',
-        /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
-        derivation_method: passkeyDerivationMethod,
-        /* eslint-enable @typescript-eslint/naming-convention */
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PasskeyUnlockInteracted)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          status: 'use_password_selected',
+          /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
+          derivation_method: passkeyDerivationMethod,
+          authenticator_id: passkeyAuthenticatorId,
+          /* eslint-enable @typescript-eslint/naming-convention */
+        })
+        .build(),
+    );
     cancelPasskeyCeremony();
     onUsePassword();
-  }, [onUsePassword, trackEvent, passkeyDerivationMethod]);
+  }, [
+    onUsePassword,
+    trackEvent,
+    createEventBuilder,
+    passkeyDerivationMethod,
+    passkeyAuthenticatorId,
+  ]);
 
   const openUnlockInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();
