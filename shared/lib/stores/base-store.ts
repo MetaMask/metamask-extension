@@ -1,3 +1,5 @@
+import type { SplitStateReadDiagnostics } from './persistence-diagnostics';
+
 /**
  * This type is used to represent the state tree of MetaMask.
  */
@@ -63,6 +65,8 @@ export type BaseStore = {
   set: (state: Required<MetaMaskStorageStructure>) => Promise<void>;
 
   get: () => Promise<MetaMaskStorageStructure | null>;
+
+  getSplitStateReadDiagnostics?: () => Promise<SplitStateReadDiagnostics>;
 
   reset: () => Promise<void>;
 };

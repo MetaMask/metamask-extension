@@ -6,6 +6,7 @@ import log from 'loglevel';
 import { captureException, captureMessage } from '../sentry';
 import { getManifestFlags } from '../manifestFlags';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
+import { VaultCorruptionType } from '../../constants/state-corruption';
 import {
   PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
@@ -13,6 +14,11 @@ import {
 import { IndexedDBStore } from './indexeddb-store';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
+import {
+  SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG,
+  getSplitStatePersistenceDiagnosticsConfig,
+  type SplitStateReadDiagnostics,
+} from './persistence-diagnostics';
 
 const MOCK_DATA = { config: { foo: 'bar' } };
 const WRITE_RETRY_DELAY_MS =
@@ -22,6 +28,7 @@ const mockStoreSet = jest.fn();
 const mockStoreSetKeyValues = jest.fn();
 const mockStoreGet = jest.fn();
 const mockStoreReset = jest.fn();
+const mockStoreGetSplitStateReadDiagnostics = jest.fn();
 
 jest.mock('./extension-store', () => {
   return jest.fn().mockImplementation(() => {
@@ -29,6 +36,7 @@ jest.mock('./extension-store', () => {
       set: mockStoreSet,
       setKeyValues: mockStoreSetKeyValues,
       get: mockStoreGet,
+      getSplitStateReadDiagnostics: mockStoreGetSplitStateReadDiagnostics,
       reset: mockStoreReset,
     };
   });
@@ -53,6 +61,20 @@ const mockedCaptureException = jest.mocked(captureException);
 const mockedCaptureMessage = jest.mocked(captureMessage);
 const mockedGetManifestFlags = jest.mocked(getManifestFlags);
 
+function getDiagnosticsConfig() {
+  const config = getSplitStatePersistenceDiagnosticsConfig({
+    [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+      enabled: true,
+    },
+  });
+
+  if (!config) {
+    throw new Error('Expected diagnostics config to be enabled');
+  }
+
+  return config;
+}
+
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
   const originalInTest = process.env.IN_TEST;
@@ -62,11 +84,13 @@ describe('PersistenceManager', () => {
     jest.spyOn(manager, 'open').mockResolvedValue(undefined);
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     process.env.IN_TEST = 'true';
     jest.clearAllMocks();
     mockedGetManifestFlags.mockReturnValue({});
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
+    await manager.reset();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
@@ -526,6 +550,116 @@ describe('PersistenceManager', () => {
         MISSING_VAULT_ERROR,
       );
     });
+
+    it('emits split-state diagnostics when storage is inaccessible and a backup exists', async () => {
+      const diagnosticsConfig = getDiagnosticsConfig();
+      manager.setSplitStatePersistenceDiagnosticsConfig(diagnosticsConfig);
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('KeyringController', { vault: 'encrypted-vault' });
+      manager.update('PreferencesController', { selectedAddress: '0xabc' });
+      await manager.persist();
+
+      const readDiagnostics: SplitStateReadDiagnostics = {
+        manifestStatus: 'readable',
+        manifestKeyCount: 2,
+        readableKeys: ['KeyringController'],
+        missingKeys: [],
+        failedKeys: [
+          {
+            key: 'PreferencesController',
+            errorName: 'Error',
+            errorMessage: 'block checksum mismatch',
+          },
+        ],
+      };
+      const storageError = new Error('Database read failed');
+      const listener = jest.fn();
+      manager.on('vaultCorruptionDetected', listener);
+      mockStoreGet.mockRejectedValueOnce(storageError);
+      mockStoreGetSplitStateReadDiagnostics.mockResolvedValueOnce(
+        readDiagnostics,
+      );
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'backup-vault',
+        },
+        RemoteFeatureFlagController: {
+          remoteFeatureFlags: {
+            [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+              enabled: true,
+            },
+          },
+        },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(
+        MISSING_VAULT_ERROR,
+      );
+
+      expect(listener).toHaveBeenCalledWith({
+        backup: {
+          KeyringController: {
+            vault: 'backup-vault',
+          },
+          RemoteFeatureFlagController: {
+            remoteFeatureFlags: {
+              [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
+                enabled: true,
+              },
+            },
+          },
+        },
+        corruptionType: VaultCorruptionType.InaccessibleDatabase,
+        diagnostics: expect.objectContaining({
+          config: diagnosticsConfig,
+          totalQueuedUpdates: 2,
+          totalPersistedBatches: 1,
+          readDiagnostics,
+          topWrittenKeys: expect.arrayContaining([
+            expect.objectContaining({
+              key: 'KeyringController',
+              queuedUpdates: 1,
+              persistedWrites: 1,
+            }),
+            expect.objectContaining({
+              key: 'PreferencesController',
+              queuedUpdates: 1,
+              persistedWrites: 1,
+            }),
+          ]),
+        }),
+      });
+    });
+
+    it('does not collect split-state diagnostics for corruption when the remote flag is missing from the backup', async () => {
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('KeyringController', { vault: 'encrypted-vault' });
+      await manager.persist();
+
+      const listener = jest.fn();
+      manager.on('vaultCorruptionDetected', listener);
+      mockStoreGet.mockRejectedValueOnce(new Error('Database read failed'));
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'backup-vault',
+        },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(
+        MISSING_VAULT_ERROR,
+      );
+
+      expect(mockStoreGetSplitStateReadDiagnostics).not.toHaveBeenCalled();
+      expect(listener).toHaveBeenCalledWith({
+        backup: {
+          KeyringController: {
+            vault: 'backup-vault',
+          },
+        },
+        corruptionType: VaultCorruptionType.InaccessibleDatabase,
+        diagnostics: undefined,
+      });
+    });
   });
 
   describe('getBackup', () => {
@@ -568,6 +702,7 @@ describe('PersistenceManager', () => {
           optedIn: true,
           consentDecisionMade: true,
         },
+        RemoteFeatureFlagController: undefined,
         meta: {
           version: 10,
         },

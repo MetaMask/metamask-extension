@@ -8,6 +8,13 @@ import { getManifestFlags } from '../manifestFlags';
 import { VaultCorruptionType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
 import { IndexedDBStore } from './indexeddb-store';
+import {
+  getSplitStateDiagnosticError,
+  getSplitStatePersistenceDiagnosticsConfig,
+  SplitStatePersistenceDiagnostics,
+  type SplitStatePersistenceDiagnosticsConfig,
+  type SplitStatePersistenceDiagnosticsSnapshot,
+} from './persistence-diagnostics';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,
@@ -23,6 +30,7 @@ export const backedUpStateKeys = [
   'AppMetadataController',
   'MetaMetricsController',
   'AnalyticsController',
+  'RemoteFeatureFlagController',
 ] as const;
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
@@ -41,6 +49,7 @@ export type Backup = {
 export type VaultCorruptionDetectedEvent = {
   backup: Backup;
   corruptionType: VaultCorruptionType;
+  diagnostics?: SplitStatePersistenceDiagnosticsSnapshot;
 };
 
 export type SplitStateMigrationSucceededEvent = {
@@ -167,6 +176,24 @@ function makeBackup(state: MetaMaskStateType, meta: MetaData): Backup {
   return backup;
 }
 
+function getRemoteFeatureFlagsFromState(
+  state: MetaMaskStateType | Backup | null | undefined,
+): Record<string, unknown> {
+  const remoteFeatureFlagController = isObject(state)
+    ? state.RemoteFeatureFlagController
+    : undefined;
+  const remoteFeatureFlags =
+    isObject(remoteFeatureFlagController) &&
+    isObject(remoteFeatureFlagController.remoteFeatureFlags)
+      ? remoteFeatureFlagController.remoteFeatureFlags
+      : {};
+
+  return {
+    ...remoteFeatureFlags,
+    ...(getManifestFlags().remoteFeatureFlags ?? {}),
+  };
+}
+
 /**
  * Checks if the state or backup object has a vault.
  *
@@ -263,6 +290,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   #currentWriteRetryAbortController: AbortController | null = null;
 
   #backupDb: IndexedDBStore | null = null;
+
+  #splitStateDiagnostics = new SplitStatePersistenceDiagnostics();
 
   #backup?: string;
 
@@ -467,6 +496,16 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return structuredClone(this.#metadata);
   }
 
+  setSplitStatePersistenceDiagnosticsConfig(
+    config: SplitStatePersistenceDiagnosticsConfig | undefined,
+  ) {
+    this.#splitStateDiagnostics.setConfig(config);
+  }
+
+  async getWeeklySplitStatePersistenceDiagnosticsSnapshot(now = Date.now()) {
+    return this.#splitStateDiagnostics.getWeeklyBaselineSnapshot(now);
+  }
+
   setMetadata(metadata: MetaData) {
     // don't rewrite if nothing has changed
     // this is a cheap comparison since metadata is small.
@@ -560,6 +599,36 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   async #setKeyValuesInLocalStore(pairs: Map<string, unknown>): Promise<void> {
     this.#maybeSimulateSetFailure();
     await this.#localStore.setKeyValues(pairs);
+  }
+
+  async #persistSplitStateDiagnosticsSnapshot() {
+    await this.#splitStateDiagnostics
+      .persistSnapshotIfDue()
+      .catch(() => undefined);
+  }
+
+  async #getSplitStatePersistenceDiagnosticsSnapshotForReport(
+    config: SplitStatePersistenceDiagnosticsConfig | undefined,
+  ) {
+    if (!config?.corruptionEnabled) {
+      return undefined;
+    }
+
+    this.#splitStateDiagnostics.setConfig(config);
+
+    const readDiagnostics = await this.#localStore
+      .getSplitStateReadDiagnostics?.()
+      .catch((error) => {
+        return {
+          manifestStatus: 'failed' as const,
+          readableKeys: [],
+          missingKeys: [],
+          failedKeys: [],
+          manifestError: getSplitStateDiagnosticError(error),
+        };
+      });
+
+    return this.#splitStateDiagnostics.getSnapshotForReport(readDiagnostics);
   }
 
   /**
@@ -701,6 +770,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     }
     this.#pendingPairs.set(key, value);
+    this.#splitStateDiagnostics.recordQueuedUpdate(String(key));
   }
 
   async persist(): Promise<[boolean, Error | undefined]> {
@@ -751,6 +821,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               'persist-retry-recovered',
               { supersedable: true },
             );
+            this.#splitStateDiagnostics.recordPersistedBatch(clone);
+            await this.#persistSplitStateDiagnosticsSnapshot();
           } catch (err) {
             // merge the clone with the pending pairs again
             for (const [key, value] of clone.entries()) {
@@ -914,9 +986,22 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               const corruptionType = localStoreError
                 ? VaultCorruptionType.InaccessibleDatabase
                 : VaultCorruptionType.MissingVaultInDatabase;
+              const diagnosticsConfig =
+                getSplitStatePersistenceDiagnosticsConfig(
+                  getRemoteFeatureFlagsFromState(backup),
+                );
+              const shouldCollectSplitStateDiagnostics = localStoreError
+                ? this.storageKind === 'split'
+                : (result?.meta?.storageKind ?? 'data') === 'split';
+              const diagnostics = shouldCollectSplitStateDiagnostics
+                ? await this.#getSplitStatePersistenceDiagnosticsSnapshotForReport(
+                    diagnosticsConfig,
+                  )
+                : undefined;
               this.emit('vaultCorruptionDetected', {
                 backup,
                 corruptionType,
+                diagnostics,
               });
 
               // We've got some data (we haven't checked for a vault, as the
@@ -976,6 +1061,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         await Promise.all([
           this.#localStore.reset(),
           await this.#backupDb?.reset(),
+          this.#splitStateDiagnostics.reset(),
         ]);
         this.#backup = undefined;
         this.#isExtensionInitialized = false;
