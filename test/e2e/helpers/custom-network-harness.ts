@@ -50,13 +50,25 @@ const MAINNET_CHAIN_ID_HEX = '0x1';
 /** 6-decimal HyperEVM frxUSD fixture used by the `wrongDecimals` scenario. */
 export const FRXUSD_SYMBOL = 'frxUSD';
 export const FRXUSD_DECIMALS = 6;
+/** Human amount stored on AssetsController / Accounts API v5 (not raw 6-decimal units). */
 export const FRXUSD_HUMAN_BALANCE = '11.811649';
 export const FRXUSD_ADDRESS = '0xcacd6fd266af91b8aed52accc382b4e165586e29';
 export const FRXUSD_CHECKSUM_ADDRESS =
   '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29';
 export const FRXUSD_ASSET_ID =
   `eip155:999/erc20:${FRXUSD_ADDRESS}` as CaipAssetType;
-export const FRXUSD_DISPLAY_AMOUNT = `${FRXUSD_HUMAN_BALANCE} ${FRXUSD_SYMBOL}`;
+/**
+ * Tokens-tab primary amount. `formatTokenQuantity` uses Intl decimal style
+ * (max 3 fraction digits), so 11.811649 renders as 11.812. Treating the raw
+ * 6-decimal amount `11811649` as a whole number instead compact-formats to
+ * `11.81M`.
+ */
+export const FRXUSD_DISPLAY_AMOUNT = `11.812 ${FRXUSD_SYMBOL}`;
+
+export type CustomNetworkAccountsApiBalance = {
+  assetId: string;
+  balance: string;
+};
 
 const CUSTOM_NETWORKS: Record<CustomNetworkId, CustomNetworkConfig> = {
   xdc: {
@@ -285,7 +297,6 @@ function applyScenarioState(
 ): FixtureBuilderV2 {
   switch (scenario) {
     case 'nativeSend':
-      return builder;
     case 'conversionRate':
     case 'unsupportedPrice':
       return builder.withAssetsController({
@@ -339,11 +350,39 @@ function applyScenarioState(
   }
 }
 
+function accountsApiBalancesFor(
+  network: CustomNetworkConfig,
+  scenario: CustomNetworkScenario,
+): { additionalBalances: CustomNetworkAccountsApiBalance[] } | undefined {
+  switch (scenario) {
+    case 'wrongDecimals':
+      return {
+        additionalBalances: [
+          { assetId: network.uiNativeAssetId, balance: '25' },
+          { assetId: FRXUSD_ASSET_ID, balance: FRXUSD_HUMAN_BALANCE },
+        ],
+      };
+    case 'nativeSend':
+    case 'nativeAndErc20':
+    case 'dualNetworkWithErc20':
+    case 'conversionRate':
+    case 'unsupportedPrice':
+      return undefined;
+    default: {
+      const exhaustive: never = scenario;
+      throw new Error(`Unknown scenario: ${String(exhaustive)}`);
+    }
+  }
+}
+
 export type CustomNetworkSetup = {
   fixtures: ReturnType<FixtureBuilderV2['build']>;
   localNodeOptions: { type: 'anvil'; options: { chainId: number } }[];
   testSpecificMock: (mockServer: Mockttp) => Promise<unknown[]>;
   network: CustomNetworkConfig;
+  unifiedEvmAccountsApiBalances?: {
+    additionalBalances: CustomNetworkAccountsApiBalance[];
+  };
 };
 
 /**
@@ -381,5 +420,6 @@ export function prepareCustomNetwork(
     testSpecificMock: (mockServer: Mockttp) =>
       mockTokenAndPriceApis(mockServer, { assets, priceMode }),
     network,
+    unifiedEvmAccountsApiBalances: accountsApiBalancesFor(network, scenario),
   };
 }

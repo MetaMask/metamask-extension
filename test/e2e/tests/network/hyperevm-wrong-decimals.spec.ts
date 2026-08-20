@@ -3,7 +3,9 @@
  *
  * Monitors the regression where a 6-decimal HyperEVM token (frxUSD) showed
  * 11,811,649 (or compact 11.81M) instead of 11.811649. The Tokens list and
- * token details must display the human amount and Token decimal 6.
+ * token details must display the formatted human amount (`11.812 frxUSD`,
+ * after `formatTokenQuantity`) and Token decimal 6. Balance is seeded through
+ * Accounts API v5 as well as AssetsController so a live refresh cannot wipe it.
  *
  * See `test/e2e/helpers/custom-network-harness.ts`.
  */
@@ -14,7 +16,6 @@ import {
   FRXUSD_CHECKSUM_ADDRESS,
   FRXUSD_DECIMALS,
   FRXUSD_DISPLAY_AMOUNT,
-  FRXUSD_HUMAN_BALANCE,
   FRXUSD_SYMBOL,
   prepareCustomNetwork,
 } from '../../helpers/custom-network-harness';
@@ -24,14 +25,19 @@ import TokensTab from '../../page-objects/pages/home/tokens-tab';
 
 describe('HyperEVM frxUSD decimal formatting', function () {
   it('shows 6-decimal frxUSD on the token list and details', async function () {
-    const { fixtures, localNodeOptions, testSpecificMock } =
-      prepareCustomNetwork('hyperevm', 'wrongDecimals');
+    const {
+      fixtures,
+      localNodeOptions,
+      testSpecificMock,
+      unifiedEvmAccountsApiBalances,
+    } = prepareCustomNetwork('hyperevm', 'wrongDecimals');
 
     await withFixtures(
       {
         fixtures,
         localNodeOptions,
         testSpecificMock,
+        unifiedEvmAccountsApiBalances,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -48,7 +54,7 @@ describe('HyperEVM frxUSD decimal formatting', function () {
         );
         await tokensTab.checkTokenRowContainsText(
           FRXUSD_SYMBOL,
-          FRXUSD_HUMAN_BALANCE,
+          FRXUSD_DISPLAY_AMOUNT,
         );
         await tokensTab.checkTokenRowDoesNotContainText(
           FRXUSD_SYMBOL,
