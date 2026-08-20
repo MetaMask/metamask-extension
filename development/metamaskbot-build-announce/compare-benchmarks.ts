@@ -348,6 +348,7 @@ function formatName(comparison: BenchmarkEntryComparison): string {
  * @param result - Comparison results.
  * @param result.comparisons
  * @param result.anyFailed
+ * @param result.missing
  */
 export function printReport(result: {
   comparisons: BenchmarkEntryComparison[];
