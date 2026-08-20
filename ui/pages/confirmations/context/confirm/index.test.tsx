@@ -152,6 +152,20 @@ describe('ConfirmContextProvider', () => {
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
   });
 
+  it('resets a pending money account amount commit when the confirmation id changes', () => {
+    const store = createStore();
+    const { result, rerender } = renderContextProvider(store);
+
+    result.current.setMoneyAccountAmountCommitPending(true);
+    rerender();
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
+
+    mockCurrentConfirmation = { id: 'next-id', type: 'transaction' };
+    rerender();
+
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
+  });
+
   it('keeps goBackTo from initial URL when location search is cleared after mount', () => {
     mockWindowSearch = '?goBackTo=/asset/keep';
     window.history.replaceState({}, '', '/?goBackTo=/asset/keep');

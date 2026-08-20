@@ -82,6 +82,21 @@ export const ConfirmContextProvider = ({
     useCurrentConfirmation(confirmationId);
   const currentConfirmation =
     currentConfirmationOverride ?? currentConfirmationFromHook;
+  const previousConfirmationId = usePrevious(currentConfirmation?.id);
+
+  /**
+   * `ConfirmContextProvider` is not remounted between confirmations in the
+   * same queue, so a still-in-flight Money Account amount commit from a
+   * confirmation the user has already left (rejected/confirmed) must not
+   * leave the next, unrelated confirmation's Confirm button disabled.
+   */
+  useEffect(() => {
+    if (previousConfirmationId === currentConfirmation?.id) {
+      return;
+    }
+    moneyAccountAmountCommitPendingCountRef.current = 0;
+    setIsMoneyAccountAmountCommitPending(false);
+  }, [currentConfirmation?.id, previousConfirmationId]);
 
   useSyncConfirmPath(
     currentConfirmationOverride === undefined ? currentConfirmation : undefined,
