@@ -4,7 +4,7 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Footer, Header, Page } from '../page';
 import {
@@ -15,12 +15,9 @@ import {
   ButtonSize,
   ButtonVariant,
   IconName,
-  Text,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTheme } from '../../../../hooks/useTheme';
-import { TabEmptyState } from '../../../ui/tab-empty-state';
-import { ThemeType } from '../../../../../shared/constants/preferences';
+import { PermissionsEmptyState } from '../gator-permissions/components';
 import {
   AlignItems,
   BackgroundColor,
@@ -29,14 +26,11 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
-  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
-  PREVIOUS_ROUTE,
   REVIEW_PERMISSIONS,
-  GATOR_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
 import {
   getConnectedSitesListWithNetworkInfo,
@@ -46,36 +40,31 @@ import { getMergedConnectionsListWithGatorPermissions } from '../../../../select
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { removePermissionsFor } from '../../../../store/actions';
 import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
+import { transitionForward } from '../../../ui/transition';
 import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
-import { Toast, ToastContainer } from '../../toast';
+import { toast } from '../../../ui/toast/toast';
+import { useDispatch } from '../../../../store/hooks';
 import { ConnectionListItem } from './connection-list-item';
 
 const PermissionsPage = () => {
   const t = useI18nContext();
-  const theme = useTheme();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const dispatch = useDispatch();
   const headerRef = useRef();
 
-  const fromPath = searchParams.get('from') ?? undefined;
+  const fromPath = searchParams.get('from') ?? DEFAULT_ROUTE;
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
+      runCloseTransition(() => navigate(-1));
     } else {
-      navigate(
-        isGatorPermissionsRevocationFeatureEnabled()
-          ? GATOR_PERMISSIONS
-          : DEFAULT_ROUTE,
-      );
+      navigate(DEFAULT_ROUTE);
     }
   };
   const [totalConnections, setTotalConnections] = useState(0);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [showErrorToast, setShowErrorToast] = useState(false);
 
   const mergedConnectionsList = useSelector((state) => {
     if (!isGatorPermissionsRevocationFeatureEnabled()) {
@@ -119,18 +108,35 @@ const PermissionsPage = () => {
     setShowDisconnectAllModal(false);
 
     if (errors.length > 0) {
-      setShowErrorToast(true);
+      toast.error(t('disconnectAllSitesError'), {
+        id: 'disconnect-all-error-toast',
+      });
     } else {
-      setShowSuccessToast(true);
+      toast.success(t('disconnectAllSitesSuccess'), {
+        id: 'disconnect-all-success-toast',
+      });
     }
-  }, [dispatch, mergedConnectionsList, subjects]);
+  }, [dispatch, mergedConnectionsList, subjects, t]);
 
   const handleConnectionClick = (connection) => {
-    navigate({
-      pathname: REVIEW_PERMISSIONS,
-      search: createSearchParams({
-        origin: connection.origin,
-      }).toString(),
+    const hasOnlyAdvancedPermissions =
+      !connection.addresses?.length &&
+      (connection.advancedPermissionsCount ?? 0) > 0;
+
+    transitionForward(() => {
+      if (hasOnlyAdvancedPermissions) {
+        navigate(
+          `${TOKEN_TRANSFER_ROUTE}/${encodeURIComponent(connection.origin)}`,
+        );
+        return;
+      }
+
+      navigate({
+        pathname: REVIEW_PERMISSIONS,
+        search: createSearchParams({
+          origin: connection.origin,
+        }).toString(),
+      });
     });
   };
 
@@ -148,31 +154,25 @@ const PermissionsPage = () => {
     });
 
   return (
-    <Page className="main-container" data-testid="permissions-page">
+    <Page
+      className="main-container"
+      data-testid="parent-selector-permission-list"
+    >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            className="connections-header__start-accessory"
             color={Color.iconDefault}
             onClick={handleBack}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             data-testid="permissions-page-back"
           />
         }
+        textProps={{ 'data-testid': 'permissions-page-title' }}
       >
-        <Text
-          as="span"
-          variant={TextVariant.headingMd}
-          textAlign={TextAlign.Center}
-          data-testid="permissions-page-title"
-        >
-          {isGatorPermissionsRevocationFeatureEnabled()
-            ? t('sites')
-            : t('dappConnections')}
-        </Text>
+        {t('permissions')}
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
@@ -187,22 +187,7 @@ const PermissionsPage = () => {
             height={BlockSize.Full}
             padding={4}
           >
-            <TabEmptyState
-              icon={
-                <img
-                  src={
-                    theme === ThemeType.dark
-                      ? '/images/empty-state-permissions-dark.png'
-                      : '/images/empty-state-permissions-light.png'
-                  }
-                  alt={t('permissionsPageEmptyDescription')}
-                  width={72}
-                  height={72}
-                />
-              }
-              description={t('permissionsPageEmptyDescription')}
-              className="mx-auto"
-            />
+            <PermissionsEmptyState />
           </Box>
         )}
       </Content>
@@ -215,33 +200,10 @@ const PermissionsPage = () => {
             gap={2}
             alignItems={AlignItems.center}
           >
-            {showSuccessToast && (
-              <ToastContainer>
-                <Toast
-                  text={t('disconnectAllSitesSuccess')}
-                  onClose={() => setShowSuccessToast(false)}
-                  autoHideTime={5000}
-                  onAutoHideToast={() => setShowSuccessToast(false)}
-                  dataTestId="disconnect-all-success-toast"
-                />
-              </ToastContainer>
-            )}
-            {showErrorToast && (
-              <ToastContainer>
-                <Toast
-                  text={t('disconnectAllSitesError')}
-                  onClose={() => setShowErrorToast(false)}
-                  autoHideTime={5000}
-                  onAutoHideToast={() => setShowErrorToast(false)}
-                  dataTestId="disconnect-all-error-toast"
-                />
-              </ToastContainer>
-            )}
             <Button
               size={ButtonSize.Lg}
               block
               variant={ButtonVariant.Secondary}
-              startIconName={IconName.Logout}
               danger
               onClick={() => setShowDisconnectAllModal(true)}
               data-testid="disconnect-all-button"

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 import {
   SECURITY_ALERTS_LEARN_MORE_LINK,
@@ -15,6 +16,7 @@ import {
   getIsSecurityAlertsEnabled,
   getUseExternalNameSources,
 } from '../../../selectors';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getIsActiveShieldSubscription } from '../../../selectors/subscription';
 import {
@@ -120,6 +122,25 @@ const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'show-hex-data', component: ShowHexDataItem, hasDividerBefore: true },
 ];
 
-const TransactionsTab = () => <SettingsTab items={TRANSACTION_SETTING_ITEMS} />;
+const CONSOLIDATED_BASIC_FUNCTIONALITY_TRANSACTION_ITEMS =
+  TRANSACTION_SETTING_ITEMS.filter(
+    ({ id }) =>
+      ![
+        'estimate-balance-changes',
+        'security-alerts',
+        'proposed-nicknames',
+      ].includes(id),
+  );
+
+const TransactionsTab = () => {
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
+  const items = isBasicFunctionalityConsolidationEnabled
+    ? CONSOLIDATED_BASIC_FUNCTIONALITY_TRANSACTION_ITEMS
+    : TRANSACTION_SETTING_ITEMS;
+
+  return <SettingsTab items={items} />;
+};
 
 export default TransactionsTab;

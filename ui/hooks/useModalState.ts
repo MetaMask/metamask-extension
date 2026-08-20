@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { closeNetworkMenu, hideModal } from '../store/actions';
+import { useDispatch } from '../store/hooks';
 
 export function useModalState() {
   const dispatch = useDispatch();

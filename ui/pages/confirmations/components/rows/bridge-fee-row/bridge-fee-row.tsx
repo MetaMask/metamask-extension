@@ -22,7 +22,7 @@ import {
 } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
@@ -42,14 +42,13 @@ export type BridgeFeeRowProps = {
   tooltipDescription?: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BridgeFeeRow({
   variant = ConfirmInfoRowSize.Default,
   tooltipDescription,
 }: BridgeFeeRowProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
-  const isLoading = useIsTransactionPayLoading();
+  const isLoading = useIsTransactionPayQuotePending();
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -138,7 +137,7 @@ export function BridgeFeeRow({
             ariaLabel={feeLabel}
             data-testid="bridge-fee-tooltip-popover"
           >
-            <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+            <Text variant={TextVariant.BodyMd}>
               {tooltipLines.map((line, i) => (
                 <React.Fragment key={i}>
                   {i > 0 && <br />}

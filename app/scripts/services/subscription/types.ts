@@ -13,10 +13,7 @@ import {
   SubscriptionControllerClearLastSelectedPaymentMethodAction,
 } from '@metamask/subscription-controller';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
-import {
-  TransactionControllerGetTransactionsAction,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import { TransactionControllerGetTransactionsAction } from '@metamask/transaction-controller';
 import { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
 import { SmartTransactionsControllerGetStateAction } from '@metamask/smart-transactions-controller';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
@@ -31,24 +28,23 @@ import {
   AppStateControllerSetPendingRedirectRouteAction,
   AppStateControllerSetShieldSubscriptionErrorAction,
 } from '../../controllers/app-state-controller-method-action-types';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import {
   RewardsControllerGetHasAccountOptedInAction,
   RewardsControllerGetSeasonMetadataAction,
   RewardsControllerGetSeasonStatusAction,
 } from '../../controllers/rewards/rewards-controller-method-action-types';
-import { SubscriptionServiceMethodActions } from './subscription-service-method-action-types';
+import { ShieldSubscriptionServiceMethodActions } from './shield-subscription-service-method-action-types';
 
 export type {
-  SubscriptionServiceUpdateSubscriptionCardPaymentMethodAction,
-  SubscriptionServiceUpdateSubscriptionCryptoPaymentMethodAction,
-  SubscriptionServiceStartSubscriptionWithCardAction,
-  SubscriptionServiceHandlePostTransactionAction,
-  SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction,
-  SubscriptionServiceLinkRewardToExistingSubscriptionAction,
-} from './subscription-service-method-action-types';
+  ShieldSubscriptionServiceUpdateSubscriptionCardPaymentMethodAction,
+  ShieldSubscriptionServiceUpdateSubscriptionCryptoPaymentMethodAction,
+  ShieldSubscriptionServiceStartSubscriptionWithCardAction,
+  ShieldSubscriptionServiceHandlePostTransactionAction,
+  ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction,
+  ShieldSubscriptionServiceLinkRewardToExistingSubscriptionAction,
+} from './shield-subscription-service-method-action-types';
 
-export const SERVICE_NAME = 'SubscriptionService';
+export const SERVICE_NAME = 'ShieldSubscriptionService';
 
 export type ServiceName = typeof SERVICE_NAME;
 
@@ -75,26 +71,25 @@ type AllowedActions =
   | AppStateControllerSetPendingShieldCohortAction
   | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetShieldSubscriptionErrorAction
-  | MetaMetricsControllerTrackEventAction
   | KeyringControllerGetStateAction // For metrics, to get the HD Keyrings metadata
   // Rewards Integration
   | RewardsControllerGetSeasonStatusAction // For rewards, to get the season status for claiming points with the shield subscription
   | RewardsControllerGetSeasonMetadataAction // For rewards, to check if the season is active and can claim points
   | RewardsControllerGetHasAccountOptedInAction; // For rewards, to check if the account has opted in to rewards
 
-export type SubscriptionServiceEvent = never;
+export type ShieldSubscriptionServiceEvent = never;
 
-export type SubscriptionServiceMessenger = Messenger<
+export type ShieldSubscriptionServiceMessenger = Messenger<
   ServiceName,
-  SubscriptionServiceMethodActions | AllowedActions,
-  SubscriptionServiceEvent
+  ShieldSubscriptionServiceMethodActions | AllowedActions,
+  ShieldSubscriptionServiceEvent
 >;
 
-export type SubscriptionServiceOptions = {
+export type ShieldSubscriptionServiceOptions = {
   /**
    * The messenger used to communicate with other services and controllers.
    */
-  messenger: SubscriptionServiceMessenger;
+  messenger: ShieldSubscriptionServiceMessenger;
 
   platform: ExtensionPlatform;
 

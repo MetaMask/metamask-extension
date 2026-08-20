@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { AnyAction, Dispatch } from 'redux';
+import { usePureBlack } from '@metamask/design-system-react';
 
 import { connect } from 'react-redux';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -7,7 +8,6 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 
-import { NetworkManager } from '../../multichain/network-manager';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../../contexts/hardware-wallets/constants';
 import {
   CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
@@ -19,12 +19,11 @@ import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
-import ConfirmResetAccount from './confirm-reset-account';
-
 import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
-import FadeModal from './fade-modal';
+import FadeModal, { type FadeModalRef } from './fade-modal';
+import RampsInfoModal from './ramps/ramps-info-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -62,11 +61,6 @@ type ModalConfig = {
   customOnHideOpts?: CustomOnHideOpts;
 };
 
-type FadeModalRef = {
-  show: () => void;
-  hide: () => void;
-};
-
 const MODALS: Record<string, ModalConfig> = {
   HIDE_TOKEN_CONFIRMATION: {
     contents: <HideTokenConfirmationModal />,
@@ -86,8 +80,8 @@ const MODALS: Record<string, ModalConfig> = {
     },
   },
 
-  CONFIRM_RESET_ACCOUNT: {
-    contents: <ConfirmResetAccount />,
+  CONVERT_TOKEN_TO_NFT: {
+    contents: <ConvertTokenToNftModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -99,8 +93,55 @@ const MODALS: Record<string, ModalConfig> = {
     },
   },
 
-  CONVERT_TOKEN_TO_NFT: {
-    contents: <ConvertTokenToNftModal />,
+  RAMPS_UNSUPPORTED: {
+    contents: (
+      <RampsInfoModal
+        testId="ramps-unsupported-modal"
+        titleKey="rampsUnsupportedTitle"
+        bodyKey="rampsUnsupportedDescription"
+      />
+    ),
+    testId: 'ramps-unsupported-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_ELIGIBILITY_FAILED: {
+    contents: (
+      <RampsInfoModal
+        testId="ramp-eligibility-failed-modal"
+        titleKey="rampsEligibilityFailedTitle"
+        bodyKey="rampsEligibilityFailedDescription"
+      />
+    ),
+    testId: 'ramp-eligibility-failed-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  RAMPS_SERVICE_DISRUPTION: {
+    contents: (
+      <RampsInfoModal
+        testId="ramps-service-disruption-modal"
+        titleKey="rampsServiceDisruptionTitle"
+        bodyKey="rampsServiceDisruptionDescription"
+      />
+    ),
+    testId: 'ramps-service-disruption-modal',
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -178,16 +219,6 @@ const MODALS: Record<string, ModalConfig> = {
     },
   },
 
-  NETWORK_MANAGER: {
-    contents: <NetworkManager />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-  },
-
   [HARDWARE_WALLET_ERROR_MODAL_NAME]: {
     contents: <HardwareWalletErrorModal />,
     testId: 'hardware-wallet-error-modal',
@@ -230,7 +261,6 @@ function mapDispatchToProps(dispatch: Dispatch) {
     }) => {
       dispatch(actions.hideModal());
       if (customOnHideOpts && customOnHideOpts.action) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         dispatch(
           customOnHideOpts.action(
             ...(customOnHideOpts.args ?? []),
@@ -259,7 +289,8 @@ type ModalProps = {
  * If you would like to help with the replacement of the old Modal component, please submit a pull request
  */
 export function Modal({ active, hideModal, modalState }: ModalProps) {
-  const modalRef = useRef<FadeModalRef>(null);
+  const isPureBlack = usePureBlack();
+  const modalRef = useRef<FadeModalRef | null>(null);
 
   useEffect(() => {
     if (active) {
@@ -271,8 +302,14 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
 
   const modal = MODALS[modalState.name ?? 'DEFAULT'];
   const { contents: children, disableBackdropClick = false, testId } = modal;
-  const modalStyle =
-    modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'];
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const modalStyle = {
+    ...modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'],
+    ...(isPureBlack && {
+      backgroundColor: 'var(--color-background-alternative)',
+      border: '1px solid var(--color-border-muted)',
+    }),
+  };
   const contentStyle = modal.contentStyle ?? {};
 
   return (
@@ -284,7 +321,6 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
         }
         hideModal(modal.customOnHideOpts);
       }}
-      // @ts-expect-error FadeModal is a JS class component without TS type declarations
       ref={modalRef}
       modalStyle={modalStyle}
       contentStyle={contentStyle}

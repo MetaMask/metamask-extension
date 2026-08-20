@@ -9,6 +9,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
+import type { CaipAssetType } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -46,10 +47,6 @@ const AssetsReceivedListItem = ({
 }: AssetsReceivedListItemProps) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-
-  if (quote && !quote.isLoadingQuote && !quote.hasQuote) {
-    return null;
-  }
 
   return (
     <Box
@@ -96,9 +93,16 @@ export const AssetsReceivedSummaryList = ({
 }: AssetsReceivedSummaryListProps) => {
   return (
     <>
-      {Object.values(sendAssetsConfig)
-        .filter(({ enabled }) => enabled)
-        .map(({ asset, slippagePercent }) => (
+      {Object.entries(sendAssetsConfig)
+        .filter(([assetId, { enabled }]) => {
+          if (!enabled) {
+            return false;
+          }
+
+          const quote = quotes?.[assetId as CaipAssetType];
+          return !quote || quote.isLoadingQuote || quote.hasQuote;
+        })
+        .map(([, { asset, slippagePercent }]) => (
           <AssetsReceivedListItem
             key={asset.assetId}
             asset={asset}

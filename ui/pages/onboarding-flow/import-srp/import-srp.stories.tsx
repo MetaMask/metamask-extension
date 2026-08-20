@@ -6,6 +6,7 @@ import ImportSRP from './import-srp';
 
 const mockStore = configureStore({
   reducer: {
+    confirmTransaction: (state = { txData: {} }) => state,
     metamask: (
       state = {
         internalAccounts: {
