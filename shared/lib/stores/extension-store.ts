@@ -1143,9 +1143,6 @@ export default class ExtensionStore implements BaseStore {
         updateGeneratedPointerMetadata(
           await this.#readStorageKeyPointers(legacyManifestKeys),
         );
-        if (storageKeyList) {
-          this.#storageKeyManifestUpdatedAt = storageKeyList.updatedAt;
-        }
         storageKeyManifestKeys = [...this.#storageKeyManifest.keys()];
       }
     }
