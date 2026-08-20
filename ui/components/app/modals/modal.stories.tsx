@@ -43,4 +43,4 @@ export const ConfirmTurnOnBackupAndSync = createModalStory(
   'CONFIRM_TURN_ON_BACKUP_AND_SYNC',
 );
 export const TurnOnBackupAndSync = createModalStory('TURN_ON_BACKUP_AND_SYNC');
-export const NetworkManager = createModalStory('NETWORK_MANAGER');
+export const NetworkManager = createModalStory('CONFIRM_DELETE_NETWORK');
