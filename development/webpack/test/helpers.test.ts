@@ -450,9 +450,8 @@ describe('./utils/helpers.ts', () => {
       const exits: number[] = [];
       const calls: unknown[] = [];
       const handoffError = new Error('handoff failed');
-      const server = {
-        stop: mock.fn(async () => undefined),
-      } as unknown as Parameters<
+      const stop = mock.fn(async () => undefined);
+      const server = { stop } as unknown as Parameters<
         typeof helpers.setupGracefulWatchShutdown
       >[0]['server'];
       const close = mock.fn(
@@ -485,7 +484,7 @@ describe('./utils/helpers.ts', () => {
       await waitForAsyncShutdown();
 
       assert.deepStrictEqual(calls, [handoffError]);
-      assert.strictEqual(server.stop.mock.callCount(), 1);
+      assert.strictEqual(stop.mock.callCount(), 1);
       assert.strictEqual(close.mock.callCount(), 1);
       assert.deepStrictEqual(exits, [0]);
     });

@@ -1,3 +1,4 @@
+import type { EventEmitter } from 'node:events';
 import { join, sep } from 'node:path';
 import type { Compiler, EntryObject, Stats } from 'webpack';
 import type WebpackDevServerType from 'webpack-dev-server';
@@ -139,6 +140,7 @@ function listenForShutdownRequests(
   signals: readonly NodeJS.Signals[],
   listener: SignalListener,
 ): () => void {
+  const eventEmitter = signalProcess as EventEmitter;
   const shutdownSignals = new Set<NodeJS.Signals>(signals);
   const messageListener = (message: unknown) => {
     if (shutdownSignals.has(message as NodeJS.Signals)) {
@@ -146,15 +148,15 @@ function listenForShutdownRequests(
     }
   };
 
-  signals.forEach((signal) => signalProcess.on(signal, listener));
+  signals.forEach((signal) => eventEmitter.on(signal, listener));
   if (typeof signalProcess.send === 'function') {
-    signalProcess.on('message', messageListener);
+    eventEmitter.on('message', messageListener);
   }
 
   return () => {
-    signals.forEach((signal) => signalProcess.removeListener(signal, listener));
+    signals.forEach((signal) => eventEmitter.removeListener(signal, listener));
     if (typeof signalProcess.send === 'function') {
-      signalProcess.removeListener('message', messageListener);
+      eventEmitter.removeListener('message', messageListener);
     }
   };
 }
