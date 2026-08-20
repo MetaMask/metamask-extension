@@ -1,6 +1,9 @@
-import { TrxScope } from '@metamask/keyring-api';
-
-import { getNetworkSections } from './network-sections';
+import { SolScope, TrxScope } from '@metamask/keyring-api';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  getNetworkSections,
+  isDisableableDefaultNetwork,
+} from './network-sections';
 
 describe('getNetworkSections', () => {
   it('assigns section titles even when only one section is present', () => {
@@ -58,5 +61,29 @@ describe('getNetworkSections', () => {
       'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
       '0x539',
     ]);
+  });
+});
+
+describe('isDisableableDefaultNetwork', () => {
+  it('returns true for featured EVM networks except mainnet', () => {
+    expect(isDisableableDefaultNetwork('0xa')).toBe(true);
+    expect(isDisableableDefaultNetwork('eip155:10')).toBe(true);
+  });
+
+  it('returns false for Ethereum mainnet', () => {
+    expect(isDisableableDefaultNetwork('0x1')).toBe(false);
+    expect(isDisableableDefaultNetwork('eip155:1')).toBe(false);
+  });
+
+  it('returns false for featured non-EVM mainnets', () => {
+    expect(isDisableableDefaultNetwork(SolScope.Mainnet)).toBe(false);
+  });
+
+  it('returns false for custom networks', () => {
+    expect(isDisableableDefaultNetwork('0xabc')).toBe(false);
+  });
+
+  it('returns false for testnets', () => {
+    expect(isDisableableDefaultNetwork(CHAIN_IDS.SEPOLIA)).toBe(false);
   });
 });

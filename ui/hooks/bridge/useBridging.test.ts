@@ -1,5 +1,6 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
+  FeatureId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
@@ -10,6 +11,7 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
 import * as bridgeActions from '../../ducks/bridge/actions';
 import {
@@ -133,6 +135,9 @@ describe('useBridging', () => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+        const setBridgeLocationSpy = jest
+          .spyOn(bridgeActions, 'setBridgeLocation')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
           .spyOn(bridgeActions, 'resetInputFields')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
@@ -182,7 +187,7 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token);
 
-        expect(mockDispatch.mock.calls.length).toStrictEqual(3);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
         expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
         expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
           [
@@ -193,11 +198,24 @@ describe('useBridging', () => {
               token_symbol_source: token?.symbol ?? 'ETH',
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_destination: '',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
             },
           ],
-          [UnifiedSwapBridgeEventName.PageViewed, {}],
+          [
+            UnifiedSwapBridgeEventName.PageViewed,
+            {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
+            },
+          ],
         ]);
         expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
+        expect(setBridgeLocationSpy).toHaveBeenCalledWith(location);
 
         expect(mockUseNavigate).toHaveBeenCalledWith(
           { pathname: expectedUrl, search: '' },
@@ -338,7 +356,9 @@ describe('useBridging', () => {
         'Home',
       ],
       [
-        '/asset/0xa/',
+        buildAssetRoutePath(
+          getNativeAssetForChainId(CHAIN_IDS.OPTIMISM).assetId,
+        ),
         {
           pathname: BRIDGE_PREPARE_PATH,
           search: '',
@@ -350,7 +370,9 @@ describe('useBridging', () => {
         },
       ],
       [
-        '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+        buildAssetRoutePath(
+          'eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+        ),
         {
           pathname: BRIDGE_PREPARE_PATH,
           search: '',
@@ -386,7 +408,9 @@ describe('useBridging', () => {
         },
       ],
       [
-        '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+        buildAssetRoutePath(
+          'eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+        ),
         {
           pathname: BRIDGE_PREPARE_PATH,
           search: `from=${encodeURIComponent('eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d')}`,
@@ -463,6 +487,9 @@ describe('useBridging', () => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+        const setBridgeLocationSpy = jest
+          .spyOn(bridgeActions, 'setBridgeLocation')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
           .spyOn(bridgeActions, 'resetInputFields')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
@@ -517,7 +544,7 @@ describe('useBridging', () => {
         result.current.openBridgeExperience(location, token);
 
         expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
-        expect(mockDispatch.mock.calls.length).toStrictEqual(3);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
         expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
           [
             UnifiedSwapBridgeEventName.ButtonClicked,
@@ -527,11 +554,24 @@ describe('useBridging', () => {
               token_symbol_destination: '',
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_source: token?.symbol ?? 'ETH',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
             },
           ],
-          [UnifiedSwapBridgeEventName.PageViewed, {}],
+          [
+            UnifiedSwapBridgeEventName.PageViewed,
+            {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'background',
+            },
+          ],
         ]);
         expect(resetBridgeControllerAndCacheSpy).toHaveBeenCalledTimes(1);
+        expect(setBridgeLocationSpy).toHaveBeenCalledWith(location);
 
         expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl, {
           replace: false,

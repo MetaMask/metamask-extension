@@ -6,7 +6,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
     class="flex flex-col gap-4"
   >
     <div
-      class="bg-section recovery-phrase__secret rounded-lg w-full"
+      class="recovery-phrase__secret rounded-lg w-full"
     >
       <div
         class="items-center justify-center recovery-phrase__chips grid"
@@ -218,7 +218,7 @@ exports[`Recovery Phrase Chips Component should match snapshot of confirm recove
     class="flex flex-col gap-4"
   >
     <div
-      class="bg-section recovery-phrase__secret rounded-lg w-full"
+      class="recovery-phrase__secret rounded-lg w-full"
     >
       <div
         class="items-center justify-center recovery-phrase__chips grid"

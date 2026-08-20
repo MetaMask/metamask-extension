@@ -1,81 +1,52 @@
-import React, { useEffect, useContext, useMemo } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  ONBOARDING_WELCOME_ROUTE,
-  ONBOARDING_UNLOCK_ROUTE,
-} from '../../../helpers/constants/routes';
-import {
-  getAccountTypeForOnboardingMetrics,
-  getFirstTimeFlowType,
-  getSocialLoginEmail,
-  getSocialLoginType,
-} from '../../../selectors';
-import {
-  AuthConnection,
-  FirstTimeFlowType,
-} from '../../../../shared/constants/onboarding';
-import {
-  forceUpdateMetamaskState,
-  resetOnboarding,
-} from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { AccountStatusLayout } from '../account-status-layout';
+import { useAccountStatusContext } from '../hooks/useAccountStatusContext';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AccountExist() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const userSocialLoginEmail = useSelector(getSocialLoginEmail);
-  const socialLoginType = useSelector(getSocialLoginType);
-  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const {
+    accountTypeForMetrics,
+    descriptionKey,
+    descriptionInterpolation,
+    resetOnboardingAndReturn,
     trackEvent,
+    createEventBuilder,
     bufferedTrace,
-    bufferedEndTrace,
     onboardingParentContext,
-  } = useContext(MetaMetricsContext);
-
-  const descriptionKey = useMemo(() => {
-    if (socialLoginType === AuthConnection.Telegram) {
-      return 'accountAlreadyExistsLoginDescriptionTelegram';
-    }
-    return 'accountAlreadyExistsLoginDescription';
-  }, [socialLoginType]);
-
-  const descriptionInterpolation = useMemo(() => {
-    if (socialLoginType === AuthConnection.Telegram) {
-      return [socialLoginType];
-    }
-    return [userSocialLoginEmail || '-'];
-  }, [socialLoginType, userSocialLoginEmail]);
+  } = useAccountStatusContext({
+    telegramDescriptionKey: 'accountAlreadyExistsLoginDescriptionTelegram',
+    defaultDescriptionKey: 'accountAlreadyExistsLoginDescription',
+    validFlowType: FirstTimeFlowType.socialImport,
+    pageViewedEventName: MetaMetricsEventName.AccountAlreadyExistsPageViewed,
+    pageTraceName: TraceName.OnboardingNewSocialAccountExists,
+  });
 
   const onLoginWithDifferentMethod = async (
     e?: React.MouseEvent<HTMLButtonElement>,
   ) => {
     e?.preventDefault();
-    await dispatch(resetOnboarding());
-    await forceUpdateMetamaskState(dispatch);
-    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    await resetOnboardingAndReturn();
   };
 
   const onDone = async () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletImportStarted,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountTypeForMetrics,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.WalletImportStarted)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountTypeForMetrics,
+        })
+        .build(),
+    );
     bufferedTrace?.({
       name: TraceName.OnboardingExistingSocialLogin,
       op: TraceOperation.OnboardingUserJourney,
@@ -84,36 +55,6 @@ export default function AccountExist() {
     });
     navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
   };
-
-  useEffect(() => {
-    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.AccountAlreadyExistsPageViewed,
-      });
-      bufferedTrace?.({
-        name: TraceName.OnboardingNewSocialAccountExists,
-        op: TraceOperation.OnboardingUserJourney,
-        parentContext: onboardingParentContext?.current,
-      });
-    } else {
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
-    }
-    return () => {
-      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-        bufferedEndTrace?.({
-          name: TraceName.OnboardingNewSocialAccountExists,
-        });
-      }
-    };
-  }, [
-    firstTimeFlowType,
-    navigate,
-    onboardingParentContext,
-    bufferedTrace,
-    bufferedEndTrace,
-    trackEvent,
-  ]);
 
   return (
     <AccountStatusLayout

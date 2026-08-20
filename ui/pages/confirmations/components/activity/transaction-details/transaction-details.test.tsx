@@ -4,6 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetails } from './transaction-details';
@@ -28,7 +29,12 @@ function createMockState(includeToken = false) {
           'account-1': {
             id: 'account-1',
             address: FROM_ADDRESS,
-            metadata: { name: ACCOUNT_NAME },
+            // Required so that getSelectedEvmInternalAccount can find this
+            // account (it filters by isEvmAccountType).
+            type: EthAccountType.Eoa,
+            metadata: { name: ACCOUNT_NAME, keyring: { type: 'HD Key Tree' } },
+            options: {},
+            methods: [],
           },
         },
         selectedAccount: 'account-1',
@@ -45,7 +51,12 @@ function createMockState(includeToken = false) {
               ],
             },
           }
-        : {},
+        : {
+            // Provide an empty token list for the chain so that selectors
+            // which look up tokens by chainId (e.g. findAssetByAddress) don't
+            // emit "No tokens found for chainId" warnings in tests.
+            [CHAIN_ID]: {},
+          },
       tokenBalances: {},
       tokensChainsCache: {},
       networkConfigurationsByChainId: {

@@ -8,10 +8,14 @@ export function useTabState<TTab extends string = AccountOverviewTab>() {
 
   const setTab = useCallback(
     (value: TTab) =>
-      setSearchParams((prev) => {
-        prev.set('tab', value);
-        return prev;
-      }),
+      setSearchParams(
+        (prev) => {
+          prev.set('tab', value);
+          return prev;
+        },
+        // Clear stale location state when changing tabs via search params.
+        { state: null },
+      ),
     [setSearchParams],
   );
 

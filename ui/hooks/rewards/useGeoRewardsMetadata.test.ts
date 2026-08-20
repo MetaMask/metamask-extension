@@ -1,5 +1,4 @@
-import { act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { RewardsGeoMetadata } from '../../../shared/types/rewards';
 import { useGeoRewardsMetadata } from './useGeoRewardsMetadata';

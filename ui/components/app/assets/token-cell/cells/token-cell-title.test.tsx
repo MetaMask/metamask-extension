@@ -42,6 +42,10 @@ jest.mock('../../stock-badge/stock-badge', () => ({
   ),
 }));
 
+jest.mock('../../asset-inactive-badge/asset-inactive-badge', () => ({
+  AssetInactiveBadge: () => <span data-testid="asset-inactive-badge" />,
+}));
+
 const mockIsStockToken = jest.fn();
 const mockIsTokenTradingOpen = jest.fn();
 
@@ -94,6 +98,22 @@ describe('TokenCellTitle', () => {
     const { queryByTestId } = render(<TokenCellTitle token={token} />);
 
     expect(queryByTestId('tag')).not.toBeInTheDocument();
+  });
+
+  it('renders inactive trustline badge when token requires activation', () => {
+    const token = createMockToken({
+      accountType: undefined,
+      chainId: 'stellar:pubnet',
+      assetId:
+        'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+      isNative: false,
+      tokenRequireActivate: true,
+      balance: '0',
+    } as unknown as TokenFiatDisplayInfo);
+
+    const { getByTestId } = render(<TokenCellTitle token={token} />);
+
+    expect(getByTestId('asset-inactive-badge')).toBeInTheDocument();
   });
 
   it('does not render tag when accountType is undefined', () => {
@@ -350,6 +370,38 @@ describe('TokenCellTitle', () => {
       rerender(<TokenCellTitle token={updatedToken} />);
 
       expect(getByTestId('asset-cell-title')).toHaveTextContent('After');
+    });
+
+    it('re-renders when tokenRequireActivate changes from false to true', () => {
+      const token = createMockToken({
+        accountType: undefined,
+        chainId: 'stellar:pubnet',
+        assetId:
+          'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+        isNative: false,
+        tokenRequireActivate: false,
+        balance: '0',
+      } as unknown as TokenFiatDisplayInfo);
+
+      const { rerender, queryByTestId } = render(
+        <TokenCellTitle token={token} />,
+      );
+
+      expect(queryByTestId('asset-inactive-badge')).not.toBeInTheDocument();
+
+      const updatedToken = createMockToken({
+        accountType: undefined,
+        chainId: 'stellar:pubnet',
+        assetId:
+          'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+        isNative: false,
+        tokenRequireActivate: true,
+        balance: '0',
+      } as unknown as TokenFiatDisplayInfo);
+
+      rerender(<TokenCellTitle token={updatedToken} />);
+
+      expect(queryByTestId('asset-inactive-badge')).toBeInTheDocument();
     });
 
     it('skips re-render when all compared props are the same', () => {

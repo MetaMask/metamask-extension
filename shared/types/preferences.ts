@@ -7,11 +7,13 @@ export type Preferences = {
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
+  isBasicFunctionalityConsolidatedEnabled: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
   showDefaultAddress: boolean;
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
+  showTickerWidget: boolean;
   showMultiRpcModal: boolean;
   showNativeTokenAsMainBalance: boolean;
   showTestNetworks: boolean;
@@ -27,4 +29,5 @@ export type Preferences = {
   useNativeCurrencyAsPrimaryCurrency: boolean;
   useSidePanelAsDefault?: boolean;
   perpsSelectedCandlePeriod?: string;
+  gasSponsorshipOptOutByChainId: Record<string, boolean>;
 };
