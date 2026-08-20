@@ -23,7 +23,6 @@ import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { useMusdConversionTokens } from '../../../../../hooks/musd';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
-import { ClaimableBonusRow } from '../../rows/claimable-bonus-row/claimable-bonus-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
 import { useMusdConversionQuoteTrace } from '../../../hooks/musd/useMusdConversionQuoteTrace';
@@ -48,7 +47,6 @@ const MusdBottomContent = () => {
             variant={ConfirmInfoRowSize.Small}
             tooltipDescription={t('musdConversionFeeTooltipDescription')}
           />
-          <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
           {!isPaidByMetaMask && <TotalRow variant={ConfirmInfoRowSize.Small} />}
         </>
       )}
