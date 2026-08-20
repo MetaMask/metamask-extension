@@ -16,7 +16,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { PerpsMarketCard } from '../perps-market-card';
+import { MarketRow } from '../market-row';
 import { PERPS_CONSTANTS } from '../constants';
 import type { PerpsMarketData } from '../types';
 
@@ -24,15 +24,15 @@ export type PerpsExploreMarketsProps = {
   markets: PerpsMarketData[];
 };
 
-export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
-  markets,
-}) => {
+export const PerpsExploreMarkets = ({ markets }: PerpsExploreMarketsProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 
   const handleMarketClick = useCallback(
-    (symbol: string) => {
-      navigate(`${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(symbol)}`);
+    (market: PerpsMarketData) => {
+      navigate(
+        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
+      );
     },
     [navigate],
   );
@@ -63,14 +63,11 @@ export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
         {markets
           .slice(0, PERPS_CONSTANTS.EXPLORE_MARKETS_LIMIT)
           .map((market) => (
-            <PerpsMarketCard
+            <MarketRow
               key={market.symbol}
-              symbol={market.symbol}
-              name={market.name}
-              price={market.price}
-              change24hPercent={market.change24hPercent}
-              volume={market.volume}
-              onClick={handleMarketClick}
+              market={market}
+              displayMetric="volume"
+              onPress={handleMarketClick}
               data-testid={`explore-markets-${market.symbol.replaceAll(':', '-')}`}
             />
           ))}

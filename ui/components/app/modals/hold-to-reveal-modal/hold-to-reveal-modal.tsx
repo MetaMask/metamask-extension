@@ -1,13 +1,12 @@
 import React from 'react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
   Display,
-  FlexDirection,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  Box,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -27,8 +26,6 @@ type HoldToRevealModalProps = {
   holdToRevealType: 'SRP' | 'PrivateKey';
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function HoldToRevealModal({
   isOpen,
   onClose,
@@ -62,8 +59,8 @@ export default function HoldToRevealModal({
   const MainContent = () => {
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        className="flex"
+        flexDirection={BoxFlexDirection.Column}
         gap={4}
         marginTop={4}
         marginBottom={6}

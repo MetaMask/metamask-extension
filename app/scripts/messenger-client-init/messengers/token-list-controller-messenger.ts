@@ -8,6 +8,7 @@ import type {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -47,7 +48,8 @@ export function getTokenListControllerMessenger(
 type AllowedInitializationActions =
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
-  | PreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
 
@@ -82,6 +84,7 @@ export function getTokenListControllerInitMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
     ],
     events: ['PreferencesController:stateChange'],
   });

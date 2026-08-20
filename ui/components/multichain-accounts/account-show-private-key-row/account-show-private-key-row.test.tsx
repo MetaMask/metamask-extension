@@ -12,7 +12,6 @@ const mockStore = configureMockStore(middleware);
 
 jest.mock('../../../store/actions', () => ({
   exportAccount: () => ({ type: 'MOCK_EXPORT_ACCOUNT' }),
-  hideWarning: () => ({ type: 'MOCK_HIDE_WARNING' }),
 }));
 
 jest.mock('../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal', () => ({

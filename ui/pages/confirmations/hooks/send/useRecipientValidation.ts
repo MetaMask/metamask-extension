@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { debounce } from 'lodash';
 
 import {
   isSolanaAddress,
   isBtcMainnetAddress,
+  isStellarAddress,
   isTronAddress,
 } from '../../../../../shared/lib/multichain/accounts';
 import { isValidHexAddress } from '../../../../../shared/lib/hexstring-utils';
@@ -14,22 +15,28 @@ import {
   validateBtcAddress,
   validateEvmHexAddress,
   validateSolanaAddress,
+  validateStellarAddress,
   validateTronAddress,
 } from '../../utils/sendValidations';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
 import { useNameValidation } from './useNameValidation';
+import { useSendAlerts } from './alerts/useSendAlerts';
 
 const VALIDATION_DEBOUNCE_MS = 500;
 
 export const useRecipientValidation = () => {
   const t = useI18nContext();
   const { asset, chainId, to } = useSendContext();
-  const { isBitcoinSendType, isEvmSendType, isSolanaSendType, isTronSendType } =
-    useSendType();
+  const {
+    isBitcoinSendType,
+    isEvmSendType,
+    isSolanaSendType,
+    isStellarSendType,
+    isTronSendType,
+  } = useSendType();
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
-  const [acknowledged, setAcknowledged] = useState(false);
   const prevAddressValidated = useRef<string>();
   const prevChainIdValidated = useRef<string>();
   const unmountedRef = useRef(false);
@@ -67,7 +74,7 @@ export const useRecipientValidation = () => {
       }
 
       if (isEvmSendType && isValidHexAddress(toAddress)) {
-        return await validateEvmHexAddress(toAddress, chainId, asset?.address);
+        return validateEvmHexAddress(toAddress, asset?.address);
       }
 
       if (isSolanaSendType && isSolanaAddress(toAddress)) {
@@ -80,6 +87,10 @@ export const useRecipientValidation = () => {
 
       if (isTronSendType && isTronAddress(toAddress)) {
         return validateTronAddress(toAddress);
+      }
+
+      if (isStellarSendType && isStellarAddress(toAddress)) {
+        return validateStellarAddress(toAddress);
       }
 
       if (isResolvableName(toAddress)) {
@@ -96,6 +107,7 @@ export const useRecipientValidation = () => {
     isBitcoinSendType,
     isEvmSendType,
     isSolanaSendType,
+    isStellarSendType,
     isTronSendType,
     validateName,
   ]);
@@ -146,27 +158,18 @@ export const useRecipientValidation = () => {
     };
   }, [debouncedValidateRecipient]);
 
-  // Reset acknowledgment when the recipient address changes
-  useEffect(() => {
-    setAcknowledged(false);
-  }, [to]);
-
-  const acknowledgeError = useCallback(() => {
-    setAcknowledged(true);
-  }, []);
-
-  const isAcknowledgeable = result?.allowAcknowledge === true;
-  const errorDismissed = isAcknowledgeable && acknowledged;
+  const { alerts, hasUnacknowledgedAlerts, acknowledgeAlerts } =
+    useSendAlerts();
 
   return {
     recipientConfusableCharacters: result?.confusableCharacters,
-    recipientError:
-      result?.error && !errorDismissed ? t(result?.error) : undefined,
-    recipientErrorAllowAcknowledge: isAcknowledgeable && !acknowledged,
-    acknowledgeError,
+    recipientError: result?.error ? t(result?.error) : undefined,
     recipientResolvedLookup: result?.resolvedLookup,
     recipientWarning: result?.warning ? t(result?.warning) : undefined,
     resolutionProtocol: result?.protocol,
     toAddressValidated: result?.toAddressValidated,
+    alerts,
+    hasUnacknowledgedAlerts,
+    acknowledgeAlerts,
   };
 };

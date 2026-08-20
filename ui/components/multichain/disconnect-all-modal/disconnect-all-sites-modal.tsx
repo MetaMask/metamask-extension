@@ -1,16 +1,15 @@
 import React from 'react';
+import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
-  IconName,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -20,9 +19,11 @@ export type DisconnectAllSitesModalProps = {
   onClose: () => void;
 };
 
-export const DisconnectAllSitesModal: React.FC<
-  DisconnectAllSitesModalProps
-> = ({ isOpen, onClick, onClose }) => {
+export const DisconnectAllSitesModal = ({
+  isOpen,
+  onClick,
+  onClose,
+}: DisconnectAllSitesModalProps) => {
   const t = useI18nContext();
 
   return (
@@ -33,14 +34,17 @@ export const DisconnectAllSitesModal: React.FC<
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>{t('disconnectAllSites')}</ModalHeader>
+        <ModalHeader onClose={onClose}>
+          {t('disconnectAllSitesQuestion')}
+        </ModalHeader>
         <ModalBody>
-          <Text>{t('disconnectAllSitesDescriptionText')}</Text>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {t('disconnectAllSitesDescriptionText')}
+          </Text>
         </ModalBody>
         <ModalFooter>
           <Button
             onClick={onClick}
-            startIconName={IconName.Logout}
             block
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}

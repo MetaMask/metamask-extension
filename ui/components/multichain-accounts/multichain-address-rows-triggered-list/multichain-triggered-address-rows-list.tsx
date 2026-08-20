@@ -22,7 +22,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Popover, PopoverPosition } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -326,7 +325,7 @@ export const MultichainTriggeredAddressRowsList = ({
         account: InternalAccount;
       },
       index: number,
-    ): React.JSX.Element => {
+    ): JSX.Element => {
       const handleCopyClick = () => {
         handleCopy(normalizeSafeAddress(item.account.address));
       };
@@ -381,7 +380,6 @@ export const MultichainTriggeredAddressRowsList = ({
         isOpen={isOpen}
         position={dynamicPosition}
         hasArrow={true}
-        backgroundColor={BackgroundColor.backgroundDefault}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClickOutside={handlePopoverClose}

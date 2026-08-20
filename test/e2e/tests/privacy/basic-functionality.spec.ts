@@ -6,7 +6,7 @@ import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -152,6 +152,18 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
+        // Turning basic functionality off disables the remote feature flag
+        // controller, so the mocked `/v1/flags` response below is never
+        // fetched and the network filter falls back to its pre-redesign
+        // variant
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxNetworkManagement: {
+              enabled: true,
+              minimumVersion: '13.36.0',
+            },
+          },
+        },
         testSpecificMock: async (server: Mockttp) => {
           await mockFeatureFlagsForPrivacyTest(server);
           return mockApis(
@@ -185,9 +197,9 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.refreshErc20TokenList();
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.refreshErc20TokenList();
 
         for (const mockedEndpoint of mockedEndpoints) {
           const requests = await mockedEndpoint.getSeenRequests();
@@ -229,9 +241,9 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.refreshErc20TokenList();
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.refreshErc20TokenList();
 
         // Check if sidepanel is enabled
         const hasSidepanel = await isSidePanelEnabled();

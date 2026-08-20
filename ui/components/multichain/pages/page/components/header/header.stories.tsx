@@ -31,7 +31,7 @@ StartAdornmentStory.storyName = 'StartAccessory';
 StartAdornmentStory.args = {
   startAccessory: (
     <ButtonIcon
-      size={ButtonIconSize.Sm}
+      size={ButtonIconSize.Md}
       ariaLabel="Back"
       iconName={IconName.ArrowLeft}
     />
@@ -43,7 +43,7 @@ EndAdornmentStory.storyName = 'EndAccessory';
 EndAdornmentStory.args = {
   endAccessory: (
     <ButtonIcon
-      size={ButtonIconSize.Sm}
+      size={ButtonIconSize.Md}
       ariaLabel="Close"
       iconName={IconName.Close}
     />
@@ -57,14 +57,14 @@ StartAndEndAdornmentStory.storyName = 'StartEndAccessory';
 StartAndEndAdornmentStory.args = {
   startAccessory: (
     <ButtonIcon
-      size={ButtonIconSize.Sm}
+      size={ButtonIconSize.Md}
       ariaLabel="Back"
       iconName={IconName.ArrowLeft}
     />
   ),
   endAccessory: (
     <ButtonIcon
-      size={ButtonIconSize.Sm}
+      size={ButtonIconSize.Md}
       ariaLabel="Close"
       iconName={IconName.Close}
     />
@@ -78,14 +78,14 @@ OverflowStory.storyName = 'OverflowStory';
 OverflowStory.args = {
   startAccessory: (
     <ButtonIcon
-      size={ButtonIconSize.Sm}
+      size={ButtonIconSize.Md}
       ariaLabel="Back"
       iconName={IconName.ArrowLeft}
     />
   ),
   endAccessory: (
     <ButtonIcon
-      size={ButtonIconSize.Sm}
+      size={ButtonIconSize.Md}
       ariaLabel="Close"
       iconName={IconName.Close}
     />

@@ -42,7 +42,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                         class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                       >
                         <div
-                          class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                          class="shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8 flex"
                         >
                           <div
                             class="flex [&>div]:!rounded-none"
@@ -94,7 +94,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                     class="hidden sm:flex"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
                     >
                       <div
                         class="flex [&>div]:!rounded-none"
@@ -354,7 +354,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                         class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                       >
                         <div
-                          class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                          class="shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8 flex"
                         >
                           <div
                             class="flex [&>div]:!rounded-none"
@@ -406,7 +406,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                     class="hidden sm:flex"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
                     >
                       <div
                         class="flex [&>div]:!rounded-none"

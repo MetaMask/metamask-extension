@@ -6,17 +6,6 @@ import {
 import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
-export function getMethodName(camelCase) {
-  if (!camelCase || typeof camelCase !== 'string') {
-    return '';
-  }
-
-  return camelCase
-    .replace(/([a-z])([A-Z])/gu, '$1 $2')
-    .replace(/([A-Z])([a-z])/gu, ' $1$2')
-    .replace(/ +/gu, ' ');
-}
-
 export function formatAccountType(accountType) {
   if (accountType === 'default') {
     return 'metamask';

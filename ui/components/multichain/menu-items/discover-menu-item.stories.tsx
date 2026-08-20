@@ -8,8 +8,9 @@ import { DiscoverMenuItem } from './discover-menu-item';
 const mockStore = configureStore({
   metamask: {
     currentLocale: 'en',
-    metaMetricsId: 'test-metrics-id',
-    participateInMetaMetrics: true,
+    analyticsId: 'test-metrics-id',
+    optedIn: true,
+    consentDecisionMade: true,
     dataCollectionForMarketing: false,
   },
 });

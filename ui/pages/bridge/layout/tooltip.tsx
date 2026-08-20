@@ -15,7 +15,6 @@ import {
   IconColor,
   JustifyContent,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Column from './column';
@@ -29,6 +28,7 @@ const Tooltip = React.forwardRef(
       disabled = false,
       onClose,
       iconName,
+      iconColor = IconColor.iconAlternative,
       style,
       ...props
     }: PopoverProps<'div'> & {
@@ -36,6 +36,7 @@ const Tooltip = React.forwardRef(
       disabled?: boolean;
       onClose?: () => void;
       iconName?: IconName;
+      iconColor?: IconColor;
     },
     ref?: PolymorphicRef<'div'>,
   ) => {
@@ -58,17 +59,9 @@ const Tooltip = React.forwardRef(
         >
           {triggerElement ??
             (iconName && (
-              <Icon
-                color={IconColor.iconAlternative}
-                name={iconName}
-                size={IconSize.Sm}
-              />
+              <Icon color={iconColor} name={iconName} size={IconSize.Sm} />
             )) ?? (
-              <Icon
-                name={IconName.Info}
-                color={IconColor.iconAlternative}
-                size={IconSize.Sm}
-              />
+              <Icon name={IconName.Info} color={iconColor} size={IconSize.Sm} />
             )}
         </Box>
         {!disabled && (
@@ -79,7 +72,6 @@ const Tooltip = React.forwardRef(
             onClickOutside={handleMouseLeave}
             style={{
               maxWidth: '264px',
-              backgroundColor: 'var(--color-text-default)',
               paddingInline: '12px',
               paddingTop: '12px',
               paddingBottom: '12px',
@@ -96,7 +88,6 @@ const Tooltip = React.forwardRef(
             <Column gap={2}>
               {title && (
                 <PopoverHeader
-                  color={TextColor.infoInverse}
                   textAlign={TextAlign.Center}
                   justifyContent={
                     onClose
@@ -111,7 +102,6 @@ const Tooltip = React.forwardRef(
               )}
               <Text
                 justifyContent={JustifyContent.center}
-                color={TextColor.infoInverse}
                 variant={TextVariant.bodySm}
               >
                 {children}

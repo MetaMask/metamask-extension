@@ -2,6 +2,20 @@ import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useExternalAccountResolution } from './useExternalAccountResolution';
 
+jest.mock('../../../ducks/domains', () => {
+  const actual = jest.requireActual('../../../ducks/domains');
+  return {
+    // Required for Babel/Jest default-export interop so the DNS reducer stays registered.
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ESM interop flag
+    __esModule: true,
+    ...actual,
+    default: actual.default,
+    // Prevent async lookups from clearing preloaded DNS resolutions during render.
+    initializeDomainSlice: () => () => undefined,
+    lookupDomainName: () => async () => undefined,
+  };
+});
+
 const renderUseExternalAccountResolution = (
   searchQuery: string,
   isDestinationSolana: boolean,
@@ -24,8 +38,7 @@ describe('useExternalAccountResolution', () => {
 
   it('returns null when search query is not a valid address', () => {
     const { result } = renderUseExternalAccountResolution('0x123', false);
-    expect(result.all.length).toBe(1);
-    expect(result.all[0]).toBeNull();
+    expect(result.current).toBeNull();
   });
 
   it('returns null when search query is an internal account', () => {
@@ -33,8 +46,7 @@ describe('useExternalAccountResolution', () => {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       false,
     );
-    expect(result.all.length).toBe(1);
-    expect(result.all[0]).toBeNull();
+    expect(result.current).toBeNull();
   });
 
   it('returns external account when ENS search query is resolved', () => {
@@ -49,8 +61,7 @@ describe('useExternalAccountResolution', () => {
         },
       },
     });
-    expect(result.all.length).toBe(2);
-    expect(result.all[0]).toStrictEqual({
+    expect(result.current).toStrictEqual({
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7ba',
       isExternal: true,
       type: 'any:account',
@@ -64,7 +75,6 @@ describe('useExternalAccountResolution', () => {
         DNS: {},
       },
     });
-    expect(result.all.length).toBe(2);
-    expect(result.all[0]).toBeNull();
+    expect(result.current).toBeNull();
   });
 });

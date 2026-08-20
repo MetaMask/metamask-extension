@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import {
@@ -33,11 +33,12 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseExternalServices } from '../../../../../selectors';
 import { showModal } from '../../../../../store/actions';
 import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../confirm-turn-on-backup-and-sync-modal';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const TURN_ON_BACKUP_AND_SYNC_MODAL_NAME = 'TURN_ON_BACKUP_AND_SYNC';
 export const turnOnBackupAndSyncModalTestIds = {
@@ -45,14 +46,12 @@ export const turnOnBackupAndSyncModalTestIds = {
   button: 'turn-on-backup-and-sync-button',
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TurnOnBackupAndSyncModal() {
   const { hideModal } = useModalProps();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
@@ -63,28 +62,30 @@ export function TurnOnBackupAndSyncModal() {
   const { setIsBackupAndSyncFeatureEnabled, error } = useBackupAndSync();
 
   const handleDismissModal = () => {
-    trackEvent({
-      event: MetaMetricsEventName.ProfileActivityUpdated,
-      category: MetaMetricsEventCategory.BackupAndSync,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        feature_name: 'Backup And Sync Carousel Modal',
-        action: 'Modal Dismissed',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
+        .addCategory(MetaMetricsEventCategory.BackupAndSync)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_name: 'Backup And Sync Carousel Modal',
+          action: 'Modal Dismissed',
+        })
+        .build(),
+    );
     hideModal();
   };
 
   const handleTurnOnBackupAndSync = async () => {
-    trackEvent({
-      event: MetaMetricsEventName.ProfileActivityUpdated,
-      category: MetaMetricsEventCategory.BackupAndSync,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        feature_name: 'Backup And Sync Carousel Modal',
-        action: 'Turned On',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
+        .addCategory(MetaMetricsEventCategory.BackupAndSync)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_name: 'Backup And Sync Carousel Modal',
+          action: 'Turned On',
+        })
+        .build(),
+    );
 
     if (!isBasicFunctionalityEnabled) {
       dispatch(
@@ -176,8 +177,6 @@ export function TurnOnBackupAndSyncModal() {
         </ModalBody>
         <ModalFooter
           paddingTop={4}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={() => handleTurnOnBackupAndSync()}
           containerProps={{
             flexDirection: FlexDirection.Column,

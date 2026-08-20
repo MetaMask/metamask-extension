@@ -1,4 +1,5 @@
 import urlLib from 'url';
+import ipRegex from 'ip-regex';
 
 export function addUrlProtocolPrefix(urlString: string) {
   let trimmed = urlString.trim();
@@ -56,4 +57,25 @@ export function isWebOrigin(origin: string | undefined | null): boolean {
     return false;
   }
   return origin.startsWith('http://') || origin.startsWith('https://');
+}
+
+/**
+ * Check if a hostname is localhost or an IP address.
+ * Public RPC providers use domain names, not raw IP addresses.
+ * These should never be considered "public" endpoints even if they appear in chainlist.
+ *
+ * @param hostname - The hostname to check.
+ * @returns True if the hostname is localhost or an IP address (v4 or v6).
+ */
+export function isLocalhostOrIPAddress(hostname: string): boolean {
+  const lowerHostname = hostname.toLowerCase();
+
+  if (lowerHostname === 'localhost') {
+    return true;
+  }
+
+  // Remove brackets from IPv6 addresses for testing (e.g., [::1] -> ::1)
+  const hostnameWithoutBrackets = lowerHostname.replace(/^\[|\]$/gu, '');
+
+  return ipRegex({ exact: true }).test(hostnameWithoutBrackets);
 }

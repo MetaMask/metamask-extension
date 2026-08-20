@@ -2,8 +2,24 @@ import { until } from 'selenium-webdriver';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
 
+/**
+ * Fatal startup failure UI when MetaMask cannot boot normally.
+ *
+ * Screen: critical-error HTML rendered in place of the normal UI (not a hash
+ * route), shown when background/UI init fails.
+ * Owns: trouble-starting title/details, reinstall link, attempt-recovery link
+ * (when a vault backup exists), and post-reload window reattachment helpers.
+ * Boundaries: the critical-error shell only. Confirmed recovery button flows
+ * that specialize this UI belong to `VaultRecoveryPage`.
+ * Related: `VaultRecoveryPage` (extends this when recovery UI is available).
+ *
+ * @see ui/helpers/utils/display-critical-error.ts
+ * @see shared/lib/error-utils.ts
+ */
 class CriticalErrorPage {
   protected readonly driver: Driver;
+
+  protected readonly errorMessage = '.critical-error__details';
 
   // Locators
   protected readonly errorPageTitle: object = {
@@ -11,14 +27,12 @@ class CriticalErrorPage {
     css: 'h1',
   };
 
-  protected readonly errorMessage = '.critical-error__details';
-
-  protected readonly troubleStartingDescription =
-    'This error could be intermittent, so try restarting the extension.';
+  protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
 
   protected readonly restoreAccountsLink = '#critical-error-restore-link';
 
-  protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
+  protected readonly troubleStartingDescription =
+    'This error could be intermittent, so try restarting the extension.';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -43,35 +57,6 @@ class CriticalErrorPage {
       throw e;
     }
     console.log('Critical error page is loaded');
-  }
-
-  /**
-   * Validate that the description on the page is for the "trouble starting" scenario.
-   */
-  async validateTroubleStartingDescription(): Promise<void> {
-    await this.driver.waitForSelector({
-      text: this.troubleStartingDescription,
-    });
-  }
-
-  /**
-   * Validate that the given error message is shown.
-   *
-   * @param errorMessage - The error message to check for.
-   */
-  async validateErrorMessage(errorMessage: string): Promise<void> {
-    await this.driver.waitForSelector({
-      text: errorMessage,
-      css: this.errorMessage,
-    });
-  }
-
-  /**
-   * Validate that the "Reinstall MetaMask" link is present on the page and
-   * points to the SRP recovery support article.
-   */
-  async validateReinstallMetamaskLink(): Promise<void> {
-    await this.driver.waitForSelector(this.reinstallMetamaskLink);
   }
 
   /**
@@ -118,13 +103,13 @@ class CriticalErrorPage {
       await this.driver.waitUntil(
         async () => {
           const cleared = await this.driver.executeScript(`
-            return new Promise(resolve => {
-              const b = globalThis.browser ?? globalThis.chrome;
-              b.storage.local.get('criticalErrorRestore', (data) => {
-                resolve(!data.criticalErrorRestore);
+              return new Promise(resolve => {
+                const b = globalThis.browser ?? globalThis.chrome;
+                b.storage.local.get('criticalErrorRestore', (data) => {
+                  resolve(!data.criticalErrorRestore);
+                });
               });
-            });
-          `);
+            `);
           return Boolean(cleared);
         },
         { interval: 300, timeout: 30_000 },
@@ -138,6 +123,35 @@ class CriticalErrorPage {
     } else {
       await alert.dismiss();
     }
+  }
+
+  /**
+   * Validate that the given error message is shown.
+   *
+   * @param errorMessage - The error message to check for.
+   */
+  async validateErrorMessage(errorMessage: string): Promise<void> {
+    await this.driver.waitForSelector({
+      text: errorMessage,
+      css: this.errorMessage,
+    });
+  }
+
+  /**
+   * Validate that the "Reinstall MetaMask" link is present on the page and
+   * points to the SRP recovery support article.
+   */
+  async validateReinstallMetamaskLink(): Promise<void> {
+    await this.driver.waitForSelector(this.reinstallMetamaskLink);
+  }
+
+  /**
+   * Validate that the description on the page is for the "trouble starting" scenario.
+   */
+  async validateTroubleStartingDescription(): Promise<void> {
+    await this.driver.waitForSelector({
+      text: this.troubleStartingDescription,
+    });
   }
 
   /**

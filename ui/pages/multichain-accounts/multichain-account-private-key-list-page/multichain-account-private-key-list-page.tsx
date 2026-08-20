@@ -60,7 +60,7 @@ export const MultichainAccountPrivateKeyListPage = ({
   }, [account, t]);
 
   const learnMoreLink = (
-    <TextButton asChild size={TextButtonSize.BodyMd}>
+    <TextButton key="learnMore" asChild size={TextButtonSize.BodyMd}>
       <a
         className="items-start self-start"
         href={ZENDESK_URLS.PRIVATE_KEY_GUIDE}
@@ -73,7 +73,7 @@ export const MultichainAccountPrivateKeyListPage = ({
   );
 
   return (
-    <Page>
+    <Page data-testid="parent-selector-multichain-account-private-key-list-page">
       <Header
         textProps={{
           variant: TextVariant.headingSm,
@@ -90,13 +90,14 @@ export const MultichainAccountPrivateKeyListPage = ({
       >
         {accountGroupName} / {t('privateKeys')}
       </Header>
-      <Content>
+      <Content padding={0}>
         <BannerAlert
           data-testid="backup-state-banner-alert"
           title={t('revealMultichainPrivateKeysBannerTitle')}
           paddingTop={2}
           paddingBottom={2}
           severity={BannerAlertSeverity.Danger}
+          marginHorizontal={4}
         >
           {t('revealMultichainPrivateKeysBannerDescription', [learnMoreLink])}
         </BannerAlert>

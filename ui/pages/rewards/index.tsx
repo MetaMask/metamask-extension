@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box } from '@metamask/design-system-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LoadingIndicator from '../../components/ui/loading-indicator';
@@ -10,8 +10,9 @@ import {
   setRewardsDeeplinkUrl,
 } from '../../ducks/rewards';
 import { REWARDS_DEEPLINK_HOST } from '../../components/app/rewards/utils/constants';
+import { useDispatch } from '../../store/hooks';
 
-const RewardsPage: React.FC = () => {
+const RewardsPage = () => {
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const location = useLocation();
   const navigate = useNavigate();

@@ -22,7 +22,7 @@ const rawArgv = process.argv.slice(2);
 const shutdownSignalExitCodes = { SIGINT: 2, SIGTERM: 15 } as const;
 type ShutdownSignal = keyof typeof shutdownSignalExitCodes;
 
-const alias = { cache: 'c', help: 'h' };
+const alias = { cache: 'c', help: 'h', watch: 'w' };
 type Args = { [x in keyof typeof alias]?: boolean };
 const args = parser(rawArgv, { alias, boolean: Object.keys(alias) }) as Args;
 

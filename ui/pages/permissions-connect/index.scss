@@ -38,6 +38,12 @@
     width: $width-screen-lg-min;
   }
 
+  .app--sidepanel & {
+    width: 100%;
+    max-width: var(--width-max);
+    margin: 0 auto;
+  }
+
   &__top-bar {
     display: grid;
     grid-template-columns: 1fr 1fr;

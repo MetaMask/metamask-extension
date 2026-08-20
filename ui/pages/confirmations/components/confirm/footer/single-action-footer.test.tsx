@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { DefaultRootState } from 'react-redux';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -9,7 +8,8 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
 import { SingleActionFooter } from './single-action-footer';
@@ -62,9 +62,7 @@ function render({
     isBlocking?: boolean;
   }[];
 } = {}) {
-  const baseState = getMockConfirmStateForTransaction(
-    confirmation,
-  ) as DefaultRootState;
+  const baseState = getMockConfirmStateForTransaction(confirmation);
 
   const state = {
     ...baseState,
@@ -86,7 +84,8 @@ function render({
 describe('<SingleActionFooter />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    jest.mocked(useIsTransactionPayLoading).mockReturnValue(false);
+    jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(false);
+    jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(true);
     jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
       amountUsd: '10.00',
       skipIfBalance: false,
@@ -107,18 +106,18 @@ describe('<SingleActionFooter />', () => {
     expect(MOCK_ON_SUBMIT).toHaveBeenCalledTimes(1);
   });
 
-  it('shows loading state when gasless is loading', () => {
+  it('disables the button when gasless is loading', () => {
     const { getByTestId } = render({ isGaslessLoading: true });
 
-    expect(getByTestId('confirm-footer-button')).not.toBeDisabled();
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
-  it('shows loading state when pay token data is loading', () => {
-    jest.mocked(useIsTransactionPayLoading).mockReturnValue(true);
+  it('disables the button when pay token data is loading', () => {
+    jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(true);
 
     const { getByTestId } = render();
 
-    expect(getByTestId('confirm-footer-button')).not.toBeDisabled();
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
   it('prefers alert reason as button text when blocking alert has both reason and message', () => {
@@ -253,5 +252,43 @@ describe('<SingleActionFooter />', () => {
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.perpsWithdraw.message,
     );
+  });
+
+  it('does not show a loader before a Perps Withdraw amount is entered', () => {
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '0',
+      skipIfBalance: false,
+    } as never);
+    jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(false);
+
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).not.toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('disables perps withdrawal while post-quote setup is pending', () => {
+    jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(true);
+
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('disables perps withdrawal without an executable quote', () => {
+    jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(false);
+
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('submits perps withdrawal when an executable quote is ready', () => {
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    fireEvent.click(getByTestId('confirm-footer-button'));
+
+    expect(MOCK_ON_SUBMIT).toHaveBeenCalledTimes(1);
   });
 });

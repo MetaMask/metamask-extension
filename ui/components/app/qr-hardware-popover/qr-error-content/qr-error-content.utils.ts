@@ -7,12 +7,12 @@ import { QrErrorType, QrErrorFlowContext } from './qr-error-content.types';
 type TranslateFn = ReturnType<typeof useI18nContext>;
 
 /**
- * Resolves the localized title and body for the given error + flow combination.
+ * Resolves the localized title and body for the given error and flow combination.
  *
- * State 5 (`UrDecodeError`) ignores `flowContext` — its copy is universal.
+ * `UrDecodeError` ignores `flowContext` because its copy is universal.
  *
  * @param errorType - Which scan error occurred.
- * @param flowContext - Pairing vs signing flow.
+ * @param flowContext - Pairing or signing flow.
  * @param t - i18n translate function.
  * @returns Localized `title` and `body`.
  */
@@ -41,6 +41,11 @@ export function resolveErrorCopy(
         body: isPairing
           ? t('qrErrorWrongUrTypePairingBody')
           : t('qrErrorWrongUrTypeSigningBody'),
+      };
+    case QrErrorType.MismatchedTransaction:
+      return {
+        title: t('qrErrorMismatchedTransactionTitle'),
+        body: t('qrErrorMismatchedTransactionBody'),
       };
     case QrErrorType.UrDecodeError:
     default:

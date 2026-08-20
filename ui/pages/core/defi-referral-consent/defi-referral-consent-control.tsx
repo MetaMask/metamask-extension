@@ -9,12 +9,12 @@ import {
   FontWeight,
   Text,
   TextAlign,
+  TextButton,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBoolean } from '../../../hooks/useBoolean';
-import { PartnerLink } from './partner-link';
 import { DefiReferralConsentProps } from './defi-referral-consent.types';
 
 const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
@@ -53,6 +53,7 @@ export const DefiReferralConsentControl: React.FC<DefiReferralConsentProps> = ({
   t('hyperliquidReferralSubtitle');
   t('gmxReferralSubtitle');
   t('asterdexReferralSubtitle');
+  t('variationalReferralSubtitle');
 
   return (
     <Box
@@ -74,10 +75,11 @@ export const DefiReferralConsentControl: React.FC<DefiReferralConsentProps> = ({
         </Text>
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t(defiReferralSubtitle)}{' '}
-          <PartnerLink
-            text={`${t('learnMoreUpperCase')}.`}
-            url={learnMoreUrl}
-          />
+          <TextButton asChild>
+            <a href={learnMoreUrl} target="_blank" rel="noopener noreferrer">
+              {`${t('learnMoreUpperCase')}.`}
+            </a>
+          </TextButton>
         </Text>
       </Box>
       <Box paddingBottom={6} paddingHorizontal={4}>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import README from './README.mdx';
 import { BlockSize, Display } from '../../../helpers/constants/design-system';
 
 import { Text } from '../text';
@@ -15,15 +14,17 @@ import { ModalContent } from '../modal-content';
 import { ModalHeader } from '../modal-header';
 import { ModalBody } from '../modal-body';
 import { ModalFooter } from '../modal-footer';
-import { TextFieldSearch } from '../text-field-search';
 
 export default {
-  title: 'Components/ComponentLibrary/Modal',
+  title: 'Components/ComponentLibrary/Modal (deprecated)',
   component: Modal,
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [Modal from @metamask/design-system-react] instead.',
+      },
     },
   },
   argTypes: {
@@ -157,153 +158,3 @@ const Template: StoryFn<typeof Modal> = (args) => {
 };
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-
-export const Usage = Template.bind({});
-
-export const IsClosedOnOutsideClick = Template.bind({});
-IsClosedOnOutsideClick.args = {
-  isClosedOnOutsideClick: false,
-  children: (
-    <Text paddingTop={4}>
-      This Modal has set isClosedOnOutsideClick: false. Clicking outside this
-      Modal <strong>WILL NOT</strong> close it
-    </Text>
-  ),
-};
-
-export const IsClosedOnEscapeKey = Template.bind({});
-IsClosedOnEscapeKey.args = {
-  isClosedOnEscapeKey: false,
-  children: (
-    <Text paddingTop={4}>
-      This Modal has set isClosedOnEscapeKey: false. Pressing the ESC key{' '}
-      <strong>WILL NOT</strong> close it
-    </Text>
-  ),
-};
-
-export const InitialFocusRef: StoryFn<typeof Modal> = (args) => {
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleOnClick = () => {
-    setIsOpen(true);
-  };
-
-  const handleOnClose = () => {
-    setIsOpen(false);
-  };
-
-  return (
-    <>
-      <Button onClick={handleOnClick}>Open modal</Button>
-      <Modal
-        {...args}
-        isOpen={isOpen}
-        onClose={handleOnClose}
-        initialFocusRef={inputRef}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader
-            onClose={handleOnClose}
-            onBack={handleOnClose}
-            marginBottom={4}
-          >
-            Modal Header
-          </ModalHeader>
-          <TextFieldSearch
-            placeholder="Search"
-            inputProps={{ ref: inputRef }}
-            width={BlockSize.Full}
-          />
-          <ModalBody>{args.children}</ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-};
-
-InitialFocusRef.args = {
-  children: (
-    <Text paddingTop={4}>
-      This Modal has set initialFocusRef to the TextFieldSearch component. When
-      the Modal opens, the TextFieldSearch component will be focused.
-    </Text>
-  ),
-};
-
-export const FinalFocusRef: StoryFn<typeof Modal> = (args) => {
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleOnClick = () => {
-    setIsOpen(true);
-  };
-
-  const handleOnClose = () => {
-    setIsOpen(false);
-  };
-
-  return (
-    <>
-      <Button onClick={handleOnClick} marginRight={4}>
-        Open modal
-      </Button>
-      <button ref={buttonRef}>Receives focus after close</button>
-      <Modal
-        {...args}
-        isOpen={isOpen}
-        onClose={handleOnClose}
-        finalFocusRef={buttonRef}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader
-            onClose={handleOnClose}
-            onBack={handleOnClose}
-            marginBottom={4}
-          >
-            Modal Header
-          </ModalHeader>
-          <ModalBody>
-            <Text>{args.children}</Text>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-};
-
-FinalFocusRef.args = {
-  children: (
-    <Text paddingTop={4}>
-      This Modal has set finalFocusRef to the second button element. When the
-      Modal closes, the second button component will be focused. Use keyboard
-      navigation to see it clearly.
-    </Text>
-  ),
-};
-
-export const RestoreFocus = Template.bind({});
-RestoreFocus.args = {
-  restoreFocus: true,
-  children: (
-    <Text paddingTop={4}>
-      This Modal has set restoreFocus: true. When the Modal closes, the Button
-      component will be focused. Use keyboard navigation to see it clearly.
-    </Text>
-  ),
-};
-
-export const AutoFocus = Template.bind({});
-AutoFocus.args = {
-  autoFocus: false,
-  children: (
-    <Text paddingTop={4}>
-      This Modal has set autoFocus: false. When the Modal opens the first
-      element to focus <strong>WILL NOT</strong> be the first focusable element
-      in the Modal.
-    </Text>
-  ),
-};

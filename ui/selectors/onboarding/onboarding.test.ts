@@ -35,9 +35,11 @@ const MOCK_STATE: OnboardingState = {
     socialLoginEmail: 'mock-social-login-email',
     authConnection: AuthConnection.Google,
     isSeedlessOnboardingUserAuthenticated: true,
+    migrationVersion: 0,
     seedPhraseBackedUp: true,
     firstTimeFlowType: FirstTimeFlowType.import,
     completedOnboarding: true,
+    hasSeenOnboardingCompletionPage: true,
     onboardingTabs: {
       welcome: 'welcome',
       createPassword: 'createPassword',
