@@ -81,6 +81,7 @@ export async function mockAccountsApiWithEvmActivity(mockServer: Mockttp) {
 export async function withTronActivityFixtures(
   options: {
     borrowedTronNode: TronNode;
+    fixtures?: ReturnType<FixtureBuilderV2['build']>;
     title?: string;
     transactions?: TronFixtureAccount['transactions'];
     testSpecificMock?: (
@@ -100,7 +101,7 @@ export async function withTronActivityFixtures(
         },
       ],
       borrowedTronNode: options.borrowedTronNode,
-      fixtures: new FixtureBuilderV2().build(),
+      fixtures: options.fixtures ?? new FixtureBuilderV2().build(),
       includeAnvil: false,
       testSpecificMock: options.testSpecificMock,
       title: options.title,
