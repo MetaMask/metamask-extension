@@ -257,7 +257,6 @@ function applyScenarioState(
 ): FixtureBuilderV2 {
   switch (scenario) {
     case 'nativeSend':
-      return builder;
     case 'conversionRate':
     case 'unsupportedPrice':
       return builder.withAssetsController({

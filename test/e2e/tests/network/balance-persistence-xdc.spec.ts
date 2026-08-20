@@ -10,7 +10,6 @@
  * See `test/e2e/helpers/custom-network-harness.ts`.
  */
 
-import { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import {
@@ -36,13 +35,7 @@ describe('Balance persistence on XDC Network', function () {
         testSpecificMock,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes?: Anvil[];
-      }) => {
+      async ({ driver }: { driver: Driver }) => {
         // Login without balance validation — the overview shows "ETH" by
         // default but the selected network is XDC, so the default check
         // would look for "25 ETH" and fail. The Tokens tab is verified below.
@@ -54,6 +47,10 @@ describe('Balance persistence on XDC Network', function () {
 
         await tokensTab.checkTokenListIsDisplayed();
         await tokensTab.checkTokenExistsInList(network.nativeSymbol);
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed(
+          '25',
+          network.nativeSymbol,
+        );
         await tokensTab.checkTokenExistsInList(SEEDED_ERC20_SYMBOL);
         await tokensTab.checkExpectedTokenBalanceIsDisplayed(
           '10',
@@ -76,6 +73,10 @@ describe('Balance persistence on XDC Network', function () {
         await selectNetworkModal.selectNetworkByChainId(NetworkId.XDC);
 
         await tokensTab.checkTokenExistsInList(network.nativeSymbol);
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed(
+          '25',
+          network.nativeSymbol,
+        );
         await tokensTab.checkTokenExistsInList(SEEDED_ERC20_SYMBOL);
         await tokensTab.checkExpectedTokenBalanceIsDisplayed(
           '10',
