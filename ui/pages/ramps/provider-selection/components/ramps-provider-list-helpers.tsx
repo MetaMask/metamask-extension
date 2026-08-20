@@ -8,9 +8,6 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-/**
- * "Other options" separator between providers with and without quotes.
- */
 export function RampsProviderSeparator() {
   const t = useI18nContext();
 
@@ -33,7 +30,6 @@ type RampsQuotesForPaymentMethodBannerProps = {
 
 /**
  * Banner noting which payment method the listed quotes apply to.
- *
  * @param options0
  * @param options0.paymentMethodName
  */

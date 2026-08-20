@@ -23,6 +23,7 @@ import {
   NetworkEnablementControllerState,
   NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
+import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import {
   add0x,
   bytesToHex,
@@ -251,6 +252,7 @@ import type {
   PasskeyAuthenticationResponse,
   PasskeyControllerChangePasswordWithPasskeyVerificationAction,
   PasskeyControllerClearStateAction,
+  PasskeyControllerExportSeedPhraseWithPasskeyAction,
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
@@ -472,6 +474,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
+  'exportSeedPhraseWithPasskey',
   'forgetDevice',
   'getAccountsBySnapId',
   'getAppNameAndVersion',
@@ -642,6 +645,7 @@ type AllowedActions =
   | OnboardingControllerResetOnboardingAction
   | PasskeyControllerChangePasswordWithPasskeyVerificationAction
   | PasskeyControllerClearStateAction
+  | PasskeyControllerExportSeedPhraseWithPasskeyAction
   | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
@@ -678,6 +682,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | SelectedNetworkControllerGetNetworkClientIdForDomainAction
   | GetSignatureState
   | ShieldControllerClearStateAction
   | ShieldControllerStartAction
@@ -733,7 +738,6 @@ export type LegacyBackgroundApiServiceMessenger = Messenger<
 type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
   infuraProjectId: string;
-  seedlessOperationMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   getPermittedAccounts: (origin: string) => Promise<string[]>;
@@ -798,7 +802,6 @@ export class LegacyBackgroundApiService {
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
-   * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
   constructor({
@@ -812,7 +815,6 @@ export class LegacyBackgroundApiService {
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
-    seedlessOperationMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
@@ -827,11 +829,7 @@ export class LegacyBackgroundApiService {
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
-    // Temporarily get the mutex from `MetamaskController` until
-    // changePasswordWithPasskeyVerification is migrated here (the only remaining
-    // MetamaskController user of this mutex).
-    // TODO: Remove this injection once that migration is complete.
-    this.#seedlessOperationMutex = seedlessOperationMutex;
+    this.#seedlessOperationMutex = new Mutex();
     this.#createVaultMutex = new Mutex();
     this.#offscreenPromise = offscreenPromise;
 
@@ -2439,6 +2437,27 @@ export class LegacyBackgroundApiService {
         params,
       ),
     );
+  }
+
+  /**
+   * Exports and JSON-encodes a seed phrase after passkey verification.
+   *
+   * @param params - Passkey seed export parameters.
+   * @param params.authenticationResponse - WebAuthn authentication response.
+   * @param params.keyringId - Optional HD keyring id.
+   * @returns UTF-8 seed phrase bytes as a JSON-safe number array.
+   */
+  async exportSeedPhraseWithPasskey(params: {
+    authenticationResponse: PasskeyAuthenticationResponse;
+    keyringId?: string;
+  }): Promise<number[]> {
+    const mnemonic = await this.#messenger.call(
+      'PasskeyController:exportSeedPhraseWithPasskey',
+      params.authenticationResponse,
+      params.keyringId,
+    );
+
+    return Array.from(convertEnglishWordlistIndicesToCodepoints(mnemonic));
   }
 
   /**
@@ -4596,6 +4615,25 @@ export class LegacyBackgroundApiService {
 
     if (hasPendingApproval) {
       return;
+    }
+
+    // If the partner requires a specific chain and user's chain doesn't match,
+    // return early to avoid the referral code potentially not being applied.
+    // Don't write any account status so that the prompt can show on the next
+    // trigger (NewConnection or OnNavigateConnectedTab) once the user has switched chain
+    if (partner.requiredChainId) {
+      const networkClientId = this.#messenger.call(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        partner.origin,
+      );
+      const networkConfig = this.#messenger.call(
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        networkClientId,
+      );
+      const currentChainId = networkConfig?.chainId;
+      if (currentChainId !== partner.requiredChainId) {
+        return;
+      }
     }
 
     const { activePermittedAddressOverride } = options;

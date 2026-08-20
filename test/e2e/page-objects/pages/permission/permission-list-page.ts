@@ -21,7 +21,7 @@ class PermissionListPage {
 
   private driver: Driver;
 
-  private readonly permissionsPage = '[data-testid="permissions-page"]';
+  private readonly page = '[data-testid="parent-selector-permission-list"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -59,7 +59,7 @@ class PermissionListPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.permissionsPage);
+      await this.driver.waitForSelector(this.page);
     } catch (e) {
       console.log(
         'Timeout while waiting for permission list page to be loaded',

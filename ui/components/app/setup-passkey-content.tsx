@@ -27,6 +27,7 @@ import {
   getFirstTimeFlowType,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
+  getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
   getSocialLoginType,
 } from '../../selectors';
@@ -40,20 +41,15 @@ import { createSentryError } from '../../../shared/lib/error';
 import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
-  startPasskeyRegistration,
-  startPasskeyAuthentication,
   translatePasskeyError,
   isPasskeyCeremonySilentError,
 } from '../../../shared/lib/passkey';
 import { captureException } from '../../../shared/lib/sentry';
-import {
-  protectVaultKeyWithPasskey,
-  generatePasskeyRegistrationOptions,
-  generatePasskeyPostRegistrationAuthenticationOptions,
-  forceUpdateMetamaskState,
-} from '../../store/actions';
+import { forceUpdateMetamaskState } from '../../store/actions';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
+import { usePasskeyPRFSupport } from '../../hooks/usePasskeyPRFSupport';
+import { usePasskeyEnrollment } from '../../hooks/passkey/usePasskeyEnrollment';
 
 import {
   PasskeyEnrollmentSteps,
@@ -84,6 +80,7 @@ export default function SetupPasskeyContent({
   password,
 }: SetupPasskeyContentProps) {
   const dispatch = useDispatch();
+  const { enrollWithPasskey } = usePasskeyEnrollment();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext() as (
     key: string,
@@ -142,6 +139,11 @@ export default function SetupPasskeyContent({
     hasAdvancedRef.current = true;
     onNext();
   }, [onNext]);
+
+  usePasskeyPRFSupport({
+    enabled: !isPasskeyRegistered,
+    onUnsupported: goToNextStep,
+  });
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -210,33 +212,25 @@ export default function SetupPasskeyContent({
     );
 
     try {
-      const registrationOptions = await generatePasskeyRegistrationOptions();
-      const registrationResponse =
-        await startPasskeyRegistration(registrationOptions);
-
-      setRegisterStepPhase('success');
-      setVerifyStepPhase('loading');
-
-      currentStep = 'verify';
-      const postRegAuthOptions =
-        await generatePasskeyPostRegistrationAuthenticationOptions(
-          registrationResponse,
-        );
-      const postRegAuthenticationResponse =
-        await startPasskeyAuthentication(postRegAuthOptions);
-
-      currentStep = 'enroll';
-      await protectVaultKeyWithPasskey(
-        registrationResponse,
-        postRegAuthenticationResponse,
+      await enrollWithPasskey({
         password,
-      );
+        onStageChange: (stage) => {
+          currentStep = stage;
+          if (stage === 'verify') {
+            setRegisterStepPhase('success');
+            setVerifyStepPhase('loading');
+          }
+        },
+      });
 
       const newMetamaskState = await forceUpdateMetamaskState(dispatch);
       setVerifyStepPhase('success');
 
       currentStep = 'complete';
       const derivationMethod = getPasskeyDerivationMethod({
+        metamask: newMetamaskState,
+      });
+      const authenticatorId = getPasskeyAuthenticatorId({
         metamask: newMetamaskState,
       });
 
@@ -248,6 +242,8 @@ export default function SetupPasskeyContent({
             status: 'completed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             derivation_method: derivationMethod,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            authenticator_id: authenticatorId,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - enrollmentStartedAt,
           })
@@ -328,6 +324,7 @@ export default function SetupPasskeyContent({
   }, [
     baseProperties,
     dispatch,
+    enrollWithPasskey,
     goToNextStep,
     t,
     passkeyMethodLabel,
@@ -341,7 +338,12 @@ export default function SetupPasskeyContent({
   }
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} gap={4} className="h-full">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      gap={4}
+      className="h-full"
+      data-testid="parent-selector-setup-passkey"
+    >
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Center}

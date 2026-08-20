@@ -39,6 +39,8 @@ class OnboardingCompletePage {
   private readonly onboardingCompleteDoneButton =
     '[data-testid="onboarding-complete-done"]';
 
+  private readonly page = '[data-testid="parent-selector-onboarding-complete"]';
+
   private readonly remindMeLaterButton = {
     text: 'We’ll remind you later',
     tag: 'h2',
@@ -59,6 +61,7 @@ class OnboardingCompletePage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.manageDefaultSettingsButton,
         this.onboardingCompleteDoneButton,
       ]);
@@ -75,6 +78,7 @@ class OnboardingCompletePage {
   async checkPageIsLoadedBackup(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.keepSrpSafeMessage,
         this.onboardingCompleteDoneButton,
       ]);
