@@ -456,7 +456,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       }
       await write();
       this.#emitWriteRetryRecovered(retryRecoveredEvent, firstError);
-  }
+    }
   }
 
   async open(): Promise<void> {
