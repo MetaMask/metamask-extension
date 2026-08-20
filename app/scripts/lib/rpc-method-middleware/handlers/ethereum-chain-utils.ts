@@ -59,7 +59,7 @@ export type SwitchChainHooks = {
     caveatType: typeof Caip25CaveatType;
     target: typeof Caip25EndowmentPermissionName;
   }) => Caip25Caveat | null | undefined;
-  getEnabledNetworks: (namespace: string) => Record<string, unknown>;
+  getEnabledNetworks: (namespace: string) => Record<string, boolean>;
   hasApprovalRequestsForOrigin?: () => boolean;
   isAddFlow?: boolean;
   isSwitchFlow?: boolean;

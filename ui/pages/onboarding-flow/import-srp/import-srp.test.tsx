@@ -101,19 +101,15 @@ describe('Import SRP', () => {
     const srpNote = queryByTestId('srp-input-import__srp-note');
     expect(srpNote).toBeInTheDocument();
 
-    // Use fireEvent.paste so React's onPaste receives clipboardData reliably.
-    fireEvent.paste(srpNote as HTMLElement, {
-      clipboardData: {
-        getData: () => TEST_SEED,
-      },
-    });
+    srpNote?.focus();
 
-    // Phrase is validated and lifted to parent state in an effect after paste.
-    await waitFor(() => {
-      expect(queryByTestId('import-srp-confirm')).not.toBeDisabled();
-    });
+    await userEvent.paste(TEST_SEED);
 
-    fireEvent.click(queryByTestId('import-srp-confirm') as HTMLElement);
+    const confirmSrpButton = queryByTestId('import-srp-confirm');
+
+    expect(confirmSrpButton).not.toBeDisabled();
+
+    fireEvent.click(confirmSrpButton as HTMLElement);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
     expect(mockUseNavigate).toHaveBeenCalledWith(
@@ -123,7 +119,6 @@ describe('Import SRP', () => {
 
   it('should input and submit srp', async () => {
     const mockStore = configureMockStore()(mockState);
-    const user = userEvent.setup();
 
     const { queryByTestId } = renderWithProvider(
       <ImportSrp submitSecretRecoveryPhrase={mockSubmitSecretRecoveryPhrase} />,
@@ -133,15 +128,16 @@ describe('Import SRP', () => {
     const srpNote = queryByTestId('srp-input-import__srp-note');
     expect(srpNote).toBeInTheDocument();
 
-    await user.click(srpNote as HTMLElement);
-    await user.type(srpNote as HTMLElement, TEST_SEED);
+    srpNote?.focus();
 
-    // Phrase is validated and lifted to parent state in an effect after input.
-    await waitFor(() => {
-      expect(queryByTestId('import-srp-confirm')).not.toBeDisabled();
-    });
+    await userEvent.type(srpNote as HTMLElement, TEST_SEED);
+    // fireEvent.change(srpNote, { target: { value: TEST_SEED } });
 
-    fireEvent.click(queryByTestId('import-srp-confirm') as HTMLElement);
+    const confirmSrpButton = queryByTestId('import-srp-confirm');
+
+    expect(confirmSrpButton).not.toBeDisabled();
+
+    fireEvent.click(confirmSrpButton as HTMLElement);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
     expect(mockUseNavigate).toHaveBeenCalledWith(

@@ -15,6 +15,7 @@ import './development/wdyr';
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
+import type { Duplex } from 'stream';
 import * as reactDevtoolsCore from 'react-devtools-core';
 import type { Substream } from '@metamask/object-multiplex/dist/Substream';
 
@@ -27,6 +28,7 @@ if (reactDevtoolsCore && process.env.METAMASK_REACT_REDUX_DEVTOOLS) {
 import browser from 'webextension-polyfill';
 
 import { StreamProvider } from '@metamask/providers';
+import type { Provider } from '@metamask/network-controller';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
 import { ExtensionPortStream } from 'extension-port-stream';
@@ -63,6 +65,14 @@ const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
 const container = document.getElementById('app-content');
+
+type UiBackgroundRpcApi = {
+  startSendingPatches: () => Promise<void>;
+};
+
+type UiBackgroundConnection = ReturnType<
+  typeof metaRPCClientFactory<UiBackgroundRpcApi>
+>;
 
 type ActiveTab = {
   id?: browser.Tabs.Tab['id'] | string;
@@ -145,10 +155,9 @@ async function start(): Promise<void> {
 
   const connectionStream = new ExtensionPortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
-  const backgroundConnection = metaRPCClientFactory(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    subStreams.controller as any,
-  ) as BackgroundConnection;
+  const backgroundConnection = metaRPCClientFactory<UiBackgroundRpcApi>(
+    subStreams.controller as unknown as Duplex,
+  );
   connectToBackground(backgroundConnection, handleStartUISync);
 
   async function handleStartUISync(initialState: unknown): Promise<void> {
@@ -277,7 +286,7 @@ async function loadPhishingWarningPage(): Promise<void> {
 
 async function initializeUiWithTab(
   activeTab: ActiveTab,
-  backgroundConnection: BackgroundConnection,
+  backgroundConnection: UiBackgroundConnection,
   windowType: EnvironmentType,
   traceContext: TraceContext,
   initialState: unknown,
@@ -404,6 +413,5 @@ async function setupProviderConnection(
   providerStream.on('error', console.error.bind(console));
 
   await providerStream.initialize();
-  globalThis.ethereumProvider =
-    providerStream as unknown as typeof globalThis.ethereumProvider;
+  globalThis.ethereumProvider = providerStream as unknown as Provider;
 }
