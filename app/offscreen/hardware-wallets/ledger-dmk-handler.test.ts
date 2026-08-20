@@ -54,7 +54,8 @@ const createMockBridge = () => ({
   deviceSignTransaction: mockBridgeDeviceSignTransaction,
   deviceSignMessage: mockBridgeDeviceSignMessage,
   deviceSignTypedData: mockBridgeDeviceSignTypedData,
-  deviceSignDelegationAuthorization: mockBridgeDeviceSignDelegationAuthorization,
+  deviceSignDelegationAuthorization:
+    mockBridgeDeviceSignDelegationAuthorization,
   connect: mockBridgeConnect,
   startDiscovering: mockBridgeStartDiscovering,
   onSessionStateChange: mockOnSessionStateChangeSubject.asObservable(),
@@ -505,14 +506,14 @@ describe('LedgerDmkBridgeHandler', () => {
             nonce: 2,
           },
         );
-        expect(mockBridgeDeviceSignDelegationAuthorization).toHaveBeenCalledWith(
-          {
-            hdPath: "m/44'/60'/0'/0/0",
-            chainId: 1,
-            contractAddress: '0x1234',
-            nonce: 2,
-          },
-        );
+        expect(
+          mockBridgeDeviceSignDelegationAuthorization,
+        ).toHaveBeenCalledWith({
+          hdPath: "m/44'/60'/0'/0/0",
+          chainId: 1,
+          contractAddress: '0x1234',
+          nonce: 2,
+        });
         expect(result).toEqual({ v: 27, r: '0xabc', s: '0xdef' });
       });
 
