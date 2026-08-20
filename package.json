@@ -171,6 +171,16 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/bridge-controller": {
+      "type": "breaking",
+      "previewVersion": "79.2.0-preview-9efd0b754"
+    },
+    "@metamask/bridge-status-controller": {
+      "type": "breaking",
+      "previewVersion": "75.1.0-preview-9efd0b754"
+    }
+  },
   "resolutions": {
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "35.0.0",

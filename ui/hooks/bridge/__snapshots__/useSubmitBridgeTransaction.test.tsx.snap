@@ -201,6 +201,7 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
     null,
     undefined,
     "token_amount",
+    "1.5",
   ],
 ]
 `;
@@ -408,6 +409,7 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
     null,
     undefined,
     "token_amount",
+    "1.5",
   ],
 ]
 `;
