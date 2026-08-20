@@ -64,6 +64,7 @@ const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   amountFiat: '100',
   amountHuman: '50',
   amountHumanDebounced: '50',
+  hasAmount: true,
   hasInput: false,
   isInputChanged: false,
   updatePendingAmount: jest.fn(),
@@ -379,6 +380,34 @@ describe('CustomAmountInfo', () => {
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+    });
+
+    it('does not render result rows before an amount is entered', () => {
+      const { queryByTestId } = render({
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          hasAmount: false,
+        },
+        hasQuotes: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('bridge-time-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('does not render result rows before an amount is entered while quotes load', () => {
+      const { queryByTestId } = render({
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          hasAmount: false,
+        },
+        isQuotesLoading: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('bridge-time-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
   });
 

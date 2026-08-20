@@ -20,6 +20,17 @@ export function useTransactionPayRequiredTokens() {
   return useTransactionPayData(selectTransactionPayTokensByTransactionId);
 }
 
+export function useTransactionPayHasPositiveRequiredAmount() {
+  const requiredTokens = useTransactionPayRequiredTokens();
+
+  return requiredTokens.some(
+    (token) =>
+      !token.skipIfBalance &&
+      Boolean(token.amountRaw) &&
+      token.amountRaw !== '0',
+  );
+}
+
 export function useTransactionPaySourceAmounts() {
   return useTransactionPayData(
     selectTransactionPaySourceAmountsByTransactionId,
