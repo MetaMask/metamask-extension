@@ -1429,6 +1429,75 @@ describe('ConfirmFooter', () => {
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 
+  it('renders SingleActionFooter for the real two-leg approve+deposit money account batch', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.moneyAccountDeposit },
+        ],
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('renders SingleActionFooter for the real two-leg withdraw+transfer money account batch', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.moneyAccountWithdraw },
+          { type: TransactionType.tokenMethodTransfer },
+        ],
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.perpsWithdraw.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('does not render SingleActionFooter for a batch mixing a money-account leg with an unrelated call', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.moneyAccountDeposit },
+          { type: TransactionType.contractInteraction },
+        ],
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { queryByText } = render(getMockContractInteractionConfirmState());
+
+    expect(queryByText(messages.cancel.message)).toBeInTheDocument();
+  });
+
   it('does not render SingleActionFooter for a plain batch transaction without a money-account nested transaction', () => {
     jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: {
