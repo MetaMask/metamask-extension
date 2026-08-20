@@ -3,7 +3,24 @@ import { PLATFORM_FIREFOX } from '../../shared/constants/app';
 import { getPlatform } from './lib/util';
 import type MetaMaskController from './metamask-controller';
 import type ExtensionPlatform from './platforms/extension';
-import { AppStateController } from './controllers/app-state-controller';
+import type { AppStateController } from './controllers/app-state-controller';
+
+export type OnUpdateAppStateController = Pick<
+  AppStateController,
+  | 'setLastUpdatedAt'
+  | 'setLastUpdatedFromVersion'
+  | 'setPendingExtensionVersion'
+> & {
+  state: Pick<AppStateController['state'], 'lastUpdatedFromVersion'>;
+};
+
+export type OnUpdateController = {
+  store: MetaMaskController['store'];
+  appStateController: OnUpdateAppStateController;
+};
+
+export type OnUpdatePlatform = Pick<ExtensionPlatform, 'getVersion'>;
+
 /**
  * Trigger actions that should happen only upon update installation. Calling
  * this might result in the extension restarting on Chromium-based browsers.
@@ -17,13 +34,8 @@ import { AppStateController } from './controllers/app-state-controller';
  * extension background process.
  */
 export function onUpdate(
-  // we use a custom type here because the `MetaMaskController` type doesn't
-  // include the actual controllers as properties.
-  controller: {
-    store: MetaMaskController['store'];
-    appStateController: AppStateController;
-  },
-  platform: ExtensionPlatform,
+  controller: OnUpdateController,
+  platform: OnUpdatePlatform,
   previousVersion: string,
   requestSafeReload: () => void,
 ): void {
