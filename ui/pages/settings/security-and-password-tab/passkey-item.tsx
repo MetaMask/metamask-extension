@@ -1,11 +1,5 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
 import { TextButton, TextColor } from '@metamask/design-system-react';
@@ -16,17 +10,21 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
+import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
-  startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
   translatePasskeyError,
   getPasskeyErrorCode,
 } from '../../../../shared/lib/passkey';
+import { captureException } from '../../../../shared/lib/sentry';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  transitionBack,
+  transitionForward,
+} from '../../../components/ui/transition';
 import {
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
@@ -37,14 +35,13 @@ import {
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
 } from '../../../selectors';
-import {
-  forceUpdateMetamaskState,
-  generatePasskeyAuthenticationOptions,
-  removePasskeyWithPasskeyVerification,
-} from '../../../store/actions';
+import { forceUpdateMetamaskState } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useRemovePasskeyWithPasskey } from '../../../hooks/passkey/usePasskeyRemoval';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { SECURITY_ITEMS } from '../search-config';
+import { useDispatch } from '../../../store/hooks';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
@@ -58,8 +55,9 @@ const PasskeyItem = () => {
     getPasskeyAuthMethodKey({ specific: true }),
   );
   const dispatch = useDispatch();
+  const removePasskeyWithPasskey = useRemovePasskeyWithPasskey();
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
@@ -72,12 +70,6 @@ const PasskeyItem = () => {
     useState(false);
   const [showPasskeyTroubleshootModal, setShowPasskeyTroubleshootModal] =
     useState(false);
-
-  useEffect(() => {
-    return () => {
-      cancelPasskeyCeremony();
-    };
-  }, []);
 
   const openSecurityAndPasswordInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();
@@ -93,7 +85,9 @@ const PasskeyItem = () => {
       return;
     }
 
-    navigate(SECURITY_REGISTER_PASSKEY_ROUTE, { replace: true });
+    transitionForward(() =>
+      navigate(SECURITY_REGISTER_PASSKEY_ROUTE, { replace: true }),
+    );
   }, [environmentType, navigate]);
 
   const removePasskey = useCallback(async () => {
@@ -101,20 +95,22 @@ const PasskeyItem = () => {
       return;
     }
 
+    const verificationMethod = 'passkey';
     if (
       environmentType === ENVIRONMENT_TYPE_SIDEPANEL &&
       isEnrolledPasskeyIncompatibleWithSidepanel
     ) {
       cancelPasskeyCeremony();
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasskeyTurnOff,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: 'passkey',
-          status: 'full_screen_opened',
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: verificationMethod,
+            status: 'full_screen_opened',
+          })
+          .build(),
+      );
       globalThis.platform?.openExtensionInBrowser?.(
         SECURITY_AND_PASSWORD_ROUTE,
       );
@@ -123,34 +119,32 @@ const PasskeyItem = () => {
 
     setIsPasskeyOperationPending(true);
     const startedAt = Date.now();
-    const verificationMethod = 'passkey';
-    trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.PasskeyTurnOff,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        verification_method: verificationMethod,
-        status: 'started',
-      },
-    });
-    try {
-      const authOptions = await generatePasskeyAuthenticationOptions();
-      const authenticationResponse =
-        await startPasskeyAuthentication(authOptions);
-      await removePasskeyWithPasskeyVerification(authenticationResponse);
-      await forceUpdateMetamaskState(dispatch);
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasskeyTurnOff,
-        properties: {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: verificationMethod,
-          status: 'completed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - startedAt,
-        },
-      });
+          status: 'started',
+        })
+        .build(),
+    );
+    try {
+      await removePasskeyWithPasskey();
+      await forceUpdateMetamaskState(dispatch);
+
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: verificationMethod,
+            status: 'completed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+          })
+          .build(),
+      );
 
       toast.success(
         <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
@@ -159,22 +153,27 @@ const PasskeyItem = () => {
         },
       );
 
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SettingsUpdated,
-        properties: {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          settings_group: 'security_privacy',
-          settings_type: 'passkey',
-          old_value: true,
-          new_value: false,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_group: 'security_privacy',
+            settings_type: 'passkey',
+            old_value: true,
+            new_value: false,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
 
-      navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
+      transitionBack(() =>
+        navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
+      );
     } catch (error: unknown) {
       let errorStatus = 'failed';
+      const durationMs = Date.now() - startedAt;
+      const errorCode = getPasskeyErrorCode(error);
       if (isPasskeyCeremonySilentError(error)) {
         errorStatus = 'cancelled';
         log.debug(
@@ -182,9 +181,9 @@ const PasskeyItem = () => {
           error,
         );
       } else {
-        log.error(
-          'Passkey verification for disable failed; offering password fallback',
-          error,
+        captureException(
+          createSentryError('Passkey turn off in settings failed', error),
+          { extra: { verificationMethod, durationMs, errorCode } },
         );
         toast.error(
           <ToastContent
@@ -197,29 +196,34 @@ const PasskeyItem = () => {
         );
       }
 
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasskeyTurnOff,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: verificationMethod,
-          status: errorStatus,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - startedAt,
-          reason: getPasskeyErrorCode(error),
-        },
-      });
-      navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: verificationMethod,
+            status: errorStatus,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: durationMs,
+            reason: errorCode,
+          })
+          .build(),
+      );
+      transitionForward(() =>
+        navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true }),
+      );
     } finally {
       setIsPasskeyOperationPending(false);
     }
   }, [
+    createEventBuilder,
     dispatch,
     environmentType,
     isEnrolledPasskeyIncompatibleWithSidepanel,
     isPasskeyRegistered,
     navigate,
     passkeyMethodLabel,
+    removePasskeyWithPasskey,
     t,
     trackEvent,
   ]);

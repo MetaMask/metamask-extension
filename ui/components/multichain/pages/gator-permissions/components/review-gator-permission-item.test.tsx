@@ -1,4 +1,5 @@
 import React from 'react';
+import { TokenApprovalRevocationPermission } from '@metamask/7715-permission-types';
 import { Hex } from '@metamask/utils';
 import {
   NativeTokenStreamPermission,
@@ -16,6 +17,7 @@ import {
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
+import { EMPTY_ARRAY } from '../../../../../selectors/shared';
 import { ReviewGatorPermissionItem } from './review-gator-permission-item';
 
 const mockAccountAddress = '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
@@ -81,9 +83,14 @@ const store = configureStore({
 
 jest.mock(
   '../../../../../selectors/gator-permissions/gator-permissions',
-  () => ({
-    getPendingRevocations: jest.fn().mockReturnValue([]),
-  }),
+  () => {
+    const { EMPTY_ARRAY: emptyRevocations } = jest.requireActual(
+      '../../../../../selectors/shared',
+    );
+    return {
+      getPendingRevocations: jest.fn().mockReturnValue(emptyRevocations),
+    };
+  },
 );
 
 jest.mock(
@@ -142,6 +149,10 @@ describe('Permission List Item', () => {
     const mockOnClick = jest.fn();
     const mockNetworkName = 'Ethereum';
     const mockStartTime = 1736271776; // January 7, 2025;
+
+    afterEach(() => {
+      jest.mocked(getPendingRevocations).mockReturnValue(EMPTY_ARRAY);
+    });
 
     describe('NATIVE token permissions', () => {
       const mockExpiryTimestamp = 1767225600; // January 1, 2026 00:00:00 UTC
@@ -332,12 +343,15 @@ describe('Permission List Item', () => {
         });
 
         it('shows Revocation pending when permission context is in pending revocations', () => {
-          jest.mocked(getPendingRevocations).mockReturnValueOnce([
+          const pendingRevocations = [
             {
               txId: '1',
-              permissionContext: '0x00000000',
+              permissionContext: '0x00000000' as Hex,
             },
-          ]);
+          ];
+          jest
+            .mocked(getPendingRevocations)
+            .mockReturnValue(pendingRevocations);
           const { getByRole } = renderWithProvider(
             <ReviewGatorPermissionItem
               networkName={mockNetworkName}
@@ -803,34 +817,36 @@ describe('Permission List Item', () => {
         expect(expandedSkeletons.length).toBeGreaterThan(skeletons.length);
       });
 
-      it('renders erc20 token revocation permission correctly without frequency row', () => {
-        const mockErc20TokenRevocationPermission: PermissionInfoWithMetadata<{
-          type: 'erc20-token-revocation';
-          isAdjustmentAllowed: boolean;
-          data: Record<string, unknown>;
-        }> = {
-          permissionResponse: {
-            chainId: '0x1',
-            from: mockAccountAddress,
-            permission: {
-              type: 'erc20-token-revocation',
-              isAdjustmentAllowed: false,
-              data: {
-                justification: 'Revoke all token approvals',
+      it('renders token approval revocation permission correctly without frequency row', () => {
+        const mockErc20TokenRevocationPermission: PermissionInfoWithMetadata<TokenApprovalRevocationPermission> =
+          {
+            permissionResponse: {
+              chainId: '0x1',
+              from: mockAccountAddress,
+              permission: {
+                type: 'token-approval-revocation',
+                isAdjustmentAllowed: false,
+                data: {
+                  erc20Approve: true,
+                  erc721Approve: true,
+                  erc721SetApprovalForAll: true,
+                  permit2Approve: true,
+                  permit2Lockdown: true,
+                  permit2InvalidateNonces: true,
+                },
               },
+              rules: [
+                {
+                  type: 'expiry',
+                  data: { timestamp: 1736358176 }, // January 8, 2025
+                },
+              ],
+              context: '0x00000000',
+              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
             },
-            rules: [
-              {
-                type: 'expiry',
-                data: { timestamp: 1736358176 }, // January 8, 2025
-              },
-            ],
-            context: '0x00000000',
-            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-          },
-          siteOrigin: 'http://localhost:8000',
-          status: 'Active',
-        };
+            siteOrigin: 'http://localhost:8000',
+            status: 'Active',
+          };
 
         const { container, getByTestId, queryByTestId } = renderWithProvider(
           <ReviewGatorPermissionItem

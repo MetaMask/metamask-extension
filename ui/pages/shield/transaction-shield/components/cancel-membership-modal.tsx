@@ -11,14 +11,13 @@ import {
 } from '../../../../components/component-library';
 import { AlignItems } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getShortDateFormatterV2 } from '../../../asset/util';
 import {
   getIsShieldSubscriptionPaused,
   getIsSubscriptionCancelNotAllowed,
 } from '../../../../../shared/lib/shield';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function CancelMembershipModal({
   onConfirm,
   onClose,

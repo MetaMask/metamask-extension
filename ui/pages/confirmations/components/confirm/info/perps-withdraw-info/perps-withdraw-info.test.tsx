@@ -14,14 +14,6 @@ jest.mock('../../../../hooks/tokens/useAddToken', () => ({
   useAddToken: jest.fn(),
 }));
 
-// `useTransactionPayPostQuote` reads the current confirmation via
-// `useConfirmContext`, which throws without a `ConfirmContextProvider`.
-// The hook itself is exercised in its own unit tests; mock it out here so
-// `PerpsWithdrawInfo` can render under the lighter `renderWithProvider`.
-jest.mock('../../../../hooks/pay/useTransactionPayPostQuote', () => ({
-  useTransactionPayPostQuote: jest.fn(),
-}));
-
 jest.mock('../../../../hooks/pay/usePerpsWithdrawDefaultToken', () => ({
   usePerpsWithdrawDefaultToken: jest.fn(),
 }));
@@ -95,7 +87,7 @@ describe('PerpsWithdrawInfo', () => {
     usePerpsLiveAccountMock.mockReturnValue({
       account: {
         spendableBalance: '0',
-        withdrawableBalance: '321.09',
+        withdrawableBalance: '321.098765',
       } as never,
       isInitialLoading: false,
     });
@@ -104,7 +96,7 @@ describe('PerpsWithdrawInfo', () => {
 
     expect(customAmountInfoMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        balanceUsdOverride: 321.09,
+        balanceUsdOverride: 321.098765,
       }),
       expect.anything(),
     );
@@ -116,15 +108,6 @@ describe('PerpsWithdrawInfo', () => {
     expect(
       screen.getByTestId('perps-withdraw-balance-mock'),
     ).toBeInTheDocument();
-  });
-
-  it('does not pass hasMax (percentage buttons hidden for MVP)', () => {
-    renderWithProvider(<PerpsWithdrawInfo />, configureStore(mockState));
-
-    expect(customAmountInfoMock).toHaveBeenCalledWith(
-      expect.not.objectContaining({ hasMax: true }),
-      expect.anything(),
-    );
   });
 
   it('passes the default destination token from `usePerpsWithdrawDefaultToken` as `preferredToken`', () => {
@@ -144,8 +127,7 @@ describe('PerpsWithdrawInfo', () => {
 
   it('uses `withdrawableBalance` for the percentage-button balance override', () => {
     // HyperLiquid Unified Account mode: `spendableBalance` is $0 because USDC
-    // sits in the spot clearinghouse. `withdrawableBalance` is the unified
-    // value — must take precedence. Mirrors metamask-mobile#29492.
+    // sits in the spot clearinghouse. `withdrawableBalance` is the unified value.
     usePerpsLiveAccountMock.mockReturnValue({
       account: {
         spendableBalance: '0',

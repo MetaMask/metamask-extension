@@ -1,31 +1,15 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  NetworkControllerGetStateAction,
-  NetworkControllerStateChangeEvent,
-} from '@metamask/network-controller';
-import { NetworkEnablementControllerGetStateAction } from '@metamask/network-enablement-controller';
-import {
-  TokensControllerGetStateAction,
-  TokensControllerStateChangeEvent,
-} from '@metamask/assets-controllers';
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { TokenRatesControllerMessenger } from '@metamask/assets-controllers';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../../controllers/preferences-controller';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions =
-  | TokensControllerGetStateAction
-  | NetworkControllerGetStateAction
-  | NetworkEnablementControllerGetStateAction;
-
-type Events =
-  | TokensControllerStateChangeEvent
-  | NetworkControllerStateChangeEvent;
-
-export type TokenRatesControllerMessenger = ReturnType<
-  typeof getTokenRatesControllerMessenger
->;
 
 /**
  * Get a restricted messenger for the Token Rates controller. This is scoped to the
@@ -35,14 +19,12 @@ export type TokenRatesControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getTokenRatesControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
-) {
-  const controllerMessenger = new Messenger<
-    'TokenRatesController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<TokenRatesControllerMessenger>,
+    MessengerEvents<TokenRatesControllerMessenger>
+  >,
+): TokenRatesControllerMessenger {
+  const controllerMessenger: TokenRatesControllerMessenger = new Messenger({
     namespace: 'TokenRatesController',
     parent: messenger,
   });
@@ -58,7 +40,9 @@ export function getTokenRatesControllerMessenger(
   return controllerMessenger;
 }
 
-type AllowedInitializationActions = PreferencesControllerGetStateAction;
+type AllowedInitializationActions =
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
 
@@ -91,7 +75,10 @@ export function getTokenRatesControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['PreferencesController:getState'],
+    actions: [
+      'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
+    ],
     events: ['PreferencesController:stateChange'],
   });
   return controllerInitMessenger;

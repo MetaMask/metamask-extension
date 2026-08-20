@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 export const TransactionModalContext = createContext({});
 
+/** @type {import('react').FC<{ children: import('react').ReactNode }>} */
 export const TransactionModalContextProvider = ({ children }) => {
   const [openModals, setOpenModals] = useState([]);
 

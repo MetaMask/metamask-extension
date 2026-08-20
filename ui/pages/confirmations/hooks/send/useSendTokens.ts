@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import {
+  getNativeTokenAddress,
+  type AccountGroupAssets,
+} from '@metamask/assets-controllers';
 import {
   isCaipAssetType,
   parseCaipAssetType,
@@ -18,8 +21,17 @@ import {
   toAssetId,
   type AssetMetadata,
 } from '../../../../../shared/lib/asset-utils';
-import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
+import {
+  getAssetsByAccountGroupId,
+  getAssetsBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroupIncludingHidden,
+} from '../../../../selectors/assets';
+import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../../selectors/multichain-accounts/account-tree.types';
+import { getIsTokenManagementFilterEnabled } from '../../../../selectors/multichain/feature-flags';
+import type { MetaMaskReduxState } from '../../../../store/store';
 import { AssetStandard, type Asset } from '../../types/send';
+import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
 
 export type EnrichTokenRequest = {
@@ -34,6 +46,7 @@ type UseSendTokensOptions = {
 };
 
 const EMPTY_ENRICH_TOKEN_REQUESTS: EnrichTokenRequest[] = [];
+const EMPTY_ACCOUNT_GROUP_ASSETS: AccountGroupAssets = {};
 
 export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
   const {
@@ -42,7 +55,26 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
     enrichTokenRequests = EMPTY_ENRICH_TOKEN_REQUESTS,
   } = options;
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
-  const assets = useSelector(getAssetsBySelectedAccountGroup);
+  const includeHiddenTokens = useSelector(getIsTokenManagementFilterEnabled);
+  const accountOverride = useTransactionAccountOverride();
+  const globalAssets = useSelector(
+    includeHiddenTokens
+      ? getAssetsBySelectedAccountGroupIncludingHidden
+      : getAssetsBySelectedAccountGroup,
+  );
+  const accountAssets = useAccountGroupAssets(
+    accountOverride,
+    includeHiddenTokens,
+  );
+  // When an account override is active, always use its assets (even if empty)
+  // to avoid showing stale tokens from the globally selected account.
+  const assets = useMemo(
+    () =>
+      accountOverride === undefined
+        ? globalAssets
+        : (accountAssets ?? EMPTY_ACCOUNT_GROUP_ASSETS),
+    [accountOverride, accountAssets, globalAssets],
+  );
   const [enrichedTokensMetadata, setEnrichedTokensMetadata] = useState<
     Record<CaipAssetType, AssetMetadata>
   >({});
@@ -210,6 +242,29 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
     );
   }, [processedAssets]);
 };
+
+function useAccountGroupAssets(
+  accountAddress: string | undefined,
+  includeHiddenTokens: boolean,
+): AccountGroupAssets | undefined {
+  const accountGroupId = useSelector((state) => {
+    if (!accountAddress) {
+      return undefined;
+    }
+
+    return getAccountGroupsByAddress(state as MultichainAccountsState, [
+      accountAddress,
+    ])[0]?.id;
+  });
+
+  const overrideAssets = useSelector((state: MetaMaskReduxState) =>
+    getAssetsByAccountGroupId(state, accountGroupId, {
+      includeHidden: includeHiddenTokens,
+    }),
+  );
+
+  return accountGroupId ? overrideAssets : undefined;
+}
 
 function getTokenFilterAddress(asset: Asset): string | undefined {
   const chainId = String(asset.chainId ?? '');

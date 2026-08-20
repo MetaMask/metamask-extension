@@ -1,8 +1,8 @@
 import {
+  parseCaipAssetType,
   type CaipAssetType,
   type CaipChainId,
   type Hex,
-  parseCaipAssetType,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
@@ -13,12 +13,14 @@ import {
   formatChainIdToHex,
   formatAddressToCaipReference,
   ChainId,
+  assetIdsMatch,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { Numeric } from '../../../shared/lib/Numeric';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+  BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
 } from '../../../shared/constants/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
@@ -84,29 +86,6 @@ export const getHexMaxGasLimit = (gasLimit: number) => {
     10,
   ).toPrefixedHexString() as Hex;
 };
-/**
- * Converts basis points (BPS) to percentage
- * 1 BPS = 0.01%
- *
- * @param bps - The value in basis points (e.g., "87.5" or 87.5)
- * @returns The percentage value as a string (e.g., "0.875")
- */
-export const bpsToPercentage = (
-  bps: string | number | undefined,
-): string | undefined => {
-  if (bps === undefined || bps === null) {
-    return undefined;
-  }
-
-  const bpsValue = typeof bps === 'string' ? parseFloat(bps) : bps;
-
-  if (isNaN(bpsValue)) {
-    return undefined;
-  }
-
-  // BPS to percentage: divide by 100
-  return (bpsValue / 100).toString();
-};
 
 const fetchTokenExchangeRates = async (
   currency: string,
@@ -121,8 +100,6 @@ const fetchTokenExchangeRates = async (
     includeMarketData: 'true',
     vsCurrency: currency,
   });
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
   const tokenV3PriceResponse = (await handleFetch(url, {
     method: 'GET',
@@ -236,21 +213,35 @@ export const toBridgeToken = (
   };
 };
 
+export const getDefaultFromToken = (fromChainId: CaipChainId) => {
+  const defaultFromTokenForChain =
+    BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN[fromChainId];
+  // If commonPair is defined and is not the same as the fromToken, return it
+  if (defaultFromTokenForChain) {
+    return toBridgeToken(defaultFromTokenForChain);
+  }
+
+  // Last resort: native token
+  return toBridgeToken(getNativeAssetForChainId(fromChainId));
+};
+
 export const getDefaultToToken = (
   toChainId: CaipChainId,
   fromAssetId: CaipAssetType,
 ) => {
   const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[toChainId];
   // If commonPair is defined and is not the same as the fromToken, return it
-  if (
-    commonPair &&
-    fromAssetId.toLowerCase() !== commonPair.assetId.toLowerCase()
-  ) {
+  if (commonPair && !assetIdsMatch(fromAssetId, commonPair.assetId)) {
     return toBridgeToken(commonPair);
   }
 
-  // Last resort: native token
-  return toBridgeToken(getNativeAssetForChainId(toChainId));
+  /**
+   * Our current "from" asset is our default "to" token.
+   * Hence we can make our "to" token be the default "from" token.
+   * It will still fallback to native (original behavior).
+   * We know fromChainId === toChainId because of the assetId clash.
+   */
+  return getDefaultFromToken(toChainId);
 };
 
 /**

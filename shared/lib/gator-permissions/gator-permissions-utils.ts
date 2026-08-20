@@ -468,7 +468,7 @@ export function getGatorPermissionDisplayMetadata(
     };
   }
 
-  if (permissionType === 'erc20-token-revocation') {
+  if (permissionType === 'token-approval-revocation') {
     return {
       displayNameKey: 'revokeTokenApprovals',
       amount: '',

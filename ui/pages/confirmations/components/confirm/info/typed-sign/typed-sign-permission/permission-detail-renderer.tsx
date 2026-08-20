@@ -1,6 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import type { Rule } from '@metamask/7715-permission-types';
+import { shallowEqual, useSelector } from 'react-redux';
+import type {
+  Rule,
+  AmountField,
+  I18nFunction,
+  PermissionRenderContext,
+  SchemaElement,
+  SchemaSection,
+  TokenResolution,
+  TranslationKeys,
+} from '@metamask/7715-permission-types';
 import type { Hex } from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
@@ -26,6 +35,7 @@ import {
 } from '../../../../../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { useAdvancedPermissionTranslationsMap } from '../../../../../../../hooks/gator-permissions/useAdvancedPermissionTranslationsMap';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
 import { NetworkRow } from '../../shared/network-row/network-row';
@@ -35,22 +45,10 @@ import {
   computeTotalExposureForPermission,
   isPermissionDataWithTotalExposure,
 } from '../../../../../../../../shared/lib/gator-permissions/compute-total-exposure';
-import {
-  PERMISSION_SCHEMAS,
-  assertPermissionSchemaEntry,
-} from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import { getPermissionSchemaEntry } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { extractAddressesFromRuleByType } from '../../../../../../../../shared/lib/gator-permissions';
 import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
-import type {
-  AmountField,
-  DeepNonNullable,
-  I18nFunction,
-  PermissionRenderContext,
-  SchemaElement,
-  SchemaSection,
-  TokenResolution,
-} from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
 import { NativeAmountRow } from './native-amount-row';
 import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
@@ -65,8 +63,13 @@ function useNativeTokenData(
   chainId: Hex,
   resolution: TokenResolution,
 ): PermissionRenderContext['tokenInfo'] {
-  const { symbol, decimals } = useSelector((state: MetaMaskReduxState) =>
-    getNativeTokenInfo(state.metamask.networkConfigurationsByChainId, chainId),
+  const { symbol, decimals } = useSelector(
+    (state: MetaMaskReduxState) =>
+      getNativeTokenInfo(
+        state.metamask.networkConfigurationsByChainId,
+        chainId,
+      ),
+    shallowEqual,
   );
   const imageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
 
@@ -112,7 +115,7 @@ function useErc20DecimalsResolved(
 function renderAmountField(
   element: AmountField,
   ctx: PermissionRenderContext,
-  t: I18nFunction,
+  i18nMap: Record<TranslationKeys, string>,
   index: number,
 ): React.ReactNode {
   // If the field has getTokenAddress, it's an ERC20 amount
@@ -120,7 +123,7 @@ function renderAmountField(
     return (
       <TokenAmountRow
         key={index}
-        label={t(element.labelKey)}
+        label={i18nMap[element.labelKey]}
         value={element.getValue(ctx)}
         tokenAddress={element.getTokenAddress(ctx)}
         chainId={ctx.chainId}
@@ -131,13 +134,13 @@ function renderAmountField(
   }
 
   // Native token amount — tokenInfo is guaranteed to be set for native schemas
-  const tokenInfo = ctx.tokenInfo as DeepNonNullable<
+  const tokenInfo = ctx.tokenInfo as NonNullable<
     PermissionRenderContext['tokenInfo']
   >;
   return (
     <NativeAmountRow
       key={index}
-      label={t(element.labelKey)}
+      label={i18nMap[element.labelKey]}
       value={element.getValue(ctx)}
       symbol={tokenInfo.symbol}
       decimals={tokenInfo.decimals}
@@ -151,6 +154,7 @@ function renderElement(
   element: SchemaElement,
   ctx: PermissionRenderContext,
   t: I18nFunction,
+  i18nMap: Record<TranslationKeys, string>,
   ownerId: string,
   index: number,
 ): React.ReactNode {
@@ -166,18 +170,46 @@ function renderElement(
 
   switch (element.type) {
     case 'amount':
-      return renderAmountField(element, ctx, t, index);
+      return renderAmountField(element, ctx, i18nMap, index);
 
     case 'text': {
       return (
         <ConfirmInfoRow
           key={index}
-          label={t(element.labelKey)}
-          tooltip={element.tooltip}
+          label={i18nMap[element.labelKey]}
+          tooltip={element.tooltip ? t(element.tooltip) : undefined}
         >
           <Text variant={TextVariant.BodyMd}>
             {translateI18nValue(t, element.getValue(ctx))}
           </Text>
+        </ConfirmInfoRow>
+      );
+    }
+
+    case 'raw-text': {
+      return (
+        <ConfirmInfoRow
+          key={index}
+          label={i18nMap[element.labelKey]}
+          tooltip={element.tooltip}
+        >
+          <Text variant={TextVariant.BodyMd}>{element.getValue(ctx)}</Text>
+        </ConfirmInfoRow>
+      );
+    }
+
+    case 'list': {
+      return (
+        <ConfirmInfoRow
+          key={index}
+          label={i18nMap[element.labelKey]}
+          tooltip={element.tooltip}
+        >
+          <ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
+            {element.getValue(ctx).map((value, valueIndex) => (
+              <li key={`${value}-${valueIndex}`}>{t(value)}</li>
+            ))}
+          </ul>
         </ConfirmInfoRow>
       );
     }
@@ -187,7 +219,7 @@ function renderElement(
         <DateAndTimeRow
           key={index}
           timestamp={element.getValue(ctx)}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
           tooltip={element.tooltip}
         />
       );
@@ -210,7 +242,7 @@ function renderElement(
       return (
         <ConfirmInfoRow
           key={index}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
           tooltip={t('confirmFieldTooltipJustification')}
         >
           <Text variant={TextVariant.BodyMd}>{justificationText}</Text>
@@ -233,7 +265,7 @@ function renderElement(
           key={index}
           alertKey={RowAlertKey.RequestFrom}
           ownerId={ownerId}
-          label={t('requestFrom')}
+          label={i18nMap.requestFrom}
           tooltip={tooltipMessage}
         >
           <ConfirmInfoRowUrl url={origin} />
@@ -247,7 +279,7 @@ function renderElement(
         return null;
       }
       return (
-        <ConfirmInfoRow key={index} label={t(element.labelKey)}>
+        <ConfirmInfoRow key={index} label={i18nMap[element.labelKey]}>
           <ConfirmInfoRowAddress address={address} chainId={ctx.chainId} />
         </ConfirmInfoRow>
       );
@@ -260,7 +292,7 @@ function renderElement(
       }
       return (
         <React.Fragment key={index}>
-          <ConfirmInfoRow label={t(element.labelKey)}>
+          <ConfirmInfoRow label={i18nMap[element.labelKey]}>
             <Box
               flexDirection={BoxFlexDirection.Column}
               alignItems={BoxAlignItems.End}
@@ -282,8 +314,10 @@ function renderElement(
       return <NetworkRow key={index} />;
     }
 
-    default:
-      return throwUnhandledPermissionSchemaElement(element);
+    default: {
+      const neverElement: never = element;
+      return throwUnhandledPermissionSchemaElement(neverElement);
+    }
   }
 }
 
@@ -295,10 +329,11 @@ function renderSection(
   section: SchemaSection,
   ctx: PermissionRenderContext,
   t: I18nFunction,
+  i18nMap: Record<TranslationKeys, string>,
   ownerId: string,
 ): React.ReactNode {
   const children = section.elements.map((element, index) =>
-    renderElement(element, ctx, t, ownerId, index),
+    renderElement(element, ctx, t, i18nMap, ownerId, index),
   );
 
   const hasContent = children.some(
@@ -320,7 +355,15 @@ function renderSection(
 // Main renderer component
 // ---------------------------------------------------------------------------
 
-export const PermissionDetailRenderer: React.FC<{
+export const PermissionDetailRenderer = ({
+  permission,
+  expiry,
+  chainId,
+  origin,
+  to,
+  ownerId,
+  rules,
+}: {
   permission: {
     type: string;
     data: Record<string, unknown>;
@@ -332,16 +375,15 @@ export const PermissionDetailRenderer: React.FC<{
   to?: string;
   ownerId: string;
   rules?: Rule[];
-}> = ({ permission, expiry, chainId, origin, to, ownerId, rules }) => {
+}) => {
   const t = useI18nContext() as I18nFunction;
+  const i18nMap = useAdvancedPermissionTranslationsMap();
 
-  const schemaEntry = PERMISSION_SCHEMAS[permission.type];
-  // Use an explicit branch (not `?.`) so React Compiler output cannot read
-  // `.tokenResolution` off an undefined schema entry during invalid types.
-  const tokenResolution: TokenResolution =
-    schemaEntry === undefined ? { kind: 'none' } : schemaEntry.tokenResolution;
+  const schemaEntry = getPermissionSchemaEntry(permission.type, true);
 
-  // Hooks must run before any code that can throw (invalid type / validate),
+  const { tokenResolution } = schemaEntry;
+
+  // Hooks must run before any code that can throw (validataion failures),
   // so hook order stays stable if permission data changes between renders.
   const nativeToken = useNativeTokenData(chainId, tokenResolution);
   const erc20Decimals = useErc20DecimalsResolved(
@@ -349,8 +391,6 @@ export const PermissionDetailRenderer: React.FC<{
     chainId,
     tokenResolution,
   );
-
-  assertPermissionSchemaEntry(permission.type, schemaEntry);
 
   if (schemaEntry.validate) {
     schemaEntry.validate(permission);
@@ -394,7 +434,7 @@ export const PermissionDetailRenderer: React.FC<{
   return (
     <>
       {schemaEntry.sections.map((section) =>
-        renderSection(section, ctx, t, ownerId),
+        renderSection(section, ctx, t, i18nMap, ownerId),
       )}
     </>
   );

@@ -23,6 +23,10 @@ const mockRemovePasskeyWithPasswordVerification = jest
   .mockResolvedValue(undefined);
 const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
 
+jest.mock('../../../hooks/passkey/usePasskeyRemoval', () => ({
+  useRemovePasskeyWithPassword: () => mockRemovePasskeyWithPasswordVerification,
+}));
+
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
@@ -40,8 +44,6 @@ const mockVerifyPassword = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  removePasskeyWithPasswordVerification: (...args: unknown[]) =>
-    mockRemovePasskeyWithPasswordVerification(...args),
   forceUpdateMetamaskState: (...args: unknown[]) =>
     mockForceUpdateMetamaskState(...args),
   verifyPassword: (...args: unknown[]) => mockVerifyPassword(...args),
@@ -52,6 +54,13 @@ jest.mock('../../../../shared/lib/passkey', () => ({
     '../../../../shared/lib/passkey',
   ),
   cancelPasskeyCeremony: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
+    '../../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
 }));
 
 const stateWithPasskey = {

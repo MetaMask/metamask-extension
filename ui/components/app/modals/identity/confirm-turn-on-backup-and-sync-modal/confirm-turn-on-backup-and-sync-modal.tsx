@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -21,8 +20,6 @@ import {
   ModalFooter,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { toggleExternalServices } from '../../../../../store/actions';
-import { onboardingToggleBasicFunctionalityOn } from '../../../../../ducks/app/app';
 
 export const CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME =
   'CONFIRM_TURN_ON_BACKUP_AND_SYNC';
@@ -32,27 +29,16 @@ export const confirmTurnOnBackupAndSyncModalTestIds = {
   cancelButton: 'confirm-turn-on-backup-and-sync-cancel-button',
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function ConfirmTurnOnBackupAndSyncModal() {
   const { props, hideModal } = useModalProps();
   const { enableBackupAndSync } = props;
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
   const handleHideModal = () => {
     hideModal();
   };
 
-  const enableBasicFunctionality = async () => {
-    await Promise.all([
-      dispatch(onboardingToggleBasicFunctionalityOn()),
-      dispatch(toggleExternalServices(true)),
-    ]);
-  };
-
   const handleEnableBackupAndSync = async () => {
-    await enableBasicFunctionality();
     await enableBackupAndSync();
     hideModal();
   };
@@ -119,8 +105,6 @@ export function ConfirmTurnOnBackupAndSyncModal() {
               className="w-1/2"
               variant={ButtonVariant.Primary}
               data-testid={confirmTurnOnBackupAndSyncModalTestIds.toggleButton}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={handleEnableBackupAndSync}
             >
               {t('turnOn')}

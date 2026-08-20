@@ -11,7 +11,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 **UI Framework:** React with functional components + hooks
 **State Management:** Redux + BaseController architecture
 **Testing:** Jest (unit), Playwright (E2E)
-**Build System:** Browserify (production), Webpack (development)
+**Build System:** Webpack (with LavaMoat for production)
 **Security:** LavaMoat policies required for all dependency changes
 
 ### Critical Rules for Agents
@@ -21,32 +21,53 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 3. **ALWAYS update LavaMoat policies** after dependency changes: `yarn lavamoat:auto`
 4. **ALWAYS colocate tests** with source files (`.test.ts`/`.test.tsx`)
 5. **ALWAYS use yarn.cmd** if you're running in PowerShell
-6. **NEVER use class components** (use functional components with hooks)
-7. **NEVER modify git config** or run destructive git operations
-8. **NEVER commit** unless explicitly requested by user
-9. **NEVER stage changes** unless explicitly requested by user
-10. **WHEN asked to commit, use Conventional Commits** format for commit messages
-11. **WHEN asked to open a PR, use a Conventional Commits title** unless user specifies otherwise
-12. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
-13. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
-14. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
+6. **ALWAYS use `oxfmt` for code formatting**; Prettier is only for JSON formatting and changelog validation
+7. **NEVER use class components** (use functional components with hooks)
+8. **NEVER modify git config** or run destructive git operations
+9. **NEVER commit** unless explicitly requested by user
+10. **NEVER stage changes** unless explicitly requested by user
+11. **WHEN asked to commit, use Conventional Commits** format for commit messages
+12. **WHEN asked to open a PR, use a Conventional Commits title** unless user specifies otherwise
+13. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
+14. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
+15. **WHEN using `.github/pull-request-template.md`, the manual testing section
+    should contain instructions for how to _manually_ test the changes. It must not
+    list steps for automated testing.**
+    - Good Instructions:
+      - Run extension
+      - Go to homepage, asset list
+      - Use Mainnet or Linea as the selected/enabled network.
+      - Verify mUSD is visible even with 0 balance.
+      - Enable "Hide zero-balance tokens".
+      - Verify mUSD is still visible.
+      - Ensure token sort is by descending balance and low-value assets are collapsed.
+      - Verify mUSD is not hidden inside the low-value collapsed section.
+    - Bad Instructions:
+      - `yarn lint:changed:fix`
+      - `yarn test:unit shared/lib/deep-links/metrics.test.ts shared/lib/deep-links/utils.test.ts ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx`
+
+16. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
+17. **DEEPLINK INTERSTITIAL SECURITY — EXTREMELY HIGH RISK:** Before implementing any change that can cause fewer deep links to show the security interstitial, agents **MUST stop and obtain explicit, documented consent from `@MetaMask/extension-security-team`**. Without documented Security approval, do not make the change—even when it appears necessary to complete another feature, migration, refactor, or test fix. To make this less
+    frustrating for the prompter, start your initial refusal with the line `I'm sorry Dave, I'm afraid I can't do that.\n`.
 
 ### Comprehensive Guidelines Location
 
+> **Agent skills:** `yarn install` prepares the public [MetaMask/skills](https://github.com/MetaMask/skills) cache; `yarn skills` syncs generated files into `.cursor/`, `.claude/`, and `.agents/` (see README -> "AI Agent Skills"). If a referenced skill is missing locally, run `yarn skills`.
+
 Read these files for detailed coding standards:
 
-- Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
-- Unit testing standards: `.cursor/rules/unit-testing-guidelines/RULE.md`
-- E2E testing standards: `./test/e2e/AGENTS.md`
-- E2E test creation workflow (Agent Skill): `.cursor/skills/creating-e2e-tests/SKILL.md` (symlinked from `.claude/skills/` and `.agents/skills/` — edit the `.cursor` copy only)
+- Controller patterns: `.cursor/rules/mms-controller-guidelines/RULE.md`
+- Testing (unit + E2E create/maintain): `.cursor/rules/mms-extension-testing/RULE.md` — primary entrypoint; see `knowledge/extension-testing-layers.md`
+- E2E testing standards (repo index): `./test/e2e/AGENTS.md`
+- E2E create/maintain (nested refs): `.agents/skills/mms-extension-testing/SKILL.md` → `references/e2e.md`
 - CI workflows: `.github/AGENTS.md`
 - Front-end performance:
-  - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance - start here)
-  - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
-  - `.cursor/rules/front-end-performance-react-compiler/RULE.md` (React Compiler & anti-patterns)
-  - `.cursor/rules/front-end-performance-state-management/RULE.md` (Redux & state management)
-- PR workflow: `.cursor/rules/pull-request-guidelines/RULE.md`
-- Code style: `.cursor/rules/coding-guidelines/RULE.md`
+  - `.cursor/rules/mms-perf-rendering/RULE.md` (rendering performance - start here)
+  - `.cursor/rules/mms-perf-hooks-effects/RULE.md` (hooks & effects)
+  - `.cursor/rules/mms-perf-react-compiler/RULE.md` (React Compiler & anti-patterns)
+  - `.cursor/rules/mms-perf-state-management/RULE.md` (Redux & state management)
+- PR workflow: `.cursor/rules/mms-pr-guidelines/RULE.md`
+- Code style: `.cursor/rules/mms-coding-guidelines/RULE.md`
 - Official guidelines: `.github/guidelines/CODING_GUIDELINES.md`
 
 ---
@@ -97,7 +118,7 @@ In `.metamaskrc`, you can also configure:
 | `command not found: yarn`        | Run `corepack enable`                                                                                   |
 | Build fails with policy errors   | Run `yarn lavamoat:auto`                                                                                |
 | Invalid Infura key error         | Check `INFURA_PROJECT_ID` in `.metamaskrc`                                                              |
-| Ganache won't start              | Ensure port 8545 is available                                                                           |
+| Anvil won't start                | Ensure port 8545 is available and `yarn foundryup` has installed the binary                             |
 | Git hooks not working in VS Code | Follow [Husky troubleshooting](https://typicode.github.io/husky/troubleshooting.html#command-not-found) |
 
 ---
@@ -130,8 +151,8 @@ yarn download-builds --build-type test
 **Build System Notes:**
 
 - `yarn start` uses Webpack (faster, development)
-- `yarn dist` uses Browserify + LavaMoat (production)
-- `--apply-lavamoat=false` flag speeds up development builds
+- `yarn dist` uses Webpack + LavaMoat (production)
+- `yarn start` skips LavaMoat by default for speed; use `yarn start:lavamoat` to enable it
 - Test builds are required for E2E tests (not dev builds)
 
 ### Testing
@@ -158,8 +179,6 @@ yarn test:integration
 yarn test:integration:coverage
 
 # Playwright Tests
-yarn test:e2e:swap         # Swap functionality
-yarn test:e2e:global       # Global tests
 yarn test:e2e:benchmark    # Performance benchmarks
 ```
 
@@ -168,29 +187,38 @@ yarn test:e2e:benchmark    # Performance benchmarks
 - Unit tests should be colocated with source files (`.test.ts`/`.test.tsx`)
 - Always create a test build before running E2E tests
 - Use `--leave-running` to debug failed E2E tests
-- See `.cursor/rules/unit-testing-guidelines/RULE.md` for testing standards
+- See `.cursor/rules/mms-extension-testing/RULE.md` for testing standards
 
 ### Linting & Formatting
 
 ```bash
 # Run all linters
-yarn lint                  # Prettier + ESLint + TypeScript + Styles + Images
+yarn lint                  # JSON formatting + oxfmt + ESLint + TypeScript + Styles + Images
 
 # Individual linters
+yarn lint:json             # Prettier JSON formatting check
+yarn lint:format           # oxfmt code formatting check
 yarn lint:eslint           # ESLint only
 yarn lint:tsc              # TypeScript type checking
-yarn lint:prettier         # Prettier formatting check
 yarn lint:styles           # Stylelint for SCSS
 
 # Auto-fix
 yarn lint:fix              # Fix all auto-fixable issues
+yarn lint:json:fix         # Fix JSON formatting with Prettier
+yarn lint:format:fix       # Fix code formatting with oxfmt
 yarn lint:eslint:fix       # Fix ESLint issues
-yarn lint:prettier:fix     # Fix formatting
 
 # Lint only changed files (faster)
 yarn lint:changed
 yarn lint:changed:fix
 ```
+
+**Formatter Notes:**
+
+- Use `yarn lint:changed:fix` for normal agent work; it applies the repo's formatter choices to changed files.
+- Use `yarn lint:format:fix` or `oxfmt -c oxfmt.config.mts` for JavaScript, TypeScript, JSX, TSX, and other code formatting.
+- Use `yarn lint:json:fix` for JSON files such as `package.json`; this is the main remaining Prettier formatting path.
+- Do not run Prettier directly on code files.
 
 ### Development Tools
 
@@ -199,7 +227,7 @@ yarn lint:changed:fix
 yarn dapp                  # Start test dapp on :8080
 yarn dapp-multichain       # Multichain test dapp
 yarn dapp-solana           # Solana test dapp
-yarn dapp-chain            # Dapp with local Ganache
+yarn dapp-chain            # Dapp with local Anvil
 
 # DevTools
 yarn devtools:react        # React DevTools
@@ -207,8 +235,7 @@ yarn devtools:redux        # Redux DevTools
 yarn start:dev             # Start with both DevTools
 
 # Local Blockchain
-yarn ganache:start         # Start Ganache on port 8545
-yarn anvil                 # Start Anvil (Foundry)
+yarn anvil                 # Start Anvil (Foundry) on port 8545
 
 # Storybook
 yarn storybook             # Component documentation/development
@@ -234,7 +261,7 @@ yarn lint:lockfile:dedupe:fix
 yarn allow-scripts auto
 
 # 4. Update LavaMoat policies
-yarn lavamoat:auto         # Updates both build system and webapp policies
+yarn lavamoat:auto         # Regenerates the webpack LavaMoat policies
 
 # 5. Update attributions
 yarn attributions:generate
@@ -276,9 +303,9 @@ yarn test:e2e:single test/e2e/tests/new-test.spec.js --browser=chrome
 
 ```bash
 # 1. Identify file type and read relevant guidelines
-# - Controller? Read .cursor/rules/controller-guidelines/RULE.md
-# - React component? Read .cursor/rules/coding-guidelines/RULE.md
-# - Test? Read .cursor/rules/unit-testing-guidelines/RULE.md
+# - Controller? Read .cursor/rules/mms-controller-guidelines/RULE.md
+# - React component? Read .cursor/rules/mms-coding-guidelines/RULE.md
+# - Test? Read .cursor/rules/mms-extension-testing/RULE.md
 
 # 2. Make changes following guidelines
 
@@ -320,8 +347,7 @@ yarn build:test
 # 7. Commit all changes including:
 #    - package.json
 #    - yarn.lock
-#    - lavamoat/browserify/*/policy.json
-#    - lavamoat/build-system/policy.json
+#    - lavamoat/webpack/*/policy.json
 #    - attribution.txt
 ```
 
@@ -354,7 +380,7 @@ yarn test:e2e:single path/to/test.spec.js --browser=chrome
 
 ```bash
 # 1. MUST read controller guidelines first
-# Read .cursor/rules/controller-guidelines/RULE.md
+# Read .cursor/rules/mms-controller-guidelines/RULE.md
 
 # 2. Create controller file (TypeScript only)
 # Location: app/scripts/controllers/your-controller/your-controller.ts
@@ -382,7 +408,7 @@ yarn lint:changed:fix
 
 ### Controller Development Patterns
 
-When creating a controller, follow these critical patterns from `.cursor/rules/controller-guidelines/RULE.md`:
+When creating a controller, follow these critical patterns from `.cursor/rules/mms-controller-guidelines/RULE.md`:
 
 #### State Metadata Requirements
 
@@ -544,7 +570,7 @@ class TokensController extends BaseController</*...*/> {
 }
 ```
 
-**See `.cursor/rules/controller-guidelines/RULE.md` for complete patterns with detailed examples.**
+**See `.cursor/rules/mms-controller-guidelines/RULE.md` for complete patterns with detailed examples.**
 
 ---
 
@@ -673,7 +699,7 @@ metamask-extension/
 - Manage wallet state and business logic
 - Communicate via Messenger pattern (pub/sub)
 - Use selectors for derived state (not getter methods)
-- See `.cursor/rules/controller-guidelines.mdc` for detailed patterns
+- See `.cursor/rules/mms-controller-guidelines/RULE.md` for detailed patterns
 
 **React Components** (UI):
 
@@ -683,14 +709,14 @@ metamask-extension/
 - Performance optimizations: useMemo, useCallback, React.memo
 - Unique IDs as keys (not array index for dynamic lists)
 - Organized in component folders with tests, styles, and types
-- See `.cursor/rules/coding-guidelines/RULE.md` and `.cursor/rules/front-end-performance-rendering/RULE.md`
+- See `.cursor/rules/mms-coding-guidelines/RULE.md` and `.cursor/rules/mms-perf-rendering/RULE.md`
 
 **Testing**:
 
 - Unit tests colocated with source files (`.test.ts`)
 - Jest for unit tests, Playwright for E2E
 - Test files organized with `describe` blocks by method/function
-- See `.cursor/rules/unit-testing-guidelines/RULE.md` for testing patterns
+- See `.cursor/rules/mms-extension-testing/RULE.md` for testing patterns
 
 ### File Modification Patterns
 
@@ -729,8 +755,7 @@ ui/ducks/foo/foo.ts → ALSO UPDATE:
 ```
 package.json → MUST UPDATE:
 ├── yarn.lock (run yarn install)
-├── lavamoat/browserify/*/policy.json (run yarn lavamoat:auto)
-├── lavamoat/build-system/policy.json (run yarn lavamoat:auto)
+├── lavamoat/webpack/*/policy.json (run yarn lavamoat:auto)
 └── attribution.txt (run yarn attributions:generate)
 ```
 
@@ -825,7 +850,7 @@ Update policies whenever you:
 **Automated (Recommended):**
 
 ```bash
-# Update all policies (build system + webapp)
+# Regenerate the webpack LavaMoat policies
 yarn lavamoat:auto
 
 # Or use MetaMask bot (team members only):
@@ -835,37 +860,36 @@ yarn lavamoat:auto
 **Manual:**
 
 ```bash
-# Update webapp policies (app/scripts)
-yarn lavamoat:webapp:auto
+# Compile the webpack build tooling
+yarn webpack:tsc
 
-# Update build system policies
-yarn lavamoat:build:auto
+# Regenerate the webpack build tooling policy
+yarn webpack:lavamoat:policy:build
+
+# Regenerate the Firefox MV2 application policies
+yarn webpack:lavamoat:policy:mv2
+
+# Regenerate the Chrome MV3 application policies
+yarn webpack:lavamoat:policy:mv3
 
 # If policies still fail after regeneration:
-rm -rf node_modules/ && yarn && yarn lavamoat:auto
+rm -rf node_modules/ && yarn
+# Then compile the webpack build tooling and rerun the affected policy command above.
 ```
 
-### Debugging Policy Issues
-
-```bash
-# Generate debug output
-yarn lavamoat:debug:build         # Build system debug
-yarn lavamoat:debug:webapp        # Webapp debug
-```
-
-**Common Issues:**
+### Common Policy Issues
 
 - **Policy fails on macOS/Windows:** Platform-specific optional dependencies. Regenerate on the target platform.
 - **Dynamic imports fail:** LavaMoat's static analysis may miss dynamic code. May need manual policy updates.
-- **Can't build at all:** Try `--apply-lavamoat=false` for development, but fix before merging.
+- **Can't build at all:** Use `yarn start` (LavaMoat off by default) for development, but fix before merging.
 
 ### Development Without LavaMoat
 
-For faster iteration during development:
+For faster iteration during development (LavaMoat is off by default):
 
 ```bash
-yarn start --apply-lavamoat=false       # Development build
-yarn start:test --apply-lavamoat=false  # Test build
+yarn start       # Development build
+yarn start:test  # Test build
 ```
 
 **⚠️ Warning:** Always test with LavaMoat enabled before merging!
@@ -960,7 +984,7 @@ describe('TokensController', () => {
 });
 ```
 
-**Detailed Guidelines:** See `.cursor/rules/unit-testing-guidelines/RULE.md`
+**Detailed Guidelines:** See `.cursor/rules/mms-extension-testing/RULE.md`
 
 ### E2E Tests
 
@@ -1012,7 +1036,7 @@ When the user explicitly asks for visual verification of UI behavior (e.g., "ver
 
 **If CLI is unavailable or denied:** Say so explicitly and explain what's missing. Do not claim you verified without actual tool output as evidence.
 
-**Skill location:** `.claude/skills/metamask-visual-testing/SKILL.md`
+**Skill location:** `.claude/skills/mms-visual-testing/SKILL.md`
 
 **MM CLI architecture docs:** `test/e2e/playwright/llm-workflow/README.md`
 
@@ -1205,7 +1229,7 @@ Complete all steps for **push** above, then:
 - [ ] Review the squash commit message (auto-generated from PR)
 - [ ] **Don't modify the commit title format** (must be: `Title (#number)`)
 
-**Detailed Guidelines:** See `.cursor/rules/pull-request-guidelines/RULE.md`
+**Detailed Guidelines:** See `.cursor/rules/mms-pr-guidelines/RULE.md`
 
 ---
 
@@ -1315,12 +1339,12 @@ useEffect(() => {
 
 **Detailed Guidelines:**
 
-- General coding: `.cursor/rules/coding-guidelines/RULE.md`
+- General coding: `.cursor/rules/mms-coding-guidelines/RULE.md`
 - Performance optimization:
-  - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance)
-  - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
-  - `.cursor/rules/front-end-performance-react-compiler/RULE.md` (React Compiler & anti-patterns)
-  - `.cursor/rules/front-end-performance-state-management/RULE.md` (Redux & state management)
+  - `.cursor/rules/mms-perf-rendering/RULE.md` (rendering performance)
+  - `.cursor/rules/mms-perf-hooks-effects/RULE.md` (hooks & effects)
+  - `.cursor/rules/mms-perf-react-compiler/RULE.md` (React Compiler & anti-patterns)
+  - `.cursor/rules/mms-perf-state-management/RULE.md` (Redux & state management)
 
 ---
 
@@ -1409,10 +1433,10 @@ Before marking a component complete:
 
 **See:**
 
-- `.cursor/rules/front-end-performance-rendering/RULE.md` - Rendering performance (keys, memoization, virtualization)
-- `.cursor/rules/front-end-performance-hooks-effects/RULE.md` - Hooks & effects optimization
-- `.cursor/rules/front-end-performance-react-compiler/RULE.md` - React Compiler considerations & anti-patterns
-- `.cursor/rules/front-end-performance-state-management/RULE.md` - Redux & state management optimization
+- `.cursor/rules/mms-perf-rendering/RULE.md` - Rendering performance (keys, memoization, virtualization)
+- `.cursor/rules/mms-perf-hooks-effects/RULE.md` - Hooks & effects optimization
+- `.cursor/rules/mms-perf-react-compiler/RULE.md` - React Compiler considerations & anti-patterns
+- `.cursor/rules/mms-perf-state-management/RULE.md` - Redux & state management optimization
 
 ---
 
@@ -1468,7 +1492,7 @@ Before marking a component complete:
    → Check if on correct platform (macOS vs Linux)
    → Platform-specific dependencies need regeneration on that platform
 4. IF blocked during development:
-   → Temporarily use: yarn start --apply-lavamoat=false
+   → Temporarily use: yarn start (LavaMoat off by default)
    → MUST fix before merging
 ```
 
@@ -1503,7 +1527,7 @@ Before marking a component complete:
 | Problem                 | Solution                                          |
 | ----------------------- | ------------------------------------------------- |
 | E2E tests fail to start | Build test build first: `yarn build:test`         |
-| Tests hang indefinitely | Check if port 8545 (Ganache) is available         |
+| Tests hang indefinitely | Check if port 8545 (Anvil) is available           |
 | Snapshot tests fail     | Update snapshots: `yarn test:unit -u`             |
 | Browser not launching   | Check if browser is installed and in PATH         |
 | Random E2E failures     | Use `--retries` flag or check for race conditions |
@@ -1594,8 +1618,7 @@ yarn lavamoat:auto
 yarn attributions:generate
 
 # 5. Verify all policy files are included in changes:
-# - lavamoat/browserify/*/policy.json
-# - lavamoat/build-system/policy.json
+# - lavamoat/webpack/*/policy.json
 # - attribution.txt
 ```
 
@@ -1669,28 +1692,35 @@ Performance Checks (React Components):
 
 ### Coding Guidelines
 
-- **Controller Patterns:** [.cursor/rules/controller-guidelines/RULE.md](./.cursor/rules/controller-guidelines/RULE.md)
-- **Unit Testing:** [.cursor/rules/unit-testing-guidelines/RULE.md](./.cursor/rules/unit-testing-guidelines/RULE.md)
-- **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
+- **Controller Patterns:** [.cursor/rules/mms-controller-guidelines/RULE.md](./.cursor/rules/mms-controller-guidelines/RULE.md)
+- **Unit Testing:** [.cursor/rules/mms-extension-testing/RULE.md](./.cursor/rules/mms-extension-testing/RULE.md) → `references/unit.md`
+- **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md) and [.cursor/rules/mms-extension-testing/RULE.md](./.cursor/rules/mms-extension-testing/RULE.md) → `references/e2e.md`
+- **E2E CI Decision Tree:** [.github/guidelines/E2E_DECISION_TREE.md](./.github/guidelines/E2E_DECISION_TREE.md)
 - **E2E Deprecated Patterns:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
 - **CI Workflows:** [.github/AGENTS.md](./.github/AGENTS.md)
 - **Front-End Performance:**
-  - [Rendering Performance](.cursor/rules/front-end-performance-rendering/RULE.md) - Start here (keys, memoization, virtualization)
-  - [Hooks & Effects](.cursor/rules/front-end-performance-hooks-effects/RULE.md) - useEffect best practices
-  - [React Compiler & Anti-Patterns](.cursor/rules/front-end-performance-react-compiler/RULE.md) - React Compiler considerations
-  - [State Management](.cursor/rules/front-end-performance-state-management/RULE.md) - Redux optimization
-- **Pull Requests:** [.cursor/rules/pull-request-guidelines/RULE.md](./.cursor/rules/pull-request-guidelines/RULE.md)
-- **General Coding:** [.cursor/rules/coding-guidelines/RULE.md](./.cursor/rules/coding-guidelines/RULE.md)
+  - [Rendering Performance](.cursor/rules/mms-perf-rendering/RULE.md) - Start here (keys, memoization, virtualization)
+  - [Hooks & Effects](.cursor/rules/mms-perf-hooks-effects/RULE.md) - useEffect best practices
+  - [React Compiler & Anti-Patterns](.cursor/rules/mms-perf-react-compiler/RULE.md) - React Compiler considerations
+  - [State Management](.cursor/rules/mms-perf-state-management/RULE.md) - Redux optimization
+- **Pull Requests:** [.cursor/rules/mms-pr-guidelines/RULE.md](./.cursor/rules/mms-pr-guidelines/RULE.md)
+- **General Coding:** [.cursor/rules/mms-coding-guidelines/RULE.md](./.cursor/rules/mms-coding-guidelines/RULE.md)
 - **Official Guidelines:** [.github/guidelines/CODING_GUIDELINES.md](./.github/guidelines/CODING_GUIDELINES.md)
 
 ### Non-EVM Swaps/Bridge Agent Entrypoints
 
 - **Non-EVM Swaps/Bridge Standard:** [`docs/add-non-evm-swaps-bridge-network.md`](./docs/add-non-evm-swaps-bridge-network.md) - Canonical implementation and review standard for adding non-EVM bridge or swaps support with code-gate and LaunchDarkly rollout requirements.
-- **OpenAI/Codex Skill:** [`.agents/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.agents/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Multi-agent skill entrypoint for the shared standard.
-- **Cursor Skill:** [`.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Cursor skill entrypoint for the shared standard.
-- **Claude Skill:** [`.claude/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.claude/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Claude skill entrypoint for the shared standard.
-- **Claude Command:** [`.claude/commands/add-non-evm-swaps-bridge-network.md`](./.claude/commands/add-non-evm-swaps-bridge-network.md) - Claude command entrypoint for the shared standard.
+- **OpenAI/Codex Skill:** [`.agents/skills/mms-add-non-evm-network/SKILL.md`](./.agents/skills/mms-add-non-evm-network/SKILL.md) - Multi-agent skill entrypoint for the shared standard.
+- **Cursor Rule:** [`.cursor/rules/mms-add-non-evm-network/RULE.md`](./.cursor/rules/mms-add-non-evm-network/RULE.md) - Cursor rule entrypoint for the shared standard.
+- **Claude Skill:** [`.claude/skills/mms-add-non-evm-network/SKILL.md`](./.claude/skills/mms-add-non-evm-network/SKILL.md) - Claude skill entrypoint for the shared standard.
 - **Cursor Command:** [`.cursor/commands/add-non-evm-swaps-bridge-network.md`](./.cursor/commands/add-non-evm-swaps-bridge-network.md) - Cursor command shim to the Claude command entrypoint.
+
+### EVM Swaps/Bridge Agent Entrypoints
+
+- **EVM Swaps/Bridge Standard:** [`docs/add-evm-swaps-bridge-network.md`](./docs/add-evm-swaps-bridge-network.md) - Canonical implementation and review standard for adding a new EVM network to the unified swaps/bridge flow (bridge allowlist, default token pair, stablecoin slippage, and `bridgeConfigV2` rollout). Follows the MegaETH/Robinhood pattern.
+- **OpenAI/Codex Skill:** [`.agents/skills/mms-add-evm-network/SKILL.md`](./.agents/skills/mms-add-evm-network/SKILL.md) - Multi-agent skill entrypoint for the shared standard.
+- **Cursor Rule:** [`.cursor/rules/mms-add-evm-network/RULE.md`](./.cursor/rules/mms-add-evm-network/RULE.md) - Cursor rule entrypoint for the shared standard.
+- **Claude Skill:** [`.claude/skills/mms-add-evm-network/SKILL.md`](./.claude/skills/mms-add-evm-network/SKILL.md) - Claude skill entrypoint for the shared standard.
 
 ### External Resources
 
@@ -1698,3 +1728,28 @@ Performance Checks (React Components):
 - **MetaMask Developer Docs:** https://docs.metamask.io/
 - **Community Forum:** https://community.metamask.io/
 - **User Support:** https://support.metamask.io/
+
+---
+
+## Cursor Cloud specific instructions
+
+This section captures non-obvious, durable caveats for running this repo inside Cursor Cloud VMs. Dependency installation is handled automatically by the startup update script (nvm install/use per `.nvmrc`, `corepack enable`, `yarn install`, and creating `.metamaskrc` from `.metamaskrc.dist` if missing). Standard commands live in the sections above and in `README.md`/`package.json` — reference those instead of duplicating.
+
+### Node version gotcha (important)
+
+- The repo requires Node `>=24.13` (`.nvmrc` → `v24.13`), but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 24 automatically**. If a command runs Node 22 (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v24.13.1/bin:$PATH"` before the command. `corepack enable` must run under Node 24 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
+
+### Running / building the extension
+
+- It is a browser extension, so `yarn start` does not open a UI — it webpack-builds + watches into `dist/chrome` (MV3). Initial build takes ~45s and then prints `compiled successfully` / `Watching for changes…`. Load `dist/chrome` as an unpacked extension in a Chromium browser to use it. Use `yarn start:mv2` for Firefox (`dist/firefox`).
+- `.metamaskrc` uses a **placeholder `INFURA_PROJECT_ID` (`00000000000`)**, which is enough to build and to onboard/create a wallet locally, but **all live RPC fails** (you'll see "Unable to connect to <network>"). For any on-chain flow (balances, sending, swaps), provide a real `INFURA_PROJECT_ID`, or point networks at a local `yarn anvil` chain (`:8545`).
+- Build config precedence is **`process.env` > `.metamaskprodrc` > `.metamaskrc` > `builds.yml`** (`development/webpack/utils/config.ts`; env vars win). So the Cursor Cloud secret named `INFURA_PROJECT_ID` is picked up automatically by the build in any **new** VM session (it overrides the placeholder in `.metamaskrc` with no file edit needed). Note secrets are injected only into new VMs, not one already running when the secret is added.
+
+### Visual / interactive verification (`mm` CLI)
+
+- The `mm` CLI (`node_modules/.bin/mm`, from `@metamask/client-mcp-core`) drives the extension via Playwright and is the fastest way to click through onboarding/unlock/send flows. It requires **Playwright's Chromium**, which is not part of `yarn install`: run `yarn playwright install chromium` once (cached under `~/.cache/ms-playwright`) before `mm launch`. It also needs an X display — one is available at `DISPLAY=:1` (set `export DISPLAY=:1`).
+- Launch against the existing dev build with `mm launch --context prod --extension-path dist/chrome --state onboarding`, then use `mm describe-screen` / `mm click --testid <id>` / `mm type`. During create-wallet, the on-home **Terms of Use** dialog's Agree button stays disabled until you click `terms-of-use-scroll-button` (repeatedly) to scroll the terms to the bottom. Always finish with `mm cleanup`. See `test/e2e/playwright/llm-workflow/README.md`.
+
+### E2E tests
+
+- Selenium-based E2E (`yarn test:e2e:*`) require a **test build** first (`yarn build:test` or the faster `yarn start:test`) plus a browser + driver; unit tests (`yarn test:unit`) and lint do not.

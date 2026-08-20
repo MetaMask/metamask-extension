@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Sinun on valittava tili!"
   },
-  "addAcquiredTokens": {
-    "message": "Lisää MetaMaskia käyttämällä hankkimasi tietueet"
-  },
   "addAlias": {
     "message": "Lisää alias"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Edellinen"
-  },
-  "backupApprovalInfo": {
-    "message": "Tämä salainen koodi vaaditaan kukkarosi palauttamiseen siinä tapauksessa, että kadotat laitteesi, unohdat salasanasi, joudut asentamaan MetaMaskin uudestaan tai haluat käyttää lompakkoasi jollakin toisella laitteella."
   },
   "backupApprovalNotice": {
     "message": "Varmuuskopioi salainen palautuskoodisi pitääksesi kukkarosi ja varasi turvassa."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Lisäasetukset"
   },
-  "customToken": {
-    "message": "Mukautettu tietue"
-  },
   "decimal": {
     "message": "Tarkkuusdesimaalit"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desimaalien on oltava vähintään 0 ja korkeintaan 36."
   },
   "delete": {
     "message": "Poista"
@@ -198,9 +186,6 @@
   },
   "done": {
     "message": "Valmis"
-  },
-  "downloadGoogleChrome": {
-    "message": "Lataa Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Lataa tilalokit"
@@ -259,9 +244,6 @@
   },
   "hardwareWallets": {
     "message": "Yhdistä kiinteän laitteiston lompakko"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Valitse laitteistokukkaro, jota haluaisit käyttää MetaMaskilla"
   },
   "here": {
     "message": "tässä",
@@ -354,9 +336,6 @@
   "metamaskVersion": {
     "message": "MetaMask-versio"
   },
-  "mustSelectOne": {
-    "message": "Valittava vähintään 1 poletti."
-  },
   "needImportFile": {
     "message": "Sinun tarvitsee valita tuotava tiedosto.",
     "description": "User is important an account and needs to add a file to continue"
@@ -366,9 +345,6 @@
   },
   "networks": {
     "message": "Verkot"
-  },
-  "nevermind": {
-    "message": "Antaa olla"
   },
   "newAccountNumberName": {
     "message": "Tili $1",
@@ -388,9 +364,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Verkkokameraa ei löytynyt"
-  },
-  "notEnoughGas": {
-    "message": "Liian vähän gasia"
   },
   "ofTextNofM": {
     "message": "/"
@@ -526,9 +499,6 @@
   },
   "sign": {
     "message": "Allekirjoita"
-  },
-  "signatureRequest": {
-    "message": "Allekirjoitus pyydetään"
   },
   "signed": {
     "message": "Allekirjoitettu"

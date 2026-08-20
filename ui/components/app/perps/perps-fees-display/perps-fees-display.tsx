@@ -1,28 +1,38 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   BoxAlignItems,
-  BoxBackgroundColor,
   BoxFlexDirection,
   FontWeight,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  formatPerpsFiat,
+  PRICE_RANGES_MINIMAL_VIEW,
+} from '../../../../../shared/lib/perps-formatters';
+import { RewardsVipBadge } from '../../rewards/RewardsVipBadge';
 
 export type PerpsFeesDisplayProps = {
   /**
-   * MetaMask fee discount in whole percentage points. When `undefined`, `0`,
-   * or negative, the discount badge is not rendered (matching mobile's
-   * `PerpsFeesDisplay`).
+   * MetaMask fee discount in whole percentage points. When defined and
+   * positive, a VIP badge is rendered and (if `originalFee` is also provided)
+   * the pre-discount fee is shown struck-through.
    */
   metamaskFeeRateDiscountPercentage?: number;
-  /** Pre-formatted fee text (e.g. `"$0.50"`). Always rendered. */
-  formatFeeText: string;
+  /**
+   * Fee amount in USD **before** any VIP discount. Shown struck-through when
+   * a discount is active. When `undefined` the struck-through row is omitted.
+   */
+  originalFee?: number;
+  /**
+   * Fee amount in USD **after** any VIP discount has already been applied.
+   * When `undefined`, a placeholder is rendered.
+   */
+  fee: number | undefined;
+  /** Text shown when `fee` is `undefined` (defaults to `"-"`). */
+  placeholder?: string;
   /** Optional override for the fee text variant (defaults to BodySm). */
   variant?: TextVariant;
   /** Optional override for the fee text color (defaults to TextDefault). */
@@ -34,22 +44,15 @@ export type PerpsFeesDisplayProps = {
 };
 
 /**
- * Renders the estimated fee text with an inline `-X%` warning-colored badge
- * when a MetaMask fee discount is active. Mirrors mobile's
- * `app/components/UI/Perps/components/PerpsFeesDisplay/PerpsFeesDisplay.tsx`.
- *
- * The badge is hidden entirely when `metamaskFeeRateDiscountPercentage` is `undefined`, `0`,
- * or negative — the surrounding row stays clean when no discount applies.
- *
- * Extension does not have the mobile `TagColored` component, so the badge is
- * built from a `Box` with the warning-muted background plus the design
- * system's `MetamaskFoxOutline` icon, matching the existing warning-tone
- * patterns already used inside the perps UI (e.g. the partial-close min
- * notional banner in `ClosePositionModal`).
+ * Renders the estimated fee text with an optional strikethrough original and
+ * discounted fee when a MetaMask fee discount is active, plus an optional VIP
+ * tier badge.
  *
  * @param props - Component props.
- * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount in whole percentage points. The badge is hidden when this is `undefined`, `0`, or negative.
- * @param props.formatFeeText - Pre-formatted fee text (e.g. `"$0.50"`), always rendered.
+ * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount in whole percentage points. Controls VIP badge visibility and struck-through original fee display.
+ * @param props.originalFee - Fee amount in USD before discount. Shown struck-through when a discount is active.
+ * @param props.fee - Fee amount in USD after any VIP discount has been applied.
+ * @param props.placeholder - Text shown when `fee` is `undefined` (defaults to `"-"`).
  * @param props.variant - Text variant for the fee value (defaults to BodySm).
  * @param props.feeTextColor - Text color for the fee value (defaults to TextDefault).
  * @param props.feeTextFontWeight - Optional font weight for the fee value.
@@ -57,48 +60,89 @@ export type PerpsFeesDisplayProps = {
  */
 export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
   metamaskFeeRateDiscountPercentage,
-  formatFeeText,
+  originalFee,
+  fee,
+  placeholder = '-',
   variant = TextVariant.BodySm,
   feeTextColor = TextColor.TextDefault,
   feeTextFontWeight,
   feeTextTestId,
-}) => (
-  <Box
-    flexDirection={BoxFlexDirection.Row}
-    alignItems={BoxAlignItems.Center}
-    gap={1}
-  >
-    {metamaskFeeRateDiscountPercentage !== undefined &&
-    metamaskFeeRateDiscountPercentage > 0 ? (
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={1}
-        backgroundColor={BoxBackgroundColor.WarningMuted}
-        paddingLeft={1}
-        paddingRight={1}
-        className="rounded"
-        data-testid="perps-fees-display-discount"
-      >
-        <Icon
-          name={IconName.MetamaskFoxOutline}
-          size={IconSize.Sm}
-          color={IconColor.WarningDefault}
-        />
-        <Text variant={TextVariant.BodyXs} color={TextColor.WarningDefault}>
-          {`-${metamaskFeeRateDiscountPercentage}%`}
-        </Text>
-      </Box>
-    ) : null}
-    <Text
-      variant={variant}
-      color={feeTextColor}
-      fontWeight={feeTextFontWeight}
-      data-testid={feeTextTestId}
+}) => {
+  const formatFee = useCallback(
+    (amount: number): string =>
+      formatPerpsFiat(amount, { ranges: PRICE_RANGES_MINIMAL_VIEW }),
+    [],
+  );
+
+  const { feeText, originalFeeText } = useMemo(() => {
+    if (fee === undefined) {
+      return { feeText: placeholder, originalFeeText: undefined };
+    }
+
+    const text = formatFee(fee);
+
+    if (
+      metamaskFeeRateDiscountPercentage !== undefined &&
+      metamaskFeeRateDiscountPercentage > 0 &&
+      originalFee !== undefined &&
+      originalFee > fee
+    ) {
+      return { feeText: text, originalFeeText: formatFee(originalFee) };
+    }
+
+    return { feeText: text, originalFeeText: undefined };
+  }, [
+    fee,
+    placeholder,
+    metamaskFeeRateDiscountPercentage,
+    originalFee,
+    formatFee,
+  ]);
+
+  const showVipBadge =
+    metamaskFeeRateDiscountPercentage !== undefined &&
+    metamaskFeeRateDiscountPercentage > 0;
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={1}
     >
-      {formatFeeText}
-    </Text>
-  </Box>
-);
+      {showVipBadge ? <RewardsVipBadge /> : null}
+      {originalFeeText === undefined ? (
+        <Text
+          variant={variant}
+          color={feeTextColor}
+          fontWeight={feeTextFontWeight}
+          data-testid={feeTextTestId}
+        >
+          {feeText}
+        </Text>
+      ) : (
+        <>
+          <Text
+            variant={variant}
+            color={TextColor.TextAlternative}
+            style={{ textDecoration: 'line-through' }}
+            data-testid={
+              feeTextTestId ? `${feeTextTestId}-original` : undefined
+            }
+          >
+            {originalFeeText}
+          </Text>
+          <Text
+            variant={variant}
+            color={feeTextColor}
+            fontWeight={feeTextFontWeight}
+            data-testid={feeTextTestId}
+          >
+            {feeText}
+          </Text>
+        </>
+      )}
+    </Box>
+  );
+};
 
 export default PerpsFeesDisplay;

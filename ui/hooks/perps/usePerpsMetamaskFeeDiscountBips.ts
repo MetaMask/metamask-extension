@@ -7,6 +7,7 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
+import { getIsVipProgramEnabled } from '../../selectors/perps/feature-flags';
 
 /**
  * Cache TTL for the per-address fee discount lookup. Mirrors mobile's
@@ -91,15 +92,25 @@ export function usePerpsMetamaskFeeDiscountBips(
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const currentChainId = useSelector(getCurrentChainId);
+  const isVipProgramEnabled = useSelector(getIsVipProgramEnabled);
 
   const [discountBips, setDiscountBips] = useState<number | undefined>(
     undefined,
   );
+  const discountKey = `${isVipProgramEnabled}|${selectedAddress ?? ''}|${currentChainId}|${baseFeeBips}`;
+  // Unset so the first mount still runs the sync below (and can hit the cache).
+  const [prevDiscountKey, setPrevDiscountKey] = useState<string | undefined>(
+    undefined,
+  );
+
+  if (discountKey !== prevDiscountKey) {
+    setPrevDiscountKey(discountKey);
+    setDiscountBips(undefined);
+  }
 
   useEffect(() => {
     let cancelled = false;
-    if (!selectedAddress) {
-      setDiscountBips(undefined);
+    if (!isVipProgramEnabled || !selectedAddress) {
       return undefined;
     }
 
@@ -108,7 +119,6 @@ export function usePerpsMetamaskFeeDiscountBips(
       currentChainId,
     );
     if (!caipAccountId) {
-      setDiscountBips(undefined);
       return undefined;
     }
 
@@ -117,13 +127,16 @@ export function usePerpsMetamaskFeeDiscountBips(
       feeDiscountCache?.caipAccountId === caipAccountId &&
       now - feeDiscountCache.timestamp < FEE_DISCOUNT_CACHE_TTL_MS
     ) {
-      setDiscountBips(feeDiscountCache.discountBips);
-      return undefined;
+      const cachedBips = feeDiscountCache.discountBips;
+      queueMicrotask(() => {
+        if (!cancelled) {
+          setDiscountBips(cachedBips);
+        }
+      });
+      return () => {
+        cancelled = true;
+      };
     }
-
-    // Clear the previous account's discount immediately so downstream memos
-    // don't apply a stale discount while the new fetch is in flight.
-    setDiscountBips(undefined);
 
     submitRequestToBackground<number | null>(
       'rewardsGetPerpsDiscountForAccount',
@@ -155,7 +168,7 @@ export function usePerpsMetamaskFeeDiscountBips(
     return () => {
       cancelled = true;
     };
-  }, [selectedAddress, currentChainId, baseFeeBips]);
+  }, [isVipProgramEnabled, selectedAddress, currentChainId, baseFeeBips]);
 
   return discountBips !== undefined && discountBips > 0
     ? Math.min(discountBips, MAX_DISCOUNT_BIPS)

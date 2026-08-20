@@ -1,7 +1,6 @@
 import { useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { isEthAddress } from '../../../../app/scripts/lib/multichain/address';
+import { useSelector } from 'react-redux';
+import { isEthAddress } from '../../../../shared/lib/multichain/address';
 import type { ExternalDestinationAccount } from '../prepare/types';
 import {
   getDomainResolutions,
@@ -16,6 +15,7 @@ import {
 } from '../../../../shared/lib/multichain/accounts';
 import { getInternalAccountByAddress } from '../../../selectors';
 import { shortenString } from '../../../helpers/utils/util';
+import { useDispatch } from '../../../store/hooks';
 
 type UseExternalAccountResolutionProps = {
   searchQuery: string;

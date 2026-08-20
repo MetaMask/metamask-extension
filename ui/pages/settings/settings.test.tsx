@@ -9,6 +9,8 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   CURRENCY_ROUTE,
   DEFAULT_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -19,6 +21,11 @@ import {
 } from '../../../shared/constants/app';
 import Settings from './settings';
 
+jest.mock('@metamask/design-system-react', () => ({
+  ...jest.requireActual('@metamask/design-system-react'),
+  usePureBlack: jest.fn(() => false),
+}));
+
 const mockNavigate = jest.fn();
 const mockGetEnvironmentType = jest.fn(() => ENVIRONMENT_TYPE_POPUP);
 
@@ -27,7 +34,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../../../app/scripts/lib/util', () => ({
+jest.mock('../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../shared/lib/environment-type'),
   getEnvironmentType: () => mockGetEnvironmentType(),
 }));
 
@@ -85,9 +93,7 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-item-transaction-shield'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      expect(
-        await screen.findByText(messages.theme.message),
-      ).toBeInTheDocument();
+      await screen.findByTestId('settings-tab-item-preferences-and-display');
       expect(
         screen.getByText(messages.securityAndPrivacy.message),
       ).toBeInTheDocument();
@@ -106,9 +112,43 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-bar-grouped'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      expect(
-        await screen.findByText(messages.theme.message),
-      ).toBeInTheDocument();
+      await screen.findByTestId('settings-tab-item-preferences-and-display');
+    });
+
+    it('detaches form controls that can be retained by non-delegated React listeners on unmount', async () => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+      const storeWithDefaultAddress = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          remoteFeatureFlags: {
+            ...mockState.metamask.remoteFeatureFlags,
+            extensionUxDefaultAddressVersioned: true,
+          },
+        },
+      });
+
+      const { unmount } = renderSettings(storeWithDefaultAddress);
+      const select = await screen.findByTestId(
+        'default-address-scope-dropdown',
+      );
+
+      Object.defineProperty(select, '__reactFiber$test', {
+        configurable: true,
+        enumerable: true,
+        value: {},
+      });
+      Object.defineProperty(select, '__reactProps$test', {
+        configurable: true,
+        enumerable: true,
+        value: {},
+      });
+
+      unmount();
+
+      expect(select.parentElement).toBeNull();
+      expect('__reactFiber$test' in select).toBe(false);
+      expect('__reactProps$test' in select).toBe(false);
     });
 
     it('navigates to transaction shield from the root page', async () => {
@@ -126,9 +166,7 @@ describe('Settings', () => {
     it('navigates to home with the global menu drawer open when back is clicked at settings root', async () => {
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -143,9 +181,7 @@ describe('Settings', () => {
       mockPathname = `${SETTINGS_ROUTE}?drawerOpen=true`;
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -156,13 +192,11 @@ describe('Settings', () => {
       });
     });
 
-    it('navigates to parent tab when back is clicked on a sub-page', async () => {
+    it('navigates to parent tab without global-menu transition when back is clicked on a sub-page', async () => {
       mockPathname = CURRENCY_ROUTE;
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -170,6 +204,62 @@ describe('Settings', () => {
         expect(mockNavigate).toHaveBeenCalledWith(
           PREFERENCES_AND_DISPLAY_ROUTE,
         );
+      });
+    });
+
+    it('navigates from a notification section back to the main notifications settings page', async () => {
+      mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
+      renderSettings(mockStore);
+
+      const backButton = await screen.findByTestId('page-header-back-button');
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith(NOTIFICATIONS_SETTINGS_ROUTE);
+      });
+    });
+  });
+
+  describe('pure black theme', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      setBackgroundConnection(backgroundConnectionMock as never);
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+    });
+
+    it('applies bg-background-alternative to sidebar in pure black mode', async () => {
+      const { usePureBlack } = jest.requireMock(
+        '@metamask/design-system-react',
+      );
+      usePureBlack.mockReturnValue(true);
+      mockPathname = CURRENCY_ROUTE;
+
+      const { container } = renderSettings(mockStore);
+
+      await waitFor(() => {
+        expect(
+          container.querySelector('.bg-background-alternative'),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('applies bg-background-muted to sidebar when pure black is off', async () => {
+      const { usePureBlack } = jest.requireMock(
+        '@metamask/design-system-react',
+      );
+      usePureBlack.mockReturnValue(false);
+      mockPathname = CURRENCY_ROUTE;
+
+      const { container } = renderSettings(mockStore);
+
+      await waitFor(() => {
+        expect(
+          container.querySelector('.bg-background-muted'),
+        ).toBeInTheDocument();
+        expect(
+          container.querySelector('.bg-background-alternative'),
+        ).not.toBeInTheDocument();
       });
     });
   });

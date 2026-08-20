@@ -1,17 +1,24 @@
-import { MultichainBalancesController } from '@metamask/assets-controllers';
+import {
+  MultichainBalancesController,
+  MultichainBalancesControllerMessenger,
+} from '@metamask/assets-controllers';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
+  getMultichainBalancesControllerInitMessenger,
   getMultichainBalancesControllerMessenger,
-  MultichainBalancesControllerMessenger,
-} from '../messengers/multichain';
+  MultichainBalancesControllerInitMessenger,
+} from '../messengers/multichain/multichain-balances-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { MultichainBalancesControllerInit } from './multichain-balances-controller-init';
 
 jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
-  MessengerClientInitRequest<MultichainBalancesControllerMessenger>
+  MessengerClientInitRequest<
+    MultichainBalancesControllerMessenger,
+    MultichainBalancesControllerInitMessenger
+  >
 > {
   const baseControllerMessenger = getRootMessenger();
 
@@ -20,7 +27,9 @@ function buildInitRequestMock(): jest.Mocked<
     controllerMessenger: getMultichainBalancesControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getMultichainBalancesControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 }
 
@@ -47,6 +56,7 @@ describe('MultichainBalancesControllerInit', () => {
     expect(multichainBalancesControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.MultichainBalancesController,
+      isDeprecated: expect.any(Function),
     });
   });
 });

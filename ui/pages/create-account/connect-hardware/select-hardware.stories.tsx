@@ -1,22 +1,13 @@
 import React from 'react';
-import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import SelectHardware from './select-hardware';
-
-const mockMetaMetricsContext = {
-  trackEvent: () => Promise.resolve(),
-  bufferedTrace: () => Promise.resolve(undefined),
-  bufferedEndTrace: () => undefined,
-  onboardingParentContext: { current: null },
-};
 
 export default {
   title: 'Pages/CreateAccount/ConnectHardware/SelectHardware',
   decorators: [
     (Story: () => JSX.Element) => (
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <div style={{ width: '400px', height: '600px' }}>
         <Story />
-      </MetaMetricsContext.Provider>
+      </div>
     ),
   ],
 };
@@ -24,12 +15,11 @@ export default {
 export const DefaultStory = () => {
   return (
     <SelectHardware
-      onCancel={() => null}
       browserSupported
+      isFirefox={false}
       connectToHardwareWallet={() => {
         /* no-op */
       }}
-      ledgerTransportType={LedgerTransportTypes.webhid}
     />
   );
 };
@@ -39,9 +29,23 @@ DefaultStory.storyName = 'Default';
 export const BrowserNotSupported = () => {
   return (
     <SelectHardware
-      onCancel={() => null}
       browserSupported={false}
-      connectToHardwareWallet={() => undefined}
+      isFirefox={false}
+      connectToHardwareWallet={() => {
+        /* no-op */
+      }}
+    />
+  );
+};
+
+export const FirefoxBrowser = () => {
+  return (
+    <SelectHardware
+      browserSupported
+      isFirefox
+      connectToHardwareWallet={() => {
+        /* no-op */
+      }}
     />
   );
 };

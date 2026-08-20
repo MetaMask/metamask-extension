@@ -72,6 +72,51 @@ describe('TronDailyResources', () => {
       ).toBeInTheDocument();
     });
 
+    it('renders with data-testids', () => {
+      mockUseTronResources.mockReturnValue({
+        energy: {
+          type: 'energy',
+          current: 65000,
+          max: 100000,
+          percentage: 65,
+        },
+        bandwidth: {
+          type: 'bandwidth',
+          current: 1000,
+          max: 5000,
+          percentage: 20,
+        },
+      });
+
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
+
+      expect(screen.getByTestId('tron-daily-resources')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-title'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-description'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-energy'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-energy-description'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-bandwidth'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-bandwidth-description'),
+      ).toBeInTheDocument();
+    });
+
     it('displays formatted current values for energy and bandwidth', () => {
       mockUseTronResources.mockReturnValue({
         energy: {

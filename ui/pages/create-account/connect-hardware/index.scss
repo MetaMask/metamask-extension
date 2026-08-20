@@ -1,145 +1,57 @@
 @use "design-system";
 
-.hw-tutorial {
-  overflow: visible;
-  display: block;
-  padding: 15px 30px;
-}
-
-.hw-connect {
-  width: 100%;
-
-  &__header__title-wrapper {
-    width: 100%;
-  }
-
-  &__QR-subtitle {
-    @include design-system.H5;
-
-    margin-top: 10px;
-    color: var(--color-text-default);
-  }
-
-  &__btn-wrapper {
-    flex: 1;
-    flex-direction: row;
+.select-hardware {
+  &__wallet-list {
     display: flex;
+    flex-direction: column;
   }
 
-  &__connect-btn {
-    width: 315px;
-    margin: 20px;
+  &__wallet-option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    background: var(--color-background-muted);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+
+    &:hover {
+      background: var(--color-background-muted-hover);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
   }
 
-  &__connect-btn.disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
+  &__wallet-image {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
   }
 
-  &__external-btn-first {
-    @include design-system.H7;
-
-    padding: 5px 10px;
-    width: auto;
-    display: inline;
-    margin-top: 10px;
-    margin-right: 20px;
-  }
-
-  &__external-btn {
-    @include design-system.H7;
-
-    padding: 5px 10px;
-    width: auto;
-    display: inline;
-    margin-top: 10px;
-  }
-
-  &__btn {
-    background: var(--color-background-alternative);
-    border: 1px solid var(--color-border-muted);
-    height: 148px;
-    width: 199px;
-    flex: 1;
+  &__wallet-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 5px;
-    padding: 0;
-    margin-right: 15px;
-
-    &__img {
-      width: 136px;
-    }
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: white;
   }
+}
 
-  &__btn.selected {
-    border-color: var(--color-primary-default);
-    width: 199px;
-  }
-
-  &__btn:first-child {
-    margin-left: 20px;
-  }
-
-  &__btn:last-child {
-    margin-right: 20px;
-  }
-
-  &__hdPath {
-    @include design-system.H6;
-
-    display: flex;
-    flex-direction: row;
-    margin-top: 15px;
-    margin-bottom: 30px;
-
-    &__title {
-      display: flex;
-      margin-top: 10px;
-      margin-right: 15px;
-    }
-
-    &__select {
-      display: flex;
-      flex: 1;
-    }
-  }
-
-  &__unlock-title {
-    @include design-system.H3;
-
-    padding-top: 10px;
-    font-weight: 400;
-    margin-bottom: 15px;
-  }
-
-  &__href-link {
-    text-align: center;
-    color: var(--color-primary-default);
-    background: unset;
-  }
-
-  &__msg {
-    &-link {
-      @include design-system.H6;
-
-      text-align: center;
-      color: var(--color-primary-default);
-      background: unset;
-    }
-  }
-
+.hw-connect {
   &__error {
     color: var(--color-warning-default);
     margin: 20px 20px 10px;
     display: block;
     text-align: center;
-  }
-
-  &__step-asset {
-    margin: 0 auto 20px;
-    display: flex;
   }
 }
 
@@ -270,15 +182,6 @@
 }
 
 .new-external-account-form {
-  &.footer {
-    width: 520px;
-  }
-
-  &.unsupported-browser {
-    height: 210px;
-    overflow: auto;
-  }
-
   &.account-list {
     height: auto;
     padding-left: 20px;

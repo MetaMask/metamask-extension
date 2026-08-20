@@ -1,12 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   BRIDGE_MM_FEE_RATE,
+  FeatureId,
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
+  sumAmounts,
 } from '@metamask/bridge-controller';
-import { bpsToPercentage } from '../../../ducks/bridge/utils';
+import { Skeleton } from '@metamask/design-system-react';
 import {
   SuccessPill,
   Text,
@@ -21,8 +23,7 @@ import {
   getToToken,
   getFromToken,
   getSlippage,
-  getIsSolanaSwap,
-  getIsRWASwap,
+  getIsSlippageUserOverride,
   getQuoteRequest,
   getIsToOrFromNonEvm,
   getIsStxEnabled,
@@ -30,7 +31,6 @@ import {
   getPriceImpact,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
@@ -46,10 +46,18 @@ import { type DestinationAccount } from '../prepare/types';
 import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
-import { Skeleton } from '../../../components/component-library/skeleton';
 import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { PriceImpactQuoteDetailsRow } from '../components/price-impact-quote-details-row';
+import { useDispatch } from '../../../store/hooks';
+import {
+  getGasFees,
+  getIncludedTxFees,
+  getTotalNetworkFee,
+  formatNetworkFee,
+  formatTokenAmount,
+  readMmFee,
+} from '../utils/quote';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
@@ -92,8 +100,13 @@ export const MultichainBridgeQuoteCard = ({
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const slippage = useSelector(getSlippage);
-  const isSolanaSwap = useSelector(getIsSolanaSwap);
-  const isRWASwap = useSelector(getIsRWASwap);
+  const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
+  let slippageDisplay: string;
+  if (slippage === undefined) {
+    slippageDisplay = isSlippageUserOverride ? t('slippageAuto') : '-';
+  } else {
+    slippageDisplay = `${slippage}%`;
+  }
   const dispatch = useDispatch();
   const { isEstimatedReturnLow } = useSelector(
     getValidationErrors,
@@ -126,6 +139,10 @@ export const MultichainBridgeQuoteCard = ({
       ],
     );
   }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
+
+  const quoteFeePercentage = activeQuote
+    ? readMmFee(activeQuote).quoteFeePercentage
+    : undefined;
 
   const shouldShowGasSponsored = useMemo(() => {
     // HW wallets cannot use any form of gas sponsorship. Gate early as
@@ -178,6 +195,10 @@ export const MultichainBridgeQuoteCard = ({
     return null;
   }
 
+  const includedTxFees = getIncludedTxFees(activeQuote);
+  const gasFees = getGasFees(activeQuote);
+  const totalNetworkFee = getTotalNetworkFee(activeQuote);
+
   return (
     <>
       <BridgeQuotesModal
@@ -211,11 +232,10 @@ export const MultichainBridgeQuoteCard = ({
               offset={[-16, 16]}
             >
               {t('multichainQuoteCardRateExplanation', [
-                new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(0)
-                  ? (bpsToPercentage(
-                      // @ts-expect-error: controller types are not up to date yet
-                      activeQuote.quote.feeData.metabridge.quoteBpsFee,
-                    ) ?? BRIDGE_MM_FEE_RATE)
+                new BigNumber(
+                  sumAmounts(activeQuote.quote.feeData.metabridge)?.amount ?? 0,
+                ).gt(0)
+                  ? (quoteFeePercentage ?? BRIDGE_MM_FEE_RATE)
                   : '0',
               ])}
             </Tooltip>
@@ -225,10 +245,10 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
+              {`1 ${activeQuote.quote.src.asset.symbol} = ${formatTokenAmount(
                 locale,
-                activeQuote.swapRate,
-              )} ${activeQuote.quote.destAsset.symbol}`}
+                activeQuote.quote.priceData?.swapRate,
+              )} ${activeQuote.quote.dest.asset.symbol}`}
             </Text>
             <ButtonIcon
               iconName={IconName.ArrowRight}
@@ -261,11 +281,12 @@ export const MultichainBridgeQuoteCard = ({
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         gas_included: Boolean(activeQuote.quote?.gasIncluded),
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // @ts-expect-error gas_included_7702 needs to be added to bridge-controller types
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         gas_included_7702: Boolean(
                           activeQuote.quote?.gasIncluded7702,
                         ),
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
                       },
                     ),
                   );
@@ -277,9 +298,7 @@ export const MultichainBridgeQuoteCard = ({
         </Row>
 
         {/* Network Fee - Hide if zero/undefined for non-EVM chains (e.g., Bitcoin with no gas.) */}
-        {(!isToOrFromNonEvm ||
-          (activeQuote.totalNetworkFee?.valueInCurrency &&
-            activeQuote.totalNetworkFee.valueInCurrency !== '0')) && (
+        {(!isToOrFromNonEvm || totalNetworkFee?.valueInCurrency) && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text
@@ -315,15 +334,9 @@ export const MultichainBridgeQuoteCard = ({
                   style={{ textDecoration: 'line-through' }}
                   data-testid="network-fees-included-original-amount"
                 >
-                  {activeQuote.includedTxFees?.valueInCurrency
-                    ? formatNetworkFee(
-                        activeQuote.includedTxFees.valueInCurrency,
-                        currency,
-                      )
-                    : formatNetworkFee(
-                        activeQuote.gasFee.effective?.valueInCurrency,
-                        currency,
-                      )}
+                  {includedTxFees?.valueInCurrency
+                    ? formatNetworkFee(includedTxFees.valueInCurrency, currency)
+                    : formatNetworkFee(gasFees?.valueInCurrency, currency)}
                 </Text>
                 <Text
                   variant={TextVariant.bodySm}
@@ -347,10 +360,7 @@ export const MultichainBridgeQuoteCard = ({
                 }
                 data-testid="network-fees"
               >
-                {formatNetworkFee(
-                  activeQuote.gasFee.effective?.valueInCurrency,
-                  currency,
-                )}
+                {formatNetworkFee(gasFees?.valueInCurrency, currency)}
               </Text>
             )}
           </Row>
@@ -378,9 +388,7 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {slippage === undefined && (isSolanaSwap || isRWASwap)
-                ? t('slippageAuto')
-                : `${slippage}%`}
+              {slippageDisplay}
             </Text>
             <ButtonIcon
               iconName={IconName.Edit}
@@ -398,7 +406,7 @@ export const MultichainBridgeQuoteCard = ({
         />
 
         {/* Minimum Received */}
-        {activeQuote.minToTokenAmount.amount && (
+        {activeQuote.quote.dest?.minAmountNormalized && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text
@@ -423,8 +431,8 @@ export const MultichainBridgeQuoteCard = ({
             >
               {formatTokenAmount(
                 locale,
-                activeQuote.minToTokenAmount.amount,
-                activeQuote.quote.destAsset.symbol,
+                activeQuote.quote.dest.minAmountNormalized,
+                activeQuote.quote.dest.asset.symbol,
               )}
             </Text>
           </Row>

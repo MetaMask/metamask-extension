@@ -1,35 +1,25 @@
 import { DelegationController } from '@metamask/delegation-controller';
+import { type DelegationControllerMessenger } from '@metamask/delegation-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { MessengerClientInitRequest } from '../types';
-import {
-  type DelegationControllerMessenger,
-  type DelegationControllerInitMessenger,
-  getDelegationControllerMessenger,
-  getDelegationControllerInitMessenger,
-} from '../messengers/delegation/delegation-controller-messenger';
+import { getDelegationControllerMessenger } from '../messengers/delegation/delegation-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { DelegationControllerInit } from './delegation-controller-init';
 
 jest.mock('@metamask/delegation-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  MessengerClientInitRequest<
-    DelegationControllerMessenger,
-    DelegationControllerInitMessenger
-  >
+  MessengerClientInitRequest<DelegationControllerMessenger>
 > {
   const baseControllerMessenger = getRootMessenger();
   const controllerMessenger = getDelegationControllerMessenger(
-    baseControllerMessenger,
-  );
-  const initMessenger = getDelegationControllerInitMessenger(
     baseControllerMessenger,
   );
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger,
-    initMessenger,
+    initMessenger: undefined,
   };
 }
 

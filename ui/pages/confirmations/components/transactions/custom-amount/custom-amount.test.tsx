@@ -138,6 +138,15 @@ describe('CustomAmount', () => {
     expect(amountElement).toHaveStyle({ fontSize: '64px' });
   });
 
+  it('accounts for the fiat symbol when choosing font size', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmount amountFiat="7.863083" />, store);
+
+    const amountElement = screen.getByTestId('custom-amount-input');
+    expect(amountElement).toHaveStyle({ fontSize: '40px' });
+  });
+
   it('counts decimal separators as half a character when calculating input width', () => {
     const store = mockStore(getMockState());
 

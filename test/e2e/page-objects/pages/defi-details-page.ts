@@ -1,31 +1,58 @@
 import { Driver } from '../../webdriver/driver';
-import TokenList from './token-list';
 
-class DeFiDetailsPage extends TokenList {
-  protected readonly driver: Driver;
-
+/**
+ * DeFi protocol position details for a single protocol on a chain.
+ *
+ * Screen: `#/defi/:chainId/:protocolId`, reached from the home DeFi tab.
+ * Owns: protocol name/title, total market value, supplied heading, and token
+ * list item balance/value assertions on the details page.
+ * Boundaries: the details page only. The DeFi tab list and back-navigation
+ * landing content belong to `DeFiTab` / `HomePage`.
+ * Related: `DeFiTab` (list entry point).
+ *
+ * @see ui/pages/defi/components/defi-details-page.tsx
+ */
+class DeFiDetailsPage {
   private readonly defiBackButton =
     '[data-testid="defi-details-page-back-button"]';
 
   private readonly defiProtocolName = '[data-testid="defi-details-page-title"]';
 
-  private readonly defiProtocolTotalVlaue =
+  private readonly defiProtocolTotalValue =
     '[data-testid="defi-details-page-market-value"]';
 
-  protected readonly backButton =
-    '[data-testid="defi-details-page-back-button"]';
+  private readonly driver: Driver;
 
   private readonly suppliedHeading =
     '[data-testid="defi-details-list-supply-position"]';
 
+  private readonly tokenListItemSecondaryValue =
+    '[data-testid="multichain-token-list-item-secondary-value"]';
+
+  private readonly tokenListItemTokenName =
+    '[data-testid="multichain-token-list-item-token-name"]';
+
+  private readonly tokenListItemValue =
+    '[data-testid="multichain-token-list-item-value"]';
+
   constructor(driver: Driver) {
-    super(driver);
     this.driver = driver;
   }
 
-  async clickBackButton() {
-    console.log('Click back button');
-    await this.driver.clickElement(this.backButton);
+  async checkDefiDetailsNameIsDisplayed(name: string) {
+    console.log('Check if DeFi name is displayed on details page', name);
+    await this.driver.waitForSelector({
+      css: this.defiProtocolName,
+      text: name,
+    });
+  }
+
+  async checkDefiDetailsTotalValueIsDisplayed(defiProtocolTotalValue: string) {
+    console.log('Check if DeFi total value is displayed on DeFi details page');
+    await this.driver.waitForSelector({
+      css: this.defiProtocolTotalValue,
+      text: defiProtocolTotalValue,
+    });
   }
 
   async checkDeFiProtocolNameIsDisplayed(description: string) {
@@ -44,20 +71,42 @@ class DeFiDetailsPage extends TokenList {
     });
   }
 
-  async checkDefiDetailsNameIsDisplayed(name: string) {
-    console.log('Check if DeFi name is displayed on details page', name);
+  async checkTokenBalanceWithName(tokenListItemValue: string) {
+    console.log(
+      'Check if token balance is displayed on token list item',
+      tokenListItemValue,
+    );
     await this.driver.waitForSelector({
-      css: this.defiProtocolName,
-      text: name,
+      css: this.tokenListItemValue,
+      text: tokenListItemValue,
     });
   }
 
-  async checkDefiDetailsTotalValueIsDisplayed(defiProtocolTotalVlaue: string) {
-    console.log('Check if DeFi total value is displayed on DeFi details page');
+  async checkTokenMarketValue(tokenListItemSecondaryValue: string) {
+    console.log(
+      'Check if token market value is displayed on token list item',
+      tokenListItemSecondaryValue,
+    );
     await this.driver.waitForSelector({
-      css: this.defiProtocolTotalVlaue,
-      text: defiProtocolTotalVlaue,
+      css: this.tokenListItemSecondaryValue,
+      text: tokenListItemSecondaryValue,
     });
+  }
+
+  async checkTokenName(tokenName: string) {
+    console.log(
+      'Check if token name is displayed on token list item',
+      tokenName,
+    );
+    await this.driver.waitForSelector({
+      css: this.tokenListItemTokenName,
+      text: tokenName,
+    });
+  }
+
+  async clickBackButton() {
+    console.log('Click back button');
+    await this.driver.clickElement(this.defiBackButton);
   }
 }
 

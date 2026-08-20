@@ -6,10 +6,6 @@ import {
 } from '@metamask/messenger';
 import { RootMessenger } from '../../../lib/messenger';
 
-type Actions = MessengerActions<AccountActivityServiceMessenger>;
-
-type Events = MessengerEvents<AccountActivityServiceMessenger>;
-
 /**
  * Get a restricted messenger for the Account Activity service. This is scoped to the
  * actions and events that the Account Activity service is allowed to handle.
@@ -18,21 +14,19 @@ type Events = MessengerEvents<AccountActivityServiceMessenger>;
  * @returns The restricted messenger.
  */
 export function getAccountActivityServiceMessenger(
-  messenger: RootMessenger<Actions, Events>,
+  messenger: RootMessenger<
+    MessengerActions<AccountActivityServiceMessenger>,
+    MessengerEvents<AccountActivityServiceMessenger>
+  >,
 ): AccountActivityServiceMessenger {
-  const serviceMessenger = new Messenger<
-    'AccountActivityService',
-    Actions,
-    Events,
-    typeof messenger
-  >({
+  const serviceMessenger: AccountActivityServiceMessenger = new Messenger({
     namespace: 'AccountActivityService',
     parent: messenger,
   });
   messenger.delegate({
     messenger: serviceMessenger,
     actions: [
-      'AccountsController:getSelectedAccount',
+      'AccountTreeController:getAccountsFromSelectedAccountGroup',
       'BackendWebSocketService:connect',
       'BackendWebSocketService:forceReconnection',
       'BackendWebSocketService:subscribe',
@@ -42,10 +36,12 @@ export function getAccountActivityServiceMessenger(
       'BackendWebSocketService:findSubscriptionsByChannelPrefix',
       'BackendWebSocketService:addChannelCallback',
       'BackendWebSocketService:removeChannelCallback',
+      'RemoteFeatureFlagController:getState',
     ],
     events: [
-      'AccountsController:selectedAccountChange',
+      'AccountTreeController:selectedAccountGroupChange',
       'BackendWebSocketService:connectionStateChanged',
+      'RemoteFeatureFlagController:stateChange',
     ],
   });
   return serviceMessenger;

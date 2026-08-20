@@ -2,7 +2,6 @@
  * @jest-environment node
  */
 
-/* eslint-disable import-x/no-nodejs-modules */
 import { spawnSync } from 'child_process';
 import {
   appendFileSync,
@@ -21,7 +20,7 @@ type CommandResult = {
 
 const checkerSourcePath = path.resolve(
   __dirname,
-  '../../.agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts',
+  '../scripts/check-ab-testing-compliance.ts',
 );
 const tsxLoaderPath = path.resolve(
   __dirname,

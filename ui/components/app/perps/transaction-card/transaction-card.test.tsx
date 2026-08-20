@@ -297,6 +297,114 @@ describe('TransactionCard', () => {
       expect(amountElement).toHaveClass('text-error-default');
     });
 
+    it('shows the translated verb, amount, and asset in the title for a deposit', () => {
+      const transaction = createMockTransaction({
+        type: 'deposit',
+        category: 'deposit',
+        symbol: 'USDC',
+        title: 'Deposited 5.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '+$5.00',
+          amountNumber: 5,
+          isPositive: true,
+          asset: 'USDC',
+          txHash: '0x1234567890abcdef',
+          status: 'completed',
+          type: 'deposit',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(`${messages.perpsDepositedVerb.message} 5.00 USDC`),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the translated verb, amount, and asset in the title for a withdrawal', () => {
+      const transaction = createMockTransaction({
+        type: 'withdrawal',
+        category: 'withdrawal',
+        symbol: 'USDC',
+        title: 'Withdrew 5.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '-$5.00',
+          amountNumber: -5,
+          isPositive: false,
+          asset: 'USDC',
+          txHash: '0xabcdef1234567890',
+          status: 'completed',
+          type: 'withdrawal',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(`${messages.perpsWithdrewVerb.message} 5.00 USDC`),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the translated empty-state title for a zero-amount deposit', () => {
+      const transaction = createMockTransaction({
+        type: 'deposit',
+        category: 'deposit',
+        symbol: 'USDC',
+        title: 'Deposit',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '+$0.00',
+          amountNumber: 0,
+          isPositive: true,
+          asset: 'USDC',
+          txHash: '0x1234567890abcdef',
+          status: 'pending',
+          type: 'deposit',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsDepositEmptyTitle.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the translated empty-state title for a zero-amount withdrawal', () => {
+      const transaction = createMockTransaction({
+        type: 'withdrawal',
+        category: 'withdrawal',
+        symbol: 'USDC',
+        title: 'Withdrawal',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '-$0.00',
+          amountNumber: 0,
+          isPositive: false,
+          asset: 'USDC',
+          txHash: '0xabcdef1234567890',
+          status: 'pending',
+          type: 'withdrawal',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsWithdrawalEmptyTitle.message),
+      ).toBeInTheDocument();
+    });
+
     it('shows "Completed" status for deposits', () => {
       const transaction = createMockTransaction({
         type: 'deposit',
@@ -321,6 +429,87 @@ describe('TransactionCard', () => {
 
       expect(
         screen.getByText(messages.perpsStatusCompleted.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows "Pending" status for a pending wallet-tracked deposit', () => {
+      const transaction = createMockTransaction({
+        type: 'deposit',
+        category: 'deposit',
+        symbol: 'USDC',
+        title: 'Deposited 100.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '+$100.00',
+          amountNumber: 100,
+          isPositive: true,
+          asset: 'USDC',
+          txHash: '0x1234567890abcdef',
+          status: 'pending',
+          type: 'deposit',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsStatusPending.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows "Failed" status for a failed wallet-tracked deposit', () => {
+      const transaction = createMockTransaction({
+        type: 'deposit',
+        category: 'deposit',
+        symbol: 'USDC',
+        title: 'Deposited 100.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '+$100.00',
+          amountNumber: 100,
+          isPositive: true,
+          asset: 'USDC',
+          txHash: '0x1234567890abcdef',
+          status: 'failed',
+          type: 'deposit',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsStatusFailed.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows "Pending" status for a pending wallet-tracked withdrawal', () => {
+      const transaction = createMockTransaction({
+        type: 'withdrawal',
+        category: 'withdrawal',
+        symbol: 'USDC',
+        title: 'Withdrew 50.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '-$50.00',
+          amountNumber: 50,
+          isPositive: false,
+          asset: 'USDC',
+          txHash: '0xabcdef1234567890',
+          status: 'pending',
+          type: 'withdrawal',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsStatusPending.message),
       ).toBeInTheDocument();
     });
   });
@@ -521,6 +710,152 @@ describe('TransactionCard', () => {
 
       // Should display "TSLA" not "xyz:TSLA" in subtitle
       expect(screen.getByText('10 TSLA')).toBeInTheDocument();
+    });
+  });
+
+  describe('Fill tag badges', () => {
+    it('shows Take Profit badge for take profit fills', () => {
+      const transaction = createMockTransaction({
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '+$125.00',
+          amountNumber: 125,
+          isPositive: true,
+          size: '0.5',
+          entryPrice: '2500.00',
+          points: '0',
+          pnl: '+125.00',
+          fee: '2.50',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.TakeProfit,
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-fill-tag-take-profit'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows Stop Loss badge for stop loss fills', () => {
+      const transaction = createMockTransaction({
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '-$50.00',
+          amountNumber: -50,
+          isPositive: false,
+          size: '0.5',
+          entryPrice: '2500.00',
+          points: '0',
+          pnl: '-50.00',
+          fee: '2.50',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.StopLoss,
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-fill-tag-stop-loss'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not show badge for standard fills', () => {
+      const transaction = createMockTransaction();
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('perps-fill-tag-take-profit'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-fill-tag-stop-loss'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-fill-tag-liquidated'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-fill-tag-adl'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('ADL badge accessibility', () => {
+    const createAdlTransaction = () =>
+      createMockTransaction({
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '+$100',
+          amountNumber: 100,
+          isPositive: true,
+          size: '1.5',
+          entryPrice: '2000',
+          points: '0',
+          pnl: '+100',
+          fee: '1',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.AutoDeleveraging,
+        },
+      });
+
+    it('does not nest the ADL button inside another button when row is clickable', () => {
+      const transaction = createAdlTransaction();
+      renderWithProvider(
+        <TransactionCard transaction={transaction} onClick={jest.fn()} />,
+        mockStore,
+      );
+
+      const card = screen.getByTestId(`transaction-card-${transaction.id}`);
+      const adlButton = screen.getByTestId('perps-fill-tag-adl-button');
+
+      let ancestor = adlButton.parentElement;
+      while (ancestor && ancestor !== card) {
+        expect(ancestor.tagName).not.toBe('BUTTON');
+        ancestor = ancestor.parentElement;
+      }
+    });
+
+    it('fires row onClick from the row button when ADL badge is present', () => {
+      const handleClick = jest.fn();
+      globalThis.platform = { openTab: jest.fn() } as never;
+      const transaction = createAdlTransaction();
+
+      renderWithProvider(
+        <TransactionCard transaction={transaction} onClick={handleClick} />,
+        mockStore,
+      );
+
+      const card = screen.getByTestId(`transaction-card-${transaction.id}`);
+      const rowButton = card.querySelector(
+        'button:not([data-testid="perps-fill-tag-adl-button"])',
+      );
+      expect(rowButton).not.toBeNull();
+      fireEvent.click(rowButton as HTMLElement);
+      expect(handleClick).toHaveBeenCalledWith(transaction);
+    });
+
+    it('renders the ADL badge outside the row button area', () => {
+      const transaction = createAdlTransaction();
+      renderWithProvider(
+        <TransactionCard transaction={transaction} onClick={jest.fn()} />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('perps-fill-tag-adl')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-fill-tag-adl-button'),
+      ).toBeInTheDocument();
     });
   });
 });

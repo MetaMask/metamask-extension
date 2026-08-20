@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du må velge en konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Legg til sjetongene du har kjøpt med MetaMask"
-  },
   "addAlias": {
     "message": "Legg til alias "
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Tilbake"
-  },
-  "backupApprovalInfo": {
-    "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere MetaMask, eller ønsker å få tilgang til lommeboken din på en annen enhet."
   },
   "backupApprovalNotice": {
     "message": "Sikkerhetskopier den hemmelige gjenopprettingskoden for å sikre lommeboken og midlene."
@@ -178,14 +172,8 @@
   "custom": {
     "message": "Avansert"
   },
-  "customToken": {
-    "message": "Egendefinert token "
-  },
   "decimal": {
     "message": "Presisjonsdesimaler"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desimaler må være minst 0, og ikke flere enn 36."
   },
   "delete": {
     "message": "Slett"
@@ -195,9 +183,6 @@
   },
   "done": {
     "message": "Ferdig"
-  },
-  "downloadGoogleChrome": {
-    "message": "Last ned Google Chrome "
   },
   "downloadStateLogs": {
     "message": "Last ned tilstandslogg"
@@ -253,9 +238,6 @@
   },
   "hardwareWallets": {
     "message": "Koble til en hardware-lommebok"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Velg maskinvarelommeboken som du vil bruke med MetaMask"
   },
   "here": {
     "message": "her",
@@ -345,9 +327,6 @@
   "metamaskVersion": {
     "message": "MetaMask-versjon "
   },
-  "mustSelectOne": {
-    "message": "Må velge minst 1 token. "
-  },
   "needImportFile": {
     "message": "Du må velge en fil å importere.",
     "description": "User is important an account and needs to add a file to continue"
@@ -357,9 +336,6 @@
   },
   "networks": {
     "message": "Nettverk"
-  },
-  "nevermind": {
-    "message": "Bare glem det"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -379,9 +355,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webkamera ikke funnet"
-  },
-  "notEnoughGas": {
-    "message": "Ikke nok bensin"
   },
   "ofTextNofM": {
     "message": "av"
@@ -517,9 +490,6 @@
   },
   "sign": {
     "message": "Undertegn"
-  },
-  "signatureRequest": {
-    "message": "Signaturforespørsel"
   },
   "signed": {
     "message": "Signert"

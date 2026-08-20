@@ -23,6 +23,7 @@ import {
   KeyringControllerSignPersonalMessageAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import { RemoteFeatureFlagControllerStateChangeEvent } from '@metamask/remote-feature-flag-controller';
 import {
   RECURRING_INTERVALS,
   RecurringInterval,
@@ -202,6 +203,7 @@ type WithControllerArgs<ReturnValue> = [
     isDisabled?: boolean;
     isBitcoinDisabled?: boolean;
     isTronDisabled?: boolean;
+    isVipDisabled?: boolean;
   },
   WithControllerCallback<ReturnValue>,
 ];
@@ -215,6 +217,7 @@ async function withController<ReturnValue>(
     isDisabled = false,
     isBitcoinDisabled = false,
     isTronDisabled = false,
+    isVipDisabled = false,
   } = options;
 
   type TestAllowedActions =
@@ -240,7 +243,8 @@ async function withController<ReturnValue>(
 
   type TestAllowedEvents =
     | KeyringControllerUnlockEvent
-    | AccountTreeControllerSelectedAccountGroupChangeEvent;
+    | AccountTreeControllerSelectedAccountGroupChangeEvent
+    | RemoteFeatureFlagControllerStateChangeEvent;
 
   const messenger = getRootMessenger<
     RewardsControllerActions | TestAllowedActions,
@@ -282,13 +286,13 @@ async function withController<ReturnValue>(
     events: [
       'AccountTreeController:selectedAccountGroupChange',
       'KeyringController:unlock',
+      'RemoteFeatureFlagController:stateChange',
     ],
   });
 
   // Setup default mocks
   const mockMessengerCall = jest.fn();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   jest.spyOn(controllerMessenger, 'call').mockImplementation(mockMessengerCall);
 
   const controller = new RewardsController({
@@ -297,6 +301,7 @@ async function withController<ReturnValue>(
     isDisabled: () => isDisabled,
     isBitcoinDisabled: () => isBitcoinDisabled,
     isTronDisabled: () => isTronDisabled,
+    isVipDisabled: () => isVipDisabled,
   });
 
   return await fn({
@@ -857,6 +862,36 @@ describe('RewardsController', () => {
       );
     });
 
+    it('returns null when the subscription record is missing even if a VIP fees cache entry exists', async () => {
+      await withController(
+        {
+          state: {
+            rewardsAccounts: {
+              [VIP_ACCOUNT]: vipAccountState({
+                subscriptionId: NON_VIP_SUB_ID,
+              }),
+            },
+            rewardsVipPerpsFees: {
+              [NON_VIP_SUB_ID]: {
+                hyperliquidBuilderFeeBips: '5',
+                lastFetched: Date.now(),
+              },
+            },
+          },
+          isDisabled: false,
+        },
+        async ({ controller, mockMessengerCall }) => {
+          const result = await controller.getPerpsDiscountForAccount(
+            VIP_ACCOUNT,
+            BASE_FEE_BIPS,
+          );
+
+          expect(result).toBeNull();
+          expect(mockMessengerCall).not.toHaveBeenCalled();
+        },
+      );
+    });
+
     it('calls /vip/fees even when the subscription is flagged as not VIP, and promotes the subscription on a valid response', async () => {
       await withController(
         {
@@ -1133,6 +1168,38 @@ describe('RewardsController', () => {
           );
 
           expect(result).toBeNull();
+        },
+      );
+    });
+
+    it('returns 0 when /vip/fees has fees but no hyperliquid builderFeeBips', async () => {
+      await withController(
+        { state: stateWithVipAccount(), isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation(
+            (method: string, ..._args: unknown[]): unknown => {
+              if (method === 'RewardsDataService:getVipFees') {
+                return Promise.resolve({
+                  vipTier: 2,
+                  fees: {
+                    swaps: { feeBips: '50' },
+                  },
+                  updatedAt: '2026-05-01T00:00:00.000Z',
+                } as VipFeesResponseDto);
+              }
+              return Promise.resolve(undefined);
+            },
+          );
+
+          const result = await controller.getPerpsDiscountForAccount(
+            VIP_ACCOUNT,
+            BASE_FEE_BIPS,
+          );
+
+          expect(result).toBe(0);
+          expect(
+            controller.state.rewardsVipPerpsFees[VIP_SUB_ID],
+          ).toBeUndefined();
         },
       );
     });
@@ -3400,27 +3467,24 @@ describe('RewardsController', () => {
   });
 
   describe('validateReferralCode', () => {
-    it('should return false when rewards are disabled', async () => {
+    it('should return invalid when rewards are disabled', async () => {
       await withController({ isDisabled: true }, async ({ controller }) => {
         const result = await controller.validateReferralCode('TEST123');
 
-        expect(result).toBe(false);
+        expect(result).toStrictEqual({ valid: false, isVipCode: false });
       });
     });
 
-    it('should return false for empty code', async () => {
+    it('should return invalid for empty / whitespace-only input', async () => {
       await withController({ isDisabled: false }, async ({ controller }) => {
-        const result = await controller.validateReferralCode('  ');
-
-        expect(result).toBe(false);
-      });
-    });
-
-    it('should return false for code with invalid length', async () => {
-      await withController({ isDisabled: false }, async ({ controller }) => {
-        const result = await controller.validateReferralCode('TEST');
-
-        expect(result).toBe(false);
+        expect(await controller.validateReferralCode('')).toStrictEqual({
+          valid: false,
+          isVipCode: false,
+        });
+        expect(await controller.validateReferralCode('   ')).toStrictEqual({
+          valid: false,
+          isVipCode: false,
+        });
       });
     });
 
@@ -3437,7 +3501,94 @@ describe('RewardsController', () => {
 
           const result = await controller.validateReferralCode('TEST12');
 
-          expect(result).toBe(true);
+          expect(result).toStrictEqual({ valid: true, isVipCode: false });
+        },
+      );
+    });
+
+    it('should forward non-empty vanity codes to the data service', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:validateReferralCode') {
+              return Promise.resolve({ valid: true });
+            }
+            return undefined;
+          });
+
+          const result = await controller.validateReferralCode('BANKLESS');
+
+          expect(result).toStrictEqual({ valid: true, isVipCode: false });
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:validateReferralCode',
+            'BANKLESS',
+          );
+        },
+      );
+    });
+
+    it('should mark a backend VIP code as VIP when the VIP feature is enabled', async () => {
+      await withController(
+        { isDisabled: false, isVipDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:validateReferralCode') {
+              return Promise.resolve({ valid: true, isVipCode: true });
+            }
+            return undefined;
+          });
+
+          const result = await controller.validateReferralCode('VIPCODE');
+
+          expect(result).toStrictEqual({ valid: true, isVipCode: true });
+        },
+      );
+    });
+
+    it('should not mark a backend VIP code as VIP when the VIP feature is disabled', async () => {
+      await withController(
+        { isDisabled: false, isVipDisabled: true },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:validateReferralCode') {
+              return Promise.resolve({ valid: true, isVipCode: true });
+            }
+            return undefined;
+          });
+
+          const result = await controller.validateReferralCode('VIPCODE');
+
+          expect(result).toStrictEqual({ valid: true, isVipCode: false });
+        },
+      );
+    });
+  });
+
+  describe('isVipFeatureEnabled', () => {
+    it('returns false when rewards are disabled', async () => {
+      await withController(
+        { isDisabled: true, isVipDisabled: false },
+        ({ controller }) => {
+          expect(controller.isVipFeatureEnabled()).toBe(false);
+        },
+      );
+    });
+
+    it('returns false when the VIP program is disabled', async () => {
+      await withController(
+        { isDisabled: false, isVipDisabled: true },
+        ({ controller }) => {
+          expect(controller.isVipFeatureEnabled()).toBe(false);
+        },
+      );
+    });
+
+    it('returns true when rewards are on and VIP is not disabled', async () => {
+      await withController(
+        { isDisabled: false, isVipDisabled: false },
+        ({ controller }) => {
+          expect(controller.isVipFeatureEnabled()).toBe(true);
         },
       );
     });

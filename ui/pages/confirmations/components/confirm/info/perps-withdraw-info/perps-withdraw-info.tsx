@@ -1,6 +1,5 @@
 import React from 'react';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
-import { useTransactionPayPostQuote } from '../../../../hooks/pay/useTransactionPayPostQuote';
 import { usePerpsWithdrawDefaultToken } from '../../../../hooks/pay/usePerpsWithdrawDefaultToken';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
 import { PerpsWithdrawBalance } from '../../../perps-confirmations/perps-withdraw-balance';
@@ -16,20 +15,15 @@ export const PerpsWithdrawInfo = () => {
     tokenAddress: ARBITRUM_USDC.address,
   });
 
-  useTransactionPayPostQuote();
-
   const preferredToken = usePerpsWithdrawDefaultToken();
 
   const { account } = usePerpsLiveAccount();
-  const balanceUsdOverride = parseFloat(getTradeableBalance(account)) || 0;
+  const availableBalance = Number(getTradeableBalance(account)) || 0;
 
   return (
-    // Percentage buttons (25/50/75/Max) are intentionally hidden for MVP —
-    // not passing `hasMax` so they never render. Re-enable by passing
-    // `hasMax` (and optionally a `percentages` override) when ready.
     <CustomAmountInfo
       autoFocusAmount
-      balanceUsdOverride={balanceUsdOverride}
+      balanceUsdOverride={availableBalance}
       currency={PERPS_CURRENCY}
       hidePayTokenAmount
       preferredToken={preferredToken}

@@ -38,6 +38,7 @@ async function runHook({
   });
   mockedUseHasInsufficientBalance.mockReturnValue({
     hasInsufficientBalance: insufficientBalance,
+    isNativeBalanceKnown: true,
     nativeCurrency: 'USD',
   });
 

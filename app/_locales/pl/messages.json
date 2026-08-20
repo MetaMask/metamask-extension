@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Należy wybrać konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Dodaj tokeny pozyskane przy pomocy MetaMask"
-  },
   "addAlias": {
     "message": "Dodaj alias"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Wstecz"
-  },
-  "backupApprovalInfo": {
-    "message": "Ten tajny kod jest wymagany do odzyskania portfela w przypadku zgubienia urządzenia, zapomnienia hasła, ponownego zainstalowania MetaMask lub potrzeby uzyskania dostępu do portfela na innym urządzeniu."
   },
   "backupApprovalNotice": {
     "message": "Utwórz kopię zapasową tajnego kodu odzyskiwania, aby zapewnić bezpieczeństwo swojego portfela i środków."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Zaawansowane"
   },
-  "customToken": {
-    "message": "Własny token"
-  },
   "decimal": {
     "message": "Dokładność liczb po przecinku"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Liczb po przecinku musi być co najmniej 0 i nie więcej niż 36."
   },
   "delete": {
     "message": "Usuń"
@@ -198,9 +186,6 @@
   },
   "done": {
     "message": "Gotowe"
-  },
-  "downloadGoogleChrome": {
-    "message": "Ściągnij Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Załaduj logi stanów"
@@ -259,9 +244,6 @@
   },
   "hardwareWallets": {
     "message": "Podłącz sprzętowy portfel"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Wybierz portfel sprzętowy, którego chcesz użyć z MetaMaskiem"
   },
   "here": {
     "message": "tutaj",
@@ -351,9 +333,6 @@
   "metamaskVersion": {
     "message": "Wersja MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Należy wybrać co najmniej 1 token."
-  },
   "needImportFile": {
     "message": "Musisz wybrać plik do zaimportowania.",
     "description": "User is important an account and needs to add a file to continue"
@@ -363,9 +342,6 @@
   },
   "networks": {
     "message": "Sieci"
-  },
-  "nevermind": {
-    "message": "Nie ważne"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -385,9 +361,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Nie znaleziono kamery"
-  },
-  "notEnoughGas": {
-    "message": "Za mało gazu"
   },
   "ofTextNofM": {
     "message": "z"
@@ -523,9 +496,6 @@
   },
   "sign": {
     "message": "Podpisz"
-  },
-  "signatureRequest": {
-    "message": "Prośba o podpis"
   },
   "signed": {
     "message": "Podpisane"

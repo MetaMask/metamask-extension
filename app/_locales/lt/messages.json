@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums reikia pasirinkti paskyrą!"
   },
-  "addAcquiredTokens": {
-    "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „MetaMask“"
-  },
   "addAlias": {
     "message": "Pridėti alternatyvųjį vardą"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Grįžti"
-  },
-  "backupApprovalInfo": {
-    "message": "Šis slaptas kodas reikalingas norint atkurti jūsų slaptažodinę, jeigu pamestumėte savo įrenginį, pamirštumėte savo slaptažodį, iš naujo įdiegtumėte „MetaMask“, taip pat norint pasiekti slaptažodinę iš kito įrenginio."
   },
   "backupApprovalNotice": {
     "message": "Pasidarykite atsarginę savo slapto atkūrimo kodo kopiją, kad jūsų slaptažodinė ir fondai būtų saugūs."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Išplėstiniai"
   },
-  "customToken": {
-    "message": "Pritaikytas žetonas"
-  },
   "decimal": {
     "message": "Skaičiai po kablelio"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Turi būti bent 0 skaitmenų po kablelio, bet ne daugiau kaip 36."
   },
   "delete": {
     "message": "Ištrinti"
@@ -198,9 +186,6 @@
   },
   "done": {
     "message": "Atlikta"
-  },
-  "downloadGoogleChrome": {
-    "message": "Atsiunčiama „Google Chrome“"
   },
   "downloadStateLogs": {
     "message": "Atsisiųsti būsenos žurnalus"
@@ -259,9 +244,6 @@
   },
   "hardwareWallets": {
     "message": "Susieti aparatinės įrangos slaptažodinę"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Pasirinkite aparatinės įrangos slaptažodinę, kurią pageidaujate naudoti su „MetaTask“"
   },
   "here": {
     "message": "čia",
@@ -354,9 +336,6 @@
   "metamaskVersion": {
     "message": "„MetaMask“ versija"
   },
-  "mustSelectOne": {
-    "message": "Turite pasirinkti bent 1 žetoną."
-  },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
@@ -366,9 +345,6 @@
   },
   "networks": {
     "message": "Tinklai"
-  },
-  "nevermind": {
-    "message": "Nekreipti dėmesio"
   },
   "newAccountNumberName": {
     "message": "Paskyra $1",
@@ -388,9 +364,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Internetinė vaizdo kamera nerasta"
-  },
-  "notEnoughGas": {
-    "message": "Nepakanka dujų"
   },
   "ofTextNofM": {
     "message": "nuo"
@@ -529,9 +502,6 @@
   },
   "sign": {
     "message": "Prisijunkite"
-  },
-  "signatureRequest": {
-    "message": "Parašo užklausa"
   },
   "signed": {
     "message": "Pasirašyta"
