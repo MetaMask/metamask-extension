@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -16,6 +16,7 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { Copyable } from '../copyable';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import { useSnapSettings } from '../../../../hooks/snaps/useSnapSettings';
+import { useDispatch } from '../../../../store/hooks';
 
 export const SnapSettingsRenderer = () => {
   const [searchParams] = useSearchParams();
@@ -60,8 +61,6 @@ export const SnapSettingsRenderer = () => {
           </SnapDelineator>
         </Box>
       )}
-      {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
       {(interfaceId || loading) && (
         <SnapUIRenderer
           snapId={snapId}

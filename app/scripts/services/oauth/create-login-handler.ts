@@ -5,13 +5,12 @@ import { TelegramLoginHandler } from './telegram-login-handler';
 import {
   type LoginHandlerOptions,
   type OAuthConfig,
-  type OAuthLoginEnv,
   type WebAuthenticator,
 } from './types';
 
 export function createLoginHandler(
   authConnection: AuthConnection,
-  config: OAuthConfig & OAuthLoginEnv,
+  config: OAuthConfig,
   webAuthenticator: WebAuthenticator,
 ) {
   const commonHandlerOptions: Omit<LoginHandlerOptions, 'oAuthClientId'> = {

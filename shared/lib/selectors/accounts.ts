@@ -1,13 +1,20 @@
 import type { AccountsControllerState } from '@metamask/accounts-controller';
+import { createSelector } from 'reselect';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
 };
 
-export function getSelectedInternalAccount(state: AccountsState) {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
-}
+const selectInternalAccounts = (state: AccountsState) =>
+  state.metamask.internalAccounts.accounts;
+
+const selectSelectedInternalAccountId = (state: AccountsState) =>
+  state.metamask.internalAccounts.selectedAccount;
+
+export const getSelectedInternalAccount = createSelector(
+  [selectSelectedInternalAccountId, selectInternalAccounts],
+  (accountId, accounts) => accounts[accountId],
+);
 
 /**
  * Same as `getSelectedInternalAccount`, but might potentially be `undefined`:

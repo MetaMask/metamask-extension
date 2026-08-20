@@ -8,12 +8,14 @@ import { extractMessageFromUnknownError } from '../../../../contexts/hardware-wa
  * - `WrongUrType` - valid UR whose type does not match the current flow.
  * - `UrDecodeError` - the UR decoder failed to reassemble frames.
  * - `ScanException` - an unexpected runtime exception during processing.
+ * - `MismatchedSignId` - the signature QR request ID does not match the pending transaction.
  */
 export const ScanErrorCategory = {
   NonUrQrScanned: 'non_ur_qr_scanned',
   WrongUrType: 'wrong_ur_type',
   UrDecodeError: 'ur_decode_error',
   ScanException: 'scan_exception',
+  MismatchedSignId: 'mismatched_sign_id',
 } as const;
 
 export type ScanErrorCategory =
@@ -35,7 +37,30 @@ export type ScanErrorClassification =
       category: typeof ScanErrorCategory.ScanException;
       isUrFormat: boolean;
       rawMessage: string;
-    };
+    }
+  | { category: typeof ScanErrorCategory.MismatchedSignId; isUrFormat: true };
+
+/**
+ * Thrown when a scanned signature QR belongs to a different transaction.
+ */
+export class QrMismatchedTransactionError extends Error {
+  constructor() {
+    super('QrMismatchedTransactionError');
+    this.name = 'QrMismatchedTransactionError';
+  }
+}
+
+/**
+ * Type guard for {@link QrMismatchedTransactionError}.
+ *
+ * @param error - Unknown rejection from `handleSuccess`.
+ * @returns True when the error represents a mismatched signing request ID.
+ */
+export function isQrMismatchedTransactionError(
+  error: unknown,
+): error is QrMismatchedTransactionError {
+  return error instanceof QrMismatchedTransactionError;
+}
 
 /**
  * Input for {@link classifyScanResult}. Callers populate only the fields
@@ -142,6 +167,8 @@ export function scanCategoryToQrErrorType(
     case ScanErrorCategory.UrDecodeError:
     case ScanErrorCategory.ScanException:
       return QrErrorType.UrDecodeError;
+    case ScanErrorCategory.MismatchedSignId:
+      return QrErrorType.MismatchedTransaction;
     default:
       return QrErrorType.UrDecodeError;
   }

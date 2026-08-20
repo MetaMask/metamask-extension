@@ -15,8 +15,6 @@ type GenericAssetCellLayoutProps = {
   footerRightDisplay: ReactNode;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function GenericAssetCellLayout({
   onClick,
   badge,
@@ -29,7 +27,7 @@ export default function GenericAssetCellLayout({
     <Box
       flexDirection={BoxFlexDirection.Row}
       gap={4}
-      className="flex h-full w-full"
+      className="flex h-full w-full [container-name:list-item] [container-type:inline-size]"
     >
       <Box asChild>
         <a

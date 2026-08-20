@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { Checkbox } from '@metamask/design-system-react';
 import {
   Button,
   ButtonSize,
@@ -27,16 +28,16 @@ import { Text } from '../../components/component-library/text/text';
 import { Box } from '../../components/component-library/box/box';
 import { Container } from '../../components/component-library/container/container';
 import { ButtonLink, Label } from '../../components/component-library';
-import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
-import { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
+import { useDispatch } from '../../store/hooks';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 
 type TranslateFunction = (
   key: string,
-  substitutions?: (string | React.JSX.Element)[],
+  substitutions?: (string | JSX.Element)[],
 ) => string;
 
 type Route = {
@@ -103,13 +104,13 @@ async function updateStateFromUrl(
     if (parsed) {
       const { destination } = parsed;
 
-      if ('redirectTo' in destination) {
-        window.location.href = destination.redirectTo.toString();
-        return;
-      }
-
-      const { path, query } = destination;
-      const href = getExtensionURL(path, query.toString() ?? null);
+      const href =
+        'redirectTo' in destination
+          ? destination.redirectTo.toString()
+          : getExtensionURL(
+              destination.path,
+              destination.query.toString() ?? null,
+            );
       const title = parsed.route.getTitle(url.searchParams);
 
       const signed = parsed.signature === VALID;
@@ -381,7 +382,7 @@ export const DeepLink = () => {
                   <Checkbox
                     id="dont-remind-me-checkbox"
                     data-testid="deep-link-checkbox"
-                    isChecked={skipDeepLinkInterstitialChecked}
+                    isSelected={skipDeepLinkInterstitialChecked}
                     onChange={onRemindMeStateChanged}
                   ></Checkbox>
                   <Label

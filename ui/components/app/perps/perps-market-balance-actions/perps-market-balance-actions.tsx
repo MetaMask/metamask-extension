@@ -45,13 +45,13 @@ type PerpsMarketBalanceActionsProps = {
   onLearnMore?: () => void;
 };
 
-const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
+const PerpsMarketBalanceActions = ({
   showActionButtons = true,
   isAddFundsLoading = false,
   onAddFunds,
   onWithdraw,
   onLearnMore,
-}) => {
+}: PerpsMarketBalanceActionsProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const { formatCurrency } = useFormatters();

@@ -1,19 +1,23 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { capitalize } from 'lodash';
-import { Box, BoxAlignItems } from '@metamask/design-system-react';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
-import { SrpList } from '../../multichain/multi-srp/srp-list/srp-list';
 import {
+  Box,
+  BoxAlignItems,
   TextVariant,
   TextColor,
-  TextTransform,
-  BackgroundColor,
+  Icon,
+  IconName,
+  IconSize,
   IconColor,
   FontWeight,
-} from '../../../helpers/constants/design-system';
+  TextTransform,
+  Text,
+} from '@metamask/design-system-react';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
+import { SrpList } from '../../multichain/multi-srp/srp-list/srp-list';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_REVIEW_SRP_ROUTE,
@@ -26,6 +30,38 @@ import {
 } from '../../../selectors';
 import Card from '../../ui/card';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
+
+const SOCIAL_LOGIN_ICON_CLASS = 'srp-reveal-list__social-icon';
+
+function renderSocialLoginIcon(socialLoginType: AuthConnection) {
+  switch (socialLoginType) {
+    case AuthConnection.Apple:
+      return (
+        <Icon
+          name={IconName.AppleLogo}
+          color={IconColor.IconDefault}
+          size={IconSize.Lg}
+        />
+      );
+    case AuthConnection.Telegram:
+      return (
+        <Icon
+          name={IconName.Telegram}
+          size={IconSize.Lg}
+          style={{ color: 'var(--color-telegram-blue)' }}
+        />
+      );
+    case AuthConnection.Google:
+    default:
+      return (
+        <img
+          src="images/google.svg"
+          className={SOCIAL_LOGIN_ICON_CLASS}
+          alt="Google icon"
+        />
+      );
+  }
+}
 
 export const RevealSrpList = () => {
   const t = useI18nContext();
@@ -60,10 +96,10 @@ export const RevealSrpList = () => {
       {isSocialLoginFlow && (
         <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
           <Text
-            marginBottom={2}
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
             textTransform={TextTransform.Uppercase}
+            className="mb-2"
           >
             {t('securitySocialLoginLabel', [socialLoginType])}
           </Text>
@@ -78,19 +114,7 @@ export const RevealSrpList = () => {
               gap={3}
             >
               <Box className="flex" alignItems={BoxAlignItems.Center} gap={2}>
-                {socialLoginType === AuthConnection.Apple ? (
-                  <Icon
-                    name={IconName.Apple}
-                    color={IconColor.iconDefault}
-                    size={IconSize.Lg}
-                  />
-                ) : (
-                  <img
-                    src={`images/icons/google.svg`}
-                    className="srp-reveal-list__social-icon"
-                    alt="Google icon"
-                  />
-                )}
+                {renderSocialLoginIcon(socialLoginType as AuthConnection)}
               </Box>
               <Box className="flex-col flex">
                 <Text fontWeight={FontWeight.Medium}>
@@ -98,8 +122,8 @@ export const RevealSrpList = () => {
                 </Text>
                 {socialLoginEmail && (
                   <Text
-                    variant={TextVariant.bodySm}
-                    color={TextColor.textAlternative}
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
                   >
                     {maskHostNameFromEmail(socialLoginEmail)}
                   </Text>
@@ -108,9 +132,9 @@ export const RevealSrpList = () => {
             </Box>
           </Card>
           <Text
-            marginTop={1}
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            className="mt-1"
           >
             {t('securitySocialLoginEnabledDescription', [
               capitalize(socialLoginType),
@@ -128,9 +152,9 @@ export const RevealSrpList = () => {
         data-testid="select-srp-container"
       >
         <Text
-          marginBottom={2}
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          className="mb-2"
           textTransform={TextTransform.Uppercase}
         >
           {t('securitySrpLabel')}

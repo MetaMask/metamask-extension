@@ -1,14 +1,14 @@
 import EventEmitter from 'events';
 import React, { useContext, useRef, useState, useEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../hooks/useSegmentContext';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -65,6 +65,7 @@ import SwapsFooter from '../swaps-footer';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import { useDispatch } from '../../../store/hooks';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
@@ -78,7 +79,8 @@ export default function AwaitingSwap({
   txId,
 }) {
   const t = useContext(I18nContext);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -173,18 +175,13 @@ export default function AwaitingSwap({
         rel="noopener noreferrer"
         onClick={() => {
           trackEvent(
-            {
-              category: MetaMetricsEventCategory.Swaps,
-              event: MetaMetricsEventName.SupportLinkClicked,
-              properties: {
+            createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+              .addCategory(MetaMetricsEventCategory.Swaps)
+              .addProperties({
                 url: SUPPORT_LINK,
-              },
-            },
-            {
-              contextPropsIntoEventProperties: [
-                MetaMetricsContextProp.PageTitle,
-              ],
-            },
+                location: segmentContext.page?.title,
+              })
+              .build(),
           );
         }}
       >
@@ -207,14 +204,15 @@ export default function AwaitingSwap({
 
     if (!trackedQuotesExpiredEvent) {
       setTrackedQuotesExpiredEvent(true);
-      trackEvent({
-        event: 'Quotes Timed Out',
-        category: MetaMetricsEventCategory.Swaps,
-        sensitiveProperties,
-        properties: {
-          hd_entropy_index: hdEntropyIndex,
-        },
-      });
+      trackEvent(
+        createEventBuilder('Quotes Timed Out')
+          .addCategory(MetaMetricsEventCategory.Swaps)
+          .addSensitiveProperties(sensitiveProperties)
+          .addProperties({
+            hd_entropy_index: hdEntropyIndex,
+          })
+          .build(),
+      );
     }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
     headerText = t('swapFetchingQuotesErrorTitle');

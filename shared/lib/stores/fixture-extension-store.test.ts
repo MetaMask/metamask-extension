@@ -285,6 +285,7 @@ describe('FixtureExtensionStore', () => {
 
   describe('set', () => {
     it('sets the state', async () => {
+      setMockFixtureServerReply();
       const store = new FixtureExtensionStore({ initialize: true });
 
       await store.set({

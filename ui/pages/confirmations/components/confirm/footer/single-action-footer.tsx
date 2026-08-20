@@ -3,12 +3,14 @@ import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { Button, ButtonSize } from '@metamask/design-system-react';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
@@ -20,6 +22,8 @@ type ButtonState = {
 };
 
 const BUTTON_TEXT_BY_TYPE: Partial<Record<TransactionType, string>> = {
+  [TransactionType.moneyAccountDeposit]: 'addFunds',
+  [TransactionType.moneyAccountWithdraw]: 'send',
   [TransactionType.musdConversion]: 'musdConvert',
   [TransactionType.perpsDeposit]: 'addFunds',
   [TransactionType.perpsWithdraw]: 'perpsWithdraw',
@@ -32,8 +36,11 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const transactionType = currentConfirmation?.type;
 
   const { alerts } = useAlerts(transactionId);
-  const isPayLoading = useIsTransactionPayLoading();
+  const isPayLoading = useIsTransactionPayQuotePending();
+  const hasExecutableQuote = useTransactionPayHasExecutableQuote();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+  const isPayReady =
+    !isPerpsWithdrawTransaction(currentConfirmation) || hasExecutableQuote;
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
@@ -62,7 +69,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
         : defaultButtonText;
 
     const isDisabled =
-      isAwaitingRequiredToken || hasBlockingAlerts || !hasAmount;
+      isAwaitingRequiredToken || hasBlockingAlerts || !hasAmount || !isPayReady;
 
     const isLoading =
       isAwaitingRequiredToken || isGaslessLoading || isPayLoading;
@@ -71,6 +78,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   }, [
     blockingAlerts,
     isGaslessLoading,
+    isPayReady,
     isPayLoading,
     primaryRequiredToken,
     transactionType,
@@ -98,9 +106,9 @@ export const SingleActionFooter = ({
       <Button
         className="w-full"
         data-testid="confirm-footer-button"
-        disabled={isDisabled}
+        disabled={isDisabled || isLoading}
         isLoading={isLoading}
-        onClick={isLoading ? undefined : onSubmit}
+        onClick={onSubmit}
         size={ButtonSize.Lg}
       >
         {buttonText}

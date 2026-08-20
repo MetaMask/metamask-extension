@@ -4,14 +4,15 @@ import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import { TOKENS_API_MOCK_RESULT } from '../../../data/mock-data';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { NETWORK_CLIENT_ID } from '../../constants';
 
 async function mockTokenList(mockServer: Mockttp) {
@@ -49,6 +50,7 @@ describe('Address Book', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
 
+        // Add flakiness fix here: wait for the continue button to be stably enabled
         await createInternalTransaction({
           driver,
           chainId: '0x539',
@@ -61,10 +63,10 @@ describe('Address Book', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Sent' });
-        await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );
   });
@@ -109,20 +111,23 @@ describe('Address Book', function (this: Suite) {
           amount: '2',
         });
 
-        await new TransactionConfirmation(driver).clickFooterConfirmButton();
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.waitForReviewAlertToDisappear();
+        await confirmation.clickFooterConfirmButton();
 
         // Select Linea to check the Activity list
-        const networkSelector = new NetworkManager(driver);
-        await networkSelector.openNetworkManager();
-        await networkSelector.selectTab('Custom');
+        const networkSelector = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await networkSelector.checkPageIsLoaded();
         await networkSelector.selectNetworkByName('Localhost 8545');
 
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Sent' });
-        await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );
   });

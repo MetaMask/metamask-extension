@@ -7,11 +7,12 @@ import React, {
   FormEvent,
   ChangeEvent,
   MutableRefObject,
+  useCallback,
+  useContext,
 } from 'react';
 import PropTypes from 'prop-types';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
-import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   TextVariant,
   TextColor,
@@ -53,7 +54,10 @@ import { isFlask, isBeta } from '../../../shared/lib/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import { withMetaMetrics } from '../../contexts/metametrics';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useSegmentContext } from '../../hooks/useSegmentContext';
+import { I18nContext } from '../../contexts/i18n';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -66,7 +70,7 @@ import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
 
-type UnlockPageProps = {
+type UnlockPageProps = UnlockPageContext & {
   navigate: NavigateFunction;
   location: RouterLocation;
   isUnlocked: boolean;
@@ -74,9 +78,6 @@ type UnlockPageProps = {
   onSubmit: (password: string) => Promise<void>;
   navigateAfterUnlock: () => Promise<void>;
   isPasskeyActive: boolean;
-  onUnlockWithPasskey: (
-    authenticationResponse: PasskeyAuthenticationResponse,
-  ) => Promise<void>;
   checkIsSeedlessPasswordOutdated: () => Promise<void>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
   forceUpdateMetamaskState: () => Promise<void>;
@@ -85,7 +86,7 @@ type UnlockPageProps = {
   loginWithDifferentMethod: () => Promise<void>;
   firstTimeFlowType: string | null;
   isPopup: boolean;
-  accountTypeForMetrics: string;
+  accountTypeForMetrics?: string;
   isWalletResetInProgress: boolean;
   passkeyAutoUnlockSuppressed: boolean;
   /** When true, passkey ceremony must run in a browser tab (sidepanel + incompatible AAGUID). */
@@ -124,22 +125,26 @@ const FoxAppearAnimation = lazy(
     // @ts-expect-error - Build system resolves without extension, but TS wants .js
     // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
     import('../onboarding-flow/welcome/fox-appear-animation') as Promise<{
-      default: ComponentType<{
-        isLoader?: boolean;
-        skipTransition?: boolean;
-      }>;
+      default: ComponentType<
+        React.PropsWithChildren<{
+          isLoader?: boolean;
+          skipTransition?: boolean;
+        }>
+      >;
     }>,
 );
 
-class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
-  static contextTypes = {
-    trackEvent: PropTypes.func,
-    bufferedTrace: PropTypes.func,
-    bufferedEndTrace: PropTypes.func,
-    t: PropTypes.func,
-  };
+class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
+  private get ctx(): UnlockPageContext {
+    const { t, trackEvent, bufferedTrace, bufferedEndTrace } = this.props;
+    return { t, trackEvent, bufferedTrace, bufferedEndTrace };
+  }
 
   static propTypes = {
+    t: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func.isRequired,
+    bufferedTrace: PropTypes.func.isRequired,
+    bufferedEndTrace: PropTypes.func.isRequired,
     /**
      * navigate function for redirect after action
      */
@@ -220,7 +225,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     /**
      * Completes passkey unlock and navigates after success (same redirect rules as password onSubmit).
      */
-    onUnlockWithPasskey: PropTypes.func,
   };
 
   state: UnlockPageState = {
@@ -316,7 +320,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
     // Track wallet rehydration attempted for social import users (only during rehydration)
     if (isRehydrationFlow) {
-      this.context.trackEvent({
+      this.ctx.trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.RehydrationPasswordAttempted,
         properties: {
@@ -327,7 +331,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         },
       });
     } else if (!isOnboardingCompleted) {
-      this.context.bufferedTrace({
+      this.ctx.bufferedTrace({
         name: TraceName.OnboardingPasswordLoginAttempt,
         op: TraceOperation.OnboardingUserJourney,
         parentContext: this.props.onboardingParentContext?.current,
@@ -339,36 +343,34 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
       // Track wallet rehydration completed for social import users (only during rehydration)
       if (isRehydrationFlow) {
-        this.context.trackEvent({
+        this.ctx.trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.RehydrationCompleted,
           properties: {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: accountTypeForMetrics,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             biometrics: false,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: this.failed_attempts,
           },
         });
-        this.context.bufferedEndTrace({
+        this.ctx.bufferedEndTrace({
           name: TraceName.OnboardingExistingSocialLogin,
         });
       }
 
       if (!isOnboardingCompleted) {
-        this.context.bufferedEndTrace({
+        this.ctx.bufferedEndTrace({
           name: TraceName.OnboardingPasswordLoginAttempt,
         });
-        this.context.bufferedEndTrace({
+        this.ctx.bufferedEndTrace({
           name: TraceName.OnboardingJourneyOverall,
         });
       }
 
-      this.context.trackEvent(
+      this.ctx.trackEvent(
         {
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.AppUnlocked,
@@ -395,7 +397,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   };
 
   handleLoginError = async (error: LoginError, isRehydrationFlow = false) => {
-    const { t } = this.context as UnlockPageContext;
+    const { t } = this.ctx;
     const { message, data } = error;
     const { isOnboardingCompleted, accountTypeForMetrics } = this.props;
 
@@ -452,7 +454,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
       // Track wallet rehydration failed for social import users (only during rehydration)
       if (isRehydrationFlow) {
-        this.context.trackEvent({
+        this.ctx.trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.RehydrationPasswordFailed,
           properties: {
@@ -468,7 +470,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           },
         });
       }
-      this.context.trackEvent({
+      this.ctx.trackEvent({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.AppUnlockedFailed,
         properties: {
@@ -575,13 +577,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     this.setPasswordUnlockMode(false);
   };
 
-  handleUnlockWithPasskey = async (
-    authenticationResponse: PasskeyAuthenticationResponse,
-  ) => {
-    await this.props.onUnlockWithPasskey(authenticationResponse);
-    await this.props.navigateAfterUnlock();
-  };
-
   onForgotPasswordOrLoginWithDiffMethods = async () => {
     const {
       isSocialLoginFlow,
@@ -594,7 +589,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     // we can redirect to `onboarding_welcome` route to select a different login method
     if (!isOnboardingCompleted && isSocialLoginFlow) {
       // Track when user clicks "Use a different login method" during rehydration
-      this.context.trackEvent({
+      this.ctx.trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.UseDifferentLoginMethodClicked,
         properties: {
@@ -610,7 +605,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       return;
     }
 
-    this.context.trackEvent({
+    this.ctx.trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.ForgotPasswordClicked,
       properties: {
@@ -624,7 +619,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   };
 
   renderLogoSection = (isRehydrationFlow: boolean) => {
-    const { t } = this.context as UnlockPageContext;
+    const { t } = this.ctx;
     return (
       <Box
         className="unlock-page__mascot-container"
@@ -661,7 +656,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       isPasswordUnlockMode,
     } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
-    const { t } = this.context as UnlockPageContext;
+    const { t } = this.ctx;
 
     const needHelpText = t('needHelpLinkText');
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
@@ -769,7 +764,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                   data-testid="unlock-submit"
                   disabled={!password || isLocked}
                 >
-                  {this.context.t('unlock')}
+                  {this.ctx.t('unlock')}
                 </Button>
 
                 <TextButton
@@ -798,7 +793,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                       <TextButton
                         key="need-help-link"
                         onClick={() => {
-                          this.context.trackEvent(
+                          this.ctx.trackEvent(
                             {
                               category: MetaMetricsEventCategory.Navigation,
                               event: MetaMetricsEventName.SupportLinkClicked,
@@ -840,7 +835,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                 this.props.mustDeferPasskeyToBrowserTab
               }
               isPasswordInProgress={isSubmitting}
-              onUnlockWithPasskey={this.handleUnlockWithPasskey}
+              onUnlockSuccess={this.props.navigateAfterUnlock}
               onUsePassword={() => this.setPasswordUnlockMode(true)}
             />
           )}
@@ -855,6 +850,56 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   }
 }
 
-export default withMetaMetrics(
-  UnlockPage as unknown as React.ComponentType<Record<string, unknown>>,
-);
+function UnlockPage(props: React.PropsWithChildren<Record<string, unknown>>) {
+  const t = useContext(I18nContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
+  const { bufferedTrace, bufferedEndTrace } = useContext(MetaMetricsContext);
+
+  const trackEventForUnlock = useCallback(
+    (
+      payload: {
+        category: string;
+        event: string;
+        properties?: Record<string, unknown>;
+      },
+      options?: {
+        contextPropsIntoEventProperties?: string | string[];
+      },
+    ) => {
+      const contextFields = options?.contextPropsIntoEventProperties;
+      let fields: string[] = [];
+      if (contextFields) {
+        fields = Array.isArray(contextFields) ? contextFields : [contextFields];
+      }
+      const properties = {
+        ...(payload.properties ?? {}),
+        ...(fields.includes(MetaMetricsContextProp.PageTitle)
+          ? { [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title }
+          : {}),
+      };
+
+      trackEvent(
+        createEventBuilder(payload.event)
+          .addCategory(payload.category)
+          .addProperties(properties)
+          .build(),
+      );
+    },
+    [segmentContext.page?.title, trackEvent, createEventBuilder],
+  );
+
+  return (
+    <UnlockPageBase
+      {...(props as unknown as UnlockPageProps)}
+      t={t}
+      trackEvent={trackEventForUnlock as UnlockPageContext['trackEvent']}
+      bufferedTrace={bufferedTrace as UnlockPageContext['bufferedTrace']}
+      bufferedEndTrace={
+        bufferedEndTrace as UnlockPageContext['bufferedEndTrace']
+      }
+    />
+  );
+}
+
+export default UnlockPage;

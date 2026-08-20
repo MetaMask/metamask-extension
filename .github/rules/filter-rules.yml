@@ -63,8 +63,8 @@ dev_tools: &dev_tools
   - 'development/sentry-publish.js'
   - 'development/sentry-upload-artifacts.sh'
   - 'development/shellcheck.sh'
-  - 'development/sourcemap-validator.js'
   - 'development/ts-migration-dashboard/**/*'
+  - 'development/webpack/sourcemap-validator.ts'
 
 # CI / GITHUB FILES — workflow and repo config that doesn't affect the extension build.
 # If a CI-only PR does need E2E, use [force-e2e] tag or force-e2e label.

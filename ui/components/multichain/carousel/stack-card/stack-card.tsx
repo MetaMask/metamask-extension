@@ -18,14 +18,14 @@ import {
 } from '../resolve-carousel-href';
 import type { StackCardProps } from './stack-card.types';
 
-export const StackCard: React.FC<StackCardProps> = ({
+export const StackCard = ({
   slide,
   isCurrentCard,
   isLastSlide = false,
   onSlideClick,
   onTransitionToNextCard,
   className = '',
-}) => {
+}: StackCardProps) => {
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 
@@ -87,6 +87,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             variant={TextVariant.bodySmMedium}
             color={TextColor.textDefault}
             className="carousel-card__title"
+            data-testid="carousel-slide-title"
           >
             {isContentfulContent ? slide.title : t(slide.title)}
           </Text>
@@ -111,6 +112,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             variant={TextVariant.bodyXsMedium}
             color={TextColor.textAlternative}
             className="carousel-card__description"
+            data-testid="carousel-slide-description"
           >
             {isContentfulContent ? slide.description : t(slide.description)}
           </Text>

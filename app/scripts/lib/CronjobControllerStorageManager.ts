@@ -1,4 +1,4 @@
-import type { Json } from '@metamask/utils';
+import { isValidJson, type Json } from '@metamask/utils';
 import browser from 'webextension-polyfill';
 import { captureException } from '../../../shared/lib/sentry';
 
@@ -137,7 +137,8 @@ export class CronjobControllerStorageManager {
 
   async #readStorageKey(storageKey: string): Promise<Json | undefined> {
     const response = await browser.storage.local.get(storageKey);
-    return response[storageKey] as Json | undefined;
+    const value = response[storageKey];
+    return isValidJson(value) ? value : undefined;
   }
 
   async #readLegacyStorage(): Promise<Json | undefined> {

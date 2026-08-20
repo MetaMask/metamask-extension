@@ -14,7 +14,7 @@ import {
   ConfirmInfoRowSkeleton,
 } from '../../../../../components/app/confirm/info/row/row';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
@@ -31,13 +31,12 @@ export type BridgeTimeRowProps = {
   rowVariant?: ConfirmInfoRowSize;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BridgeTimeRow({
   rowVariant = ConfirmInfoRowSize.Default,
 }: BridgeTimeRowProps) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const isLoading = useIsTransactionPayLoading();
+  const isLoading = useIsTransactionPayQuotePending();
   const { estimatedDuration } = useTransactionPayTotals() ?? {};
   const quotes = useTransactionPayQuotes();
   const { payToken } = useTransactionPayToken();
