@@ -8,7 +8,12 @@
  *
  * Usage:
  * node development/metamaskbot-build-announce/compare-benchmarks.ts \
- * --current <path-to-benchmark-json-directory>
+ * --current <path-to-benchmark-json-directory> [--require-complete]
+ *
+ * `--require-complete` additionally asserts that every artifact a full CI run
+ * produces is present. Pass it only where the directory is meant to hold all of
+ * them — the aggregate `quality-gate` job — never in a per-leg invocation,
+ * where one artifact is the correct and complete contents.
  *
  * Exit codes:
  * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold, and
@@ -469,6 +474,7 @@ async function main(): Promise<void> {
   const { values } = parseArgs({
     options: {
       current: { type: 'string' },
+      'require-complete': { type: 'boolean', default: false },
     },
     strict: true,
   });
@@ -486,7 +492,11 @@ async function main(): Promise<void> {
 
   const baseline = await loadBaseline();
 
-  const missing = findMissingArtifacts(benchmarks);
+  // Only the aggregate invocation sees every artifact. A per-leg run is handed
+  // its own single result, where the other sixteen are absent by design.
+  const missing = values['require-complete']
+    ? findMissingArtifacts(benchmarks)
+    : [];
   const result = runComparison(benchmarks, baseline);
   printReport({ ...result, missing });
 
