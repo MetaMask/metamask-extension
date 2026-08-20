@@ -80,7 +80,7 @@ export type CustomAmountInfoProps = {
    */
   prefillMaxOnLoad?: boolean;
   preferredToken?: SetPayTokenRequest;
-  overrideBottomContent?: (hasInput: boolean) => ReactNode;
+  overrideBottomContent?: (hasAmount: boolean) => ReactNode;
   overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
 };
 
@@ -125,6 +125,7 @@ export const CustomAmountInfo = React.memo(
     const {
       amountFiat,
       amountHuman,
+      hasAmount,
       hasInput,
       isDepositPrefillLoading,
       updatePendingAmount,
@@ -173,11 +174,12 @@ export const CustomAmountInfo = React.memo(
           {children}
         </CenterContainer>
         <AlertMessage />
-        {overrideBottomContent?.(hasInput) ?? (
+        {overrideBottomContent?.(hasAmount) ?? (
           <BottomContainer
             amountFiat={amountFiat}
             disablePay={disablePay}
             displayAccountRow={displayAccountRow}
+            hasAmount={hasAmount}
           />
         )}
       </Box>
@@ -284,13 +286,15 @@ function BottomContainer({
   amountFiat,
   disablePay,
   displayAccountRow,
+  hasAmount,
 }: {
   amountFiat: string;
   disablePay?: boolean;
   displayAccountRow?: boolean;
+  hasAmount: boolean;
 }) {
   const t = useI18nContext();
-  const isResultReady = useIsResultReady();
+  const isResultReady = useIsResultReady(hasAmount);
   const { hideResults } = useTransactionCustomAmountAlerts();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
@@ -335,13 +339,29 @@ function BottomContainer({
   );
 }
 
-function useIsResultReady() {
+/**
+ * Whether the quote-derived rows (transaction fee, estimated time, total /
+ * you'll receive) should be shown.
+ *
+ * These rows are meaningless until the user has entered an amount, so they stay
+ * hidden while the field is empty or zero. Gating on `hasAmount` (which tracks
+ * the field directly) rather than the quote state also means clearing the
+ * amount hides them immediately, instead of leaving the previous quote's
+ * numbers on screen until a new quote resolves.
+ *
+ * @param hasAmount - Whether the amount field holds a value greater than zero.
+ */
+function useIsResultReady(hasAmount: boolean) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const quotes = useTransactionPayQuotes();
   const isQuotePending = useIsTransactionPayQuotePending();
   const hasExecutableQuote = useTransactionPayHasExecutableQuote();
   const hasPositiveRequiredAmount =
     useTransactionPayHasPositiveRequiredAmount();
+
+  if (!hasAmount) {
+    return false;
+  }
 
   if (isPerpsWithdrawTransaction(currentConfirmation)) {
     return hasPositiveRequiredAmount && (isQuotePending || hasExecutableQuote);
