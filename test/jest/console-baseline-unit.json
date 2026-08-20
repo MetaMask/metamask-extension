@@ -620,7 +620,7 @@
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
-      "MetaMask: Background connection not initialized": 32
+      "MetaMask: Background connection not initialized": 36
     },
     "ui/pages/confirmations/components/confirm/info/info.test.tsx": {
       "MetaMask: Background connection not initialized": 61,

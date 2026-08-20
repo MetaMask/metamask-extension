@@ -12,13 +12,10 @@ import {
 } from '../../../../../shared/lib/transactions.utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
-import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { isHardwareAccount } from '../../../multichain-accounts/account-details/account-type-utils';
 import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -36,7 +33,6 @@ type PayWithToken = {
   displayToken: PayWithDisplayToken | undefined;
   balanceUsdFormatted: string;
   label: string;
-  canEdit: boolean;
   from: string | undefined;
   ownerId: string;
   isPerpsWithdraw: boolean;
@@ -63,17 +59,12 @@ export function usePayWithToken(): PayWithToken {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const from = currentConfirmation?.txParams?.from;
   const transactionId = currentConfirmation?.id ?? '';
-
-  const fromAccount = useSelector((state) =>
-    getInternalAccountByAddress(state, from ?? ''),
-  );
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
   const isMoneyAccountSelected =
     paymentOverride === PaymentOverride.MoneyAccount;
 
-  const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
   // Avoid flashing the destination/required token (e.g. mUSD on Monad) while
   // payToken is cleared during account switches or initial auto-select.
@@ -84,10 +75,8 @@ export function usePayWithToken(): PayWithToken {
     ]);
 
   const openModal = useCallback(() => {
-    if (canEdit) {
-      setIsModalOpen(true);
-    }
-  }, [canEdit]);
+    setIsModalOpen(true);
+  }, []);
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -127,7 +116,6 @@ export function usePayWithToken(): PayWithToken {
     displayToken,
     balanceUsdFormatted,
     label: isPerpsWithdraw ? t('withdrawTo') : t('payWith'),
-    canEdit,
     from,
     ownerId: currentConfirmation?.id ?? '',
     isPerpsWithdraw,
