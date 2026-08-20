@@ -5,6 +5,7 @@ import {
   runComparison,
   buildMetricLines,
   findMissingArtifacts,
+  isBlocking,
   loadCurrentBenchmarks,
   printReport,
 } from './compare-benchmarks';
@@ -990,5 +991,39 @@ describe('printReport with absent artifacts', () => {
     );
     expect(output).not.toContain('reduced coverage');
     expect(output).toContain('0 no results');
+  });
+});
+
+describe('isBlocking', () => {
+  const gated = {
+    artifactName: 'benchmark-chrome-webpack-userJourneyTransactions',
+    browser: 'chrome',
+    buildType: 'webpack',
+    preset: 'userJourneyTransactions',
+    benchmarkNames: ['sendTransactions'],
+    gatedMetrics: ['sendTransactions.cls'],
+  };
+  const ungated = { ...gated, gatedMetrics: [] };
+
+  it('does not block a clean run', () => {
+    expect(isBlocking({ anyFailed: false, missing: [] })).toBe(false);
+  });
+
+  it('blocks on a breached allowlisted metric', () => {
+    expect(isBlocking({ anyFailed: true, missing: [] })).toBe(true);
+  });
+
+  it('blocks when an absent artifact owns an allowlisted metric', () => {
+    expect(isBlocking({ anyFailed: false, missing: [gated] })).toBe(true);
+  });
+
+  it('does not block when the absent artifact owns none', () => {
+    expect(isBlocking({ anyFailed: false, missing: [ungated] })).toBe(false);
+  });
+
+  it('blocks when only one of several absences is allowlisted', () => {
+    expect(isBlocking({ anyFailed: false, missing: [ungated, gated] })).toBe(
+      true,
+    );
   });
 });

@@ -112,6 +112,29 @@ export function findMissingArtifacts(
 }
 
 /**
+ * Decides whether the gate blocks.
+ *
+ * A threshold breach blocks when the metric is allowlisted, which
+ * `applyGatingPolicy` has already resolved into `anyFailed`. An absent artifact
+ * blocks on the same principle: the gate cannot vouch for a metric it never
+ * measured, but only an allowlisted one is worth stopping a merge over.
+ *
+ * @param args - The two independent grounds for blocking.
+ * @param args.anyFailed - Whether a measured allowlisted metric breached.
+ * @param args.missing - Artifacts the run was expected to produce and did not.
+ * @returns True when the run must not merge.
+ */
+export function isBlocking({
+  anyFailed,
+  missing,
+}: {
+  anyFailed: boolean;
+  missing: MissingArtifact[];
+}): boolean {
+  return anyFailed || missing.some((m) => m.gatedMetrics.length > 0);
+}
+
+/**
  * Loads the historical baseline.
  */
 async function loadBaseline(): Promise<HistoricalBaselineReference> {
@@ -500,9 +523,7 @@ async function main(): Promise<void> {
   const result = runComparison(benchmarks, baseline);
   printReport({ ...result, missing });
 
-  const blocked =
-    result.anyFailed || missing.some((m) => m.gatedMetrics.length > 0);
-  process.exit(blocked ? 1 : 0);
+  process.exit(isBlocking({ anyFailed: result.anyFailed, missing }) ? 1 : 0);
 }
 
 if (require.main === module) {

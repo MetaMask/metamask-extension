@@ -22,7 +22,7 @@ describe('MATRIX_PRESETS', () => {
 });
 
 describe('benchmarkNamesForPreset', () => {
-  it.each([
+  const cases: [string, string[]][] = [
     ['userJourneyTransactions', ['sendTransactions', 'swap']],
     ['userJourneyAssets', ['assetDetails', 'solanaAssetDetails']],
     ['userJourneyAccountManagement', ['importSrpHome']],
@@ -32,9 +32,13 @@ describe('benchmarkNamesForPreset', () => {
       'interactionUserActions',
       ['loadNewAccount', 'confirmTx', 'bridgeUserActions'],
     ],
-  ])('derives %s from the files the runner executes', (preset, expected) => {
-    expect(benchmarkNamesForPreset(preset)).toStrictEqual(expected);
-  });
+  ];
+
+  for (const [preset, expected] of cases) {
+    it(`derives ${preset} from the files the runner executes`, () => {
+      expect(benchmarkNamesForPreset(preset)).toStrictEqual(expected);
+    });
+  }
 
   it('overrides the page-load preset, whose key does not follow its filename', () => {
     expect(benchmarkNamesForPreset('pageLoadBenchmark')).toStrictEqual([
