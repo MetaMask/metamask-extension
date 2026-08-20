@@ -26,10 +26,7 @@ export function getMoneyAccountAvailabilityServiceMessenger(
 
   messenger.delegate({
     messenger: serviceMessenger,
-    actions: [
-      'KeyringController:withKeyringUnsafe',
-      'RemoteFeatureFlagController:getState',
-    ],
+    actions: ['KeyringController:withKeyringUnsafe'],
     events: ['KeyringController:unlock', 'KeyringController:lock'],
   });
 
