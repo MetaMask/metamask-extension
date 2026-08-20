@@ -175,7 +175,7 @@ describe('enforced-simulations', () => {
       ).toBe(true);
     });
 
-    it('returns false when simulation data is undefined', () => {
+    it('returns false when simulation data is not yet loaded', () => {
       expect(
         isEnforcedSimulationsEligible(
           { ...BASE_TRANSACTION_META, simulationData: undefined },
@@ -184,7 +184,7 @@ describe('enforced-simulations', () => {
       ).toBe(false);
     });
 
-    it('returns false when simulation data has no balance changes', () => {
+    it('returns true when simulation data has no balance changes', () => {
       expect(
         isEnforcedSimulationsEligible(
           {
@@ -193,7 +193,7 @@ describe('enforced-simulations', () => {
           },
           buildState(ResultType.Benign),
         ),
-      ).toBe(false);
+      ).toBe(true);
     });
 
     it('returns true when simulation data has only token balance changes', () => {
@@ -450,7 +450,7 @@ describe('enforced-simulations', () => {
         ).toBe(true);
       });
 
-      it('still returns false when there are no balance changes', () => {
+      it('returns true even when there are no balance changes', () => {
         expect(
           isEnforcedSimulationsEligible(
             {
@@ -459,7 +459,7 @@ describe('enforced-simulations', () => {
             },
             buildState(ResultType.Trusted),
           ),
-        ).toBe(false);
+        ).toBe(true);
       });
 
       it('still returns false when origin is MetaMask internal', () => {
