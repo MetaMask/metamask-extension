@@ -2,13 +2,18 @@
  * Send Ink native ETH using Max.
  *
  * Covers:
- * - Ink (0xdef1) Max send confirming and showing in Activity
- * - Decimal-string chainId send path (57073) merged from EXT-9
+ * - Ink (`0xdef1`) Max send confirming and showing in Activity
+ * - Decimal chainId `57073` on the gas-estimate API (EXT-9 / #39806)
+ *
+ * The send token picker renders `token-asset-${hexChainId}-ETH`. A decimal
+ * `token-asset-57073-ETH` row is not produced, so this spec selects the hex
+ * asset and asserts the decimal gas-fee URL instead of falling back.
  */
 
 import { strict as assert } from 'assert';
 import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import type { MockedEndpoint, Mockttp } from 'mockttp';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
   CHAIN_IDS,
   INK_DISPLAY_NAME,
@@ -29,6 +34,7 @@ import { Driver } from '../../webdriver/driver';
 
 const INK_CHAIN_ID_HEX = CHAIN_IDS.INK;
 const INK_CHAIN_ID_DECIMAL = 57073;
+const INK_CHAIN_ID_DECIMAL_STRING = String(INK_CHAIN_ID_DECIMAL);
 const INK_NATIVE_ASSET_ID = `eip155:${INK_CHAIN_ID_DECIMAL}/slip44:60`;
 /** Default Anvil account balance (25 ETH) in wei. */
 const ANVIL_DEFAULT_BALANCE = '0x15af1d78b58c40000';
@@ -72,13 +78,13 @@ const INK_SUGGESTED_GAS_FEES = {
   baseFeeTrend: 'up',
 };
 
-const TOKEN_CHAIN_ID_CASES = [
-  { label: 'hex', tokenChainId: INK_CHAIN_ID_HEX },
-  { label: 'decimal-string', tokenChainId: String(INK_CHAIN_ID_DECIMAL) },
-] as const;
+const INK_GAS_FEE_STATE = {
+  gasFeeEstimates: INK_SUGGESTED_GAS_FEES,
+  gasEstimateType: GasEstimateTypes.feeMarket,
+};
 
 function buildInkFixtures(): ReturnType<FixtureBuilderV2['build']> {
-  return new FixtureBuilderV2()
+  const fixtures = new FixtureBuilderV2()
     .withNetworkController({
       selectedNetworkClientId: INK_NETWORK_CLIENT_ID,
       networkConfigurationsByChainId: {
@@ -131,6 +137,17 @@ function buildInkFixtures(): ReturnType<FixtureBuilderV2['build']> {
       },
     })
     .build();
+
+  // Send Max reads `gasFeeEstimatesByChainId` and does not start polling, so
+  // estimates must already be present or Max fills the full balance.
+  fixtures.data.GasFeeController.gasEstimateType = GasEstimateTypes.feeMarket;
+  fixtures.data.GasFeeController.gasFeeEstimates = INK_SUGGESTED_GAS_FEES;
+  fixtures.data.GasFeeController.gasFeeEstimatesByChainId = {
+    [INK_CHAIN_ID_HEX]: INK_GAS_FEE_STATE,
+    [INK_CHAIN_ID_DECIMAL_STRING]: INK_GAS_FEE_STATE,
+  };
+
+  return fixtures;
 }
 
 async function mockInkApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
@@ -155,33 +172,6 @@ async function mockInkApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
     });
 
   return [suggestedGasFees];
-}
-
-async function selectInkNativeToken(
-  driver: Driver,
-  sendPage: SendPage,
-  tokenChainId: string,
-): Promise<void> {
-  const preferredToken = { testId: `token-asset-${tokenChainId}-ETH` };
-  const hexFallbackToken = { testId: `token-asset-${INK_CHAIN_ID_HEX}-ETH` };
-
-  await sendPage.checkPageIsLoaded();
-  await driver.waitUntil(
-    async () => {
-      return (
-        (await driver.isElementPresent(preferredToken)) ||
-        (await driver.isElementPresent(hexFallbackToken))
-      );
-    },
-    { interval: 100, timeout: 15000 },
-  );
-
-  if (await driver.isElementPresent(preferredToken)) {
-    await sendPage.selectToken(tokenChainId, 'ETH');
-    return;
-  }
-
-  await sendPage.selectToken(INK_CHAIN_ID_HEX, 'ETH');
 }
 
 async function assertMaxAmountDoesNotExceedBalanceMinusGas(
@@ -220,6 +210,7 @@ async function assertMaxAmountDoesNotExceedBalanceMinusGas(
 }
 
 async function assertDecimalChainIdGasEstimatesWereRequested(
+  driver: Driver,
   mockedEndpoints: MockedEndpoint[],
 ): Promise<void> {
   const [suggestedGasFees] = mockedEndpoints;
@@ -227,60 +218,63 @@ async function assertDecimalChainIdGasEstimatesWereRequested(
     suggestedGasFees,
     'Decimal chainId gas-fee mock was not registered',
   );
-  const requests = await suggestedGasFees.getSeenRequests();
-  assert.ok(
-    requests.length > 0,
-    `Gas fee estimates must be requested with decimal chainId ${INK_CHAIN_ID_DECIMAL}`,
+  await driver.waitUntil(
+    async () => {
+      const requests = await suggestedGasFees.getSeenRequests();
+      return requests.length > 0;
+    },
+    { interval: 200, timeout: 15000 },
   );
 }
 
 describe('Send Ink native max', function () {
-  TOKEN_CHAIN_ID_CASES.forEach(({ label, tokenChainId }) => {
-    it(`sends native ETH using Max when token chainId is ${label}`, async function () {
-      await withFixtures(
-        {
-          fixtures: buildInkFixtures(),
-          localNodeOptions: {
-            chainId: INK_CHAIN_ID_DECIMAL,
-            hardfork: 'london',
-          },
-          title: this.test?.fullTitle(),
-          testSpecificMock: mockInkApis,
+  it('sends native ETH using Max when token chainId is hex', async function () {
+    await withFixtures(
+      {
+        fixtures: buildInkFixtures(),
+        localNodeOptions: {
+          chainId: INK_CHAIN_ID_DECIMAL,
+          hardfork: 'london',
         },
-        async ({
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockInkApis,
+      },
+      async ({
+        driver,
+        mockedEndpoint,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint[];
+      }) => {
+        await login(driver, { validateBalance: false });
+
+        await driver.delay(1000);
+        const homePage = new HomePage(driver);
+        await homePage.startSendFlow();
+
+        const sendPage = new SendPage(driver);
+        await sendPage.checkPageIsLoaded();
+        await sendPage.selectToken(INK_CHAIN_ID_HEX, 'ETH');
+        await sendPage.fillRecipient({ recipientAddress: DEFAULT_RECIPIENT });
+        await sendPage.clickMaxButton();
+        await assertMaxAmountDoesNotExceedBalanceMinusGas(driver, sendPage);
+        await sendPage.pressContinueButton();
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkPageIsLoaded();
+        await assertDecimalChainIdGasEstimatesWereRequested(
           driver,
           mockedEndpoint,
-        }: {
-          driver: Driver;
-          mockedEndpoint: MockedEndpoint[];
-        }) => {
-          await login(driver, { validateBalance: false });
+        );
+        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
-          await driver.delay(1000);
-          const homePage = new HomePage(driver);
-          await homePage.startSendFlow();
-
-          const sendPage = new SendPage(driver);
-          await selectInkNativeToken(driver, sendPage, tokenChainId);
-          await sendPage.fillRecipient({ recipientAddress: DEFAULT_RECIPIENT });
-          await sendPage.clickMaxButton();
-          await assertMaxAmountDoesNotExceedBalanceMinusGas(driver, sendPage);
-          await sendPage.pressContinueButton();
-
-          const transactionConfirmation = new TransactionConfirmation(driver);
-          await transactionConfirmation.checkPageIsLoaded();
-          await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
-
-          await homePage.goToActivityList();
-          const activityTab = new ActivityTab(driver);
-          await activityTab.checkTransactionActivityByText('Sent');
-          await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
-          await activityTab.checkNoFailedTransactions();
-          await activityTab.checkNoPendingTransactions();
-
-          await assertDecimalChainIdGasEstimatesWereRequested(mockedEndpoint);
-        },
-      );
-    });
+        await homePage.goToActivityList();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTransactionActivityByText('Sent');
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkNoFailedTransactions();
+        await activityTab.checkNoPendingTransactions();
+      },
+    );
   });
 });
