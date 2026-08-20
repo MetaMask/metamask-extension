@@ -101,8 +101,16 @@ export const components: NotificationComponent<SnapNotification> = {
                 alignItems={AlignItems.center}
                 paddingBottom={2}
               >
-                <SnapIcon snapId={snapId} avatarSize={IconSize.Xl} />
-                <Text paddingLeft={4} fontWeight={FontWeight.Medium}>
+                <SnapIcon
+                  snapId={snapId}
+                  avatarSize={IconSize.Xl}
+                  data-testid="notification-details-snap-avatar"
+                />
+                <Text
+                  paddingLeft={4}
+                  fontWeight={FontWeight.Medium}
+                  data-testid="notification-details-snap-name"
+                >
                   {snapsNameGetter(snapId)}
                 </Text>
               </Box>

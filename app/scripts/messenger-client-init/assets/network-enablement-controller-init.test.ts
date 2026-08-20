@@ -3,7 +3,10 @@ import {
   MOCK_ANY_NAMESPACE,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { NetworkEnablementController } from '@metamask/network-enablement-controller';
+import {
+  NetworkEnablementController,
+  NetworkEnablementControllerMessenger,
+} from '@metamask/network-enablement-controller';
 import { BtcScope, SolAccountType, SolScope } from '@metamask/keyring-api';
 import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
 import {
@@ -18,7 +21,6 @@ import {
   getNetworkEnablementControllerInitMessenger,
   getNetworkEnablementControllerMessenger,
   NetworkEnablementControllerInitMessenger,
-  NetworkEnablementControllerMessenger,
 } from '../messengers/assets';
 import { getRootMessenger } from '../../lib/messenger';
 import { NetworkEnablementControllerInit } from './network-enablement-controller-init';
@@ -328,9 +330,9 @@ describe('NetworkEnablementControllerInit', () => {
     });
   });
 
-  it('initialises the controller with the correct networks for test environment', () => {
+  it('initialises the controller with the correct networks for testing environment', () => {
     process.env.METAMASK_DEBUG = '';
-    process.env.METAMASK_ENVIRONMENT = 'test';
+    process.env.METAMASK_ENVIRONMENT = 'testing';
     process.env.IN_TEST = '';
 
     NetworkEnablementControllerInit(getInitRequestMock());

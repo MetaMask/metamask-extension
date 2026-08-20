@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { useCallback, useContext } from 'react';
+import { useCallback } from 'react';
 
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   RecipientInputMethod,
   useSendMetricsContext,
@@ -14,7 +14,7 @@ import { useSendContext } from '../../../context/send';
 import { useSendType } from '../useSendType';
 
 export const useRecipientSelectionMetrics = () => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { chainId } = useSendContext();
   const { isEvmSendType } = useSendType();
   const { accountType, recipientInputMethod, setRecipientInputMethod } =
@@ -38,23 +38,26 @@ export const useRecipientSelectionMetrics = () => {
 
   const captureRecipientSelected = useCallback(async () => {
     trackEvent(
-      {
-        event: MetaMetricsEventName.SendRecipientSelected,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
+      createEventBuilder(MetaMetricsEventName.SendRecipientSelected)
+        .addCategory(MetaMetricsEventCategory.Send)
+        .addProperties({
           account_type: accountType,
           input_method: recipientInputMethod,
           chain_id: chainId,
           chain_id_caip: isEvmSendType
             ? `eip155:${parseInt(chainId as string, 16)}`
             : chainId,
-        },
-      },
-      {
-        excludeMetaMetricsId: false,
-      },
+        })
+        .build({ excludeMetaMetricsId: false }),
     );
-  }, [accountType, chainId, isEvmSendType, recipientInputMethod, trackEvent]);
+  }, [
+    accountType,
+    chainId,
+    createEventBuilder,
+    isEvmSendType,
+    recipientInputMethod,
+    trackEvent,
+  ]);
 
   return {
     captureRecipientSelected,

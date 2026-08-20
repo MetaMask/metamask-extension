@@ -1,10 +1,12 @@
 import { asset } from './asset';
+import { batchSell } from './batch-sell';
 import { buy } from './buy';
 import { card } from './card';
 import { home } from './home';
 import { nfts } from './nfts';
 import { notifications } from './notifications';
 import { onboarding } from './onboarding';
+import { money } from './money';
 import { musd } from './musd';
 import { perps } from './perps';
 import { perpsAsset } from './perps-asset';
@@ -15,6 +17,7 @@ import type { Route } from './route';
 import { sell } from './sell';
 import { shield } from './shield';
 import { swap } from './swap';
+import { topTraders } from './top-traders';
 import { trending } from './trending';
 
 export type { Route } from './route';
@@ -41,11 +44,12 @@ export function addRoute(route: Route) {
 }
 
 if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   addRoute(require('./test-route').test);
 }
 
 addRoute(buy);
+addRoute(batchSell);
 addRoute(sell);
 addRoute(card);
 addRoute(home);
@@ -53,6 +57,7 @@ addRoute(nfts);
 addRoute(notifications);
 addRoute(onboarding);
 addRoute(swap);
+addRoute(money);
 addRoute(musd);
 addRoute(perps);
 addRoute(perpsAsset);
@@ -61,4 +66,5 @@ addRoute(predict);
 addRoute(rewards);
 addRoute(shield);
 addRoute(asset);
+addRoute(topTraders);
 addRoute(trending);

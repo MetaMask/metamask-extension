@@ -1,10 +1,11 @@
-import { TokensController } from '@metamask/assets-controllers';
-import { assert } from '@metamask/utils';
-import { MessengerClientInitFunction } from './types';
 import {
+  TokensController,
   TokensControllerMessenger,
-  TokensControllerInitMessenger,
-} from './messengers';
+} from '@metamask/assets-controllers';
+import { assert } from '@metamask/utils';
+import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { MessengerClientInitFunction } from './types';
+import { TokensControllerInitMessenger } from './messengers';
 import { getGlobalChainId } from './init-utils';
 import { tokenListService } from './token-list-service';
 
@@ -25,6 +26,12 @@ export const TokensControllerInit: MessengerClientInitFunction<
     provider,
     chainId: getGlobalChainId(initMessenger),
     tokenListService,
+    isDeprecated: () => {
+      const { remoteFeatureFlags } = initMessenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+      return getIsDeprecatedController(remoteFeatureFlags, 'TokensController');
+    },
   });
 
   return {

@@ -13,7 +13,7 @@ import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
 } from '../../../../../shared/lib/eip7702-support-utils';
-import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import {
   RelayStatus,
   RelaySubmitRequest,
@@ -22,6 +22,7 @@ import {
 } from '../transaction-relay';
 import {
   getClientForTransactionMetadata,
+  getClientVersionForTransactionMetadata,
   sanitizeOrigin,
 } from '../../smart-transaction/utils';
 import {
@@ -171,6 +172,7 @@ export class Delegation7702PublishHook {
       metadata: {
         txType: transactionMeta.type as RelayTransactionTxType,
         client: getClientForTransactionMetadata(),
+        clientVersion: getClientVersionForTransactionMetadata(),
         origin: sanitizeOrigin(transactionMeta.origin),
       },
     };

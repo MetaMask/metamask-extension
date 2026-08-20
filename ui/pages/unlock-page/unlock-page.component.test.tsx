@@ -6,9 +6,32 @@ import thunk from 'redux-thunk';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
-import * as actionsModule from '../../store/actions';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
 import UnlockPage from './unlock-page.component';
+
+const mockTrackEvent = jest.fn();
+const mockUnlockWithPasskey = jest.fn();
+
+jest.mock('../../hooks/passkey/usePasskeyUnlock', () => ({
+  usePasskeyUnlock: () => mockUnlockWithPasskey,
+}));
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
+
+jest.mock('../../hooks/useSegmentContext', () => ({
+  useSegmentContext: () => ({ page: { title: 'Unlock' } }),
+}));
 
 const mockLogoElement = document.createElement('svg');
 
@@ -26,10 +49,20 @@ jest.mock('@metamask/logo', () => () => ({
   lookAtAndRender: jest.fn(),
 }));
 
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../shared/lib/sentry')>(
+    '../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
+}));
+
 describe('UnlockPage component (passkey UI)', () => {
   const selectedTestAccountId = 'test-unlock-account-id';
 
   const mockStore = configureMockStore([thunk])({
+    confirmTransaction: {
+      txData: {},
+    },
     metamask: {
       passkeyRecord: null,
       internalAccounts: {
@@ -59,8 +92,8 @@ describe('UnlockPage component (passkey UI)', () => {
     isOnboardingCompleted: true,
     onRestore: jest.fn(),
     onSubmit: jest.fn().mockResolvedValue(undefined),
+    navigateAfterUnlock: jest.fn(),
     isPasskeyActive: true,
-    onUnlockWithPasskey: jest.fn().mockResolvedValue(undefined),
     checkIsSeedlessPasswordOutdated: jest.fn().mockResolvedValue(undefined),
     getIsSeedlessOnboardingUserAuthenticated: jest.fn().mockResolvedValue(true),
     forceUpdateMetamaskState: jest.fn().mockResolvedValue(undefined),
@@ -77,26 +110,8 @@ describe('UnlockPage component (passkey UI)', () => {
   });
 
   beforeEach(() => {
-    jest
-      .spyOn(actionsModule, 'generatePasskeyAuthenticationOptions')
-      .mockResolvedValue({
-        challenge: 'AQ',
-        allowCredentials: [{ id: 'AQ', type: 'public-key' }],
-        userVerification: 'required',
-      } as never);
-    jest
-      .spyOn(passkeyCeremony, 'startPasskeyAuthentication')
-      .mockResolvedValue({
-        id: 'cred',
-        rawId: 'cred',
-        type: 'public-key',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'AQ',
-        },
-        clientExtensionResults: {},
-      });
+    mockUnlockWithPasskey.mockReset();
+    mockUnlockWithPasskey.mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -115,14 +130,35 @@ describe('UnlockPage component (passkey UI)', () => {
     fireEvent.click(getByTestId('unlock-passkey-button'));
 
     await waitFor(() => {
-      expect(props.onUnlockWithPasskey).toHaveBeenCalled();
+      expect(mockUnlockWithPasskey).toHaveBeenCalled();
+      expect(props.navigateAfterUnlock).toHaveBeenCalled();
+    });
+  });
+
+  it('navigates after a successful password unlock', async () => {
+    const props = buildProps({ isPasskeyActive: false });
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPage {...props} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.change(getByTestId('unlock-password'), {
+      target: { value: 'test-password' },
+    });
+    fireEvent.click(getByTestId('unlock-submit'));
+
+    await waitFor(() => {
+      expect(props.onSubmit).toHaveBeenCalledWith('test-password');
+      expect(props.navigateAfterUnlock).toHaveBeenCalled();
     });
   });
 
   it('shows a passkey error banner when authentication fails with a non-silent error', async () => {
-    jest
-      .spyOn(passkeyCeremony, 'startPasskeyAuthentication')
-      .mockRejectedValueOnce({ code: PasskeyControllerErrorCode.NotEnrolled });
+    mockUnlockWithPasskey.mockRejectedValueOnce({
+      code: PasskeyControllerErrorCode.NotEnrolled,
+    });
 
     const props = buildProps();
 
@@ -140,11 +176,9 @@ describe('UnlockPage component (passkey UI)', () => {
   });
 
   it('does not show a passkey error banner when the user cancels WebAuthn', async () => {
-    jest
-      .spyOn(passkeyCeremony, 'startPasskeyAuthentication')
-      .mockRejectedValueOnce(
-        new DOMException('Not allowed', 'NotAllowedError'),
-      );
+    mockUnlockWithPasskey.mockRejectedValueOnce(
+      new DOMException('Not allowed', 'NotAllowedError'),
+    );
 
     const props = buildProps();
 
@@ -157,7 +191,7 @@ describe('UnlockPage component (passkey UI)', () => {
     fireEvent.click(getByTestId('unlock-passkey-button'));
 
     await waitFor(() => {
-      expect(passkeyCeremony.startPasskeyAuthentication).toHaveBeenCalled();
+      expect(mockUnlockWithPasskey).toHaveBeenCalled();
     });
 
     expect(
@@ -198,20 +232,5 @@ describe('UnlockPage component (passkey UI)', () => {
     await waitFor(() => {
       expect(getByTestId('unlock-passkey-button')).toBeInTheDocument();
     });
-  });
-
-  it('cancels an in-flight passkey ceremony when the component unmounts', () => {
-    const cancelSpy = jest.spyOn(passkeyCeremony, 'cancelPasskeyCeremony');
-    const props = buildProps();
-
-    const { unmount } = renderWithProvider(
-      <UnlockPage {...props} />,
-      mockStore,
-      '/unlock',
-    );
-
-    unmount();
-
-    expect(cancelSpy).toHaveBeenCalled();
   });
 });

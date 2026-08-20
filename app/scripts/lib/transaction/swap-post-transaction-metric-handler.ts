@@ -11,13 +11,10 @@ import {
   getSwapsTokensReceivedFromTxMeta,
 } from '../../../../shared/lib/transactions-controller-utils';
 import { hexWEIToDecETH } from '../../../../shared/lib/conversion.utils';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 
 export async function handleSwapPostTransactionMetricHandler(
-  {
-    getParticipateInMetrics,
-    trackEvent,
-    getHDEntropyIndex,
-  }: TransactionMetricsRequest,
+  { getParticipateInMetrics, getHDEntropyIndex }: TransactionMetricsRequest,
   {
     transactionMeta,
     approvalTransactionMeta,
@@ -28,14 +25,15 @@ export async function handleSwapPostTransactionMetricHandler(
 ) {
   if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
     if (transactionMeta.txReceipt?.status === '0x0') {
-      trackEvent({
-        event: MetaMetricsEventName.SwapFailed,
-        category: MetaMetricsEventCategory.Swaps,
-        sensitiveProperties: { ...transactionMeta.swapMetaData },
-        properties: {
-          hd_entropy_index: getHDEntropyIndex(),
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SwapFailed)
+          .addCategory(MetaMetricsEventCategory.Swaps)
+          .addSensitiveProperties({ ...transactionMeta.swapMetaData })
+          .addProperties({
+            hd_entropy_index: getHDEntropyIndex(),
+          })
+          .build(),
+      );
     } else {
       const tokensReceived = getSwapsTokensReceivedFromTxMeta(
         transactionMeta.destinationTokenSymbol,
@@ -48,9 +46,7 @@ export async function handleSwapPostTransactionMetricHandler(
       );
 
       const quoteVsExecutionRatio = tokensReceived
-        ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          `${new BigNumber(tokensReceived, 10)
+        ? `${new BigNumber(tokensReceived, 10)
             .div(transactionMeta.swapMetaData.token_to_amount, 10)
             .times(100)
             .toFixed(2)}%`
@@ -59,9 +55,7 @@ export async function handleSwapPostTransactionMetricHandler(
       const estimatedVsUsedGasRatio =
         transactionMeta.txReceipt?.gasUsed &&
         transactionMeta.swapMetaData.estimated_gas
-          ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
+          ? `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
               .div(transactionMeta.swapMetaData.estimated_gas, 10)
               .times(100)
               .toFixed(2)}%`
@@ -72,30 +66,31 @@ export async function handleSwapPostTransactionMetricHandler(
         approvalTransactionMeta,
       );
 
-      trackEvent({
-        event: MetaMetricsEventName.SwapCompleted,
-        category: MetaMetricsEventCategory.Swaps,
-        sensitiveProperties: {
-          ...transactionMeta.swapMetaData,
-          token_to_amount_received: tokensReceived,
-          quote_vs_executionRatio: quoteVsExecutionRatio,
-          estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
-          approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
-          trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
-          trade_and_approval_gas_cost_in_eth:
-            transactionsCost.tradeAndApprovalGasCostInEth,
-          // Firefox and Chrome have different implementations of the APIs
-          // that we rely on for communication accross the app. On Chrome big
-          // numbers are converted into number strings, on firefox they remain
-          // Big Number objects. As such, we convert them here for both
-          // browsers.
-          token_to_amount:
-            transactionMeta.swapMetaData.token_to_amount.toString(10),
-        },
-        properties: {
-          hd_entropy_index: getHDEntropyIndex(),
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SwapCompleted)
+          .addCategory(MetaMetricsEventCategory.Swaps)
+          .addSensitiveProperties({
+            ...transactionMeta.swapMetaData,
+            token_to_amount_received: tokensReceived,
+            quote_vs_executionRatio: quoteVsExecutionRatio,
+            estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
+            approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
+            trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
+            trade_and_approval_gas_cost_in_eth:
+              transactionsCost.tradeAndApprovalGasCostInEth,
+            // Firefox and Chrome have different implementations of the APIs
+            // that we rely on for communication accross the app. On Chrome big
+            // numbers are converted into number strings, on firefox they remain
+            // Big Number objects. As such, we convert them here for both
+            // browsers.
+            token_to_amount:
+              transactionMeta.swapMetaData.token_to_amount.toString(10),
+          })
+          .addProperties({
+            hd_entropy_index: getHDEntropyIndex(),
+          })
+          .build(),
+      );
     }
   }
 }

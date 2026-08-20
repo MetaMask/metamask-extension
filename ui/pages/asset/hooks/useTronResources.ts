@@ -11,7 +11,7 @@ import { getMultichainBalances } from '../../../selectors/multichain';
 import { getIsAssetsUnifyStateEnabled } from '../../../selectors/assets-unify-state';
 import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
 import { TRON_CHAINS } from '../../../../shared/constants/multichain/networks';
-import { MultichainWalletSnapSender } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { MultichainWalletSnapSender } from '../../../hooks/accounts/useMultichainWalletSnapSender';
 
 const TronResourceType = {
   ENERGY: 'energy',

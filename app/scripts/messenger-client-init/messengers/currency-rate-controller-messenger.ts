@@ -1,18 +1,12 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerGetStateAction,
-} from '@metamask/network-controller';
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { CurrencyRateMessenger } from '@metamask/assets-controllers';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-type AllowedActions =
-  | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetStateAction;
-
-export type CurrencyRateControllerMessenger = ReturnType<
-  typeof getCurrencyRateControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -22,14 +16,12 @@ export type CurrencyRateControllerMessenger = ReturnType<
  * messenger.
  */
 export function getCurrencyRateControllerMessenger(
-  messenger: RootMessenger<AllowedActions, never>,
-) {
-  const controllerMessenger = new Messenger<
-    'CurrencyRateController',
-    AllowedActions,
-    never,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<CurrencyRateMessenger>,
+    MessengerEvents<CurrencyRateMessenger>
+  >,
+): CurrencyRateMessenger {
+  const controllerMessenger: CurrencyRateMessenger = new Messenger({
     namespace: 'CurrencyRateController',
     parent: messenger,
   });
@@ -43,7 +35,9 @@ export function getCurrencyRateControllerMessenger(
   return controllerMessenger;
 }
 
-type AllowedInitializationActions = PreferencesControllerGetStateAction;
+type AllowedInitializationActions =
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 export type CurrencyRateControllerInitMessenger = ReturnType<
   typeof getCurrencyRateControllerInitMessenger
@@ -70,7 +64,10 @@ export function getCurrencyRateControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['PreferencesController:getState'],
+    actions: [
+      'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
+    ],
   });
   return controllerInitMessenger;
 }

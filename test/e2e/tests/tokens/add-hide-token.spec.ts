@@ -4,7 +4,7 @@ import type { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
@@ -173,12 +173,12 @@ describe('Add hide token', function () {
       },
       async ({ driver }) => {
         await login(driver, { validateBalance: false });
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenItemNumber(2);
-        await assetListPage.checkTokenAmountIsDisplayed('10 TST');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenItemNumber(2);
+        await tokensTab.checkTokenAmountIsDisplayed('10 TST');
 
-        await assetListPage.hideToken('TST');
-        await assetListPage.checkTokenItemNumber(1);
+        await tokensTab.hideToken('TST');
+        await tokensTab.checkTokenItemNumber(1);
       },
     );
   });
@@ -260,8 +260,8 @@ describe('Add hide token', function () {
 
         await login(driver, { validateBalance: false });
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenAmountIsDisplayed('10 TST');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenAmountIsDisplayed('10 TST');
 
         const subscriptionId = await subscriptionPromise;
         console.log(`Subscription established: ${subscriptionId}`);
@@ -294,7 +294,7 @@ describe('Add hide token', function () {
         wsServer.sendMessage(JSON.stringify(notification));
 
         // Verify the UI updates to reflect the new balance
-        await assetListPage.checkTokenAmountIsDisplayed('20 TST');
+        await tokensTab.checkTokenAmountIsDisplayed('20 TST');
       },
     );
   });

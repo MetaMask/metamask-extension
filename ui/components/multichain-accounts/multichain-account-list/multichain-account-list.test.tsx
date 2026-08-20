@@ -12,10 +12,18 @@ import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   MultichainAccountList,
   MultichainAccountListProps,
 } from './multichain-account-list';
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 jest.mock('../../../../shared/lib/trace', () => {
   const actual = jest.requireActual('../../../../shared/lib/trace');
@@ -98,7 +106,7 @@ const mockSetSelectedMultichainAccount = jest.requireMock(
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
-const modalHeaderSelector = '.mm-modal-header';
+const modalHeaderTestId = 'account-edit-modal-header';
 const walletHeaderTestId = 'multichain-account-tree-wallet-header';
 const accountNameInputTestId = 'account-name-input';
 
@@ -189,6 +197,7 @@ describe('MultichainAccountList', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    setBackgroundConnection(backgroundConnectionMock as never);
     mockGetAccountGroupsByAddress.mockReturnValue([]);
     mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
   });
@@ -229,7 +238,7 @@ describe('MultichainAccountList', () => {
     expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
   });
 
-  it('marks only the selected account with a check icon and dispatches action on click', () => {
+  it('marks only the selected account with a check icon and dispatches action on click', async () => {
     renderComponent();
 
     // With default props, checkboxes should not be shown (showAccountCheckbox defaults to false)
@@ -247,13 +256,34 @@ describe('MultichainAccountList', () => {
     const accountCell = screen.getByTestId(
       `multichain-account-cell-${walletTwoGroupId}`,
     );
-    accountCell.click();
+    // useTransition schedules pending-state updates that must flush inside act
+    await act(async () => {
+      fireEvent.click(accountCell);
+    });
 
     // Verify that the action was dispatched with the correct account group ID
     expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
       walletTwoGroupId,
     );
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('does not wrap custom handleAccountClick in the default switch transition gate', async () => {
+    const customHandleAccountClick = jest.fn();
+    renderComponent({
+      handleAccountClick: customHandleAccountClick,
+    });
+
+    const accountCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    await act(async () => {
+      fireEvent.click(accountCell);
+    });
+
+    expect(customHandleAccountClick).toHaveBeenCalledWith(walletTwoGroupId);
+    expect(mockSetSelectedMultichainAccount).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('updates selected account when selectedAccountGroup changes', () => {
@@ -378,16 +408,12 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify the modal is open by finding the modal header
-    const modalHeader = document.querySelector(modalHeaderSelector);
+    const modalHeader = screen.getByTestId(modalHeaderTestId);
     expect(modalHeader).toBeInTheDocument();
 
     // Find the header text inside the modal
-    if (modalHeader) {
-      const headerText = within(modalHeader as HTMLElement).getByText(
-        messages.rename.message,
-      );
-      expect(headerText).toBeInTheDocument();
-    }
+    const headerText = within(modalHeader).getByText(messages.rename.message);
+    expect(headerText).toBeInTheDocument();
 
     // Find the actual input element directly
     const inputContainer = screen.getByTestId(accountNameInputTestId);
@@ -461,7 +487,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify that the modal is open
-    const modalHeader = document.querySelector(modalHeaderSelector);
+    const modalHeader = screen.getByTestId(modalHeaderTestId);
     expect(modalHeader).toBeInTheDocument();
 
     // Find the close button by aria-label
@@ -619,6 +645,21 @@ describe('MultichainAccountList', () => {
         walletTwoGroupId,
       );
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+
+    it('invokes toggle handler only once when checkbox is clicked', () => {
+      const handleAccountClick = jest.fn();
+
+      renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: true,
+        handleAccountClick,
+      });
+
+      fireEvent.click(screen.getAllByRole('checkbox')[1]);
+
+      expect(handleAccountClick).toHaveBeenCalledTimes(1);
+      expect(handleAccountClick).toHaveBeenCalledWith(walletTwoGroupId);
     });
 
     it('handles checkbox click to deselect selected account', () => {

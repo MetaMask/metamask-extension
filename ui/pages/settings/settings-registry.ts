@@ -16,6 +16,10 @@ import {
   EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
@@ -31,10 +35,25 @@ import {
   THEME_ROUTE,
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+import {
+  getIsQrSyncEnabled,
+  getIsPerpsIncludedInBuild,
+} from '../../../shared/lib/environment';
+import type {
+  UIMessengerActions,
+  UIMessengerEvents,
+} from '../../messengers/ui-messenger';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
+import {
+  PASSKEY_PASSWORD_CHANGE_ROUTE_CAPABILITIES,
+  PASSKEY_REGISTRATION_ROUTE_CAPABILITIES,
+  PASSKEY_SECURITY_ROUTE_CAPABILITIES,
+  PASSKEY_TURN_OFF_ROUTE_CAPABILITIES,
+} from './security-and-password-tab/messenger';
 
 /**
  * Route definition for a Settings page.
@@ -45,11 +64,25 @@ export type SettingsRouteMeta = {
   /** Parent path for back navigation; undefined = settings root */
   parentPath?: string;
   /** Lazy-loaded component to render for this route */
-  component?: ComponentType;
+  component?: ComponentType<React.PropsWithChildren<unknown>>;
   /** If true, this route appears as a tab in the TabBar */
   isTab?: boolean;
   /** Icon for TabBar (required if isTab is true) */
   iconName?: IconName;
+  /** Background messenger capabilities delegated only while this route is mounted. */
+  messengerCapabilities?: {
+    actions?: UIMessengerActions['type'][];
+    events?: UIMessengerEvents['type'][];
+  };
+  /**
+   * If true, the route's component is mounted by the top-level app router
+   * (outside `SettingsLayout`) rather than by the nested Settings router.
+   * Used for full-page routes whose path is not under `/settings` (e.g.
+   * `/sync-accounts`). These are excluded from `SETTINGS_RENDERABLE_ROUTES`
+   * so the Settings router does not also mount a nested `/settings/<path>`
+   * child that would duplicate headers and skip `hideAppHeader` matching.
+   */
+  externalRoute?: boolean;
 };
 
 export const SETTINGS_ROOT_SECTIONS: readonly {
@@ -75,6 +108,7 @@ export const SETTINGS_ROOT_SECTIONS: readonly {
       DEVELOPER_OPTIONS_ROUTE,
       DEVELOPER_TOOLS_ROUTE,
       ABOUT_US_ROUTE,
+      ...(getIsQrSyncEnabled() ? [SYNC_ACCOUNTS_ROUTE] : []),
     ],
   },
 ] as const;
@@ -142,6 +176,38 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     isTab: true,
     iconName: IconName.Notification,
   },
+  [NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE]: {
+    labelKey: 'notificationsSettingsWalletActivityTitle',
+    parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+    component: mmLazy(
+      () => import('./notifications-tab/wallet-activity-sub-page.tsx'),
+    ),
+  },
+  ...(getIsPerpsIncludedInBuild()
+    ? {
+        [NOTIFICATIONS_SETTINGS_PERPS_ROUTE]: {
+          labelKey: 'notificationsSettingsPerpsTitle',
+          parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+          component: mmLazy(
+            () => import('./notifications-tab/perps-sub-page.tsx'),
+          ),
+        },
+      }
+    : {}),
+  [NOTIFICATIONS_SETTINGS_MARKETING_ROUTE]: {
+    labelKey: 'notificationsSettingsMarketingTitle',
+    parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+    component: mmLazy(
+      () => import('./notifications-tab/marketing-sub-page.tsx'),
+    ),
+  },
+  [NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE]: {
+    labelKey: 'notificationsSettingsAgenticCliTitle',
+    parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+    component: mmLazy(
+      () => import('./notifications-tab/agentic-cli-sub-page.tsx'),
+    ),
+  },
 
   // --- Security and Password tab ---
   [SECURITY_AND_PASSWORD_ROUTE]: {
@@ -150,6 +216,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(() => import('./security-and-password-tab/index.ts')),
     isTab: true,
     iconName: IconName.SecurityKey,
+    messengerCapabilities: PASSKEY_SECURITY_ROUTE_CAPABILITIES,
   },
   [AUTO_LOCK_ROUTE]: {
     labelKey: 'autoLock',
@@ -172,6 +239,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(
       () => import('./security-and-password-tab/password-sub-page.tsx'),
     ),
+    messengerCapabilities: PASSKEY_PASSWORD_CHANGE_ROUTE_CAPABILITIES,
   },
   [SECURITY_REGISTER_PASSKEY_ROUTE]: {
     labelKey: 'setUpPasskey',
@@ -179,6 +247,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(
       () => import('./security-and-password-tab/passkey-register-sub-page.tsx'),
     ),
+    messengerCapabilities: PASSKEY_REGISTRATION_ROUTE_CAPABILITIES,
   },
   [SECURITY_TURN_OFF_PASSKEY_ROUTE]: {
     labelKey: 'turnOffPasskey',
@@ -186,6 +255,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(
       () => import('./security-and-password-tab/passkey-turn-off-sub-page.tsx'),
     ),
+    messengerCapabilities: PASSKEY_TURN_OFF_ROUTE_CAPABILITIES,
   },
 
   // --- Privacy tab ---
@@ -284,6 +354,21 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     isTab: true,
     iconName: IconName.SwapVertical,
   },
+
+  // --- Sync Accounts tab (only when QR_SYNC_ENABLED=true) ---
+  ...(getIsQrSyncEnabled()
+    ? {
+        [SYNC_ACCOUNTS_ROUTE]: {
+          labelKey: 'syncAccounts',
+          component: mmLazy(() => import('./sync-accounts/index.ts')),
+          isTab: true,
+          iconName: IconName.Mobile,
+          // Mounted top-level at `/sync-accounts` by the app router, not nested
+          // under `/settings`. Excluded from SETTINGS_RENDERABLE_ROUTES below.
+          externalRoute: true,
+        },
+      }
+    : {}),
 
   // --- Experimental tab ---
   [EXPERIMENTAL_ROUTE]: {
@@ -390,14 +475,17 @@ export const SETTINGS_TABS = Object.entries(SETTINGS_ROUTES)
   }));
 
 /**
- * All routes that have a component (for generating Route elements).
+ * All routes that have a component and are rendered by the nested Settings
+ * router (for generating Route elements). Excludes `externalRoute` entries,
+ * which are mounted top-level by the app router.
  */
 export const SETTINGS_RENDERABLE_ROUTES = Object.entries(SETTINGS_ROUTES)
   .filter((entry): entry is [string, RenderableRouteMeta] => {
     const [, meta] = entry;
-    return Boolean(meta.component);
+    return Boolean(meta.component) && !meta.externalRoute;
   })
   .map(([path, meta]) => ({
     path,
     component: meta.component,
+    messengerCapabilities: meta.messengerCapabilities,
   }));

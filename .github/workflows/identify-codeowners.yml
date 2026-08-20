@@ -26,7 +26,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: pr-comment
+    permissions:
+      contents: read
+      id-token: write
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            actions: read
+            contents: write
+            pull_requests: write
+
       - name: Checkout .github/ directory
         uses: actions/checkout@v6
         with:
@@ -45,5 +58,5 @@ jobs:
 
       - name: Identify codeowners
         env:
-          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+          PR_COMMENT_TOKEN: ${{ steps.token.outputs.token }}
         run: node ./.github/scripts/identify-codeowners.mts

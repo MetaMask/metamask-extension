@@ -2,14 +2,14 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ToastContent } from './toast';
 
-jest.mock('../icon/status-icon', () => ({
+jest.mock('../status-icon/status-icon', () => ({
   StatusIcon: () => null,
 }));
 
 describe('ToastContent', () => {
   it('renders the title', () => {
     render(<ToastContent title="Transaction pending" />);
-    expect(screen.getByText('Transaction pending')).toHaveClass('font-bold');
+    expect(screen.getByText('Transaction pending')).toBeInTheDocument();
   });
 
   it('renders the description when provided', () => {

@@ -17,5 +17,7 @@ export type UserPrefrencedCurrencyDisplayProps = OverridingUnion<
   }
 >;
 
-declare const UserPrefrencedCurrencyDisplay: React.FC<UserPrefrencedCurrencyDisplayProps>;
+declare const UserPrefrencedCurrencyDisplay: React.ComponentType<
+  React.PropsWithChildren<UserPrefrencedCurrencyDisplayProps>
+>;
 export default UserPrefrencedCurrencyDisplay;

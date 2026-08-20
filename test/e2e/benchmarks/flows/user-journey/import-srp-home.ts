@@ -8,7 +8,7 @@ import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-n
 import { withFixtures } from '../../../helpers';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import LoginPage from '../../../page-objects/pages/login-page';
 import { Driver } from '../../../webdriver/driver';
@@ -103,10 +103,10 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
             async () => {
               const homePage = new HomePage(driver);
               await homePage.checkPageIsLoaded();
-              const assetListPage = new AssetListPage(driver);
-              await assetListPage.checkTokenListIsDisplayed();
-              await assetListPage.checkTokenExistsInList('Ethereum');
-              await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
+              const tokensTab = new TokensTab(driver);
+              await tokensTab.checkTokenListIsDisplayed();
+              await tokensTab.checkTokenExistsInList('Ethereum');
+              await tokensTab.waitForTokenToBeDisplayed('Solana', 60000);
             },
           ),
         );

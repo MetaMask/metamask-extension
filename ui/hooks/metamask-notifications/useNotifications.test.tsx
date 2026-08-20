@@ -1,14 +1,15 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
 import * as actions from '../../store/actions';
-import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
   useCreateNotifications,
   useDisableNotifications,
+  useEnableNotifications,
+  useListNotifications,
 } from './useNotifications';
 
 const middlewares = [thunk];
@@ -22,6 +23,7 @@ jest.mock('../../store/actions', () => ({
   markMetamaskNotificationsAsRead: jest.fn(),
   showLoadingIndication: jest.fn(),
   hideLoadingIndication: jest.fn(),
+  enableMetamaskNotifications: jest.fn(() => jest.fn()),
   disableMetamaskNotifications: jest.fn(),
 }));
 
@@ -33,6 +35,8 @@ describe('useNotifications', () => {
       metamask: {
         isMetamaskNotificationsEnabled: false,
         isBackupAndSyncEnabled: false,
+        isFeatureAnnouncementsEnabled: false,
+        dataCollectionForMarketing: true,
         internalAccounts: {
           accounts: [
             {
@@ -63,12 +67,8 @@ describe('useNotifications', () => {
 
   it('should create notifications', async () => {
     const { result } = renderHook(() => useCreateNotifications(), {
-      wrapper: ({ children }) => (
-        <Provider store={store}>
-          <MetamaskNotificationsProvider>
-            {children}
-          </MetamaskNotificationsProvider>
-        </Provider>
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
       ),
     });
 
@@ -81,7 +81,9 @@ describe('useNotifications', () => {
 
   it('should disable notifications and handle states', async () => {
     const { result } = renderHook(() => useDisableNotifications(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
     });
 
     act(() => {
@@ -89,5 +91,45 @@ describe('useNotifications', () => {
     });
 
     expect(actions.disableMetamaskNotifications).toHaveBeenCalled();
+  });
+
+  it('should enable notifications with AUS marketing initialization options', async () => {
+    const { result } = renderHook(() => useEnableNotifications(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
+    });
+
+    await act(async () => {
+      await result.current.enableNotifications();
+    });
+
+    expect(actions.enableMetamaskNotifications).toHaveBeenCalledWith({
+      hasMarketingConsent: true,
+      productAnnouncementEnabled: false,
+    });
+  });
+
+  it('applies fetched notification list data after listNotifications resolves', async () => {
+    const notifications = [{ id: 'n1' }];
+    (actions.fetchAndUpdateMetamaskNotifications as jest.Mock).mockReturnValue(
+      () => Promise.resolve(notifications),
+    );
+
+    const { result } = renderHook(() => useListNotifications(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
+    });
+
+    await act(async () => {
+      await result.current.listNotifications();
+    });
+
+    expect(actions.fetchAndUpdateMetamaskNotifications).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(result.current.notificationsData).toEqual(notifications);
+      expect(result.current.isLoading).toBe(false);
+    });
   });
 });
