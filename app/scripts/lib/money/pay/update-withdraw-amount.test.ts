@@ -25,9 +25,9 @@ const TELLER_INTERFACE = new Interface(TELLER_ABI);
 const MUSD_ADDRESS = MUSD_TOKEN_ADDRESS_BY_CHAIN[VAULT_CONFIG_MOCK.chainId];
 const RECIPIENT_MOCK = '0x1234567890123456789012345678901234567890' as Hex;
 
-/** 1.0000004 mUSD: base units 1000000.4, so ROUND_UP → 1000001. */
+/** 1.0000004 mUSD: base units 1000000.4, so ROUND_DOWN → 1000000. */
 const AMOUNT_HUMAN = '1.0000004';
-const AMOUNT_ROUNDED_UP = 1000001n;
+const AMOUNT_ROUNDED_DOWN = 1000000n;
 
 let transactionIdCounter = 0;
 
@@ -104,7 +104,8 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
     // Shares are ceil(amount * ONE_SHARE / rate) at the mocked vault rate.
     expect(withdraw.shareAmount.toBigInt()).toBe(
-      (AMOUNT_ROUNDED_UP * 1_000_000n + VAULT_RATE_MOCK - 1n) / VAULT_RATE_MOCK,
+      (AMOUNT_ROUNDED_DOWN * 1_000_000n + VAULT_RATE_MOCK - 1n) /
+        VAULT_RATE_MOCK,
     );
     expect(withdraw.to.toLowerCase()).toBe(MONEY_ACCOUNT_ADDRESS_MOCK);
 
@@ -113,7 +114,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       meta.nestedTransactions?.[1].data as string,
     );
     expect(transfer.recipient.toLowerCase()).toBe(RECIPIENT_MOCK);
-    expect(transfer.amount.toBigInt()).toBe(AMOUNT_ROUNDED_UP);
+    expect(transfer.amount.toBigInt()).toBe(AMOUNT_ROUNDED_DOWN);
 
     expect(meta.txParams.gas).toBeUndefined();
     expect(meta.simulationData).toBeUndefined();

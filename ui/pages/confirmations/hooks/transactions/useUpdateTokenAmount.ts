@@ -100,7 +100,7 @@ export function useUpdateTokenAmount() {
       // legacy per-call updater as the fallback; that legacy pipeline was
       // deliberately not ported, so this is the extension's only path.
       if (moneyAccountFlow === MoneyAccountFlow.Deposit) {
-        setMoneyAccountAmountCommitPending(true);
+        setMoneyAccountAmountCommitPending(true, transactionId);
         updateMoneyAccountDepositAmount(transactionId, amountHuman)
           .catch((error) => {
             console.error(
@@ -109,7 +109,7 @@ export function useUpdateTokenAmount() {
             );
           })
           .finally(() => {
-            setMoneyAccountAmountCommitPending(false);
+            setMoneyAccountAmountCommitPending(false, transactionId);
           });
         return;
       }
@@ -118,7 +118,7 @@ export function useUpdateTokenAmount() {
       // no calldata to parse, and the background commit path resolves the
       // recipient (the selected account) and the vault rate.
       if (moneyAccountFlow === MoneyAccountFlow.Withdraw) {
-        setMoneyAccountAmountCommitPending(true);
+        setMoneyAccountAmountCommitPending(true, transactionId);
         updateMoneyAccountWithdrawAmount(transactionId, amountHuman)
           .catch((error) => {
             console.error(
@@ -127,7 +127,7 @@ export function useUpdateTokenAmount() {
             );
           })
           .finally(() => {
-            setMoneyAccountAmountCommitPending(false);
+            setMoneyAccountAmountCommitPending(false, transactionId);
           });
         return;
       }

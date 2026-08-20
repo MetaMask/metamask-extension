@@ -39,8 +39,18 @@ export type ConfirmContextType = {
    * commit's `finally` can run after a newer one has already started), and a
    * plain boolean would let the older commit's completion incorrectly clear
    * the flag while the newer one is still in flight.
+   *
+   * `confirmationId` must be the id of the confirmation the commit was
+   * started for. `ConfirmContextProvider` is not remounted between
+   * confirmations, so a commit abandoned on a previous confirmation can still
+   * resolve after the user has moved on; calls whose `confirmationId` no
+   * longer matches the current confirmation are ignored rather than mutating
+   * the new confirmation's count.
    */
-  setMoneyAccountAmountCommitPending: (isPending: boolean) => void;
+  setMoneyAccountAmountCommitPending: (
+    isPending: boolean,
+    confirmationId: string,
+  ) => void;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -66,8 +76,20 @@ export const ConfirmContextProvider = ({
     isMoneyAccountAmountCommitPending,
     setIsMoneyAccountAmountCommitPending,
   ] = useState(false);
+  const { currentConfirmation: currentConfirmationFromHook } =
+    useCurrentConfirmation(confirmationId);
+  const currentConfirmation =
+    currentConfirmationOverride ?? currentConfirmationFromHook;
+  const previousConfirmationId = usePrevious(currentConfirmation?.id);
+  const currentConfirmationIdRef = useRef(currentConfirmation?.id);
+  useEffect(() => {
+    currentConfirmationIdRef.current = currentConfirmation?.id;
+  }, [currentConfirmation?.id]);
   const setMoneyAccountAmountCommitPending = useCallback(
-    (isPending: boolean) => {
+    (isPending: boolean, forConfirmationId: string) => {
+      if (forConfirmationId !== currentConfirmationIdRef.current) {
+        return;
+      }
       moneyAccountAmountCommitPendingCountRef.current = Math.max(
         0,
         moneyAccountAmountCommitPendingCountRef.current + (isPending ? 1 : -1),
@@ -78,11 +100,6 @@ export const ConfirmContextProvider = ({
     },
     [],
   );
-  const { currentConfirmation: currentConfirmationFromHook } =
-    useCurrentConfirmation(confirmationId);
-  const currentConfirmation =
-    currentConfirmationOverride ?? currentConfirmationFromHook;
-  const previousConfirmationId = usePrevious(currentConfirmation?.id);
 
   /**
    * `ConfirmContextProvider` is not remounted between confirmations in the
@@ -174,6 +191,9 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
     isMoneyAccountAmountCommitPending: boolean;
-    setMoneyAccountAmountCommitPending: (isPending: boolean) => void;
+    setMoneyAccountAmountCommitPending: (
+      isPending: boolean,
+      confirmationId: string,
+    ) => void;
   };
 };
