@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { type CaipChainId } from '@metamask/utils';
+import { IconName } from '@metamask/design-system-shared';
 import { BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP } from '../../../../shared/constants/bridge';
 import {
   NetworkSelectionModal,
@@ -14,7 +15,6 @@ import {
 } from '../../../../shared/lib/ab-testing/configs/chain-value-order';
 import { useABTest } from '../../../hooks/useABTest';
 import { useChainValueOrder } from '../hooks/useChainValueOrder';
-import { IconName } from '@metamask/design-system-shared';
 
 type NetworkPickerProps = {
   chains: { chainId: CaipChainId; name: string }[];
