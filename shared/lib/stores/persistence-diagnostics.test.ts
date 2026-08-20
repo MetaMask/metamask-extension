@@ -21,9 +21,7 @@ async function deleteDiagnosticsDatabase() {
   });
 }
 
-function getEnabledConfig(
-  overrides: Record<string, unknown> = {},
-) {
+function getEnabledConfig(overrides: Record<string, unknown> = {}) {
   const config = getSplitStatePersistenceDiagnosticsConfig({
     [SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG]: {
       enabled: true,
