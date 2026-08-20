@@ -1,9 +1,12 @@
 /**
- * Browser-side MutationObserver used by homepage E2E to catch blocking error
+ * Browser-side toast monitor used by homepage E2E to catch blocking error
  * toasts that auto-dismiss before a later assertion.
  *
  * Serialized into the page via WebDriver `executeScript`, so this function
  * must stay self-contained (no closed-over imports).
+ *
+ * Polls with `setTimeout` instead of `MutationObserver` because LavaMoat
+ * scuttling blocks MutationObserver in the UI realm.
  */
 
 type BlockingErrorToastWindow = Window & {
@@ -12,20 +15,25 @@ type BlockingErrorToastWindow = Window & {
 };
 
 /**
+ * Poll interval used by {@link installBlockingErrorToastMonitor}. Inlined as a
+ * literal inside that function so WebDriver `executeScript` serialization stays
+ * self-contained. Keep these values in sync.
+ */
+export const BLOCKING_ERROR_TOAST_POLL_INTERVAL_MS = 50;
+
+/**
  * Toasts recorded by {@link installBlockingErrorToastMonitor} on the current
  * document. Used by unit tests; E2E reads the same array via executeScript.
  *
  * @returns Recorded toast text, or an empty array if monitoring is not installed.
  */
 export function getRecordedBlockingErrorToasts(): string[] {
-  return (
-    (window as BlockingErrorToastWindow).__mmE2eBlockingErrorToasts ?? []
-  );
+  return (window as BlockingErrorToastWindow).__mmE2eBlockingErrorToasts ?? [];
 }
 
 /**
- * Installs a MutationObserver that records blocking error toasts as they
- * appear. Idempotent on the current document.
+ * Installs a monitor that records blocking error toasts as they appear.
+ * Idempotent on the current document.
  */
 export function installBlockingErrorToastMonitor(): void {
   const win = window as BlockingErrorToastWindow;
@@ -33,6 +41,8 @@ export function installBlockingErrorToastMonitor(): void {
     return;
   }
   win.__mmE2eBlockingErrorToasts = [];
+  // Literal (not the exported const) so executeScript serialization stays self-contained.
+  const pollIntervalMs = 50;
   const matchText = /cryptocurrencies|unsupported/iu;
   const toastRootSelector =
     '.toast-container, .toasts-container, .toasts-container__banner-base, [data-testid="storage-error-toast"], [data-testid="survey-toast"]';
@@ -85,26 +95,28 @@ export function installBlockingErrorToastMonitor(): void {
 
   function commit(candidates: Set<Element>) {
     candidates.forEach((el) => {
-      if (isMatch(el) && win.__mmE2eBlockingErrorToasts) {
-        win.__mmE2eBlockingErrorToasts.push((el.textContent || '').trim());
+      if (!isMatch(el) || !win.__mmE2eBlockingErrorToasts) {
+        return;
+      }
+      const text = (el.textContent || '').trim();
+      if (!win.__mmE2eBlockingErrorToasts.includes(text)) {
+        win.__mmE2eBlockingErrorToasts.push(text);
       }
     });
   }
 
-  const observer = new MutationObserver((mutations) => {
+  function scanDocument() {
     const candidates = new Set<Element>();
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((child) => {
-        collectCandidates(child, candidates);
-      });
-    });
+    collectCandidates(win.document.documentElement, candidates);
     commit(candidates);
-  });
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-  });
-  const initialCandidates = new Set<Element>();
-  collectCandidates(document.documentElement, initialCandidates);
-  commit(initialCandidates);
+  }
+
+  function poll() {
+    scanDocument();
+    // setTimeout is a LavaMoat scuttling exception; MutationObserver is not.
+    setTimeout(poll, pollIntervalMs);
+  }
+
+  scanDocument();
+  setTimeout(poll, pollIntervalMs);
 }

@@ -683,8 +683,9 @@ class HomePage {
   }
 
   /**
-   * Installs a MutationObserver that records blocking error toasts as they
+   * Installs a page-side poller that records blocking error toasts as they
    * appear, including ones that auto-dismiss before a later assertion.
+   * Polls instead of using MutationObserver, which LavaMoat scuttling blocks.
    * Idempotent on the current document; call again after unlock in case the
    * document reloaded.
    */
