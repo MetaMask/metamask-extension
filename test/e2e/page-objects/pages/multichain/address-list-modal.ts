@@ -143,15 +143,13 @@ class AddressListModal {
     console.log(
       `Check quick-copy popover shows "${networkAddress}" for "${networkName}"`,
     );
-    const row = await this.driver.findElement(
-      this.quickCopyRowByNetworkName(networkName),
-    );
-    const rowText = await row.getText();
-    if (!rowText.includes(networkAddress)) {
-      throw new Error(
-        `Expected quick-copy row for "${networkName}" to include "${networkAddress}" but got "${rowText}"`,
-      );
-    }
+    const { xpath: rowXpath } = this.quickCopyRowByNetworkName(networkName);
+    await this.driver.waitForSelector({
+      xpath: rowXpath.replace(
+        /\]$/u,
+        ` and contains(normalize-space(.), ${quoteXPathText(networkAddress)})]`,
+      ),
+    });
   }
 
   async checkQuickCopyPopoverIsClosed(): Promise<void> {
@@ -184,21 +182,17 @@ class AddressListModal {
   }
 
   async clickCopyButton(addressIndex: number = 0): Promise<void> {
-    const copyButtonsList = await this.driver.findElements(this.copyButton);
-    const copyButton = copyButtonsList[addressIndex];
-    await copyButton.click();
+    await this.driver.clickElement({
+      xpath: `(//*[@data-testid='multichain-address-row-copy-button'])[${addressIndex + 1}]`,
+    });
   }
 
   async clickCopyButtonForNetwork(networkName: string): Promise<void> {
     console.log(`Click copy button for network "${networkName}"`);
-    const row = await this.driver.findElement(
-      this.addressListRowByNetworkName(networkName),
-    );
-    const copyButton = await this.driver.findNestedElement(
-      row,
-      this.copyButton,
-    );
-    await copyButton.click();
+    const { xpath: rowXpath } = this.addressListRowByNetworkName(networkName);
+    await this.driver.clickElement({
+      xpath: `${rowXpath}//*[@data-testid='multichain-address-row-copy-button']`,
+    });
   }
 
   async clickCopyButtonForNetworkAndAssertClipboard({
@@ -213,18 +207,17 @@ class AddressListModal {
   }
 
   async clickQRbutton(addressIndex: number = 0): Promise<void> {
-    const qrButtonsList = await this.driver.findElements(this.qrButton);
-    const qrButton = qrButtonsList[addressIndex];
-    await qrButton.click();
+    await this.driver.clickElement({
+      xpath: `(//*[@data-testid='multichain-address-row-qr-button'])[${addressIndex + 1}]`,
+    });
   }
 
   async clickQRbuttonForNetwork(networkName: string): Promise<void> {
     console.log(`Click QR button for network "${networkName}"`);
-    const row = await this.driver.findElement(
-      this.addressListRowByNetworkName(networkName),
-    );
-    const qrButton = await this.driver.findNestedElement(row, this.qrButton);
-    await qrButton.click();
+    const { xpath: rowXpath } = this.addressListRowByNetworkName(networkName);
+    await this.driver.clickElement({
+      xpath: `${rowXpath}//*[@data-testid='multichain-address-row-qr-button']`,
+    });
   }
 
   async clickQrCopyAddressLink(expectedAddress: string): Promise<void> {
@@ -242,10 +235,7 @@ class AddressListModal {
     expectedAddress: string;
   }): Promise<void> {
     console.log(`Click quick-copy row for network "${networkName}"`);
-    const row = await this.driver.findElement(
-      this.quickCopyRowByNetworkName(networkName),
-    );
-    await row.click();
+    await this.driver.clickElement(this.quickCopyRowByNetworkName(networkName));
     await this.driver.waitForClipboardContent(expectedAddress);
   }
 

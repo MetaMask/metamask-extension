@@ -1,18 +1,18 @@
-import { Suite } from "mocha";
-import { Mockttp } from "mockttp";
-import { withFixtures } from "../../helpers";
-import FixtureBuilderV2 from "../../fixtures/fixture-builder-v2";
-import { Driver } from "../../webdriver/driver";
-import { login } from "../../page-objects/flows/login.flow";
-import HomePage from "../../page-objects/pages/home/homepage";
-import HeaderNavbar from "../../page-objects/pages/header-navbar";
-import NetworksPage from "../../page-objects/pages/networks/networks-page";
-import SelectNetworkModal from "../../page-objects/pages/networks/select-network-modal";
-import NetworkFilter from "../../page-objects/pages/networks/network-filter";
-import { TRON_CHAIN_ID, mockTronFeatureFlags } from "../tron/mocks/common-tron";
+import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { Driver } from '../../webdriver/driver';
+import { login } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import NetworksPage from '../../page-objects/pages/networks/networks-page';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
+import { TRON_CHAIN_ID, mockTronFeatureFlags } from '../tron/mocks/common-tron';
 
-const TRON_NILE_NAME = "Tron Nile";
-const TRON_SHASTA_NAME = "Tron Shasta";
+const TRON_NILE_NAME = 'Tron Nile';
+const TRON_SHASTA_NAME = 'Tron Shasta';
 
 function buildTronNetworkFixture() {
   // Nile/Shasta appear in the home network filter testnets section when
@@ -37,16 +37,16 @@ const TRON_DEFAULT_WALLET_MANIFEST_FLAGS = {
   },
 } as const;
 
-describe("Tron - Network", function (this: Suite) {
+describe('Tron - Network', function (this: Suite) {
   this.timeout(180_000);
 
-  describe("default wallet", function () {
-    it("shows Tron in the home network filter", async function () {
+  describe('default wallet', function () {
+    it('shows Tron in the home network filter', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          localNodeOptions: ["anvil"],
+          localNodeOptions: ['anvil'],
           testSpecificMock: mockTronNetworkFlags,
           manifestFlags: TRON_DEFAULT_WALLET_MANIFEST_FLAGS,
         },
@@ -56,18 +56,18 @@ describe("Tron - Network", function (this: Suite) {
           const networkFilter = new NetworkFilter(driver);
           await networkFilter.open();
           await selectNetworkModal.checkPageIsLoaded();
-          await selectNetworkModal.checkNetworkIsListed("Tron");
+          await selectNetworkModal.checkNetworkIsListed('Tron');
           await selectNetworkModal.close();
         },
       );
     });
 
-    it("shows Tron in the Tokens tab network selector", async function () {
+    it('shows Tron in the Tokens tab network selector', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          localNodeOptions: ["anvil"],
+          localNodeOptions: ['anvil'],
           testSpecificMock: mockTronNetworkFlags,
           manifestFlags: TRON_DEFAULT_WALLET_MANIFEST_FLAGS,
         },
@@ -79,18 +79,18 @@ describe("Tron - Network", function (this: Suite) {
           const networkFilter = new NetworkFilter(driver);
           await networkFilter.open();
           await selectNetworkModal.checkPageIsLoaded();
-          await selectNetworkModal.checkNetworkIsListed("Tron");
+          await selectNetworkModal.checkNetworkIsListed('Tron');
           await selectNetworkModal.close();
         },
       );
     });
 
-    it("Shows Tron on Networks page", async function () {
+    it('shows Tron on the Networks page', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          localNodeOptions: ["anvil"],
+          localNodeOptions: ['anvil'],
           testSpecificMock: mockTronNetworkFlags,
           manifestFlags: TRON_DEFAULT_WALLET_MANIFEST_FLAGS,
         },
@@ -102,7 +102,7 @@ describe("Tron - Network", function (this: Suite) {
 
           await headerNavbar.openGlobalNetworksMenu();
           await networksPage.checkPageIsLoaded();
-          await networksPage.fillNetworkSearchInput("Tron");
+          await networksPage.fillNetworkSearchInput('Tron');
           await networksPage.openNetworkListOptions(TRON_CHAIN_ID);
           await networksPage.checkDiscoverButtonIsVisible();
           // While the header is in search mode (and the options popover is
@@ -113,12 +113,12 @@ describe("Tron - Network", function (this: Suite) {
       );
     });
 
-    it("selects Tron from the home network filter", async function () {
+    it('selects Tron from the home network filter', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          localNodeOptions: ["anvil"],
+          localNodeOptions: ['anvil'],
           testSpecificMock: mockTronNetworkFlags,
           manifestFlags: TRON_DEFAULT_WALLET_MANIFEST_FLAGS,
         },
@@ -130,19 +130,19 @@ describe("Tron - Network", function (this: Suite) {
           await networkFilter.open();
           await selectNetworkModal.checkPageIsLoaded();
           await selectNetworkModal.selectNetworkByChainId(TRON_CHAIN_ID);
-          await networkFilter.checkLabelIs("Tron");
+          await networkFilter.checkLabelIs('Tron');
         },
       );
     });
   });
 
-  describe("test networks enabled", function () {
-    it("shows Tron Nile when test networks are enabled", async function () {
+  describe('test networks enabled', function () {
+    it('shows Tron Nile when test networks are enabled', async function () {
       await withFixtures(
         {
           fixtures: buildTronNetworkFixture(),
           title: this.test?.fullTitle(),
-          localNodeOptions: ["anvil"],
+          localNodeOptions: ['anvil'],
           testSpecificMock: mockTronNetworkFlags,
         },
         async ({ driver }: { driver: Driver }) => {
@@ -157,12 +157,12 @@ describe("Tron - Network", function (this: Suite) {
       );
     });
 
-    it("shows Tron Shasta when test networks are enabled", async function () {
+    it('shows Tron Shasta when test networks are enabled', async function () {
       await withFixtures(
         {
           fixtures: buildTronNetworkFixture(),
           title: this.test?.fullTitle(),
-          localNodeOptions: ["anvil"],
+          localNodeOptions: ['anvil'],
           testSpecificMock: mockTronNetworkFlags,
         },
         async ({ driver }: { driver: Driver }) => {
