@@ -42,7 +42,7 @@ import {
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { DISCOVER_SEARCH_PREVIEW_COUNT } from '../../hooks/discover-search/constants';
 import { getDiscoverViewMoreAction } from '../../hooks/discover-search/get-discover-view-more-action';
-import { useEnableDiscoverAssetNetwork } from '../../hooks/discover-search/useDiscoverAssetPress';
+import { useEnableFeaturedEvmNetwork } from '../../hooks/useEnableFeaturedEvmNetwork';
 import { useDiscoverSearch } from '../../hooks/discover-search/useDiscoverSearch';
 import type {
   DiscoverSearchSectionId,
@@ -188,7 +188,7 @@ export const DiscoverSearchPage = () => {
   const { createEventBuilder, trackEvent } = useAnalytics();
   const [searchParams, setSearchParams] = useSearchParams();
   const runCloseTransition = useGlobalMenuRouteTransition();
-  const enableDiscoverAssetNetwork = useEnableDiscoverAssetNetwork();
+  const enableFeaturedEvmNetwork = useEnableFeaturedEvmNetwork();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const trackedSearchKey = useRef<string | null>(null);
   const pendingTabSwitch = useRef<PendingTabSwitch | null>(null);
@@ -340,12 +340,12 @@ export const DiscoverSearchPage = () => {
         result_count: getResultCount(activeTab),
       });
       if (isCaipAssetType(asset.assetId)) {
-        const networkName = await enableDiscoverAssetNetwork(asset.assetId);
+        const addedNetwork = await enableFeaturedEvmNetwork(asset.assetId);
         navigate(buildAssetRoutePath(asset.assetId));
-        if (networkName) {
+        if (addedNetwork) {
           toast.success(
             <ToastContent
-              title={t('newNetworkAdded', [networkName])}
+              title={t('newNetworkAdded', [addedNetwork.name])}
               dataTestId="discover-network-added-success-toast"
             />,
           );
@@ -354,7 +354,7 @@ export const DiscoverSearchPage = () => {
     },
     [
       activeTab,
-      enableDiscoverAssetNetwork,
+      enableFeaturedEvmNetwork,
       getResultCount,
       navigate,
       searchQuery,
@@ -365,18 +365,18 @@ export const DiscoverSearchPage = () => {
 
   const handlePopularAssetPress = useCallback(
     async (assetId: CaipAssetType) => {
-      const networkName = await enableDiscoverAssetNetwork(assetId);
+      const addedNetwork = await enableFeaturedEvmNetwork(assetId);
       navigate(buildAssetRoutePath(assetId));
-      if (networkName) {
+      if (addedNetwork) {
         toast.success(
           <ToastContent
-            title={t('newNetworkAdded', [networkName])}
+            title={t('newNetworkAdded', [addedNetwork.name])}
             dataTestId="discover-network-added-success-toast"
           />,
         );
       }
     },
-    [enableDiscoverAssetNetwork, navigate, t],
+    [enableFeaturedEvmNetwork, navigate, t],
   );
 
   const handlePerpsPress = useCallback(
