@@ -466,6 +466,7 @@ export function tronBridgeHistoryItem(opts: {
     slippagePercentage: 0,
     startTime: opts.timestamp,
     quote: {
+      bridgeId: 'rango',
       destAsset,
       destChainId: ETH_MAINNET_CHAIN_ID,
       destTokenAmount: opts.destAmount,
@@ -480,6 +481,7 @@ export function tronBridgeHistoryItem(opts: {
       srcChainId: TRON_MAINNET_CHAIN_ID,
       srcTokenAmount: opts.srcAmount,
       steps: [],
+      bridges: ['rango'],
     },
     status: {
       destChain: {
