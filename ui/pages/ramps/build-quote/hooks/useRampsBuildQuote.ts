@@ -1,12 +1,15 @@
 import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { CaipChainId } from '@metamask/utils';
+import { v4 as uuidV4 } from 'uuid';
 import {
   getInternalOrderCode,
   normalizeProviderCode,
 } from '@metamask/ramps-controller';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
@@ -79,6 +82,15 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     getBuyWidgetData,
   } = useRampsController();
 
+  const chainAccount = useSelector((state) =>
+    selectedToken?.chainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          selectedToken.chainId as CaipChainId,
+        )
+      : null,
+  );
+
   const intentAssetId = (location.state as BuildQuoteLocationState | null)
     ?.assetId;
   const tokenStateIsSettled = isTokenStateSettled(
@@ -91,7 +103,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
 
   const currency = userRegion?.country?.currency ?? 'USD';
   const currencySymbol = getCurrencySymbol(currency);
-  const walletAddress = selectedAccount?.address ?? '';
+  const walletAddress = (chainAccount ?? selectedAccount)?.address ?? '';
   const hasAmount = amountAsNumber > 0;
   const hasSettledQuoteAmount = amountAsNumber === debouncedAmount;
 
@@ -194,6 +206,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     }
     setContinueError(null);
     setIsContinuing(true);
+    const checkoutSessionId = uuidV4();
     try {
       const widget = await getBuyWidgetData(selectedQuote);
       if (!widget?.url) {
@@ -208,11 +221,16 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
 
       // Open + watch in the background so popup-mode UI can close when the
       // provider tab opens without losing the callback listener.
+      // trackCheckoutOpened fires from the background after the tab opens,
+      // so a failed openTab does not emit a false checkout-opened event.
       await watchRampsCheckoutTab({
         url: widget.url,
         providerCode,
         walletAddress,
         orderCode,
+        checkoutSessionId,
+        region: userRegion?.regionCode,
+        providerName: selectedProvider?.name,
       });
 
       navigate(DEFAULT_ROUTE);
@@ -230,9 +248,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     getBuyWidgetData,
     isContinuing,
     navigate,
-    selectedProvider,
+    selectedProvider?.id,
+    selectedProvider?.name,
     selectedQuote,
     t,
+    userRegion?.regionCode,
     walletAddress,
   ]);
 

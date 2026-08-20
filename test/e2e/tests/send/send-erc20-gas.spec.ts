@@ -297,6 +297,19 @@ describe('Send ERC20 - Gas Customization', function () {
           fullSupport: [],
           partialSupport: { balances: [] },
         }),
+      // Browse list on the token management page. Without this the catch-all
+      // answers with an empty body, which `browseTokens` fails to parse.
+      await server
+        .forGet(
+          /https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/chains\/.+\/assets/u,
+        )
+        .always()
+        .thenJson(200, {
+          data: [],
+          count: 0,
+          totalCount: 0,
+          pageInfo: { hasNextPage: false, endCursor: '' },
+        }),
       await server
         .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
         .always()

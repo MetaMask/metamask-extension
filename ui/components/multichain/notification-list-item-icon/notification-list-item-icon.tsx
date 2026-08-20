@@ -4,6 +4,8 @@ import {
   AvatarIcon,
   AvatarIconSeverity,
   AvatarIconSize,
+  AvatarToken,
+  AvatarTokenSize,
   IconColor,
   IconName,
   IconSize,
@@ -12,8 +14,6 @@ import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import { isIpfsURL } from '../../../helpers/utils/notification.util';
 import {
-  AvatarToken,
-  AvatarTokenSize,
   BadgeWrapper,
   BadgeWrapperPosition,
   Box,
@@ -21,7 +21,6 @@ import {
 import {
   BackgroundColor,
   BorderRadius,
-  BorderStyle,
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
@@ -57,10 +56,8 @@ const AvatarTokenComponent = ({ src }: { src: string }): JSX.Element => (
   <AvatarToken
     data-testid="avatar-token"
     src={src}
-    padding={1}
-    backgroundColor={BackgroundColor.transparent}
-    borderStyle={BorderStyle.none}
     size={AvatarTokenSize.Md}
+    className="bg-transparent border-none p-1"
   />
 );
 

@@ -81,7 +81,7 @@ type HomeNetworkFilterModalProps = {
 
 type NetworkRowProps = {
   name: string;
-  iconSrc?: string | IconName;
+  iconSrc?: string;
   chainId?: string;
   selected?: boolean;
   disabled?: boolean;
@@ -94,7 +94,8 @@ type NetworkRowProps = {
 export type NetworkSelectionItem = {
   key: string;
   name: string;
-  iconSrc?: string | IconName;
+  iconName?: IconName;
+  iconSrc?: string;
   chainId?: string;
   selected?: boolean;
   disabled?: boolean;
@@ -127,9 +128,6 @@ type NetworkSelectionModalProps = {
 
 const getSelectableChainId = (network: MultichainNetworkConfiguration) =>
   network.isEvm ? convertCaipToHexChainId(network.chainId) : network.chainId;
-
-const isIconName = (iconSrc?: string | IconName): iconSrc is IconName =>
-  Object.values(IconName).includes(iconSrc as IconName);
 
 const SectionHeader = ({
   children,
@@ -200,15 +198,17 @@ const HomeNetworkFilterRow = ({
 
 const NetworkSelectionItemIcon = ({
   name,
+  iconName,
   iconSrc,
 }: {
   name: string;
+  iconName?: IconName;
   iconSrc?: string;
 }) => {
-  if (isIconName(iconSrc)) {
+  if (iconName) {
     return (
       <AvatarIcon
-        iconName={iconSrc}
+        iconName={iconName}
         size={AvatarIconSize.Md}
         severity={AvatarIconSeverity.Neutral}
         iconProps={{ color: IconColor.IconDefault }}
@@ -270,6 +270,7 @@ export const NetworkSelectionModal = ({
                 <Box className="flex min-w-0 items-center gap-3">
                   <NetworkSelectionItemIcon
                     name={topItem.name}
+                    iconName={topItem.iconName}
                     iconSrc={topItem.iconSrc}
                   />
                   <Text
@@ -643,7 +644,7 @@ const HomeNetworkFilterModalContent = ({
         name: hasOnlyDefaultNetworks
           ? t('allNetworks')
           : t('allDefaultNetworks'),
-        iconSrc: IconName.Global,
+        iconName: IconName.Global,
         selected: isAllDefaultSelected,
         onClick: handleSelectAllDefaultNetworks,
         testId: 'home-network-filter-all-default',

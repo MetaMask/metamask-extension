@@ -3,38 +3,44 @@ import type {
   Quote,
   QuotesResponse,
 } from '@metamask/ramps-controller';
+import { TagSeverity } from '@metamask/design-system-react';
 import type { useI18nContext } from '../../../../hooks/useI18nContext';
-import { providerSupportsAsset } from '../../utils/providerSupportsAsset';
 
 type TranslateFn = ReturnType<typeof useI18nContext>;
 
-export type ProviderListItem =
-  | { type: 'provider'; provider: Provider }
-  | { type: 'separator' };
+export type ProviderListItem = { type: 'provider'; provider: Provider };
+
+export type ProviderTag = {
+  label: string;
+  severity: TagSeverity;
+};
 
 /**
- * Tag label for a provider row (previously used / reliability / best rate).
+ * Tag pill for a provider row (previously used / reliability / best rate).
+ *
+ * Each reason gets its own severity so the pills are visually distinct.
+ * `Info` aliases the `primary-muted` / `primary-default` design tokens.
  *
  * @param providerId - Provider id.
  * @param matchedQuote - Quote matched to this provider, when available.
  * @param ordersProviders - Provider ids from completed orders.
  * @param t - i18n translate function.
- * @returns Localized tag, or null.
+ * @returns Localized tag with its severity, or null.
  */
 export function getProviderTag(
   providerId: string,
   matchedQuote: Quote | null,
   ordersProviders: string[],
   t: TranslateFn,
-): string | null {
+): ProviderTag | null {
   if (ordersProviders.includes(providerId)) {
-    return t('rampsPreviouslyUsed');
+    return { label: t('rampsPreviouslyUsed'), severity: TagSeverity.Info };
   }
   if (matchedQuote?.metadata?.tags?.isMostReliable) {
-    return t('rampsMostReliable');
+    return { label: t('rampsMostReliable'), severity: TagSeverity.Neutral };
   }
   if (matchedQuote?.metadata?.tags?.isBestRate) {
-    return t('rampsBestRate');
+    return { label: t('rampsBestRate'), severity: TagSeverity.Success };
   }
   return null;
 }
@@ -44,19 +50,16 @@ type BuildProviderListItemsArgs = {
   quotes: QuotesResponse | null;
   quotesLoading: boolean;
   displayQuotes: boolean;
-  selectedTokenAssetId?: string;
 };
 
 /**
- * Builds the ordered provider list with an optional "Other options" separator,
- * matching mobile `ProviderSelection` sorting.
- *
- * @param args - Sorting inputs.
- * @param args.providers
- * @param args.quotes
- * @param args.quotesLoading
- * @param args.displayQuotes
- * @param args.selectedTokenAssetId
+ * Builds the ordered provider list, hiding providers without quotes once the
+ * quote response settles.
+ * @param options0
+ * @param options0.providers
+ * @param options0.quotes
+ * @param options0.quotesLoading
+ * @param options0.displayQuotes
  * @returns Ordered list items for the provider selection UI.
  */
 export function buildProviderListItems({
@@ -64,51 +67,18 @@ export function buildProviderListItems({
   quotes,
   quotesLoading,
   displayQuotes,
-  selectedTokenAssetId,
 }: BuildProviderListItemsArgs): ProviderListItem[] {
   if (!displayQuotes || !quotes || quotesLoading) {
-    const [supported, unsupported] = providers.reduce<
-      [ProviderListItem[], ProviderListItem[]]
-    >(
-      ([sup, unsup], provider) => {
-        const item: ProviderListItem = { type: 'provider', provider };
-        if (!selectedTokenAssetId) {
-          return [[...sup, item], unsup];
-        }
-        return providerSupportsAsset(provider, selectedTokenAssetId)
-          ? [[...sup, item], unsup]
-          : [sup, [...unsup, item]];
-      },
-      [[], []],
-    );
-
-    if (
-      selectedTokenAssetId &&
-      supported.length > 0 &&
-      unsupported.length > 0
-    ) {
-      return [...supported, { type: 'separator' }, ...unsupported];
-    }
-    return [...supported, ...unsupported];
+    return providers.map((provider) => ({ type: 'provider', provider }));
   }
 
   const sortOrder =
     quotes.sorted?.find((entry) => entry.sortBy === 'reliability')?.ids ??
     quotes.sorted?.[0]?.ids;
 
-  const providersWithQuotes: Provider[] = [];
-  const providersWithoutQuotes: Provider[] = [];
-
-  for (const provider of providers) {
-    const hasQuote = quotes.success?.some(
-      (quote) => quote.provider === provider.id,
-    );
-    if (hasQuote) {
-      providersWithQuotes.push(provider);
-    } else {
-      providersWithoutQuotes.push(provider);
-    }
-  }
+  const providersWithQuotes = providers.filter((provider) =>
+    quotes.success?.some((quote) => quote.provider === provider.id),
+  );
 
   if (sortOrder) {
     const orderMap = new Map(sortOrder.map((id, index) => [id, index]));
@@ -119,22 +89,10 @@ export function buildProviderListItems({
     );
   }
 
-  providersWithoutQuotes.sort((a, b) => a.name.localeCompare(b.name));
-
-  const items: ProviderListItem[] = providersWithQuotes.map((provider) => ({
+  return providersWithQuotes.map((provider) => ({
     type: 'provider',
     provider,
   }));
-
-  if (providersWithQuotes.length > 0 && providersWithoutQuotes.length > 0) {
-    items.push({ type: 'separator' });
-  }
-
-  for (const provider of providersWithoutQuotes) {
-    items.push({ type: 'provider', provider });
-  }
-
-  return items;
 }
 
 /**
