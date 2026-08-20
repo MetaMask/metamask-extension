@@ -123,7 +123,9 @@ describe('All Connections', () => {
     it('renders correctly', () => {
       const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
 
-      expect(getByTestId('permissions-page')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-permission-list'),
+      ).toBeInTheDocument();
     });
 
     it('renders no connections message when user has no connections', () => {

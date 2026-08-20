@@ -1583,6 +1583,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "Wallet not supported"
   },
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "Couldn't check your Perps balance. Try again."
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "1st interaction"
   },
@@ -1615,6 +1618,9 @@
   },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
+  },
+  "alertReasonPerpsWithdrawBalanceUnavailable": {
+    "message": "Balance unavailable"
   },
   "alertReasonSignIn": {
     "message": "Suspicious sign-in request"
@@ -5431,7 +5437,19 @@
     "message": "Earn on your crypto"
   },
   "moneyEarnOnCryptoDescription": {
-    "message": "Fund your Money account using eligible assets already in your wallet."
+    "message": "See how your money can grow over time by converting your crypto to mUSD."
+  },
+  "moneyEarnOnCryptoDescriptionMiddle": {
+    "message": "in assets and you could earn up to"
+  },
+  "moneyEarnOnCryptoDescriptionPrefix": {
+    "message": "Add your"
+  },
+  "moneyEarnOnCryptoDescriptionSuffix": {
+    "message": "in one year."
+  },
+  "moneyEarnOnCryptoNoFee": {
+    "message": "No fee"
   },
   "moneyEarnTitle": {
     "message": "Earn on your balance"
@@ -11952,6 +11970,10 @@
   },
   "value": {
     "message": "Value"
+  },
+  "variationalReferralSubtitle": {
+    "message": "Get +15% Omni points and Silver tier for 90 days with a MetaMask referral code.",
+    "description": "The subtitle of the Variational referral confirmation screen"
   },
   "version": {
     "message": "Version"

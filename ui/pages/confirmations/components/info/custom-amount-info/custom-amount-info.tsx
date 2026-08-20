@@ -26,20 +26,27 @@ import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
 import {
-  isPerpsWithdrawTransaction,
-  isPostQuoteWithdrawTransaction,
-} from '../../../../../../shared/lib/transactions.utils';
+  PercentageButtons,
+  PercentageButtonsSkeleton,
+} from '../../percentage-buttons';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
+import { useTransactionPayPostQuote } from '../../../hooks/pay/useTransactionPayPostQuote';
+import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
+  useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
+import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
+import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -73,6 +80,12 @@ export type CustomAmountInfoProps = {
    * letting the user choose which account funds the transaction.
    */
   displayAccountRow?: boolean;
+  /**
+   * When true, renders the percentage shortcut buttons (10% / 25% / 50% and
+   * 90% or Max) under the amount input. Set by the money-account flows; other
+   * flows sharing this component keep the plain amount input.
+   */
+  displayPercentageButtons?: boolean;
   hidePayTokenAmount?: boolean;
   /**
    * When true, pre-fills the amount field with the max balance on load.
@@ -92,6 +105,7 @@ export const CustomAmountInfo = React.memo(
     disableAutomaticToken,
     disablePay,
     displayAccountRow,
+    displayPercentageButtons,
     hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
@@ -102,17 +116,20 @@ export const CustomAmountInfo = React.memo(
       disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
       preferredToken,
     });
+    // Configures post-quote mode for withdraw flows; no-op for other flows.
+    useTransactionPayPostQuote();
     useTransactionPayMetrics();
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
     const availableTokens = useTransactionPayAvailableTokens();
     const accountNoFundsAlert = useAccountNoFundsAlert();
     const hasAccountNoFunds = accountNoFundsAlert.length > 0;
-    const isPostQuoteWithdraw =
-      isPostQuoteWithdrawTransaction(currentConfirmation);
-    // Post-quote withdrawals (e.g. Perps) source funds off-chain, not from a
-    // wallet token, so the amount input stays usable without wallet tokens.
-    const hasTokens = availableTokens.length > 0 || isPostQuoteWithdraw;
+    // Input enablement keys off the transaction type, not the post-quote flag:
+    // withdrawals source funds off-chain (Perps HyperCore, money-account vault)
+    // regardless of whether token selection is enabled, so the amount input
+    // must stay usable with an empty wallet in both flag states.
+    const { isWithdraw } = useTransactionPayWithdraw();
+    const hasTokens = availableTokens.length > 0 || isWithdraw;
     const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
     const isAwaitingRequiredToken = !disablePay && !primaryRequiredToken;
 
@@ -124,12 +141,23 @@ export const CustomAmountInfo = React.memo(
       hasInput,
       isDepositPrefillLoading,
       updatePendingAmount,
+      updatePendingAmountPercentage,
     } = useTransactionCustomAmount({
       balanceUsdOverride,
       currency,
       disableUpdate,
       prefillMaxOnLoad,
     });
+
+    const { isNative: isNativePayToken, payToken } = useTransactionPayToken();
+    const { isNoFeeToken } = usePayWithNoFeeToken();
+    const isNoFeePayToken = Boolean(
+      payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
+    );
+    // Withdraw always offers Max. Deposit shows Max only for fixed-spread
+    // ("No fee") tokens; other deposit tokens and native deposit tokens keep
+    // 90% so a gas/fee buffer remains.
+    const showMax = isWithdraw || (isNoFeePayToken && !isNativePayToken);
 
     const handleAmountChange = useCallback(
       (value: string) => {
@@ -143,7 +171,11 @@ export const CustomAmountInfo = React.memo(
     const showAmountLoader = isDepositPrefillLoading && !hasAccountNoFunds;
 
     if (!currentConfirmation || isAwaitingRequiredToken) {
-      return <CustomAmountInfoSkeleton />;
+      return (
+        <CustomAmountInfoSkeleton
+          displayPercentageButtons={displayPercentageButtons}
+        />
+      );
     }
 
     return (
@@ -169,6 +201,13 @@ export const CustomAmountInfo = React.memo(
           {children}
         </CenterContainer>
         <AlertMessage />
+        {displayPercentageButtons && (
+          <PercentageButtons
+            disabled={!hasTokens}
+            hasMax={showMax}
+            onPercentageClick={updatePendingAmountPercentage}
+          />
+        )}
         {overrideBottomContent?.(hasInput) ?? (
           <BottomContainer
             amountFiat={amountFiat}
@@ -181,7 +220,11 @@ export const CustomAmountInfo = React.memo(
   },
 );
 
-export function CustomAmountInfoSkeleton() {
+export function CustomAmountInfoSkeleton({
+  displayPercentageButtons,
+}: {
+  displayPercentageButtons?: boolean;
+} = {}) {
   return (
     <Box
       display={Display.Flex}
@@ -189,7 +232,9 @@ export function CustomAmountInfoSkeleton() {
       style={{ flex: 1 }}
       data-testid="custom-amount-info-skeleton"
     >
-      <CenterContainerSkeleton />
+      <CenterContainerSkeleton
+        displayPercentageButtons={displayPercentageButtons}
+      />
     </Box>
   );
 }
@@ -260,7 +305,11 @@ function CenterContainer({
   );
 }
 
-function CenterContainerSkeleton() {
+function CenterContainerSkeleton({
+  displayPercentageButtons,
+}: {
+  displayPercentageButtons?: boolean;
+}) {
   return (
     <Box
       display={Display.Flex}
@@ -272,6 +321,7 @@ function CenterContainerSkeleton() {
     >
       <CustomAmountSkeleton />
       <PayTokenAmountSkeleton />
+      {displayPercentageButtons && <PercentageButtonsSkeleton />}
     </Box>
   );
 }
@@ -291,6 +341,11 @@ function BottomContainer({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+  // Gate the Receive row on the flag, not the transaction type: with post-quote
+  // disabled the withdraw falls back to a direct transfer, which has a regular
+  // total rather than a bridged "you'll receive" amount. Mirrors mobile
+  // `CustomAmountTotals`.
+  const { canSelectWithdrawToken } = useTransactionPayWithdraw();
 
   return (
     <Box
@@ -312,7 +367,7 @@ function BottomContainer({
             }
           />
           <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
-          {isPerpsWithdraw ? (
+          {canSelectWithdrawToken ? (
             <ReceiveRow
               inputAmountUsd={amountFiat}
               variant={ConfirmInfoRowSize.Small}
@@ -327,10 +382,18 @@ function BottomContainer({
 }
 
 function useIsResultReady() {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const quotes = useTransactionPayQuotes();
-  const isQuotesLoading = useIsTransactionPayLoading();
+  const isQuotePending = useIsTransactionPayQuotePending();
+  const hasExecutableQuote = useTransactionPayHasExecutableQuote();
+  const hasPositiveRequiredAmount =
+    useTransactionPayHasPositiveRequiredAmount();
 
-  return isQuotesLoading || Boolean(quotes?.length);
+  if (isPerpsWithdrawTransaction(currentConfirmation)) {
+    return hasPositiveRequiredAmount && (isQuotePending || hasExecutableQuote);
+  }
+
+  return isQuotePending || Boolean(quotes?.length);
 }
 
 function AlertMessage() {
