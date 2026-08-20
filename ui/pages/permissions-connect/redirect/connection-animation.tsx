@@ -14,7 +14,7 @@ import { useRiveWasmContext, useRiveWasmFile } from '../../../contexts/rive-wasm
 const CONNECTION_RIV_URL = './images/riv_animations/connection.riv';
 const STATE_MACHINE_NAME = 'State Machine 1';
 const IMAGE_PLACEHOLDER_NAME = 'DEX Img-6574022.jpeg';
-const FALLBACK_ICON_URL = './images/eth_logo.svg';
+const FALLBACK_ICON_URL = './images/black-eth-logo.png';
 
 const ANIMATION_SIZE = 200;
 
@@ -106,29 +106,50 @@ const ConnectionAnimationInner = ({
     }),
   });
 
-  // Fire 'connected' trigger when isConnected becomes true (like status-icon.tsx pattern)
+  // Fire 'connected' trigger when isConnected becomes true
+  // Uses requestAnimationFrame retry because inputs can lag one frame behind rive
   useEffect(() => {
-    if (!rive || !isConnected || connectedTriggeredRef.current) {
-      return;
+    if (!rive || !isWasmReady || !isConnected || connectedTriggeredRef.current) {
+      return undefined;
     }
 
-    try {
-      const inputs = rive.stateMachineInputs(STATE_MACHINE_NAME);
-      const connectedTrigger = inputs?.find(
-        (input) => input.name === 'connected',
-      );
-      if (connectedTrigger) {
-        connectedTrigger.fire();
-        connectedTriggeredRef.current = true;
+    let cancelled = false;
 
-        if (onConnectedAnimationComplete) {
-          setTimeout(onConnectedAnimationComplete, 800);
-        }
+    const fireConnectedTrigger = () => {
+      if (cancelled || connectedTriggeredRef.current) {
+        return;
       }
-    } catch {
-      // Rive WASM runtime may have been cleaned up
-    }
-  }, [rive, isConnected, onConnectedAnimationComplete]);
+
+      try {
+        const inputs = rive.stateMachineInputs(STATE_MACHINE_NAME);
+        if (!inputs) {
+          // Inputs can lag one frame behind rive after createRoot remounts
+          requestAnimationFrame(fireConnectedTrigger);
+          return;
+        }
+
+        const connectedTrigger = inputs.find(
+          (input) => input.name === 'connected',
+        );
+        if (connectedTrigger) {
+          connectedTrigger.fire();
+          connectedTriggeredRef.current = true;
+
+          if (onConnectedAnimationComplete) {
+            setTimeout(onConnectedAnimationComplete, 800);
+          }
+        }
+      } catch {
+        // Rive WASM runtime may have been cleaned up
+      }
+    };
+
+    fireConnectedTrigger();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [rive, isWasmReady, isConnected, onConnectedAnimationComplete]);
 
   useEffect(() => {
     if (!rive || !containerRef.current) {
