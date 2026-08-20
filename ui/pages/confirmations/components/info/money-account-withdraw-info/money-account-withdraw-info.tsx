@@ -35,6 +35,7 @@ export const MoneyAccountWithdrawInfo = () => {
       currency={MONEY_ACCOUNT_WITHDRAW_CURRENCY}
       disablePay={!canSelectWithdrawToken}
       displayAccountRow
+      displayPercentageButtons
       hidePayTokenAmount
       preferredToken={MONEY_ACCOUNT_WITHDRAW_PREFERRED_TOKEN}
     />

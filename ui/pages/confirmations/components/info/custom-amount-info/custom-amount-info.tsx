@@ -25,6 +25,10 @@ import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
+import {
+  PercentageButtons,
+  PercentageButtonsSkeleton,
+} from '../../percentage-buttons';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
@@ -41,6 +45,8 @@ import {
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
+import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
+import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -74,6 +80,12 @@ export type CustomAmountInfoProps = {
    * letting the user choose which account funds the transaction.
    */
   displayAccountRow?: boolean;
+  /**
+   * When true, renders the percentage shortcut buttons (10% / 25% / 50% and
+   * 90% or Max) under the amount input. Set by the money-account flows; other
+   * flows sharing this component keep the plain amount input.
+   */
+  displayPercentageButtons?: boolean;
   hidePayTokenAmount?: boolean;
   /**
    * When true, pre-fills the amount field with the max balance on load.
@@ -93,6 +105,7 @@ export const CustomAmountInfo = React.memo(
     disableAutomaticToken,
     disablePay,
     displayAccountRow,
+    displayPercentageButtons,
     hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
@@ -128,12 +141,23 @@ export const CustomAmountInfo = React.memo(
       hasInput,
       isDepositPrefillLoading,
       updatePendingAmount,
+      updatePendingAmountPercentage,
     } = useTransactionCustomAmount({
       balanceUsdOverride,
       currency,
       disableUpdate,
       prefillMaxOnLoad,
     });
+
+    const { isNative: isNativePayToken, payToken } = useTransactionPayToken();
+    const { isNoFeeToken } = usePayWithNoFeeToken();
+    const isNoFeePayToken = Boolean(
+      payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
+    );
+    // Withdraw always offers Max. Deposit shows Max only for fixed-spread
+    // ("No fee") tokens; other deposit tokens and native deposit tokens keep
+    // 90% so a gas/fee buffer remains.
+    const showMax = isWithdraw || (isNoFeePayToken && !isNativePayToken);
 
     const handleAmountChange = useCallback(
       (value: string) => {
@@ -147,7 +171,11 @@ export const CustomAmountInfo = React.memo(
     const showAmountLoader = isDepositPrefillLoading && !hasAccountNoFunds;
 
     if (!currentConfirmation || isAwaitingRequiredToken) {
-      return <CustomAmountInfoSkeleton />;
+      return (
+        <CustomAmountInfoSkeleton
+          displayPercentageButtons={displayPercentageButtons}
+        />
+      );
     }
 
     return (
@@ -173,6 +201,13 @@ export const CustomAmountInfo = React.memo(
           {children}
         </CenterContainer>
         <AlertMessage />
+        {displayPercentageButtons && (
+          <PercentageButtons
+            disabled={!hasTokens}
+            hasMax={showMax}
+            onPercentageClick={updatePendingAmountPercentage}
+          />
+        )}
         {overrideBottomContent?.(hasInput) ?? (
           <BottomContainer
             amountFiat={amountFiat}
@@ -185,7 +220,11 @@ export const CustomAmountInfo = React.memo(
   },
 );
 
-export function CustomAmountInfoSkeleton() {
+export function CustomAmountInfoSkeleton({
+  displayPercentageButtons,
+}: {
+  displayPercentageButtons?: boolean;
+} = {}) {
   return (
     <Box
       display={Display.Flex}
@@ -193,7 +232,9 @@ export function CustomAmountInfoSkeleton() {
       style={{ flex: 1 }}
       data-testid="custom-amount-info-skeleton"
     >
-      <CenterContainerSkeleton />
+      <CenterContainerSkeleton
+        displayPercentageButtons={displayPercentageButtons}
+      />
     </Box>
   );
 }
@@ -264,7 +305,11 @@ function CenterContainer({
   );
 }
 
-function CenterContainerSkeleton() {
+function CenterContainerSkeleton({
+  displayPercentageButtons,
+}: {
+  displayPercentageButtons?: boolean;
+}) {
   return (
     <Box
       display={Display.Flex}
@@ -276,6 +321,7 @@ function CenterContainerSkeleton() {
     >
       <CustomAmountSkeleton />
       <PayTokenAmountSkeleton />
+      {displayPercentageButtons && <PercentageButtonsSkeleton />}
     </Box>
   );
 }
