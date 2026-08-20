@@ -244,6 +244,66 @@ class SwapPage {
     });
   }
 
+  /**
+   * Waits until the swap amount fields match the expected quoted values.
+   *
+   * @param expected - Expected from/to input values.
+   * @param expected.fromAmount - Source amount field value.
+   * @param expected.toAmount - Destination amount field value.
+   */
+  async checkSwapAmounts(expected: {
+    fromAmount: string;
+    toAmount: string;
+  }): Promise<void> {
+    console.log(
+      `Check swap amounts are ${expected.fromAmount} -> ${expected.toAmount}`,
+    );
+    await this.driver.wait(async () => {
+      const fromAmount = await this.getFromAmountValue();
+      const toAmount = await this.getToAmountValue();
+      return (
+        fromAmount === expected.fromAmount && toAmount === expected.toAmount
+      );
+    });
+    const fromAmount = await this.getFromAmountValue();
+    const toAmount = await this.getToAmountValue();
+    assert.equal(
+      fromAmount,
+      expected.fromAmount,
+      'Swap from-amount did not match the quoted source amount',
+    );
+    assert.equal(
+      toAmount,
+      expected.toAmount,
+      'Swap to-amount did not match the quoted destination amount',
+    );
+  }
+
+  /**
+   * Waits until both swap amount fields have a non-empty value, then asserts
+   * they stayed populated so the timeout error names the empty field.
+   */
+  async checkSwapAmountsArePopulated(): Promise<void> {
+    console.log('Check swap from-amount and to-amount are populated');
+    await this.driver.wait(async () => {
+      const fromAmount = await this.getFromAmountValue();
+      const toAmount = await this.getToAmountValue();
+      return fromAmount !== '' && toAmount !== '';
+    });
+    const fromAmount = await this.getFromAmountValue();
+    const toAmount = await this.getToAmountValue();
+    assert.notEqual(
+      fromAmount,
+      '',
+      'Swap from-amount should be populated after the quote loads',
+    );
+    assert.notEqual(
+      toAmount,
+      '',
+      'Swap to-amount should be populated after the quote loads',
+    );
+  }
+
   async checkSwapButtonIsEnabled(): Promise<void> {
     await this.driver.waitForSelector(this.swapButton, {
       state: 'enabled',

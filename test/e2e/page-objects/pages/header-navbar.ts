@@ -1,5 +1,5 @@
-import { strict as assert } from 'assert';
-import { Driver } from '../../webdriver/driver';
+import { strict as assert } from "assert";
+import { Driver } from "../../webdriver/driver";
 
 /**
  * Unlocked app header chrome: account menu, global menu, network picker.
@@ -19,23 +19,21 @@ import { Driver } from '../../webdriver/driver';
  * @see ui/components/multichain/global-menu-drawer/global-menu-drawer.tsx
  */
 class HeaderNavbar {
-  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
+  private readonly accountDetailsTab = { text: "Details", tag: "button" };
 
-  private readonly accountListPage = '.account-list-page';
+  private readonly accountListPage = ".account-list-page";
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
+  private readonly accountSnapButton = { text: "Snaps", tag: "div" };
 
-  private readonly allPermissionsButton =
-    '[data-testid="global-menu-connected-sites"]';
+  private readonly allPermissionsButton = '[data-testid="global-menu-connected-sites"]';
 
   private readonly contactsButton = '[data-testid="global-menu-contacts"]';
 
   private readonly copyAddressButton = '[aria-label="Copy address"]';
 
-  private readonly dappConnectionControlBar =
-    '[data-testid="dapp-connection-control-bar"]';
+  private readonly dappConnectionControlBar = '[data-testid="dapp-connection-control-bar"]';
 
   private readonly dappNetworkButton =
     '[data-testid="dapp-connection-control-bar__network-button"]';
@@ -44,31 +42,25 @@ class HeaderNavbar {
 
   protected driver: Driver;
 
-  private readonly globalMenuButton =
-    '[data-testid="account-options-menu-button"]';
+  private readonly globalMenuButton = '[data-testid="account-options-menu-button"]';
 
   private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
 
   private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
-  private readonly networkAddressesLink =
-    '[data-testid="networks-subtitle-test-id"]';
+  private readonly networkAddressesLink = '[data-testid="networks-subtitle-test-id"]';
 
-  private readonly networkOption = (networkId: string) =>
-    `[data-testid="${networkId}"]`;
+  private readonly networkOption = (networkId: string) => `[data-testid="${networkId}"]`;
 
-  private readonly networkPicker = '.mm-picker-network';
+  private readonly networkPicker = ".mm-picker-network";
 
-  private readonly notificationCountOption =
-    '[data-testid="global-menu-notification-count"]';
+  private readonly notificationCountOption = '[data-testid="global-menu-notification-count"]';
 
-  private readonly notificationsButton =
-    '[data-testid="notifications-menu-item"]';
+  private readonly notificationsButton = '[data-testid="notifications-menu-item"]';
 
   private readonly notificationsPage = '[data-testid="notifications-page"]';
 
-  private readonly openAccountDetailsButton =
-    '[data-testid="account-list-menu-details"]';
+  private readonly openAccountDetailsButton = '[data-testid="account-list-menu-details"]';
 
   private readonly selectedNetworkItem = (networkName: string) =>
     `.multichain-network-list-item--selected [data-testid="${networkName}"]`;
@@ -85,9 +77,7 @@ class HeaderNavbar {
    * @param expectedAddress - The expected address of the account.
    */
   async checkAccountAddress(expectedAddress: string): Promise<void> {
-    console.log(
-      `Verify the displayed account address in header is: ${expectedAddress}`,
-    );
+    console.log(`Verify the displayed account address in header is: ${expectedAddress}`);
     await this.driver.waitForSelector({
       css: this.copyAddressButton,
       text: expectedAddress,
@@ -100,9 +90,7 @@ class HeaderNavbar {
    * @param expectedLabel - The expected label of the account.
    */
   async checkAccountLabel(expectedLabel: string): Promise<void> {
-    console.log(
-      `Verify the displayed account label in header is: ${expectedLabel}`,
-    );
+    console.log(`Verify the displayed account label in header is: ${expectedLabel}`);
     await this.driver.waitForSelector({
       css: this.accountMenuButton,
       text: expectedLabel,
@@ -115,16 +103,10 @@ class HeaderNavbar {
    *
    * @param expectedNetwork - The network name expected to appear in the popover.
    */
-  async checkConnectedSitePopoverNetwork(
-    expectedNetwork: string,
-  ): Promise<void> {
-    console.log(
-      `Verify the connected site popover network is: ${expectedNetwork}`,
-    );
+  async checkConnectedSitePopoverNetwork(expectedNetwork: string): Promise<void> {
+    console.log(`Verify the connected site popover network is: ${expectedNetwork}`);
     await this.openDappNetworkMenu();
-    await this.driver.waitForSelector(
-      this.selectedNetworkItem(expectedNetwork),
-    );
+    await this.driver.waitForSelector(this.selectedNetworkItem(expectedNetwork));
   }
 
   /**
@@ -135,9 +117,7 @@ class HeaderNavbar {
    * show a network picker even when the bar itself is visible.
    */
   async checkDappNetworkButtonNotVisible(): Promise<void> {
-    console.log(
-      'Verify the dapp connection control bar network picker is NOT visible',
-    );
+    console.log("Verify the dapp connection control bar network picker is NOT visible");
     await this.driver.waitForSelector(this.dappConnectionControlBar);
     await this.driver.assertElementNotPresent(this.dappNetworkButton, {
       waitAtLeastGuard: 500,
@@ -151,18 +131,13 @@ class HeaderNavbar {
    * `@metamask/connect-evm`) expose the network picker.
    */
   async checkDappNetworkButtonVisible(): Promise<void> {
-    console.log(
-      'Verify the dapp connection control bar network picker is visible',
-    );
+    console.log("Verify the dapp connection control bar network picker is visible");
     await this.driver.waitForSelector(this.dappNetworkButton);
   }
 
   async checkIfNetworkPickerClickable(clickable: boolean): Promise<void> {
-    console.log('Check whether the network picker is clickable or not');
-    assert.equal(
-      await (await this.driver.findElement(this.networkPicker)).isEnabled(),
-      clickable,
-    );
+    console.log("Check whether the network picker is clickable or not");
+    assert.equal(await (await this.driver.findElement(this.networkPicker)).isEnabled(), clickable);
   }
 
   /**
@@ -170,12 +145,8 @@ class HeaderNavbar {
    * drawer to settle after React re-renders, then opens the notifications list.
    * @param count
    */
-  async checkNotificationCountAndOpenNotifications(
-    count: number,
-  ): Promise<void> {
-    console.log(
-      `Verify notification count is ${count} and open notifications list`,
-    );
+  async checkNotificationCountAndOpenNotifications(count: number): Promise<void> {
+    console.log(`Verify notification count is ${count} and open notifications list`);
     await this.openGlobalMenu();
     await this.driver.findElement({
       css: this.notificationCountOption,
@@ -196,15 +167,12 @@ class HeaderNavbar {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.accountMenuButton,
-        this.globalMenuButton,
-      ]);
+      await this.driver.waitForMultipleSelectors([this.accountMenuButton, this.globalMenuButton]);
     } catch (e) {
-      console.log('Timeout while waiting for header navbar to be loaded', e);
+      console.log("Timeout while waiting for header navbar to be loaded", e);
       throw e;
     }
-    console.log('Header navbar is loaded');
+    console.log("Header navbar is loaded");
   }
 
   async clickAddressCopyButton(): Promise<void> {
@@ -218,7 +186,7 @@ class HeaderNavbar {
    * Use openPermissionsPageFlow for the full flow that navigates to the Permissions Page.
    */
   async clickAllPermissionsButton(): Promise<void> {
-    console.log('Click All Permissions button in header navbar');
+    console.log("Click All Permissions button in header navbar");
     await this.openGlobalMenu();
     await this.driver.clickElement(this.allPermissionsButton);
   }
@@ -231,7 +199,7 @@ class HeaderNavbar {
    * Click the network addresses link
    */
   async clickNetworkAddresses(): Promise<void> {
-    console.log('Click the network addresses link');
+    console.log("Click the network addresses link");
     await this.driver.clickElement(this.networkAddressesLink);
   }
 
@@ -244,7 +212,7 @@ class HeaderNavbar {
   }
 
   async clickNotificationsOptions(): Promise<void> {
-    console.log('Click notifications options');
+    console.log("Click notifications options");
     await this.openGlobalMenu();
     await this.driver.clickElement(this.notificationsButton);
   }
@@ -253,26 +221,38 @@ class HeaderNavbar {
     await this.navigateToNotificationsPage();
   }
 
+  /**
+   * Moves the pointer off the network-addresses trigger so its hover-triggered
+   * quick-copy popover can close. The popover opens/closes on hover only —
+   * clicking the trigger again does not toggle it closed — so the way to
+   * dismiss it is to move the mouse to another header element.
+   */
+  async hoverAwayFromNetworkAddresses(): Promise<void> {
+    console.log("Hover away from the network addresses trigger");
+    const target = await this.driver.findElement(this.globalMenuButton);
+    await this.driver.hoverElement(target);
+  }
+
   async lockMetaMask(): Promise<void> {
     await this.openGlobalMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
   }
 
   async navigateToNotificationsPage(): Promise<void> {
-    console.log('Navigate to notifications page');
+    console.log("Navigate to notifications page");
     await this.openGlobalMenu();
     await this.driver.clickElement(this.notificationsButton);
     await this.driver.waitForSelector(this.notificationsPage);
   }
 
   async openAccountDetailsModal(): Promise<void> {
-    console.log('Open account details modal');
+    console.log("Open account details modal");
     await this.openGlobalMenu();
     await this.driver.clickElement(this.openAccountDetailsButton);
   }
 
   async openAccountDetailsModalDetailsTab(): Promise<void> {
-    console.log('Open account details modal');
+    console.log("Open account details modal");
     await this.openGlobalMenu();
     await this.driver.clickElement(this.openAccountDetailsButton);
     await this.driver.clickElementSafe(this.accountDetailsTab);
@@ -284,7 +264,7 @@ class HeaderNavbar {
   }
 
   async openContactsPage(): Promise<void> {
-    console.log('Open contacts page');
+    console.log("Open contacts page");
     await this.openGlobalMenu();
     await this.driver.clickElement(this.contactsButton);
   }
@@ -293,12 +273,12 @@ class HeaderNavbar {
    * Open the dapp network selector from the connection control bar
    */
   async openDappNetworkMenu(): Promise<void> {
-    console.log('Opening dapp network menu from control bar');
+    console.log("Opening dapp network menu from control bar");
     await this.driver.clickElement(this.dappNetworkButton);
   }
 
   async openGlobalMenu(): Promise<void> {
-    console.log('Open account options menu');
+    console.log("Open account options menu");
     // Use a normal click by default — it is reliable in headless and already
     // retries on ElementClickInterceptedError. A notification counter badge can
     // overlap the menu icon and intercept the click; if it persists through those
@@ -319,7 +299,7 @@ class HeaderNavbar {
   }: {
     isDrawerOpen?: boolean;
   } = {}): Promise<void> {
-    console.log('Open global menu networks Page');
+    console.log("Open global menu networks Page");
     if (!isDrawerOpen) {
       await this.openGlobalMenu();
     }
@@ -327,13 +307,13 @@ class HeaderNavbar {
   }
 
   async openSettingsPage(): Promise<void> {
-    console.log('Open settings page');
+    console.log("Open settings page");
     await this.openGlobalMenu();
     await this.driver.clickElement(this.settingsButton);
   }
 
   async openSnapListPage(): Promise<void> {
-    console.log('Open account snap page');
+    console.log("Open account snap page");
     await this.openGlobalMenu();
     await this.driver.clickElement(this.accountSnapButton);
   }
