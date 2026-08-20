@@ -10,13 +10,17 @@ import { Driver } from '../../../webdriver/driver';
  * `ConnectHardwareWalletPage`; wallet UI after unlock is outside this object.
  * Related: `ConnectHardwareWalletPage` (how tests get here).
  *
- * @see ui/pages/create-account/connect-hardware/select-hardware-accounts-page/select-hardware-accounts-page.tsx
+ * @see ui/pages/create-account/connect-hardware/account-list.tsx
  */
 class SelectHardwareWalletAccountPage {
   protected readonly accountCheckbox = '.hw-account-list__item__checkbox';
 
   protected readonly cancelButton = {
     testId: 'connect-hardware-account-list-cancel-btn',
+  };
+
+  protected readonly connectHardwareAccountListPage = {
+    testId: 'parent-selector-connect-hardware-account-list-page',
   };
 
   protected driver: Driver;
@@ -69,6 +73,7 @@ class SelectHardwareWalletAccountPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.connectHardwareAccountListPage,
         this.selectAccountPageTitle,
         this.cancelButton,
       ]);

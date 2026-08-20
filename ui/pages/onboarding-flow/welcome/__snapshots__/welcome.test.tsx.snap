@@ -4,6 +4,7 @@ exports[`Welcome Page render matches snapshot 1`] = `
 <div>
   <div
     class="flex flex-col items-center justify-center welcome-container h-full w-full"
+    data-testid="parent-selector-onboarding-welcome"
   >
     <div
       class=""

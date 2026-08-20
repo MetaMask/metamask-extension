@@ -1172,7 +1172,7 @@ const PerpsMarketDetailPage = () => {
   return (
     <Box
       className="main-container asset__container"
-      data-testid="perps-market-detail-page"
+      data-testid="parent-selector-perps-market-detail"
     >
       {/* Header */}
       <Box
