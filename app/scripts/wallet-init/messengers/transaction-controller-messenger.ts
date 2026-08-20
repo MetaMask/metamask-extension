@@ -164,6 +164,7 @@ export function getTransactionControllerInitMessenger(
     ],
     actions: [
       'AccountTrackerController:getState',
+      'AccountsController:getState',
       'ApprovalController:acceptRequest',
       'ApprovalController:addRequest',
       'ApprovalController:endFlow',

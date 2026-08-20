@@ -1,7 +1,12 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { Hex } from '@metamask/utils';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { Hex, createProjectLogger } from '@metamask/utils';
 import {
   CachedScanAddressResponse,
   createCacheKey,
@@ -20,6 +25,8 @@ const BASIS_POINTS_PER_PERCENT = 100;
 
 const ENFORCED_SIMULATIONS_FEATURE_FLAG = 'confirmations_enforced_simulations';
 
+const log = createProjectLogger('enforced-simulations-eligibility');
+
 /**
  * Shape of the `confirmations_enforced_simulations` remote feature flag
  * value. Both fields are optional; consumers fall back to safe defaults
@@ -36,6 +43,8 @@ export type EnforcedSimulationsFeatureFlag = {
 export type EnforcedSimulationsState = {
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
   eip7702SupportedChains: Hex[];
+  /** Addresses of the user's own internal EVM accounts; excluded from trust evaluation. */
+  internalAddresses: string[];
 };
 
 type RemoteFlagsWithEnforcedSimulations = {
@@ -47,6 +56,24 @@ type FeatureFlagSource = Pick<
   RemoteFeatureFlagControllerState,
   'remoteFeatureFlags'
 >;
+
+function isInternalAddress(
+  address: string,
+  internalAddresses: string[],
+): boolean {
+  const normalized = address.toLowerCase();
+  return internalAddresses.some((a) => a.toLowerCase() === normalized);
+}
+
+/**
+ * Returns the EVM addresses of the given internal accounts.
+ *
+ * @param accounts - Array of internal accounts.
+ * @returns Array of EVM account addresses.
+ */
+export function getInternalEvmAddresses(accounts: InternalAccount[]): string[] {
+  return accounts.filter((a) => isEvmAccountType(a.type)).map((a) => a.address);
+}
 
 /**
  * Reads the `enabled` field from the `confirmations_enforced_simulations`
@@ -120,7 +147,7 @@ export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, origin, simulationData } = transactionMeta;
+  const { chainId, origin, simulationData, type } = transactionMeta;
 
   if (!origin || origin === ORIGIN_METAMASK) {
     return false;
@@ -131,6 +158,10 @@ export function isEnforcedSimulationsEligible(
       (supported) => supported.toLowerCase() === chainId?.toLowerCase(),
     )
   ) {
+    log('Not eligible - chain does not support EIP-7702', {
+      chainId,
+      type,
+    });
     return false;
   }
 
@@ -139,13 +170,16 @@ export function isEnforcedSimulationsEligible(
   }
 
   if (isEnforcedSimulationsForceEnabled()) {
+    log('Eligible - force enabled', { type });
     return true;
   }
 
   if (isTrusted(transactionMeta, state)) {
+    log('Not eligible - transaction trusted', { type });
     return false;
   }
 
+  log('Eligible', { chainId, type });
   return true;
 }
 
@@ -161,7 +195,7 @@ function isTrusted(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, txParams, txParamsOriginal, nestedTransactions } =
+  const { chainId, type, txParams, txParamsOriginal, nestedTransactions } =
     transactionMeta;
 
   const supportedChain = chainId
@@ -177,41 +211,54 @@ function isTrusted(
   // Use the original `to` address before any container wrapping,
   // since containers may redirect to a trusted delegation manager.
   const originalTo = txParamsOriginal?.to ?? txParams?.to;
-  const toAddresses = getToAddresses(originalTo, nestedTransactions);
+  const data = txParamsOriginal?.data ?? txParams?.data;
 
-  if (toAddresses.length === 0) {
-    return true;
-  }
+  // All calls the transaction performs: the outer call plus any nested (batch)
+  // calls, treated uniformly.
+  const calls = [{ to: originalTo, data, type }, ...(nestedTransactions ?? [])];
 
-  return !toAddresses.some((address) => {
-    const cacheKey = createCacheKey(supportedChain, address);
-    const cached = state.addressSecurityAlertResponses[cacheKey];
+  let trusted = true;
 
+  for (let index = 0; index < calls.length; index++) {
+    const { to, data: callData, type: callType } = calls[index];
+    const label = `Address ${index + 1}`;
+    const props = { address: to, type: callType, data: callData };
+
+    if (!to) {
+      log(`${label} - Trusted - No Recipient`, props);
+      continue;
+    }
+
+    if (isInternalAddress(to, state.internalAddresses)) {
+      log(`${label} - Trusted - Internal Address`, props);
+      continue;
+    }
+
+    if (callType === TransactionType.simpleSend) {
+      log(`${label} - Trusted - Simple Send`, props);
+      continue;
+    }
+
+    const cached =
+      state.addressSecurityAlertResponses[createCacheKey(supportedChain, to)];
+
+    // Unknown or still-loading signals don't make a call untrusted.
     if (!cached || cached.result_type === ResultType.Loading) {
-      return false;
+      log(`${label} - Trusted - Unknown Signal`, {
+        ...props,
+        resultType: cached?.result_type,
+      });
+      continue;
     }
 
-    return cached.result_type !== ResultType.Trusted;
-  });
-}
-
-function getToAddresses(
-  primaryTo: string | undefined,
-  nestedTransactions: TransactionMeta['nestedTransactions'],
-): string[] {
-  const addresses: string[] = [];
-
-  if (primaryTo) {
-    addresses.push(primaryTo);
-  }
-
-  if (nestedTransactions) {
-    for (const nested of nestedTransactions) {
-      if (nested.to) {
-        addresses.push(nested.to);
-      }
+    if (cached.result_type === ResultType.Trusted) {
+      log(`${label} - Trusted - Trusted Signal`, props);
+      continue;
     }
+
+    log(`${label} - Not Trusted - ${cached.result_type}`, props);
+    trusted = false;
   }
 
-  return addresses;
+  return trusted;
 }

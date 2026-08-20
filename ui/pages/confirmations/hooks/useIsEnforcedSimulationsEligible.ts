@@ -1,9 +1,11 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import {
   EnforcedSimulationsState,
+  getInternalEvmAddresses,
   isEnforcedSimulationsEligible,
   isEnforcedSimulationsForceEnabled,
 } from '../../../../shared/lib/transaction/enforced-simulations';
@@ -11,6 +13,7 @@ import { getEip7702SupportedChains } from '../../../../shared/lib/eip7702-suppor
 import { useIsHardwareWalletAccount } from '../../../hooks/useIsHardwareWalletAccount';
 import { useConfirmContext } from '../context/confirm';
 import { selectIsEnforcedSimulationsEnabled } from '../selectors/feature-flags';
+import { getInternalAccounts } from '../../../selectors/accounts';
 import { EMPTY_OBJECT } from '../../../selectors/shared';
 
 function selectEip7702SupportedChains(state: {
@@ -33,6 +36,12 @@ export function useIsEnforcedSimulationsEligible(): boolean {
     isEqual,
   );
 
+  const internalAccounts = useSelector(getInternalAccounts);
+  const internalAddresses = useMemo(
+    () => getInternalEvmAddresses(internalAccounts),
+    [internalAccounts],
+  );
+
   const enabled = useSelector(selectIsEnforcedSimulationsEnabled);
 
   const isHardwareWallet = useIsHardwareWalletAccount(
@@ -50,5 +59,6 @@ export function useIsEnforcedSimulationsEligible(): boolean {
   return isEnforcedSimulationsEligible(currentConfirmation, {
     addressSecurityAlertResponses,
     eip7702SupportedChains,
+    internalAddresses,
   });
 }
