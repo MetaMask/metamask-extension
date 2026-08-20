@@ -77,7 +77,7 @@ describe('BridgeControllerInit', () => {
   it('correctly sets up trackMetaMetricsFn', () => {
     BridgeControllerInit(getInitRequestMock());
     const constructorOptions = jest.mocked(BridgeController).mock.calls[0][0];
-    const {trackMetaMetricsFn} = constructorOptions;
+    const { trackMetaMetricsFn } = constructorOptions;
     const properties = {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       error_message: 'Snap request failed',
@@ -96,7 +96,7 @@ describe('BridgeControllerInit', () => {
   it('handles trackMetaMetricsFn with no properties', () => {
     BridgeControllerInit(getInitRequestMock());
     const constructorOptions = jest.mocked(BridgeController).mock.calls[0][0];
-    const {trackMetaMetricsFn} = constructorOptions;
+    const { trackMetaMetricsFn } = constructorOptions;
 
     trackMetaMetricsFn(UnifiedSwapBridgeEventName.Failed, {} as never);
 
