@@ -5957,15 +5957,13 @@ export default class MetamaskController extends EventEmitter {
       return end();
     });
 
-    const subscriptionManager = this.multichainSubscriptionManager;
-
-    function destroy() {
+    const destroy = () => {
       engine.destroy();
-      subscriptionManager.removeListener(
+      this.multichainSubscriptionManager.removeListener(
         'notification',
         onMultichainNotification,
       );
-    }
+    };
 
     return { engine, destroy };
   }
