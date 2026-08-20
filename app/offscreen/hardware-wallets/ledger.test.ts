@@ -1099,6 +1099,30 @@ describe('Ledger Offscreen', () => {
         });
         consoleSpy.mockRestore();
       });
+
+      it('returns error for signDelegationAuthorization requiring DMK mode', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
+        const response = await sendAction(
+          LedgerAction.signDelegationAuthorization,
+          {
+            hdPath: "m/44'/60'/0'/0/0",
+            chainId: 1,
+            contractAddress: '0x1234',
+            nonce: 0,
+          },
+        );
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: expect.stringContaining('requires DMK mode'),
+          }),
+        });
+        consoleSpy.mockRestore();
+      });
     });
   });
 });

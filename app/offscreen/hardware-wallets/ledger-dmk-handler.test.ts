@@ -41,6 +41,7 @@ const mockBridgeGetPublicKey = jest.fn();
 const mockBridgeDeviceSignTransaction = jest.fn();
 const mockBridgeDeviceSignMessage = jest.fn();
 const mockBridgeDeviceSignTypedData = jest.fn();
+const mockBridgeDeviceSignDelegationAuthorization = jest.fn();
 const mockBridgeConnect = jest.fn();
 const mockBridgeStartDiscovering = jest.fn();
 let mockOnSessionStateChangeSubject = new Subject<{ connected: boolean }>();
@@ -53,6 +54,8 @@ const createMockBridge = () => ({
   deviceSignTransaction: mockBridgeDeviceSignTransaction,
   deviceSignMessage: mockBridgeDeviceSignMessage,
   deviceSignTypedData: mockBridgeDeviceSignTypedData,
+  deviceSignDelegationAuthorization:
+    mockBridgeDeviceSignDelegationAuthorization,
   connect: mockBridgeConnect,
   startDiscovering: mockBridgeStartDiscovering,
   onSessionStateChange: mockOnSessionStateChangeSubject.asObservable(),
@@ -487,18 +490,45 @@ describe('LedgerDmkBridgeHandler', () => {
       });
     });
 
-    it('throws for signDelegationAuthorization as an unknown action', async () => {
-      await expect(
-        handler.handleAction(LedgerAction.signDelegationAuthorization, {
+    describe('signDelegationAuthorization', () => {
+      it('routes to bridge.deviceSignDelegationAuthorization()', async () => {
+        mockBridgeDeviceSignDelegationAuthorization.mockResolvedValue({
+          v: 27,
+          r: '0xabc',
+          s: '0xdef',
+        });
+        const result = await handler.handleAction(
+          LedgerAction.signDelegationAuthorization,
+          {
+            hdPath: "m/44'/60'/0'/0/0",
+            chainId: 1,
+            contractAddress: '0x1234',
+            nonce: 2,
+          },
+        );
+        expect(
+          mockBridgeDeviceSignDelegationAuthorization,
+        ).toHaveBeenCalledWith({
           hdPath: "m/44'/60'/0'/0/0",
           chainId: 1,
           contractAddress: '0x1234',
           nonce: 2,
-        }),
-      ).rejects.toMatchObject({
-        name: 'HardwareWalletError',
-        message: `Unknown Ledger action: ${LedgerAction.signDelegationAuthorization}`,
-        code: ErrorCode.Unknown,
+        });
+        expect(result).toEqual({ v: 27, r: '0xabc', s: '0xdef' });
+      });
+
+      it('throws when a required param is missing', async () => {
+        await expect(
+          handler.handleAction(LedgerAction.signDelegationAuthorization, {
+            hdPath: "m/44'/60'/0'/0/0",
+            chainId: 1,
+            nonce: 2,
+          }),
+        ).rejects.toMatchObject({
+          name: 'HardwareWalletError',
+          message: 'Missing delegation authorization parameter',
+          code: ErrorCode.Unknown,
+        });
       });
     });
   });
@@ -732,6 +762,36 @@ describe('LedgerDmkBridgeHandler', () => {
       resolveDestroy?.();
       consoleErrorSpy.mockRestore();
       consoleLogSpy.mockRestore();
+    });
+
+    it('forceReset clears bridge state synchronously so the next action rebuilds', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+      await handler.handleAction(LedgerAction.makeApp);
+
+      let resolveDestroy: (() => void) | undefined;
+      mockBridgeDestroy.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveDestroy = resolve;
+          }),
+      );
+
+      handler.forceReset();
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+
+      (LedgerDmkBridge as jest.Mock).mockClear();
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+      await expect(handler.handleAction(LedgerAction.makeApp)).resolves.toBe(
+        true,
+      );
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+
+      resolveDestroy?.();
     });
 
     it('preserves HID listeners on device disconnect (replug still notifies)', async () => {
