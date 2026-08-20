@@ -2,7 +2,6 @@ import EventEmitter from 'events';
 import log from 'loglevel';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
-import { captureException, captureMessage } from '../sentry';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import { getManifestFlags } from '../manifestFlags';
 import { VaultCorruptionType } from '../../constants/state-corruption';
@@ -51,6 +50,21 @@ export type SplitStateMigrationFailedEvent = {
   state: MetaMaskStateType;
 };
 
+export type PersistenceErrorEvent = {
+  error: unknown;
+  type:
+    | 'backup-db-open-failed'
+    | 'get-failed'
+    | 'persist-backup-failed'
+    | 'persist-failed'
+    | 'set-backup-failed'
+    | 'set-failed';
+};
+
+export type PersistenceRecoveredEvent = {
+  type: 'persist-recovered' | 'set-recovered';
+};
+
 export type WriteRetryRecoveredPersistenceEvent =
   | 'set-retry-recovered'
   | 'set-backup-retry-recovered'
@@ -68,6 +82,8 @@ export type PersistenceManagerEventMap = {
   vaultCorruptionDetected: [VaultCorruptionDetectedEvent];
   splitStateMigrationSucceeded: [SplitStateMigrationSucceededEvent];
   splitStateMigrationFailed: [SplitStateMigrationFailedEvent];
+  persistenceError: [PersistenceErrorEvent];
+  persistenceRecovered: [PersistenceRecoveredEvent];
   writeRetryRecovered: [WriteRetryRecoveredEvent];
 };
 
@@ -440,12 +456,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         error.message ===
           'A mutation operation was attempted on a database that did not allow mutations.'
       ) {
-        // Custom fingerprint prevents Sentry's deduplication from dropping
-        // this event when other persistence errors with the same underlying
-        // error message (e.g., "An unexpected error occurred") are reported.
-        captureException(error, {
-          tags: { 'persistence.error': 'backup-db-open-failed' },
-          fingerprint: ['persistence-error', 'backup-db-open-failed'],
+        this.emit('persistenceError', {
+          error,
+          type: 'backup-db-open-failed',
         });
         console.warn(
           'Could not open backup database; automatic vault recovery will not be available.',
@@ -650,14 +663,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             this.#dataPersistenceFailing = false;
             // Track recovery to understand how often failures are temporary.
             // This helps answer: "Do set calls ever fail and then succeed in the same session?"
-            captureMessage(
-              'Data persistence recovered after temporary failure',
-              {
-                level: 'info',
-                tags: { 'persistence.event': 'set-recovered' },
-                fingerprint: ['persistence-event', 'set-recovered'],
-              },
-            );
+            this.emit('persistenceRecovered', { type: 'set-recovered' });
           }
 
           return [true, undefined];
@@ -667,13 +673,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             // Use different tags to differentiate storage.local vs IndexedDB backup failures.
             const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
 
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
+            this.emit('persistenceError', { error: err, type: tag });
           }
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
@@ -793,14 +793,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             this.#dataPersistenceFailing = false;
             // Track recovery to understand how often failures are temporary.
             // This helps answer: "Do set calls ever fail and then succeed in the same session?"
-            captureMessage(
-              'Data persistence recovered after temporary failure',
-              {
-                level: 'info',
-                tags: { 'persistence.event': 'persist-recovered' },
-                fingerprint: ['persistence-event', 'persist-recovered'],
-              },
-            );
+            this.emit('persistenceRecovered', { type: 'persist-recovered' });
           }
 
           return [true, undefined];
@@ -812,13 +805,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               ? 'persist-backup-failed'
               : 'persist-failed';
 
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
+            this.emit('persistenceError', { error: err, type: tag });
           }
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
@@ -837,7 +824,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    *
    * @param options - An object containing options for the retrieval.
    * @param options.validateVault - A flag indicating whether to validate the vault
-   * @param options.reportErrors - Whether read errors should be reported to Sentry.
+   * @param options.reportErrors - Whether read errors should emit diagnostic events.
    * @returns The current state of the local store or null if the store is empty.
    * @throws Error if the vault is missing and a backup vault is found in IndexedDB.
    * @throws Error if the local store is not open.
@@ -871,12 +858,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             localStoreError,
           );
           if (reportErrors) {
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(localStoreError, {
-              tags: { 'persistence.error': 'get-failed' },
-              fingerprint: ['persistence-error', 'get-failed'],
+            this.emit('persistenceError', {
+              error: localStoreError,
+              type: 'get-failed',
             });
           }
         }

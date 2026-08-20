@@ -3,7 +3,6 @@
 import 'navigator.locks';
 import log from 'loglevel';
 
-import { captureException, captureMessage } from '../sentry';
 import { getManifestFlags } from '../manifestFlags';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import {
@@ -37,10 +36,6 @@ jest.mock('loglevel', () => ({
   error: jest.fn(),
   info: jest.fn(),
 }));
-jest.mock('../sentry', () => ({
-  captureException: jest.fn(),
-  captureMessage: jest.fn(),
-}));
 jest.mock('../manifestFlags', () => ({
   getManifestFlags: jest.fn(() => ({})),
 }));
@@ -49,8 +44,8 @@ jest.mock('../trace', () => ({
   endTrace: jest.fn(),
   TraceName: {},
 }));
-const mockedCaptureException = jest.mocked(captureException);
-const mockedCaptureMessage = jest.mocked(captureMessage);
+const mockedCaptureException = jest.fn();
+const mockedCaptureMessage = jest.fn();
 const mockedGetManifestFlags = jest.mocked(getManifestFlags);
 
 describe('PersistenceManager', () => {
@@ -67,6 +62,22 @@ describe('PersistenceManager', () => {
     jest.clearAllMocks();
     mockedGetManifestFlags.mockReturnValue({});
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
+    manager.on('persistenceError', ({ error, type }) => {
+      mockedCaptureException(error, {
+        tags: { 'persistence.error': type },
+        fingerprint: ['persistence-error', type],
+      });
+    });
+    manager.on('persistenceRecovered', ({ type }) => {
+      mockedCaptureMessage(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: { 'persistence.event': type },
+          fingerprint: ['persistence-event', type],
+        },
+      );
+    });
   });
 
   afterEach(() => {
@@ -95,6 +106,8 @@ describe('PersistenceManager', () => {
       const listener = jest.fn();
       expect(() => {
         manager.on('splitStateMigrationSucceeded', listener);
+        manager.on('persistenceError', listener);
+        manager.on('persistenceRecovered', listener);
         manager.on('writeRetryRecovered', listener);
         manager.off('splitStateMigrationSucceeded', listener);
         manager.off('vaultCorruptionDetected', listener);
@@ -973,6 +986,12 @@ describe('PersistenceManager', () => {
 
       brokenManager = new PersistenceManager({
         localStore: new ExtensionStore(),
+      });
+      brokenManager.on('persistenceError', ({ error, type }) => {
+        mockedCaptureException(error, {
+          tags: { 'persistence.error': type },
+          fingerprint: ['persistence-error', type],
+        });
       });
       await brokenManager.open();
 

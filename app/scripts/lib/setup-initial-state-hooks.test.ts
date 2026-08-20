@@ -12,6 +12,8 @@ const mockGetBackup = jest.fn();
 const mockCleanUpMostRecentRetrievedState = jest.fn();
 const mockPersistenceOn = jest.fn();
 const mockTrackEarlySegmentEvent = jest.fn();
+const mockCaptureException = jest.fn();
+const mockCaptureMessage = jest.fn();
 let mockMostRecentRetrievedState: unknown = null;
 
 jest.mock('../platforms/extension', () => {
@@ -34,6 +36,11 @@ jest.mock('../../../shared/lib/object.utils', () => ({
 
 jest.mock('./segment/custom-segment-tracking', () => ({
   trackEarlySegmentEvent: mockTrackEarlySegmentEvent,
+}));
+
+jest.mock('../../../shared/lib/sentry', () => ({
+  captureException: mockCaptureException,
+  captureMessage: mockCaptureMessage,
 }));
 
 jest.mock('../../../shared/lib/stores/extension-store', () => {
@@ -92,6 +99,8 @@ describe('setup-initial-state-hooks', () => {
     mockCleanUpMostRecentRetrievedState.mockClear();
     mockPersistenceOn.mockClear();
     mockTrackEarlySegmentEvent.mockClear();
+    mockCaptureException.mockClear();
+    mockCaptureMessage.mockClear();
     globalThis.stateHooks = {} as typeof stateHooks;
   });
 
@@ -190,7 +199,15 @@ describe('setup-initial-state-hooks', () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
 
-      expect(mockPersistenceOn).toHaveBeenCalledTimes(4);
+      expect(mockPersistenceOn).toHaveBeenCalledTimes(6);
+      expect(mockPersistenceOn).toHaveBeenCalledWith(
+        'persistenceError',
+        expect.any(Function),
+      );
+      expect(mockPersistenceOn).toHaveBeenCalledWith(
+        'persistenceRecovered',
+        expect.any(Function),
+      );
       expect(mockPersistenceOn).toHaveBeenCalledWith(
         'vaultCorruptionDetected',
         expect.any(Function),
@@ -247,6 +264,43 @@ describe('setup-initial-state-hooks', () => {
           retry_delay_ms: 500,
         },
       });
+    });
+
+    it('reports persistence errors to Sentry', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      const error = new Error('storage failed');
+      const listener = mockPersistenceOn.mock.calls.find(
+        ([eventName]) => eventName === 'persistenceError',
+      )?.[1] as (payload: { error: Error; type: 'get-failed' }) => void;
+
+      listener({ error, type: 'get-failed' });
+
+      expect(mockCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'get-failed' },
+        fingerprint: ['persistence-error', 'get-failed'],
+      });
+    });
+
+    it('reports persistence recovery to Sentry', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      const listener = mockPersistenceOn.mock.calls.find(
+        ([eventName]) => eventName === 'persistenceRecovered',
+      )?.[1] as (payload: { type: 'persist-recovered' }) => void;
+
+      listener({ type: 'persist-recovered' });
+
+      expect(mockCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: { 'persistence.event': 'persist-recovered' },
+          fingerprint: ['persistence-event', 'persist-recovered'],
+        },
+      );
     });
   });
 

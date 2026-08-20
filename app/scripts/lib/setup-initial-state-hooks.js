@@ -10,6 +10,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { captureException, captureMessage } from '../../../shared/lib/sentry';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
@@ -37,6 +38,23 @@ function createLocalStore() {
 
 const localStore = createLocalStore();
 
+function reportPersistenceError({ error, type }) {
+  // Custom fingerprint prevents Sentry's deduplication from dropping this event
+  // when other persistence errors share the same underlying error message.
+  captureException(error, {
+    tags: { 'persistence.error': type },
+    fingerprint: ['persistence-error', type],
+  });
+}
+
+function reportPersistenceRecovered({ type }) {
+  captureMessage('Data persistence recovered after temporary failure', {
+    level: 'info',
+    tags: { 'persistence.event': type },
+    fingerprint: ['persistence-event', type],
+  });
+}
+
 function getStateForEarlySegmentEvent(manager) {
   if (globalThis.stateHooks.getSentryAppState) {
     return globalThis.stateHooks.getSentryAppState();
@@ -51,6 +69,8 @@ function getStateForEarlySegmentEvent(manager) {
 
 // Single PersistenceManager per context: one in background, one per UI context.
 export const persistenceManager = new PersistenceManager({ localStore })
+  .on('persistenceError', reportPersistenceError)
+  .on('persistenceRecovered', reportPersistenceRecovered)
   .on('vaultCorruptionDetected', (payload) => {
     trackVaultCorruptionEvent(
       payload.backup,

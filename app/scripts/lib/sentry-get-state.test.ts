@@ -77,6 +77,9 @@ describe('sentry-get-state', () => {
             optedIn: true,
             consentDecisionMade: true,
           },
+          MetaMetricsController: {
+            completedMetaMetricsOnboarding: true,
+          },
         },
       });
 
