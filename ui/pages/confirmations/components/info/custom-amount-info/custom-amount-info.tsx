@@ -115,13 +115,18 @@ export const CustomAmountInfo = React.memo(
 
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
-    const { amountFiat, amountHuman, hasAmount, hasInput, updatePendingAmount } =
-      useTransactionCustomAmount({
-        balanceUsdOverride,
-        currency,
-        disableUpdate,
-        prefillMaxOnLoad,
-      });
+    const {
+      amountFiat,
+      amountHuman,
+      hasAmount,
+      hasInput,
+      updatePendingAmount,
+    } = useTransactionCustomAmount({
+      balanceUsdOverride,
+      currency,
+      disableUpdate,
+      prefillMaxOnLoad,
+    });
 
     const handleAmountChange = useCallback(
       (value: string) => {
