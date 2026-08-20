@@ -149,7 +149,7 @@ describe('OperationSafener', () => {
     expect(mockOp).toHaveBeenCalledWith('param1');
   });
 
-  it('should flush pending work without preventing future executions', async () => {
+  it('flushes pending work without preventing future executions', async () => {
     jest.useFakeTimers();
     try {
       const mockOp = jest.fn().mockResolvedValue('success');
@@ -174,6 +174,16 @@ describe('OperationSafener', () => {
     } finally {
       jest.useRealTimers();
     }
+  });
+
+  it('does not flush after evacuation starts', async () => {
+    const mockOp = jest.fn();
+    const safener = new OperationSafener({ op: mockOp });
+
+    await safener.evacuate();
+
+    await expect(safener.flush()).resolves.toBe(false);
+    expect(mockOp).not.toHaveBeenCalled();
   });
 
   describe('Errors', () => {

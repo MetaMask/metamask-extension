@@ -7,9 +7,6 @@ import { captureException, captureMessage } from '../sentry';
 import { getManifestFlags } from '../manifestFlags';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import {
-  IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS,
-  PERSISTENCE_OPERATION_DEBOUNCE_MS,
-  PERSISTENCE_OPERATION_MAX_WAIT_MS,
   PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
   isIndexedDBMutationBlockedError,
@@ -101,19 +98,6 @@ describe('PersistenceManager', () => {
     jest.clearAllMocks();
     mockedGetManifestFlags.mockReturnValue({});
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
-  });
-
-  describe('persistence operation timing', () => {
-    it('uses a 5 second debounce with a 30 minute maxWait', () => {
-      expect(PERSISTENCE_OPERATION_DEBOUNCE_MS).toBe(5_000);
-      expect(PERSISTENCE_OPERATION_MAX_WAIT_MS).toBe(30 * 60 * 1000);
-    });
-
-    it('defines immediate persistence keys', () => {
-      expect(IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS).toStrictEqual([
-        'KeyringController',
-      ]);
-    });
   });
 
   afterEach(() => {

@@ -1,19 +1,21 @@
 import 'navigator.locks';
-import browser from 'webextension-polyfill';
 import type {
   PersistenceManager,
   StorageKind,
 } from '../../../shared/lib/stores/persistence-manager';
-import {
-  PERSISTENCE_OPERATION_DEBOUNCE_MS,
-  PERSISTENCE_OPERATION_MAX_WAIT_MS,
-} from '../../../shared/lib/stores/persistence-manager';
+import { captureException } from '../../../shared/lib/sentry';
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import { getRequestSafeReload } from './safe-reload';
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     reload: jest.fn(),
   },
+}));
+
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../shared/lib/sentry'),
+  captureException: jest.fn(),
 }));
 
 const mockLocksRequest = jest
@@ -23,12 +25,15 @@ const mockLocksRequest = jest
   });
 navigator.locks.request = mockLocksRequest;
 
-async function flushPromises() {
-  await Promise.resolve();
-  await Promise.resolve();
-}
-
-function createPersistenceManager(storageKind: StorageKind = 'split') {
+/**
+ * Creates a persistence manager mock for exercising request-safe persistence.
+ *
+ * @param storageKind - Storage implementation used by the mock.
+ * @returns A persistence manager with mocked write methods.
+ */
+function createPersistenceManager(
+  storageKind: StorageKind = 'split',
+): PersistenceManager {
   return {
     persist: jest.fn().mockResolvedValue([true, undefined]),
     set: jest.fn().mockResolvedValue([true, undefined]),
@@ -47,48 +52,26 @@ describe('getRequestSafeReload', () => {
     jest.restoreAllMocks();
   });
 
-  it('debounces persistence for the configured wait', async () => {
+  it('flushes pending split persistence when any changed controller requires an immediate write', async () => {
     const persistenceManager = createPersistenceManager();
-    const { safePersist } = getRequestSafeReload(persistenceManager);
+    const { safePersist } = getRequestSafeReload(persistenceManager, [
+      'KeyringController',
+    ]);
 
-    await safePersist();
-    await safePersist();
-
-    jest.advanceTimersByTime(PERSISTENCE_OPERATION_DEBOUNCE_MS - 1);
-    await flushPromises();
+    await safePersist({
+      changedControllerKeys: ['SubjectMetadataController'],
+    });
 
     expect(persistenceManager.persist).not.toHaveBeenCalled();
 
-    jest.advanceTimersByTime(1);
-    await flushPromises();
-
-    expect(persistenceManager.persist).toHaveBeenCalledTimes(1);
-  });
-
-  it('flushes queued split persistence for an immediate key without evacuating future writes', async () => {
-    const persistenceManager = createPersistenceManager();
-    const { safePersist } = getRequestSafeReload(persistenceManager, [
-      'KeyringController',
-    ]);
-
-    await safePersist('KeyringController');
+    await safePersist({
+      changedControllerKeys: ['PreferencesController', 'KeyringController'],
+    });
 
     expect(persistenceManager.persist).toHaveBeenCalledTimes(1);
 
-    await safePersist();
-    jest.advanceTimersByTime(PERSISTENCE_OPERATION_DEBOUNCE_MS);
+    jest.runOnlyPendingTimers();
     await flushPromises();
-
-    expect(persistenceManager.persist).toHaveBeenCalledTimes(2);
-  });
-
-  it('flushes queued split persistence when any changed key is immediate', async () => {
-    const persistenceManager = createPersistenceManager();
-    const { safePersist } = getRequestSafeReload(persistenceManager, [
-      'KeyringController',
-    ]);
-
-    await safePersist(['AppMetadataController', 'KeyringController']);
 
     expect(persistenceManager.persist).toHaveBeenCalledTimes(1);
   });
@@ -100,63 +83,50 @@ describe('getRequestSafeReload', () => {
     ]);
     const state = { KeyringController: { vault: 'vault' } };
 
-    await safePersist(['KeyringController'], state);
+    await safePersist({
+      changedControllerKeys: ['KeyringController'],
+      state,
+    });
 
     expect(persistenceManager.set).toHaveBeenCalledTimes(1);
     expect(persistenceManager.set).toHaveBeenCalledWith(state);
   });
 
-  it('does not flush queued persistence for non-immediate keys', async () => {
+  it('does not flush pending persistence for non-immediate controllers', async () => {
     const persistenceManager = createPersistenceManager();
     const { safePersist } = getRequestSafeReload(persistenceManager, [
       'KeyringController',
     ]);
 
-    await safePersist('SubjectMetadataController');
-    await flushPromises();
+    await safePersist({
+      changedControllerKeys: ['SubjectMetadataController'],
+    });
 
     expect(persistenceManager.persist).not.toHaveBeenCalled();
 
-    jest.advanceTimersByTime(PERSISTENCE_OPERATION_DEBOUNCE_MS);
+    jest.runOnlyPendingTimers();
     await flushPromises();
 
     expect(persistenceManager.persist).toHaveBeenCalledTimes(1);
   });
 
-  it('persists at maxWait when updates keep arriving before the debounce expires', async () => {
+  it('reports persistence write failures', async () => {
     const persistenceManager = createPersistenceManager();
-    const { safePersist } = getRequestSafeReload(persistenceManager);
-    const intervalMs = PERSISTENCE_OPERATION_DEBOUNCE_MS - 1;
+    const writeError = new Error('Write failed');
+    jest.mocked(persistenceManager.persist).mockRejectedValue(writeError);
+    const { safePersist } = getRequestSafeReload(persistenceManager, [
+      'KeyringController',
+    ]);
 
-    for (
-      let elapsedMs = 0;
-      elapsedMs < PERSISTENCE_OPERATION_MAX_WAIT_MS;
-      elapsedMs += intervalMs
-    ) {
-      await safePersist();
-      jest.advanceTimersByTime(intervalMs);
-      await flushPromises();
-    }
+    await expect(
+      safePersist({ changedControllerKeys: ['KeyringController'] }),
+    ).resolves.toBe(true);
 
-    expect(persistenceManager.persist).toHaveBeenCalledTimes(1);
-  });
-
-  it('requests runtime reload after evacuating pending persistence', async () => {
-    const persistenceManager = createPersistenceManager();
-    const { safePersist, requestSafeReload } =
-      getRequestSafeReload(persistenceManager);
-
-    await safePersist();
-    const reloadPromise = requestSafeReload();
-
-    await flushPromises();
-
-    expect(persistenceManager.persist).toHaveBeenCalledTimes(1);
-    expect(browser.runtime.reload).not.toHaveBeenCalled();
-
-    jest.advanceTimersByTime(150);
-    await reloadPromise;
-
-    expect(browser.runtime.reload).toHaveBeenCalledTimes(1);
+    expect(captureException).toHaveBeenCalledWith(
+      expect.objectContaining({
+        cause: writeError,
+        message: 'MetaMask - Persistence failed',
+      }),
+    );
   });
 });

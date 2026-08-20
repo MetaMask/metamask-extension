@@ -67,7 +67,6 @@ import { createEvent } from '../../shared/lib/deep-links/metrics';
 import {
   backedUpStateKeys,
   hasVault,
-  IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS,
 } from '../../shared/lib/stores/persistence-manager';
 import Migrator from './lib/migrator';
 import migrations from './migrations';
@@ -113,7 +112,10 @@ import {
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
-import { getRequestSafeReload } from './lib/safe-reload';
+import {
+  getRequestSafeReload,
+  IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS,
+} from './lib/safe-reload';
 import {
   readCriticalErrorRestoreSession,
   clearCriticalErrorRestoreSession,
@@ -1344,7 +1346,7 @@ export function setupController(
         persistenceManager.update(key, currentState[key]);
       });
       // then persist it
-      safePersist(changedControllerKeys).catch((error) => {
+      safePersist({ changedControllerKeys }).catch((error) => {
         log.error('Error persisting updated state:', error);
         sentry?.captureException(error);
       });
@@ -1388,7 +1390,7 @@ export function setupController(
           });
         }
         try {
-          await safePersist(controllerKey);
+          await safePersist({ changedControllerKeys: [controllerKey] });
         } catch (error) {
           log.error('Error persisting state change:', error);
           sentry?.captureException(error);
@@ -1401,12 +1403,14 @@ export function setupController(
         `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
       );
       // persist the new state
-      safePersist(changedControllerKeys, currentState).catch((error) => {
-        log.error('Error persisting updated controller state:', error);
-        sentry?.captureException(error);
-      });
+      safePersist({ changedControllerKeys, state: currentState }).catch(
+        (error) => {
+          log.error('Error persisting updated controller state:', error);
+          sentry?.captureException(error);
+        },
+      );
     }
-    controller.store.on('update', safePersist);
+    controller.store.on('update', (state) => safePersist({ state }));
   }
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);

@@ -2,9 +2,8 @@ import browser from 'webextension-polyfill';
 import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
 import {
-  PERSISTENCE_OPERATION_DEBOUNCE_MS,
-  PERSISTENCE_OPERATION_MAX_WAIT_MS,
   type PersistenceManager,
+  PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
 } from '../../../shared/lib/stores/persistence-manager';
 import type { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
 import { OperationSafener } from './operation-safener';
@@ -12,46 +11,23 @@ import { OperationSafener } from './operation-safener';
 /** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
 const RELOAD_AFTER_EVACUATE_MS = 150;
 
-type ImmediatePersistenceKeys = string | readonly string[];
+/** Controller changes that bypass the persistence debounce. */
+export const IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS = [
+  'KeyringController',
+] as const;
 
-type PersistenceOperationParams = [state?: MetaMaskStateType];
+type SafePersistOptions = {
+  /** Controller keys represented by the pending persistence operation. */
+  changedControllerKeys?: readonly string[];
+  /** Full state to persist when the persistence manager uses data storage. */
+  state?: MetaMaskStateType;
+};
 
-type SafePersistArgs =
-  | PersistenceOperationParams
-  | [
-      changedControllerKeys: ImmediatePersistenceKeys,
-      ...params: PersistenceOperationParams,
-    ];
-
-function isImmediatePersistenceKeysArgument(
-  value: unknown,
-): value is ImmediatePersistenceKeys {
-  return (
-    typeof value === 'string' ||
-    (Array.isArray(value) &&
-      value.every((key): key is string => typeof key === 'string'))
-  );
-}
-
-function normalizeKeys(keys: ImmediatePersistenceKeys): readonly string[] {
-  return typeof keys === 'string' ? [keys] : keys;
-}
-
-function normalizeSafePersistArgs(args: SafePersistArgs) {
-  const [maybeChangedControllerKeys, ...params] = args;
-
-  if (isImmediatePersistenceKeysArgument(maybeChangedControllerKeys)) {
-    return {
-      changedControllerKeys: normalizeKeys(maybeChangedControllerKeys),
-      params: params as PersistenceOperationParams,
-    };
-  }
-
-  return {
-    changedControllerKeys: [],
-    params: args as PersistenceOperationParams,
-  };
-}
+type RequestSafeReload = {
+  safePersist: (options?: SafePersistOptions) => Promise<boolean>;
+  requestSafeReload: () => Promise<void>;
+  evacuate: () => Promise<void>;
+};
 
 /**
  * Creates a request-safe reload mechanism for the given persistence manager.
@@ -60,16 +36,14 @@ function normalizeSafePersistArgs(args: SafePersistArgs) {
  * updates.
  * @param immediatePersistenceKeys - Controller keys that require the latest
  * queued persistence operation to flush immediately.
+ * @returns Operations for queueing persistence and safely reloading the
+ * extension.
  */
 export function getRequestSafeReload<Type extends PersistenceManager>(
   persistenceManager: Type,
   immediatePersistenceKeys: readonly string[] = [],
-) {
+): RequestSafeReload {
   const immediatePersistenceKeySet = new Set(immediatePersistenceKeys);
-
-  const shouldFlushPersistImmediately = (
-    changedControllerKeys: readonly string[],
-  ) => changedControllerKeys.some((key) => immediatePersistenceKeySet.has(key));
 
   const operationSafener = new OperationSafener({
     op: async (state?: MetaMaskStateType) => {
@@ -90,26 +64,29 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
         );
       }
     },
-    wait: PERSISTENCE_OPERATION_DEBOUNCE_MS,
-    options: { maxWait: PERSISTENCE_OPERATION_MAX_WAIT_MS },
+    wait: PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
   });
 
   return {
     /**
      * Safely updates the persistence manager
      *
-     * @param args - Optional changed controller keys followed by arguments to
-     * pass to the persistence operation. For 'data' storage, pass the state;
-     * for 'split' storage, no persistence arguments are needed.
-     * @returns true if the update was queued, false if writes are not allowed.
+     * @param options - Persistence operation details.
+     * @param options.changedControllerKeys - Controller keys represented by
+     * the pending persistence operation.
+     * @param options.state - Full state to persist when using data storage.
+     * @returns A promise that resolves to true if the update was queued, or
+     * false if writes are not allowed.
      */
-    safePersist: async (...args: SafePersistArgs) => {
-      const { changedControllerKeys, params } = normalizeSafePersistArgs(args);
-      const didQueuePersist = operationSafener.execute(...params);
+    safePersist: async ({
+      changedControllerKeys = [],
+      state,
+    }: SafePersistOptions = {}) => {
+      const didQueuePersist = operationSafener.execute(state);
 
       if (
         didQueuePersist &&
-        shouldFlushPersistImmediately(changedControllerKeys)
+        changedControllerKeys.some((key) => immediatePersistenceKeySet.has(key))
       ) {
         await operationSafener.flush();
       }
@@ -123,6 +100,9 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
      * after a short delay. The delay lets popup/notification windows call
      * `window.close()` before reload so Chromium does not show normal tab
      * content inside that window (see GitHub issue #29151).
+     *
+     * @returns A promise that resolves after persistence is evacuated and the
+     * reload is scheduled.
      */
     requestSafeReload: async () => {
       await operationSafener.evacuate();
