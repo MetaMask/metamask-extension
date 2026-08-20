@@ -46,38 +46,9 @@ import {
 } from '../hardware-wallet-signatures-state-machine';
 import type { UseHardwareWalletSignaturesReturn } from './useHardwareWalletSignatures.types';
 import { useSendBundleSubmission } from './useSendBundleSubmission';
+import { useBridgeNavigation } from '../../../../hooks/bridge/useBridgeNavigation';
 
 const SIGNATURE_STUCK_TIMEOUT_MS = 15_000;
-
-type SendBundleHardwareWalletState = {
-  txMeta: TransactionMeta;
-  needsTwoConfirmations: boolean;
-  returnRoute?: string;
-  /**
-   * Pending approval id captured at navigation time. The signing page refuses
-   * to submit unless this id is still in `state.metamask.pendingApprovals`.
-   */
-  approvalRequestId: string;
-  /**
-   * The display amount being sent (e.g. "1.5"), used to label the send step.
-   * Derived in the confirmations flow from the same source the send screen
-   * uses.
-   */
-  sendAmount?: string;
-  /**
-   * The symbol of the token being sent (e.g. "ETH" or "USDC").
-   */
-  sendSymbol?: string;
-  /**
-   * The symbol of the token used to pay the network fee (always the chain's
-   * native currency). Distinct from `sendSymbol` for ERC20 sends.
-   */
-  gasSymbol?: string;
-};
-
-type HardwareWalletSignaturesLocationState = {
-  sendBundle?: SendBundleHardwareWalletState | null;
-};
 
 /**
  * Terminal signature state machine statuses — the flow has finished (either
@@ -104,22 +75,19 @@ const TERMINAL_STATUSES = new Set<HardwareWalletSignatureStatus>([
 export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn {
   const t = useI18nContext();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const location = useLocation();
-  const sendBundleState = (
-    location.state as HardwareWalletSignaturesLocationState
-  )?.sendBundle;
+  const { hardwareWalletSigningState } = useBridgeNavigation();
   // `sendBundleTxMeta` is reactive: retry replaces it with a fresh
   // TransactionMeta (created via `addTransaction`). All consumers — the
   // tracker's expectedTxIds, the safety check, the auto-submit effect —
   // automatically pick up the new value on the next render.
   const [sendBundleTxMeta, setSendBundleTxMeta] = useState(
-    sendBundleState?.txMeta,
+    hardwareWalletSigningState?.txMeta,
   );
   const isSendBundleFlow = Boolean(sendBundleTxMeta);
   // Reactive approval id: updated on retry so the wallet-safety selector
   // tracks the CURRENT pending approval, not the original one.
   const [currentApprovalRequestId, setCurrentApprovalRequestId] = useState(
-    sendBundleState?.approvalRequestId,
+    hardwareWalletSigningState?.approvalRequestId,
   );
   const isHardwareWalletAccount = useSelector(isHardwareWallet);
   const isStxEnabled = useSelector(getIsStxEnabled);
@@ -135,7 +103,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   const { lockedQuote, fromToken } = useHwSwapQuoteData();
   const needsTwoConfirmations = isSendBundleFlow
-    ? Boolean(sendBundleState?.needsTwoConfirmations)
+    ? Boolean(hardwareWalletSigningState?.needsTwoConfirmations)
     : Boolean(lockedQuote?.approval);
   const fromAmount = lockedQuote?.quote.src?.normalizedAmount;
   const activeSigningRequestId =
@@ -361,7 +329,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       retrySubmission,
       handleQrSignatureCancel,
       currentApprovalRequestId,
-      returnRoute: sendBundleState?.returnRoute,
+      returnRoute: hardwareWalletSigningState?.returnRoute,
       isRetryingRef,
     });
 
@@ -448,9 +416,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     spenderAddress: getTransactionField(lockedQuote?.approval, 'to'),
     fromAmount,
     fromTokenSymbol: fromToken?.symbol,
-    sendAmount: sendBundleState?.sendAmount,
-    sendSymbol: sendBundleState?.sendSymbol,
-    gasSymbol: sendBundleState?.gasSymbol,
+    sendAmount: hardwareWalletSigningState?.sendAmount,
+    sendSymbol: hardwareWalletSigningState?.sendSymbol,
+    gasSymbol: hardwareWalletSigningState?.gasSymbol,
     hasSigningRequest: Boolean(lockedQuote || sendBundleTxMeta),
     hasSignatureTimedOut,
     isRetrying,
