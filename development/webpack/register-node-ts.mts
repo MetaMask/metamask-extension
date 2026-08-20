@@ -26,6 +26,7 @@ const moduleWithResolver = Module as unknown as {
 const originalResolveFilename = moduleWithResolver._resolveFilename;
 
 moduleWithResolver._resolveFilename = function resolveFilename(
+  this: typeof moduleWithResolver,
   request,
   parent,
   isMain,
