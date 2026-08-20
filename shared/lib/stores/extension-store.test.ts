@@ -118,4 +118,65 @@ describe('ExtensionStore', () => {
       expect(getMock).toHaveBeenCalledWith(['data', 'meta']);
     });
   });
+
+  describe('getSplitStateReadDiagnostics', () => {
+    it('reports manifest keys that are readable, missing, or failed', async () => {
+      const getMock = jest
+        .fn()
+        .mockResolvedValueOnce({
+          manifest: [
+            'KeyringController',
+            'PreferencesController',
+            'MissingController',
+          ],
+        })
+        .mockResolvedValueOnce({
+          KeyringController: { vault: 'encrypted-vault' },
+        })
+        .mockRejectedValueOnce(new Error('block checksum mismatch'))
+        .mockResolvedValueOnce({});
+      const localStore = setup({ localMock: { get: getMock } });
+
+      await expect(
+        localStore.getSplitStateReadDiagnostics(),
+      ).resolves.toStrictEqual({
+        manifestStatus: 'readable',
+        manifestKeyCount: 3,
+        readableKeys: ['KeyringController'],
+        missingKeys: ['MissingController'],
+        failedKeys: [
+          {
+            key: 'PreferencesController',
+            errorName: 'Error',
+            errorMessage: 'block checksum mismatch',
+          },
+        ],
+      });
+
+      expect(getMock).toHaveBeenNthCalledWith(1, ['manifest']);
+      expect(getMock).toHaveBeenNthCalledWith(2, ['KeyringController']);
+      expect(getMock).toHaveBeenNthCalledWith(3, ['PreferencesController']);
+      expect(getMock).toHaveBeenNthCalledWith(4, ['MissingController']);
+    });
+
+    it('reports a failed manifest read', async () => {
+      const getMock = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('manifest block checksum mismatch'));
+      const localStore = setup({ localMock: { get: getMock } });
+
+      await expect(
+        localStore.getSplitStateReadDiagnostics(),
+      ).resolves.toStrictEqual({
+        manifestStatus: 'failed',
+        readableKeys: [],
+        missingKeys: [],
+        failedKeys: [],
+        manifestError: {
+          errorName: 'Error',
+          errorMessage: 'manifest block checksum mismatch',
+        },
+      });
+    });
+  });
 });
