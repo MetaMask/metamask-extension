@@ -1,4 +1,7 @@
 import { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { getMaybeSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,
@@ -21,16 +24,26 @@ export type InitiateWithdrawalOptions = {
  * as `useMoneyAccountDeposit`. There is no deposit-intent equivalent for
  * withdrawals — mobile records none either.
  *
+ * Fails fast (as mobile does) when no EVM account is selected: the recipient
+ * is only committed later by `updateMoneyAccountWithdrawAmount`, so without
+ * this guard the user would reach the confirmation and have every amount
+ * commit fail instead.
+ *
  * @returns The initiator and its loading state.
  */
 export function useMoneyAccountWithdrawal() {
   const { navigateToTransaction } = useConfirmationNavigation();
+  const selectedAccount = useSelector(getMaybeSelectedInternalAccount);
   const [isLoading, setIsLoading] = useState(false);
 
   const initiateWithdrawal = useCallback(
     async (options?: InitiateWithdrawalOptions) => {
       setIsLoading(true);
       try {
+        if (!selectedAccount || !isEvmAccountType(selectedAccount.type)) {
+          throw new Error('[Money Account] Missing recipient EVM address');
+        }
+
         const { transactionId } = await createMoneyAccountWithdrawTransaction();
 
         navigateToTransaction(transactionId, {
@@ -48,7 +61,7 @@ export function useMoneyAccountWithdrawal() {
         setIsLoading(false);
       }
     },
-    [navigateToTransaction],
+    [navigateToTransaction, selectedAccount],
   );
 
   return { initiateWithdrawal, isLoading };
