@@ -109,7 +109,7 @@ export default function ImportSRP({
       justifyContent={BoxJustifyContent.Between}
       className="import-srp h-full"
       gap={4}
-      data-testid="import-srp"
+      data-testid="parent-selector-onboarding-srp"
     >
       <Box>
         <Box marginBottom={4}>
