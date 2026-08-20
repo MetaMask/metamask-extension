@@ -5,6 +5,7 @@ import {
   MUSD_DECIMALS,
 } from '@metamask/money-account-utils';
 import {
+  TransactionStatus,
   TransactionType,
   updateEIP7702BatchData,
   type TransactionMeta,
@@ -128,6 +129,13 @@ async function updateMoneyAccountDepositAmountInternal(
     skipResimulate: true,
     callback: (transactionMeta: TransactionMeta) => {
       validateTransactionTemplate(transactionMeta);
+
+      // Checked at commit time, inside the atomic metadata write: the UI
+      // gate is the primary defense, but calldata must never be rewritten
+      // under a transaction that has already been approved for signing.
+      if (transactionMeta.status !== TransactionStatus.unapproved) {
+        failUpdate('transaction is no longer unapproved');
+      }
 
       if (transactionMeta.chainId !== chainId) {
         failUpdate('transaction chain changed during preparation');

@@ -4,6 +4,7 @@ import {
   TELLER_ABI,
 } from '@metamask/money-account-utils';
 import {
+  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -36,6 +37,7 @@ function buildTemplateTransaction(): TransactionMeta {
   return {
     id: `withdraw-transaction-${transactionIdCounter}`,
     chainId: VAULT_CONFIG_MOCK.chainId,
+    status: TransactionStatus.unapproved,
     txParams: { from: MONEY_ACCOUNT_ADDRESS_MOCK, gas: '0x5208' },
     nestedTransactions: [
       {
@@ -63,6 +65,7 @@ function setup(
     handlers: {
       'AccountsController:getSelectedAccount': () => ({
         address: RECIPIENT_MOCK,
+        type: 'eip155:eoa',
       }),
       'TransactionController:getState': () => ({
         transactions: [transaction],
@@ -162,6 +165,56 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     ).rejects.toThrow(
       'Update Amount: Money Account Withdrawal: missing recipient account',
     );
+  });
+
+  it('rejects when the selected account is not an EVM account', async () => {
+    const transaction = buildTemplateTransaction();
+    const { messenger } = setup(transaction, {
+      handlers: {
+        'AccountsController:getSelectedAccount': () => ({
+          address: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
+          type: 'solana:data-account',
+        }),
+      },
+    });
+
+    await expect(
+      updateMoneyAccountWithdrawAmount(messenger, transaction.id, AMOUNT_HUMAN),
+    ).rejects.toThrow(
+      'Update Amount: Money Account Withdrawal: selected account is not an EVM account',
+    );
+  });
+
+  it('rejects when the selected account address is not hex', async () => {
+    const transaction = buildTemplateTransaction();
+    const { messenger } = setup(transaction, {
+      handlers: {
+        'AccountsController:getSelectedAccount': () => ({
+          address: 'not-a-hex-address',
+          type: 'eip155:eoa',
+        }),
+      },
+    });
+
+    await expect(
+      updateMoneyAccountWithdrawAmount(messenger, transaction.id, AMOUNT_HUMAN),
+    ).rejects.toThrow(
+      'Update Amount: Money Account Withdrawal: invalid recipient address',
+    );
+  });
+
+  it('rejects at commit time when the transaction is no longer unapproved', async () => {
+    const transaction = buildTemplateTransaction();
+    transaction.status = TransactionStatus.approved;
+    const { messenger } = setup(transaction);
+
+    await expect(
+      updateMoneyAccountWithdrawAmount(messenger, transaction.id, AMOUNT_HUMAN),
+    ).rejects.toThrow(
+      'Update Amount: Money Account Withdrawal: transaction is no longer unapproved',
+    );
+    // The placeholder calldata must be untouched.
+    expect(transaction.nestedTransactions?.[1].data).toBe('0x00');
   });
 
   it('shares the promise for identical in-flight intents', async () => {
