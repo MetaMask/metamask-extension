@@ -13,8 +13,28 @@ const POSITION_ROWS = [
   { key: 'lifetime', labelKey: 'moneyLifetime' },
 ] as const;
 
-export function MoneyPositionPlaceholder() {
+type MoneyPositionPlaceholderProps = {
+  monthlyEarnings: string;
+  lifetimeEarnings: string;
+  isMonthlyLoading: boolean;
+  isLifetimeLoading: boolean;
+};
+
+export function MoneyPositionPlaceholder({
+  monthlyEarnings,
+  lifetimeEarnings,
+  isMonthlyLoading,
+  isLifetimeLoading,
+}: MoneyPositionPlaceholderProps) {
   const t = useI18nContext();
+  const earnings = {
+    monthly: monthlyEarnings,
+    lifetime: lifetimeEarnings,
+  };
+  const loading = {
+    monthly: isMonthlyLoading,
+    lifetime: isLifetimeLoading,
+  };
 
   return (
     <section
@@ -41,10 +61,25 @@ export function MoneyPositionPlaceholder() {
             >
               {t(labelKey)}
             </Text>
-            <Skeleton
-              className="h-6 w-20"
-              data-testid={`money-position-${key}-skeleton`}
-            />
+            {loading[key] ? (
+              <Skeleton
+                className="h-6 w-20"
+                data-testid={`money-position-${key}-skeleton`}
+              />
+            ) : (
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                className={
+                  earnings[key].startsWith('+')
+                    ? 'text-success-default'
+                    : undefined
+                }
+                data-testid={`money-position-${key}-value`}
+              >
+                {earnings[key]}
+              </Text>
+            )}
           </div>
         ))}
       </div>

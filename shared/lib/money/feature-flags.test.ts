@@ -2,10 +2,12 @@ import packageJson from '../../../package.json';
 import {
   DEFAULT_MONEY_ACCOUNT_BLOCKED_COUNTRIES,
   MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME,
+  MONEY_EARNING_SECTION_ENABLED_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
   getMoneyAccountGeoBlockedCountries,
   isMoneyAccountEnabled,
   isMoneyAccountGeoEligible,
+  isMoneyEarningSectionEnabled,
 } from './feature-flags';
 
 const CURRENT_VERSION = packageJson.version;
@@ -191,5 +193,50 @@ describe('isMoneyAccountGeoEligible', () => {
 
   it('compares blocked country codes case-insensitively', () => {
     expect(isMoneyAccountGeoEligible('GB', ['gb'])).toBe(false);
+  });
+});
+
+describe('isMoneyEarningSectionEnabled', () => {
+  it('returns true for an enabled flag the current version satisfies', () => {
+    expect(
+      isMoneyEarningSectionEnabled({
+        [MONEY_EARNING_SECTION_ENABLED_FLAG_NAME]: {
+          enabled: true,
+          minimumVersion: CURRENT_VERSION,
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false for a disabled flag', () => {
+    expect(
+      isMoneyEarningSectionEnabled({
+        [MONEY_EARNING_SECTION_ENABLED_FLAG_NAME]: {
+          enabled: false,
+          minimumVersion: '0.0.1',
+        },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when the current version is below the minimum', () => {
+    expect(
+      isMoneyEarningSectionEnabled({
+        [MONEY_EARNING_SECTION_ENABLED_FLAG_NAME]: {
+          enabled: true,
+          minimumVersion: '9999.0.0',
+        },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is absent, malformed, or unserved', () => {
+    expect(isMoneyEarningSectionEnabled(undefined)).toBe(false);
+    expect(isMoneyEarningSectionEnabled({})).toBe(false);
+    expect(
+      isMoneyEarningSectionEnabled({
+        [MONEY_EARNING_SECTION_ENABLED_FLAG_NAME]: true,
+      }),
+    ).toBe(false);
   });
 });

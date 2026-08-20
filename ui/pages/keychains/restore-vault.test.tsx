@@ -71,7 +71,9 @@ async function enterSrpAndContinue(
   });
 
   await waitFor(() => {
-    expect(queryByTestId('create-password')).toBeInTheDocument();
+    expect(
+      queryByTestId('parent-selector-onboarding-password'),
+    ).toBeInTheDocument();
   });
 }
 
@@ -185,7 +187,9 @@ describe('Restore vault Component', () => {
     const terms = queryByTestId('create-password-terms');
     fireEvent.click(terms as HTMLElement);
 
-    const createPasswordForm = queryByTestId('create-password');
+    const createPasswordForm = queryByTestId(
+      'parent-selector-onboarding-password',
+    );
     const createNewWalletButton = queryByTestId('create-password-submit');
 
     // Wait for the button to be enabled (password validation is async)
@@ -284,7 +288,9 @@ describe('Restore vault Component', () => {
 
     fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
     await act(async () => {
-      fireEvent.submit(queryByTestId('create-password') as HTMLElement);
+      fireEvent.submit(
+        queryByTestId('parent-selector-onboarding-password') as HTMLElement,
+      );
     });
 
     await waitFor(() => {
