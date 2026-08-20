@@ -14,6 +14,9 @@ export class TxToastNotification {
     text: 'Transaction confirmed',
   };
 
+  private readonly transactionSubmittedToast =
+    '[data-testid="transaction-submitted-toast"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -21,6 +24,11 @@ export class TxToastNotification {
   async checkTxConfirmedToast(): Promise<void> {
     console.log('Check transaction confirmed toast is displayed');
     await this.driver.waitForSelector(this.transactionConfirmedText);
+  }
+
+  async checkTxSubmittedToast(): Promise<void> {
+    console.log('Check transaction submitted toast is displayed');
+    await this.driver.waitForSelector(this.transactionSubmittedToast);
   }
 
   async closeToastNotification(): Promise<void> {

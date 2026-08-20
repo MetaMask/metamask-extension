@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
-import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -11,7 +10,6 @@ import {
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
-  tryUnlockMetamaskWithPasskey,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
@@ -83,9 +81,6 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
     tryUnlockMetamask: (password: string) =>
       dispatch(tryUnlockMetamask(password)),
-    tryUnlockMetamaskWithPasskey: (
-      authenticationResponse: PasskeyAuthenticationResponse,
-    ) => dispatch(tryUnlockMetamaskWithPasskey(authenticationResponse)),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
@@ -100,11 +95,8 @@ const mergeProps = (
   dispatchProps: ReturnType<typeof mapDispatchToProps>,
   ownProps: OwnProps,
 ) => {
-  const {
-    tryUnlockMetamask: propsTryUnlockMetamask,
-    tryUnlockMetamaskWithPasskey: propsTryUnlockMetamaskWithPasskey,
-    ...restDispatchProps
-  } = dispatchProps;
+  const { tryUnlockMetamask: propsTryUnlockMetamask, ...restDispatchProps } =
+    dispatchProps;
   const {
     navigate,
     onSubmit: ownPropsSubmit,
@@ -134,18 +126,11 @@ const mergeProps = (
     await propsTryUnlockMetamask(password);
   };
 
-  const onUnlockWithPasskey = async (
-    authenticationResponse: PasskeyAuthenticationResponse,
-  ) => {
-    await propsTryUnlockMetamaskWithPasskey(authenticationResponse);
-  };
-
   return {
     ...stateProps,
     ...restDispatchProps,
     ...restOwnProps,
     onSubmit: ownPropsSubmit || onSubmit,
-    onUnlockWithPasskey,
     navigateAfterUnlock:
       ownPropsNavigateAfterUnlock || handleNavigationAfterUnlock,
     navigate,

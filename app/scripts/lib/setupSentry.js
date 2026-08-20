@@ -28,6 +28,7 @@ import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
+import { applySentryRemoteRates } from '../../../shared/lib/sentry-remote-rates';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
 import {
@@ -41,6 +42,7 @@ import {
 } from './sentry-get-state';
 import { makeTransport } from './sentry-make-transport';
 import { getInstallType, initInstallType } from './install-type';
+import { createTracesSampler } from './sentry-traces-sampler';
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -130,6 +132,7 @@ function safeCloneReport(report) {
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
+  const tracesSampleRate = getTracesSampleRate(sentryTarget);
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
@@ -184,7 +187,16 @@ function getClientOptions() {
     sendClientReports: false,
     // Sentry only runs in extension-owned realms, not in content scripts.
     skipBrowserExtensionCheck: true,
-    tracesSampleRate: getTracesSampleRate(sentryTarget),
+    tracesSampleRate,
+    // Per-transaction sampler: caps high-volume custom transactions (seeded with
+    // the assets-controller spans that breached quota in 13.32.0 — see #43410)
+    // while every other transaction keeps the global `tracesSampleRate`.
+    // `tracesSampler` takes precedence over `tracesSampleRate` in Sentry, so
+    // this option supersedes the `tracesSampleRate` above rather than
+    // combining with it.
+    tracesSampler: createTracesSampler({
+      defaultSampleRate: tracesSampleRate,
+    }),
     // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
     ignoreErrors: sentryTarget === SENTRY_DSN_PERFORMANCE ? [/.*/u] : undefined,
     transport: makeTransport,
@@ -297,6 +309,12 @@ function setSentryClient() {
 
   registerSpanErrorInstrumentation();
   init(clientOptions);
+
+  // Apply remote-flag sample-rate overrides once, post-init; compile-time
+  // rates remain the fallback when the flag is absent or malformed.
+  applySentryRemoteRates(getClient()).catch((error) =>
+    log('Failed to apply remote Sentry sample rates', error),
+  );
 
   setCITags();
 
