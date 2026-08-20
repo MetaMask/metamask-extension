@@ -239,5 +239,17 @@ export const selectOrderBookPosition = (state: PerpsState) =>
   state.metamask.proLayoutPreferences?.orderBookPosition ??
   DEFAULT_PRO_LAYOUT_PREFERENCES.orderBookPosition;
 
+/**
+ * Whether the order book panel was left open. Global across markets (the
+ * preference object is flat, not per-market), so the panel opens in the same
+ * state on every symbol.
+ *
+ * @param state - Perps controller state.
+ * @returns True when the panel should start open.
+ */
+export const selectOrderBookExpanded = (state: PerpsState) =>
+  state.metamask.proLayoutPreferences?.orderBookExpanded ??
+  DEFAULT_PRO_LAYOUT_PREFERENCES.orderBookExpanded;
+
 export const selectPerpsTradeConfigurations = (state: PerpsState) =>
   state.metamask.tradeConfigurations ?? EMPTY_TRADE_CONFIGURATIONS;

@@ -10,7 +10,6 @@ import {
 } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../context/confirm';
-import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import { selectPaymentOverrideByTransactionId } from '../../../../selectors/transactionPayController';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -30,9 +29,6 @@ jest.mock('./useTransactionPayToken', () => ({
 jest.mock('./useTransactionPayData', () => ({
   useTransactionPayRequiredTokens: jest.fn(),
 }));
-jest.mock('../../../../selectors/accounts', () => ({
-  getInternalAccountByAddress: jest.fn(),
-}));
 jest.mock('../../../../selectors/transactionPayController', () => ({
   selectPaymentOverrideByTransactionId: jest.fn(),
 }));
@@ -49,12 +45,6 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
 jest.mock('../../../../hooks/useFiatFormatter', () => ({
   useFiatFormatter: () => (value: number) => `$${value.toFixed(2)}`,
 }));
-jest.mock(
-  '../../../multichain-accounts/account-details/account-type-utils',
-  () => ({
-    isHardwareAccount: jest.fn(() => false),
-  }),
-);
 jest.mock('../../components/modals/pay-with-modal', () => ({
   PayWithModal: ({ isOpen }: { isOpen: boolean }) =>
     isOpen ? <div data-testid="pay-with-modal" /> : null,
@@ -85,15 +75,9 @@ describe('usePayWithToken', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
-  const getInternalAccountByAddressMock = jest.mocked(
-    getInternalAccountByAddress,
-  );
   const selectPaymentOverrideByTransactionIdMock = jest.mocked(
     selectPaymentOverrideByTransactionId,
   );
-  const { isHardwareAccount } = jest.requireMock(
-    '../../../multichain-accounts/account-details/account-type-utils',
-  ) as { isHardwareAccount: jest.Mock };
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -112,9 +96,7 @@ describe('usePayWithToken', () => {
       isNative: false,
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
-    getInternalAccountByAddressMock.mockReturnValue(ACCOUNT as never);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
-    isHardwareAccount.mockReturnValue(false);
 
     useSelectorMock.mockImplementation(
       (selector: (state: unknown) => unknown) => selector({}),
@@ -132,7 +114,6 @@ describe('usePayWithToken', () => {
     expect(result.current.balanceUsdFormatted).toBe('$25.00');
     expect(result.current.label).toBe('Pay with');
     expect(result.current.isMoneyAccountSelected).toBe(false);
-    expect(result.current.canEdit).toBe(true);
   });
 
   it('returns Money account display values when paymentOverride is MoneyAccount', () => {
@@ -165,7 +146,7 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.label).toBe('Withdraw to');
-    expect(result.current.isPerpsWithdraw).toBe(true);
+    expect(result.current.isPostQuoteWithdraw).toBe(true);
   });
 
   it('opens the pay with modal when editable', () => {
@@ -178,20 +159,6 @@ describe('usePayWithToken', () => {
     });
 
     expect(result.current.modal).not.toBeNull();
-  });
-
-  it('does not open the modal for hardware accounts', () => {
-    isHardwareAccount.mockReturnValue(true);
-
-    const { result } = renderHook(() => usePayWithToken());
-
-    expect(result.current.canEdit).toBe(false);
-
-    act(() => {
-      result.current.openModal();
-    });
-
-    expect(result.current.modal).toBeNull();
   });
 
   it('waits for payToken on perps withdraw instead of falling back to required token', () => {

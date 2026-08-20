@@ -335,7 +335,7 @@ export function useGlobalMenuSections(
         {
           id: 'global-menu-connected-sites',
           iconName: IconName.SecurityTick,
-          label: t('allPermissions'),
+          label: t('permissions'),
           to: isGatorPermissionsRevocationFeatureEnabled()
             ? `${GATOR_PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
             : `${PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`,

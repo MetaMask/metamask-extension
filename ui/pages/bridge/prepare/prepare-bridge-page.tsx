@@ -23,7 +23,6 @@ import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToToken,
   updateQuoteRequestParams,
   trackUnifiedSwapBridgeEvent,
   setIsSrcAssetPickerOpen,
@@ -40,7 +39,6 @@ import {
   getSlippage,
   getIsSlippageUserOverride,
   getToChain,
-  getToChains,
   getToToken,
   getWasTxDeclined,
   getFromAmountInCurrency,
@@ -50,8 +48,6 @@ import {
   getFromAccount,
   getIsStxEnabled,
   getValidatedFromValue,
-  getIsSrcAssetPickerOpen,
-  getIsDestAssetPickerOpen,
   getQuoteRequestInsufficientBal,
 } from '../../../ducks/bridge/selectors';
 import {
@@ -88,7 +84,6 @@ import {
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
-import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
 import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
 import { getTokenSecurityAssetKey } from '../utils/token-security';
 import { useDispatch } from '../../../store/hooks';
@@ -121,7 +116,6 @@ const PrepareBridgePage = ({
   );
 
   const fromChains = useSelector(getFromChains);
-  const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
@@ -148,8 +142,6 @@ const PrepareBridgePage = ({
   const { dest } = unvalidatedQuote?.quote ?? {};
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
-  const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
-  const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
 
   const isQuoteRequestInsufficientBal = useSelector(
     getQuoteRequestInsufficientBal,
@@ -240,8 +232,6 @@ const PrepareBridgePage = ({
 
   useLatestBalance();
 
-  const ensureNetworkEnabled = useEnsureNetworkEnabled();
-
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
   // Background updates are debounced when the switch button is clicked
@@ -249,8 +239,15 @@ const PrepareBridgePage = ({
   // from switching tokens within the debounce period
   const [isSwitchingTemporarilyDisabled, setIsSwitchingTemporarilyDisabled] =
     useState(false);
+  const isFirstRotateEffectRef = useRef(true);
   useEffect(() => {
-    setIsSwitchingTemporarilyDisabled(true);
+    if (isFirstRotateEffectRef.current) {
+      isFirstRotateEffectRef.current = false;
+      return undefined;
+    }
+    queueMicrotask(() => {
+      setIsSwitchingTemporarilyDisabled(true);
+    });
     const switchButtonTimer = setTimeout(() => {
       setIsSwitchingTemporarilyDisabled(false);
     }, SECOND);
@@ -274,44 +271,51 @@ const PrepareBridgePage = ({
   }, [isLoading]);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+  const fromTokenAssetId = fromToken?.assetId;
+  const toTokenAssetId = toToken?.assetId;
+  const fromTokenChainId = fromToken?.chainId;
+  const toTokenChainId = toToken?.chainId;
+  const selectedAccountAddress = selectedAccount?.address;
+  const selectedDestinationAccountAddress = selectedDestinationAccount?.address;
+  const providerConfigRpcUrl = providerConfig?.rpcUrl;
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
     | undefined = useMemo(() => {
-    if (!selectedAccount?.address) {
+    if (!selectedAccountAddress) {
       return undefined;
     }
     return {
-      srcTokenAddress: fromToken?.assetId
-        ? formatAddressToCaipReference(fromToken.assetId)
+      srcTokenAddress: fromTokenAssetId
+        ? formatAddressToCaipReference(fromTokenAssetId)
         : undefined,
-      destTokenAddress: toToken?.assetId
-        ? formatAddressToCaipReference(toToken.assetId)
+      destTokenAddress: toTokenAssetId
+        ? formatAddressToCaipReference(toTokenAssetId)
         : undefined,
       srcTokenAmount: validatedFromValue,
-      srcChainId: fromToken?.chainId,
-      destChainId: toToken?.chainId,
+      srcChainId: fromTokenChainId,
+      destChainId: toTokenChainId,
       // This override allows quotes to be returned when the rpcUrl is a forked network
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
-      insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
+      insufficientBal: providerConfigRpcUrl?.includes('localhost')
         ? true
         : isQuoteRequestInsufficientBal,
       ...(slippage === undefined ? {} : { slippage }),
-      walletAddress: selectedAccount.address,
-      destWalletAddress: selectedDestinationAccount?.address,
+      walletAddress: selectedAccountAddress,
+      destWalletAddress: selectedDestinationAccountAddress,
       gasIncluded,
       gasIncluded7702,
     };
   }, [
-    fromToken?.assetId,
-    toToken?.assetId,
+    fromTokenAssetId,
+    toTokenAssetId,
     validatedFromValue,
-    fromToken?.chainId,
-    toToken?.chainId,
+    fromTokenChainId,
+    toTokenChainId,
     slippage,
-    selectedAccount?.address,
-    selectedDestinationAccount?.address,
-    providerConfig?.rpcUrl,
+    selectedAccountAddress,
+    selectedDestinationAccountAddress,
+    providerConfigRpcUrl,
     gasIncluded,
     gasIncluded7702,
     isQuoteRequestInsufficientBal,
@@ -423,26 +427,22 @@ const PrepareBridgePage = ({
         onClose={() => setIsMarketClosedModalOpen(false)}
       />
 
-      <Column className="prepare-bridge-page" gap={4}>
+      <Column
+        className="prepare-bridge-page"
+        gap={4}
+        data-testid="parent-selector-bridge-quote"
+      >
         <BridgeInputGroup
-          isAssetPickerOpen={isSrcAssetPickerOpen}
           setIsAssetPickerOpen={(isOpen) =>
             dispatch(setIsSrcAssetPickerOpen(isOpen))
           }
-          header={t('swapSelectToken')}
           token={fromToken}
           tokenSecurityData={
             selectedTokenSecurityData[
               getTokenSecurityAssetKey(fromToken.assetId)
             ]
           }
-          accountAddress={selectedAccount?.address}
           onAmountChange={sourceInputAmount.handleAmountChange}
-          onAssetChange={async (token) => {
-            await ensureNetworkEnabled(token.chainId);
-            dispatch(setFromToken(token));
-          }}
-          networks={fromChains}
           onMaxButtonClick={
             shouldShowMaxButton
               ? (value: string) => {
@@ -589,13 +589,8 @@ const PrepareBridgePage = ({
           />
 
           <BridgeInputGroup
-            isAssetPickerOpen={isDestAssetPickerOpen}
             setIsAssetPickerOpen={(isOpen) =>
               dispatch(setIsDestAssetPickerOpen(isOpen))
-            }
-            header={t('swapSelectToken')}
-            accountAddress={
-              selectedDestinationAccount?.address ?? selectedAccount.address
             }
             token={toToken}
             tokenSecurityData={
@@ -603,18 +598,6 @@ const PrepareBridgePage = ({
                 getTokenSecurityAssetKey(toToken.assetId)
               ]
             }
-            // If the fromChain is a bridge-only chain, disable it in the toChain picker
-            disabledChainId={
-              fromChain?.chainId &&
-              BRIDGE_ONLY_CHAINS.includes(fromChain.chainId)
-                ? fromChain.chainId
-                : undefined
-            }
-            onAssetChange={async (newToToken) => {
-              await ensureNetworkEnabled(newToToken.chainId);
-              dispatch(setToToken(newToToken));
-            }}
-            networks={toChains}
             secondaryDisplay={destinationSecondaryDisplay}
             amountInputPrefix={
               isDestinationFiatPrimary ? getCurrencySymbol(currency) : undefined

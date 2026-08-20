@@ -1143,9 +1143,14 @@
       }
     },
     "@metamask/claims-controller": {
+      "globals": {
+        "fetch": true
+      },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/react-data-query>@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
@@ -1192,9 +1197,10 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/wallet>@metamask/connectivity-controller": {
+    "@metamask/connectivity-controller": {
       "packages": {
-        "@metamask/base-controller": true
+        "@metamask/base-controller": true,
+        "reselect": true
       }
     },
     "@metamask/controller-utils": {
@@ -1330,15 +1336,6 @@
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true
-      }
-    },
-    "@metamask/ens-controller": {
-      "packages": {
-        "@ethersproject/providers": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/utils": true,
-        "punycode": true
       }
     },
     "@metamask/eth-token-tracker>@metamask/eth-block-tracker": {
@@ -2027,6 +2024,21 @@
         "async-mutex": true
       }
     },
+    "@metamask/network-connection-banner-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/client-controller": true,
+        "@metamask/connectivity-controller": true,
+        "@metamask/network-controller": true,
+        "@metamask/network-enablement-controller": true,
+        "@metamask/utils": true,
+        "reselect": true
+      }
+    },
     "@metamask/network-controller": {
       "globals": {
         "Intl.NumberFormat": true,
@@ -2042,7 +2054,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/network-controller>@metamask/connectivity-controller": true,
+        "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
@@ -2071,7 +2083,8 @@
         "@metamask/keyring-api": true,
         "@metamask/multichain-network-controller": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "reselect": true
       }
     },
     "@metamask/transaction-controller>@metamask/nonce-tracker": {
@@ -2167,6 +2180,7 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
+        "URLSearchParams": true,
         "clearInterval": true,
         "clearTimeout": true,
         "fetch": true,
@@ -2343,7 +2357,8 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "@tanstack/react-query": true
       }
     },
     "@metamask/remote-feature-flag-controller": {
@@ -2416,7 +2431,8 @@
     },
     "@metamask/shield-controller": {
       "globals": {
-        "AbortController": true
+        "AbortController": true,
+        "fetch": true
       },
       "meta": {
         "webpack-optimization": [
@@ -2425,9 +2441,10 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/react-data-query>@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
-        "@metamask/shield-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "cockatiel": true,
         "lodash": true
@@ -2628,13 +2645,23 @@
     },
     "@metamask/subscription-controller": {
       "globals": {
-        "URL": true
+        "URL": true,
+        "fetch": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
       },
       "packages": {
+        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
-        "@metamask/subscription-controller>bignumber.js": true
+        "@metamask/subscription-controller>bignumber.js": true,
+        "cockatiel": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
@@ -2820,7 +2847,8 @@
         "@metamask/address-book-controller": true,
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
-        "@metamask/wallet>@metamask/connectivity-controller": true,
+        "@metamask/claims-controller": true,
+        "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/keyring-controller": true,
@@ -2829,7 +2857,9 @@
         "@metamask/passkey-controller": true,
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/seedless-onboarding-controller": true,
+        "@metamask/shield-controller": true,
         "@metamask/storage-service": true,
+        "@metamask/subscription-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }

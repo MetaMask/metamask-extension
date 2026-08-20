@@ -152,8 +152,9 @@
   "accountsConnected": {
     "message": "Akun terhubung"
   },
-  "accountsPermissionsTitle": {
-    "message": "Melihat akun Anda dan menyarankan transaksi"
+  "accountsCount": {
+    "message": "$1 akun",
+    "description": "Label showing number of accounts selected, $1 is the count"
   },
   "accountsSmallCase": {
     "message": "akun"
@@ -1397,6 +1398,12 @@
   "alert": {
     "message": "Peringatan"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "Dana tidak tersedia. Gunakan akun lain."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "Dana tidak cukup"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "Anda memperbarui akun ke akun cerdas. Anda akan tetap menggunakan alamat akun yang sama sambil membuka transaksi yang lebih cepat dan biaya jaringan yang lebih rendah. $1"
   },
@@ -1423,6 +1430,10 @@
   },
   "alertContentMultipleApprovals": {
     "message": "Anda memberikan izin kepada orang lain untuk menarik token Anda, meskipun tindakan tersebut tidak diperlukan untuk transaksi ini."
+  },
+  "alertDepositLimit": {
+    "message": "Deposit maks: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
   },
   "alertDisableTooltip": {
     "message": "Ini dapat diubah dalam \"Pengaturan > Peringatan\""
@@ -1574,9 +1585,6 @@
   },
   "allNetworks": {
     "message": "Semua jaringan"
-  },
-  "allPermissions": {
-    "message": "Koneksi dapp"
   },
   "allPopularNetworks": {
     "message": "Semua jaringan populer"
@@ -1768,6 +1776,9 @@
   },
   "back": {
     "message": "Kembali"
+  },
+  "backToSafety": {
+    "message": "Kembali ke keamanan"
   },
   "backUpIncomplete": {
     "message": "Pencadangan tidak selesai"
@@ -1990,54 +2001,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Jika dilanjutkan, semua aset yang Anda daftarkan di Blur bisa berpotensi hilang."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Anda berinteraksi dengan situs berbahaya. Jika dilanjutkan, Anda akan kehilangan aset milik Anda."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Jika dilanjutkan, semua aset yang Anda daftarkan di OpenSea bisa berpotensi hilang."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Jika permintaan ini dikonfirmasi, Anda dapat kehilangan aset milik Anda. Sebaiknya batalkan permintaan ini."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Anda mengirimkan aset milik Anda ke penipu. Jika dilanjutkan, Anda akan kehilangan aset tersebut."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Jika permintaan ini dikonfirmasi, Anda mengizinkan penipu untuk menarik dan menggunakan aset Anda. Anda tidak akan mendapatkannya kembali."
-  },
-  "blockaidDescriptionApproveFarming": {
-    "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan dapat mengambil semua aset Anda."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Jika Anda menyetujui permintaan ini, seseorang dapat mencuri aset Anda yang terdaftar di Blur."
-  },
-  "blockaidDescriptionErrored": {
-    "message": "Karena terjadi kesalahan, kami tidak dapat memeriksa peringatan keamanan. Lanjutkan hanya jika Anda memercayai setiap alamat yang terlibat."
-  },
-  "blockaidDescriptionMaliciousDomain": {
-    "message": "Anda berinteraksi dengan domain berbahaya. Jika Anda menyetujui permintaan ini, aset Anda kemungkinan akan hilang."
-  },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Jika Anda menyetujui permintaan ini, aset Anda kemungkinan akan hilang."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Jika Anda menyetujui permintaan ini, seseorang dapat mencuri aset Anda yang terdaftar di OpenSea."
-  },
-  "blockaidDescriptionTransferFarming": {
-    "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan akan mengambil semua aset Anda."
-  },
-  "blockaidTitleDeceptive": {
-    "message": "Ini adalah permintaan tipuan"
-  },
-  "blockaidTitleMayNotBeSafe": {
-    "message": "Berhati-hatilah"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Ini adalah permintaan yang mencurigakan"
   },
   "blockies": {
     "message": "Blockies"
@@ -2771,9 +2734,6 @@
   "confirmationAlertDetails": {
     "message": "Untuk melindungi aset Anda, sebaiknya tolak permintaan tersebut."
   },
-  "confirmationAlertModalTitleDescription": {
-    "message": "Aset Anda berpotensi hilang"
-  },
   "confirmed": {
     "message": "Dikonfirmasi"
   },
@@ -2798,8 +2758,8 @@
   "connectAHardwareWalletDescription": {
     "message": "Menggunakan USB atau Kode QR"
   },
-  "connectAccounts": {
-    "message": "Hubungkan akun"
+  "connectAnyway": {
+    "message": "Tetap hubungkan"
   },
   "connectHardwareDevice": {
     "message": "Hubungkan $1",
@@ -2845,18 +2805,6 @@
   "connectedSnaps": {
     "message": "Snaps yang Terhubung"
   },
-  "connectedWithAccount": {
-    "message": "$1 akun terhubung",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Terhubung dengan $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 jaringan terhubung",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Menghubungkan"
   },
@@ -2894,6 +2842,9 @@
   "connectionRequest": {
     "message": "Permintaan koneksi"
   },
+  "connections": {
+    "message": "Koneksi"
+  },
   "connectionsRemovedModalDescription": {
     "message": "Beberapa koneksi (seperti dompet perangkat keras dan snap) telah dihapus karena tidak aktif di perangkat ini. Anda dapat menambahkannya kembali setiap saat di Pengaturan."
   },
@@ -2921,6 +2872,9 @@
   },
   "continue": {
     "message": "Lanjutkan"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "Lanjutkan dengan risiko Anda sendiri"
   },
   "contract": {
     "message": "Kontrak"
@@ -3096,9 +3050,6 @@
   },
   "customerSupport": {
     "message": "dukungan pelanggan"
-  },
-  "dappConnections": {
-    "message": "Koneksi Dapp"
   },
   "dappSuggested": {
     "message": "Situs yang disarankan"
@@ -3446,6 +3397,9 @@
   "disconnectAllSites": {
     "message": "Putuskan semua koneksi"
   },
+  "disconnectAllSitesDescriptionText": {
+    "message": "Tindakan ini akan memutus koneksi semua akun Anda dari semua dapp. Anda perlu menghubungkannya kembali untuk dapat menggunakannya lagi."
+  },
   "disconnectAllSitesError": {
     "message": "Beberapa dapp tidak dapat diputus koneksinya. Coba lagi."
   },
@@ -3455,14 +3409,15 @@
   "disconnectAllSitesSuccess": {
     "message": "Semua dapp berhasil diputus koneksinya."
   },
-  "disconnectMessage": {
-    "message": "Ini akan memutus koneksi dari situs ini"
-  },
   "disconnectPrompt": {
     "message": "Putuskan koneksi $1"
   },
   "disconnectQuestion": {
     "message": "Putuskan koneksi?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "Tindakan ini akan memutus koneksi semua akun Anda dari $1. Anda perlu menghubungkannya kembali untuk menggunakan dapp ini lagi.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "Putuskan koneksi akun ini"
@@ -3633,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "edit jaringan asli"
-  },
-  "editNetworksTitle": {
-    "message": "Edit jaringan"
   },
   "editNonceField": {
     "message": "Edit nonce"
@@ -5093,6 +5045,9 @@
   "manage": {
     "message": "Kelola"
   },
+  "manageConnectedAccounts": {
+    "message": "Kelola akun yang terhubung"
+  },
   "manageDefaultSettings": {
     "message": "Kelola pengaturan default"
   },
@@ -5258,6 +5213,48 @@
   "mmFee": {
     "message": "$1% biaya MetaMask"
   },
+  "money": {
+    "message": "Dana"
+  },
+  "moneyActivity": {
+    "message": "Aktivitas"
+  },
+  "moneyAdd": {
+    "message": "Tambah"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Saldo tidak tersedia"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Dapatkan likuiditas penuh tanpa penguncian, sehingga Anda dapat melakukan perdagangan atau penarikan setiap saat"
+  },
+  "moneyBenefitSend": {
+    "message": "Kirim ke dompet Anda di MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Amankan uang Anda di mUSD, stablecoin yang didukung dolar dengan rasio 1:1"
+  },
+  "moneyBenefits": {
+    "message": "Manfaat"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Raih pendapatan dari kripto"
+  },
+  "moneyFundDescription": {
+    "message": "Danai Money Account dan lihat saldo Anda bertambah."
+  },
+  "moneyHowItWorks": {
+    "message": "Cara kerjanya"
+  },
+  "moneyLearnMore": {
+    "message": "Selengkapnya"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Kirim"
+  },
   "month": {
     "message": "bulan"
   },
@@ -5266,10 +5263,6 @@
   },
   "more": {
     "message": "lainnya"
-  },
-  "moreAccounts": {
-    "message": "+ $1 akun lain",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Selengkapnya"
@@ -5464,18 +5457,6 @@
     "message": "Klaim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Bonus yang dapat diklaim",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "Bonus tahunan yang Anda peroleh karena memiliki mUSD. Bonus Anda dapat diklaim setiap hari di Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Detail bonus yang dapat diklaim",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Biaya konversi mUSD mencakup biaya jaringan dan mungkin termasuk biaya penyedia. MetaMask tidak mengenakan biaya saat Anda mengonversi ke mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5500,10 +5481,6 @@
   "musdConvert": {
     "message": "Konversikan"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Dapatkan bonus sebesar $1%",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Mulai"
   },
@@ -5516,10 +5493,6 @@
   },
   "musdGetMusd": {
     "message": "Dapatkan mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5727,9 +5700,6 @@
   "networkOptions": {
     "message": "Opsi jaringan"
   },
-  "networkPermissionToast": {
-    "message": "Izin jaringan diperbarui"
-  },
   "networkStatus": {
     "message": "Status jaringan"
   },
@@ -5765,9 +5735,6 @@
   },
   "networks": {
     "message": "Jaringan"
-  },
-  "networksSmallCase": {
-    "message": "jaringan"
   },
   "new": {
     "message": "Baru!"
@@ -5881,15 +5848,16 @@
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
   },
-  "noConnectionDescription": {
-    "message": "MetaMask tidak terhubung ke situs ini. Untuk memulai, pilih tombol Hubungkan ke situs ini."
-  },
   "noDefaultAddress": {
     "message": "Tidak ada alamat $1",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Tidak ada resolusi untuk domain yang tersedia."
+  },
+  "noFee": {
+    "message": "Tidak ada biaya",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap, dan sebagian besar dompet perangkat keras, tidak akan berfungsi dengan versi browser saat ini."
@@ -6115,12 +6083,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Anda belum menerima notifikasi."
-  },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "Permintaan koneksi CLI, persetujuan, dan pembaruan sesi untuk Agentic"
-  },
-  "notificationsSettingsAgenticCliTitle": {
-    "message": "Agentic CLI"
   },
   "notificationsSettingsBoxError": {
     "message": "Terjadi kesalahan. Coba lagi."
@@ -6561,9 +6523,29 @@
     "message": "Bayar melalui",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "Kripto",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "Pilih metode pembayaran",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "Bayar melalui",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "Aset lainnya",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "Pilih dari token Anda",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "Penerima pembayaran"
@@ -6596,6 +6578,10 @@
   "percentChange": {
     "message": "Perubahan persentase"
   },
+  "permissionCannotMoveFunds": {
+    "message": "Tidak dapat memindahkan dana tanpa izin Anda",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "Izin untuk"
   },
@@ -6615,6 +6601,14 @@
   "permissionRevokedForAccounts": {
     "message": "Dicabut dalam pembaruan ini untuk $1",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "Lihat alamat, saldo, dan aktivitas",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "Kirim permintaan untuk transaksi",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "Hubungkan ke $1.",
@@ -6855,8 +6849,8 @@
   "permissions": {
     "message": "Izin"
   },
-  "permissionsPageEmptyDescription": {
-    "message": "Izin tidak terdeteksi. Setelah Anda memberikan izin ke situs atau menginstal Snap, detailnya akan muncul di sini."
+  "permissionsPageEmptyTitle": {
+    "message": "Tak ada apa pun di sini"
   },
   "permitSimulationChange_approve": {
     "message": "Batas penggunaan"
@@ -7002,6 +6996,9 @@
   },
   "perpsClosePosition": {
     "message": "Tutup posisi"
+  },
+  "perpsClosePrice": {
+    "message": "Harga penutupan"
   },
   "perpsClosePriceUnavailable": {
     "message": "Harga saat ini tidak tersedia. Coba lagi sebentar lagi."
@@ -7320,6 +7317,15 @@
   "perpsOrderBookGroupBy": {
     "message": "Pengelompokan berdasarkan"
   },
+  "perpsOrderBookLayout": {
+    "message": "Tata letak daftar order"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "Kiri"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "Benar"
+  },
   "perpsOrderBookListedBy": {
     "message": "Terdaftar berdasarkan"
   },
@@ -7379,6 +7385,9 @@
   "perpsOrderFailed": {
     "message": "Order tidak dapat dibuat. Coba lagi."
   },
+  "perpsOrderFilled": {
+    "message": "Terpenuhi"
+  },
   "perpsOrderOriginalSize": {
     "message": "Ukuran asli"
   },
@@ -7387,6 +7396,12 @@
   },
   "perpsOrderStatus": {
     "message": "Status"
+  },
+  "perpsOrderTotalFee": {
+    "message": "Total biaya"
+  },
+  "perpsOrderType": {
+    "message": "Jenis order"
   },
   "perpsOrderValue": {
     "message": "Nilai order"
@@ -8253,9 +8268,6 @@
     "message": "Pembelian berhasil",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Opsi lainnya"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "hari kerja"
   },
@@ -8473,9 +8485,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Ini merupakan situs yang meminta konfirmasi Anda."
-  },
-  "requestingFor": {
-    "message": "Meminta untuk"
   },
   "required": {
     "message": "Diperlukan"
@@ -9135,6 +9144,9 @@
   "securityTrustMalicious": {
     "message": "Berbahaya"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "Berbahaya—ditandai sebagai tidak aman"
+  },
   "securityTrustMaliciousLabel": {
     "message": "Berbahaya"
   },
@@ -9275,6 +9287,9 @@
   "select": {
     "message": "Pilih"
   },
+  "selectAccounts": {
+    "message": "Pilih akun"
+  },
   "selectAll": {
     "message": "Pilih semua"
   },
@@ -9292,9 +9307,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Aktifkan Autodeteksi NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Pilih jaringan untuk disaring"
   },
   "selectPathHelp": {
     "message": "Jika Anda tidak menemukan akun yang diharapkan, coba alihkan jalur HD atau jaringan yang dipilih saat ini."
@@ -10057,6 +10069,12 @@
   "showTestnetNetworks": {
     "message": "Tampilkan jaringan pengujian"
   },
+  "showTickerWidget": {
+    "message": "Tampilkan widget web di X"
+  },
+  "showTickerWidgetDescription": {
+    "message": "Menampilkan widget MetaMask yang berisi detail token saat Anda menjelajahi X.com."
+  },
   "sidePanelMigrationToast": {
     "message": "MetaMask kini terbuka di panel samping secara default. $1 setiap saat dari menu.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -10158,8 +10176,9 @@
   "singleNetwork": {
     "message": "1 jaringan"
   },
-  "sites": {
-    "message": "Situs"
+  "sitePermissionsBanner": {
+    "message": "$1 dapat melihat akun Anda yang terhubung dan menyarankan transaksi.",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "Diterbitkan"
@@ -11430,6 +11449,9 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask mengalami masalah saat memulai."
+  },
+  "trustSignalPhishingWarning": {
+    "message": "Situs ini menunjukkan tanda-tanda aktivitas phishing atau pengurasan dompet. Situs ini mungkin meminta transaksi yang dirancang untuk mencuri dana Anda."
   },
   "tryAgain": {
     "message": "Coba lagi"

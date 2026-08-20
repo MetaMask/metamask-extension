@@ -152,8 +152,9 @@
   "accountsConnected": {
     "message": "계정 연결됨"
   },
-  "accountsPermissionsTitle": {
-    "message": "계정 보기 및 트랜잭션 제안"
+  "accountsCount": {
+    "message": "계정 $1개",
+    "description": "Label showing number of accounts selected, $1 is the count"
   },
   "accountsSmallCase": {
     "message": "계정"
@@ -1397,6 +1398,12 @@
   "alert": {
     "message": "경고"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "사용 가능한 자금이 없습니다. 다른 계정을 사용하세요."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "자금 부족"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "스마트 계정으로 업그레이드 중입니다. 계정 주소는 그대로 유지되며, 더 빠른 트랜잭션과 낮은 네트워크 수수료 혜택을 누릴 수 있습니다. $1"
   },
@@ -1423,6 +1430,10 @@
   },
   "alertContentMultipleApprovals": {
     "message": "이 트랜잭션에 필요하지 않음에도 불구하고 다른 사람이 토큰을 인출할 수 있도록 승인하고 있습니다."
+  },
+  "alertDepositLimit": {
+    "message": "최대 예치금: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
   },
   "alertDisableTooltip": {
     "message": "\"설정 > 경고\"에서 변경할 수 있습니다"
@@ -1574,9 +1585,6 @@
   },
   "allNetworks": {
     "message": "모든 네트워크"
-  },
-  "allPermissions": {
-    "message": "디앱 연결"
   },
   "allPopularNetworks": {
     "message": "모든 인기 네트워크"
@@ -1768,6 +1776,9 @@
   },
   "back": {
     "message": "뒤로"
+  },
+  "backToSafety": {
+    "message": "안전성으로 돌아가기"
   },
   "backUpIncomplete": {
     "message": "백업 미완료"
@@ -1990,54 +2001,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertDescriptionBlur": {
-    "message": "계속하면 Blur에 등록한 모든 자산이 위험에 처할 수 있습니다."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "악성 사이트와 인터렉션하고 있습니다. 계속하면 자산을 잃게 됩니다."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "계속하면 OpenSea에 등록한 모든 자산이 위험에 처할 수 있습니다."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "이 요청을 컨펌하면, 자산을 잃을 수 있습니다. 이 요청을 취소할 것을 권장합니다."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "지금 자산을 사기범에게 보내고 있습니다. 계속하면 해당 자산을 잃게 됩니다."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "이 요청을 컨펌하면, 사기범이 자산을 인출하고 사용할 수 있게 됩니다. 그러한 자산은 돌려받을 수 없습니다."
-  },
-  "blockaidDescriptionApproveFarming": {
-    "message": "이 요청을 승인하면 스캠을 목적으로 하는 제3자가 회원님의 자산을 모두 가져갈 수 있습니다."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "이 요청을 승인하면 Blur에 등록된 회원님의 자산을 타인이 훔칠 수 있습니다."
-  },
-  "blockaidDescriptionErrored": {
-    "message": "오류로 인해 보안 알림을 확인할 수 없었습니다. 모든 관련 주소를 신뢰하는 경우에만 계속 진행하세요."
-  },
-  "blockaidDescriptionMaliciousDomain": {
-    "message": "악성 도메인과 인터렉션하고 있습니다. 이 요청을 승인하면 본인의 자산을 잃을 수도 있습니다."
-  },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "이 요청을 승인하면, 자산을 잃을 수 있습니다."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "이 요청을 승인하면 OpenSea에 등록된 회원님의 자산을 타인이 훔칠 수 있습니다."
-  },
-  "blockaidDescriptionTransferFarming": {
-    "message": "이 요청을 승인하면 스캠을 목적으로 하는 타사가 회원님의 자산을 모두 가져가게 됩니다."
-  },
-  "blockaidTitleDeceptive": {
-    "message": "사기성 요청입니다"
-  },
-  "blockaidTitleMayNotBeSafe": {
-    "message": "주의"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "의심스러운 요청입니다"
   },
   "blockies": {
     "message": "블로키즈"
@@ -2771,9 +2734,6 @@
   "confirmationAlertDetails": {
     "message": "자산을 보호하기 위해 요청을 거부하는 것이 좋습니다."
   },
-  "confirmationAlertModalTitleDescription": {
-    "message": "자산이 위험할 수 있습니다"
-  },
   "confirmed": {
     "message": "컨펌"
   },
@@ -2798,8 +2758,8 @@
   "connectAHardwareWalletDescription": {
     "message": "USB 또는 QR 코드 사용"
   },
-  "connectAccounts": {
-    "message": "계정 연결"
+  "connectAnyway": {
+    "message": "연결 계속하기"
   },
   "connectHardwareDevice": {
     "message": "$1 연결",
@@ -2845,18 +2805,6 @@
   "connectedSnaps": {
     "message": "연결된 Snap"
   },
-  "connectedWithAccount": {
-    "message": "$1 계정 연결됨",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "$1(으)로 연결됨",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 네트워크 연결됨",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "연결 중"
   },
@@ -2894,6 +2842,9 @@
   "connectionRequest": {
     "message": "연결 요청"
   },
+  "connections": {
+    "message": "연결"
+  },
   "connectionsRemovedModalDescription": {
     "message": "이 장치에서 일부 연결(하드웨어 지갑 및 Snap 등)이 비활성화되어 있어 제거되었습니다. 설정에서 언제든지 다시 추가할 수 있습니다."
   },
@@ -2921,6 +2872,9 @@
   },
   "continue": {
     "message": "계속"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "위험을 감수하고 계속하기"
   },
   "contract": {
     "message": "계약"
@@ -3096,9 +3050,6 @@
   },
   "customerSupport": {
     "message": "고객 지원"
-  },
-  "dappConnections": {
-    "message": "디앱 연결"
   },
   "dappSuggested": {
     "message": "사이트 제안"
@@ -3446,6 +3397,9 @@
   "disconnectAllSites": {
     "message": "모두 연결 해제"
   },
+  "disconnectAllSitesDescriptionText": {
+    "message": "이 작업을 하면 사용자의 모든 계정과 디앱과의 연결이 해제됩니다. 다시 사용하려면 다시 연결해야 합니다."
+  },
   "disconnectAllSitesError": {
     "message": "일부 디앱은 연결을 해제할 수 없습니다. 다시 시도해 주세요."
   },
@@ -3455,14 +3409,15 @@
   "disconnectAllSitesSuccess": {
     "message": "모든 디앱의 연결이 성공적으로 해제되었습니다."
   },
-  "disconnectMessage": {
-    "message": "이렇게 하면 이 사이트와의 연결이 해제됩니다"
-  },
   "disconnectPrompt": {
     "message": "$1 연결 해제"
   },
   "disconnectQuestion": {
     "message": "연결 해제?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "이 작업을 하면 사용자 계정과 $1의 연결이 해제됩니다. 이 디앱을 다시 사용하려면 다시 연결해야 합니다.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "이 계정 연결 해제"
@@ -3633,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "원본 네트워크 편집"
-  },
-  "editNetworksTitle": {
-    "message": "네트워크 편집"
   },
   "editNonceField": {
     "message": "논스 편집"
@@ -5093,6 +5045,9 @@
   "manage": {
     "message": "관리"
   },
+  "manageConnectedAccounts": {
+    "message": "연결된 계정 관리"
+  },
   "manageDefaultSettings": {
     "message": "기본 개인정보 보호 설정 관리"
   },
@@ -5258,6 +5213,48 @@
   "mmFee": {
     "message": "$1% MetaMask 수수료"
   },
+  "money": {
+    "message": "머니"
+  },
+  "moneyActivity": {
+    "message": "활동"
+  },
+  "moneyAdd": {
+    "message": "추가"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "잔액을 확인할 수 없음"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "락업 없이 완전한 유동성을 제공하므로 언제든지 거래하거나 출금할 수 있습니다"
+  },
+  "moneyBenefitSend": {
+    "message": "MetaMask에 연결된 모든 지갑으로 전송할 수 있습니다."
+  },
+  "moneyBenefitStablecoin": {
+    "message": "1:1 달러 연동 스테이블코인인 mUSD로 자금을 안전하게 보관하세요"
+  },
+  "moneyBenefits": {
+    "message": "혜택"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "암호화폐로 수익 얻기"
+  },
+  "moneyFundDescription": {
+    "message": "Money Account에 자금을 추가하고 잔액이 늘어나는 것을 확인하세요."
+  },
+  "moneyHowItWorks": {
+    "message": "작동 방식"
+  },
+  "moneyLearnMore": {
+    "message": "자세히 알아보세요."
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "전송"
+  },
   "month": {
     "message": "월"
   },
@@ -5266,10 +5263,6 @@
   },
   "more": {
     "message": "더 보기"
-  },
-  "moreAccounts": {
-    "message": "$1개의 계정 추가",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "더 보기"
@@ -5464,18 +5457,6 @@
     "message": "보너스 수령",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "청구 가능한 보너스",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "mUSD를 보유하여 받은 연 환산 보너스입니다. 보너스는 Linea에서 매일 수령할 수 있습니다. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "수령 가능한 보너스 정보",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 환전 수수료에는 네트워크 비용이 포함되며 제공업체 수수료가 포함될 수 있습니다. mUSD로 환전할 때 MetaMask 수수료는 적용되지 않습니다.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5500,10 +5481,6 @@
   "musdConvert": {
     "message": "전환"
   },
-  "musdEarnBonusPercentage": {
-    "message": "$1% 보너스 받기",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "시작하기"
   },
@@ -5516,10 +5493,6 @@
   },
   "musdGetMusd": {
     "message": "mUSD 받기"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5727,9 +5700,6 @@
   "networkOptions": {
     "message": "네트워크 옵션"
   },
-  "networkPermissionToast": {
-    "message": "네트워크 권한 업데이트됨"
-  },
   "networkStatus": {
     "message": "네트워크 상태"
   },
@@ -5764,9 +5734,6 @@
     "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
-    "message": "네트워크"
-  },
-  "networksSmallCase": {
     "message": "네트워크"
   },
   "new": {
@@ -5881,15 +5848,16 @@
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
   },
-  "noConnectionDescription": {
-    "message": "사이트에 연결하려면 \"연결\" 버튼을 찾아 클릭하세요. MetaMask는 웹3의 사이트에만 연결할 수 있습니다."
-  },
   "noDefaultAddress": {
     "message": "$1 주소가 없음",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "도메인에 대한 해결 방법이 제공되지 않았습니다."
+  },
+  "noFee": {
+    "message": "요금 없음",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap 및 대부분의 하드웨어 지갑은 현재 사용 중인 브라우저 버전에서 작동하지 않습니다."
@@ -6115,12 +6083,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "아직 알림을 받지 못했습니다."
-  },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "Agentic용 CLI 연결 요청, 승인, 세션 업데이트"
-  },
-  "notificationsSettingsAgenticCliTitle": {
-    "message": "Agentic CLI"
   },
   "notificationsSettingsBoxError": {
     "message": "오류가 발생했습니다. 다시 시도해 주세요."
@@ -6561,9 +6523,29 @@
     "message": "결제 수단:",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "암호화폐",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "결제 방법 선택",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "결제 수단:",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "기타 자산",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "보유한 토큰 중에서 선택",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "수취인"
@@ -6596,6 +6578,10 @@
   "percentChange": {
     "message": "퍼센트 변동"
   },
+  "permissionCannotMoveFunds": {
+    "message": "사용자 승인 없이 자금을 이동할 수 없음",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "승인:"
   },
@@ -6615,6 +6601,14 @@
   "permissionRevokedForAccounts": {
     "message": "이 업데이트에서 $1 취소됨",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "주소, 잔액, 활동 보기",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "거래 요청 전송",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "$1에 연결",
@@ -6855,8 +6849,8 @@
   "permissions": {
     "message": "권한"
   },
-  "permissionsPageEmptyDescription": {
-    "message": "감지된 권한이 없습니다. 사이트에 권한을 부여하거나 Snap을 설치하면 세부 정보가 여기에 표시됩니다."
+  "permissionsPageEmptyTitle": {
+    "message": "표시할 항목이 없습니다"
   },
   "permitSimulationChange_approve": {
     "message": "지출 한도"
@@ -7002,6 +6996,9 @@
   },
   "perpsClosePosition": {
     "message": "포지션 종료"
+  },
+  "perpsClosePrice": {
+    "message": "종료 가격"
   },
   "perpsClosePriceUnavailable": {
     "message": "현재 가격을 확인할 수 없습니다. 잠시 후에 다시 시도하세요."
@@ -7320,6 +7317,15 @@
   "perpsOrderBookGroupBy": {
     "message": "그룹화 기준"
   },
+  "perpsOrderBookLayout": {
+    "message": "오더북 레이아웃"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "왼쪽"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "오른쪽"
+  },
   "perpsOrderBookListedBy": {
     "message": "표시 기준"
   },
@@ -7379,6 +7385,9 @@
   "perpsOrderFailed": {
     "message": "주문을 제출하지 못했습니다. 다시 시도해 주세요."
   },
+  "perpsOrderFilled": {
+    "message": "체결됨"
+  },
   "perpsOrderOriginalSize": {
     "message": "원주문 규모"
   },
@@ -7387,6 +7396,12 @@
   },
   "perpsOrderStatus": {
     "message": "상태"
+  },
+  "perpsOrderTotalFee": {
+    "message": "총 수수료"
+  },
+  "perpsOrderType": {
+    "message": "주문 유형"
   },
   "perpsOrderValue": {
     "message": "주문 금액"
@@ -8253,9 +8268,6 @@
     "message": "매수 성공",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "기타 옵션"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "영업일"
   },
@@ -8473,9 +8485,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "컨펌이 필요한 사이트입니다."
-  },
-  "requestingFor": {
-    "message": "요청 중:"
   },
   "required": {
     "message": "필수"
@@ -9135,6 +9144,9 @@
   "securityTrustMalicious": {
     "message": "악성"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "악성 - 안전하지 않은 것으로 표시됨"
+  },
   "securityTrustMaliciousLabel": {
     "message": "악성"
   },
@@ -9275,6 +9287,9 @@
   "select": {
     "message": "선택"
   },
+  "selectAccounts": {
+    "message": "계정 선택"
+  },
   "selectAll": {
     "message": "전체 선택"
   },
@@ -9292,9 +9307,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "NFT 자동 감기 지능 켜기"
-  },
-  "selectNetworkToFilter": {
-    "message": "필터링할 네트워크 선택"
   },
   "selectPathHelp": {
     "message": "원하는 계정이 표시되지 않으면 HD 경로나 현재 선택한 네트워크를 바꿔 보세요."
@@ -10057,6 +10069,12 @@
   "showTestnetNetworks": {
     "message": "테스트 네트워크 표시"
   },
+  "showTickerWidget": {
+    "message": "X에 웹 위젯 표시"
+  },
+  "showTickerWidgetDescription": {
+    "message": "X.com을 이용할 때 토큰 세부 정보를 보여주는 MetaMask 위젯을 표시합니다."
+  },
   "sidePanelMigrationToast": {
     "message": "이제 MetaMask가 기본적으로 사이드 패널에서 열립니다. 메뉴에서 언제든지 $1할 수 있습니다.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -10158,8 +10176,9 @@
   "singleNetwork": {
     "message": "네트워크 1개"
   },
-  "sites": {
-    "message": "사이트"
+  "sitePermissionsBanner": {
+    "message": "$1에서 연결된 계좌를 확인하고 추천 거래를 제안할 수 있습니다.",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "발급됨"
@@ -11430,6 +11449,9 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask 시작 중 문제가 발생했습니다."
+  },
+  "trustSignalPhishingWarning": {
+    "message": "이 사이트는 피싱 또는 지갑 탈취 활동의 징후를 보입니다. 자금 탈취를 위한 거래를 요청할 수 있습니다."
   },
   "tryAgain": {
     "message": "다시 시도"

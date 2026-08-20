@@ -12,7 +12,7 @@ import {
 } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
@@ -48,7 +48,7 @@ export function ReceiveRow({
   // currency symbol matches the numerical value even if the user has set a
   // non-USD primary currency.
   const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
-  const isLoading = useIsTransactionPayLoading();
+  const isLoading = useIsTransactionPayQuotePending();
   const totals = useTransactionPayTotals();
   const quotes = useTransactionPayQuotes();
 
