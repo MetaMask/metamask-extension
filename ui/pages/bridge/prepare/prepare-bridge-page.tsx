@@ -19,7 +19,6 @@ import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToToken,
   updateQuoteRequestParams,
   trackUnifiedSwapBridgeEvent,
   setIsSrcAssetPickerOpen,

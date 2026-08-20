@@ -47,6 +47,31 @@ import { useDispatch } from '../../../store/hooks';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { SelectedAssetButton } from '../asset-picker/selected-asset-button';
 
+const getBlockExplorerUrl = (
+  chainId: BridgeToken['chainId'],
+  assetReference: string,
+): string | null => {
+  const caipChainId = formatChainIdToCaip(chainId);
+
+  if (isNonEvmChainId(chainId)) {
+    const blockExplorerUrls =
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
+    return blockExplorerUrls
+      ? formatBlockExplorerAddressUrl(blockExplorerUrls, assetReference)
+      : null;
+  }
+
+  const explorerUrl = CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[caipChainId];
+  return explorerUrl
+    ? getAccountLink(
+        assetReference,
+        formatChainIdToHex(chainId),
+        { blockExplorerUrl: explorerUrl },
+        undefined,
+      )
+    : null;
+};
+
 export const BridgeInputGroup = ({
   token,
   onAmountChange,
@@ -108,7 +133,9 @@ export const BridgeInputGroup = ({
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { assetReference } = token ? parseCaipAssetType(token.assetId) : {};
+  const assetReference = token
+    ? parseCaipAssetType(token.assetId).assetReference
+    : undefined;
   const balanceAmount = useSelector(getFromTokenBalance);
 
   const isAmountReadOnly =
@@ -175,40 +202,17 @@ export const BridgeInputGroup = ({
   }, []);
 
   const handleAddressClick = () => {
-    if (token && selectedChainId && assetReference) {
-      const caipChainId = formatChainIdToCaip(selectedChainId);
+    if (!token || !selectedChainId || !assetReference) {
+      return;
+    }
 
-      let blockExplorerUrl = '';
-      if (isNonEvmChainId(selectedChainId)) {
-        const blockExplorerUrls =
-          MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
-        if (blockExplorerUrls) {
-          blockExplorerUrl = formatBlockExplorerAddressUrl(
-            blockExplorerUrls,
-            assetReference,
-          );
-        }
-      } else {
-        const explorerUrl =
-          CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[
-            formatChainIdToCaip(token.chainId)
-          ];
-        if (explorerUrl) {
-          blockExplorerUrl = getAccountLink(
-            assetReference,
-            formatChainIdToHex(selectedChainId),
-            {
-              blockExplorerUrl: explorerUrl,
-            },
-            undefined,
-          );
-        }
-      }
-
-      if (blockExplorerUrl) {
-        handleCopy(blockExplorerUrl);
-        onBlockExplorerClick?.(token);
-      }
+    const blockExplorerUrl = getBlockExplorerUrl(
+      selectedChainId,
+      assetReference,
+    );
+    if (blockExplorerUrl) {
+      handleCopy(blockExplorerUrl);
+      onBlockExplorerClick?.(token);
     }
   };
 

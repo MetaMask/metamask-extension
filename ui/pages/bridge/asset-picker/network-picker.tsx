@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { type CaipChainId } from '@metamask/utils';
 import { BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP } from '../../../../shared/constants/bridge';
-import { IconName as ComponentIconName } from '../../../components/component-library';
 import {
   NetworkSelectionModal,
   type NetworkSelectionSection,
@@ -15,6 +14,7 @@ import {
 } from '../../../../shared/lib/ab-testing/configs/chain-value-order';
 import { useABTest } from '../../../hooks/useABTest';
 import { useChainValueOrder } from '../hooks/useChainValueOrder';
+import { IconName } from '@metamask/design-system-shared';
 
 type NetworkPickerProps = {
   chains: { chainId: CaipChainId; name: string }[];
@@ -79,7 +79,7 @@ const NetworkPickerContent = ({
       topItem={{
         key: 'all-networks',
         name: t('allNetworks'),
-        iconSrc: ComponentIconName.Global,
+        iconSrc: IconName.Global,
         selected: !selectedChainId,
         onClick: () => onNetworkChange(null),
         testId: `${testId}-all-networks`,
