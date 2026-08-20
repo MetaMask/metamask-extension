@@ -3,9 +3,9 @@ import { selectAllNetworksFromNetworkSelect } from '../../../page-objects/flows/
 import {
   landOnTronActivity,
   openTronTransactionDetails,
-  returnToTronActivityList,
 } from '../../../page-objects/flows/tron-activity.flow';
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
+import TransactionDetailsPage from '../../../page-objects/pages/transaction-details-page';
 import { TronNode } from '../../../seeder/tron/node';
 import { Driver } from '../../../webdriver/driver';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
@@ -120,7 +120,8 @@ describe('Tron - Activity types', function (this: Suite) {
 
   afterEach(async function () {
     if (driver) {
-      await returnToTronActivityList(driver);
+      const details = new TransactionDetailsPage(driver);
+      await details.clickBackButtonIfPresent();
     }
   });
 
