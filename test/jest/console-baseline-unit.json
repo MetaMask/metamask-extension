@@ -563,7 +563,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1,
+      "React: Act warnings (component updates not wrapped)": 6,
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
@@ -857,7 +857,7 @@
       "error: Warning: Encountered two children with": 1
     },
     "ui/pages/notifications/notifications.test.tsx": {
-      "Reselect: Input stability warnings": 2
+      "Reselect: Input stability warnings": 3
     },
     "ui/pages/onboarding-flow/import-srp/import-srp.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 212
