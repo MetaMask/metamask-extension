@@ -35,6 +35,9 @@ type TabUpdatedListener = Parameters<
 >[0];
 
 export default class ExtensionPlatform {
+  //
+  // Public
+  //
   reload(): void {
     // TODO: should this be a safe reload via the `WriteManager`?
     browser.runtime.reload();
@@ -154,6 +157,7 @@ export default class ExtensionPlatform {
     const receiptStatus = txMeta.txReceipt?.status;
 
     if (txMeta.status === TransactionStatus.confirmed) {
+      // There was an on-chain failure
       if (receiptStatus === '0x0') {
         await this._showFailedTransaction(
           txMeta,

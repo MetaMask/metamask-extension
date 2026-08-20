@@ -52,6 +52,9 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
 
   defaultVersion: number;
 
+  /**
+   * @param opts - Migrator options
+   */
   constructor(opts: MigratorOptions = {}) {
     super();
     const migrations = opts.migrations ?? [];
@@ -153,10 +156,22 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
 
     return { state, changedKeys };
 
+    /**
+     * Returns whether or not the migration is pending
+     *
+     * A migration is considered "pending" if it has a higher
+     * version number than the current version.
+     * @param migration
+     */
     function migrationIsPending(migration: Migration): boolean {
       return migration.version > state.meta.version;
     }
 
+    /**
+     * Throws if the migrated data does not have the correct shape.
+     * @param migratedData
+     * @param migration
+     */
     function assertValidShape(
       migratedData: MigrationState,
       migration: Migration,
@@ -176,6 +191,11 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
     }
   }
 
+  /**
+   * Returns the initial state for the migrator
+   *
+   * @param data - The data for the initial state
+   */
   generateInitialState(data: MetaMaskStateType = {}): MigrationState {
     return {
       data,
