@@ -8,6 +8,10 @@ import {
   TrxScope,
   XlmScope,
 } from '@metamask/keyring-api';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
   getFeaturedEvmNetworks,
@@ -37,8 +41,6 @@ import {
   setActiveNetwork,
 } from '../../../../../store/actions';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -101,7 +103,7 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
         name={network.name}
         size={AvatarNetworkSize.Md}
         src={networkImageUrl}
-        borderRadius={BorderRadius.LG}
+        className="rounded-lg"
       />
       <Box
         display={Display.Flex}

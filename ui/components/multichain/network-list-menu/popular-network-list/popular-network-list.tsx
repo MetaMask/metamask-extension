@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   ButtonIcon,
   ButtonIconSize,
   Icon,
@@ -11,8 +13,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   Text,
-  AvatarNetwork,
-  AvatarNetworkSize,
   ButtonLinkSize,
   ButtonLink,
   Popover,
@@ -151,7 +151,6 @@ const PopularNetworkList = ({
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
-                borderColor={BorderColor.backgroundDefault}
                 size={AvatarNetworkSize.Sm}
                 src={
                   network.imageUrl ??
