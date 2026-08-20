@@ -290,6 +290,9 @@ describe('Info', () => {
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: jest.fn(),
         goBackTo: undefined,
+        isMoneyAccountAmountCommitPending: false,
+        setMoneyAccountDisplayedAmount: jest.fn(),
+        setMoneyAccountCommittedAmount: jest.fn(),
       };
     });
 

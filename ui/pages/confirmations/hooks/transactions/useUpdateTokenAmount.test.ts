@@ -403,14 +403,13 @@ describe('useUpdateTokenAmount', () => {
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
     });
 
-    it('stays true across a scheduling markAmountCommitPending call and the commit it precedes, then resolves once', async () => {
-      // Simulates `useTransactionCustomAmount` calling `markAmountCommitPending`
+    it('stays true across a scheduling markAmountAsDisplayed call and the commit it precedes, then resolves once', async () => {
+      // Simulates `useTransactionCustomAmount` calling `markAmountAsDisplayed`
       // synchronously when it schedules the debounced commit, ahead of the
-      // debounce delay that eventually invokes `updateTokenAmount`. Guards
-      // against double-counting the pending state: without the idempotency
-      // guard, this scheduling call and `updateTokenAmount`'s own pending
-      // mark would push the count to 2, and a single commit resolving would
-      // only bring it back to 1 - leaving Confirm disabled forever.
+      // debounce delay that eventually invokes `updateTokenAmount`. Both
+      // record the same displayed amount, so the eventual commit resolving
+      // that amount is what re-enables Confirm — recording twice is
+      // harmless.
       let resolveCommit: (value: boolean) => void = () => undefined;
       jest.mocked(updateMoneyAccountDepositAmount).mockReturnValue(
         new Promise((resolve) => {
@@ -435,7 +434,7 @@ describe('useUpdateTokenAmount', () => {
       });
 
       act(() => {
-        result.current.markAmountCommitPending();
+        result.current.markAmountAsDisplayed('1.5');
       });
 
       await waitFor(() => expect(result.current.isUpdating).toBe(true));
@@ -451,6 +450,119 @@ describe('useUpdateTokenAmount', () => {
       });
 
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
+    });
+
+    it('stays true when an older commit resolves while a newer amount is displayed', async () => {
+      // The transaction's calldata encodes the older amount while the user
+      // sees the newer one; Confirm must stay disabled until the newer
+      // amount's own commit lands.
+      const resolvers: ((value: boolean) => void)[] = [];
+      jest.mocked(updateMoneyAccountDepositAmount).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolvers.push(resolve);
+          }),
+      );
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'approve' },
+          { to: MOCK_RECIPIENT, type: 'moneyAccountDeposit' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      act(() => {
+        result.current.updateTokenAmount('1.5');
+      });
+      act(() => {
+        result.current.updateTokenAmount('2');
+      });
+
+      await waitFor(() => expect(result.current.isUpdating).toBe(true));
+
+      // The "1.5" commit landing must not enable Confirm: displayed is "2".
+      await act(async () => {
+        resolvers[0](true);
+      });
+      expect(result.current.isUpdating).toBe(true);
+
+      await act(async () => {
+        resolvers[1](true);
+      });
+      await waitFor(() => expect(result.current.isUpdating).toBe(false));
+    });
+
+    it('stays true when the commit fails', async () => {
+      // A failed commit means the calldata still encodes the previous
+      // amount; enabling Confirm would let the user sign it while the
+      // screen shows the new amount.
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      jest
+        .mocked(updateMoneyAccountDepositAmount)
+        .mockRejectedValue(new Error('vault read failed'));
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'approve' },
+          { to: MOCK_RECIPIENT, type: 'moneyAccountDeposit' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      await act(async () => {
+        result.current.updateTokenAmount('1.5');
+      });
+
+      expect(result.current.isUpdating).toBe(true);
+      expect(consoleErrorSpy).toHaveBeenCalled();
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('stays true when the commit resolves without committing', async () => {
+      // `false` means the background did not write calldata (zero amount or
+      // superseded intent) - the displayed amount is not on the transaction.
+      jest.mocked(updateMoneyAccountDepositAmount).mockResolvedValue(false);
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'approve' },
+          { to: MOCK_RECIPIENT, type: 'moneyAccountDeposit' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      await act(async () => {
+        result.current.updateTokenAmount('1.5');
+      });
+
+      expect(result.current.isUpdating).toBe(true);
     });
   });
 });
