@@ -1351,7 +1351,7 @@
     "message": "Added"
   },
   "addedProtectionDescription": {
-    "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
+    "message": "Because you're interacting with an unknown address, protection can prevent some malicious transactions."
   },
   "addedProtectionIncludesNetworkFee": {
     "message": "Includes $1 for added protection",
@@ -8538,6 +8538,9 @@
   },
   "rampsOtherOptions": {
     "message": "Other options"
+  },
+  "rampsPayWith": {
+    "message": "Pay with"
   },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"

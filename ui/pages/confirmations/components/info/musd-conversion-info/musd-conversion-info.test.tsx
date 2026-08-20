@@ -113,6 +113,7 @@ function setupDefaultMocks({
   hideResults = false,
   isPaidByMetaMask = false,
   prefillMax = false,
+  hasAmount = true,
   hasInput = false,
   payToken = undefined as
     | { address: string; chainId: `0x${string}` }
@@ -127,6 +128,7 @@ function setupDefaultMocks({
   hideResults?: boolean;
   isPaidByMetaMask?: boolean;
   prefillMax?: boolean;
+  hasAmount?: boolean;
   hasInput?: boolean;
   payToken?: { address: string; chainId: `0x${string}` } | undefined;
   defaultPaymentToken?: { address: string; chainId: `0x${string}` } | null;
@@ -140,6 +142,7 @@ function setupDefaultMocks({
       amountFiat: '100',
       amountHuman: '50',
       amountHumanDebounced: '50',
+      hasAmount,
       hasInput,
       isDepositPrefillEnabled: false,
       isDepositPrefillLoading: false,
@@ -432,6 +435,40 @@ describe('MusdConversionInfo', () => {
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
+    });
+
+    it('does not render bottom content rows before an amount is entered', () => {
+      const { queryByTestId } = render({
+        hasAmount: false,
+        hasQuotes: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('does not render bottom content rows before an amount is entered while quotes load', () => {
+      const { queryByTestId } = render({
+        hasAmount: false,
+        isQuotesLoading: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('hides bottom content rows again when the amount is reset to zero with a stale quote', () => {
+      const { queryByTestId } = render({
+        hasAmount: false,
+        hasQuotes: true,
+        isPaidByMetaMask: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
   });
 

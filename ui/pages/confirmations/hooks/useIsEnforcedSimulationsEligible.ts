@@ -10,6 +10,7 @@ import {
   isEnforcedSimulationsForceEnabled,
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { getEip7702SupportedChains } from '../../../../shared/lib/eip7702-support-utils';
+import { useIsHardwareWalletAccount } from '../../../hooks/useIsHardwareWalletAccount';
 import { useConfirmContext } from '../context/confirm';
 import { selectIsEnforcedSimulationsEnabled } from '../selectors/feature-flags';
 import { getInternalAccounts } from '../../../selectors/accounts';
@@ -43,9 +44,14 @@ export function useIsEnforcedSimulationsEligible(): boolean {
 
   const enabled = useSelector(selectIsEnforcedSimulationsEnabled);
 
+  const isHardwareWallet = useIsHardwareWalletAccount(
+    currentConfirmation?.txParams?.from,
+  );
+
   if (
     (!enabled && !isEnforcedSimulationsForceEnabled()) ||
-    !currentConfirmation
+    !currentConfirmation ||
+    isHardwareWallet
   ) {
     return false;
   }

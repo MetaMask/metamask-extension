@@ -28,14 +28,20 @@ import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
 import { useMusdConversionQuoteTrace } from '../../../hooks/musd/useMusdConversionQuoteTrace';
 import { MusdOverrideContent } from './musd-override-content';
 
-const MusdBottomContent = () => {
+const MusdBottomContent = ({ hasAmount }: { hasAmount: boolean }) => {
   const t = useI18nContext();
   const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
   const { hideResults } = useTransactionCustomAmountAlerts();
   const isPaidByMetaMask = useIsPaidByMetaMask();
 
-  const isResultReady = isQuotesLoading || Boolean(quotes?.length);
+  // The fee, bonus and total rows describe a conversion that has not been
+  // specified yet while the amount is empty or zero, so they stay hidden until
+  // the user enters an amount. Gating on `hasAmount` also clears them
+  // immediately when the amount is reset, rather than leaving the previous
+  // quote's numbers on screen.
+  const isResultReady =
+    hasAmount && (isQuotesLoading || Boolean(quotes?.length));
   const showResults = isResultReady && !hideResults;
 
   return (
@@ -132,7 +138,10 @@ export const MusdConversionInfo = () => {
     [],
   );
 
-  const renderBottomContent = useCallback(() => <MusdBottomContent />, []);
+  const renderBottomContent = useCallback(
+    (hasAmount: boolean) => <MusdBottomContent hasAmount={hasAmount} />,
+    [],
+  );
 
   return (
     <CustomAmountInfo
