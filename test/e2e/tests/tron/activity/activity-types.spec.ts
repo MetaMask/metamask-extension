@@ -8,12 +8,14 @@ import {
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import { TronNode } from '../../../seeder/tron/node';
 import { Driver } from '../../../webdriver/driver';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { buildTronNodeOptions } from '../fixtures/with-tron-fixtures';
 import { TRON_ACCOUNT_ADDRESS } from '../mocks/common-tron';
 import {
   bridgeTx,
   swapTx,
   trc20ApproveTx,
+  tronBridgeHistoryItem,
   trxReceiveTx,
   trxSendTx,
 } from '../mocks/tron-tx-fixtures';
@@ -26,14 +28,14 @@ import {
   mockAccountsApiWithEvmActivity,
 } from './helpers';
 
-// Newest-first list order. Approve is first so clickActivityByText on
-// "Approved spending cap" opens the real approval, not the bridge fallback.
 const ACTIVITY_TIMESTAMP = 1_700_000_000_000;
 const APPROVE_TIMESTAMP = ACTIVITY_TIMESTAMP + 4_000;
 const SEND_TIMESTAMP = ACTIVITY_TIMESTAMP + 3_000;
 const RECEIVE_TIMESTAMP = ACTIVITY_TIMESTAMP + 2_000;
 const SWAP_TIMESTAMP = ACTIVITY_TIMESTAMP + 1_000;
-const BRIDGE_FALLBACK_TIMESTAMP = ACTIVITY_TIMESTAMP;
+const BRIDGE_TIMESTAMP = ACTIVITY_TIMESTAMP;
+const BRIDGE_SRC_AMOUNT = '5000000';
+const BRIDGE_DEST_AMOUNT = '5000000';
 
 const CONFIRMED_TRON_ACTIVITY_COUNT = 5;
 
@@ -68,19 +70,31 @@ describe('Tron - Activity types', function (this: Suite) {
     status: 'Confirmed',
     timestamp: SWAP_TIMESTAMP,
   });
-  const bridgeFallback = bridgeTx({
+  const bridge = bridgeTx({
     srcSymbol: 'USDT',
-    srcAmount: '5000000',
+    srcAmount: BRIDGE_SRC_AMOUNT,
     destChain: 'eip155:1',
     status: 'Confirmed',
-    timestamp: BRIDGE_FALLBACK_TIMESTAMP,
+    timestamp: BRIDGE_TIMESTAMP,
   });
   const chromeSession = createSharedTronActivitySession({
     borrowedTronNode: sharedTronNode,
+    fixtures: new FixtureBuilderV2()
+      .withBridgeStatusController({
+        txHistory: {
+          [bridge.raw.txID]: tronBridgeHistoryItem({
+            destAmount: BRIDGE_DEST_AMOUNT,
+            srcAmount: BRIDGE_SRC_AMOUNT,
+            timestamp: BRIDGE_TIMESTAMP,
+            txId: bridge.raw.txID,
+          }),
+        },
+      })
+      .build(),
     testSpecificMock: mockAccountsApiWithEvmActivity,
     transactions: {
-      raw: [approve.raw, send, receive, swap.raw, bridgeFallback.raw],
-      trc20: [approve.trc20, swap.trc20, bridgeFallback.trc20],
+      raw: [approve.raw, send, receive, swap.raw, bridge.raw],
+      trc20: [approve.trc20, swap.trc20, bridge.trc20],
     },
   });
 
@@ -176,13 +190,20 @@ describe('Tron - Activity types', function (this: Suite) {
     await details.checkAmount('-5 TRX');
   });
 
-  it('Approval event without bridge history falls back to spending cap rendering', async function () {
-    // TronGrid-only bridge fixtures are an Approval to the router. A real
-    // bridge row needs BridgeStatusController txHistory keyed by the snap tx
-    // id, which these activity fixtures do not seed. List-only: details match
-    // the spending-cap case above.
-    await activity.checkTransactionActivityByText('Approved spending cap');
-    await activity.checkTransactionAmount('-5 USDT');
+  it('Bridge transaction uses the bridge transaction presentation', async function () {
+    await activity.checkTransactionActivityByText('Bridged USDT');
+    // destAmount is USDC base units (6 decimals): 5000000 → 5 USDC.
+    await activity.checkTransactionAmount('5 USDC');
+    const details = await openTronTransactionDetails({
+      driver,
+      activityTab: activity,
+      activityText: 'Bridged USDT',
+    });
+    await details.checkTitle('Bridged USDT');
+    await details.checkStatus('Confirmed');
+    await details.checkAmount('-5 USDT');
+    await details.checkAmount('+5 USDC');
+    await details.checkHashLinkPresent();
   });
 
   it('Tron-only filter hides EVM transactions', async function () {

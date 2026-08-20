@@ -42,6 +42,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { AssetsControllerState } from '@metamask/assets-controller';
+import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
 import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
@@ -285,6 +286,11 @@ class FixtureBuilderV2 {
 
   withAppStateController(data: Partial<AppStateControllerState>): this {
     merge(this.fixture.data.AppStateController, data);
+    return this;
+  }
+
+  withBridgeStatusController(data: Partial<BridgeStatusControllerState>): this {
+    merge(this.fixture.data.BridgeStatusController, data);
     return this;
   }
 
