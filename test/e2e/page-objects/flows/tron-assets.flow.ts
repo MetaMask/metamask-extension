@@ -76,9 +76,7 @@ export async function switchToPortfolioTronAccount(
   });
 }
 
-export async function switchToFundedTronAccount(
-  driver: Driver,
-): Promise<void> {
+export async function switchToFundedTronAccount(driver: Driver): Promise<void> {
   await switchToTronAccount(driver, {
     accountName: 'Account 3',
     expectedTrxAmount: '106.072',

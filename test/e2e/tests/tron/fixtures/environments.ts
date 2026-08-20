@@ -56,9 +56,7 @@ export const TRON_PORTFOLIO_ACCOUNT: TronFixtureAccount = {
 export const TRON_CHECK_BALANCE_ACCOUNT: TronFixtureAccount = {
   address: TRON_ACCOUNT_ADDRESS,
   assets: TRON_PORTFOLIO_ACCOUNT.assets.map((asset) =>
-    asset.type === 'native'
-      ? { ...asset, balance: TRX_BALANCE }
-      : { ...asset },
+    asset.type === 'native' ? { ...asset, balance: TRX_BALANCE } : { ...asset },
   ),
 };
 
