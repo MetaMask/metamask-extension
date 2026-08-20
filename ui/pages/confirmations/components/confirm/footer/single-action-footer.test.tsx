@@ -8,7 +8,8 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
 import { SingleActionFooter } from './single-action-footer';
@@ -83,7 +84,8 @@ function render({
 describe('<SingleActionFooter />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    jest.mocked(useIsTransactionPayLoading).mockReturnValue(false);
+    jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(false);
+    jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(true);
     jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
       amountUsd: '10.00',
       skipIfBalance: false,
@@ -111,7 +113,7 @@ describe('<SingleActionFooter />', () => {
   });
 
   it('disables the button when pay token data is loading', () => {
-    jest.mocked(useIsTransactionPayLoading).mockReturnValue(true);
+    jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(true);
 
     const { getByTestId } = render();
 
@@ -250,5 +252,43 @@ describe('<SingleActionFooter />', () => {
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.perpsWithdraw.message,
     );
+  });
+
+  it('does not show a loader before a Perps Withdraw amount is entered', () => {
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '0',
+      skipIfBalance: false,
+    } as never);
+    jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(false);
+
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).not.toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('disables perps withdrawal while post-quote setup is pending', () => {
+    jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(true);
+
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('disables perps withdrawal without an executable quote', () => {
+    jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(false);
+
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('submits perps withdrawal when an executable quote is ready', () => {
+    const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
+
+    fireEvent.click(getByTestId('confirm-footer-button'));
+
+    expect(MOCK_ON_SUBMIT).toHaveBeenCalledTimes(1);
   });
 });

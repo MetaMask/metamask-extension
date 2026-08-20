@@ -34,6 +34,8 @@ class OnboardingMetricsPage {
     tag: 'h2',
   };
 
+  private readonly page = '[data-testid="parent-selector-onboarding-metrics"]';
+
   private readonly participateChecked =
     '[data-testid="metametrics-checkbox"][data-checked="true"]';
 
@@ -47,6 +49,7 @@ class OnboardingMetricsPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.metametricsMessage,
         this.continueButton,
       ]);

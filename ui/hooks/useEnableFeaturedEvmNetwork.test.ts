@@ -1,27 +1,27 @@
-import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import * as ActionsModule from '../../store/actions';
-import { useEnableDiscoverAssetNetwork } from './useDiscoverAssetPress';
+import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
+import { createBridgeMockStore } from '../../test/data/bridge/mock-bridge-store';
+import * as ActionsModule from '../store/actions';
+import { useEnableFeaturedEvmNetwork } from './useEnableFeaturedEvmNetwork';
 
 const mockDispatch = jest.fn();
 
-jest.mock('../../store/hooks', () => ({
+jest.mock('../store/hooks', () => ({
   useDispatch: () => mockDispatch,
 }));
 
-describe('useEnableDiscoverAssetNetwork', () => {
+describe('useEnableFeaturedEvmNetwork', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockDispatch.mockResolvedValue(undefined);
   });
 
-  it('adds a missing popular network without changing the network filter', async () => {
+  it('adds a missing featured network without changing the network filter', async () => {
     mockDispatch.mockResolvedValue({});
     const mockAddNetwork = jest
       .spyOn(ActionsModule, 'addNetwork')
       .mockReturnValue(jest.fn().mockResolvedValue(undefined) as never);
     const hook = renderHookWithProvider(
-      () => useEnableDiscoverAssetNetwork(),
+      () => useEnableFeaturedEvmNetwork(),
       createBridgeMockStore({
         metamaskStateOverrides: {
           networkConfigurationsByChainId: {},
@@ -44,7 +44,7 @@ describe('useEnableDiscoverAssetNetwork', () => {
       .spyOn(ActionsModule, 'addNetwork')
       .mockReturnValue(jest.fn().mockResolvedValue(undefined) as never);
     const hook = renderHookWithProvider(
-      () => useEnableDiscoverAssetNetwork(),
+      () => useEnableFeaturedEvmNetwork(),
       createBridgeMockStore({
         metamaskStateOverrides: {
           networkConfigurationsByChainId: {},
