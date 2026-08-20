@@ -2,6 +2,8 @@
 
 Instructions for AI coding agents working on E2E tests in the MetaMask Browser Extension. All patterns, commands, and rules are in the canonical docs below — read those, do not duplicate.
 
+**POM** (Page Object Model) is how this repo structures E2E UI automation: locators and UI actions live in page object classes under `test/e2e/page-objects/pages/`; multi-page workflows live in flows under `test/e2e/page-objects/flows/`; specs under `test/e2e/tests/` only orchestrate those methods (they must not click, fill, or wait on locators directly).
+
 ---
 
 ## Canonical Testing Docs
