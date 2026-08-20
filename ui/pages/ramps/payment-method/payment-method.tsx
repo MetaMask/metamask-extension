@@ -1,12 +1,14 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { CaipChainId } from '@metamask/utils';
 import {
   RampsOrderStatus,
   type PaymentMethod,
 } from '@metamask/ramps-controller';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import {
   PREVIOUS_ROUTE,
@@ -66,9 +68,18 @@ export function RampsPaymentMethodScreen() {
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
 
+  const chainAccount = useSelector((state) =>
+    selectedToken?.chainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          selectedToken.chainId as CaipChainId,
+        )
+      : null,
+  );
+
   const amount =
     (location.state as PaymentMethodLocationState | null)?.amount ?? 0;
-  const walletAddress = selectedAccount?.address ?? '';
+  const walletAddress = (chainAccount ?? selectedAccount)?.address ?? '';
   const assetId = selectedToken?.assetId
     ? normalizeAssetIdForApi(selectedToken.assetId)
     : '';
