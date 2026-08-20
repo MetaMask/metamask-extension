@@ -1,0 +1,69 @@
+name: React 18 concurrent perf (#7550 scratch)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - test/7550-react-18-performance
+
+permissions:
+  contents: read
+
+concurrency:
+  group: react18-concurrent-perf-7550-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    name: before/after benchmarks + report
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      SELENIUM_BROWSER: chrome
+      SELENIUM_HEADLESS: true
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      BENCHMARK_ITERATIONS: 5
+      BENCHMARK_RETRIES: 2
+    steps:
+      - name: Checkout scratch branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Enable Corepack and install
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Install Foundry (anvil)
+        run: yarn mm-foundryup
+
+      - name: Run before/after comparison
+        run: |
+          chmod +x test/e2e/benchmarks/scratch-7550/run-comparison.sh
+          ./test/e2e/benchmarks/scratch-7550/run-comparison.sh test-artifacts/scratch-7550
+
+      - name: Upload benchmark artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: react18-concurrent-perf-7550
+          path: test-artifacts/scratch-7550/
+          retention-days: 14
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f test-artifacts/scratch-7550/react18-concurrent-perf-report.md ]; then
+            echo '### React 18 concurrent perf report' >> "$GITHUB_STEP_SUMMARY"
+            cat test-artifacts/scratch-7550/react18-concurrent-perf-report.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Report not generated — check job logs.' >> "$GITHUB_STEP_SUMMARY"
+          fi
