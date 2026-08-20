@@ -154,7 +154,6 @@ function normalizeSmartContracts(smartContract) {
  * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5). Auto-populated from the local node when chainId is 1 and omitted.
  * @property {string} [localhostNativeEthHuman] - Localhost (eip155:1337) native balance string. Auto-populated from the local node when chainId is 1337 and omitted, so smart-contract deployment gas is reflected.
  * @property {{ assetId: string, balance: string }[]} [mainnetAdditionalBalances] - Extra v5 rows for mainnet (e.g. ERC-20s).
- * @property {{ assetId: string, balance: string }[]} [additionalBalances] - Extra v5 rows for any chain whose CAIP-2 prefix matches the requested accountId (e.g. HyperEVM ERC-20s).
  */
 
 const LOCALHOST_EVM_CHAIN_ID_HEX = '0x539';

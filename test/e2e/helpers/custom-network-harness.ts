@@ -375,6 +375,57 @@ function accountsApiBalancesFor(
   }
 }
 
+/**
+ * First-`always()` Accounts API v5 handler so it wins over the default
+ * mock in `mock-e2e.js`. `balance` strings are human amounts.
+ * @param mockServer
+ * @param rows
+ */
+async function mockAccountsApiBalances(
+  mockServer: Mockttp,
+  rows: CustomNetworkAccountsApiBalance[],
+) {
+  return mockServer
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+    .always()
+    .thenCallback((req) => {
+      const url = new URL(req.url);
+      const accountIdsParam = url.searchParams.get('accountIds') ?? '';
+      const accountIds = accountIdsParam ? accountIdsParam.split(',') : [];
+      const balances: {
+        accountId: string;
+        assetId: string;
+        balance: string;
+      }[] = [];
+
+      for (const accountId of accountIds) {
+        const parts = accountId.split(':');
+        if (parts[0] !== 'eip155' || parts.length < 3) {
+          continue;
+        }
+        const chainPrefix = `eip155:${parts[1]}/`;
+        for (const row of rows) {
+          if (row.assetId.startsWith(chainPrefix)) {
+            balances.push({
+              accountId,
+              assetId: row.assetId,
+              balance: row.balance,
+            });
+          }
+        }
+      }
+
+      return {
+        statusCode: 200,
+        json: {
+          count: balances.length,
+          balances,
+          unprocessedNetworks: [],
+        },
+      };
+    });
+}
+
 export type CustomNetworkSetup = {
   fixtures: ReturnType<FixtureBuilderV2['build']>;
   localNodeOptions: { type: 'anvil'; options: { chainId: number } }[];
@@ -411,15 +462,33 @@ export function prepareCustomNetwork(
 
   const assets = catalogAssetsFor(network, scenario);
   const priceMode = priceModeFor(scenario);
+  const unifiedEvmAccountsApiBalances = accountsApiBalancesFor(
+    network,
+    scenario,
+  );
 
   return {
     fixtures: builder.build(),
     localNodeOptions: [
       { type: 'anvil', options: { chainId: network.chainIdDecimal } },
     ],
-    testSpecificMock: (mockServer: Mockttp) =>
-      mockTokenAndPriceApis(mockServer, { assets, priceMode }),
+    testSpecificMock: async (mockServer: Mockttp) => {
+      const tokenAndPriceMocks = await mockTokenAndPriceApis(mockServer, {
+        assets,
+        priceMode,
+      });
+      const additionalBalances =
+        unifiedEvmAccountsApiBalances?.additionalBalances;
+      if (!additionalBalances) {
+        return tokenAndPriceMocks;
+      }
+      const accountsApiMock = await mockAccountsApiBalances(
+        mockServer,
+        additionalBalances,
+      );
+      return [...tokenAndPriceMocks, accountsApiMock];
+    },
     network,
-    unifiedEvmAccountsApiBalances: accountsApiBalancesFor(network, scenario),
+    unifiedEvmAccountsApiBalances,
   };
 }

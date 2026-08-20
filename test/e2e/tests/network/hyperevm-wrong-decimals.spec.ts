@@ -25,19 +25,14 @@ import TokensTab from '../../page-objects/pages/home/tokens-tab';
 
 describe('HyperEVM frxUSD decimal formatting', function () {
   it('shows 6-decimal frxUSD on the token list and details', async function () {
-    const {
-      fixtures,
-      localNodeOptions,
-      testSpecificMock,
-      unifiedEvmAccountsApiBalances,
-    } = prepareCustomNetwork('hyperevm', 'wrongDecimals');
+    const { fixtures, localNodeOptions, testSpecificMock } =
+      prepareCustomNetwork('hyperevm', 'wrongDecimals');
 
     await withFixtures(
       {
         fixtures,
         localNodeOptions,
         testSpecificMock,
-        unifiedEvmAccountsApiBalances,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

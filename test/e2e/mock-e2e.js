@@ -1719,11 +1719,6 @@ async function setupMocking(
       )
         ? unifiedEvmAccountsApiBalances.mainnetAdditionalBalances
         : [];
-      const additionalBalances = Array.isArray(
-        unifiedEvmAccountsApiBalances.additionalBalances,
-      )
-        ? unifiedEvmAccountsApiBalances.additionalBalances
-        : [];
 
       const balances = [];
       for (const id of accountIds) {
@@ -1764,23 +1759,6 @@ async function setupMocking(
         if (chainRef === '1' && mainnetAdditional.length > 0) {
           for (const row of mainnetAdditional) {
             if (row?.assetId && row.balance !== undefined) {
-              balances.push({
-                accountId: id,
-                assetId: row.assetId,
-                balance: String(row.balance),
-              });
-            }
-          }
-        }
-
-        if (additionalBalances.length > 0) {
-          const chainPrefix = `eip155:${chainRef}/`;
-          for (const row of additionalBalances) {
-            if (
-              row?.assetId &&
-              row.balance !== undefined &&
-              row.assetId.startsWith(chainPrefix)
-            ) {
               balances.push({
                 accountId: id,
                 assetId: row.assetId,
