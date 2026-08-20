@@ -7,6 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.46.0]
+
+### Uncategorized
+
+- Hid Money Account from users in geo-blocked regions (#45653)
+- Simplify mUSD conversion (#45629)
+- Support for adding featured networks when enabling tokens found by address search (#45636)
+- Prevented Perps withdrawals from submitting before a payment quote was ready (#45604)
+- Renamed the Agentic CLI notifications category to Agent wallet in Settings (#45540)
+- Rename Dapp Connections global menu item to Permissions and update child page UX (#45461)
+- Patch @metamask/assets-controller to default-track Arc native USDC (#45500)
+- Switch Arc bridge asset id to slip44:5042 (#45270)
+
+### Added
+
+- Added live monthly and lifetime earnings to funded Money Accounts (#45632)
+- Added referral prompt to Variational (#45582)
+- Added new field, `authenticator_id` to AppUnlocked and PasskeySetup metrics (#45623)
+- Added an “Earn on your crypto” section showing eligible assets and projected earnings (#45603)
+- Added a funded Money Home view with earnings and educational content (#45600)
+- Added new field, `authenticator_id` to AppUnlocked and PasskeySetup metrics (#45594)
+- Added a sticky Buy and Swap action bar to the token detail page (#45593)
+- Added persistence for the perps order book panel, so it stays open or closed between visits (#45587)
+- Added money balance hook (#45534)
+- Added the initial Money Home screen with live balance and APY information (#45466)
+- Added the option to withdraw Perps funds to Money account (#45453)
+
+### Changed
+
+- Improved extension storage efficiency when enumerating StorageService keys (#45510)
+- Updated the withdrawal token picker to say "Receive" and "Search tokens" instead of "Pay with" and "Search for an asset to send" (#45613)
+- Updated security alert titles and messages to describe the flagged risk per attack type and to show the simulated value at risk where available (#45509)
+- Changed address security screening to use the shared PhishingController chain support instead of a hardcoded network list (#45107)
+
+### Removed
+
+- Removed Edit Networks screen and preceding summary screen from Permissions menu (#45607)
+- Removed old network manager old (#45602)
+
+### Fixed
+
+- Fixed conflicting transaction fee information on mUSD convert, Perps deposit and money account confirmations, where a fee or "Paid by MetaMask" was shown before an amount was entered (#45659)
+- Fixed the buy provider list showing providers that could not provide a quote (#45657)
+- Fixed a bug that prevented hardware wallet accounts from selecting a token in the MMPay confirmation flow (#45660)
+- Fixed a memory leak that would get worse the longer MetaMask ran (#45650)
+- Fixed ledger gen 5 712 permit signing (#45637)
+- Fixed a bug that prevented hardware wallet accounts from selecting a token in the MMPay confirmation flow (#45648)
+- Fixed a bug that caused all quotes to be unavailable when buying non-EVM assets (#45293)
+- Fixed a bug where the back button on the token detail page navigated to a stale mUSD conversion confirmation screen instead of the home page (#45649)
+- Fixed the Perps available-to-trade percentage showing a truncated decimal on initial load (#45561)
+- Fixed a bug where the Perps withdrawal confirmation could allow or block a withdrawal based on an out-of-date balance (#45191)
+- Fixed backend-driven extension push notifications failing to register an FCM token on LavaMoat production builds (#45610)
+- Fixed an issue where networks wouldn't properly display fallback URLs (#45601)
+- Fixed the hamburger menu back icon color to match other menu icons (#45429)
+- Fixed enforced simulations not running for wallet-initiated transactions (#45278)
+- Fixed deep links to exclude unsigned parameters from the QR code destinations generated for `batch-sell`, `predict`, and `trending` (#45103)
+- Fixed redundant token selection logic when re-selecting the already active payment token in the Pay With modal (#45402)
+- Swap dest asset selection sets src asset (dev) (#45388)
+
 ## [13.45.0]
 
 ### Added
@@ -3007,7 +3066,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.45.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.46.0...HEAD
+[13.46.0]: https://github.com/MetaMask/metamask-extension/compare/v13.45.0...v13.46.0
 [13.45.0]: https://github.com/MetaMask/metamask-extension/compare/v13.44.0...v13.45.0
 [13.44.0]: https://github.com/MetaMask/metamask-extension/compare/v13.43.0...v13.44.0
 [13.43.0]: https://github.com/MetaMask/metamask-extension/compare/v13.42.0...v13.43.0
