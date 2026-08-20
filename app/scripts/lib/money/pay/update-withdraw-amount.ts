@@ -1,13 +1,15 @@
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   buildMoneyAccountWithdrawBatch,
   MUSD_DECIMALS,
 } from '@metamask/money-account-utils';
 import {
+  TransactionStatus,
   TransactionType,
   updateEIP7702BatchData,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import { isStrictHexString, type Hex } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
 import { calcTokenValue } from '../../../../../shared/lib/swaps-utils';
 import {
@@ -79,10 +81,19 @@ async function updateMoneyAccountWithdrawAmountInternal(
 
   // The redeemed mUSD is forwarded to the user's currently selected account,
   // resolved at commit time — the same rule as mobile's `selectEvmAddress`
-  // default.
-  const recipient = getSelectedAccount(messenger)?.address as Hex | undefined;
-  if (!recipient) {
+  // default. Validated rather than cast: the selected account is global
+  // state the user can change mid-flow, including to a non-EVM account whose
+  // address would otherwise reach the ABI encoder as a bogus recipient.
+  const selectedAccount = getSelectedAccount(messenger);
+  if (!selectedAccount) {
     failUpdate('missing recipient account');
+  }
+  if (!isEvmAccountType(selectedAccount.type)) {
+    failUpdate('selected account is not an EVM account');
+  }
+  const recipient = selectedAccount.address;
+  if (!isStrictHexString(recipient)) {
+    failUpdate('invalid recipient address');
   }
 
   const { withdrawTx, transferTx } = await buildMoneyAccountWithdrawBatch({
@@ -110,6 +121,13 @@ async function updateMoneyAccountWithdrawAmountInternal(
     skipResimulate: true,
     callback: (transactionMeta: TransactionMeta) => {
       validateTransactionTemplate(transactionMeta);
+
+      // Checked at commit time, inside the atomic metadata write: the UI
+      // gate is the primary defense, but calldata must never be rewritten
+      // under a transaction that has already been approved for signing.
+      if (transactionMeta.status !== TransactionStatus.unapproved) {
+        failUpdate('transaction is no longer unapproved');
+      }
 
       if (transactionMeta.chainId !== chainId) {
         failUpdate('transaction chain changed during preparation');
