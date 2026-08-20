@@ -8302,9 +8302,6 @@
     "message": "Compra exitosa",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Otras opciones"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "día hábil"
   },
@@ -9347,9 +9344,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Habilite la autodetección de NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Selecciona la red para filtrar"
   },
   "selectPathHelp": {
     "message": "Si no ve las cuentas previstas, intente cambiar la ruta HD o la red seleccionada actualmente."

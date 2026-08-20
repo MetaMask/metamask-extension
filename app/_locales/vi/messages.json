@@ -8302,9 +8302,6 @@
     "message": "Mua thành công",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Tùy chọn khác"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "ngày làm việc"
   },
@@ -9347,9 +9344,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Bật tính năng Tự động phát hiện NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Chọn mạng để lọc"
   },
   "selectPathHelp": {
     "message": "Nếu bạn không thấy các tài khoản như mong đợi, hãy chuyển đổi đường dẫn HD hoặc mạng đã chọn hiện tại."

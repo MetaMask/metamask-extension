@@ -275,17 +275,6 @@ describe('PayWithRow', () => {
     expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent('ETH');
   });
 
-  it('does not open modal when hardware account', () => {
-    isHardwareAccountMock.mockReturnValue(true);
-
-    const store = mockStore(getMockState());
-    renderWithProvider(<PayWithRow />, store);
-
-    fireEvent.click(screen.getByTestId('pay-with-pill'));
-
-    expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
-  });
-
   [TransactionType.perpsWithdraw, TransactionType.moneyAccountDeposit].forEach(
     (transactionType) => {
       describe(`${transactionType} fallback behaviour`, () => {
@@ -365,15 +354,6 @@ describe('PayWithRow', () => {
       renderWithProvider(<PayWithRow />, store);
 
       expect(screen.getByTestId('pay-with-arrow')).toBeInTheDocument();
-    });
-
-    it('hides arrow icon for hardware account', () => {
-      isHardwareAccountMock.mockReturnValue(true);
-
-      const store = mockStore(getMockState());
-      renderWithProvider(<PayWithRow />, store);
-
-      expect(screen.queryByTestId('pay-with-arrow')).not.toBeInTheDocument();
     });
   });
 

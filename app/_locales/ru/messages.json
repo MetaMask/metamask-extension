@@ -8294,9 +8294,6 @@
     "message": "Успешная покупка",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Другие варианты"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "рабочий день"
   },
@@ -9339,9 +9336,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Включите автоопределение NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Выберите сеть для фильтрации"
   },
   "selectPathHelp": {
     "message": "Если вы не видите ожидаемые счета, попробуйте переключиться на путь HD или текущую выбранную сеть."

@@ -8302,9 +8302,6 @@
     "message": "매수 성공",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "기타 옵션"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "영업일"
   },
@@ -9347,9 +9344,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "NFT 자동 감기 지능 켜기"
-  },
-  "selectNetworkToFilter": {
-    "message": "필터링할 네트워크 선택"
   },
   "selectPathHelp": {
     "message": "원하는 계정이 표시되지 않으면 HD 경로나 현재 선택한 네트워크를 바꿔 보세요."

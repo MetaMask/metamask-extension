@@ -8536,9 +8536,6 @@
     "message": "Buy successful",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Other options"
-  },
   "rampsPayWith": {
     "message": "Pay with"
   },
@@ -9584,9 +9581,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Enable NFT Autodetection"
-  },
-  "selectNetworkToFilter": {
-    "message": "Select network to filter"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."

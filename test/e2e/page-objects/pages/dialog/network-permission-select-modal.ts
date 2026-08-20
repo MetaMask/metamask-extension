@@ -20,8 +20,7 @@ import { Driver } from '../../../webdriver/driver';
  */
 class NetworkPermissionSelectModal {
   private readonly confirmEditButton = {
-    text: 'Update',
-    tag: 'button',
+    testId: 'connect-more-chains-button',
   };
 
   driver: Driver;

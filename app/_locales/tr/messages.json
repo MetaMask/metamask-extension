@@ -8302,9 +8302,6 @@
     "message": "Alış işlemi başarılı",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Diğer seçenekler"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "iş günü"
   },
@@ -9347,9 +9344,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "NFT Otomatik Algılamayı etkinleştir"
-  },
-  "selectNetworkToFilter": {
-    "message": "Filtrelemek için ağ seç"
   },
   "selectPathHelp": {
     "message": "Beklediğiniz hesapları görmüyorsanız HD yoluna veya geçerli seçilen ağa geçmeyi deneyin."

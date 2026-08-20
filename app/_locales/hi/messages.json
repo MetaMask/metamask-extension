@@ -8294,9 +8294,6 @@
     "message": "खरीद सफल रही",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "अन्य विकल्प"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "व्यावसायिक दिन"
   },
@@ -9339,9 +9336,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "NFT ऑटोडिटेक्शन चालू करें"
-  },
-  "selectNetworkToFilter": {
-    "message": "फ़िल्टर करने के लिए नेटवर्क चुनें"
   },
   "selectPathHelp": {
     "message": "यदि आपको अपनी पसंद के हिसाब से अकाउंट दिखाई नहीं देते हैं, तो HD पथ या मौजूदा चुना गया नेटवर्क बदलने की कोशिश करें।"
