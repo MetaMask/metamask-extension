@@ -191,11 +191,16 @@ describe('Tron - Assets', function (this: Suite) {
   it('displays native TRX as the main balance for each asset account', async function () {
     await withIsolatedTronAssets(this, sharedTronNode, async (driver) => {
       const homePage = new HomePage(driver);
+
+      console.log(
+        'Checking just created Tron account shows 0 TRX when native token is enabled',
+      );
       await homePage.checkExpectedBalanceIsDisplayed({
         expectedBalance: '0 TRX',
         timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
       });
 
+      console.log('Checking empty account lists TRX with balance 0');
       const tokensTab = new TokensTab(driver);
       await waitForVisibleTronToken(tokensTab);
       await tokensTab.checkOnlyAssetsArePresent(['Tron']);
@@ -207,12 +212,18 @@ describe('Tron - Assets', function (this: Suite) {
         '$',
       ]);
 
+      console.log(
+        'Checking funded account shows 106.072 TRX as the main balance',
+      );
       await switchToFundedTronAccount(driver);
       await homePage.checkExpectedBalanceIsDisplayed({
         expectedBalance: '106.072 TRX',
         timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
       });
 
+      console.log(
+        'Checking portfolio account shows native TRX as the main balance',
+      );
       await switchToPortfolioTronAccount(driver);
       await homePage.checkExpectedBalanceIsDisplayed({
         expectedBalance: '6.072 TRX',

@@ -154,6 +154,7 @@ describe('Tron Send', function (this: Suite) {
       driver,
     });
 
+    console.log('Checking Continue is blocked when a bad address is entered');
     let sendPage = await openTronSendAmountRecipient({ driver });
     await sendPage.fillRecipient({
       recipientAddress: 'not-a-valid-address',
@@ -164,6 +165,7 @@ describe('Tron Send', function (this: Suite) {
     await sendPage.checkInvalidAddressError();
     await sendPage.checkContinueButtonIsDisabled();
 
+    console.log('Checking Continue is blocked when amount is empty');
     sendPage = await openTronSendAmountRecipient({ driver });
     await sendPage.fillRecipient({
       recipientAddress: TRON_RECIPIENT_ADDRESS,
@@ -174,6 +176,7 @@ describe('Tron Send', function (this: Suite) {
     await sendPage.checkTransactionError();
     await sendPage.checkContinueButtonIsDisabled();
 
+    console.log('Checking Continue is blocked when amount exceeds balance');
     sendPage = await openTronSendAmountRecipient({ driver });
     await sendPage.fillRecipient({
       recipientAddress: TRON_RECIPIENT_ADDRESS,
@@ -182,6 +185,9 @@ describe('Tron Send', function (this: Suite) {
     await sendPage.checkInsufficientFundsError();
     await sendPage.checkContinueButtonIsDisabled();
 
+    console.log(
+      'Checking USDT send is blocked when TRX cannot cover the energy fee',
+    );
     await switchToTronAccountForSend({
       accountName: 'Account 2',
       driver,

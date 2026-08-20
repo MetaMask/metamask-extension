@@ -30,9 +30,11 @@ describe('Swap on Tron', function (this: Suite) {
         const homePage = new HomePage(driver);
         const swapPage = new SwapPage(driver);
 
+        console.log('Checking Swap form shows default token on open');
         await homePage.clickOnSwapButton();
         await swapPage.checkSourceToken('TRX');
 
+        console.log('Checking quote displayed between TRX and TRC20');
         await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDT',
@@ -48,6 +50,9 @@ describe('Swap on Tron', function (this: Suite) {
           toAmount: '0.295',
         });
 
+        console.log(
+          'Checking quote displayed for USDT to TRX swap (reverse direction)',
+        );
         await returnToTronHome(driver, '106.07');
         await homePage.clickOnSwapButton();
         await swapPage.createSwap({
@@ -62,6 +67,9 @@ describe('Swap on Tron', function (this: Suite) {
         await swapPage.checkDestinationToken('TRX');
         await swapPage.checkSwapAmountsArePopulated();
 
+        console.log(
+          'Checking amount exceeding balance shows insufficient funds',
+        );
         await returnToTronHome(driver, '106.07');
         await homePage.clickOnSwapButton();
         await swapPage.createSwap({
@@ -72,6 +80,9 @@ describe('Swap on Tron', function (this: Suite) {
         });
         await swapPage.checkInsufficientFundsButtonIsDisplayed();
 
+        console.log(
+          'Checking quote updates when selecting a different destination token',
+        );
         await returnToTronHome(driver, '106.07');
         await homePage.clickOnSwapButton();
         await swapPage.createSwap({
