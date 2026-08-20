@@ -13,6 +13,7 @@ import { PAGES } from '../../webdriver/driver';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/login-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { waitForStorage } from '../state-persistence/helpers';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
 const FEATURE_FLAGS_RESPONSE = [
@@ -863,8 +864,25 @@ describe('Sentry errors', function () {
           await driver.navigate();
           await new LoginPage(driver).checkPageIsLoaded();
 
-          // Wait for state to settle
-          await driver.delay(5_000);
+          await waitForStorage(
+            driver,
+            (storage) => {
+              const controllerState =
+                'data' in storage ? storage.data : storage;
+              assert.ok(
+                has(
+                  controllerState,
+                  'AppMetadataController.currentAppVersion',
+                ),
+                'App metadata state has not persisted',
+              );
+              assert.ok(
+                has(controllerState, 'MetaMetricsController.eventQueue'),
+                'MetaMetrics event queue has not persisted',
+              );
+            },
+            'Sentry application state',
+          );
 
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
