@@ -38,6 +38,21 @@ type ConnectivityChangeListener = (
   callback: (state: { connectivityStatus: string }) => void,
 ) => () => void;
 
+/**
+ * Opens the server-aggregated order-book subscription on a dedicated
+ * Hyperliquid WebSocket connection (separate from the controller's shared
+ * socket) and returns an unsubscribe function. Injected so this file never
+ * value-imports the ESM-only Hyperliquid SDK, keeping the bridge Jest-friendly.
+ */
+type SubscribeAggregatedOrderBook = (params: {
+  symbol: string;
+  levels?: number;
+  nSigFigs?: 2 | 3 | 4 | 5;
+  mantissa?: 2 | 5;
+  callback: (data: unknown) => void;
+  onStatusChange?: (status: 'connecting' | 'connected' | 'error') => void;
+}) => () => void;
+
 type PerpsStreamBridgeOptions = {
   controller: PerpsController;
   onControllerStateChange: StateChangeListener;
@@ -46,6 +61,8 @@ type PerpsStreamBridgeOptions = {
   perpsDisconnect: (...args: unknown[]) => Promise<unknown>;
   perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
   isConnectionAlive: () => boolean;
+  isTerminalBackendEnabled: () => boolean;
+  subscribeAggregatedOrderBook: SubscribeAggregatedOrderBook;
   emit: EmitFn;
 };
 
@@ -96,11 +113,29 @@ export class PerpsStreamBridge {
 
   readonly #isConnectionAlive: () => boolean;
 
+  readonly #isTerminalBackendEnabled: () => boolean;
+
+  readonly #subscribeAggregatedOrderBook: SubscribeAggregatedOrderBook;
+
   readonly #emit: EmitFn;
 
   readonly #staticUnsubs: (() => void)[] = [];
 
   readonly #dynamicUnsubs: Record<string, () => void> = {};
+
+  /**
+   * Per-channel activation generation for the deferred dynamic subscriptions
+   * (prices / orderBook / orderBookAggregated). Each `perpsDeactivate*Stream`
+   * bumps its channel's counter, so an activation whose `#initAndActivate()`
+   * only resolves *after* that deactivation ran will see the mismatch and
+   * refuse to subscribe. Without this, opening and quickly closing a panel
+   * during cold init would let the activation continuation resurrect the
+   * subscription after teardown, leaking a hidden stream that survives until
+   * the next (de)activation or bridge destruction. Mirrors the candle path's
+   * `#destroyGeneration` guard, but scoped per channel so an unrelated
+   * channel's teardown never cancels this activation.
+   */
+  readonly #dynamicActivationGeneration: Record<string, number> = {};
 
   readonly #pendingCandleTeardowns = new Map<
     string,
@@ -138,6 +173,20 @@ export class PerpsStreamBridge {
 
   #lastMarketCacheKey: string | null = null;
 
+  /**
+   * Serializes the Terminal-mode market refetch triggered by preload-cache
+   * bumps so a burst of state changes cannot fan out into concurrent Terminal
+   * REST hits (the exact rate-limit pressure this stack is trying to avoid).
+   */
+  #terminalMarketRefetchInFlight = false;
+
+  /**
+   * Set when a preload-cache bump arrives while a Terminal market refetch is
+   * already in flight. The in-flight fetch re-runs once on settle so the newest
+   * market set (e.g. post-HIP-3) still reaches the UI instead of being dropped.
+   */
+  #terminalMarketRefetchPending = false;
+
   #wasDeviceOffline = false;
 
   constructor(options: PerpsStreamBridgeOptions) {
@@ -148,6 +197,8 @@ export class PerpsStreamBridge {
     this.#perpsDisconnect = options.perpsDisconnect;
     this.#perpsToggleTestnet = options.perpsToggleTestnet;
     this.#isConnectionAlive = options.isConnectionAlive;
+    this.#isTerminalBackendEnabled = options.isTerminalBackendEnabled;
+    this.#subscribeAggregatedOrderBook = options.subscribeAggregatedOrderBook;
     this.#emit = options.emit;
   }
 
@@ -202,22 +253,20 @@ export class PerpsStreamBridge {
           this.#activateStreaming(params);
         }
       },
-      perpsActivatePriceStream: async ({
+      perpsActivatePriceStream: ({
         symbols,
         includeMarketData,
       }: {
         symbols: string[];
         includeMarketData?: boolean;
-      }) => {
-        await this.#initAndActivate();
-        if (this.#isConnectionAlive()) {
-          this.#activatePriceStream(symbols, includeMarketData);
-        }
-      },
+      }) =>
+        this.#activateDynamicWhenReady('prices', () =>
+          this.#activatePriceStream(symbols, includeMarketData),
+        ),
       perpsDeactivatePriceStream: () => {
-        this.#tearDownChannel('prices');
+        this.#deactivateDynamicChannel('prices');
       },
-      perpsActivateOrderBookStream: async ({
+      perpsActivateOrderBookStream: ({
         symbol,
         levels,
         nSigFigs,
@@ -227,14 +276,42 @@ export class PerpsStreamBridge {
         levels?: number;
         nSigFigs?: 2 | 3 | 4 | 5;
         mantissa?: 2 | 5;
-      }) => {
-        await this.#initAndActivate();
-        if (this.#isConnectionAlive()) {
-          this.#activateOrderBookStream({ symbol, levels, nSigFigs, mantissa });
-        }
-      },
+      }) =>
+        this.#activateDynamicWhenReady('orderBook', () =>
+          this.#activateOrderBookStream({ symbol, levels, nSigFigs, mantissa }),
+        ),
       perpsDeactivateOrderBookStream: () => {
-        this.#tearDownChannel('orderBook');
+        this.#deactivateDynamicChannel('orderBook');
+      },
+      perpsActivateOrderBookAggregatedStream: ({
+        symbol,
+        levels,
+        nSigFigs,
+        mantissa,
+        subscriptionId,
+      }: {
+        symbol: string;
+        levels?: number;
+        nSigFigs?: 2 | 3 | 4 | 5;
+        mantissa?: 2 | 5;
+        /**
+         * UI-generated identity for this activate request. Echoed on every
+         * data/status emission so the UI can discard packets from a prior
+         * grouping that arrive during the async deactivate/activate IPC gap.
+         */
+        subscriptionId?: string;
+      }) =>
+        this.#activateDynamicWhenReady('orderBookAggregated', () =>
+          this.#activateOrderBookAggregatedStream({
+            symbol,
+            levels,
+            nSigFigs,
+            mantissa,
+            subscriptionId,
+          }),
+        ),
+      perpsDeactivateOrderBookAggregatedStream: () => {
+        this.#deactivateDynamicChannel('orderBookAggregated');
       },
       perpsActivateCandleStream: async ({
         symbol,
@@ -354,6 +431,8 @@ export class PerpsStreamBridge {
     this.#hydrationSeq += 1;
     this.#isHydrating = false;
     this.#lastMarketCacheKey = null;
+    this.#terminalMarketRefetchInFlight = false;
+    this.#terminalMarketRefetchPending = false;
     this.#wasDeviceOffline = false;
   }
 
@@ -362,6 +441,55 @@ export class PerpsStreamBridge {
     if (!this.#activated && this.#isConnectionAlive()) {
       this.#activate();
     }
+  }
+
+  /**
+   * Runs a deferred dynamic-channel activation behind a per-channel generation
+   * guard. If a `perpsDeactivate*Stream` for the same channel — or a full
+   * `destroy()` — fires while `#initAndActivate()` is still pending, the
+   * captured generation no longer matches on resume and the subscription is
+   * skipped, so a quick open→close during cold init cannot leak a hidden
+   * subscription created after teardown.
+   *
+   * @param channel - The dynamic channel being (re)activated.
+   * @param activate - Subscribe callback, invoked only if still current.
+   */
+  async #activateDynamicWhenReady(
+    channel: 'prices' | 'orderBook' | 'orderBookAggregated',
+    activate: () => void,
+  ): Promise<void> {
+    const activationGenerationAtStart =
+      this.#dynamicActivationGeneration[channel] ?? 0;
+    const destroyGenerationAtStart = this.#destroyGeneration;
+
+    await this.#initAndActivate();
+
+    if (
+      this.#destroyGeneration !== destroyGenerationAtStart ||
+      (this.#dynamicActivationGeneration[channel] ?? 0) !==
+        activationGenerationAtStart
+    ) {
+      return;
+    }
+
+    if (this.#isConnectionAlive()) {
+      activate();
+    }
+  }
+
+  /**
+   * Tears down a dynamic channel and bumps its activation generation so any
+   * activation that is still awaiting init for this channel aborts on resume
+   * instead of resurrecting the subscription.
+   *
+   * @param channel - The dynamic channel to deactivate.
+   */
+  #deactivateDynamicChannel(
+    channel: 'prices' | 'orderBook' | 'orderBookAggregated',
+  ): void {
+    this.#dynamicActivationGeneration[channel] =
+      (this.#dynamicActivationGeneration[channel] ?? 0) + 1;
+    this.#tearDownChannel(channel);
   }
 
   #activate(): void {
@@ -485,7 +613,94 @@ export class PerpsStreamBridge {
       return;
     }
     this.#lastMarketCacheKey = snapshotKey;
+
+    // The controller's background preload (startMarketDataPreload) always
+    // fetches via getMarketDataWithPrices({ standalone: true }) without the
+    // Terminal API, so cachedMarketDataByProvider only ever holds
+    // direct-provider data (no display names / keywords / tags / categories).
+    // When the Terminal backend is enabled we must not warm the UI 'markets'
+    // channel with that un-enriched snapshot. But the preload timestamp bump
+    // still signals that the market set changed (e.g. a HIP-3 config arrived or
+    // the 5-minute refresh ran), so re-fetch the enriched Terminal data and
+    // emit that instead. Otherwise the channel would hold whatever the last
+    // REST/reconnect hydration produced and silently go stale.
+    if (this.#isTerminalBackendEnabled()) {
+      this.#refetchTerminalMarketData();
+      return;
+    }
+
     this.#emit('markets', entry.data);
+  }
+
+  /**
+   * Re-fetches enriched market data via the Terminal API and emits it on the
+   * 'markets' channel. Used to keep Terminal-mode UI in sync when the
+   * direct-provider preload cache updates (the raw snapshot is unfit to emit).
+   *
+   * Serialized via #terminalMarketRefetchInFlight; a bump that lands mid-fetch
+   * flips #terminalMarketRefetchPending so exactly one follow-up fetch runs.
+   * getMarketDataWithPrices with the Terminal API does not write
+   * cachedMarketDataByProvider, so this cannot re-trigger the state listener.
+   */
+  #refetchTerminalMarketData(): void {
+    // Re-check the flag on every entry (including the queued follow-up rerun):
+    // the Terminal backend may have been disabled since the preload bump that
+    // scheduled this refetch, and we must not issue/emit Terminal data once it
+    // is off.
+    if (!this.#isConnectionAlive() || !this.#isTerminalBackendEnabled()) {
+      return;
+    }
+    if (this.#terminalMarketRefetchInFlight) {
+      this.#terminalMarketRefetchPending = true;
+      return;
+    }
+    this.#terminalMarketRefetchInFlight = true;
+    const generationAtStart = this.#destroyGeneration;
+    this.#controller
+      .getMarketDataWithPrices({ useTerminalApi: true })
+      .then((markets) => {
+        // destroy() may have fired during the await; never emit onto a torn-down
+        // stream. A generation bump (rather than a latched flag) lets later init
+        // cycles resume refetching without an explicit reset. Also re-check the
+        // flag: if the Terminal backend was disabled mid-flight, this enriched
+        // payload no longer matches the active mode and must not be emitted.
+        // Guard the empty case symmetrically with the direct-provider branch
+        // in #handleMarketDataPreload: emitting an empty array would blank the
+        // UI list and flip the channel's hasCachedData() to true, suppressing
+        // the WS-grace REST fallback that would otherwise recover.
+        if (
+          this.#destroyGeneration === generationAtStart &&
+          this.#isTerminalBackendEnabled() &&
+          Array.isArray(markets) &&
+          markets.length > 0
+        ) {
+          this.#emit('markets', markets);
+        }
+      })
+      .catch((error) => {
+        console.debug(
+          '[PerpsStreamBridge] terminal market data refetch failed',
+          error,
+        );
+      })
+      .finally(() => {
+        // destroy() (and possibly a fresh init + refetch) may have fired during
+        // the await. If so, this settled fetch belongs to a prior bridge
+        // generation and must not touch the current generation's coordination
+        // state: clearing #terminalMarketRefetchInFlight here could let an extra
+        // concurrent Terminal REST call slip past the serializer, and clearing
+        // #terminalMarketRefetchPending could drop a queued follow-up, delaying
+        // the newest enriched market update until the next preload bump.
+        if (this.#destroyGeneration !== generationAtStart) {
+          return;
+        }
+        this.#terminalMarketRefetchInFlight = false;
+        const shouldRerun = this.#terminalMarketRefetchPending;
+        this.#terminalMarketRefetchPending = false;
+        if (shouldRerun) {
+          this.#refetchTerminalMarketData();
+        }
+      });
   }
 
   /**
@@ -504,7 +719,9 @@ export class PerpsStreamBridge {
 
     try {
       const marketsResult = await this.#controller
-        .getMarketDataWithPrices({ useTerminalApi: true })
+        .getMarketDataWithPrices({
+          useTerminalApi: this.#isTerminalBackendEnabled(),
+        })
         .catch(() => null);
 
       if (marketsResult) {
@@ -614,6 +831,55 @@ export class PerpsStreamBridge {
     }
   }
 
+  /**
+   * Activate the server-aggregated order-book subscription (`nSigFigs` /
+   * `mantissa`) for the order-book panel's grouped ladder.
+   *
+   * Unlike the raw `orderBook` channel — which runs on the controller's shared
+   * WebSocket — this runs on a dedicated Hyperliquid connection. The SDK routes
+   * `l2Book` events by `coin` only, so a raw and an aggregated subscription for
+   * the same coin on the same socket cross-contaminate (the coarse ladder and
+   * the precise spread/slippage clobber each other). Isolating the aggregated
+   * subscription on its own socket removes the collision: that socket carries a
+   * single `l2Book` stream and the shared socket is never touched by grouping.
+   *
+   * @param params - Subscription parameters.
+   * @param params.symbol - Market symbol.
+   * @param params.levels - Number of levels per side to request.
+   * @param params.nSigFigs - Server-side aggregation significant figures.
+   * @param params.mantissa - Mantissa refinement when nSigFigs is 5.
+   * @param params.subscriptionId - UI identity echoed on every emission.
+   */
+  #activateOrderBookAggregatedStream(params: {
+    symbol: string;
+    levels?: number;
+    nSigFigs?: 2 | 3 | 4 | 5;
+    mantissa?: 2 | 5;
+    subscriptionId?: string;
+  }): void {
+    const { symbol, subscriptionId, levels, nSigFigs, mantissa } = params;
+    this.#tearDownChannel('orderBookAggregated');
+    if (symbol) {
+      // Capture the UI identity in this subscription's closures so emissions
+      // from a prior grouping keep their old id after the UI has already
+      // switched — the StreamManager then discards the mismatch.
+      const emitExtra =
+        subscriptionId === undefined ? undefined : { subscriptionId };
+      this.#addDynamicSubscription('orderBookAggregated', () =>
+        this.#subscribeAggregatedOrderBook({
+          symbol,
+          levels,
+          nSigFigs,
+          mantissa,
+          callback: (data: unknown) =>
+            this.#emit('orderBookAggregated', data, emitExtra),
+          onStatusChange: (status) =>
+            this.#emit('orderBookAggregatedStatus', status, emitExtra),
+        }),
+      );
+    }
+  }
+
   #activateCandleStream(params: {
     symbol: string;
     interval: CandlePeriod;
@@ -673,7 +939,9 @@ export class PerpsStreamBridge {
     }
   }
 
-  #tearDownChannel(channel: 'prices' | 'orderBook'): void {
+  #tearDownChannel(
+    channel: 'prices' | 'orderBook' | 'orderBookAggregated',
+  ): void {
     const unsub = this.#dynamicUnsubs[channel];
     if (unsub) {
       this.#callAndClearUnsub(unsub);

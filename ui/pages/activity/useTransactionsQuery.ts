@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { HttpError } from '@metamask/core-backend';
 import { parseCaipAssetType } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
@@ -9,6 +9,7 @@ import { getIntlLocale } from '../../ducks/locale/locale';
 import { apiClient } from '../../helpers/api-client';
 import { getUseExternalServices } from '../../selectors';
 import { selectEvmAddress } from '../../selectors/activity';
+import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import type { ActivityListFilter } from './helpers';
 import { useQueryFilters } from './query-filters/useQueryFilters';
 
@@ -149,4 +150,60 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
   ]);
 
   return { ...query, fetchNextVisiblePage };
+}
+
+export function usePrefetchTransactions() {
+  const queryClient = useQueryClient();
+  const useExternalServices = useSelector(getUseExternalServices);
+  const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
+  const locale = useSelector(getIntlLocale);
+  const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
+
+  const evmNetworks = useMemo(
+    () => enabledNetworks.filter((id: string) => id.startsWith('eip155:')),
+    [enabledNetworks],
+  );
+
+  const accountAddresses = useMemo(
+    () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
+    [evmAddress],
+  );
+
+  const queryOptions = useMemo(
+    () =>
+      apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
+        accountAddresses,
+        networks: evmNetworks,
+        includeTxMetadata: true,
+        lang: locale.split('-')[0],
+      }),
+    [accountAddresses, evmNetworks, locale],
+  );
+
+  return useCallback(() => {
+    if (!useExternalServices || !evmAddress) {
+      return;
+    }
+
+    const { queryKey } = queryOptions;
+    if (!queryKey || queryClient.getQueryData(queryKey)) {
+      return;
+    }
+
+    if (queryClient.isFetching({ queryKey }) > 0) {
+      return;
+    }
+
+    queryClient
+      .prefetchInfiniteQuery({
+        ...queryOptions,
+        // @ts-expect-error apiClient returns v5 types, repo still in v4
+        queryFn: withKnownApiResponse(queryOptions.queryFn),
+        retry: false,
+        staleTime: 5 * MINUTE,
+      })
+      .catch(() => {
+        // Prefetch is opportunistic
+      });
+  }, [evmAddress, queryOptions, queryClient, useExternalServices]);
 }

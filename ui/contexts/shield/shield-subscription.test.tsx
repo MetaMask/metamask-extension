@@ -9,26 +9,36 @@ import * as authSelectors from '../../selectors/identity/authentication';
 import * as subscriptionSelectors from '../../selectors/subscription';
 import * as metamaskBaseSelectors from '../../ducks/metamask/base-selectors';
 import * as environment from '../../../shared/lib/environment';
+import { useDispatch } from '../../store/hooks';
+
 import {
   ShieldSubscriptionProvider,
   useShieldSubscriptionContext,
+  resetEvaluatedShieldCohortsForTesting,
 } from './shield-subscription';
+
+jest.mock('../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 jest.mock('../../hooks/subscription/useSubscription');
 jest.mock('../../hooks/shield/metrics/useSubscriptionMetrics');
+jest.mock('../../hooks/usePolling', () => jest.fn());
+jest.mock('./subscriptionsPollingActions', () => ({
+  subscriptionsStartPolling: jest.fn(),
+  subscriptionsStopPolling: jest.fn(),
+}));
 jest.mock('../../store/actions', () => ({
   assignUserToCohort: jest.fn(),
   setPendingShieldCohort: jest.fn(),
   setShowShieldEntryModalOnce: jest.fn(),
-  subscriptionsStartPolling: jest.fn(),
 }));
 
-const mockUseDispatch = jest.mocked(redux.useDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 const mockUseSelector = jest.mocked(redux.useSelector);
 
 describe('ShieldSubscriptionProvider', () => {
@@ -38,8 +48,9 @@ describe('ShieldSubscriptionProvider', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetEvaluatedShieldCohortsForTesting();
 
-    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
     mockUseSelector.mockImplementation((selector) => {
       if (selector === selectors.getUseExternalServices) {
         return true;
@@ -222,7 +233,6 @@ describe('ShieldSubscriptionProvider', () => {
 
       const TestConsumer = () => {
         const { evaluateCohortEligibility } = useShieldSubscriptionContext();
-        // eslint-disable-next-line react-compiler/react-compiler
         evaluateFnRef.current = evaluateCohortEligibility;
         return <div data-testid="consumer">Consumer</div>;
       };
@@ -279,7 +289,6 @@ describe('ShieldSubscriptionProvider', () => {
 
       const TestConsumer = () => {
         const { evaluateCohortEligibility } = useShieldSubscriptionContext();
-        // eslint-disable-next-line react-compiler/react-compiler
         evaluateFnRef.current = evaluateCohortEligibility;
         return <div data-testid="consumer">Consumer</div>;
       };

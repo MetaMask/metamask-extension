@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import {
   finalizeEventFragment,
@@ -38,14 +38,19 @@ describe('useEventFragment', () => {
           id: 'testid',
         }),
       );
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         useEventFragment(undefined, {
           successEvent: 'success',
           failureEvent: 'failure',
           persist: true,
         }),
       );
-      await waitForNextUpdate();
+      const prevUpdate0 = result.current;
+      await waitFor(() => {
+        if (Object.is(result.current, prevUpdate0)) {
+          throw new Error('Waiting for next update');
+        }
+      });
       value = result.current;
     });
 
@@ -92,14 +97,15 @@ describe('useEventFragment', () => {
           id: 'testid',
         }),
       );
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         useEventFragment(undefined, {
           successEvent: 'success',
           failureEvent: 'failure',
         }),
       );
-      await waitForNextUpdate();
-      expect(createEventFragment).toHaveBeenCalledTimes(1);
+      await waitFor(() => {
+        expect(createEventFragment).toHaveBeenCalledTimes(1);
+      });
       const returnValue = result.current;
       expect(returnValue.fragment).toMatchObject({
         id: 'testid',
@@ -176,14 +182,19 @@ describe('useEventFragment', () => {
           id: 'testid',
         }),
       );
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         useEventFragment(undefined, {
           successEvent: 'success',
           failureEvent: 'failure',
           persist: true,
         }),
       );
-      await waitForNextUpdate();
+      const prevUpdate1 = result.current;
+      await waitFor(() => {
+        if (Object.is(result.current, prevUpdate1)) {
+          throw new Error('Waiting for next update');
+        }
+      });
       value = result.current;
     });
 

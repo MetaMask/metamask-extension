@@ -6,10 +6,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
 import { createProjectLogger, Json } from '@metamask/utils';
-import {
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-} from '../../../../shared/constants/app';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 
 const log = createProjectLogger('approval-utils');
 
@@ -21,30 +18,7 @@ export function getAttentionRequiredApprovalCount({
   const approvalRequestsById = approvalController.state.pendingApprovals ?? {};
   const approvalRequests = Object.values(approvalRequestsById);
 
-  return approvalRequests.filter(
-    (approvalRequest) =>
-      approvalRequest.type !==
-      SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-  ).length;
-}
-
-export function rejectAllApprovals({
-  approvalController,
-  deleteInterface,
-}: {
-  approvalController: ApprovalController;
-  deleteInterface?: (id: string) => void;
-}) {
-  const approvalRequestsById = approvalController.state.pendingApprovals;
-  const approvalRequests = Object.values(approvalRequestsById);
-
-  for (const approvalRequest of approvalRequests) {
-    rejectApproval({
-      approvalController,
-      approvalRequest,
-      deleteInterface,
-    });
-  }
+  return approvalRequests.length;
 }
 
 export function rejectOriginApprovals({

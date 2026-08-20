@@ -18,9 +18,23 @@ import {
   setTokenNetworkFilter,
   updateNetwork,
 } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { NetworksForm } from './networks-form';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -43,7 +57,7 @@ jest.mock('../../../store/background-connection', () => ({
   }),
 }));
 
-const renderComponent = (props) => {
+const renderComponent = ({ isRpcFailoverEnabled, ...props } = {}) => {
   const store = configureMockStore([thunk])({
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -56,6 +70,9 @@ const renderComponent = (props) => {
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: 'eip155:1',
       isEvmSelected: true,
+      remoteFeatureFlags: {
+        walletFrameworkRpcFailoverEnabled: isRpcFailoverEnabled ?? false,
+      },
     },
   });
   return renderWithProvider(<NetworksForm {...props} />, store);
@@ -102,6 +119,7 @@ describe('NetworkForm Component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockClear();
 
     nock('https://chainid.network:443', { encodedQueryParams: true })
       .get('/chains.json')
@@ -142,6 +160,7 @@ describe('NetworkForm Component', () => {
 
   afterEach(() => {
     nock.cleanAll();
+    delete process.env.QUICKNODE_BSC_URL;
   });
 
   it('should render add new network form correctly', async () => {
@@ -185,6 +204,23 @@ describe('NetworkForm Component', () => {
         'This Chain ID is currently used by the Ethereum network.',
       ),
     ).toBeInTheDocument();
+  });
+
+  it('starts the Chainlist flow from the add network form', () => {
+    const onAddFromChainlist = jest.fn();
+
+    renderComponent({
+      ...propNetworkDisplay,
+      onAddFromChainlist,
+    });
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: messages.addFromChainlist.message,
+      }),
+    );
+
+    expect(onAddFromChainlist).toHaveBeenCalledTimes(1);
   });
 
   it('should render network form correctly', () => {
@@ -247,7 +283,9 @@ describe('NetworkForm Component', () => {
       'The RPC URL you have entered returned a different chain ID (56).';
     expect(await screen.findByText(expectedWarning)).toBeInTheDocument();
 
-    expect(screen.getByText(messages.save.message)).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: messages.save.message }),
+    ).toBeDisabled();
   });
 
   it('should chainID be a valid number', async () => {
@@ -476,121 +514,68 @@ describe('NetworkForm Component', () => {
   });
 
   it('should track RPC update event when trackRpcUpdateFromBanner is true', async () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
-    const store = configureMockStore([thunk])({
-      metamask: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        useSafeChainsListValidation: true,
-        orderedNetworkList: {
-          networkId: '0x1',
-          networkRpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://monad-mainnet.infura.io/v3/',
-                  type: 'custom',
-                },
-              ],
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://monad-mainnet.infura.io/v3/',
+              type: 'custom',
             },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            rpcEndpoints: [
-              {
-                url: 'https://mainnet.infura.io/v3/',
-              },
-            ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          trackRpcUpdateFromBanner
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+          ],
+        },
+      },
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+      },
+      trackRpcUpdateFromBanner: true,
+    });
 
     const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
 
     await waitFor(() => {
       expect(updateNetwork).toHaveBeenCalled();
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: 'Network',
-        event: 'Network Connection Banner RPC Updated',
-        properties: {
-          chain_id_caip: 'eip155:100',
-          from_rpc_domain: 'mainnet.infura.io',
-          to_rpc_domain: 'monad-mainnet.infura.io',
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Connection Banner RPC Updated',
+          properties: expect.objectContaining({
+            category: 'Network',
+            chain_id_caip: 'eip155:100',
+            from_rpc_domain: 'mainnet.infura.io',
+            to_rpc_domain: 'monad-mainnet.infura.io',
+          }),
+        }),
+      );
     });
   });
 
   it('should not track RPC update event when trackRpcUpdateFromBanner is not set', async () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
-    const store = configureMockStore([thunk])({
-      metamask: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        useSafeChainsListValidation: true,
-        orderedNetworkList: {
-          networkId: '0x1',
-          networkRpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
       },
     });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            rpcEndpoints: [
-              {
-                url: 'https://mainnet.infura.io/v3/',
-              },
-            ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          // trackRpcUpdateFromBanner not set
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
 
     const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
@@ -600,150 +585,300 @@ describe('NetworkForm Component', () => {
       // Should not have called the banner tracking event
       expect(mockTrackEvent).not.toHaveBeenCalledWith(
         expect.objectContaining({
-          event: 'Network Connection Banner RPC Updated',
+          name: 'Network Connection Banner RPC Updated',
         }),
       );
     });
   });
 
   it('should track custom RPC URL when endpoint is not public', async () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
-    const store = configureMockStore([thunk])({
-      metamask: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        useSafeChainsListValidation: true,
-        orderedNetworkList: {
-          networkId: '0x1',
-          networkRpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://custom-rpc.example.com',
-                  type: 'custom',
-                },
-              ],
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://custom-rpc.example.com',
+              type: 'custom',
             },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            rpcEndpoints: [
-              {
-                url: 'https://custom-rpc.example.com',
-              },
-            ],
-            defaultRpcEndpointIndex: 0,
-          }}
-          trackRpcUpdateFromBanner
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+          ],
+        },
+      },
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://custom-rpc.example.com',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+      },
+      trackRpcUpdateFromBanner: true,
+    });
 
     const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
 
     await waitFor(() => {
       expect(updateNetwork).toHaveBeenCalled();
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: 'Network',
-        event: 'Network Connection Banner RPC Updated',
-        properties: {
-          chain_id_caip: 'eip155:100',
-          from_rpc_domain: 'custom',
-          to_rpc_domain: 'custom',
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Connection Banner RPC Updated',
+          properties: expect.objectContaining({
+            category: 'Network',
+            chain_id_caip: 'eip155:100',
+            from_rpc_domain: 'custom',
+            to_rpc_domain: 'custom',
+          }),
+        }),
+      );
     });
   });
 
   it('should handle corrupted state with missing rpcEndpoints gracefully', async () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
-    const store = configureMockStore([thunk])({
-      metamask: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        useSafeChainsListValidation: true,
-        orderedNetworkList: {
-          networkId: '0x1',
-          networkRpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <NetworksForm
-          {...propNetworkDisplay}
-          networkFormState={{
-            ...propNetworkDisplay.networkFormState,
-            rpcUrls: {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://monad-mainnet.infura.io/v3/',
-                  type: 'custom',
-                },
-              ],
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://monad-mainnet.infura.io/v3/',
+              type: 'custom',
             },
-          }}
-          existingNetwork={{
-            chainId: '0x64',
-            name: 'Ethereum',
-            nativeCurrency: 'ETH',
-            // rpcEndpoints is undefined (corrupted state)
-          }}
-          trackRpcUpdateFromBanner
-        />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+          ],
+        },
+      },
+      existingNetwork: {
+        chainId: '0x64',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        // rpcEndpoints is undefined (corrupted state)
+      },
+      trackRpcUpdateFromBanner: true,
+    });
 
     const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
 
     await waitFor(() => {
       expect(updateNetwork).toHaveBeenCalled();
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: 'Network',
-        event: 'Network Connection Banner RPC Updated',
-        properties: {
-          chain_id_caip: 'eip155:100',
-          from_rpc_domain: 'unknown', // Corrupted state handled gracefully
-          to_rpc_domain: 'monad-mainnet.infura.io',
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Network Connection Banner RPC Updated',
+          properties: expect.objectContaining({
+            category: 'Network',
+            chain_id_caip: 'eip155:100',
+            from_rpc_domain: 'unknown',
+            to_rpc_domain: 'monad-mainnet.infura.io',
+          }),
+        }),
+      );
     });
+  });
+
+  it('shows failover from shared config for a map chain with empty persisted failoverUrls', () => {
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          type: 'infura',
+          url: 'https://bsc-mainnet.infura.io/v3/test',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { getByLabelText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(getByLabelText(messages.failoverRpcUrl.message)).toHaveValue(
+      'failover.example',
+    );
+  });
+
+  it('shows the failover tag on the rpc list item from shared config when persisted failoverUrls is empty', () => {
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          // An Infura endpoint renders through RpcListItem rather than the
+          // inline custom branch.
+          type: 'infura',
+          url: 'https://bsc-mainnet.infura.io/v3/test',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { getByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(getByText(messages.failover.message)).toBeInTheDocument();
+  });
+
+  it('does not show failover for a custom endpoint even when the chain has a shared config failover', () => {
+    // Failover only applies to Infura endpoints, so a custom endpoint shows no
+    // failover even though this chain (BSC) has a shared config failover.
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          type: 'custom',
+          url: 'https://bsc.example/rpc',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { queryByLabelText, queryByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(queryByLabelText(messages.failoverRpcUrl.message)).toBeNull();
+    expect(queryByText(messages.failover.message)).toBeNull();
+  });
+
+  it('does not show failover for a chain not in the shared config', () => {
+    // 0x2328 (9000) is not in the shared failover map, so even an Infura
+    // endpoint gets no failover.
+    const existingNetwork = {
+      chainId: '0x2328',
+      name: 'Some Custom Network',
+      nativeCurrency: 'CUSTOM',
+      blockExplorerUrls: ['https://explorer.example/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'custom',
+          type: 'infura',
+          url: 'https://custom.example/rpc',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { queryByLabelText, queryByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '9000',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(queryByLabelText(messages.failoverRpcUrl.message)).toBeNull();
+    expect(queryByText(messages.failover.message)).toBeNull();
   });
 });

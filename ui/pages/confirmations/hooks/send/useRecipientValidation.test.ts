@@ -1,10 +1,11 @@
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   BITCOIN_ASSET,
   EVM_ASSET,
   SOLANA_ASSET,
+  STELLAR_NATIVE_ASSET,
 } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -35,6 +36,8 @@ describe('useRecipientValidation', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Ensure real timers are active; the debouncing suite toggles fake timers.
+    jest.useRealTimers();
     mockUseI18nContext.mockReturnValue(mockT);
     mockUseSendAlerts.mockReturnValue({
       alerts: [],
@@ -54,6 +57,7 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: true,
       isSolanaSendType: false,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
   });
 
@@ -201,6 +205,7 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: true,
       isSolanaSendType: false,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     const mockValidateHexAddress = jest
@@ -221,6 +226,7 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: false,
       isSolanaSendType: true,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     mockUseSendContext.mockReturnValue({
@@ -250,11 +256,50 @@ describe('useRecipientValidation', () => {
     });
   });
 
+  it('validate stellar address for Stellar send type', async () => {
+    const validStellarAddress = `G${'A'.repeat(55)}`;
+
+    mockUseSendType.mockReturnValue({
+      isEvmSendType: false,
+      isSolanaSendType: false,
+      isBitcoinSendType: false,
+      isStellarSendType: true,
+      isTronSendType: false,
+    } as unknown as ReturnType<typeof useSendType>);
+
+    mockUseSendContext.mockReturnValue({
+      asset: STELLAR_NATIVE_ASSET,
+      to: validStellarAddress,
+      chainId: 'stellar:pubnet',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+      validateName: () =>
+        Promise.resolve({
+          error: 'nameResolutionFailedError',
+        }),
+    });
+
+    const mockValidateStellarAddress = jest
+      .spyOn(SendValidationUtils, 'validateStellarAddress')
+      .mockReturnValue({});
+
+    const { result } = renderHook();
+
+    await waitFor(() => {
+      expect(mockValidateStellarAddress).toHaveBeenCalledWith(
+        validStellarAddress,
+      );
+      expect(result.current.recipientError).toBeUndefined();
+    });
+  });
+
   it('validate bitcoin address for Bitcoin send type', async () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: false,
       isSolanaSendType: false,
       isBitcoinSendType: true,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     mockUseSendContext.mockReturnValue({
@@ -290,6 +335,17 @@ describe('useRecipientValidation', () => {
     });
 
     afterEach(() => {
+      // Flush and clear pending timers before restoring real timers so later
+      // tests (lodash debounce + waitFor) are not stuck on fake timers.
+      // RTL's waitFor schedules its own timers while fake timers are active.
+      act(() => {
+        try {
+          jest.runOnlyPendingTimers();
+        } catch {
+          // Ignore if no fake timers are installed
+        }
+      });
+      jest.clearAllTimers();
       jest.useRealTimers();
     });
 
@@ -335,7 +391,9 @@ describe('useRecipientValidation', () => {
 
       expect(mockValidateName).not.toHaveBeenCalled();
 
-      jest.advanceTimersByTime(500);
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+      });
 
       await waitFor(() => {
         expect(mockValidateName).toHaveBeenCalledTimes(1);
@@ -372,7 +430,9 @@ describe('useRecipientValidation', () => {
       const { result, rerender } = renderHook();
 
       // Advance timers to trigger the debounced validation
-      jest.advanceTimersByTime(500);
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+      });
 
       await waitFor(() => {
         expect(mockValidateName).toHaveBeenCalledWith(
@@ -391,19 +451,24 @@ describe('useRecipientValidation', () => {
       rerender();
 
       // Now resolve the original validation (for chainId 0x1)
-      if (resolveValidation) {
-        resolveValidation({
+      await act(async () => {
+        resolveValidation?.({
           resolvedLookup: '0xOldChainResult',
           protocol: 'ens',
         });
-      }
-
-      // Wait for any state updates
-      await jest.advanceTimersByTimeAsync(100);
+        await Promise.resolve();
+      });
 
       // The result from chainId 0x1 should be discarded
       // because chainId has changed to 0x89
       expect(result.current.recipientResolvedLookup).toBeUndefined();
+
+      // Flush the debounce scheduled for the new chainId so its setResult
+      // does not fire outside act during afterEach timer cleanup.
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+        await Promise.resolve();
+      });
     });
   });
 

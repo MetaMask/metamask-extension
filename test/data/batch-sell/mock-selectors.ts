@@ -23,9 +23,7 @@ export function seedCurrencyLocaleSelectors(
   locale = 'en-US',
 ): void {
   mockUseSelector.mockReset();
-  mockUseSelector
-    .mockReturnValueOnce(currency as never)
-    .mockReturnValueOnce(locale as never);
+  mockUseSelector.mockReturnValueOnce(currency).mockReturnValueOnce(locale);
 }
 
 /**

@@ -1,14 +1,25 @@
 import { Driver } from '../../../webdriver/driver';
 import HomePage from './homepage';
 
+/**
+ * A single DeFi protocol / position cell in the DeFi list.
+ *
+ * Screen: not a route by itself — cells inside the DeFi tab on `#/`.
+ * Owns: asserting a cell's token/protocol name and market-value text.
+ * Boundaries: tab-level empty/error states and navigation into protocol
+ * details belong to `DeFiTab`.
+ * Related: `DeFiTab` (owner; exposes `defiTabCells`).
+ *
+ * @see ui/components/app/assets/defi-list/cells/defi-protocol-cell.tsx
+ */
 class DeFiToken {
   protected readonly driver: Driver;
 
-  protected readonly tokenListItemTokenName =
-    '[data-testid="multichain-token-list-item-token-name"]';
-
   protected readonly tokenListItemSecondaryValue =
     '[data-testid="defi-list-market-value"]';
+
+  protected readonly tokenListItemTokenName =
+    '[data-testid="multichain-token-list-item-token-name"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -37,20 +48,27 @@ class DeFiToken {
   }
 }
 
+/**
+ * Home DeFi tab: protocol positions list, empty/error states, and entry into
+ * protocol details.
+ *
+ * Screen: `#/` DeFi tab (`account-overview__defi-tab`), reached via
+ * `HomePage.goToDeFiTab()`; protocol rows navigate to `#/defi/...`.
+ * Owns: empty and error messages, the avatar group icon, `DeFiToken` cell
+ * checks via `defiTabCells`, and clicking into Aave V3 details.
+ * Boundaries: homepage chrome and other tabs stay on `HomePage`. Cell-level
+ * name/value assertions belong to `DeFiToken`.
+ * Related: `HomePage` (`goToDeFiTab`), `DeFiToken` (`defiTabCells`),
+ * `NetworkFilter` (shared control bar on the DeFi list).
+ *
+ * @see ui/pages/defi/pages/defi-tab.tsx
+ */
 class DeFiTab extends HomePage {
   readonly defiTabCells: DeFiToken;
 
-  private readonly allNetworksOption =
-    '[data-testid="network-filter-all__button"]';
-
-  private readonly networksToggle = '[data-testid="sort-by-networks"]';
-
-  private readonly popularNetworks =
-    '[data-testid="network-filter-all__button"]';
+  private readonly errorMessage = '[data-testid="defi-tab-error-message"]';
 
   private readonly groupIcon = '[data-testid="avatar-group"]';
-
-  private readonly errorMessage = '[data-testid="defi-tab-error-message"]';
 
   private readonly noPositionsMessage = '[data-testid="defi-tab-empty-state"]';
 
@@ -59,31 +77,14 @@ class DeFiTab extends HomePage {
     this.defiTabCells = new DeFiToken(driver);
   }
 
-  async openNetworksFilterAndClickPopularNetworks(): Promise<void> {
-    console.log(`Opening the network filter and click popular networks`);
-    await this.driver.clickElement(this.networksToggle);
-    await this.driver.waitUntil(
-      async () => {
-        return Boolean(await this.driver.findElement(this.allNetworksOption));
-      },
-      {
-        timeout: 5000,
-        interval: 100,
-      },
-    );
-    await this.driver.clickElement(this.popularNetworks);
-  }
-
-  async clickIntoAaveV3DetailsPage() {
-    console.log('Click Aave V3 details page');
-    await this.driver.clickElement({
-      text: 'Aave V3',
-    });
-  }
-
   async checkErrorMessageIsDisplayed(): Promise<void> {
     console.log('Check that error message is displayed');
     await this.driver.waitForSelector(this.errorMessage);
+  }
+
+  async checkGroupIconIsDisplayed(): Promise<void> {
+    console.log('Check that group icon is displayed');
+    await this.driver.waitForSelector(this.groupIcon);
   }
 
   async checkNoPositionsMessageIsDisplayed(): Promise<void> {
@@ -91,9 +92,11 @@ class DeFiTab extends HomePage {
     await this.driver.waitForSelector(this.noPositionsMessage);
   }
 
-  async checkGroupIconIsDisplayed(): Promise<void> {
-    console.log('Check that group icon is displayed');
-    await this.driver.waitForSelector(this.groupIcon);
+  async clickIntoAaveV3DetailsPage() {
+    console.log('Click Aave V3 details page');
+    await this.driver.clickElement({
+      text: 'Aave V3',
+    });
   }
 }
 

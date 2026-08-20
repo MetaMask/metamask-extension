@@ -7,15 +7,15 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
-import { Mutex } from 'async-mutex';
 import type { TransactionMetricsRequest } from '../../../shared/types';
-import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import ExtensionPlatform from '../platforms/extension';
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../ui/store/store';
 import { MessengerClient, MessengerClientFlatState } from './controller-list';
+
+type MessageSender = chrome.runtime.MessageSender;
 
 /** The supported messenger client names. */
 export type MessengerClientName = MessengerClient['name'];
@@ -149,12 +149,6 @@ export type MessengerClientInitRequest<
    */
   persistedState: MessengerClientPersistedState;
 
-  // TODO: Remove this once the migration to the LegacyBackgroundApiService is complete.
-  /**
-   * The mutex used to ensure that only one seedless onboarding operation can occur at a time.
-   */
-  seedlessOperationMutex: Mutex;
-
   /**
    * Create a multiplexed stream for connecting to an untrusted context like a
    * like a website, Snap, or other extension.
@@ -232,6 +226,31 @@ export type MessengerClientInitRequest<
    * Gets the record of open MetaMask tab IDs.
    */
   getOpenMetamaskTabsIds: () => Record<string, number>;
+
+  /**
+   * Returns the current URL of the given browser tab.
+   *
+   * @param tabId - The ID of the tab to read.
+   */
+  getTabUrl: (tabId: number) => Promise<string | undefined>;
+
+  /**
+   * Navigates the given browser tab to the given URL.
+   *
+   * @param tabId - The ID of the tab to update.
+   * @param url - The URL to navigate the tab to.
+   */
+  updateTabUrl: (tabId: number, url: string) => Promise<void>;
+
+  /**
+   * Marks the notification popup as having been automatically closed.
+   */
+  markNotificationPopupAsAutomaticallyClosed: () => void;
+
+  /**
+   * Triggers a safe reload of the extension without disrupting user state.
+   */
+  requestSafeReload: () => Promise<void>;
 
   /**
    * Sends an update to the UI.

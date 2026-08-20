@@ -1,9 +1,17 @@
-import type { PersistenceManager as PersistenceManagerType } from '../../../shared/lib/stores/persistence-manager';
+import type {
+  PersistenceManager as PersistenceManagerType,
+  WriteRetryRecoveredEvent,
+} from '../../../shared/lib/stores/persistence-manager';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 
 const mockGet = jest.fn();
 const mockGetBackup = jest.fn();
 const mockCleanUpMostRecentRetrievedState = jest.fn();
 const mockPersistenceOn = jest.fn();
+const mockTrackEarlySegmentEvent = jest.fn();
 const mockCaptureException = jest.fn();
 const mockCaptureMessage = jest.fn();
 let mockMostRecentRetrievedState: unknown = null;
@@ -24,6 +32,10 @@ jest.mock('../constants/sentry-state', () => ({
 
 jest.mock('../../../shared/lib/object.utils', () => ({
   maskObject: jest.fn((obj) => obj),
+}));
+
+jest.mock('./segment/custom-segment-tracking', () => ({
+  trackEarlySegmentEvent: mockTrackEarlySegmentEvent,
 }));
 
 jest.mock('../../../shared/lib/sentry', () => ({
@@ -78,20 +90,6 @@ function setSelfHref(href: string): void {
   });
 }
 
-function getPersistenceListener<TPayload>(
-  eventName: string,
-): (payload: TPayload) => void {
-  const listener = mockPersistenceOn.mock.calls.find(
-    ([registeredEventName]) => registeredEventName === eventName,
-  )?.[1];
-
-  if (typeof listener !== 'function') {
-    throw new Error(`No listener registered for ${eventName}`);
-  }
-
-  return listener as (payload: TPayload) => void;
-}
-
 describe('setup-initial-state-hooks', () => {
   const originalSelf = globalThis.self;
 
@@ -100,6 +98,7 @@ describe('setup-initial-state-hooks', () => {
     mockMostRecentRetrievedState = null;
     mockCleanUpMostRecentRetrievedState.mockClear();
     mockPersistenceOn.mockClear();
+    mockTrackEarlySegmentEvent.mockClear();
     mockCaptureException.mockClear();
     mockCaptureMessage.mockClear();
     globalThis.stateHooks = {} as typeof stateHooks;
@@ -114,20 +113,7 @@ describe('setup-initial-state-hooks', () => {
   });
 
   describe('isBackgroundContext (via module behavior)', () => {
-    it('detects browserify MV3 background (app-init.js)', async () => {
-      setSelfHref('chrome-extension://abc123/scripts/app-init.js');
-      const { FixtureExtensionStore } = jest.requireMock(
-        '../../../shared/lib/stores/fixture-extension-store',
-      );
-
-      await importFresh();
-
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
-        initialize: true,
-      });
-    });
-
-    it('detects webpack MV3 background (service-worker.js)', async () => {
+    it('detects Chrome MV3 background (service-worker.js)', async () => {
       setSelfHref('chrome-extension://abc123/service-worker.js');
       const { FixtureExtensionStore } = jest.requireMock(
         '../../../shared/lib/stores/fixture-extension-store',
@@ -213,7 +199,7 @@ describe('setup-initial-state-hooks', () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
 
-      expect(mockPersistenceOn).toHaveBeenCalledTimes(5);
+      expect(mockPersistenceOn).toHaveBeenCalledTimes(6);
       expect(mockPersistenceOn).toHaveBeenCalledWith(
         'persistenceError',
         expect.any(Function),
@@ -234,6 +220,50 @@ describe('setup-initial-state-hooks', () => {
         'splitStateMigrationFailed',
         expect.any(Function),
       );
+      expect(mockPersistenceOn).toHaveBeenCalledWith(
+        'writeRetryRecovered',
+        expect.any(Function),
+      );
+    });
+
+    it('tracks write retry recovery events to Segment', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      const metricsState = {
+        AnalyticsController: {
+          optedIn: true,
+          analyticsId: 'test-metrics-id',
+        },
+      };
+      globalThis.stateHooks.getSentryAppState = () => metricsState;
+
+      const writeRetryRecoveredHandler = mockPersistenceOn.mock.calls.find(
+        ([eventName]) => eventName === 'writeRetryRecovered',
+      )?.[1] as (payload: WriteRetryRecoveredEvent) => void;
+
+      writeRetryRecoveredHandler({
+        event: 'persist-retry-recovered',
+        firstErrorMessage: 'Database is shutting down',
+        firstErrorName: 'Error',
+        retryDelayMs: 500,
+      });
+
+      expect(mockTrackEarlySegmentEvent).toHaveBeenCalledWith({
+        state: metricsState,
+        event: MetaMetricsEventName.DataPersistenceWriteRetryRecovered,
+        category: MetaMetricsEventCategory.Error,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          persistence_event: 'persist-retry-recovered',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          first_error_message: 'Database is shutting down',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          first_error_name: 'Error',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          retry_delay_ms: 500,
+        },
+      });
     });
 
     it('reports persistence errors to Sentry', async () => {
@@ -241,10 +271,9 @@ describe('setup-initial-state-hooks', () => {
       await importFresh();
 
       const error = new Error('storage failed');
-      const listener = getPersistenceListener<{
-        error: Error;
-        type: 'get-failed';
-      }>('persistenceError');
+      const listener = mockPersistenceOn.mock.calls.find(
+        ([eventName]) => eventName === 'persistenceError',
+      )?.[1] as (payload: { error: Error; type: 'get-failed' }) => void;
 
       listener({ error, type: 'get-failed' });
 
@@ -258,9 +287,9 @@ describe('setup-initial-state-hooks', () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
 
-      const listener = getPersistenceListener<{
-        type: 'persist-recovered';
-      }>('persistenceRecovered');
+      const listener = mockPersistenceOn.mock.calls.find(
+        ([eventName]) => eventName === 'persistenceRecovered',
+      )?.[1] as (payload: { type: 'persist-recovered' }) => void;
 
       listener({ type: 'persist-recovered' });
 

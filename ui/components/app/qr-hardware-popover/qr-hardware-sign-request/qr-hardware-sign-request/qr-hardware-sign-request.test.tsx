@@ -1,7 +1,7 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import { screen, fireEvent } from '@testing-library/react';
 import type { QrSignatureRequest } from '@metamask/eth-qr-keyring';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -19,6 +19,9 @@ jest.mock('../../../../../store/actions', () => ({
 
 jest.mock('../qr-reader', () => {
   const { UrType: MockUrType } = jest.requireActual('../../base-qr-reader');
+  const { ErrorCode: MockErrorCode } = jest.requireActual(
+    '@metamask/hw-wallet-sdk',
+  );
   const MockQrReader = (props: QrReaderProps) => (
     <div data-testid="mock-qr-reader">
       <span data-testid="qr-reader-request-id">{props.requestId}</span>
@@ -42,6 +45,14 @@ jest.mock('../qr-reader', () => {
       <button
         data-testid="qr-reader-set-error-active"
         onClick={() => props.setErrorActive(true)}
+      />
+      <button
+        data-testid="qr-reader-set-camera-permission-error-code"
+        onClick={() =>
+          props.setCameraPermissionErrorCode?.(
+            MockErrorCode.PermissionCameraDenied,
+          )
+        }
       />
     </div>
   );
@@ -90,6 +101,7 @@ describe('QRHardwareSignRequest', () => {
     handleCancel: jest.fn(),
     setErrorTitle: jest.fn(),
     setErrorActive: jest.fn(),
+    setCameraPermissionErrorCode: jest.fn(),
   };
 
   beforeEach(() => {
@@ -129,7 +141,7 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
 
       expect(screen.getByTestId('mock-qr-reader')).toBeInTheDocument();
       expect(screen.queryByTestId('mock-qr-player')).not.toBeInTheDocument();
@@ -141,7 +153,7 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
 
       expect(screen.getByTestId('qr-reader-request-id')).toHaveTextContent(
         'test-request-id-1',
@@ -156,7 +168,7 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
       expect(screen.getByTestId('mock-qr-reader')).toBeInTheDocument();
 
       rerender(
@@ -176,7 +188,7 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
       expect(screen.getByTestId('mock-qr-reader')).toBeInTheDocument();
 
       rerender(<QRHardwareSignRequest {...defaultProps} />);
@@ -192,7 +204,7 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-cancel'));
+      fireEvent.click(screen.getByTestId('qr-player-cancel'));
 
       expect(defaultProps.handleCancel).toHaveBeenCalledTimes(1);
     });
@@ -203,8 +215,8 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
-      await userEvent.click(screen.getByTestId('qr-reader-cancel'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-reader-cancel'));
 
       expect(defaultProps.handleCancel).toHaveBeenCalledTimes(1);
     });
@@ -217,8 +229,8 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
-      await userEvent.click(screen.getByTestId('qr-reader-submit'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-reader-submit'));
 
       expect(mockCompleteQrCodeScan).toHaveBeenCalledWith({
         type: UrType.EthSignature,
@@ -234,8 +246,8 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
-      await userEvent.click(screen.getByTestId('qr-reader-set-error'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-reader-set-error'));
 
       expect(defaultProps.setErrorTitle).toHaveBeenCalledWith('test-error');
     });
@@ -248,10 +260,28 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
-      await userEvent.click(screen.getByTestId('qr-reader-set-error-active'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-reader-set-error-active'));
 
       expect(defaultProps.setErrorActive).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe('setCameraPermissionErrorCode propagation', () => {
+    it('passes setCameraPermissionErrorCode through to QrReader', async () => {
+      renderWithProvider(
+        <QRHardwareSignRequest {...defaultProps} />,
+        buildStore(),
+      );
+
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(
+        screen.getByTestId('qr-reader-set-camera-permission-error-code'),
+      );
+
+      expect(defaultProps.setCameraPermissionErrorCode).toHaveBeenCalledWith(
+        ErrorCode.PermissionCameraDenied,
+      );
     });
   });
 });

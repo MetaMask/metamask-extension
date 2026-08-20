@@ -1,7 +1,19 @@
 import { ERC_4337_ACCOUNT_SNAP_URL, WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import SnapInstall from './dialog/snap-install';
 
+/**
+ * External ERC-4337 account-abstraction keyring snap test site.
+ *
+ * Screen: hosted snap site (`ERC_4337_ACCOUNT_SNAP_URL`), not a MetaMask route.
+ * Owns: connect, create-account (private key/salt), chain config (bundler,
+ * entry point, factory, paymaster), and dialog confirmations for adding the
+ * AA account.
+ * Boundaries: the snap site + its immediate MetaMask dialogs only. Account
+ * list / home after creation belong to extension page objects.
+ * Related: confirmation/dialog page objects for snap install and account add.
+ *
+ * @see node_modules/@metamask/snap-account-abstraction-keyring-site/public/index.html
+ */
 class SnapAccountAbstractionKeyringPage {
   private readonly addAccountButton = {
     tag: 'button',
@@ -75,18 +87,6 @@ class SnapAccountAbstractionKeyringPage {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
   }
 
-  async install(snapUrl: string = ERC_4337_ACCOUNT_SNAP_URL): Promise<void> {
-    console.log('Install Account Abstraction Snap');
-    await this.driver.openNewPage(snapUrl);
-    await this.driver.clickElement(this.connectButton);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-    const snapInstall = new SnapInstall(this.driver);
-    await snapInstall.clickConnectButton();
-    await snapInstall.clickConfirmButton();
-    await snapInstall.clickOkButton();
-  }
-
   async setChainConfig({
     bundlerUrl,
     entrypoint,
@@ -123,6 +123,15 @@ class SnapAccountAbstractionKeyringPage {
     }
 
     await this.driver.clickElement(this.setChainConfigButton);
+  }
+
+  async startInstall(
+    snapUrl: string = ERC_4337_ACCOUNT_SNAP_URL,
+  ): Promise<void> {
+    console.log('Start Account Abstraction Snap install');
+    await this.driver.openNewPage(snapUrl);
+    await this.driver.clickElement(this.connectButton);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   }
 }
 

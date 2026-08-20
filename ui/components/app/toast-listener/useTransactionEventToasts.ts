@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useStore } from 'react-redux';
+import type { Hex } from 'viem';
 import {
+  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -8,8 +10,13 @@ import type {
   AccountTransactionsUpdatedEventPayload,
   Transaction,
 } from '@metamask/keyring-api';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
 import { useMessenger } from '../../../hooks/useMessenger';
-import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
+import {
+  hasTransactionType,
+  isPerpsWithdrawTransaction,
+} from '../../../../shared/lib/transactions.utils';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
@@ -39,15 +46,18 @@ type ToastListenerMessenger = RouteMessengerFromCapabilities<
 
 // Flows with custom toasts — excluded for now from generic messenger event toasts.
 const excludedTransactionTypes: TransactionType[] = [
-  TransactionType.musdConversion,
-  TransactionType.musdClaim,
   TransactionType.musdRelayDeposit,
   TransactionType.perpsDeposit,
   TransactionType.perpsDepositAndOrder,
-  TransactionType.perpsWithdraw,
   TransactionType.perpsRelayDeposit,
   TransactionType.shieldSubscriptionApprove,
 ];
+
+// Ported from custom toasts that included pre-broadcast (approved/signed) stage
+const earlyPendingToastTypes = new Set([
+  TransactionType.musdConversion,
+  TransactionType.musdClaim,
+]);
 
 function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
   // Top-level only — nested swapApproval inside batch txs must still toast.
@@ -62,9 +72,40 @@ function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
 
 const failedStatuses = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
 
+function isPendingToastStatus(
+  transactionMeta: TransactionMeta,
+  status: string,
+) {
+  if (status === TransactionStatus.submitted) {
+    return true;
+  }
+
+  const isEarlyPending =
+    (transactionMeta.type &&
+      earlyPendingToastTypes.has(transactionMeta.type)) ||
+    isPerpsWithdrawTransaction(transactionMeta);
+
+  if (isEarlyPending) {
+    return (
+      status === TransactionStatus.approved ||
+      status === TransactionStatus.signed
+    );
+  }
+
+  return false;
+}
+
 const generateToastId = (id: string) => `tx-${id}`;
 const extractPayload = <Type>(raw: Type | [Type]) =>
   Array.isArray(raw) ? raw[0] : raw;
+
+function getDetailsRoute(chainId?: Hex, hash?: string) {
+  if (!chainId || !hash) {
+    return undefined;
+  }
+
+  return `${TX_DETAILS_ROUTE}/${toEvmCaipChainId(chainId)}/${hash}`;
+}
 
 function isSpeedUpReplacement(
   replacedById: string,
@@ -119,7 +160,7 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
-      const { id, status } = transactionMeta;
+      const { id, status, hash, chainId } = transactionMeta;
       if (!id || !status) {
         return;
       }
@@ -129,11 +170,17 @@ export function useTransactionEventToasts(): void {
       }
 
       const toastId = generateToastId(id);
+      const props = {
+        transactionId: id,
+        to: getDetailsRoute(chainId, hash),
+      };
 
-      if (status === 'submitted' && shouldShowPendingToast(id)) {
-        showPendingToast(toastId);
+      if (isPendingToastStatus(transactionMeta, status)) {
+        if (shouldShowPendingToast(id)) {
+          showPendingToast(toastId, props);
+        }
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
-        showSuccessToast(toastId);
+        showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
         if (transactionMeta.replacedById) {
           const transactions = store.getState().metamask?.transactions ?? [];
@@ -143,10 +190,10 @@ export function useTransactionEventToasts(): void {
             dismissToast(toastId);
             clearToastPhase(id);
           } else if (shouldShowTerminalToast(id)) {
-            showFailedToast(toastId);
+            showFailedToast(toastId, props);
           }
         } else if (shouldShowTerminalToast(id)) {
-          showFailedToast(toastId);
+          showFailedToast(toastId, props);
         }
       }
     };

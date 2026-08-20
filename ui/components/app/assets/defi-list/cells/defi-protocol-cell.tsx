@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import GenericAssetCellLayout from '../../asset-list/cells/generic-asset-cell-layout';
 import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
@@ -10,7 +10,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import { DeFiProtocolPosition } from '../../types';
 import { AvatarGroup } from '../../../../multichain/avatar-group/avatar-group';
 import { DeFiSymbolGroup } from './defi-grouped-symbol-cell';
@@ -20,31 +20,30 @@ type DeFiProtocolCellProps = {
   position: DeFiProtocolPosition;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function DefiProtocolCell({
   onClick,
   position,
 }: DeFiProtocolCellProps) {
   const { privacyMode } = useSelector(getPreferences);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const handleTokenClick = (token: DeFiProtocolPosition) => () => {
     onClick(token.chainId, token.protocolId);
 
-    trackEvent({
-      category: MetaMetricsEventCategory.DeFi,
-      event: MetaMetricsEventName.DeFiDetailsOpened,
-      properties: {
-        location: 'Home',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: token.chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        protocol_id: token.protocolId,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.DeFiDetailsOpened)
+        .addCategory(MetaMetricsEventCategory.DeFi)
+        .addProperties({
+          location: 'Home',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: token.chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          protocol_id: token.protocolId,
+        })
+        .build(),
+    );
   };
 
   return (

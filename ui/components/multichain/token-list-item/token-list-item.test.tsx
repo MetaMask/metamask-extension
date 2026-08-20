@@ -15,6 +15,21 @@ import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { getIsRWATokensEnabled } from '../../../selectors/rwa/feature-flags';
 import { TokenListItem } from '.';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const state = {
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),

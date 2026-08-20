@@ -27,6 +27,7 @@ import {
   getTransactions,
   getUnapprovedTransactions,
   getTransactionsByChainId,
+  getCurrentNetworkTransactions,
   incomingTxListSelectorAllChains,
   incomingTxListSelector,
   selectedAddressTxListSelectorAllChain,
@@ -2136,6 +2137,71 @@ describe('Transaction Selectors', () => {
 
       // Should return same reference (memoized)
       expect(result1).toBe(result2);
+    });
+  });
+
+  describe('getCurrentNetworkTransactions', () => {
+    it('returns transactions for the current network', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+      const goerliTx = {
+        id: 2,
+        chainId: CHAIN_IDS.GOERLI,
+        time: 200,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx, goerliTx],
+        },
+      };
+
+      expect(getCurrentNetworkTransactions(state)).toStrictEqual([mainnetTx]);
+    });
+
+    it('returns cached reference when non-current-network transactions change', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state1 = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx],
+        },
+      };
+
+      const result1 = getCurrentNetworkTransactions(state1);
+
+      const state2 = {
+        ...state1,
+        metamask: {
+          ...state1.metamask,
+          transactions: [
+            mainnetTx,
+            {
+              id: 2,
+              chainId: CHAIN_IDS.GOERLI,
+              time: 200,
+              status: TransactionStatus.confirmed,
+            },
+          ],
+        },
+      };
+
+      const result2 = getCurrentNetworkTransactions(state2);
+
+      expect(result2).toBe(result1);
+      expect(result2).toStrictEqual([mainnetTx]);
     });
   });
 });

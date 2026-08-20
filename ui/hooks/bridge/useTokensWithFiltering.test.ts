@@ -1,4 +1,5 @@
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { waitFor } from '@testing-library/react';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { SolScope } from '@metamask/keyring-api';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
@@ -76,14 +77,17 @@ describe('useTokensWithFiltering', () => {
       },
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+    const { result } = renderHookWithProvider(() => {
       const { filteredTokenListGenerator } = useTokensWithFiltering(
         CHAIN_IDS.MAINNET,
       );
       return filteredTokenListGenerator;
     }, mockStore);
 
-    await waitForNextUpdate();
+    const prevUpdate0 = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(prevUpdate0);
+    });
     await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
@@ -114,14 +118,17 @@ describe('useTokensWithFiltering', () => {
       },
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+    const { result } = renderHookWithProvider(() => {
       const { filteredTokenListGenerator } = useTokensWithFiltering(
         CHAIN_IDS.MAINNET,
       );
       return filteredTokenListGenerator;
     }, mockStore);
 
-    await waitForNextUpdate();
+    const prevUpdate1 = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(prevUpdate1);
+    });
     await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
@@ -160,14 +167,17 @@ describe('useTokensWithFiltering', () => {
       },
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+    const { result } = renderHookWithProvider(() => {
       const { filteredTokenListGenerator } = useTokensWithFiltering(
         MultichainNetwork.Solana,
       );
       return filteredTokenListGenerator;
     }, mockStore);
 
-    await waitForNextUpdate();
+    const prevUpdate2 = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(prevUpdate2);
+    });
     await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
@@ -195,13 +205,16 @@ describe('useTokensWithFiltering', () => {
       },
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+    const { result } = renderHookWithProvider(() => {
       const { filteredTokenListGenerator } = useTokensWithFiltering(
         CHAIN_IDS.POLYGON,
       );
       return filteredTokenListGenerator;
     }, mockStore);
-    await waitForNextUpdate();
+    const prevUpdate3 = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(prevUpdate3);
+    });
     await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);

@@ -36,8 +36,6 @@ export function getTransactionPayControllerMessenger(
     actions: [
       'AccountTrackerController:getState',
       'AssetsController:getStateForTransactionPay',
-      'BridgeController:fetchQuotes',
-      'BridgeStatusController:submitTx',
       'CurrencyRateController:getState',
       'GasFeeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
@@ -54,10 +52,12 @@ export function getTransactionPayControllerMessenger(
       'TransactionController:updateTransaction',
       'KeyringController:getState',
       'KeyringController:signTypedMessage',
+      'RampsController:getOrder',
+      'RampsController:getQuotes',
+      'SentinelApiService:simulateTransactions',
     ],
     events: [
       'AssetsController:stateChange',
-      'BridgeStatusController:stateChange',
       'CurrencyRateController:stateChange',
       'TokenRatesController:stateChange',
       'TokensController:stateChange',

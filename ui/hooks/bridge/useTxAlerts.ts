@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
@@ -8,6 +8,7 @@ import {
   getFromAccount,
 } from '../../ducks/bridge/selectors';
 import { setTxAlerts } from '../../ducks/bridge/actions';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * Sets tx alerts for the active quote
