@@ -125,6 +125,10 @@ const mockControllerState = ({
   userRegion,
   selectedToken,
   tokensLoading,
+  providers: [],
+  providersLoading: false,
+  providersError: null,
+  setSelectedProvider: jest.fn().mockResolvedValue(undefined),
   selectedProvider: { id: 'transak', name: 'Transak' },
   selectedPaymentMethod: { id: 'debit-credit-card', name: 'Debit card' },
   paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
@@ -232,7 +236,7 @@ describe('RampsBuildQuoteScreen', () => {
     expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
   });
 
-  it('opens the provider widget, watches the tab, and returns home on continue', async () => {
+  it('opens the provider widget via background watch and returns home on continue', async () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
       orderId: 'order-123',
