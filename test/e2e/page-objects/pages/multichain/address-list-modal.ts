@@ -154,6 +154,11 @@ class AddressListModal {
     }
   }
 
+  async checkQuickCopyPopoverIsClosed(): Promise<void> {
+    console.log('Check quick-copy address popover is closed');
+    await this.driver.assertElementNotPresent(this.addressRow);
+  }
+
   async checkQuickCopyPopoverIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([

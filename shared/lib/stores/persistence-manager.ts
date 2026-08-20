@@ -106,6 +106,9 @@ function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
   });
 }
 
+export type PersistenceManagerResetOptions = {
+  initializeStore?: boolean;
+};
 /**
  * This Error represents an error that occurs during persistence operations.
  * It includes a backup of the state at the time of the error and optionally
@@ -966,15 +969,20 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * Resets the local store and the backup database. This method is used to
    * clear the state and metadata, effectively resetting the application to
    * its initial state.
+   *
+   * @param options - Reset behavior options.
+   * @param options.initializeStore - Whether the local store should initialize after reset.
    */
-  async reset() {
+  async reset({
+    initializeStore = true,
+  }: PersistenceManagerResetOptions = {}) {
     this.#supersedeWriteRetry();
     await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive' },
       async () => {
         await Promise.all([
-          this.#localStore.reset(),
+          this.#localStore.reset({ initialize: initializeStore }),
           await this.#backupDb?.reset(),
         ]);
         this.#backup = undefined;
