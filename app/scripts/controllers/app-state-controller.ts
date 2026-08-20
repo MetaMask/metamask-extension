@@ -43,7 +43,6 @@ import { SecurityAlertResponse } from '../lib/ppom/types';
 import {
   AccountOverviewTabKey,
   CarouselSlide,
-  NetworkConnectionBanner,
   StorageWriteErrorType,
 } from '../../../shared/constants/app-state';
 import type {
@@ -123,7 +122,6 @@ export type AppStateControllerState = {
   lastUpdatedAt: number | null;
   lastUpdatedFromVersion: string | null;
   lastViewedUserSurvey: number | null;
-  networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   pna25Acknowledged: boolean;
@@ -277,7 +275,6 @@ type AppStateControllerInitState = Partial<
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
     | 'currentExtensionPopupId'
-    | 'networkConnectionBanner'
   >
 >;
 
@@ -353,9 +350,6 @@ function getInitialStateOverrides() {
     currentExtensionPopupId: 0,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
-    networkConnectionBanner: {
-      status: 'unknown' as const,
-    },
   };
 }
 
@@ -462,12 +456,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  networkConnectionBanner: {
-    includeInStateLogs: false,
-    persist: false,
-    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   newPrivacyPolicyToastClickedOrClosed: {
@@ -788,7 +776,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'setTermsOfUseLastAgreed',
   'setTrezorModel',
   'setUpdateModalLastDismissedAt',
-  'updateNetworkConnectionBanner',
   'updateNftDropDownState',
   'updateSlides',
   'updateThrottledOriginState',
@@ -1398,19 +1385,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Updates the network connection banner state
-   *
-   * @param networkConnectionBanner - The new banner state
-   */
-  updateNetworkConnectionBanner(
-    networkConnectionBanner: AppStateControllerState['networkConnectionBanner'],
-  ): void {
-    this.update((state) => {
-      state.networkConnectionBanner = networkConnectionBanner;
-    });
-  }
-
-  /**
    * Sets a unique ID for the current extension popup
    *
    * @param currentExtensionPopupId
@@ -1500,11 +1474,12 @@ export class AppStateController extends BaseController<
   };
 
   /**
-   * A setter for the currentPopupId which indicates the id of popup window that's currently active
+   * A setter for the currentPopupId which indicates the id of popup window that's currently active.
+   * Pass `undefined` to clear when the popup is closed.
    *
    * @param currentPopupId
    */
-  setCurrentPopupId(currentPopupId: number): void {
+  setCurrentPopupId(currentPopupId: number | undefined): void {
     this.update((state) => {
       state.currentPopupId = currentPopupId;
     });

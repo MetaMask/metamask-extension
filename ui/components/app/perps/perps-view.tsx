@@ -8,6 +8,7 @@ import {
 import type { Order, Position } from '@metamask/perps-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -39,7 +40,10 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
 import { useSelectedAccountComplianceGate } from '../compliance';
+import { PERPS_ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
 import { useDispatch } from '../../../store/hooks';
+import type { PerpsTransaction } from './types';
+import { getPerpsTransactionDestination } from './utils/getPerpsTransactionDestination';
 import { trackPerpsErrorScreenViewed } from './utils/track-perps-error-screen';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
@@ -74,6 +78,7 @@ type BatchCloseResult = {
 
 export const PerpsView = () => {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const bottomNavSource = usePerpsBottomNavSource();
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
@@ -148,6 +153,20 @@ export const PerpsView = () => {
   const applyOrdersSnapshot = useCallback((next: Order[]) => {
     getPerpsStreamManager().orders.pushData(next);
   }, []);
+
+  // Navigate to the transaction's details view instead of falling back to
+  // the general activity list (see `getPerpsTransactionDestination`).
+  const handleRecentActivityTransactionClick = useCallback(
+    (transaction: PerpsTransaction) => {
+      const destination = getPerpsTransactionDestination(transaction);
+      if (destination) {
+        navigate(destination.pathname, { state: destination.state });
+      } else {
+        navigate(PERPS_ACTIVITY_ROUTE);
+      }
+    },
+    [navigate],
+  );
 
   // Compliance gate wraps only the entry point: when the wallet is blocked the
   // access-restricted modal shows and the confirmation flow never opens. When
@@ -463,6 +482,7 @@ export const PerpsView = () => {
       <PerpsRecentActivity
         transactions={recentActivityTransactions}
         maxTransactions={PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS}
+        onTransactionClick={handleRecentActivityTransactionClick}
         isLoading={recentActivityLoading}
         error={recentActivityError}
       />

@@ -1,6 +1,22 @@
 import { Driver } from '../../../webdriver/driver';
 import { largeDelayMs } from '../../../helpers';
 
+/**
+ * Multichain account details: name, address, export, remove, and navigation.
+ *
+ * Screen: `#/multichain-account-details` (and related account-details rows).
+ * Owns: header/back, rename account, address/QR navigation, export private
+ * key and SRP entry points, networks row, remove-account confirm/cancel, and
+ * common loaded/error checks.
+ * Boundaries: the account details page. Address list / QR and private-key
+ * password UI belong to `AddressListModal`, `AccountAddressModal`, and
+ * `PrivateKeyModal`; wallet-level details are
+ * `MultichainWalletDetailsPage`.
+ * Related: `AddressListModal`, `AccountAddressModal`, `PrivateKeyModal`,
+ * `MultichainWalletDetailsPage`.
+ *
+ * @see ui/pages/multichain-accounts/multichain-account-details-page/multichain-account-details-page.tsx
+ */
 class MultichainAccountDetailsPage {
   // First row is account name
 
@@ -53,6 +69,9 @@ class MultichainAccountDetailsPage {
   private readonly loadingSpinner = '[data-testid="loading-spinner"]';
 
   private readonly networksRow = { text: 'Networks' };
+
+  private readonly parentSelector =
+    '[data-testid="parent-selector-multichain-account-details-page"]';
 
   private readonly privateKeyRow = { text: 'Private key' };
 
@@ -130,6 +149,7 @@ class MultichainAccountDetailsPage {
    */
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check if multichain account details page is loaded');
+    await this.driver.waitForSelector(this.parentSelector);
     await this.driver.waitForSelector(this.accountNameHeader);
     await this.driver.waitForSelector(this.accountAvatar);
     await this.driver.waitForSelector(this.accountNameRow);

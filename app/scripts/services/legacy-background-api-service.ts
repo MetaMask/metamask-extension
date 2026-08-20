@@ -1,7 +1,9 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
+  AddNetworkFields,
   NetworkConfiguration,
+  NetworkControllerAddNetworkAction,
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetNetworkConfigurationByNetworkClientIdAction,
@@ -9,13 +11,19 @@ import {
   NetworkControllerGetStateAction,
   NetworkControllerLookupNetworkAction,
   NetworkControllerResetConnectionAction,
+  NetworkControllerSetActiveNetworkAction,
   Provider,
 } from '@metamask/network-controller';
 import {
+  NetworkEnablementControllerActions,
   NetworkEnablementControllerEnableAllPopularNetworksAction,
   NetworkEnablementControllerEnableNetworkAction,
   NetworkEnablementControllerGetStateAction,
+  NetworkEnablementControllerIsNetworkEnabledAction,
+  NetworkEnablementControllerState,
+  NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
+import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import {
   add0x,
   bytesToHex,
@@ -127,6 +135,7 @@ import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   PhishingControllerMaybeUpdateStateAction,
+  PhishingControllerScanAddressAction,
   PhishingControllerTestOriginAction,
 } from '@metamask/phishing-controller';
 import {
@@ -243,6 +252,7 @@ import type {
   PasskeyAuthenticationResponse,
   PasskeyControllerChangePasswordWithPasskeyVerificationAction,
   PasskeyControllerClearStateAction,
+  PasskeyControllerExportSeedPhraseWithPasskeyAction,
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
@@ -444,6 +454,7 @@ type TokenStandardAndDetails = {
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
+  'addNetwork',
   'addTransaction',
   'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
@@ -463,6 +474,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
+  'exportSeedPhraseWithPasskey',
   'forgetDevice',
   'getAccountsBySnapId',
   'getAppNameAndVersion',
@@ -531,6 +543,15 @@ const MESSENGER_EXPOSED_METHODS = [
  */
 export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
+
+// `@metamask/network-enablement-controller`@6.0.0 defines this action type but
+// omits it from the package's public exports, so derive it from the exported
+// actions union. Import it directly once the package re-exports
+// `NetworkEnablementControllerRestoreEnabledNetworkMapAction`.
+type NetworkEnablementControllerRestoreEnabledNetworkMapAction = Extract<
+  NetworkEnablementControllerActions,
+  { type: 'NetworkEnablementController:restoreEnabledNetworkMap' }
+>;
 
 type AllowedActions =
   | AccountOrderControllerUpdateHiddenAccountsListAction
@@ -605,6 +626,7 @@ type AllowedActions =
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceRemoveMultichainAccountWalletAction
   | MultichainAccountServiceResyncAccountsAction
+  | NetworkControllerAddNetworkAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetNetworkConfigurationByNetworkClientIdAction
@@ -612,14 +634,18 @@ type AllowedActions =
   | NetworkControllerGetStateAction
   | NetworkControllerLookupNetworkAction
   | NetworkControllerResetConnectionAction
+  | NetworkControllerSetActiveNetworkAction
   | NetworkEnablementControllerEnableAllPopularNetworksAction
   | NetworkEnablementControllerEnableNetworkAction
+  | NetworkEnablementControllerIsNetworkEnabledAction
   | NetworkEnablementControllerGetStateAction
+  | NetworkEnablementControllerRestoreEnabledNetworkMapAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
   | OnboardingControllerResetOnboardingAction
   | PasskeyControllerChangePasswordWithPasskeyVerificationAction
   | PasskeyControllerClearStateAction
+  | PasskeyControllerExportSeedPhraseWithPasskeyAction
   | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
@@ -627,6 +653,7 @@ type AllowedActions =
   | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PhishingControllerMaybeUpdateStateAction
+  | PhishingControllerScanAddressAction
   | PhishingControllerTestOriginAction
   | PreferencesControllerAddReferralApprovedAccountAction
   | PreferencesControllerAddReferralDeclinedAccountAction
@@ -655,6 +682,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | SelectedNetworkControllerGetNetworkClientIdForDomainAction
   | GetSignatureState
   | ShieldControllerClearStateAction
   | ShieldControllerStartAction
@@ -691,6 +719,7 @@ type AllowedActions =
  * transaction or signature request while running PPOM security validation.
  */
 type AllowedEvents =
+  | NetworkEnablementControllerStateChangeEvent
   | TransactionControllerUnapprovedTransactionAddedEvent
   | SignatureStateChange;
 
@@ -709,7 +738,6 @@ export type LegacyBackgroundApiServiceMessenger = Messenger<
 type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
   infuraProjectId: string;
-  seedlessOperationMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   getPermittedAccounts: (origin: string) => Promise<string[]>;
@@ -774,7 +802,6 @@ export class LegacyBackgroundApiService {
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
-   * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
   constructor({
@@ -788,7 +815,6 @@ export class LegacyBackgroundApiService {
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
-    seedlessOperationMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
@@ -803,11 +829,7 @@ export class LegacyBackgroundApiService {
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
-    // Temporarily get the mutex from `MetamaskController` until
-    // changePasswordWithPasskeyVerification is migrated here (the only remaining
-    // MetamaskController user of this mutex).
-    // TODO: Remove this injection once that migration is complete.
-    this.#seedlessOperationMutex = seedlessOperationMutex;
+    this.#seedlessOperationMutex = new Mutex();
     this.#createVaultMutex = new Mutex();
     this.#offscreenPromise = offscreenPromise;
 
@@ -1171,6 +1193,95 @@ export class LegacyBackgroundApiService {
       ).securityAlertsEnabled,
       waitForSubmit,
     };
+  }
+
+  /**
+   * Adds a network and (optionally) sets it as the active network.
+   *
+   * @param networkConfiguration - The network configuration to add.
+   * @param options - Options for post-add behavior.
+   * @param options.setActive - Whether to switch to the added network.
+   * @returns The added network configuration.
+   */
+  async addNetwork(
+    networkConfiguration: AddNetworkFields,
+    { setActive = true } = {},
+  ): Promise<NetworkConfiguration> {
+    if (setActive) {
+      const addedNetwork = this.#messenger.call(
+        'NetworkController:addNetwork',
+        networkConfiguration,
+      );
+      const { networkClientId } =
+        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+        {};
+      await this.#messenger.call(
+        'NetworkController:setActiveNetwork',
+        networkClientId,
+      );
+      return addedNetwork;
+    }
+
+    const { enabledNetworkMap } = this.#messenger.call(
+      'NetworkEnablementController:getState',
+    );
+    const previousEnabledNetworkMap = Object.fromEntries(
+      Object.entries(enabledNetworkMap).map(([namespace, networks]) => [
+        namespace,
+        { ...networks },
+      ]),
+    ) as NetworkEnablementControllerState['enabledNetworkMap'];
+
+    const addedNetwork = this.#messenger.call(
+      'NetworkController:addNetwork',
+      networkConfiguration,
+    );
+    await this.lookupSelectedNetworks();
+
+    // The NetworkEnablementController enables the newly added network
+    // asynchronously (its `onAddNetwork` handler awaits a SLIP-44 lookup before
+    // updating state), which switches the active network filter. Wait for that
+    // enablement to land, then restore the previous map.
+    //
+    // The restore runs here in the linear flow rather than from a
+    // `NetworkEnablementController:stateChange` subscriber on purpose: calling
+    // the `restoreEnabledNetworkMap` action synchronously from inside the
+    // subscriber re-enters the messenger's publish and the restore update is
+    // dropped. Awaiting first defers the restore to a microtask outside that
+    // publish.
+    await this.#waitForNetworkToBeEnabled(networkConfiguration.chainId);
+    this.#messenger.call(
+      'NetworkEnablementController:restoreEnabledNetworkMap',
+      previousEnabledNetworkMap,
+    );
+
+    return addedNetwork;
+  }
+
+  /**
+   * Resolves once the given network is enabled in the
+   * NetworkEnablementController. `NetworkEnablementController.onAddNetwork`
+   * always enables a newly added network, so this is guaranteed to resolve.
+   *
+   * @param chainId - The chain ID of the newly added network.
+   */
+  async #waitForNetworkToBeEnabled(chainId: Hex): Promise<void> {
+    if (
+      this.#messenger.call(
+        'NetworkEnablementController:isNetworkEnabled',
+        chainId,
+      )
+    ) {
+      return;
+    }
+
+    await this.#messenger.waitUntil('NetworkEnablementController:stateChange', {
+      condition: () =>
+        this.#messenger.call(
+          'NetworkEnablementController:isNetworkEnabled',
+          chainId,
+        ),
+    });
   }
 
   /**
@@ -2326,6 +2437,27 @@ export class LegacyBackgroundApiService {
         params,
       ),
     );
+  }
+
+  /**
+   * Exports and JSON-encodes a seed phrase after passkey verification.
+   *
+   * @param params - Passkey seed export parameters.
+   * @param params.authenticationResponse - WebAuthn authentication response.
+   * @param params.keyringId - Optional HD keyring id.
+   * @returns UTF-8 seed phrase bytes as a JSON-safe number array.
+   */
+  async exportSeedPhraseWithPasskey(params: {
+    authenticationResponse: PasskeyAuthenticationResponse;
+    keyringId?: string;
+  }): Promise<number[]> {
+    const mnemonic = await this.#messenger.call(
+      'PasskeyController:exportSeedPhraseWithPasskey',
+      params.authenticationResponse,
+      params.keyringId,
+    );
+
+    return Array.from(convertEnglishWordlistIndicesToCodepoints(mnemonic));
   }
 
   /**
@@ -4483,6 +4615,25 @@ export class LegacyBackgroundApiService {
 
     if (hasPendingApproval) {
       return;
+    }
+
+    // If the partner requires a specific chain and user's chain doesn't match,
+    // return early to avoid the referral code potentially not being applied.
+    // Don't write any account status so that the prompt can show on the next
+    // trigger (NewConnection or OnNavigateConnectedTab) once the user has switched chain
+    if (partner.requiredChainId) {
+      const networkClientId = this.#messenger.call(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        partner.origin,
+      );
+      const networkConfig = this.#messenger.call(
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        networkClientId,
+      );
+      const currentChainId = networkConfig?.chainId;
+      if (currentChainId !== partner.requiredChainId) {
+        return;
+      }
     }
 
     const { activePermittedAddressOverride } = options;

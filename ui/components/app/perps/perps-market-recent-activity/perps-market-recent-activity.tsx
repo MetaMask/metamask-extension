@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsMarketFills } from '../../../../hooks/perps';
 import { transformFillsToTransactions } from '../utils/transactionTransforms';
+import { getPerpsTransactionDestination } from '../utils/getPerpsTransactionDestination';
 import { TransactionCard } from '../transaction-card';
 import { PERPS_CONSTANTS } from '../constants';
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
@@ -56,7 +57,7 @@ const RecentActivityList = ({
   onTransactionClick,
 }: {
   transactions: PerpsTransaction[];
-  onTransactionClick: () => void;
+  onTransactionClick: (transaction: PerpsTransaction) => void;
 }) => (
   <Box
     flexDirection={BoxFlexDirection.Column}
@@ -102,6 +103,17 @@ export const PerpsMarketRecentActivity = ({
 
   const handleSeeAll = () => navigate(PERPS_ACTIVITY_ROUTE);
 
+  // Navigate to the transaction's details view instead of falling back to
+  // the general activity list (see `getPerpsTransactionDestination`).
+  const handleTransactionClick = (transaction: PerpsTransaction) => {
+    const destination = getPerpsTransactionDestination(transaction);
+    if (destination) {
+      navigate(destination.pathname, { state: destination.state });
+      return;
+    }
+    handleSeeAll();
+  };
+
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
       {hasTransactions ? (
@@ -133,7 +145,7 @@ export const PerpsMarketRecentActivity = ({
         {!showSkeleton && hasTransactions && (
           <RecentActivityList
             transactions={transactions}
-            onTransactionClick={handleSeeAll}
+            onTransactionClick={handleTransactionClick}
           />
         )}
       </Box>

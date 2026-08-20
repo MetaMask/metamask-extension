@@ -420,6 +420,15 @@ describe('AppStateController', () => {
         expect(controller.state.currentPopupId).toBe(popupId);
       });
     });
+
+    it('clears the currentPopupId when undefined is passed', async () => {
+      await withController(({ controller }) => {
+        controller.setCurrentPopupId(12345);
+        controller.setCurrentPopupId(undefined);
+
+        expect(controller.state.currentPopupId).toBeUndefined();
+      });
+    });
   });
 
   describe('getCurrentPopupId', () => {
@@ -1106,9 +1115,6 @@ describe('AppStateController', () => {
               "lastVisitedRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
-              "networkConnectionBanner": {
-                "status": "unknown",
-              },
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDropdownState": {},
