@@ -1,14 +1,18 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { renderHook, act } from '@testing-library/react';
+import { useSelector } from 'react-redux';
+import { DeepPartial, QuoteResponse } from '@metamask/bridge-controller';
 import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
-import {
-  getFromAccount,
-  getIsStxEnabled,
-} from '../../../../../ducks/bridge/selectors';
+import { getFromAccount } from '../../../../../ducks/bridge/selectors';
+import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
+import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { mockUseSelectorPassthrough } from '../../../../../../test/data/batch-sell';
+import { useDispatch } from '../../../../../store/hooks';
 import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
+
+jest.mock('../../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 const mockNavigate = jest.fn();
 
@@ -19,7 +23,6 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
@@ -33,7 +36,16 @@ jest.mock('../../../../../ducks/bridge-status/actions', () => ({
 
 jest.mock('../../../../../ducks/bridge/selectors', () => ({
   getFromAccount: jest.fn(),
-  getIsStxEnabled: jest.fn(),
+}));
+
+jest.mock('../../../../../ducks/bridge/utils', () => ({
+  getMaybeHexChainId: jest.fn((chainId?: string) =>
+    chainId ? `0x${Number(chainId).toString(16)}` : undefined,
+  ),
+}));
+
+jest.mock('../../../../../../shared/lib/selectors', () => ({
+  getIsSmartTransaction: jest.fn(),
 }));
 
 jest.mock('../../../../../helpers/constants/routes', () => ({
@@ -41,16 +53,20 @@ jest.mock('../../../../../helpers/constants/routes', () => ({
 }));
 
 const mockDispatch = jest.fn();
-const mockUseDispatch = jest.mocked(useDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 const mockUseSelector = jest.mocked(useSelector);
 const mockGetFromAccount = jest.mocked(getFromAccount);
-const mockGetIsStxEnabled = jest.mocked(getIsStxEnabled);
+const mockGetMaybeHexChainId = jest.mocked(getMaybeHexChainId);
+const mockGetIsSmartTransaction = jest.mocked(getIsSmartTransaction);
 const mockCaptureException = jest.mocked(captureException);
 const mockSubmitBatchSellTrade = jest.mocked(submitBatchSellTrade);
 
 const MOCK_ACCOUNT = { address: '0xdeadbeef', type: 'eip155:eoa' };
 
-const MOCK_QUOTE_RESPONSE = { quote: { requestId: 'req-1' } } as never;
+const MOCK_QUOTE_RESPONSE: DeepPartial<QuoteResponse> = {
+  chainId: 'eip155:1',
+  quote: { requestId: 'req-1' },
+};
 
 const MOCK_RECEIVED_ASSET_NO_SECURITY: BatchSellAsset = {
   assetId: 'eip155:1/erc20:0xusdc' as never,
@@ -75,7 +91,10 @@ function renderDefault(
     receivedAsset = MOCK_RECEIVED_ASSET_NO_SECURITY,
   } = overrides;
   return renderHook(() =>
-    useBatchSellSubmitQuotes({ quoteResponses, receivedAsset }),
+    useBatchSellSubmitQuotes({
+      quoteResponses: quoteResponses as unknown as QuoteResponse[],
+      receivedAsset,
+    }),
   );
 }
 
@@ -84,12 +103,15 @@ describe('useBatchSellSubmitQuotes', () => {
     jest.clearAllMocks();
 
     mockDispatch.mockResolvedValue(undefined);
-    mockUseDispatch.mockReturnValue(mockDispatch as never);
+    mockUseAppDispatch.mockReturnValue(mockDispatch as never);
 
     mockGetFromAccount.mockReturnValue(MOCK_ACCOUNT as never);
-    mockGetIsStxEnabled.mockReturnValue(true as never);
+    mockGetIsSmartTransaction.mockReturnValue(true);
 
-    mockUseSelectorPassthrough(mockUseSelector);
+    // Route every useSelector call through the mocked selector functions.
+    mockUseSelector.mockImplementation(
+      (selectorFn: (state: unknown) => unknown) => selectorFn({}),
+    );
   });
 
   describe('initial state', () => {
@@ -184,7 +206,7 @@ describe('useBatchSellSubmitQuotes', () => {
     });
 
     it('passes the smartTransactionsEnabled flag to the action', async () => {
-      mockGetIsStxEnabled.mockReturnValue(false as never);
+      mockGetIsSmartTransaction.mockReturnValue(false);
 
       const { result } = renderDefault();
 
@@ -192,6 +214,40 @@ describe('useBatchSellSubmitQuotes', () => {
         await result.current.submitBatchSellQuotes();
       });
 
+      expect(mockSubmitBatchSellTrade).toHaveBeenCalledWith(
+        expect.objectContaining({ isStxEnabled: false }),
+      );
+    });
+
+    it('converts numeric srcChainId to hex before querying STX enablement', async () => {
+      const quoteWithNumericChainId: DeepPartial<QuoteResponse> = {
+        chainId: 'eip155:1',
+        quote: { requestId: 'req-chain' },
+      };
+
+      mockGetMaybeHexChainId.mockReturnValue('0x1');
+
+      renderDefault({ quoteResponses: [quoteWithNumericChainId] });
+
+      expect(mockGetMaybeHexChainId).toHaveBeenCalledWith('eip155:1');
+      expect(mockGetIsSmartTransaction).toHaveBeenCalledWith(
+        expect.anything(),
+        '0x1',
+      );
+    });
+
+    // `getIsSmartTransaction` falls back to the globally selected network when
+    // given no chain id, which has nothing to do with the chain being sold on.
+    it('reports STX as disabled instead of querying the global network when the source chain has no hex equivalent', async () => {
+      mockGetMaybeHexChainId.mockReturnValue(undefined);
+
+      const { result } = renderDefault();
+
+      await act(async () => {
+        await result.current.submitBatchSellQuotes();
+      });
+
+      expect(mockGetIsSmartTransaction).not.toHaveBeenCalled();
       expect(mockSubmitBatchSellTrade).toHaveBeenCalledWith(
         expect.objectContaining({ isStxEnabled: false }),
       );

@@ -1,26 +1,18 @@
 import React from 'react';
-import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
-import {
-  Display,
-  FlexDirection,
-  IconColor,
-  TextColor,
-} from '../../../helpers/constants/design-system';
 
 import { HelpText } from './help-text';
-import { HelpTextSeverity } from './help-text.types';
-
-import { Box } from '../box';
-import { Icon, IconName, IconSize } from '../icon';
 
 export default {
-  title: 'Components/ComponentLibrary/HelpText',
+  title: 'Components/ComponentLibrary/HelpText (deprecated)',
   component: HelpText,
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [HelpText from @metamask/design-system-react](https://metamask.github.io/design-system-react/?path=/docs/components-helptext--docs) instead.',
+      },
     },
   },
   argTypes: {
@@ -29,14 +21,6 @@ export default {
     },
     className: {
       control: 'text',
-    },
-    severity: {
-      control: 'select',
-      options: Object.values(HelpTextSeverity),
-    },
-    color: {
-      control: 'select',
-      options: Object.values(TextColor),
     },
   },
   args: {
@@ -48,54 +32,3 @@ const Template: StoryFn<typeof HelpText> = (args) => <HelpText {...args} />;
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-
-export const Children: StoryFn<typeof HelpText> = (args) => (
-  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
-    <HelpText {...args}>Plain text</HelpText>
-    <HelpText>
-      <span>Text and icon</span>
-      <Icon
-        marginLeft={1}
-        color={IconColor.iconAlternative}
-        name={IconName.Warning}
-        size={IconSize.Inherit}
-        as="span"
-      />
-    </HelpText>
-  </Box>
-);
-
-export const SeverityStory: StoryFn<typeof HelpText> = (args) => (
-  <>
-    <HelpText {...args}>HelpText without severity prop</HelpText>
-    <HelpText {...args} severity={HelpTextSeverity.Danger}>
-      HelpText with severity: HelpTextSeverity.Danger
-    </HelpText>
-    <HelpText {...args} severity={HelpTextSeverity.Success}>
-      HelpText with severity: HelpTextSeverity.Success
-    </HelpText>
-    <HelpText {...args} severity={HelpTextSeverity.Warning}>
-      HelpText with severity: HelpTextSeverity.Warning
-    </HelpText>
-    <HelpText {...args} severity={HelpTextSeverity.Info}>
-      HelpText with severity: HelpTextSeverity.Info
-    </HelpText>
-  </>
-);
-
-SeverityStory.storyName = 'Severity';
-
-export const ColorStory: StoryFn<typeof HelpText> = (args) => (
-  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
-    <HelpText color={TextColor.textDefault} {...args}>
-      This HelpText default color is TextColor.textDefault
-    </HelpText>
-    <HelpText color={TextColor.textAlternative} {...args}>
-      This HelpText color is TextColor.textAlternative
-    </HelpText>
-    <HelpText color={TextColor.textMuted} {...args}>
-      This HelpText color is TextColor.textMuted
-    </HelpText>
-  </Box>
-);
-ColorStory.storyName = 'Color';

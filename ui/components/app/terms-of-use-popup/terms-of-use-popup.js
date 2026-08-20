@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Box, BoxAlignItems } from '@metamask/design-system-react';
+import { Box, BoxAlignItems, Checkbox } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   Button,
@@ -8,7 +8,6 @@ import {
   ButtonPrimary,
   ButtonSize,
   ButtonVariant,
-  Checkbox,
   IconName,
   IconSize,
   Modal,
@@ -22,7 +21,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
   BlockSize,
@@ -39,9 +38,10 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
   const { value: isTermsOfUseChecked, toggle } = useBoolean();
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const bottomRef = useRef(null);
   const scrollContainerRef = useRef(null);
+  const hasTrackedView = useRef(false);
 
   const handleScrollDownClick = (e) => {
     e.stopPropagation();
@@ -84,14 +84,19 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
   }, []);
 
   useEffect(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.TermsOfUseShown,
-      properties: {
-        location: 'Terms Of Use Popover',
-      },
-    });
-  }, []);
+    if (hasTrackedView.current) {
+      return;
+    }
+    hasTrackedView.current = true;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TermsOfUseShown)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          location: 'Terms Of Use Popover',
+        })
+        .build(),
+    );
+  }, [createEventBuilder, trackEvent]);
 
   return (
     <Modal
@@ -1223,10 +1228,9 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
         >
           <Checkbox
             id="terms-of-use__checkbox"
-            className="terms-of-use__checkbox"
+            className="terms-of-use__checkbox items-start"
             data-testid="terms-of-use-checkbox"
-            isChecked={isTermsOfUseChecked}
-            alignItems={AlignItems.flexStart}
+            isSelected={isTermsOfUseChecked}
             onChange={toggle}
             label={t('termsOfUseAgreeText')}
           />

@@ -1,7 +1,13 @@
 import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
 import { Hex, assert } from '@metamask/utils';
 import { Duration } from 'luxon';
+import {
+  processAssetParams,
+  resolveAssetRouteLookup,
+} from '../../../shared/lib/asset-route';
 import { PriceApiTimePeriod } from './types/PriceApiTimePeriod';
+
+export { processAssetParams, resolveAssetRouteLookup };
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const getShortDateFormatter = () =>

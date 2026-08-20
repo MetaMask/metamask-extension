@@ -117,6 +117,39 @@ describe('useTrustSignalAlerts', () => {
       );
     });
 
+    it('uses the original address when the transaction is wrapped', () => {
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+      });
+
+      const contractInteraction = genUnapprovedContractInteractionConfirmation({
+        chainId: CHAIN_IDS.GOERLI,
+      }) as TransactionMeta;
+      const currentConfirmation = {
+        ...contractInteraction,
+        txParams: {
+          ...contractInteraction.txParams,
+          to: SAFE_ADDRESS,
+        },
+        txParamsOriginal: {
+          ...contractInteraction.txParams,
+          to: MALICIOUS_ADDRESS,
+        },
+      } as TransactionMeta;
+
+      const { result } = renderHookWithConfirmContextProvider(
+        () => useAddressTrustSignalAlerts(),
+        getMockConfirmStateForTransaction(currentConfirmation),
+      );
+
+      expect(result.current).toEqual([expectedMaliciousAlert]);
+      expect(mockUseTrustSignal).toHaveBeenCalledWith(
+        MALICIOUS_ADDRESS,
+        NameType.ETHEREUM_ADDRESS,
+        CHAIN_IDS.GOERLI,
+      );
+    });
+
     it('returns warning alert for transaction with warning to address', () => {
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Warning,

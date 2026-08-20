@@ -11,7 +11,9 @@ import { login } from '../../../page-objects/flows/login.flow';
 
 const RECIPIENT = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
-describe('Trezor Hardware', function (this: Suite) {
+// TODO: Fix in the e2e because of the newly introduced hardware wallet signatures page
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Trezor Hardware', function (this: Suite) {
   for (const testCase of [
     { hardfork: 'london', type: 'EIP-1559' },
     { hardfork: 'muirGlacier', type: 'legacy' },

@@ -25,7 +25,7 @@ describe('metaMetricsIntegration', () => {
   describe('processEvent', () => {
     it('returns null and logs when MetaMetrics is disabled', async () => {
       const integration = createIntegration(async () => ({
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: false,
       }));
       const event: SentryEvent = { message: 'err' };
@@ -54,7 +54,7 @@ describe('metaMetricsIntegration', () => {
 
     it('attaches user.id from getAnalyticsState when opted in', async () => {
       const integration = createIntegration(async () => ({
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         analyticsId: 'metrics-id-from-async',
       }));
@@ -69,9 +69,9 @@ describe('metaMetricsIntegration', () => {
       expect(log).not.toHaveBeenCalled();
     });
 
-    it('does not set user when opted in but metaMetricsId is missing', async () => {
+    it('does not set user when opted in but analyticsId is missing', async () => {
       const integration = createIntegration(async () => ({
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         analyticsId: undefined,
       }));

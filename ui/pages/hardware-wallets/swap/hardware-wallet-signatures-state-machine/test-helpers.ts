@@ -1,25 +1,28 @@
 import { HardwareWalletSignatureStatus } from '.';
-import type { HardwareWalletSignaturesState } from '.';
+import type { HardwareWalletSignaturesState, SigningStatus } from '.';
 
 export const createSignatureState = (
   status: HardwareWalletSignatureStatus,
+  savedStep?: SigningStatus,
 ): HardwareWalletSignaturesState => {
   switch (status) {
     case HardwareWalletSignatureStatus.Rejected:
       return {
         status,
-        rejectedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        rejectedSignature:
+          savedStep ?? HardwareWalletSignatureStatus.AwaitingFirstSignature,
       };
     case HardwareWalletSignatureStatus.Failed:
       return {
         status,
-        failedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        failedSignature:
+          savedStep ?? HardwareWalletSignatureStatus.AwaitingFirstSignature,
       };
     case HardwareWalletSignatureStatus.Disconnected:
       return {
         status,
         disconnectedSignature:
-          HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          savedStep ?? HardwareWalletSignatureStatus.AwaitingFirstSignature,
       };
     default:
       return { status };

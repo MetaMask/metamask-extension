@@ -24,10 +24,14 @@ export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =
       transactionMeta.nestedTransactions?.length,
     );
 
+    const onChainError =
+      eventName === TransactionMetaMetricsEvent.finalized
+        ? transactionMeta.revert?.receipt?.message
+        : undefined;
+    const error = transactionEventPayload.error ?? onChainError;
+
     const properties = {
-      ...(transactionEventPayload.error
-        ? { error: transactionEventPayload.error }
-        : {}),
+      ...(error ? { error } : {}),
       ...(hasBatchTransactions
         ? {}
         : {

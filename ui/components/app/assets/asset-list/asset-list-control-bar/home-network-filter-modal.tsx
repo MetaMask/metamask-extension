@@ -1,11 +1,14 @@
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { EthScope } from '@metamask/keyring-api';
+import { EthScope, isEvmAccountType } from '@metamask/keyring-api';
 import { type AddNetworkFields } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId } from '@metamask/utils';
 import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  AvatarIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
@@ -14,6 +17,11 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  ModalHeader,
   Text,
   TextColor,
   TextVariant,
@@ -30,21 +38,19 @@ import {
 } from '../../../../../../shared/lib/network.utils';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import {
-  Icon,
-  IconName,
-  IconSize,
   Modal,
   ModalContent,
   ModalContentSize,
-  ModalHeader,
   ModalOverlay,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { transitionForward } from '../../../../ui/transition';
 import { NETWORKS_ROUTE } from '../../../../../helpers/constants/routes';
 import {
   addNetwork,
   setEnabledAllPopularNetworks,
 } from '../../../../../store/actions';
+import type { MetaMaskReduxState } from '../../../../../store/store';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getMultichainNetworkConfigurationsByChainId,
@@ -54,23 +60,32 @@ import {
   getShowTestNetworks,
   getUseExternalServices,
 } from '../../../../../selectors';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getInternalAccountsFromGroupById,
+  getSelectedAccountGroup,
+} from '../../../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../../../selectors/multichain-accounts/account-tree.types';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { useNetworkManagerState } from '../../../../multichain/network-manager/hooks/useNetworkManagerState';
 import { useNetworkChangeHandlers } from '../../../../multichain/network-manager/hooks/useNetworkChangeHandlers';
 import { NetworkListItem } from '../../../../multichain/network-list-item';
+import Tooltip from '../../../../ui/tooltip';
+import { useDispatch } from '../../../../../store/hooks';
 
 type HomeNetworkFilterModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  onPendingChange?: (isPending: boolean) => void;
 };
 
 type NetworkRowProps = {
   name: string;
-  iconSrc?: string | IconName;
+  iconSrc?: string;
   chainId?: string;
   selected?: boolean;
   disabled?: boolean;
+  disabledTooltip?: string;
   endIconName?: IconName;
   onClick: () => void;
   testId: string;
@@ -79,10 +94,12 @@ type NetworkRowProps = {
 export type NetworkSelectionItem = {
   key: string;
   name: string;
-  iconSrc?: string | IconName;
+  iconName?: IconName;
+  iconSrc?: string;
   chainId?: string;
   selected?: boolean;
   disabled?: boolean;
+  disabledTooltip?: string;
   endIconName?: IconName;
   onClick: () => void;
   testId: string;
@@ -112,15 +129,18 @@ type NetworkSelectionModalProps = {
 const getSelectableChainId = (network: MultichainNetworkConfiguration) =>
   network.isEvm ? convertCaipToHexChainId(network.chainId) : network.chainId;
 
-const isIconName = (iconSrc?: string | IconName): iconSrc is IconName =>
-  Object.values(IconName).includes(iconSrc as IconName);
-
-const SectionHeader = ({ children }: { children: React.ReactNode }) => (
+const SectionHeader = ({
+  children,
+  className = 'px-4 pb-2 pt-4',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => (
   <Text
     variant={TextVariant.BodyMd}
     color={TextColor.TextAlternative}
     fontWeight={FontWeight.Medium}
-    className="px-4 py-2"
+    className={className}
   >
     {children}
   </Text>
@@ -132,28 +152,72 @@ const HomeNetworkFilterRow = ({
   chainId,
   selected = false,
   disabled = false,
+  disabledTooltip,
   endIconName,
   onClick,
   testId,
 }: NetworkRowProps) => {
+  let endAccessory: React.ReactNode;
+
+  if (disabledTooltip) {
+    endAccessory = (
+      <Tooltip
+        position="top"
+        title={disabledTooltip}
+        wrapperClassName="flex items-center justify-center"
+      >
+        <Box className="flex items-center justify-center rounded-lg p-1">
+          <Icon name={IconName.Info} size={IconSize.Sm} />
+        </Box>
+      </Tooltip>
+    );
+  } else if (endIconName) {
+    endAccessory = (
+      <Box className="flex items-center justify-center rounded-lg p-1">
+        <Icon name={endIconName} size={IconSize.Lg} />
+      </Box>
+    );
+  }
+
   return (
     <Box data-testid={testId}>
       <NetworkListItem
         name={name}
-        iconSrc={isIconName(iconSrc) ? (iconSrc as string) : iconSrc}
+        iconSrc={iconSrc}
         chainId={chainId}
         selected={selected}
         disabled={disabled}
-        onClick={onClick}
+        onClick={disabled ? () => undefined : onClick}
         focus={false}
-        endAccessory={
-          endIconName ? (
-            <Icon name={endIconName} size={IconSize.Sm} />
-          ) : undefined
-        }
+        endAccessory={endAccessory}
         showEndAccessory={!selected}
       />
     </Box>
+  );
+};
+
+const NetworkSelectionItemIcon = ({
+  name,
+  iconName,
+  iconSrc,
+}: {
+  name: string;
+  iconName?: IconName;
+  iconSrc?: string;
+}) => {
+  if (iconName) {
+    return (
+      <AvatarIcon
+        iconName={iconName}
+        size={AvatarIconSize.Md}
+        severity={AvatarIconSeverity.Neutral}
+        iconProps={{ color: IconColor.IconDefault }}
+      />
+    );
+  }
+
+  return (
+    <AvatarNetwork name={name} src={iconSrc} size={AvatarNetworkSize.Md} />
   );
 };
 
@@ -166,6 +230,7 @@ export const NetworkSelectionModal = ({
   footerButton,
   'data-testid': dataTestId,
 }: NetworkSelectionModalProps) => {
+  const t = useI18nContext();
   return (
     <Modal
       isOpen={isOpen}
@@ -180,12 +245,17 @@ export const NetworkSelectionModal = ({
           size={ModalContentSize.Sm}
           modalDialogProps={{
             padding: 0,
-            className: 'overflow-hidden',
+            className: 'flex h-full flex-col overflow-hidden',
           }}
         >
-          <ModalHeader onClose={onClose}>{title}</ModalHeader>
+          <ModalHeader
+            onClose={onClose}
+            closeButtonProps={{ ariaLabel: t('close') }}
+          >
+            {title}
+          </ModalHeader>
           <Box
-            className="max-h-[calc(100vh-168px)] overflow-y-auto"
+            className="min-h-0 flex-1 overflow-y-auto"
             flexDirection={BoxFlexDirection.Column}
           >
             {topItem ? (
@@ -198,15 +268,11 @@ export const NetworkSelectionModal = ({
                 onClick={topItem.onClick}
               >
                 <Box className="flex min-w-0 items-center gap-3">
-                  {isIconName(topItem.iconSrc) ? (
-                    <Icon name={topItem.iconSrc} size={IconSize.Sm} />
-                  ) : (
-                    <AvatarNetwork
-                      name={topItem.name}
-                      src={topItem.iconSrc}
-                      size={AvatarNetworkSize.Md}
-                    />
-                  )}
+                  <NetworkSelectionItemIcon
+                    name={topItem.name}
+                    iconName={topItem.iconName}
+                    iconSrc={topItem.iconSrc}
+                  />
                   <Text
                     variant={TextVariant.BodyMd}
                     color={TextColor.TextDefault}
@@ -223,13 +289,10 @@ export const NetworkSelectionModal = ({
                         ? IconName.Check
                         : (topItem.endIconName as IconName)
                     }
-                    size={IconSize.Sm}
+                    size={IconSize.Lg}
                   />
                 )}
               </button>
-            ) : null}
-            {topItem && sections.length > 0 ? (
-              <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
             ) : null}
             {sections.map((section, index) => (
               <Box key={section.key} className="flex flex-col">
@@ -237,7 +300,11 @@ export const NetworkSelectionModal = ({
                   <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
                 ) : null}
                 {section.title ? (
-                  <SectionHeader>{section.title}</SectionHeader>
+                  <SectionHeader
+                    className={index > 0 ? 'px-4 pb-2 pt-4' : undefined}
+                  >
+                    {section.title}
+                  </SectionHeader>
                 ) : null}
                 {section.items.map(({ key, ...item }) => (
                   <HomeNetworkFilterRow key={key} {...item} />
@@ -246,11 +313,11 @@ export const NetworkSelectionModal = ({
             ))}
           </Box>
           {footerButton ? (
-            <Box className="px-4 pt-2">
+            <Box className="px-4 pt-4">
               <Button
                 data-testid={footerButton.testId}
-                className="h-14 w-full rounded-2xl border-0 bg-muted hover:bg-muted-hover active:bg-muted-pressed"
-                size={ButtonSize.Lg}
+                className="h-12 w-full rounded-xl border-0 bg-muted hover:bg-muted-hover active:bg-muted-pressed"
+                size={ButtonSize.Md}
                 variant={ButtonVariant.Secondary}
                 onClick={footerButton.onClick}
               >
@@ -271,8 +338,10 @@ export const NetworkSelectionModal = ({
 
 const HomeNetworkFilterModalContent = ({
   onClose,
+  onPendingChange,
 }: {
   onClose: () => void;
+  onPendingChange?: (isPending: boolean) => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -280,6 +349,10 @@ const HomeNetworkFilterModalContent = ({
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
+  );
+  const rawMultichainNetworkConfigurationsByChainId = useSelector(
+    (state: MetaMaskReduxState) =>
+      state.metamask.multichainNetworkConfigurationsByChainId,
   );
   const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
   const useExternalServices = useSelector(getUseExternalServices);
@@ -290,13 +363,56 @@ const HomeNetworkFilterModalContent = ({
   const evmAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
   );
-  const { handleNetworkChange } = useNetworkChangeHandlers();
+  const isEvmOnlySelectedAccountGroup = useSelector(
+    (state: MetaMaskReduxState) => {
+      const multichainAccountsState =
+        state as unknown as MultichainAccountsState;
+      const selectedAccountGroup = getSelectedAccountGroup(
+        multichainAccountsState,
+      );
+      const selectedAccountGroupAccounts = getInternalAccountsFromGroupById(
+        multichainAccountsState,
+        selectedAccountGroup,
+      );
+
+      return (
+        selectedAccountGroupAccounts.length > 0 &&
+        selectedAccountGroupAccounts.every((account) =>
+          isEvmAccountType(account.type),
+        )
+      );
+    },
+  );
+  const { handleNetworkChange, isPending } = useNetworkChangeHandlers();
+
+  const handleClose = useCallback(() => {
+    if (isPending) {
+      return;
+    }
+    onClose();
+  }, [isPending, onClose]);
+
   const {
     nonTestNetworks: allDefaultNetworkMap,
     isNetworkInDefaultNetworkTab,
   } = useNetworkManagerState({ showDefaultNetworks: true });
   const { nonTestNetworks: customNetworkMap, testNetworks: testNetworkMap } =
     useNetworkManagerState();
+
+  const allDefaultNetworksForSelectedAccountGroup = useMemo(
+    () =>
+      isEvmOnlySelectedAccountGroup
+        ? {
+            ...rawMultichainNetworkConfigurationsByChainId,
+            ...allDefaultNetworkMap,
+          }
+        : allDefaultNetworkMap,
+    [
+      allDefaultNetworkMap,
+      isEvmOnlySelectedAccountGroup,
+      rawMultichainNetworkConfigurationsByChainId,
+    ],
+  );
 
   const enabledNetworkSet = useMemo(
     () => new Set(enabledNetworks),
@@ -312,22 +428,30 @@ const HomeNetworkFilterModalContent = ({
     [enabledNetworkSet, enabledNetworks.length],
   );
 
+  const isNetworkDisabled = useCallback(
+    (network: MultichainNetworkConfiguration) =>
+      !network.isEvm && isEvmOnlySelectedAccountGroup,
+    [isEvmOnlySelectedAccountGroup],
+  );
+  const getDisabledTooltip = useCallback(
+    (disabled: boolean) =>
+      disabled ? t('networkNotSupportedByThisAccount') : undefined,
+    [t],
+  );
+
   const defaultNetworks = useMemo(() => {
-    return sortNetworks(allDefaultNetworkMap, orderedNetworksList).filter(
-      (network) => {
-        if (!isNetworkInDefaultNetworkTab(network)) {
-          return false;
-        }
+    return sortNetworks(
+      allDefaultNetworksForSelectedAccountGroup,
+      orderedNetworksList,
+    ).filter((network) => {
+      if (!isNetworkInDefaultNetworkTab(network)) {
+        return false;
+      }
 
-        if (!useExternalServices && !network.isEvm) {
-          return false;
-        }
-
-        return network.isEvm ? Boolean(evmAccountGroup) : true;
-      },
-    );
+      return network.isEvm ? Boolean(evmAccountGroup) : useExternalServices;
+    });
   }, [
-    allDefaultNetworkMap,
+    allDefaultNetworksForSelectedAccountGroup,
     evmAccountGroup,
     isNetworkInDefaultNetworkTab,
     orderedNetworksList,
@@ -336,22 +460,29 @@ const HomeNetworkFilterModalContent = ({
 
   const customNetworks = useMemo(() => {
     return sortNetworks(customNetworkMap, orderedNetworksList).filter(
-      (network) => useExternalServices || network.isEvm,
+      (network) => network.isEvm || useExternalServices,
     );
   }, [customNetworkMap, orderedNetworksList, useExternalServices]);
 
   const testNetworks = useMemo(() => {
     return sortNetworks(testNetworkMap, orderedNetworksList).filter(
-      (network) => useExternalServices || network.isEvm,
+      (network) => network.isEvm || useExternalServices,
     );
   }, [orderedNetworksList, testNetworkMap, useExternalServices]);
+
+  // When there are no custom networks and no visible test networks, the default
+  // list is the only list, so selecting default networks is equivalent to
+  // selecting all networks. Once custom or test networks are visible, the top row
+  // specifically selects "All default networks".
+  const hasOnlyDefaultNetworks =
+    customNetworks.length === 0 && !(showTestnets && testNetworks.length > 0);
 
   const additionalNetworks = useMemo(() => {
     const availableNetworks = FEATURED_RPCS.filter(
       ({ chainId }) => !evmNetworks[chainId],
     ).filter(
       ({ chainId }) =>
-        useExternalServices || isEvmChainId(chainId as CaipChainId),
+        isEvmChainId(chainId as CaipChainId) || useExternalServices,
     );
 
     return getFilteredFeaturedNetworks(
@@ -361,42 +492,60 @@ const HomeNetworkFilterModalContent = ({
   }, [blacklistedChainIds, evmNetworks, useExternalServices]);
 
   const handleSelectAllDefaultNetworks = useCallback(() => {
+    if (isPending) {
+      return;
+    }
     dispatch(setEnabledAllPopularNetworks());
     onClose();
-  }, [dispatch, onClose]);
+  }, [dispatch, isPending, onClose]);
 
   const handleSelectNetwork = useCallback(
     async (chainId: CaipChainId) => {
-      await handleNetworkChange(chainId);
+      if (isPending) {
+        return;
+      }
+      onPendingChange?.(true);
       onClose();
+      try {
+        await handleNetworkChange(chainId);
+      } finally {
+        onPendingChange?.(false);
+      }
     },
-    [handleNetworkChange, onClose],
+    [handleNetworkChange, isPending, onClose, onPendingChange],
   );
 
   const handleAddNetwork = useCallback(
     async (network: AddNetworkFields) => {
+      if (isPending) {
+        return;
+      }
       await dispatch(addNetwork(network));
       onClose();
     },
-    [dispatch, onClose],
+    [dispatch, isPending, onClose],
   );
 
   const handleManageNetworks = useCallback(() => {
-    onClose();
-    navigate(`${NETWORKS_ROUTE}?drawerOpen=true`);
-  }, [navigate, onClose]);
+    // Don't close the modal first — letting the whole current view (modal
+    // included) transition as one view-transition snapshot keeps the motion
+    // smooth. The modal's open state resets when the home route unmounts.
+    transitionForward(() => navigate(NETWORKS_ROUTE));
+  }, [navigate]);
 
   const sections = useMemo<NetworkSelectionSection[]>(() => {
     const nextSections: NetworkSelectionSection[] = [
       {
         key: 'default-networks',
-        title: t('defaultNetworks'),
+        title: hasOnlyDefaultNetworks ? undefined : t('defaultNetworks'),
         items: defaultNetworks.map((network) => ({
+          disabled: isPending || isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
           iconSrc: getNetworkIcon(network),
           chainId: getSelectableChainId(network),
           selected: isNetworkSelected(network),
+          disabledTooltip: getDisabledTooltip(isNetworkDisabled(network)),
           onClick: () => handleSelectNetwork(network.chainId),
           testId: `home-network-filter-network-${getSelectableChainId(network)}`,
         })),
@@ -408,11 +557,13 @@ const HomeNetworkFilterModalContent = ({
         key: 'custom-networks',
         title: t('customNetworks'),
         items: customNetworks.map((network) => ({
+          disabled: isPending || isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
           iconSrc: getNetworkIcon(network),
           chainId: getSelectableChainId(network),
           selected: isNetworkSelected(network),
+          disabledTooltip: getDisabledTooltip(isNetworkDisabled(network)),
           onClick: () => handleSelectNetwork(network.chainId),
           testId: `home-network-filter-custom-${getSelectableChainId(network)}`,
         })),
@@ -424,11 +575,13 @@ const HomeNetworkFilterModalContent = ({
         key: 'test-networks',
         title: t('testnets'),
         items: testNetworks.map((network) => ({
+          disabled: isPending || isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
           iconSrc: getNetworkIcon(network),
           chainId: getSelectableChainId(network),
           selected: isNetworkSelected(network),
+          disabledTooltip: getDisabledTooltip(isNetworkDisabled(network)),
           onClick: () => handleSelectNetwork(network.chainId),
           testId: `home-network-filter-test-${getSelectableChainId(network)}`,
         })),
@@ -439,18 +592,27 @@ const HomeNetworkFilterModalContent = ({
       nextSections.push({
         key: 'additional-networks',
         title: t('additionalNetworks'),
-        items: additionalNetworks.map((network) => ({
-          key: network.chainId,
-          name: network.name,
-          iconSrc:
-            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-              network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-            ],
-          chainId: network.chainId,
-          endIconName: IconName.Add,
-          onClick: () => handleAddNetwork(network),
-          testId: `home-network-filter-additional-${network.chainId}`,
-        })),
+        items: additionalNetworks.map((network) => {
+          const disabled =
+            isPending ||
+            (!isEvmChainId(network.chainId as CaipChainId) &&
+              isEvmOnlySelectedAccountGroup);
+
+          return {
+            key: network.chainId,
+            name: network.name,
+            iconSrc:
+              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+              ],
+            chainId: network.chainId,
+            disabled,
+            disabledTooltip: getDisabledTooltip(disabled),
+            endIconName: IconName.Add,
+            onClick: () => handleAddNetwork(network),
+            testId: `home-network-filter-additional-${network.chainId}`,
+          };
+        }),
       });
     }
 
@@ -459,9 +621,14 @@ const HomeNetworkFilterModalContent = ({
     additionalNetworks,
     customNetworks,
     defaultNetworks,
+    getDisabledTooltip,
     handleAddNetwork,
     handleSelectNetwork,
+    hasOnlyDefaultNetworks,
+    isEvmOnlySelectedAccountGroup,
+    isNetworkDisabled,
     isNetworkSelected,
+    isPending,
     showTestnets,
     t,
     testNetworks,
@@ -470,12 +637,14 @@ const HomeNetworkFilterModalContent = ({
   return (
     <NetworkSelectionModal
       isOpen
-      onClose={onClose}
+      onClose={handleClose}
       title={t('bridgeSelectNetwork')}
       topItem={{
         key: 'all-default-networks',
-        name: t('allDefaultNetworks'),
-        iconSrc: IconName.Global,
+        name: hasOnlyDefaultNetworks
+          ? t('allNetworks')
+          : t('allDefaultNetworks'),
+        iconName: IconName.Global,
         selected: isAllDefaultSelected,
         onClick: handleSelectAllDefaultNetworks,
         testId: 'home-network-filter-all-default',
@@ -494,6 +663,12 @@ const HomeNetworkFilterModalContent = ({
 export const HomeNetworkFilterModal = ({
   isOpen,
   onClose,
+  onPendingChange,
 }: HomeNetworkFilterModalProps) => {
-  return isOpen ? <HomeNetworkFilterModalContent onClose={onClose} /> : null;
+  return isOpen ? (
+    <HomeNetworkFilterModalContent
+      onClose={onClose}
+      onPendingChange={onPendingChange}
+    />
+  ) : null;
 };
