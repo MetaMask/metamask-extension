@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
@@ -90,6 +90,31 @@ export function useUpdateTokenAmount() {
     [transactionMeta],
   );
 
+  // Guards the pending count against double-counting: the debounce that
+  // schedules a commit (see `useTransactionCustomAmount`) and the commit
+  // itself both mark pending, but only one +1/-1 pair should ever reach
+  // `setMoneyAccountAmountCommitPending` per edit cycle. Without this, N
+  // keystrokes scheduling N debounced calls that coalesce into a single
+  // eventual commit would push the count positive and never bring it back
+  // to zero.
+  const isPendingRef = useRef(false);
+
+  const markAmountCommitPending = useCallback(() => {
+    if (moneyAccountFlow === undefined || isPendingRef.current) {
+      return;
+    }
+    isPendingRef.current = true;
+    setMoneyAccountAmountCommitPending(true, transactionId);
+  }, [moneyAccountFlow, setMoneyAccountAmountCommitPending, transactionId]);
+
+  const clearAmountCommitPending = useCallback(() => {
+    if (!isPendingRef.current) {
+      return;
+    }
+    isPendingRef.current = false;
+    setMoneyAccountAmountCommitPending(false, transactionId);
+  }, [setMoneyAccountAmountCommitPending, transactionId]);
+
   const updateTokenAmount = useCallback(
     (amountHuman: string) => {
       // Money deposits are a placeholder approve + deposit batch with no
@@ -100,7 +125,7 @@ export function useUpdateTokenAmount() {
       // legacy per-call updater as the fallback; that legacy pipeline was
       // deliberately not ported, so this is the extension's only path.
       if (moneyAccountFlow === MoneyAccountFlow.Deposit) {
-        setMoneyAccountAmountCommitPending(true, transactionId);
+        markAmountCommitPending();
         updateMoneyAccountDepositAmount(transactionId, amountHuman)
           .catch((error) => {
             console.error(
@@ -109,7 +134,7 @@ export function useUpdateTokenAmount() {
             );
           })
           .finally(() => {
-            setMoneyAccountAmountCommitPending(false, transactionId);
+            clearAmountCommitPending();
           });
         return;
       }
@@ -118,7 +143,7 @@ export function useUpdateTokenAmount() {
       // no calldata to parse, and the background commit path resolves the
       // recipient (the selected account) and the vault rate.
       if (moneyAccountFlow === MoneyAccountFlow.Withdraw) {
-        setMoneyAccountAmountCommitPending(true, transactionId);
+        markAmountCommitPending();
         updateMoneyAccountWithdrawAmount(transactionId, amountHuman)
           .catch((error) => {
             console.error(
@@ -127,7 +152,7 @@ export function useUpdateTokenAmount() {
             );
           })
           .finally(() => {
-            setMoneyAccountAmountCommitPending(false, transactionId);
+            clearAmountCommitPending();
           });
         return;
       }
@@ -179,12 +204,13 @@ export function useUpdateTokenAmount() {
     },
     [
       amountRaw,
+      clearAmountCommitPending,
       data,
       decimals,
       dispatch,
+      markAmountCommitPending,
       moneyAccountFlow,
       nestedCallIndex,
-      setMoneyAccountAmountCommitPending,
       to,
       transactionId,
     ],
@@ -192,6 +218,7 @@ export function useUpdateTokenAmount() {
 
   return {
     isUpdating,
+    markAmountCommitPending,
     updateTokenAmount,
   };
 }

@@ -402,5 +402,55 @@ describe('useUpdateTokenAmount', () => {
 
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
     });
+
+    it('stays true across a scheduling markAmountCommitPending call and the commit it precedes, then resolves once', async () => {
+      // Simulates `useTransactionCustomAmount` calling `markAmountCommitPending`
+      // synchronously when it schedules the debounced commit, ahead of the
+      // debounce delay that eventually invokes `updateTokenAmount`. Guards
+      // against double-counting the pending state: without the idempotency
+      // guard, this scheduling call and `updateTokenAmount`'s own pending
+      // mark would push the count to 2, and a single commit resolving would
+      // only bring it back to 1 - leaving Confirm disabled forever.
+      let resolveCommit: (value: boolean) => void = () => undefined;
+      jest.mocked(updateMoneyAccountDepositAmount).mockReturnValue(
+        new Promise((resolve) => {
+          resolveCommit = resolve;
+        }),
+      );
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'approve' },
+          { to: MOCK_RECIPIENT, type: 'moneyAccountDeposit' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      act(() => {
+        result.current.markAmountCommitPending();
+      });
+
+      await waitFor(() => expect(result.current.isUpdating).toBe(true));
+
+      act(() => {
+        result.current.updateTokenAmount('1.5');
+      });
+
+      expect(result.current.isUpdating).toBe(true);
+
+      await act(async () => {
+        resolveCommit(true);
+      });
+
+      await waitFor(() => expect(result.current.isUpdating).toBe(false));
+    });
   });
 });

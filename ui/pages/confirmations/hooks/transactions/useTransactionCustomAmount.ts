@@ -66,12 +66,21 @@ export function useTransactionCustomAmount({
     payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
   );
 
-  const { updateTokenAmount: updateTokenAmountCallback } =
-    useUpdateTokenAmount();
+  const {
+    updateTokenAmount: updateTokenAmountCallback,
+    markAmountCommitPending,
+  } = useUpdateTokenAmount();
 
   const debounceRef = useRef<DebouncedFunc<(value: string) => void> | null>(
     null,
   );
+  // Read via ref (not a dependency) in the scheduling effect below, matching
+  // `updateTokenAmountCallback`'s exclusion from that effect: recreation of
+  // this callback alone must not re-trigger it and restart the debounce.
+  const markAmountCommitPendingRef = useRef(markAmountCommitPending);
+  useEffect(() => {
+    markAmountCommitPendingRef.current = markAmountCommitPending;
+  }, [markAmountCommitPending]);
   const hasPrefilledMaxRef = useRef(false);
   const userEditedRef = useRef(false);
   // Full-precision human amount from payToken.balanceRaw for money-account
@@ -184,9 +193,23 @@ export function useTransactionCustomAmount({
     // Deposit Max keeps the raw-balance human amount so the fiat-derived
     // `amountHuman` cannot overwrite it after debounce.
     if (debounceRef.current) {
+      // Marked synchronously, before the debounce delay elapses, so Confirm
+      // stays disabled for the whole edit-to-commit window. Marking only
+      // once the debounce fires (as `updateTokenAmount` itself does) would
+      // leave a ~500ms gap where the button is enabled but the transaction
+      // still carries the pre-edit amount.
+      if (!disableUpdate) {
+        markAmountCommitPendingRef.current();
+      }
       debounceRef.current(depositMaxHumanRef.current ?? amountHuman);
     }
-  }, [amountHuman, isMaxAmount, payToken?.address, payToken?.chainId]);
+  }, [
+    amountHuman,
+    disableUpdate,
+    isMaxAmount,
+    payToken?.address,
+    payToken?.chainId,
+  ]);
 
   useEffect(() => {
     if (amountHumanDebounced !== '0') {
