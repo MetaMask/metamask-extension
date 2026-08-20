@@ -3,7 +3,14 @@ import {
   SimulationTokenStandard,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
+import {
+  Hex,
+  bytesToHex,
+  concatBytes,
+  createProjectLogger,
+  hexToBytes,
+  hexToNumber,
+} from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import {
   createERC1155BalanceChangeTerms,
@@ -137,6 +144,20 @@ function generateCaveats(
       }),
       args,
     });
+  } else {
+    log('Caveat - Native Balance Change - Enforce No Decrease', { recipient });
+
+    caveats.push({
+      enforcer: environment.caveatEnforcers.NativeBalanceChangeEnforcer,
+      // Enforce that the native balance does not decrease at all (zero
+      // tolerance). The `NativeBalanceChangeEnforcer` contract checks
+      // `after >= before - amount`, so an amount of `0` requires
+      // `after >= before`. We encode the 53-byte terms directly because
+      // `createNativeBalanceChangeTerms` rejects a zero balance, even though
+      // the on-chain enforcer accepts it.
+      terms: createNoNativeBalanceDecreaseTerms(recipient),
+      args,
+    });
   }
 
   for (const tokenChange of tokenBalanceChanges) {
@@ -217,11 +238,38 @@ function generateCaveats(
     }
   }
 
+  // Defensive invariant — unreachable since a native caveat is always emitted above
   if (caveats.length === 0) {
     throw new Error('No caveats generated for enforced simulations');
   }
 
   return caveats;
+}
+
+/**
+ * Encodes `NativeBalanceChangeEnforcer` terms that forbid any decrease in the
+ * recipient's native balance.
+ *
+ * The terms are 53 packed bytes (per the on-chain enforcer):
+ * byte 0 is the `enforceDecrease` flag (`0x01` = decrease), bytes 1-20 are the
+ * recipient address, and bytes 21-52 are the guardrail amount (here `0`, so the
+ * balance must not decrease at all: `after >= before - 0`).
+ *
+ * We encode these terms directly rather than via
+ * `createNativeBalanceChangeTerms` because that helper rejects a zero balance,
+ * even though the on-chain enforcer treats a zero amount as valid.
+ *
+ * @param recipient - The address whose native balance must not decrease.
+ * @returns The 53-byte hex-encoded enforcer terms.
+ */
+function createNoNativeBalanceDecreaseTerms(recipient: Hex): Hex {
+  const enforceDecreaseByte = new Uint8Array([1]);
+  const recipientBytes = hexToBytes(recipient);
+  const amountBytes = new Uint8Array(32);
+
+  return bytesToHex(
+    concatBytes([enforceDecreaseByte, recipientBytes, amountBytes]),
+  );
 }
 
 function getBalanceChangeType(enforceDecrease: boolean): BalanceChangeType {

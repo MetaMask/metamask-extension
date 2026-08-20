@@ -15,7 +15,6 @@ import { debounce, uniq } from 'lodash';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { Mutex } from 'async-mutex';
 import log from 'loglevel';
 import { rawChainData } from 'eth-chainlist';
 import { nanoid } from 'nanoid';
@@ -231,7 +230,6 @@ import {
   initializeRpcProviderDomains,
   getPlatform,
   getBooleanFlag,
-  convertEnglishWordlistIndicesToCodepoints,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiReferralMiddleware';
@@ -513,12 +511,6 @@ export default class MetamaskController extends EventEmitter {
     // external connections by origin
     // Do not modify directly. Use the associated methods.
     this.connections = {};
-
-    // lock to ensure only one seedless onboarding operation is running at once
-    // Shared with LegacyBackgroundApiService until
-    // changePasswordWithPasskeyVerification is migrated (the only remaining
-    // MetamaskController user of this mutex).
-    this.seedlessOperationMutex = new Mutex();
 
     // timer to reset passkey auto unlock suppressed state
     /** @type {NodeJS.Timeout | null} */
@@ -2855,42 +2847,6 @@ export default class MetamaskController extends EventEmitter {
         'KeyringController:verifyPassword',
       ),
 
-      // passkey management
-      generatePasskeyRegistrationOptions:
-        this.passkeyController.generateRegistrationOptions.bind(
-          this.passkeyController,
-        ),
-      generatePasskeyPostRegistrationAuthenticationOptions: (
-        registrationResponse,
-      ) =>
-        this.passkeyController.generatePostRegistrationAuthenticationOptions({
-          registrationResponse,
-        }),
-      generatePasskeyAuthenticationOptions:
-        this.passkeyController.generateAuthenticationOptions.bind(
-          this.passkeyController,
-        ),
-      protectVaultKeyWithPasskey: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'PasskeyController:protectVaultKeyWithPasskey',
-      ),
-      unlockWithPasskey: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:unlockWithPasskey',
-      ),
-      removePasskeyWithPasskeyVerification: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'PasskeyController:removePasskeyWithPasskeyVerification',
-      ),
-      removePasskeyWithPasswordVerification: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'PasskeyController:removePasskeyWithPasswordVerification',
-      ),
-      changePasswordWithPasskeyVerification: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
-      ),
-
       // network management
       setActiveNetwork: async (id) => {
         // The multichain network controller will proxy the call to the network controller
@@ -3325,11 +3281,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:exportAccount',
       ),
-      exportAccountsWithPasskey: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'PasskeyController:exportAccountsWithPasskey',
-      ),
-      exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -3958,26 +3909,6 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
       origin,
     });
-  }
-
-  /**
-   * Exports the Secret Recovery Phrase after verifying a passkey assertion,
-   * used as a password-less alternative to {@link getSeedPhrase}.
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
-   * @param {string} [keyringId] - The id of the HD keyring to export. Defaults to the primary keyring.
-   * @returns {Promise<Buffer>} The seed phrase encoded as an array of UTF-8 bytes.
-   */
-  async exportSeedPhraseWithPasskey(authenticationResponse, keyringId) {
-    // Assertion verification + vault-key export live in `PasskeyController`,
-    // which returns the raw wordlist-index bytes from `KeyringController`. The
-    // extension re-encodes them as UTF-8 codepoints for the UI.
-    const mnemonic = await this.passkeyController.exportSeedPhraseWithPasskey(
-      authenticationResponse,
-      keyringId,
-    );
-
-    return convertEnglishWordlistIndicesToCodepoints(mnemonic);
   }
 
   //=============================================================================
@@ -7071,11 +7002,6 @@ export default class MetamaskController extends EventEmitter {
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
-      // Temporarily inject this mutex until changePasswordWithPasskeyVerification
-      // is migrated to LegacyBackgroundApiService (the only remaining
-      // MetamaskController user of this mutex).
-      // TODO: Remove this once that migration is complete.
-      seedlessOperationMutex: this.seedlessOperationMutex,
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
       setupUntrustedCommunicationCaip:

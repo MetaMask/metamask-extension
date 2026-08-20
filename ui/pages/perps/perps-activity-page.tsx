@@ -167,7 +167,7 @@ const PerpsActivityPage = () => {
   }
 
   return (
-    <Page data-testid="perps-activity-page">
+    <Page data-testid="parent-selector-perps-activity">
       <Header
         startAccessory={
           <ButtonIcon

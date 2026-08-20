@@ -571,7 +571,9 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
     });
 
@@ -1210,7 +1212,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(
-        screen.queryByTestId('perps-order-entry-page'),
+        screen.queryByTestId('parent-selector-perps-order-entry'),
       ).not.toBeInTheDocument();
     });
 
@@ -1226,7 +1228,7 @@ describe('PerpsOrderEntryPage', () => {
         screen.queryByText(messages.perpsMarketNotFound.message),
       ).not.toBeInTheDocument();
       expect(
-        screen.queryByTestId('perps-order-entry-page'),
+        screen.queryByTestId('parent-selector-perps-order-entry'),
       ).not.toBeInTheDocument();
     });
 
@@ -3324,7 +3326,9 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
   });
 
@@ -3381,7 +3385,9 @@ describe('PerpsOrderEntryPage', () => {
         ]);
       });
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
 
     it('preserves missing markPrice when absent from the stream update', async () => {
@@ -3401,7 +3407,9 @@ describe('PerpsOrderEntryPage', () => {
         ]);
       });
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
 
     it('ignores price updates for other symbols', async () => {
@@ -3418,7 +3426,9 @@ describe('PerpsOrderEntryPage', () => {
         ]);
       });
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
 
     it('processes order book updates from subscribeToOrderBook callback', async () => {
@@ -3437,7 +3447,9 @@ describe('PerpsOrderEntryPage', () => {
         });
       });
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
 
     it('ignores empty order book updates', async () => {
@@ -3456,7 +3468,9 @@ describe('PerpsOrderEntryPage', () => {
         });
       });
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
   });
 

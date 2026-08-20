@@ -2274,7 +2274,7 @@ const PerpsOrderEntryPage = () => {
   return (
     <form
       className="main-container asset__container relative overflow-hidden"
-      data-testid="perps-order-entry-page"
+      data-testid="parent-selector-perps-order-entry"
       onSubmit={handleFormSubmit}
     >
       <OrderEntryHeader
