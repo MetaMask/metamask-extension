@@ -154,6 +154,15 @@ export function useTransactionCustomAmount({
     [amountFiat, hasBalanceUsdOverride, tokenFiatRate],
   );
 
+  // Undebounced counterpart to `hasInput`. Quote-derived results (fee,
+  // estimated time, total) must disappear the moment the field is cleared
+  // rather than lingering for the debounce window on a stale quote, so they
+  // are gated on this instead of `hasInput`.
+  const hasAmount = useMemo(() => {
+    const value = new BigNumber(amountFiat || '0');
+    return value.isFinite() && value.gt(0);
+  }, [amountFiat]);
+
   // The raw-balance Max amount is token-specific and must not be reused after
   // a Pay with switch. A user-typed USD amount is not: deposit prefill already
   // recomputes on token change and only skips overwrite when userEditedRef is
@@ -464,6 +473,7 @@ export function useTransactionCustomAmount({
     amountFiat,
     amountHuman,
     amountHumanDebounced,
+    hasAmount,
     hasInput,
     isDepositPrefillEnabled: shouldUseDepositPrefill,
     // A pay token or funding account change restarts the prefill computation,

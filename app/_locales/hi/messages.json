@@ -9346,9 +9346,6 @@
   "selectNFTPrivacyPreference": {
     "message": "NFT ऑटोडिटेक्शन चालू करें"
   },
-  "selectNetworkToFilter": {
-    "message": "फ़िल्टर करने के लिए नेटवर्क चुनें"
-  },
   "selectPathHelp": {
     "message": "यदि आपको अपनी पसंद के हिसाब से अकाउंट दिखाई नहीं देते हैं, तो HD पथ या मौजूदा चुना गया नेटवर्क बदलने की कोशिश करें।"
   },

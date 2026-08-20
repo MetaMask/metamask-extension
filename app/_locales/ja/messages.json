@@ -9350,9 +9350,6 @@
   "selectNFTPrivacyPreference": {
     "message": "NFTの自動検出を有効にする"
   },
-  "selectNetworkToFilter": {
-    "message": "ネットワークを選択して絞り込む"
-  },
   "selectPathHelp": {
     "message": "アカウントが見当たらない場合は、HDパスまたは現在選択されているネットワークを切り替えてみてください。"
   },

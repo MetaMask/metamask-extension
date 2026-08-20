@@ -9354,9 +9354,6 @@
   "selectNFTPrivacyPreference": {
     "message": "Habilite la autodetección de NFT"
   },
-  "selectNetworkToFilter": {
-    "message": "Selecciona la red para filtrar"
-  },
   "selectPathHelp": {
     "message": "Si no ve las cuentas previstas, intente cambiar la ruta HD o la red seleccionada actualmente."
   },

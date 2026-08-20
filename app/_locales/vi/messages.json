@@ -9354,9 +9354,6 @@
   "selectNFTPrivacyPreference": {
     "message": "Bật tính năng Tự động phát hiện NFT"
   },
-  "selectNetworkToFilter": {
-    "message": "Chọn mạng để lọc"
-  },
   "selectPathHelp": {
     "message": "Nếu bạn không thấy các tài khoản như mong đợi, hãy chuyển đổi đường dẫn HD hoặc mạng đã chọn hiện tại."
   },

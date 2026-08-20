@@ -9346,9 +9346,6 @@
   "selectNFTPrivacyPreference": {
     "message": "Включите автоопределение NFT"
   },
-  "selectNetworkToFilter": {
-    "message": "Выберите сеть для фильтрации"
-  },
   "selectPathHelp": {
     "message": "Если вы не видите ожидаемые счета, попробуйте переключиться на путь HD или текущую выбранную сеть."
   },
