@@ -296,6 +296,27 @@ function generateTokensControllerState(account) {
       delete data.myAccount;
     }
 
+    if (FIXTURES_CONFIG.withErc20TokenCount) {
+      const mainnetTokens = tokens.allTokens[CHAIN_IDS.MAINNET];
+      if (mainnetTokens?.[account]) {
+        const accountTokens = mainnetTokens[account];
+        const targetCount = FIXTURES_CONFIG.withErc20TokenCount;
+        const seedTokens = [...accountTokens];
+        let index = accountTokens.length;
+        while (accountTokens.length < targetCount) {
+          const template = seedTokens[index % seedTokens.length];
+          accountTokens.push({
+            ...template,
+            symbol: `TK${index}`,
+            address: normalizeSafeAddress(
+              `0x${index.toString(16).padStart(40, '0')}`,
+            ),
+          });
+          index += 1;
+        }
+      }
+    }
+
     return tokens;
   }
   return {};

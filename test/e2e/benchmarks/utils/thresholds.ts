@@ -287,6 +287,36 @@ const BRIDGE_USER_ACTIONS = {
   },
 } satisfies ThresholdConfig;
 
+const SCRATCH_7550_RELAXED = {
+  p75: { warn: 60_000, fail: 999_999 },
+  p95: { warn: 90_000, fail: 999_999 },
+  ciMultiplier: CI_MULTIPLIER.DEFAULT,
+} as const;
+
+const TOKEN_SEARCH_POWER_USER = {
+  token_search_power_user: SCRATCH_7550_RELAXED,
+  longTaskMaxDuration: SCRATCH_7550_RELAXED,
+  tbt: SCRATCH_7550_RELAXED,
+} satisfies ThresholdConfig;
+
+const ACCOUNT_SWITCH_POWER_USER = {
+  account_switch: SCRATCH_7550_RELAXED,
+  longTaskMaxDuration: SCRATCH_7550_RELAXED,
+  tbt: SCRATCH_7550_RELAXED,
+} satisfies ThresholdConfig;
+
+const NETWORK_SWITCH_POWER_USER = {
+  network_switch: SCRATCH_7550_RELAXED,
+  longTaskMaxDuration: SCRATCH_7550_RELAXED,
+  tbt: SCRATCH_7550_RELAXED,
+} satisfies ThresholdConfig;
+
+const ACTIVITY_SCROLL_POWER_USER = {
+  activity_list_scroll: SCRATCH_7550_RELAXED,
+  longTaskMaxDuration: SCRATCH_7550_RELAXED,
+  tbt: SCRATCH_7550_RELAXED,
+} satisfies ThresholdConfig;
+
 const DAPP_PAGE_LOAD = {
   pageLoadTime: {
     p75: { warn: 1450, fail: 1700 },
@@ -319,7 +349,11 @@ const BENCHMARK_THRESHOLDS = {
   confirmTx: CONFIRM_TX,
   bridgeUserActions: BRIDGE_USER_ACTIONS,
 
-  // User journey benchmarks (chrome-webpack test build)
+  tokenSearchPowerUser: TOKEN_SEARCH_POWER_USER,
+  accountSwitch: ACCOUNT_SWITCH_POWER_USER,
+  networkSwitch: NETWORK_SWITCH_POWER_USER,
+  activityScroll: ACTIVITY_SCROLL_POWER_USER,
+
   onboardingImportWallet: ONBOARDING_IMPORT_WALLET,
   onboardingNewWallet: ONBOARDING_NEW_WALLET,
   importSrpHome: IMPORT_SRP_HOME,

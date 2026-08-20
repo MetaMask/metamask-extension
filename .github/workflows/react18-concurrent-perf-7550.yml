@@ -1,0 +1,95 @@
+name: React 18 concurrent perf (#7550 scratch)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - test/7550-react-18-performance
+
+permissions:
+  contents: read
+
+concurrency:
+  group: react18-concurrent-perf-7550-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test-webpack:
+    name: build-test-webpack
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TZ: UTC
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Run tsc
+        run: yarn webpack:tsc
+
+      - name: Run build
+        run: yarn build:test --zip
+
+      - name: Validate source maps
+        run: yarn validate-source-maps
+
+      - name: Upload artifact 'build-test-webpack'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-test-webpack
+          path: |
+            builds
+            dist
+
+  compare:
+    name: before/after benchmarks + report
+    needs: build-test-webpack
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      SELENIUM_BROWSER: chrome
+      SELENIUM_HEADLESS: true
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      BENCHMARK_ITERATIONS: 5
+      BENCHMARK_RETRIES: 2
+      SKIP_AFTER_BUILD: 1
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          fetch-depth: 0
+          skip-allow-scripts: true
+
+      - name: Download artifact 'build-test-webpack'
+        uses: actions/download-artifact@v4
+        with:
+          name: build-test-webpack
+
+      - name: Install Foundry (anvil)
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Run before/after comparison
+        run: |
+          chmod +x test/e2e/benchmarks/scratch-7550/run-comparison.sh
+          ./test/e2e/benchmarks/scratch-7550/run-comparison.sh test-artifacts/scratch-7550
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f test-artifacts/scratch-7550/react18-concurrent-perf-report.md ]; then
+            echo '### React 18 concurrent perf report' >> "$GITHUB_STEP_SUMMARY"
+            cat test-artifacts/scratch-7550/react18-concurrent-perf-report.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Report not generated — check job logs.' >> "$GITHUB_STEP_SUMMARY"
+          fi
