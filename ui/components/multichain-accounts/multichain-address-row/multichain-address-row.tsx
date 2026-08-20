@@ -97,9 +97,12 @@ export const MultichainAddressRow = ({
   const timeoutRef = useRef<number | null>(null);
 
   // Update `subText` when the address prop changes
-  useEffect(() => {
+  const [prevTruncatedAddress, setPrevTruncatedAddress] =
+    useState(truncatedAddress);
+  if (truncatedAddress !== prevTruncatedAddress) {
+    setPrevTruncatedAddress(truncatedAddress);
     setSubText(truncatedAddress);
-  }, [address, truncatedAddress]);
+  }
 
   // Cleanup timeout when component unmounts
   useEffect(() => {

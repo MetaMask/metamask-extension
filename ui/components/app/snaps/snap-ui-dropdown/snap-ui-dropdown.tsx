@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import classnames from 'clsx';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
@@ -35,12 +35,14 @@ export const SnapUIDropdown = ({
   const initialValue = getValue(name, form) as string;
 
   const [value, setValue] = useState(initialValue ?? '');
+  const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
 
-  useEffect(() => {
+  if (initialValue !== prevInitialValue) {
+    setPrevInitialValue(initialValue);
     if (initialValue !== undefined && initialValue !== null) {
       setValue(initialValue);
     }
-  }, [initialValue]);
+  }
 
   const handleChange = (newValue: string) => {
     setValue(newValue);

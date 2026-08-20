@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import classnames from 'clsx';
 import { Checkbox } from '@metamask/design-system-react';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
@@ -39,12 +39,14 @@ export const SnapUICheckbox = ({
   const initialValue = getValue(name, form) as boolean;
 
   const [value, setValue] = useState(initialValue ?? false);
+  const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
 
-  useEffect(() => {
+  if (initialValue !== prevInitialValue) {
+    setPrevInitialValue(initialValue);
     if (initialValue !== undefined && initialValue !== null) {
       setValue(initialValue);
     }
-  }, [initialValue]);
+  }
 
   const handleChange = () => {
     // ToggleButton passes the current value; design-system Checkbox passes the

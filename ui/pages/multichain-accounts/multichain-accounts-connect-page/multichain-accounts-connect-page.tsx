@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import {
   generateCaip25Caveat,
   getAllNamespacesFromCaip25CaveatValue,
@@ -470,24 +469,17 @@ export const MultichainAccountsConnectPage = ({
     [defaultConnectChainIds, supportedAccountGroups],
   );
 
-  useEffect(() => {
-    const defaultAccountGroupIds = suggestedAccountGroups.map(
-      (group) => group.id,
-    );
-    if (
-      !userHasModifiedAccountSelection &&
-      !isEqual(defaultAccountGroupIds, selectedAccountGroupIds)
-    ) {
-      handleAccountGroupIdsSelected(defaultAccountGroupIds, {
-        isUserModified: false,
-      });
-    }
-  }, [
-    userHasModifiedAccountSelection,
-    handleAccountGroupIdsSelected,
-    selectedAccountGroupIds,
-    suggestedAccountGroups,
-  ]);
+  const defaultAccountGroupIds = suggestedAccountGroups.map(
+    (group) => group.id,
+  );
+
+  const effectiveSelectedAccountGroupIds = userHasModifiedAccountSelection
+    ? selectedAccountGroupIds
+    : defaultAccountGroupIds;
+
+  const effectiveSelectedCaipAccountIds = userHasModifiedAccountSelection
+    ? selectedCaipAccountIds
+    : suggestedCaipAccountIds;
 
   const setModeToEditAccounts = useCallback(() => {
     trackEvent(
@@ -513,7 +505,7 @@ export const MultichainAccountsConnectPage = ({
         ...request.permissions,
         ...generateCaip25Caveat(
           requestedCaip25CaveatValueWithExistingPermissions,
-          selectedCaipAccountIds,
+          effectiveSelectedCaipAccountIds,
           defaultConnectChainIds,
         ),
       },
@@ -522,7 +514,7 @@ export const MultichainAccountsConnectPage = ({
   }, [
     request,
     requestedCaip25CaveatValueWithExistingPermissions,
-    selectedCaipAccountIds,
+    effectiveSelectedCaipAccountIds,
     defaultConnectChainIds,
     approveConnection,
   ]);
@@ -536,16 +528,16 @@ export const MultichainAccountsConnectPage = ({
     trustSignalState === TrustSignalDisplayState.Warning;
 
   const seedAddresses = useSelector((state) =>
-    selectedAccountGroupIds.map((id) =>
+    effectiveSelectedAccountGroupIds.map((id) =>
       getIconSeedAddressByAccountGroupId(state, id),
     ),
   );
 
   const singleAccountData = useMemo(() => {
-    if (selectedAccountGroupIds.length !== 1) {
+    if (effectiveSelectedAccountGroupIds.length !== 1) {
       return null;
     }
-    const accountGroupId = selectedAccountGroupIds[0];
+    const accountGroupId = effectiveSelectedAccountGroupIds[0];
     const accountGroup = supportedAccountGroups.find(
       (group) => group.id === accountGroupId,
     );
@@ -561,7 +553,7 @@ export const MultichainAccountsConnectPage = ({
       balance: formatCurrencyWithMinThreshold(balance, currency),
     };
   }, [
-    selectedAccountGroupIds,
+    effectiveSelectedAccountGroupIds,
     supportedAccountGroups,
     wallets,
     formatCurrencyWithMinThreshold,
@@ -647,11 +639,11 @@ export const MultichainAccountsConnectPage = ({
                   privacyMode={privacyMode}
                 />
               )}
-              {selectedAccountGroupIds.length > 1 && (
+              {effectiveSelectedAccountGroupIds.length > 1 && (
                 <MultiAccountRow
                   seedAddresses={seedAddresses}
                   onEdit={setModeToEditAccounts}
-                  accountsCount={selectedAccountGroupIds.length}
+                  accountsCount={effectiveSelectedAccountGroupIds.length}
                 />
               )}
             </Box>
@@ -714,7 +706,7 @@ export const MultichainAccountsConnectPage = ({
       title={t('selectAccounts')}
       confirmButtonText={t('save')}
       supportedAccountGroups={supportedAccountGroups}
-      defaultSelectedAccountGroups={selectedAccountGroupIds}
+      defaultSelectedAccountGroups={effectiveSelectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}
       onClose={() => setPageMode(MultichainAccountsConnectPageMode.Summary)}
     />
