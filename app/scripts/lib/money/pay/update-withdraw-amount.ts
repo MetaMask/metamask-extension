@@ -61,11 +61,14 @@ async function updateMoneyAccountWithdrawAmountInternal(
   }
   const { moneyAccountAddress, vaultConfig, provider } = context;
 
-  // ROUND_UP, matching mobile's withdraw amount updater — the ROUND_DOWN rule
-  // applies only to the payment-override Max path, where the amount is bounded
-  // by the withdrawable balance rather than typed by the user.
+  // ROUND_DOWN, matching the payment-override withdraw path
+  // (`payment-override-callback.ts`) that actually executes the withdrawal.
+  // This commit only re-encodes the confirmation's preview calldata; rounding
+  // up here would show/commit an amount the payment-override path can't
+  // (and won't) submit, since it always rounds down to avoid requesting more
+  // atomic units than the withdrawable balance.
   const amountRaw = calcTokenValue(amountHuman, MUSD_DECIMALS)
-    .round(0, BigNumber.ROUND_UP)
+    .round(0, BigNumber.ROUND_DOWN)
     .toFixed(0);
 
   // A cleared amount field arrives as zero; the builder throws on zero rather

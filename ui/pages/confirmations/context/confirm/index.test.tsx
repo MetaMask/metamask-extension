@@ -156,13 +156,40 @@ describe('ConfirmContextProvider', () => {
     const store = createStore();
     const { result, rerender } = renderContextProvider(store);
 
-    result.current.setMoneyAccountAmountCommitPending(true);
+    result.current.setMoneyAccountAmountCommitPending(true, 'test-id');
     rerender();
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
 
     mockCurrentConfirmation = { id: 'next-id', type: 'transaction' };
     rerender();
 
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
+  });
+
+  it('ignores a stale commit resolving for a confirmation the user has already left', () => {
+    const store = createStore();
+    const { result, rerender } = renderContextProvider(store);
+
+    // Confirmation "test-id" starts a commit, then the user moves on to
+    // "next-id" before it resolves.
+    result.current.setMoneyAccountAmountCommitPending(true, 'test-id');
+    mockCurrentConfirmation = { id: 'next-id', type: 'transaction' };
+    rerender();
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
+
+    // "next-id" starts its own commit.
+    result.current.setMoneyAccountAmountCommitPending(true, 'next-id');
+    rerender();
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
+
+    // The abandoned "test-id" commit's `finally` resolves late; it must not
+    // clear "next-id"'s still-in-flight commit.
+    result.current.setMoneyAccountAmountCommitPending(false, 'test-id');
+    rerender();
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
+
+    result.current.setMoneyAccountAmountCommitPending(false, 'next-id');
+    rerender();
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
   });
 
