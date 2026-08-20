@@ -8536,6 +8536,9 @@
     "message": "Buy successful",
     "description": "Title for the successful ramp buy order toast"
   },
+  "rampsPayWith": {
+    "message": "Pay with"
+  },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"
   },

@@ -8,7 +8,6 @@ type RampsQuotesForPaymentMethodBannerProps = {
 
 /**
  * Banner noting which payment method the listed quotes apply to.
- *
  * @param options0
  * @param options0.paymentMethodName
  */
