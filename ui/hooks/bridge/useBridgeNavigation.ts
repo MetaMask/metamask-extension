@@ -70,7 +70,7 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
      * Prepared sendBundle transaction metadata for hardware-wallet signing on
      * the shared signing page.
      */
-    hardwareWalletSigningState?: {
+    sendBundle?: {
       txMeta: TransactionMeta;
       needsTwoConfirmations: boolean;
       returnRoute?: string;
@@ -105,12 +105,12 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
 };
 
 const clearSendBundleIfPresent = (state: BridgeNavigationOptions['state']) =>
-  state.hardwareWalletSigningState ? { hardwareWalletSigningState: null } : {};
+  Object.hasOwn(state, 'sendBundle') ? { sendBundle: null } : {};
 
 /**
  * Builds a "cleared" bridge navigation state: preserves any extra props from
  * `baseState` while resetting `bridgeState`, `token`, and any existing
- * `hardwareWalletSigningState` to null and setting `stayOnHomePage` to the given value.
+ * `sendBundle` to null and setting `stayOnHomePage` to the given value.
  *
  * @param baseState - The base navigation state to spread (extra props pass through).
  * @param stayOnHomePage - Whether the user should be kept on the home page.
@@ -297,7 +297,7 @@ export const useBridgeNavigation = () => {
    */
   const navigateToHwSigningPage = useCallback(
     (nextState: Partial<BridgeNavigationOptions['state']> = {}) => {
-      const hasSendBundleState = nextState.hardwareWalletSigningState;
+      const hasSendBundleState = Object.hasOwn(nextState, 'sendBundle');
       navigate(`${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`, {
         // For the sendBundle (send) flow, the signing page replaces the
         // /confirm-transaction entry so that cancelling returns the user
@@ -347,7 +347,6 @@ export const useBridgeNavigation = () => {
 
   return {
     bridgeState: memoizedBridgeState,
-    hardwareWalletSigningState: state.hardwareWalletSigningState,
     /**
      * The token propagated through the bridge navigation state when the Swap button is clicked
      * from the asset page

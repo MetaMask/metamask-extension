@@ -170,7 +170,7 @@ function createSendBundleLocationState(
   } = {},
 ) {
   return {
-    hardwareWalletSigningState: {
+    sendBundle: {
       txMeta: overrides.txMeta ?? createSendBundleTxMeta(),
       needsTwoConfirmations: overrides.needsTwoConfirmations ?? true,
       approvalRequestId: overrides.approvalRequestId ?? APPROVAL_ID,

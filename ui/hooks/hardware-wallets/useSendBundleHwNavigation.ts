@@ -53,7 +53,7 @@ export function useSendBundleHwNavigation({
       navigateToHwSigningPage({
         bridgeState: null,
         token: null,
-        hardwareWalletSigningState: {
+        sendBundle: {
           txMeta: newTransactionMeta,
           needsTwoConfirmations: Boolean(
             newTransactionMeta.batchTransactions?.length,
