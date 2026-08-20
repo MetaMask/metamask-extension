@@ -57,6 +57,7 @@ function runHook({
   isMaxAmount = false,
   requiredTokens = [],
   updateTokenAmountMock = jest.fn(),
+  markAmountCommitPendingMock = jest.fn(),
   prefillMaxOnLoad = false,
   transactionMeta = MOCK_TRANSACTION_META,
   depositPrefill = DISABLED_DEPOSIT_PREFILL,
@@ -74,6 +75,7 @@ function runHook({
   isMaxAmount?: boolean;
   requiredTokens?: { amountUsd?: string; skipIfBalance?: boolean }[];
   updateTokenAmountMock?: jest.Mock;
+  markAmountCommitPendingMock?: jest.Mock;
   prefillMaxOnLoad?: boolean;
   transactionMeta?: TransactionMeta;
   depositPrefill?: ReturnType<typeof useDepositPrefillAmount>;
@@ -119,6 +121,7 @@ function runHook({
   });
   jest.mocked(useUpdateTokenAmountModule.useUpdateTokenAmount).mockReturnValue({
     updateTokenAmount: updateTokenAmountMock,
+    markAmountCommitPending: markAmountCommitPendingMock,
     isUpdating: false,
   });
   useDepositPrefillAmountMock.mockReturnValue(depositPrefill);
@@ -532,6 +535,51 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(updateTokenAmountMock).toHaveBeenCalledWith('50');
+    });
+
+    it('marks the amount commit pending synchronously, before the debounce fires updateTokenAmount', () => {
+      // Confirm must stay disabled for the whole edit-to-commit window, not
+      // just once the 500ms debounce actually invokes updateTokenAmount -
+      // otherwise a fast Confirm click inside the debounce window can submit
+      // stale, pre-edit calldata.
+      const updateTokenAmountMock = jest.fn();
+      const markAmountCommitPendingMock = jest.fn();
+
+      const { result } = runHook({
+        disableUpdate: false,
+        updateTokenAmountMock,
+        markAmountCommitPendingMock,
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      expect(markAmountCommitPendingMock).toHaveBeenCalled();
+      expect(updateTokenAmountMock).not.toHaveBeenCalled();
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('50');
+    });
+
+    it('does not mark the amount commit pending when disableUpdate is true', () => {
+      const updateTokenAmountMock = jest.fn();
+      const markAmountCommitPendingMock = jest.fn();
+
+      const { result } = runHook({
+        disableUpdate: true,
+        updateTokenAmountMock,
+        markAmountCommitPendingMock,
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      expect(markAmountCommitPendingMock).not.toHaveBeenCalled();
     });
 
     it('does not call updateTokenAmount when disableUpdate is true and percentage button is clicked', () => {
@@ -1136,6 +1184,7 @@ describe('useTransactionCustomAmount', () => {
         .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
         .mockReturnValue({
           updateTokenAmount: newUpdateTokenAmountMock,
+          markAmountCommitPending: jest.fn(),
           isUpdating: false,
         });
 
@@ -1177,6 +1226,7 @@ describe('useTransactionCustomAmount', () => {
           .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
           .mockReturnValue({
             updateTokenAmount: newMock,
+            markAmountCommitPending: jest.fn(),
             isUpdating: false,
           });
 
