@@ -10,6 +10,14 @@ import {
   type DelegationMessenger,
   getDelegationTransaction,
 } from '../lib/transaction/delegation';
+import { handleUnapprovedTransactionAddedForMoneyAccount } from '../lib/money/pay/account-override';
+import { getMoneyAccountAmountData } from '../lib/money/pay/amount-data-callback';
+import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
+import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
+import { getMoneyAccountPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
+import { updateMoneyAccountDepositAmount } from '../lib/money/pay/update-deposit-amount';
+import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
+import type { MoneyPayMessenger } from '../lib/money/pay/pay-context';
 import type {
   MessengerClientInitFunction,
   MessengerClientInitResult,
@@ -34,21 +42,64 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
     );
 
   const messengerClient = new TransactionPayController({
+    getAmountData: (amountDataRequest) =>
+      getMoneyAccountAmountData(
+        amountDataRequest,
+        initMessenger as MoneyPayMessenger,
+      ),
     getDelegationTransaction: getDelegationTransactionCallback,
+    getPaymentOverrideData: (paymentOverrideRequest) =>
+      getMoneyAccountPaymentOverrideData(
+        paymentOverrideRequest,
+        initMessenger as MoneyPayMessenger,
+      ),
     getStrategy,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });
 
-  const api = getApi(messengerClient);
+  initMessenger.subscribe(
+    'TransactionController:unapprovedTransactionAdded',
+    (transaction) =>
+      handleUnapprovedTransactionAddedForMoneyAccount(
+        messengerClient,
+        initMessenger as MoneyPayMessenger,
+        transaction,
+      ),
+  );
+
+  const api = getApi(messengerClient, initMessenger as MoneyPayMessenger);
 
   return { messengerClient, api };
 };
 
 function getApi(
   messengerClient: TransactionPayController,
+  moneyPayMessenger: MoneyPayMessenger,
 ): MessengerClientInitResult<TransactionPayController>['api'] {
   return {
+    createMoneyAccountDepositTransaction: (batchId: Hex) =>
+      createMoneyAccountDepositTransaction(moneyPayMessenger, batchId),
+    createMoneyAccountWithdrawTransaction: () =>
+      createMoneyAccountWithdrawTransaction(moneyPayMessenger),
+    updateMoneyAccountWithdrawAmount: (
+      transactionId: string,
+      amountHuman: string,
+    ) =>
+      updateMoneyAccountWithdrawAmount(
+        moneyPayMessenger,
+        transactionId,
+        amountHuman,
+      ),
+    updateMoneyAccountDepositAmount: (
+      transactionId: string,
+      amountHuman: string,
+    ) =>
+      updateMoneyAccountDepositAmount(
+        moneyPayMessenger,
+        transactionId,
+        amountHuman,
+      ),
     setTransactionPayIsMaxAmount: (
       transactionId: string,
       isMaxAmount: boolean,

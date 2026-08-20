@@ -43,7 +43,9 @@ describe('TransactionPayControllerInit', () => {
 
     const controllerMock = jest.mocked(TransactionPayController);
     expect(controllerMock).toHaveBeenCalledWith({
+      getAmountData: expect.any(Function),
       getDelegationTransaction: expect.any(Function),
+      getPaymentOverrideData: expect.any(Function),
       getStrategy: expect.any(Function),
       messenger: expect.any(Object),
       state: undefined,
