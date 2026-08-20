@@ -14,7 +14,7 @@ import {
   type GetPaymentOverrideDataRequest,
   type GetPaymentOverrideDataResponse,
 } from '@metamask/transaction-pay-controller';
-import type { Hex } from '@metamask/utils';
+import { isStrictHexString, type Hex } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
 import { calcTokenValue } from '../../../../../shared/lib/swaps-utils';
 import {
@@ -283,13 +283,13 @@ export async function getMoneyAccountPaymentOverrideData(
       );
     }
 
-    if (!transaction.txParams?.from) {
+    if (!isStrictHexString(transaction.txParams?.from)) {
       return { calls: [] };
     }
 
     const calls = await getMoneyAccountWithdrawPaymentOverrideData(
       messenger,
-      transaction.txParams.from as Hex,
+      transaction.txParams.from,
       amount,
       atomic,
     );
