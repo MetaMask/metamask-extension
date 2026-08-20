@@ -772,7 +772,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientBalanceAlerts.test.ts": {
-      "MetaMask: Background connection not initialized": 60
+      "MetaMask: Background connection not initialized": 68
     },
     "ui/pages/confirmations/hooks/alerts/useNetworkAndOriginSwitchingAlerts.test.ts": {
       "MetaMask: Background connection not initialized": 6
@@ -825,14 +825,8 @@
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/pages/keychains/restore-vault.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 9
-    },
     "ui/pages/multi-srp/import-srp/import-srp.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 881
-    },
-    "ui/pages/multichain-accounts/multichain-account-private-key-list-page/multichain-account-private-key-list-page.test.tsx": {
-      "React: Missing key props in lists": 1
     },
     "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.test.tsx": {
       "MetaMask: Background connection not initialized": 3,
