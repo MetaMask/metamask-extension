@@ -1,6 +1,7 @@
 import React, {
   ReactElement,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -25,6 +26,21 @@ export type ConfirmContextType = {
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
   /** Route to use for cancel / reject / auto-exit; captured once from URL on mount. */
   goBackTo: string | undefined;
+  /**
+   * Whether a Money Account deposit/withdrawal amount commit is currently in
+   * flight for this confirmation. Set by `useUpdateTokenAmount`, read by the
+   * footer to keep Confirm disabled until the commit lands, so a fast
+   * Confirm click can't sign against stale/placeholder calldata.
+   */
+  isMoneyAccountAmountCommitPending: boolean;
+  /**
+   * Increments/decrements the pending count for `isMoneyAccountAmountCommitPending`.
+   * A count rather than a boolean: two commits can overlap (a superseded
+   * commit's `finally` can run after a newer one has already started), and a
+   * plain boolean would let the older commit's completion incorrectly clear
+   * the flag while the newer one is still in flight.
+   */
+  setMoneyAccountAmountCommitPending: (isPending: boolean) => void;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -45,6 +61,23 @@ export const ConfirmContextProvider = ({
   const [goBackTo] = useState(goBackFromUrl);
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
+  const moneyAccountAmountCommitPendingCountRef = useRef(0);
+  const [
+    isMoneyAccountAmountCommitPending,
+    setIsMoneyAccountAmountCommitPending,
+  ] = useState(false);
+  const setMoneyAccountAmountCommitPending = useCallback(
+    (isPending: boolean) => {
+      moneyAccountAmountCommitPendingCountRef.current = Math.max(
+        0,
+        moneyAccountAmountCommitPendingCountRef.current + (isPending ? 1 : -1),
+      );
+      setIsMoneyAccountAmountCommitPending(
+        moneyAccountAmountCommitPendingCountRef.current > 0,
+      );
+    },
+    [],
+  );
   const { currentConfirmation: currentConfirmationFromHook } =
     useCurrentConfirmation(confirmationId);
   const currentConfirmation =
@@ -92,12 +125,16 @@ export const ConfirmContextProvider = ({
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
+      isMoneyAccountAmountCommitPending,
+      setMoneyAccountAmountCommitPending,
     }),
     [
       currentConfirmation,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
+      isMoneyAccountAmountCommitPending,
+      setMoneyAccountAmountCommitPending,
     ],
   );
 
@@ -121,5 +158,7 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
+    isMoneyAccountAmountCommitPending: boolean;
+    setMoneyAccountAmountCommitPending: (isPending: boolean) => void;
   };
 };

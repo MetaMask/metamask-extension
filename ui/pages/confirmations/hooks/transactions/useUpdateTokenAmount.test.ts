@@ -1,10 +1,14 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { act } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateEditableParams } from '../../../../store/actions';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';
+import {
+  updateMoneyAccountDepositAmount,
+  updateMoneyAccountWithdrawAmount,
+} from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
@@ -21,6 +25,17 @@ jest.mock(
       '../../../../store/controller-actions/transaction-controller',
     ),
     updateAtomicBatchData: jest.fn(),
+  }),
+);
+
+jest.mock(
+  '../../../../store/controller-actions/transaction-pay-controller',
+  () => ({
+    ...jest.requireActual(
+      '../../../../store/controller-actions/transaction-pay-controller',
+    ),
+    updateMoneyAccountDepositAmount: jest.fn(),
+    updateMoneyAccountWithdrawAmount: jest.fn(),
   }),
 );
 
@@ -104,6 +119,72 @@ describe('useUpdateTokenAmount', () => {
   });
 
   describe('updateTokenAmount', () => {
+    it('dispatches the money deposit commit path for a money account deposit batch', () => {
+      const updateMoneyAmountMock = jest
+        .mocked(updateMoneyAccountDepositAmount)
+        .mockResolvedValue(true);
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'approve' },
+          { to: MOCK_RECIPIENT, type: 'moneyAccountDeposit' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        // The placeholder batch has no transfer calldata to parse.
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      act(() => {
+        result.current.updateTokenAmount('1.5');
+      });
+
+      expect(updateMoneyAmountMock).toHaveBeenCalledWith(
+        transactionMeta.id,
+        '1.5',
+      );
+      expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
+      expect(updateEditableParamsMock).not.toHaveBeenCalled();
+    });
+
+    it('dispatches the withdrawal commit path for a money account withdrawal batch', () => {
+      const updateWithdrawAmountMock = jest
+        .mocked(updateMoneyAccountWithdrawAmount)
+        .mockResolvedValue(true);
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'moneyAccountWithdraw' },
+          { to: MOCK_RECIPIENT, type: 'transfer' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      act(() => {
+        result.current.updateTokenAmount('2');
+      });
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
+        transactionMeta.id,
+        '2',
+      );
+      expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
+    });
+
     it('does nothing when data is undefined', () => {
       const { result } = runHook({
         tokenTransferData: {
@@ -244,6 +325,82 @@ describe('useUpdateTokenAmount', () => {
       const { result } = runHook();
 
       expect(result.current.isUpdating).toBe(false);
+    });
+
+    it('is true while a money deposit amount commit is in flight, and false once it resolves', async () => {
+      let resolveCommit: (value: boolean) => void = () => undefined;
+      jest.mocked(updateMoneyAccountDepositAmount).mockReturnValue(
+        new Promise((resolve) => {
+          resolveCommit = resolve;
+        }),
+      );
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'approve' },
+          { to: MOCK_RECIPIENT, type: 'moneyAccountDeposit' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      expect(result.current.isUpdating).toBe(false);
+
+      act(() => {
+        result.current.updateTokenAmount('1.5');
+      });
+
+      await waitFor(() => expect(result.current.isUpdating).toBe(true));
+
+      await act(async () => {
+        resolveCommit(true);
+      });
+
+      await waitFor(() => expect(result.current.isUpdating).toBe(false));
+    });
+
+    it('is true while a money withdrawal amount commit is in flight, and false once it resolves', async () => {
+      let resolveCommit: (value: boolean) => void = () => undefined;
+      jest.mocked(updateMoneyAccountWithdrawAmount).mockReturnValue(
+        new Promise((resolve) => {
+          resolveCommit = resolve;
+        }),
+      );
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'moneyAccountWithdraw' },
+          { to: MOCK_RECIPIENT, type: 'transfer' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      act(() => {
+        result.current.updateTokenAmount('2');
+      });
+
+      await waitFor(() => expect(result.current.isUpdating).toBe(true));
+
+      await act(async () => {
+        resolveCommit(true);
+      });
+
+      await waitFor(() => expect(result.current.isUpdating).toBe(false));
     });
   });
 });

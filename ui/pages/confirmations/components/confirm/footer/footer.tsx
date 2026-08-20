@@ -61,6 +61,33 @@ const SINGLE_ACTION_FOOTER_TYPES = [
   TransactionType.perpsWithdraw,
 ];
 
+/**
+ * Money Account deposit/withdraw transactions are submitted via
+ * `addTransactionBatch`, which always sets the top-level transaction type to
+ * `TransactionType.batch` — the money-account type only appears on the
+ * nested transactions. `SINGLE_ACTION_FOOTER_TYPES` must therefore also be
+ * checked against the nested transactions, or these confirmations silently
+ * fall through to the plain footer, which has no "amount entered" gate.
+ */
+function isSingleActionFooterConfirmation(
+  confirmation: TransactionMeta,
+): boolean {
+  if (
+    confirmation.type &&
+    SINGLE_ACTION_FOOTER_TYPES.includes(confirmation.type)
+  ) {
+    return true;
+  }
+
+  return (
+    confirmation.nestedTransactions?.some(
+      (nestedTransaction) =>
+        nestedTransaction.type &&
+        SINGLE_ACTION_FOOTER_TYPES.includes(nestedTransaction.type),
+    ) ?? false
+  );
+}
+
 export type OnCancelHandler = ({
   location,
 }: {
@@ -260,8 +287,12 @@ const Footer = () => {
   const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
-  const { currentConfirmation, isScrollToBottomCompleted, goBackTo } =
-    useConfirmContext<TransactionMeta>();
+  const {
+    currentConfirmation,
+    isScrollToBottomCompleted,
+    goBackTo,
+    isMoneyAccountAmountCommitPending,
+  } = useConfirmContext<TransactionMeta>();
   const currentConfirmationId = currentConfirmation?.id;
   const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
@@ -325,7 +356,9 @@ const Footer = () => {
   ]);
 
   const isConfirmDisabled =
-    (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
+    (!isScrollToBottomCompleted && !isSignature) ||
+    isGaslessLoading ||
+    isMoneyAccountAmountCommitPending;
 
   const shouldShowReconnectButton =
     shouldRunHardwareWalletPreflight &&
@@ -452,10 +485,7 @@ const Footer = () => {
     return null;
   }
 
-  if (
-    currentConfirmation.type &&
-    SINGLE_ACTION_FOOTER_TYPES.includes(currentConfirmation.type)
-  ) {
+  if (isSingleActionFooterConfirmation(currentConfirmation)) {
     return (
       <SingleActionFooter
         onSubmit={onSubmit}
