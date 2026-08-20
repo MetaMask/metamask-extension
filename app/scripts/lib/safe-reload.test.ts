@@ -54,9 +54,7 @@ describe('getRequestSafeReload', () => {
 
   it('flushes pending split persistence when any changed controller requires an immediate write', async () => {
     const persistenceManager = createPersistenceManager();
-    const { safePersist } = getRequestSafeReload(persistenceManager, [
-      'KeyringController',
-    ]);
+    const { safePersist } = getRequestSafeReload(persistenceManager);
 
     await safePersist({
       changedControllerKeys: ['SubjectMetadataController'],
@@ -78,9 +76,7 @@ describe('getRequestSafeReload', () => {
 
   it('flushes queued data persistence for an immediate key', async () => {
     const persistenceManager = createPersistenceManager('data');
-    const { safePersist } = getRequestSafeReload(persistenceManager, [
-      'KeyringController',
-    ]);
+    const { safePersist } = getRequestSafeReload(persistenceManager);
     const state = { KeyringController: { vault: 'vault' } };
 
     await safePersist({
@@ -92,15 +88,11 @@ describe('getRequestSafeReload', () => {
     expect(persistenceManager.set).toHaveBeenCalledWith(state);
   });
 
-  it('does not flush pending persistence for non-immediate controllers', async () => {
+  it('keeps ordinary persistence debounced by default', async () => {
     const persistenceManager = createPersistenceManager();
-    const { safePersist } = getRequestSafeReload(persistenceManager, [
-      'KeyringController',
-    ]);
+    const { safePersist } = getRequestSafeReload(persistenceManager);
 
-    await safePersist({
-      changedControllerKeys: ['SubjectMetadataController'],
-    });
+    await safePersist();
 
     expect(persistenceManager.persist).not.toHaveBeenCalled();
 
@@ -114,9 +106,7 @@ describe('getRequestSafeReload', () => {
     const persistenceManager = createPersistenceManager();
     const writeError = new Error('Write failed');
     jest.mocked(persistenceManager.persist).mockRejectedValue(writeError);
-    const { safePersist } = getRequestSafeReload(persistenceManager, [
-      'KeyringController',
-    ]);
+    const { safePersist } = getRequestSafeReload(persistenceManager);
 
     await expect(
       safePersist({ changedControllerKeys: ['KeyringController'] }),

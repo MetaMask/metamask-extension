@@ -115,10 +115,7 @@ import {
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
-import {
-  getRequestSafeReload,
-  IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS,
-} from './lib/safe-reload';
+import { getRequestSafeReload } from './lib/safe-reload';
 import {
   readCriticalErrorRestoreSession,
   clearCriticalErrorRestoreSession,
@@ -175,10 +172,8 @@ const inTestState = process.env.IN_TEST
   ? { restoreInProgress: false, hasVaultAtStartup: null }
   : null;
 
-const { safePersist, requestSafeReload, evacuate } = getRequestSafeReload(
-  persistenceManager,
-  IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS,
-);
+const { safePersist, requestSafeReload, evacuate } =
+  getRequestSafeReload(persistenceManager);
 
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
@@ -1413,7 +1408,12 @@ export function setupController(
         },
       );
     }
-    controller.store.on('update', (state) => safePersist({ state }));
+    controller.store.on('stateChange', ({ controllerKey }) =>
+      safePersist({
+        changedControllerKeys: [controllerKey],
+        state: controller.store.getState(),
+      }),
+    );
   }
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);

@@ -2,19 +2,11 @@ import browser from 'webextension-polyfill';
 import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
 import {
-  type PersistenceManager,
+  PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
 } from '../../../shared/lib/stores/persistence-manager';
-import type { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
+import { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
 import { OperationSafener } from './operation-safener';
-
-/** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
-const RELOAD_AFTER_EVACUATE_MS = 150;
-
-/** Controller changes that bypass the persistence debounce. */
-export const IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS = [
-  'KeyringController',
-] as const;
 
 type SafePersistOptions = {
   /** Controller keys represented by the pending persistence operation. */
@@ -29,21 +21,22 @@ type RequestSafeReload = {
   evacuate: () => Promise<void>;
 };
 
+/** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
+const RELOAD_AFTER_EVACUATE_MS = 150;
+
 /**
  * Creates a request-safe reload mechanism for the given persistence manager.
  *
  * @param persistenceManager - The PersistenceManager instance to be used for
  * updates.
- * @param immediatePersistenceKeys - Controller keys that require the latest
- * queued persistence operation to flush immediately.
  * @returns Operations for queueing persistence and safely reloading the
  * extension.
  */
 export function getRequestSafeReload<Type extends PersistenceManager>(
   persistenceManager: Type,
-  immediatePersistenceKeys: readonly string[] = [],
 ): RequestSafeReload {
-  const immediatePersistenceKeySet = new Set(immediatePersistenceKeys);
+  /** Controller changes that bypass the persistence debounce. */
+  const immediatePersistenceKeySet = new Set(['KeyringController']);
 
   const operationSafener = new OperationSafener({
     op: async (state?: MetaMaskStateType) => {

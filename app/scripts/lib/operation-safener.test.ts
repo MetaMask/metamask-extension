@@ -214,6 +214,15 @@ describe('OperationSafener', () => {
 
       await expect(mockOp).rejects.toEqual(new Error('Test error'));
     });
+
+    it('rejects when flushing a failed operation', async () => {
+      const mockOp = jest.fn().mockRejectedValue(new Error('Test error'));
+      const safener = new OperationSafener({ op: mockOp, wait: 100 });
+
+      safener.execute('param');
+
+      await expect(safener.flush()).rejects.toThrow('Test error');
+    });
   });
 
   it('should create instance with debounce options', () => {

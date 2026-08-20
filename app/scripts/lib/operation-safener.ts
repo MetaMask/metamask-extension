@@ -135,7 +135,7 @@ export class OperationSafener<O extends Op = Op> {
    * @throws If the pending operation rejects.
    */
   flush = async (): Promise<boolean> => {
-    if (this.#evacuating) {
+    if (this.#evacuating !== null) {
       log.warn('evacuating, ignoring call to `flush`');
       return false;
     }
