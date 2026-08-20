@@ -121,8 +121,7 @@ const PermissionsPage = () => {
   const handleConnectionClick = (connection) => {
     const hasOnlyAdvancedPermissions =
       !connection.addresses?.length &&
-      (connection.advancedPermissionsCount ?? 0) > 0 &&
-      connection.addresses.length === 0;
+      (connection.advancedPermissionsCount ?? 0) > 0;
 
     transitionForward(() => {
       if (hasOnlyAdvancedPermissions) {
