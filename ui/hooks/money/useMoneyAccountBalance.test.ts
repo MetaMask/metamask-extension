@@ -441,6 +441,19 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.apyPercentFormatted).toBe('3.8%');
     });
 
+    it('formats a service APY with more than 15 significant digits', () => {
+      stubQueries(BALANCE_LOADED, {
+        ...APY_LOADED,
+        data: apyResponse(0.06917567309149253),
+      });
+
+      const { result } = renderBalanceHook();
+
+      expect(result.current.apyDecimal).toBe(0.06917567309149253);
+      expect(result.current.apyPercent).toBe(6.9);
+      expect(result.current.apyPercentFormatted).toBe('6.9%');
+    });
+
     it('rounds the percentage down when the next digit is below half', () => {
       stubQueries(BALANCE_LOADED, {
         ...APY_LOADED,

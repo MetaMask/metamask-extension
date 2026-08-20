@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { CaipChainId } from '@metamask/utils';
 import { v4 as uuidV4 } from 'uuid';
 import {
   getInternalOrderCode,
@@ -8,6 +9,7 @@ import {
 } from '@metamask/ramps-controller';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
@@ -80,6 +82,15 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     getBuyWidgetData,
   } = useRampsController();
 
+  const chainAccount = useSelector((state) =>
+    selectedToken?.chainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          selectedToken.chainId as CaipChainId,
+        )
+      : null,
+  );
+
   const intentAssetId = (location.state as BuildQuoteLocationState | null)
     ?.assetId;
   const tokenStateIsSettled = isTokenStateSettled(
@@ -92,7 +103,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
 
   const currency = userRegion?.country?.currency ?? 'USD';
   const currencySymbol = getCurrencySymbol(currency);
-  const walletAddress = selectedAccount?.address ?? '';
+  const walletAddress = (chainAccount ?? selectedAccount)?.address ?? '';
   const hasAmount = amountAsNumber > 0;
   const hasSettledQuoteAmount = amountAsNumber === debouncedAmount;
 

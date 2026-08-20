@@ -5481,18 +5481,6 @@
     "message": "Resgatar bônus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Bônus resgatável",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "O bônus anualizado que você ganhou por manter mUSD. Seu bônus pode ser resgatado diariamente na Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Detalhes do bônus resgatável",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "As taxas de conversão de mUSD incluem custos de rede e podem incluir taxas do provedor. A MetaMask não aplica taxas quando você converte para mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5517,10 +5505,6 @@
   "musdConvert": {
     "message": "Converter"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Ganhe um bônus de $1%",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Comece já"
   },
@@ -5533,10 +5517,6 @@
   },
   "musdGetMusd": {
     "message": "Obter mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "USD MetaMask",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -8314,9 +8294,6 @@
     "message": "Compra realizada com sucesso",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Outras opções"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "dia útil"
   },
@@ -9359,9 +9336,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Ativar detecção automática de NFTs"
-  },
-  "selectNetworkToFilter": {
-    "message": "Selecionar rede para filtrar"
   },
   "selectPathHelp": {
     "message": "Se as contas que você esperava não forem exibidas, tente mudar o caminho do HD ou a rede atualmente selecionada."
