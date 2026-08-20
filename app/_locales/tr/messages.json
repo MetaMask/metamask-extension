@@ -2761,6 +2761,9 @@
   "connectAnyway": {
     "message": "Yine de bağlan"
   },
+  "connectAnyway": {
+    "message": "Yine de bağlan"
+  },
   "connectHardwareDevice": {
     "message": "Şuna bağlanın: $1",
     "description": "$1 is the hardware wallet device name"

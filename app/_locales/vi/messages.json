@@ -2761,6 +2761,9 @@
   "connectAnyway": {
     "message": "Vẫn kết nối"
   },
+  "connectAnyway": {
+    "message": "Vẫn kết nối"
+  },
   "connectHardwareDevice": {
     "message": "Kết nối $1",
     "description": "$1 is the hardware wallet device name"

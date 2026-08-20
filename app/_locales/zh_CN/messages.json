@@ -2761,6 +2761,9 @@
   "connectAnyway": {
     "message": "仍然连接"
   },
+  "connectAnyway": {
+    "message": "仍然连接"
+  },
   "connectHardwareDevice": {
     "message": "连接$1",
     "description": "$1 is the hardware wallet device name"

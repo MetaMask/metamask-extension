@@ -2761,6 +2761,9 @@
   "connectAnyway": {
     "message": "Σύνδεση ούτως ή άλλως"
   },
+  "connectAnyway": {
+    "message": "Σύνδεση ούτως ή άλλως"
+  },
   "connectHardwareDevice": {
     "message": "Σύνδεση $1",
     "description": "$1 is the hardware wallet device name"
