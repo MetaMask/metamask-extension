@@ -219,13 +219,13 @@ describe('enforced-simulations', () => {
       ).toBe(true);
     });
 
-    it('returns true when simulation data is undefined', () => {
+    it('returns false when simulation data is not yet loaded', () => {
       expect(
         isEnforcedSimulationsEligible(
           { ...BASE_TRANSACTION_META, simulationData: undefined },
           buildState(ResultType.Benign),
         ),
-      ).toBe(true);
+      ).toBe(false);
     });
 
     it('returns true when simulation data has no balance changes', () => {

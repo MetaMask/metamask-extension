@@ -145,7 +145,7 @@ export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, type } = transactionMeta;
+  const { chainId, simulationData, type } = transactionMeta;
 
   if (
     !state.eip7702SupportedChains?.some(
@@ -156,6 +156,11 @@ export function isEnforcedSimulationsEligible(
       chainId,
       type,
     });
+    return false;
+  }
+
+  if (!simulationData) {
+    log('Not eligible - simulation not complete', { type });
     return false;
   }
 
