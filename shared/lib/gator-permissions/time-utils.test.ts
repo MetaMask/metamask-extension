@@ -14,7 +14,6 @@ import {
   convertMillisecondsToSeconds,
   convertTimestampToReadableDate,
   extractExpiryTimestampFromRules,
-  extractExpiryToReadableDate,
   getPeriodFrequencyValueTranslationKey,
 } from './time-utils';
 
@@ -197,56 +196,6 @@ describe('time-utils', () => {
         { type: 'expiry', data: { timestamp: '1744588800' } },
       ];
       expect(extractExpiryTimestampFromRules(rules)).toBeNull();
-    });
-  });
-
-  describe('extractExpiryToReadableDate', () => {
-    it('extracts and converts expiry timestamp from rules', () => {
-      const rules: Rule[] = [
-        {
-          type: 'expiry',
-          data: {
-            timestamp: 1744588800, // April 14, 2025
-          },
-        },
-      ];
-
-      const result = extractExpiryToReadableDate(rules);
-      expect(result).toBe('04/14/2025');
-    });
-
-    it('returns empty string when no expiry rule exists', () => {
-      const rules: Rule[] = [
-        {
-          type: 'other-rule',
-          data: {
-            someData: 'value',
-          },
-        },
-      ];
-
-      const result = extractExpiryToReadableDate(rules);
-      expect(result).toBe('');
-    });
-
-    it('returns empty string for empty rules array', () => {
-      const rules: Rule[] = [];
-      const result = extractExpiryToReadableDate(rules);
-      expect(result).toBe('');
-    });
-
-    it('returns empty string when expiry timestamp is 0', () => {
-      const rules: Rule[] = [
-        {
-          type: 'expiry',
-          data: {
-            timestamp: 0,
-          },
-        },
-      ];
-
-      const result = extractExpiryToReadableDate(rules);
-      expect(result).toBe('');
     });
   });
 });

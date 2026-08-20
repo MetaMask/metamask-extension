@@ -23,6 +23,7 @@ export type {
 } from './usePerpsTransactionHistory';
 
 export { usePerpsMarketFills } from './usePerpsMarketFills';
+export { usePerpsRecordedOrderFees } from './usePerpsRecordedOrderFees';
 
 export { usePerpsMarginCalculations } from './usePerpsMarginCalculations';
 export type {
@@ -39,10 +40,12 @@ export type {
   UsePerpsEstimatedSlippageReturn,
 } from './usePerpsEstimatedSlippage';
 export { usePerpsEventTracking } from './usePerpsEventTracking';
+export { usePerpsAttribution } from './usePerpsAttribution';
 export type {
   PerpsTrackEventFn,
   UsePerpsEventTrackingDeclarativeOptions,
 } from './usePerpsEventTracking';
+export { usePerpsBottomNavSource } from './usePerpsBottomNavSource';
 export {
   estimateLiquidationPrice,
   liquidationDistancePercent,

@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
@@ -17,6 +16,7 @@ import { Icon, IconName, Text } from '../../../components/component-library';
 import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import SwapsFooter from '../swaps-footer';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
+import { useDispatch } from '../../../store/hooks';
 
 export default function NotificationPage({ notificationKey }) {
   const t = useContext(I18nContext);

@@ -1,9 +1,6 @@
-import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useRef, useState } from 'react';
 import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { selectSessionData } from '../../../../selectors/identity/authentication';
-import { getAnalyticsId } from '../../../../selectors/selectors';
 import { openWindow } from '../../../../helpers/utils/window';
 import {
   Modal,
@@ -35,6 +32,7 @@ import {
 } from '../../../../../shared/lib/build-support-link';
 import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
+import { getCustomerServiceToken } from '../../../../store/actions';
 
 type VisitSupportDataConsentModalProps = {
   onClose: () => void;
@@ -49,15 +47,17 @@ const VisitSupportDataConsentModal = ({
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile?.profileId;
-  const canonicalProfileId = sessionData?.profile?.canonicalProfileId;
-  const analyticsId = useSelector(getAnalyticsId);
   const { customerId: shieldCustomerId } = useUserSubscriptions();
+  const [isLoading, setIsLoading] = useState(false);
+  const wasCancelledRef = useRef(false);
 
-  const handleClickContactSupportButton = useCallback(
-    (params: SupportLinkUserData) => {
-      onClose();
+  const openSupportLink = useCallback(
+    (customerServiceToken?: string) => {
+      const params: SupportLinkUserData = {
+        version,
+        customerServiceToken,
+        shieldCustomerId,
+      };
       const supportLinkWithUserId = buildSupportLinkWithUserData(
         SUPPORT_LINK as string,
         params,
@@ -74,10 +74,47 @@ const VisitSupportDataConsentModal = ({
       );
       openWindow(supportLinkWithUserId);
     },
-    [onClose, trackEvent, createEventBuilder, segmentContext.page?.title],
+    [
+      version,
+      shieldCustomerId,
+      trackEvent,
+      createEventBuilder,
+      segmentContext.page?.title,
+    ],
   );
 
+  const handleModalClose = useCallback(() => {
+    // Escape / outside-click during Accept must cancel sharing, matching Reject.
+    if (isLoading) {
+      wasCancelledRef.current = true;
+    }
+    onClose();
+  }, [isLoading, onClose]);
+
+  const handleClickContactSupportButton = useCallback(async () => {
+    if (isLoading) {
+      return;
+    }
+
+    wasCancelledRef.current = false;
+    setIsLoading(true);
+    try {
+      const customerServiceToken = await getCustomerServiceToken();
+      if (wasCancelledRef.current) {
+        return;
+      }
+      onClose();
+      openSupportLink(customerServiceToken);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isLoading, onClose, openSupportLink]);
+
   const handleClickNoShare = useCallback(() => {
+    if (isLoading) {
+      return;
+    }
+
     onClose();
 
     trackEvent(
@@ -90,12 +127,18 @@ const VisitSupportDataConsentModal = ({
         .build(),
     );
     openWindow(SUPPORT_LINK as string);
-  }, [onClose, trackEvent, createEventBuilder, segmentContext.page?.title]);
+  }, [
+    isLoading,
+    onClose,
+    trackEvent,
+    createEventBuilder,
+    segmentContext.page?.title,
+  ]);
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleModalClose}
       data-testid="visit-support-data-consent-modal"
       className="visit-support-data-consent-modal"
     >
@@ -118,6 +161,7 @@ const VisitSupportDataConsentModal = ({
               size={ButtonSecondarySize.Lg}
               width={BlockSize.Half}
               onClick={handleClickNoShare}
+              disabled={isLoading}
               data-testid="visit-support-data-consent-modal-reject-button"
             >
               {t('visitSupportDataConsentModalReject')}
@@ -125,15 +169,9 @@ const VisitSupportDataConsentModal = ({
             <ButtonPrimary
               size={ButtonPrimarySize.Lg}
               width={BlockSize.Half}
-              onClick={() =>
-                handleClickContactSupportButton({
-                  version,
-                  profileId,
-                  canonicalProfileId,
-                  analyticsId,
-                  shieldCustomerId,
-                })
-              }
+              onClick={handleClickContactSupportButton}
+              loading={isLoading}
+              disabled={isLoading}
               data-testid="visit-support-data-consent-modal-accept-button"
             >
               {t('visitSupportDataConsentModalAccept')}

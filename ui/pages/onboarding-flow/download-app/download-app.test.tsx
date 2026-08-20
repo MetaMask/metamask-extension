@@ -24,7 +24,7 @@ type StateOverrides = {
   metamask: {
     isBackupAndSyncEnabled?: boolean;
     optedIn?: boolean;
-    completedMetaMetricsOnboarding?: boolean;
+    consentDecisionMade?: boolean;
     isSignedIn?: boolean;
     useExternalServices?: boolean;
     internalAccounts?: {
@@ -56,7 +56,7 @@ type StateOverrides = {
 const initialState: StateOverrides = {
   metamask: {
     isBackupAndSyncEnabled: false,
-    completedMetaMetricsOnboarding: true,
+    consentDecisionMade: true,
     optedIn: true,
     isSignedIn: false,
     useExternalServices: true,

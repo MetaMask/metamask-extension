@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import type { MarketInfo } from '@metamask/perps-controller';
 import {
   clearPerpsMarketInfoModuleCache,
   fetchMarketInfos,
   peekCachedMarketInfos,
 } from '../../providers/perps/perps-cache';
+import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
 import { usePerpsCacheKey } from './usePerpsCacheKey';
 
 export { clearPerpsMarketInfoModuleCache };
@@ -29,22 +31,29 @@ export { clearPerpsMarketInfoModuleCache };
  */
 export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
   const marketInfoCacheKey = usePerpsCacheKey();
+  const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
 
   const [marketInfos, setMarketInfos] = useState<MarketInfo[]>(
-    () => peekCachedMarketInfos(marketInfoCacheKey) ?? [],
+    () => peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi) ?? [],
   );
+  const marketInfoKey = `${marketInfoCacheKey}|${useTerminalApi}`;
+  const [prevMarketInfoKey, setPrevMarketInfoKey] = useState(marketInfoKey);
+
+  if (marketInfoKey !== prevMarketInfoKey) {
+    setPrevMarketInfoKey(marketInfoKey);
+    const cached = peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
+    setMarketInfos(cached ?? []);
+  }
 
   useEffect(() => {
-    const cached = peekCachedMarketInfos(marketInfoCacheKey);
+    const cached = peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
     if (cached) {
-      setMarketInfos(cached);
       return undefined;
     }
 
     let cancelled = false;
-    setMarketInfos([]);
 
-    fetchMarketInfos(marketInfoCacheKey).then((infos) => {
+    fetchMarketInfos(marketInfoCacheKey, useTerminalApi).then((infos) => {
       if (!cancelled) {
         setMarketInfos(infos);
       }
@@ -53,7 +62,7 @@ export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
     return () => {
       cancelled = true;
     };
-  }, [marketInfoCacheKey]);
+  }, [marketInfoCacheKey, useTerminalApi]);
 
   return marketInfos.find((m) => m.name.toLowerCase() === symbol.toLowerCase());
 }

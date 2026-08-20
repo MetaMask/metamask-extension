@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   setRewardsModalOpen,
   setOnboardingReferralCode,
@@ -9,8 +9,13 @@ import {
 } from '../../../ducks/rewards';
 import { selectRewardsDeeplinkUrl } from '../../../ducks/rewards/selectors';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { useDispatch } from '../../../store/hooks';
 import RewardsQRCode from './RewardsQRCode';
 import { REWARDS_DEEPLINK_BASE_URL } from './utils/constants';
+
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 // Mock react-redux hooks
 jest.mock('react-redux', () => ({
@@ -60,7 +65,9 @@ jest.mock('qrcode-generator', () => {
 });
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+const mockUseAppDispatch = useDispatch as jest.MockedFunction<
+  typeof useDispatch
+>;
 
 describe('RewardsQRCode', () => {
   beforeEach(() => {
@@ -123,7 +130,7 @@ describe('RewardsQRCode', () => {
       return null;
     });
     const dispatchMock = jest.fn();
-    mockUseDispatch.mockReturnValue(dispatchMock);
+    mockUseAppDispatch.mockReturnValue(dispatchMock);
 
     render(<RewardsQRCode />);
 

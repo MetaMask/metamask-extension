@@ -15,7 +15,7 @@ module.exports = {
     './node_modules/@metamask/design-system-shared/**/*.{mjs,cjs}',
   ],
   theme: {
-    // Keep essential semantic colors, remove default palette colors. We want to rely on the colors provided by @metamask-previews/design-system-tailwind-preset
+    // Keep essential semantic colors, remove default palette colors. We want to rely on the colors provided by @metamask/design-system-tailwind-preset
     colors: {
       inherit: 'inherit',
       current: 'currentColor',
@@ -27,8 +27,21 @@ module.exports = {
     extend: {},
   },
   plugins: [
-    plugin(({ addVariant }) => {
+    plugin(({ addVariant, addUtilities, addBase }) => {
       addVariant('@compact', '@container list-item (max-width: 399px)');
+      // TODO: Remove these polyfills once we update to Tailwind v4
+      addVariant('starting', '@starting-style');
+      addUtilities({
+        '.transition-discrete': {
+          'transition-behavior': 'allow-discrete',
+        },
+      });
+      addBase({
+        '@keyframes slide-in-from-right': {
+          from: { translate: '100% 0' },
+          to: { translate: '0 0' },
+        },
+      });
     }),
   ],
 };

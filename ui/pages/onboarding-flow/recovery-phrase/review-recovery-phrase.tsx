@@ -1,6 +1,6 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Text,
@@ -43,14 +43,13 @@ import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { useDispatch } from '../../../store/hooks';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 type RecoveryPhraseProps = {
   secretRecoveryPhrase: string;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RecoveryPhrase({
   secretRecoveryPhrase,
 }: RecoveryPhraseProps) {
@@ -185,7 +184,7 @@ export default function RecoveryPhrase({
       alignItems={BoxAlignItems.Center}
       gap={6}
       className="recovery-phrase h-full"
-      data-testid="recovery-phrase"
+      data-testid="parent-selector-secure-wallet"
     >
       <Box>
         {showSrpDetailsModal && (
