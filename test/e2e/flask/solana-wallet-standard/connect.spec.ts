@@ -64,9 +64,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
 
-    // TODO: Need to check and update the test.
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('Should be able to cancel connection and connect again', async function () {
+    it('Should be able to cancel connection and connect again', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
@@ -97,9 +95,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await connectAccountConfirmation.cancelConnect();
           await testDapp.switchTo();
 
-          // TODO: Currently, the Status is "Not connected", but the expected status is "Disconnected", need to check and update the test if this is expected.
-          // Verify we're not connected
-          await header.verifyConnectionStatus('Disconnected');
+          // Verify we're not connected. The dapp header renders "Not
+          // connected" when no session is active.
+          await header.verifyConnectionStatus('Not connected');
 
           // 2. Connect again
           await connectSolanaTestDapp(driver, testDapp);
@@ -111,9 +109,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
 
-    // TODO: Need to check and update the test.
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('Should disconnect', async function () {
+    it('Should disconnect', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
@@ -136,8 +132,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           await header.disconnect();
 
-          // TODO: Currently, the Status is "Not connected", but the expected status is "Disconnected", need to check and update the test if this is expected.
-          await header.verifyConnectionStatus('Disconnected');
+          // The dapp header renders "Not connected" when no session is active.
+          await header.verifyConnectionStatus('Not connected');
         },
       );
     });
