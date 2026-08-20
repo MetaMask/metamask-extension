@@ -901,3 +901,94 @@ describe('findMissingArtifacts', () => {
     expect(missing[0].benchmarkNames).toStrictEqual(['dappPageLoad']);
   });
 });
+
+describe('printReport with absent artifacts', () => {
+  let consoleSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+  });
+
+  afterEach(() => {
+    consoleSpy.mockRestore();
+  });
+
+  const missingGated = {
+    artifactName: 'benchmark-chrome-webpack-userJourneyTransactions',
+    browser: 'chrome',
+    buildType: 'webpack',
+    preset: 'userJourneyTransactions',
+    benchmarkNames: ['sendTransactions', 'swap'],
+    gatedMetrics: ['sendTransactions.cls', 'swap.total'],
+  };
+
+  const missingUngated = {
+    artifactName: 'benchmark-firefox-webpack-interactionUserActions',
+    browser: 'firefox',
+    buildType: 'webpack',
+    preset: 'interactionUserActions',
+    benchmarkNames: ['loadNewAccount'],
+    gatedMetrics: [],
+  };
+
+  it('reports an absent gated artifact as ERROR and names it in the verdict', () => {
+    printReport({ comparisons: [], anyFailed: false, missing: [missingGated] });
+
+    const output = consoleSpy.mock.calls.flat().join('\n');
+    expect(output).toContain(
+      'ERROR benchmark-chrome-webpack-userJourneyTransactions produced no results',
+    );
+    expect(output).toContain('chrome/webpack/userJourneyTransactions');
+    expect(output).toContain('expected sendTransactions, swap');
+    expect(output).toContain(
+      'gated metrics not measured: sendTransactions.cls, swap.total',
+    );
+    expect(output).toContain('1 no results');
+    expect(output).toContain(
+      'RESULT: FAIL — 1 expected artifact(s) carrying gated metrics produced no results',
+    );
+  });
+
+  it('reports an absent non-gated artifact as WARN and still passes, flagging coverage', () => {
+    printReport({
+      comparisons: [],
+      anyFailed: false,
+      missing: [missingUngated],
+    });
+
+    const output = consoleSpy.mock.calls.flat().join('\n');
+    expect(output).toContain(
+      'WARN  benchmark-firefox-webpack-interactionUserActions produced no results',
+    );
+    expect(output).not.toContain('gated metrics not measured');
+    expect(output).toContain('RESULT: PASS');
+    expect(output).toContain('reduced coverage');
+  });
+
+  it('names both causes when a threshold breach and an absence coincide', () => {
+    printReport({
+      comparisons: [
+        makeComparison({ benchmarkName: 'standardHome', absoluteFailed: true }),
+      ],
+      anyFailed: true,
+      missing: [missingGated],
+    });
+
+    const output = consoleSpy.mock.calls.flat().join('\n');
+    expect(output).toContain(
+      'at least one benchmark exceeds constant fail limit',
+    );
+    expect(output).toContain('produced no results');
+  });
+
+  it('keeps the original verdict when nothing is absent', () => {
+    printReport({ comparisons: [], anyFailed: false, missing: [] });
+
+    const output = consoleSpy.mock.calls.flat().join('\n');
+    expect(output).toContain(
+      'RESULT: PASS — all benchmarks within constant limits',
+    );
+    expect(output).not.toContain('reduced coverage');
+    expect(output).toContain('0 no results');
+  });
+});
