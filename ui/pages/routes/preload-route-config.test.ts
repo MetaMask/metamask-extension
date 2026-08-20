@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
