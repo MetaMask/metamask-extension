@@ -14,8 +14,6 @@ import { selectTronNetwork } from './tron-network.flow';
 import { waitUntilAccountTreeSyncIdle } from './tron-account-derivation.flow';
 
 const TRON_CONFIRM_TIMEOUT_MS = 30_000;
-const TRON_ACTIVITY_PENDING_OR_CONFIRMED_SELECTOR =
-  '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"], [data-tx-status="confirmed"]';
 
 type TronSendSymbol = 'TRX' | 'USDT' | 'USDD' | 'HTX' | 'SEED';
 
@@ -214,26 +212,6 @@ export async function landOnTronSendScreen({
   return await openTronSendAmountRecipient({ assetId, driver });
 }
 
-async function waitForTronSendActivity(
-  driver: Driver,
-  expectedCount = 1,
-): Promise<void> {
-  // Local java-tron can confirm before a pending row is observable.
-  console.log(
-    `Waiting for Tron send activity (pending or confirmed), count >= ${expectedCount}`,
-  );
-  await driver.wait(async () => {
-    try {
-      const activityItems = await driver.findElements(
-        TRON_ACTIVITY_PENDING_OR_CONFIRMED_SELECTOR,
-      );
-      return activityItems.length >= expectedCount;
-    } catch {
-      return false;
-    }
-  }, 30_000);
-}
-
 export async function confirmTronSendAndAssertActivity({
   driver,
   expectedAmount,
@@ -273,7 +251,9 @@ export async function confirmTronSendAndAssertActivity({
   await homePage.goToActivityList();
 
   const activityList = new ActivityTab(driver);
-  await waitForTronSendActivity(driver, expectedConfirmedTxCount);
+  await activityList.checkPendingOrConfirmedTxNumberDisplayedInActivity(
+    expectedConfirmedTxCount,
+  );
   await activityList.checkConfirmedTxNumberDisplayedInActivity(
     expectedConfirmedTxCount,
   );

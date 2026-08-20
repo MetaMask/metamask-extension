@@ -664,17 +664,6 @@ class HomePage {
     await this.driver.clickElement(this.portfolioLink);
   }
 
-  /**
-   * Last-resort home reload. Prefer waiting for a selector such as the token
-   * list or header balance (`checkExpectedBalanceIsDisplayed`) so Snap /
-   * `isEvmSelected` state can land without a full refresh.
-   */
-  async reloadHome(): Promise<void> {
-    console.log('Reload home to rehydrate Snap / network state');
-    await this.driver.refresh();
-    await this.checkPageIsLoaded();
-  }
-
   async startBridgeFlow(): Promise<void> {
     await this.driver.clickElement(this.bridgeButton);
   }

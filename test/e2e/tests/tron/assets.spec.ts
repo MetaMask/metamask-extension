@@ -12,7 +12,6 @@ import {
 } from '../../page-objects/flows/network.flow';
 import {
   prepareTronAssetsHomepage,
-  returnToTronHome,
   switchToFundedTronAccount,
   switchToPortfolioTronAccount,
 } from '../../page-objects/flows/tron-assets.flow';
@@ -186,41 +185,16 @@ describe('Tron - Assets', function (this: Suite) {
     await sharedTronNode.quit();
   });
 
-  // Same fixture (native-as-main ON). Header + empty-account list only.
-  describe('native token as main balance', function (this: Suite) {
-    const held = createFailFastHeldAssetsSession(sharedTronNode);
-
-    before(async function () {
-      await held.startAndPrepare(
-        this,
-        buildTronAssetsFixture().build(),
-        'Tron - Assets native token as main balance',
-      );
-    });
-
-    beforeEach(function () {
-      held.skipIfFailed(this);
-    });
-
-    afterEach(function () {
-      held.captureFailure(this);
-    });
-
-    after(async function () {
-      await held.release();
-    });
-
-    it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
-      const homePage = new HomePage(held.getDriver());
+  // Same fixture (native-as-main ON). One browser: empty header + list, then
+  // funded and portfolio headers. Combined so cases cannot depend on leftover
+  // account selection from a previous `it`.
+  it('displays native TRX as the main balance for each asset account', async function () {
+    await withIsolatedTronAssets(this, sharedTronNode, async (driver) => {
+      const homePage = new HomePage(driver);
       await homePage.checkExpectedBalanceIsDisplayed({
         expectedBalance: '0 TRX',
         timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
       });
-    });
-
-    it('empty account lists TRX with balance 0', async function () {
-      const driver = held.getDriver();
-      await returnToTronHome(driver);
 
       const tokensTab = new TokensTab(driver);
       await waitForVisibleTronToken(tokensTab);
@@ -232,22 +206,14 @@ describe('Tron - Assets', function (this: Suite) {
         '0 TRX',
         '$',
       ]);
-    });
 
-    it('funded account shows 106.072 TRX as the main balance', async function () {
-      const driver = held.getDriver();
       await switchToFundedTronAccount(driver);
-      const homePage = new HomePage(driver);
       await homePage.checkExpectedBalanceIsDisplayed({
         expectedBalance: '106.072 TRX',
         timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
       });
-    });
 
-    it('Portfolio account shows native TRX as the main balance', async function () {
-      const driver = held.getDriver();
       await switchToPortfolioTronAccount(driver);
-      const homePage = new HomePage(driver);
       await homePage.checkExpectedBalanceIsDisplayed({
         expectedBalance: '6.072 TRX',
         timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
