@@ -4,10 +4,14 @@ import type {
   KeyringControllerWithKeyringUnsafeAction,
 } from '@metamask/keyring-controller';
 import type { Messenger } from '@metamask/messenger';
+import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger, type Hex } from '@metamask/utils';
+import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
 import { isMoneyAccountEnabled } from '../../../../shared/lib/money/feature-flags';
+import { getMoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
+import type { LegacyBackgroundApiServiceAddNetworkAction } from '../../services/legacy-background-api-service-method-action-types';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
 
 const log = createProjectLogger('money-account-availability');
@@ -16,6 +20,8 @@ const serviceName = 'MoneyAccountAvailabilityService';
 
 type MoneyAccountAvailabilityAllowedActions =
   | KeyringControllerWithKeyringUnsafeAction
+  | LegacyBackgroundApiServiceAddNetworkAction
+  | NetworkControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction;
 
 type MoneyAccountAvailabilityEvents =
@@ -57,8 +63,9 @@ const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
 /**
  * Resolves whether the Money Account surface should be shown at all.
  *
- * We look at the state of the `moneyEnableMoneyAccount` flag, and whether
- * a money address can be derived from an unlocked wallet.
+ * We look at the state of the `moneyEnableMoneyAccount` flag, whether a money
+ * address can be derived from an unlocked wallet, and whether the configured
+ * Money Account chain is ready for use.
  *
  * A money account being available doesn’t mean that the account has been
  * upgraded yet.
@@ -76,6 +83,8 @@ export class MoneyAccountAvailabilityService {
   readonly #messenger: MoneyAccountAvailabilityMessenger;
 
   #address?: Promise<Hex>;
+
+  #chainConfiguration?: Promise<void>;
 
   constructor({ messenger }: { messenger: MoneyAccountAvailabilityMessenger }) {
     this.#messenger = messenger;
@@ -104,18 +113,22 @@ export class MoneyAccountAvailabilityService {
    */
   async getAvailability(): Promise<MoneyAccountAvailability> {
     try {
-      if (!this.#isEnabled()) {
+      const { remoteFeatureFlags } = this.#messenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+      if (!isMoneyAccountEnabled(remoteFeatureFlags)) {
         return UNAVAILABLE;
       }
 
       const address = await this.getAddress();
+      await this.#ensureChainConfigured(remoteFeatureFlags);
 
       return { isAvailable: true, address };
     } catch (error) {
-      // A locked wallet, or a transient failure reading the feature flag or
-      // deriving the address, lands here. None of these are evidence that
-      // the user has no money account, so the surface is hidden without the
-      // answer being cached.
+      // A locked wallet, or a transient failure reading feature flags,
+      // deriving the address, or configuring the chain lands here. None of
+      // these are evidence that the user has no money account, so the surface
+      // is hidden without the answer being cached.
       log('Failed to resolve money account availability', error);
       return UNAVAILABLE;
     }
@@ -149,16 +162,56 @@ export class MoneyAccountAvailabilityService {
     return await this.#address;
   }
 
-  /**
-   * Read the `moneyEnableMoneyAccount` flag.
-   *
-   * @returns Whether the Money Account feature is enabled.
-   */
-  #isEnabled(): boolean {
-    const { remoteFeatureFlags } = this.#messenger.call(
-      'RemoteFeatureFlagController:getState',
-    );
+  async #ensureChainConfigured(
+    remoteFeatureFlags: Record<string, unknown> | undefined,
+  ): Promise<void> {
+    if (this.#chainConfiguration) {
+      return await this.#chainConfiguration;
+    }
 
-    return isMoneyAccountEnabled(remoteFeatureFlags);
+    const chainConfiguration = this.#configureChain(remoteFeatureFlags);
+    this.#chainConfiguration = chainConfiguration;
+
+    try {
+      await chainConfiguration;
+    } finally {
+      if (this.#chainConfiguration === chainConfiguration) {
+        this.#chainConfiguration = undefined;
+      }
+    }
+  }
+
+  async #configureChain(
+    remoteFeatureFlags: Record<string, unknown> | undefined,
+  ): Promise<void> {
+    const vaultConfig = getMoneyAccountVaultConfig(remoteFeatureFlags);
+    if (!vaultConfig) {
+      throw new Error('Money Account vault configuration is unavailable');
+    }
+
+    const { networkConfigurationsByChainId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+    if (networkConfigurationsByChainId[vaultConfig.chainId]) {
+      return;
+    }
+
+    const networkConfiguration = FEATURED_RPCS.find(
+      ({ chainId }) => chainId === vaultConfig.chainId,
+    );
+    if (!networkConfiguration) {
+      throw new Error(
+        `Money Account chain ${vaultConfig.chainId} is not a featured network`,
+      );
+    }
+
+    // TODO(MUSD-1270): Move this setup to MoneyAccountUpgradeController
+    // bootstrap when https://consensyssoftware.atlassian.net/browse/MUSD-1270
+    // is implemented.
+    await this.#messenger.call(
+      'LegacyBackgroundApiService:addNetwork',
+      networkConfiguration,
+      { setActive: false },
+    );
   }
 }
