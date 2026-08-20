@@ -91,7 +91,9 @@ export function useRWAToken() {
     if (!isRWAEnabled) {
       return undefined;
     }
-    setNowMs(Date.now());
+    queueMicrotask(() => {
+      setNowMs(Date.now());
+    });
     const id = setInterval(() => setNowMs(Date.now()), RWA_TIME_TICK_MS);
     return () => clearInterval(id);
   }, [isRWAEnabled]);

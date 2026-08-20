@@ -2,7 +2,10 @@ import { createSelector } from 'reselect';
 import { isObject } from '@metamask/utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
-import { isMoneyAccountEnabled } from '../../../shared/lib/money/feature-flags';
+import {
+  isMoneyAccountEnabled,
+  isMoneyEarningSectionEnabled,
+} from '../../../shared/lib/money/feature-flags';
 import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
 
 /**
@@ -14,6 +17,8 @@ export type MoneyVaultApyRemoteConfig = {
   /** When configured, always shown instead of the live APY. */
   vaultApyOverride: number | undefined;
 };
+
+export const FALLBACK_MONEY_DEPOSIT_MIN_BALANCE = 0.01;
 
 /**
  * Parses a raw flag value into a non-negative finite number.
@@ -54,6 +59,17 @@ export const selectMoneyAccountFeatureEnabled = createSelector(
 );
 
 /**
+ * Selects whether the realized Earnings section on Money Home is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the Earnings section is enabled.
+ */
+export const selectMoneyEarningSectionEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyEarningSectionEnabled,
+);
+
+/**
  * Selects the Money Account vault config, or `undefined` when the flag is
  * unserved or malformed.
  *
@@ -82,6 +98,19 @@ export const selectMoneyVaultApyRemoteConfig = createSelector(
       vaultApyOverride: parseNonNegativeFinite(control?.vaultApyOverride),
     };
   },
+);
+
+/**
+ * Selects the minimum wallet-asset balance required for Money deposits.
+ *
+ * @param state - The MetaMask state object.
+ * @returns The minimum fiat balance, defaulting to one cent.
+ */
+export const selectMoneyDepositMinBalance = createSelector(
+  getRemoteFeatureFlags,
+  (flags): number =>
+    parseNonNegativeFinite(flags?.earnMoneyDepositMinAssetBalance) ??
+    FALLBACK_MONEY_DEPOSIT_MIN_BALANCE,
 );
 
 /**

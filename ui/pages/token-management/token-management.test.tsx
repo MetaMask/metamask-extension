@@ -52,6 +52,8 @@ const mockTokenManagementLocationState = {
   current: null as unknown,
 };
 const mockUseNavigate = jest.fn();
+const mockToastSuccess = jest.fn();
+const mockToastError = jest.fn();
 
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
@@ -68,6 +70,20 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+jest.mock('../../components/ui/toast/toast', () => ({
+  toast: {
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
+  },
+  ToastContent: ({
+    title,
+    dataTestId,
+  }: {
+    title: string;
+    dataTestId?: string;
+  }) => <div data-testid={dataTestId}>{title}</div>,
+}));
+
 jest.mock('../../selectors/assets', () => ({
   ...jest.requireActual('../../selectors/assets'),
   getAssetsBySelectedAccountGroup: (state: {
@@ -81,6 +97,13 @@ jest.mock('../../store/actions', () => {
   const actual = jest.requireActual('../../store/actions');
   return {
     ...actual,
+    addNetwork: jest.fn(
+      () => () =>
+        Promise.resolve({
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [],
+        }),
+    ),
     addCustomAsset: jest.fn(() => () => Promise.resolve()),
     addImportedTokens: jest.fn(() => () => Promise.resolve()),
     hideAsset: jest.fn(() => () => Promise.resolve()),
@@ -92,6 +115,7 @@ jest.mock('../../store/actions', () => {
 });
 
 type MockedTokenManagementActions = {
+  addNetwork: jest.Mock;
   addCustomAsset: jest.Mock;
   addImportedTokens: jest.Mock;
   hideAsset: jest.Mock;
@@ -357,10 +381,12 @@ describe('TokenManagementPage', () => {
   beforeEach(() => {
     mockTokenManagementLocationState.current = null;
     mockUseNavigate.mockClear();
+    mockToastSuccess.mockClear();
     trackAnalyticsEventMock.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
     resetTokenSearchState();
     const actions = getMockedActions();
+    actions.addNetwork.mockClear();
     actions.addCustomAsset.mockClear();
     actions.addImportedTokens.mockClear();
     actions.hideAsset.mockClear();
@@ -368,6 +394,7 @@ describe('TokenManagementPage', () => {
     actions.importCustomAssetsBatch.mockClear();
     actions.multichainAddAssets.mockClear();
     actions.multichainIgnoreAssets.mockClear();
+    mockToastError.mockClear();
     const originalWarn = console.warn;
     consoleWarnSpy = jest
       .spyOn(console, 'warn')
@@ -386,7 +413,6 @@ describe('TokenManagementPage', () => {
   const createState = ({
     enabledNetworks = { '0x1': true },
     enabledNetworkMap = { eip155: enabledNetworks },
-    networkManagementEnabled = true,
     accountGroupAssets = {
       '0x1': [mainnetToken, nativeToken],
       '0x5': [goerliToken],
@@ -395,7 +421,6 @@ describe('TokenManagementPage', () => {
   }: {
     enabledNetworks?: Record<string, boolean>;
     enabledNetworkMap?: Record<string, Record<string, boolean>>;
-    networkManagementEnabled?: boolean;
     accountGroupAssets?: Record<string, unknown[]>;
     selectedMultichainNetworkChainId?: string;
   } = {}) => ({
@@ -414,10 +439,6 @@ describe('TokenManagementPage', () => {
           order: 'asc',
           sortCallback: 'alphaNumeric',
         },
-      },
-      remoteFeatureFlags: {
-        ...mockState.metamask.remoteFeatureFlags,
-        extensionUxNetworkManagement: networkManagementEnabled,
       },
       enabledNetworkMap,
       networkConfigurationsByChainId: {
@@ -612,7 +633,7 @@ describe('TokenManagementPage', () => {
     );
   });
 
-  it('shows and dismisses the custom token success toast from route state', async () => {
+  it('shows an animated custom token success toast from route state', async () => {
     renderPage(createState(), {
       tokenManagementToast: {
         type: 'customTokenAdded',
@@ -620,17 +641,15 @@ describe('TokenManagementPage', () => {
       },
     });
 
-    const toast = await screen.findByTestId(
-      'token-management-custom-token-success-toast',
-    );
-    expect(toast).toHaveTextContent('APE');
-
-    fireEvent.click(screen.getByLabelText(messages.close.message));
-
     await waitFor(() =>
-      expect(
-        screen.queryByTestId('token-management-custom-token-success-toast'),
-      ).not.toBeInTheDocument(),
+      expect(mockToastSuccess).toHaveBeenCalledWith(
+        expect.objectContaining({
+          props: expect.objectContaining({
+            dataTestId: 'token-management-custom-token-success-toast',
+            title: expect.stringContaining('APE'),
+          }),
+        }),
+      ),
     );
   });
 
@@ -902,6 +921,22 @@ describe('TokenManagementPage', () => {
       expect.objectContaining({
         query: 'Beta',
         networks: ['eip155:1', 'eip155:5'],
+      }),
+    );
+  });
+
+  it('searches featured EVM networks for an address query', () => {
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: '0x0000000000000000000000000000000000000001' },
+    });
+
+    const { calls } = mockTokenSearch.spy.mock;
+    expect(calls[calls.length - 1][0]).toEqual(
+      expect.objectContaining({
+        query: '0x0000000000000000000000000000000000000001',
+        networks: expect.arrayContaining(['eip155:1', 'eip155:8453']),
       }),
     );
   });
@@ -1178,6 +1213,100 @@ describe('TokenManagementPage', () => {
       }),
       expect.anything(),
     );
+  });
+
+  it('adds a featured network and shows its success toast when toggling on an address search result', async () => {
+    const baseTokenAddress = '0x0000000000000000000000000000000000000abc';
+    const baseTokenAssetId = `eip155:8453/erc20:${baseTokenAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: baseTokenAssetId,
+          symbol: 'BASE',
+          decimals: 18,
+          name: 'Base Token',
+        },
+      ],
+    });
+
+    const actions = getMockedActions();
+    actions.addNetwork.mockReturnValueOnce(() =>
+      Promise.resolve({
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'base' }],
+      }),
+    );
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: baseTokenAddress },
+    });
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${baseTokenAssetId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    await waitFor(() =>
+      expect(actions.addNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          chainId: '0x2105',
+          name: 'Base',
+        }),
+        { setActive: false },
+      ),
+    );
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          dataTestId: 'token-management-custom-token-success-toast',
+          title: '“Base” was successfully added!',
+        }),
+      }),
+    );
+  });
+
+  it('shows an error toast when no network client is available for import', async () => {
+    const baseTokenAddress = '0x0000000000000000000000000000000000000abc';
+    const baseTokenAssetId = `eip155:8453/erc20:${baseTokenAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: baseTokenAssetId,
+          symbol: 'BASE',
+          decimals: 18,
+          name: 'Base Token',
+        },
+      ],
+    });
+    const actions = getMockedActions();
+    actions.addNetwork.mockReturnValueOnce(() =>
+      Promise.resolve({
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [],
+      }),
+    );
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: baseTokenAddress },
+    });
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${baseTokenAssetId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    await waitFor(() =>
+      expect(mockToastError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          props: expect.objectContaining({
+            title: messages.importTokensError.message,
+          }),
+        }),
+      ),
+    );
+    expect(actions.addImportedTokens).not.toHaveBeenCalled();
   });
 
   it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {

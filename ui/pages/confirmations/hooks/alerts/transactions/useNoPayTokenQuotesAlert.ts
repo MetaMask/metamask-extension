@@ -1,11 +1,16 @@
 import { useMemo } from 'react';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
+  useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
@@ -14,11 +19,21 @@ import { AlertsName } from '../constants';
 
 export function useNoPayTokenQuotesAlert(): Alert[] {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken } = useTransactionPayToken();
   const quotes = useTransactionPayQuotes();
-  const isQuotesLoading = useIsTransactionPayLoading();
+  const isQuotePending = useIsTransactionPayQuotePending();
+  const hasExecutableQuote = useTransactionPayHasExecutableQuote();
+  const hasPositiveRequiredAmount =
+    useTransactionPayHasPositiveRequiredAmount();
   const sourceAmounts = useTransactionPaySourceAmounts();
   const requiredTokens = useTransactionPayRequiredTokens();
+
+  const isPerpsWithdrawNotReady =
+    isPerpsWithdrawTransaction(currentConfirmation) &&
+    hasPositiveRequiredAmount &&
+    !isQuotePending &&
+    (!payToken || !hasExecutableQuote);
 
   const isOptionalOnly = (sourceAmounts ?? []).every(
     (sourceAmount) =>
@@ -28,11 +43,12 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
   );
 
   const showAlert =
-    payToken &&
-    !isQuotesLoading &&
-    sourceAmounts?.length &&
-    !quotes?.length &&
-    !isOptionalOnly;
+    isPerpsWithdrawNotReady ||
+    (payToken &&
+      !isQuotePending &&
+      sourceAmounts?.length &&
+      !quotes?.length &&
+      !isOptionalOnly);
 
   return useMemo(() => {
     if (!showAlert) {
