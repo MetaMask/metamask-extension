@@ -6,7 +6,6 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { buildSolanaFixtureScopes } from '../../fixtures/permission-scopes';
 import {
   DAPP_PATH,
-  DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -16,10 +15,10 @@ import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow
 
 // The dapp needs the Devnet scope, which a live connect cannot grant, so the
 // session is seeded with Mainnet + Devnet and restored silently on connect.
-const SOLANA_MAINNET_AND_DEVNET_PERMISSIONS = buildSolanaFixtureScopes(
-  DEFAULT_FIXTURE_SOLANA_ACCOUNT,
-  [SolScope.Mainnet, SolScope.Devnet],
-);
+const SOLANA_MAINNET_AND_DEVNET_PERMISSIONS = buildSolanaFixtureScopes([
+  SolScope.Mainnet,
+  SolScope.Devnet,
+]);
 
 describe('Solana Wallet Standard - Transfer SOL', function () {
   describe('Send a transaction', function () {

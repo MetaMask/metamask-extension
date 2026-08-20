@@ -24,7 +24,6 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { buildSolanaFixtureScopes } from '../../fixtures/permission-scopes';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
-import { account1 as SOLANA_ADDRESS_ONE } from '../../flask/solana-wallet-standard/testHelpers';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
   getPermittedChainIdsForOrigin,
@@ -37,7 +36,7 @@ const EVM_ADDRESS_TWO = ACCOUNT_2;
 const EVM_ACCOUNT_LABEL_ONE = 'Account 1';
 const EVM_ACCOUNT_LABEL_TWO = 'Account 2';
 
-const SOLANA_PERMISSIONS = buildSolanaFixtureScopes(SOLANA_ADDRESS_ONE);
+const SOLANA_PERMISSIONS = buildSolanaFixtureScopes();
 
 /**
  * CAIP chain IDs granted by a default connect: every non-test network in the

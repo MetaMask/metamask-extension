@@ -4,7 +4,6 @@ import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
   DAPP_PATH,
-  DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -24,7 +23,7 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           // restored silently on connect.
           fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp({
-              scopes: buildSolanaFixtureScopes(DEFAULT_FIXTURE_SOLANA_ACCOUNT, [
+              scopes: buildSolanaFixtureScopes([
                 SolScope.Mainnet,
                 SolScope.Devnet,
               ]),

@@ -52,13 +52,14 @@ export function buildEvmEip1193FixtureScopes(chainIds: number[]) {
  * Standard restores a seeded session silently, so pair seeded scopes with
  * `connectSolanaTestDapp(driver, testDapp, { expectExistingSession: true })`.
  *
- * @param solanaAccountAddress - The Solana account address to permit.
  * @param scopes - The Solana CAIP chain IDs to permit. Defaults to Mainnet.
+ * @param solanaAccountAddress - The Solana account address to permit. Defaults
+ * to the default fixture Solana account.
  * @returns A CAIP-25 caveat value for fixture seeding.
  */
 export function buildSolanaFixtureScopes(
-  solanaAccountAddress: string,
   scopes: string[] = [SolScope.Mainnet],
+  solanaAccountAddress: string = DEFAULT_FIXTURE_SOLANA_ACCOUNT,
 ) {
   const optionalScopes: Record<string, { accounts: string[] }> = {};
   for (const scope of scopes) {
@@ -82,7 +83,7 @@ export const EVM_AND_SOLANA_FIXTURE_SCOPES_WITH_EIP1193_COMPATIBLE = {
   ...EVM_LOCALHOST_EIP1193_FIXTURE_SCOPES,
   optionalScopes: {
     ...EVM_LOCALHOST_EIP1193_FIXTURE_SCOPES.optionalScopes,
-    ...buildSolanaFixtureScopes(DEFAULT_FIXTURE_SOLANA_ACCOUNT).optionalScopes,
+    ...buildSolanaFixtureScopes().optionalScopes,
   },
 };
 
