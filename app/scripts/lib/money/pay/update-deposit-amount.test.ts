@@ -5,6 +5,7 @@ import {
   TELLER_ABI,
 } from '@metamask/money-account-utils';
 import {
+  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -34,6 +35,7 @@ function buildTemplateTransaction(): TransactionMeta {
   return {
     id: `transaction-${transactionIdCounter}`,
     chainId: VAULT_CONFIG_MOCK.chainId,
+    status: TransactionStatus.unapproved,
     txParams: { from: MONEY_ACCOUNT_ADDRESS_MOCK, gas: '0x5208' },
     gasLimitNoBuffer: '0x5208',
     nestedTransactions: [
@@ -260,5 +262,19 @@ describe('updateMoneyAccountDepositAmount', () => {
     ).rejects.toThrow(
       'Update Amount: Money Account Deposit: missing required asset template',
     );
+  });
+
+  it('rejects at commit time when the transaction is no longer unapproved', async () => {
+    const transaction = buildTemplateTransaction();
+    transaction.status = TransactionStatus.approved;
+    const { messenger } = setup(transaction);
+
+    await expect(
+      updateMoneyAccountDepositAmount(messenger, transaction.id, AMOUNT_HUMAN),
+    ).rejects.toThrow(
+      'Update Amount: Money Account Deposit: transaction is no longer unapproved',
+    );
+    // The placeholder calldata must be untouched.
+    expect(transaction.nestedTransactions?.[0].data).toBe('0x00');
   });
 });
