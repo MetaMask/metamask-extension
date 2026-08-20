@@ -563,11 +563,6 @@ class HomePage {
     await this.driver.clickElementSafe(this.toastCloseButton, 15_000);
   }
 
-  async dismissVisibleToast(): Promise<void> {
-    console.log('Dismiss visible toast on homepage');
-    await this.driver.clickElementSafe(this.toastCloseButton);
-  }
-
   /**
    * Ensures the home page is rendered and idle (loaded + loading overlay gone).
    */

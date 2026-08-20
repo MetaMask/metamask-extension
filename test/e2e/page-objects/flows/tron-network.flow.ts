@@ -55,6 +55,5 @@ export async function selectTronNetworkForActivity(
 ): Promise<void> {
   const homePage = new NonEvmHomepage(driver);
   await homePage.waitForTronAccountToBeReady();
-  await homePage.dismissVisibleToast();
   await selectNetworkFromFilter(driver, 'Tron');
 }
