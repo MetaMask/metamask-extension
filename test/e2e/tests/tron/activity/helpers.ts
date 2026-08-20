@@ -1,6 +1,7 @@
+import { createDeferredPromise } from '@metamask/utils';
 import { Mockttp } from 'mockttp';
-import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { TronNode } from '../../../seeder/tron/node';
 import { Driver } from '../../../webdriver/driver';
 import { TRON_PORTFOLIO_ACCOUNT } from '../fixtures/environments';
@@ -108,4 +109,41 @@ export async function withTronActivityFixtures(
       await testFn(driver);
     },
   );
+}
+
+/**
+ * Holds one `withFixtures` Chrome session open for every test in a Mocha
+ * suite. Matches the phishing-redirects pattern: `start()` resolves the
+ * driver, then waits until `stop()` so cleanup still runs through
+ * `withFixtures`.
+ *
+ * @param options - Fixture options shared by every case in the suite
+ * @returns Session controls for the suite `before` / `after` hooks
+ */
+export function createSharedTronActivitySession(
+  options: Omit<Parameters<typeof withTronActivityFixtures>[0], 'title'>,
+) {
+  const deferredSuite = createDeferredPromise<void>();
+  let fixturePromise: Promise<void> | undefined;
+
+  return {
+    async start(title?: string): Promise<Driver> {
+      const driverReady = createDeferredPromise<Driver>();
+      fixturePromise = withTronActivityFixtures(
+        { ...options, title },
+        async (driver) => {
+          driverReady.resolve(driver);
+          await deferredSuite.promise;
+        },
+      ).catch((error: unknown) => {
+        driverReady.reject(error);
+        throw error;
+      });
+      return driverReady.promise;
+    },
+    async stop(): Promise<void> {
+      deferredSuite.resolve();
+      await fixturePromise;
+    },
+  };
 }

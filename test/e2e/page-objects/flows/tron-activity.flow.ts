@@ -5,7 +5,16 @@ import TransactionDetailsPage from '../pages/transaction-details-page';
 import { login } from './login.flow';
 import { selectTronNetworkForActivity } from './tron-network.flow';
 
+export async function landOnTronActivity(driver: Driver): Promise<ActivityTab> {
+  console.log('Land on the Tron activity list');
+  const homePage = await landOnTronHome(driver);
+  await homePage.goToActivityList();
+
+  return new ActivityTab(driver);
+}
+
 export async function landOnTronHome(driver: Driver): Promise<NonEvmHomepage> {
+  console.log('Land on Tron home for mocked activity assertions');
   // Activity assertions use mocked transaction history, not live balances.
   // Skipping balance and non-EVM account waits keeps each case under CI shard
   // time limits (see tron-send.flow.ts for the same pattern).
@@ -20,25 +29,25 @@ export async function landOnTronHome(driver: Driver): Promise<NonEvmHomepage> {
   return homePage;
 }
 
-export async function landOnTronActivity(driver: Driver): Promise<ActivityTab> {
-  const homePage = await landOnTronHome(driver);
-  await homePage.goToActivityList();
-
-  return new ActivityTab(driver);
-}
-
 export async function openTronTransactionDetails({
   driver,
   activityTab,
-  transactionIndex,
+  activityText,
 }: {
   driver: Driver;
   activityTab: ActivityTab;
-  transactionIndex: number;
+  activityText: string;
 }): Promise<TransactionDetailsPage> {
-  await activityTab.clickOnActivity(transactionIndex);
+  console.log(`Open Tron transaction details for "${activityText}"`);
+  await activityTab.clickActivityByText(activityText);
 
   const transactionDetailsPage = new TransactionDetailsPage(driver);
   await transactionDetailsPage.checkPageIsLoaded();
   return transactionDetailsPage;
+}
+
+export async function returnToTronActivityList(driver: Driver): Promise<void> {
+  console.log('Return to the Tron activity list if details are open');
+  const details = new TransactionDetailsPage(driver);
+  await details.clickBackButtonIfPresent();
 }

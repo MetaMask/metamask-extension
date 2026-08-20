@@ -1,11 +1,18 @@
+import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
+import { TrxAccountType, TrxScope } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { TRON_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/tron-wallet-snap';
+import { getCleanAppState } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import NonEvmHomepage from '../pages/home/non-evm-homepage';
 import NetworkFilter from '../pages/networks/network-filter';
 import SelectNetworkModal from '../pages/networks/select-network-modal';
 import {
   switchToNetworkFromNetworkSelect,
   waitForNetworkModalBackdropToClear,
 } from './network.flow';
+
+const TRON_ACCOUNT_READY_INTERVAL_MS = 1_000;
+const TRON_ACCOUNT_READY_TIMEOUT_MS = 45_000;
 
 /**
  * Opens the home network filter and selects a network by display name, then
@@ -53,7 +60,62 @@ export async function selectTronNetwork(driver: Driver): Promise<void> {
 export async function selectTronNetworkForActivity(
   driver: Driver,
 ): Promise<void> {
-  const homePage = new NonEvmHomepage(driver);
-  await homePage.waitForTronAccountToBeReady();
+  await waitForTronAccountToBeReady(driver);
   await selectNetworkFromFilter(driver, 'Tron');
+}
+
+/**
+ * Waits for BIP44 stage-2 alignment to finish creating the selected account
+ * group's Tron account. Account-tree backup sync flags do not represent this
+ * runtime alignment, so readiness is derived from the entropy wallet status
+ * and the selected group's internal accounts instead.
+ *
+ * @param driver - WebDriver instance
+ */
+export async function waitForTronAccountToBeReady(
+  driver: Driver,
+): Promise<void> {
+  console.log('Wait for the selected account group Tron account to be ready');
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      const selectedAccountGroup = uiState?.metamask?.selectedAccountGroup;
+      const wallets = uiState?.metamask?.accountTree?.wallets as
+        | AccountTreeControllerState['accountTree']['wallets']
+        | undefined;
+      const internalAccounts = uiState?.metamask?.internalAccounts?.accounts as
+        | Record<string, InternalAccount>
+        | undefined;
+
+      if (!selectedAccountGroup || !wallets || !internalAccounts) {
+        return false;
+      }
+
+      const tronSnap = uiState?.metamask?.snaps?.[TRON_WALLET_SNAP_ID] as
+        | { status?: string }
+        | undefined;
+      if (tronSnap?.status !== 'running') {
+        return false;
+      }
+
+      return Object.values(wallets).some((wallet) => {
+        const selectedGroup = wallet.groups?.[selectedAccountGroup];
+        const hasTronMainnetAccount = selectedGroup?.accounts?.some(
+          (accountId) => {
+            const account = internalAccounts[accountId];
+            return (
+              account?.type === TrxAccountType.Eoa &&
+              account.scopes?.includes(TrxScope.Mainnet)
+            );
+          },
+        );
+
+        return wallet.status === 'ready' && hasTronMainnetAccount === true;
+      });
+    },
+    {
+      interval: TRON_ACCOUNT_READY_INTERVAL_MS,
+      timeout: TRON_ACCOUNT_READY_TIMEOUT_MS,
+    },
+  );
 }
