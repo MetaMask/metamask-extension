@@ -1,11 +1,11 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../../hooks/useTheme';
 import { TabEmptyState } from '../../../../ui/tab-empty-state';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -20,7 +20,7 @@ import {
 export const DeFiEmptyStateMessage = () => {
   const t = useI18nContext();
   const theme = useTheme();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const analyticsId = useSelector(getAnalyticsId);
   const completedMetaMetricsOnboarding = useSelector(
@@ -39,15 +39,22 @@ export const DeFiEmptyStateMessage = () => {
       isMarketingEnabled === true,
     );
     global.platform.openTab({ url });
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.EmptyDeFiTabButtonClicked,
-      properties: {
-        location: 'DeFiTab',
-        text: 'Explore DeFi',
-      },
-    });
-  }, [isMarketingEnabled, isMetaMetricsEnabled, analyticsId, trackEvent]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.EmptyDeFiTabButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'DeFiTab',
+          text: 'Explore DeFi',
+        })
+        .build(),
+    );
+  }, [
+    analyticsId,
+    createEventBuilder,
+    isMarketingEnabled,
+    isMetaMetricsEnabled,
+    trackEvent,
+  ]);
 
   const defiIcon =
     theme === ThemeType.dark

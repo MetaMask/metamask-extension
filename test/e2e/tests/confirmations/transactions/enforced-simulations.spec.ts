@@ -11,6 +11,7 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
+import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
 import { MockedEndpoint } from '../../../mock-e2e';
@@ -19,8 +20,25 @@ import { getTransactionDetails } from '../helpers/anvil-transaction';
 import { mockSimulationApi } from '../mocks/simulation';
 import { mockTrustSignal } from '../mocks/trust-signals';
 import { SENDER_ADDRESS_MOCK } from '../../simulation-details/types';
+import { getMockAssetsPrice, mockSpotPrices } from '../../tokens/utils/mocks';
 
 const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const USDC_ASSET_ID = `eip155:1/erc20:${USDC_ADDRESS}`;
+// Matches mock-e2e's default `ethConversionInUsd`. Gas fiat ($15.05) is
+// 0.005 ETH × this rate; CurrencyRateController no longer supplies it.
+const ETH_USD_CONVERSION_RATE = 3010;
+const ENFORCED_SIMULATIONS_SPOT_PRICES = {
+  'eip155:1/slip44:60': {
+    price: ETH_USD_CONVERSION_RATE,
+    marketCap: 382623505141,
+    pricePercentChange1d: 0,
+  },
+  [USDC_ASSET_ID]: {
+    price: 1,
+    marketCap: 0,
+    pricePercentChange1d: 0,
+  },
+};
 const RECIPIENT_ADDRESS = '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
 const ERC20_TRANSFER_SELECTOR = '0xa9059cbb';
 const REDEEM_DELEGATIONS_SELECTOR = '0xcef6d209';
@@ -74,6 +92,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'confirmed',
+          true,
         );
 
         assert.strictEqual(
@@ -193,6 +212,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'confirmed',
+          true,
         );
 
         assert.strictEqual(
@@ -309,6 +329,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'failed',
+          true,
         );
 
         assert.strictEqual(
@@ -329,6 +350,7 @@ function setupMocks(trustResultType: ResultType) {
   return async (mockServer: MockttpServer): Promise<MockedEndpoint[]> => {
     const eip7702Mocks = await mockEip7702FeatureFlag(mockServer);
     const trustMocks = await mockTrustSignal(mockServer, trustResultType);
+    await mockSpotPrices(mockServer, ENFORCED_SIMULATIONS_SPOT_PRICES);
     await mockSimulationApi(mockServer, {
       sender: SENDER_ADDRESS_MOCK,
       recipient: RECIPIENT_ADDRESS,
@@ -351,6 +373,11 @@ function enforcedSimulationsFixtureOptions(
       .withEnabledNetworks({ eip155: { '0x1': true } })
       .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
       .withSmartTransactionsOptedOut()
+      // CurrencyRateController is deprecated under assets-unify in E2E; gas fiat
+      // (e.g. $15.05) is derived from AssetsController prices instead.
+      .withAssetsController({
+        assetsPrice: getMockAssetsPrice(ETH_USD_CONVERSION_RATE),
+      })
       .build(),
     localNodeOptions: {
       chainId: 1,
@@ -367,8 +394,16 @@ async function confirmAndGetTransaction(
   confirmation: TransactionConfirmation,
   anvil: Anvil,
   expectedStatus: 'confirmed' | 'failed',
+  acknowledgeDangerAlert = false,
 ) {
   await confirmation.clickFooterConfirmButton();
+
+  if (acknowledgeDangerAlert) {
+    const alertModal = new ConfirmAlertModal(driver);
+    await alertModal.acknowledgeAlert();
+    await alertModal.confirmFromAlertModal();
+    await confirmation.clickFooterConfirmButton();
+  }
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 

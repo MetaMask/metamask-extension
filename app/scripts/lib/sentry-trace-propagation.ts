@@ -8,21 +8,20 @@ import type {
   Event as SentryEvent,
   EventHint,
   Integration,
-} from '@sentry/types';
-import { addFetchInstrumentationHandler } from '@sentry/utils';
+} from '@sentry/core';
+import { addFetchInstrumentationHandler } from '@sentry/core';
 import { v4 as uuidv4 } from 'uuid';
 
 const NAME = 'ConsensysTracePropagation';
 
-/** RAPID baggage application identifier. */
+/** Consensys baggage application identifier. */
 const CONSENSYS_APPLICATION = 'metamask-extension';
-
-/** W3C `trace-flags` sampled bit (bit 0). */
-const TRACE_FLAG_SAMPLED = 1;
 
 /**
  * Backend API host patterns that should receive distributed-trace propagation
- * (W3C `traceparent` + RAPID baggage) on outbound HTTPS.
+ * on outbound HTTPS. The Sentry SDK injects `sentry-trace` / `traceparent` on
+ * these hosts (via `tracePropagationTargets` + `propagateTraceparent`); this
+ * integration appends the Consensys `baggage`.
  */
 export const BACKEND_TRACE_PROPAGATION_TARGETS: RegExp[] = [
   /^https:\/\/[a-z0-9.-]+\.(?:[a-z0-9]+-)?api\.cx\.metamask\.io(?:[/?#]|$)/u,
@@ -67,19 +66,6 @@ export function getCurrentConsensysRequestId(): string | undefined {
 }
 
 /**
- * Whether a W3C `trace-flags` byte has the sampled bit (bit 0) set, without a
- * bitwise mask (disallowed by lint).
- *
- * @param flags - Decimal value of the `trace-flags` byte.
- * @returns True when the sampled bit is set.
- *
- */
-// TODO: Remove once sentry SDK is upgraded to v10.
-function isSampled(flags: number): boolean {
-  return flags % 2 === TRACE_FLAG_SAMPLED;
-}
-
-/**
  * Whether a URL targets a backend host configured for trace propagation.
  *
  * @param url - The outbound request URL.
@@ -90,40 +76,32 @@ export function matchesBackendTarget(url: string): boolean {
 }
 
 /**
- * Build the W3C `traceparent` for the current trace context. Reads the active
- * span when present, otherwise the merged scope propagation context, so the
- * trace id matches the `sentry-trace` the SDK propagates.
+ * The current trace id, read from the active span when present, otherwise the
+ * merged scope propagation context. Used only to correlate an outbound
+ * request's `consensys-request-id` with the Sentry trace for event enrichment —
+ * the W3C `traceparent` header itself is injected natively by the SDK
+ * (`propagateTraceparent`).
  *
- * @returns A W3C `traceparent` string, or undefined when no trace id is known.
+ * @returns The current trace id, or undefined when none is known.
  */
-// TODO: Remove once sentry SDK is upgraded to v10.
-export function getCurrentTraceparent(): string | undefined {
+function getCurrentTraceId(): string | undefined {
   try {
     const activeSpan = getActiveSpan();
     if (activeSpan) {
-      const { traceId, spanId, traceFlags } = activeSpan.spanContext();
-      if (!traceId || !spanId) {
-        return undefined;
-      }
-      const flags = isSampled(traceFlags ?? TRACE_FLAG_SAMPLED) ? '01' : '00';
-      return `00-${traceId}-${spanId}-${flags}`;
+      return activeSpan.spanContext().traceId || undefined;
     }
-
-    const { traceId, spanId, sampled } = {
+    const { traceId } = {
       ...getIsolationScope().getPropagationContext(),
       ...getCurrentScope().getPropagationContext(),
     };
-    if (!traceId || !spanId) {
-      return undefined;
-    }
-    return `00-${traceId}-${spanId}-${sampled === false ? '00' : '01'}`;
+    return traceId || undefined;
   } catch {
     return undefined;
   }
 }
 
 /**
- * Build the RAPID `baggage` segment for an outbound request.
+ * Build the Consensys `baggage` segment for an outbound request.
  *
  * @param requestId - The `consensys-request-id` value.
  * @returns A baggage segment string.
@@ -176,20 +154,19 @@ function toHeaders(existing: unknown): Headers {
 }
 
 /**
- * Build a new `Headers` for an outbound fetch with the W3C `traceparent` and
- * RAPID baggage appended. Seeds from the existing request headers (the SDK's
- * `sentry-trace` / `baggage` are already present when this runs after Sentry's
+ * Build a new `Headers` for an outbound fetch with the Consensys `baggage`
+ * appended. Seeds from the existing request headers (the SDK's `sentry-trace` /
+ * `baggage` / `traceparent` are already present when this runs after Sentry's
  * instrumentation), so nothing the caller or the SDK set is lost.
  *
  * @param args - The fetch arguments (`[input, init]`).
  * @param fields - The values to inject.
- * @param fields.traceparent - W3C traceparent, or undefined to skip.
  * @param fields.requestId - The `consensys-request-id`.
  * @returns A new `Headers` instance to assign to the request init.
  */
 export function buildAugmentedHeaders(
   args: unknown[],
-  { traceparent, requestId }: { traceparent?: string; requestId: string },
+  { requestId }: { requestId: string },
 ): Headers {
   const [request, options] = args as [
     unknown,
@@ -202,21 +179,10 @@ export function buildAugmentedHeaders(
   initHeaders.forEach((value, key) => {
     headers.set(key, value);
   });
-  // Respect a caller- or SDK-provided `traceparent`; only set ours when absent.
-  // TODO: Remove this block and the `traceparent` param once sentry SDK is upgraded to v10.
-  if (traceparent && !headers.has('traceparent')) {
-    headers.set('traceparent', traceparent);
-  }
   // `baggage` is appended (not set): repeated baggage headers are merged by the
   // browser, so this preserves the SDK's Sentry-prefixed entries.
   headers.append('baggage', buildConsensysBaggage(requestId));
   return headers;
-}
-
-// TODO: Remove once sentry SDK is upgraded to v10.
-function getTraceIdFromTraceparent(traceparent: string): string | undefined {
-  const [, traceId] = traceparent.split('-');
-  return traceId || undefined;
 }
 
 function setRequestIdForTraceId(traceId: string, requestId: string): void {
@@ -242,10 +208,11 @@ function setRequestIdForTraceId(traceId: string, requestId: string): void {
 }
 
 /**
- * Sentry integration that propagates W3C `traceparent` and RAPID baggage
- * (`consensys-request-id`, `consensys-application=metamask-extension`) on
- * outbound HTTPS to backend API hosts, and tags Sentry events with the
- * correlation ids (`otelTraceId`, `consensysRequestId`).
+ * Sentry integration that appends Consensys baggage (`consensys-request-id`,
+ * `consensys-application=metamask-extension`) on outbound HTTPS to backend API
+ * hosts, and tags Sentry events with the correlation ids (`otelTraceId`,
+ * `consensysRequestId`). The W3C `traceparent` / `sentry-trace` headers are
+ * injected natively by the SDK (`propagateTraceparent` + `tracePropagationTargets`).
  *
  * Must be registered after `browserTracingIntegration` so the SDK's
  * `sentry-trace` / `baggage` headers are already attached when the fetch hook
@@ -277,18 +244,11 @@ export function consensysTracePropagationIntegration({
           const requestId = requestIdProvider();
           currentConsensysRequestId = requestId;
 
-          const traceparent = getCurrentTraceparent();
-          if (traceparent) {
-            // TODO: Remove `getTraceIdFromTraceparent` call once sentry SDK is upgraded to v10.
-            // Source the trace id from `getActiveSpan().spanContext()`.
-            const traceId = getTraceIdFromTraceparent(traceparent);
-            if (traceId) {
-              setRequestIdForTraceId(traceId, requestId);
-            }
+          const traceId = getCurrentTraceId();
+          if (traceId) {
+            setRequestIdForTraceId(traceId, requestId);
           }
           const headers = buildAugmentedHeaders(handlerData.args, {
-            // TODO: Remove `traceparent` argument once sentry SDK is upgraded to v10.
-            traceparent,
             requestId,
           });
           // Default the fetch `init` (the SDK does the same) before attaching

@@ -1,6 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  AvatarFavicon,
+  AvatarFaviconSize,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   Display,
@@ -10,8 +14,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  AvatarFavicon,
-  AvatarFaviconSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -46,7 +48,6 @@ export const PermissionsHeader = ({
           size={ButtonIconSize.Md}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
-          className="connections-header__start-accessory"
           color={IconColor.iconDefault}
           onClick={() => navigate(PREVIOUS_ROUTE)}
           data-testid="back-button"
@@ -58,7 +59,6 @@ export const PermissionsHeader = ({
         alignItems={AlignItems.center}
         gap={2}
         justifyContent={JustifyContent.center}
-        className="connections-header__title"
       >
         {connectedSubjectsMetadata?.iconUrl ? (
           <AvatarFavicon

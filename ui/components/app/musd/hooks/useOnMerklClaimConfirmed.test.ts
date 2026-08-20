@@ -1,5 +1,5 @@
 import { Interface } from '@ethersproject/abi';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import {
   DISTRIBUTOR_CLAIM_ABI,

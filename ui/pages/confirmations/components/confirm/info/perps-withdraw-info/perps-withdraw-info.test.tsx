@@ -14,14 +14,6 @@ jest.mock('../../../../hooks/tokens/useAddToken', () => ({
   useAddToken: jest.fn(),
 }));
 
-// `useTransactionPayPostQuote` reads the current confirmation via
-// `useConfirmContext`, which throws without a `ConfirmContextProvider`.
-// The hook itself is exercised in its own unit tests; mock it out here so
-// `PerpsWithdrawInfo` can render under the lighter `renderWithProvider`.
-jest.mock('../../../../hooks/pay/useTransactionPayPostQuote', () => ({
-  useTransactionPayPostQuote: jest.fn(),
-}));
-
 jest.mock('../../../../hooks/pay/usePerpsWithdrawDefaultToken', () => ({
   usePerpsWithdrawDefaultToken: jest.fn(),
 }));

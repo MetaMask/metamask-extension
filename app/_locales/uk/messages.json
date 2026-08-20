@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Вам потрібно обрати обліковий запис!"
   },
-  "addAcquiredTokens": {
-    "message": "Додайте токени, отримані за допомогою MetaMask"
-  },
   "addAlias": {
     "message": "Додати псевдо"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Назад"
-  },
-  "backupApprovalInfo": {
-    "message": "Цей секретний код буде потрібен, щоб відновити ваш гаманець у разі втрати вашого пристрою, забуття паролю, потреби у перевстановленні MetaMask або виникнення бажання отримати доступ до вашого гаманця з іншого пристрою."
   },
   "backupApprovalNotice": {
     "message": "Створіть резервну копію вашого Секретного кода відновлення, щоб ваш гаманець та ваші кошти залишались у безпеці."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Розширені"
   },
-  "customToken": {
-    "message": "Користувацький токен"
-  },
   "decimal": {
     "message": "Знаків після коми"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Кількість розрядів після коми: від 0 до 36."
   },
   "delete": {
     "message": "Видалити"
@@ -348,9 +336,6 @@
   "metamaskVersion": {
     "message": "Версія MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Слід вибрати хоча б 1 токен."
-  },
   "needImportFile": {
     "message": "Потрібно вибрати файл для імпорту.",
     "description": "User is important an account and needs to add a file to continue"
@@ -360,9 +345,6 @@
   },
   "networks": {
     "message": "Мережі"
-  },
-  "nevermind": {
-    "message": "Не зважати"
   },
   "newAccountNumberName": {
     "message": "Обліковий запис $1",
@@ -520,9 +502,6 @@
   },
   "sign": {
     "message": "Підписати"
-  },
-  "signatureRequest": {
-    "message": "Запит підпису"
   },
   "signed": {
     "message": "Підписано"

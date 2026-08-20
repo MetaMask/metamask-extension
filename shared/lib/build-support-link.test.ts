@@ -5,23 +5,17 @@ describe('buildSupportLinkWithUserData', () => {
   const baseSupportLink = SUPPORT_LINK as string;
   const version = 'MOCK_VERSION';
 
-  it('appends all user-identifying query parameters when provided', () => {
+  it('appends support metadata query parameters when provided', () => {
     const result = buildSupportLinkWithUserData(baseSupportLink, {
       version,
-      profileId: 'profile-id',
-      canonicalProfileId: 'canonical-profile-id',
-      analyticsId: 'analytics-id',
+      customerServiceToken: 'customer-service-token',
       shieldCustomerId: 'shield-id',
     });
 
     const url = new URL(result);
     expect(url.searchParams.get('metamask_version')).toBe(version);
-    expect(url.searchParams.get('metamask_profile_id')).toBe('profile-id');
-    expect(url.searchParams.get('metamask_canonical_profile_id')).toBe(
-      'canonical-profile-id',
-    );
-    expect(url.searchParams.get('metamask_metametrics_id')).toBe(
-      'analytics-id',
+    expect(url.searchParams.get('customer_service_token')).toBe(
+      'customer-service-token',
     );
     expect(url.searchParams.get('shield_id')).toBe('shield-id');
   });
@@ -33,22 +27,7 @@ describe('buildSupportLinkWithUserData', () => {
 
     const url = new URL(result);
     expect(url.searchParams.get('metamask_version')).toBe(version);
-    expect(url.searchParams.has('metamask_profile_id')).toBe(false);
-    expect(url.searchParams.has('metamask_canonical_profile_id')).toBe(false);
-    expect(url.searchParams.has('metamask_metametrics_id')).toBe(false);
+    expect(url.searchParams.has('customer_service_token')).toBe(false);
     expect(url.searchParams.has('shield_id')).toBe(false);
-  });
-
-  it('includes canonical profile id independently of profile id', () => {
-    const result = buildSupportLinkWithUserData(baseSupportLink, {
-      version,
-      canonicalProfileId: 'canonical-profile-id',
-    });
-
-    const url = new URL(result);
-    expect(url.searchParams.get('metamask_canonical_profile_id')).toBe(
-      'canonical-profile-id',
-    );
-    expect(url.searchParams.has('metamask_profile_id')).toBe(false);
   });
 });

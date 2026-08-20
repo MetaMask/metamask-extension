@@ -116,7 +116,7 @@ describe('Wallet Created Events', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);

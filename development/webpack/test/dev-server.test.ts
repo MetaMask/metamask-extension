@@ -284,7 +284,6 @@ function withFakeWebSocket(
     if (descriptor) {
       Object.defineProperty(globalThis, 'WebSocket', descriptor);
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete (globalThis as Record<string, unknown>).WebSocket;
     }
   }

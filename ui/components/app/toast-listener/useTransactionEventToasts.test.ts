@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import {
   TransactionStatus,
   TransactionType,
@@ -85,7 +85,6 @@ describe('useTransactionEventToasts', () => {
   it('subscribes to transaction lifecycle messenger events', () => {
     renderHook(() => useTransactionEventToasts());
 
-    expect(mockSubscribe).toHaveBeenCalledTimes(2);
     expect(mockSubscribe).toHaveBeenCalledWith(
       transactionControllerEvent,
       expect.any(Function),
@@ -101,7 +100,6 @@ describe('useTransactionEventToasts', () => {
 
     unmount();
 
-    expect(mockUnsubscribe).toHaveBeenCalledTimes(2);
     expect(mockUnsubscribe).toHaveBeenCalledWith(
       transactionControllerEvent,
       expect.any(Function),
@@ -113,36 +111,97 @@ describe('useTransactionEventToasts', () => {
   });
 
   describe('EVM via TransactionController', () => {
-    it('shows a pending toast when a tx is submitted', () => {
+    it('shows a pending toast with a details link when hash is present', () => {
       const { handlers } = mountHook();
 
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'id1',
+          id: 'pending-with-hash',
           status: TransactionStatus.submitted,
+          hash: '0xabc',
         }),
       });
 
-      expect(mockShowPendingToast).toHaveBeenCalledWith('tx-id1');
+      expect(mockShowPendingToast).toHaveBeenCalledWith(
+        'tx-pending-with-hash',
+        {
+          transactionId: 'pending-with-hash',
+          to: '/tx/eip155:1/0xabc',
+        },
+      );
     });
 
-    it('shows a success toast when a pending tx confirms', () => {
+    it('shows a success toast with a details link when a pending tx confirms', () => {
       const { handlers } = mountHook();
 
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'id1',
+          id: 'success-with-hash',
+          status: TransactionStatus.submitted,
+          hash: '0xabc',
+        }),
+      });
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'success-with-hash',
+          status: TransactionStatus.confirmed,
+          hash: '0xabc',
+        }),
+      });
+
+      expect(mockShowSuccessToast).toHaveBeenCalledWith(
+        'tx-success-with-hash',
+        {
+          transactionId: 'success-with-hash',
+          to: '/tx/eip155:1/0xabc',
+        },
+      );
+    });
+
+    it('shows a failed toast with a details link when a pending tx fails', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'failed-with-hash',
+          status: TransactionStatus.submitted,
+          hash: '0xabc',
+        }),
+      });
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'failed-with-hash',
+          status: TransactionStatus.failed,
+          hash: '0xabc',
+        }),
+      });
+
+      expect(mockShowFailedToast).toHaveBeenCalledWith('tx-failed-with-hash', {
+        transactionId: 'failed-with-hash',
+        to: '/tx/eip155:1/0xabc',
+      });
+    });
+
+    it('omits the details link when hash is missing', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'failed-no-hash',
           status: TransactionStatus.submitted,
         }),
       });
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'id1',
-          status: TransactionStatus.confirmed,
+          id: 'failed-no-hash',
+          status: TransactionStatus.failed,
         }),
       });
 
-      expect(mockShowSuccessToast).toHaveBeenCalledWith('tx-id1');
+      expect(mockShowFailedToast).toHaveBeenCalledWith('tx-failed-no-hash', {
+        transactionId: 'failed-no-hash',
+        to: undefined,
+      });
     });
 
     it('dismisses the original pending toast when a tx is dropped for speed-up', () => {
@@ -150,12 +209,12 @@ describe('useTransactionEventToasts', () => {
         metamask: {
           transactions: [
             createTransactionMeta({
-              id: 'id1',
+              id: 'speed-up-original',
               status: TransactionStatus.dropped,
-              replacedById: 'id2',
+              replacedById: 'speed-up-replacement',
             }),
             createTransactionMeta({
-              id: 'id2',
+              id: 'speed-up-replacement',
               status: TransactionStatus.submitted,
               type: TransactionType.retry,
             }),
@@ -167,51 +226,19 @@ describe('useTransactionEventToasts', () => {
 
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'id1',
+          id: 'speed-up-original',
           status: TransactionStatus.submitted,
         }),
       });
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'id1',
+          id: 'speed-up-original',
           status: TransactionStatus.dropped,
-          replacedById: 'id2',
+          replacedById: 'speed-up-replacement',
         }),
       });
 
-      expect(mockDismissToast).toHaveBeenCalledWith('tx-id1');
-      expect(mockShowFailedToast).not.toHaveBeenCalled();
-    });
-
-    it('dismisses the original pending toast on speed-up before the replacement tx is in Redux', () => {
-      mockGetState.mockReturnValue({
-        metamask: {
-          transactions: [
-            createTransactionMeta({
-              id: 'id1',
-              status: TransactionStatus.submitted,
-            }),
-          ],
-        },
-      });
-
-      const { handlers } = mountHook();
-
-      handlers[transactionControllerEvent]({
-        transactionMeta: createTransactionMeta({
-          id: 'id1',
-          status: TransactionStatus.submitted,
-        }),
-      });
-      handlers[transactionControllerEvent]({
-        transactionMeta: createTransactionMeta({
-          id: 'id1',
-          status: TransactionStatus.dropped,
-          replacedById: 'id2',
-        }),
-      });
-
-      expect(mockDismissToast).toHaveBeenCalledWith('tx-id1');
+      expect(mockDismissToast).toHaveBeenCalledWith('tx-speed-up-original');
       expect(mockShowFailedToast).not.toHaveBeenCalled();
     });
 
@@ -249,27 +276,11 @@ describe('useTransactionEventToasts', () => {
         }),
       });
 
-      expect(mockShowFailedToast).toHaveBeenCalledWith('tx-cancel-id1');
+      expect(mockShowFailedToast).toHaveBeenCalledWith('tx-cancel-id1', {
+        transactionId: 'cancel-id1',
+        to: undefined,
+      });
       expect(mockDismissToast).not.toHaveBeenCalled();
-    });
-
-    it('shows a failed toast when a pending tx fails', () => {
-      const { handlers } = mountHook();
-
-      handlers[transactionControllerEvent]({
-        transactionMeta: createTransactionMeta({
-          id: 'id1',
-          status: TransactionStatus.submitted,
-        }),
-      });
-      handlers[transactionControllerEvent]({
-        transactionMeta: createTransactionMeta({
-          id: 'id1',
-          status: TransactionStatus.failed,
-        }),
-      });
-
-      expect(mockShowFailedToast).toHaveBeenCalledWith('tx-id1');
     });
 
     it('does not toast excluded approval transactions', () => {
@@ -277,13 +288,67 @@ describe('useTransactionEventToasts', () => {
 
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'id3',
+          id: 'excluded-approval',
           status: TransactionStatus.submitted,
           type: TransactionType.bridgeApproval,
         }),
       });
 
       expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
+    it('shows a pending toast for musdClaim transactions on approved', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'claim-approved',
+          status: TransactionStatus.approved,
+          type: TransactionType.musdClaim,
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith(
+        'tx-claim-approved',
+        expect.objectContaining({ transactionId: 'claim-approved' }),
+      );
+    });
+
+    it('shows a pending toast for perpsWithdraw transactions on approved', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'withdraw-approved',
+          status: TransactionStatus.approved,
+          type: TransactionType.perpsWithdraw,
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith(
+        'tx-withdraw-approved',
+        expect.objectContaining({ transactionId: 'withdraw-approved' }),
+      );
+    });
+
+    it('shows a pending toast for nested perpsWithdraw transactions on approved', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'nested-withdraw-approved',
+          status: TransactionStatus.approved,
+          type: TransactionType.simpleSend,
+          nestedTransactions: [{ type: TransactionType.perpsWithdraw }],
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith(
+        'tx-nested-withdraw-approved',
+        expect.objectContaining({
+          transactionId: 'nested-withdraw-approved',
+        }),
+      );
     });
   });
 

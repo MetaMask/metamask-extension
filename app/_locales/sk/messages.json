@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Musíte si vybrať účet!"
   },
-  "addAcquiredTokens": {
-    "message": "Pridajte tokeny, ktoré ste získali pomocou MetaMask"
-  },
   "addAlias": {
     "message": "Pridať alias"
   },
@@ -80,9 +77,6 @@
   },
   "back": {
     "message": "Zpět"
-  },
-  "backupApprovalInfo": {
-    "message": "Tento tajný kód je potrebný na obnovenie peňaženky v prípade straty zariadenia, zabudnutia hesla, preinštalovania MetaMask alebo prístupu k peňaženke na inom zariadení."
   },
   "backupApprovalNotice": {
     "message": "Zálohujte si svoj tajný kód na obnovenie, aby bola vaša peňaženka a prostriedky bezpečné."
@@ -175,14 +169,8 @@
   "custom": {
     "message": "Rozšírené"
   },
-  "customToken": {
-    "message": "Vlastní token"
-  },
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desetinných míst musí být od 0 do 36."
   },
   "delete": {
     "message": "Odstrániť"
@@ -323,9 +311,6 @@
   "metamaskVersion": {
     "message": "Verzia MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Musíte zvolit aspoň 1 token."
-  },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"
@@ -335,9 +320,6 @@
   },
   "networks": {
     "message": "Sítě"
-  },
-  "nevermind": {
-    "message": "Nevadí"
   },
   "newAccountNumberName": {
     "message": "Účet $1",
@@ -492,9 +474,6 @@
   },
   "sign": {
     "message": "Podepsat"
-  },
-  "signatureRequest": {
-    "message": "Požadavek podpisu"
   },
   "signed": {
     "message": "Podepsáno"

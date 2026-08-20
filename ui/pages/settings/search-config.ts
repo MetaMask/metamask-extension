@@ -57,6 +57,7 @@ export const PREFERENCES_ITEMS = {
   'local-currency': 'localCurrency',
   'account-identicon': 'accountIdenticon',
   'show-default-address': 'showDefaultAddress',
+  'show-ticker-widget': 'showTickerWidget',
   'show-extension': 'showExtensionInFullSizeView',
   'manage-institutional-wallet': 'manageInstitutionalWallets',
 } as const;
@@ -64,6 +65,7 @@ export const PREFERENCES_ITEMS = {
 export const PRIVACY_ITEMS = {
   'basic-functionality': 'basicConfigurationLabel',
   'third-party-apis': 'thirdPartyApis',
+  'ipfs-gateway': 'ipfsGateway',
   'batch-account-balance-requests': 'useMultiAccountBalanceChecker',
   'skip-link-confirmation': 'skipLinkConfirmationScreens',
   metametrics: 'participateInMetaMetrics',
@@ -77,7 +79,6 @@ export const THIRD_PARTY_API_ITEMS = {
   'network-details-check': 'useSafeChainsListValidation',
   'show-ens-domains': 'ensDomainsSettingTitle',
   'make-smart-contracts-easier': 'makeSmartContractsEasier',
-  'ipfs-gateway': 'ipfsGateway',
   'display-nft-media': 'displayNftMedia',
   'autodetect-nfts': 'useNftDetection',
   'proposed-nicknames': 'externalNameSourcesSetting',
@@ -125,8 +126,8 @@ export const ABOUT_ITEMS = {
   'contact-us': 'contactUs',
 } as const;
 
-export const ADD_DEVICE_ITEMS = {
-  'add-device': 'addDevice',
+export const SYNC_ACCOUNTS_ITEMS = {
+  'sync-accounts': 'syncAccounts',
 } as const;
 
 // ── Registry (auto-derived) ─────────────────────────────────────────────
@@ -196,5 +197,5 @@ export const SETTINGS_SEARCH_CONFIG: TabSearchConfig[] = [
     items: createSearchItemMeta(DEVELOPER_TOOLS_ITEMS),
   },
   { tabId: 'about-us', items: createSearchItemMeta(ABOUT_ITEMS) },
-  { tabId: 'add-device', items: createSearchItemMeta(ADD_DEVICE_ITEMS) },
+  { tabId: 'sync-accounts', items: createSearchItemMeta(SYNC_ACCOUNTS_ITEMS) },
 ];

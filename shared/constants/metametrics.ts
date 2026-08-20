@@ -535,11 +535,11 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   petname_addresses_count?: number;
   /**
-   * The profile ID of the user if they have been signed in
+   * The canonical profile ID of the user if they have been signed in
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  profile_id?: string;
+  canonical_profile_id?: string;
   /**
    * The account type derived from the user's onboarding flow.
    */
@@ -751,7 +751,7 @@ export enum MetaMetricsUserTrait {
   /**
    * Identified when the user signs in
    */
-  ProfileId = 'profile_id',
+  CanonicalProfileId = 'canonical_profile_id',
   /**
    * Identifies the account type derived from the user's onboarding flow.
    */
@@ -777,8 +777,6 @@ export enum MetaMetricsUserTrait {
   /**
    * Whether the device is mobile or desktop.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   DeviceType = 'device_type',
   /**
    * The operating system (normalized).
@@ -907,7 +905,7 @@ export enum MetaMetricsEventName {
   KeyGlobalSecurityToggleSelected = 'Key Global Security/Privacy Settings',
   KeyBalanceTokenPriceChecker = 'Key Show Balance and Token Price Checker Settings',
   KeyGasFeeEstimationBuySwapTokens = 'Key Show Gas Fee Estimation, Buy Crypto and Swap Tokens',
-  MarkAllNotificationsRead = 'Notifications Marked All as Read',
+  MarkAllNotificationsRead = 'InApp Notifications Marked All as Read',
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
@@ -939,6 +937,7 @@ export enum MetaMetricsEventName {
   StorageErrorToastDismissed = 'Storage Error Toast Dismissed',
   StorageErrorToastBackupSrpButtonPressed = 'Storage Error Toast Backup SRP Button Pressed',
   SplitStatePersistenceBaseline = 'Split State Persistence Baseline',
+  DataPersistenceWriteRetryRecovered = 'Data Persistence Write Retry Recovered',
   StateMigrationSucceeded = 'State Migration Succeeded',
   StateMigrationFailed = 'State Migration Failed',
   VaultCorruptionDetected = 'Vault Corruption Detected',
@@ -946,7 +945,6 @@ export enum MetaMetricsEventName {
   VaultCorruptionRestoreWalletButtonPressed = 'Vault Corruption Restore Wallet Button Pressed',
   CriticalErrorScreenViewed = 'Critical Error Screen Viewed',
   CriticalErrorRestoreWalletButtonPressed = 'Critical Error Restore Wallet Button Pressed',
-  ViewPermissionedNetworks = 'View Permissioned Networks',
   ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',
   NavSettingsOpened = 'Settings Opened',
@@ -970,6 +968,15 @@ export enum MetaMetricsEventName {
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingCompleted = 'Onboarding Completed',
   OnrampProviderSelected = 'On-ramp Provider Selected',
+  RampsScreenViewed = 'Ramps Screen Viewed',
+  RampsTokenSelected = 'Ramps Token Selected',
+  RampsProviderSelected = 'Ramps Provider Selected',
+  RampsCheckoutOpened = 'Ramps Checkout Opened',
+  RampsCheckoutCallbackDetected = 'Ramps Checkout Callback Detected',
+  RampsCheckoutClosed = 'Ramps Checkout Closed',
+  RampsTransactionCompleted = 'Ramps Transaction Completed',
+  RampsTransactionConfirmed = 'Ramps Transaction Confirmed',
+  RampsTransactionFailed = 'Ramps Transaction Failed',
   PasswordChanged = 'Password Changed',
   PasswordChangeWithPasskey = 'Password Change With Passkey',
   ForgotPasswordClicked = 'Forgot Password Clicked',
@@ -1007,6 +1014,14 @@ export enum MetaMetricsEventName {
   SignatureRequestedAnon = 'Signature Requested Anon',
   SimulationFails = 'Simulation Fails',
   SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
+  ScamQuestionnaireCompleted = 'Scam Questionnaire Completed',
+  ScamQuestionnaireSupportContacted = 'Scam Questionnaire Support Contacted',
+  ScamQuestionnaireViewed = 'Scam Questionnaire Viewed',
+  SecurityPageCtaClicked = 'security_page_cta_clicked',
+  SecurityPageDismissed = 'security_page_dismissed',
+  SecurityPageViewed = 'security_page_viewed',
+  SecurityTrustBottomSheetActionTaken = 'Security Trust BottomSheet Action Taken',
+  SecurityTrustBottomSheetOpened = 'Security Trust BottomSheet Opened',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
@@ -1033,7 +1048,7 @@ export enum MetaMetricsEventName {
   TokenImportButtonClicked = 'Import Token Button Clicked',
   ImportCustomTokenViewed = 'Import Custom Token Viewed',
   ImportCustomTokenInteracted = 'Import Custom Token Interacted',
-  TokenScreenOpened = 'Token Screen Opened',
+  TokenScreenViewed = 'Token Screen Viewed',
   TokenAdded = 'Token Added',
   LowValueAssetsToggled = 'Low Value Assets Toggled',
   TokenSortPreference = 'Token Sort Preference Updated',
@@ -1076,12 +1091,17 @@ export enum MetaMetricsEventName {
   AddNetworkButtonClick = 'Add Network Button Clicked',
   ChainlistAddClicked = 'Chainlist Add Clicked',
   ChainlistNetworkSelected = 'Chainlist Network Selected',
+  CustomNetworkFormViewed = 'Custom Network Form Viewed',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
+  ExploreSearchInteracted = 'Explore Search Interacted',
+  TokenDetailsSecuritySectionClicked = 'token_details_security_section_clicked',
+  TokenDetailsSecuritySectionViewed = 'token_details_security_section_viewed',
+  NftScreenViewed = 'NFT Screen Viewed',
   NftDetailsOpened = 'NFT Details Opened',
-  DeFiScreenOpened = 'DeFi Screen Opened',
+  DeFiScreenViewed = 'DeFi Screen Viewed',
   DeFiDetailsOpened = 'DeFi Details Opened',
-  ActivityScreenOpened = 'Activity Screen Opened',
+  ActivityScreenViewed = 'Activity Screen Viewed',
   PerpsScreenViewed = 'Perp Screen Viewed',
   PerpsUiInteraction = 'Perp UI Interaction',
   PerpsTradeTransaction = 'Perp Trade Transaction',
@@ -1090,6 +1110,14 @@ export enum MetaMetricsEventName {
   PerpsWithdrawalTransaction = 'Perp Withdrawal Transaction',
   PerpsRiskManagement = 'Perp Risk Management',
   PerpsError = 'Perp Error',
+  // Order funnel events. Mirror the controller's PerpsAnalyticsEvent
+  // string values exactly so client- and controller-emitted names match.
+  PerpsTransactionConsidered = 'Perp Transaction Considered',
+  PerpsTradeQuoteReceived = 'Perp Trade Quote Received',
+  // Market search funnel events, same mirroring rule as the order funnel above.
+  PerpsSearchQuery = 'Perp Search Query',
+  PerpsSearchResultTapped = 'Perp Search Result Tapped',
+  PerpsSearchAbandoned = 'Perp Search Abandoned',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
   PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
@@ -1138,12 +1166,10 @@ export enum MetaMetricsEventName {
   TurnOnMetaMetrics = 'MetaMetrics Turned On',
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
-  NotificationClicked = 'Notification Clicked',
-  NotificationDetailClicked = 'Notification Detail Clicked',
-  NotificationsMenuOpened = 'Notifications Menu Opened',
+  NotificationClicked = 'InApp Notification Clicked',
+  NotificationDetailClicked = 'InApp Notification Detail Clicked',
+  NotificationsMenuOpened = 'InApp Notifications Menu Opened',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
-  NotificationsActivated = 'Notifications Activated',
-  PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
   // Send
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -1303,13 +1329,13 @@ export enum MetaMetricsEventCategory {
   Network = 'Network',
   Onboarding = 'Onboarding',
   NotificationInteraction = 'Notification Interaction',
-  NotificationsActivationFlow = 'Notifications Activation Flow',
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
   Perps = 'Perps',
   Phishing = 'Phishing',
+  Ramps = 'Ramps',
   Referrals = 'Referrals',
   BackupAndSync = 'Backup And Sync',
   PushNotifications = 'Notifications',
@@ -1368,6 +1394,7 @@ export enum MetaMetricsSwapsEventSource {
   ActivityDetails = 'Activity Details',
   TransactionShield = 'Transaction Shield',
   TransactionDetails = 'Transaction Details',
+  BottomNavBar = 'Bottom Nav Bar',
 }
 
 export enum MetaMetricsTokenEventSource {
@@ -1442,4 +1469,9 @@ export const DATA_DELETION_REQUESTED_STATUSES: DeleteRegulationStatus[] = [
 export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',
   DefaultEstimate = 'default_estimate',
+}
+
+export enum ScreenViewedEntryPoint {
+  SubtabClick = 'subtab_click',
+  BottomNavClick = 'bottom_nav_click',
 }

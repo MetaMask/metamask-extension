@@ -18,7 +18,7 @@ import { AuthConnection } from '../../../../shared/constants/onboarding';
 
 export type OnboardingMetricsFlowOptions = {
   optedIn?: boolean;
-  completedMetaMetricsOnboarding?: boolean;
+  consentDecisionMade?: boolean;
   dataCollectionForMarketing?: boolean;
 };
 
@@ -41,8 +41,14 @@ export const handleSidepanelPostOnboarding = async (
     return;
   }
 
-  // Give the onboarding completion time to process (needed for sidepanel)
-  await driver.delay(2000);
+  // waitUntil completedOnboarding is true, then navigate once
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return Boolean(uiState?.metamask?.completedOnboarding);
+    },
+    { timeout: 30000, interval: 500 },
+  );
 
   // Navigate directly to home page in current window
   // With sidepanel enabled, this ensures we load home page in the test window
@@ -62,7 +68,7 @@ export const handleSidepanelPostOnboarding = async (
  * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
  * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
  */
-const goToOnboardingWelcomeLoginPage = async ({
+export const goToOnboardingWelcomeLoginPage = async ({
   driver,
   optedIn = false,
   needNavigateToNewPage = true,
@@ -86,6 +92,22 @@ const goToOnboardingWelcomeLoginPage = async ({
   await startOnboardingPage.checkLoginPageIsLoaded();
 
   return startOnboardingPage;
+};
+
+const assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions = async (
+  startOnboardingPage: StartOnboardingPage,
+): Promise<void> => {
+  await startOnboardingPage.clickCreateWalletButton();
+  await startOnboardingPage.checkTermsOfUsageAndPrivacyLinksAreVisible();
+};
+
+const assertTermsOfUsageAndPrivacyLinksOnImportLoginOptions = async (
+  startOnboardingPage: StartOnboardingPage,
+): Promise<void> => {
+  await startOnboardingPage.clickImportWalletButton();
+  await startOnboardingPage.checkTermsOfUsageAndPrivacyLinksAreVisible(
+    'import',
+  );
 };
 
 /**
@@ -145,7 +167,10 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
   });
 
   const originalWindowHandle = await driver.getCurrentWindowHandle();
-  await startOnboardingPage.createWalletWithSocialLogin(authConnection);
+  await assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickCreateWalletSocialLoginButton(authConnection);
 
   if (authConnection === AuthConnection.Telegram) {
     await recoverFromTelegramAuthTab({
@@ -195,7 +220,10 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
   });
 
   const originalWindowHandle = await driver.getCurrentWindowHandle();
-  await startOnboardingPage.importWalletWithSocialLogin(authConnection);
+  await assertTermsOfUsageAndPrivacyLinksOnImportLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickImportWalletSocialLoginButton(authConnection);
 
   if (authConnection === AuthConnection.Telegram) {
     await recoverFromTelegramAuthTab({
@@ -265,7 +293,12 @@ export const createNewWalletOnboardingFlow = async ({
     ...metricsOptions,
     needNavigateToNewPage,
   });
-  await startOnboardingPage.createWalletWithSrp(socialLoginEnabled);
+  await assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions(
+    startOnboardingPage,
+  );
+  if (socialLoginEnabled) {
+    await startOnboardingPage.clickCreateWithSrpButton();
+  }
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
@@ -315,7 +348,10 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
     needNavigateToNewPage,
     dataCollectionForMarketing,
   });
-  await startOnboardingPage.createWalletWithSrp();
+  await assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickCreateWithSrpButton();
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
@@ -407,7 +443,10 @@ export const importSRPOnboardingFlow = async ({
     ...metricsOptions,
     needNavigateToNewPage,
   });
-  await startOnboardingPage.importWallet();
+  await assertTermsOfUsageAndPrivacyLinksOnImportLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickImportWithSrpButton();
 
   const onboardingSrpPage = new OnboardingSrpPage(driver);
   await onboardingSrpPage.checkPageIsLoaded();
@@ -499,7 +538,10 @@ export const completeOnboardingWithPasskey = async ({
     needNavigateToNewPage: true,
     dataCollectionForMarketing: false,
   });
-  await startOnboardingPage.createWalletWithSrp();
+  await assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickCreateWithSrpButton();
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
@@ -558,7 +600,10 @@ export const completeImportSRPOnboardingWithPasskey = async ({
     needNavigateToNewPage: true,
     dataCollectionForMarketing: false,
   });
-  await startOnboardingPage.importWallet();
+  await assertTermsOfUsageAndPrivacyLinksOnImportLoginOptions(
+    startOnboardingPage,
+  );
+  await startOnboardingPage.clickImportWithSrpButton();
 
   const onboardingSrpPage = new OnboardingSrpPage(driver);
   await onboardingSrpPage.checkPageIsLoaded();
@@ -779,6 +824,7 @@ export const completeVaultRecoveryOnboardingFlow = async ({
   // finish up onboarding screens
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.checkPageIsLoaded();
+  await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
 
   await onboardingCompletePage.completeOnboarding();
 

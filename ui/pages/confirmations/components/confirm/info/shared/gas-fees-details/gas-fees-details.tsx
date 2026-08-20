@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
+  TransactionContainerType,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -24,6 +26,7 @@ import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomatic
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useGasSponsorshipPreference } from '../../../../../hooks/gas/useGasSponsorshipPreference';
+import { useTransactionEventFragment } from '../../../../../hooks/useTransactionEventFragment';
 
 export const GasFeesDetails = (): JSX.Element | null => {
   const t = useI18nContext();
@@ -37,6 +40,8 @@ export const GasFeesDetails = (): JSX.Element | null => {
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
   const {
+    addedProtectionFeeFiat,
+    addedProtectionFeeUsd,
     estimatedFeeFiat,
     estimatedFeeFiatWith18SignificantDigits,
     estimatedFeeNative,
@@ -62,6 +67,37 @@ export const GasFeesDetails = (): JSX.Element | null => {
     transactionMeta?.type !== TransactionType.revokeDelegation;
 
   const isGasFeeSponsored = isSponsorshipEligible && !isSponsorshipOptedOut;
+  const showAddedProtectionFee = Boolean(
+    transactionMeta?.containerTypes?.includes(
+      TransactionContainerType.EnforcedSimulations,
+    ),
+  );
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
+  const transactionId = transactionMeta?.id;
+  const hasConfiguredContainers = transactionMeta?.containerTypes !== undefined;
+
+  useEffect(() => {
+    if (!transactionId || !hasConfiguredContainers) {
+      return;
+    }
+
+    updateTransactionEventFragment(
+      {
+        properties: {
+          enforced_simulation_added_network_fee_usd: showAddedProtectionFee
+            ? (addedProtectionFeeUsd ?? 0)
+            : 0,
+        },
+      },
+      transactionId,
+    );
+  }, [
+    addedProtectionFeeUsd,
+    hasConfiguredContainers,
+    showAddedProtectionFee,
+    transactionId,
+    updateTransactionEventFragment,
+  ]);
 
   if (!transactionMeta?.txParams) {
     return null;
@@ -70,6 +106,8 @@ export const GasFeesDetails = (): JSX.Element | null => {
   return (
     <>
       <EditGasFeesRow
+        addedProtectionFeeFiat={addedProtectionFeeFiat}
+        showAddedProtectionFee={showAddedProtectionFee}
         fiatFee={estimatedFeeFiat}
         fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
