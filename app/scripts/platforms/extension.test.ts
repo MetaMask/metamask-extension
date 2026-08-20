@@ -7,8 +7,10 @@ import ExtensionPlatform from './extension';
 const TEST_URL =
   'chrome-extension://jjlgkphpeekojaidfeknpknnimdbleaf/home.html';
 
-jest.mock('webextension-polyfill', () => {
-  return {
+jest.mock('webextension-polyfill', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ESM interop
+  __esModule: true,
+  default: {
     runtime: {
       getManifest: jest.fn(),
       getURL: jest.fn(),
@@ -17,35 +19,59 @@ jest.mock('webextension-polyfill', () => {
       create: jest.fn(),
       onClicked: {
         hasListener: jest.fn(),
+        addListener: jest.fn(),
       },
     },
-  };
-});
+    tabs: {
+      create: jest.fn(),
+    },
+  },
+}));
 
-jest.mock('@metamask/etherscan-link', () => {
+jest.mock('@metamask/etherscan-link', () => ({
+  getBlockExplorerLink: jest.fn(),
+}));
+
+type TestTxMeta = Parameters<ExtensionPlatform['_showConfirmedTransaction']>[0];
+type TestRpcPrefs = Parameters<
+  ExtensionPlatform['showTransactionNotification']
+>[1];
+
+const mockedBrowser = jest.mocked(browser);
+const mockGetBlockExplorerLink = getBlockExplorerLink as jest.MockedFunction<
+  typeof getBlockExplorerLink
+>;
+
+function createTxMeta(overrides: Partial<TestTxMeta> = {}): TestTxMeta {
   return {
-    getBlockExplorerLink: jest.fn(),
-  };
-});
+    chainId: '0x1',
+    hash: '0x123',
+    metamaskNetworkId: '1',
+    status: TransactionStatus.confirmed,
+    txParams: { nonce: '0x1' },
+    error: { message: 'Error message' },
+    ...overrides,
+  } as TestTxMeta;
+}
 
 describe('extension platform', () => {
   const metamaskVersion = process.env.METAMASK_VERSION;
+
   beforeEach(() => {
     // TODO: Delete this an enable 'resetMocks' in `jest.config.js` instead
     jest.resetAllMocks();
   });
 
   afterEach(() => {
-    // reset `METAMASK_VERSION` env var
     process.env.METAMASK_VERSION = metamaskVersion;
   });
 
   describe('getVersion', () => {
     it('should return non-prerelease version', () => {
       process.env.METAMASK_VERSION = 'should.not.return.me';
-      browser.runtime.getManifest.mockReturnValue({
+      mockedBrowser.runtime.getManifest.mockReturnValue({
         version: '1.2.3',
-      });
+      } as ReturnType<typeof browser.runtime.getManifest>);
       const extensionPlatform = new ExtensionPlatform();
 
       const version = extensionPlatform.getVersion();
@@ -55,9 +81,9 @@ describe('extension platform', () => {
 
     it('should return rollback version', () => {
       process.env.METAMASK_VERSION = 'should.not.return.me';
-      browser.runtime.getManifest.mockReturnValue({
+      mockedBrowser.runtime.getManifest.mockReturnValue({
         version: '1.2.3.1',
-      });
+      } as ReturnType<typeof browser.runtime.getManifest>);
       const extensionPlatform = new ExtensionPlatform();
 
       const version = extensionPlatform.getVersion();
@@ -67,9 +93,9 @@ describe('extension platform', () => {
 
     it('should return SemVer-formatted version manifest of prerelease', () => {
       process.env.METAMASK_VERSION = 'should.not.return.me';
-      browser.runtime.getManifest.mockReturnValue({
+      mockedBrowser.runtime.getManifest.mockReturnValue({
         version: '1.2.3-beta.0',
-      });
+      } as ReturnType<typeof browser.runtime.getManifest>);
       const extensionPlatform = new ExtensionPlatform();
 
       const version = extensionPlatform.getVersion();
@@ -79,9 +105,10 @@ describe('extension platform', () => {
   });
 
   describe('getExtensionURL', () => {
-    let extensionPlatform;
+    let extensionPlatform: ExtensionPlatform;
+
     beforeEach(() => {
-      browser.runtime.getURL.mockReturnValue(TEST_URL);
+      mockedBrowser.runtime.getURL.mockReturnValue(TEST_URL);
       extensionPlatform = new ExtensionPlatform();
     });
 
@@ -90,28 +117,25 @@ describe('extension platform', () => {
     });
 
     it('should return URL with route when provided', () => {
-      const TEST_ROUTE = 'test-route';
-      expect(extensionPlatform.getExtensionURL(TEST_ROUTE)).toStrictEqual(
-        `${TEST_URL}#${TEST_ROUTE}`,
+      const testRoute = 'test-route';
+      expect(extensionPlatform.getExtensionURL(testRoute)).toStrictEqual(
+        `${TEST_URL}#${testRoute}`,
       );
     });
 
     it('should return URL with queryString when provided', () => {
-      const QUERY_STRING = 'name=ferret';
+      const queryString = 'name=ferret';
       expect(
-        extensionPlatform.getExtensionURL(null, QUERY_STRING),
-      ).toStrictEqual(`${TEST_URL}?${QUERY_STRING}`);
+        extensionPlatform.getExtensionURL(null, queryString),
+      ).toStrictEqual(`${TEST_URL}?${queryString}`);
     });
   });
 
   describe('_showConfirmedTransaction', () => {
     it('should show confirmed transaction with nonce', async () => {
-      const txMeta = {
-        txParams: { nonce: '0x1' },
-        error: { message: 'Error message' },
-      };
-      browser.notifications.onClicked.hasListener.mockReturnValue(true);
-      getBlockExplorerLink.mockReturnValue('http://explorer-mock');
+      const txMeta = createTxMeta();
+      mockedBrowser.notifications.onClicked.hasListener.mockReturnValue(true);
+      mockGetBlockExplorerLink.mockReturnValue('http://explorer-mock');
 
       const extensionPlatform = new ExtensionPlatform();
       const showNotificationSpy = jest.spyOn(
@@ -129,12 +153,11 @@ describe('extension platform', () => {
     });
 
     it('should show confirmed transaction without nonce', async () => {
-      const txMeta = {
-        txParams: { nonce: undefined },
-        error: { message: 'Error message' },
-      };
-      browser.notifications.onClicked.hasListener.mockReturnValue(true);
-      getBlockExplorerLink.mockReturnValue('http://explorer-mock');
+      const txMeta = createTxMeta({
+        txParams: { nonce: undefined } as TestTxMeta['txParams'],
+      });
+      mockedBrowser.notifications.onClicked.hasListener.mockReturnValue(true);
+      mockGetBlockExplorerLink.mockReturnValue('http://explorer-mock');
 
       const extensionPlatform = new ExtensionPlatform();
       const showNotificationSpy = jest.spyOn(
@@ -154,10 +177,7 @@ describe('extension platform', () => {
 
   describe('_showFailedTransaction', () => {
     it('should show failed transaction with nonce', async () => {
-      const txMeta = {
-        txParams: { nonce: '0x1' },
-        error: { message: 'Error message' },
-      };
+      const txMeta = createTxMeta();
       const extensionPlatform = new ExtensionPlatform();
       const showNotificationSpy = jest.spyOn(
         extensionPlatform,
@@ -168,15 +188,14 @@ describe('extension platform', () => {
 
       expect(showNotificationSpy).toHaveBeenCalledWith(
         'Failed transaction',
-        `Transaction 1 failed! ${txMeta.error.message}`,
+        `Transaction 1 failed! ${txMeta.error?.message}`,
       );
     });
 
     it('should show failed transaction without nonce', async () => {
-      const txMeta = {
-        txParams: { nonce: undefined },
-        error: { message: 'Error message' },
-      };
+      const txMeta = createTxMeta({
+        txParams: { nonce: undefined } as TestTxMeta['txParams'],
+      });
       const extensionPlatform = new ExtensionPlatform();
       const showNotificationSpy = jest.spyOn(
         extensionPlatform,
@@ -187,16 +206,13 @@ describe('extension platform', () => {
 
       expect(showNotificationSpy).toHaveBeenCalledWith(
         'Failed transaction',
-        `Transaction failed! ${txMeta.error.message}`,
+        `Transaction failed! ${txMeta.error?.message}`,
       );
     });
 
     it('should show failed transaction with nonce and with errorMessage', async () => {
       const errorMessage = 'Test error message';
-      const txMeta = {
-        txParams: { nonce: '0x1' },
-        error: { message: 'Error message' },
-      };
+      const txMeta = createTxMeta();
       const extensionPlatform = new ExtensionPlatform();
       const showNotificationSpy = jest.spyOn(
         extensionPlatform,
@@ -213,10 +229,9 @@ describe('extension platform', () => {
 
     it('should show failed transaction without nonce and with errorMessage', async () => {
       const errorMessage = 'Test error message';
-      const txMeta = {
-        txParams: { nonce: undefined },
-        error: { message: 'Error message' },
-      };
+      const txMeta = createTxMeta({
+        txParams: { nonce: undefined } as TestTxMeta['txParams'],
+      });
       const extensionPlatform = new ExtensionPlatform();
       const showNotificationSpy = jest.spyOn(
         extensionPlatform,
@@ -234,14 +249,16 @@ describe('extension platform', () => {
 
   describe('showTransactionNotification', () => {
     it('shows failed transaction with EthAppNftNotSupported error message', async () => {
-      const txMeta = {
+      const txMeta = createTxMeta({
         status: TransactionStatus.failed,
-        txParams: { nonce: '0x1' },
-        error: { message: 'EthAppNftNotSupported' },
-      };
+        error: {
+          name: 'EthAppNftNotSupported',
+          message: 'EthAppNftNotSupported',
+        },
+      });
       const rpcPrefs = {
         chainId: 1,
-      };
+      } as TestRpcPrefs;
       const extensionPlatform = new ExtensionPlatform();
       const showNotificationSpy = jest.spyOn(
         extensionPlatform,
