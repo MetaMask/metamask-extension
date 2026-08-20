@@ -16,6 +16,7 @@ jest.mock('../../../selectors/feature-flags');
 
 jest.mock('../pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row">PayWithRow</div>,
+  ConfirmInfoRowSize: { Default: 'default', Small: 'small' },
 }));
 
 jest.mock('../bridge-fee-row/bridge-fee-row', () => ({

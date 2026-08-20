@@ -12,7 +12,6 @@ export {
   identify,
   trackEvent,
   trackPage,
+  updateProfileSessionData,
   validateIdentifyPayload,
 } from './analytics';
-export { getAnalyticsMessenger } from './analytics-messenger';
-export type { AnalyticsMessenger } from './analytics-messenger';

@@ -9,21 +9,15 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
-import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
-import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
-import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
-import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
-import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
-import { convertEnglishWordlistIndicesToCodepoints } from './lib/util';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // so unify-state tests can exercise real feature-flag gating via controller state.
@@ -35,9 +29,6 @@ jest.mock('../../shared/lib/environment', () => ({
   ...jest.requireActual('../../shared/lib/environment'),
   getIsAssetsUnifiedStateIncludedInBuild: jest.fn(),
 }));
-
-const mockToHardwareWalletError = jest.fn();
-const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
 
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
   PerpsControllerInit: jest.fn().mockReturnValue({
@@ -68,12 +59,6 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
         },
       };
     }),
-}));
-
-jest.mock('../../ui/contexts/hardware-wallets', () => ({
-  toHardwareWalletError: (...args) => mockToHardwareWalletError(...args),
-  isUserRejectedHardwareWalletError: (...args) =>
-    mockIsUserRejectedHardwareWalletError(...args),
 }));
 
 jest.mock('webextension-polyfill', () => ({
@@ -219,7 +204,6 @@ describe('MetaMaskController', function () {
       }),
     });
     initializeMockMiddlewareLog();
-    mockToHardwareWalletError.mockReset();
     jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
 
     // Re-create the ULID generator to start over again the `mockULIDs` list.
@@ -250,9 +234,15 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndRestore', function () {
     it('two successive calls with same inputs give same result', async function () {
-      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
       const result1 = metamaskController.keyringController.state;
-      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
       const result2 = metamaskController.keyringController.state;
 
       // v2 Snap keyrings are created lazily per-snap, so a fresh restore
@@ -279,12 +269,49 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndKeychain', function () {
     it('two successive calls with same inputs give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        'test@123',
+      );
       const result1 = metamaskController.keyringController.state;
-      await metamaskController.createNewVaultAndKeychain('test@123');
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        'test@123',
+      );
       const result2 = metamaskController.keyringController.state;
       expect(result1).not.toStrictEqual(undefined);
       expect(result1).toStrictEqual(result2);
+    });
+  });
+
+  describe('#createNewVaultAndGetSeedPhrase', function () {
+    it('creates a vault and returns the seed phrase', async function () {
+      const password = 'test@123';
+      const encodedSeedPhrase =
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndGetSeedPhrase(
+          password,
+        );
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+
+      expect(seedPhrase.split(' ')).toHaveLength(12);
+      expect(metamaskController.keyringController.state.isUnlocked).toBe(true);
+    });
+  });
+
+  describe('#unlockAndGetSeedPhrase', function () {
+    it('unlocks the vault and returns the seed phrase', async function () {
+      const password = 'test@123';
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        password,
+      );
+      await metamaskController.keyringController.setLocked();
+
+      const encodedSeedPhrase =
+        await metamaskController.legacyBackgroundApiService.unlockAndGetSeedPhrase(
+          password,
+        );
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+
+      expect(seedPhrase.split(' ')).toHaveLength(12);
+      expect(metamaskController.keyringController.state.isUnlocked).toBe(true);
     });
   });
 
@@ -325,36 +352,6 @@ describe('MetaMaskController', function () {
           .addToken({ address, symbol, decimals, networkClientId: 'sepolia' }),
       ]);
       expect(token1).toStrictEqual(token2);
-    });
-
-    it('networkClientId is used when provided', async function () {
-      const callSpy = jest
-        .spyOn(metamaskController.tokensController.messenger, 'call')
-        .mockReturnValueOnce({
-          configuration: { chainId: '0xa' },
-        })
-        .mockReturnValueOnce({
-          configuration: { chainId: '0xa' },
-        })
-        .mockReturnValueOnce({
-          networkConfigurationsByChainId: {
-            '0xa': {
-              nativeCurrency: 'ETH',
-              chainId: '0xa',
-            },
-          },
-        });
-
-      await metamaskController.getApi().addToken({
-        address,
-        symbol,
-        decimals,
-        networkClientId: 'networkClientId1',
-      });
-      expect(callSpy.mock.calls[0]).toStrictEqual([
-        'NetworkController:getNetworkClientById',
-        'networkClientId1',
-      ]);
     });
 
     describe('with assets-unify state enabled', function () {
@@ -445,6 +442,25 @@ describe('MetaMaskController', function () {
         });
       });
 
+      it('uses networkClientId to resolve the chain for AssetsController', async function () {
+        const getNetworkClientByIdSpy = jest
+          .spyOn(unifyController.networkController, 'getNetworkClientById')
+          .mockReturnValue({
+            configuration: { chainId: '0xa' },
+          });
+
+        await unifyController.getApi().addToken({
+          address,
+          symbol,
+          decimals,
+          networkClientId: 'networkClientId1',
+        });
+
+        expect(getNetworkClientByIdSpy).toHaveBeenCalledWith(
+          'networkClientId1',
+        );
+      });
+
       it('omits iconUrl when image is not provided', async function () {
         const expectedAssetId = toAssetId(address, CHAIN_IDS.SEPOLIA);
 
@@ -489,200 +505,13 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#removePermissionsFor', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        revokePermissions: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.removePermissionsFor({ subject: 'test_subject' }),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        revokePermissions: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.removePermissionsFor({ subject: 'test_subject' }),
-      ).toThrow(error);
-    });
-  });
-
-  describe('#rejectPermissionsRequest', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        rejectPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPermissionsRequest('DUMMY_ID'),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        rejectPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPermissionsRequest('DUMMY_ID'),
-      ).toThrow(error);
-    });
-  });
-
-  describe('#acceptPermissionsRequest', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        acceptPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        acceptPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
-      ).toThrow(error);
-    });
-  });
-
-  describe('#resolvePendingApproval', function () {
-    it('should not propagate ApprovalRequestNotFoundError', async function () {
-      const error = new ApprovalRequestNotFoundError('123');
-      metamaskController.approvalController = {
-        acceptRequest: () => {
-          throw error;
-        },
-      };
-      await expect(
-        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
-      ).resolves.not.toThrow(error);
-    });
-
-    it('should propagate Error other than ApprovalRequestNotFoundError', async function () {
-      const error = new Error();
-      metamaskController.approvalController = {
-        acceptRequest: () => {
-          throw error;
-        },
-      };
-      await expect(
-        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
-      ).rejects.toThrow(error);
-    });
-
-    it('should normalize null options before calling approvalController.acceptRequest', async function () {
-      const approvalId = mockULIDs[0];
-      const approvalValue = { txMeta: { id: '0x1' } };
-      metamaskController.approvalController = {
-        acceptRequest: jest.fn().mockResolvedValue(undefined),
-      };
-
-      await metamaskController.resolvePendingApproval(
-        approvalId,
-        approvalValue,
-        null,
-      );
-
-      expect(
-        metamaskController.approvalController.acceptRequest,
-      ).toHaveBeenCalledWith(approvalId, approvalValue, undefined);
-    });
-
-    it('should pass only waitForResult to approvalController.acceptRequest options', async function () {
-      const approvalId = mockULIDs[1];
-      const approvalValue = { txMeta: { id: '0x2' } };
-      metamaskController.approvalController = {
-        acceptRequest: jest.fn().mockResolvedValue(undefined),
-      };
-
-      await metamaskController.resolvePendingApproval(
-        approvalId,
-        approvalValue,
-        {
-          waitForResult: true,
-          walletType: HardwareKeyringNames.ledger,
-        },
-      );
-
-      expect(
-        metamaskController.approvalController.acceptRequest,
-      ).toHaveBeenCalledWith(approvalId, approvalValue, {
-        waitForResult: true,
-      });
-    });
-
-    it('should transform hardware wallet errors to internal JSON-RPC errors', async function () {
-      const approvalId = mockULIDs[2];
-      const approvalValue = { txMeta: { id: '0x3' } };
-      const error = new Error('Ledger transport disconnected');
-      metamaskController.approvalController = {
-        acceptRequest: () => {
-          throw error;
-        },
-      };
-      mockToHardwareWalletError.mockReturnValue({
-        message: 'Device disconnected',
-        code: ErrorCode.DeviceDisconnected,
-        severity: Severity.Err,
-        category: Category.Connection,
-        userMessage: 'Please reconnect your device',
-        metadata: {
-          transport: 'usb',
-          walletType: HardwareKeyringNames.ledger,
-        },
-      });
-
-      await expect(
-        metamaskController.resolvePendingApproval(approvalId, approvalValue, {
-          walletType: HardwareKeyringNames.ledger,
-        }),
-      ).rejects.toMatchObject({
-        code: -32603,
-        data: {
-          code: ErrorCode.DeviceDisconnected,
-          severity: Severity.Err,
-          category: Category.Connection,
-          userMessage: 'Please reconnect your device',
-          metadata: {
-            transport: 'usb',
-            walletType: HardwareKeyringNames.ledger,
-          },
-        },
-      });
-
-      expect(mockToHardwareWalletError).toHaveBeenCalledWith(
-        error,
-        HardwareKeyringNames.ledger,
-      );
-    });
-  });
-
   describe('#approveHardwareWalletTransaction', function () {
     it('should delegate to resolvePendingApproval with transaction payload and hardware wallet options', async function () {
       const resolvePendingApprovalSpy = jest
-        .spyOn(metamaskController, 'resolvePendingApproval')
+        .spyOn(
+          metamaskController.legacyBackgroundApiService,
+          'resolvePendingApproval',
+        )
         .mockResolvedValue();
       const txMeta = {
         id: '42',
@@ -693,12 +522,14 @@ describe('MetaMaskController', function () {
       };
       const actionId = mockULIDs[3];
 
-      await metamaskController.approveHardwareWalletTransaction({
-        txId: 42,
-        txMeta,
-        actionId,
-        walletType: HardwareKeyringNames.ledger,
-      });
+      await metamaskController.legacyBackgroundApiService.approveHardwareWalletTransaction(
+        {
+          txId: 42,
+          txMeta,
+          actionId,
+          walletType: HardwareKeyringNames.ledger,
+        },
+      );
 
       expect(resolvePendingApprovalSpy).toHaveBeenCalledWith(
         '42',
@@ -708,774 +539,18 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#rejectPendingApproval', function () {
-    it('should not propagate ApprovalRequestNotFoundError', function () {
-      const error = new ApprovalRequestNotFoundError('123');
-      metamaskController.approvalController = {
-        rejectRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPendingApproval('DUMMY_ID', {
-          code: 1,
-          message: 'DUMMY_MESSAGE',
-          data: 'DUMMY_DATA',
-        }),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than ApprovalRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.approvalController = {
-        rejectRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPendingApproval('DUMMY_ID', {
-          code: 1,
-          message: 'DUMMY_MESSAGE',
-          data: 'DUMMY_DATA',
-        }),
-      ).toThrow(error);
-    });
-  });
-
-  describe('passkey methods', function () {
-    const registrationResponse = { id: 'credential-id' };
-    const authenticationResponse = { id: 'assertion-id' };
-
-    describe('#generatePasskeyRegistrationOptions', function () {
-      it('delegates to passkey controller with prf availability', async function () {
-        const generateRegistrationOptionsSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'generateRegistrationOptions',
-          )
-          .mockResolvedValue({ challenge: 'challenge' });
-
-        const result = await metamaskController
-          .getApi()
-          .generatePasskeyRegistrationOptions({
-            prfAvailable: true,
-          });
-
-        expect(generateRegistrationOptionsSpy).toHaveBeenCalledWith({
-          prfAvailable: true,
-        });
-        expect(result).toStrictEqual({ challenge: 'challenge' });
-      });
-    });
-
-    describe('#generatePasskeyAuthenticationOptions', function () {
-      it('delegates to passkey controller', async function () {
-        const generateAuthenticationOptionsSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'generateAuthenticationOptions',
-          )
-          .mockResolvedValue({ challenge: 'challenge' });
-
-        const result = await metamaskController
-          .getApi()
-          .generatePasskeyAuthenticationOptions();
-
-        expect(generateAuthenticationOptionsSpy).toHaveBeenCalledTimes(1);
-        expect(result).toStrictEqual({ challenge: 'challenge' });
-      });
-    });
-
-    describe('#generatePasskeyPostRegistrationAuthenticationOptions', function () {
-      it('delegates to passkey controller', async function () {
-        const spy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'generatePostRegistrationAuthenticationOptions',
-          )
-          .mockReturnValue({ challenge: 'post-reg' });
-
-        const result = await metamaskController
-          .getApi()
-          .generatePasskeyPostRegistrationAuthenticationOptions(
-            registrationResponse,
-          );
-
-        expect(spy).toHaveBeenCalledWith({ registrationResponse });
-        expect(result).toStrictEqual({ challenge: 'post-reg' });
-      });
-    });
-
-    describe('#protectVaultKeyWithPasskey', function () {
-      it('requires password when onboarding is complete', async function () {
-        jest
-          .spyOn(metamaskController.onboardingController, 'state', 'get')
-          .mockReturnValue({
-            ...metamaskController.onboardingController.state,
-            completedOnboarding: true,
-          });
-
-        await expect(
-          metamaskController.protectVaultKeyWithPasskey(
-            registrationResponse,
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('Password required to register passkey');
-      });
-
-      it('verifies password and protects vault key after onboarding', async function () {
-        jest
-          .spyOn(metamaskController.onboardingController, 'state', 'get')
-          .mockReturnValue({
-            ...metamaskController.onboardingController.state,
-            completedOnboarding: true,
-          });
-        const verifyPasswordSpy = jest
-          .spyOn(metamaskController.keyringController, 'verifyPassword')
-          .mockResolvedValue(true);
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValue('vault-key');
-        const protectVaultKeySpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'protectVaultKeyWithPasskey',
-          )
-          .mockResolvedValue();
-
-        await metamaskController.protectVaultKeyWithPasskey(
-          registrationResponse,
-          authenticationResponse,
-          'password',
-        );
-
-        expect(verifyPasswordSpy).toHaveBeenCalledWith('password');
-        expect(protectVaultKeySpy).toHaveBeenCalledWith({
-          registrationResponse,
-          authenticationResponse,
-          vaultKey: 'vault-key',
-        });
-      });
-
-      it('skips password verification before onboarding completion', async function () {
-        jest
-          .spyOn(metamaskController.onboardingController, 'state', 'get')
-          .mockReturnValue({
-            ...metamaskController.onboardingController.state,
-            completedOnboarding: false,
-          });
-        const verifyPasswordSpy = jest.spyOn(
-          metamaskController.keyringController,
-          'verifyPassword',
-        );
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValue('vault-key');
-        const protectVaultKeySpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'protectVaultKeyWithPasskey',
-          )
-          .mockResolvedValue();
-
-        await metamaskController.protectVaultKeyWithPasskey(
-          registrationResponse,
-          authenticationResponse,
-        );
-
-        expect(verifyPasswordSpy).not.toHaveBeenCalled();
-        expect(protectVaultKeySpy).toHaveBeenCalledWith({
-          registrationResponse,
-          authenticationResponse,
-          vaultKey: 'vault-key',
-        });
-      });
-    });
-
-    describe('#unlockWithPasskey', function () {
-      it('throws when passkey is not registered', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.unlockWithPasskey(authenticationResponse),
-        ).rejects.toMatchObject({
-          name: 'PasskeyControllerError',
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        });
-      });
-
-      it('retrieves vault key and submits encryption key', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        const retrieveVaultKeySpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'retrieveVaultKeyWithPasskey',
-          )
-          .mockResolvedValue('vault-key');
-        const submitEncryptionKeySpy = jest
-          .spyOn(metamaskController, 'submitEncryptionKey')
-          .mockResolvedValue();
-
-        await metamaskController.unlockWithPasskey(authenticationResponse);
-
-        expect(retrieveVaultKeySpy).toHaveBeenCalledWith(
-          authenticationResponse,
-        );
-        expect(submitEncryptionKeySpy).toHaveBeenCalledWith('vault-key');
-      });
-    });
-
-    describe('#removePasskeyWithPasskeyVerification', function () {
-      it('throws when passkey is not registered', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.removePasskeyWithPasskeyVerification(
-            authenticationResponse,
-          ),
-        ).rejects.toMatchObject({
-          name: 'PasskeyControllerError',
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        });
-      });
-
-      it('throws when passkey authentication verification fails', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(false);
-
-        await expect(
-          metamaskController.removePasskeyWithPasskeyVerification(
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('Passkey authentication verification failed');
-      });
-
-      it('removes passkey after successful verification', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        const verifyPasskeyAuthenticationSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(true);
-        const removePasskeySpy = jest
-          .spyOn(metamaskController.passkeyController, 'removePasskey')
-          .mockReturnValue();
-
-        await metamaskController.removePasskeyWithPasskeyVerification(
-          authenticationResponse,
-        );
-
-        expect(verifyPasskeyAuthenticationSpy).toHaveBeenCalledWith(
-          authenticationResponse,
-        );
-        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('#removePasskeyWithPasswordVerification', function () {
-      it('throws when passkey is not registered', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(false);
-        const verifyPasswordSpy = jest.spyOn(
-          metamaskController.keyringController,
-          'verifyPassword',
-        );
-
-        await expect(
-          metamaskController.removePasskeyWithPasswordVerification('password'),
-        ).rejects.toMatchObject({
-          name: 'PasskeyControllerError',
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        });
-
-        expect(verifyPasswordSpy).not.toHaveBeenCalled();
-      });
-
-      it('verifies password then removes passkey', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        const verifyPasswordSpy = jest
-          .spyOn(metamaskController.keyringController, 'verifyPassword')
-          .mockResolvedValue(true);
-        const removePasskeySpy = jest
-          .spyOn(metamaskController.passkeyController, 'removePasskey')
-          .mockReturnValue();
-
-        await metamaskController.removePasskeyWithPasswordVerification(
-          'password',
-        );
-
-        expect(verifyPasswordSpy).toHaveBeenCalledWith('password');
-        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('#changePasswordWithPasskeyVerification', function () {
-      it('throws when passkey is not registered', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.changePasswordWithPasskeyVerification(
-            'new-password',
-            authenticationResponse,
-          ),
-        ).rejects.toMatchObject({
-          name: 'PasskeyControllerError',
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        });
-      });
-
-      it('throws when passkey authentication verification fails', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(false);
-
-        await expect(
-          metamaskController.changePasswordWithPasskeyVerification(
-            'new-password',
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('Passkey authentication verification failed');
-      });
-
-      it('changes password and renews vault key protection', async function () {
-        const releaseLock = jest.fn();
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(true);
-        jest
-          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-          .mockResolvedValue(releaseLock);
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValueOnce('old-vault-key')
-          .mockResolvedValueOnce('new-vault-key');
-        const changePasswordSpy = jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockResolvedValue();
-        const renewVaultKeyProtectionSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'renewVaultKeyProtection',
-          )
-          .mockResolvedValue();
-
-        await metamaskController.changePasswordWithPasskeyVerification(
-          'new-password',
-          authenticationResponse,
-        );
-
-        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
-        expect(renewVaultKeyProtectionSpy).toHaveBeenCalledWith({
-          authenticationResponse,
-          oldVaultKey: 'old-vault-key',
-          newVaultKey: 'new-vault-key',
-        });
-        expect(releaseLock).toHaveBeenCalledTimes(1);
-      });
-
-      it('removes passkey and rethrows when renew protection fails', async function () {
-        const releaseLock = jest.fn();
-        const renewError = new Error('renew failed');
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(true);
-        jest
-          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-          .mockResolvedValue(releaseLock);
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValueOnce('old-vault-key')
-          .mockResolvedValueOnce('new-vault-key');
-        jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'renewVaultKeyProtection',
-          )
-          .mockRejectedValue(renewError);
-        const removePasskeySpy = jest
-          .spyOn(metamaskController.passkeyController, 'removePasskey')
-          .mockReturnValue();
-
-        await expect(
-          metamaskController.changePasswordWithPasskeyVerification(
-            'new-password',
-            authenticationResponse,
-          ),
-        ).rejects.toMatchObject({
-          name: 'PasskeyControllerError',
-          message:
-            'Passkey vault key protection renewal failed after password change',
-          code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
-          cause: renewError,
-        });
-
-        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
-        expect(releaseLock).toHaveBeenCalledTimes(1);
-      });
-
-      it('releases lock and rethrows when keyring password change fails', async function () {
-        const releaseLock = jest.fn();
-        const changePasswordError = new Error('change password failed');
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(true);
-        jest
-          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-          .mockResolvedValue(releaseLock);
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValue('old-vault-key');
-        jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockRejectedValue(changePasswordError);
-        const renewVaultKeyProtectionSpy = jest.spyOn(
-          metamaskController.passkeyController,
-          'renewVaultKeyProtection',
-        );
-
-        await expect(
-          metamaskController.changePasswordWithPasskeyVerification(
-            'new-password',
-            authenticationResponse,
-          ),
-        ).rejects.toThrow(changePasswordError);
-
-        expect(renewVaultKeyProtectionSpy).not.toHaveBeenCalled();
-        expect(releaseLock).toHaveBeenCalledTimes(1);
-      });
-
-      it('changes password and removes passkey when vault key protection renewal is skipped', async function () {
-        const releaseLock = jest.fn();
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(true);
-        jest
-          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-          .mockResolvedValue(releaseLock);
-        const changePasswordSpy = jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockResolvedValue();
-        const verifyPasswordSpy = jest.spyOn(
-          metamaskController.keyringController,
-          'verifyPassword',
-        );
-        const renewVaultKeyProtectionSpy = jest.spyOn(
-          metamaskController.passkeyController,
-          'renewVaultKeyProtection',
-        );
-        const removePasskeySpy = jest
-          .spyOn(metamaskController.passkeyController, 'removePasskey')
-          .mockReturnValue();
-
-        await metamaskController.changePasswordWithPasskeyVerification(
-          'new-password',
-          authenticationResponse,
-          { renewVaultKeyProtection: false },
-        );
-
-        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
-        expect(verifyPasswordSpy).not.toHaveBeenCalled();
-        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
-        expect(renewVaultKeyProtectionSpy).not.toHaveBeenCalled();
-        expect(releaseLock).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('#exportSeedPhraseWithPasskey', function () {
-      it('throws when passkey is not registered', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.exportSeedPhraseWithPasskey(
-            authenticationResponse,
-          ),
-        ).rejects.toMatchObject({
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        });
-      });
-
-      it('propagates the error when passkey verification fails', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'retrieveVaultKeyWithPasskey',
-          )
-          .mockRejectedValue(new Error('invalid assertion'));
-
-        await expect(
-          metamaskController.exportSeedPhraseWithPasskey(
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('invalid assertion');
-      });
-
-      it('throws when the passkey vault key cannot decrypt the vault', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'retrieveVaultKeyWithPasskey',
-          )
-          .mockResolvedValue('passkey-vault-key');
-        jest
-          .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
-          .mockRejectedValue(new Error('Incorrect encryption key'));
-
-        await expect(
-          metamaskController.exportSeedPhraseWithPasskey(
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('Incorrect encryption key');
-      });
-
-      it('returns the encoded seed phrase for the given keyring after verification', async function () {
-        const mnemonic = new Uint8Array([0, 0, 0, 1]);
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'retrieveVaultKeyWithPasskey',
-          )
-          .mockResolvedValue('vault-key');
-        const exportSeedPhraseSpy = jest
-          .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
-          .mockResolvedValue(mnemonic);
-
-        const result = await metamaskController.exportSeedPhraseWithPasskey(
-          authenticationResponse,
-          'keyring-id',
-        );
-
-        expect(exportSeedPhraseSpy).toHaveBeenCalledWith(
-          { encryptionKey: 'vault-key' },
-          'keyring-id',
-        );
-        expect(result).toStrictEqual(
-          convertEnglishWordlistIndicesToCodepoints(mnemonic),
-        );
-      });
-
-      it('defaults to the primary keyring when no keyring id is provided', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'retrieveVaultKeyWithPasskey',
-          )
-          .mockResolvedValue('vault-key');
-        const exportSeedPhraseSpy = jest
-          .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
-          .mockResolvedValue(new Uint8Array([0, 0, 0, 1]));
-
-        await metamaskController.exportSeedPhraseWithPasskey(
-          authenticationResponse,
-        );
-
-        expect(exportSeedPhraseSpy).toHaveBeenCalledWith(
-          { encryptionKey: 'vault-key' },
-          undefined,
-        );
-      });
-    });
-
-    describe('#exportAccountsWithPasskey', function () {
-      it('throws when passkey is not registered', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
-            '0xAddressOne',
-          ]),
-        ).rejects.toMatchObject({
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        });
-      });
-
-      it('propagates the error when passkey verification fails', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'retrieveVaultKeyWithPasskey',
-          )
-          .mockRejectedValue(new Error('invalid assertion'));
-
-        await expect(
-          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
-            '0xAddressOne',
-          ]),
-        ).rejects.toThrow('invalid assertion');
-      });
-
-      it('propagates the error when account export fails', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'retrieveVaultKeyWithPasskey',
-          )
-          .mockResolvedValue('passkey-vault-key');
-        jest
-          .spyOn(metamaskController.keyringController, 'exportAccount')
-          .mockRejectedValue(new Error('Incorrect encryption key'));
-
-        await expect(
-          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
-            '0xAddressOne',
-          ]),
-        ).rejects.toThrow('Incorrect encryption key');
-      });
-
-      it('returns private keys for each address after verification', async function () {
-        const addresses = ['0xAddressOne', '0xAddressTwo'];
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        const retrieveVaultKeyWithPasskeySpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'retrieveVaultKeyWithPasskey',
-          )
-          .mockResolvedValue('vault-key');
-        const exportAccountSpy = jest
-          .spyOn(metamaskController.keyringController, 'exportAccount')
-          .mockImplementation((_options, address) =>
-            Promise.resolve(`priv-key-${address}`),
-          );
-
-        const result = await metamaskController.exportAccountsWithPasskey(
-          authenticationResponse,
-          addresses,
-        );
-
-        expect(retrieveVaultKeyWithPasskeySpy).toHaveBeenCalledWith(
-          authenticationResponse,
-        );
-        expect(retrieveVaultKeyWithPasskeySpy).toHaveBeenCalledTimes(1);
-        expect(exportAccountSpy).toHaveBeenCalledTimes(2);
-        expect(exportAccountSpy).toHaveBeenCalledWith(
-          { encryptionKey: 'vault-key' },
-          '0xAddressOne',
-        );
-        expect(exportAccountSpy).toHaveBeenCalledWith(
-          { encryptionKey: 'vault-key' },
-          '0xAddressTwo',
-        );
-        expect(result).toStrictEqual([
-          'priv-key-0xAddressOne',
-          'priv-key-0xAddressTwo',
-        ]);
-      });
-    });
-
-    describe('#resetWallet', function () {
-      it('clears passkey controller state as part of reset flow', async function () {
-        const clearPasskeyStateSpy = jest
-          .spyOn(metamaskController.passkeyController, 'clearState')
-          .mockReturnValue();
-        jest
-          .spyOn(metamaskController.keyringController, 'setLocked')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController, 'clearLoginArtifacts')
-          .mockResolvedValue();
-        await metamaskController.resetWallet(true);
-
-        expect(clearPasskeyStateSpy).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('#getApi', function () {
-      it('exposes passkey api methods', function () {
-        const api = metamaskController.getApi();
-
-        expect(api).toStrictEqual(
-          expect.objectContaining({
-            generatePasskeyRegistrationOptions: expect.any(Function),
-            generatePasskeyPostRegistrationAuthenticationOptions:
-              expect.any(Function),
-            generatePasskeyAuthenticationOptions: expect.any(Function),
-            protectVaultKeyWithPasskey: expect.any(Function),
-            unlockWithPasskey: expect.any(Function),
-            removePasskeyWithPasskeyVerification: expect.any(Function),
-            removePasskeyWithPasswordVerification: expect.any(Function),
-            changePasswordWithPasskeyVerification: expect.any(Function),
-            exportSeedPhraseWithPasskey: expect.any(Function),
-            exportAccountsWithPasskey: expect.any(Function),
-          }),
-        );
-      });
+  describe('resetWallet', function () {
+    it('delegates to LegacyBackgroundApiService', async function () {
+      const callSpy = jest
+        .spyOn(metamaskController.controllerMessenger, 'call')
+        .mockResolvedValue(undefined);
+
+      await metamaskController.getApi().resetWallet(true);
+
+      expect(callSpy).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:resetWallet',
+        true,
+      );
     });
   });
 });

@@ -1,11 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { RecommendedAction } from '@metamask/phishing-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -14,8 +13,24 @@ import {
 } from '../../../shared/constants/metametrics';
 import configureStore from '../../store/store';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
 import RevealSeedPage from './reveal-seed';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockUseParams = jest.fn().mockReturnValue({});
 
@@ -45,9 +60,6 @@ const mockRequestRevealSeedWords = jest
 const mockScanUrlForPhishing = jest.fn().mockResolvedValue(null);
 
 const mockPasskeyAuthResponse = { id: 'assertion-id', type: 'public-key' };
-const mockGeneratePasskeyAuthenticationOptions = jest
-  .fn()
-  .mockResolvedValue({ challenge: 'challenge' });
 const mockRequestRevealSeedWordsWithPasskey = jest
   .fn()
   .mockReturnValue(() => Promise.resolve('test srp'));
@@ -66,18 +78,27 @@ const mockCancelPasskeyCeremony = jest.fn();
 const mockIsPasskeyCeremonySilentError = jest.fn().mockReturnValue(false);
 const mockGetEnvironmentType = jest.fn().mockReturnValue('fullscreen');
 
+jest.mock('../../hooks/passkey/usePasskeyAuthentication', () => ({
+  usePasskeyAuthentication: () => () => mockStartPasskeyAuthentication(),
+}));
+
+jest.mock('../../hooks/passkey/usePasskeySeedPhraseExport', () => ({
+  usePasskeySeedPhraseExport:
+    () => (authenticationResponse: unknown, keyringId?: string) => {
+      const result = mockRequestRevealSeedWordsWithPasskey(
+        authenticationResponse,
+        keyringId,
+      );
+      return typeof result === 'function' ? result() : result;
+    },
+}));
+
 const password = 'password';
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   requestRevealSeedWords: (userPassword: string, keyringId?: string) =>
     mockRequestRevealSeedWords(userPassword, keyringId),
-  getSeedPhraseWithPasskey: (
-    authenticationResponse: unknown,
-    keyringId?: string,
-  ) => mockRequestRevealSeedWordsWithPasskey(authenticationResponse, keyringId),
-  generatePasskeyAuthenticationOptions: (...args: unknown[]) =>
-    mockGeneratePasskeyAuthenticationOptions(...args),
   scanUrlForPhishing: (...args: unknown[]) => mockScanUrlForPhishing(...args),
 }));
 
@@ -176,19 +197,6 @@ async function navigateQuizForPasskeyReveal({
     expect(queryByTestId('srp-quiz-continue')).toBeInTheDocument();
   });
   fireEventFn.click(queryByTestId('srp-quiz-continue') as HTMLElement);
-}
-
-function createMockMetaMetricsContext() {
-  const mockTrackEvent = jest.fn();
-  return {
-    context: {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    },
-    mockTrackEvent,
-  };
 }
 
 describe('Reveal Seed Page', () => {
@@ -361,12 +369,8 @@ describe('Reveal Seed Page', () => {
         ) => Promise<string>,
       );
 
-    const { context: metricsContext, mockTrackEvent } =
-      createMockMetaMetricsContext();
     const { queryByTestId, getByText, getByRole } = renderWithProvider(
-      <MetaMetricsContext.Provider value={metricsContext}>
-        <RevealSeedPage />
-      </MetaMetricsContext.Provider>,
+      <RevealSeedPage />,
       store,
     );
 
@@ -385,19 +389,20 @@ describe('Reveal Seed Page', () => {
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealStarted,
+        name: MetaMetricsEventName.SrpRevealStarted,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
+        sensitiveProperties: {},
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportRequested,
+        name: MetaMetricsEventName.KeyExportRequested,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -405,19 +410,21 @@ describe('Reveal Seed Page', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
+        sensitiveProperties: {},
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealNextClicked,
+        name: MetaMetricsEventName.SrpRevealNextClicked,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
+        sensitiveProperties: {},
       });
       expect(mockTrackEvent).toHaveBeenLastCalledWith({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportFailed,
+        name: MetaMetricsEventName.KeyExportFailed,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -426,6 +433,7 @@ describe('Reveal Seed Page', () => {
           hd_entropy_index: 0,
           reason: 'bad password',
         },
+        sensitiveProperties: {},
       });
     });
 
@@ -439,9 +447,9 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportRequested,
+        name: MetaMetricsEventName.KeyExportRequested,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -449,19 +457,21 @@ describe('Reveal Seed Page', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
+        sensitiveProperties: {},
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealNextClicked,
+        name: MetaMetricsEventName.SrpRevealNextClicked,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
+        sensitiveProperties: {},
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportRevealed,
+        name: MetaMetricsEventName.KeyExportRevealed,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -469,18 +479,20 @@ describe('Reveal Seed Page', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
+        sensitiveProperties: {},
       });
       expect(getByText(messages.copyToClipboard.message)).toBeInTheDocument();
     });
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpViewSrpText,
+        name: MetaMetricsEventName.SrpViewSrpText,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
+        sensitiveProperties: {},
       });
     });
 
@@ -497,12 +509,13 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenLastCalledWith({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpViewsSrpQR,
+        name: MetaMetricsEventName.SrpViewsSrpQR,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
+        sensitiveProperties: {},
       });
     });
 
@@ -515,12 +528,13 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenLastCalledWith({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpViewSrpText,
+        name: MetaMetricsEventName.SrpViewSrpText,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
+        sensitiveProperties: {},
       });
     });
 
@@ -531,12 +545,13 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
+        name: MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
         properties: {
+          category: MetaMetricsEventCategory.Onboarding,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
+        sensitiveProperties: {},
       });
     });
 
@@ -545,9 +560,9 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportCopied,
+        name: MetaMetricsEventName.KeyExportCopied,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -555,11 +570,12 @@ describe('Reveal Seed Page', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
+        sensitiveProperties: {},
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpCopiedToClipboard,
+        name: MetaMetricsEventName.SrpCopiedToClipboard,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -567,17 +583,14 @@ describe('Reveal Seed Page', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
+        sensitiveProperties: {},
       });
     });
   });
 
   it('should emit event when back button is clicked', async () => {
-    const { context: metricsContext, mockTrackEvent } =
-      createMockMetaMetricsContext();
     const { getByLabelText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={metricsContext}>
-        <RevealSeedPage />
-      </MetaMetricsContext.Provider>,
+      <RevealSeedPage />,
       mockStore,
     );
 
@@ -586,16 +599,16 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealBackButtonClicked,
+        name: MetaMetricsEventName.SrpRevealBackButtonClicked,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           screen: 'QUIZ_INTRODUCTION_SCREEN',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
+        sensitiveProperties: {},
       });
     });
   });
@@ -677,13 +690,8 @@ describe('Reveal Seed Page', () => {
         hostname: 'evil.com',
       });
 
-      const { context: metricsContext, mockTrackEvent } =
-        createMockMetaMetricsContext();
-
       const { queryByTestId, getByText } = renderWithProvider(
-        <MetaMetricsContext.Provider value={metricsContext}>
-          <RevealSeedPage />
-        </MetaMetricsContext.Provider>,
+        <RevealSeedPage />,
         mockStore,
       );
 
@@ -699,15 +707,16 @@ describe('Reveal Seed Page', () => {
       );
 
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealBackButtonClicked,
+        name: MetaMetricsEventName.SrpRevealBackButtonClicked,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           screen: 'PASSWORD_PROMPT_SCREEN',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
+        sensitiveProperties: {},
       });
     });
 
@@ -717,26 +726,23 @@ describe('Reveal Seed Page', () => {
         hostname: 'evil.com',
       });
 
-      const { context: metricsContext, mockTrackEvent } =
-        createMockMetaMetricsContext();
+      renderWithProvider(<RevealSeedPage />, mockStore);
 
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={metricsContext}>
-          <RevealSeedPage />
-        </MetaMetricsContext.Provider>,
-        mockStore,
-      );
+      await act(async () => {
+        await flushPromises();
+      });
 
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith({
-          category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
+          name: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
           properties: {
+            category: MetaMetricsEventCategory.Keys,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             key_type: MetaMetricsEventKeyType.Srp,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             dapp_host_name: 'evil.com',
           },
+          sensitiveProperties: {},
         });
       });
     });
@@ -747,15 +753,7 @@ describe('Reveal Seed Page', () => {
         hostname: 'safe-site.com',
       });
 
-      const { context: metricsContext, mockTrackEvent } =
-        createMockMetaMetricsContext();
-
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={metricsContext}>
-          <RevealSeedPage />
-        </MetaMetricsContext.Provider>,
-        mockStore,
-      );
+      renderWithProvider(<RevealSeedPage />, mockStore);
 
       await waitFor(() => {
         expect(mockScanUrlForPhishing).toHaveBeenCalled();
@@ -763,7 +761,7 @@ describe('Reveal Seed Page', () => {
 
       expect(mockTrackEvent).not.toHaveBeenCalledWith(
         expect.objectContaining({
-          event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
+          name: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
         }),
       );
     });

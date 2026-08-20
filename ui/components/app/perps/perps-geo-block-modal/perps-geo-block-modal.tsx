@@ -19,6 +19,14 @@ import {
   ModalBody,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+// Imported from the module, not the `hooks/perps` barrel: hosts that render
+// this modal partially mock that barrel, which would leave the hook undefined.
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 
 export type PerpsGeoBlockModalProps = {
   isOpen: boolean;
@@ -39,6 +47,19 @@ export const PerpsGeoBlockModal = ({
   onClose,
 }: PerpsGeoBlockModalProps) => {
   const t = useI18nContext();
+
+  // The restriction notice is a displayed funnel state, so it reports its own
+  // screen view. Emitted here rather than at the ~17 trigger sites so every
+  // host reports it once per open; the fire-once guard re-arms when the modal
+  // closes, so reopening it tracks again.
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: isOpen,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.GEO_BLOCK_NOTIF,
+    },
+  });
 
   return (
     <Modal

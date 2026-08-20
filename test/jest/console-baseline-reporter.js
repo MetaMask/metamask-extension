@@ -48,7 +48,6 @@ const prettier = require('prettier');
 const {
   categorizeUnitTestMessage,
   categorizeIntegrationTestMessage,
-  createFallbackCategory,
 } = require('./console-categorizer');
 
 /**
@@ -285,7 +284,7 @@ class ConsoleBaselineReporter {
    *
    * @param {string} type - Console message type (log, warn, error, etc.)
    * @param {string} text - Console message text
-   * @returns {string} Category name for this message
+   * @returns {string|null} Category name, or null if the rule set suppressed this message
    */
   #categorizeMessage(type, text) {
     let categorizer;
@@ -301,10 +300,7 @@ class ConsoleBaselineReporter {
 
     const category = categorizer(type, text);
 
-    // If category is null (suppressed by rules), use fallback for baseline tracking
-    if (category === null) {
-      return createFallbackCategory(type, text);
-    }
+    // group: null rules suppress this message — skip baseline tracking.
     return category;
   }
 
@@ -333,6 +329,11 @@ class ConsoleBaselineReporter {
       for (const msg of testResult.console) {
         if (msg.type === 'warn' || msg.type === 'error') {
           const category = this.#categorizeMessage(msg.type, msg.message);
+
+          // Suppressed by a group: null rule — do not track in baseline.
+          if (category === null) {
+            continue;
+          }
 
           if (!this.warningsByFile[filePath][category]) {
             this.warningsByFile[filePath][category] = 0;

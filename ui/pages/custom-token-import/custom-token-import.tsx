@@ -1,12 +1,11 @@
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { formatChainIdToHex } from '@metamask/bridge-controller';
 import {
@@ -51,12 +50,14 @@ import { checkExistingAddresses } from '../../helpers/utils/util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { isEvmChainId, toAssetId } from '../../../shared/lib/asset-utils';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useDispatch } from '../../store/hooks';
 import { type CustomTokenImportNetworkOption } from './custom-token-import-network-selector';
 import { CustomTokenImportForm } from './custom-token-import-form';
 
@@ -122,7 +123,7 @@ export const CustomTokenImportPage = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const currentChainId = useSelector(getCurrentChainId) as Hex;
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
@@ -239,15 +240,16 @@ export const CustomTokenImportPage = () => {
 
   const trackViewed = useCallback(
     (viewState: string) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Wallet,
-        event: MetaMetricsEventName.ImportCustomTokenViewed,
-        properties: {
-          [METRICS_PROPERTIES.viewState]: viewState,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ImportCustomTokenViewed)
+          .addCategory(MetaMetricsEventCategory.Wallet)
+          .addProperties({
+            [METRICS_PROPERTIES.viewState]: viewState,
+          })
+          .build(),
+      );
     },
-    [trackEvent],
+    [createEventBuilder, trackEvent],
   );
 
   useEffect(() => {
@@ -295,7 +297,7 @@ export const CustomTokenImportPage = () => {
 
       // Probe the chain *before* applying validation branches so the NFT
       // branch wins over the mainnet-warning/personal-address/existing-token
-      // branches, matching the order of the legacy `import-tokens-modal`
+      // branches, matching the order used by the previous token import flow.
       // switch.
       let standard: string | undefined;
       let rpcTokenInfo;
@@ -397,17 +399,17 @@ export const CustomTokenImportPage = () => {
     (value: string) => {
       if (value === '') {
         setDecimals('');
-        setDecimalsError(t('decimalsMustZerotoTen'));
+        setDecimalsError(t('tokenDecimalsMustBeWholeNumber'));
         return;
       }
       const next = Number(value);
       setDecimals(value);
       if (
-        Number.isNaN(next) ||
+        !Number.isInteger(next) ||
         next < MIN_DECIMAL_VALUE ||
         next > MAX_DECIMAL_VALUE
       ) {
-        setDecimalsError(t('decimalsMustZerotoTen'));
+        setDecimalsError(t('tokenDecimalsMustBeWholeNumber'));
       } else {
         setDecimalsError(null);
       }
@@ -464,26 +466,34 @@ export const CustomTokenImportPage = () => {
 
   const trackSubmitAttempt = useCallback(
     (addedToken: 0 | 1) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Wallet,
-        event: MetaMetricsEventName.ImportCustomTokenInteracted,
-        sensitiveProperties: {
-          [METRICS_PROPERTIES.addedToken]: addedToken,
-          [METRICS_PROPERTIES.tokenSymbol]: symbol,
-          [METRICS_PROPERTIES.tokenContractAddress]: address,
-          [METRICS_PROPERTIES.chainId]: selectedNetwork,
-          [METRICS_PROPERTIES.clickedSecurityLink]:
-            clickedSecurityLinkRef.current,
-          [METRICS_PROPERTIES.assetType]: AssetType.token,
-          [METRICS_PROPERTIES.tokenStandard]: ERC20,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ImportCustomTokenInteracted)
+          .addCategory(MetaMetricsEventCategory.Wallet)
+          .addProperties({
+            [METRICS_PROPERTIES.addedToken]: addedToken,
+            [METRICS_PROPERTIES.chainId]: selectedNetwork,
+            [METRICS_PROPERTIES.clickedSecurityLink]:
+              clickedSecurityLinkRef.current,
+          })
+          .addSensitiveProperties({
+            [METRICS_PROPERTIES.tokenSymbol]: symbol,
+            [METRICS_PROPERTIES.tokenContractAddress]: address,
+            [METRICS_PROPERTIES.assetType]: AssetType.token,
+            [METRICS_PROPERTIES.tokenStandard]: ERC20,
+          })
+          .build(),
+      );
     },
-    [address, selectedNetwork, symbol, trackEvent],
+    [address, createEventBuilder, selectedNetwork, symbol, trackEvent],
   );
 
   const handleSubmit = useCallback(async () => {
-    if (Number.isNaN(parsedDecimals) || !isValid || isSubmitting) {
+    if (
+      Number.isNaN(parsedDecimals) ||
+      !Number.isInteger(parsedDecimals) ||
+      !isValid ||
+      isSubmitting
+    ) {
       return;
     }
     setIsSubmitting(true);
@@ -502,10 +512,11 @@ export const CustomTokenImportPage = () => {
         ),
       );
 
-      // When assets-unify-state is enabled, the manage-tokens list reads from
-      // AssetsController (customAssets + assetsInfo) rather than
-      // TokensController.allTokens.
-      if (assetsUnifyStateFeatureEnabled && selectedAccount?.id) {
+      // Write path: seed AssetsController whenever the unified assets state is
+      // included in the build. The runtime rollout flag is treated as always-on
+      // for writes so the manage-tokens list (customAssets + assetsInfo) stays
+      // in sync; read/display gating still uses assetsUnifyStateFeatureEnabled.
+      if (getIsAssetsUnifiedStateIncludedInBuild() && selectedAccount?.id) {
         const assetId = toAssetId(
           address as Hex,
           selectedNetwork as CaipChainId | Hex,
@@ -556,7 +567,6 @@ export const CustomTokenImportPage = () => {
   }, [
     address,
     assetPreferences,
-    assetsUnifyStateFeatureEnabled,
     dispatch,
     isSubmitting,
     isValid,

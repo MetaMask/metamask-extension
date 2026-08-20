@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { EthScope } from '@metamask/keyring-api';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import {
   CHAIN_IDS,
@@ -27,6 +27,7 @@ import {
 import { getCompletedOnboarding } from '../../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../../ducks/metamask/base-selectors';
 import { useAccountNetworkAvailability } from '../../../../hooks/accounts/useAccountNetworkAvailability';
+import { useDispatch } from '../../../../store/hooks';
 
 export type NetworkItemCallbacks = {
   onDelete?: () => void;
@@ -91,9 +92,13 @@ export const useNetworkItemCallbacks = () => {
       const isEthereumMainnet =
         chainId === EthScope.Mainnet ||
         (isEvm && hexChainId === CHAIN_IDS.MAINNET);
+      const isSelectedNetwork =
+        chainId === currentChainId ||
+        (Boolean(hexChainId) && hexChainId === currentChainId);
 
       const canRemoveOrDisable =
         isUnlocked &&
+        !isSelectedNetwork &&
         (isDisableableDefault
           ? !isEthereumMainnet
           : isEvm &&

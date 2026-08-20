@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { I18nContext } from '../../../contexts/i18n';
@@ -28,9 +28,10 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import SwapsFooter from '../swaps-footer';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { Text } from '../../../components/component-library';
+import { useDispatch } from '../../../store/hooks';
 import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
@@ -50,27 +51,28 @@ export default function AwaitingSignatures() {
     getCurrentSmartTransactionsEnabled,
   );
   const needsTwoConfirmations = Boolean(approveTxParams);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   useEffect(() => {
-    trackEvent({
-      event: 'Awaiting Signature(s) on a HW wallet',
-      category: MetaMetricsEventCategory.Swaps,
-      sensitiveProperties: {
-        needs_two_confirmations: needsTwoConfirmations,
-        token_from: sourceTokenInfo?.symbol,
-        token_from_amount: fetchParams?.value,
-        token_to: destinationTokenInfo?.symbol,
-        request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
-        slippage: fetchParams?.slippage,
-        custom_slippage: fetchParams?.slippage === 2,
-        is_hardware_wallet: hardwareWalletUsed,
-        hardware_wallet_type: hardwareWalletType,
-        stx_enabled: smartTransactionsEnabled,
-        current_stx_enabled: currentSmartTransactionsEnabled,
-        stx_user_opt_in: smartTransactionsOptInStatus,
-      },
-    });
+    trackEvent(
+      createEventBuilder('Awaiting Signature(s) on a HW wallet')
+        .addCategory(MetaMetricsEventCategory.Swaps)
+        .addSensitiveProperties({
+          needs_two_confirmations: needsTwoConfirmations,
+          token_from: sourceTokenInfo?.symbol,
+          token_from_amount: fetchParams?.value,
+          token_to: destinationTokenInfo?.symbol,
+          request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
+          slippage: fetchParams?.slippage,
+          custom_slippage: fetchParams?.slippage === 2,
+          is_hardware_wallet: hardwareWalletUsed,
+          hardware_wallet_type: hardwareWalletType,
+          stx_enabled: smartTransactionsEnabled,
+          current_stx_enabled: currentSmartTransactionsEnabled,
+          stx_user_opt_in: smartTransactionsOptInStatus,
+        })
+        .build(),
+    );
   }, []);
 
   const headerText = needsTwoConfirmations

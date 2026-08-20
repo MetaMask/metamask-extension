@@ -1,9 +1,10 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 import SnapLinkWarning from '../../../../components/app/snaps/snap-link-warning';
 import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { getNotificationTypeForAnalytics } from '../../../../helpers/utils/notification.util';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -11,7 +12,7 @@ import {
 import { DetailedViewData, SnapNotification } from './types';
 
 export const SnapFooterButton = (props: { notification: SnapNotification }) => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { handleSnapNavigate } = useSnapNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const data = props.notification.data as DetailedViewData;
@@ -24,21 +25,21 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
   const onClick = useCallback(
     (href: string, isExternal: boolean) => {
       // Analytics
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationInteraction,
-        event: MetaMetricsEventName.NotificationDetailClicked,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          notification_id: props.notification.id,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          notification_type: props.notification.type,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          clicked_item: isExternal ? 'external_link' : 'internal_link',
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+          .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            notification_id: props.notification.id,
+            notification_type: getNotificationTypeForAnalytics(
+              props.notification,
+            ),
+            notification_subtype: props.notification.notification_subtype,
+            clicked_item: isExternal ? 'external_link' : 'internal_link',
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
 
       // Warning / Navigation
       if (isExternal) {
@@ -47,12 +48,7 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
         handleSnapNavigate(href);
       }
     },
-    [
-      handleSnapNavigate,
-      props.notification.id,
-      props.notification.type,
-      trackEvent,
-    ],
+    [createEventBuilder, handleSnapNavigate, props.notification, trackEvent],
   );
 
   if (!footer) {

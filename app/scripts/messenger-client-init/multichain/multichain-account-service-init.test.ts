@@ -104,7 +104,6 @@ describe('MultichainAccountServiceInit', () => {
           },
           createAccounts: {
             timeoutMs: 3000,
-            batched: true,
           },
         },
       });

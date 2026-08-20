@@ -97,7 +97,7 @@ export const currentCurrencySelector = (state) =>
 export const conversionRateSelector = (state) =>
   getCurrencyRateControllerCurrencyRates(state)[getProviderConfig(state).ticker]
     ?.conversionRate;
-export const txDataSelector = (state) => state.confirmTransaction.txData;
+export const txDataSelector = (state) => state.confirmTransaction?.txData;
 
 export const transactionFeeSelector = function (state, txData) {
   const currentCurrency = currentCurrencySelector(state);

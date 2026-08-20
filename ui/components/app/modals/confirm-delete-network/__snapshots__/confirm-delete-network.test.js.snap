@@ -27,11 +27,11 @@ exports[`Confirm Delete Network should match snapshot 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start bg-default flex max-h-full w-full rounded-lg motion-safe:animate-slide-up max-w-[360px] overflow-hidden p-4 shadow-lg"
+          class="flex-col items-stretch justify-start border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg motion-safe:animate-slide-up max-w-[360px] overflow-hidden p-4 shadow-lg"
           role="dialog"
         >
           <header
-            class="grid grid-cols-[1fr_auto_1fr] items-center px-0 pb-4"
+            class="grid grid-cols-[1fr_auto_1fr] items-start px-0 pb-4"
           >
             <div
               class="col-start-2 col-end-3 w-full"

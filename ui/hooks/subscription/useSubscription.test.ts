@@ -7,22 +7,30 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigat
 import mockState from '../../../test/data/mock-state.json';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../shared/lib/conversion.utils';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import { buildSupportLinkWithUserData } from '../../../shared/lib/build-support-link';
 import * as actions from '../../store/actions';
+import { openWindow } from '../../helpers/utils/window';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import type { MetaMaskReduxState } from '../../store/store';
 import {
   useSubscriptionCryptoApprovalTransaction,
   useShieldRewards,
+  useHandleSubscriptionSupportAction,
 } from './useSubscription';
 import * as subscriptionPricingHooks from './useSubscriptionPricing';
 import type { TokenWithApprovalAmount } from './useSubscriptionPricing';
 
 jest.mock('../useGasFeeEstimates');
 jest.mock('./useSubscriptionPricing');
+jest.mock('../../helpers/utils/window', () => ({
+  openWindow: jest.fn(),
+}));
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   estimateGas: jest.fn().mockResolvedValue('0x5208'),
   addTransaction: jest.fn().mockResolvedValue({}),
+  getCustomerServiceToken: jest.fn(),
   getSubscriptionPricing: jest.fn().mockResolvedValue({}),
   getRewardsSeasonMetadata: jest.fn(() => async () => null),
   estimateRewardsPoints: jest.fn(() => async () => null),
@@ -31,6 +39,9 @@ jest.mock('../../store/actions', () => ({
 
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockAddTransaction = jest.mocked(actions.addTransaction);
+const mockGetCustomerServiceToken = jest.mocked(
+  actions.getCustomerServiceToken,
+);
 const mockUseSubscriptionPricing = jest.mocked(
   subscriptionPricingHooks.useSubscriptionPricing,
 );
@@ -288,6 +299,61 @@ describe('useSubscriptionCryptoApprovalTransaction', () => {
   });
 });
 
+describe('useHandleSubscriptionSupportAction', () => {
+  let state: MetaMaskReduxState;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    state = cloneDeep(mockState) as unknown as MetaMaskReduxState;
+    (state.metamask as Record<string, unknown>).customerId =
+      'test-shield-customer-id';
+    mockGetCustomerServiceToken.mockResolvedValue(
+      'test-customer-service-token',
+    );
+  });
+
+  it('opens support link with customer-service token and shield id', async () => {
+    const { result } = renderHookWithProvider(
+      () => useHandleSubscriptionSupportAction(),
+      state,
+    );
+
+    await act(async () => {
+      await result.current.handleClickContactSupport();
+    });
+
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+      customerServiceToken: 'test-customer-service-token',
+      shieldCustomerId: 'test-shield-customer-id',
+    });
+
+    expect(mockGetCustomerServiceToken).toHaveBeenCalled();
+    expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+  });
+
+  it('opens support link without token when token is unavailable', async () => {
+    mockGetCustomerServiceToken.mockResolvedValue(undefined);
+
+    const { result } = renderHookWithProvider(
+      () => useHandleSubscriptionSupportAction(),
+      state,
+    );
+
+    await act(async () => {
+      await result.current.handleClickContactSupport();
+    });
+
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+      shieldCustomerId: 'test-shield-customer-id',
+    });
+
+    expect(mockGetCustomerServiceToken).toHaveBeenCalled();
+    expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+  });
+});
+
 const mockGetRewardsSeasonMetadata =
   actions.getRewardsSeasonMetadata as jest.Mock;
 const mockEstimateRewardsPoints = actions.estimateRewardsPoints as jest.Mock;
@@ -309,15 +375,15 @@ describe('useShieldRewards', () => {
       );
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => useShieldRewards(),
       shieldState,
     );
 
-    await waitForNextUpdate();
-
-    expect(result.current.isRewardsSeason).toBe(false);
-    expect(result.current.pending).toBe(false);
+    await waitFor(() => {
+      expect(result.current.isRewardsSeason).toBe(false);
+      expect(result.current.pending).toBe(false);
+    });
   });
 
   // useShieldRewards now hard-returns disabled state without invoking
@@ -333,12 +399,15 @@ describe('useShieldRewards', () => {
       throw new Error('Network error');
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => useShieldRewards(),
       shieldState,
     );
 
-    await waitForNextUpdate();
+    const prevUpdate0 = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(prevUpdate0);
+    });
 
     // seasonError triggers the error fallback, returning default values
     expect(result.current.isRewardsSeason).toBe(false);
@@ -365,12 +434,15 @@ describe('useShieldRewards', () => {
       throw new Error('Points estimation failed: 500');
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => useShieldRewards(),
       stateWithKeyrings,
     );
 
-    await waitForNextUpdate();
+    const prevUpdate1 = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(prevUpdate1);
+    });
 
     // Points estimation error is caught gracefully, returning null values
     expect(result.current.pointsMonthly).toBeNull();

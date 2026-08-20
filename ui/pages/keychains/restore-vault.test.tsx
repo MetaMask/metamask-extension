@@ -2,9 +2,9 @@ import React from 'react';
 import sinon from 'sinon';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { userEvent } from '@testing-library/user-event';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
 import * as actions from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -12,6 +12,21 @@ import {
   getIsSocialLoginFlow,
 } from '../../selectors';
 import RestoreVaultPage from './restore-vault';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockUseNavigate = jest.fn();
 
@@ -26,8 +41,41 @@ jest.mock('../../selectors', () => ({
   getIsSocialLoginFlow: jest.fn(),
 }));
 
+jest.mock('../../../shared/lib/passkey', () => ({
+  ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
+    '../../../shared/lib/passkey',
+  ),
+  isPasskeyPRFSupported: jest.fn().mockResolvedValue(true),
+}));
+
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+
+async function enterSrpAndContinue(
+  queryByTestId: (id: string) => HTMLElement | null,
+) {
+  const srpNote = queryByTestId('srp-input-import__srp-note');
+  expect(srpNote).toBeInTheDocument();
+
+  await act(async () => {
+    fireEvent.paste(srpNote as HTMLElement, {
+      clipboardData: { getData: () => TEST_SEED },
+    });
+  });
+
+  const confirmSrpButton = queryByTestId('import-srp-confirm');
+  expect(confirmSrpButton).not.toBeDisabled();
+
+  await act(async () => {
+    fireEvent.click(confirmSrpButton as HTMLElement);
+  });
+
+  await waitFor(() => {
+    expect(
+      queryByTestId('parent-selector-onboarding-password'),
+    ).toBeInTheDocument();
+  });
+}
 
 describe('Restore vault Component', () => {
   const mockStore = configureMockStore([thunk]);
@@ -63,20 +111,7 @@ describe('Restore vault Component', () => {
       }) as ReturnType<typeof mockStore>,
     );
 
-    const srpNote = queryByTestId('srp-input-import__srp-note');
-    expect(srpNote).toBeInTheDocument();
-
-    (srpNote as HTMLElement).focus();
-
-    await userEvent.paste(TEST_SEED);
-
-    const confirmSrpButton = queryByTestId('import-srp-confirm');
-
-    expect(confirmSrpButton).not.toBeDisabled();
-
-    fireEvent.click(confirmSrpButton as HTMLElement);
-
-    expect(queryByTestId('create-password')).toBeInTheDocument();
+    await enterSrpAndContinue(queryByTestId);
   });
 
   it('should call handleImport when password is submitted', async () => {
@@ -125,23 +160,7 @@ describe('Restore vault Component', () => {
       testStore,
     );
 
-    const srpNote = queryByTestId('srp-input-import__srp-note');
-    expect(srpNote).toBeInTheDocument();
-
-    (srpNote as HTMLElement).focus();
-
-    await userEvent.paste(TEST_SEED);
-
-    const confirmSrpButton = queryByTestId('import-srp-confirm');
-
-    expect(confirmSrpButton).not.toBeDisabled();
-
-    fireEvent.click(confirmSrpButton as HTMLElement);
-
-    // Wait for the password form to appear
-    await waitFor(() => {
-      expect(queryByTestId('create-password')).toBeInTheDocument();
-    });
+    await enterSrpAndContinue(queryByTestId);
 
     const createPasswordInput = queryByTestId('create-password-new-input');
     const confirmPasswordInput = queryByTestId('create-password-confirm-input');
@@ -168,7 +187,9 @@ describe('Restore vault Component', () => {
     const terms = queryByTestId('create-password-terms');
     fireEvent.click(terms as HTMLElement);
 
-    const createPasswordForm = queryByTestId('create-password');
+    const createPasswordForm = queryByTestId(
+      'parent-selector-onboarding-password',
+    );
     const createNewWalletButton = queryByTestId('create-password-submit');
 
     // Wait for the button to be enabled (password validation is async)
@@ -176,8 +197,9 @@ describe('Restore vault Component', () => {
       expect(createNewWalletButton).not.toBeDisabled();
     });
 
-    // Submit the form directly
-    fireEvent.submit(createPasswordForm as HTMLElement);
+    await act(async () => {
+      fireEvent.submit(createPasswordForm as HTMLElement);
+    });
 
     // Wait for the async action to be called
     await waitFor(() => {
@@ -238,22 +260,18 @@ describe('Restore vault Component', () => {
       };
     }) as typeof actions.resetWallet);
 
+    const messenger = createMockRouteMessenger();
     const { queryByTestId } = renderWithProvider(
       <RestoreVaultPage />,
       testStore,
+      '/',
+      undefined,
+      undefined,
+      undefined,
+      messenger,
     );
 
-    const srpNote = queryByTestId('srp-input-import__srp-note');
-    expect(srpNote).toBeInTheDocument();
-
-    (srpNote as HTMLElement).focus();
-    await userEvent.paste(TEST_SEED);
-
-    fireEvent.click(queryByTestId('import-srp-confirm') as HTMLElement);
-
-    await waitFor(() => {
-      expect(queryByTestId('create-password')).toBeInTheDocument();
-    });
+    await enterSrpAndContinue(queryByTestId);
 
     fireEvent.change(
       queryByTestId('create-password-new-input') as HTMLElement,
@@ -269,7 +287,11 @@ describe('Restore vault Component', () => {
     );
 
     fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
-    fireEvent.submit(queryByTestId('create-password') as HTMLElement);
+    await act(async () => {
+      fireEvent.submit(
+        queryByTestId('parent-selector-onboarding-password') as HTMLElement,
+      );
+    });
 
     await waitFor(() => {
       expect(mockCreateNewVaultAndRestore.calledOnce).toBe(true);

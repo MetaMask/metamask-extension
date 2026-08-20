@@ -51,10 +51,24 @@ export type SplitStateMigrationFailedEvent = {
   state: MetaMaskStateType;
 };
 
+export type WriteRetryRecoveredPersistenceEvent =
+  | 'set-retry-recovered'
+  | 'set-backup-retry-recovered'
+  | 'persist-retry-recovered'
+  | 'persist-backup-retry-recovered';
+
+export type WriteRetryRecoveredEvent = {
+  event: WriteRetryRecoveredPersistenceEvent;
+  firstErrorMessage: string;
+  firstErrorName: string;
+  retryDelayMs: number;
+};
+
 export type PersistenceManagerEventMap = {
   vaultCorruptionDetected: [VaultCorruptionDetectedEvent];
   splitStateMigrationSucceeded: [SplitStateMigrationSucceededEvent];
   splitStateMigrationFailed: [SplitStateMigrationFailedEvent];
+  writeRetryRecovered: [WriteRetryRecoveredEvent];
 };
 
 export type PersistenceManagerOptions = {
@@ -83,6 +97,36 @@ const writeRecoveryByFailure: Record<
   'persist-backup-failed': 'persist-backup-recovered',
 };
 
+type WriteRetryOptions = {
+  supersedable: boolean;
+};
+
+export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
+
+const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
+  PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
+
+function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (signal?.aborted) {
+      resolve(false);
+      return;
+    }
+
+    const timeout = globalThis.setTimeout(() => {
+      signal?.removeEventListener('abort', handleAbort);
+      resolve(true);
+    }, ms);
+
+    function handleAbort() {
+      globalThis.clearTimeout(timeout);
+      signal?.removeEventListener('abort', handleAbort);
+      resolve(false);
+    }
+
+    signal?.addEventListener('abort', handleAbort, { once: true });
+  });
+}
 /**
  * This Error represents an error that occurs during persistence operations.
  * It includes a backup of the state at the time of the error and optionally
@@ -236,6 +280,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   #localStore: BaseStore;
 
+  #currentWriteRetryAbortController: AbortController | null = null;
+
   #backupDb: IndexedDBStore | null = null;
 
   #backup?: string;
@@ -349,6 +395,70 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     });
   }
 
+  #emitWriteRetryRecovered(
+    event: WriteRetryRecoveredPersistenceEvent,
+    firstError: unknown,
+  ) {
+    const normalizedError = this.#normalizePersistError(firstError);
+    this.emit('writeRetryRecovered', {
+      event,
+      firstErrorMessage: normalizedError.message,
+      firstErrorName: normalizedError.name,
+      retryDelayMs: PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS,
+    });
+  }
+
+  #supersedeWriteRetry() {
+    this.#currentWriteRetryAbortController?.abort();
+    this.#currentWriteRetryAbortController = null;
+  }
+
+  async #waitForWriteRetryDelay({
+    supersedable,
+  }: WriteRetryOptions): Promise<boolean> {
+    if (!supersedable) {
+      // Backup retries intentionally hold the write lock until they finish.
+      // Primary storage has already been updated at this point, and aborting
+      // the backup retry could leave the recovery backup stale. This is
+      // especially risky for split state because the next write may not include
+      // backed-up keys such as KeyringController.
+      return await delay(PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS);
+    }
+
+    const abortController = new AbortController();
+    this.#currentWriteRetryAbortController = abortController;
+    try {
+      return await delay(
+        PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS,
+        abortController.signal,
+      );
+    } finally {
+      if (this.#currentWriteRetryAbortController === abortController) {
+        // `delay` must be this signal's only consumer.
+        // Additional consumers will be orphaned,
+        // unless aborted here or cancelled with `#supersedeWriteRetry`.
+        this.#currentWriteRetryAbortController = null;
+      }
+    }
+  }
+
+  async #retryWrite(
+    write: () => Promise<void>,
+    retryRecoveredEvent: WriteRetryRecoveredPersistenceEvent,
+    options: WriteRetryOptions,
+  ): Promise<void> {
+    try {
+      await write();
+    } catch (firstError) {
+      const shouldRetry = await this.#waitForWriteRetryDelay(options);
+      if (!shouldRetry) {
+        throw firstError;
+      }
+      await write();
+      this.#emitWriteRetryRecovered(retryRecoveredEvent, firstError);
+  }
+  }
+
   async open(): Promise<void> {
     if (this.#open) {
       return;
@@ -428,6 +538,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   #pendingPairs = new Map<string, unknown>();
 
+  #hasSimulatedStorageSetFailure = false;
+
   storageKind: StorageKind = PersistenceManager.defaultStorageKind;
 
   /**
@@ -453,23 +565,31 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   /**
    * Checks if storage set operations should be simulated as failing.
-   * When enabled, all set operations will fail immediately.
    *
    * @throws Error if simulating storage failure for testing
    */
   #maybeSimulateSetFailure(): void {
-    if (
-      process.env.IN_TEST &&
-      getManifestFlags().testing?.simulateStorageSetFailure
-    ) {
-      throw new Error('Simulated storage.local.set failure for testing');
+    if (!process.env.IN_TEST) {
+      return;
     }
+
+    const simulation =
+      getManifestFlags().testing?.simulateStorageSetFailure ?? false;
+    if (
+      !simulation ||
+      (simulation === 'once' && this.#hasSimulatedStorageSetFailure)
+    ) {
+      return;
+    }
+
+    this.#hasSimulatedStorageSetFailure = true;
+    throw new Error('Simulated storage.local.set failure for testing');
   }
 
   /**
    * Sets state in the local store, with optional test simulation.
-   * In test mode with simulateStorageSetFailure flag, all set operations
-   * will fail immediately.
+   * In test mode with simulateStorageSetFailure flag, set operations fail
+   * according to the configured simulation mode.
    *
    * @param data - The data to set in the local store
    * @throws Error if simulating storage failure for testing
@@ -483,8 +603,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   /**
    * Sets key-value pairs in the local store, with optional test simulation.
-   * In test mode with simulateStorageSetFailure flag, all set operations
-   * will fail immediately.
+   * In test mode with simulateStorageSetFailure flag, set operations fail
+   * according to the configured simulation mode.
    *
    * @param pairs - The key-value pairs to set in the local store
    * @throws Error if simulating storage failure for testing
@@ -520,6 +640,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
 
+    this.#supersedeWriteRetry();
     const abortController = new AbortController();
 
     // If we already have a write _pending_, abort it so the more up-to-date
@@ -543,10 +664,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         let backupSucceeded = false;
         try {
           // atomically set all the keys (includes test simulation check)
-          await this.#setInLocalStore({
-            data: state,
-            meta,
-          });
+          await this.#retryWrite(
+            () =>
+              this.#setInLocalStore({
+                data: state,
+                meta,
+              }),
+            'set-retry-recovered',
+            { supersedable: true },
+          );
 
           const backup = makeBackup(state, meta);
           // if we have a vault we can back it up
@@ -559,7 +685,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               try {
                 const backupDb = this.#backupDb;
                 if (backupDb) {
-                  await backupDb.set(backup);
+                  await this.#retryWrite(
+                    () => backupDb.set(backup),
+                    'set-backup-retry-recovered',
+                    { supersedable: false },
+                  );
                   backupSucceeded = true;
                 }
                 this.#backup = stringifiedBackup;
@@ -625,6 +755,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     }
 
+    this.#supersedeWriteRetry();
     const abortController = new AbortController();
 
     // If we already have a write _pending_, abort it so the more up-to-date
@@ -652,7 +783,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           this.#pendingPairs.clear();
           try {
             // save the pairs (includes test simulation check)
-            await this.#setKeyValuesInLocalStore(clone);
+            await this.#retryWrite(
+              () => this.#setKeyValuesInLocalStore(clone),
+              'persist-retry-recovered',
+              { supersedable: true },
+            );
           } catch (err) {
             // merge the clone with the pending pairs again
             for (const [key, value] of clone.entries()) {
@@ -679,7 +814,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             try {
               const backupDb = this.#backupDb;
               if (backupDb) {
-                await backupDb.set(backup);
+                await this.#retryWrite(
+                  () => backupDb.set(backup),
+                  'persist-backup-retry-recovered',
+                  { supersedable: false },
+                );
                 backupSucceeded = true;
               }
             } catch (backupErr) {
@@ -716,14 +855,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    *
    * @param options - An object containing options for the retrieval.
    * @param options.validateVault - A flag indicating whether to validate the vault
+   * @param options.reportErrors - Whether read errors should be reported to Sentry.
    * @returns The current state of the local store or null if the store is empty.
    * @throws Error if the vault is missing and a backup vault is found in IndexedDB.
    * @throws Error if the local store is not open.
    */
   async get({
     validateVault,
+    reportErrors = true,
   }: {
     validateVault: boolean;
+    reportErrors?: boolean;
   }): Promise<MetaMaskStorageStructure | undefined> {
     await this.open();
 
@@ -746,13 +888,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             'Error retrieving the current state of the local store:',
             localStoreError,
           );
-          // Custom fingerprint prevents Sentry's deduplication from dropping
-          // this event when other persistence errors with the same underlying
-          // error message (e.g., "An unexpected error occurred") are reported.
-          captureException(localStoreError, {
-            tags: { 'persistence.error': 'get-failed' },
-            fingerprint: ['persistence-error', 'get-failed'],
-          });
+          if (reportErrors) {
+            // Custom fingerprint prevents Sentry's deduplication from dropping
+            // this event when other persistence errors with the same underlying
+            // error message (e.g., "An unexpected error occurred") are reported.
+            captureException(localStoreError, {
+              tags: { 'persistence.error': 'get-failed' },
+              fingerprint: ['persistence-error', 'get-failed'],
+            });
+          }
         }
 
         if (validateVault) {
@@ -842,6 +986,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * its initial state.
    */
   async reset() {
+    this.#supersedeWriteRetry();
     await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive' },
