@@ -58,6 +58,80 @@ describe('useMoneyAccountInfo', () => {
     );
   });
 
+  it('widens the account to what MoneyAccountController holds, once it holds it', async () => {
+    mockGetMoneyAccountAvailability.mockResolvedValue({
+      isAvailable: true,
+      address: MONEY_ADDRESS,
+    });
+
+    const primaryKeyringId = 'primary-hd-keyring-id';
+    const controllerAccount = {
+      id: 'money-account-id',
+      address: MONEY_ADDRESS,
+      options: {
+        entropy: { type: 'mnemonic', id: primaryKeyringId, groupIndex: 0 },
+        exportable: false,
+      },
+    };
+
+    const { result } = renderHookWithProvider(() => useMoneyAccountInfo(), {
+      metamask: {
+        ...FLAG_ON.metamask,
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [],
+            metadata: { id: primaryKeyringId, name: '' },
+          },
+        ],
+        moneyAccounts: { 'money-account-id': controllerAccount },
+      },
+    });
+
+    await waitFor(() => {
+      expect(result.current.hasMoneyAccount).toBe(true);
+    });
+
+    expect(result.current.primaryMoneyAccount).toStrictEqual(controllerAccount);
+  });
+
+  it('widens the account to what MoneyAccountController holds, once it holds it', async () => {
+    mockGetMoneyAccountAvailability.mockResolvedValue({
+      isAvailable: true,
+      address: MONEY_ADDRESS,
+    });
+
+    const primaryKeyringId = 'primary-hd-keyring-id';
+    const controllerAccount = {
+      id: 'money-account-id',
+      address: MONEY_ADDRESS,
+      options: {
+        entropy: { type: 'mnemonic', id: primaryKeyringId, groupIndex: 0 },
+        exportable: false,
+      },
+    };
+
+    const { result } = renderHookWithProvider(() => useMoneyAccountInfo(), {
+      metamask: {
+        ...FLAG_ON.metamask,
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [],
+            metadata: { id: primaryKeyringId, name: '' },
+          },
+        ],
+        moneyAccounts: { 'money-account-id': controllerAccount },
+      },
+    });
+
+    await waitFor(() => {
+      expect(result.current.hasMoneyAccount).toBe(true);
+    });
+
+    expect(result.current.primaryMoneyAccount).toStrictEqual(controllerAccount);
+  });
+
   it('reports no account when the gate says it is unavailable, e.g. no delegation', async () => {
     mockGetMoneyAccountAvailability.mockResolvedValue({ isAvailable: false });
 
