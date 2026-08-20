@@ -217,7 +217,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
               }
             : {})}
         >
-          {isPostQuoteWithdraw ? t('receive') : t('payWithModalTitle')}
+          {t(isPostQuoteWithdraw ? 'withdrawTo' : 'payWithModalTitle')}
         </ModalHeader>
         <ScrollContainer
           style={{

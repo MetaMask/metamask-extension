@@ -15,6 +15,9 @@ import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAu
 import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
+import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
+import * as useTransactionPayWithdrawModule from '../../../hooks/pay/useTransactionPayWithdraw';
+import * as usePayWithNoFeeTokenModule from '../../../hooks/pay/usePayWithNoFeeToken';
 import * as useAccountNoFundsAlertModule from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import {
   CustomAmountInfo,
@@ -24,9 +27,13 @@ import {
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
 jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
+jest.mock('../../../hooks/pay/useTransactionPayPostQuote');
+jest.mock('../../../hooks/pay/useTransactionPayWithdraw');
 jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useTransactionPayToken');
+jest.mock('../../../hooks/pay/usePayWithNoFeeToken');
 jest.mock('../../../hooks/alerts/transactions/useAccountNoFundsAlert');
 jest.mock('../../transactions/custom-amount/custom-amount', () => ({
   CustomAmount: ({
@@ -69,9 +76,13 @@ jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
 jest.mock('../../rows/total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row" />,
 }));
+// `ReceiveRow` is intentionally left unmocked: it renders either
+// `receive-row-skeleton` or `receive-row` depending on quote-pending state, and
+// the Perps Withdraw cases below assert on that distinction.
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
+
 const mockStore = configureMockStore([]);
 
 const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
@@ -118,6 +129,7 @@ function render(
   options: {
     disableAutomaticToken?: boolean;
     disablePay?: boolean;
+    displayPercentageButtons?: boolean;
     hidePayTokenAmount?: boolean;
     availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
     accountNoFundsAlert?: { key: string }[];
@@ -128,14 +140,18 @@ function render(
     isPostQuote?: boolean;
     hasQuotes?: boolean;
     hasPositiveRequiredAmount?: boolean;
+    isNativePayToken?: boolean;
+    isNoFeePayToken?: boolean;
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
+    withdraw?: { isWithdraw: boolean; canSelectWithdrawToken: boolean };
   } = {},
 ) {
   const {
     disableAutomaticToken,
     disablePay = false,
+    displayPercentageButtons = false,
     hidePayTokenAmount = false,
     availableTokens = [MOCK_AVAILABLE_TOKEN],
     accountNoFundsAlert = [],
@@ -146,8 +162,11 @@ function render(
     isPostQuote = false,
     hasQuotes = false,
     hasPositiveRequiredAmount = true,
+    isNativePayToken = false,
+    isNoFeePayToken = false,
     sourceAmounts = [],
     requiredTokens = [],
+    withdraw = { isWithdraw: false, canSelectWithdrawToken: false },
   } = options;
   const primaryRequiredToken = Object.prototype.hasOwnProperty.call(
     options,
@@ -226,6 +245,20 @@ function render(
         typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
       >,
     );
+  jest
+    .mocked(useTransactionPayTokenModule.useTransactionPayToken)
+    .mockReturnValue({
+      isNative: isNativePayToken,
+      payToken: MOCK_AVAILABLE_TOKEN as never,
+      setPayToken: jest.fn(),
+    });
+  jest.mocked(usePayWithNoFeeTokenModule.usePayWithNoFeeToken).mockReturnValue({
+    isNoFeeToken: () => isNoFeePayToken,
+    renderNoFeeTag: () => null,
+  });
+  jest
+    .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
+    .mockReturnValue(withdraw);
 
   const state = getMockConfirmStateForTransaction(transactionMeta);
 
@@ -233,6 +266,7 @@ function render(
     <CustomAmountInfo
       disableAutomaticToken={disableAutomaticToken}
       disablePay={disablePay}
+      displayPercentageButtons={displayPercentageButtons}
       hidePayTokenAmount={hidePayTokenAmount}
     />,
     mockStore(state),
@@ -436,12 +470,107 @@ describe('CustomAmountInfo', () => {
   });
 
   describe('percentage buttons', () => {
-    it('does not render percentage buttons', () => {
+    // The shortcuts are opted into by the money-account flows via the
+    // displayPercentageButtons prop.
+    const renderMoneyAccount = (options: Parameters<typeof render>[0] = {}) =>
+      render({
+        ...options,
+        displayPercentageButtons: true,
+      });
+
+    it('is not rendered when displayPercentageButtons is not set', () => {
       const { queryByTestId } = render();
 
       expect(queryByTestId('percentage-buttons')).not.toBeInTheDocument();
-      expect(queryByTestId('percentage-button-25')).not.toBeInTheDocument();
+    });
+
+    it('renders 10%, 25%, 50%, and 90% by default', () => {
+      const { getByTestId, queryByTestId } = renderMoneyAccount();
+
+      expect(getByTestId('percentage-buttons')).toBeInTheDocument();
+      expect(getByTestId('percentage-button-10')).toBeInTheDocument();
+      expect(getByTestId('percentage-button-25')).toBeInTheDocument();
+      expect(getByTestId('percentage-button-50')).toBeInTheDocument();
+      expect(getByTestId('percentage-button-90')).toBeInTheDocument();
       expect(queryByTestId('percentage-button-100')).not.toBeInTheDocument();
+    });
+
+    it('replaces 90% with Max for no-fee (fixed-spread) tokens', () => {
+      const { getByTestId, queryByTestId } = renderMoneyAccount({
+        isNoFeePayToken: true,
+      });
+
+      expect(getByTestId('percentage-button-100')).toHaveTextContent('Max');
+      expect(queryByTestId('percentage-button-90')).not.toBeInTheDocument();
+    });
+
+    it('keeps 90% for tokens that are not no-fee', () => {
+      const { getByTestId, queryByTestId } = renderMoneyAccount({
+        isNoFeePayToken: false,
+      });
+
+      expect(getByTestId('percentage-button-90')).toBeInTheDocument();
+      expect(queryByTestId('percentage-button-100')).not.toBeInTheDocument();
+    });
+
+    it('always shows Max on withdraw, irrespective of the selected token', () => {
+      const { getByTestId, queryByTestId } = renderMoneyAccount({
+        isNoFeePayToken: false,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getByTestId('percentage-button-100')).toHaveTextContent('Max');
+      expect(queryByTestId('percentage-button-90')).not.toBeInTheDocument();
+    });
+
+    it('always shows Max on withdraw when the pay token is native', () => {
+      const { getByTestId, queryByTestId } = renderMoneyAccount({
+        isNoFeePayToken: false,
+        isNativePayToken: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getByTestId('percentage-button-100')).toHaveTextContent('Max');
+      expect(queryByTestId('percentage-button-90')).not.toBeInTheDocument();
+    });
+
+    it('keeps 90% when the no-fee token is native', () => {
+      const { getByTestId, queryByTestId } = renderMoneyAccount({
+        isNoFeePayToken: true,
+        isNativePayToken: true,
+      });
+
+      expect(getByTestId('percentage-button-90')).toBeInTheDocument();
+      expect(queryByTestId('percentage-button-100')).not.toBeInTheDocument();
+    });
+
+    it('applies the selected percentage to the amount', () => {
+      const updatePendingAmountPercentage = jest.fn();
+      const { getByTestId } = renderMoneyAccount({
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          updatePendingAmountPercentage,
+        },
+      });
+
+      getByTestId('percentage-button-50').click();
+
+      expect(updatePendingAmountPercentage).toHaveBeenCalledWith(50);
+    });
+
+    it('disables percentage buttons when no tokens are available', () => {
+      const updatePendingAmountPercentage = jest.fn();
+      const { getByTestId } = renderMoneyAccount({
+        availableTokens: [],
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          updatePendingAmountPercentage,
+        },
+      });
+
+      expect(getByTestId('percentage-button-50')).toBeDisabled();
+      getByTestId('percentage-button-50').click();
+      expect(updatePendingAmountPercentage).not.toHaveBeenCalled();
     });
   });
 
@@ -481,6 +610,7 @@ describe('CustomAmountInfo', () => {
         transactionMeta,
         hasQuotes: true,
         isPostQuote: false,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
       });
 
       expect(queryByTestId('bridge-fee-row')).toBeInTheDocument();
@@ -500,6 +630,7 @@ describe('CustomAmountInfo', () => {
         hasPositiveRequiredAmount: false,
         hasQuotes: true,
         isPostQuote: false,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
@@ -517,11 +648,58 @@ describe('CustomAmountInfo', () => {
         transactionMeta,
         hasQuotes: true,
         isPostQuote: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
       });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
       expect(getByTestId('bridge-time-row')).toBeInTheDocument();
       expect(getByTestId('receive-row')).toBeInTheDocument();
+    });
+
+    it('renders the receive row for a withdraw when post-quote is enabled', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
+      });
+
+      expect(getByTestId('receive-row')).toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('renders the total row for a withdraw when post-quote is disabled', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('withdraw amount input', () => {
+    it('keeps the amount input enabled without wallet tokens when post-quote is disabled', () => {
+      const { getByTestId } = render({
+        availableTokens: [],
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getByTestId('custom-amount')).toHaveAttribute(
+        'data-disabled',
+        'false',
+      );
+    });
+
+    it('disables the amount input without wallet tokens for non-withdraw flows', () => {
+      const { getByTestId } = render({
+        availableTokens: [],
+        withdraw: { isWithdraw: false, canSelectWithdrawToken: false },
+      });
+
+      expect(getByTestId('custom-amount')).toHaveAttribute(
+        'data-disabled',
+        'true',
+      );
     });
   });
 
@@ -600,6 +778,25 @@ describe('CustomAmountInfo', () => {
         .mockReturnValue({ skipIfBalance: false } as ReturnType<
           typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
         >);
+      jest
+        .mocked(useTransactionPayTokenModule.useTransactionPayToken)
+        .mockReturnValue({
+          isNative: false,
+          payToken: undefined,
+          setPayToken: jest.fn(),
+        });
+      jest
+        .mocked(usePayWithNoFeeTokenModule.usePayWithNoFeeToken)
+        .mockReturnValue({
+          isNoFeeToken: () => false,
+          renderNoFeeTag: () => null,
+        });
+      jest
+        .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
+        .mockReturnValue({
+          isWithdraw: false,
+          canSelectWithdrawToken: false,
+        });
 
       const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
@@ -622,7 +819,7 @@ describe('CustomAmountInfo', () => {
 describe('CustomAmountInfoSkeleton', () => {
   it('renders skeleton components', () => {
     const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
-    const { getByTestId } = renderWithConfirmContextProvider(
+    const { getByTestId, queryByTestId } = renderWithConfirmContextProvider(
       <CustomAmountInfoSkeleton />,
       mockStore(state),
     );
@@ -630,5 +827,18 @@ describe('CustomAmountInfoSkeleton', () => {
     expect(getByTestId('custom-amount-info-skeleton')).toBeInTheDocument();
     expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
     expect(getByTestId('pay-token-amount-skeleton')).toBeInTheDocument();
+    expect(
+      queryByTestId('percentage-buttons-skeleton'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the percentage buttons skeleton when the flow displays them', () => {
+    const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <CustomAmountInfoSkeleton displayPercentageButtons />,
+      mockStore(state),
+    );
+
+    expect(getByTestId('percentage-buttons-skeleton')).toBeInTheDocument();
   });
 });

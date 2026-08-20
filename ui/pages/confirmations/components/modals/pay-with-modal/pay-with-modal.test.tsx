@@ -219,6 +219,18 @@ describe('PayWithModal', () => {
     );
   });
 
+  it('renders Receive header for money account withdraw', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        type: TransactionType.moneyAccountWithdraw,
+      },
+    } as ReturnType<typeof useConfirmContext>);
+
+    renderModal({ isOpen: true, onClose: onCloseMock });
+
+    expect(screen.getByText(messages.withdrawTo.message)).toBeInTheDocument();
+  });
+
   it('renders Asset component with correct props', () => {
     renderModal({ isOpen: true, onClose: onCloseMock });
 
@@ -368,7 +380,7 @@ describe('PayWithModal', () => {
     it('shows the receive title instead of pay with', () => {
       renderModal({ isOpen: true, onClose: onCloseMock });
 
-      expect(screen.getByText(messages.receive.message)).toBeInTheDocument();
+      expect(screen.getByText(messages.withdrawTo.message)).toBeInTheDocument();
       expect(
         screen.queryByText(messages.payWithModalTitle.message),
       ).not.toBeInTheDocument();
