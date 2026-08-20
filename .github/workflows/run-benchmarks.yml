@@ -76,7 +76,12 @@ jobs:
         if: ${{ matrix.browser == 'firefox' }}
         run: .github/scripts/pin-geckodriver.sh
 
+      # Step timeout sits below the job's so a hung benchmark fails this step
+      # rather than cancelling the job: `continue-on-error` absorbs a failed
+      # job, but not a cancelled one, and a cancellation propagates to
+      # `All jobs pass` as an opaque `run-benchmarks: cancelled`.
       - name: Run the benchmark
+        timeout-minutes: 25
         id: run-benchmark
         run: >-
           ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
@@ -165,7 +170,10 @@ jobs:
         with:
           browsers: chromium
 
+      # Step timeout sits below the job's, for the reason given in the
+      # `benchmarks` job above.
       - name: Run dapp page load benchmarks
+        timeout-minutes: 25
         id: run-page-load
         run: yarn test:e2e:benchmark --preset=pageLoadBenchmark
 

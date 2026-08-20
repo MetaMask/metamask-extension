@@ -4,6 +4,7 @@ import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import {
   runComparison,
   buildMetricLines,
+  findMissingArtifacts,
   loadCurrentBenchmarks,
   printReport,
 } from './compare-benchmarks';
@@ -815,5 +816,88 @@ describe('buildMetricLines', () => {
     expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Warn.icon);
     expect(lines[0].hasIssue).toBe(true);
     expect(lines[0].details).toContain('1560ms');
+  });
+});
+
+describe('findMissingArtifacts', () => {
+  const allExpected = [
+    'benchmark-chrome-webpack-startupStandardHome',
+    'benchmark-chrome-webpack-startupPowerUserHome',
+    'benchmark-chrome-webpack-interactionUserActions',
+    'benchmark-chrome-webpack-userJourneyOnboardingImport',
+    'benchmark-chrome-webpack-userJourneyOnboardingNew',
+    'benchmark-chrome-webpack-userJourneyAssets',
+    'benchmark-chrome-webpack-userJourneyAccountManagement',
+    'benchmark-chrome-webpack-userJourneyTransactions',
+    'benchmark-firefox-webpack-startupStandardHome',
+    'benchmark-firefox-webpack-startupPowerUserHome',
+    'benchmark-firefox-webpack-interactionUserActions',
+    'benchmark-firefox-webpack-userJourneyOnboardingImport',
+    'benchmark-firefox-webpack-userJourneyOnboardingNew',
+    'benchmark-firefox-webpack-userJourneyAssets',
+    'benchmark-firefox-webpack-userJourneyAccountManagement',
+    'benchmark-firefox-webpack-userJourneyTransactions',
+    'benchmark-chrome-webpack-pageLoadBenchmark',
+  ];
+
+  const asLoaded = (names: string[]) =>
+    names.map((name) => ({ name, data: {} }));
+
+  it('reports nothing when every expected artifact is present', () => {
+    expect(findMissingArtifacts(asLoaded(allExpected))).toStrictEqual([]);
+  });
+
+  it('reports an absent artifact with the gated metrics it would have carried', () => {
+    const present = allExpected.filter(
+      (n) => n !== 'benchmark-chrome-webpack-userJourneyTransactions',
+    );
+
+    const missing = findMissingArtifacts(asLoaded(present));
+
+    expect(missing).toHaveLength(1);
+    expect(missing[0].artifactName).toBe(
+      'benchmark-chrome-webpack-userJourneyTransactions',
+    );
+    expect(missing[0].browser).toBe('chrome');
+    expect(missing[0].benchmarkNames).toStrictEqual([
+      'sendTransactions',
+      'swap',
+    ]);
+    // The other browser still reported these metrics, which is exactly why the
+    // gate could score them and call the run a pass.
+    expect(missing[0].gatedMetrics).toStrictEqual(
+      expect.arrayContaining([
+        'sendTransactions.cls',
+        'sendTransactions.openSendPageFromHome',
+        'swap.cls',
+        'swap.total',
+        'swap.fetchAndDisplaySwapQuotes',
+      ]),
+    );
+  });
+
+  it('reports an absent non-gated artifact with no gated metrics', () => {
+    const present = allExpected.filter(
+      (n) => n !== 'benchmark-firefox-webpack-interactionUserActions',
+    );
+
+    const missing = findMissingArtifacts(asLoaded(present));
+
+    expect(missing).toHaveLength(1);
+    expect(missing[0].artifactName).toBe(
+      'benchmark-firefox-webpack-interactionUserActions',
+    );
+    expect(missing[0].gatedMetrics).toStrictEqual([]);
+  });
+
+  it('reports the page-load artifact under its own registry key', () => {
+    const present = allExpected.filter(
+      (n) => n !== 'benchmark-chrome-webpack-pageLoadBenchmark',
+    );
+
+    const missing = findMissingArtifacts(asLoaded(present));
+
+    expect(missing).toHaveLength(1);
+    expect(missing[0].benchmarkNames).toStrictEqual(['dappPageLoad']);
   });
 });
