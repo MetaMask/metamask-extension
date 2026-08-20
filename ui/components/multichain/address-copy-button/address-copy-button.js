@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import { ButtonBase, Box } from '../../component-library';
+import { ButtonBase, Box, IconName } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -44,7 +44,7 @@ function AddressCopyButton({ address, shorten = false, wrap = false }) {
         size={Size.SM}
         variant={TextVariant.bodySm}
         color={TextColor.primaryDefault}
-        endIconName={copied ? 'copy-success' : 'copy'}
+        endIconName={copied ? IconName.CopySuccess : IconName.Copy}
         className={classnames('multichain-address-copy-button', {
           'multichain-address-copy-button__address--wrap': wrap,
         })}

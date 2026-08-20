@@ -8,6 +8,7 @@ import {
   TrxScope,
   XlmScope,
 } from '@metamask/keyring-api';
+import { IconName as MmdsIconName } from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
   getFeaturedEvmNetworks,
@@ -422,7 +423,7 @@ const DefaultNetworks = memo(() => {
           <NetworkListItem
             name={t('allPopularNetworks')}
             onClick={selectAllDefaultNetworks}
-            iconSrc={IconName.Global}
+            iconSrc={MmdsIconName.Global}
             iconSize={IconSize.Xl}
             selected={isAllPopularNetworksSelected}
             focus={false}

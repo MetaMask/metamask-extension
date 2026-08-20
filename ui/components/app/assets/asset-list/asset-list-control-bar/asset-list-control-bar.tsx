@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   ButtonIcon as DsButtonIcon,
   ButtonIconSize as DsButtonIconSize,
-  IconName as DsIconName,
+  IconName,
 } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import {
@@ -33,7 +33,7 @@ import {
   ButtonBase,
   ButtonBaseSize,
   Icon,
-  IconName,
+  IconName as ComponentIconName,
   IconSize,
   Popover,
   PopoverPosition,
@@ -388,7 +388,7 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
-          startIconName={IconName.Filter}
+          startIconName={ComponentIconName.Filter}
           startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
           loading={isNetworkSwitchPending}
           disabled={isNetworkSwitchPending}
@@ -442,7 +442,7 @@ const AssetListControlBar = ({
                 } hover:bg-hover active:bg-pressed`}
                 onClick={toggleTokenSortPopover}
                 size={DsButtonIconSize.Sm}
-                iconName={DsIconName.ListArrow}
+                iconName={IconName.ListArrow}
                 ariaLabel={t('sortBy')}
               />
             </Tooltip>
@@ -471,7 +471,7 @@ const AssetListControlBar = ({
                   className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
                   onClick={handleOpenTokenManagement}
                   size={DsButtonIconSize.Sm}
-                  iconName={DsIconName.MoreVertical}
+                  iconName={IconName.MoreVertical}
                   ariaLabel={t('manageTokens')}
                 />
               </Tooltip>
@@ -531,7 +531,7 @@ const AssetListControlBar = ({
           className="min-h-12"
         >
           <Icon
-            name={IconName.Setting}
+            name={ComponentIconName.Setting}
             size={IconSize.Sm}
             marginInlineEnd={2}
           />
@@ -539,7 +539,7 @@ const AssetListControlBar = ({
         </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
           <Icon
-            name={IconName.Refresh}
+            name={ComponentIconName.Refresh}
             size={IconSize.Sm}
             marginInlineEnd={2}
           />
@@ -563,7 +563,7 @@ const AssetListControlBar = ({
         }}
       >
         <SelectableListItem onClick={handleNftImportModal} testId="import-nfts">
-          <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
+          <Icon name={ComponentIconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
 
           {t('importNFT')}
         </SelectableListItem>
@@ -575,7 +575,7 @@ const AssetListControlBar = ({
               testId="refresh-list-button"
             >
               <Icon
-                name={IconName.Refresh}
+                name={ComponentIconName.Refresh}
                 size={IconSize.Sm}
                 marginInlineEnd={2}
               />
@@ -589,7 +589,7 @@ const AssetListControlBar = ({
               testId="enable-autodetect-button"
             >
               <Icon
-                name={IconName.Setting}
+                name={ComponentIconName.Setting}
                 size={IconSize.Sm}
                 marginInlineEnd={2}
               />
@@ -620,7 +620,7 @@ const AssetListControlBar = ({
           testId="refreshList"
         >
           <Icon
-            name={IconName.Refresh}
+            name={ComponentIconName.Refresh}
             size={IconSize.Sm}
             marginInlineEnd={2}
           />
