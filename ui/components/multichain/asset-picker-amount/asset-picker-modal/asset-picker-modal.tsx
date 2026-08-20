@@ -473,7 +473,6 @@ export function AssetPickerModal({
               src={sendingAsset.image}
               name={sendingAsset.symbol}
               size={AvatarTokenSize.Xs}
-              className="rounded-full"
             />
             <Text variant={TextVariant.bodySm}>
               {t('sendingAsset', [sendingAsset.symbol])}

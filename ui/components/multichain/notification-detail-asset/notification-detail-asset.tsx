@@ -76,13 +76,13 @@ export const NotificationDetailAsset = ({
     >
       <AvatarToken
         src={icon.src}
-        className="notification-detail-asset__icon border-border-muted"
+        className="notification-detail-asset__icon border-solid border-border-muted"
       />
     </BadgeWrapper>
   ) : (
     <AvatarToken
       src={icon.src}
-      className="notification-detail-asset__icon border-border-muted"
+      className="notification-detail-asset__icon border-solid border-border-muted"
     />
   );
 
