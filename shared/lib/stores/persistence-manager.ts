@@ -179,10 +179,9 @@ function makeBackup(state: MetaMaskStateType, meta: MetaData): Backup {
 function getRemoteFeatureFlagsFromState(
   state: MetaMaskStateType | Backup | null | undefined,
 ): Record<string, unknown> {
-  const remoteFeatureFlagController =
-    isObject(state)
-      ? state.RemoteFeatureFlagController
-      : undefined;
+  const remoteFeatureFlagController = isObject(state)
+    ? state.RemoteFeatureFlagController
+    : undefined;
   const remoteFeatureFlags =
     isObject(remoteFeatureFlagController) &&
     isObject(remoteFeatureFlagController.remoteFeatureFlags)
@@ -503,9 +502,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.#splitStateDiagnostics.setConfig(config);
   }
 
-  async getWeeklySplitStatePersistenceDiagnosticsSnapshot(
-    now = Date.now(),
-  ) {
+  async getWeeklySplitStatePersistenceDiagnosticsSnapshot(now = Date.now()) {
     return this.#splitStateDiagnostics.getWeeklyBaselineSnapshot(now);
   }
 
@@ -605,7 +602,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   }
 
   async #persistSplitStateDiagnosticsSnapshot() {
-    await this.#splitStateDiagnostics.persistSnapshotIfDue().catch(() => undefined);
+    await this.#splitStateDiagnostics
+      .persistSnapshotIfDue()
+      .catch(() => undefined);
   }
 
   async #getSplitStatePersistenceDiagnosticsSnapshotForReport(
