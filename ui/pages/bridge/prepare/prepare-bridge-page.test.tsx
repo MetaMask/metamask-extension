@@ -715,9 +715,7 @@ describe('PrepareBridgePage', () => {
       mockTrace.mockClear();
       mockEndTrace.mockClear();
 
-      await act(async () => {
-        fireEvent.click(getByTestId('bridge-cta-button'));
-      });
+      fireEvent.click(getByTestId('bridge-cta-button'));
       await act(async () => {
         jest.advanceTimersByTime(300);
         await Promise.resolve();
