@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { CaipChainId } from '@metamask/utils';
 import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   Box,
@@ -11,6 +12,7 @@ import {
 } from '@metamask/design-system-react';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
@@ -186,11 +188,20 @@ export function RampsProviderSelectionScreen() {
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
 
+  const chainAccount = useSelector((state) =>
+    selectedToken?.chainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          selectedToken.chainId as CaipChainId,
+        )
+      : null,
+  );
+
   useRampsScreenViewed('Provider Selection');
 
   const amount =
     (location.state as ProviderSelectionLocationState | null)?.amount ?? 0;
-  const walletAddress = selectedAccount?.address ?? '';
+  const walletAddress = (chainAccount ?? selectedAccount)?.address ?? '';
   const assetId = selectedToken?.assetId
     ? normalizeAssetIdForApi(selectedToken.assetId)
     : '';
