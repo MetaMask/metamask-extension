@@ -159,7 +159,7 @@ describe('Settings', function () {
         // it will show the total that the test is expecting.
 
         // I think we can slightly modify this test to switch to Sepolia network before checking the account List item value
-        await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Sepolia');
+        await switchToNetworkFromNetworkSelect(driver, 'Sepolia');
 
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);

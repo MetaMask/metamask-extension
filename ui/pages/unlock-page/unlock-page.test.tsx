@@ -8,10 +8,6 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { captureException } from '../../../shared/lib/sentry';
 import { ONBOARDING_WELCOME_ROUTE } from '../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import {
-  generatePasskeyAuthenticationOptions,
-  tryUnlockMetamaskWithPasskey,
-} from '../../store/actions';
 import UnlockPageImport from '.';
 
 // The container uses compose() which returns ComponentType, but TypeScript sees it as 'any'
@@ -20,6 +16,11 @@ const UnlockPage = UnlockPageImport as React.ComponentType<
 >;
 
 const mockTrackEvent = jest.fn();
+const mockUnlockWithPasskey = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../hooks/passkey/usePasskeyUnlock', () => ({
+  usePasskeyUnlock: () => mockUnlockWithPasskey,
+}));
 
 jest.mock('../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -53,16 +54,6 @@ jest.mock('../../../shared/lib/passkey', () => ({
   ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
     '../../../shared/lib/passkey',
   ),
-  startPasskeyAuthentication: jest.fn().mockResolvedValue({
-    id: 'cred',
-    rawId: 'cred',
-    type: 'public-key',
-    response: {
-      clientDataJSON: 'e30',
-      authenticatorData: 'AA',
-      signature: 'AQ',
-    },
-  }),
   isWebAuthnSupported: jest.fn().mockReturnValue(true),
 }));
 
@@ -81,11 +72,6 @@ const mockTryUnlockMetamask = jest.fn(() => {
     return Promise.resolve();
   };
 });
-const mockTryUnlockMetamaskWithPasskey = jest.fn(() => {
-  return async () => {
-    return Promise.resolve();
-  };
-});
 const mockMarkPasswordForgotten = jest.fn();
 const mockCaptureException = captureException as jest.MockedFunction<
   typeof captureException
@@ -94,13 +80,7 @@ const mockCaptureException = captureException as jest.MockedFunction<
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   tryUnlockMetamask: jest.fn(() => mockTryUnlockMetamask),
-  tryUnlockMetamaskWithPasskey: jest.fn(() => mockTryUnlockMetamaskWithPasskey),
   markPasswordForgotten: () => mockMarkPasswordForgotten,
-  generatePasskeyAuthenticationOptions: jest.fn().mockResolvedValue({
-    challenge: 'AQ',
-    allowCredentials: [{ id: 'AQ', type: 'public-key' }],
-    userVerification: 'required',
-  }),
 }));
 
 const mockElement = document.createElement('svg');
@@ -391,8 +371,7 @@ describe('Unlock Page', () => {
     );
 
     await waitFor(() => {
-      expect(generatePasskeyAuthenticationOptions).toHaveBeenCalled();
-      expect(tryUnlockMetamaskWithPasskey).toHaveBeenCalled();
+      expect(mockUnlockWithPasskey).toHaveBeenCalled();
     });
   });
 
@@ -421,8 +400,7 @@ describe('Unlock Page', () => {
     );
 
     await waitFor(() => {
-      expect(generatePasskeyAuthenticationOptions).not.toHaveBeenCalled();
-      expect(tryUnlockMetamaskWithPasskey).not.toHaveBeenCalled();
+      expect(mockUnlockWithPasskey).not.toHaveBeenCalled();
     });
   });
 
@@ -445,8 +423,7 @@ describe('Unlock Page', () => {
     renderWithProvider(<UnlockPage />, store, '/onboarding/unlock');
 
     await waitFor(() => {
-      expect(generatePasskeyAuthenticationOptions).not.toHaveBeenCalled();
-      expect(tryUnlockMetamaskWithPasskey).not.toHaveBeenCalled();
+      expect(mockUnlockWithPasskey).not.toHaveBeenCalled();
       expect(mockUseNavigate).not.toHaveBeenCalled();
     });
   });

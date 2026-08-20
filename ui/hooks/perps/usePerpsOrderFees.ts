@@ -125,6 +125,14 @@ export function usePerpsOrderFees({
   const [hasError, setHasError] = useState(false);
 
   const requestIdRef = useRef(0);
+  const feeRequestKey = `${symbol}|${orderType}|${amount ?? ''}|${isMaker}`;
+  const [prevFeeRequestKey, setPrevFeeRequestKey] = useState(feeRequestKey);
+
+  if (feeRequestKey !== prevFeeRequestKey) {
+    setPrevFeeRequestKey(feeRequestKey);
+    setIsLoading(true);
+    setHasError(false);
+  }
 
   useEffect(() => {
     requestIdRef.current += 1;
@@ -136,9 +144,6 @@ export function usePerpsOrderFees({
         setIsLoading(false);
       }
     }, 1500);
-
-    setIsLoading(true);
-    setHasError(false);
 
     submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
       { orderType, isMaker, amount, symbol },

@@ -1,8 +1,16 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the Perps Withdraw page.
- * Accessible from the Perps Home balance dropdown → Withdraw.
+ * The Perps Withdraw page: amount entry and summary before confirmation.
+ *
+ * Screen: `#/perps/withdraw`, reached from `PerpsTab.clickWithdraw`.
+ * Owns: the withdraw page shell, amount input, summary rows (asset / fee /
+ * receive / time), submit and cancel, header back, and the withdraw toast.
+ * Boundaries: the post-submit confirmation UI belongs to
+ * `PerpsWithdrawConfirmation`. Submit only continues the flow; await that
+ * object for quote/confirm assertions.
+ * Related: `PerpsTab` (how tests get here), `PerpsWithdrawConfirmation`
+ * (opened after submit).
  *
  * @see ui/pages/perps/perps-withdraw-page.tsx
  */
@@ -17,6 +25,10 @@ export class PerpsWithdrawPage {
 
   private readonly headerTitle = { testId: 'perps-withdraw-header-title' };
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-perps-withdraw',
+  };
+
   private readonly submitButton = { testId: 'perps-withdraw-submit' };
 
   private readonly summaryAssetRow = { testId: 'perps-withdraw-summary-asset' };
@@ -29,10 +41,8 @@ export class PerpsWithdrawPage {
 
   private readonly summaryTimeRow = { testId: 'perps-withdraw-summary-time' };
 
-  private readonly withdrawPage = { testId: 'perps-withdraw-page' };
-
   private readonly withdrawPageChildren =
-    '[data-testid="perps-withdraw-page"] *';
+    '[data-testid="parent-selector-perps-withdraw"] *';
 
   private readonly withdrawToast = { testId: 'perps-withdraw-toast' };
 
@@ -54,7 +64,7 @@ export class PerpsWithdrawPage {
    */
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
-      this.withdrawPage,
+      this.parentSelector,
       this.headerTitle,
     ]);
   }

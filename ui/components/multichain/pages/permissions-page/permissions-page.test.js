@@ -121,13 +121,11 @@ describe('All Connections', () => {
 
   describe('render', () => {
     it('renders correctly', () => {
-      const { container, getByTestId } = renderWithProvider(
-        <PermissionsPage />,
-        store,
-      );
-      expect(container).toMatchSnapshot();
+      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
 
-      expect(getByTestId('permissions-page')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-permission-list'),
+      ).toBeInTheDocument();
     });
 
     it('renders no connections message when user has no connections', () => {
@@ -142,16 +140,18 @@ describe('All Connections', () => {
     it('renders permissions title when Gator Permissions feature is disabled', () => {
       const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
       expect(getByTestId('permissions-page-title')).toHaveTextContent(
-        'Dapp Connections',
+        'Permissions',
       );
     });
 
-    it('renders sites title when Gator Permissions feature is enabled', () => {
+    it('renders permissions title when Gator Permissions feature is enabled', () => {
       jest
         .mocked(isGatorPermissionsRevocationFeatureEnabled)
         .mockReturnValue(true);
       const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
-      expect(getByTestId('permissions-page-title')).toHaveTextContent('Sites');
+      expect(getByTestId('permissions-page-title')).toHaveTextContent(
+        'Permissions',
+      );
     });
   });
 

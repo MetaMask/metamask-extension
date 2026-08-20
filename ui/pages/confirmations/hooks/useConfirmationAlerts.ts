@@ -11,8 +11,10 @@ import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useAddressPoisoningAlert } from './alerts/transactions/useAddressPoisoningAlert';
 import { useSuggestedGasFeeHighAlert } from './alerts/transactions/useSuggestedGasFeeHighAlert';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
+import { useAccountNoFundsAlert } from './alerts/transactions/useAccountNoFundsAlert';
 import { useInsufficientPayTokenBalanceAlert } from './alerts/transactions/useInsufficientPayTokenBalanceAlert';
 import { usePerpsWithdrawInsufficientBalanceAlert } from './alerts/transactions/usePerpsWithdrawInsufficientBalanceAlert';
+import { useTransactionDepositLimitAlert } from './alerts/transactions/useTransactionDepositLimitAlert';
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNoPayTokenQuotesAlert } from './alerts/transactions/useNoPayTokenQuotesAlert';
@@ -44,9 +46,11 @@ function useSignatureAlerts(): Alert[] {
 }
 
 function useTransactionAlerts(): Alert[] {
+  const accountNoFundsAlerts = useAccountNoFundsAlert();
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
   const addressPoisoningAlert = useAddressPoisoningAlert();
   const burnAddressAlert = useBurnAddressAlert();
+  const depositLimitAlerts = useTransactionDepositLimitAlert();
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
@@ -71,9 +75,11 @@ function useTransactionAlerts(): Alert[] {
 
   return useMemo(
     () => [
+      ...accountNoFundsAlerts,
       ...accountTypeUpgradeAlerts,
       ...addressPoisoningAlert,
       ...burnAddressAlert,
+      ...depositLimitAlerts,
       ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
@@ -95,9 +101,11 @@ function useTransactionAlerts(): Alert[] {
       ...tokenTrustSignalAlerts,
     ],
     [
+      accountNoFundsAlerts,
       accountTypeUpgradeAlerts,
       addressPoisoningAlert,
       burnAddressAlert,
+      depositLimitAlerts,
       firstTimeInteractionAlert,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,

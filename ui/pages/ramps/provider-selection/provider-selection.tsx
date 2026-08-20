@@ -19,6 +19,8 @@ import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsCon
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
+import { useRampsAnalytics } from '../../../hooks/ramps/useRampsAnalytics';
+import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
@@ -182,6 +184,7 @@ export function RampsProviderSelectionScreen() {
     selectedToken,
     userRegion,
   } = useRampsController();
+  const { trackProviderSelected } = useRampsAnalytics();
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
 
@@ -193,6 +196,8 @@ export function RampsProviderSelectionScreen() {
         )
       : null,
   );
+
+  useRampsScreenViewed('Provider Selection');
 
   const amount =
     (location.state as ProviderSelectionLocationState | null)?.amount ?? 0;
@@ -336,13 +341,23 @@ export function RampsProviderSelectionScreen() {
 
       try {
         await setSelectedProvider(provider);
+        trackProviderSelected({
+          provider: provider.name,
+          previousProvider: selectedProvider?.name,
+          location: 'Provider Selection',
+        });
         navigate(PREVIOUS_ROUTE);
       } catch {
         isSelectingRef.current = false;
         setIsSelecting(false);
       }
     },
-    [navigate, setSelectedProvider],
+    [
+      navigate,
+      selectedProvider?.name,
+      setSelectedProvider,
+      trackProviderSelected,
+    ],
   );
 
   const title = t('rampsProviders');

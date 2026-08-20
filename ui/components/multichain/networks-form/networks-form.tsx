@@ -6,7 +6,6 @@ import {
   ButtonSize as DSButtonSize,
   ButtonVariant as DSButtonVariant,
   IconName,
-  Tag,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -26,6 +25,7 @@ import {
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
 import {
   decimalToHex,
   hexToDecimal,
@@ -133,6 +133,24 @@ export const NetworksForm = ({
     rpcUrls.defaultRpcEndpointIndex === undefined
       ? undefined
       : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
+
+  const networkChainIdHex = chainId === '' ? undefined : toHex(chainId);
+  const chainFailoverUrls = networkChainIdHex
+    ? getFailoverUrlsForChainId(networkChainIdHex)
+    : [];
+
+  // Failover only applies to Infura RPC endpoints. NetworkController wires
+  // failover URLs solely for Infura endpoints; applying them to custom RPCs
+  // would leak requests to the failover, so it does not. Only surface failover
+  // in the form for Infura endpoints so the UI matches the actual behaviour.
+  const failoverUrlsForEndpoint = (endpoint?: { url: string }) => {
+    return endpoint?.url &&
+      new URL(endpoint.url).hostname.endsWith('.infura.io')
+      ? chainFailoverUrls
+      : [];
+  };
+
+  const defaultFailoverUrls = failoverUrlsForEndpoint(defaultRpcEndpoint);
 
   const { safeChains } = useSafeChains();
 
@@ -553,11 +571,23 @@ export const NetworksForm = ({
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
-          renderItem={(item, isList) =>
-            isList || item?.name || item?.type === RpcEndpointType.Infura ? (
-              <RpcListItem rpcEndpoint={item} />
+          renderItem={(item, isList) => {
+            const failoverUrls = failoverUrlsForEndpoint(item);
+            return isList ||
+              item?.name ||
+              item?.type === RpcEndpointType.Infura ||
+              failoverUrls.length > 0 ? (
+              <RpcListItem
+                rpcEndpoint={{
+                  ...item,
+                  failoverUrls,
+                }}
+              />
             ) : (
+              // A custom (non Infura) endpoint never has a failover, so it just
+              // renders the URL with no failover tag.
               <Text
+                as="span"
                 ellipsis
                 variant={TextVariant.bodyMd}
                 paddingTop={3}
@@ -567,14 +597,9 @@ export const NetworksForm = ({
                 gap={1}
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-                {isRpcFailoverEnabled &&
-                item.failoverUrls &&
-                item.failoverUrls.length > 0 ? (
-                  <Tag className="inline-flex">{t('failover')}</Tag>
-                ) : null}
               </Text>
-            )
-          }
+            );
+          }}
           renderTooltip={(item, isList) => {
             const url = stripKeyFromInfuraUrl(item.url);
             return url.length > (isList ? 37 : 35) ? url : undefined;
@@ -612,10 +637,7 @@ export const NetworksForm = ({
           </Box>
         )}
 
-        {isRpcFailoverEnabled &&
-        defaultRpcEndpoint &&
-        defaultRpcEndpoint.failoverUrls &&
-        defaultRpcEndpoint.failoverUrls.length > 0 ? (
+        {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}
@@ -628,7 +650,7 @@ export const NetworksForm = ({
             textFieldProps={{
               borderRadius: BorderRadius.LG,
             }}
-            value={onlyKeepHost(defaultRpcEndpoint.failoverUrls[0])}
+            value={onlyKeepHost(defaultFailoverUrls[0])}
             disabled={true}
           />
         ) : null}

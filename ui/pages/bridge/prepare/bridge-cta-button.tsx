@@ -9,6 +9,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import type { InputPrimaryDenomination } from '@metamask/bridge-controller';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../shared/constants/metametrics';
 import {
   getFromAmount,
@@ -23,6 +24,7 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import {
   ConnectionStatus,
   HardwareWalletType,
+  isInE2eTest,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
@@ -37,12 +39,14 @@ export const BridgeCTAButton = ({
   onOpenRecipientModal,
   onOpenAlertModals,
   onOpenMarketClosedModal,
+  inputPrimaryDenomination,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
   onOpenRecipientModal: () => void;
   onOpenAlertModals?: () => void;
   onOpenMarketClosedModal: () => void;
+  inputPrimaryDenomination?: InputPrimaryDenomination;
 }) => {
   const t = useI18nContext();
 
@@ -52,8 +56,9 @@ export const BridgeCTAButton = ({
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
-  const { submitBridgeTransaction, isSubmitting } =
-    useSubmitBridgeTransaction();
+  const { submitBridgeTransaction, isSubmitting } = useSubmitBridgeTransaction(
+    inputPrimaryDenomination,
+  );
 
   const {
     isNoQuotesAvailable,
@@ -77,6 +82,7 @@ export const BridgeCTAButton = ({
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
+  const inE2e = isInE2eTest();
 
   const hardwareWalletName = useMemo(
     () => (walletType ? t(walletType) : undefined),
@@ -84,7 +90,7 @@ export const BridgeCTAButton = ({
   );
 
   const isHardwareWalletReady = useMemo(() => {
-    if (!isHardwareWalletAccount) {
+    if (inE2e || !isHardwareWalletAccount) {
       return true;
     }
     // QR wallets don't need a physical device connection before showing the
@@ -101,7 +107,7 @@ export const BridgeCTAButton = ({
     return [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
       connectionState.status,
     );
-  }, [connectionState.status, isHardwareWalletAccount, walletType]);
+  }, [connectionState.status, inE2e, isHardwareWalletAccount, walletType]);
 
   /**
    * Defines the behavior of the CTA button based on the current state

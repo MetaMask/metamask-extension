@@ -2,7 +2,10 @@ import EventEmitter from 'events';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
+import {
+  type PasskeyAuthenticationResponse,
+  PasskeyControllerErrorCode,
+} from '@metamask/passkey-controller';
 import {
   Box,
   Button,
@@ -34,16 +37,13 @@ import {
 } from '../../../../shared/lib/passkey';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
-  ExtensionPasskeyErrorCode,
   getPasskeyErrorCode,
   getPasskeyControllerErrorCode,
 } from '../../../../shared/lib/passkey/passkey-error';
 import {
   changePassword,
-  changePasswordWithPasskeyVerification,
   checkIsSeedlessPasswordOutdated,
   forceUpdateMetamaskState,
-  removePasskeyWithPasswordVerification,
   verifyPassword,
 } from '../../../store/actions';
 import { getIsSocialLoginFlow } from '../../../selectors';
@@ -73,6 +73,9 @@ import {
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { useDispatch } from '../../../store/hooks';
+import { usePasskeyPasswordChange } from '../../../hooks/passkey/usePasskeyPasswordChange';
+import { useRemovePasskeyWithPassword } from '../../../hooks/passkey/usePasskeyRemoval';
+import { usePasskeyAuthentication } from '../../../hooks/passkey/usePasskeyAuthentication';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -94,6 +97,9 @@ const ChangePassword = ({
   const t = useI18nContext();
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const dispatch = useDispatch();
+  const changePasswordWithPasskey = usePasskeyPasswordChange();
+  const removePasskeyWithPassword = useRemovePasskeyWithPassword();
+  const authenticateWithPasskey = usePasskeyAuthentication();
   const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
@@ -177,13 +183,11 @@ const ChangePassword = ({
 
     let isPasskeyRenewed = false;
     try {
-      await dispatch(
-        changePasswordWithPasskeyVerification(
-          newPassword,
-          passkeyAuthenticationResponse,
-          { renewVaultKeyProtection: isPasskeyRenewalEnabled },
-        ),
-      );
+      await changePasswordWithPasskey({
+        newPassword,
+        authenticationResponse: passkeyAuthenticationResponse,
+        options: { renewVaultKeyProtection: isPasskeyRenewalEnabled },
+      });
       isPasskeyRenewed = isPasskeyRenewalEnabled;
 
       trackEvent(
@@ -236,7 +240,7 @@ const ChangePassword = ({
 
       const passkeyCode = getPasskeyControllerErrorCode(error);
       // strictly treat vault key renewal failure as a password change success
-      if (passkeyCode !== ExtensionPasskeyErrorCode.VaultKeyRenewalFailed) {
+      if (passkeyCode !== PasskeyControllerErrorCode.VaultKeyRenewalFailed) {
         throw error;
       }
     }
@@ -261,7 +265,7 @@ const ChangePassword = ({
         // Remove enrollment before changing the password so a failure after
         // `changePassword` cannot leave an enrolled-but-invalid passkey on disk.
         if (isPasskeyActive) {
-          await removePasskeyWithPasswordVerification(currentPassword);
+          await removePasskeyWithPassword(currentPassword);
           await forceUpdateMetamaskState(dispatch);
         }
         await dispatch(changePassword(newPassword, currentPassword));
@@ -411,6 +415,7 @@ const ChangePassword = ({
           t,
           showErrorToast: true,
           toastDurationMs: autoHideToastDelay,
+          authenticateWithPasskey,
         });
         setPasskeyAuthenticationResponse(response);
         setIsPasskeyRenewalEnabled(Boolean(response));
@@ -422,6 +427,7 @@ const ChangePassword = ({
       isPasskeyActive,
       isVerifyingPasskey,
       passkeyAuthenticationResponse,
+      authenticateWithPasskey,
       passkeyMethodLabel,
       t,
     ],

@@ -7,6 +7,7 @@ import { DefaultDetails } from './default-details';
 import { NftDetails } from './nft-details';
 import { PerpsDepositDetails } from './perps-deposit-details';
 import { PerpsDetails } from './perps-details';
+import { RampOrderDetails } from './ramps/ramp-order-details';
 import { SendDetails } from './send-details';
 import { SwapDetails } from './swap-details';
 import { AssetActivationDetails } from './asset-activation-details';
@@ -49,6 +50,9 @@ export function TemplateLoader({ item }: Props) {
     case 'assetActivation':
     case 'assetDeactivation':
       return <AssetActivationDetails item={item} />;
+    case 'rampBuy':
+    case 'rampSell':
+      return <RampOrderDetails item={item} />;
     default:
       return <DefaultDetails item={item} />;
   }

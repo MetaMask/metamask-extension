@@ -1,5 +1,17 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Token / coin asset overview: send, swap, receive, and explorer actions.
+ *
+ * Screen: `#/asset/:chainId/:asset?...` asset details page.
+ * Owns: send/swap/receive/more actions, view-in-explorer, and back navigation
+ * on the token overview.
+ * Boundaries: the asset overview only. Send/swap destinations and confirmation
+ * flows belong to their page objects after leaving this screen.
+ * Related: `TokensTab` (entry), `SendPage`, `SwapPage`.
+ *
+ * @see ui/pages/asset/components/asset-page.tsx
+ */
 class TokenOverviewPage {
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 

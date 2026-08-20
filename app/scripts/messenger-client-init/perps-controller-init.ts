@@ -187,6 +187,8 @@ type PerpsActionName =
   | 'perpsClearPendingTransactionRequests'
   | 'perpsSaveOrderBookGrouping'
   | 'perpsGetOrderBookGrouping'
+  | 'perpsGetProLayoutPreferences'
+  | 'perpsSetProLayoutPreferences'
   | 'perpsGetMaxSlippage'
   | 'perpsSetMaxSlippage'
   | 'perpsGetUserHistory'
@@ -524,6 +526,10 @@ function getApi(
       messengerClient.saveOrderBookGrouping.bind(messengerClient),
     perpsGetOrderBookGrouping:
       messengerClient.getOrderBookGrouping.bind(messengerClient),
+    perpsGetProLayoutPreferences:
+      messengerClient.getProLayoutPreferences.bind(messengerClient),
+    perpsSetProLayoutPreferences:
+      messengerClient.setProLayoutPreferences.bind(messengerClient),
     perpsGetMaxSlippage: messengerClient.getMaxSlippage.bind(messengerClient),
     perpsSetMaxSlippage: messengerClient.setMaxSlippage.bind(messengerClient),
 

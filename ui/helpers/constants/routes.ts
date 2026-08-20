@@ -203,9 +203,11 @@ export const PERPS_ROUTE = '/perps';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
 export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
+export const PERPS_TRANSACTION_DETAILS_ROUTE = '/perps/transaction-details';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 export const PERPS_HOME_PAGE_ROUTE = '/perps-home';
+export const MONEY_HOME_ROUTE = '/money-home';
 
 // Window during which reopening the extension resumes the last Perps screen
 // instead of landing on the wallet home. Keeps the cap short so stale sessions
@@ -220,6 +222,7 @@ export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
   { path: ACTIVITY_ROUTE, label: 'Activity', trackInAnalytics: true },
   { path: PERPS_HOME_PAGE_ROUTE, label: 'Perps', trackInAnalytics: true },
+  { path: MONEY_HOME_ROUTE, label: 'Money', trackInAnalytics: true },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
   {
     path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
@@ -248,6 +251,11 @@ export const ROUTES = [
   {
     path: PERPS_ACTIVITY_ROUTE,
     label: 'Perps Activity',
+    trackInAnalytics: true,
+  },
+  {
+    path: PERPS_TRANSACTION_DETAILS_ROUTE,
+    label: 'Perps Transaction Details',
     trackInAnalytics: true,
   },
   {
@@ -683,7 +691,7 @@ export const ROUTES = [
   },
   {
     path: NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
-    label: 'Notifications Agentic CLI Settings Page',
+    label: 'Notifications Agent Wallet Settings Page',
     trackInAnalytics: false,
   },
   {
