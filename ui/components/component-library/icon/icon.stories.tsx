@@ -20,9 +20,9 @@ import { Text } from '../text';
 import { Icon } from './icon';
 import { IconName, IconSize } from './icon.types';
 
+import { TextFieldSearch } from '@metamask/design-system-react';
 import { Box } from '../box';
 import { Label } from '../label';
-import { TextFieldSearch } from '../text-field-search';
 import { TextField, TextFieldSize } from '../text-field';
 import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
@@ -85,7 +85,7 @@ export const DefaultStory: StoryFn<typeof Icon> = (args) => {
           <Label htmlFor="icon-search">IconName</Label>
           <TextFieldSearch
             id="icon-search"
-            marginBottom={4}
+            className="mb-4"
             onChange={handleSearch}
             clearButtonOnClick={handleOnClear}
             value={search}

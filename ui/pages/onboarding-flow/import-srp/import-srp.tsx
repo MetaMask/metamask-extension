@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -19,11 +19,11 @@ import {
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { useOnboardingReset } from '../hooks/useOnboardingReset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -38,8 +38,6 @@ const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ImportSRP({
   submitSecretRecoveryPhrase,
 }: ImportSRPProps) {
@@ -57,7 +55,7 @@ export default function ImportSRP({
       navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
     }
   }, [currentKeyring, navigate, isWalletResetInProgress]);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -78,27 +76,32 @@ export default function ImportSRP({
 
     submitSecretRecoveryPhrase?.(secretRecoveryPhrase);
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
+      )
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
     navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
   }, [
     secretRecoveryPhrase,
     t,
     hdEntropyIndex,
+    createEventBuilder,
     trackEvent,
     navigate,
     submitSecretRecoveryPhrase,
   ]);
 
-  useEffect(() => {
+  const handleSecretRecoveryPhraseChange = useCallback((phrase: string) => {
+    setSecretRecoveryPhrase(phrase);
     setSrpError('');
-  }, [secretRecoveryPhrase]);
+  }, []);
 
   return (
     <Box
@@ -106,7 +109,7 @@ export default function ImportSRP({
       justifyContent={BoxJustifyContent.Between}
       className="import-srp h-full"
       gap={4}
-      data-testid="import-srp"
+      data-testid="parent-selector-onboarding-srp"
     >
       <Box>
         <Box marginBottom={4}>
@@ -124,7 +127,7 @@ export default function ImportSRP({
         </Box>
         <SrpInputForm
           error={srpError}
-          setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+          setSecretRecoveryPhrase={handleSecretRecoveryPhraseChange}
           onClearCallback={() => setSrpError('')}
         />
       </Box>

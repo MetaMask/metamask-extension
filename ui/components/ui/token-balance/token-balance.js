@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import CurrencyDisplay from '../currency-display';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
 import { Text } from '../../component-library';
 import {
   FontWeight,
@@ -19,12 +18,10 @@ export default function TokenBalance({
   const { tokensWithBalances } = useTokenTracker({ tokens: [token] });
   const { string, symbol, address } = tokensWithBalances[0] || {};
   const formattedFiat = useTokenFiatAmount(address, string, symbol);
-  const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
-  const fiatValue = isOriginalTokenSymbol ? formattedFiat : null;
   if (showFiat) {
     return (
       <Text fontWeight={FontWeight.Medium} variant={TextVariant.bodyMd}>
-        {fiatValue}
+        {formattedFiat}
       </Text>
     );
   }

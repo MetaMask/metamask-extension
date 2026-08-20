@@ -26,6 +26,7 @@ import { isWebHidAvailable, isWebUsbAvailable } from './webConnectionUtils';
 export type HardwareWalletConfigContextType = {
   isHardwareWalletAccount: boolean;
   walletType: HardwareWalletType | null;
+  accountAddress: string | null;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
@@ -62,6 +63,7 @@ export type HardwareWalletContextType = {
   // State (may cause rerenders)
   isHardwareWalletAccount: boolean;
   walletType: HardwareWalletType | null;
+  accountAddress: string | null;
   connectionState: HardwareWalletConnectionState;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
@@ -168,6 +170,7 @@ export const HardwareWalletProvider = ({
     connectionState,
     walletType,
     isHardwareWalletAccount,
+    accountAddress,
   } = state;
 
   const {
@@ -254,13 +257,12 @@ export const HardwareWalletProvider = ({
 
   // Abort controller lifecycle
   useEffect(() => {
-    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/immutability
     refs.abortControllerRef.current = new AbortController();
     return () => {
       refs.abortControllerRef.current?.abort();
       refs.adapterRef.current?.destroy();
     };
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -273,7 +275,6 @@ export const HardwareWalletProvider = ({
     updateConnectionState(ConnectionState.disconnected());
     resetConnectionRefs();
     resetAutoConnectState();
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetAutoConnectState, resetConnectionRefs, updateConnectionState]);
 
@@ -285,7 +286,6 @@ export const HardwareWalletProvider = ({
     ) {
       resetHardwareWalletConnection();
     }
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHardwareWalletAccount, resetHardwareWalletConnection]);
 
@@ -307,7 +307,6 @@ export const HardwareWalletProvider = ({
     ) {
       resetHardwareWalletConnection();
     }
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHardwareWalletAccount, walletType, resetHardwareWalletConnection]);
 
@@ -317,6 +316,7 @@ export const HardwareWalletProvider = ({
       // State
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       connectionState,
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
@@ -336,6 +336,7 @@ export const HardwareWalletProvider = ({
     [
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       connectionState,
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
@@ -349,6 +350,7 @@ export const HardwareWalletProvider = ({
     () => ({
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
       isWebUsbAvailable: isWebUsbAvailableState,
@@ -356,6 +358,7 @@ export const HardwareWalletProvider = ({
     [
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
       isWebUsbAvailableState,

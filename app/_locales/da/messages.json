@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du skal vælge en konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Tilføj de tokens du har erhvervet ved hjælp af MetaMask"
-  },
   "addAlias": {
     "message": "Tilføj alias"
   },
@@ -83,9 +80,6 @@
   },
   "back": {
     "message": "Tilbage"
-  },
-  "backupApprovalInfo": {
-    "message": "Den hemmelige kode er påkrævet for at gendanne din pung, hvis du mister din enhed, glemmer dit kodeord, er nødt til at geninstallere MetaMask eller ønsker adgang til din pung fra en anden enhed."
   },
   "backupApprovalNotice": {
     "message": "Sikkerhedskopiér din Hemmelige Gendannelseskode for at holde din tegnebog og dine penge sikre."
@@ -181,14 +175,8 @@
   "custom": {
     "message": "Avanceret"
   },
-  "customToken": {
-    "message": "Brugerdefineret Token"
-  },
   "decimal": {
     "message": "Decimalpræcision"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimaler skal være mindst 0 og højst 36."
   },
   "delete": {
     "message": "Slet"
@@ -339,9 +327,6 @@
   "message": {
     "message": "Besked"
   },
-  "mustSelectOne": {
-    "message": "Skal vælge mindst 1 token."
-  },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
     "description": "User is important an account and needs to add a file to continue"
@@ -351,9 +336,6 @@
   },
   "networks": {
     "message": "Netværk"
-  },
-  "nevermind": {
-    "message": "Lige meget"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -505,9 +487,6 @@
   },
   "sign": {
     "message": "Underskriv"
-  },
-  "signatureRequest": {
-    "message": "Signaturforespørgsel"
   },
   "signed": {
     "message": "Underskrevet"

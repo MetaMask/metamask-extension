@@ -38,9 +38,9 @@ import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 import {
   getSafeChainsListFromCacheOnly,
   getIsMetaMaskInfuraEndpointUrl,
-  getIsQuicknodeEndpointUrl,
   KNOWN_CUSTOM_ENDPOINT_URLS,
 } from '../../../shared/lib/network-utils';
+import { getIsQuicknodeEndpointUrl } from '../../../shared/constants/network-failover';
 import { isLocalhostOrIPAddress } from '../../../shared/lib/url-utils';
 // Re-export install type utilities from dedicated module to avoid circular dependencies
 // and keep the sentry bundle lightweight
@@ -478,23 +478,11 @@ export function formatTxMetaForRpcResult(
     from,
     hash,
     nonce: nonce ? `${nonce}` : '0x0',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     input: data || '0x',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     value: value || '0x0',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     accessList: accessList || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     blockHash: txReceipt?.blockHash || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     blockNumber: txReceipt?.blockNumber || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     transactionIndex: txReceipt?.transactionIndex || null,
     type:
       maxFeePerGas && maxPriorityFeePerGas

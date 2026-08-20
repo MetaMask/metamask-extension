@@ -30,6 +30,12 @@ jest.mock('./send/useAddressPoisoningDetection', () => ({
   }),
 }));
 
+// Mock the async simulation balance-changes fetch used by useBlockaidAlerts
+// to prevent React Act warnings
+jest.mock('./alerts/useSendingAssetsFiatTotal', () => ({
+  useSendingAssetsFiatTotal: () => null,
+}));
+
 describe('useConfirmationAlerts', () => {
   it('returns empty array if no alerts', () => {
     const { result } = renderHookWithConfirmContextProvider(

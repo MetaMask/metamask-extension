@@ -163,8 +163,8 @@ describe('Perps Withdraw', function (this: Suite) {
           await openPerpsWithdrawConfirmation(driver);
 
         await withdrawConfirmation.checkAvailableBalance('$10,000.00');
-        await withdrawConfirmation.checkDestinationToken('USDC');
         await withdrawConfirmation.fillAmount('50');
+        await withdrawConfirmation.checkDestinationToken('USDC');
         await withdrawConfirmation.checkWithdrawButtonEnabled();
         await withdrawConfirmation.clickWithdraw();
         await withdrawConfirmation.waitForSuccessToast();

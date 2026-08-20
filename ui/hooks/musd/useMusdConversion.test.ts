@@ -1,8 +1,9 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { ConvertibleToken } from '../../pages/musd/types';
 import { MUSD_CONVERSION_EDUCATION_ROUTE } from '../../pages/musd/constants/routes';
+import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { useMusdConversion } from './useMusdConversion';
 
 const mockNavigate = jest.fn();
@@ -204,9 +205,11 @@ describe('useMusdConversion', () => {
 
       expect(mockAddTransaction).toHaveBeenCalled();
       expect(mockNavigate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          pathname: `/confirm-transaction/${MOCK_TX_ID}`,
-        }),
+        {
+          pathname: '/confirm-transaction/tx-abc-123',
+          search: 'loader=customAmount&goBackTo=%2Fasset%2F0x1%2F0xtest',
+        },
+        { replace: true },
       );
 
       useMusdGeoBlocking.mockReturnValue({
@@ -241,7 +244,7 @@ describe('useMusdConversion', () => {
       });
     });
 
-    it('navigates to education route when education not seen and skipEducation is false', async () => {
+    it('starts conversion even when education has not been seen', async () => {
       setupSelectors({ educationSeen: false });
 
       const { result } = renderHook(() => useMusdConversion());
@@ -252,25 +255,9 @@ describe('useMusdConversion', () => {
         });
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith(
+      expect(mockNavigate).not.toHaveBeenCalledWith(
         MUSD_CONVERSION_EDUCATION_ROUTE,
       );
-      expect(mockAddTransaction).not.toHaveBeenCalled();
-    });
-
-    it('skips education when skipEducation option is true', async () => {
-      setupSelectors({ educationSeen: false });
-
-      const { result } = renderHook(() => useMusdConversion());
-
-      await act(async () => {
-        await result.current.startConversionFlow({
-          preferredToken: MOCK_PREFERRED_TOKEN,
-          skipEducation: true,
-        });
-      });
-
-      expect(mockNavigate).not.toHaveBeenCalledWith('/musd/education');
       expect(mockAddTransaction).toHaveBeenCalled();
     });
 
@@ -309,9 +296,11 @@ describe('useMusdConversion', () => {
 
       expect(mockAddTransaction).not.toHaveBeenCalled();
       expect(mockNavigate).toHaveBeenCalledWith(
-        expect.objectContaining({
+        {
           pathname: '/confirm-transaction/existing-tx-id',
-        }),
+          search: 'loader=customAmount&goBackTo=%2Fasset%2F0x1%2F0xtest',
+        },
+        { replace: true },
       );
     });
 
@@ -361,10 +350,11 @@ describe('useMusdConversion', () => {
       );
       expect(mockAddTransaction).toHaveBeenCalled();
       expect(mockNavigate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          pathname: `/confirm-transaction/${MOCK_TX_ID}`,
+        {
+          pathname: '/confirm-transaction/tx-abc-123',
           search: 'loader=customAmount&goBackTo=%2Fasset%2F0x1%2F0xtest',
-        }),
+        },
+        { replace: true },
       );
     });
 
@@ -476,7 +466,7 @@ describe('useMusdConversion', () => {
         result.current.cancelConversion();
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith(-1);
+      expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
   });
 

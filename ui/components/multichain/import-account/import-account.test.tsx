@@ -1,10 +1,16 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import * as actions from '../../../store/actions';
+import {
+  MetaMetricsEventAccountImportType,
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ImportAccount } from './import-account';
 
@@ -13,12 +19,30 @@ jest.mock('../../../store/actions', () => ({
   checkIsSeedlessPasswordOutdated: jest.fn(),
 }));
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockedActions = jest.mocked(actions);
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
 const mockOnActionComplete = jest.fn();
+
+const getImportButton = () =>
+  screen.getByRole('button', { name: messages.import.message });
 
 const renderImportAccount = (storeState: typeof mockState = mockState) => {
   const store = mockStore(storeState);
@@ -92,7 +116,7 @@ describe('ImportAccount', () => {
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
       // Ensure error is shown
       await waitFor(() => {
@@ -122,7 +146,7 @@ describe('ImportAccount', () => {
 
       fireEvent.change(privateKeyInput, { target: { value: testPrivateKey } });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -147,7 +171,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -168,7 +192,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -191,7 +215,7 @@ describe('ImportAccount', () => {
         target: { value: 'invalid-key' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -199,10 +223,90 @@ describe('ImportAccount', () => {
       });
     });
 
+    it('tracks a failed private key import with the private key import type', async () => {
+      mockedActions.importNewAccount.mockReturnValue(() =>
+        Promise.reject(new Error('Invalid private key')),
+      );
+
+      const { getByLabelText, getByText } = renderImportAccount();
+
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      fireEvent.change(privateKeyInput, {
+        target: { value: 'invalid-key' },
+      });
+
+      fireEvent.click(getImportButton());
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.AccountAddFailed,
+        properties: {
+          category: MetaMetricsEventCategory.Accounts,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: MetaMetricsEventAccountType.Imported,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_import_type: MetaMetricsEventAccountImportType.PrivateKey,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: 0,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_suggested_name: true,
+        },
+        sensitiveProperties: {},
+      });
+    });
+
+    it('tracks a failed json import with the json import type', async () => {
+      mockedActions.importNewAccount.mockReturnValue(() =>
+        Promise.reject(new Error('Invalid JSON file')),
+      );
+
+      const { getByRole, getByTestId, getByText } = renderImportAccount();
+
+      fireEvent.change(getByRole('combobox'), {
+        target: { value: 'JSON File' },
+      });
+
+      const fileInput = getByTestId('file-input');
+      const mockFile = new File(['0'], 'test.json');
+
+      fireEvent.change(fileInput, {
+        target: { files: [mockFile] },
+      });
+
+      await waitFor(() => {
+        expect(getImportButton()).not.toBeDisabled();
+      });
+
+      fireEvent.click(getImportButton());
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.AccountAddFailed,
+        properties: {
+          category: MetaMetricsEventCategory.Accounts,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: MetaMetricsEventAccountType.Imported,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_import_type: MetaMetricsEventAccountImportType.Json,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: 0,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_suggested_name: true,
+        },
+        sensitiveProperties: {},
+      });
+    });
+
     it('disables import button when private key input is empty', () => {
       const { getByText } = renderImportAccount();
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       expect(importButton).toBeDisabled();
     });
 
@@ -214,7 +318,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       expect(importButton).not.toBeDisabled();
     });
   });
@@ -247,7 +351,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -271,7 +375,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -295,7 +399,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {

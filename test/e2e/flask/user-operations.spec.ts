@@ -23,6 +23,7 @@ import ActivityTab from '../page-objects/pages/home/activity-tab';
 import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
 import { createInternalTransaction } from '../page-objects/flows/transaction.flow';
+import { installAccountAbstractionSnap } from '../page-objects/flows/snap-account-abstraction.flow';
 import { login } from '../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../page-objects/flows/test-dapp.flow';
 
@@ -133,9 +134,10 @@ async function withAccountSnap(
     }) => {
       await login(driver, { validateBalance: false });
 
+      await installAccountAbstractionSnap(driver);
+
       const snapAccountAbstractionKeyringPage =
         new SnapAccountAbstractionKeyringPage(driver);
-      await snapAccountAbstractionKeyringPage.install();
       await snapAccountAbstractionKeyringPage.setChainConfig({
         bundlerUrl: BUNDLER_URL,
         entrypoint: ENTRYPOINT,

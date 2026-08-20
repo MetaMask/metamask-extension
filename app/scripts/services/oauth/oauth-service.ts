@@ -10,13 +10,12 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
   MetaMetricsEventAccountType,
-  MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
 } from '../../../../shared/constants/metametrics';
 import {
   AuthConnection,
   FirstTimeFlowType,
 } from '../../../../shared/constants/onboarding';
+import { createEventBuilder } from '../../controllers/analytics';
 import ExtensionPlatform from '../../platforms/extension';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
@@ -64,12 +63,6 @@ export class OAuthService {
 
   #trackEvent: OAuthServiceOptions['trackEvent'];
 
-  #addEventBeforeMetricsOptIn: OAuthServiceOptions['addEventBeforeMetricsOptIn'];
-
-  #getCompletedMetaMetricsOnboarding: OAuthServiceOptions['getCompletedMetaMetricsOnboarding'];
-
-  #getOptedIn: OAuthServiceOptions['getOptedIn'];
-
   constructor({
     messenger,
     webAuthenticator,
@@ -77,9 +70,6 @@ export class OAuthService {
     bufferedTrace,
     bufferedEndTrace,
     trackEvent,
-    addEventBeforeMetricsOptIn,
-    getCompletedMetaMetricsOnboarding,
-    getOptedIn,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
@@ -89,38 +79,11 @@ export class OAuthService {
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
     this.#trackEvent = trackEvent;
-    this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
-    this.#getCompletedMetaMetricsOnboarding = getCompletedMetaMetricsOnboarding;
-    this.#getOptedIn = getOptedIn;
 
     this.#messenger.registerMethodActionHandlers(
       this,
       MESSENGER_EXPOSED_METHODS,
     );
-  }
-
-  /**
-   * Track a MetaMetrics event with buffering (handles consent checking)
-   *
-   * @param payload - The event payload
-   * @param options - Optional event options
-   */
-  #trackEventWithBuffering(
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ): void {
-    const isMetricsEnabled =
-      this.#getCompletedMetaMetricsOnboarding() && this.#getOptedIn();
-
-    if (isMetricsEnabled) {
-      this.#trackEvent(payload, options);
-    } else {
-      const bufferedPayload = {
-        ...payload,
-        actionId: `${Date.now() + Math.random()}`,
-      };
-      this.#addEventBeforeMetricsOptIn(bufferedPayload);
-    }
   }
 
   /**
@@ -383,21 +346,22 @@ export class OAuthService {
     errorCategory: 'provider_login' | 'get_auth_tokens';
     failureType: 'error' | 'user_cancelled';
   }): void {
-    this.#trackEventWithBuffering({
-      event: MetaMetricsEventName.SocialLoginFailed,
-      category: MetaMetricsEventCategory.Onboarding,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_rehydration:
-          isRehydration === null ? 'unknown' : String(isRehydration),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        failure_type: failureType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_category: errorCategory,
-      },
-    });
+    this.#trackEvent(
+      createEventBuilder(MetaMetricsEventName.SocialLoginFailed)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_rehydration:
+            isRehydration === null ? 'unknown' : String(isRehydration),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          failure_type: failureType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_category: errorCategory,
+        })
+        .build(),
+    );
   }
 
   /**
@@ -438,8 +402,8 @@ export class OAuthService {
 
     if (process.env.IN_TEST) {
       const { MOCK_AUTH_CONNECTION_ID, MOCK_GROUPED_AUTH_CONNECTION_ID } =
-        // Use `require` to make it easier to exclude this test code from the Browserify build.
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+        // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         require('../../../../test/e2e/constants');
       authConnectionId = MOCK_AUTH_CONNECTION_ID;
       groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;

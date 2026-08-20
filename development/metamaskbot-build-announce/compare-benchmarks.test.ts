@@ -92,7 +92,7 @@ describe('compare-benchmarks', () => {
       // startupStandardHome.uiStartup IS in GATED_METRICS — fail breach blocks.
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-startupStandardHome',
+          name: 'benchmark-chrome-webpack-startupStandardHome',
           data: {
             startupStandardHome: makeBenchmarkResults('uiStartup', {
               p75: { uiStartup: 99999 },
@@ -290,7 +290,7 @@ describe('compare-benchmarks', () => {
       // surface in WARN, not FAIL, and not change the overall PASS verdict.
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
             onboardingImportWallet: makeBenchmarkResults(
               'importWalletToSocialScreen',
@@ -663,6 +663,45 @@ describe('buildMetricLines', () => {
 
     expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Regression.icon);
     expect(lines[0].hasIssue).toBe(true);
+  });
+
+  it('reports the absolute ceiling, not the relative improvement, on an absolute-only fail', () => {
+    // Observed on a live benchmark run (onboardingImportWallet total.p75):
+    // the metric fails the absolute ceiling (11291 > 11050ms) while the
+    // relative delta is a stale-baseline improvement (-72.1%). The line must
+    // attribute the failure to the ceiling, never paint the improvement as
+    // the reason.
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
+          {
+            metric: 'total',
+            percentile: 'p75',
+            current: 11291,
+            baseline: 40000,
+            delta: -28709,
+            deltaPercent: -0.721,
+            severity: COMPARISON_SEVERITY.Pass.value,
+            indication: COMPARISON_SEVERITY.Pass.icon,
+          },
+        ],
+        absoluteViolations: [
+          {
+            metricId: 'total',
+            percentile: 'p75',
+            value: 11291,
+            threshold: 11050,
+            severity: THRESHOLD_SEVERITY.Fail,
+          },
+        ],
+      }),
+    );
+
+    const { details } = lines[0];
+    expect(details).toContain('absolute ceiling exceeded');
+    expect(details).toContain('11291ms');
+    expect(details).toContain('11050ms');
+    expect(details).not.toContain('-72.1%');
   });
 
   it('overrides icon with 🟡 when absolute Warn violation matches the metric', () => {
