@@ -1,8 +1,8 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -22,7 +22,7 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
@@ -47,15 +47,15 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
 
-        // TRX_BALANCE = 6072392 SUN = ~6.07 TRX * $0.29469 = ~$1.79
-        // Total Fiat = TRX $1.79, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $10.18
+        // TRX_BALANCE = 106072392 SUN = ~106.07 TRX * $0.29469 = ~$31.26
+        // Total Fiat = TRX $31.26, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $39.65
         await homePage.checkExpectedBalanceIsDisplayed({
-          expectedBalance: '$10.18',
+          expectedBalance: '$39.65',
           timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
@@ -73,14 +73,14 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
 
-        // TRX_BALANCE = 6072392 SUN = ~6.07 TRX
+        // TRX_BALANCE = 106072392 SUN = ~106.07 TRX
         await homePage.checkExpectedBalanceIsDisplayed({
-          expectedBalance: '6.072 TRX',
+          expectedBalance: '106.072 TRX',
           timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { RecommendedAction } from '@metamask/phishing-controller';
 import { getUrlScanCacheResult } from '../selectors/selectors';
 import { TrustSignalDisplayState } from './useTrustSignals';

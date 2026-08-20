@@ -25,3 +25,13 @@ export { LeverageSlider } from './components/leverage-slider';
 export { OrderSummary } from './components/order-summary';
 export { AutoCloseSection } from './components/auto-close-section';
 export { CloseAmountSection } from './components/close-amount-section';
+export { LimitPriceInput } from './components/limit-price-input';
+export type { LimitPriceInputProps } from './components/limit-price-input/limit-price-input';
+export {
+  OrderTypeToggle,
+  type OrderTypeToggleProps,
+} from './components/order-type-toggle';
+export {
+  OrderEntryHeader,
+  type OrderEntryHeaderProps,
+} from './components/order-entry-header';

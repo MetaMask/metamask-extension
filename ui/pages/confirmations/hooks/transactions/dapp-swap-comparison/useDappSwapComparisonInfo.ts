@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse, TxData } from '@metamask/bridge-controller';
+import { QuoteResponseV1, TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -21,7 +21,7 @@ import { useDappSwapComparisonLatencyMetrics } from './useDappSwapComparisonLate
 import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 import { useDappSwapUSDValues } from './useDappSwapUSDValues';
 
-const getGasFromQuote = (quote: QuoteResponse) => {
+const getGasFromQuote = (quote: QuoteResponseV1) => {
   const { approval, trade } = quote;
   const approvalGas =
     (approval as TxData)?.effectiveGas ?? (approval as TxData)?.gasLimit ?? 0;
@@ -182,8 +182,9 @@ export function useDappSwapComparisonInfo() {
           ),
           swap_mm_to_token_simulated_value_usd:
             getDestinationTokenUSDValue(destTokenAmount),
-          swap_mm_minimum_received_value_usd:
-            getDestinationTokenUSDValue(minDestTokenAmount),
+          swap_mm_minimum_received_value_usd: getDestinationTokenUSDValue(
+            minDestTokenAmount ?? destTokenAmount,
+          ),
           swap_mm_slippage: (bestQuote.quote as unknown as { slippage: string })
             .slippage,
           swap_mm_quote_provider: (

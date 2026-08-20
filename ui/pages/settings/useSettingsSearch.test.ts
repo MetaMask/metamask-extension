@@ -1,4 +1,7 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
+import React from 'react';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
 import { useSettingsSearch } from './useSettingsSearch';
 
 jest.mock('../../../shared/lib/passkey', () => ({
@@ -18,6 +21,7 @@ jest.mock('../../hooks/useI18nContext', () => ({
       theme: 'Theme',
       language: 'Language',
       localCurrency: 'Local currency',
+      showTickerWidget: 'Show web widget on X',
       autoDetectTokens: 'Auto-detect tokens',
     };
 
@@ -81,6 +85,7 @@ jest.mock('./search-config', () => ({
         { id: 'theme', titleKey: 'theme' },
         { id: 'language', titleKey: 'language' },
         { id: 'local-currency', titleKey: 'localCurrency' },
+        { id: 'show-ticker-widget', titleKey: 'showTickerWidget' },
       ],
     },
     {
@@ -100,11 +105,18 @@ jest.mock('./search-config', () => ({
     },
     {
       tabId: 'privacy',
-      items: [{ id: 'third-party-apis', titleKey: 'thirdPartyApis' }],
+      items: [
+        { id: 'third-party-apis', titleKey: 'thirdPartyApis' },
+        { id: 'ipfs-gateway', titleKey: 'ipfsGateway' },
+        {
+          id: 'batch-account-balance-requests',
+          titleKey: 'useMultiAccountBalanceChecker',
+        },
+      ],
       subPages: [
         {
           path: '/settings/privacy/third-party-apis',
-          items: [{ id: 'ipfs-gateway', titleKey: 'ipfsGateway' }],
+          items: [{ id: 'autodetect-nfts', titleKey: 'useNftDetection' }],
         },
       ],
     },
@@ -112,24 +124,50 @@ jest.mock('./search-config', () => ({
 }));
 
 describe('useSettingsSearch', () => {
+  const createWrapper =
+    (
+      remoteFeatureFlags = {},
+      isBasicFunctionalityConsolidatedEnabled = false,
+    ) =>
+    ({ children }: { children: React.ReactNode }) => {
+      const store = configureMockStore()({
+        metamask: {
+          remoteFeatureFlags,
+          preferences: {
+            isBasicFunctionalityConsolidatedEnabled,
+          },
+        },
+      });
+
+      return React.createElement(Provider, { store, children });
+    };
+
   it('returns empty results for queries shorter than 3 characters', () => {
-    const { result } = renderHook(() => useSettingsSearch('th'));
+    const { result } = renderHook(() => useSettingsSearch('th'), {
+      wrapper: createWrapper(),
+    });
     expect(result.current).toEqual([]);
   });
 
   it('returns empty results for empty string', () => {
-    const { result } = renderHook(() => useSettingsSearch(''));
+    const { result } = renderHook(() => useSettingsSearch(''), {
+      wrapper: createWrapper(),
+    });
     expect(result.current).toEqual([]);
   });
 
   it('returns matching results for a valid query', () => {
-    const { result } = renderHook(() => useSettingsSearch('theme'));
+    const { result } = renderHook(() => useSettingsSearch('theme'), {
+      wrapper: createWrapper(),
+    });
     expect(result.current.length).toBeGreaterThan(0);
     expect(result.current[0].titleKey).toBe('theme');
   });
 
   it('returns matching results for partial queries', () => {
-    const { result } = renderHook(() => useSettingsSearch('curr'));
+    const { result } = renderHook(() => useSettingsSearch('curr'), {
+      wrapper: createWrapper(),
+    });
     expect(result.current.length).toBeGreaterThan(0);
 
     const titleKeys = result.current.map((item) => item.titleKey);
@@ -137,12 +175,69 @@ describe('useSettingsSearch', () => {
   });
 
   it('returns empty array for non-matching queries', () => {
-    const { result } = renderHook(() => useSettingsSearch('xyznonexistent'));
+    const { result } = renderHook(() => useSettingsSearch('xyznonexistent'), {
+      wrapper: createWrapper(),
+    });
     expect(result.current).toEqual([]);
   });
 
+  it('hides consolidated Basic Functionality settings when the flag is enabled', () => {
+    const { result } = renderHook(() => useSettingsSearch('auto'), {
+      wrapper: createWrapper({ extensionBasicFunctionalityToggle: true }, true),
+    });
+
+    expect(result.current).toEqual([]);
+  });
+
+  it('hides the X widget setting when cashtagInjection is disabled', () => {
+    const { result } = renderHook(() => useSettingsSearch('widget'), {
+      wrapper: createWrapper({ cashtagInjection: false }),
+    });
+
+    expect(result.current).toEqual([]);
+  });
+
+  it('keeps the X widget setting searchable when cashtagInjection is enabled', () => {
+    const { result } = renderHook(() => useSettingsSearch('widget'), {
+      wrapper: createWrapper({ cashtagInjection: true }),
+    });
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0]).toEqual(
+      expect.objectContaining({
+        settingId: 'show-ticker-widget',
+        titleKey: 'showTickerWidget',
+        tabRoute: '/settings/preferences-and-display',
+      }),
+    );
+  });
+
+  it('keeps IPFS searchable on the Privacy page when the flag is enabled', () => {
+    const { result } = renderHook(() => useSettingsSearch('ipfs'), {
+      wrapper: createWrapper({ extensionBasicFunctionalityToggle: true }, true),
+    });
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].titleKey).toBe('ipfsGateway');
+    expect(result.current[0].tabRoute).toBe('/settings/privacy');
+  });
+
+  it('keeps granular settings searchable when the flag is enabled without the local cohort marker', () => {
+    const { result } = renderHook(() => useSettingsSearch('auto'), {
+      wrapper: createWrapper(
+        { extensionBasicFunctionalityToggle: true },
+        false,
+      ),
+    });
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].titleKey).toBe('autoDetectTokens');
+  });
+
   it('returns notification sub-pages when the query matches the parent tab label', () => {
-    const { result } = renderHook(() => useSettingsSearch('notif'));
+    const { result } = renderHook(() => useSettingsSearch('notif'), {
+      wrapper: createWrapper(),
+    });
 
     const walletActivity = result.current.find(
       (item) => item.settingId === 'wallet-activity',
@@ -158,14 +253,18 @@ describe('useSettingsSearch', () => {
   });
 
   it('returns privacy sub-pages when the query matches the parent tab label', () => {
-    const { result } = renderHook(() => useSettingsSearch('priv'));
+    const { result } = renderHook(() => useSettingsSearch('priv'), {
+      wrapper: createWrapper(),
+    });
 
-    const ipfsGateway = result.current.find(
-      (item) => item.settingId === 'ipfs-gateway',
+    const autodetectNfts = result.current.find(
+      (item) =>
+        item.settingId === 'autodetect-nfts' &&
+        item.tabRoute === '/settings/privacy/third-party-apis',
     );
-    expect(ipfsGateway).toEqual(
+    expect(autodetectNfts).toEqual(
       expect.objectContaining({
-        settingId: 'ipfs-gateway',
+        settingId: 'autodetect-nfts',
         parentTabLabelKey: 'privacy',
         tabRoute: '/settings/privacy/third-party-apis',
       }),

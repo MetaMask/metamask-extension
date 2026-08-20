@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
 import { usePerpsLiveMarketData } from './usePerpsLiveMarketData';
 import { usePerpsLiveMarketListData } from './usePerpsLiveMarketListData';
@@ -67,6 +67,39 @@ describe('usePerpsLiveMarketListData', () => {
       activateStream: true,
       includeMarketData: false,
     });
+  });
+
+  it('does not activate live market streams when disabled', () => {
+    const refresh = jest.fn();
+    const market = createMockMarket({ symbol: 'BTC' });
+
+    mockUsePerpsLiveMarketData.mockReturnValue({
+      markets: [market],
+      cryptoMarkets: [market],
+      hip3Markets: [],
+      isInitialLoading: false,
+      error: null,
+      refresh,
+    });
+    mockUsePerpsLivePrices.mockReturnValue({
+      prices: {},
+      isInitialLoading: false,
+    });
+
+    renderHook(() => usePerpsLiveMarketListData({ activateStream: false }));
+
+    expect(mockUsePerpsLiveMarketData).toHaveBeenCalledWith({
+      autoSubscribe: false,
+    });
+    expect(mockUsePerpsLivePrices).toHaveBeenCalledWith({
+      symbols: ['BTC'],
+      activateStream: false,
+      includeMarketData: false,
+    });
+
+    jest.advanceTimersByTime(30000);
+
+    expect(refresh).not.toHaveBeenCalled();
   });
 
   it('overlays live price and 24h change onto the market list', () => {

@@ -1,4 +1,4 @@
-process.env.METAMASK_ENVIRONMENT = 'test';
+process.env.METAMASK_ENVIRONMENT = 'testing';
 process.env.SUPPORT_LINK = 'https://support.metamask.io/?utm_source=extension';
 process.env.IFRAME_EXECUTION_ENVIRONMENT_URL =
   'https://execution.metamask.io/0.36.1-flask.1/index.html';
@@ -20,3 +20,5 @@ process.env.METAMASK_SHIELD_ENABLED = 'false';
 process.env.PERPS_ENABLED = 'true';
 process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
 process.env.NEW_HARDWARE_WALLET_ONBOARDING = 'false';
+process.env.PHISHING_WARNING_PAGE_URL =
+  'https://metamask.github.io/phishing-warning/v4.1.0/';

@@ -5,7 +5,7 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Navigate,
   createSearchParams,
@@ -19,6 +19,7 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   FontWeight,
@@ -46,7 +47,10 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../shared/constants/perps-events';
-import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
+import {
+  getIsPerpsExperienceAvailable,
+  getIsPerpsShowFullAssetNamesEnabled,
+} from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -55,6 +59,7 @@ import {
   DEFAULT_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   usePerpsLivePositions,
@@ -68,6 +73,7 @@ import {
   usePerpsEventTracking,
   usePerpsMarketInfo,
 } from '../../hooks/perps';
+import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
@@ -87,10 +93,11 @@ import {
   ZOOM_CONFIG,
 } from '../../components/app/perps/constants/chartConfig';
 import {
-  getDisplayName,
+  getDisplaySymbol,
   safeDecodeURIComponent,
   getChangeColor,
   formatSignedChangePercent,
+  getPrivacyAwareColor,
 } from '../../components/app/perps/utils';
 import {
   parsePerpsDisplayPrice,
@@ -122,12 +129,14 @@ import {
 import Tooltip from '../../components/ui/tooltip';
 import type { MetaMaskReduxState } from '../../store/store';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { captureException } from '../../../shared/lib/sentry';
 import {
   type PerpsState,
   selectPerpsIsWatchlistMarket,
 } from '../../selectors/perps-controller';
 import { setTutorialModalOpen } from '../../ducks/perps';
 import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -275,11 +284,23 @@ const PerpsMarketDetailPage = () => {
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { gate } = useSelectedAccountComplianceGate();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const { setFlowAttribution } = usePerpsAttribution();
+
+  // Re-assert this screen's entry point on mount so `trackingData` for actions
+  // taken here (close / cancel / TP-SL / margin) reflects asset_details even
+  // after returning from the order-entry screen, which sets trade_screen on the
+  // shared provider.
+  useEffect(() => {
+    setFlowAttribution({
+      entryPoint: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    });
+  }, [setFlowAttribution]);
   const {
     formatCurrencyWithMinThreshold,
     formatNumber,
@@ -375,12 +396,34 @@ const PerpsMarketDetailPage = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
+  // Find market data for the given symbol. Computed before the screen-view
+  // tracking below so the asset_details event can be gated on the market
+  // existing (an unknown symbol renders the error state instead).
+  const market = useMemo(() => {
+    if (!decodedSymbol) {
+      return undefined;
+    }
+    return allMarkets.find(
+      (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
+    );
+  }, [decodedSymbol, allMarkets]);
+  const marketCatalogReady = !marketsLoading && allMarkets.length > 0;
+
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
+  const isInWatchlist = useSelector((state: MetaMaskReduxState) =>
+    selectPerpsIsWatchlistMarket(state as PerpsState, decodedSymbol ?? ''),
+  );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
-    conditions: !marketsLoading && Boolean(decodedSymbol) && account !== null,
+    // Gate on `market` so an unknown symbol emits only the error screen view
+    // below (not both asset_details and error for one rendered error screen).
+    conditions:
+      marketCatalogReady &&
+      Boolean(decodedSymbol) &&
+      account !== null &&
+      Boolean(market),
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
         PERPS_EVENT_VALUE.SCREEN_TYPE.ASSET_DETAILS,
@@ -389,6 +432,8 @@ const PerpsMarketDetailPage = () => {
       }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      // watchlisted only surfaces on the asset_detail screen.
+      [PERPS_EVENT_PROPERTY.WATCHLISTED]: isInWatchlist,
     },
     resetKey: decodedSymbol,
   });
@@ -400,9 +445,18 @@ const PerpsMarketDetailPage = () => {
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
   );
+  const livePriceStreamKey =
+    decodedSymbol && selectedAddress
+      ? `${decodedSymbol}:${selectedAddress}`
+      : null;
+  const [prevLivePriceStreamKey, setPrevLivePriceStreamKey] =
+    useState(livePriceStreamKey);
+  if (livePriceStreamKey !== prevLivePriceStreamKey) {
+    setPrevLivePriceStreamKey(livePriceStreamKey);
+    setLivePrice(undefined);
+  }
   useEffect(() => {
     if (!decodedSymbol || !selectedAddress) {
-      setLivePrice(undefined);
       return undefined;
     }
 
@@ -435,17 +489,24 @@ const PerpsMarketDetailPage = () => {
     };
   }, [decodedSymbol, selectedAddress]);
 
-  // Find market data for the given symbol
-  const market = useMemo(() => {
-    if (!decodedSymbol) {
-      return undefined;
-    }
-    return allMarkets.find(
-      (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
-    );
-  }, [decodedSymbol, allMarkets]);
-
   const marketInfo = usePerpsMarketInfo(decodedSymbol ?? '');
+
+  // Market-not-found renders a displayed error state (see the `!market` branch
+  // below); emit the error screen view for that funnel state.
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: marketCatalogReady && Boolean(decodedSymbol) && !market,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
+      [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+        PERPS_EVENT_VALUE.ERROR_TYPE.MARKET_NOT_FOUND,
+      [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+    },
+    // Re-arm per symbol so navigating between distinct invalid symbols tracks
+    // each one (otherwise the one-shot guard suppresses the second).
+    resetKey: decodedSymbol,
+  });
 
   // Find position for this market (if exists)
   const position = useMemo(() => {
@@ -515,9 +576,24 @@ const PerpsMarketDetailPage = () => {
 
   // Candle period: persisted in PreferencesController across sessions/markets.
   // Local override gives instant UI feedback; background save persists for next visit.
-  const { perpsSelectedCandlePeriod: persistedCandlePeriod } = useSelector(
-    getPreferences,
-  ) as { perpsSelectedCandlePeriod?: string };
+  const { perpsSelectedCandlePeriod: persistedCandlePeriod, privacyMode } =
+    useSelector(getPreferences) as {
+      perpsSelectedCandlePeriod?: string;
+      privacyMode?: boolean;
+    };
+
+  const positionPnlColor = getPrivacyAwareColor(
+    position && parseFloat(position.unrealizedPnl) < 0
+      ? TextColor.ErrorDefault
+      : TextColor.SuccessDefault,
+    privacyMode,
+  );
+  const positionReturnColor = getPrivacyAwareColor(
+    position && parseFloat(position.returnOnEquity) < 0
+      ? TextColor.ErrorDefault
+      : TextColor.SuccessDefault,
+    privacyMode,
+  );
   const resolvedPersistedPeriod =
     persistedCandlePeriod &&
     Object.values(CandlePeriod).includes(persistedCandlePeriod as CandlePeriod)
@@ -557,14 +633,16 @@ const PerpsMarketDetailPage = () => {
   const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
   const [isTPSLModalOpen, setIsTPSLModalOpen] = useState(false);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+  // Which CTA opened the close modal (close vs reduce_exposure), surfaced on the
+  // position_close PERPS_SCREEN_VIEWED event.
+  const [closeButtonClicked, setCloseButtonClicked] = useState<string>(
+    PERPS_EVENT_VALUE.BUTTON_CLICKED.CLOSE,
+  );
   const [cancelOrderTarget, setCancelOrderTarget] = useState<Order | null>(
     null,
   );
   const modifyMenuRef = useRef<HTMLDivElement>(null);
   const marginMenuRef = useRef<HTMLDivElement>(null);
-  const isInWatchlist = useSelector((state: MetaMaskReduxState) =>
-    selectPerpsIsWatchlistMarket(state as PerpsState, decodedSymbol ?? ''),
-  );
 
   // Parse fallback price from market data (used before candle stream is ready)
   const marketPrice = useMemo(() => {
@@ -748,7 +826,7 @@ const PerpsMarketDetailPage = () => {
 
   const handleBackClick = useCallback(() => {
     if (typeof window !== 'undefined' && window.history.length > 1) {
-      navigate(-1);
+      navigate(PREVIOUS_ROUTE);
       return;
     }
     navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });
@@ -814,6 +892,7 @@ const PerpsMarketDetailPage = () => {
       if (!position) {
         return;
       }
+      setCloseButtonClicked(PERPS_EVENT_VALUE.BUTTON_CLICKED.CLOSE);
       setIsCloseModalOpen(true);
     }).catch((error: unknown) => {
       console.error(error);
@@ -915,6 +994,7 @@ const PerpsMarketDetailPage = () => {
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
       });
+      setCloseButtonClicked(PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE);
       setIsModifyMenuOpen(false);
       setIsCloseModalOpen(true);
     }).catch((error: unknown) => {
@@ -968,8 +1048,13 @@ const PerpsMarketDetailPage = () => {
     });
     submitRequestToBackground('perpsToggleWatchlistMarket', [
       decodedSymbol,
-    ]).catch((e) => {
-      console.warn('[Perps] Toggle watchlist failed:', e);
+    ]).catch((error) => {
+      // The star icon renders from `isInWatchlist`, a controller-backed Redux
+      // selector — not optimistic local state. A failed toggle leaves the store
+      // (and therefore the icon) unchanged, so the UI is already consistent and
+      // there is nothing to revert. Surface the failure to Sentry rather than
+      // swallowing it, since a silently dropped favorite is still a real defect.
+      captureException(error);
     });
   }, [decodedSymbol, track]);
 
@@ -989,7 +1074,7 @@ const PerpsMarketDetailPage = () => {
   }
 
   // Show loading state while market data is being fetched
-  if (marketsLoading) {
+  if (!marketCatalogReady) {
     return <PerpsDetailPageSkeleton />;
   }
 
@@ -1026,7 +1111,7 @@ const PerpsMarketDetailPage = () => {
               color={TextColor.TextAlternative}
             >
               {t('perpsMarketNotFoundDescription', [
-                getDisplayName(safeDecodeURIComponent(symbol) ?? symbol),
+                getDisplaySymbol(safeDecodeURIComponent(symbol) ?? symbol),
               ])}
             </Text>
           </Box>
@@ -1035,9 +1120,12 @@ const PerpsMarketDetailPage = () => {
     );
   }
 
-  const displayName = getDisplayName(market.symbol);
-  // Full market name (e.g. "Bitcoin"), falling back to the ticker when unavailable.
-  const fullName = market.name || displayName;
+  const displayName = getDisplaySymbol(market.symbol);
+  // Full market name (e.g. "Bitcoin"), gated behind the feature flag and falling
+  // back to the ticker when disabled or unavailable.
+  const fullName = showFullAssetNames
+    ? market.name || displayName
+    : displayName;
 
   // Render the chart area: skeleton during initial load, error state on failure,
   // or the live chart once data is available.
@@ -1084,7 +1172,7 @@ const PerpsMarketDetailPage = () => {
   return (
     <Box
       className="main-container asset__container"
-      data-testid="perps-market-detail-page"
+      data-testid="parent-selector-perps-market-detail"
     >
       {/* Header */}
       <Box
@@ -1315,17 +1403,15 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsPnl')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
-                    color={
-                      parseFloat(position.unrealizedPnl) >= 0
-                        ? TextColor.SuccessDefault
-                        : TextColor.ErrorDefault
-                    }
+                    color={positionPnlColor}
+                    isHidden={privacyMode}
+                    data-testid="perps-position-pnl-value"
                   >
                     {formatPnl(position.unrealizedPnl)}
-                  </Text>
+                  </SensitiveText>
                 </Box>
 
                 {/* Return Card */}
@@ -1338,20 +1424,18 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsReturn')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
-                    color={
-                      parseFloat(position.returnOnEquity) >= 0
-                        ? TextColor.SuccessDefault
-                        : TextColor.ErrorDefault
-                    }
+                    color={positionReturnColor}
+                    isHidden={privacyMode}
+                    data-testid="perps-position-return-value"
                   >
                     {/* Controller/mobile ROE is a ratio (e.g. 0.1579), same as what the formatter expects. */}
                     {formatPercentWithMinThreshold(
                       Number.parseFloat(position.returnOnEquity),
                     )}
-                  </Text>
+                  </SensitiveText>
                 </Box>
               </Box>
 
@@ -1373,9 +1457,10 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsSize')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-size-value"
                   >
                     {showSizeInFiat && Boolean(position.entryPrice)
@@ -1386,8 +1471,8 @@ const PerpsMarketDetailPage = () => {
                       : `${formatPositionSize(
                           Math.abs(parseFloat(position.size)),
                           marketInfo?.szDecimals,
-                        )} ${getDisplayName(position.symbol)}`}
-                  </Text>
+                        )} ${getDisplaySymbol(position.symbol)}`}
+                  </SensitiveText>
                 </Box>
 
                 {/* Margin Card - click to open Add/Remove margin popover */}
@@ -1406,13 +1491,14 @@ const PerpsMarketDetailPage = () => {
                       {t('perpsMargin')}
                     </Text>
                   </Box>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-margin-value"
                   >
                     {formatPerpsFiatMinimal(position.marginUsed)}
-                  </Text>
+                  </SensitiveText>
                   <Popover
                     referenceElement={marginMenuRef.current}
                     isOpen={isMarginMenuOpen}
@@ -1478,28 +1564,32 @@ const PerpsMarketDetailPage = () => {
                     >
                       TP{' '}
                     </Text>
-                    <Text
+                    <SensitiveText
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
+                      isHidden={privacyMode}
+                      data-testid="perps-auto-close-tp-value"
                     >
                       {effectiveTakeProfitPrice
                         ? formatPerpsFiatUniversal(effectiveTakeProfitPrice)
                         : '-'}
-                    </Text>
+                    </SensitiveText>
                     <Text
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
                       , SL{' '}
                     </Text>
-                    <Text
+                    <SensitiveText
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
+                      isHidden={privacyMode}
+                      data-testid="perps-auto-close-sl-value"
                     >
                       {effectiveStopLossPrice
                         ? formatPerpsFiatUniversal(effectiveStopLossPrice)
                         : '-'}
-                    </Text>
+                    </SensitiveText>
                   </Box>
                 </Box>
                 <Icon
@@ -1562,13 +1652,14 @@ const PerpsMarketDetailPage = () => {
                   >
                     {t('perpsEntryPrice')}
                   </Text>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-entry-value"
                   >
                     {formatPerpsFiatUniversal(position.entryPrice)}
-                  </Text>
+                  </SensitiveText>
                 </Box>
 
                 {/* Liquidation Price Row */}
@@ -1584,13 +1675,14 @@ const PerpsMarketDetailPage = () => {
                   >
                     {t('perpsLiquidationPrice')}
                   </Text>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-liquidation-value"
                   >
                     {formatPerpsLiquidationPrice(position.liquidationPrice)}
-                  </Text>
+                  </SensitiveText>
                 </Box>
 
                 {/* Funding Payments Row */}
@@ -1606,9 +1698,10 @@ const PerpsMarketDetailPage = () => {
                   >
                     {t('perpsFundingPayments')}
                   </Text>
-                  <Text
+                  <SensitiveText
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
+                    isHidden={privacyMode}
                     data-testid="perps-position-funding-value"
                   >
                     {(() => {
@@ -1626,7 +1719,7 @@ const PerpsMarketDetailPage = () => {
                         { ranges: PRICE_RANGES_MINIMAL_VIEW },
                       )}`;
                     })()}
-                  </Text>
+                  </SensitiveText>
                 </Box>
               </Box>
             </Box>
@@ -2080,7 +2173,12 @@ const PerpsMarketDetailPage = () => {
           onClose={() => setIsCloseModalOpen(false)}
           position={position}
           currentPrice={currentPrice}
+          markPrice={livePrice?.markPrice}
           sizeDecimals={marketInfo?.szDecimals}
+          buttonClicked={closeButtonClicked}
+          buttonLocation={PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS}
+          displayPrice={displayPrice}
+          displayChange={displayChange}
         />
       )}
 

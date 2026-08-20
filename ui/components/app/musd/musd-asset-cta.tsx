@@ -11,7 +11,7 @@
  */
 
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
   Box,
@@ -37,14 +37,16 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMusdConversion } from '../../../hooks/musd';
 import { addMusdConversionDismissedCtaKey } from '../../../store/actions';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
+import { useDispatch } from '../../../store/hooks';
 import { MUSD_CONVERSION_APY } from './constants';
+
 import {
   createMusdCtaClickedEventProperties,
   MUSD_EVENTS_CONSTANTS,
   resolveMusdConversionCtaRedirectsTo,
 } from './musd-events';
 
-// Runtime path: app/images/ is copied to images/ in the build (see development/build/static.js)
+// Runtime path: app/images/ is copied to images/ by the build
 const MUSD_EDUCATION_COIN_IMAGE = './images/musd-icon-no-background-2x.png';
 
 // ============================================================================
@@ -96,7 +98,7 @@ export const MusdAssetCta = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { startConversionFlow, educationSeen } = useMusdConversion();
+  const { startConversionFlow } = useMusdConversion();
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -116,7 +118,6 @@ export const MusdAssetCta = ({
     const ctaDisplayText = t('musdBoostTitle', [String(MUSD_CONVERSION_APY)]);
     const redirectsTo = resolveMusdConversionCtaRedirectsTo({
       intent: 'conversion',
-      educationSeen,
     });
 
     trackEvent(
@@ -150,7 +151,6 @@ export const MusdAssetCta = ({
     trackEvent,
     startConversionFlow,
     t,
-    educationSeen,
     networkName,
   ]);
 

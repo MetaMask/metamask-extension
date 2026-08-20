@@ -14,6 +14,8 @@ import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  BATCH_SELL_ROOT_ROUTE,
+  DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
@@ -26,6 +28,7 @@ import {
 import {
   getTransactions,
   selectHasApprovalFlows,
+  selectHasBatchSellQuotes,
   selectHasBridgeQuotes,
   selectPendingApprovalsForNavigation,
 } from '../../selectors';
@@ -34,6 +37,8 @@ import {
   isMerklClaimTransaction,
   isMusdConversionTransaction,
 } from '../../components/app/musd/utils';
+import { resetBridgeController } from '../../ducks/bridge/actions';
+import { useDispatch } from '../../store/hooks';
 
 const EXEMPTED_ROUTES = [
   CROSS_CHAIN_SWAP_ROUTE,
@@ -46,6 +51,7 @@ const EXEMPTED_ROUTES = [
   // shield approval transaction back to shield plan and transaction shield settings page on cancel/confirm, need to be exempted otherwise it will redirect to home page
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  BATCH_SELL_ROOT_ROUTE,
 ];
 
 const SNAP_APPROVAL_TYPES = [
@@ -57,6 +63,7 @@ const SNAP_APPROVAL_TYPES = [
 
 export const ConfirmationRouter = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const { pathname } = location;
   const { closeModals } = useModalState();
@@ -67,6 +74,7 @@ export const ConfirmationRouter = () => {
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
 
   const hasBridgeQuotes = useSelector(selectHasBridgeQuotes);
+  const hasBatchSellQuotes = useSelector(selectHasBatchSellQuotes);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
   const stayOnHomePage = Boolean(location.state?.stayOnHomePage);
@@ -81,7 +89,11 @@ export const ConfirmationRouter = () => {
 
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
-    if (canRedirect && hasBridgeQuotes && isPopup) {
+    if (canRedirect && hasBatchSellQuotes && isPopup) {
+      closeModals();
+      navigate(DEFAULT_ROUTE, { replace: true });
+      dispatch(resetBridgeController());
+    } else if (canRedirect && hasBridgeQuotes && isPopup) {
       closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
@@ -100,7 +112,9 @@ export const ConfirmationRouter = () => {
   }, [
     canRedirect,
     closeModals,
+    dispatch,
     hasApprovalFlows,
+    hasBatchSellQuotes,
     hasBridgeQuotes,
     navigate,
     pendingApprovals,
