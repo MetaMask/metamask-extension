@@ -15,7 +15,6 @@ import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/acc
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useFormatters } from '../../../hooks/useFormatters';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsAnalytics } from '../../../hooks/ramps/useRampsAnalytics';
 import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
@@ -31,11 +30,7 @@ import {
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
 import { providerSupportsAsset } from '../utils/providerSupportsAsset';
-import { getProviderLimitMessage } from '../utils/getProviderLimitMessage';
-import {
-  RampsProviderSeparator,
-  RampsQuotesForPaymentMethodBanner,
-} from './components/ramps-provider-list-helpers';
+import { RampsQuotesForPaymentMethodBanner } from './components/ramps-provider-list-helpers';
 import RampsProviderListItem from './components/ramps-provider-list-item';
 import {
   buildProviderListItems,
@@ -49,25 +44,21 @@ type ProviderSelectionLocationState = {
   amount?: number;
 };
 
-type ProviderListRow =
-  | { type: 'separator'; key: string }
-  | {
-      type: 'provider';
-      key: string;
-      provider: Provider;
-      isSelected: boolean;
-      isDisabled: boolean;
-      tag: ProviderTag | null;
-      subtitle: string | null;
-      showQuote: boolean;
-      quote: ReturnType<typeof findProviderQuote>;
-      quoteLoading: boolean;
-      currency: string;
-      tokenSymbol: string;
-    };
+type ProviderListRow = {
+  key: string;
+  provider: Provider;
+  isSelected: boolean;
+  isDisabled: boolean;
+  tag: ProviderTag | null;
+  showQuote: boolean;
+  quote: ReturnType<typeof findProviderQuote>;
+  quoteLoading: boolean;
+  currency: string;
+  tokenSymbol: string;
+};
 
 /**
- * Builds render-ready rows from sorted list items (tags, quotes, unavailable).
+ * Builds render-ready rows from providers with available quotes.
  * @param options0
  * @param options0.sortedListItems
  * @param options0.quotes
@@ -77,10 +68,8 @@ type ProviderListRow =
  * @param options0.selectedPaymentMethodId
  * @param options0.ordersProviders
  * @param options0.isSelecting
- * @param options0.amount
  * @param options0.fiatCurrency
  * @param options0.tokenSymbol
- * @param options0.formatCurrency
  * @param options0.t
  */
 function buildProviderListRows({
@@ -92,10 +81,8 @@ function buildProviderListRows({
   selectedPaymentMethodId,
   ordersProviders,
   isSelecting,
-  amount,
   fiatCurrency,
   tokenSymbol,
-  formatCurrency,
   t,
 }: {
   sortedListItems: ProviderListItem[];
@@ -106,52 +93,28 @@ function buildProviderListRows({
   selectedPaymentMethodId: string | undefined;
   ordersProviders: string[];
   isSelecting: boolean;
-  amount: number;
   fiatCurrency: string;
   tokenSymbol: string;
-  formatCurrency: ReturnType<typeof useFormatters>['formatCurrency'];
   t: ReturnType<typeof useI18nContext>;
 }): ProviderListRow[] {
-  return sortedListItems.map((item, index) => {
-    if (item.type === 'separator') {
-      return { type: 'separator', key: `separator-${index}` };
-    }
-
+  return sortedListItems.map((item) => {
     const { provider } = item;
     const matchedQuote = findProviderQuote(
       quotes,
       provider.id,
       selectedPaymentMethodId,
     );
-    const providerError =
-      showQuotes && !quotesLoading
-        ? quotes?.error?.find((entry) => entry.provider === provider.id)?.error
-        : undefined;
-    const isUnavailable = Boolean(providerError && !matchedQuote);
     const tag =
-      !isUnavailable && showQuotes && !quotesLoading
+      showQuotes && !quotesLoading
         ? getProviderTag(provider.id, matchedQuote, ordersProviders, t)
         : null;
-    const subtitle = isUnavailable
-      ? (getProviderLimitMessage({
-          provider,
-          fiatCurrency,
-          paymentMethodId: selectedPaymentMethodId,
-          amount,
-          currency: fiatCurrency,
-          formatCurrency,
-          t,
-        }) ?? t('rampsQuoteUnavailable'))
-      : null;
 
     return {
-      type: 'provider',
       key: provider.id,
       provider,
       isSelected: selectedProviderId === provider.id,
       isDisabled: isSelecting,
       tag,
-      subtitle,
       showQuote: showQuotes,
       quote: matchedQuote,
       quoteLoading: quotesLoading,
@@ -171,7 +134,6 @@ export function RampsProviderSelectionScreen() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const { formatCurrency } = useFormatters();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const controllerOrders = useSelector(selectRampsOrdersForSelectedAccount);
   const {
@@ -271,25 +233,15 @@ export function RampsProviderSelectionScreen() {
     ? parseUserFacingError(quotesError, t('rampsNoProvidersAvailable'))
     : null;
 
-  const hasSuccessfulQuotes = (quotes?.success?.length ?? 0) > 0;
-
   const sortedListItems = useMemo(
     () =>
       buildProviderListItems({
         providers: displayProviders,
         quotes,
         quotesLoading,
-        displayQuotes: showQuotes && hasSuccessfulQuotes,
-        selectedTokenAssetId: assetId || undefined,
+        displayQuotes: showQuotes,
       }),
-    [
-      displayProviders,
-      quotes,
-      quotesLoading,
-      showQuotes,
-      hasSuccessfulQuotes,
-      assetId,
-    ],
+    [displayProviders, quotes, quotesLoading, showQuotes],
   );
 
   const listRows = useMemo(
@@ -303,10 +255,8 @@ export function RampsProviderSelectionScreen() {
         selectedPaymentMethodId: selectedPaymentMethod?.id,
         ordersProviders,
         isSelecting,
-        amount,
         fiatCurrency,
         tokenSymbol,
-        formatCurrency,
         t,
       }),
     [
@@ -318,10 +268,8 @@ export function RampsProviderSelectionScreen() {
       selectedPaymentMethod?.id,
       ordersProviders,
       isSelecting,
-      amount,
       fiatCurrency,
       tokenSymbol,
-      formatCurrency,
       t,
     ],
   );
@@ -372,7 +320,10 @@ export function RampsProviderSelectionScreen() {
   } else if (providersError && displayProviders.length === 0) {
     testId = 'ramps-provider-selection-error';
     body = <RampsSelectionCenteredMessage message={providersError} />;
-  } else if (displayProviders.length === 0) {
+  } else if (
+    displayProviders.length === 0 ||
+    (quotes && !quotesLoading && listRows.length === 0)
+  ) {
     testId = 'ramps-provider-selection-empty';
     body = (
       <RampsSelectionCenteredMessage message={t('rampsNoProvidersAvailable')} />
@@ -394,28 +345,23 @@ export function RampsProviderSelectionScreen() {
         ) : null}
         <ScrollContainer className="flex-1 overflow-y-auto pb-4">
           <Box flexDirection={BoxFlexDirection.Column}>
-            {listRows.map((row) =>
-              row.type === 'separator' ? (
-                <RampsProviderSeparator key={row.key} />
-              ) : (
-                <RampsProviderListItem
-                  key={row.key}
-                  provider={row.provider}
-                  isSelected={row.isSelected}
-                  isDisabled={row.isDisabled}
-                  tag={row.tag}
-                  subtitle={row.subtitle}
-                  showQuote={row.showQuote}
-                  quote={row.quote}
-                  quoteLoading={row.quoteLoading}
-                  currency={row.currency}
-                  tokenSymbol={row.tokenSymbol}
-                  onClick={() => {
-                    handleProviderSelect(row.provider).catch(() => undefined);
-                  }}
-                />
-              ),
-            )}
+            {listRows.map((row) => (
+              <RampsProviderListItem
+                key={row.key}
+                provider={row.provider}
+                isSelected={row.isSelected}
+                isDisabled={row.isDisabled}
+                tag={row.tag}
+                showQuote={row.showQuote}
+                quote={row.quote}
+                quoteLoading={row.quoteLoading}
+                currency={row.currency}
+                tokenSymbol={row.tokenSymbol}
+                onClick={() => {
+                  handleProviderSelect(row.provider).catch(() => undefined);
+                }}
+              />
+            ))}
           </Box>
         </ScrollContainer>
       </>

@@ -8260,9 +8260,6 @@
     "message": "Kauf erfolgreich",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Weitere Optionen"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "Werktag"
   },

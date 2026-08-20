@@ -8260,9 +8260,6 @@
     "message": "Matagumpay na nabili",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Iba pang opsyon"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"
   },

@@ -8260,9 +8260,6 @@
     "message": "Η αγορά ολοκληρώθηκε με επιτυχία",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Άλλες επιλογές"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "εργάσιμη μέρα"
   },

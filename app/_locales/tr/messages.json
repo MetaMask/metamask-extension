@@ -8268,9 +8268,6 @@
     "message": "Alış işlemi başarılı",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Diğer seçenekler"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "iş günü"
   },
