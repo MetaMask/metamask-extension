@@ -7,7 +7,9 @@ import {
 } from '@metamask/network-controller';
 import type { CaipChainId } from '@metamask/utils';
 import {
+  Checkbox,
   FontWeight,
+  IconName,
   Text as DsText,
   TextColor as DsTextColor,
   TextVariant as DsTextVariant,
@@ -30,10 +32,8 @@ import {
   Modal,
   Box,
   ButtonLink,
-  Checkbox,
   Text,
   AvatarNetworkSize,
-  IconName,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NetworkListItem } from '../../network-list-item';
@@ -217,15 +217,13 @@ export const AssetPickerModalNetwork = ({
         {isMultiselectEnabled && (
           <Box display={Display.Flex} padding={4}>
             <Checkbox
-              isIndeterminate={Object.values(checkedChainIds).every((v) => v)}
-              iconProps={{
+              id="asset-picker-network-select-all"
+              isSelected
+              checkedIconProps={{
                 name: Object.values(checkedChainIds).some((v) => !v)
                   ? IconName.MinusBold
                   : IconName.Add,
-                color: IconColor.primaryInverse,
-                backgroundColor: BackgroundColor.primaryDefault,
               }}
-              isChecked
               onChange={() => {
                 handleToggleAllNetworks();
               }}
@@ -301,8 +299,10 @@ export const AssetPickerModalNetwork = ({
                     startAccessory={
                       isMultiselectEnabled ? (
                         <Checkbox
-                          isChecked={checkedChainIds[chainId]}
-                          name={chainId}
+                          id={`asset-picker-network-checkbox-${chainId}`}
+                          isSelected={checkedChainIds[chainId]}
+                          onChange={() => handleToggleNetwork(chainId)}
+                          onClick={(event) => event.stopPropagation()}
                         />
                       ) : undefined
                     }

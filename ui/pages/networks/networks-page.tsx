@@ -4,13 +4,7 @@ import {
   UpdateNetworkFields,
 } from '@metamask/network-controller';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -23,7 +17,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -42,6 +36,7 @@ import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
 } from '../../../shared/constants/metametrics';
 import {
   getMultichainNetworkConfigurationsByChainId,
@@ -49,10 +44,10 @@ import {
 } from '../../selectors/multichain/networks';
 import { getIsChainlistEnabled } from '../../selectors/multichain/feature-flags';
 import { getEditedNetwork } from '../../selectors/selectors';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { SettingsHeader } from '../settings/shared/settings-header';
+import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useDispatch } from '../../store/hooks';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import {
   ChainlistNetworkPicker,
@@ -129,7 +124,7 @@ const NetworksPageFormBody = ({ children }: { children: React.ReactNode }) => (
 export const NetworksPage = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -212,13 +207,29 @@ export const NetworksPage = () => {
     setView('add');
   }, [setView]);
 
+  const handleAddCustomNetworkClick = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.CustomNetworkFormViewed)
+        .addCategory(MetaMetricsEventCategory.Network)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          source_connection_method:
+            MetaMetricsNetworkEventSource.CustomNetworkForm,
+        })
+        .build(),
+    );
+    handleNewNetwork();
+  }, [createEventBuilder, handleNewNetwork, trackEvent]);
+
   const handleAddFromChainlist = useCallback(() => {
-    trackEvent({
-      event: MetaMetricsEventName.ChainlistAddClicked,
-      category: MetaMetricsEventCategory.Network,
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ChainlistAddClicked)
+        .addCategory(MetaMetricsEventCategory.Network)
+        .build(),
+    );
     setView('add-from-chainlist');
-  }, [setView, trackEvent]);
+  }, [createEventBuilder, setView, trackEvent]);
 
   const handleChainlistNetworkSelect = useCallback(
     (network: ChainlistNetwork, searchQuery?: string) => {
@@ -226,17 +237,19 @@ export const NetworksPage = () => {
       const existingNetwork =
         evmNetworks[chainIdHex as keyof typeof evmNetworks];
       const networkName = existingNetwork?.name ?? network.name;
-      trackEvent({
-        event: MetaMetricsEventName.ChainlistNetworkSelected,
-        category: MetaMetricsEventCategory.Network,
-        /* eslint-disable @typescript-eslint/naming-convention */
-        properties: {
-          chain_id: chainIdHex,
-          network_name: networkName,
-          already_added: Boolean(existingNetwork),
-          ...(searchQuery ? { search_query: searchQuery } : {}),
-        },
-      });
+      /* eslint-disable @typescript-eslint/naming-convention */
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ChainlistNetworkSelected)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            chain_id: chainIdHex,
+            network_name: networkName,
+            already_added: Boolean(existingNetwork),
+            ...(searchQuery ? { search_query: searchQuery } : {}),
+          })
+          .build(),
+      );
+      /* eslint-enable @typescript-eslint/naming-convention */
 
       if (existingNetwork) {
         dispatch(
@@ -249,10 +262,10 @@ export const NetworksPage = () => {
         return;
       }
 
-      const rpcEndpoints = getUsableUrls(network.rpc).map((url) => ({
-        url,
-        type: RpcEndpointType.Custom,
-      }));
+      const primaryRpcUrl = getUsableUrls(network.rpc)[0];
+      const rpcEndpoints = primaryRpcUrl
+        ? [{ url: primaryRpcUrl, type: RpcEndpointType.Custom }]
+        : [];
       const blockExplorerUrls = getUsableUrls(
         network.explorers?.map((explorer) => explorer.url ?? '') ?? [],
       );
@@ -276,7 +289,14 @@ export const NetworksPage = () => {
       });
       setView('add');
     },
-    [dispatch, evmNetworks, networkFormState, setView, trackEvent],
+    [
+      createEventBuilder,
+      dispatch,
+      evmNetworks,
+      networkFormState,
+      setView,
+      trackEvent,
+    ],
   );
 
   const handleAddRPC = useCallback(
@@ -409,9 +429,9 @@ export const NetworksPage = () => {
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
       {view === '' ? (
         <>
-          <SettingsHeader
+          <PageHeaderWithSearch
             title={t('manageNetworksMenuHeading')}
-            onClose={handleRootBack}
+            onBack={handleRootBack}
             isSearchOpen={isSearchOpen}
             onOpenSearch={() => setIsSearchOpen(true)}
             onCloseSearch={() => setIsSearchOpen(false)}
@@ -422,7 +442,7 @@ export const NetworksPage = () => {
           />
           <NetworksPageList
             searchQuery={searchValue}
-            onAddCustomNetwork={handleNewNetwork}
+            onAddCustomNetwork={handleAddCustomNetworkClick}
             footerContent={
               pageToast ? (
                 <Box

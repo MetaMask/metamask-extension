@@ -14,7 +14,8 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { PerpsFillTag } from '../perps-fill-tag';
-import { getDisplayName } from '../utils';
+import { getDisplaySymbol } from '../utils';
+import { getOrderStatusI18nKey } from '../utils/orderUtils';
 import { FillType } from '../types';
 import type { PerpsTransaction } from '../types';
 
@@ -26,13 +27,14 @@ export type TransactionCardProps = {
   screenName?: string;
 };
 
-const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
-  open: 'perpsStatusOpen',
-  filled: 'perpsStatusFilled',
-  canceled: 'perpsStatusCanceled',
-  queued: 'perpsStatusQueued',
-  rejected: 'perpsStatusRejected',
-  triggered: 'perpsStatusTriggered',
+// `bridging` is treated the same as `pending` for display purposes — the
+// wallet doesn't currently emit a distinct in-progress-bridge state, but the
+// depositWithdrawal.status type supports it for other request-based sources.
+const DEPOSIT_WITHDRAWAL_STATUS_TO_I18N_KEY: Record<string, string> = {
+  completed: 'perpsStatusCompleted',
+  pending: 'perpsStatusPending',
+  bridging: 'perpsStatusPending',
+  failed: 'perpsStatusFailed',
 };
 
 /**
@@ -54,7 +56,7 @@ export const TransactionCard = ({
   screenName,
 }: TransactionCardProps) => {
   const t = useI18nContext();
-  const displayName = getDisplayName(transaction.symbol);
+  const displayName = getDisplaySymbol(transaction.symbol);
 
   const handleClick = useCallback(() => {
     if (onClick) {
@@ -99,17 +101,36 @@ export const TransactionCard = ({
     }
     // For orders, show status in muted text
     if (transaction.type === 'order' && transaction.order) {
-      const { text: statusText } = transaction.order;
-      const statusKey = statusText?.toLowerCase() ?? '';
-      const translatedStatus = ORDER_STATUS_TO_I18N_KEY[statusKey]
-        ? t(ORDER_STATUS_TO_I18N_KEY[statusKey])
-        : '';
+      const translatedStatus = t(getOrderStatusI18nKey(transaction.order.text));
       return { text: translatedStatus, color: TextColor.TextMuted };
     }
     return { text: displayName, color: TextColor.TextDefault };
   };
 
   const amountDisplay = getAmountDisplay();
+
+  // Construct title display based on transaction type. Deposit/withdrawal
+  // titles are rendered directly (unlike the subtitle, there's no other
+  // override downstream), so the verb and empty-state text must be
+  // translated here rather than left as the transform's deterministic
+  // English string.
+  const getTitleDisplay = (): string => {
+    if (
+      (transaction.type === 'deposit' || transaction.type === 'withdrawal') &&
+      transaction.depositWithdrawal
+    ) {
+      const isDeposit = transaction.type === 'deposit';
+      const magnitude = Math.abs(transaction.depositWithdrawal.amountNumber);
+      if (magnitude === 0) {
+        return t(
+          isDeposit ? 'perpsDepositEmptyTitle' : 'perpsWithdrawalEmptyTitle',
+        );
+      }
+      const verb = t(isDeposit ? 'perpsDepositedVerb' : 'perpsWithdrewVerb');
+      return `${verb} ${magnitude.toFixed(2)} ${transaction.depositWithdrawal.asset}`;
+    }
+    return transaction.title;
+  };
 
   // Construct subtitle display based on transaction type
   const getSubtitleDisplay = (): string => {
@@ -127,9 +148,14 @@ export const TransactionCard = ({
     if (transaction.type === 'funding') {
       return displayName;
     }
-    // For deposits/withdrawals, show status
+    // For deposits/withdrawals, show the transaction's real status (e.g. a
+    // wallet-tracked deposit/withdrawal may still be pending or have failed)
+    // instead of always displaying "Completed".
     if (transaction.type === 'deposit' || transaction.type === 'withdrawal') {
-      return t('perpsStatusCompleted');
+      const status = transaction.depositWithdrawal?.status ?? 'completed';
+      const i18nKey =
+        DEPOSIT_WITHDRAWAL_STATUS_TO_I18N_KEY[status] ?? 'perpsStatusCompleted';
+      return t(i18nKey);
     }
     return transaction.subtitle;
   };
@@ -161,7 +187,7 @@ export const TransactionCard = ({
             fontWeight={FontWeight.Medium}
             className="text-s-body-md @compact:text-s-body-sm"
           >
-            {transaction.title}
+            {getTitleDisplay()}
           </Text>
           {!(isClickable && hasInteractiveBadge) && (
             <PerpsFillTag transaction={transaction} screenName={screenName} />

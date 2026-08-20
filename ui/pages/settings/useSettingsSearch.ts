@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../selectors/multichain/feature-flags';
+import { selectIsTickerWidgetFeatureEnabled } from '../../selectors';
 import { SETTINGS_TABS, SETTINGS_ROUTES } from './settings-registry';
-import { SETTINGS_SEARCH_CONFIG } from './search-config';
+import { SETTINGS_SEARCH_CONFIG, type TabSearchConfig } from './search-config';
 import { useSettingsI18n } from './useSettingsI18n';
 
 export const MIN_SEARCH_LENGTH = 3;
@@ -17,14 +20,97 @@ export type SettingsSearchResult = {
   parentTabLabelKey?: string;
 };
 
+const HIDDEN_BY_CONSOLIDATED_BASIC_FUNCTIONALITY: Record<
+  string,
+  ReadonlySet<string>
+> = {
+  assets: new Set([
+    'display-nft-media',
+    'autodetect-nfts',
+    'autodetect-tokens',
+  ]),
+  privacy: new Set(['third-party-apis', 'batch-account-balance-requests']),
+  'security-and-password': new Set(['phishing-detection']),
+  transactions: new Set([
+    'estimate-balance-changes',
+    'security-alerts',
+    'proposed-nicknames',
+  ]),
+};
+
+const HIDDEN_SUBPAGE_ITEMS_BY_CONSOLIDATED_BASIC_FUNCTIONALITY: ReadonlySet<string> =
+  new Set([
+    'network-details-check',
+    'show-ens-domains',
+    'make-smart-contracts-easier',
+    'display-nft-media',
+    'autodetect-nfts',
+    'proposed-nicknames',
+  ]);
+
+function getSearchConfig(
+  isBasicFunctionalityToggleEnabled: boolean,
+): TabSearchConfig[] {
+  if (!isBasicFunctionalityToggleEnabled) {
+    return SETTINGS_SEARCH_CONFIG;
+  }
+
+  return SETTINGS_SEARCH_CONFIG.map((config) => {
+    const hiddenItems =
+      HIDDEN_BY_CONSOLIDATED_BASIC_FUNCTIONALITY[config.tabId] ?? new Set();
+    const items = config.items.filter((item) => !hiddenItems.has(item.id));
+    const subPages =
+      config.tabId === 'privacy'
+        ? undefined
+        : config.subPages?.map((subPage) => ({
+            ...subPage,
+            items: subPage.items.filter(
+              (item) =>
+                !HIDDEN_SUBPAGE_ITEMS_BY_CONSOLIDATED_BASIC_FUNCTIONALITY.has(
+                  item.id,
+                ),
+            ),
+          }));
+
+    return { ...config, items, subPages };
+  });
+}
+
+function excludeHiddenItems(
+  configs: TabSearchConfig[],
+  hiddenItemIds: ReadonlySet<string>,
+): TabSearchConfig[] {
+  if (hiddenItemIds.size === 0) {
+    return configs;
+  }
+
+  return configs.map((config) => ({
+    ...config,
+    items: config.items.filter((item) => !hiddenItemIds.has(item.id)),
+    subPages: config.subPages?.map((subPage) => ({
+      ...subPage,
+      items: subPage.items.filter((item) => !hiddenItemIds.has(item.id)),
+    })),
+  }));
+}
+
 /**
  * Builds a flat list of searchable items by joining the lightweight
  * search config (id + titleKey pairs) with the registry (labelKey, path, iconName).
+ *
+ * @param isBasicFunctionalityToggleEnabled - Whether consolidated Basic Functionality settings should hide granular items.
+ * @param hiddenItemIds - Setting item ids that should be excluded from search results.
  */
-function buildSearchableItems(): SettingsSearchResult[] {
+function buildSearchableItems(
+  isBasicFunctionalityToggleEnabled: boolean,
+  hiddenItemIds: ReadonlySet<string>,
+): SettingsSearchResult[] {
   const tabById = new Map(SETTINGS_TABS.map((t) => [t.id, t]));
 
-  return SETTINGS_SEARCH_CONFIG.flatMap((cfg) => {
+  return excludeHiddenItems(
+    getSearchConfig(isBasicFunctionalityToggleEnabled),
+    hiddenItemIds,
+  ).flatMap((cfg) => {
     const tab = tabById.get(cfg.tabId);
     if (!tab) {
       return [];
@@ -66,9 +152,23 @@ function buildSearchableItems(): SettingsSearchResult[] {
  */
 export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
   const t = useSettingsI18n();
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
+  const isTickerWidgetFeatureEnabled = useSelector(
+    selectIsTickerWidgetFeatureEnabled,
+  );
 
   const fuse = useMemo(() => {
-    const items = buildSearchableItems();
+    const hiddenItemIds = new Set<string>();
+    if (!isTickerWidgetFeatureEnabled) {
+      hiddenItemIds.add('show-ticker-widget');
+    }
+
+    const items = buildSearchableItems(
+      isBasicFunctionalityConsolidationEnabled,
+      hiddenItemIds,
+    );
     return new Fuse(items, {
       shouldSort: true,
       threshold: 0.3,
@@ -82,7 +182,11 @@ export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
         return typeof labelKey === 'string' ? t(labelKey) : '';
       },
     });
-  }, [t]);
+  }, [
+    isBasicFunctionalityConsolidationEnabled,
+    isTickerWidgetFeatureEnabled,
+    t,
+  ]);
 
   return useMemo(() => {
     const query = searchValue.trim();

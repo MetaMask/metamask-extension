@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { debounce } from 'lodash';
 import {
   BatchSellQuotesControllerResult,
@@ -8,6 +7,7 @@ import {
 } from '../types';
 import { TRADES_REQUEST_DEBOUNCE_MS } from '../../../../../constants/batch-sell';
 import { updateBatchSellTrades } from '../../../../../ducks/batch-sell/actions';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const useBatchSellTradesFetching = (
   {

@@ -63,12 +63,14 @@ export const buildResults = ({
           asset: entry.asset,
           quote: recommendedQuote,
           slippagePercent: entry.slippagePercent,
-          receivedAmount: toFinite(recommendedQuote.toTokenAmount?.amount),
+          receivedAmount: toFinite(
+            recommendedQuote.quote.dest.normalizedAmount,
+          ),
           receivedAmountFiat: toFinite(
-            recommendedQuote.toTokenAmount?.valueInCurrency,
+            recommendedQuote.quote.dest.valueInCurrency,
           ),
           minimumReceivedAmount: toFinite(
-            recommendedQuote.minToTokenAmount?.amount,
+            recommendedQuote.quote.dest.minAmountNormalized,
           ),
           hasQuote: true,
           isLoadingQuote: false,
@@ -76,8 +78,7 @@ export const buildResults = ({
             validation?.isPriceImpactWarning || validation?.isPriceImpactError,
           ),
           quoteBpsFee:
-            // @ts-expect-error: controller types are not up to date yet
-            recommendedQuote.quote?.feeData?.metabridge?.quoteBpsFee,
+            recommendedQuote.quote?.feeData?.metabridge?.[0]?.quoteBpsFee,
         },
       ];
     }),
@@ -90,13 +91,13 @@ export const buildResults = ({
   // instead of a deceptive "0".
   const hasAnyQuote = recommendedQuotes.some((quote) => Boolean(quote));
   const totalReceivedAmount = hasAnyQuote
-    ? toFinite(totalReceived?.amount)
+    ? toFinite(totalReceived?.normalizedAmount)
     : undefined;
   const totalReceivedAmountFiat = hasAnyQuote
     ? toFinite(totalReceived?.valueInCurrency)
     : undefined;
   const minimumReceivedAmount = hasAnyQuote
-    ? toFinite(minimumReceived?.amount)
+    ? toFinite(minimumReceived?.normalizedAmount)
     : undefined;
 
   return {

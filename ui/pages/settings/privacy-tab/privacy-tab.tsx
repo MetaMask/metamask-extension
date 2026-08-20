@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem } from '../shared';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
@@ -7,6 +8,7 @@ import {
   setSkipDeepLinkInterstitial,
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import { PRIVACY_ITEMS } from '../search-config';
 import { ThirdPartyApisItem } from './third-party-apis-item';
 import { BasicFunctionalityToggleItem } from './basic-functionality-item';
@@ -15,6 +17,7 @@ import { DataCollectionToggleItem } from './data-collection-item';
 import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 import { DownloadStateLogsItem } from './download-state-logs-item';
 import { ExportYourDataItem } from './export-your-data-item';
+import { IpfsGatewayItem } from './ipfs-gateway-item';
 
 const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',
@@ -42,6 +45,7 @@ const SkipLinkConfirmationToggleItem = createToggleItem({
 const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'basic-functionality', component: BasicFunctionalityToggleItem },
   { id: 'third-party-apis', component: ThirdPartyApisItem },
+  { id: 'ipfs-gateway', component: IpfsGatewayItem },
   {
     id: 'batch-account-balance-requests',
     component: BatchAccountBalanceRequestsToggleItem,
@@ -65,6 +69,37 @@ const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
   },
 ];
 
-const PrivacyTab = () => <SettingsTab items={PRIVACY_SETTING_ITEMS} />;
+const CONSOLIDATED_BASIC_FUNCTIONALITY_PRIVACY_ITEMS: SettingItemConfig[] = [
+  { id: 'basic-functionality', component: BasicFunctionalityToggleItem },
+  { id: 'ipfs-gateway', component: IpfsGatewayItem },
+  { id: 'skip-link-confirmation', component: SkipLinkConfirmationToggleItem },
+  {
+    id: 'metametrics',
+    component: MetametricsToggleItem,
+    hasDividerBefore: true,
+  },
+  { id: 'data-collection', component: DataCollectionToggleItem },
+  { id: 'delete-metametrics-data', component: DeleteMetametricsDataItem },
+  {
+    id: 'download-state-logs',
+    component: DownloadStateLogsItem,
+    hasDividerBefore: true,
+  },
+  {
+    id: 'export-your-data',
+    component: ExportYourDataItem,
+  },
+];
+
+const PrivacyTab = () => {
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
+  const items = isBasicFunctionalityConsolidationEnabled
+    ? CONSOLIDATED_BASIC_FUNCTIONALITY_PRIVACY_ITEMS
+    : PRIVACY_SETTING_ITEMS;
+
+  return <SettingsTab items={items} />;
+};
 
 export default PrivacyTab;

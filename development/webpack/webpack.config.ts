@@ -18,6 +18,7 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
+import * as sassEmbedded from 'sass-embedded';
 import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
@@ -317,7 +318,7 @@ const isChunkableAsync = (chunk: Chunk) =>
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
-  target: '17',
+  target: '18',
   verbose: args.reactCompilerVerbose,
   debug: args.reactCompilerDebug,
   threadLoaderEnabled: threadLoader !== null,
@@ -370,28 +371,6 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    // TODO: Remove this workaround after upgrading to React 18
-    // WORKAROUND: Alias for React JSX runtime to handle ESM module resolution issues.
-    // This is needed because @metamask/design-system-react uses @radix-ui/react-slot,
-    // which is distributed as an ESM module (.mjs) that imports 'react/jsx-runtime'
-    // without the file extension. Webpack 5's strict ESM resolution requires fully
-    // specified imports, so we explicitly map these to the actual files.
-    //
-    // This issue only affects React 17. React 18+ properly exports jsx-runtime
-    // with correct ESM module resolution, so this workaround can be removed after upgrading.
-    //
-    // Related issues:
-    // - https://github.com/radix-ui/primitives/issues/3413
-    // - Fix example: https://github.com/xyflow/xyflow/issues/4683#issuecomment-2388049017
-    //
-    // Potential solutions until React 18 upgrade:
-    // 1. Current workaround: webpack aliases (what we're using)
-    // 2. @metamask/design-system-react could patch the Radix UI packages
-    // 3. @metamask/design-system-react could re-export components with a build step that fixes imports
-    alias: {
-      'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
-      'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
-    },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
     // the browser. The browser will first attempt to load these modules, if
@@ -550,30 +529,31 @@ const config = {
             loader: 'sass-loader',
             options: {
               // Use 'sass-embedded', as it is usually faster than 'sass'
-              implementation: 'sass-embedded',
+              implementation: sassEmbedded,
+              api: 'modern-compiler',
+              // Disable Webpack's Sass importer because Sass's native
+              // importer keeps stylesheet resolution independent of Webpack
+              // and is faster for our current import graph. All current
+              // non-relative imports resolve through the loadPaths below.
+              webpackImporter: false,
               sassOptions: {
-                api: 'modern',
                 // We don't need to specify the charset because the HTML
                 // already does and browsers use the HTML's charset for CSS.
                 // Additionally, webpack + sass can cause problems with the
                 // charset placement, as described here:
                 // https://github.com/webpack-contrib/css-loader/issues/1212
                 charset: false,
-                // The order of includePaths is important; prefer our own
+                quietDeps: true,
+                // TODO: Remove after https://github.com/MetaMask/metamask-extension/issues/44725
+                silenceDeprecations: ['import'],
+                // The order of loadPaths is important; prefer our own
                 // folders over `node_modules`
-                includePaths: [
+                loadPaths: [
                   // enables aliases to `@use design - system`,
                   // `@use utilities`, etc.
                   join(context, '../ui/css'),
                   join(context, '../node_modules'),
                 ],
-                // Disable the webpackImporter, as we:
-                //  a) don't want to rely on it in case we want to switch away
-                //     from webpack in the future
-                //  b) the sass importer is faster
-                //  c) the "modern" sass api doesn't work with the
-                //     webpackImporter yet.
-                webpackImporter: false,
               },
             },
           },

@@ -204,4 +204,5 @@ export const unrestrictedMethods = Object.freeze([
   'snap_getWebSockets',
   'snap_startTrace',
   'snap_endTrace',
+  'snap_messengerCall',
 ]);

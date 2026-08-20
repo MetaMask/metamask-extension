@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   AvatarAccountSize,
   AvatarNetwork,
@@ -15,6 +15,7 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
 } from '@metamask/design-system-react';
+import { useDispatch } from '../../../store/hooks';
 import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -42,7 +43,7 @@ import {
   isValidHexAddress,
 } from '../../../../shared/lib/hexstring-utils';
 import type { EditContactFormProps } from '../contacts.types';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -58,7 +59,7 @@ export function EditContactForm({
 }: EditContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const networks = useSelector(getNetworkConfigurationsByChainId);
@@ -150,18 +151,19 @@ export function EditContactForm({
       }
     }
     const savedAddress = newAddress === address ? address : newAddress;
-    trackEvent({
-      category: MetaMetricsEventCategory.Contacts,
-      event: MetaMetricsEventName.ContactUpdated,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: contactChainId,
-      },
-      sensitiveProperties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        contact_address: savedAddress,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ContactUpdated)
+        .addCategory(MetaMetricsEventCategory.Contacts)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: contactChainId,
+        })
+        .addSensitiveProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          contact_address: savedAddress,
+        })
+        .build(),
+    );
     onSuccess();
   };
 
@@ -301,7 +303,7 @@ export function EditContactForm({
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           onClick={onCancel}
-          className="flex-1 rounded-xl border border-border-default"
+          className="flex-1 rounded-xl"
           data-testid="page-container-footer-cancel"
         >
           {t('cancel')}

@@ -13,11 +13,9 @@ import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferenc
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../components/app/alert-system/inline-alert';
 import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
-import {
-  ConfirmInfoAlertRow,
-  getAlertTextColors,
-} from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { getAlertTextColors } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import {
   Box,
@@ -26,6 +24,7 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
+import type { ConfirmInfoSectionMarginBottom } from '../../../../components/app/confirm/info/row/section';
 import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -57,6 +56,7 @@ export type SimulationDetailsProps = {
   readonly enableMetrics?: boolean;
   readonly isTransactionsRedesign?: boolean;
   readonly metricsOnly?: boolean;
+  readonly sectionMarginBottom?: ConfirmInfoSectionMarginBottom;
   readonly staticRows?: StaticRow[];
   readonly transaction: TransactionMeta;
   readonly smartTransactionStatus?: string;
@@ -113,7 +113,7 @@ const EmptyContent = () => {
   );
 };
 
-const HeaderWithAlert = ({
+const Header = ({
   title,
   titleTooltip,
   transactionId,
@@ -152,12 +152,11 @@ const HeaderWithAlert = ({
       width={BlockSize.Full}
       alignItems={AlignItems.center}
     >
-      <ConfirmInfoAlertRow
-        alertKey={RowAlertKey.Resimulation}
+      <ConfirmInfoRow
         label={label}
-        ownerId={transactionId}
         tooltip={tooltip}
         style={{
+          background: 'transparent',
           paddingLeft: 0,
           paddingRight: 0,
         }}
@@ -229,7 +228,7 @@ const HeaderLayout = ({
       justifyContent={JustifyContent.spaceBetween}
     >
       {isTransactionsRedesign ? (
-        <HeaderWithAlert
+        <Header
           title={title}
           titleTooltip={titleTooltip}
           transactionId={transactionId}
@@ -251,6 +250,7 @@ const HeaderLayout = ({
  * @param props.inHeader
  * @param props.isTransactionsRedesign
  * @param props.children
+ * @param props.sectionMarginBottom
  * @param props.transactionId
  */
 export const SimulationDetailsLayout = ({
@@ -258,6 +258,7 @@ export const SimulationDetailsLayout = ({
   titleTooltip,
   inHeader,
   isTransactionsRedesign,
+  sectionMarginBottom,
   transactionId,
   children,
 }: React.PropsWithChildren<{
@@ -265,10 +266,11 @@ export const SimulationDetailsLayout = ({
   titleTooltip?: string;
   inHeader?: React.ReactNode;
   isTransactionsRedesign: boolean;
+  sectionMarginBottom?: ConfirmInfoSectionMarginBottom;
   transactionId: string;
 }>) =>
   isTransactionsRedesign ? (
-    <ConfirmInfoSection noPadding>
+    <ConfirmInfoSection noPadding marginBottom={sectionMarginBottom}>
       <Box
         data-testid="simulation-details-layout"
         className="simulation-details-layout"
@@ -375,14 +377,17 @@ const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function SimulationDetailsSkeleton({
   isTransactionsRedesign,
+  sectionMarginBottom,
   transactionId,
 }: {
   isTransactionsRedesign: boolean;
+  sectionMarginBottom?: ConfirmInfoSectionMarginBottom;
   transactionId: string;
 }) {
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
+      sectionMarginBottom={sectionMarginBottom}
       transactionId={transactionId}
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
@@ -416,6 +421,7 @@ function SimulationDetailsSkeleton({
  * @param props.isTransactionsRedesign - Whether or not the component is being
  * used inside the transaction redesign flow.
  * @param props.metricsOnly - Whether to only track metrics and not render the UI.
+ * @param props.sectionMarginBottom - Optional bottom margin for the containing section.
  * @param props.staticRows - Optional static rows to display.
  * @param props.smartTransactionStatus - Optional Smart Transaction status to override transaction status for immediate UI updates.
  */
@@ -424,6 +430,7 @@ export const SimulationDetails = ({
   enableMetrics = false,
   isTransactionsRedesign = false,
   metricsOnly = false,
+  sectionMarginBottom,
   staticRows = [],
   smartTransactionStatus,
 }: SimulationDetailsProps) => {
@@ -462,6 +469,7 @@ export const SimulationDetails = ({
     return (
       <SimulationDetailsSkeleton
         isTransactionsRedesign={isTransactionsRedesign}
+        sectionMarginBottom={sectionMarginBottom}
         transactionId={transactionId}
       />
     );
@@ -490,6 +498,7 @@ export const SimulationDetails = ({
     return (
       <SimulationDetailsLayout
         isTransactionsRedesign={isTransactionsRedesign}
+        sectionMarginBottom={sectionMarginBottom}
         transactionId={transactionId}
         {...inHeaderProp}
       >
@@ -512,6 +521,7 @@ export const SimulationDetails = ({
     return (
       <SimulationDetailsLayout
         isTransactionsRedesign={isTransactionsRedesign}
+        sectionMarginBottom={sectionMarginBottom}
         transactionId={transactionId}
         inHeader={<EmptyContent />}
       />
@@ -568,6 +578,7 @@ export const SimulationDetails = ({
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
+      sectionMarginBottom={sectionMarginBottom}
       transactionId={transactionId}
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
@@ -577,8 +588,10 @@ export const SimulationDetails = ({
               heading={staticRow.label}
               balanceChanges={staticRow.balanceChanges}
               labelColor={getAlertTextColors(selectedAlertSeverity)}
+              labelChildren={
+                <BalanceChangesAlert transactionId={transactionId} />
+              }
             />
-            <BalanceChangesAlert transactionId={transactionId} />
           </Fragment>
         ))}
         <BalanceChangeList

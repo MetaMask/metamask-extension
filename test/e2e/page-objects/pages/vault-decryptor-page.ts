@@ -1,13 +1,26 @@
 import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../constants';
 
+/**
+ * External vault-decryptor webapp for recovering seed from vault JSON/logs.
+ *
+ * Screen: hosted vault-decryptor app
+ * (`https://metamask.github.io/vault-decryptor`), not a MetaMask route and not
+ * vendored in this repo.
+ * Owns: file/text vault input modes, password entry, decrypt confirm, and
+ * decrypted seed-phrase assertion.
+ * Boundaries: the external decryptor page only. Extension log export and
+ * critical-error recovery UI belong to extension page objects.
+ * Related: `CriticalErrorPage` / `VaultRecoveryPage` for in-extension recovery;
+ * `test/e2e/dist/vault-decryption-chrome.spec.ts` for usage.
+ */
 class VaultDecryptorPage {
-  private driver: Driver;
-
   private readonly decryptButton = {
     text: 'Decrypt',
     tag: 'button',
   };
+
+  private driver: Driver;
 
   private readonly fileInput = '#fileinput';
 
@@ -37,6 +50,24 @@ class VaultDecryptorPage {
       throw e;
     }
     console.log('Vault Decryptor page is loaded');
+  }
+
+  /**
+   * Checks if the vault is decrypted and the seed phrase is correct.
+   *
+   * @param seedPhrase - The expected seed phrase (may include numbered lines from MetaMask UI, e.g. "1.\nvehicle").
+   */
+  async checkVaultIsDecrypted(seedPhrase: string) {
+    // Normalize MetaMask UI format ("1.\nvehicle") to vault-decryptor format ("vehicle") in one pass
+    const normalizedPhrase = seedPhrase
+      .replace(/\d+\.\s*|\r?\n/gu, ' ')
+      .replace(/\s+/gu, ' ')
+      .trim();
+    console.log('check vault is decrypted on vault decryptor page');
+    await this.driver.waitForSelector({
+      text: normalizedPhrase,
+      tag: 'div',
+    });
   }
 
   /**
@@ -77,24 +108,6 @@ class VaultDecryptorPage {
     await this.driver.clickElement(this.radioFileInput);
     const inputField = await this.driver.findElement(this.fileInput);
     await inputField.sendKeys(filePath);
-  }
-
-  /**
-   * Checks if the vault is decrypted and the seed phrase is correct.
-   *
-   * @param seedPhrase - The expected seed phrase (may include numbered lines from MetaMask UI, e.g. "1.\nvehicle").
-   */
-  async checkVaultIsDecrypted(seedPhrase: string) {
-    // Normalize MetaMask UI format ("1.\nvehicle") to vault-decryptor format ("vehicle") in one pass
-    const normalizedPhrase = seedPhrase
-      .replace(/\d+\.\s*|\r?\n/gu, ' ')
-      .replace(/\s+/gu, ' ')
-      .trim();
-    console.log('check vault is decrypted on vault decryptor page');
-    await this.driver.waitForSelector({
-      text: normalizedPhrase,
-      tag: 'div',
-    });
   }
 }
 

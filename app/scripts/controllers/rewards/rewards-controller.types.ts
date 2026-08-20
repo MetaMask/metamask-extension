@@ -13,6 +13,7 @@ import {
   KeyringControllerSignPersonalMessageAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import { RemoteFeatureFlagControllerStateChangeEvent } from '@metamask/remote-feature-flag-controller';
 import { Messenger } from '@metamask/messenger';
 import {
   EstimatePerpsContextDto,
@@ -45,17 +46,14 @@ export type LoginResponseDto = {
   subscription: SubscriptionDto;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type VipFeatureDto = {
   enabled: boolean;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type SubscriptionFeaturesDto = {
   vip: VipFeatureDto;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type SubscriptionDto = {
   id: string;
   referralCode: string;
@@ -76,24 +74,20 @@ export type SubscriptionDto = {
 // Backend wire format for GET /vip/fees — mirrors va-mmcx-rewards
 // src/main/vip/dto/vip-fees.dto.ts (PR #546). Fee bips are returned as
 // strings; the controller parses them as needed.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type HyperliquidVipFeesDto = {
   builderCode: string;
   builderFeeBips: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type SwapsVipFeesDto = {
   feeBips: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type VipFeesGroupDto = {
   hyperliquid: HyperliquidVipFeesDto;
   swaps: SwapsVipFeesDto;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type VipFeesResponseDto = {
   vipTier: number;
   fees: VipFeesGroupDto | null;
@@ -103,7 +97,6 @@ export type VipFeesResponseDto = {
 // Per-subscription cache for VIP perps builder fee.
 // We store the raw bips string from the backend rather than a derived
 // discount so the cache stays valid if the perps base fee constant changes.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type VipPerpsFeesState = {
   hyperliquidBuilderFeeBips: string;
   lastFetched: number;
@@ -343,7 +336,6 @@ export type PointsEventDto = BasePointsEventDto &
       }
   );
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type SeasonTierDto = {
   id: string;
   name: string;
@@ -635,14 +627,12 @@ export type RewardClaimData =
   | AlphaFoxInviteRewardData
   | null;
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type PointsBoostRewardData = {
   seasonPointsBonusId: string;
   activeUntil: string; // reward expiration date
   activeFrom: string; // claim date
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type AlphaFoxInviteRewardData = {
   telegramHandle: string;
 };
@@ -664,7 +654,6 @@ export type ThemeImage = {
   darkModeUrl: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type RewardsAccountState = {
   account: CaipAccountId;
   hasOptedIn?: boolean;
@@ -806,7 +795,6 @@ export type PointsEstimateHistoryEntry = {
   responseBonusBips: number;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type RewardsControllerState = {
   rewardsActiveAccount: RewardsAccountState | null;
   rewardsAccounts: { [account: CaipAccountId]: RewardsAccountState };
@@ -926,7 +914,8 @@ type AllowedActions =
 
 type AllowedEvents =
   | KeyringControllerUnlockEvent
-  | AccountTreeControllerSelectedAccountGroupChangeEvent;
+  | AccountTreeControllerSelectedAccountGroupChangeEvent
+  | RemoteFeatureFlagControllerStateChangeEvent;
 
 export type RewardsControllerMessenger = Messenger<
   'RewardsController',

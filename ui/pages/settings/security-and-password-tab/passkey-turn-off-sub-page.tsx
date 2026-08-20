@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -17,6 +17,7 @@ import {
 } from '../../../components/component-library';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { transitionBack } from '../../../components/ui/transition';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
@@ -27,7 +28,6 @@ import { captureException } from '../../../../shared/lib/sentry';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   forceUpdateMetamaskState,
-  removePasskeyWithPasswordVerification,
   verifyPassword,
 } from '../../../store/actions';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
@@ -37,12 +37,15 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getIsPasskeyRegistered } from '../../../selectors';
+import { useDispatch } from '../../../store/hooks';
+import { useRemovePasskeyWithPassword } from '../../../hooks/passkey/usePasskeyRemoval';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
 export default function PasskeyTurnOffSubPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const removePasskeyWithPassword = useRemovePasskeyWithPassword();
   const t = useI18nContext();
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -68,7 +71,9 @@ export default function PasskeyTurnOffSubPage() {
 
   const goToSettings = () => {
     setWalletPassword('');
-    navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
+    transitionBack(() =>
+      navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
+    );
   };
 
   const handleTurnOffPasskeyWithPasswordSubmit = async () => {
@@ -97,7 +102,7 @@ export default function PasskeyTurnOffSubPage() {
           .build(),
       );
       try {
-        await removePasskeyWithPasswordVerification(walletPassword);
+        await removePasskeyWithPassword(walletPassword);
         await forceUpdateMetamaskState(dispatch);
         trackEvent(
           createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)

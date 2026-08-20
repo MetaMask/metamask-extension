@@ -1,8 +1,18 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * DeFi protocol position details for a single protocol on a chain.
+ *
+ * Screen: `#/defi/:chainId/:protocolId`, reached from the home DeFi tab.
+ * Owns: protocol name/title, total market value, supplied heading, and token
+ * list item balance/value assertions on the details page.
+ * Boundaries: the details page only. The DeFi tab list and back-navigation
+ * landing content belong to `DeFiTab` / `HomePage`.
+ * Related: `DeFiTab` (list entry point).
+ *
+ * @see ui/pages/defi/components/defi-details-page.tsx
+ */
 class DeFiDetailsPage {
-  private readonly driver: Driver;
-
   private readonly defiBackButton =
     '[data-testid="defi-details-page-back-button"]';
 
@@ -10,6 +20,8 @@ class DeFiDetailsPage {
 
   private readonly defiProtocolTotalValue =
     '[data-testid="defi-details-page-market-value"]';
+
+  private readonly driver: Driver;
 
   private readonly suppliedHeading =
     '[data-testid="defi-details-list-supply-position"]';
@@ -25,27 +37,6 @@ class DeFiDetailsPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async clickBackButton() {
-    console.log('Click back button');
-    await this.driver.clickElement(this.defiBackButton);
-  }
-
-  async checkDeFiProtocolNameIsDisplayed(description: string) {
-    console.log('Check if defi protocol name is displayed', description);
-    await this.driver.waitForSelector({
-      css: this.defiProtocolName,
-      text: description,
-    });
-  }
-
-  async checkSuppliedHeadingIsDisplayed(): Promise<void> {
-    console.log('Check that supplied heading is displayed');
-    await this.driver.waitForSelector({
-      text: 'Supplied',
-      css: this.suppliedHeading,
-    });
   }
 
   async checkDefiDetailsNameIsDisplayed(name: string) {
@@ -64,14 +55,19 @@ class DeFiDetailsPage {
     });
   }
 
-  async checkTokenName(tokenName: string) {
-    console.log(
-      'Check if token name is displayed on token list item',
-      tokenName,
-    );
+  async checkDeFiProtocolNameIsDisplayed(description: string) {
+    console.log('Check if defi protocol name is displayed', description);
     await this.driver.waitForSelector({
-      css: this.tokenListItemTokenName,
-      text: tokenName,
+      css: this.defiProtocolName,
+      text: description,
+    });
+  }
+
+  async checkSuppliedHeadingIsDisplayed(): Promise<void> {
+    console.log('Check that supplied heading is displayed');
+    await this.driver.waitForSelector({
+      text: 'Supplied',
+      css: this.suppliedHeading,
     });
   }
 
@@ -95,6 +91,22 @@ class DeFiDetailsPage {
       css: this.tokenListItemSecondaryValue,
       text: tokenListItemSecondaryValue,
     });
+  }
+
+  async checkTokenName(tokenName: string) {
+    console.log(
+      'Check if token name is displayed on token list item',
+      tokenName,
+    );
+    await this.driver.waitForSelector({
+      css: this.tokenListItemTokenName,
+      text: tokenName,
+    });
+  }
+
+  async clickBackButton() {
+    console.log('Click back button');
+    await this.driver.clickElement(this.defiBackButton);
   }
 }
 

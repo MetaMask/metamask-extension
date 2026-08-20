@@ -1,23 +1,25 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { useDispatch } from 'react-redux';
+import { waitFor } from '@testing-library/react';
 
 import {
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
 } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import { automaticallySwitchNetwork } from '../../store/actions';
 import { NetworkHandler } from './network-handler';
 
+const { render } = jest.requireActual<typeof import('@testing-library/react')>(
+  '@testing-library/react',
+);
+
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
 }));
 
-jest.mock('../../store/store', () => ({
-  ...jest.requireActual('../../store/store'),
+jest.mock('../../store/hooks', () => ({
+  useDispatch: jest.fn(),
   useAppSelector: jest.fn(),
 }));
 
@@ -61,7 +63,7 @@ describe('NetworkHandler', () => {
     });
   });
 
-  it('dispatches automatic switch when pending confirmations drop to zero', () => {
+  it('dispatches automatic switch when pending confirmations drop to zero', async () => {
     networkToAutomaticallySwitchTo = 'network-client-id';
     totalUnapprovedConfirmationCount = 1;
 
@@ -70,17 +72,19 @@ describe('NetworkHandler', () => {
     totalUnapprovedConfirmationCount = 0;
     rerender(<NetworkHandler />);
 
-    expect(automaticallySwitchNetwork).toHaveBeenCalledWith(
-      'network-client-id',
-    );
-    expect(mockDispatch).toHaveBeenCalledWith(
-      expect.objectContaining({
-        payload: 'network-client-id',
-      }),
-    );
+    await waitFor(() => {
+      expect(automaticallySwitchNetwork).toHaveBeenCalledWith(
+        'network-client-id',
+      );
+      expect(mockDispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          payload: 'network-client-id',
+        }),
+      );
+    });
   });
 
-  it('dispatches automatic switch when the wallet transitions from locked to unlocked', () => {
+  it('dispatches automatic switch when the wallet transitions from locked to unlocked', async () => {
     networkToAutomaticallySwitchTo = 'network-client-id';
     totalUnapprovedConfirmationCount = 0;
     isUnlocked = false;
@@ -90,14 +94,16 @@ describe('NetworkHandler', () => {
     isUnlocked = true;
     rerender(<NetworkHandler />);
 
-    expect(automaticallySwitchNetwork).toHaveBeenCalledWith(
-      'network-client-id',
-    );
-    expect(mockDispatch).toHaveBeenCalledWith(
-      expect.objectContaining({
-        payload: 'network-client-id',
-      }),
-    );
+    await waitFor(() => {
+      expect(automaticallySwitchNetwork).toHaveBeenCalledWith(
+        'network-client-id',
+      );
+      expect(mockDispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          payload: 'network-client-id',
+        }),
+      );
+    });
   });
 
   it('does not dispatch when there is no network to switch to', () => {

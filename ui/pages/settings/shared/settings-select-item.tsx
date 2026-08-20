@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Box,
   Text,
@@ -13,6 +13,7 @@ import {
   IconSize,
   TextColor,
 } from '@metamask/design-system-react';
+import { transitionForward } from '../../../components/ui/transition';
 
 type SettingsSelectItemProps = {
   label: string;
@@ -33,11 +34,17 @@ export const SettingsSelectItem = ({
   dataTestId,
   startAccessory,
 }: SettingsSelectItemProps) => {
+  const navigate = useNavigate();
+
   return (
     <Link
       to={to}
       className="block hover:bg-background-default-hover"
       data-testid={dataTestId}
+      onClick={(event) => {
+        event.preventDefault();
+        transitionForward(() => navigate(to));
+      }}
     >
       <Box
         flexDirection={BoxFlexDirection.Row}

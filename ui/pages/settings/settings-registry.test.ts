@@ -8,10 +8,12 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
   PRIVACY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
   SETTINGS_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
   THEME_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
@@ -71,6 +73,42 @@ describe('settings-registry', () => {
           parentPath: TRANSACTION_SHIELD_ROUTE,
         }),
       );
+    });
+
+    it('assigns removal messenger capabilities to passkey settings routes', () => {
+      expect(
+        getSettingsRouteMeta(SECURITY_AND_PASSWORD_ROUTE)
+          ?.messengerCapabilities,
+      ).toStrictEqual({
+        actions: [
+          'PasskeyController:generateAuthenticationOptions',
+          'PasskeyController:removePasskeyWithPasskeyVerification',
+          'PasskeyController:removePasskeyWithPasswordVerification',
+          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+        ],
+        events: [],
+      });
+      expect(
+        getSettingsRouteMeta(SECURITY_TURN_OFF_PASSKEY_ROUTE)
+          ?.messengerCapabilities,
+      ).toStrictEqual({
+        actions: ['PasskeyController:removePasskeyWithPasswordVerification'],
+        events: [],
+      });
+    });
+
+    it('assigns passkey capabilities to password change', () => {
+      expect(
+        getSettingsRouteMeta(SECURITY_PASSWORD_CHANGE_V2_ROUTE)
+          ?.messengerCapabilities,
+      ).toStrictEqual({
+        actions: [
+          'PasskeyController:generateAuthenticationOptions',
+          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+          'PasskeyController:removePasskeyWithPasswordVerification',
+        ],
+        events: [],
+      });
     });
 
     it('matches dynamic transaction shield claim routes', () => {
@@ -161,6 +199,41 @@ describe('settings-registry', () => {
       expect(tabPaths).not.toContain(CURRENCY_ROUTE);
       expect(tabPaths).not.toContain(THEME_ROUTE);
       expect(tabPaths).not.toContain(THIRD_PARTY_APIS_ROUTE);
+    });
+  });
+
+  describe('external routes (sync accounts)', () => {
+    const loadRegistryWithSyncEnabled = () => {
+      let registry: typeof import('./settings-registry');
+      jest.isolateModules(() => {
+        jest.doMock('../../../shared/lib/environment', () => ({
+          ...jest.requireActual('../../../shared/lib/environment'),
+          getIsQrSyncEnabled: () => true,
+        }));
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        registry = require('./settings-registry');
+      });
+      // @ts-expect-error assigned within isolateModules callback
+      return registry;
+    };
+
+    afterEach(() => {
+      jest.dontMock('../../../shared/lib/environment');
+    });
+
+    it('exposes sync accounts as a tab', () => {
+      const { SETTINGS_TABS: tabs } = loadRegistryWithSyncEnabled();
+      const tabPaths = tabs.map((tab) => tab.path);
+
+      expect(tabPaths).toContain(SYNC_ACCOUNTS_ROUTE);
+    });
+
+    it('excludes the top-level sync accounts route from nested settings routes', () => {
+      const { SETTINGS_RENDERABLE_ROUTES: renderable } =
+        loadRegistryWithSyncEnabled();
+      const paths = renderable.map((route) => route.path);
+
+      expect(paths).not.toContain(SYNC_ACCOUNTS_ROUTE);
     });
   });
 

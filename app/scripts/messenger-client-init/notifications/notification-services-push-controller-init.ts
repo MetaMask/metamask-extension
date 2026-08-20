@@ -7,7 +7,6 @@ import {
   deleteRegToken,
   createSubscribeToPushNotifications,
 } from '@metamask/notification-services-controller/push-services/web';
-import { hasProperty } from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import type {
   NotificationServicesPushControllerMessenger,
@@ -23,6 +22,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import ExtensionPlatform from '../../platforms/extension';
+
+/**
+ * Matches backend-safe extension versions: 2 to 4 dot-separated numeric
+ * segments (e.g. `7.80`, `7.80.0`, `12.18.3.0`). Rejects bare majors,
+ * prerelease (`-flask.1`), build metadata (`+build.1`), and `v` prefixes.
+ */
+const APP_VERSION_REGEX = /^\d+\.\d+(?:\.\d+){0,2}$/u;
 
 /**
  * normalises the extension locale path to use hyphens ('-') instead of underscores ('_')
@@ -33,6 +40,28 @@ import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 export const getNormalisedLocale = (locale: string): string =>
   locale.replace('_', '-');
 
+/**
+ * Returns the extension version for push registration metadata, but only when
+ * it is in a backend-safe numeric format. Returns undefined otherwise (or if
+ * the version lookup fails) so the field is omitted from the registration.
+ *
+ * @param getVersion - Returns the extension version to validate.
+ * @returns The backend-safe app version, or undefined.
+ */
+export const getAppVersionForRegistration = (
+  getVersion: () => string = () => new ExtensionPlatform().getVersion(),
+): string | undefined => {
+  let appVersion: string;
+
+  try {
+    appVersion = getVersion();
+  } catch {
+    return undefined;
+  }
+
+  return APP_VERSION_REGEX.test(appVersion) ? appVersion : undefined;
+};
+
 export const NotificationServicesPushControllerInit: MessengerClientInitFunction<
   NotificationServicesPushController,
   NotificationServicesPushControllerMessenger,
@@ -42,7 +71,10 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
   initMessenger,
   persistedState,
   getMessengerClient,
+  platform,
 }) => {
+  const appVersion = getAppVersionForRegistration(() => platform.getVersion());
+
   const messengerClient = new NotificationServicesPushController({
     messenger: controllerMessenger,
     state: {
@@ -68,8 +100,6 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
         subscribeToPushNotifications: createSubscribeToPushNotifications({
           messenger: controllerMessenger,
           onReceivedHandler: onPushNotificationReceived,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClickHandler: onPushNotificationClicked,
         }),
       },
@@ -77,57 +107,23 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
         getNormalisedLocale(
           getMessengerClient('PreferencesController').state.currentLocale,
         ),
+      ...(appVersion ? { appVersion } : {}),
     },
   });
 
   initMessenger.subscribe(
-    'NotificationServicesPushController:onNewNotifications',
-    (notification) => {
-      const chainId = hasProperty(notification, 'chain_id')
-        ? (notification.chain_id as number)
-        : null;
-
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PushNotificationReceived)
-          .addCategory(MetaMetricsEventCategory.PushNotifications)
-          .addProperties({
-            /* eslint-disable @typescript-eslint/naming-convention */
-            notification_id: notification.id,
-            notification_type: notification.type,
-            chain_id: chainId,
-            /* eslint-enable @typescript-eslint/naming-convention */
-          })
-          .build(),
-      );
-    },
-  );
-
-  initMessenger.subscribe(
     'NotificationServicesPushController:pushNotificationClicked',
     (notification) => {
-      const otherNotificationProperties = () => {
-        if (
-          'notification_type' in notification &&
-          notification.notification_type === 'on-chain' &&
-          notification.payload?.chain_id
-        ) {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          return { chain_id: notification.payload.chain_id };
-        }
-
-        return undefined;
-      };
-
       trackEvent(
         createEventBuilder(MetaMetricsEventName.PushNotificationClicked)
           .addCategory(MetaMetricsEventCategory.PushNotifications)
           .addProperties({
             /* eslint-disable @typescript-eslint/naming-convention */
-            notification_id: notification.id,
-            notification_type: notification.type,
-            ...otherNotificationProperties(),
-            data: notification, // data blob for feature teams to analyse their notification shapes
+            notification_id: notification.notification_id,
+            notification_type: notification.notification_type,
+            notification_subtype: notification.notification_subtype,
+            deeplink: `#notifications/${notification.notification_id}`,
+            ...(notification.chain_id && { chain_id: notification.chain_id }),
             /* eslint-enable @typescript-eslint/naming-convention */
           })
           .build(),

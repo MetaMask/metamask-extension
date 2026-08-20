@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
 import { getTransactionDetailsMetricsProperties } from './transaction-details';
 import { createBuilderRequest } from './test-utils';
@@ -47,6 +46,45 @@ describe('transaction-details builder', () => {
     );
 
     expect(result.properties.error).toBe('user rejected the request');
+  });
+
+  it('reports the receipt revert message for an on-chain failure', async () => {
+    const result = await getTransactionDetailsMetricsProperties(
+      createBuilderRequest({
+        eventName: TransactionMetaMetricsEvent.finalized,
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          revert: {
+            receipt: {
+              message: 'NativeBalanceChangeEnforcer:hasnt-decreased-enough',
+            },
+          },
+        } as never,
+      }),
+    );
+
+    expect(result.properties.error).toBe(
+      'NativeBalanceChangeEnforcer:hasnt-decreased-enough',
+    );
+  });
+
+  it('prefers the lifecycle error over the receipt revert message', async () => {
+    const result = await getTransactionDetailsMetricsProperties(
+      createBuilderRequest({
+        eventName: TransactionMetaMetricsEvent.finalized,
+        transactionEventPayload: {
+          transactionMeta: createBuilderRequest().transactionMeta,
+          error: 'lifecycle error',
+        } as never,
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          txReceipt: { status: '0x0' },
+          revert: { receipt: { message: 'receipt error' } },
+        } as never,
+      }),
+    );
+
+    expect(result.properties.error).toBe('lifecycle error');
   });
 
   it('omits transaction_contract_address for batch transactions so batch.ts can supply it', async () => {

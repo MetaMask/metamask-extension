@@ -3,6 +3,7 @@ import {
   getMockFeatureAnnouncementResponse,
   getMockListNotificationsResponse,
   getMockMarkNotificationsAsReadResponse,
+  createMockFeatureAnnouncementAPIResult,
   createMockNotificationEthSent,
   createMockNotificationEthReceived,
   createMockNotificationERC20Sent,
@@ -25,6 +26,8 @@ import {
 } from '@metamask/notification-services-controller/push-services/mocks';
 import {
   TRIGGER_TYPES,
+  isOnChainNotification,
+  isPlatformNotification,
   type NormalisedAPINotification,
 } from '@metamask/notification-services-controller/notification-services';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
@@ -33,17 +36,6 @@ type MockResponse = {
   url: string | RegExp;
   requestMethod: 'GET' | 'POST' | 'PUT' | 'DELETE';
   response: unknown;
-};
-
-type MockFeatureAnnouncementResponse = {
-  items?: {
-    sys: {
-      createdAt: string;
-    };
-    fields?: {
-      id?: string;
-    };
-  }[];
 };
 
 export type UserStorageAccount = {
@@ -71,8 +63,7 @@ export const notificationsMockAccounts: UserStorageAccount[] = [
   },
 ];
 
-const mockListNotificationsResponse = getMockListNotificationsResponse();
-const mockListNotifications = [
+const mockNotifications: NormalisedAPINotification[] = [
   createMockNotificationEthSent(),
   createMockNotificationEthReceived(),
   createMockNotificationERC20Sent(),
@@ -95,31 +86,35 @@ const mockListNotifications = [
   n.id = `${n.id}-${i}`;
   n.created_at = date.toString();
   return n;
-}) as NormalisedAPINotification[];
-mockListNotificationsResponse.response = mockListNotifications;
+});
+
+const mockListNotificationsResponse = {
+  ...getMockListNotificationsResponse(),
+  response: mockNotifications,
+};
+
+const mockFeatureAnnouncementContent = createMockFeatureAnnouncementAPIResult();
+const FEATURE_ANNOUNCEMENT_EXPIRED_MS = 31 * 24 * 60 * 60 * 1000;
+const date = new Date(Date.now() - FEATURE_ANNOUNCEMENT_EXPIRED_MS);
+const firstFeatureAnnouncementItem = mockFeatureAnnouncementContent.items?.[0];
+if (firstFeatureAnnouncementItem) {
+  firstFeatureAnnouncementItem.sys.createdAt = date.toISOString();
+}
 
 const mockFeatureAnnouncementResponse = {
   ...getMockFeatureAnnouncementResponse(),
   url: /^https:\/\/cdn\.contentful\.com\/.*$/u,
+  response: mockFeatureAnnouncementContent,
 };
-const FEATURE_ANNOUNCEMENT_EXPIRED_MS = 31 * 24 * 60 * 60 * 1000;
-const date = new Date(Date.now() - FEATURE_ANNOUNCEMENT_EXPIRED_MS);
-const mockFeatureAnnouncementContentfulResponse =
-  mockFeatureAnnouncementResponse.response as MockFeatureAnnouncementResponse;
-const firstFeatureAnnouncement =
-  mockFeatureAnnouncementContentfulResponse.items?.[0];
-if (firstFeatureAnnouncement) {
-  firstFeatureAnnouncement.sys.createdAt = date.toISOString();
-}
 
 export function getMockWalletNotificationItemId(trigger: TRIGGER_TYPES) {
   return (
-    mockListNotifications.find((n) => {
-      if (n.notification_type === 'on-chain') {
-        return n.payload.data.kind === trigger;
+    mockNotifications.find((n) => {
+      if (isOnChainNotification(n)) {
+        return n.payload.data?.kind === trigger;
       }
-      if (n.notification_type === 'platform') {
-        return n.notification_type === trigger;
+      if (isPlatformNotification(n)) {
+        return trigger === TRIGGER_TYPES.PLATFORM;
       }
       return false;
     })?.id ?? 'DOES NOT EXIST'
@@ -128,8 +123,7 @@ export function getMockWalletNotificationItemId(trigger: TRIGGER_TYPES) {
 
 export function getMockFeatureAnnouncementItemId() {
   return (
-    mockFeatureAnnouncementContentfulResponse.items?.at(0)?.fields?.id ??
-    'DOES NOT EXIST'
+    mockFeatureAnnouncementContent.items?.at(0)?.fields?.id ?? 'DOES NOT EXIST'
   );
 }
 
