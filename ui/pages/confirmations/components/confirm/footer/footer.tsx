@@ -55,6 +55,7 @@ import { SingleActionFooter } from './single-action-footer';
 
 const SINGLE_ACTION_FOOTER_TYPES = [
   TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,

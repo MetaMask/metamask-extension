@@ -25,16 +25,17 @@ import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
-import {
-  isPerpsWithdrawTransaction,
-  isPostQuoteWithdrawTransaction,
-} from '../../../../../../shared/lib/transactions.utils';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
+import { useTransactionPayPostQuote } from '../../../hooks/pay/useTransactionPayPostQuote';
+import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
+  useTransactionPayHasExecutableQuote,
+  useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
@@ -102,17 +103,20 @@ export const CustomAmountInfo = React.memo(
       disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
       preferredToken,
     });
+    // Configures post-quote mode for withdraw flows; no-op for other flows.
+    useTransactionPayPostQuote();
     useTransactionPayMetrics();
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
     const availableTokens = useTransactionPayAvailableTokens();
     const accountNoFundsAlert = useAccountNoFundsAlert();
     const hasAccountNoFunds = accountNoFundsAlert.length > 0;
-    const isPostQuoteWithdraw =
-      isPostQuoteWithdrawTransaction(currentConfirmation);
-    // Post-quote withdrawals (e.g. Perps) source funds off-chain, not from a
-    // wallet token, so the amount input stays usable without wallet tokens.
-    const hasTokens = availableTokens.length > 0 || isPostQuoteWithdraw;
+    // Input enablement keys off the transaction type, not the post-quote flag:
+    // withdrawals source funds off-chain (Perps HyperCore, money-account vault)
+    // regardless of whether token selection is enabled, so the amount input
+    // must stay usable with an empty wallet in both flag states.
+    const { isWithdraw } = useTransactionPayWithdraw();
+    const hasTokens = availableTokens.length > 0 || isWithdraw;
     const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
     const isAwaitingRequiredToken = !disablePay && !primaryRequiredToken;
 
@@ -291,6 +295,11 @@ function BottomContainer({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+  // Gate the Receive row on the flag, not the transaction type: with post-quote
+  // disabled the withdraw falls back to a direct transfer, which has a regular
+  // total rather than a bridged "you'll receive" amount. Mirrors mobile
+  // `CustomAmountTotals`.
+  const { canSelectWithdrawToken } = useTransactionPayWithdraw();
 
   return (
     <Box
@@ -312,7 +321,7 @@ function BottomContainer({
             }
           />
           <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
-          {isPerpsWithdraw ? (
+          {canSelectWithdrawToken ? (
             <ReceiveRow
               inputAmountUsd={amountFiat}
               variant={ConfirmInfoRowSize.Small}
@@ -327,10 +336,18 @@ function BottomContainer({
 }
 
 function useIsResultReady() {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const quotes = useTransactionPayQuotes();
-  const isQuotesLoading = useIsTransactionPayLoading();
+  const isQuotePending = useIsTransactionPayQuotePending();
+  const hasExecutableQuote = useTransactionPayHasExecutableQuote();
+  const hasPositiveRequiredAmount =
+    useTransactionPayHasPositiveRequiredAmount();
 
-  return isQuotesLoading || Boolean(quotes?.length);
+  if (isPerpsWithdrawTransaction(currentConfirmation)) {
+    return hasPositiveRequiredAmount && (isQuotePending || hasExecutableQuote);
+  }
+
+  return isQuotePending || Boolean(quotes?.length);
 }
 
 function AlertMessage() {

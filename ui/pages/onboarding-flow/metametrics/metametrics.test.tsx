@@ -225,7 +225,9 @@ describe('Onboarding Metametrics Component', () => {
       <OnboardingMetametrics />,
       store,
     );
-    expect(queryByTestId('onboarding-metametrics')).toBeInTheDocument();
+    expect(
+      queryByTestId('parent-selector-onboarding-metrics'),
+    ).toBeInTheDocument();
   });
 
   it('on uncheking the participate meatametric, checked datacollection marketing checkbox should be unchecked', async () => {

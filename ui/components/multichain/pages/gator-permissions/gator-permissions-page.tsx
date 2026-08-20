@@ -165,7 +165,10 @@ export const GatorPermissionsPage = () => {
   };
 
   return (
-    <Page className="main-container" data-testid="gator-permissions-page">
+    <Page
+      className="main-container"
+      data-testid="parent-selector-gator-permissions"
+    >
       <Header
         className="bg-background-default"
         startAccessory={

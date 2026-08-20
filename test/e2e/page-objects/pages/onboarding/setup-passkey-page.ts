@@ -21,6 +21,8 @@ class SetupPasskeyPage {
   private readonly maybeLaterButton =
     '[data-testid="passkey-maybe-later-button"]';
 
+  private readonly page = '[data-testid="parent-selector-setup-passkey"]';
+
   private readonly setUpPasskeyButton = '[data-testid="passkey-set-up-button"]';
 
   private readonly stepIndicatorSuccess =
@@ -33,7 +35,7 @@ class SetupPasskeyPage {
   async checkPageIsLoaded(timeout?: number): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
-        [this.maybeLaterButton, this.setUpPasskeyButton],
+        [this.page, this.maybeLaterButton, this.setUpPasskeyButton],
         { timeout },
       );
     } catch (e) {

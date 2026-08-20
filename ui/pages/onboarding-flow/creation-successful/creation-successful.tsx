@@ -221,7 +221,7 @@ export default function CreationSuccessful() {
       justifyContent={BoxJustifyContent.Between}
       gap={6}
       className="creation-successful h-full"
-      data-testid="wallet-ready"
+      data-testid="parent-selector-onboarding-complete"
     >
       {isFromSettingsSRPBackup && (
         <Box>
