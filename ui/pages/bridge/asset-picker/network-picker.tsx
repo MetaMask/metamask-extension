@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { type CaipChainId } from '@metamask/utils';
-import { IconName } from '@metamask/design-system-shared';
+import { IconName } from '@metamask/design-system-react';
 import { BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP } from '../../../../shared/constants/bridge';
 import {
   NetworkSelectionModal,
@@ -79,7 +79,7 @@ const NetworkPickerContent = ({
       topItem={{
         key: 'all-networks',
         name: t('allNetworks'),
-        iconSrc: IconName.Global,
+        iconName: IconName.Global,
         selected: !selectedChainId,
         onClick: () => onNetworkChange(null),
         testId: `${testId}-all-networks`,

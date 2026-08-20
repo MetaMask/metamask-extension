@@ -237,7 +237,7 @@ export const NetworkFilter = ({
         topItem={{
           key: 'all-networks',
           name: t('allNetworks'),
-          iconSrc: IconName.Global,
+          iconName: IconName.Global,
           selected: selectedChainId === null,
           onClick: () => handleNetworkSelection(null),
           testId: 'send-network-filter-all-networks',

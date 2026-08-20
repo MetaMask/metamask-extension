@@ -1,4 +1,5 @@
 import React from 'react';
+import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import configureStore from '../../../store/store';
@@ -56,6 +57,14 @@ describe('NetworkPicker chain value order experiment', () => {
       document.body.textContent?.indexOf('Base') ?? 0,
     );
     expect(mockUseChainValueOrder).not.toHaveBeenCalled();
+  });
+
+  it('renders the all-networks globe as an icon', () => {
+    renderNetworkPicker();
+
+    const allNetworksItem = screen.getByTestId('network-picker-all-networks');
+    expect(allNetworksItem.querySelector('svg')).toBeInTheDocument();
+    expect(allNetworksItem.querySelector('img')).not.toBeInTheDocument();
   });
 
   it('renders treatment order', () => {
