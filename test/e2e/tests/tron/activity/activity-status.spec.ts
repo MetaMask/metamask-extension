@@ -2,9 +2,9 @@ import { Suite } from 'mocha';
 import {
   landOnTronActivity,
   openTronTransactionDetails,
-  returnToTronActivityList,
 } from '../../../page-objects/flows/tron-activity.flow';
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
+import TransactionDetailsPage from '../../../page-objects/pages/transaction-details-page';
 import { TronNode } from '../../../seeder/tron/node';
 import { Driver } from '../../../webdriver/driver';
 import { buildTronNodeOptions } from '../fixtures/with-tron-fixtures';
@@ -62,7 +62,8 @@ describe('Tron - Activity status', function (this: Suite) {
 
   afterEach(async function () {
     if (driver) {
-      await returnToTronActivityList(driver);
+      const details = new TransactionDetailsPage(driver);
+      await details.clickBackButtonIfPresent();
     }
   });
 

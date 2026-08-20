@@ -45,9 +45,3 @@ export async function openTronTransactionDetails({
   await transactionDetailsPage.checkPageIsLoaded();
   return transactionDetailsPage;
 }
-
-export async function returnToTronActivityList(driver: Driver): Promise<void> {
-  console.log('Return to the Tron activity list if details are open');
-  const details = new TransactionDetailsPage(driver);
-  await details.clickBackButtonIfPresent();
-}
