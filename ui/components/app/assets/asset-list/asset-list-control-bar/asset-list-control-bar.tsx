@@ -563,7 +563,11 @@ const AssetListControlBar = ({
         }}
       >
         <SelectableListItem onClick={handleNftImportModal} testId="import-nfts">
-          <Icon name={ComponentIconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
+          <Icon
+            name={ComponentIconName.Add}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
 
           {t('importNFT')}
         </SelectableListItem>
