@@ -8539,6 +8539,9 @@
   "rampsOtherOptions": {
     "message": "Other options"
   },
+  "rampsPayWith": {
+    "message": "Pay with"
+  },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"
   },

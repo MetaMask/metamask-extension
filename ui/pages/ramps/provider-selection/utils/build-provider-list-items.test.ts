@@ -123,10 +123,10 @@ describe('getProviderTag', () => {
         [transak.id],
         t,
       ),
-    ).toBe('rampsPreviouslyUsed');
+    ).toStrictEqual({ label: 'rampsPreviouslyUsed', severity: 'info' });
   });
 
-  it('returns most reliable then best rate', () => {
+  it('returns most reliable then best rate, each with its own severity', () => {
     expect(
       getProviderTag(
         transak.id,
@@ -138,7 +138,7 @@ describe('getProviderTag', () => {
         [],
         t,
       ),
-    ).toBe('rampsMostReliable');
+    ).toStrictEqual({ label: 'rampsMostReliable', severity: 'neutral' });
 
     expect(
       getProviderTag(
@@ -151,6 +151,6 @@ describe('getProviderTag', () => {
         [],
         t,
       ),
-    ).toBe('rampsBestRate');
+    ).toStrictEqual({ label: 'rampsBestRate', severity: 'success' });
   });
 });

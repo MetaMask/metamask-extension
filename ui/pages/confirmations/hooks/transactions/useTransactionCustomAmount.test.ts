@@ -425,6 +425,62 @@ describe('useTransactionCustomAmount', () => {
     });
   });
 
+  describe('hasAmount', () => {
+    it('has hasAmount as false initially', () => {
+      const { result } = runHook();
+
+      expect(result.current.hasAmount).toBe(false);
+    });
+
+    it('sets hasAmount to true immediately, without waiting for the debounce', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      expect(result.current.hasAmount).toBe(true);
+    });
+
+    it('sets hasAmount back to false immediately when the amount is cleared', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('');
+      });
+
+      expect(result.current.hasAmount).toBe(false);
+    });
+
+    it('treats an explicit zero amount as no amount', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('0');
+      });
+
+      expect(result.current.hasAmount).toBe(false);
+    });
+
+    it('treats a zero-valued decimal amount as no amount', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('0.00');
+      });
+
+      expect(result.current.hasAmount).toBe(false);
+    });
+  });
+
   describe('primary required token selection', () => {
     it('uses the first required token without skipIfBalance flag', () => {
       const { result } = runHook({
