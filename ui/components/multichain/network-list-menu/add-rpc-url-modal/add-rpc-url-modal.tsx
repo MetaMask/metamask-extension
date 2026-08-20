@@ -100,7 +100,7 @@ const AddRpcUrlModal = ({
           isDisabled={Boolean(error)}
           size={ButtonSize.Lg}
           variant={ButtonVariant.Primary}
-          data-testid="page-container-footer-next"
+          data-testid="add-rpc-url-button"
           onClick={async () => {
             if (url && !error && nameRef.current) {
               onAdded(url, nameRef.current.value || undefined);
