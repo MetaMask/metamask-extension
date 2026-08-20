@@ -7,18 +7,41 @@ import { withFixtures } from '../helpers';
 type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
 
+type FixtureSessionContext = Parameters<WithFixturesTestSuite>[0] & {
+  driver: Driver;
+};
+
 /**
- * Fixture runner used to start the shared session. Typed against the plain
- * `withFixtures` contract; wrappers with richer option/context shapes (e.g.
- * `withTronFixtures`) can be injected by narrowing their own types internally.
+ * Options accepted by the default (plain `withFixtures`) runner. Wrappers
+ * with richer option shapes (e.g. `withTronFixtures`, whose `testSpecificMock`
+ * takes a second `context` argument and whose `fixtures` is optional) pass
+ * their own `TRunnerOptions` to `configureFixtureSession` instead of this
+ * default.
  */
-export type FixtureSessionRunner = (
-  options: WithFixturesOptions,
-  testSuite: WithFixturesTestSuite,
+type BaseFixtureSessionRunnerOptions = WithFixturesOptions & {
+  fixtures: unknown;
+  testSpecificMock?: (mockServer: Mockttp) => unknown | Promise<unknown>;
+};
+
+/**
+ * Fixture runner used to start the shared session. Generic so wrappers with
+ * richer option/context shapes (e.g. `withTronFixtures`) can be plugged in
+ * via `runFixtures` without casting: `TRunnerOptions` is whatever options the
+ * runner itself expects, and `TRunnerContext` is the context it hands to the
+ * test suite callback.
+ */
+export type FixtureSessionRunner<
+  TRunnerOptions extends object = BaseFixtureSessionRunnerOptions,
+  TRunnerContext extends { driver: Driver } = FixtureSessionContext,
+> = (
+  options: TRunnerOptions,
+  testSuite: (context: TRunnerContext) => Promise<void> | void,
 ) => Promise<void>;
 
-export type FixtureSessionOptions = WithFixturesOptions & {
-  fixtures: unknown;
+export type FixtureSessionOptions<
+  TRunnerOptions extends object = BaseFixtureSessionRunnerOptions,
+  TRunnerContext extends { driver: Driver } = FixtureSessionContext,
+> = TRunnerOptions & {
   // When true, skip the remaining tests in the suite after the first test
   // failure (fail-fast). Defaults to false.
   failFast?: boolean;
@@ -27,19 +50,17 @@ export type FixtureSessionOptions = WithFixturesOptions & {
   navigateAfterEach?: boolean;
   resetAfterEach?: boolean;
   // Fixture runner that starts the shared session. Defaults to `withFixtures`.
-  runFixtures?: FixtureSessionRunner;
-  testSpecificMock?: (mockServer: Mockttp) => unknown | Promise<unknown>;
-};
-type FixtureSessionContext = Parameters<WithFixturesTestSuite>[0] & {
-  driver: Driver;
+  runFixtures?: FixtureSessionRunner<TRunnerOptions, TRunnerContext>;
 };
 
-export type FixtureSessionAccessors = {
+export type FixtureSessionAccessors<
+  TRunnerContext extends { driver: Driver } = FixtureSessionContext,
+> = {
   getDriver: () => Driver;
-  getFixtures: () => FixtureSessionContext;
+  getFixtures: () => TRunnerContext;
 };
 
-const OFFSCREEN_PAGE_TITLE = 'MetaMask Offscreen Page';
+const OFFSCREEN_PAGE_PATH = '/offscreen.html';
 const CHROME_EXTENSION_PROTOCOL = 'chrome-extension://';
 
 function getRunnableTests(suite: Mocha.Suite): Mocha.Test[] {
@@ -71,7 +92,14 @@ function shouldResetSharedFixtureSession(
 
 async function getReloadSurvivorWindow(driver: Driver): Promise<string> {
   const currentWindow = await driver.getCurrentWindowHandle();
-  const currentUrl = await driver.getCurrentUrl().catch(() => '');
+  const currentUrl = await driver.getCurrentUrl().catch((error) => {
+    console.warn(
+      'getReloadSurvivorWindow: failed to read the current window URL; ' +
+        'falling back to treating it as a non-extension page.',
+      error,
+    );
+    return '';
+  });
 
   if (!currentUrl.startsWith(driver.extensionUrl)) {
     return currentWindow;
@@ -114,6 +142,10 @@ async function restartChromeServiceWorker(driver: Driver): Promise<void> {
     scopeURL,
   });
   await backgroundSocket.waitForConnectionAfter(connectionVersion);
+  // The tab that was active before the restart may hold a message port or
+  // other reference tied to the now-dead service worker instance. Open a
+  // fresh, neutral tab so the session has a live, non-extension page to
+  // continue from instead of a stale extension page.
   await driver.openNewPage('about:blank');
 }
 
@@ -125,8 +157,9 @@ async function restartChromeServiceWorker(driver: Driver): Promise<void> {
  * @param driver - The active shared-session driver.
  */
 async function closeAuxiliaryWindows(driver: Driver): Promise<void> {
-  const currentHandle = await driver.driver.getWindowHandle();
+  const currentHandle = await driver.getCurrentWindowHandle();
   const windowHandles = await driver.getAllWindowHandles();
+  const offscreenPageUrl = `${driver.extensionUrl}${OFFSCREEN_PAGE_PATH}`;
 
   for (const handle of windowHandles) {
     if (handle === currentHandle) {
@@ -135,12 +168,22 @@ async function closeAuxiliaryWindows(driver: Driver): Promise<void> {
 
     try {
       await driver.switchToWindow(handle);
-      const title = await driver.driver.getTitle();
-      if (title !== OFFSCREEN_PAGE_TITLE) {
+      // Match the MV3 offscreen page by URL (available immediately via
+      // `getCurrentUrl()`) rather than by title: reading the title requires
+      // the document to have rendered, so a transiently empty title could
+      // misidentify - and close - the offscreen page, poisoning the session.
+      const url = await driver.getCurrentUrl();
+      if (url !== offscreenPageUrl) {
         await driver.closeWindow();
       }
-    } catch {
-      // Ignore handles that disappeared during cleanup.
+    } catch (error) {
+      // Best-effort cleanup: log so a systemic failure (e.g. every handle
+      // erroring) isn't silently invisible, but don't fail the suite over a
+      // handle that disappeared during cleanup.
+      console.warn(
+        `closeAuxiliaryWindows: failed to inspect/close window handle ${handle}.`,
+        error,
+      );
     } finally {
       await driver.switchToWindow(currentHandle);
     }
@@ -152,10 +195,11 @@ async function closeAuxiliaryWindows(driver: Driver): Promise<void> {
  * without rebuilding the entire E2E environment.
  *
  * @param fixtureContext - The active shared-session fixture context.
+ * @param fixtureContext.driver - The active shared-session driver.
  */
-async function resetSharedFixtureSession(
-  fixtureContext: FixtureSessionContext,
-): Promise<void> {
+async function resetSharedFixtureSession(fixtureContext: {
+  driver: Driver;
+}): Promise<void> {
   const { driver } = fixtureContext;
   const canRestartWithCdp = driver.extensionUrl.startsWith(
     CHROME_EXTENSION_PROTOCOL,
@@ -198,21 +242,24 @@ async function resetSharedFixtureSession(
  * @param defineSuite - Callback that defines the suite's tests and hooks using
  * the shared driver and fixture accessors.
  */
-export function configureFixtureSession(
+export function configureFixtureSession<
+  TRunnerOptions extends object = BaseFixtureSessionRunnerOptions,
+  TRunnerContext extends { driver: Driver } = FixtureSessionContext,
+>(
   suiteTitle: string,
-  fixtureOptions: FixtureSessionOptions,
-  defineSuite: (accessors: FixtureSessionAccessors) => void,
+  fixtureOptions: FixtureSessionOptions<TRunnerOptions, TRunnerContext>,
+  defineSuite: (accessors: FixtureSessionAccessors<TRunnerContext>) => void,
 ): void {
   const sharedSuite = describe(suiteTitle, function () {
-    const fixtureSetup = createDeferredPromise<FixtureSessionContext>();
+    const fixtureSetup = createDeferredPromise<TRunnerContext>();
     const suiteFinished = createDeferredPromise<void>();
 
     let firstTestFailureError: Error | undefined;
     let fixturePromise: Promise<void> | undefined;
-    let fixtures: FixtureSessionContext | undefined;
+    let fixtures: TRunnerContext | undefined;
     let sessionPoisonedError: Error | undefined;
 
-    const getFixtures = (): FixtureSessionContext => {
+    const getFixtures = (): TRunnerContext => {
       if (!fixtures) {
         throw new Error(
           'Fixture session is not ready yet; call getDriver()/getFixtures() only inside test or hook bodies after the shared fixture session `before` hook has run.',
@@ -231,17 +278,24 @@ export function configureFixtureSession(
         failFast: _failFast,
         navigateAfterEach: _navigateAfterEach,
         resetAfterEach: _resetAfterEach,
-        runFixtures = withFixtures,
+        // The default runner only matches `TRunnerOptions`/`TRunnerContext`
+        // when the caller uses the default type parameters (plain
+        // `withFixtures`); callers that pass their own `TRunnerOptions` (e.g.
+        // Tron's `withTronFixtures`) always supply their own `runFixtures`.
+        runFixtures = withFixtures as unknown as FixtureSessionRunner<
+          TRunnerOptions,
+          TRunnerContext
+        >,
         ...withFixturesOptions
       } = fixtureOptions;
       const { title } = withFixturesOptions as { title?: string };
       const options = {
         ...withFixturesOptions,
         title: title ?? suiteTitle,
-      };
+      } as TRunnerOptions;
 
       fixturePromise = runFixtures(options, async (fixtureContext) => {
-        fixtures = fixtureContext as FixtureSessionContext;
+        fixtures = fixtureContext;
         fixtureSetup.resolve(fixtures);
         await suiteFinished.promise;
       });

@@ -4,9 +4,9 @@ import TokensTab from '../pages/home/tokens-tab';
 import { addMultipleAccounts } from './add-account.flow';
 import { switchToAccount } from './account-list.flow';
 import { login } from './login.flow';
-import { switchToNetworkFromNetworkSelect } from './network.flow';
 import { waitUntilAccountTreeSyncIdle } from './tron-account-derivation.flow';
 import { returnToTronHome } from './tron-home.flow';
+import { selectTronNetwork } from './tron-network.flow';
 
 const TRON_HOMEPAGE_TOKEN_TIMEOUT_MS = 30_000;
 
@@ -26,7 +26,7 @@ export async function prepareTronAssetsHomepage(driver: Driver): Promise<void> {
   await homePage.checkPageIsLoaded();
   await homePage.waitForNonEvmAccountsLoaded();
   await waitUntilAccountTreeSyncIdle(driver);
-  await switchToNetworkFromNetworkSelect(driver, 'Tron');
+  await selectTronNetwork(driver);
   const tokensTab = new TokensTab(driver);
   await tokensTab.checkTokenNameVisible('Tron', {
     timeout: TRON_HOMEPAGE_TOKEN_TIMEOUT_MS,
@@ -57,7 +57,7 @@ export async function switchToTronAccount(
   await returnToTronHome(driver);
   await switchToAccount(driver, accountName);
   await waitUntilAccountTreeSyncIdle(driver);
-  await switchToNetworkFromNetworkSelect(driver, 'Tron');
+  await selectTronNetwork(driver);
   const tokensTab = new TokensTab(driver);
   await tokensTab.checkTokenNameVisible('Tron', {
     timeout: TRON_HOMEPAGE_TOKEN_TIMEOUT_MS,

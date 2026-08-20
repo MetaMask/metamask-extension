@@ -1,6 +1,5 @@
 import {
   configureFixtureSession,
-  type FixtureSessionOptions,
   type FixtureSessionRunner,
 } from '../../../helpers/fixture-session';
 import { TronNode } from '../../../seeder/tron/node';
@@ -33,6 +32,8 @@ export type TronFixtureSessionAccessors = {
   getFixtures: () => TronFixtureSessionContext;
 };
 
+type TronRunnerOptions = Omit<WithTronFixturesOptions, 'borrowedTronNode'>;
+
 /**
  * Defines a Tron suite that reuses a single browser/extension fixture session
  * across all tests in the suite. Tron shared sessions fail fast (remaining
@@ -53,17 +54,10 @@ export function configureTronFixtureSession(
 ): void {
   const { tronNode, ...tronFixturesOptions } = options;
 
-  const runTronFixtures: FixtureSessionRunner = async (
-    runnerOptions,
-    testSuite,
-  ) => {
-    // `configureFixtureSession` round-trips the Tron options untouched: it
-    // only strips its own session flags and defaults `title`.
-    const tronRunnerOptions = runnerOptions as unknown as Omit<
-      WithTronFixturesOptions,
-      'borrowedTronNode'
-    >;
-
+  const runTronFixtures: FixtureSessionRunner<
+    TronRunnerOptions,
+    TronFixtureSessionContext
+  > = async (tronRunnerOptions, testSuite) => {
     if (tronNode) {
       await withTronFixtures(
         { ...tronRunnerOptions, borrowedTronNode: tronNode },
@@ -84,23 +78,17 @@ export function configureTronFixtureSession(
     }
   };
 
-  configureFixtureSession(
+  configureFixtureSession<TronRunnerOptions, TronFixtureSessionContext>(
     suiteTitle,
     {
-      // The Tron option shape (e.g. the two-argument `testSpecificMock`) is
-      // consumed by `runTronFixtures`, not by the base `withFixtures` runner,
-      // so the loose cast is safe here.
-      ...(tronFixturesOptions as unknown as FixtureSessionOptions),
+      ...tronFixturesOptions,
       failFast: true,
       navigateAfterEach: false,
       resetAfterEach: false,
       runFixtures: runTronFixtures,
     },
     ({ getDriver, getFixtures }) => {
-      defineSuite({
-        getDriver,
-        getFixtures: () => getFixtures() as TronFixtureSessionContext,
-      });
+      defineSuite({ getDriver, getFixtures });
     },
   );
 }

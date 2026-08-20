@@ -1,37 +1,41 @@
-import { Suite } from "mocha";
-import FixtureBuilderV2 from "../../../fixtures/fixture-builder-v2";
-import { Driver } from "../../../webdriver/driver";
-import { login } from "../../../page-objects/flows/login.flow";
-import { completeImportSRPOnboardingFlow } from "../../../page-objects/flows/onboarding.flow";
+import { Suite } from 'mocha';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { Driver } from '../../../webdriver/driver';
+import { login } from '../../../page-objects/flows/login.flow';
+import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import {
   waitUntilAccountTreeSyncIdle,
   addNHdAccountsForTronDerivation,
-} from "../../../page-objects/flows/tron-account-derivation.flow";
-import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from "../../../constants";
-import { shortenAddress } from "../../../../../ui/helpers/utils/util";
-import HomePage from "../../../page-objects/pages/home/homepage";
-import AccountListPage from "../../../page-objects/pages/account-list-page";
-import AddressListModal from "../../../page-objects/pages/multichain/address-list-modal";
-import NonEvmHomepage from "../../../page-objects/pages/home/non-evm-homepage";
-import { selectTronNetwork } from "../../../page-objects/flows/tron-network.flow";
-import { base58AddressToHex } from "../../../seeder/tron/assets";
-import { TronNode } from "../../../seeder/tron/node";
-import { SUN_PER_TRX, TRON_ACCOUNT_ADDRESS, TRX_TO_USD_RATE } from "../../tron/mocks/common-tron";
-import { EMPTY_TRON_ACCOUNT } from "../../tron/fixtures/environments";
-import { configureTronFixtureSession } from "../../tron/fixtures/tron-fixture-session";
+} from '../../../page-objects/flows/tron-account-derivation.flow';
+import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../../constants';
+import { shortenAddress } from '../../../../../ui/helpers/utils/util';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import AccountListPage from '../../../page-objects/pages/account-list-page';
+import AddressListModal from '../../../page-objects/pages/multichain/address-list-modal';
+import NonEvmHomepage from '../../../page-objects/pages/home/non-evm-homepage';
+import { selectTronNetwork } from '../../../page-objects/flows/tron-network.flow';
+import { base58AddressToHex } from '../../../seeder/tron/assets';
+import { TronNode } from '../../../seeder/tron/node';
+import {
+  SUN_PER_TRX,
+  TRON_ACCOUNT_ADDRESS,
+  TRX_TO_USD_RATE,
+} from '../../tron/mocks/common-tron';
+import { EMPTY_TRON_ACCOUNT } from '../../tron/fixtures/environments';
+import { configureTronFixtureSession } from '../../tron/fixtures/tron-fixture-session';
 import {
   buildTronNodeOptions,
   type TronFixtureAccount,
   withTronFixtures,
-} from "../../tron/fixtures/with-tron-fixtures";
-import { TRX } from "../../tron/fixtures/tokens";
+} from '../../tron/fixtures/with-tron-fixtures';
+import { TRX } from '../../tron/fixtures/tokens';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 function createDiscoveryTronTransaction(address: string) {
   const timestamp = Date.now() - 60_000;
   return {
-    ret: [{ contractRet: "SUCCESS", fee: 0 }],
-    txID: `1${base58AddressToHex(address).slice(2)}`.padEnd(64, "0"),
+    ret: [{ contractRet: 'SUCCESS', fee: 0 }],
+    txID: `1${base58AddressToHex(address).slice(2)}`.padEnd(64, '0'),
     blockNumber: 77_000_000,
     block_timestamp: timestamp,
     raw_data: {
@@ -43,14 +47,14 @@ function createDiscoveryTronTransaction(address: string) {
               owner_address: base58AddressToHex(TRON_ACCOUNT_ADDRESS),
               to_address: base58AddressToHex(address),
             },
-            type_url: "type.googleapis.com/protocol.TransferContract",
+            type_url: 'type.googleapis.com/protocol.TransferContract',
           },
-          type: "TransferContract",
+          type: 'TransferContract',
         },
       ],
       expiration: timestamp + 60_000,
-      ref_block_bytes: "0000",
-      ref_block_hash: "0000000000000000",
+      ref_block_bytes: '0000',
+      ref_block_hash: '0000000000000000',
       timestamp,
     },
   };
@@ -68,6 +72,41 @@ function buildDiscoveryAccountsThrough(total: number): TronFixtureAccount[] {
   }));
 }
 
+/**
+ * Opens the Addresses modal for one account, asserts the Tron network
+ * address, copies it and checks the clipboard, then backs out. Shared by the
+ * derivation test's incremental-add loop and assertTronAddressesForAccounts
+ * below: both perform the same per-index assertion, just with different
+ * account-membership setup around it.
+ *
+ * @param driver - The Selenium driver instance.
+ * @param index - Zero-based HD account index (Account 1 is index 0).
+ */
+async function assertTronAddressAtIndex(
+  driver: Driver,
+  index: number,
+): Promise<void> {
+  const accountList = new AccountListPage(driver);
+  const addressList = new AddressListModal(driver);
+  const accountLabel = `Account ${index + 1}`;
+  const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
+
+  console.log(`Checking Tron address for ${accountLabel}`);
+
+  await accountList.openMultichainAccountMenu({ accountLabel });
+  await accountList.clickMultichainAccountMenuItem('Addresses');
+  await addressList.checkPageIsLoaded();
+  await addressList.checkNetworkAddressIsDisplayedForNetwork({
+    networkName: 'Tron',
+    networkAddress: shortenAddress(expected),
+  });
+  await addressList.clickCopyButtonForNetworkAndAssertClipboard({
+    networkName: 'Tron',
+    expectedAddress: expected,
+  });
+  await addressList.goBack();
+}
+
 async function assertTronAddressesForAccounts(
   driver: Driver,
   total: number,
@@ -75,32 +114,19 @@ async function assertTronAddressesForAccounts(
 ): Promise<void> {
   const homepage = new HomePage(driver);
   const accountList = new AccountListPage(driver);
-  const addressList = new AddressListModal(driver);
 
   await homepage.headerNavbar.openAccountMenu();
   await accountList.checkPageIsLoaded();
   await accountList.waitUntilSyncingIsCompleted();
 
   for (let index = 0; index < total; index += 1) {
-    const accountLabel = `Account ${index + 1}`;
-    const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
-
-    await accountList.openMultichainAccountMenu({ accountLabel });
-    await accountList.clickMultichainAccountMenuItem("Addresses");
-    await addressList.checkPageIsLoaded();
-    await addressList.checkNetworkAddressIsDisplayedForNetwork({
-      networkName: "Tron",
-      networkAddress: shortenAddress(expected),
-    });
-    await addressList.clickCopyButtonForNetworkAndAssertClipboard({
-      networkName: "Tron",
-      expectedAddress: expected,
-    });
-    await addressList.goBack();
+    await assertTronAddressAtIndex(driver, index);
   }
 
   if (options.absentAccountLabel) {
-    await accountList.checkMultichainAccountNameNotDisplayed(options.absentAccountLabel);
+    await accountList.checkMultichainAccountNameNotDisplayed(
+      options.absentAccountLabel,
+    );
   }
 
   await accountList.closeMultichainAccountsPage();
@@ -180,13 +206,15 @@ const TRON_ACCOUNT_DERIVATION_ALL_ACCOUNTS: TronFixtureAccount[] = [
  * - asset discovery 1-5: mocked txs, no manual add — automatic discovery; Account 6 absent
  * - quick-copy / QR / Receive: add 8 upfront — Tron address on each surface for all indices
  */
-describe("Tron account derivation", function (this: Suite) {
+describe('Tron account derivation', function (this: Suite) {
   this.timeout(240_000);
 
   const sharedTronNode = new TronNode();
 
   before(async function () {
-    await sharedTronNode.start(buildTronNodeOptions(TRON_ACCOUNT_DERIVATION_ALL_ACCOUNTS));
+    await sharedTronNode.start(
+      buildTronNodeOptions(TRON_ACCOUNT_DERIVATION_ALL_ACCOUNTS),
+    );
   });
 
   after(async function () {
@@ -198,28 +226,27 @@ describe("Tron account derivation", function (this: Suite) {
   // quick-copy and Receive tests reuse, and the session fails fast so a
   // derivation failure skips the dependent tests instead of cascading.
   configureTronFixtureSession(
-    "shared session",
+    'shared session',
     {
       accounts: TRON_ACCOUNT_DERIVATION_EMPTY_ACCOUNTS,
       fixtures: new FixtureBuilderV2().build(),
-      title: "Tron account derivation shared session",
+      title: 'Tron account derivation shared session',
       tronNode: sharedTronNode,
     },
     ({ getDriver }) => {
       // Runs inside the session's nested suite at runtime, not as a sibling
       // of the outer node-lifecycle `before`.
       // eslint-disable-next-line mocha/no-sibling-hooks
-      before("Log in and select the Tron network", async function () {
+      before('Log in and select the Tron network', async function () {
         const driver = getDriver();
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
       });
 
-      it("derives Tron addresses while adding multichain accounts from Account 1 to Account 8", async function () {
+      it('derives Tron addresses while adding multichain accounts from Account 1 to Account 8', async function () {
         const driver = getDriver();
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
-        const addressList = new AddressListModal(driver);
 
         // Open account menu to let the UI sync complete
         await homepage.headerNavbar.openAccountMenu();
@@ -227,33 +254,20 @@ describe("Tron account derivation", function (this: Suite) {
         await accountList.waitUntilSyncingIsCompleted();
 
         for (let index = 0; index < 8; index += 1) {
-          const accountLabel = `Account ${index + 1}`;
-          const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
-
           if (index > 0) {
+            const accountLabel = `Account ${index + 1}`;
             await waitUntilAccountTreeSyncIdle(driver);
             await accountList.addMultichainAccount();
             await accountList.checkMultichainAccountNameDisplayed(accountLabel);
           }
 
-          await accountList.openMultichainAccountMenu({ accountLabel });
-          await accountList.clickMultichainAccountMenuItem("Addresses");
-          await addressList.checkPageIsLoaded();
-          await addressList.checkNetworkAddressIsDisplayedForNetwork({
-            networkName: "Tron",
-            networkAddress: shortenAddress(expected),
-          });
-          await addressList.clickCopyButtonForNetworkAndAssertClipboard({
-            networkName: "Tron",
-            expectedAddress: expected,
-          });
-          await addressList.goBack();
+          await assertTronAddressAtIndex(driver, index);
         }
 
         await accountList.closeMultichainAccountsPage();
       });
 
-      it("Shows each account Tron address on the quick-copy popup and copies it", async function () {
+      it('copies each account Tron address from the quick-copy popup', async function () {
         const driver = getDriver();
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -264,6 +278,10 @@ describe("Tron account derivation", function (this: Suite) {
           const accountLabel = `Account ${index + 1}`;
           const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
 
+          console.log(
+            `Checking Tron address for ${accountLabel} on the quick-copy popup`,
+          );
+
           await homepage.headerNavbar.openAccountMenu();
           await accountList.checkPageIsLoaded();
           await accountList.selectAccount(accountLabel);
@@ -272,11 +290,11 @@ describe("Tron account derivation", function (this: Suite) {
           await homepage.headerNavbar.clickNetworkAddresses();
           await addressList.checkQuickCopyPopoverIsLoaded();
           await addressList.checkQuickCopyAddressIsDisplayedForNetwork({
-            networkName: "Tron",
+            networkName: 'Tron',
             networkAddress: shortenAddress(expected),
           });
           await addressList.clickQuickCopyButtonForNetwork({
-            networkName: "Tron",
+            networkName: 'Tron',
             expectedAddress: expected,
           });
         }
@@ -289,7 +307,7 @@ describe("Tron account derivation", function (this: Suite) {
         await addressList.checkQuickCopyPopoverIsClosed();
       });
 
-      it("Shows each account Tron address on the Receive page and copies it", async function () {
+      it('copies each account Tron address from the Receive page', async function () {
         const driver = getDriver();
         const homepage = new NonEvmHomepage(driver);
         const accountList = new AccountListPage(driver);
@@ -300,6 +318,10 @@ describe("Tron account derivation", function (this: Suite) {
           const accountLabel = `Account ${index + 1}`;
           const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
 
+          console.log(
+            `Checking Tron address for ${accountLabel} on the Receive page`,
+          );
+
           await homepage.headerNavbar.openAccountMenu();
           await accountList.checkPageIsLoaded();
           await accountList.selectAccount(accountLabel);
@@ -309,11 +331,11 @@ describe("Tron account derivation", function (this: Suite) {
           await homepage.clickOnReceiveButton();
           await addressList.checkPageIsLoaded();
           await addressList.checkNetworkAddressIsDisplayedForNetwork({
-            networkName: "Tron",
+            networkName: 'Tron',
             networkAddress: shortenAddress(expected),
           });
           await addressList.clickCopyButtonForNetworkAndAssertClipboard({
-            networkName: "Tron",
+            networkName: 'Tron',
             expectedAddress: expected,
           });
           await addressList.goBack();
@@ -322,7 +344,7 @@ describe("Tron account derivation", function (this: Suite) {
     },
   );
 
-  it("aligns Tron addresses for 8 existing multichain account groups", async function () {
+  it('aligns Tron addresses for 8 existing multichain account groups', async function () {
     await withTronFixtures(
       {
         accounts: TRON_ACCOUNT_DERIVATION_EMPTY_ACCOUNTS,
@@ -342,7 +364,7 @@ describe("Tron account derivation", function (this: Suite) {
     );
   });
 
-  it("discovers Tron accounts through Account 5 when each account has assets", async function () {
+  it('discovers Tron accounts through Account 5 when each account has assets', async function () {
     await withTronFixtures(
       {
         accounts: TRON_ACCOUNT_DERIVATION_DISCOVERY_ACCOUNTS,
@@ -358,14 +380,14 @@ describe("Tron account derivation", function (this: Suite) {
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         await assertTronAddressesForAccounts(driver, 5, {
-          absentAccountLabel: "Account 6",
+          absentAccountLabel: 'Account 6',
         });
       },
     );
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests -- flaky clipboard copy in QR popup on CI; see #44165
-  it.skip("Shows Account 1 QR popup with address, copy link, and View on Tronscan", async function () {
+  it.skip('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
     await withTronFixtures(
       {
         accounts: TRON_ACCOUNT_DERIVATION_EMPTY_ACCOUNTS,
@@ -384,15 +406,19 @@ describe("Tron account derivation", function (this: Suite) {
         await accountList.checkPageIsLoaded();
 
         await accountList.openMultichainAccountMenu({
-          accountLabel: "Account 1",
+          accountLabel: 'Account 1',
         });
-        await accountList.clickMultichainAccountMenuItem("Addresses");
+        await accountList.clickMultichainAccountMenuItem('Addresses');
         await addressList.checkPageIsLoaded();
-        await addressList.clickQRbuttonForNetwork("Tron");
+        await addressList.clickQRbuttonForNetwork('Tron');
 
-        await addressList.checkQrPopupShowsAddress(EXPECTED_TRON_ADDRESSES_BY_INDEX[0]);
+        await addressList.checkQrPopupShowsAddress(
+          EXPECTED_TRON_ADDRESSES_BY_INDEX[0],
+        );
         await addressList.checkViewOnTronscanButton();
-        await addressList.clickQrCopyAddressLink(EXPECTED_TRON_ADDRESSES_BY_INDEX[0]);
+        await addressList.clickQrCopyAddressLink(
+          EXPECTED_TRON_ADDRESSES_BY_INDEX[0],
+        );
       },
     );
   });
