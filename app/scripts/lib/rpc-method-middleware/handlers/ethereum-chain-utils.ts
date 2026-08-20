@@ -296,7 +296,12 @@ export async function switchChain(
         !isAddFlow &&
         !autoApprove
       ) {
-        await requestUserApproval?.({
+        if (!requestUserApproval) {
+          throw rpcErrors.internal(
+            'requestUserApproval hook is required but was not provided',
+          );
+        }
+        await requestUserApproval({
           origin,
           type: ApprovalType.SwitchEthereumChain,
           requestData: {
@@ -315,7 +320,12 @@ export async function switchChain(
     const isOriginSnap = origin ? isSnapId(origin) : false;
 
     if (!isOriginSnap) {
-      rejectApprovalRequestsForOrigin?.();
+      if (!rejectApprovalRequestsForOrigin) {
+        throw rpcErrors.internal(
+          'rejectApprovalRequestsForOrigin hook is required but was not provided',
+        );
+      }
+      rejectApprovalRequestsForOrigin();
     }
 
     await setActiveNetwork(networkClientId);
