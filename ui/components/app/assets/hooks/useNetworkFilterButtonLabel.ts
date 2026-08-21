@@ -2,7 +2,10 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isStrictHexString } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
+import {
+  getAllEnabledNetworksForAllNamespaces,
+  getAllMultichainNetworkConfigurations,
+} from '../../../../selectors/multichain/networks';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   getShowTestNetworks,
@@ -10,6 +13,28 @@ import {
 } from '../../../../selectors';
 import { useNetworkManagerState } from '../../../multichain/network-manager/hooks/useNetworkManagerState';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getNetworkIcon } from '../../../../../shared/lib/network.utils';
+
+const toCaipChainId = (chainId: string) =>
+  isStrictHexString(chainId) ? toEvmCaipChainId(chainId) : chainId;
+
+export function useNetworkFilterButtonIcon():
+  | { name: string; src?: string }
+  | undefined {
+  const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
+  const allNetworks = useSelector(getAllMultichainNetworkConfigurations);
+
+  return useMemo(() => {
+    if (enabledNetworks.length !== 1) {
+      return undefined;
+    }
+
+    const network = allNetworks[toCaipChainId(enabledNetworks[0])];
+    return network
+      ? { name: network.name, src: getNetworkIcon(network) }
+      : undefined;
+  }, [allNetworks, enabledNetworks]);
+}
 
 export function useNetworkFilterButtonLabel(): string {
   const t = useI18nContext();
@@ -40,9 +65,7 @@ export function useNetworkFilterButtonLabel(): string {
   return useMemo(() => {
     if (totalEnabledNetworkCount === 1) {
       const chainId = allEnabledNetworksForAllNamespaces[0];
-      const caipChainId = isStrictHexString(chainId)
-        ? toEvmCaipChainId(chainId)
-        : chainId;
+      const caipChainId = toCaipChainId(chainId);
       const networkName =
         allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
       return `${t('network')}: ${networkName}`;
