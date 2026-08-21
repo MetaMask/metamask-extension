@@ -381,6 +381,22 @@ class TokensTab extends HomePage {
   }
 
   /**
+   * Verifies the Token decimal row on the asset details page.
+   *
+   * @param decimals - Expected decimal count shown next to "Token decimal".
+   */
+  async checkTokenDecimalsInDetails(decimals: number): Promise<void> {
+    console.log(`Verifying token decimal ${decimals} on asset details`);
+    await this.driver.waitForSelector({
+      text: 'Token decimal',
+      tag: 'p',
+    });
+    await this.driver.waitForSelector({
+      xpath: `//p[normalize-space()='Token decimal']/following-sibling::*[contains(normalize-space(), '${decimals}')]`,
+    });
+  }
+
+  /**
    * Checks if a token exists in the token list and optionally verifies the token amount.
    * Waits for the list row’s name cell (`multichain-token-list-item-token-name`), not the
    * whole row button text (which mixes name, balance, fiat, etc.).
@@ -642,6 +658,20 @@ class TokensTab extends HomePage {
     assert.ok(
       (await row.getText()).includes(expectedText),
       `Expected "${tokenName}" row to contain "${expectedText}"`,
+    );
+  }
+
+  async checkTokenRowDoesNotContainText(
+    tokenName: string,
+    unexpectedText: string,
+  ): Promise<void> {
+    console.log(
+      `Checking token row "${tokenName}" does not contain "${unexpectedText}"`,
+    );
+    const row = await this.findTokenRowByName(tokenName);
+    assert.ok(
+      !(await row.getText()).includes(unexpectedText),
+      `Expected "${tokenName}" row not to contain "${unexpectedText}"`,
     );
   }
 
