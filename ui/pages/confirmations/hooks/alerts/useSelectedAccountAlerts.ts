@@ -10,6 +10,7 @@ import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getMoneyAccountTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { SignatureRequestType } from '../../types/confirm';
 import { useConfirmContext } from '../../context/confirm';
 
@@ -38,8 +39,15 @@ export const useSelectedAccountAlerts = (): Alert[] => {
   const confirmationAccountSameAsSelectedAccount =
     !fromAccount || isAccountFromSelectedAccountGroup;
 
+  // Money account deposits/withdrawals are wallet-initiated and always sent
+  // from the dedicated money account, never the selected account group, so
+  // the "different account" warning is noise there.
+  const isMoneyAccountTransaction = Boolean(
+    getMoneyAccountTransactionType(currentConfirmation as TransactionMeta),
+  );
+
   return useMemo<Alert[]>((): Alert[] => {
-    if (confirmationAccountSameAsSelectedAccount) {
+    if (confirmationAccountSameAsSelectedAccount || isMoneyAccountTransaction) {
       return [];
     }
 
@@ -52,5 +60,5 @@ export const useSelectedAccountAlerts = (): Alert[] => {
         message: t('alertSelectedAccountWarning'),
       },
     ];
-  }, [confirmationAccountSameAsSelectedAccount, t]);
+  }, [confirmationAccountSameAsSelectedAccount, isMoneyAccountTransaction, t]);
 };
