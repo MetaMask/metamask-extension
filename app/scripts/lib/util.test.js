@@ -1057,6 +1057,23 @@ describe('app utils', () => {
       });
     });
 
+    describe('bare special-use names used as a hostname', () => {
+      it('should return true for a bare special-use name', () => {
+        expect(isSpecialUseDomain('localhost')).toBe(true);
+        expect(isSpecialUseDomain('test')).toBe(true);
+        expect(isSpecialUseDomain('invalid')).toBe(true);
+        expect(isSpecialUseDomain('example')).toBe(true);
+        expect(isSpecialUseDomain('local')).toBe(true);
+      });
+
+      it('should not treat a public domain that merely contains a special-use name as special-use', () => {
+        expect(isSpecialUseDomain('latest')).toBe(false);
+        expect(isSpecialUseDomain('notlocal')).toBe(false);
+        expect(isSpecialUseDomain('test.com')).toBe(false);
+        expect(isSpecialUseDomain('contest.com')).toBe(false);
+      });
+    });
+
     describe('RFC 6761 reserved example domains', () => {
       it('should return true for example.com', () => {
         expect(isSpecialUseDomain('example.com')).toBe(true);
