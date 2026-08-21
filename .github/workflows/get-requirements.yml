@@ -663,15 +663,30 @@ jobs:
           }}
         env:
           BUILDS_FROM_BASE_BRANCH: ${{ steps.find-reusable-builds.outputs.builds-from-base-branch }}
+          FILTER_BENCHMARK_COUNT: ${{ steps.filter.outputs.benchmark_files_count }}
         run: |
           echo "=== Benchmarks skip decision ==="
           echo "  Builds from base branch: $BUILDS_FROM_BASE_BRANCH"
+          echo "  Benchmark-owned files changed: $FILTER_BENCHMARK_COUNT"
 
-          if [[ "$BUILDS_FROM_BASE_BRANCH" == "true" ]]; then
+          # A change to the measurement apparatus needs benchmarking even when
+          # builds are reused. The build hash covers application sources only, so
+          # a PR touching just the harness, the mocks, the thresholds or the gate
+          # allowlist always matches the base branch and would otherwise never
+          # run the benchmarks it changes. Mirrors the unit/integration rule above.
+          #
+          # Such a run measures the reused base build with the new apparatus,
+          # which is the comparison that isolates the apparatus change, and it is
+          # the cheap option since no fresh build is needed.
+          if [[ "$BUILDS_FROM_BASE_BRANCH" == "true" && "$FILTER_BENCHMARK_COUNT" == "0" ]]; then
             echo "-> needs-benchmarks=false (builds from base branch — identical output)"
           else
             echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
-            echo "-> needs-benchmarks=true (fresh builds)"
+            if [[ "$BUILDS_FROM_BASE_BRANCH" == "true" ]]; then
+              echo "-> needs-benchmarks=true (benchmark-owned files changed)"
+            else
+              echo "-> needs-benchmarks=true (fresh builds)"
+            fi
           fi
 
       - name: Compute needs-e2e flag
