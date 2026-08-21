@@ -39,14 +39,13 @@ describe('getRequestSafeReload', () => {
 
   it('persists pending work immediately', async () => {
     const persistenceManager = createPersistenceManager();
-    const { safePersist, safePersistImmediately } =
-      getRequestSafeReload(persistenceManager);
+    const { safePersist } = getRequestSafeReload(persistenceManager);
 
     await safePersist();
 
     expect(persistenceManager.persist).not.toHaveBeenCalled();
 
-    await safePersistImmediately();
+    await safePersist({ immediate: true });
 
     expect(persistenceManager.persist).toHaveBeenCalledTimes(1);
 

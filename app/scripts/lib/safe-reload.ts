@@ -11,6 +11,11 @@ import { OperationSafener } from './operation-safener';
 /** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
 const RELOAD_AFTER_EVACUATE_MS = 150;
 
+type SafePersistOptions = {
+  /** Whether to persist pending split state without waiting for the debounce. */
+  immediate?: boolean;
+};
+
 /**
  * Creates a request-safe reload mechanism for the given persistence manager.
  *
@@ -48,28 +53,23 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
     /**
      * Safely updates the persistence manager
      *
-     * @param params - Arguments to pass to the persistence operation. For
-     * 'data' storage, pass the state; for 'split' storage, no arguments needed.
+     * @param stateOrOptions - For 'data' storage, the state to persist. For
+     * 'split' storage, options that control how the state is persisted.
      * @returns true if the update was queued, false if writes are not allowed.
      */
     safePersist: async (
-      ...params: Parameters<
-        PersistenceManager['set'] | PersistenceManager['persist']
-      >
+      stateOrOptions?: MetaMaskStateType | SafePersistOptions,
     ) => {
-      return operationSafener.execute(...params);
-    },
+      const isSplitStorage = persistenceManager.storageKind === 'split';
+      const didQueuePersist = isSplitStorage
+        ? operationSafener.execute()
+        : operationSafener.execute(stateOrOptions as MetaMaskStateType);
 
-    /**
-     * Safely persists pending split state without waiting for the debounce.
-     *
-     * @returns A promise that resolves to true if the update was queued and
-     * flushed, or false if writes are not allowed.
-     */
-    safePersistImmediately: async () => {
-      const didQueuePersist = operationSafener.execute();
-
-      if (didQueuePersist) {
+      if (
+        didQueuePersist &&
+        isSplitStorage &&
+        (stateOrOptions as SafePersistOptions | undefined)?.immediate
+      ) {
         await operationSafener.flush();
       }
 

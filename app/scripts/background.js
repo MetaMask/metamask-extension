@@ -172,7 +172,7 @@ const inTestState = process.env.IN_TEST
   ? { restoreInProgress: false, hasVaultAtStartup: null }
   : null;
 
-const { safePersist, safePersistImmediately, requestSafeReload, evacuate } =
+const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
 
 // Setup global hook for improved Sentry state snapshots during initialization
@@ -1344,10 +1344,9 @@ export function setupController(
         persistenceManager.update(key, currentState[key]);
       });
       // then persist it
-      const persistState = changedControllerKeys.includes('KeyringController')
-        ? safePersistImmediately
-        : safePersist;
-      persistState().catch((error) => {
+      safePersist({
+        immediate: changedControllerKeys.includes('KeyringController'),
+      }).catch((error) => {
         log.error('Error persisting updated state:', error);
         sentry?.captureException(error);
       });
@@ -1391,11 +1390,9 @@ export function setupController(
           });
         }
         try {
-          if (controllerKey === 'KeyringController') {
-            await safePersistImmediately();
-          } else {
-            await safePersist();
-          }
+          await safePersist({
+            immediate: controllerKey === 'KeyringController',
+          });
         } catch (error) {
           log.error('Error persisting state change:', error);
           sentry?.captureException(error);
