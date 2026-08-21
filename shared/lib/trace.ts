@@ -200,6 +200,18 @@ export type TraceRequest = {
    * Custom operation name to associate with the trace.
    */
   op?: string;
+
+  /**
+   * Explicitly promote this trace to a Sentry transaction, even when it falls
+   * back to the ambient active span as its parent.
+   *
+   * Prefer leaving this unset. A trace that inherits the ambient span should
+   * remain a child span of it: only set this for operations that genuinely
+   * warrant transaction-level visibility, and opt in by name rather than
+   * having the promotion acquired by accident. See
+   * https://github.com/MetaMask/metamask-extension/issues/45393
+   */
+  forceTransaction?: boolean;
 };
 
 /**
@@ -526,20 +538,28 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, op } = request;
+  const {
+    data: attributes,
+    forceTransaction,
+    name,
+    parentContext,
+    startTime,
+    op,
+  } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
   // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
   // when no explicit parent is provided. Must capture before withIsolationScope
   // severs the active span context chain.
-  // forceTransaction preserves transaction-level visibility for monitoring while
-  // linking to the auto-instrumentation hierarchy.
-  let forceTransaction: boolean | undefined;
+  //
+  // The operation becomes a child span of the active span, not a transaction:
+  // transaction-level promotion is only available through an explicit
+  // `forceTransaction` on the request and is never inferred from the ambient
+  // span. See https://github.com/MetaMask/metamask-extension/issues/45393
   if (!parentSpan && !parentContext) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;
-      forceTransaction = true;
     }
   }
 
