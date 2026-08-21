@@ -755,9 +755,7 @@ class HomePage {
    * connection" modal does not race the recipient input.
    */
   async waitForNetworkStatusAvailable(): Promise<void> {
-    console.log(
-      'Waiting for selected network status to be available in Redux',
-    );
+    console.log('Waiting for selected network status to be available in Redux');
     await this.driver.waitUntil(
       async () => {
         const uiState = await getCleanAppState(this.driver);
