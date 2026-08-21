@@ -319,7 +319,12 @@ jobs:
   # Skip on fork repos — only store stats on the canonical repository.
   store-benchmark-stats:
     name: store-benchmark-stats (main/release only)
-    continue-on-error: true
+    # Not continue-on-error. This job publishes the series every historical
+    # comparison is built from, and a silent failure here is indistinguishable
+    # from a healthy run: `main` stopped publishing on 2026-07-28 and reported
+    # success for the two weeks that followed. The job runs only on main and
+    # release pushes and gates nothing, so a red here costs a notification and
+    # buys the ability to notice.
     needs:
       - benchmarks
       - benchmarks-page-load
@@ -362,7 +367,6 @@ jobs:
 
       - name: Commit performance stats to extension_benchmark_stats
         if: steps.download-perf-benchmark.outcome == 'success'
-        continue-on-error: true
         run: .github/scripts/benchmark-stats-commit.sh
         env:
           BENCHMARK_DATA_TYPE: performance
