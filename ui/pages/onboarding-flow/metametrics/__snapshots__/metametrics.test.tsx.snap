@@ -4,7 +4,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
 <div>
   <div
     class="flex flex-col gap-4 onboarding-metametrics"
-    data-testid="onboarding-metametrics"
+    data-testid="parent-selector-onboarding-metrics"
   >
     <h2
       class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default text-left"
@@ -35,33 +35,29 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
       tabindex="0"
     >
       <label
-        class="inline-flex items-center"
+        class="inline-flex items-center self-start"
         for="metametrics-opt-in"
       >
         <div
-          class="relative"
+          class="relative inline-flex size-6 items-center justify-center"
         >
           <input
             aria-invalid="false"
             checked=""
-            class="peer absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-icon-default enabled:hover:bg-icon-default-hover enabled:active:bg-icon-default-pressed border-icon-default"
             id="metametrics-opt-in"
             type="checkbox"
           />
-          <div
-            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed border-icon-default"
+          <svg
+            class="inline-block w-4 h-4 text-icon-inverse pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition peer-enabled:peer-active:scale-95 opacity-100"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              class="inline-block w-4 h-4 text-icon-inverse pointer-events-none transition-opacity opacity-100"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
-              />
-            </svg>
-          </div>
+            <path
+              d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+            />
+          </svg>
         </div>
         <span
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default ml-3"
@@ -87,32 +83,28 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
       tabindex="0"
     >
       <label
-        class="inline-flex items-center"
+        class="inline-flex items-center self-start"
         for="metametrics-datacollection-opt-in"
       >
         <div
-          class="relative"
+          class="relative inline-flex size-6 items-center justify-center"
         >
           <input
             aria-invalid="false"
-            class="peer absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-default enabled:hover:bg-default-hover enabled:active:bg-default-pressed border-default"
             id="metametrics-datacollection-opt-in"
             type="checkbox"
           />
-          <div
-            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-default hover:bg-default-hover active:bg-default-pressed border-default"
+          <svg
+            class="inline-block w-4 h-4 text-icon-inverse pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition peer-enabled:peer-active:scale-95 opacity-0"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              class="inline-block w-4 h-4 text-icon-inverse pointer-events-none transition-opacity opacity-0"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
-              />
-            </svg>
-          </div>
+            <path
+              d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+            />
+          </svg>
         </div>
         <span
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default ml-3"
@@ -153,7 +145,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
 <div>
   <div
     class="flex flex-col gap-4 onboarding-metametrics"
-    data-testid="onboarding-metametrics"
+    data-testid="parent-selector-onboarding-metrics"
   >
     <h2
       class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default text-left"
@@ -184,33 +176,29 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
       tabindex="0"
     >
       <label
-        class="inline-flex items-center"
+        class="inline-flex items-center self-start"
         for="metametrics-opt-in"
       >
         <div
-          class="relative"
+          class="relative inline-flex size-6 items-center justify-center"
         >
           <input
             aria-invalid="false"
             checked=""
-            class="peer absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-icon-default enabled:hover:bg-icon-default-hover enabled:active:bg-icon-default-pressed border-icon-default"
             id="metametrics-opt-in"
             type="checkbox"
           />
-          <div
-            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed border-icon-default"
+          <svg
+            class="inline-block w-4 h-4 text-icon-inverse pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition peer-enabled:peer-active:scale-95 opacity-100"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              class="inline-block w-4 h-4 text-icon-inverse pointer-events-none transition-opacity opacity-100"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
-              />
-            </svg>
-          </div>
+            <path
+              d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+            />
+          </svg>
         </div>
         <span
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default ml-3"
@@ -236,32 +224,28 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
       tabindex="0"
     >
       <label
-        class="inline-flex items-center"
+        class="inline-flex items-center self-start"
         for="metametrics-datacollection-opt-in"
       >
         <div
-          class="relative"
+          class="relative inline-flex size-6 items-center justify-center"
         >
           <input
             aria-invalid="false"
-            class="peer absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-default enabled:hover:bg-default-hover enabled:active:bg-default-pressed border-default"
             id="metametrics-datacollection-opt-in"
             type="checkbox"
           />
-          <div
-            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-default hover:bg-default-hover active:bg-default-pressed border-default"
+          <svg
+            class="inline-block w-4 h-4 text-icon-inverse pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition peer-enabled:peer-active:scale-95 opacity-0"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              class="inline-block w-4 h-4 text-icon-inverse pointer-events-none transition-opacity opacity-0"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
-              />
-            </svg>
-          </div>
+            <path
+              d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+            />
+          </svg>
         </div>
         <span
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default ml-3"

@@ -156,9 +156,6 @@
     "message": "$1 (na) account",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Tingnan ang mga account mo at magmungkahi ng mga transaksyon"
-  },
   "accountsSmallCase": {
     "message": "mga account"
   },
@@ -1589,9 +1586,6 @@
   "allNetworks": {
     "message": "Lahat ng network"
   },
-  "allPermissions": {
-    "message": "Mga koneksyon ng dapp"
-  },
   "allPopularNetworks": {
     "message": "Lahat ng sikat na network"
   },
@@ -2764,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Paggamit ng USB o QR Code"
   },
-  "connectAccounts": {
-    "message": "Ikonekta ang mga account"
-  },
   "connectAnyway": {
     "message": "Kumonekta pa rin"
   },
@@ -2814,18 +2805,6 @@
   "connectedSnaps": {
     "message": "Mga konektadong Snap"
   },
-  "connectedWithAccount": {
-    "message": "$1 (na) account ang nakakonekta",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Konektado sa $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 (na) network ang nakakonekta",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Kumonekta"
   },
@@ -2862,6 +2841,9 @@
   },
   "connectionRequest": {
     "message": "Kahilingan sa koneksyon"
+  },
+  "connections": {
+    "message": "Mga Koneksyon"
   },
   "connectionsRemovedModalDescription": {
     "message": "Inalis ang ilang koneksyon (gaya ng mga hardware wallet at snap) dahil sa kawalan ng aktibidad sa device na ito. Maaari mong muling idagdag ang mga iyon anumang oras sa Mga Setting."
@@ -3068,9 +3050,6 @@
   },
   "customerSupport": {
     "message": "suporta sa kostumer"
-  },
-  "dappConnections": {
-    "message": "Mga koneksyon ng Dapp"
   },
   "dappSuggested": {
     "message": "Iminungkahing site"
@@ -3430,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Matagumpay na naidiskonekta ang lahat ng dapp."
   },
-  "disconnectMessage": {
-    "message": "Ididiskonekta ka nito mula sa site na ito"
-  },
   "disconnectPrompt": {
     "message": "Idiskonekta $1"
   },
@@ -3612,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "i-edit ang orihinal na network"
-  },
-  "editNetworksTitle": {
-    "message": "I-edit ang mga network"
   },
   "editNonceField": {
     "message": "I-edit sa Nonce"
@@ -5236,6 +5209,48 @@
   "mmFee": {
     "message": "$1% bayad sa MetaMask"
   },
+  "money": {
+    "message": "Pera"
+  },
+  "moneyActivity": {
+    "message": "Aktibidad"
+  },
+  "moneyAdd": {
+    "message": "Idagdag"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Hindi available ang balanse"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Makakuha ng ganap na liquidity nang walang lockup, kaya maaari kang mag-trade o mag-withdraw anumang oras"
+  },
+  "moneyBenefitSend": {
+    "message": "Magpadala sa alinman sa mga wallet mo sa buong MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Itabi nang ligtas ang pera mo sa mUSD, isang stablecoin na sinusuportahan ng dolyar nang 1:1"
+  },
+  "moneyBenefits": {
+    "message": "Mga Benepisyo"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Kumita sa crypto mo"
+  },
+  "moneyFundDescription": {
+    "message": "Pondohan ang iyong Money account at panoorin na lumaki ang balanse mo."
+  },
+  "moneyHowItWorks": {
+    "message": "Paano ito gumagana"
+  },
+  "moneyLearnMore": {
+    "message": "Matuto pa."
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Ipadala"
+  },
   "month": {
     "message": "buwan"
   },
@@ -5244,10 +5259,6 @@
   },
   "more": {
     "message": "iba pa"
-  },
-  "moreAccounts": {
-    "message": "+ $1 pang mga account",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Higit pa"
@@ -5442,18 +5453,6 @@
     "message": "I-claim ang bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Naki-claim na bonus",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "Ang kinita mong taunang bonus para sa pag-hold ng mUSD. Puwedeng ma-claim ang bonus mo sa Linea araw-araw.$1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Mga detalye ng bonus na pwedeng i-claim",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Kasama sa mga bayarin sa pag-convert ng mUSD ang mga bayad sa network at posible ring kasama ang mga bayarin sa provider. Walang hihinging bayad sa MetaMask kapag nag-convert ka sa mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5478,10 +5477,6 @@
   "musdConvert": {
     "message": "I-convert"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Kumita ng $1% bonus",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Magsimula"
   },
@@ -5494,10 +5489,6 @@
   },
   "musdGetMusd": {
     "message": "Kumuha ng mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5705,9 +5696,6 @@
   "networkOptions": {
     "message": "Mga pagpipilian na network"
   },
-  "networkPermissionToast": {
-    "message": "Na-update ang mga pahintulot sa network"
-  },
   "networkStatus": {
     "message": "Katayuan ng network"
   },
@@ -5743,9 +5731,6 @@
   },
   "networks": {
     "message": "Mga Network"
-  },
-  "networksSmallCase": {
-    "message": "mga network"
   },
   "new": {
     "message": "Bago!"
@@ -5859,15 +5844,16 @@
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
   },
-  "noConnectionDescription": {
-    "message": "Para kumonekta sa site, hanapin at piliin ang \"connect\" button. Tandaan na ang MetaMask ay maaari lamang kumonekta sa mga site sa web3"
-  },
   "noDefaultAddress": {
     "message": "Walang $1 address",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Walang resolusyon para sa ibinigay na domain."
+  },
+  "noFee": {
+    "message": "Walang bayarin",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Ang mga Snap, at karamihan sa mga hardware wallet, ay hindi gagana sa iyong kasalukuyang bersyon ng browser."
@@ -6858,6 +6844,9 @@
   },
   "permissions": {
     "message": "Mga Pahintulot"
+  },
+  "permissionsPageEmptyTitle": {
+    "message": "Walang makikita rito"
   },
   "permitSimulationChange_approve": {
     "message": "Limitasyon sa paggastos"
@@ -8271,9 +8260,6 @@
     "message": "Matagumpay na nabili",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Iba pang opsyon"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"
   },
@@ -8491,9 +8477,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Ito ang site na humihiling ng iyong kumpirmasyon."
-  },
-  "requestingFor": {
-    "message": "Humihiling ng"
   },
   "required": {
     "message": "Kinakailangan"
@@ -9316,9 +9299,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Paganahin ang autodetection ng NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Piliin ang network na ifi-filter"
   },
   "selectPathHelp": {
     "message": "Kung hindi mo makita ang mga account na inaasahan mo, subukang lumipat ng HD path o kasalukuyang piniling network."

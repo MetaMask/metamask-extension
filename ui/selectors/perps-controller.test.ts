@@ -31,6 +31,7 @@ import {
   selectPerpsShouldShowDepositToast,
   selectProLayoutPreferences,
   selectOrderBookPosition,
+  selectOrderBookExpanded,
 } from './perps-controller';
 
 function buildState(overrides: Record<string, unknown> = {}) {
@@ -801,6 +802,12 @@ describe('perps-controller selectors', () => {
         chartExpanded: false,
         orderBookPosition: 'right',
         orderFormPosition: 'right',
+        positionsSideFilter: 'all',
+        positionsSortField: 'positionValue',
+        positionsSortDirection: 'desc',
+        ordersSideFilter: 'all',
+        ordersSortField: 'time',
+        ordersSortDirection: 'desc',
       });
     });
 
@@ -810,6 +817,12 @@ describe('perps-controller selectors', () => {
         chartExpanded: false,
         orderBookPosition: 'left',
         orderFormPosition: 'right',
+        positionsSideFilter: 'all',
+        positionsSortField: 'positionValue',
+        positionsSortDirection: 'desc',
+        ordersSideFilter: 'all',
+        ordersSortField: 'time',
+        ordersSortDirection: 'desc',
       });
     });
 
@@ -841,6 +854,23 @@ describe('perps-controller selectors', () => {
       expect(
         selectOrderBookPosition(buildState({ proLayoutPreferences: {} })),
       ).toBe('left');
+    });
+  });
+
+  describe('selectOrderBookExpanded', () => {
+    it('returns the persisted open state', () => {
+      expect(
+        selectOrderBookExpanded(
+          buildState({ proLayoutPreferences: { orderBookExpanded: true } }),
+        ),
+      ).toBe(true);
+    });
+
+    it('defaults to closed', () => {
+      expect(selectOrderBookExpanded(buildState())).toBe(false);
+      expect(
+        selectOrderBookExpanded(buildState({ proLayoutPreferences: {} })),
+      ).toBe(false);
     });
   });
 });

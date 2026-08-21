@@ -156,9 +156,6 @@
     "message": "$1 λογαριασμοί",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Δείτε τους λογαριασμούς σας και προτείνετε συναλλαγές"
-  },
   "accountsSmallCase": {
     "message": "λογαριασμοί"
   },
@@ -1589,9 +1586,6 @@
   "allNetworks": {
     "message": "Όλα τα δίκτυα"
   },
-  "allPermissions": {
-    "message": "Συνδέσεις με Dapp"
-  },
   "allPopularNetworks": {
     "message": "Όλα τα δημοφιλή δίκτυα"
   },
@@ -2764,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Χρήση USB ή κωδικού QR"
   },
-  "connectAccounts": {
-    "message": "Σύνδεση λογαριασμών"
-  },
   "connectAnyway": {
     "message": "Σύνδεση ούτως ή άλλως"
   },
@@ -2814,18 +2805,6 @@
   "connectedSnaps": {
     "message": "Συνδεδεμένα Snaps"
   },
-  "connectedWithAccount": {
-    "message": "$1 λογαριασμοί συνδεδεμένοι",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Συνδέθηκε με το $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 δίκτυα συνδεδεμένα",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Σύνδεση"
   },
@@ -2862,6 +2841,9 @@
   },
   "connectionRequest": {
     "message": "Αίτημα σύνδεσης"
+  },
+  "connections": {
+    "message": "Συνδέσεις"
   },
   "connectionsRemovedModalDescription": {
     "message": "Ορισμένες συνδέσεις (όπως τα πορτοφόλια υλικού και τα snap) αφαιρέθηκαν λόγω αδράνειας σε αυτήν τη συσκευή. Μπορείτε να τα προσθέσετε ξανά οποιαδήποτε στιγμή από τις Ρυθμίσεις."
@@ -3068,9 +3050,6 @@
   },
   "customerSupport": {
     "message": "υποστήριξη πελατών"
-  },
-  "dappConnections": {
-    "message": "Συνδέσεις με Dapp"
   },
   "dappSuggested": {
     "message": "Υπόδειξη ιστότοπου"
@@ -3430,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Όλες οι αποκεντρωμένες εφαρμογές (dapps) αποσυνδέθηκαν με επιτυχία."
   },
-  "disconnectMessage": {
-    "message": "Αυτό θα σας αποσυνδέσει από αυτόν το ιστότοπο"
-  },
   "disconnectPrompt": {
     "message": "Αποσύνδεση $1"
   },
@@ -3612,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "επεξεργαστείτε το αρχικό δίκτυο"
-  },
-  "editNetworksTitle": {
-    "message": "Επεξεργασία δικτύων"
   },
   "editNonceField": {
     "message": "Επεξεργασία Nonce"
@@ -5236,6 +5209,48 @@
   "mmFee": {
     "message": "$1% τέλη στο MetaMask"
   },
+  "money": {
+    "message": "Οικονομικά"
+  },
+  "moneyActivity": {
+    "message": "Δραστηριότητα"
+  },
+  "moneyAdd": {
+    "message": "Προσθήκη"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Το υπόλοιπο δεν είναι διαθέσιμο"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Πλήρης ρευστότητα χωρίς δεσμεύσεις, ώστε να μπορείτε να κάνετε συναλλαγές ή ανάληψη οποιαδήποτε στιγμή"
+  },
+  "moneyBenefitSend": {
+    "message": "Στείλτε σε οποιοδήποτε από τα πορτοφόλια σας στο MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Κρατήστε τα χρήματά σας ασφαλή σε mUSD, ένα stablecoin με αναλογία 1:1 σε δολάρια"
+  },
+  "moneyBenefits": {
+    "message": "Ανταμοιβές"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Κερδίστε από τα κρυπτονομίσματά σας"
+  },
+  "moneyFundDescription": {
+    "message": "Χρηματοδοτήστε τον Money Account σας και δείτε το υπόλοιπό σας να αυξάνεται."
+  },
+  "moneyHowItWorks": {
+    "message": "Πώς λειτουργεί"
+  },
+  "moneyLearnMore": {
+    "message": "Μάθετε περισσότερα"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Αποστολή"
+  },
   "month": {
     "message": "μήνας"
   },
@@ -5244,10 +5259,6 @@
   },
   "more": {
     "message": "περισσότερα"
-  },
-  "moreAccounts": {
-    "message": "+ $1 περισσότεροι λογαριασμοί",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Περισσότερα"
@@ -5442,18 +5453,6 @@
     "message": "Εξαργύρωση μπόνους",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Μπόνους προς εξαργύρωση",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "Το ετήσιο μπόνους που έχετε κερδίσει διατηρώντας τα mUSD. Μπορείτε να εξαργυρώσετε το μπόνους σας καθημερινά στο δίκτυο Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Πληροφορίες για το μπόνους προς εξαργύρωση",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Τα τέλη μετατροπής σε mUSD περιλαμβάνουν τα έξοδα δικτύου και ενδέχεται να περιλαμβάνουν τα τέλη παρόχου. Δεν υπάρχει χρέωση στο MetaMask όταν μετατρέπετε σε mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5478,10 +5477,6 @@
   "musdConvert": {
     "message": "Μετατροπή"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Κερδίστε $1% σε μπόνους",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Ξεκινήστε"
   },
@@ -5494,10 +5489,6 @@
   },
   "musdGetMusd": {
     "message": "Αποκτήστε mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5705,9 +5696,6 @@
   "networkOptions": {
     "message": "Επιλογές δικτύου"
   },
-  "networkPermissionToast": {
-    "message": "Ενημερωμένες άδειες χρήσης δικτύων"
-  },
   "networkStatus": {
     "message": "Κατάσταση δικτύου"
   },
@@ -5743,9 +5731,6 @@
   },
   "networks": {
     "message": "Δίκτυα"
-  },
-  "networksSmallCase": {
-    "message": "δίκτυα"
   },
   "new": {
     "message": "Νέα!"
@@ -5859,15 +5844,16 @@
   "noAccountsFound": {
     "message": "Δεν βρέθηκαν λογαριασμοί για το συγκεκριμένο αίτημα αναζήτησης"
   },
-  "noConnectionDescription": {
-    "message": "Το MetaMask δεν είναι συνδεδεμένο με αυτόν τον ιστότοπο. Για να ξεκινήσετε, επιλέξτε το κουμπί Σύνδεση του ιστότοπου."
-  },
   "noDefaultAddress": {
     "message": "Δεν υπάρχει διεύθυνση $1",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Δεν παρέχεται ανάλυση για τον τομέα."
+  },
+  "noFee": {
+    "message": "Χωρίς τέλος συναλλαγής",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Τα Snaps και τα περισσότερα πορτοφόλια υλικού δεν θα λειτουργούν με την τρέχουσα έκδοση του προγράμματος περιήγησής σας."
@@ -6858,6 +6844,9 @@
   },
   "permissions": {
     "message": "Άδειες"
+  },
+  "permissionsPageEmptyTitle": {
+    "message": "Τίποτα το ιδιαίτερο εδώ"
   },
   "permitSimulationChange_approve": {
     "message": "Ανώτατο όριο δαπανών"
@@ -8271,9 +8260,6 @@
     "message": "Η αγορά ολοκληρώθηκε με επιτυχία",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Άλλες επιλογές"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "εργάσιμη μέρα"
   },
@@ -8491,9 +8477,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Αυτός είναι ο ιστότοπος που ζητά την επιβεβαίωσή σας."
-  },
-  "requestingFor": {
-    "message": "Ζητάει για το"
   },
   "required": {
     "message": "Απαιτείται"
@@ -9316,9 +9299,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Ενεργοποιήστε την ανίχνευση των NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Επιλέξτε δίκτυο για φιλτράρισμα"
   },
   "selectPathHelp": {
     "message": "Αν δεν βλέπετε τους λογαριασμούς που επιθυμείτε, δοκιμάστε να αλλάξετε τη διαδρομή HD ή το τρέχον επιλεγμένο δίκτυο."

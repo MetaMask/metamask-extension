@@ -39,55 +39,61 @@ export const ClaimsProvider = ({ children }: ClaimsProviderProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchClaims = useCallback(
-    async (isCancelled: () => boolean = () => false) => {
-      try {
-        if (isCancelled()) {
-          return;
-        }
-        setIsLoading(true);
-        setError(null);
-        const claimsData = await getShieldClaims();
-        if (isCancelled()) {
-          return;
-        }
-        const sortedClaims = claimsData
-          .sort((a: Claim, b: Claim) => {
-            const dateA = new Date(a.createdAt).getTime();
-            const dateB = new Date(b.createdAt).getTime();
-            return dateB - dateA;
-          })
-          .map((claim: Claim) => {
-            const numberChain = Number(claim.chainId);
-            const chainId = isNaN(numberChain) ? '' : numberToHex(numberChain);
-            return {
-              ...claim,
-              chainId,
-            };
-          });
-        setClaims(sortedClaims);
-      } catch (err) {
-        if (!isCancelled()) {
-          setError(err as Error);
-        }
-      } finally {
-        if (!isCancelled()) {
-          setIsLoading(false);
-        }
-      }
-    },
-    [],
-  );
+  const sortAndNormalizeClaims = useCallback((claimsData: Claim[]) => {
+    return claimsData
+      .sort((a: Claim, b: Claim) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateB - dateA;
+      })
+      .map((claim: Claim) => {
+        const numberChain = Number(claim.chainId);
+        const chainId = isNaN(numberChain) ? '' : numberToHex(numberChain);
+        return {
+          ...claim,
+          chainId,
+        };
+      });
+  }, []);
+
+  const fetchClaims = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const claimsData = await getShieldClaims();
+      setClaims(sortAndNormalizeClaims(claimsData));
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [sortAndNormalizeClaims]);
 
   useEffect(() => {
     let cancelled = false;
 
-    fetchClaims(() => cancelled);
+    // isLoading starts true; only update state in async callbacks.
+    getShieldClaims()
+      .then((claimsData) => {
+        if (!cancelled) {
+          setClaims(sortAndNormalizeClaims(claimsData));
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err as Error);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      });
 
     return () => {
       cancelled = true;
     };
-  }, [fetchClaims]);
+  }, [sortAndNormalizeClaims]);
 
   const pendingClaims = useMemo(() => {
     return claims.filter((claim) =>

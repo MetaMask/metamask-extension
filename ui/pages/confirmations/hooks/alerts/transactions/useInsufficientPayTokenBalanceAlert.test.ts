@@ -77,14 +77,29 @@ function runHook(
 
 function runHookForPerpsWithdraw(
   props: Parameters<typeof useInsufficientPayTokenBalanceAlert>[0] = {},
-  { chainId = CHAIN_IDS.ARBITRUM as Hex } = {},
+  {
+    chainId = CHAIN_IDS.ARBITRUM as Hex,
+    isPostQuoteEnabled = true,
+  }: { chainId?: Hex; isPostQuoteEnabled?: boolean } = {},
 ) {
   const transaction = {
     ...genUnapprovedContractInteractionConfirmation({ chainId }),
     type: TransactionType.perpsWithdraw,
   } as TransactionMeta;
 
-  const state = getMockConfirmStateForTransaction(transaction);
+  const state = getMockConfirmStateForTransaction(transaction, {
+    metamask: {
+      remoteFeatureFlags: {
+        /* eslint-disable @typescript-eslint/naming-convention */
+        confirmations_pay_post_quote: {
+          overrides: {
+            perpsWithdraw: { enabled: isPostQuoteEnabled },
+          },
+        },
+        /* eslint-enable @typescript-eslint/naming-convention */
+      },
+    },
+  });
 
   return renderHookWithConfirmContextProvider(
     () => useInsufficientPayTokenBalanceAlert(props),
@@ -403,6 +418,31 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       const { result } = runHookForPerpsWithdraw();
 
       expect(result.current).toStrictEqual([]);
+    });
+
+    it('checks the pay token balance when post-quote is disabled for the type', () => {
+      // Post-quote off means a direct transfer, so `payToken` is the source
+      // token again and its balance must cover the required amount.
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          chainId: '0x38' as Hex,
+          balanceUsd: '4.00',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHookForPerpsWithdraw(
+        {},
+        { isPostQuoteEnabled: false },
+      );
+
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.InsufficientPayTokenBalance,
+        }),
+      ]);
     });
 
     it('still raises the source-network alert when native balance on the tx chain is below gas fee', () => {

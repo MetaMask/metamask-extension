@@ -10,16 +10,19 @@ import { ConfirmContext } from '../../context/confirm';
 import { Asset } from '../../types/send';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { selectMinimumRequiredTokenBalance } from '../../selectors/feature-flags';
+import { ARBITRUM_USDC } from '../../constants/perps';
 import {
   ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS,
   useAutomaticTransactionPayToken,
 } from './useAutomaticTransactionPayToken';
+import { useImportPayToken } from './useImportPayToken';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import type { SetPayTokenRequest } from './types';
 import { usePostQuoteWithdrawTokenFilter } from './useWithdrawTokenFilter';
 
+jest.mock('./useImportPayToken');
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
 jest.mock('./useTransactionPayAvailableTokens');
@@ -143,8 +146,9 @@ describe('useAutomaticTransactionPayToken', () => {
   const selectMinimumRequiredTokenBalanceMock = jest.mocked(
     selectMinimumRequiredTokenBalance,
   );
+  const useImportPayTokenMock = jest.mocked(useImportPayToken);
 
-  const setPayTokenMock = jest.fn();
+  const setPayTokenMock = jest.fn(async () => undefined);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -154,6 +158,7 @@ describe('useAutomaticTransactionPayToken', () => {
       payToken: undefined,
       setPayToken: setPayTokenMock,
     });
+    setPayTokenMock.mockResolvedValue(undefined);
 
     useTransactionPayRequiredTokensMock.mockReturnValue([
       {
@@ -175,6 +180,28 @@ describe('useAutomaticTransactionPayToken', () => {
   afterEach(() => {
     jest.useRealTimers();
   });
+
+  function mockPreferredWithdrawTokenMissingFromTokenList() {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      },
+    ] as Asset[]);
+    usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: () =>
+        [
+          {
+            address: TOKEN_ADDRESS_2_MOCK,
+            chainId: CHAIN_ID_2_MOCK,
+          },
+        ] as Asset[],
+      isFilterApplied: true,
+      isTokenAllowed: (chainId, address) =>
+        chainId.toLowerCase() === PREFERRED_CHAIN_ID_MOCK &&
+        address.toLowerCase() === PREFERRED_TOKEN_ADDRESS_MOCK,
+    });
+  }
 
   it('selects first token', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([
@@ -297,7 +324,7 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('selects preferred token without availability check for perpsWithdraw', () => {
+  it('selects preferred token without availability check for perpsWithdraw', async () => {
     // The user is RECEIVING this token via Relay; they typically have $0
     // wallet balance of it, so the regular `availableTokens` membership check
     // would otherwise fall through to the first balance token.
@@ -314,6 +341,10 @@ describe('useAutomaticTransactionPayToken', () => {
         address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
         chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
       },
+    });
+
+    await act(async () => {
+      await Promise.resolve();
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
@@ -355,7 +386,7 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('selects an allowlisted preferred withdraw token before enrichment adds it to the token list', () => {
+  it('selects an allowlisted preferred withdraw token before enrichment adds it to the token list', async () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([
       {
         address: TOKEN_ADDRESS_1_MOCK,
@@ -384,9 +415,82 @@ describe('useAutomaticTransactionPayToken', () => {
       },
     });
 
+    await act(async () => {
+      await Promise.resolve();
+    });
+
     expect(setPayTokenMock).toHaveBeenCalledWith({
       address: PREFERRED_TOKEN_ADDRESS_MOCK,
       chainId: PREFERRED_CHAIN_ID_MOCK,
+    });
+  });
+
+  it('requests import of the preferred withdraw token when it is not listed', () => {
+    mockPreferredWithdrawTokenMissingFromTokenList();
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+        chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+      },
+    });
+
+    expect(useImportPayTokenMock).toHaveBeenLastCalledWith({
+      address: PREFERRED_TOKEN_ADDRESS_MOCK,
+      chainId: PREFERRED_CHAIN_ID_MOCK,
+      enabled: true,
+    });
+  });
+
+  it('does not request import for non-withdraw flows', () => {
+    renderHookWithProvider({
+      preferredToken: {
+        address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+        chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+      },
+    });
+
+    expect(useImportPayTokenMock).toHaveBeenLastCalledWith(
+      expect.objectContaining({ enabled: false }),
+    );
+  });
+
+  it('does not request import when the preferred withdraw token is already listed', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: PREFERRED_TOKEN_ADDRESS_MOCK,
+        chainId: PREFERRED_CHAIN_ID_MOCK,
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+        chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+      },
+    });
+
+    expect(useImportPayTokenMock).toHaveBeenLastCalledWith(
+      expect.objectContaining({ enabled: false }),
+    );
+  });
+
+  it('selects the preferred withdraw token when it is missing from available tokens', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([]);
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: ARBITRUM_USDC.address,
+        chainId: ARBITRUM_USDC.chainId,
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: ARBITRUM_USDC.address,
+      chainId: ARBITRUM_USDC.chainId,
     });
   });
 

@@ -14,6 +14,7 @@ import {
   selectPayQuoteConfig,
   selectPreferredPayToken,
   selectPreferredPayTokens,
+  selectRelayFixedSpread,
 } from './feature-flags';
 
 type ConfirmationsPayDappsFlag = {
@@ -67,11 +68,8 @@ type PayPrefilledAmountConfig = {
   enabled?: boolean;
 };
 
-type PayFlag = {
-  depositLimit?: Record<string, number>;
-};
-
 type PayExtendedFlag = {
+  depositLimit?: Record<string, number>;
   prefilledAmount?: {
     default?: PayPrefilledAmountConfig;
     overrides?: Record<string, PayPrefilledAmountConfig>;
@@ -87,7 +85,6 @@ type HardwareWalletFlag = {
 type MockState = {
   metamask: {
     remoteFeatureFlags: {
-      confirmations_pay?: PayFlag;
       confirmations_pay_dapps?: ConfirmationsPayDappsFlag;
       confirmations_enforced_simulations?: EnforcedSimulationsFlag;
       confirmations_pay_post_quote?: PayPostQuoteFlag;
@@ -141,16 +138,6 @@ const getMockPayTokensState = (
     remoteFeatureFlags: {
       ...(confirmations_pay_tokens !== undefined && {
         confirmations_pay_tokens,
-      }),
-    },
-  },
-});
-
-const getMockPayState = (confirmations_pay?: PayFlag): MockState => ({
-  metamask: {
-    remoteFeatureFlags: {
-      ...(confirmations_pay !== undefined && {
-        confirmations_pay,
       }),
     },
   },
@@ -473,19 +460,19 @@ describe('Confirmations Pay Feature Flags', () => {
 
   describe('selectDepositLimits', () => {
     it('returns the default empty map when the flag is absent', () => {
-      const state = getMockPayState();
+      const state = getMockPayExtendedState();
 
       expect(selectDepositLimits(state)).toStrictEqual({});
     });
 
     it('returns the default empty map when depositLimit is absent', () => {
-      const state = getMockPayState({});
+      const state = getMockPayExtendedState({});
 
       expect(selectDepositLimits(state)).toStrictEqual({});
     });
 
     it('returns deposit limits from the feature flag', () => {
-      const state = getMockPayState({
+      const state = getMockPayExtendedState({
         depositLimit: {
           moneyAccountDeposit: 100000,
         },
@@ -497,7 +484,7 @@ describe('Confirmations Pay Feature Flags', () => {
     });
 
     it('returns multiple deposit type limits', () => {
-      const state = getMockPayState({
+      const state = getMockPayExtendedState({
         depositLimit: {
           moneyAccountDeposit: 100000,
           perpsDeposit: 25000,
@@ -610,6 +597,16 @@ describe('Confirmations Pay Feature Flags', () => {
       ).toBe(true);
     });
 
+    it('returns true when perpsWithdraw is enabled', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { perpsWithdraw: true },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsWithdraw'),
+      ).toBe(true);
+    });
+
     it('returns false when the transaction type is disabled', () => {
       const state = getMockPayExtendedState({
         enableMoneyAccountTransactions: { perpsDeposit: false },
@@ -674,6 +671,43 @@ describe('Confirmations Pay Feature Flags', () => {
     it('defaults to false when remoteFeatureFlags is empty', () => {
       const state: MockState = { metamask: { remoteFeatureFlags: {} } };
       expect(selectIsPayHardwareEnabled(state)).toBe(false);
+    });
+  });
+
+  describe('selectRelayFixedSpread', () => {
+    const ETH_USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const ETH_MUSD = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+
+    it('returns parsed routes from confirmations_relay_fixed_spread', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            /* eslint-disable @typescript-eslint/naming-convention -- remote flag payload shape */
+            confirmations_relay_fixed_spread: {
+              chains: { eth: '0x1' },
+              tokens: { eth_usdc: ETH_USDC, musd: ETH_MUSD },
+              routes: [['eth', 'eth_usdc', 'eth', 'musd']],
+            },
+            /* eslint-enable @typescript-eslint/naming-convention */
+          },
+        },
+      };
+
+      expect(selectRelayFixedSpread(state)).toEqual({
+        routes: [
+          {
+            sourceChain: '0x1',
+            sourceToken: ETH_USDC,
+            targetChain: '0x1',
+            targetToken: ETH_MUSD,
+          },
+        ],
+      });
+    });
+
+    it('returns empty routes when the flag is unset', () => {
+      const state: MockState = { metamask: { remoteFeatureFlags: {} } };
+      expect(selectRelayFixedSpread(state)).toEqual({ routes: [] });
     });
   });
 });

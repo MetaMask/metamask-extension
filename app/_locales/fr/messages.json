@@ -156,9 +156,6 @@
     "message": "$1 comptes",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Consultez vos comptes et suggérez des transactions"
-  },
   "accountsSmallCase": {
     "message": "comptes"
   },
@@ -1589,9 +1586,6 @@
   "allNetworks": {
     "message": "Tous les réseaux"
   },
-  "allPermissions": {
-    "message": "Connexions aux dapps"
-  },
   "allPopularNetworks": {
     "message": "Tous les réseaux populaires"
   },
@@ -2764,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Utilisation d’une clé USB ou d’un code QR"
   },
-  "connectAccounts": {
-    "message": "Connecter les comptes"
-  },
   "connectAnyway": {
     "message": "Se connecter quand même"
   },
@@ -2814,18 +2805,6 @@
   "connectedSnaps": {
     "message": "Snaps connectés"
   },
-  "connectedWithAccount": {
-    "message": "$1 comptes connectés",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Connecté avec $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 réseaux connectés",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Connexion…"
   },
@@ -2862,6 +2841,9 @@
   },
   "connectionRequest": {
     "message": "Demande de connexion"
+  },
+  "connections": {
+    "message": "Connexions"
   },
   "connectionsRemovedModalDescription": {
     "message": "Certaines connexions (par exemple, les portefeuilles matériels et snaps) ont été supprimées en raison d’une inactivité sur cet appareil. Vous pouvez les rétablir à tout moment dans les « Paramètres »."
@@ -3068,9 +3050,6 @@
   },
   "customerSupport": {
     "message": "assistance à la clientèle"
-  },
-  "dappConnections": {
-    "message": "Connexions aux dapps"
   },
   "dappSuggested": {
     "message": "Suggéré par le site"
@@ -3430,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Toutes les dapps ont été déconnectées avec succès."
   },
-  "disconnectMessage": {
-    "message": "Cela vous déconnectera de ce site"
-  },
   "disconnectPrompt": {
     "message": "Déconnecter $1"
   },
@@ -3612,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "modifier le réseau d’origine"
-  },
-  "editNetworksTitle": {
-    "message": "Modifier les réseaux"
   },
   "editNonceField": {
     "message": "Modifier le nonce"
@@ -5236,6 +5209,48 @@
   "mmFee": {
     "message": "Frais MetaMask de $1 %"
   },
+  "money": {
+    "message": "Money"
+  },
+  "moneyActivity": {
+    "message": "Activité"
+  },
+  "moneyAdd": {
+    "message": "Ajouter"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Solde non disponible"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Profitez d’une liquidité totale sans période de blocage, vous pourrez ainsi trader ou retirer des fonds à tout moment"
+  },
+  "moneyBenefitSend": {
+    "message": "Effectuez des transferts vers n’importe lequel de vos portefeuilles MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Sécurisez vos fonds en achetant des mUSD, un stablecoin adossé au dollar à un ratio de 1:1"
+  },
+  "moneyBenefits": {
+    "message": "Avantages"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Gagnez de l’argent grâce à vos crypto-monnaies"
+  },
+  "moneyFundDescription": {
+    "message": "Approvisionnez votre Money Account et voyez votre solde augmenter."
+  },
+  "moneyHowItWorks": {
+    "message": "Comment ça marche "
+  },
+  "moneyLearnMore": {
+    "message": "En savoir plus."
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Envoyer"
+  },
   "month": {
     "message": "mois"
   },
@@ -5244,10 +5259,6 @@
   },
   "more": {
     "message": "plus"
-  },
-  "moreAccounts": {
-    "message": "+ $1 comptes supplémentaires",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Plus"
@@ -5442,18 +5453,6 @@
     "message": "Réclamer le bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Bonus réclamable",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "Le bonus annualisé que vous avez gagné pour avoir détenu des mUSD. Vous pouvez réclamer votre bonus quotidiennement sur Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Détails du bonus pouvant être réclamé",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Les frais de conversion en mUSD comprennent les coûts de réseau et peuvent inclure des frais de fournisseur. Aucuns frais MetaMask ne s’appliquent lorsque vous effectuez un échange contre des mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5478,10 +5477,6 @@
   "musdConvert": {
     "message": "Convertir"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Obtenez un bonus de $1 %",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Commencer"
   },
@@ -5494,10 +5489,6 @@
   },
   "musdGetMusd": {
     "message": "Obtenir des mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5705,9 +5696,6 @@
   "networkOptions": {
     "message": "Options du réseau"
   },
-  "networkPermissionToast": {
-    "message": "Les autorisations réseau ont été mises à jour"
-  },
   "networkStatus": {
     "message": "Statut du réseau"
   },
@@ -5743,9 +5731,6 @@
   },
   "networks": {
     "message": "Réseaux"
-  },
-  "networksSmallCase": {
-    "message": "réseaux"
   },
   "new": {
     "message": "Nouveau!"
@@ -5859,15 +5844,16 @@
   "noAccountsFound": {
     "message": "Aucun compte trouvé pour la demande de recherche effectuée"
   },
-  "noConnectionDescription": {
-    "message": "Pour vous connecter à un site, trouvez et sélectionnez le bouton « connecter ». N’oubliez pas que MetaMask ne peut se connecter qu’à des sites Web3"
-  },
   "noDefaultAddress": {
     "message": "Aucune adresse $1",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Aucune résolution n’a été fournie pour le domaine."
+  },
+  "noFee": {
+    "message": "Pas de frais",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Les Snaps et la plupart des portefeuilles matériels ne fonctionneront pas avec la version actuelle de votre navigateur."
@@ -6858,6 +6844,9 @@
   },
   "permissions": {
     "message": "Autorisations"
+  },
+  "permissionsPageEmptyTitle": {
+    "message": "Rien à voir ici"
   },
   "permitSimulationChange_approve": {
     "message": "Plafond de dépenses"
@@ -8271,9 +8260,6 @@
     "message": "Achat effectué avec succès",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Autres options"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "jour ouvrable"
   },
@@ -8491,9 +8477,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Il s’agit du site qui demande votre confirmation."
-  },
-  "requestingFor": {
-    "message": "Demande de"
   },
   "required": {
     "message": "Requis"
@@ -9316,9 +9299,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Activez la détection automatique des NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Sélectionner le réseau à filtrer"
   },
   "selectPathHelp": {
     "message": "Si vous ne voyez pas les comptes auxquels vous vous attendez, essayez de changer le chemin HD ou le réseau sélectionné."
