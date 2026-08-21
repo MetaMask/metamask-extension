@@ -134,7 +134,7 @@ export const bridgeTransaction = async ({
   openPickersWithDebounce?: boolean;
 }) => {
   const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
+  await homePage.goToHomePage();
   await homePage.startSwapFlow();
 
   const bridgePage = new BridgeQuotePage(driver);
