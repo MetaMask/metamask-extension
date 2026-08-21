@@ -6730,15 +6730,14 @@ export default class MetamaskController extends EventEmitter {
     }
     const startTime = performance.now();
 
-    const traceContext = trace({
-      name: TraceName.OnFinishedTransaction,
-      startTime: performance.timeOrigin,
-    });
-
+    // Keyed by transaction id: `tracesByKey` keys on name + id and falls back to
+    // the literal 'default' when no id is given, so two transactions finishing
+    // during the awaits below would otherwise share one key and the first span
+    // would be silently dropped.
     trace({
       name: TraceName.OnFinishedTransaction,
+      id: transactionMeta.id,
       startTime: performance.timeOrigin,
-      parentContext: traceContext,
       data: {
         transactionMeta,
       },
@@ -6752,6 +6751,7 @@ export default class MetamaskController extends EventEmitter {
     });
     endTrace({
       name: TraceName.OnFinishedTransaction,
+      id: transactionMeta.id,
       timestamp: performance.timeOrigin + startTime,
     });
   }
