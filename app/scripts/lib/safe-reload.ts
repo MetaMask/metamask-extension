@@ -8,19 +8,6 @@ import {
 import { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
 import { OperationSafener } from './operation-safener';
 
-type SafePersistOptions = {
-  /** Controller keys represented by the pending persistence operation. */
-  changedControllerKeys?: readonly string[];
-  /** Full state to persist when the persistence manager uses data storage. */
-  state?: MetaMaskStateType;
-};
-
-type RequestSafeReload = {
-  safePersist: (options?: SafePersistOptions) => Promise<boolean>;
-  requestSafeReload: () => Promise<void>;
-  evacuate: () => Promise<void>;
-};
-
 /** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
 const RELOAD_AFTER_EVACUATE_MS = 150;
 
@@ -34,10 +21,7 @@ const RELOAD_AFTER_EVACUATE_MS = 150;
  */
 export function getRequestSafeReload<Type extends PersistenceManager>(
   persistenceManager: Type,
-): RequestSafeReload {
-  /** Controller changes that bypass the persistence debounce. */
-  const immediatePersistenceKeySet = new Set(['KeyringController']);
-
+) {
   const operationSafener = new OperationSafener({
     op: async (state?: MetaMaskStateType) => {
       try {
@@ -64,23 +48,28 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
     /**
      * Safely updates the persistence manager
      *
-     * @param options - Persistence operation details.
-     * @param options.changedControllerKeys - Controller keys represented by
-     * the pending persistence operation.
-     * @param options.state - Full state to persist when using data storage.
-     * @returns A promise that resolves to true if the update was queued, or
-     * false if writes are not allowed.
+     * @param params - Arguments to pass to the persistence operation. For
+     * 'data' storage, pass the state; for 'split' storage, no arguments needed.
+     * @returns true if the update was queued, false if writes are not allowed.
      */
-    safePersist: async ({
-      changedControllerKeys = [],
-      state,
-    }: SafePersistOptions = {}) => {
-      const didQueuePersist = operationSafener.execute(state);
+    safePersist: async (
+      ...params: Parameters<
+        PersistenceManager['set'] | PersistenceManager['persist']
+      >
+    ) => {
+      return operationSafener.execute(...params);
+    },
 
-      if (
-        didQueuePersist &&
-        changedControllerKeys.some((key) => immediatePersistenceKeySet.has(key))
-      ) {
+    /**
+     * Safely persists pending split state without waiting for the debounce.
+     *
+     * @returns A promise that resolves to true if the update was queued and
+     * flushed, or false if writes are not allowed.
+     */
+    safePersistImmediately: async () => {
+      const didQueuePersist = operationSafener.execute();
+
+      if (didQueuePersist) {
         await operationSafener.flush();
       }
 
