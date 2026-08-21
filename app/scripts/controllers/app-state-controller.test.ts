@@ -235,6 +235,34 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('pendingDeepLinkRequestIds', () => {
+    it('adds unique pending deep link request ids', async () => {
+      await withController(({ controller }) => {
+        controller.addPendingDeepLinkRequestId('request-1');
+        controller.addPendingDeepLinkRequestId('request-1');
+        controller.addPendingDeepLinkRequestId('request-2');
+
+        expect(controller.state.pendingDeepLinkRequestIds).toStrictEqual([
+          'request-1',
+          'request-2',
+        ]);
+      });
+    });
+
+    it('removes pending deep link request ids', async () => {
+      await withController(({ controller }) => {
+        controller.addPendingDeepLinkRequestId('request-1');
+        controller.addPendingDeepLinkRequestId('request-2');
+
+        controller.removePendingDeepLinkRequestId('request-1');
+
+        expect(controller.state.pendingDeepLinkRequestIds).toStrictEqual([
+          'request-2',
+        ]);
+      });
+    });
+  });
+
   describe('setLastVisitedRoute', () => {
     it('stores the route namespace, path, and current timestamp', async () => {
       await withController(({ controller }) => {
@@ -861,6 +889,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "passkeyAutoUnlockSuppressed": false,
+              "pendingDeepLinkRequestIds": [],
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -949,6 +978,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "passkeyAutoUnlockSuppressed": false,
+              "pendingDeepLinkRequestIds": [],
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -1111,6 +1141,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "passkeyAutoUnlockSuppressed": false,
+              "pendingDeepLinkRequestIds": [],
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,

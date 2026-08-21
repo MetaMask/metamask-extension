@@ -660,6 +660,7 @@
     "isSignedIn": "boolean",
     "isUiOpen": "boolean",
     "isUnlocked": "boolean",
+    "pendingDeepLinkRequestIds": [],
     "pendingExtensionVersion": "null",
     "isUpdatingFCMToken": "boolean",
     "isUpdatingMetamaskNotifications": "boolean",

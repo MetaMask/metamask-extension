@@ -14,16 +14,13 @@ import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
-
-// `routes.ts` seem to require routes have a leading slash, but then the
-// UI always redirects it to the non-slashed version. So we just use the
-// non-slashed version here to skip that redirect step.
-const slashRe = /^\//u;
-const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(slashRe, '');
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 
 export type Options = {
   getExtensionURL: ExtensionPlatform['getExtensionURL'];
   getState: MetamaskController['getState'];
+  setId: (id: string) => void;
+  removeId: (id: string) => void;
 };
 
 /**
@@ -42,15 +39,21 @@ export class DeepLinkRouter extends EventEmitter<{
    */
   private getExtensionURL: Options['getExtensionURL'];
 
+  private setId: Options['setId'];
+
+  private removeId: Options['removeId'];
+
   /**
    * The function to get the current state of the application.
    */
   private getState: Options['getState'];
 
-  constructor({ getExtensionURL, getState }: Options) {
+  constructor({ getExtensionURL, getState, setId, removeId }: Options) {
     super();
     this.getExtensionURL = getExtensionURL;
     this.getState = getState;
+    this.setId = setId;
+    this.removeId = removeId;
   }
 
   /**
@@ -65,6 +68,23 @@ export class DeepLinkRouter extends EventEmitter<{
   }
 
   /**
+   * Returns the extension-owned interstitial URL for a deep link.
+   *
+   * @param url - The deep link URL to verify and display.
+   * @param id - The in-flight deep-link request id, if any.
+   * @returns The extension URL for the deep-link interstitial.
+   */
+  private getInterstitialURL(url: URL, id?: string) {
+    const search = new URLSearchParams({
+      u: this.formatUrlForInterstitialPage(url),
+    });
+    if (id) {
+      search.set('id', id);
+    }
+    return this.getExtensionURL(DEEP_LINK_ROUTE, search.toString());
+  }
+
+  /**
    * Returns the URL to the 404 error page for deep links.
    *
    * @param originalUrl - The original URL that caused the error, if available.
@@ -75,7 +95,7 @@ export class DeepLinkRouter extends EventEmitter<{
     if (originalUrl) {
       params.set('u', this.formatUrlForInterstitialPage(originalUrl));
     }
-    return this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, params.toString());
+    return this.getExtensionURL(DEEP_LINK_ROUTE, params.toString());
   }
 
   /**
@@ -86,6 +106,9 @@ export class DeepLinkRouter extends EventEmitter<{
    */
   private async redirectTab(tabId: number, url: string) {
     try {
+      // Keep tabs.update as the synchronous prefix of this async method. The
+      // webRequest handler relies on calling redirectTab without awaiting it to
+      // initiate navigation before returning in both MV2 and MV3.
       await browser.tabs.update(tabId, {
         url,
       });
@@ -152,31 +175,99 @@ export class DeepLinkRouter extends EventEmitter<{
    * redirecting to the appropriate internal route.
    * If the URL is invalid or too long, it redirects to the 404 error page.
    *
-   * In Manifest V3 this listener is non-blocking, so Chrome continues the
-   * original request without waiting for this method's Promise. Keep all work
-   * before `redirectTab` minimal and never perform external network or API
-   * lookups here. Otherwise `link.metamask.io` can load its fallback page and
-   * incorrectly tell the user to install MetaMask even though it is installed.
+   * This method must return immediately in both manifest versions. MV2 cancels
+   * the original request synchronously, while MV3 cannot block it. The call to
+   * `navigate` below must synchronously initiate the extension-owned
+   * loading-page redirect before either response is returned. Never perform
+   * external network or API lookups in this path. Otherwise `link.metamask.io`
+   * can load its fallback page and incorrectly tell the user to install
+   * MetaMask even though it is installed.
    *
    * @param tabId - The ID of the tab to redirect.
    * @param urlStr - The URL string to navigate to.
    * @param requestOrigin - The origin of the page that initiated this navigation, if known.
    */
-  private async tryNavigateTo(
+  private tryNavigateTo(
     tabId: number,
     urlStr: string,
     requestOrigin?: string,
-  ): Promise<browser.WebRequest.BlockingResponse> {
+  ): browser.WebRequest.BlockingResponse {
     if (urlStr.length > DEEP_LINK_MAX_LENGTH) {
       log.debug('Url is too long, skipping deep link handling');
       return {};
     }
 
-    let link: string;
-    try {
-      const url = new URL(urlStr);
+    // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+    // `navigate` must be invoked without awaiting it so its synchronous prefix
+    // initiates the extension-owned loading-page redirect before this handler
+    // returns. MV2 then cancels the original request immediately; MV3 lets it
+    // continue because the webRequest API cannot block it. Do not add work
+    // between the length check above and this call.
+    this.navigate(tabId, urlStr, requestOrigin);
 
-      const parsed = await parse(url);
+    if (isManifestV3) {
+      // We need to use the redirect API in MV3, because the webRequest API does
+      // not support blocking redirects.
+      return {};
+    }
+
+    // In MV2 we can't just return a `redirectUrl`, as the browser blocks the
+    // redirect when requested this way. Instead, we can `cancel` the navigation
+    // request, and then use our `redirectTab` method to complete the redirect.
+    // This is better than the MV3 way because it avoids any network requests
+    // to the deep link host, which aren't necessary so and best to avoid.
+    return { cancel: true };
+  }
+
+  /**
+   * Navigates the specified tab to the given URL, handling deep link parsing
+   * and interstitial screens.
+   *
+   * @param tabId - The ID of the tab to navigate.
+   * @param urlStr - The URL string to navigate to.
+   * @param requestOrigin - The origin of the page that initiated this navigation, if known.
+   */
+  private async navigate(
+    tabId: number,
+    urlStr: string,
+    requestOrigin?: string,
+  ): Promise<void> {
+    let redirectUrl: string | undefined;
+    let url: URL | undefined;
+    let parsed: ParsedDeepLink | false = false;
+    let id: string | undefined;
+    let interstitialPageRedirect:
+      | { promise: Promise<void>; url: string }
+      | undefined;
+    try {
+      url = new URL(urlStr);
+
+      id = crypto.randomUUID();
+      this.setId(id);
+
+      const interstitialPageUrl = this.getInterstitialURL(url, id);
+
+      // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+      // In both MV2 and MV3, synchronously initiate the extension-owned redirect
+      // before parsing or signature verification. Do not add awaited work before
+      // this call or move it below `parse`. `redirectTab` must call
+      // `browser.tabs.update` before it awaits.
+      interstitialPageRedirect = {
+        promise: this.redirectTab(tabId, interstitialPageUrl),
+        url: interstitialPageUrl,
+      };
+
+      if (process.env.IN_TEST) {
+        const simulatedDelay =
+          getManifestFlags().testing?.simulatedDeepLinkVerificationDelay;
+        if (simulatedDelay) {
+          // E2E-only control that keeps background verification pending long
+          // enough to assert the extension-owned loading page.
+          await new Promise((resolve) => setTimeout(resolve, simulatedDelay));
+        }
+      }
+
+      parsed = await parse(url);
       if (parsed) {
         this.emit('navigate', { url, parsed });
 
@@ -193,48 +284,38 @@ export class DeepLinkRouter extends EventEmitter<{
         });
 
         if (shouldShowInterstitial) {
-          // unsigned links or signed links that don't skip the interstitial
-          const search = new URLSearchParams({
-            u: this.formatUrlForInterstitialPage(url),
-          });
-          link = this.getExtensionURL(
-            TRIMMED_DEEP_LINK_ROUTE,
-            search.toString(),
-          );
+          redirectUrl = this.getInterstitialURL(url, id);
         } else if ('redirectTo' in parsed.destination) {
-          link = parsed.destination.redirectTo.toString();
+          redirectUrl = parsed.destination.redirectTo.toString();
         } else {
-          link = this.getExtensionURL(
+          redirectUrl = this.getExtensionURL(
             parsed.destination.path,
             parsed.destination.query.toString(),
           );
         }
       } else {
         // unable to parse, show error page
-        link = this.get404ErrorURL(url);
+        redirectUrl = this.get404ErrorURL(url);
       }
     } catch (error) {
       log.error('Invalid URL:', urlStr, error);
       this.emit('error', error);
       // we got a route we can't handle for some reason, and we can't just
       // swallow it, so we just show the 404 error page.
-      link = this.get404ErrorURL();
+      parsed = false;
+      redirectUrl = this.get404ErrorURL();
+    } finally {
+      if (id) {
+        this.removeId(id);
+      }
     }
 
-    this.redirectTab(tabId, link);
-
-    if (isManifestV3) {
-      // We need to use the redirect API in MV3, because the webRequest API does
-      // not support blocking redirects.
-      return {};
+    if (redirectUrl && interstitialPageRedirect?.url !== redirectUrl) {
+      // await to ensure a fast verification result cannot make the final
+      // navigation finish before the loading-page navigation, resulting in a race.
+      await interstitialPageRedirect?.promise;
+      this.redirectTab(tabId, redirectUrl);
     }
-
-    // In MV2 we can't just return a `redirectUrl`, as the browser blocks the
-    // redirect when requested this way. Instead, we can `cancel` the navigation
-    // request, and then use our `redirectTab` method to complete the redirect.
-    // This is better than the MV3 way because it avoids any network requests
-    // to the deep link host, which aren't necessary so and best to avoid.
-    return { cancel: true };
   }
 
   /**
