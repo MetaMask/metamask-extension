@@ -126,4 +126,6 @@ export const CHAIN_IDS = {
   STABLE: '0x3dc',
   SOMNIA: '0x13a7',
   ZERO_G: '0x4115',
+  DAILY_MAINNET: '0x338',
+  DAILY_TESTNET: '0x339',
 } as const;
