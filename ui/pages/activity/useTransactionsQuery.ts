@@ -1,4 +1,8 @@
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { HttpError } from '@metamask/core-backend';
 import { parseCaipAssetType } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
@@ -19,8 +23,12 @@ const maxEmptyFilteredPagesToSkip = 1;
 type TransactionQueryOptions = ReturnType<
   typeof apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions
 >;
+type QueryOptions = Extract<
+  TransactionQueryOptions,
+  { getNextPageParam: unknown }
+>;
 type TransactionQueryFunction = Extract<
-  NonNullable<TransactionQueryOptions['queryFn']>,
+  NonNullable<QueryOptions['queryFn']>,
   (...args: never[]) => unknown
 >;
 
@@ -37,7 +45,7 @@ function isKnownApiResponseError(error: unknown) {
   );
 }
 
-function withKnownApiResponse(queryFn: TransactionQueryOptions['queryFn']) {
+function withKnownApiResponse(queryFn: QueryOptions['queryFn']) {
   if (typeof queryFn !== 'function') {
     return queryFn;
   }
@@ -53,6 +61,7 @@ function withKnownApiResponse(queryFn: TransactionQueryOptions['queryFn']) {
             count: 0,
             hasNextPage: false,
           },
+          unprocessedNetworks: [],
         };
       }
 
@@ -85,7 +94,7 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
       networks: evmNetworks,
       includeTxMetadata: true,
       lang: locale.split('-')[0],
-    });
+    }) as QueryOptions;
 
   const enabled =
     Boolean(useExternalServices) &&
@@ -94,12 +103,11 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
 
   const query = useInfiniteQuery({
     ...queryOptions,
-    // @ts-expect-error apiClient returns v5 types, repo still in v4
     queryFn: withKnownApiResponse(queryOptions.queryFn),
     select: selectFn,
     enabled,
     retry: false,
-    keepPreviousData: enabled,
+    placeholderData: enabled ? keepPreviousData : undefined,
     staleTime: 5 * MINUTE,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
@@ -176,7 +184,7 @@ export function usePrefetchTransactions() {
         networks: evmNetworks,
         includeTxMetadata: true,
         lang: locale.split('-')[0],
-      }),
+      }) as QueryOptions,
     [accountAddresses, evmNetworks, locale],
   );
 
@@ -197,7 +205,6 @@ export function usePrefetchTransactions() {
     queryClient
       .prefetchInfiniteQuery({
         ...queryOptions,
-        // @ts-expect-error apiClient returns v5 types, repo still in v4
         queryFn: withKnownApiResponse(queryOptions.queryFn),
         retry: false,
         staleTime: 5 * MINUTE,
