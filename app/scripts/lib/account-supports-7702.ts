@@ -1,5 +1,5 @@
 import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
-import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../shared/constants/keyring';
+import { KEYRING_TYPES_SUPPORTING_7702_RELAY } from '../../../shared/constants/keyring';
 import { RootMessenger } from './messenger';
 
 /** Minimal shape; KeyringController.getKeyringForAccount is typed as Promise<unknown>. */
@@ -49,7 +49,7 @@ export async function accountSupports7702(
       typeof (keyring as { type: unknown }).type === 'string'
         ? (keyring as { type: string }).type
         : '';
-    return KEYRING_TYPES_SUPPORTING_7702.includes(keyringType as never);
+    return KEYRING_TYPES_SUPPORTING_7702_RELAY.includes(keyringType as never);
   } catch {
     return true;
   }

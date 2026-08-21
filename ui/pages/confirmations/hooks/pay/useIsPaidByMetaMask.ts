@@ -4,6 +4,7 @@ import { hasTransactionType } from '../../../../../shared/lib/transactions.utils
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import {
   useTransactionPayHasPositiveRequiredAmount,
+  useTransactionPayQuotes,
   useTransactionPaySourceAmounts,
   useTransactionPayTotals,
 } from './useTransactionPayData';
@@ -11,19 +12,22 @@ import {
 const SUPPORTED_TYPES: TransactionType[] = [
   TransactionType.musdConversion,
   TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
 ];
 
 /**
  * Determines whether the current transaction is fully sponsored by MetaMask
  * (zero gas, zero provider fee, zero MetaMask fee).
  *
- * Money-account deposits on Monad are gas-sponsored, and fixed-spread / same-
- * token (Monad mUSD) routes have $0 provider fee, so they show as paid by
- * MetaMask the same way mUSD conversion does.
+ * The pre-quote sponsored short-circuit is deposit-only. Direct withdrawals
+ * set `isGasFeeSponsored` on Monad and never have source amounts, so that
+ * check would always show "Paid by MetaMask". Withdrawals only qualify once
+ * a quote reports $0 fees.
  */
 export function useIsPaidByMetaMask(): boolean {
   const transactionMeta = useTransactionMetadataRequestOptional();
   const totals = useTransactionPayTotals();
+  const quotes = useTransactionPayQuotes();
   const sourceAmounts = useTransactionPaySourceAmounts();
   const hasPositiveRequiredAmount =
     useTransactionPayHasPositiveRequiredAmount();
@@ -32,8 +36,16 @@ export function useIsPaidByMetaMask(): boolean {
     return false;
   }
 
+  const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
+    TransactionType.moneyAccountWithdraw,
+  ]);
+
   // Pre-quote gasless deposits: no conversion yet, gas is sponsored.
-  if (transactionMeta?.isGasFeeSponsored && !sourceAmounts?.length) {
+  if (
+    !isMoneyAccountWithdraw &&
+    transactionMeta?.isGasFeeSponsored &&
+    !sourceAmounts?.length
+  ) {
     return true;
   }
 
@@ -41,7 +53,7 @@ export function useIsPaidByMetaMask(): boolean {
   // from genuine sponsorship. Requiring a positive amount stops the empty state
   // from claiming the transaction is "Paid by MetaMask" and then contradicting
   // itself with real fees once the user types.
-  if (!totals?.fees || !hasPositiveRequiredAmount) {
+  if (!quotes?.length || !totals?.fees || !hasPositiveRequiredAmount) {
     return false;
   }
 

@@ -6,7 +6,10 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { setIsMaxAmount } from '../../../../store/controller-actions/transaction-pay-controller';
+import {
+  setIsMaxAmount,
+  setLastMoneyAccountWithdrawAmount,
+} from '../../../../store/controller-actions/transaction-pay-controller';
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
@@ -203,16 +206,28 @@ export function useTransactionCustomAmount({
   const amountFiat = useMemo(() => {
     // Quote target USD is the amount that will actually land after fees —
     // use it for Max display so the field matches the submitted total.
+    // Withdrawals: target USD is destination-received value after bridge
+    // fees, not the mUSD being withdrawn — keep the typed amount.
     const targetAmountUsd = totals?.targetAmount?.usd;
 
-    if (isMaxAmount && targetAmountUsd && targetAmountUsd !== '0') {
+    if (
+      !isMoneyAccountWithdraw &&
+      isMaxAmount &&
+      targetAmountUsd &&
+      targetAmountUsd !== '0'
+    ) {
       return new BigNumber(targetAmountUsd)
         .round(2, BigNumber.ROUND_HALF_UP)
         .toString(10);
     }
 
     return amountFiatState;
-  }, [amountFiatState, isMaxAmount, totals?.targetAmount?.usd]);
+  }, [
+    amountFiatState,
+    isMaxAmount,
+    isMoneyAccountWithdraw,
+    totals?.targetAmount?.usd,
+  ]);
 
   const amountHuman = useMemo(
     () =>
@@ -238,6 +253,12 @@ export function useTransactionCustomAmount({
   }, [payToken?.address, payToken?.chainId]);
 
   useEffect(() => {
+    // Record immediately so Send is enabled and confirm can encode without
+    // waiting for the 500ms debounce that writes calldata.
+    if (isMoneyAccountWithdraw && transactionId) {
+      setLastMoneyAccountWithdrawAmount(transactionId, amountHuman);
+    }
+
     // When isMaxAmount is true, amountHuman is driven by quote-controller updates
     // (primaryRequiredToken.amountUsd). Re-feeding it into updateTokenAmount
     // changes txParams.data, which restarts the quote cycle (infinite loop).
@@ -266,8 +287,10 @@ export function useTransactionCustomAmount({
     amountHuman,
     disableUpdate,
     isMaxAmount,
+    isMoneyAccountWithdraw,
     payToken?.address,
     payToken?.chainId,
+    transactionId,
   ]);
 
   useEffect(() => {
@@ -351,8 +374,11 @@ export function useTransactionCustomAmount({
         .times(balanceUsdValue);
       // Max deposits also set isMaxAmount, with isMoneyAccountDeposit so TPC
       // runs them non-atomic instead of substituting token.balanceRaw.
+      // Do not set isMaxAmount for money-account withdraw. TPC would
+      // substitute on-chain mUSD `token.balanceRaw` instead of the typed
+      // withdrawable (mUSD + vmUSD) total. Matches mobile.
       const shouldSetMaxAmountMode =
-        percentage === 100 && !hasBalanceUsdOverride;
+        percentage === 100 && !hasBalanceUsdOverride && !isMoneyAccountWithdraw;
       // Keep the displayed fiat rounded except for balanceUsdOverride Max
       // (Perps withdraw), which must preserve the full typed balance.
       const newAmountFiat = (
@@ -424,6 +450,7 @@ export function useTransactionCustomAmount({
       hasBalanceUsdOverride,
       isMaxAmount,
       isMoneyAccountDeposit,
+      isMoneyAccountWithdraw,
       isNoFeePayToken,
       payToken?.balanceRaw,
       payToken?.decimals,

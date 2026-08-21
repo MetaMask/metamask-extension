@@ -6,6 +6,8 @@ import {
   setPostQuote,
   setAccountOverride,
   setPaymentOverride,
+  updateMoneyAccountWithdrawAmount,
+  getLastMoneyAccountWithdrawAmount,
 } from './transaction-pay-controller';
 
 jest.mock('../background-connection');
@@ -153,6 +155,34 @@ describe('transaction-pay-controller actions', () => {
         'setTransactionPayPaymentOverride',
         ['tx-clear', { paymentOverride: undefined, refundTo: undefined }],
       );
+    });
+  });
+
+  describe('updateMoneyAccountWithdrawAmount', () => {
+    it('forwards transactionId, amount, and recipient override', async () => {
+      const transactionId = 'tx-withdraw';
+      const recipientOverride =
+        '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+
+      await updateMoneyAccountWithdrawAmount(
+        transactionId,
+        '0.05',
+        recipientOverride,
+      );
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'updateMoneyAccountWithdrawAmount',
+        [transactionId, '0.05', recipientOverride],
+      );
+    });
+
+    it('records the last withdraw amount for confirm to re-encode', async () => {
+      const transactionId = 'tx-withdraw-last-amount';
+      mockSubmitRequestToBackground.mockResolvedValue({ id: transactionId });
+
+      await updateMoneyAccountWithdrawAmount(transactionId, '1.25');
+
+      expect(getLastMoneyAccountWithdrawAmount(transactionId)).toBe('1.25');
     });
   });
 });

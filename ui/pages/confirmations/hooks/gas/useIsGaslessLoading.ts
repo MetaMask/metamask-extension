@@ -1,6 +1,11 @@
 import { useSelector } from 'react-redux';
-import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import {
+  GasFeeToken,
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../context/confirm';
 import { getUseTransactionSimulations } from '../../../../selectors';
 import { useHasInsufficientBalance } from '../useHasInsufficientBalance';
@@ -49,7 +54,15 @@ export function useIsGaslessLoading() {
   const hasNoNativeTokenAvailable =
     excludeNativeTokenForFee || hasInsufficientBalance;
 
+  // Money-account batches skip initial gas estimate and sponsor Monad gas.
+  // Waiting on `gasFeeTokens` keeps Send spinning forever.
+  const isMoneyAccountTransaction = hasTransactionType(transactionMeta, [
+    TransactionType.moneyAccountDeposit,
+    TransactionType.moneyAccountWithdraw,
+  ]);
+
   const isGaslessLoading = Boolean(
+    !isMoneyAccountTransaction &&
     isSimulationEnabled &&
     hasNoNativeTokenAvailable &&
     (isGaslessSupportedPending || isGaslessSupportedFinished) &&

@@ -27,6 +27,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../context/confirm';
+import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
 import { AccountSelectModal } from '../../account-select-modal';
 
 export { ConfirmInfoRowSize };
@@ -91,6 +92,16 @@ export function FromAccountRow({
         currentConfirmation?.id &&
         address.toLowerCase() !== from.toLowerCase()
       ) {
+        // Mobile PayAccountSelector rewrites encoded nested calldata first so
+        // the withdraw transfer recipient (or any other encoded account word)
+        // matches the new selection, then seeds accountOverride.
+        replaceAccountInNestedTransactions({
+          transactionId: currentConfirmation.id,
+          nestedTransactions: currentConfirmation.nestedTransactions,
+          oldAddress: accountOverride ?? txFrom,
+          newAddress: address,
+        });
+
         // The TransactionPayController resolves the funding account (and gas)
         // from `accountOverride ?? txParams.from`, so keep it in sync with the
         // newly selected account.
@@ -101,7 +112,7 @@ export function FromAccountRow({
         );
       }
     },
-    [closeModal, currentConfirmation?.id, from],
+    [accountOverride, closeModal, currentConfirmation, from, txFrom],
   );
 
   if (!currentConfirmation || !from) {

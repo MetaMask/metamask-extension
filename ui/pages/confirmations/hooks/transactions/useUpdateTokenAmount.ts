@@ -18,6 +18,7 @@ import {
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTransactionPayPrimaryRequiredToken } from '../pay/useTransactionPayData';
 import { useDispatch } from '../../../../store/hooks';
+import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 
 const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
 let erc20Interface: Interface | null = null;
@@ -61,6 +62,7 @@ export function useUpdateTokenAmount() {
   );
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+  const accountOverride = useTransactionAccountOverride();
 
   const decimals = primaryRequiredToken?.decimals;
 
@@ -138,12 +140,16 @@ export function useUpdateTokenAmount() {
         return;
       }
 
-      // Same shape as deposits: the placeholder withdraw + transfer batch has
-      // no calldata to parse, and the background commit path resolves the
-      // recipient (the selected account) and the vault rate.
+      // Placeholder withdraw + transfer batch has no calldata to parse. The
+      // background commit re-encodes both calls (vault rate + recipient).
+      // Confirm patches the returned hexes onto the approval clone.
       if (moneyAccountFlow === MoneyAccountFlow.Withdraw) {
         setMoneyAccountDisplayedAmount(amountHuman, transactionId);
-        updateMoneyAccountWithdrawAmount(transactionId, amountHuman)
+        updateMoneyAccountWithdrawAmount(
+          transactionId,
+          amountHuman,
+          accountOverride,
+        )
           .then((didCommit) => {
             if (didCommit) {
               setMoneyAccountCommittedAmount(amountHuman, transactionId);
@@ -205,6 +211,7 @@ export function useUpdateTokenAmount() {
       );
     },
     [
+      accountOverride,
       amountRaw,
       data,
       decimals,

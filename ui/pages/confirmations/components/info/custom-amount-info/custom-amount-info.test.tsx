@@ -83,6 +83,16 @@ jest.mock('../../rows/total-row/total-row', () => ({
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
 
+// Withdraws are batches, so the money-account type sits on a nested transaction.
+const MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META = {
+  ...MOCK_TRANSACTION_META,
+  type: TransactionType.batch,
+  nestedTransactions: [
+    { type: TransactionType.moneyAccountWithdraw },
+    { type: TransactionType.tokenMethodTransfer },
+  ],
+} as TransactionMeta;
+
 const mockStore = configureMockStore([]);
 
 const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
@@ -471,6 +481,19 @@ describe('CustomAmountInfo', () => {
         queryByTestId('custom-amount-info-skeleton'),
       ).not.toBeInTheDocument();
     });
+
+    it('does not render the skeleton for a money-account withdraw without a required token', () => {
+      const { getByTestId, queryByTestId } = render({
+        disablePay: false,
+        primaryRequiredToken: undefined,
+        transactionMeta: MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META,
+      });
+
+      expect(getByTestId('custom-amount-info')).toBeInTheDocument();
+      expect(
+        queryByTestId('custom-amount-info-skeleton'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('renders the pay with selector when tokens available and disablePay is false', () => {
@@ -611,6 +634,17 @@ describe('CustomAmountInfo', () => {
         isQuotesLoading: false,
       });
 
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+    });
+
+    it('renders the total without a fee row for disablePay withdraws', () => {
+      const { getByTestId, queryByTestId } = render({
+        disablePay: true,
+        hasQuotes: false,
+        isQuotesLoading: false,
+      });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
     });
 
