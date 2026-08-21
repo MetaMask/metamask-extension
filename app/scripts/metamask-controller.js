@@ -5897,6 +5897,21 @@ export default class MetamaskController extends EventEmitter {
       ),
     );
 
+    // Placed after the `wallet_invokeMethod` unwrap so it sees the inner method
+    // under its EIP-1193 name, with `networkClientId` already resolved from the
+    // request's own CAIP scope. Connect-time methods (`wallet_createSession`,
+    // `wallet_getSession`) end further up the stack and are not covered here.
+    engine.push(
+      createTrustSignalsMiddleware(
+        this.networkController,
+        this.appStateController,
+        this.phishingController,
+        this.preferencesController,
+        this.getPermittedAccounts.bind(this),
+        sender?.url,
+      ),
+    );
+
     engine.push(this.metamaskMiddleware);
 
     engine.push(this.eip5792Middleware);
