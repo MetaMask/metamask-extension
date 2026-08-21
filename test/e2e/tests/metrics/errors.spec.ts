@@ -874,8 +874,8 @@ describe('Sentry errors', function () {
                 'App metadata state has not persisted',
               );
               assert.ok(
-                has(controllerState, 'MetaMetricsController.eventQueue'),
-                'MetaMetrics event queue has not persisted',
+                has(controllerState, 'AnalyticsController.eventQueue'),
+                'Analytics event queue has not persisted',
               );
             },
             'Sentry application state',
