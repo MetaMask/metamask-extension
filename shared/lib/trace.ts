@@ -483,7 +483,9 @@ function isValidSentrySpan(value: unknown): value is Sentry.Span {
  * @returns Resolved Sentry Span or null.
  */
 function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
-  if (!parentContext) {
+  // Nullish, not falsy: `TraceContext` is `unknown`, so `0` / `''` / `false`
+  // reach here, and none of them state "no parent was declared".
+  if (parentContext === null || parentContext === undefined) {
     return null;
   }
 
@@ -508,6 +510,22 @@ function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
   return null;
 }
 
+/**
+ * Whether a parent context names a trace this process started and expects to
+ * resolve from `tracesByKey`. Such a context is not a cross-process
+ * continuation, even when it also carries serialized ids for propagation.
+ *
+ * @param value - Candidate parent context.
+ * @returns True when the context names an in-process parent.
+ */
+function hasInProcessIdentity(value: unknown): value is { _name: string } {
+  return (
+    isObject(value) &&
+    hasProperty(value, '_name') &&
+    typeof value._name === 'string'
+  );
+}
+
 function hasDistributedTraceIds(
   value: unknown,
 ): value is { _traceId: string; _spanId: string } {
@@ -529,13 +547,26 @@ function startSpan<T>(
   const { data: attributes, name, parentContext, startTime, op } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
+  // `undefined` and `null` are different statements and must not be collapsed:
+  //
+  //   undefined -> no parent was declared. Inheriting the ambient span and
+  //                promoting to a transaction is the intended behaviour.
+  //   null      -> a parent WAS intended but no span exists for it.
+  //                `traceCallback` is typed `(span: Sentry.Span | null)`, so a
+  //                caller receives `null` whenever the SDK created no span and
+  //                passes it straight back. Promoting that to a transaction
+  //                bills a root for what the caller asked to be a child.
+  //
+  // See https://github.com/MetaMask/MetaMask-planning/issues/7569
+  const parentDeclared = parentContext !== undefined;
+
   // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
   // when no explicit parent is provided. Must capture before withIsolationScope
   // severs the active span context chain.
   // forceTransaction preserves transaction-level visibility for monitoring while
   // linking to the auto-instrumentation hierarchy.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext) {
+  if (!parentSpan && !parentDeclared) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;
@@ -554,7 +585,14 @@ function startSpan<T>(
 
   // Cross-process propagation via continueTrace when we have serialized
   // trace/span IDs but couldn't resolve a local parent span from the map.
-  if (!parentSpan && hasDistributedTraceIds(parentContext)) {
+  // Only a context WITHOUT in-process identity is a genuine cross-process
+  // continuation. One that names a local trace was meant to resolve from the
+  // map; routing a lookup miss here mints a segment, and a segment is billed.
+  if (
+    !parentSpan &&
+    hasDistributedTraceIds(parentContext) &&
+    !hasInProcessIdentity(parentContext)
+  ) {
     const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
     return sentryContinueTrace(sentryTrace, () =>
       sentryWithIsolationScope((scope: Sentry.Scope) => {
@@ -562,6 +600,20 @@ function startSpan<T>(
         return callback({ ...spanOptions, parentSpan: undefined });
       }),
     );
+  }
+
+  // A parent was declared (`null`, or an in-process context that missed the
+  // map) but did not resolve. Nest under whatever is active rather than
+  // starting a new segment — and deliberately WITHOUT `forceTransaction`, since
+  // a failed lookup is not a statement that this operation is a root.
+  if (!parentSpan && parentDeclared) {
+    const activeSpan = sentryGetActiveSpan();
+    if (activeSpan) {
+      return sentryWithIsolationScope((scope: Sentry.Scope) => {
+        initScope(scope, request);
+        return callback({ ...spanOptions, parentSpan: activeSpan });
+      });
+    }
   }
 
   return sentryWithIsolationScope((scope: Sentry.Scope) => {
