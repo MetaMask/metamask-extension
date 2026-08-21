@@ -412,7 +412,7 @@
     "@metamask/eth-trezor-keyring": "^11.0.0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^26.1.0",
-    "@metamask/gator-permissions-controller": "^4.2.1",
+    "@metamask/gator-permissions-controller": "^5.0.0",
     "@metamask/gator-permissions-snap": "^2.4.0",
     "@metamask/geolocation-controller": "^1.0.0",
     "@metamask/hw-wallet-sdk": "^1.0.0",

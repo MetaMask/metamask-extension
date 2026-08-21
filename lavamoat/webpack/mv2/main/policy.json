@@ -1590,6 +1590,7 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/7715-permission-types": true,
         "@metamask/gator-permissions-controller>@metamask/abi-utils": true,
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,
