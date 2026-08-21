@@ -152,6 +152,7 @@
   "trigger.api.cx.metamask.io",
   "tron-mainnet.infura.io",
   "tx-sentinel-arbitrum-mainnet.api.cx.metamask.io",
+  "tx-sentinel-base-mainnet.api.cx.metamask.io",
   "tx-sentinel-bsc-mainnet.api.cx.metamask.io",
   "tx-sentinel-ethereum-mainnet.api.cx.metamask.io",
   "tx-sentinel-linea-mainnet.api.cx.metamask.io",
