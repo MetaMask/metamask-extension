@@ -64,16 +64,21 @@ export const useMerklClaimAmount = (
 
   // Fetch on-chain claimed amount
   const [claimedAmount, setClaimedAmount] = useState<string | null>(null);
-  const [pending, setPending] = useState(true);
+  const [fetchPending, setFetchPending] = useState(() => Boolean(claimParams));
+  const [prevClaimParams, setPrevClaimParams] = useState(claimParams);
+
+  if (claimParams !== prevClaimParams) {
+    setPrevClaimParams(claimParams);
+    setClaimedAmount(null);
+    setFetchPending(Boolean(claimParams));
+  }
 
   useEffect(() => {
     if (!claimParams) {
-      setPending(false);
       return;
     }
 
     let cancelled = false;
-    setPending(true);
 
     getClaimedAmountFromContract(
       claimParams.userAddress,
@@ -82,13 +87,13 @@ export const useMerklClaimAmount = (
       .then((result) => {
         if (!cancelled) {
           setClaimedAmount(result);
-          setPending(false);
+          setFetchPending(false);
         }
       })
       .catch(() => {
         if (!cancelled) {
           setClaimedAmount(null);
-          setPending(false);
+          setFetchPending(false);
         }
       });
 
@@ -96,6 +101,8 @@ export const useMerklClaimAmount = (
       cancelled = true;
     };
   }, [claimParams]);
+
+  const pending = Boolean(claimParams) && fetchPending;
 
   // Compute unclaimed amount and format for display
   const { displayClaimAmount, fiatDisplayValue, fiatValue } = useMemo(() => {
