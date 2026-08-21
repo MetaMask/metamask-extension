@@ -3528,32 +3528,6 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // MetaMetrics
-      trackMetaMetricsEvent: (payload, options) => {
-        trackEvent(
-          createEventBuilder(payload.event)
-            .addProperties({
-              ...(payload.properties ?? {}),
-              ...(payload.category === undefined
-                ? {}
-                : { category: payload.category }),
-              ...(payload.revenue === undefined
-                ? {}
-                : { revenue: payload.revenue }),
-              ...(payload.value === undefined ? {} : { value: payload.value }),
-              ...(payload.currency === undefined
-                ? {}
-                : { currency: payload.currency }),
-            })
-            .addSensitiveProperties(payload.sensitiveProperties)
-            .build({
-              environmentType: payload.environmentType,
-              page: payload.page,
-              referrer: payload.referrer,
-              excludeMetaMetricsId: options?.excludeMetaMetricsId,
-              matomoEvent: options?.matomoEvent,
-            }),
-        );
-      },
       trackAnalyticsEvent: trackEvent,
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
