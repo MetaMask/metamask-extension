@@ -384,6 +384,21 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual(ALERT);
   });
 
+  it('returns no alerts for money account deposits even when native balance is insufficient', () => {
+    const moneyAccountDeposit = {
+      ...TRANSACTION_MOCK,
+      nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+    } as TransactionMeta;
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: moneyAccountDeposit,
+      transaction: moneyAccountDeposit,
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
   describe('post-quote withdraws', () => {
     const WITHDRAW_TRANSACTION_MOCK = {
       ...TRANSACTION_MOCK,

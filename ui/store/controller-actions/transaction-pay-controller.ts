@@ -39,10 +39,12 @@ export async function setPaymentOverride(
 export async function setIsMaxAmount(
   transactionId: string,
   isMaxAmount: boolean,
+  options: { isMoneyAccountDeposit?: boolean } = {},
 ): Promise<void> {
   return await submitRequestToBackground('setTransactionPayIsMaxAmount', [
     transactionId,
     isMaxAmount,
+    options,
   ]);
 }
 

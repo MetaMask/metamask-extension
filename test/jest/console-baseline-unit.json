@@ -763,7 +763,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientBalanceAlerts.test.ts": {
-      "MetaMask: Background connection not initialized": 68
+      "MetaMask: Background connection not initialized": 72
     },
     "ui/pages/confirmations/hooks/alerts/useNetworkAndOriginSwitchingAlerts.test.ts": {
       "MetaMask: Background connection not initialized": 6

@@ -33,10 +33,15 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
 
   const getDelegationTransactionCallback: (request: {
     transaction: TransactionMeta;
-  }) => ReturnType<typeof getDelegationTransaction> = ({ transaction }) =>
+    isSubsidized?: boolean;
+  }) => ReturnType<typeof getDelegationTransaction> = ({
+    transaction,
+    isSubsidized,
+  }) =>
     getDelegationTransaction(
       {
         messenger: initMessenger as DelegationMessenger,
+        isSubsidized,
       },
       transaction,
     );
@@ -103,9 +108,16 @@ function getApi(
     setTransactionPayIsMaxAmount: (
       transactionId: string,
       isMaxAmount: boolean,
+      options: { isMoneyAccountDeposit?: boolean } = {},
     ) => {
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.isMaxAmount = isMaxAmount;
+        // Max money-account deposits run the vault deposit after Relay
+        // settles (EXACT_INPUT). Regular deposits stay atomic so the vault
+        // call is embedded in the Relay bundle (EXPECTED_OUTPUT).
+        if (options.isMoneyAccountDeposit) {
+          config.atomic = isMaxAmount ? false : undefined;
+        }
       });
     },
     setTransactionPayPostQuote: (

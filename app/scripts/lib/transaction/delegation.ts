@@ -36,6 +36,28 @@ const log = createProjectLogger('transaction-delegation');
 
 export const PRIMARY_TYPE_DELEGATION = 'Delegation';
 
+/**
+ * Must match the placeholder used by the Intents / Relay execute API so
+ * subsidized quotes can inject the real request id after signing.
+ */
+export const SUBSIDIZED_ORDER_ID_PLACEHOLDER =
+  '0x07cece46d0aec658b12c9d194b3ac3cc74aadf102176005c76f96422b57328b2' as Hex;
+
+/** The number of bytes in a function selector. */
+const SELECTOR_BYTES = 4;
+
+/** A byte range within calldata: [start, end) in bytes, not hex characters. */
+type ByteRange = {
+  start: number;
+  end: number;
+};
+
+/** A run of calldata bytes to enforce, plus its byte start index. */
+type EnforcedSegment = {
+  startIndex: number;
+  value: Hex;
+};
+
 type DelegationMessengerActions =
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
@@ -96,6 +118,12 @@ type ConvertTransactionToRedeemDelegationsRequest = {
    * Omit to skip authorization list building entirely.
    */
   authorization?: AuthorizationRequest;
+
+  /**
+   * When true, build the Relay-execute subsidized shape: a single execution
+   * of the 7702 batch and caveats that leave the order-id placeholder free.
+   */
+  isSubsidized?: boolean;
 };
 
 type ConvertTransactionToRedeemDelegationsResult = {
@@ -107,6 +135,7 @@ type ConvertTransactionToRedeemDelegationsResult = {
 
 type GetDelegationTransactionRequest = {
   messenger: DelegationMessenger;
+  isSubsidized?: boolean;
 };
 
 type DelegationTransactionResult = {
@@ -131,22 +160,37 @@ type DelegationTransactionResult = {
 export async function convertTransactionToRedeemDelegations(
   request: ConvertTransactionToRedeemDelegationsRequest,
 ): Promise<ConvertTransactionToRedeemDelegationsResult> {
-  const { transaction, messenger } = request;
+  const { transaction, messenger, isSubsidized = false } = request;
   const { chainId } = transaction;
   const environment = getDeleGatorEnvironment(parseInt(chainId, 16));
 
-  const defaultExecutions = getDefaultTransactionExecutions(transaction);
+  // Subsidized caveats are built first so a missing batch target/calldata
+  // throws with the same prefixed error as mobile.
+  const subsidizedCaveats =
+    isSubsidized && !request.caveats
+      ? buildSubsidizedCaveats(environment, transaction)
+      : undefined;
 
-  const additionalExecutions = request.additionalExecutions ?? [];
+  const defaultExecutions = isSubsidized
+    ? buildSubsidizedExecutions(transaction)
+    : getDefaultTransactionExecutions(transaction);
+
+  const additionalExecutions = isSubsidized
+    ? []
+    : (request.additionalExecutions ?? []);
   const executions: ExecutionStruct[][] = [
     [...defaultExecutions, ...additionalExecutions],
   ];
 
   const caveats =
-    request.caveats ?? buildDefaultCaveats(environment, executions[0]);
+    request.caveats ??
+    subsidizedCaveats ??
+    buildDefaultCaveats(environment, executions[0]);
 
   const modes: ExecutionMode[] = [
-    executions[0].length > 1 ? BATCH_DEFAULT_MODE : SINGLE_DEFAULT_MODE,
+    isSubsidized || executions[0].length <= 1
+      ? SINGLE_DEFAULT_MODE
+      : BATCH_DEFAULT_MODE,
   ];
 
   const delegations = await signAndWrapDelegation({
@@ -192,6 +236,7 @@ export async function getDelegationTransaction(
       transaction,
       messenger: request.messenger,
       authorization: {},
+      isSubsidized: request.isSubsidized,
     });
 
   return {
@@ -291,6 +336,233 @@ function buildDefaultCaveats(
   }
 
   return caveats;
+}
+
+function buildSubsidizedExecutions(
+  transactionMeta: TransactionMeta,
+): ExecutionStruct[] {
+  const { txParams } = transactionMeta;
+  const target = txParams.to as Hex | undefined;
+  const callData = txParams.data as Hex | undefined;
+
+  if (!target || !callData) {
+    throw new Error('Missing batch target or calldata');
+  }
+
+  return [
+    {
+      target,
+      value: BigInt(txParams.value ?? '0x0'),
+      callData: normalizeCallData(callData),
+    },
+  ];
+}
+
+function buildSubsidizedCaveats(
+  environment: ReturnType<typeof getDeleGatorEnvironment>,
+  transaction: TransactionMeta,
+): Caveat[] {
+  try {
+    return buildSubsidizedCaveatsInternal(environment, transaction);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Subsidized Caveats: ${message}`, { cause: error });
+  }
+}
+
+function buildSubsidizedCaveatsInternal(
+  environment: ReturnType<typeof getDeleGatorEnvironment>,
+  transaction: TransactionMeta,
+): Caveat[] {
+  const { txParams } = transaction;
+  const target = txParams.to as Hex | undefined;
+  const calldata = txParams.data as Hex | undefined;
+
+  if (!target || !calldata) {
+    throw new Error('Missing batch target or calldata');
+  }
+
+  const caveats: Caveat[] = [
+    {
+      enforcer: environment.caveatEnforcers.AllowedTargetsEnforcer,
+      terms: concatHex([normalizeCallData(target)]),
+      args: '0x',
+    },
+    {
+      enforcer: environment.caveatEnforcers.LimitedCallsEnforcer,
+      terms: createLimitedCallsTerms({
+        limit: 1,
+      }),
+      args: '0x',
+    },
+  ];
+
+  for (const { startIndex, value } of getEnforcedSegments(
+    normalizeCallData(calldata),
+    transaction.nestedTransactions ?? [],
+  )) {
+    caveats.push({
+      enforcer: environment.caveatEnforcers.AllowedCalldataEnforcer,
+      terms: concatHex([toUint256Hex(startIndex), value]),
+      args: '0x',
+    });
+  }
+
+  return caveats;
+}
+
+/**
+ * Enforces every calldata byte except the order-ID placeholder window(s).
+ *
+ * @param calldata - The 0x-prefixed batch calldata (txParams.data).
+ * @param nestedTransactions - The batch's nested calls, used to locate split points.
+ * @returns The segments to enforce, ordered by byte start index.
+ */
+function getEnforcedSegments(
+  calldata: Hex,
+  nestedTransactions: { data?: string }[],
+): EnforcedSegment[] {
+  const freeRanges = findByteRanges(calldata, [
+    SUBSIDIZED_ORDER_ID_PLACEHOLDER,
+  ]);
+
+  const splitPoints = getSplitPoints(calldata, nestedTransactions);
+
+  return getSegmentsBetweenFreeRanges(calldata, freeRanges, splitPoints);
+}
+
+/**
+ * Byte offset after the selector of each order-ID-bearing nested call.
+ *
+ * @param calldata - The 0x-prefixed batch calldata.
+ * @param nestedTransactions - The nested calls to locate.
+ * @returns The post-selector byte offsets, sorted ascending, deduplicated.
+ */
+function getSplitPoints(
+  calldata: Hex,
+  nestedTransactions: { data?: string }[],
+): number[] {
+  const placeholderBody =
+    SUBSIDIZED_ORDER_ID_PLACEHOLDER.slice(2).toLowerCase();
+
+  const nestedData = nestedTransactions
+    .map((tx) => tx.data)
+    // length >= 10 ensures at least a 0x-prefixed 4-byte selector.
+    .filter((data): data is string => data !== undefined && data.length >= 10)
+    .map((data) => data.toLowerCase() as Hex)
+    // Only order-ID-bearing calls need an isolated boundary.
+    .filter((data) => data.includes(placeholderBody));
+
+  const ranges = findByteRanges(calldata, nestedData);
+
+  const points = ranges.map((range) => range.start + SELECTOR_BYTES);
+
+  return [...new Set(points)].sort((a, b) => a - b);
+}
+
+/**
+ * Every whole-byte-aligned occurrence of each needle in calldata.
+ *
+ * @param calldata - The 0x-prefixed calldata to search.
+ * @param needles - The 0x-prefixed values to locate.
+ * @returns The byte ranges [start, end) of every occurrence, unsorted.
+ */
+function findByteRanges(calldata: Hex, needles: Hex[]): ByteRange[] {
+  const haystack = calldata.slice(2).toLowerCase();
+
+  return needles.flatMap((needle) => {
+    const body = needle.slice(2).toLowerCase();
+    const byteLength = body.length / 2;
+    const ranges: ByteRange[] = [];
+
+    let charIndex = haystack.indexOf(body);
+    while (charIndex !== -1) {
+      // Only whole-byte boundaries are meaningful (each byte is two hex chars).
+      if (charIndex % 2 === 0) {
+        const start = charIndex / 2;
+        ranges.push({ start, end: start + byteLength });
+      }
+      charIndex = haystack.indexOf(body, charIndex + 1);
+    }
+
+    return ranges;
+  });
+}
+
+/**
+ * Enforces the bytes outside the free ranges, ending a segment at each split point.
+ *
+ * @param calldata - The 0x-prefixed calldata.
+ * @param freeRanges - Ranges to leave free (order-ID placeholder windows).
+ * @param splitPoints - Byte offsets at which to end a segment (post-selector).
+ * @returns The enforced segments ordered by byte start index.
+ */
+function getSegmentsBetweenFreeRanges(
+  calldata: Hex,
+  freeRanges: ByteRange[],
+  splitPoints: number[],
+): EnforcedSegment[] {
+  const totalBytes = (calldata.length - 2) / 2;
+  const sliceValue = (start: number, end: number): Hex =>
+    `0x${calldata.slice(2 + start * 2, 2 + end * 2)}` as Hex;
+
+  const sortedFree = [...freeRanges].sort((a, b) => a.start - b.start);
+  const sortedSplitPoints = [...splitPoints].sort((a, b) => a - b);
+
+  const segments: EnforcedSegment[] = [];
+
+  // Walk the ranges between free windows, ending a segment at each split point.
+  let cursor = 0;
+  for (const free of [...sortedFree, { start: totalBytes, end: totalBytes }]) {
+    addSegments(cursor, free.start, sortedSplitPoints, segments, sliceValue);
+    cursor = Math.max(cursor, free.end);
+  }
+
+  return segments;
+}
+
+/**
+ * Enforces [start, end), ending a segment at each split point inside it; the preceding
+ * selector folds into that segment.
+ *
+ * @param start - The first byte of the range (inclusive).
+ * @param end - The end of the range (exclusive).
+ * @param sortedSplitPoints - Split points sorted ascending, spanning the whole calldata.
+ * @param segments - The accumulator to push enforced segments onto.
+ * @param sliceValue - Extracts the 0x-prefixed value for a byte range.
+ */
+function addSegments(
+  start: number,
+  end: number,
+  sortedSplitPoints: number[],
+  segments: EnforcedSegment[],
+  sliceValue: (from: number, to: number) => Hex,
+): void {
+  const pushSegment = (from: number, to: number) => {
+    if (to > from) {
+      segments.push({ startIndex: from, value: sliceValue(from, to) });
+    }
+  };
+
+  const pointsInRange = sortedSplitPoints.filter(
+    (point) => point > start && point < end,
+  );
+
+  let cursor = start;
+  for (const point of pointsInRange) {
+    pushSegment(cursor, point);
+    cursor = point;
+  }
+
+  pushSegment(cursor, end);
+}
+
+function concatHex(values: Hex[]): Hex {
+  return `0x${values.map((value) => value.slice(2).toLowerCase()).join('')}` as Hex;
+}
+
+function toUint256Hex(value: number): Hex {
+  return `0x${value.toString(16).padStart(64, '0')}` as Hex;
 }
 
 async function signAndWrapDelegation({
