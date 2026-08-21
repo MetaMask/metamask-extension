@@ -75,6 +75,17 @@ export const ALL_METRICS = {
   tbt: 'tbt',
 } as const;
 
+/**
+ * Render-complete wait knobs for the account-menu and swap benchmark flows.
+ *
+ * Benchmark variance was inflated by waits that resolved on container
+ * visibility before the UI had finished rendering. These timeouts and the
+ * stability window let the flows wait for a render-complete state instead.
+ */
+export const BENCHMARK_ACCOUNT_LIST_RENDER_TIMEOUT = 120000;
+export const BENCHMARK_ACCOUNT_LIST_STABLE_FOR = 500;
+export const BENCHMARK_SWAP_PAGE_RENDER_TIMEOUT = 60000;
+
 export const WITH_STATE_POWER_USER = {
   withAccounts: 30,
   withConfirmedTransactions: 40,

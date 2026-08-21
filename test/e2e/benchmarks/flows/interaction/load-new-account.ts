@@ -41,7 +41,9 @@ export async function run(): Promise<BenchmarkRunResult> {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountListRenderComplete({
+          expectedCount: 1,
+        });
 
         await driver.resetLongTaskMetrics();
         const timestampBeforeAction = new Date();
