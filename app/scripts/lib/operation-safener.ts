@@ -127,6 +127,26 @@ export class OperationSafener<O extends Op = Op> {
   };
 
   /**
+   * Executes the latest pending operation immediately without preventing future
+   * operations from being queued.
+   *
+   * @returns A promise that resolves to true if the flush was allowed, or false
+   * if evacuation has started.
+   * @throws If the pending operation rejects.
+   */
+  flush = async (): Promise<boolean> => {
+    if (this.#evacuating !== null) {
+      log.warn('evacuating, ignoring call to `flush`');
+      return false;
+    }
+
+    const finalInvocation = this.#bouncer.flush();
+    await finalInvocation;
+
+    return true;
+  };
+
+  /**
    * Executes the operation with the provided parameters, debouncing it if
    * necessary.
    *

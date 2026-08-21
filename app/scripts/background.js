@@ -1344,7 +1344,9 @@ export function setupController(
         persistenceManager.update(key, currentState[key]);
       });
       // then persist it
-      safePersist().catch((error) => {
+      safePersist({
+        immediate: changedControllerKeys.includes('KeyringController'),
+      }).catch((error) => {
         log.error('Error persisting updated state:', error);
         sentry?.captureException(error);
       });
@@ -1388,7 +1390,9 @@ export function setupController(
           });
         }
         try {
-          await safePersist();
+          await safePersist({
+            immediate: controllerKey === 'KeyringController',
+          });
         } catch (error) {
           log.error('Error persisting state change:', error);
           sentry?.captureException(error);
