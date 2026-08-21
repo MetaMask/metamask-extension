@@ -8,13 +8,11 @@ import {
   ErrorCode as MwpCoreErrorCode,
   SessionError as MwpCoreSessionError,
 } from '@metamask/mobile-wallet-protocol-core';
-import { KeyringType } from '@metamask/keyring-api/v2';
 import {
   AccountGroupType,
   AccountWalletType,
   toAccountWalletId,
   type AccountGroupId,
-  type AccountWalletId,
 } from '@metamask/account-api';
 import type {
   AccountGroupObject,
@@ -33,7 +31,6 @@ import {
   QR_SYNC_TIMEOUT_MS,
   QrSyncErrorCodes,
 } from '../../../../shared/constants/qr-sync';
-import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import {
   QrSyncActionTypes,
   QrSyncConnectionStatus,
@@ -41,17 +38,13 @@ import {
 } from './constants';
 import { getDefaultQrSyncControllerState } from './metadata';
 import { QrSyncController } from './qr-sync-controller';
-import { QrSyncDataService } from './qr-sync-data-service';
 import type { KeyManager } from './key-manager';
-import type {
-  QrSyncControllerMessenger,
-  QrSyncDataServiceMessenger,
-} from './types';
+import type { QrSyncControllerMessenger } from './types';
 
 type RootMessenger = Messenger<
   MockAnyNamespace,
-  MessengerActions<QrSyncControllerMessenger | QrSyncDataServiceMessenger>,
-  MessengerEvents<QrSyncControllerMessenger | QrSyncDataServiceMessenger>
+  MessengerActions<QrSyncControllerMessenger>,
+  MessengerEvents<QrSyncControllerMessenger>
 >;
 
 const TEST_RELAY_URL = 'wss://test-relay.example/connection/websocket';
@@ -171,33 +164,10 @@ const mockKeyManager: KeyManager = {
 
 function setupController(
   options: {
-    keyringHandlers?: {
-      entropyIds?: string[];
-      primaryEntropyId?: string;
-      seedPhrase?: number[];
-    };
     entropyFixtures?: ReturnType<typeof createEntropyWalletFixture>[];
   } = {},
 ) {
-  const entropyIds = options.keyringHandlers?.entropyIds ?? [TEST_ENTROPY_ID];
-  const primaryEntropyId =
-    options.keyringHandlers?.primaryEntropyId ?? TEST_ENTROPY_ID;
-  const seedPhrase = options.keyringHandlers?.seedPhrase ?? TEST_SEED_PHRASE;
-  const entropyFixtures =
-    options.entropyFixtures ??
-    entropyIds.map((entropyId) =>
-      entropyId === TEST_SECONDARY_ENTROPY_ID
-        ? secondaryEntropyFixture
-        : primaryEntropyFixture,
-    );
-
-  const exportSeedPhrase = jest.fn().mockResolvedValue(seedPhrase);
-  const groupsById = new Map<AccountGroupId, AccountGroupObject>(
-    entropyFixtures.map((fixture) => [fixture.groupId, fixture.group]),
-  );
-  const walletsById = new Map<AccountWalletId, AccountWalletObject>(
-    entropyFixtures.map((fixture) => [fixture.walletId, fixture.wallet]),
-  );
+  const entropyFixtures = options.entropyFixtures ?? [primaryEntropyFixture];
 
   const rootMessenger: RootMessenger = new Messenger({
     namespace: MOCK_ANY_NAMESPACE,
@@ -208,86 +178,30 @@ function setupController(
     parent: rootMessenger,
   });
 
-  const dataServiceMessenger: QrSyncDataServiceMessenger = new Messenger({
-    namespace: 'QrSyncDataService',
-    parent: rootMessenger,
-  });
-
-  rootMessenger.delegate({
-    messenger: dataServiceMessenger,
-    actions: [
-      'KeyringController:withKeyringV2',
-      'KeyringController:exportSeedPhrase',
-      'KeyringController:exportAccount',
-      'AccountTreeController:getAccountGroupObject',
-      'AccountTreeController:getAccountWalletObject',
-      'AccountsController:getAccount',
-    ],
-    events: [],
-  });
-
   rootMessenger.delegate({
     messenger: qrSyncMessenger,
-    actions: ['QrSyncDataService:buildWalletExportEntries'],
+    actions: ['AccountTreeController:exportState'],
     events: [],
   });
 
-  const qrSyncDataService = new QrSyncDataService({
-    messenger: dataServiceMessenger,
-  });
+  const mockSnapshot = {
+    toPayloadId: jest.fn((groupId: AccountGroupId) => groupId),
+    filterAllGroups: jest.fn().mockReturnThis(),
+    serialize: jest.fn().mockReturnValue([
+      {
+        type: 'Mnemonic',
+        name: 'Wallet 1',
+        mnemonic: btoa('test mnemonic'),
+        isPrimary: true,
+        groups: [{ groupIndex: 0, name: 'Account 1' }],
+      },
+    ]),
+  };
 
+  const mockExportState = jest.fn().mockResolvedValue(mockSnapshot);
   rootMessenger.registerActionHandler(
-    'KeyringController:withKeyringV2',
-    jest.fn().mockImplementation((selector, callback) => {
-      if ('id' in selector) {
-        if (!entropyIds.includes(selector.id)) {
-          throw new Error('Keyring not found');
-        }
-
-        return callback({
-          keyring: { type: KeyringType.Hd },
-          metadata: { id: selector.id },
-        });
-      }
-
-      if ('type' in selector && selector.type === KeyringType.Hd) {
-        return callback({
-          keyring: { type: KeyringType.Hd },
-          metadata: { id: primaryEntropyId },
-        });
-      }
-
-      throw new Error('Unexpected keyring selector');
-    }),
-  );
-
-  rootMessenger.registerActionHandler(
-    'KeyringController:exportSeedPhrase',
-    exportSeedPhrase,
-  );
-
-  rootMessenger.registerActionHandler(
-    'KeyringController:exportAccount',
-    jest.fn().mockResolvedValue('0xprivate'),
-  );
-
-  rootMessenger.registerActionHandler(
-    'AccountTreeController:getAccountGroupObject',
-    jest.fn((groupId: AccountGroupId) => groupsById.get(groupId)),
-  );
-
-  rootMessenger.registerActionHandler(
-    'AccountTreeController:getAccountWalletObject',
-    jest.fn((walletId: AccountWalletId) => walletsById.get(walletId)),
-  );
-
-  rootMessenger.registerActionHandler(
-    'AccountsController:getAccount',
-    jest.fn(() => ({
-      ...MOCK_ACCOUNT_EOA,
-      id: TEST_ACCOUNT_ID,
-      address: '0x123',
-    })),
+    'AccountTreeController:exportState',
+    mockExportState,
   );
 
   const controller = new QrSyncController({
@@ -300,8 +214,8 @@ function setupController(
     controller,
     rootMessenger,
     qrSyncMessenger,
-    qrSyncDataService,
-    exportSeedPhrase,
+    mockExportState,
+    mockSnapshot,
     primaryGroupId:
       entropyFixtures[0]?.groupId ?? primaryEntropyFixture.groupId,
     entropyFixtures,
@@ -871,18 +785,17 @@ describe('QrSyncController', () => {
 
   describe('syncAccounts', () => {
     it('exports selected mnemonics and sends sync-ready to mobile', async () => {
-      const { controller, exportSeedPhrase, primaryGroupId } =
-        setupController();
+      const { controller, mockExportState, primaryGroupId } = setupController();
 
       await mockStartSession(controller);
       await mockSetReviewingSyncOffer(controller);
 
       await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
 
-      expect(exportSeedPhrase).toHaveBeenCalledWith(
-        { password: TEST_PASSWORD },
-        TEST_ENTROPY_ID,
-      );
+      expect(mockExportState).toHaveBeenCalledWith({
+        includeSecrets: true,
+        password: TEST_PASSWORD,
+      });
       expect(mockMwp.dappClient?.sendRequest).toHaveBeenCalledWith(
         expect.objectContaining({
           type: QrSyncActionTypes.SYNC_READY,
@@ -914,12 +827,25 @@ describe('QrSyncController', () => {
     });
 
     it('marks non-primary wallets when exporting multiple entropy sources', async () => {
-      const { controller } = setupController({
-        keyringHandlers: {
-          entropyIds: [TEST_ENTROPY_ID, TEST_SECONDARY_ENTROPY_ID],
-          primaryEntropyId: TEST_ENTROPY_ID,
-        },
+      const { controller, mockSnapshot } = setupController({
+        entropyFixtures: [primaryEntropyFixture, secondaryEntropyFixture],
       });
+
+      mockSnapshot.serialize.mockReturnValue([
+        {
+          type: 'Mnemonic',
+          name: 'Wallet 1',
+          mnemonic: btoa('test mnemonic primary'),
+          isPrimary: true,
+          groups: [{ groupIndex: 0, name: 'Account 1' }],
+        },
+        {
+          type: 'Mnemonic',
+          name: 'Wallet 2',
+          mnemonic: btoa('test mnemonic secondary'),
+          groups: [{ groupIndex: 0, name: 'Account 1' }],
+        },
+      ]);
 
       await mockStartSession(controller);
       await mockSetReviewingSyncOffer(controller);
@@ -956,6 +882,27 @@ describe('QrSyncController', () => {
       ).toHaveLength(1);
 
       mockEmitSyncCompleted();
+    });
+
+    it('rejects an empty account group selection before exporting secrets', async () => {
+      const { controller, mockExportState } = setupController();
+
+      await mockStartSession(controller);
+      await mockSetReviewingSyncOffer(controller);
+
+      await expect(controller.syncAccounts(TEST_PASSWORD, [])).rejects.toThrow(
+        QrSyncErrorMessages.NO_ACCOUNT_GROUPS_SELECTED,
+      );
+
+      expect(mockExportState).not.toHaveBeenCalled();
+      expect(mockMwp.dappClient?.sendRequest).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: QrSyncActionTypes.SYNC_READY,
+        }),
+      );
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
+      );
     });
 
     it('fails the session when sync completion times out', async () => {

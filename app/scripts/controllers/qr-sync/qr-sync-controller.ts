@@ -8,6 +8,7 @@ import {
   type OtpRequiredPayload,
 } from '@metamask/mobile-wallet-protocol-dapp-client';
 import type { AccountGroupId } from '@metamask/account-api';
+import { ExportStateOptions } from '@metamask/account-tree-controller';
 
 import log from 'loglevel';
 import { createSentryError } from '../../../../shared/lib/error';
@@ -193,11 +194,22 @@ export class QrSyncController extends BaseController<
       QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
     ]);
 
-    const exportData = (await this.messenger.call(
-      'QrSyncDataService:buildWalletExportEntries',
-      password,
-      selectedAccountGroupIds,
-    )) as QrSyncReadyData;
+    if (selectedAccountGroupIds.length === 0) {
+      throw new Error(QrSyncErrorMessages.NO_ACCOUNT_GROUPS_SELECTED);
+    }
+
+    let snapshot = await this.messenger.call(
+      'AccountTreeController:exportState',
+      { includeSecrets: true, password },
+    );
+
+    const selectedPayloadIds = new Set(
+      selectedAccountGroupIds.map((groupId) => snapshot.toPayloadId(groupId)),
+    );
+    snapshot = snapshot.filterAllGroups((payloadGroup) =>
+      selectedPayloadIds.has(payloadGroup.id),
+    );
+    const exportData = snapshot.serialize();
 
     const deadline = Date.now() + QR_SYNC_TIMEOUT_MS.SYNC_COMPLETION_TIMEOUT;
 
@@ -837,7 +849,9 @@ export class QrSyncController extends BaseController<
       this.#reportToSentry(
         `QR sync failed to send message (${message.type})`,
         error,
-        { code: QrSyncErrorCodes.SYNC_FAILED },
+        {
+          code: QrSyncErrorCodes.SYNC_FAILED,
+        },
       );
       throw new Error(QrSyncErrorMessages.SYNC_FAILED_TO_SEND_MESSAGE);
     }
