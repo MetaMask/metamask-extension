@@ -601,6 +601,72 @@ describe('printReport', () => {
       'startupStandardHome: chrome-webpack, firefox-webpack',
     );
   });
+
+  it('shows Layer 3 results for warned entries', () => {
+    const { THRESHOLD_SEVERITY: TS } = jest.requireActual(
+      '../../shared/constants/benchmarks',
+    ) as typeof import('../../shared/constants/benchmarks');
+    printReport({
+      comparisons: [
+        makeComparison({
+          benchmarkName: 'standardHome',
+          absoluteFailed: false,
+          absoluteViolations: [
+            {
+              metricId: 'uiStartup',
+              percentile: 'p75',
+              value: 2100,
+              threshold: 2000,
+              severity: TS.Warn,
+            },
+          ],
+          statisticalTests: [
+            {
+              metric: 'uiStartup',
+              significant: true,
+              pValue: 0.031,
+              effectSize: 0.45,
+              deltaPercent: 0.08,
+              verdict: 'warn',
+            },
+          ],
+        }),
+      ],
+      anyFailed: false,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('Statistical significance (Mann-Whitney U):');
+    expect(allCalls).toContain('uiStartup');
+    expect(allCalls).toContain('p=0.0310');
+  });
+
+  it('shows Layer 3 early warnings for passed entries with significant regressions', () => {
+    printReport({
+      comparisons: [
+        makeComparison({
+          benchmarkName: 'standardHome',
+          absoluteFailed: false,
+          statisticalTests: [
+            {
+              metric: 'load',
+              significant: true,
+              pValue: 0.018,
+              effectSize: 0.52,
+              deltaPercent: 0.06,
+              verdict: 'warn',
+            },
+          ],
+        }),
+      ],
+      anyFailed: false,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('Statistical early warnings');
+    expect(allCalls).toContain('load');
+    expect(allCalls).toContain('p=0.0180');
+  });
 });
 
 describe('buildMetricLines', () => {
