@@ -89,6 +89,12 @@ const ONBOARDING_IMPORT_WALLET = {
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   ...CLS_THRESHOLDS,
+  // Baseline: p75=485ms, p95=559ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 575, fail: 625 },
+    p95: { warn: 675, fail: 725 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
 } satisfies ThresholdConfig;
 
 const ONBOARDING_NEW_WALLET = {
@@ -128,6 +134,12 @@ const ONBOARDING_NEW_WALLET = {
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   ...CLS_THRESHOLDS,
+  // Baseline: p75=326ms, p95=377ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 400, fail: 425 },
+    p95: { warn: 450, fail: 500 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
 } satisfies ThresholdConfig;
 
 const IMPORT_SRP_HOME = {
@@ -152,6 +164,12 @@ const IMPORT_SRP_HOME = {
     ciMultiplier: CI_MULTIPLIER.TIER_2,
   },
   ...CLS_THRESHOLDS,
+  // Baseline: p75=3354ms, p95=3552ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 4000, fail: 4350 },
+    p95: { warn: 4250, fail: 4625 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
 } satisfies ThresholdConfig;
 
 const SWAP = {
@@ -171,6 +189,12 @@ const SWAP = {
     ciMultiplier: CI_MULTIPLIER.TIER_2,
   },
   ...CLS_THRESHOLDS,
+  // Baseline: p75=438ms, p95=483ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 525, fail: 575 },
+    p95: { warn: 575, fail: 625 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
 } satisfies ThresholdConfig;
 
 const SEND_TRANSACTIONS = {
@@ -190,6 +214,12 @@ const SEND_TRANSACTIONS = {
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
   ...CLS_THRESHOLDS,
+  // Baseline: p75=151ms, p95=151ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 200, fail: 225 },
+    p95: { warn: 200, fail: 225 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
 } satisfies ThresholdConfig;
 
 const ASSET_DETAILS = {
@@ -199,6 +229,12 @@ const ASSET_DETAILS = {
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
   ...CLS_THRESHOLDS,
+  // Baseline: p75=95ms, p95=127ms (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 125, fail: 150 },
+    p95: { warn: 150, fail: 175 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
 } satisfies ThresholdConfig;
 
 const SOLANA_ASSET_DETAILS = {
@@ -208,6 +244,12 @@ const SOLANA_ASSET_DETAILS = {
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
   ...CLS_THRESHOLDS,
+  // Baseline: p75≈1ms, p95≈1ms — floor applied (2026-04-07 – 2026-04-20, ci.branch:main)
+  tbt: {
+    p75: { warn: 50, fail: 75 },
+    p95: { warn: 75, fail: 100 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
 } satisfies ThresholdConfig;
 
 const STANDARD_HOME = {
@@ -227,6 +269,8 @@ const STANDARD_HOME = {
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   ...CLS_THRESHOLDS,
+  // No `tbt`: startup flows (`standard-home.ts`) do not call
+  // `buildLongTaskTimerResults`, so TBT data is never emitted for this preset.
 } satisfies ThresholdConfig;
 
 const POWER_USER_HOME = {
@@ -246,6 +290,8 @@ const POWER_USER_HOME = {
     ciMultiplier: CI_MULTIPLIER.STARTUP_POWER_USER,
   },
   ...CLS_THRESHOLDS,
+  // No `tbt`: startup flows (`power-user-home.ts`) do not call
+  // `buildLongTaskTimerResults`, so TBT data is never emitted for this preset.
 } satisfies ThresholdConfig;
 
 // Threshold keys must match timer IDs emitted by the benchmark flows (snake_case).
