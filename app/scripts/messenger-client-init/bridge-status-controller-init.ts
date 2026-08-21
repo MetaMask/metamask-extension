@@ -6,11 +6,15 @@ import {
 } from '@metamask/bridge-status-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
-import { trace } from '../../../shared/lib/trace';
+import { trace, traceBackgroundPoll } from '../../../shared/lib/trace';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { accountSupports7702 } from '../lib/account-supports-7702';
 import { captureException } from '../../../shared/lib/sentry';
 import { MessengerClientInitFunction } from './types';
+
+type ControllerWithExecutePoll = {
+  _executePoll?: (input: unknown) => Promise<void>;
+};
 
 /**
  * Shape of the `bridgeQuoteStatusManager` remote feature flag after it has been resolved by
@@ -96,6 +100,19 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
       return bridgeQuoteStatusManager?.enabled === true;
     },
   });
+
+  // Root each scheduled poll cycle in its own trace before the controller's
+  // internal `_executePoll` callback performs network work.
+  const pollingController =
+    messengerClient as unknown as ControllerWithExecutePoll;
+  const executePoll = pollingController._executePoll?.bind(messengerClient);
+
+  if (executePoll) {
+    pollingController._executePoll = (pollingInput: unknown) =>
+      traceBackgroundPoll('BridgeStatusController', () =>
+        executePoll(pollingInput),
+      );
+  }
 
   return {
     messengerClient,
