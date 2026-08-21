@@ -93,6 +93,12 @@ function sanitizeTestTitle(title: string): string {
   return title.replace(/[^a-zA-Z0-9-_]/gu, '_');
 }
 
+const DOWNLOADS_FOLDER = path.join(
+  process.cwd(),
+  'test-artifacts',
+  'downloads',
+);
+
 /**
  * Wraps a Playwright `Locator` with the same surface as the Selenium-flavored
  * elements returned by `wrapElementWithAPI` in `webdriver/driver.js`. Page
@@ -285,6 +291,20 @@ export class PlaywrightDriver {
     this.handleCounter += 1;
     const handle = `pw-handle-${this.handleCounter}`;
     this.pages.set(handle, page);
+    // Selenium relies on the browser's native download directory. Playwright
+    // instead intercepts downloads, so persist each one under the shared
+    // downloads folder with its real filename to keep spec expectations
+    // (read file by name from `test-artifacts/downloads`) working.
+    page.on('download', (download) => {
+      download
+        .saveAs(path.join(DOWNLOADS_FOLDER, download.suggestedFilename()))
+        .catch((error) => {
+          console.error(
+            `PlaywrightDriver: failed to save download '${download.suggestedFilename()}'`,
+            error,
+          );
+        });
+    });
     page.on('close', () => {
       this.pages.delete(handle);
       if (this.currentPage === page) {
@@ -805,17 +825,35 @@ export class PlaywrightDriver {
     await element.locator.hover();
   }
 
-  async clickElementUsingMouseMove(_rawLocator: RawLocator): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.clickElementUsingMouseMove is not yet implemented.',
-    );
+  async clickElementUsingMouseMove(rawLocator: RawLocator): Promise<void> {
+    // Selenium escape hatch for ElementClickInterceptedError: it clicks via
+    // the raw actions API, which does NOT check whether another element (e.g.
+    // a notification badge) covers the target. The Playwright equivalent is
+    // `force: true`, which skips the receives-pointer-events actionability
+    // check while still waiting for the element to be visible and stable.
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.scrollIntoViewIfNeeded();
+    await locator.click({ force: true, timeout: this.timeout });
   }
 
   async pasteIntoField(
-    _rawLocator: RawLocator,
-    _content: string,
+    rawLocator: RawLocator,
+    contentToPaste: string,
   ): Promise<void> {
-    throw new Error('PlaywrightDriver.pasteIntoField is not yet implemented.');
+    // Selenium writes to the system clipboard (`navigator.clipboard.writeText`)
+    // and sends a Cmd/Ctrl+V chord. The async clipboard API needs
+    // browser-specific permission setup in Playwright (Chromium
+    // `grantPermissions`, Firefox prefs), so mirror the *effect* of a paste
+    // instead: focus the field and insert the full string as a single `input`
+    // event — what a paste produces for controlled React inputs — without
+    // per-character key events or touching the system clipboard.
+    //
+    // Caveat: `insertText` does not dispatch a `paste` ClipboardEvent. If a
+    // migrated spec ever exercises an `onPaste` handler (e.g. SRP word
+    // splitting), this needs a real clipboard-backed implementation.
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.click();
+    await this.page.keyboard.insertText(contentToPaste);
   }
 
   async holdMouseDownOnElement(
@@ -879,9 +917,14 @@ export class PlaywrightDriver {
 
   async openNewPage(url: string): Promise<string> {
     const page = await this.context.newPage();
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    // Selenium switches to the new tab *before* navigating, so callers that
+    // swallow navigation errors (e.g. intentional proxy failures in the ENS
+    // resolution spec) still end up focused on the new tab. Mirror that by
+    // making the page current before `goto` can throw.
     this.currentPage = page;
-    return this.handleFor(page);
+    const handle = this.handleFor(page);
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    return handle;
   }
 
   async openNewURL(url: string): Promise<void> {
@@ -890,6 +933,25 @@ export class PlaywrightDriver {
 
   async getCurrentUrl(): Promise<string> {
     return this.page.url();
+  }
+
+  /**
+   * Waits until the current page's URL equals the given URL. Mirrors the
+   * Selenium driver's `waitForUrl` (`until.urlIs`). Playwright treats a
+   * plain string (no glob characters) as an exact-match pattern.
+   *
+   * @param options - Parameters for the function.
+   * @param options.url - The URL to wait for.
+   * @param options.timeout - Optional timeout period, defaults to `this.timeout`.
+   */
+  async waitForUrl({
+    url,
+    timeout = this.timeout,
+  }: {
+    url: string;
+    timeout?: number;
+  }): Promise<void> {
+    await this.page.waitForURL(url, { timeout });
   }
 
   async refresh(): Promise<void> {
@@ -907,15 +969,37 @@ export class PlaywrightDriver {
   }
 
   // -- Window / tab management ---------------------------------------------
+  //
+  // Selenium identifies windows/tabs by opaque string handles. The shim
+  // mirrors that with synthetic `pw-handle-N` handles mapped to Playwright
+  // `Page`s (see `registerPage`); every page the context opens — including
+  // tabs opened by the extension background — arrives via the context's
+  // 'page' event and gets a handle.
 
-  async getAllWindowHandles(): Promise<string[]> {
-    throw new Error(
-      'PlaywrightDriver.getAllWindowHandles is not yet implemented.',
-    );
+  async getCurrentWindowHandle(): Promise<string> {
+    return this.handleFor(this.page);
   }
 
-  async switchToWindow(_handle: string): Promise<void> {
-    throw new Error('PlaywrightDriver.switchToWindow is not yet implemented.');
+  async getAllWindowHandles(): Promise<string[]> {
+    // Defensive: make sure every page the context currently knows about is
+    // registered before reporting handles.
+    for (const page of this.context.pages()) {
+      this.registerPage(page);
+    }
+    return [...this.pages.keys()];
+  }
+
+  async switchToWindow(handle: string): Promise<void> {
+    const page = this.pages.get(handle);
+    if (!page || page.isClosed()) {
+      throw new Error(
+        `PlaywrightDriver.switchToWindow: no open window with handle '${handle}'`,
+      );
+    }
+    this.currentPage = page;
+    // Selenium's switchTo().window() also focuses the window; some UI (e.g.
+    // focus-dependent rendering) relies on that.
+    await page.bringToFront();
   }
 
   async switchToNewWindow(): Promise<void> {
@@ -960,10 +1044,17 @@ export class PlaywrightDriver {
     throw new Error('PlaywrightDriver.closeWindow is not yet implemented.');
   }
 
-  async closeWindowHandle(_handle: string): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.closeWindowHandle is not yet implemented.',
-    );
+  async closeWindowHandle(handle: string): Promise<void> {
+    const page = this.pages.get(handle);
+    if (!page) {
+      throw new Error(
+        `PlaywrightDriver.closeWindowHandle: no window with handle '${handle}'`,
+      );
+    }
+    // If this was the current page, the 'close' listener in `registerPage`
+    // moves `currentPage` to another open page, mirroring how Selenium
+    // callers always `switchToWindow` after closing.
+    await page.close();
   }
 
   async switchToFrame(frame: PlaywrightElement | string): Promise<void> {

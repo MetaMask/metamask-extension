@@ -1,0 +1,222 @@
+import { test as pwTest } from '@playwright/test';
+import { MockttpServer, Mockttp } from 'mockttp';
+import { withFixtures } from '../../helpers';
+import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import {
+  getMainnet25EthAssetsControllerPatch,
+  MAINNET_NATIVE_ASSET_ID,
+} from '../tokens/utils/mocks';
+import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
+import { DEFAULT_FIXTURE_ACCOUNT_ID, E2E_DRIVER } from '../../constants';
+
+const SEPOLIA_NATIVE_ASSET_ID = 'eip155:11155111/slip44:60';
+
+const SEPOLIA_NATIVE_ASSET_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image:
+    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/11155111/slip44/60.png',
+  name: 'Sepolia Ether',
+  symbol: 'SepoliaETH',
+  type: 'native' as const,
+};
+
+const infuraSepoliaUrl =
+  'https://sepolia.infura.io/v3/00000000000000000000000000000000';
+
+async function mockInfura(mockServer: Mockttp): Promise<void> {
+  await mockServerJsonRpc(mockServer as MockttpServer, [
+    ['eth_blockNumber'],
+    ['eth_getBlockByNumber'],
+  ]);
+  await mockServer
+    .forPost(infuraSepoliaUrl)
+    .withJsonBodyIncluding({ method: 'eth_getBalance' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        jsonrpc: '2.0',
+        id: '6857940763865360',
+        result: '0x15af1d78b58c40000',
+      },
+    }));
+}
+const ETH_CONVERSION_RATE_USD = 1700;
+
+async function mockPriceApi(mockServer: Mockttp) {
+  const price = ETH_CONVERSION_RATE_USD;
+  await mockServer
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:1/slip44:60': {
+          price,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+  await mockServer
+    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / ETH_CONVERSION_RATE_USD,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
+}
+
+pwTest.describe('Settings', () => {
+  pwTest(
+    'Should match the value of token list item and account list item for eth conversion',
+    async (
+      // eslint-disable-next-line no-empty-pattern
+      {},
+      testInfo,
+    ) => {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2()
+            .withShowNativeTokenAsMainBalanceDisabled()
+            .withEnabledNetworks({ eip155: { '0x1': true } })
+            .withAssetsController(getMainnet25EthAssetsControllerPatch(1700))
+            .build(),
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockPriceApi(mockServer);
+          },
+          driverType: E2E_DRIVER.PLAYWRIGHT,
+          title: testInfo.titlePath.join(' '),
+        },
+        async ({ driver }) => {
+          await login(driver, { expectedBalance: '$42,500.00' });
+          await new HeaderNavbar(driver).openAccountMenu();
+          await new AccountListPage(
+            driver,
+          ).checkMultichainAccountBalanceDisplayed({ balance: '$42,500.00' });
+        },
+      );
+    },
+  );
+
+  pwTest(
+    'Should match the value of token list item and account list item for fiat conversion',
+    async (
+      // eslint-disable-next-line no-empty-pattern
+      {},
+      testInfo,
+    ) => {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2()
+            .withShowNativeTokenAsMainBalanceDisabled()
+            .withPreferencesController({
+              preferences: { showFiatInTestnets: true, showTestNetworks: true },
+            })
+            .withEnabledNetworks({ eip155: { '0x1': true } })
+            .withAssetsController({
+              ...getMainnet25EthAssetsControllerPatch(1700),
+              assetsBalance: {
+                [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                  [MAINNET_NATIVE_ASSET_ID]: { amount: '25' },
+                  [SEPOLIA_NATIVE_ASSET_ID]: { amount: '25' },
+                },
+              },
+              assetsInfo: {
+                [SEPOLIA_NATIVE_ASSET_ID]: SEPOLIA_NATIVE_ASSET_INFO,
+              },
+            })
+            .build(),
+          driverType: E2E_DRIVER.PLAYWRIGHT,
+          title: testInfo.titlePath.join(' '),
+          testSpecificMock: async (mockServer: Mockttp) => {
+            await mockPriceApi(mockServer);
+            await mockInfura(mockServer);
+          },
+        },
+        async ({ driver }) => {
+          await login(driver, { validateBalance: false });
+          const homePage = new HomePage(driver);
+          await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
+          await new TokensTab(driver).checkTokenFiatAmountIsDisplayed(
+            '$42,500.00',
+          );
+
+          // switch to Sepolia
+          // the account list item used to always show account.balance as long as its EVM network.
+          // Now we are showing aggregated fiat balance on non testnetworks; but if it is a testnetwork we will show account.balance.
+          // The current test was running initially on localhost
+          // which is not a testnetwork resulting in the code trying to calculate the aggregated total fiat balance which shows 0.00$
+          // If this test switches to mainnet then switches back to localhost; the test will pass because switching to mainnet
+          // will make the code calculate the aggregate fiat balance on mainnet+Linea mainnet and because this account in this test
+          // has 42,500.00 native Eth on mainnet then the aggregated total fiat would be 42,500.00. When the user switches back to localhost
+          // it will show the total that the test is expecting.
+
+          // I think we can slightly modify this test to switch to Sepolia network before checking the account List item value
+          await switchToNetworkFromNetworkSelect(driver, 'Sepolia');
+
+          await homePage.headerNavbar.openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.toggleBalanceSetting();
+          await closeSettings(driver);
+          await homePage.checkExpectedBalanceIsDisplayed('25', 'SepoliaETH');
+        },
+      );
+    },
+  );
+
+  pwTest(
+    'Should show crypto value when price checker setting is off',
+    async (
+      // eslint-disable-next-line no-empty-pattern
+      {},
+      testInfo,
+    ) => {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2()
+            .withPreferencesController({
+              preferences: { showFiatInTestnets: true },
+            })
+            .withAssetsController({
+              ...getMainnet25EthAssetsControllerPatch(1700),
+            })
+            .build(),
+          driverType: E2E_DRIVER.PLAYWRIGHT,
+          title: testInfo.titlePath.join(' '),
+          testSpecificMock: async (mockServer: Mockttp) => {
+            await mockPriceApi(mockServer);
+            await mockInfura(mockServer);
+          },
+        },
+        async ({ driver }) => {
+          await login(driver);
+          const homePage = new HomePage(driver);
+          await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
+        },
+      );
+    },
+  );
+});

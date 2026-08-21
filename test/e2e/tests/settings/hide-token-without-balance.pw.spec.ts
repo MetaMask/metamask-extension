@@ -1,0 +1,74 @@
+import { test as pwTest } from '@playwright/test';
+import { E2E_DRIVER } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import AssetsSettingsPage from '../../page-objects/pages/settings/assets-settings-page';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
+
+pwTest.describe('Hide tokens without balance', () => {
+  // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // This script tests the "hide tokens without balance" feature in wallet settings, ensuring that tokens with zero        //
+  // balances are correctly hidden from the tokens list tab when corresponding toggle is enabled.                       //
+  // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  pwTest(
+    'user can activate hide tokens without balance feature via settings',
+    async (
+      // eslint-disable-next-line no-empty-pattern
+      {},
+      testInfo,
+    ) => {
+      const smartContract = SMART_CONTRACTS.HST;
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2().build(),
+          driverType: E2E_DRIVER.PLAYWRIGHT,
+          title: testInfo.titlePath.join(' '),
+          smartContract,
+          manifestFlags: {
+            remoteFeatureFlags: {
+              extensionUxTokenManagementFilter: true,
+            },
+          },
+        },
+        async ({ driver, localNodes }) => {
+          await login(driver, { localNode: localNodes[0] });
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.importCustomTokenByChain(
+            '0x539',
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          );
+          await tokensTab.importCustomTokenByChain(
+            '0x539',
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945948',
+            'TST2',
+            '4',
+          );
+
+          // Verify that both zero-balance tokens and non-zero-balance tokens are displayed by default
+          const tokenList = new TokensTab(driver);
+          await tokenList.checkTokenItemNumber(3);
+          await tokenList.checkTokenExistsInList('Ethereum');
+          await tokenList.checkTokenExistsInList('TST');
+          await tokenList.checkTokenExistsInList('TST2');
+
+          // Navigate to settings and toggle on "hide tokens without balance" feature
+          await new HomePage(driver).headerNavbar.openSettingsPage();
+          const assetsSettings = new AssetsSettingsPage(driver);
+          await assetsSettings.checkAssetsPageIsLoaded();
+          await assetsSettings.toggleHideTokensWithoutBalance();
+          await closeSettings(driver);
+
+          // Check that tokens with zero balances are hidden, tokens with non-zero balances remain visible
+          await new HomePage(driver).checkPageIsLoaded();
+          await tokenList.checkTokenItemNumber(2);
+          await tokenList.checkTokenExistsInList('Ethereum');
+          await tokenList.checkTokenExistsInList('TST');
+        },
+      );
+    },
+  );
+});
