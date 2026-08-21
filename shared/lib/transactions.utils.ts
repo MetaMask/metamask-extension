@@ -75,6 +75,33 @@ export function getTransactionType(
   return type;
 }
 
+export const MONEY_ACCOUNT_TRANSACTION_TYPES = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
+] as const;
+
+/**
+ * Resolves the money-account type of a transaction, including batches.
+ *
+ * Money-account deposits and withdrawals are created via
+ * `addTransactionBatch`, so the top-level `type` is `batch` and the
+ * meaningful type sits on a nested transaction — and not necessarily the
+ * first one: deposits are `[approve, deposit]`, so `getTransactionType`
+ * would resolve them to `tokenMethodApprove`. Mirrors mobile's `info-root`
+ * routing, which checks `hasTransactionType` before the generic batch map.
+ *
+ * @param transactionMeta - The transaction metadata to inspect.
+ * @returns The money-account type when present anywhere in the transaction,
+ * otherwise undefined.
+ */
+export function getMoneyAccountTransactionType(
+  transactionMeta: TransactionMeta | undefined,
+): TransactionType | undefined {
+  return MONEY_ACCOUNT_TRANSACTION_TYPES.find((transactionType) =>
+    hasTransactionType(transactionMeta, [transactionType]),
+  );
+}
+
 export const POST_QUOTE_WITHDRAW_TRANSACTION_TYPES = [
   TransactionType.moneyAccountWithdraw,
   TransactionType.perpsWithdraw,

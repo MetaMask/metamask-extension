@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -158,11 +158,15 @@ describe('ConfirmContextProvider', () => {
 
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
 
-    result.current.setMoneyAccountDisplayedAmount('5', 'test-id');
+    act(() => {
+      result.current.setMoneyAccountDisplayedAmount('5', 'test-id');
+    });
     rerender();
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
 
-    result.current.setMoneyAccountCommittedAmount('5', 'test-id');
+    act(() => {
+      result.current.setMoneyAccountCommittedAmount('5', 'test-id');
+    });
     rerender();
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
   });
@@ -172,18 +176,24 @@ describe('ConfirmContextProvider', () => {
     const { result, rerender } = renderContextProvider(store);
 
     // Type "5" (commit starts), then "6" before the "5" commit lands.
-    result.current.setMoneyAccountDisplayedAmount('5', 'test-id');
-    result.current.setMoneyAccountDisplayedAmount('6', 'test-id');
+    act(() => {
+      result.current.setMoneyAccountDisplayedAmount('5', 'test-id');
+      result.current.setMoneyAccountDisplayedAmount('6', 'test-id');
+    });
     rerender();
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
 
     // The "5" commit landing must NOT enable Confirm: the transaction's
     // calldata encodes 5 while the user sees 6.
-    result.current.setMoneyAccountCommittedAmount('5', 'test-id');
+    act(() => {
+      result.current.setMoneyAccountCommittedAmount('5', 'test-id');
+    });
     rerender();
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
 
-    result.current.setMoneyAccountCommittedAmount('6', 'test-id');
+    act(() => {
+      result.current.setMoneyAccountCommittedAmount('6', 'test-id');
+    });
     rerender();
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
   });
@@ -192,7 +202,9 @@ describe('ConfirmContextProvider', () => {
     const store = createStore();
     const { result, rerender } = renderContextProvider(store);
 
-    result.current.setMoneyAccountDisplayedAmount('5', 'test-id');
+    act(() => {
+      result.current.setMoneyAccountDisplayedAmount('5', 'test-id');
+    });
     rerender();
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
 
@@ -203,12 +215,16 @@ describe('ConfirmContextProvider', () => {
 
     // The abandoned "test-id" commit resolving late must not touch
     // "next-id"'s state.
-    result.current.setMoneyAccountDisplayedAmount('7', 'next-id');
-    result.current.setMoneyAccountCommittedAmount('5', 'test-id');
+    act(() => {
+      result.current.setMoneyAccountDisplayedAmount('7', 'next-id');
+      result.current.setMoneyAccountCommittedAmount('5', 'test-id');
+    });
     rerender();
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
 
-    result.current.setMoneyAccountCommittedAmount('7', 'next-id');
+    act(() => {
+      result.current.setMoneyAccountCommittedAmount('7', 'next-id');
+    });
     rerender();
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
   });
