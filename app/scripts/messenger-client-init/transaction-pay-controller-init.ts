@@ -90,11 +90,13 @@ function getApi(
     updateMoneyAccountWithdrawAmount: (
       transactionId: string,
       amountHuman: string,
+      recipientOverride?: Hex,
     ) =>
       updateMoneyAccountWithdrawAmount(
         moneyPayMessenger,
         transactionId,
         amountHuman,
+        recipientOverride,
       ),
     updateMoneyAccountDepositAmount: (
       transactionId: string,

@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  type NestedTransactionMetadata,
+} from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import {
   PaymentOverride,
@@ -8,11 +11,77 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { isTestNetwork } from '../../../helpers/utils/network-helper';
 import { isPostQuoteWithdrawTransaction } from '../../../../shared/lib/transactions.utils';
+import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
 import { setPaymentOverride } from '../../../store/controller-actions/transaction-pay-controller';
 import type { BlockedPayTokensListConfig } from '../selectors/feature-flags';
 import { Asset, AssetStandard } from '../types/send';
 
 const FOUR_BYTE_TOKEN_TRANSFER = '0xa9059cbb';
+
+function toAddressWord(address: string): string {
+  return address.toLowerCase().replace(/^0x/u, '').padStart(64, '0');
+}
+
+/**
+ * Replace every occurrence of `oldAddress` (encoded as a 32-byte ABI word)
+ * inside the `data` of each nested transaction with `newAddress`, and persist
+ * the change via `updateAtomicBatchData`. No-ops when there are no nested
+ * transactions or no old address to replace.
+ *
+ * Mirrors mobile `replaceAccountInNestedTransactions`. Used when the From-row
+ * changes the withdraw recipient so the transfer calldata is rewritten
+ * immediately, not only on the next amount encode.
+ *
+ * @param params - Replacement inputs.
+ * @param params.transactionId - Id of the parent batch transaction.
+ * @param params.nestedTransactions - Nested calls to scan.
+ * @param params.oldAddress - Address currently encoded in calldata.
+ * @param params.newAddress - Address to write in its place.
+ */
+export function replaceAccountInNestedTransactions({
+  transactionId,
+  nestedTransactions,
+  oldAddress,
+  newAddress,
+}: {
+  transactionId: string;
+  nestedTransactions: NestedTransactionMetadata[] | undefined;
+  oldAddress: string | undefined;
+  newAddress: string;
+}): void {
+  if (!oldAddress || !nestedTransactions?.length) {
+    return;
+  }
+
+  const oldWord = toAddressWord(oldAddress);
+  const newWord = toAddressWord(newAddress);
+
+  if (oldWord === newWord) {
+    return;
+  }
+
+  nestedTransactions.forEach((nested, index) => {
+    const { data } = nested;
+    if (!data) {
+      return;
+    }
+
+    const lowerData = data.toLowerCase();
+    if (!lowerData.includes(oldWord)) {
+      return;
+    }
+
+    const newData = lowerData.split(oldWord).join(newWord) as Hex;
+
+    updateAtomicBatchData({
+      transactionId,
+      transactionIndex: index,
+      transactionData: newData,
+    }).catch((error) => {
+      console.error('Failed to update account in nested transaction', error);
+    });
+  });
+}
 
 export function getTokenTransferData(
   transactionMeta: TransactionMeta | undefined,

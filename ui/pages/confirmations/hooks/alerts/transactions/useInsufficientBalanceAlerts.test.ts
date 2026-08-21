@@ -424,7 +424,7 @@ describe('useInsufficientBalanceAlerts', () => {
       expect(alerts).toEqual([]);
     });
 
-    it('returns alert when post-quote is disabled for the type, since the direct transfer spends native balance', () => {
+    it('returns no alerts for a direct money-account withdraw, which is sponsored from the money account', () => {
       const alerts = runHook({
         balance: 7,
         currentConfirmation: WITHDRAW_TRANSACTION_MOCK,
@@ -432,7 +432,7 @@ describe('useInsufficientBalanceAlerts', () => {
         remoteFeatureFlags: buildPostQuoteFlags(false),
       });
 
-      expect(alerts).toEqual(ALERT);
+      expect(alerts).toEqual([]);
     });
   });
 

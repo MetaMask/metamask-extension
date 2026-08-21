@@ -8,9 +8,11 @@ import { updateAtomicBatchData } from '../../../../store/controller-actions/tran
 import {
   updateMoneyAccountDepositAmount,
   updateMoneyAccountWithdrawAmount,
+  type MoneyAccountWithdrawAmountUpdate,
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as transactionPayUtils from '../../utils/transaction-pay';
+import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
 
 jest.mock('../../../../store/actions', () => ({
@@ -41,6 +43,7 @@ jest.mock(
 
 jest.mock('../pay/useTransactionPayData');
 jest.mock('../../utils/transaction-pay');
+jest.mock('./useTransactionAccountOverride');
 
 const MOCK_RECIPIENT = '0x1234567890123456789012345678901234567890';
 const MOCK_TOKEN_ADDRESS = '0xabcdef0123456789abcdef0123456789abcdef01';
@@ -110,12 +113,16 @@ function runHook({
 describe('useUpdateTokenAmount', () => {
   const updateEditableParamsMock = jest.mocked(updateEditableParams);
   const updateAtomicBatchDataMock = jest.mocked(updateAtomicBatchData);
+  const useTransactionAccountOverrideMock = jest.mocked(
+    useTransactionAccountOverride,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
     updateAtomicBatchDataMock.mockResolvedValue(undefined);
     updateEditableParamsMock.mockReturnValue((() =>
       Promise.resolve()) as never);
+    useTransactionAccountOverrideMock.mockReturnValue(undefined);
   });
 
   describe('updateTokenAmount', () => {
@@ -158,7 +165,7 @@ describe('useUpdateTokenAmount', () => {
     it('dispatches the withdrawal commit path for a money account withdrawal batch', async () => {
       const updateWithdrawAmountMock = jest
         .mocked(updateMoneyAccountWithdrawAmount)
-        .mockResolvedValue(true);
+        .mockResolvedValue(false);
 
       const transactionMeta = createMockTransactionMeta({
         nestedTransactions: [
@@ -185,8 +192,47 @@ describe('useUpdateTokenAmount', () => {
       expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
         transactionMeta.id,
         '2',
+        undefined,
       );
       expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
+    });
+
+    it('passes the account override as the withdraw recipient', async () => {
+      const accountOverride =
+        '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as const;
+      useTransactionAccountOverrideMock.mockReturnValue(accountOverride);
+
+      const updateWithdrawAmountMock = jest
+        .mocked(updateMoneyAccountWithdrawAmount)
+        .mockResolvedValue(false);
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'moneyAccountWithdraw' },
+          { to: MOCK_RECIPIENT, type: 'transfer' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      // The commit promise settles in a microtask, and its `finally` clears the
+      // pending flag, so the state update must be flushed inside `act`.
+      await act(async () => {
+        result.current.updateTokenAmount('2');
+      });
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
+        transactionMeta.id,
+        '2',
+        accountOverride,
+      );
     });
 
     it('does nothing when data is undefined', () => {
@@ -371,7 +417,9 @@ describe('useUpdateTokenAmount', () => {
     });
 
     it('is true while a money withdrawal amount commit is in flight, and false once it resolves', async () => {
-      let resolveCommit: (value: boolean) => void = () => undefined;
+      let resolveCommit: (
+        value: false | MoneyAccountWithdrawAmountUpdate,
+      ) => void = () => undefined;
       jest.mocked(updateMoneyAccountWithdrawAmount).mockReturnValue(
         new Promise((resolve) => {
           resolveCommit = resolve;
@@ -401,7 +449,10 @@ describe('useUpdateTokenAmount', () => {
       await waitFor(() => expect(result.current.isUpdating).toBe(true));
 
       await act(async () => {
-        resolveCommit(true);
+        resolveCommit({
+          withdrawData: '0x',
+          transferData: '0x',
+        });
       });
 
       await waitFor(() => expect(result.current.isUpdating).toBe(false));

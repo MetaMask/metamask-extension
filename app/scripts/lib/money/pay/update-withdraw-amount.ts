@@ -24,7 +24,16 @@ import {
 
 const UPDATE_ERROR_PREFIX = 'Update Amount: Money Account Withdrawal: ';
 
-const amountUpdates = new Map<string, AmountUpdateIntent<boolean>>();
+export type MoneyAccountWithdrawAmountUpdate = {
+  transactionData?: Hex;
+  transferData: Hex;
+  withdrawData: Hex;
+};
+
+const amountUpdates = new Map<
+  string,
+  AmountUpdateIntent<MoneyAccountWithdrawAmountUpdate | false>
+>();
 
 function failUpdate(message: string): never {
   throw new Error(`${UPDATE_ERROR_PREFIX}${message}`);
@@ -37,11 +46,12 @@ function failUpdate(message: string): never {
  * @param transaction - The transaction to validate.
  */
 function validateTransactionTemplate(transaction: TransactionMeta): void {
+  // Require the two nested slots only. `addTransactionBatch` can drop nested
+  // types on the unapproved parent, and a type check here made every encode
+  // throw — Send then no-op'd because confirm swallowed that error.
   if (
-    transaction.nestedTransactions?.[0]?.type !==
-      TransactionType.moneyAccountWithdraw ||
-    transaction.nestedTransactions[1]?.type !==
-      TransactionType.tokenMethodTransfer
+    !transaction.nestedTransactions?.[0] ||
+    !transaction.nestedTransactions[1]
   ) {
     failUpdate('missing withdraw/transfer transaction template');
   }
@@ -52,7 +62,8 @@ async function updateMoneyAccountWithdrawAmountInternal(
   transaction: TransactionMeta,
   amountHuman: string,
   isCurrentIntent: () => boolean,
-): Promise<boolean> {
+  recipientOverride?: Hex,
+): Promise<MoneyAccountWithdrawAmountUpdate | false> {
   validateTransactionTemplate(transaction);
 
   const chainId = transaction.chainId as Hex;
@@ -79,19 +90,26 @@ async function updateMoneyAccountWithdrawAmountInternal(
     return false;
   }
 
-  // The redeemed mUSD is forwarded to the user's currently selected account,
-  // resolved at commit time — the same rule as mobile's `selectEvmAddress`
-  // default. Validated rather than cast: the selected account is global
-  // state the user can change mid-flow, including to a non-EVM account whose
-  // address would otherwise reach the ABI encoder as a bogus recipient.
-  const selectedAccount = getSelectedAccount(messenger);
-  if (!selectedAccount) {
-    failUpdate('missing recipient account');
+  // Mobile: `recipientOverride ?? selectEvmAddress`. The From-row override is
+  // the user's EVM account; `txParams.from` is the money account and must not
+  // receive the redeemed mUSD. Fall back to the selected account when no
+  // override is set, resolved at commit time.
+  //
+  // The fallback is validated rather than cast: the selected account is
+  // global state the user can change mid-flow, including to a non-EVM
+  // account whose address would otherwise reach the ABI encoder as a bogus
+  // recipient.
+  let recipient: string | undefined = recipientOverride;
+  if (!recipient) {
+    const selectedAccount = getSelectedAccount(messenger);
+    if (!selectedAccount) {
+      failUpdate('missing recipient account');
+    }
+    if (!isEvmAccountType(selectedAccount.type)) {
+      failUpdate('selected account is not an EVM account');
+    }
+    recipient = selectedAccount.address;
   }
-  if (!isEvmAccountType(selectedAccount.type)) {
-    failUpdate('selected account is not an EVM account');
-  }
-  const recipient = selectedAccount.address;
   if (!isStrictHexString(recipient)) {
     failUpdate('invalid recipient address');
   }
@@ -116,6 +134,7 @@ async function updateMoneyAccountWithdrawAmountInternal(
     failUpdate('incomplete withdraw/transfer updates');
   }
 
+  let transactionData: Hex | undefined;
   messenger.call('TransactionController:updateTransactionMetadata', {
     transactionId: transaction.id,
     skipResimulate: true,
@@ -133,7 +152,7 @@ async function updateMoneyAccountWithdrawAmountInternal(
         failUpdate('transaction chain changed during preparation');
       }
 
-      const { nestedTransactions, transactionData } = updateEIP7702BatchData({
+      const updated = updateEIP7702BatchData({
         from: transactionMeta.txParams.from as Hex,
         transactions: transactionMeta.nestedTransactions ?? [],
         updates: [
@@ -141,37 +160,49 @@ async function updateMoneyAccountWithdrawAmountInternal(
           { transactionIndex: 1, transactionData: transferData },
         ],
       });
+      transactionData = updated.transactionData;
 
-      transactionMeta.nestedTransactions = nestedTransactions;
-      transactionMeta.txParams.data = transactionData;
+      transactionMeta.type = TransactionType.moneyAccountWithdraw;
+      transactionMeta.nestedTransactions = updated.nestedTransactions;
+      transactionMeta.txParams.data = updated.transactionData;
       resetTransactionEstimates(transactionMeta);
     },
   });
 
-  return true;
+  const committed = findTransaction(
+    messenger,
+    ({ id }) => id === transaction.id,
+  );
+  if (!committed) {
+    failUpdate('transaction missing after commit');
+  }
+
+  // Return the hexes, not the full TransactionMeta. The UI background bridge
+  // often strips nested calldata, which made Send treat a successful encode
+  // as "not funded" and no-op.
+  return { withdrawData, transferData, transactionData };
 }
 
 /**
  * Prepares and atomically commits a Money Account withdrawal amount:
- * re-encodes the withdraw + transfer calldata for the new amount (which needs
- * the vault rate for the share conversion) and writes it into the transaction
- * in one `updateTransactionMetadata` call.
- *
- * The concurrency contract mirrors `updateMoneyAccountDepositAmount`:
- * identical in-flight intents share a promise, and a newer intent for the
- * same transaction prevents an older preparation from committing stale
- * calldata — the superseded call resolves `false`.
+ * re-encodes the withdraw + transfer calldata and writes both nested calls
+ * in one `updateTransactionMetadata` so confirm can approve the returned
+ * transaction instead of the empty placeholder.
  *
  * @param messenger - The messenger to resolve and commit through.
  * @param transactionId - Id of the Money Account withdrawal transaction.
  * @param amountHuman - Exact human-readable amount.
- * @returns Whether this intent committed transaction metadata.
+ * @param recipientOverride - Optional EVM address to receive the redeemed mUSD.
+ * When omitted, defaults to the currently selected account.
+ * @returns The encoded nested calldata, or `false` if this intent did not
+ * commit (zero amount or superseded).
  */
 export function updateMoneyAccountWithdrawAmount(
   messenger: MoneyPayMessenger,
   transactionId: string,
   amountHuman: string,
-): Promise<boolean> {
+  recipientOverride?: Hex,
+): Promise<MoneyAccountWithdrawAmountUpdate | false> {
   const transaction = findTransaction(
     messenger,
     ({ id }) => id === transactionId,
@@ -180,7 +211,11 @@ export function updateMoneyAccountWithdrawAmount(
     failUpdate('transaction not found');
   }
 
-  const intentKey = JSON.stringify({ amountHuman, transactionId });
+  const intentKey = JSON.stringify({
+    amountHuman,
+    recipientOverride: recipientOverride?.toLowerCase() ?? null,
+    transactionId,
+  });
 
   return runSingleFlightAmountUpdate(
     amountUpdates,
@@ -192,6 +227,7 @@ export function updateMoneyAccountWithdrawAmount(
         transaction,
         amountHuman,
         isCurrentIntent,
+        recipientOverride,
       ),
   );
 }

@@ -95,8 +95,12 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       AMOUNT_HUMAN,
     );
 
-    expect(result).toBe(true);
     const meta = committed.meta as TransactionMeta;
+    expect(result).toEqual({
+      withdrawData: meta.nestedTransactions?.[0].data,
+      transferData: meta.nestedTransactions?.[1].data,
+      transactionData: meta.txParams.data,
+    });
 
     const withdraw = TELLER_INTERFACE.decodeFunctionData(
       'withdraw',
@@ -105,7 +109,6 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     expect(withdraw.withdrawAsset.toLowerCase()).toBe(
       MUSD_ADDRESS.toLowerCase(),
     );
-    // Shares are ceil(amount * ONE_SHARE / rate) at the mocked vault rate.
     expect(withdraw.shareAmount.toBigInt()).toBe(
       (AMOUNT_ROUNDED_DOWN * 1_000_000n + VAULT_RATE_MOCK - 1n) /
         VAULT_RATE_MOCK,
@@ -119,6 +122,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     expect(transfer.recipient.toLowerCase()).toBe(RECIPIENT_MOCK);
     expect(transfer.amount.toBigInt()).toBe(AMOUNT_ROUNDED_DOWN);
 
+    expect(meta.type).toBe(TransactionType.moneyAccountWithdraw);
     expect(meta.txParams.gas).toBeUndefined();
     expect(meta.simulationData).toBeUndefined();
   });
@@ -150,6 +154,22 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     ).rejects.toThrow(
       'Update Amount: Money Account Withdrawal: missing withdraw/transfer transaction template',
     );
+  });
+
+  it('encodes when nested slots exist without money-account types', async () => {
+    const transaction = buildTemplateTransaction();
+    delete transaction.nestedTransactions?.[0].type;
+    delete transaction.nestedTransactions?.[1].type;
+    const { messenger, committed } = setup(transaction);
+
+    const result = await updateMoneyAccountWithdrawAmount(
+      messenger,
+      transaction.id,
+      AMOUNT_HUMAN,
+    );
+
+    expect(result).not.toBe(false);
+    expect(committed.meta?.nestedTransactions?.[1].data).toBeDefined();
   });
 
   it('rejects when no recipient account resolves', async () => {
@@ -233,6 +253,63 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
 
     expect(second).toBe(first);
-    await expect(first).resolves.toBe(true);
+    await expect(first).resolves.toEqual(
+      expect.objectContaining({
+        transferData: expect.any(String),
+        withdrawData: expect.any(String),
+      }),
+    );
+  });
+
+  it('forwards mUSD to the recipient override instead of the selected account', async () => {
+    const transaction = buildTemplateTransaction();
+    const { messenger, committed } = setup(transaction);
+    const recipientOverride =
+      '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as Hex;
+
+    await updateMoneyAccountWithdrawAmount(
+      messenger,
+      transaction.id,
+      AMOUNT_HUMAN,
+      recipientOverride,
+    );
+
+    const meta = committed.meta as TransactionMeta;
+    const transfer = ERC20_INTERFACE.decodeFunctionData(
+      'transfer',
+      meta.nestedTransactions?.[1].data as string,
+    );
+    expect(transfer.recipient.toLowerCase()).toBe(
+      recipientOverride.toLowerCase(),
+    );
+  });
+
+  it('does not share the promise when the recipient override differs', async () => {
+    const transaction = buildTemplateTransaction();
+    const { messenger } = setup(transaction);
+    const firstRecipient = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as Hex;
+    const secondRecipient = '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' as Hex;
+
+    const first = updateMoneyAccountWithdrawAmount(
+      messenger,
+      transaction.id,
+      AMOUNT_HUMAN,
+      firstRecipient,
+    );
+    const second = updateMoneyAccountWithdrawAmount(
+      messenger,
+      transaction.id,
+      AMOUNT_HUMAN,
+      secondRecipient,
+    );
+
+    expect(second).not.toBe(first);
+    await expect(first).resolves.toBe(false);
+    await expect(second).resolves.toEqual(
+      expect.objectContaining({
+        transferData: expect.any(String),
+        withdrawData: expect.any(String),
+      }),
+    );
   });
 });
