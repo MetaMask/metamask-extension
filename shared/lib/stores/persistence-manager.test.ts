@@ -482,6 +482,21 @@ describe('PersistenceManager', () => {
       );
     });
 
+    it('does not capture exception or trigger vault recovery when store.get throws a browser-shutdown error', async () => {
+      const shutdownError = new Error('The browser is shutting down.');
+      mockStoreGet.mockRejectedValueOnce(shutdownError);
+
+      // Re-throws so callers fail gracefully instead of continuing with
+      // undefined state (which would trigger generateInitialState and could
+      // overwrite persisted data on the next write).
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(
+        shutdownError,
+      );
+
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(log.error).not.toHaveBeenCalled();
+    });
+
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
       manager.storageKind = 'data';
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
