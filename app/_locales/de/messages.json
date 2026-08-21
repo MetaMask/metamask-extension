@@ -152,6 +152,10 @@
   "accountsConnected": {
     "message": "Konten wurden verbunden"
   },
+  "accountsCount": {
+    "message": "$1 Konten",
+    "description": "Label showing number of accounts selected, $1 is the count"
+  },
   "accountsPermissionsTitle": {
     "message": "Sehen Sie Ihre Konten ein und schlagen Sie Transaktionen vor"
   },
@@ -851,6 +855,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Prognosenauszahlung"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Kauf fehlgeschlagen"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Kauf fehlgeschlagen"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "$1 kaufen",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "$1 kaufen",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "$1 gekauft",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "$1 gekauft",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Verkaufen fehlgeschlagen"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Verkaufen fehlgeschlagen"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "$1 verkaufen",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "$1 verkaufen",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "$1 verkauft",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "$1 verkauft",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "Von: $1",
     "description": "$1 is the shortened sender address"
@@ -1353,6 +1401,12 @@
   "alert": {
     "message": "Warnhinweis"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "Keine Geldmittel verfügbar. Verwenden Sie ein anderes Konto."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "Unzureichende Gelder"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "Sie aktualisieren Ihr Konto auf ein Smart-Konto. Sie behalten die gleiche Kontoadresse und profitieren gleichzeitig von schnelleren Transaktionen und niedrigeren Netzwerkgebühren. $1"
   },
@@ -1379,6 +1433,10 @@
   },
   "alertContentMultipleApprovals": {
     "message": "Sie erteilen jemand anderem die Genehmigung, Ihre Token abzuheben, obwohl dies für diese Transaktion nicht erforderlich ist."
+  },
+  "alertDepositLimit": {
+    "message": "Maximale Einzahlung: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
   },
   "alertDisableTooltip": {
     "message": "Dies kann in „Einstellungen“ > „Warnungen“ geändert werden"
@@ -1725,6 +1783,9 @@
   "back": {
     "message": "Zurück"
   },
+  "backToSafety": {
+    "message": "Zurück zu Sicherheit"
+  },
   "backUpIncomplete": {
     "message": "Sicherung unvollständig"
   },
@@ -1769,9 +1830,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Erfahren Sie, wie wir Ihre Privatsphäre schützen"
-  },
-  "backupApprovalInfo": {
-    "message": "Dieser geheime Code ist zum Wiedererlangen Ihrer Wallet erforderlich, falls Sie Ihr Gerät verlieren, Ihr Passwort vergessen, MetaMask neu installieren müssen oder auf einem anderen Gerät auf Ihre Wallet zugreifen möchten."
   },
   "backupApprovalNotice": {
     "message": "Sichern Sie Ihre geheime Wiederherstellungsphrase, um Ihre Wallet und Ihr Geld geschützt zu halten."
@@ -1949,54 +2007,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Wenn Sie so weitermachen, könnten alle von Ihnen auf Blur aufgeführten Assets gefährdet sein."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Sie interagieren mit einer schädlichen Website. Wenn Sie fortfahren, werden Sie Ihre Assets verlieren."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Wenn Sie fortfahren, könnten von Ihnen auf OpenSea aufgeführten Assets gefährdet sein."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Wenn Sie diese Anfrage bestätigen, könnten Sie Ihre Assets verlieren. Wir empfehlen Ihnen, diese Anfrage abzubrechen."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Sie senden Ihre Assets an einen Betrüger. Wenn Sie fortfahren, werden Sie diese Assets verlieren."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Wenn Sie diese Anfrage bestätigen, erlauben Sie einem Betrüger, sich Ihre Assets abzahlen zu lassen und auszugeben. Sie erhalten diese nicht zurück."
-  },
-  "blockaidDescriptionApproveFarming": {
-    "message": "Wenn Sie diese Anfrage genehmigen, könnten Dritte, die für Betrügereien bekannt sind, alle Ihre Assets an sich reißen."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Wenn Sie diese Anfrage genehmigen, kann jemand Ihre auf Blur aufgeführten Assets stehlen."
-  },
-  "blockaidDescriptionErrored": {
-    "message": "Aufgrund eines Fehlers konnten wir nicht auf Sicherheitsalarme prüfen. Fahren Sie nur fort, wenn Sie jeder involvierten Adresse vertrauen."
-  },
-  "blockaidDescriptionMaliciousDomain": {
-    "message": "Sie haben es mit einer bösartigen Domain zu tun. Wenn Sie diese Anfrage genehmigen, könnten Sie Ihre Assets verlieren."
-  },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Wenn Sie diese Anfrage genehmigen, könnten Sie Ihre Assets verlieren."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Wenn Sie diese Anfrage genehmigen, kann jemand Ihre auf OpenSea aufgeführten Assets stehlen."
-  },
-  "blockaidDescriptionTransferFarming": {
-    "message": "Wenn Sie diese Anfrage genehmigen, wird eine dritte Partei, die für Betrügereien bekannt ist, alle Ihre Assets an sich reißen."
-  },
-  "blockaidTitleDeceptive": {
-    "message": "Dies ist eine betrügerische Anfrage."
-  },
-  "blockaidTitleMayNotBeSafe": {
-    "message": "Seien Sie vorsichtig"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Dies ist eine verdächtige Anfrage."
   },
   "blockies": {
     "message": "Blockies"
@@ -2730,9 +2740,6 @@
   "confirmationAlertDetails": {
     "message": "Um Ihre Assets zu schützen, empfehlen wir die Ablehnung der Anfrage."
   },
-  "confirmationAlertModalTitleDescription": {
-    "message": "Ihre Assets könnten gefährdet sein"
-  },
   "confirmed": {
     "message": "Bestätigt"
   },
@@ -2759,6 +2766,9 @@
   },
   "connectAccounts": {
     "message": "Konten verbinden"
+  },
+  "connectAnyway": {
+    "message": "Trotzdem verbinden"
   },
   "connectHardwareDevice": {
     "message": "Mit $1 verbinden",
@@ -2880,6 +2890,9 @@
   },
   "continue": {
     "message": "Fortfahren"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "Fortfahren auf eigene Gefahr"
   },
   "contract": {
     "message": "Contract"
@@ -3402,14 +3415,17 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Sind Sie sicher, dass Sie die Verbindung trennen möchten? Sie könnten die Seitenfunktionalität verlieren."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Falls Sie die Verbindung zu dieser Seite trennen, müssen Sie Ihre Konten und Netzwerke bei einer weiteren Nutzung dieser Website erneut verbinden."
-  },
   "disconnectAllSites": {
     "message": "Alle trennen"
   },
+  "disconnectAllSitesDescriptionText": {
+    "message": "Dadurch werden alle Ihre Konten von allen dApps getrennt. Sie müssen die Verbindung zur erneuten Nutzung wiederherstellen."
+  },
   "disconnectAllSitesError": {
     "message": "Einige dApp konnten nicht getrennt werden. Bitte versuchen Sie es erneut."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Alle trennen?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Alle dApps wurden erfolgreich getrennt."
@@ -3419,6 +3435,13 @@
   },
   "disconnectPrompt": {
     "message": "$1 trennen"
+  },
+  "disconnectQuestion": {
+    "message": "Verbindung trennen?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "Dadurch werden alle Ihre Konten von $1 getrennt. Sie müssen sich zur erneuten Nutzung dieser dApp erneut verbinden.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "Dieses Konto trennen"
@@ -3598,9 +3621,6 @@
   },
   "editNonceMessage": {
     "message": "Dies ist eine erweiterte Funktion, verwenden Sie diese vorsichtig."
-  },
-  "editPermissions": {
-    "message": "Genehmigungen bearbeiten"
   },
   "editSpendingCap": {
     "message": "Ausgabenobergrenze bearbeiten"
@@ -5048,6 +5068,9 @@
   "manage": {
     "message": "Verwalten"
   },
+  "manageConnectedAccounts": {
+    "message": "Verbundene Konten verwalten"
+  },
   "manageDefaultSettings": {
     "message": "Standardeinstellungen verwalten"
   },
@@ -6071,12 +6094,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Sie haben noch keine Benachrichtigungen empfangen."
   },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "CLI-Verbindungsanfragen, Genehmigungen und Sitzungsaktualisierungen für Agentic"
-  },
-  "notificationsSettingsAgenticCliTitle": {
-    "message": "Agentic CLI"
-  },
   "notificationsSettingsBoxError": {
     "message": "Etwas ist schiefgelaufen! Bitte versuchen Sie es erneut."
   },
@@ -6516,9 +6533,29 @@
     "message": "Bezahlen mit",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "Krypto",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "Zahlungsmethode auswählen",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "Bezahlen mit",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "Weitere Vermögenswerte",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "Wählen Sie aus Ihren Token",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "Zahlungsempfänger"
@@ -6551,6 +6588,10 @@
   "percentChange": {
     "message": "Prozentänderung"
   },
+  "permissionCannotMoveFunds": {
+    "message": "Ohne Ihre Zustimmung können keine Gelder übertragen werden",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "Genehmigung für"
   },
@@ -6570,6 +6611,14 @@
   "permissionRevokedForAccounts": {
     "message": "In diesem Update für $1 widerrufen",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "Adressen, Kontostände und Aktivitäten anzeigen",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "Anfragen für Transaktionen senden",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "Mit $1 verbinden.",
@@ -6810,9 +6859,6 @@
   "permissions": {
     "message": "Genehmigungen"
   },
-  "permissionsPageEmptyDescription": {
-    "message": "Es wurden keine Genehmigungen ermittelt. Sobald Sie einer Website Genehmigungen erteilt oder einen Snap installiert haben, werden die Details hier angezeigt."
-  },
   "permitSimulationChange_approve": {
     "message": "Ausgabenobergrenze"
   },
@@ -6836,9 +6882,6 @@
   },
   "permitSimulationDetailInfo": {
     "message": "Sie erteilen dem Spender die Genehmigung, diese Menge an Tokens von Ihrem Konto auszugeben."
-  },
-  "permittedChainToastUpdate": {
-    "message": "$1 hat Zugang zu $2."
   },
   "perps": {
     "message": "Perps"
@@ -6960,6 +7003,9 @@
   },
   "perpsClosePosition": {
     "message": "Position schließen"
+  },
+  "perpsClosePrice": {
+    "message": "Schlusskurs"
   },
   "perpsClosePriceUnavailable": {
     "message": "Aktueller Preis nicht verfügbar. Bitte versuchen Sie es in Kürze erneut."
@@ -7278,6 +7324,15 @@
   "perpsOrderBookGroupBy": {
     "message": "Gruppieren nach"
   },
+  "perpsOrderBookLayout": {
+    "message": "Orderbuch-Layout"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "Links"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "Rechts"
+  },
   "perpsOrderBookListedBy": {
     "message": "Gelistet nach"
   },
@@ -7337,6 +7392,9 @@
   "perpsOrderFailed": {
     "message": "Die Order konnte nicht erteilt werden. Versuchen Sie es erneut."
   },
+  "perpsOrderFilled": {
+    "message": "Ausgeführt"
+  },
   "perpsOrderOriginalSize": {
     "message": "Originalgröße"
   },
@@ -7345,6 +7403,12 @@
   },
   "perpsOrderStatus": {
     "message": "Status"
+  },
+  "perpsOrderTotalFee": {
+    "message": "Gesamtgebühr"
+  },
+  "perpsOrderType": {
+    "message": "Orderart"
   },
   "perpsOrderValue": {
     "message": "Orderwert"
@@ -8132,6 +8196,80 @@
   "rampsOnNetwork": {
     "message": "bei $1",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Angaben zur Banküberweisung"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Erneut kaufen"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Gebühren"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Auftrags-ID"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Bezahlt mit",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1 Gebühr",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Insgesamt"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Auf $1 ansehen"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Bei Ihrer Order ist ein Fehler aufgetreten.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Kauf fehlgeschlagen",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Ihre Order ist in Bearbeitung.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Kaufvorgang läuft",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Bei Ihrer Order ist ein Fehler aufgetreten.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Verkaufen fehlgeschlagen",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Ihre Order ist in Bearbeitung.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Verkaufsvorgang läuft",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Ihre Gelder sind unterwegs.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Verkauf erfolgreich",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Ihr Krypto ist unterwegs.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Kauf erfolgreich",
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "Weitere Optionen"
@@ -9015,6 +9153,9 @@
   "securityTrustMalicious": {
     "message": "Bösartig"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "Bösartig – als unsicher gekennzeichnet"
+  },
   "securityTrustMaliciousLabel": {
     "message": "Bösartig"
   },
@@ -9155,8 +9296,8 @@
   "select": {
     "message": "Auswählen"
   },
-  "selectAccountToConnect": {
-    "message": "Ein zu verbindendes Konto auswählen"
+  "selectAccounts": {
+    "message": "Konten auswählen"
   },
   "selectAll": {
     "message": "Alle auswählen"
@@ -9940,6 +10081,12 @@
   "showTestnetNetworks": {
     "message": "Testnetzwerke anzeigen"
   },
+  "showTickerWidget": {
+    "message": "Web-Widget auf X anzeigen"
+  },
+  "showTickerWidgetDescription": {
+    "message": "Zeigt beim Surfen auf X.com ein MetaMask-Widget mit Token-Details an."
+  },
   "sidePanelMigrationToast": {
     "message": "MetaMask wird nun standardmäßig in der Seitenleiste geöffnet. $1 jederzeit über das Menü.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -10041,8 +10188,9 @@
   "singleNetwork": {
     "message": "1 Netzwerk"
   },
-  "sites": {
-    "message": "Websites"
+  "sitePermissionsBanner": {
+    "message": "$1 kann Ihre verknüpften Konten einsehen und Transaktionen vorschlagen.",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "Ausgestellt"
@@ -11314,14 +11462,8 @@
   "troubleStartingTitle": {
     "message": "MetaMask hat Probleme beim Starten."
   },
-  "trustSignalBlockDescription": {
-    "message": "Wenn Sie diese Website besuchen, könnten Sie all Ihre Assets verlieren."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Schadhafte Website erkannt"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Trotzdem verbinden"
+  "trustSignalPhishingWarning": {
+    "message": "Diese Website weist Anzeichen von Phishing oder Aktivitäten zum Entleeren von Wallets auf. Möglicherweise werden Transaktionen zum Diebstahl Ihres Guthabens gefordert."
   },
   "tryAgain": {
     "message": "Erneut versuchen"

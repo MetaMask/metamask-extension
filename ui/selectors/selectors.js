@@ -72,6 +72,7 @@ import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
+  getIsStellarSupportEnabled,
   getIsSolanaTestnetSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   getIsTronTestnetSupportEnabled,
@@ -219,6 +220,7 @@ export {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
+  getIsStellarSupportEnabled,
   getIsSolanaTestnetSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   getIsTronTestnetSupportEnabled,
@@ -263,10 +265,6 @@ export function getCustomNonceValue(state) {
 
 export function getNextSuggestedNonce(state) {
   return Number(state.appState.nextNonce);
-}
-
-export function getShowPermittedNetworkToastOpen(state) {
-  return state.appState.showPermittedNetworkToastOpen;
 }
 
 /**
@@ -1576,6 +1574,16 @@ export function getFeatureNotificationsEnabled(state) {
 export function getShowExtensionInFullSizeView(state) {
   const { showExtensionInFullSizeView } = getPreferences(state);
   return Boolean(showExtensionInFullSizeView);
+}
+
+export function selectShowTickerWidget(state) {
+  const { showTickerWidget = true } = getPreferences(state);
+  return Boolean(showTickerWidget);
+}
+
+export function selectIsTickerWidgetFeatureEnabled(state) {
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+  return getBooleanFeatureFlag(remoteFeatureFlags?.cashtagInjection, false);
 }
 
 export function getTestNetworkBackgroundColor(state) {
@@ -2998,6 +3006,16 @@ export function getIsPasskeyRegistered(state) {
  */
 export function getPasskeyDerivationMethod(state) {
   return state.metamask?.passkeyRecord?.keyDerivation?.method;
+}
+
+/**
+ * Passkey authenticator AAGUID from the enrolled credential.
+ *
+ * @param {object} state - Redux state
+ * @returns {string | undefined}
+ */
+export function getPasskeyAuthenticatorId(state) {
+  return state.metamask?.passkeyRecord?.credential?.aaguid;
 }
 
 /**

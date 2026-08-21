@@ -64,6 +64,7 @@ const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   amountFiat: '100',
   amountHuman: '50',
   amountHumanDebounced: '50',
+  hasAmount: true,
   hasInput: false,
   isInputChanged: false,
   updatePendingAmount: jest.fn(),
@@ -340,9 +341,9 @@ describe('CustomAmountInfo', () => {
     expect(getByTestId('pay-with-row')).toBeInTheDocument();
   });
 
-  it('does not render any pay with selector when no tokens available', () => {
-    const { queryByTestId } = render({ availableTokens: [] });
-    expect(queryByTestId('pay-with-row')).not.toBeInTheDocument();
+  it('keeps the pay with selector mounted when no tokens are available yet', () => {
+    const { getByTestId } = render({ availableTokens: [] });
+    expect(getByTestId('pay-with-row')).toBeInTheDocument();
   });
 
   describe('percentage buttons', () => {
@@ -379,6 +380,34 @@ describe('CustomAmountInfo', () => {
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+    });
+
+    it('does not render result rows before an amount is entered', () => {
+      const { queryByTestId } = render({
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          hasAmount: false,
+        },
+        hasQuotes: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('bridge-time-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('does not render result rows before an amount is entered while quotes load', () => {
+      const { queryByTestId } = render({
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          hasAmount: false,
+        },
+        isQuotesLoading: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('bridge-time-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
   });
 

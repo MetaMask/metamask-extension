@@ -1,8 +1,16 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the Perps Withdraw page.
- * Accessible from the Perps Home balance dropdown → Withdraw.
+ * The Perps Withdraw page: amount entry and summary before confirmation.
+ *
+ * Screen: `#/perps/withdraw`, reached from `PerpsTab.clickWithdraw`.
+ * Owns: the withdraw page shell, amount input, summary rows (asset / fee /
+ * receive / time), submit and cancel, header back, and the withdraw toast.
+ * Boundaries: the post-submit confirmation UI belongs to
+ * `PerpsWithdrawConfirmation`. Submit only continues the flow; await that
+ * object for quote/confirm assertions.
+ * Related: `PerpsTab` (how tests get here), `PerpsWithdrawConfirmation`
+ * (opened after submit).
  *
  * @see ui/pages/perps/perps-withdraw-page.tsx
  */

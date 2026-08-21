@@ -2,19 +2,21 @@ import { Wallet } from '@metamask/wallet';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
+import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
-import {
-  getNetworkControllerInstanceOptions,
-  setupRpcEndpointMetrics,
-} from './instance-options/network-controller';
+import { getNetworkControllerInstanceOptions } from './instance-options/network-controller';
 import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
+import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
+import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
 import type { InitializeWalletRequest } from './types';
+import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
+import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each
@@ -35,10 +37,13 @@ export function initializeWallet(request: InitializeWalletRequest) {
     messenger,
     showApprovalRequest,
     state,
+    platform,
   } = request;
 
   const transactionControllerInitMessenger =
     getTransactionControllerInitMessenger(messenger);
+  const seedlessOnboardingControllerInitMessenger =
+    getSeedlessOnboardingControllerInitMessenger(messenger);
 
   const wallet = new Wallet({
     instanceOptions: {
@@ -48,11 +53,22 @@ export function initializeWallet(request: InitializeWalletRequest) {
       connectivityController: getConnectivityControllerInstanceOptions({
         connectivityAdapter,
       }),
+      gasFeeController: getGasFeeControllerInstanceOptions({
+        initMessenger: getGasFeeControllerInitMessenger(messenger),
+      }),
       keyringController: getKeyringControllerInstanceOptions({
         encryptor,
         messenger,
       }),
       networkController: getNetworkControllerInstanceOptions(infuraProjectId),
+      passkeyController: getPasskeyControllerInstanceOptions({
+        messenger,
+        platform,
+      }),
+      seedlessOnboardingController:
+        getSeedlessOnboardingControllerInstanceOptions({
+          initMessenger: seedlessOnboardingControllerInitMessenger,
+        }),
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
       storageService: getStorageServiceInstanceOptions(),
@@ -83,7 +99,6 @@ export function initializeWallet(request: InitializeWalletRequest) {
     },
   });
 
-  setupRpcEndpointMetrics(infuraProjectId, messenger);
   setupTransactionControllerListeners({
     getTransactionMetricsRequest,
     messenger: transactionControllerInitMessenger,

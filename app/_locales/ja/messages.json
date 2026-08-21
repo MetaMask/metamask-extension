@@ -152,6 +152,10 @@
   "accountsConnected": {
     "message": "アカウントが接続されました"
   },
+  "accountsCount": {
+    "message": "$1件のアカウント",
+    "description": "Label showing number of accounts selected, $1 is the count"
+  },
   "accountsPermissionsTitle": {
     "message": "アカウントを確認しトランザクションを提案する"
   },
@@ -851,6 +855,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "予測の引き出し"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "購入に失敗しました"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "購入に失敗しました"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "$1を購入しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "$1を購入しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "$1を購入しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "$1を購入しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "売却に失敗しました"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "売却に失敗しました"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "$1を売却しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "$1を売却しています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "$1を売却しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "$1を売却しました",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "移動元: $1",
     "description": "$1 is the shortened sender address"
@@ -1353,6 +1401,12 @@
   "alert": {
     "message": "アラート"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "利用可能な資金がありません。別のアカウントをお試しください。"
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "資金不足"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "アカウントをスマートアカウントにアップデートしようとしています。アカウントアドレスは変わらずに、より高速なトランザクションと低いネットワーク手数料が利用できるようになります。$1"
   },
@@ -1379,6 +1433,10 @@
   },
   "alertContentMultipleApprovals": {
     "message": "このトランザクションに必要ないにもかかわらず、他者にトークンの引き出しを許可しようとしています。"
+  },
+  "alertDepositLimit": {
+    "message": "最大デポジット: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
   },
   "alertDisableTooltip": {
     "message": "これは「設定」>「アラート」で変更できます"
@@ -1725,6 +1783,9 @@
   "back": {
     "message": "戻る"
   },
+  "backToSafety": {
+    "message": "安全な場所に戻る"
+  },
   "backUpIncomplete": {
     "message": "バックアップ未完了"
   },
@@ -1769,9 +1830,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "当社のプライバシー保護への取り組みについてはこちらをご覧ください"
-  },
-  "backupApprovalInfo": {
-    "message": "このシークレット コードは、デバイスをなくしたとき、パスワードを忘れたとき、MetaMaskの再インストールが必要なとき、または別のデバイスでウォレットにアクセスするときに必要です。"
   },
   "backupApprovalNotice": {
     "message": "シークレットリカバリーフレーズをバックアップして、ウォレットと資金の安全を確保してください。"
@@ -1949,54 +2007,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertDescriptionBlur": {
-    "message": "続行すると、Blurに出品しているすべての資産がリスクにさらされる可能性があります。"
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "悪意のあるサイトとやり取りしています。続行すると、資産を失うことになります。"
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "続行すると、OpenSeaに出品しているすべての資産がリスクにさらされる可能性があります。"
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "この要求を確定すると、資産が失われる可能性があります。この要求はキャンセルすることをお勧めします。"
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "資産を詐欺師に送ろうとしています。続行すると、これらの資産が失われます。"
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "この要求を確定すると、詐欺師に資産の引き出しと使用を許可することになります。失った資産を取り戻すことはできません。"
-  },
-  "blockaidDescriptionApproveFarming": {
-    "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われる可能性があります。"
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "このリクエストを承認すると、Blurに登録されている資産を誰かに盗まれる可能性があります。"
-  },
-  "blockaidDescriptionErrored": {
-    "message": "エラーが発生したため、セキュリティアラートをチェックできませんでした。関連するすべてのアドレスが信頼できる場合のみ続行してください。"
-  },
-  "blockaidDescriptionMaliciousDomain": {
-    "message": "悪質なドメインとやり取りしています。このリクエストを承認すると、資産を失う可能性があります。"
-  },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "このリクエストを承認すると、資産を失う可能性があります。"
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "このリクエストを承認すると、OpenSeaに登録されている資産を誰かに盗まれる可能性があります。"
-  },
-  "blockaidDescriptionTransferFarming": {
-    "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われます。"
-  },
-  "blockaidTitleDeceptive": {
-    "message": "これは虚偽のリクエストです"
-  },
-  "blockaidTitleMayNotBeSafe": {
-    "message": "ご注意ください"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "これは不審なリクエストです"
   },
   "blockies": {
     "message": "Blockie"
@@ -2730,9 +2740,6 @@
   "confirmationAlertDetails": {
     "message": "資産を守るため、リクエストを拒否することをお勧めします。"
   },
-  "confirmationAlertModalTitleDescription": {
-    "message": "資産が危険にさらされている可能性があります"
-  },
   "confirmed": {
     "message": "確定されました"
   },
@@ -2759,6 +2766,9 @@
   },
   "connectAccounts": {
     "message": "アカウントの接続"
+  },
+  "connectAnyway": {
+    "message": "それでも接続する"
   },
   "connectHardwareDevice": {
     "message": "$1を接続",
@@ -2880,6 +2890,9 @@
   },
   "continue": {
     "message": "続行"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "自己責任で行ってください"
   },
   "contract": {
     "message": "コントラクト"
@@ -3402,14 +3415,17 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "本当に接続解除しますか？サイトの機能を失う可能性があります。"
   },
-  "disconnectAllDescriptionText": {
-    "message": "このサイトとの接続を解除すると、このサイトをもう一度使用するには、アカウントとネットワークを接続しなおす必要があります。"
-  },
   "disconnectAllSites": {
     "message": "すべて接続解除"
   },
+  "disconnectAllSitesDescriptionText": {
+    "message": "これにより、全アカウントのすべてのDAppへの接続が解除されます。再び使用するには再度接続する必要があります。"
+  },
   "disconnectAllSitesError": {
     "message": "一部のDAppの接続を解除できませんでした。もう一度お試しください。"
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "すべて接続解除?"
   },
   "disconnectAllSitesSuccess": {
     "message": "すべてのDAppの接続が解除されました。"
@@ -3419,6 +3435,13 @@
   },
   "disconnectPrompt": {
     "message": "$1を接続解除"
+  },
+  "disconnectQuestion": {
+    "message": "接続解除?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "これにより、すべてのアカウントの$1への接続が解除されます。このDAppを再び使用するには、再度接続する必要があります。",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "このアカウントを接続解除"
@@ -3598,9 +3621,6 @@
   },
   "editNonceMessage": {
     "message": "これは高度な機能であり、慎重に使用してください。"
-  },
-  "editPermissions": {
-    "message": "アクセス許可を編集"
   },
   "editSpendingCap": {
     "message": "使用上限の編集"
@@ -5052,6 +5072,9 @@
   "manage": {
     "message": "管理"
   },
+  "manageConnectedAccounts": {
+    "message": "接続されたアカウントの管理"
+  },
   "manageDefaultSettings": {
     "message": "デフォルトのプライバシー設定の管理"
   },
@@ -6075,12 +6098,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "まだ通知を受け取っていません。"
   },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "Agenticを対象としたCLIによる接続要求、承認、セッション更新情報"
-  },
-  "notificationsSettingsAgenticCliTitle": {
-    "message": "Agentic CLI"
-  },
   "notificationsSettingsBoxError": {
     "message": "問題が発生しました。もう一度お試しください。"
   },
@@ -6520,9 +6537,29 @@
     "message": "支払方法:",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "仮想通貨",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "支払方法を選択",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "支払方法:",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "その他の資産",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "お持ちのトークンからお選びください",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "支払先"
@@ -6555,6 +6592,10 @@
   "percentChange": {
     "message": "変動率"
   },
+  "permissionCannotMoveFunds": {
+    "message": "ユーザーの許可なしに資金を移動させることはできません",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "アクセス許可:"
   },
@@ -6574,6 +6615,14 @@
   "permissionRevokedForAccounts": {
     "message": "この更新で$1に対して取り消し済み",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "アドレス、残高、アクティビティの表示",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "トランザクションリクエストの送信",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "$1に接続.",
@@ -6814,9 +6863,6 @@
   "permissions": {
     "message": "アクセス許可"
   },
-  "permissionsPageEmptyDescription": {
-    "message": "権限が検出されませんでした。サイトに権限を付与したり、Snapをインストールしたりした場合、その詳細がここに表示されます。"
-  },
   "permitSimulationChange_approve": {
     "message": "使用上限"
   },
@@ -6840,9 +6886,6 @@
   },
   "permitSimulationDetailInfo": {
     "message": "アカウントからこの量のトークンを使用する、使用者権限を付与しようとしています。"
-  },
-  "permittedChainToastUpdate": {
-    "message": "$1は$2にアクセスできます。"
   },
   "perps": {
     "message": "パーペチュアル"
@@ -6964,6 +7007,9 @@
   },
   "perpsClosePosition": {
     "message": "ポジションのクローズ"
+  },
+  "perpsClosePrice": {
+    "message": "決済価格"
   },
   "perpsClosePriceUnavailable": {
     "message": "現在の価格は入手できません。しばらくしてからもう一度お試しください。"
@@ -7282,6 +7328,15 @@
   "perpsOrderBookGroupBy": {
     "message": "グループ化"
   },
+  "perpsOrderBookLayout": {
+    "message": "オーダーブックのレイアウト"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "左"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "右"
+  },
   "perpsOrderBookListedBy": {
     "message": "表示単位"
   },
@@ -7341,6 +7396,9 @@
   "perpsOrderFailed": {
     "message": "注文できませんでした。もう一度お試しください。"
   },
+  "perpsOrderFilled": {
+    "message": "約定済"
+  },
   "perpsOrderOriginalSize": {
     "message": "元のサイズ"
   },
@@ -7349,6 +7407,12 @@
   },
   "perpsOrderStatus": {
     "message": "ステータス"
+  },
+  "perpsOrderTotalFee": {
+    "message": "合計手数料"
+  },
+  "perpsOrderType": {
+    "message": "注文タイプ"
   },
   "perpsOrderValue": {
     "message": "注文額"
@@ -8136,6 +8200,80 @@
   "rampsOnNetwork": {
     "message": "$1上",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "銀行送金の詳細"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "再度購入する"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "手数料"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "注文ID"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "支払方法:",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1手数料",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "合計"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "$1で表示"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "注文で問題が発生しました。",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "購入に失敗しました",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "注文を処理しています。",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "購入処理中",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "注文で問題が発生しました。",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "売却に失敗しました",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "注文を処理しています。",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "売却処理中",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "資金がまもなくお手元に届きます。",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "売却成功",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "暗合資産がまもなくお手元に届きます。",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "購入成功",
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "その他のオプション"
@@ -9019,6 +9157,9 @@
   "securityTrustMalicious": {
     "message": "悪意のある"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "悪質 — 危険フラグ付き"
+  },
   "securityTrustMaliciousLabel": {
     "message": "悪意のある"
   },
@@ -9159,8 +9300,8 @@
   "select": {
     "message": "選択"
   },
-  "selectAccountToConnect": {
-    "message": "接続するアカウントを選択します"
+  "selectAccounts": {
+    "message": "アカウントの選択"
   },
   "selectAll": {
     "message": "すべて選択"
@@ -9944,6 +10085,12 @@
   "showTestnetNetworks": {
     "message": "テストネットワークを表示"
   },
+  "showTickerWidget": {
+    "message": "XでWebウィジェットを表示する"
+  },
+  "showTickerWidgetDescription": {
+    "message": "X.comの閲覧中に、トークンの詳細を含むMetaMaskウィジェットを表示します。"
+  },
   "sidePanelMigrationToast": {
     "message": "MetaMaskはデフォルトでサイドパネルで開かれるようになりました。メニューからいつでも$1ことができます。",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -10045,8 +10192,9 @@
   "singleNetwork": {
     "message": "1つのネットワーク"
   },
-  "sites": {
-    "message": "サイト"
+  "sitePermissionsBanner": {
+    "message": "$1は接続されたアカウントを確認し、トランザクションを提案できます。",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "発行されました"
@@ -11318,14 +11466,8 @@
   "troubleStartingTitle": {
     "message": "MetaMaskの起動中に問題が発生しました。"
   },
-  "trustSignalBlockDescription": {
-    "message": "このサイトに接続すると、資産をすべて失う可能性があります。"
-  },
-  "trustSignalBlockTitle": {
-    "message": "悪質なサイトが検出されました"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "それでも接続する"
+  "trustSignalPhishingWarning": {
+    "message": "このサイトには、フィッシングやウォレットの資金を引き出すアクティビティの兆候が見られます。資金を盗むことを目的としたトランザクションが求められる可能性があります。"
   },
   "tryAgain": {
     "message": "再試行してください"

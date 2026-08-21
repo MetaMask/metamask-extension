@@ -138,6 +138,7 @@ describe('Actions', () => {
     background.signPersonalMessage = sinon.stub();
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
+    background.getTokenStandardAndDetailsByChain = sinon.stub();
     background.toggleExternalServices = sinon.stub();
     background.setUseMultiAccountBalanceChecker = sinon.stub();
     background.setUseTransactionSimulations = sinon.stub();
@@ -150,6 +151,10 @@ describe('Actions', () => {
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
     background.changePasswordWithPasskeyVerification = sinon.stub();
+    background.protectVaultKeyWithPasskey = sinon.stub();
+    background.removePasskeyWithPasskeyVerification = sinon.stub();
+    background.removePasskeyWithPasswordVerification = sinon.stub();
+    background.unlockWithPasskey = sinon.stub();
     background.generatePasskeyRegistrationOptions = sinon.stub();
     background.generatePasskeyAuthenticationOptions = sinon.stub();
     background.generatePasskeyPostRegistrationAuthenticationOptions =
@@ -376,11 +381,11 @@ describe('Actions', () => {
       );
 
       expect(
-        background.changePasswordWithPasskeyVerification.calledOnceWith(
+        background.changePasswordWithPasskeyVerification.calledOnceWith({
           newPassword,
           authenticationResponse,
-          undefined,
-        ),
+          options: undefined,
+        }),
       ).toStrictEqual(true);
     });
 
@@ -412,11 +417,11 @@ describe('Actions', () => {
       );
 
       expect(
-        background.changePasswordWithPasskeyVerification.calledOnceWith(
+        background.changePasswordWithPasskeyVerification.calledOnceWith({
           newPassword,
           authenticationResponse,
-          { renewVaultKeyProtection: false },
-        ),
+          options: { renewVaultKeyProtection: false },
+        }),
       ).toStrictEqual(true);
     });
 
@@ -524,10 +529,25 @@ describe('Actions', () => {
       ).toBe(true);
     });
 
-    it('#generatePasskeyRegistrationOptions passes prfAvailable false when PRF support is false', async () => {
+    it('#generatePasskeyRegistrationOptions rejects when PRF support is false', async () => {
       jest
         .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
         .mockResolvedValue(false);
+      setBackgroundConnection(background);
+
+      await expect(
+        actions.generatePasskeyRegistrationOptions(),
+      ).rejects.toThrow('Passkey setup requires PRF support');
+
+      expect(background.generatePasskeyRegistrationOptions.notCalled).toBe(
+        true,
+      );
+    });
+
+    it('#generatePasskeyRegistrationOptions attempts registration when PRF support is unknown', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockResolvedValue(undefined);
       background.generatePasskeyRegistrationOptions.resolves({
         rp: { name: 'MM' },
       });
@@ -537,7 +557,25 @@ describe('Actions', () => {
 
       expect(
         background.generatePasskeyRegistrationOptions.calledOnceWith({
-          prfAvailable: false,
+          prfAvailable: true,
+        }),
+      ).toBe(true);
+    });
+
+    it('#generatePasskeyRegistrationOptions attempts registration when PRF detection fails', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockRejectedValue(new Error('capability detection failed'));
+      background.generatePasskeyRegistrationOptions.resolves({
+        rp: { name: 'MM' },
+      });
+      setBackgroundConnection(background);
+
+      await actions.generatePasskeyRegistrationOptions();
+
+      expect(
+        background.generatePasskeyRegistrationOptions.calledOnceWith({
+          prfAvailable: true,
         }),
       ).toBe(true);
     });
@@ -614,11 +652,11 @@ describe('Actions', () => {
       );
 
       expect(
-        background.protectVaultKeyWithPasskey.calledOnceWith(
+        background.protectVaultKeyWithPasskey.calledOnceWith({
           registrationResponse,
           authenticationResponse,
-          'secret',
-        ),
+          password: 'secret',
+        }),
       ).toBe(true);
 
       await actions.protectVaultKeyWithPasskey(
@@ -629,9 +667,11 @@ describe('Actions', () => {
       expect(
         background.protectVaultKeyWithPasskey.secondCall.args,
       ).toStrictEqual([
-        registrationResponse,
-        authenticationResponse,
-        undefined,
+        {
+          registrationResponse,
+          authenticationResponse,
+          password: undefined,
+        },
       ]);
     });
 
@@ -2255,17 +2295,13 @@ describe('Actions', () => {
 
       setBackgroundConnection(background.getApi());
 
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
       await store.dispatch(
         actions.setSelectedMultichainAccount(
           'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
         ),
       );
-      expect(store.getActions()).toStrictEqual(expectedActions);
+      // No fullscreen loading indication — pending UI is owned by useTransition
+      expect(store.getActions()).toStrictEqual([]);
     });
   });
 
