@@ -40,6 +40,18 @@ jest.mock('../../../hooks/bridge/useBridging', () => ({
   })),
 }));
 
+jest.mock('../../../pages/asset/hooks/useBalanceAwareSwapDefaults', () => ({
+  useBalanceAwareSwapDefaults: jest.fn(() => ({
+    sourceToken: {
+      symbol: 'ETH',
+      address: '0x0000000000000000000000000000000000000000',
+      chainId: '0x1',
+      decimals: 18,
+      name: 'Ether',
+    },
+  })),
+}));
+
 jest.mock('../../../hooks/batch-sell/useBatchSell', () => ({
   useBatchSell: jest.fn(() => ({
     openBatchSellExperience: jest.fn(),
@@ -143,6 +155,62 @@ describe('CoinButtons – MoreButtonsGroup pure black dropdown', () => {
     await waitFor(() => {
       const dropdown = container.querySelector('.bg-background-alternative');
       expect(dropdown).toBeInTheDocument();
+    });
+  });
+});
+
+describe('CoinButtons – asset page swap token', () => {
+  const { useBalanceAwareSwapDefaults } = jest.requireMock(
+    '../../../pages/asset/hooks/useBalanceAwareSwapDefaults',
+  );
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const renderAssetPageCoinButtons = (chainId: string) =>
+    renderWithProvider(
+      <CoinButtons
+        account={mockAccount as Parameters<typeof CoinButtons>[0]['account']}
+        chainId={chainId as Parameters<typeof CoinButtons>[0]['chainId']}
+        trackingLocation="asset-page"
+        isSwapsChain
+        isSigningEnabled
+      />,
+      configureStore(mockState),
+      '/',
+    );
+
+  it('describes the native token with a CAIP-2 chain id on a non-EVM chain', () => {
+    renderAssetPageCoinButtons('bip122:000000000019d6689c085ae165831e93');
+
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: expect.objectContaining({
+        symbol: 'BTC',
+        decimals: 8,
+        // The decimal chain id from `getNativeAssetForChainId` is not a chain
+        // the bridge entry point accepts.
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+      }),
+    });
+  });
+
+  it('describes the native token with a CAIP-2 chain id on an EVM chain', () => {
+    renderAssetPageCoinButtons('0x1');
+
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: expect.objectContaining({
+        symbol: 'ETH',
+        chainId: 'eip155:1',
+      }),
+    });
+  });
+
+  it('passes no token when the chain cannot open a swap', () => {
+    renderAssetPageCoinButtons('0x539');
+
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: null,
     });
   });
 });
