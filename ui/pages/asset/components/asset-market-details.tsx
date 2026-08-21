@@ -7,16 +7,15 @@ import {
   BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
 import { getPricePrecision } from '../util';
 
-import { Text } from '../../../components/component-library';
-import {
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -120,10 +119,8 @@ export const AssetMarketDetails = ({
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
       <Text
-        variant={TextVariant.headingSm}
-        paddingInline={4}
-        paddingTop={2}
-        paddingBottom={2}
+        className="px-4 py-2"
+        variant={TextVariant.HeadingSm}
       >
         {t('marketDetails')}
       </Text>
@@ -136,7 +133,8 @@ export const AssetMarketDetails = ({
           renderRow(
             t('marketCap'),
             <Text
-              variant={TextVariant.bodyMdMedium}
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
               data-testid="asset-market-cap"
             >
               {formatCurrencyCompact(marketCap, currency)}
@@ -145,21 +143,30 @@ export const AssetMarketDetails = ({
         {totalVolume > 0 &&
           renderRow(
             t('totalVolume'),
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+            >
               {formatCurrencyCompact(totalVolume, currency)}
             </Text>,
           )}
         {circulatingSupply > 0 &&
           renderRow(
             t('circulatingSupply'),
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+            >
               {formatCompact(circulatingSupply)}
             </Text>,
           )}
         {allTimeHigh > 0 &&
           renderRow(
             t('allTimeHigh'),
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+            >
               {formatCurrency(
                 `${allTimeHigh}`,
                 currency,
@@ -170,7 +177,10 @@ export const AssetMarketDetails = ({
         {allTimeLow > 0 &&
           renderRow(
             t('allTimeLow'),
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+            >
               {formatCurrency(
                 `${allTimeLow}`,
                 currency,
@@ -187,8 +197,9 @@ function renderRow(leftColumn: string, rightColumn: ReactNode) {
   return (
     <Box className="flex" justifyContent={BoxJustifyContent.Between}>
       <Text
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodyMdMedium}
+        color={TextColor.TextAlternative}
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Medium}
       >
         {leftColumn}
       </Text>
