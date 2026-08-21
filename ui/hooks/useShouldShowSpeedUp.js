@@ -26,55 +26,38 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
       timeDelta > 5000 && isEarliestNonce && !hasRetried && matchCurrentChainId;
     return shouldEnable;
   });
-  useEffect(() => {
-    // because this hook is optimized to only run on changes we have to
-    // key into the changing time delta between submittedTime and now()
-    // and if the status of the transaction changes based on that difference
-    // trigger a setState call to tell react to re-render. This effect will
-    // also immediately set retryEnabled and not create a timeout if the
-    // condition is already met. This effect will run anytime the variables
-    // for determining enabled status change
-    let timeoutId;
+  const canSpeedUp = !hasRetried && isEarliestNonce && matchCurrentChainId;
 
-    // Disable speed up if conditions are no longer met
-    if (
-      (hasRetried || !isEarliestNonce || !matchCurrentChainId) &&
-      speedUpEnabled
-    ) {
-      setSpeedUpEnabled(false);
-    } else if (
-      !hasRetried &&
-      isEarliestNonce &&
-      matchCurrentChainId &&
-      !speedUpEnabled
-    ) {
-      // Enable speed up after 5 seconds if conditions are met
-      if (Date.now() - submittedTime > SECOND * 5) {
-        setSpeedUpEnabled(true);
-      } else {
-        timeoutId = setTimeout(
-          () => {
-            setSpeedUpEnabled(true);
-            clearTimeout(timeoutId);
-          },
-          5001 - (Date.now() - submittedTime),
-        );
-      }
+  if (!canSpeedUp && speedUpEnabled) {
+    setSpeedUpEnabled(false);
+  } else if (canSpeedUp && !speedUpEnabled) {
+    if (Date.now() - submittedTime > SECOND * 5) {
+      setSpeedUpEnabled(true);
     }
-    // Anytime the effect is re-ran, make sure to remove a previously set timeout
-    // so as to avoid multiple timers potentially overlapping
+  }
+
+  useEffect(() => {
+    // Schedule enabling speed-up once the transaction has been queued for 5s.
+    // Immediate enable/disable based on current conditions is handled during render.
+    if (!canSpeedUp || speedUpEnabled) {
+      return undefined;
+    }
+
+    if (Date.now() - submittedTime > SECOND * 5) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(
+      () => {
+        setSpeedUpEnabled(true);
+      },
+      5001 - (Date.now() - submittedTime),
+    );
+
     return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
+      clearTimeout(timeoutId);
     };
-  }, [
-    submittedTime,
-    speedUpEnabled,
-    hasRetried,
-    isEarliestNonce,
-    matchCurrentChainId,
-  ]);
+  }, [submittedTime, speedUpEnabled, canSpeedUp]);
 
   return speedUpEnabled;
 }

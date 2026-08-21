@@ -3,7 +3,6 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -34,9 +33,11 @@ export const GlobalMenuRouteTransition = ({
     );
   const onCloseCompleteRef = useRef<(() => void) | null>(null);
 
-  useLayoutEffect(() => {
+  const [prevLocationKey, setPrevLocationKey] = useState(location.key);
+  if (location.key !== prevLocationKey) {
+    setPrevLocationKey(location.key);
     setTransitionDirection(shouldAnimate ? 'forward' : null);
-  }, [location.key, shouldAnimate]);
+  }
 
   const runCloseTransition = useCallback<RunCloseTransition>((onComplete) => {
     onCloseCompleteRef.current = onComplete;

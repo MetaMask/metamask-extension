@@ -64,7 +64,9 @@ export const useTokenSecurityData = ({
   );
   const [error, setError] = useState<Error | null>(null);
   const [assetMetadata, setAssetMetadata] =
-    useState<TokenSecurityAssetMetadata>({});
+    useState<TokenSecurityAssetMetadata>(() =>
+      assetId ? getAssetMetadataFromAssetId(assetId) : {},
+    );
   const activeAssetIdRef = useRef<CaipAssetType | null>(null);
 
   const fetchData = useCallback(async (requestAssetId: CaipAssetType) => {
@@ -98,30 +100,43 @@ export const useTokenSecurityData = ({
     }
   }, []);
 
-  useEffect(() => {
+  const securityRequestKey = `${assetId ?? ''}|${prefetchedData ? 'prefetched' : 'fetch'}`;
+  const [prevSecurityRequestKey, setPrevSecurityRequestKey] =
+    useState(securityRequestKey);
+
+  if (securityRequestKey !== prevSecurityRequestKey) {
+    setPrevSecurityRequestKey(securityRequestKey);
+    activeAssetIdRef.current = assetId;
+
     if (prefetchedData) {
-      activeAssetIdRef.current = assetId;
       setSecurityData(prefetchedData);
       setError(null);
       setIsLoading(false);
-      return undefined;
-    }
-
-    if (!assetId) {
+    } else if (assetId) {
+      setSecurityData(null);
+      setError(null);
+      setAssetMetadata(getAssetMetadataFromAssetId(assetId));
+      setIsLoading(true);
+    } else {
       activeAssetIdRef.current = null;
       setSecurityData(null);
       setError(null);
       setAssetMetadata({});
       setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (prefetchedData || !assetId) {
       return undefined;
     }
 
     activeAssetIdRef.current = assetId;
-    setSecurityData(null);
-    setError(null);
-    setAssetMetadata(getAssetMetadataFromAssetId(assetId));
-    setIsLoading(true);
-    fetchData(assetId);
+    // Defer so async helper setState paths are not treated as synchronous
+    // effect updates (react-hooks/set-state-in-effect).
+    queueMicrotask(() => {
+      fetchData(assetId);
+    });
 
     return () => {
       activeAssetIdRef.current = null;
