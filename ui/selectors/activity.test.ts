@@ -3,6 +3,11 @@ import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { Transaction } from '@metamask/keyring-api';
 import { TransactionStatus, TransactionType } from '@metamask/keyring-api';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import {
+  TransactionStatus as EvmTransactionStatus,
+  TransactionType as EvmTransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import type { MetaMaskReduxState } from '../store/store';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
@@ -10,6 +15,7 @@ import mockState from '../../test/data/mock-state.json';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../test/data/mock-accounts';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
 import {
+  selectLocalTransactions,
   selectNonEvmActivityItems,
   selectNonEvmTransactionsForActivity,
   selectEvmAddress,
@@ -296,5 +302,85 @@ describe('selectEvmAddress', () => {
     ];
 
     expect(selectEvmAddress(state)).toBeUndefined();
+  });
+});
+
+describe('selectLocalTransactions', () => {
+  const MONEY_ACCOUNT_ADDRESS = '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2';
+  const PRIMARY_HD_KEYRING_ID = '01JKAF3DSGM3AB87EM9N0K41AJ';
+
+  function buildMoneyAccountTransaction(
+    overrides: Partial<TransactionMeta> = {},
+  ): TransactionMeta {
+    return {
+      id: 'money-account-tx',
+      chainId: '0x1',
+      networkClientId: 'mainnet',
+      status: EvmTransactionStatus.confirmed,
+      time: 1,
+      type: EvmTransactionType.batch,
+      txParams: {
+        from: MONEY_ACCOUNT_ADDRESS,
+        to: MONEY_ACCOUNT_ADDRESS,
+        nonce: '0x77',
+        value: '0x0',
+      },
+      nestedTransactions: [
+        { type: EvmTransactionType.tokenMethodApprove },
+        { type: EvmTransactionType.moneyAccountDeposit },
+      ],
+      ...overrides,
+    } as TransactionMeta;
+  }
+
+  function buildStateWithMoneyAccount(transaction: TransactionMeta) {
+    const state = structuredClone(typedMockState) as MultichainAccountsState & {
+      metamask: {
+        transactions?: TransactionMeta[];
+        moneyAccounts?: Record<
+          string,
+          { address: string; options: { entropy: { id: string } } }
+        >;
+      };
+    };
+
+    state.metamask.transactions = [transaction];
+    state.metamask.moneyAccounts = {
+      'money-account-1': {
+        address: MONEY_ACCOUNT_ADDRESS,
+        options: { entropy: { id: PRIMARY_HD_KEYRING_ID } },
+      },
+    };
+
+    return state as Parameters<typeof selectLocalTransactions>[0];
+  }
+
+  it('includes money-account transactions sent from the money account', () => {
+    const state = buildStateWithMoneyAccount(buildMoneyAccountTransaction());
+
+    const groups = selectLocalTransactions(state);
+
+    expect(
+      groups.some(
+        (group) => group.initialTransaction.id === 'money-account-tx',
+      ),
+    ).toBe(true);
+  });
+
+  it('excludes non-money transactions sent from the money account', () => {
+    const state = buildStateWithMoneyAccount(
+      buildMoneyAccountTransaction({
+        type: EvmTransactionType.simpleSend,
+        nestedTransactions: undefined,
+      }),
+    );
+
+    const groups = selectLocalTransactions(state);
+
+    expect(
+      groups.some(
+        (group) => group.initialTransaction.id === 'money-account-tx',
+      ),
+    ).toBe(false);
   });
 });

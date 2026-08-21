@@ -31,6 +31,7 @@ import type { MetaMaskReduxState } from '../store/store';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
+import { getMoneyAccountTransactionType } from '../../shared/lib/transactions.utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import { ActivityListItem, Status } from '../../shared/lib/activity/types';
@@ -42,6 +43,7 @@ import { getInternalAccountsObject } from './accounts';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
 import { enrichLocalActivity } from './activity/enrich-local-activity';
+import { selectPrimaryMoneyAccount } from './money-account';
 import { getAssetsMetadata } from './assets';
 import {
   groupAndSortTransactionsByNonce,
@@ -65,6 +67,29 @@ const selectTransactionPayData = (state: MetaMaskReduxState) =>
   (state.metamask as unknown as TransactionPayControllerState)
     .transactionData ??
   (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
+
+/**
+ * Money-account deposits and withdrawals execute from the Money Keyring
+ * account rather than the selected account, so the selected-address filter
+ * alone would drop them from the activity list even though the user
+ * initiated them. Mirrors mobile, which surfaces money-account transactions
+ * in activity despite their sender being the money account.
+ *
+ * @param tx - The transaction to check.
+ * @param moneyAccountAddress - Lowercased primary money account address.
+ * @returns Whether the transaction is a money-account transaction sent by
+ * the money account.
+ */
+function isMoneyAccountTransaction(
+  tx: TransactionMeta,
+  moneyAccountAddress: string | undefined,
+) {
+  return Boolean(
+    moneyAccountAddress &&
+    tx.txParams?.from?.toLowerCase() === moneyAccountAddress &&
+    getMoneyAccountTransactionType(tx),
+  );
+}
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
@@ -92,18 +117,21 @@ export const selectLocalTransactions = createSelector(
   smartTransactionsListSelector,
   selectRequiredTransactionIds,
   selectRequiredTransactionHashes,
+  selectPrimaryMoneyAccount,
   (
     transactions,
     evmAddress,
     smartTransactions,
     internalTxIds,
     internalTxHashes,
+    primaryMoneyAccount,
   ): TransactionGroup[] => {
     if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
     }
 
     const selectedAddress = evmAddress.toLowerCase();
+    const moneyAccountAddress = primaryMoneyAccount?.address.toLowerCase();
 
     const isInternalRequiredTransaction = (
       tx: Pick<Partial<TransactionMeta>, 'id' | 'hash'>,
@@ -119,7 +147,8 @@ export const selectLocalTransactions = createSelector(
 
     const filtered = (transactions ?? []).filter(
       (tx) =>
-        isFromSelectedAccount(tx, selectedAddress) &&
+        (isFromSelectedAccount(tx, selectedAddress) ||
+          isMoneyAccountTransaction(tx, moneyAccountAddress)) &&
         !isInternalRequiredTransaction(tx),
     );
 
