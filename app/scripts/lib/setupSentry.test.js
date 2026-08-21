@@ -8,6 +8,8 @@ import {
   shouldCreateSpanForRequest,
 } from './setupSentry';
 
+const originalEnvironment = process.env;
+
 describe('Setup Sentry', () => {
   describe('rewriteReport', () => {
     it('should remove urls from error messages', () => {
@@ -679,5 +681,88 @@ describe('Setup Sentry', () => {
         '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
       );
     });
+  });
+});
+
+describe('setupSentry', () => {
+  afterEach(() => {
+    process.env = originalEnvironment;
+    jest.dontMock('@sentry/browser');
+    jest.dontMock('@sentry/core');
+    jest.dontMock('@metamask/utils');
+    jest.dontMock('./install-type');
+    jest.dontMock('./sentry-get-state');
+    jest.dontMock('./sentry-make-transport');
+    jest.dontMock('./sentry-metametrics');
+    jest.dontMock('./sentry-trace-propagation');
+    jest.dontMock('../../../shared/lib/manifestFlags');
+    jest.dontMock('../../../shared/lib/mv3.utils');
+    jest.resetModules();
+  });
+
+  it('initializes Sentry with getter-only SDK loggers', async () => {
+    const mockSentryInit = jest.fn();
+    const mockSdkLogger = {};
+
+    Object.defineProperties(mockSdkLogger, {
+      error: { get: jest.fn(), configurable: true },
+      log: { get: jest.fn(), configurable: true },
+    });
+
+    process.env = {
+      ...originalEnvironment,
+      METAMASK_DEBUG: 'true',
+    };
+    jest.resetModules();
+
+    let setupSentry;
+    await jest.isolateModulesAsync(async () => {
+      jest.doMock('@sentry/browser', () => ({
+        browserTracingIntegration: jest.fn(),
+        dedupeIntegration: jest.fn(),
+        extraErrorDataIntegration: jest.fn(),
+        getClient: jest.fn(),
+        init: mockSentryInit,
+        registerSpanErrorInstrumentation: jest.fn(),
+        setTag: jest.fn(),
+      }));
+      jest.doMock('@sentry/core', () => ({
+        ...jest.requireActual('@sentry/core'),
+        logger: mockSdkLogger,
+      }));
+      jest.doMock('@metamask/utils', () => ({
+        ...jest.requireActual('@metamask/utils'),
+        createModuleLogger: jest.fn(() => jest.fn()),
+      }));
+      jest.doMock('./install-type', () => ({
+        getInstallType: jest.fn(),
+        initInstallType: jest.fn(),
+      }));
+      jest.doMock('./sentry-get-state', () => ({
+        getAnalyticsState: jest.fn(),
+        getAnalyticsStateFromAppState: jest.fn(),
+        getState: jest.fn(),
+      }));
+      jest.doMock('./sentry-make-transport', () => ({
+        makeTransport: jest.fn(),
+      }));
+      jest.doMock('./sentry-metametrics', () => ({
+        metaMetricsIntegration: jest.fn(),
+      }));
+      jest.doMock('./sentry-trace-propagation', () => ({
+        BACKEND_TRACE_PROPAGATION_TARGETS: [],
+        consensysTracePropagationIntegration: jest.fn(),
+      }));
+      jest.doMock('../../../shared/lib/manifestFlags', () => ({
+        getManifestFlags: jest.fn(() => ({})),
+      }));
+      jest.doMock('../../../shared/lib/mv3.utils', () => ({
+        isManifestV3: false,
+      }));
+      setupSentry = (await import('./setupSentry')).default;
+    });
+
+    expect(() => setupSentry()).not.toThrow();
+    expect(mockSentryInit).toHaveBeenCalledTimes(1);
   });
 });
