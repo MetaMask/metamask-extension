@@ -27,12 +27,12 @@
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
     "webpack:tsc": "tsc -p ./development/webpack/tsconfig.webpack.json",
-    "webpack:lavamoat": "NODE_OPTIONS=\"--no-deprecation --max-old-space-size=${WEBPACK_LAVAMOAT_HEAP:-8192}\" lavamoat --policy lavamoat/webpack/build/policy.json --override lavamoat/webpack/build/policy-override.json ./development/.webpack/launch.js",
+    "webpack:lavamoat": "NODE_OPTIONS=--no-deprecation lavamoat --policy lavamoat/webpack/build/policy.json --override lavamoat/webpack/build/policy-override.json ./development/.webpack/launch.js",
     "webpack:lavamoat:build": "yarn webpack:lavamoat -- --mode production --no-cache",
     "webpack:lavamoat:build:mv2": "yarn webpack:lavamoat:build --browser firefox -v 2",
     "webpack:lavamoat:policy:build": "yarn webpack:lavamoat --writeAutoPolicy -- --mode production --no-cache",
-    "webpack:lavamoat:policy:mv2": "concurrently 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build:mv2 --generatePolicy' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build:mv2 --generatePolicy --type flask' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build:mv2 --generatePolicy --type beta' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build:mv2 --generatePolicy --type experimental' --kill-others-on-fail",
-    "webpack:lavamoat:policy:mv3": "concurrently 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy --type flask' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy --type beta' 'WEBPACK_LAVAMOAT_HEAP=4096 yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail",
+    "webpack:lavamoat:policy:mv2": "concurrently 'yarn webpack:lavamoat:build:mv2 --generatePolicy' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type flask' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type beta' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type experimental' --kill-others-on-fail",
+    "webpack:lavamoat:policy:mv3": "concurrently 'yarn webpack:lavamoat:build --generatePolicy' 'yarn webpack:lavamoat:build --generatePolicy --type flask' 'yarn webpack:lavamoat:build --generatePolicy --type beta' 'yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail",
     "foundryup": "yarn mm-foundryup",
     "bitcoin-regtest-up:install": "bitcoin-regtest-up install",
     "java-tron": "node_modules/.bin/java-tron",
@@ -172,6 +172,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "lavamoat-core": "github:LavaMoat/LavaMoat.git#workspace=lavamoat-core&head=naugtur/write-policy-fix",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "35.0.0",
     "follow-redirects": "^1.16.0",
@@ -333,7 +334,8 @@
     "postcss@npm:7.0.36": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
     "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
     "@ledgerhq/context-module/ethers": "^6.15.0",
-    "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0"
+    "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
+    "@sentry/core@npm:10.69.0": "patch:@sentry/core@npm%3A10.69.0#~/.yarn/patches/@sentry-core-npm-10.69.0-9688b83676.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -501,9 +503,9 @@
     "@rive-app/react-canvas": "patch:@rive-app/react-canvas@npm%3A4.23.3#~/.yarn/patches/@rive-app-react-canvas-npm-4.23.3-3ab1940c19.patch",
     "@scure/base": "^1.2.5",
     "@segment/analytics-node": "^3.0.0",
-    "@sentry/browser": "patch:@sentry/browser@npm%3A10.38.0#~/.yarn/patches/@sentry-browser-npm-10.38.0-d1e984c1c7.patch",
-    "@sentry/core": "10.38.0",
-    "@sentry/types": "10.38.0",
+    "@sentry/browser": "patch:@sentry/browser@npm%3A10.69.0#~/.yarn/patches/@sentry-browser-npm-10.69.0-736e899d40.patch",
+    "@sentry/core": "patch:@sentry/core@npm%3A10.69.0#~/.yarn/patches/@sentry-core-npm-10.69.0-9688b83676.patch",
+    "@sentry/types": "^10.69.0",
     "@simplewebauthn/browser": "^13.3.0",
     "@solana/addresses": "2.0.0-rc.4",
     "@swc/core": "^1.13.2",

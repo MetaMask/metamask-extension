@@ -1,0 +1,115 @@
+diff --git a/build/cjs/instrument/fetch.js b/build/cjs/instrument/fetch.js
+index 31b5ca0af3eeefc3cae78bd0c2b1da4c5b7b8c21..ac0db1e000ea60082f3eb77d5e085469315e1cab 100644
+--- a/build/cjs/instrument/fetch.js
++++ b/build/cjs/instrument/fetch.js
+@@ -70,7 +70,7 @@ function instrumentFetch(onFetchResolved, skipNativeFetchCheck = false) {
+           const client = currentScopes.getClient();
+           const enhanceOption = client?.getOptions().enhanceFetchErrorMessages ?? "always";
+           const shouldEnhance = enhanceOption !== false;
+-          if (shouldEnhance && error instanceof TypeError && (error.message === "Failed to fetch" || error.message === "Load failed" || error.message === "NetworkError when attempting to fetch resource.")) {
++          if (shouldEnhance && is.isError(error) && error.name === "TypeError" && (error.message === "Failed to fetch" || error.message === "Load failed" || error.message === "NetworkError when attempting to fetch resource.")) {
+             try {
+               const url2 = new URL(handlerData.fetchData.url);
+               const hostname = url2.host;
+diff --git a/build/cjs/utils/aggregate-errors.js b/build/cjs/utils/aggregate-errors.js
+index 1a4e0d7fc30dc2cafe3eab00c1223ab7f412553d..e85a304a83fd61643cd0d93dc64310e705068fd2 100644
+--- a/build/cjs/utils/aggregate-errors.js
++++ b/build/cjs/utils/aggregate-errors.js
+@@ -3,7 +3,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+ const is = require('./is.js');
+ 
+ function applyAggregateErrorsToEvent(exceptionFromErrorImplementation, parser, key, limit, event, hint) {
+-  if (!event.exception?.values || !hint || !is.isInstanceOf(hint.originalException, Error)) {
++  if (!event.exception?.values || !hint || !is.isError(hint.originalException)) {
+     return;
+   }
+   const originalException = event.exception.values.length > 0 ? event.exception.values[event.exception.values.length - 1] : void 0;
+@@ -25,7 +25,7 @@ function aggregateExceptionsFromError(exceptionFromErrorImplementation, parser,
+     return prevExceptions;
+   }
+   let newExceptions = [...prevExceptions];
+-  if (is.isInstanceOf(error[key], Error)) {
++  if (is.isError(error[key])) {
+     applyExceptionGroupFieldsForParentException(exception, exceptionId, error);
+     const newException = exceptionFromErrorImplementation(parser, error[key]);
+     const newExceptionId = newExceptions.length;
+@@ -43,7 +43,7 @@ function aggregateExceptionsFromError(exceptionFromErrorImplementation, parser,
+   }
+   if (isExceptionGroup(error)) {
+     error.errors.forEach((childError, i) => {
+-      if (is.isInstanceOf(childError, Error)) {
++      if (is.isError(childError)) {
+         applyExceptionGroupFieldsForParentException(exception, exceptionId, error);
+         const newException = exceptionFromErrorImplementation(parser, childError);
+         const newExceptionId = newExceptions.length;
+diff --git a/build/cjs/utils/eventbuilder.js b/build/cjs/utils/eventbuilder.js
+index ca61d15f44fff144a58e4811236526baa1544a2f..14a1ee5b9cfed41c228347ef0924c2ee5ce1b020 100644
+--- a/build/cjs/utils/eventbuilder.js
++++ b/build/cjs/utils/eventbuilder.js
+@@ -32,7 +32,7 @@ function getErrorPropertyFromObject(obj) {
+   for (const prop in obj) {
+     if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+       const value = obj[prop];
+-      if (value instanceof Error) {
++      if (is.isError(value)) {
+         return value;
+       }
+     }
+diff --git a/build/esm/instrument/fetch.js b/build/esm/instrument/fetch.js
+index ffd8787595db665ba6e3ba8bfb1fcfb16674a77c..d96ca079281200fd0e668777a0dadaba35e96fdb 100644
+--- a/build/esm/instrument/fetch.js
++++ b/build/esm/instrument/fetch.js
+@@ -68,7 +68,7 @@ function instrumentFetch(onFetchResolved, skipNativeFetchCheck = false) {
+           const client = getClient();
+           const enhanceOption = client?.getOptions().enhanceFetchErrorMessages ?? "always";
+           const shouldEnhance = enhanceOption !== false;
+-          if (shouldEnhance && error instanceof TypeError && (error.message === "Failed to fetch" || error.message === "Load failed" || error.message === "NetworkError when attempting to fetch resource.")) {
++          if (shouldEnhance && isError(error) && error.name === "TypeError" && (error.message === "Failed to fetch" || error.message === "Load failed" || error.message === "NetworkError when attempting to fetch resource.")) {
+             try {
+               const url2 = new URL(handlerData.fetchData.url);
+               const hostname = url2.host;
+diff --git a/build/esm/utils/aggregate-errors.js b/build/esm/utils/aggregate-errors.js
+index 1364b749748be3368307986b6370751b083be708..3a744c13f7e7780e730a7bb0e1f70f3ea7e1e1ed 100644
+--- a/build/esm/utils/aggregate-errors.js
++++ b/build/esm/utils/aggregate-errors.js
+@@ -1,7 +1,7 @@
+-import { isInstanceOf } from './is.js';
++import { isError } from './is.js';
+ 
+ function applyAggregateErrorsToEvent(exceptionFromErrorImplementation, parser, key, limit, event, hint) {
+-  if (!event.exception?.values || !hint || !isInstanceOf(hint.originalException, Error)) {
++  if (!event.exception?.values || !hint || !isError(hint.originalException)) {
+     return;
+   }
+   const originalException = event.exception.values.length > 0 ? event.exception.values[event.exception.values.length - 1] : void 0;
+@@ -23,7 +23,7 @@ function aggregateExceptionsFromError(exceptionFromErrorImplementation, parser,
+     return prevExceptions;
+   }
+   let newExceptions = [...prevExceptions];
+-  if (isInstanceOf(error[key], Error)) {
++  if (isError(error[key])) {
+     applyExceptionGroupFieldsForParentException(exception, exceptionId, error);
+     const newException = exceptionFromErrorImplementation(parser, error[key]);
+     const newExceptionId = newExceptions.length;
+@@ -41,7 +41,7 @@ function aggregateExceptionsFromError(exceptionFromErrorImplementation, parser,
+   }
+   if (isExceptionGroup(error)) {
+     error.errors.forEach((childError, i) => {
+-      if (isInstanceOf(childError, Error)) {
++      if (isError(childError)) {
+         applyExceptionGroupFieldsForParentException(exception, exceptionId, error);
+         const newException = exceptionFromErrorImplementation(parser, childError);
+         const newExceptionId = newExceptions.length;
+diff --git a/build/esm/utils/eventbuilder.js b/build/esm/utils/eventbuilder.js
+index f8ad272f51739788fa5d6a40aced762547bde0e1..a7ef550fe05375998d6f0aedabed2fef444b6e1a 100644
+--- a/build/esm/utils/eventbuilder.js
++++ b/build/esm/utils/eventbuilder.js
+@@ -30,7 +30,7 @@ function getErrorPropertyFromObject(obj) {
+   for (const prop in obj) {
+     if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+       const value = obj[prop];
+-      if (value instanceof Error) {
++      if (isError(value)) {
+         return value;
+       }
+     }

@@ -26,6 +26,7 @@ async function mockSentryAutomatedTrace(mockServer: MockttpServer) {
     await mockServer
       .forPost(/sentry/u)
       .withBodyIncluding('"transaction":"/home.html"')
+      .withBodyIncluding('"performance.timeOrigin":')
       .thenCallback(() => {
         return {
           statusCode: 200,
