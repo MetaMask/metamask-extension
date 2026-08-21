@@ -67,10 +67,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           wallet: 'Wallet 1',
           balance: '$85,025.00',
         });
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           account: 'Account 1',
           wallet: 'Wallet 2',
-          balance: '$0.00',
         });
         await accountListPage.checkNumberOfAvailableAccounts(2);
       },
@@ -129,9 +128,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
         await accountListPage.checkAddWalletButtonIsDisplayed();
 
-        // The balance is not loaded for a non-selected account (which was never selected before)
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
-          balance: '$0.00',
+        // The balance is not loaded for a non-selected account (which was never
+        // selected before), so nothing is rendered rather than a misleading $0.00
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'Wallet 1',
           account: 'Account 1',
         });
@@ -205,10 +204,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           wallet: 'Wallet 1',
           balance: '$85,025.00',
         });
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           account: 'Snap Account 1',
           wallet: 'MetaMask Simple Snap Keyring',
-          balance: '$0.00',
         });
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList(

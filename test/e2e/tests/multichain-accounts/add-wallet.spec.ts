@@ -163,10 +163,9 @@ describe('Add wallet', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'Imported accounts',
           account: IMPORTED_ACCOUNT_NAME,
-          balance: '$0.00',
         });
         await accountListPage.checkNumberOfAvailableAccounts(4);
         await accountListPage.switchToAccount(IMPORTED_ACCOUNT_NAME);
