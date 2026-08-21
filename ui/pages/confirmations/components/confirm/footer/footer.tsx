@@ -87,6 +87,9 @@ const SINGLE_ACTION_FOOTER_COMPANION_TYPES = [
  * known companion legs (approve/transfer) — a batch that mixed in anything
  * else must fall through to the full multi-step footer instead of silently
  * hiding that other call's confirmation UI.
+ *
+ * @param confirmation - The transaction confirmation to route.
+ * @returns Whether the confirmation should use the single-action footer.
  */
 function isSingleActionFooterConfirmation(
   confirmation: TransactionMeta,

@@ -4,11 +4,11 @@ import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { createMoneyAccountDepositTransaction } from './create-deposit-transaction';
 import {
-  createMoneyPayMessengerMock,
+  createPlaceholderBatchMessengerMock,
   MONEY_ACCOUNT_ADDRESS_MOCK,
   NETWORK_CLIENT_ID_MOCK,
   VAULT_CONFIG_MOCK,
-  type MessengerMockOptions,
+  type PlaceholderBatchMockOptions,
 } from './test-mocks';
 
 const BATCH_ID = '0xB47C41D0000000000000000000000000' as Hex;
@@ -16,29 +16,18 @@ const TRANSACTION_ID = 'transaction-id-mock';
 
 const MUSD_ADDRESS = MUSD_TOKEN_ADDRESS_BY_CHAIN[VAULT_CONFIG_MOCK.chainId];
 
-function setup(options: MessengerMockOptions = {}) {
-  const addTransactionBatch = jest
-    .fn()
-    .mockResolvedValue({ batchId: BATCH_ID });
-
-  const mock = createMoneyPayMessengerMock({
+function setup(
+  options: Omit<PlaceholderBatchMockOptions, 'transactionId'> = {},
+) {
+  return createPlaceholderBatchMessengerMock({
+    transactionId: TRANSACTION_ID,
     ...options,
-    handlers: {
-      'TransactionController:addTransactionBatch': addTransactionBatch,
-      'TransactionController:getState': () => ({
-        transactions: [
-          { id: 'other-transaction', batchId: '0x1234' },
-          { id: TRANSACTION_ID, batchId: BATCH_ID.toLowerCase() },
-        ],
-      }),
-      ...options.handlers,
-    },
   });
-
-  return { ...mock, addTransactionBatch };
 }
 
 describe('createMoneyAccountDepositTransaction', () => {
+  // The batch mock never settles, matching the controller: resolving at all
+  // proves initiation does not wait for the confirmation to be approved.
   it('submits the placeholder batch from the money account and returns the transaction id', async () => {
     const { messenger, addTransactionBatch } = setup();
 
@@ -103,15 +92,14 @@ describe('createMoneyAccountDepositTransaction', () => {
     ).rejects.toThrow('Money account deposit is not available');
   });
 
-  it('throws when the created transaction cannot be found', async () => {
-    const { messenger } = setup({
-      handlers: {
-        'TransactionController:getState': () => ({ transactions: [] }),
-      },
+  it('throws when the batch fails before the transaction is added', async () => {
+    const { messenger, unsubscribe } = setup({
+      batchError: new Error('Account does not support EIP-7702'),
     });
 
     await expect(
       createMoneyAccountDepositTransaction(messenger, BATCH_ID),
-    ).rejects.toThrow('Deposit transaction not found after batch creation');
+    ).rejects.toThrow('Account does not support EIP-7702');
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
   });
 });

@@ -411,7 +411,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex"
+        class="flex"
       >
         <button
           aria-label="expand"
@@ -436,11 +436,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       </div>
     </div>
     <div
-      class="mm-box expandable"
+      class="expandable"
       style="height: 0px;"
     >
       <div
-        class="mm-box"
+        class=""
         style="margin-top: -8px;"
       >
         <div
@@ -582,7 +582,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex"
+        class="flex"
       >
         <button
           aria-label="expand"
@@ -607,11 +607,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       </div>
     </div>
     <div
-      class="mm-box expandable"
+      class="expandable"
       style="height: 0px;"
     >
       <div
-        class="mm-box"
+        class=""
         style="margin-top: -8px;"
       >
         <div
@@ -971,7 +971,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex"
+        class="flex"
       >
         <button
           aria-label="expand"
@@ -996,11 +996,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       </div>
     </div>
     <div
-      class="mm-box expandable"
+      class="expandable"
       style="height: 0px;"
     >
       <div
-        class="mm-box"
+        class=""
         style="margin-top: -8px;"
       >
         <div
@@ -1200,7 +1200,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex"
+        class="flex"
       >
         <button
           aria-label="expand"
@@ -1225,11 +1225,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       </div>
     </div>
     <div
-      class="mm-box expandable"
+      class="expandable"
       style="height: 0px;"
     >
       <div
-        class="mm-box"
+        class=""
         style="margin-top: -8px;"
       >
         <div

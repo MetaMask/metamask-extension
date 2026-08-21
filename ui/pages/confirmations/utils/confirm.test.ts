@@ -11,6 +11,7 @@ import {
 } from '../../../../test/data/confirmations/typed_sign';
 import { SignatureRequestType } from '../types/confirm';
 import {
+  getConfirmationTransactionType,
   isOrderSignatureRequest,
   isPermitSignatureRequest,
   isProtectedByEnforcedSimulations,
@@ -35,6 +36,36 @@ describe('confirm util', () => {
       expect(() => {
         parseSanitizeTypedDataMessage('{}');
       }).toThrow();
+    });
+  });
+
+  describe('getConfirmationTransactionType', () => {
+    it('returns the nested money-account type for batch transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.moneyAccountDeposit },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(getConfirmationTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountDeposit,
+      );
+    });
+
+    it('returns the top-level type when no money-account type is present', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+      } as TransactionMeta;
+
+      expect(getConfirmationTransactionType(transactionMeta)).toBe(
+        TransactionType.simpleSend,
+      );
+    });
+
+    it('returns undefined when the transaction is undefined', () => {
+      expect(getConfirmationTransactionType(undefined)).toBeUndefined();
     });
   });
 

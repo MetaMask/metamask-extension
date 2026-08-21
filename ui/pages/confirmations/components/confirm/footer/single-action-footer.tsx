@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { Button, ButtonSize } from '@metamask/design-system-react';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -29,31 +30,12 @@ const BUTTON_TEXT_BY_TYPE: Partial<Record<TransactionType, string>> = {
   [TransactionType.perpsWithdraw]: 'perpsWithdraw',
 };
 
-/**
- * Money Account deposit/withdraw transactions are submitted via
- * `addTransactionBatch`, whose top-level type is always
- * `TransactionType.batch` — the money-account type lives on the nested
- * transactions, so the button text/gating must be resolved from there too.
- */
-function getSingleActionTransactionType(
-  confirmation?: TransactionMeta,
-): TransactionType | undefined {
-  if (confirmation?.type && BUTTON_TEXT_BY_TYPE[confirmation.type]) {
-    return confirmation.type;
-  }
-
-  return confirmation?.nestedTransactions?.find(
-    (nestedTransaction) =>
-      nestedTransaction.type && BUTTON_TEXT_BY_TYPE[nestedTransaction.type],
-  )?.type;
-}
-
 function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const t = useI18nContext();
   const { currentConfirmation, isMoneyAccountAmountCommitPending } =
     useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
-  const transactionType = getSingleActionTransactionType(currentConfirmation);
+  const transactionType = getConfirmationTransactionType(currentConfirmation);
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayQuotePending();

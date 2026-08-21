@@ -177,9 +177,6 @@
       "error: StorageService: Failed to remove item:": 1,
       "error: StorageService: Failed to set item:": 1
     },
-    "ui/components/app/alert-system/contexts/alertActionHandler.test.ts": {
-      "Test errors: Uncaught Errors": 1
-    },
     "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.test.tsx": {
       "MetaMask: Background connection not initialized": 9,
       "React: PropTypes validation failures": 1
@@ -1018,9 +1015,6 @@
     "ui/pages/swaps/smart-transaction-status/smart-transaction-status.test.js": {
       "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 1
-    },
-    "ui/pages/token-management/token-management.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 22
     },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
