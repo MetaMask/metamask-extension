@@ -6067,6 +6067,7 @@ describe('LegacyBackgroundApiService', () => {
         const clearPermissionState = jest.fn();
         const clearSnapState = jest.fn().mockResolvedValue(undefined);
         const clearAccountTreeState = jest.fn();
+        const clearAccountsState = jest.fn();
         const updateHiddenAccountsList = jest.fn();
         const clearUnapprovedTransactions = jest.fn();
         const createWallet = jest.fn().mockResolvedValue(undefined);
@@ -6094,6 +6095,10 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'AccountTreeController:clearState',
           clearAccountTreeState,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:clearState',
+          clearAccountsState,
         );
         rootMessenger.registerActionHandler(
           'AccountOrderController:updateHiddenAccountsList',
@@ -6129,6 +6134,8 @@ describe('LegacyBackgroundApiService', () => {
         expect(clearPermissionState).toHaveBeenCalled();
         expect(clearSnapState).toHaveBeenCalled();
         expect(clearAccountTreeState).toHaveBeenCalled();
+        expect(clearAccountsState).toHaveBeenCalled();
+        expect(reinit).toHaveBeenCalledTimes(2);
         expect(updateHiddenAccountsList).toHaveBeenCalledWith([]);
         expect(clearUnapprovedTransactions).toHaveBeenCalled();
         expect(createWallet).toHaveBeenCalledWith({
@@ -6137,6 +6144,9 @@ describe('LegacyBackgroundApiService', () => {
         });
         expect(setIsWalletResetInProgress).toHaveBeenCalledWith(false);
         expect(result).toStrictEqual(primaryKeyring);
+        expect(reinit.mock.invocationCallOrder[0]).toBeLessThan(
+          createWallet.mock.invocationCallOrder[0],
+        );
       });
     });
   });
@@ -7519,6 +7529,7 @@ function getMessenger(
       'SeedlessOnboardingController:submitPassword',
       'SeedlessOnboardingController:syncLatestGlobalPassword',
       'AccountsController:updateAccounts',
+      'AccountsController:clearState',
       'AccountOrderController:updateHiddenAccountsList',
       'AccountTreeController:clearState',
       'AccountTreeController:init',
