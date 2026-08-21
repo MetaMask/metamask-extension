@@ -18,8 +18,10 @@ import {
   fetchAssetMetadata,
   toAssetId,
   fetchAssetMetadataForAssetIds,
+  getFallbackNativeAssetId,
   getNativeAssetId,
   isEvmChainId,
+  isNativeAssetId,
   isTronSpecialAsset,
 } from './asset-utils';
 
@@ -53,6 +55,46 @@ describe('asset-utils', () => {
     it('returns undefined for a chain unknown to the asset map', () => {
       // getNativeAssetForChainId throws on custom/unsupported networks.
       expect(getNativeAssetId('0x123456' as Hex)).toBeUndefined();
+    });
+  });
+
+  describe('getFallbackNativeAssetId', () => {
+    it('builds a zero-address erc20 placeholder for an EVM chain', () => {
+      expect(getFallbackNativeAssetId('eip155:88888' as CaipChainId)).toBe(
+        'eip155:88888/erc20:0x0000000000000000000000000000000000000000',
+      );
+    });
+
+    it('returns undefined for a non-EVM chain', () => {
+      expect(
+        getFallbackNativeAssetId(MultichainNetworks.SOLANA as CaipChainId),
+      ).toBeUndefined();
+    });
+  });
+
+  describe('isNativeAssetId', () => {
+    it('returns true for a slip44 asset id', () => {
+      expect(isNativeAssetId('eip155:1/slip44:60' as CaipAssetType)).toBe(true);
+    });
+
+    it('returns true for the zero-address erc20 placeholder', () => {
+      expect(
+        isNativeAssetId(
+          'eip155:88888/erc20:0x0000000000000000000000000000000000000000' as CaipAssetType,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false for a real erc20 token', () => {
+      expect(
+        isNativeAssetId(
+          'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' as CaipAssetType,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for undefined', () => {
+      expect(isNativeAssetId(undefined)).toBe(false);
     });
   });
 

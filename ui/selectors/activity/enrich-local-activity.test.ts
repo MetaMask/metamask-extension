@@ -154,4 +154,54 @@ describe('enrichLocalActivity', () => {
 
     expect(enrichLocalActivity(activity, group)).toBe(activity);
   });
+
+  it('backfills a missing native assetId from the activity chainId', () => {
+    const group = buildTokenTransferGroup({ type: TransactionType.simpleSend });
+    const activity = {
+      type: 'send',
+      chainId: 'eip155:88888',
+      status: 'success',
+      timestamp: 1,
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: RECIPIENT,
+        token: {
+          direction: 'out',
+          symbol: 'CHZ',
+          assetType: 'native',
+        },
+      },
+    } as ActivityListItem;
+
+    const enriched = enrichLocalActivity(activity, group);
+
+    expect(enriched.data).toMatchObject({
+      token: {
+        assetId:
+          'eip155:88888/erc20:0x0000000000000000000000000000000000000000',
+      },
+    });
+  });
+
+  it('does not touch a native token that already has an assetId', () => {
+    const group = buildTokenTransferGroup({ type: TransactionType.simpleSend });
+    const activity = {
+      type: 'send',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: RECIPIENT,
+        token: {
+          direction: 'out',
+          symbol: 'ETH',
+          assetType: 'native',
+          assetId: 'eip155:1/slip44:60',
+        },
+      },
+    } as ActivityListItem;
+
+    expect(enrichLocalActivity(activity, group)).toBe(activity);
+  });
 });
