@@ -748,6 +748,33 @@ class HomePage {
     }
   }
 
+  /**
+   * Polls Redux state until the selected network's metadata status is
+   * `'available'`. Call before opening the Send flow so the async
+   * `lookupSelectedNetworks` probe has settled and the "Unavailable network
+   * connection" modal does not race the recipient input.
+   */
+  async waitForNetworkStatusAvailable(): Promise<void> {
+    console.log(
+      'Waiting for selected network status to be available in Redux',
+    );
+    await this.driver.waitUntil(
+      async () => {
+        const uiState = await getCleanAppState(this.driver);
+        if (!uiState?.metamask) {
+          return false;
+        }
+        const { networksMetadata, selectedNetworkClientId } = uiState.metamask;
+        if (!networksMetadata || !selectedNetworkClientId) {
+          return false;
+        }
+        const metadata = networksMetadata[selectedNetworkClientId];
+        return metadata?.status === 'available';
+      },
+      { timeout: 15000, interval: 500 },
+    );
+  }
+
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
     // See the removal TODO on `NON_EVM_ICON_TIMEOUT`. Still polled: returns
