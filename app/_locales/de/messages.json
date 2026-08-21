@@ -156,9 +156,6 @@
     "message": "$1 Konten",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Sehen Sie Ihre Konten ein und schlagen Sie Transaktionen vor"
-  },
   "accountsSmallCase": {
     "message": "Konten"
   },
@@ -2767,9 +2764,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Verwendung von USB oder einem QR-Code"
   },
-  "connectAccounts": {
-    "message": "Konten verbinden"
-  },
   "connectAnyway": {
     "message": "Trotzdem verbinden"
   },
@@ -2816,18 +2810,6 @@
   },
   "connectedSnaps": {
     "message": "Verbundene Snaps"
-  },
-  "connectedWithAccount": {
-    "message": "$1 Konten verbunden",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Verbunden mit $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 Netzwerke verbunden",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Verbinden"
@@ -3433,9 +3415,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Alle dApps wurden erfolgreich getrennt."
   },
-  "disconnectMessage": {
-    "message": "Dadurch wird die Verbindung zu dieser Seite getrennt"
-  },
   "disconnectPrompt": {
     "message": "$1 trennen"
   },
@@ -3615,9 +3594,6 @@
   },
   "editNetworkLink": {
     "message": "Das ursprüngliche Netzwerk bearbeiten"
-  },
-  "editNetworksTitle": {
-    "message": "Netzwerke bearbeiten"
   },
   "editNonceField": {
     "message": "Nonce bearbeiten"
@@ -5290,10 +5266,6 @@
   "more": {
     "message": "Mehr"
   },
-  "moreAccounts": {
-    "message": "Über $1 mehr Konten",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "Mehr"
   },
@@ -5730,9 +5702,6 @@
   "networkOptions": {
     "message": "Netzwerkoptionen"
   },
-  "networkPermissionToast": {
-    "message": "Netzwerkgenehmigungen aktualisiert"
-  },
   "networkStatus": {
     "message": "Netzwerkstatus"
   },
@@ -5767,9 +5736,6 @@
     "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
-    "message": "Netzwerke"
-  },
-  "networksSmallCase": {
     "message": "Netzwerke"
   },
   "new": {
@@ -8517,9 +8483,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Dies ist die Website, die Sie um Ihre Bestätigung bittet."
-  },
-  "requestingFor": {
-    "message": "Anforderung von"
   },
   "required": {
     "message": "Erforderlich"

@@ -156,9 +156,6 @@
     "message": "$1 akun",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Melihat akun Anda dan menyarankan transaksi"
-  },
   "accountsSmallCase": {
     "message": "akun"
   },
@@ -2767,9 +2764,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Menggunakan USB atau Kode QR"
   },
-  "connectAccounts": {
-    "message": "Hubungkan akun"
-  },
   "connectAnyway": {
     "message": "Tetap hubungkan"
   },
@@ -2816,18 +2810,6 @@
   },
   "connectedSnaps": {
     "message": "Snaps yang Terhubung"
-  },
-  "connectedWithAccount": {
-    "message": "$1 akun terhubung",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Terhubung dengan $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 jaringan terhubung",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Menghubungkan"
@@ -3433,9 +3415,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Semua dapp berhasil diputus koneksinya."
   },
-  "disconnectMessage": {
-    "message": "Ini akan memutus koneksi dari situs ini"
-  },
   "disconnectPrompt": {
     "message": "Putuskan koneksi $1"
   },
@@ -3615,9 +3594,6 @@
   },
   "editNetworkLink": {
     "message": "edit jaringan asli"
-  },
-  "editNetworksTitle": {
-    "message": "Edit jaringan"
   },
   "editNonceField": {
     "message": "Edit nonce"
@@ -5294,10 +5270,6 @@
   "more": {
     "message": "lainnya"
   },
-  "moreAccounts": {
-    "message": "+ $1 akun lain",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "Selengkapnya"
   },
@@ -5734,9 +5706,6 @@
   "networkOptions": {
     "message": "Opsi jaringan"
   },
-  "networkPermissionToast": {
-    "message": "Izin jaringan diperbarui"
-  },
   "networkStatus": {
     "message": "Status jaringan"
   },
@@ -5772,9 +5741,6 @@
   },
   "networks": {
     "message": "Jaringan"
-  },
-  "networksSmallCase": {
-    "message": "jaringan"
   },
   "new": {
     "message": "Baru!"
@@ -8525,9 +8491,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Ini merupakan situs yang meminta konfirmasi Anda."
-  },
-  "requestingFor": {
-    "message": "Meminta untuk"
   },
   "required": {
     "message": "Diperlukan"

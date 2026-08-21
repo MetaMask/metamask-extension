@@ -1,19 +1,19 @@
 import React from 'react';
 import { renderWithProvider } from '../../test/lib/render-helpers-navigate';
 import * as routeMessengerModule from '../messengers/route-messenger';
-import { RouteWithMessenger } from './route-with-messenger';
+import { RouteMessengerProvider } from './route-messenger';
 
-describe('RouteWithMessenger', () => {
+describe('RouteMessengerProvider', () => {
   it('renders children and provides a route messenger', () => {
     const { getByTestId } = renderWithProvider(
-      <RouteWithMessenger
+      <RouteMessengerProvider
         path="/test"
         capabilities={{
           actions: ['SnapController:installSnaps'],
         }}
       >
         <div data-testid="child" />
-      </RouteWithMessenger>,
+      </RouteMessengerProvider>,
     );
 
     expect(getByTestId('child')).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe('RouteWithMessenger', () => {
     );
 
     renderWithProvider(
-      <RouteWithMessenger
+      <RouteMessengerProvider
         path="/some/path"
         capabilities={{
           actions: ['SnapController:installSnaps'],
@@ -34,7 +34,7 @@ describe('RouteWithMessenger', () => {
         }}
       >
         <div />
-      </RouteWithMessenger>,
+      </RouteMessengerProvider>,
       undefined,
       '/some/path',
     );

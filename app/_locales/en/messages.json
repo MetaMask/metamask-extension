@@ -156,9 +156,6 @@
     "message": "$1 accounts",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "See your accounts and suggest transactions"
-  },
   "accountsSmallCase": {
     "message": "accounts"
   },
@@ -2905,9 +2902,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Using USB or a QR Code"
   },
-  "connectAccounts": {
-    "message": "Connect accounts"
-  },
   "connectAnyway": {
     "message": "Connect anyway"
   },
@@ -2954,18 +2948,6 @@
   },
   "connectedSnaps": {
     "message": "Connected Snaps"
-  },
-  "connectedWithAccount": {
-    "message": "$1 accounts connected",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Connected with $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 networks connected",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Connecting"
@@ -3574,9 +3556,6 @@
   "disconnectAllSitesSuccess": {
     "message": "All dapps successfully disconnected."
   },
-  "disconnectMessage": {
-    "message": "This will disconnect you from this site"
-  },
   "disconnectPrompt": {
     "message": "Disconnect $1"
   },
@@ -3756,9 +3735,6 @@
   },
   "editNetworkLink": {
     "message": "edit the original network"
-  },
-  "editNetworksTitle": {
-    "message": "Edit networks"
   },
   "editNonceField": {
     "message": "Edit nonce"
@@ -5515,10 +5491,6 @@
   "more": {
     "message": "more"
   },
-  "moreAccounts": {
-    "message": "+ $1 more accounts",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "More"
   },
@@ -5955,9 +5927,6 @@
   "networkOptions": {
     "message": "Network options"
   },
-  "networkPermissionToast": {
-    "message": "Network permissions updated"
-  },
   "networkStatus": {
     "message": "Network status"
   },
@@ -5993,9 +5962,6 @@
   },
   "networks": {
     "message": "Networks"
-  },
-  "networksSmallCase": {
-    "message": "networks"
   },
   "new": {
     "message": "New!"
@@ -8762,9 +8728,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "This is the site asking for your confirmation."
-  },
-  "requestingFor": {
-    "message": "Requesting for"
   },
   "required": {
     "message": "Required"

@@ -7,7 +7,6 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { addAccount } from '../../page-objects/flows/add-account.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
-import { confirmConnectAndUpdateSiteNetworksToOnly } from '../../page-objects/flows/connect.flow';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
 import { switchToAccount } from '../../page-objects/flows/account-list.flow';
@@ -65,9 +64,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
 
-    // TODO: Need to check and update the test.
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('Should be able to cancel connection and connect again', async function () {
+    it('Should be able to cancel connection and connect again', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
@@ -98,9 +95,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await connectAccountConfirmation.cancelConnect();
           await testDapp.switchTo();
 
-          // TODO: Currently, the Status is "Not connected", but the expected status is "Disconnected", need to check and update the test if this is expected.
-          // Verify we're not connected
-          await header.verifyConnectionStatus('Disconnected');
+          // Verify we're not connected. The dapp header renders "Not
+          // connected" when no session is active.
+          await header.verifyConnectionStatus('Not connected');
 
           // 2. Connect again
           await connectSolanaTestDapp(driver, testDapp);
@@ -112,56 +109,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
 
-    // TODO: Need to check and update the test.
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('Should not create session when Solana permissions are deselected', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2().build(),
-          title: this.test?.fullTitle(),
-          dappOptions: {
-            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
-          },
-        },
-        async ({ driver }) => {
-          await login(driver);
-          const testDapp = new TestDappSolana(driver);
-          await testDapp.openTestDappPage();
-          await testDapp.checkPageIsLoaded();
-
-          // Start connection
-          const header = await testDapp.getHeader();
-          await header.connect();
-          const modal = await testDapp.getWalletModal();
-          await modal.connectToMetaMaskWallet();
-
-          // Open the connect dialog
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const connectAccountConfirmation = new ConnectAccountConfirmation(
-            driver,
-          );
-          await connectAccountConfirmation.checkPageIsLoaded();
-
-          // Connect with Ethereum only so Solana permissions are not granted.
-          await confirmConnectAndUpdateSiteNetworksToOnly(
-            driver,
-            DAPP_HOST_ADDRESS,
-            ['Ethereum'],
-          );
-
-          // Switch back to test dapp
-          await testDapp.switchTo();
-
-          // TODO: Currently, the Status is "Not connected", but the expected status is "Disconnected", need to check and update the test if this is expected.
-          // Verify we're not connected
-          await header.verifyConnectionStatus('Disconnected');
-        },
-      );
-    });
-
-    // TODO: Need to check and update the test.
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('Should disconnect', async function () {
+    it('Should disconnect', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
@@ -184,8 +132,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           await header.disconnect();
 
-          // TODO: Currently, the Status is "Not connected", but the expected status is "Disconnected", need to check and update the test if this is expected.
-          await header.verifyConnectionStatus('Disconnected');
+          // The dapp header renders "Not connected" when no session is active.
+          await header.verifyConnectionStatus('Not connected');
         },
       );
     });
@@ -361,7 +309,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
-          await connectSolanaTestDapp(driver, testDapp, {});
+          await connectSolanaTestDapp(driver, testDapp);
 
           // Refresh the page
           await driver.refresh();
