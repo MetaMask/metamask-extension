@@ -402,6 +402,28 @@ class SendPage {
   }
 
   /**
+   * Reads the current send amount input value.
+   *
+   * @returns The raw input value, or an empty string if unset.
+   */
+  async getAmountInputValue(): Promise<string> {
+    const inputElement = await this.driver.findElement(this.amountInput);
+    return (await inputElement.getAttribute('value')) ?? '';
+  }
+
+  /**
+   * Parses the numeric "available" balance shown on the amount screen.
+   *
+   * @returns The available balance as a number, or `NaN` if it cannot be parsed.
+   */
+  async getAvailableBalanceNumeric(): Promise<number> {
+    await this.waitForSendAmountBalance();
+    const element = await this.driver.findElement(this.amountBalance);
+    const text = await element.getText();
+    return parseFloat(text.replace(/[^0-9.]/gu, ''));
+  }
+
+  /**
    * Clicks Continue once the button is stably enabled, then acknowledges the
    * optional send-alert modal when present.
    */
