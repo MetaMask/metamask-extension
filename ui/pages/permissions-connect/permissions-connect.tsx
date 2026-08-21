@@ -94,7 +94,7 @@ import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
 
-const APPROVE_TIMEOUT = MILLISECOND * 1200;
+const CONNECTION_ANIMATION_DELAY = MILLISECOND * 800;
 
 function getDefaultSelectedAccounts(
   currentAddress: string,
@@ -335,6 +335,12 @@ function PermissionsConnect() {
   const prevLastConnectedInfoRef = useRef<typeof lastConnectedInfo | null>(
     null,
   );
+  const [isConnectionAnimationConnected, setIsConnectionAnimationConnected] =
+    useState(false);
+
+  const handleAnimationComplete = useCallback(() => {
+    navigate(DEFAULT_ROUTE);
+  }, [navigate]);
 
   // Define redirect function before it's used in effects
   const redirect = useCallback(
@@ -355,7 +361,8 @@ function PermissionsConnect() {
       }
 
       if (approved) {
-        setTimeout(() => navigate(DEFAULT_ROUTE), APPROVE_TIMEOUT);
+        // Trigger the connected animation state
+        setIsConnectionAnimationConnected(true);
         return;
       }
       navigate(DEFAULT_ROUTE);
@@ -650,7 +657,11 @@ function PermissionsConnect() {
           permissionsRequestId &&
           renderTopBar(permissionsRequestId)}
         {redirecting && permissionsApproved ? (
-          <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
+          <PermissionsRedirect
+            subjectMetadata={targetSubjectMetadata}
+            isConnected={isConnectionAnimationConnected}
+            onAnimationComplete={handleAnimationComplete}
+          />
         ) : (
           <Routes>
             <Route
