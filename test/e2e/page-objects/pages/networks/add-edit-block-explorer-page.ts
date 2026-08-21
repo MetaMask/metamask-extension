@@ -30,13 +30,20 @@ class AddEditBlockExplorerPage {
     tag: 'p',
   };
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-add-edit-block-explorer-page',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.pageTitle);
+      await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
+        this.pageTitle,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for the block explorer URL page to be loaded',
