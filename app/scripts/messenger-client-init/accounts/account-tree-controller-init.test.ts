@@ -2,6 +2,7 @@ import {
   AccountTreeController,
   AccountTreeControllerMessenger,
 } from '@metamask/account-tree-controller';
+import { TraceName, trace } from '../../../../shared/lib/trace';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
@@ -13,6 +14,10 @@ import { getRootMessenger } from '../../lib/messenger';
 import { AccountTreeControllerInit } from './account-tree-controller-init';
 
 jest.mock('@metamask/account-tree-controller');
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  trace: jest.fn(),
+}));
 
 function buildInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
@@ -35,6 +40,7 @@ function buildInitRequestMock(): jest.Mocked<
 
 describe('AccountTreeControllerInit', () => {
   const accountTreeControllerClassMock = jest.mocked(AccountTreeController);
+  const traceMock = jest.mocked(trace);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -62,6 +68,25 @@ describe('AccountTreeControllerInit', () => {
           }),
         }),
       }),
+    );
+  });
+
+  it('roots multichain account sync entry traces', () => {
+    const requestMock = buildInitRequestMock();
+    AccountTreeControllerInit(requestMock);
+
+    const traceFn =
+      accountTreeControllerClassMock.mock.calls[0][0].config?.trace;
+    const callback = jest.fn();
+
+    traceFn?.({ name: TraceName.AccountSyncFull } as never, callback);
+
+    expect(traceMock).toHaveBeenCalledWith(
+      {
+        name: TraceName.AccountSyncFull,
+        root: true,
+      },
+      callback,
     );
   });
 });
