@@ -4,6 +4,7 @@ import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
+import { installBlockingErrorToastMonitor } from '../../../helpers/blocking-error-toast-monitor';
 import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../../constants';
 import {
   BASE_ACCOUNT_SYNC_INTERVAL,
@@ -166,6 +167,25 @@ class HomePage {
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
+  }
+
+  /**
+   * Fails if {@link startMonitoringBlockingErrorToast} recorded a matching
+   * toast, then re-checks that none is currently displayed.
+   */
+  async assertNoBlockingErrorToastWasObserved(): Promise<void> {
+    console.log(
+      'Assert no blocking error toast was observed during homepage load',
+    );
+    const seen = (await this.driver.executeScript(
+      'return window.__mmE2eBlockingErrorToasts || [];',
+    )) as string[];
+    if (Array.isArray(seen) && seen.length > 0) {
+      throw new Error(
+        `Blocking error toast was displayed: ${JSON.stringify(seen)}`,
+      );
+    }
+    await this.checkNoErrorToastIsDisplayed();
   }
 
   /**
@@ -660,6 +680,18 @@ class HomePage {
 
   async startBridgeFlow(): Promise<void> {
     await this.driver.clickElement(this.bridgeButton);
+  }
+
+  /**
+   * Installs a page-side poller that records blocking error toasts as they
+   * appear, including ones that auto-dismiss before a later assertion.
+   * Polls instead of using MutationObserver, which LavaMoat scuttling blocks.
+   * Idempotent on the current document; call again after unlock in case the
+   * document reloaded.
+   */
+  async startMonitoringBlockingErrorToast(): Promise<void> {
+    console.log('Start monitoring homepage for blocking error toasts');
+    await this.driver.executeScript(installBlockingErrorToastMonitor);
   }
 
   async startSendFlow(): Promise<void> {
