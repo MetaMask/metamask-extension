@@ -28,6 +28,7 @@ import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOrigin
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 import { useAddressTrustSignalAlerts } from './alerts/useAddressTrustSignalAlerts';
 import { useOriginTrustSignalAlerts } from './alerts/useOriginTrustSignalAlerts';
+import { useSignatureAddressAlerts } from './alerts/useSignatureAddressAlerts';
 import { useSpenderAlerts } from './alerts/useSpenderAlerts';
 import { useTokenTrustSignalAlerts } from './alerts/useTokenTrustSignalAlerts';
 import { useShieldCoverageAlert } from './alerts/useShieldCoverageAlert';
@@ -139,6 +140,7 @@ export default function useConfirmationAlerts(): Alert[] {
   const addressTrustSignalAlerts = useAddressTrustSignalAlerts();
   const originTrustSignalAlerts = useOriginTrustSignalAlerts();
   const spenderAlerts = useSpenderAlerts();
+  const signatureAddressAlerts = useSignatureAddressAlerts();
   const addEthereumChainAlerts = useAddEthereumChainAlerts();
 
   return useMemo(
@@ -152,6 +154,7 @@ export default function useConfirmationAlerts(): Alert[] {
       ...addressTrustSignalAlerts,
       ...originTrustSignalAlerts,
       ...spenderAlerts,
+      ...signatureAddressAlerts,
       ...addEthereumChainAlerts,
     ],
     [
@@ -164,6 +167,7 @@ export default function useConfirmationAlerts(): Alert[] {
       addressTrustSignalAlerts,
       originTrustSignalAlerts,
       spenderAlerts,
+      signatureAddressAlerts,
       addEthereumChainAlerts,
     ],
   );
