@@ -21,6 +21,9 @@ export const createInternalTransaction = async ({
   recipientName?: string;
   amount?: string;
 }) => {
+  // Firefox has incorrect balance if send flow started too quickly.
+  await driver.delay(1000);
+
   const homePage = new HomePage(driver);
   await homePage.waitForNetworkStatusAvailable();
   await homePage.startSendFlow();
@@ -53,6 +56,9 @@ export const createInternalTransactionWithMaxAmount = async ({
   recipientAddress?: string;
   recipientName?: string;
 }) => {
+  // Firefox has incorrect balance if send flow started too quickly.
+  await driver.delay(1000);
+
   const homePage = new HomePage(driver);
   await homePage.waitForNetworkStatusAvailable();
   await homePage.startSendFlow();
