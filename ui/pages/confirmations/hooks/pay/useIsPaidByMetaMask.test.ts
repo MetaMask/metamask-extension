@@ -7,6 +7,7 @@ import type { TransactionPayTotals } from '@metamask/transaction-pay-controller'
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import {
   useTransactionPayHasPositiveRequiredAmount,
+  useTransactionPaySourceAmounts,
   useTransactionPayTotals,
 } from './useTransactionPayData';
 import { useIsPaidByMetaMask } from './useIsPaidByMetaMask';
@@ -21,10 +22,17 @@ const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
 const useTransactionPayHasPositiveRequiredAmountMock = jest.mocked(
   useTransactionPayHasPositiveRequiredAmount,
 );
+const useTransactionPaySourceAmountsMock = jest.mocked(
+  useTransactionPaySourceAmounts,
+);
 
-function mockConfirmation(type: TransactionType) {
+function mockConfirmation(
+  type: TransactionType,
+  extras: Partial<TransactionMeta> = {},
+) {
   useTransactionMetadataRequestOptionalMock.mockReturnValue({
     type,
+    ...extras,
   } as TransactionMeta);
 }
 
@@ -46,6 +54,7 @@ describe('useIsPaidByMetaMask', () => {
     mockConfirmation(TransactionType.musdConversion);
     mockTotals();
     useTransactionPayHasPositiveRequiredAmountMock.mockReturnValue(true);
+    useTransactionPaySourceAmountsMock.mockReturnValue(undefined);
   });
 
   it('returns true when all fees are zero for musdConversion', () => {
@@ -89,8 +98,41 @@ describe('useIsPaidByMetaMask', () => {
     expect(result.current).toBe(false);
   });
 
-  it('returns false for non-musdConversion transaction types', () => {
+  it('returns false for unsupported transaction types', () => {
     mockConfirmation(TransactionType.simpleSend);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns true when all fees are zero for moneyAccountDeposit', () => {
+    mockConfirmation(TransactionType.moneyAccountDeposit);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(true);
+  });
+
+  it('returns true when gas is sponsored and there are no source amounts yet', () => {
+    mockConfirmation(TransactionType.moneyAccountDeposit, {
+      isGasFeeSponsored: true,
+    });
+    useTransactionPayTotalsMock.mockReturnValue(undefined);
+    useTransactionPaySourceAmountsMock.mockReturnValue([]);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(true);
+  });
+
+  it('does not short-circuit when sponsored but source amounts exist', () => {
+    mockConfirmation(TransactionType.moneyAccountDeposit, {
+      isGasFeeSponsored: true,
+    });
+    useTransactionPaySourceAmountsMock.mockReturnValue([
+      {},
+    ] as unknown as ReturnType<typeof useTransactionPaySourceAmounts>);
+    mockTotals({
+      provider: { usd: '1.00' },
+    } as TransactionPayTotals['fees']);
 
     const { result } = renderHook(() => useIsPaidByMetaMask());
     expect(result.current).toBe(false);

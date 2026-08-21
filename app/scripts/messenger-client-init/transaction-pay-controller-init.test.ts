@@ -3,6 +3,7 @@ import {
   TransactionPayControllerMessenger,
 } from '@metamask/transaction-pay-controller';
 import { getRootMessenger } from '../lib/messenger';
+import { getDelegationTransaction } from '../lib/transaction/delegation';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -13,6 +14,9 @@ import {
 import { TransactionPayControllerInit } from './transaction-pay-controller-init';
 
 jest.mock('@metamask/transaction-pay-controller');
+jest.mock('../lib/transaction/delegation', () => ({
+  getDelegationTransaction: jest.fn(),
+}));
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
@@ -50,6 +54,30 @@ describe('TransactionPayControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
     });
+  });
+
+  it('forwards isSubsidized to getDelegationTransaction', async () => {
+    TransactionPayControllerInit(getInitRequestMock());
+
+    const controllerMock = jest.mocked(TransactionPayController);
+    const lastCall =
+      controllerMock.mock.calls[controllerMock.mock.calls.length - 1][0];
+    const getDelegationTransactionCallback =
+      lastCall.getDelegationTransaction as (request: {
+        transaction: { id: string };
+        isSubsidized?: boolean;
+      }) => Promise<unknown>;
+
+    const transaction = { id: 'tx-1' };
+    await getDelegationTransactionCallback({
+      transaction,
+      isSubsidized: true,
+    });
+
+    expect(jest.mocked(getDelegationTransaction)).toHaveBeenCalledWith(
+      expect.objectContaining({ isSubsidized: true }),
+      transaction,
+    );
   });
 
   describe('api.setTransactionPayPostQuote', () => {
@@ -113,6 +141,62 @@ describe('TransactionPayControllerInit', () => {
       updater(config as never);
 
       expect(config).toEqual({ isPostQuote: true });
+    });
+  });
+
+  describe('api.setTransactionPayIsMaxAmount', () => {
+    function initApi() {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      const setTransactionConfigMock = jest.mocked(
+        messengerClient.setTransactionConfig,
+      );
+      return { api, setTransactionConfigMock };
+    }
+
+    it('sets isMaxAmount without touching atomic by default', () => {
+      const { api, setTransactionConfigMock } = initApi();
+
+      api.setTransactionPayIsMaxAmount('tx-1', true);
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: { isMaxAmount?: boolean; atomic?: boolean } = {};
+      updater(config as never);
+
+      expect(config).toEqual({ isMaxAmount: true });
+    });
+
+    it('sets atomic false for a max money-account deposit', () => {
+      const { api, setTransactionConfigMock } = initApi();
+
+      api.setTransactionPayIsMaxAmount('tx-1', true, {
+        isMoneyAccountDeposit: true,
+      });
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: { isMaxAmount?: boolean; atomic?: boolean } = {};
+      updater(config as never);
+
+      expect(config).toEqual({ isMaxAmount: true, atomic: false });
+    });
+
+    it('clears atomic when max is unset on a money-account deposit', () => {
+      const { api, setTransactionConfigMock } = initApi();
+
+      api.setTransactionPayIsMaxAmount('tx-1', false, {
+        isMoneyAccountDeposit: true,
+      });
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: { isMaxAmount?: boolean; atomic?: boolean } = {
+        atomic: false,
+      };
+      updater(config as never);
+
+      expect(config).toEqual({ isMaxAmount: false, atomic: undefined });
     });
   });
 

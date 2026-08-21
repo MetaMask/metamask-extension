@@ -60,7 +60,7 @@ describe('transaction-pay-controller actions', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'setTransactionPayIsMaxAmount',
-        [transactionId, true],
+        [transactionId, true, {}],
       );
     });
 
@@ -72,16 +72,17 @@ describe('transaction-pay-controller actions', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'setTransactionPayIsMaxAmount',
-        [transactionId, false],
+        [transactionId, false, {}],
       );
     });
 
-    it('returns the result from submitRequestToBackground', async () => {
-      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+    it('forwards isMoneyAccountDeposit so Max deposits run non-atomic', async () => {
+      await setIsMaxAmount('tx-ma', true, { isMoneyAccountDeposit: true });
 
-      const result = await setIsMaxAmount('tx-123', true);
-
-      expect(result).toBeUndefined();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setTransactionPayIsMaxAmount',
+        ['tx-ma', true, { isMoneyAccountDeposit: true }],
+      );
     });
   });
 
