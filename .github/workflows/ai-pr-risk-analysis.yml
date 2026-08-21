@@ -1,26 +1,32 @@
 name: AI PR risk analysis
 
-on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - ready_for_review
+# Reusable workflow — called from main.yml after the shared changed-files artifact exists.
+# Do not add a standalone pull_request trigger; that would double-run analysis.
+#
+# The action owns labels / check runs / summaries.
+#
+# Pin bump process for MetaMask/ai-analyzer:
+# 1. Pick an immutable commit SHA from main
+#    (https://github.com/MetaMask/ai-analyzer/commits/main) or from a release
+#    (https://github.com/MetaMask/ai-analyzer/releases)
+# 2. Update the checkout `ref:` below
+# 3. Smoke-test Analyze on a PR
 
-concurrency:
-  group: ai-pr-risk-analysis-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: true
+on:
+  workflow_call:
+    secrets:
+      AI_ANALYZER_TOKEN:
+        description: Token with read access to MetaMask/ai-analyzer (private action checkout)
+        required: true
+      AI_ANALYZER_LITELLM_KEY:
+        description: LiteLLM API key for AI PR analysis
+        required: true
 
 jobs:
   analyze:
     name: Analyze
-    if: >-
-      github.event_name == 'pull_request'
-      && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
-      && github.event.pull_request.draft == false
-      && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'release/'))
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
       pull-requests: write
@@ -29,12 +35,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # https://github.com/MetaMask/ai-analyzer/releases
+      - name: Download changed-files artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: changed-files
+          path: changed-files
+
+      - name: Verify changed-files artifact
+        run: |
+          if [[ ! -f changed-files/changed-files.json ]]; then
+            echo "::error::changed-files/changed-files.json is missing; refusing to fall back to gh rediscovery"
+            exit 1
+          fi
+
+      # Pinned immutable SHA — see header pin bump process
       - name: Checkout AI Analyzer
         uses: actions/checkout@v6
         with:
           repository: MetaMask/ai-analyzer
-          ref: v1
+          ref: b89c011b1515c193e0c3514393c38ad7066e21c4
           path: .ai-analyzer-action
           token: ${{ secrets.AI_ANALYZER_TOKEN }}
 
@@ -42,9 +61,10 @@ jobs:
         uses: ./.ai-analyzer-action
         with:
           mode: pr-risk-analysis
+          config-path: .github/ai-pr-analyzer
+          changed-files-path: changed-files/changed-files.json
           add-comment: false
           add-label: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           litellm-api-key: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
           # Gate override for Runway release-branch cherry-picks
           gate-override-risk-threshold: medium

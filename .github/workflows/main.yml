@@ -381,12 +381,74 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
+  # Shared PR file list for all consumers (E2E, AI PR risk analysis, etc.).
+  changed-files:
+    name: Compute changed files
+    needs:
+      - get-requirements
+    if: >-
+      ${{
+        !cancelled()
+        && (
+          needs.get-requirements.outputs.needs-e2e == 'true'
+          || (
+            github.event_name == 'pull_request'
+            && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+            && github.event.pull_request.draft == false
+            && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'release/'))
+          )
+        )
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Get changed files with git diff
+        run: yarn tsx .github/scripts/git-diff-default-branch.mts
+
+      - name: Upload changed files artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: changed-files
+          path: ./changed-files/
+
   prep-e2e:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
+      - changed-files
+    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' && !cancelled() && needs.changed-files.result == 'success' }}
     uses: ./.github/workflows/prep-e2e.yml
+
+  ai-pr-risk-analysis:
+    name: AI PR risk analysis
+    needs:
+      - get-requirements
+      - changed-files
+    if: >-
+      ${{
+        !cancelled()
+        && needs.changed-files.result == 'success'
+        && github.event_name == 'pull_request'
+        && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+        && github.event.pull_request.draft == false
+        && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'release/'))
+      }}
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    uses: ./.github/workflows/ai-pr-risk-analysis.yml
+    secrets:
+      AI_ANALYZER_TOKEN: ${{ secrets.AI_ANALYZER_TOKEN }}
+      AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
 
   e2e-chrome:
     needs:
