@@ -787,6 +787,10 @@
     "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo.test.ts": {
       "MetaMask: Background connection not initialized": 2
     },
+    "ui/pages/confirmations/hooks/transactions/useTransactionConfirm.test.ts": {
+      "error: Money Account withdraw: amount encode": 3,
+      "error: Money Account withdraw: no committed": 1
+    },
     "ui/pages/confirmations/hooks/useConfirmationAlerts.test.ts": {
       "MetaMask: Background connection not initialized": 5,
       "React: Act warnings (component updates not wrapped)": 3,

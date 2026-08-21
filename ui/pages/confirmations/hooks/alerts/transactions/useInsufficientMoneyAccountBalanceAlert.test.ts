@@ -11,6 +11,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../../test/data/c
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
+import { useLastMoneyAccountWithdrawAmount } from '../../transactions/useLastMoneyAccountWithdrawAmount';
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -20,10 +21,14 @@ jest.mock('@metamask/react-data-query', () => ({
   useQuery: jest.fn(),
 }));
 jest.mock('../../pay/useTransactionPayData');
+jest.mock('../../transactions/useLastMoneyAccountWithdrawAmount');
 
 const useQueryMock = jest.mocked(useQuery);
 const usePrimaryRequiredTokenMock = jest.mocked(
   useTransactionPayPrimaryRequiredToken,
+);
+const useLastMoneyAccountWithdrawAmountMock = jest.mocked(
+  useLastMoneyAccountWithdrawAmount,
 );
 
 const EXPECTED_ALERT = {
@@ -92,6 +97,7 @@ describe('useInsufficientMoneyAccountBalanceAlert', () => {
         typeof useTransactionPayPrimaryRequiredToken
       >,
     );
+    useLastMoneyAccountWithdrawAmountMock.mockReturnValue(undefined);
   });
 
   it('returns alert when pending amount exceeds available balance', () => {
@@ -201,5 +207,37 @@ describe('useInsufficientMoneyAccountBalanceAlert', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual([]);
+  });
+
+  it('returns alert when the live typed amount exceeds the balance', () => {
+    // Mirrors mobile: the alert reacts to the current input, not just the
+    // debounced calldata commit.
+    useLastMoneyAccountWithdrawAmountMock.mockReturnValue('150');
+
+    const { result } = runHook();
+
+    expect(result.current).toEqual([EXPECTED_ALERT]);
+  });
+
+  it('prefers the live typed amount over the stale required token amount', () => {
+    // The user reduced the amount below the balance; the committed calldata
+    // still carries the previous over-balance amount until the debounce
+    // re-encodes. The alert must clear immediately.
+    useLastMoneyAccountWithdrawAmountMock.mockReturnValue('50');
+    usePrimaryRequiredTokenMock.mockReturnValue({
+      amountHuman: '150',
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual([]);
+  });
+
+  it('prefers pendingAmount over the live typed amount', () => {
+    useLastMoneyAccountWithdrawAmountMock.mockReturnValue('50');
+
+    const { result } = runHook({ pendingAmount: '150' });
+
+    expect(result.current).toEqual([EXPECTED_ALERT]);
   });
 });

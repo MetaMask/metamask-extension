@@ -17,6 +17,7 @@ import { hasTransactionType } from '../../../../../../shared/lib/transactions.ut
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../../../../shared/lib/money/query-keys';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
+import { useLastMoneyAccountWithdrawAmount } from '../../transactions/useLastMoneyAccountWithdrawAmount';
 import { AlertsName } from '../constants';
 
 const MUSD_UNIT = 10 ** MUSD_DECIMALS;
@@ -35,7 +36,11 @@ const NON_WITHDRAW_QUERY_KEY = 'money-account-withdraw-alert:disabled';
  * withdraw info messenger) so this can run in `useConfirmationAlerts` without
  * requiring a money-account route messenger.
  *
- * Mirrors mobile `useInsufficientMoneyAccountBalanceAlert`.
+ * Mirrors mobile `useInsufficientMoneyAccountBalanceAlert`, including its
+ * live-input responsiveness: mobile evaluates the pending typed amount, so
+ * the extension prefers the synchronously-recorded last withdraw amount over
+ * `primaryRequiredToken.amountHuman`, which lags typing by the debounced
+ * calldata encode.
  *
  * @param options
  * @param options.pendingAmount - Optional in-progress human mUSD amount.
@@ -48,6 +53,9 @@ export function useInsufficientMoneyAccountBalanceAlert({
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+  const lastWithdrawAmount = useLastMoneyAccountWithdrawAmount(
+    currentConfirmation?.id ?? '',
+  );
 
   const isMoneyAccountWithdraw = hasTransactionType(currentConfirmation, [
     TransactionType.moneyAccountWithdraw,
@@ -71,7 +79,11 @@ export function useInsufficientMoneyAccountBalanceAlert({
     enabled: false,
   });
 
-  const amountHuman = pendingAmount ?? primaryRequiredToken?.amountHuman ?? '0';
+  const amountHuman =
+    pendingAmount ??
+    lastWithdrawAmount ??
+    primaryRequiredToken?.amountHuman ??
+    '0';
 
   const withdrawableMusd = useMemo(() => {
     if (
