@@ -55,6 +55,8 @@ class AddEditNetworkPage {
 
   private readonly rpcDropDownButton = '[data-testid="test-add-rpc-drop-down"]';
 
+  private readonly rpcDropDownItem = '.dropdown-editor__item';
+
   private readonly saveButton = {
     testId: 'page-container-footer-next',
   };
@@ -141,7 +143,12 @@ class AddEditNetworkPage {
         shouldBeDisplayed ? '' : 'not '
       } displayed on the edit network page`,
     );
-    await this.driver.clickElement(this.rpcDropDownButton);
+    if (
+      !(await this.driver.isElementPresentAndVisible(this.rpcDropDownItem, 100))
+    ) {
+      await this.driver.clickElement(this.rpcDropDownButton);
+      await this.driver.waitForSelector(this.rpcDropDownItem);
+    }
     if (shouldBeDisplayed) {
       await this.driver.waitForSelector({
         text: rpcName,
@@ -153,6 +160,18 @@ class AddEditNetworkPage {
         tag: 'p',
       });
     }
+    await this.driver.clickElement(this.rpcDropDownButton);
+    await this.driver.waitUntil(
+      async () =>
+        !(await this.driver.isElementPresentAndVisible(
+          this.rpcDropDownItem,
+          100,
+        )),
+      {
+        interval: 100,
+        timeout: 3000,
+      },
+    );
   }
 
   async checkSaveButtonIsEnabled(): Promise<boolean> {

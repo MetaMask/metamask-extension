@@ -1,5 +1,3 @@
-const nodeCrypto = require('crypto');
-const fs = require('fs');
 const path = require('path');
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
@@ -39,19 +37,12 @@ class ChromeDriver {
       '--disable-crash-reporter', // Prevent chrome_crashpad_handler zombie accumulation in CI
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',
+      '--enable-unsafe-extension-debugging',
       '--no-sandbox',
     ];
 
     if (isBenchmark) {
       args.push('--js-flags=--expose-gc');
-    }
-
-    if (process.env.MULTIPROVIDER) {
-      args.push(
-        `load-extension=${process.cwd()}/dist/chrome,${process.cwd()}/dist/chrome2`,
-      );
-    } else {
-      args.push(`load-extension=${process.cwd()}/dist/chrome`);
     }
 
     // When "responsive" is enabled, open dev tools to force a smaller viewport
@@ -80,9 +71,14 @@ class ChromeDriver {
     }
 
     const options = new chrome.Options().addArguments(args);
+    options.set('goog:chromeOptions', {
+      ...options.get('goog:chromeOptions'),
+      enableExtensionTargets: true,
+    });
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
+      'extensions.ui.developer_mode': true,
       'profile.content_settings.exceptions.clipboard': {
         '[*.]': {
           last_modified: Date.now(),
@@ -91,8 +87,7 @@ class ChromeDriver {
       },
     });
 
-    // Temporarily lock to version 126
-    options.setBrowserVersion('126');
+    options.setBrowserVersion(process.env.SELENIUM_CHROME_VERSION || '151');
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
@@ -124,13 +119,39 @@ class ChromeDriver {
     // Ensure Chrome is cleaned up if anything below fails (extension ID
     // lookup, etc.).  Without this, a partial failure orphans the browser.
     try {
-      // When the manifest has a `key`, the extension ID is deterministic and can
-      // be computed locally — skipping the chrome://extensions round-trip (~880ms).
-      let extensionId = ChromeDriver._computeExtensionId('dist/chrome');
-      if (!extensionId) {
-        const chromeDriver = new ChromeDriver(driver);
-        extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
+      const cdpConnection = await driver.createCDPConnection('browser');
+      // Selenium attaches the connection to a page target. The Extensions
+      // installation commands are only available on the browser target.
+      cdpConnection.sessionId = null;
+      const loadUnpackedExtension = async (extensionPath) => {
+        const { result, error } = await cdpConnection.send(
+          'Extensions.loadUnpacked',
+          { path: path.resolve(extensionPath) },
+        );
+        if (error) {
+          throw new Error(error.message);
+        }
+        return result.id;
+      };
+
+      const extensionId = await loadUnpackedExtension('dist/chrome');
+      if (process.env.MULTIPROVIDER) {
+        await loadUnpackedExtension('dist/chrome2');
       }
+
+      await driver.get('chrome://extensions');
+      await driver.executeAsyncScript(`
+        const callback = arguments[arguments.length - 1];
+        chrome.developerPrivate.updateProfileConfiguration(
+          { inDeveloperMode: true },
+          callback,
+        );
+      `);
+
+      await driver.sendDevToolsCommand('Browser.grantPermissions', {
+        origin: `chrome-extension://${extensionId}`,
+        permissions: ['clipboardReadWrite', 'clipboardSanitizedWrite'],
+      });
 
       return {
         driver,
@@ -156,36 +177,6 @@ class ChromeDriver {
         // best-effort
       }
       throw error;
-    }
-  }
-
-  /**
-   * Computes the deterministic Chrome extension ID from the manifest's `key` field.
-   * Returns null if the key is absent.
-   *
-   * @param {string} extensionDir - Path to the unpacked extension directory
-   * @returns {string|null} The 32-char extension ID, or null
-   */
-  static _computeExtensionId(extensionDir) {
-    try {
-      const manifest = JSON.parse(
-        fs.readFileSync(path.join(extensionDir, 'manifest.json'), 'utf8'),
-      );
-      if (!manifest.key) {
-        return null;
-      }
-      const keyBytes = Buffer.from(manifest.key, 'base64');
-      const hash = nodeCrypto
-        .createHash('sha256')
-        .update(keyBytes)
-        .digest('hex');
-      return hash
-        .slice(0, 32)
-        .replace(/[0-9a-f]/gu, (c) =>
-          String.fromCharCode(97 + parseInt(c, 16)),
-        );
-    } catch {
-      return null;
     }
   }
 
