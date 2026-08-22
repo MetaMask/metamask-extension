@@ -41,6 +41,7 @@ import {
   addPermittedChain,
   detectNfts,
   setActiveNetwork,
+  setEnabledNetworks,
   setNetworkClientIdForDomain,
   setNextNonce,
   setShowTestNetworks,
@@ -185,6 +186,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
         }
 
         dispatch(setActiveNetwork(finalNetworkClientId));
+        dispatch(setEnabledNetworks(hexChainId));
         dispatch(updateCustomNonce(''));
         dispatch(setNextNonce(''));
         dispatch(detectNfts(allChainIds));
