@@ -119,7 +119,7 @@ describe('useUpdateTokenAmount', () => {
   });
 
   describe('updateTokenAmount', () => {
-    it('dispatches the money deposit commit path for a money account deposit batch', () => {
+    it('dispatches the money deposit commit path for a money account deposit batch', async () => {
       const updateMoneyAmountMock = jest
         .mocked(updateMoneyAccountDepositAmount)
         .mockResolvedValue(true);
@@ -141,7 +141,7 @@ describe('useUpdateTokenAmount', () => {
         },
       });
 
-      act(() => {
+      await act(async () => {
         result.current.updateTokenAmount('1.5');
       });
 
@@ -153,7 +153,7 @@ describe('useUpdateTokenAmount', () => {
       expect(updateEditableParamsMock).not.toHaveBeenCalled();
     });
 
-    it('dispatches the withdrawal commit path for a money account withdrawal batch', () => {
+    it('dispatches the withdrawal commit path for a money account withdrawal batch', async () => {
       const updateWithdrawAmountMock = jest
         .mocked(updateMoneyAccountWithdrawAmount)
         .mockResolvedValue(true);
@@ -174,7 +174,7 @@ describe('useUpdateTokenAmount', () => {
         },
       });
 
-      act(() => {
+      await act(async () => {
         result.current.updateTokenAmount('2');
       });
 
