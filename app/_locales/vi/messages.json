@@ -1290,9 +1290,6 @@
   "added": {
     "message": "Đã thêm"
   },
-  "addedProtectionDescription": {
-    "message": "Bạn đang tương tác với một địa chỉ không xác định. Điều này giúp ngăn chặn các giao dịch độc hại."
-  },
   "addedProtectionIncludesNetworkFee": {
     "message": "Bao gồm $1 để tăng cường bảo vệ",
     "description": "$1 is the added-protection fee amount in the user's selected fiat currency."

@@ -1290,9 +1290,6 @@
   "added": {
     "message": "추가함"
   },
-  "addedProtectionDescription": {
-    "message": "알 수 없는 주소에 접근하고 있습니다. 이는 악성 트랜잭션을 방지하는 데 도움이 됩니다."
-  },
   "addedProtectionIncludesNetworkFee": {
     "message": "추가 보호 비용 $1이(가) 포함되어 있습니다",
     "description": "$1 is the added-protection fee amount in the user's selected fiat currency."

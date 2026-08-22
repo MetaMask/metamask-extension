@@ -1290,9 +1290,6 @@
   "added": {
     "message": "Ditambahkan"
   },
-  "addedProtectionDescription": {
-    "message": "Anda berinteraksi dengan alamat yang tidak dikenal. Ini membantu mencegah transaksi berbahaya."
-  },
   "addedProtectionIncludesNetworkFee": {
     "message": "Termasuk $1 untuk perlindungan tambahan",
     "description": "$1 is the added-protection fee amount in the user's selected fiat currency."

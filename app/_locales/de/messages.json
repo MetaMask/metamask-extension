@@ -1290,9 +1290,6 @@
   "added": {
     "message": "Hinzugefügt"
   },
-  "addedProtectionDescription": {
-    "message": "Sie interagieren mit einer unbekannten Adresse. Dies hilft, betrügerische Transaktionen zu verhindern."
-  },
   "addedProtectionIncludesNetworkFee": {
     "message": "Beinhaltet $1 für zusätzlichen Schutz",
     "description": "$1 is the added-protection fee amount in the user's selected fiat currency."

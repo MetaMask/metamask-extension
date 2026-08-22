@@ -1290,9 +1290,6 @@
   "added": {
     "message": "जोड़ा गया"
   },
-  "addedProtectionDescription": {
-    "message": "आप किसी अज्ञात एड्रेस से इंटरैक्ट कर रहे हैं। इससे बुरी नीयत वाले ट्रांसेक्शन को रोकने में मदद मिलती है।"
-  },
   "addedProtectionIncludesNetworkFee": {
     "message": "इसमें अतिरिक्त सुरक्षा के लिए $1 शामिल है",
     "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
