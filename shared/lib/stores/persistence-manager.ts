@@ -75,6 +75,28 @@ export type PersistenceManagerOptions = {
   localStore: BaseStore;
 };
 
+type PersistenceWriteFailure =
+  | 'set-failed'
+  | 'set-backup-failed'
+  | 'persist-failed'
+  | 'persist-backup-failed';
+
+type PersistenceWriteRecovery =
+  | 'set-recovered'
+  | 'set-backup-recovered'
+  | 'persist-recovered'
+  | 'persist-backup-recovered';
+
+const writeRecoveryByFailure: Record<
+  PersistenceWriteFailure,
+  PersistenceWriteRecovery
+> = {
+  'set-failed': 'set-recovered',
+  'set-backup-failed': 'set-backup-recovered',
+  'persist-failed': 'persist-recovered',
+  'persist-backup-failed': 'persist-backup-recovered',
+};
+
 type WriteRetryOptions = {
   supersedable: boolean;
 };
@@ -105,7 +127,6 @@ function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
     signal?.addEventListener('abort', handleAbort, { once: true });
   });
 }
-
 /**
  * Checks whether IndexedDB mutations are blocked, as can happen for Firefox
  * extensions in private browsing mode.
@@ -250,12 +271,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     : null) ?? 'split') as StorageKind;
 
   /**
-   * dataPersistenceFailing is a boolean that is set to true if the storage
-   * system attempts to write state and the write operation fails. This is only
-   * used as a way of deduplicating error reports sent to sentry as it is
-   * likely that multiple writes will fail concurrently.
+   * dataPersistenceFailures tracks failing storage write targets. This is
+   * used to deduplicate error reports sent to Sentry while still allowing
+   * recovery reporting to match the write target that actually failed.
    */
-  #dataPersistenceFailing: boolean = false;
+  #dataPersistenceFailures = new Set<PersistenceWriteFailure>();
 
   /**
    * mostRecentRetrievedState is a property that holds the most recent state
@@ -357,6 +377,38 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   #normalizePersistError(error: unknown): Error {
     return error instanceof Error ? error : new Error(String(error));
+  }
+
+  #captureWriteFailure(error: unknown, failure: PersistenceWriteFailure) {
+    if (this.#dataPersistenceFailures.has(failure)) {
+      return;
+    }
+
+    this.#dataPersistenceFailures.add(failure);
+
+    // Custom fingerprint prevents Sentry's deduplication from dropping
+    // this event when other persistence errors with the same underlying
+    // error message (e.g., "An unexpected error occurred") are reported.
+    captureException(error, {
+      tags: { 'persistence.error': failure },
+      fingerprint: ['persistence-error', failure],
+    });
+  }
+
+  #captureWriteRecovery(failure: PersistenceWriteFailure) {
+    if (!this.#dataPersistenceFailures.delete(failure)) {
+      return;
+    }
+
+    const recovery = writeRecoveryByFailure[failure];
+
+    // Track recovery to understand how often failures are temporary.
+    // This helps answer: "Do write calls ever fail and then succeed in the same session?"
+    captureMessage('Data persistence recovered after temporary failure', {
+      level: 'info',
+      tags: { 'persistence.event': recovery },
+      fingerprint: ['persistence-event', recovery],
+    });
   }
 
   #emitWriteRetryRecovered(
@@ -619,6 +671,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#currentLockAbortController = undefined;
         // Track which operation failed to use the correct Sentry tag
         let backupFailed = false;
+        let backupSucceeded = false;
         try {
           // atomically set all the keys (includes test simulation check)
           await this.#retryWrite(
@@ -647,6 +700,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                     'set-backup-retry-recovered',
                     { supersedable: false },
                   );
+                  backupSucceeded = true;
                 }
                 this.#backup = stringifiedBackup;
               } catch (backupErr) {
@@ -656,35 +710,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             }
           }
 
-          if (this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = false;
-            // Track recovery to understand how often failures are temporary.
-            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
-            captureMessage(
-              'Data persistence recovered after temporary failure',
-              {
-                level: 'info',
-                tags: { 'persistence.event': 'set-recovered' },
-                fingerprint: ['persistence-event', 'set-recovered'],
-              },
-            );
+          this.#captureWriteRecovery('set-failed');
+          if (backupSucceeded) {
+            this.#captureWriteRecovery('set-backup-failed');
           }
 
           return [true, undefined];
         } catch (err) {
-          if (!this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
-
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
-          }
+          this.#captureWriteFailure(
+            err,
+            backupFailed ? 'set-backup-failed' : 'set-failed',
+          );
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
           log.error('error setting state in local store:', err);
@@ -750,6 +786,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#currentLockAbortController = undefined;
         // Track which operation failed to use the correct Sentry tag
         let backupFailed = false;
+        let backupSucceeded = false;
         try {
           const clone = structuredClone(this.#pendingPairs);
           // reset the pendingPairs
@@ -792,6 +829,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                   'persist-backup-retry-recovered',
                   { supersedable: false },
                 );
+                backupSucceeded = true;
               }
             } catch (backupErr) {
               backupFailed = true;
@@ -799,37 +837,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             }
           }
 
-          if (this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = false;
-            // Track recovery to understand how often failures are temporary.
-            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
-            captureMessage(
-              'Data persistence recovered after temporary failure',
-              {
-                level: 'info',
-                tags: { 'persistence.event': 'persist-recovered' },
-                fingerprint: ['persistence-event', 'persist-recovered'],
-              },
-            );
+          this.#captureWriteRecovery('persist-failed');
+          if (backupSucceeded) {
+            this.#captureWriteRecovery('persist-backup-failed');
           }
 
           return [true, undefined];
         } catch (err) {
-          if (!this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed
-              ? 'persist-backup-failed'
-              : 'persist-failed';
-
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
-          }
+          this.#captureWriteFailure(
+            err,
+            backupFailed ? 'persist-backup-failed' : 'persist-failed',
+          );
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
           log.error('error setting state in local store:', err);
@@ -989,7 +1007,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         ]);
         this.#backup = undefined;
         this.#isExtensionInitialized = false;
-        this.#dataPersistenceFailing = false;
+        this.#dataPersistenceFailures.clear();
         this.#metadata = undefined;
         this.storageKind = PersistenceManager.defaultStorageKind;
         this.cleanUpMostRecentRetrievedState();
