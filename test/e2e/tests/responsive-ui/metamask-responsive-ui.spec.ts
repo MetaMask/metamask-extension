@@ -157,7 +157,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         await homePage.checkPageIsLoaded();
 
         const txToast = new TxToastNotification(driver);
-        await txToast.checkTxSubmittedToast();
+        await txToast.waitForToastNotification();
         await txToast.closeToastNotification();
 
         await switchToNetworkFromNetworkSelect(driver, 'Localhost 8545');
