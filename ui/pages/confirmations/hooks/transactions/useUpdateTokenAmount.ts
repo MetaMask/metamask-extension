@@ -5,9 +5,17 @@ import { BigNumber } from 'bignumber.js';
 import { Interface } from '@ethersproject/abi';
 import { useConfirmContext } from '../../context/confirm';
 import { parseStandardTokenTransactionData } from '../../../../../shared/lib/transaction.utils';
+import {
+  getMoneyAccountFlow,
+  MoneyAccountFlow,
+} from '../../../../../shared/lib/money/money-account-flow';
 import { getTokenTransferData } from '../../utils/transaction-pay';
 import { updateEditableParams } from '../../../../store/actions';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';
+import {
+  updateMoneyAccountDepositAmount,
+  updateMoneyAccountWithdrawAmount,
+} from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTransactionPayPrimaryRequiredToken } from '../pay/useTransactionPayData';
 import { useDispatch } from '../../../../store/hooks';
 
@@ -28,8 +36,12 @@ function calcTokenValue(value: string, decimals: number): BigNumber {
 
 export function useUpdateTokenAmount() {
   const dispatch = useDispatch();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const {
+    currentConfirmation: transactionMeta,
+    isMoneyAccountAmountCommitPending: isMoneyAmountCommitPending,
+    setMoneyAccountDisplayedAmount,
+    setMoneyAccountCommittedAmount,
+  } = useConfirmContext<TransactionMeta>();
 
   const transactionId = transactionMeta?.id ?? '';
   const [previousAmountRaw, setPreviousAmountRaw] = useState<string>();
@@ -65,7 +77,8 @@ export function useUpdateTokenAmount() {
   }, [data]);
 
   const isUpdating =
-    Boolean(previousAmountRaw) && amountRaw === previousAmountRaw;
+    isMoneyAmountCommitPending ||
+    (Boolean(previousAmountRaw) && amountRaw === previousAmountRaw);
 
   useEffect(() => {
     if (!isUpdating) {
@@ -73,8 +86,79 @@ export function useUpdateTokenAmount() {
     }
   }, [isUpdating, transactionId]);
 
+  const moneyAccountFlow = useMemo(
+    () => getMoneyAccountFlow(transactionMeta),
+    [transactionMeta],
+  );
+
+  // Records the amount the user currently sees, the moment an edit is
+  // scheduled (see `useTransactionCustomAmount`). Confirm stays disabled
+  // until the same amount comes back through
+  // `setMoneyAccountCommittedAmount`, so a dropped debounce, a failed
+  // commit, or overlapping edits all leave Confirm disabled instead of
+  // signable against stale calldata. Idempotent for repeated identical
+  // values, so the scheduling call and the eventual commit recording the
+  // same amount is harmless.
+  const markAmountAsDisplayed = useCallback(
+    (amountHuman: string) => {
+      if (moneyAccountFlow === undefined) {
+        return;
+      }
+      setMoneyAccountDisplayedAmount(amountHuman, transactionId);
+    },
+    [moneyAccountFlow, setMoneyAccountDisplayedAmount, transactionId],
+  );
+
   const updateTokenAmount = useCallback(
     (amountHuman: string) => {
+      // Money deposits are a placeholder approve + deposit batch with no
+      // calldata to parse — the background commit path re-encodes both calls
+      // (it needs a vault read for the share preview) and has its own
+      // in-flight dedup, so `previousAmountRaw` tracking is not used here.
+      // Mobile gates this behind the deposit-quote-pipeline flag with a
+      // legacy per-call updater as the fallback; that legacy pipeline was
+      // deliberately not ported, so this is the extension's only path.
+      if (moneyAccountFlow === MoneyAccountFlow.Deposit) {
+        setMoneyAccountDisplayedAmount(amountHuman, transactionId);
+        updateMoneyAccountDepositAmount(transactionId, amountHuman)
+          .then((didCommit) => {
+            if (didCommit) {
+              setMoneyAccountCommittedAmount(amountHuman, transactionId);
+            }
+          })
+          .catch((error) => {
+            // Deliberately no committed-amount update: displayed !==
+            // committed keeps Confirm disabled rather than signable against
+            // calldata that still encodes the previous amount.
+            console.error(
+              'Failed to update money account deposit amount',
+              error,
+            );
+          });
+        return;
+      }
+
+      // Same shape as deposits: the placeholder withdraw + transfer batch has
+      // no calldata to parse, and the background commit path resolves the
+      // recipient (the selected account) and the vault rate.
+      if (moneyAccountFlow === MoneyAccountFlow.Withdraw) {
+        setMoneyAccountDisplayedAmount(amountHuman, transactionId);
+        updateMoneyAccountWithdrawAmount(transactionId, amountHuman)
+          .then((didCommit) => {
+            if (didCommit) {
+              setMoneyAccountCommittedAmount(amountHuman, transactionId);
+            }
+          })
+          .catch((error) => {
+            // Deliberately no committed-amount update; see the deposit path.
+            console.error(
+              'Failed to update money account withdrawal amount',
+              error,
+            );
+          });
+        return;
+      }
+
       if (!data || !to || decimals === undefined) {
         return;
       }
@@ -120,11 +204,23 @@ export function useUpdateTokenAmount() {
         }),
       );
     },
-    [amountRaw, data, decimals, dispatch, nestedCallIndex, to, transactionId],
+    [
+      amountRaw,
+      data,
+      decimals,
+      dispatch,
+      moneyAccountFlow,
+      nestedCallIndex,
+      setMoneyAccountCommittedAmount,
+      setMoneyAccountDisplayedAmount,
+      to,
+      transactionId,
+    ],
   );
 
   return {
     isUpdating,
+    markAmountAsDisplayed,
     updateTokenAmount,
   };
 }

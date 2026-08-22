@@ -191,6 +191,9 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   LoggingController: {
     logs: false,
   },
+  MoneyAccountController: {
+    moneyAccounts: false,
+  },
   NotificationServicesController: {
     subscriptionAccountsSeen: false,
     isMetamaskNotificationsFeatureSeen: false,

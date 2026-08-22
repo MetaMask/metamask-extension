@@ -23,17 +23,39 @@ type ButtonState = {
 
 const BUTTON_TEXT_BY_TYPE: Partial<Record<TransactionType, string>> = {
   [TransactionType.moneyAccountDeposit]: 'addFunds',
-  [TransactionType.moneyAccountWithdraw]: 'send',
+  [TransactionType.moneyAccountWithdraw]: 'perpsWithdraw',
   [TransactionType.musdConversion]: 'musdConvert',
   [TransactionType.perpsDeposit]: 'addFunds',
   [TransactionType.perpsWithdraw]: 'perpsWithdraw',
 };
 
+/**
+ * Money Account deposit/withdraw transactions are submitted via
+ * `addTransactionBatch`, whose top-level type is always
+ * `TransactionType.batch` — the money-account type lives on the nested
+ * transactions, so the button text/gating must be resolved from there too.
+ *
+ * @param confirmation - The current transaction confirmation, if any.
+ */
+function getSingleActionTransactionType(
+  confirmation?: TransactionMeta,
+): TransactionType | undefined {
+  if (confirmation?.type && BUTTON_TEXT_BY_TYPE[confirmation.type]) {
+    return confirmation.type;
+  }
+
+  return confirmation?.nestedTransactions?.find(
+    (nestedTransaction) =>
+      nestedTransaction.type && BUTTON_TEXT_BY_TYPE[nestedTransaction.type],
+  )?.type;
+}
+
 function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, isMoneyAccountAmountCommitPending } =
+    useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
-  const transactionType = currentConfirmation?.type;
+  const transactionType = getSingleActionTransactionType(currentConfirmation);
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayQuotePending();
@@ -69,7 +91,11 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
         : defaultButtonText;
 
     const isDisabled =
-      isAwaitingRequiredToken || hasBlockingAlerts || !hasAmount || !isPayReady;
+      isAwaitingRequiredToken ||
+      hasBlockingAlerts ||
+      !hasAmount ||
+      !isPayReady ||
+      isMoneyAccountAmountCommitPending;
 
     const isLoading =
       isAwaitingRequiredToken || isGaslessLoading || isPayLoading;
@@ -78,6 +104,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   }, [
     blockingAlerts,
     isGaslessLoading,
+    isMoneyAccountAmountCommitPending,
     isPayReady,
     isPayLoading,
     primaryRequiredToken,

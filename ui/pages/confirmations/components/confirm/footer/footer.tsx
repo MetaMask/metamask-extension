@@ -61,6 +61,69 @@ const SINGLE_ACTION_FOOTER_TYPES = [
   TransactionType.perpsWithdraw,
 ];
 
+/**
+ * The only companion legs a single-action batch is ever built with: a
+ * deposit's approve-then-deposit batch, and a withdrawal's withdraw-then-
+ * transfer batch (see `create-deposit-transaction.ts` /
+ * `create-withdraw-transaction.ts`). Allowed alongside
+ * `SINGLE_ACTION_FOOTER_TYPES` so those two-leg batches still route to the
+ * single-action footer, while anything else mixed in falls through.
+ */
+const SINGLE_ACTION_FOOTER_COMPANION_TYPES = [
+  TransactionType.tokenMethodApprove,
+  TransactionType.tokenMethodTransfer,
+];
+
+/**
+ * Money Account deposit/withdraw transactions are submitted via
+ * `addTransactionBatch`, which always sets the top-level transaction type to
+ * `TransactionType.batch` — the money-account type only appears on the
+ * nested transactions. `SINGLE_ACTION_FOOTER_TYPES` must therefore also be
+ * checked against the nested transactions, or these confirmations silently
+ * fall through to the plain footer, which has no "amount entered" gate.
+ *
+ * Routes to the single-action footer when at least one nested transaction is
+ * a single-action type and every other nested transaction is one of its
+ * known companion legs (approve/transfer) — a batch that mixed in anything
+ * else must fall through to the full multi-step footer instead of silently
+ * hiding that other call's confirmation UI.
+ *
+ * @param confirmation - The transaction confirmation to route.
+ */
+function isSingleActionFooterConfirmation(
+  confirmation: TransactionMeta,
+): boolean {
+  if (
+    confirmation.type &&
+    SINGLE_ACTION_FOOTER_TYPES.includes(confirmation.type)
+  ) {
+    return true;
+  }
+
+  const { nestedTransactions } = confirmation;
+  if (!nestedTransactions?.length) {
+    return false;
+  }
+
+  const hasSingleActionLeg = nestedTransactions.some(
+    (nestedTransaction) =>
+      nestedTransaction.type &&
+      SINGLE_ACTION_FOOTER_TYPES.includes(nestedTransaction.type),
+  );
+
+  return (
+    hasSingleActionLeg &&
+    nestedTransactions.every(
+      (nestedTransaction) =>
+        nestedTransaction.type &&
+        (SINGLE_ACTION_FOOTER_TYPES.includes(nestedTransaction.type) ||
+          SINGLE_ACTION_FOOTER_COMPANION_TYPES.includes(
+            nestedTransaction.type,
+          )),
+    )
+  );
+}
+
 export type OnCancelHandler = ({
   location,
 }: {
@@ -260,8 +323,12 @@ const Footer = () => {
   const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
-  const { currentConfirmation, isScrollToBottomCompleted, goBackTo } =
-    useConfirmContext<TransactionMeta>();
+  const {
+    currentConfirmation,
+    isScrollToBottomCompleted,
+    goBackTo,
+    isMoneyAccountAmountCommitPending,
+  } = useConfirmContext<TransactionMeta>();
   const currentConfirmationId = currentConfirmation?.id;
   const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
@@ -325,7 +392,9 @@ const Footer = () => {
   ]);
 
   const isConfirmDisabled =
-    (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
+    (!isScrollToBottomCompleted && !isSignature) ||
+    isGaslessLoading ||
+    isMoneyAccountAmountCommitPending;
 
   const shouldShowReconnectButton =
     shouldRunHardwareWalletPreflight &&
@@ -452,10 +521,7 @@ const Footer = () => {
     return null;
   }
 
-  if (
-    currentConfirmation.type &&
-    SINGLE_ACTION_FOOTER_TYPES.includes(currentConfirmation.type)
-  ) {
+  if (isSingleActionFooterConfirmation(currentConfirmation)) {
     return (
       <SingleActionFooter
         onSubmit={onSubmit}
