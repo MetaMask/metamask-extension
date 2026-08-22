@@ -1290,9 +1290,6 @@
   "added": {
     "message": "Προστέθηκε"
   },
-  "addedProtectionDescription": {
-    "message": "Αλληλεπιδράτε με άγνωστη διεύθυνση. Αυτό βοηθά στην αποτροπή κακόβουλων συναλλαγών."
-  },
   "addedProtectionIncludesNetworkFee": {
     "message": "Περιλαμβάνει $1 για επιπλέον προστασία",
     "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
