@@ -3,13 +3,13 @@ import {
   AvatarIcon,
   BannerAlert,
   FormTextField,
+  Tag,
   Text,
 } from '../../component-library';
 import { AccountListItem } from '../../multichain/account-list-item';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
-import Chip from '../../ui/chip';
 import DefinitionList from '../../ui/definition-list';
 import Preloader from '../../ui/icon/preloader';
 import OriginPill from '../../ui/origin-pill/origin-pill';
@@ -73,7 +73,7 @@ export const safeComponentList = {
   BannerAlert,
   Box,
   Button,
-  Chip,
+  Tag,
   ConfirmationNetworkSwitch,
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
