@@ -20,6 +20,7 @@ import type { Json } from '@metamask/utils';
 import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-domain-metrics';
+import { INDEXED_DB_STORAGE_REMOTE_FEATURE_FLAG } from '../../../shared/lib/stores/persistence-flags';
 import {
   MONEY_EARNING_SECTION_ENABLED_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
@@ -104,6 +105,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'addSolanaAccount',
     productionDefault: true,
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  [INDEXED_DB_STORAGE_REMOTE_FEATURE_FLAG]: {
+    inProd: true,
+    name: INDEXED_DB_STORAGE_REMOTE_FEATURE_FLAG,
+    productionDefault: false,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },

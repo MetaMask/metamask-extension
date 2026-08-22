@@ -28,7 +28,7 @@ export const backedUpStateKeys = [
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
 
 /**
- * Shape of the backup object read from the IndexedDB backup database.
+ * Shape of the backup object read from the selected backup database.
  * Used for vault recovery and critical error restore.
  * Keys are derived from backedUpStateKeys (single source of truth).
  */
@@ -73,7 +73,18 @@ export type PersistenceManagerEventMap = {
 
 export type PersistenceManagerOptions = {
   localStore: BaseStore;
+  indexedDBStore?: BaseStore;
+  localBackupStore?: BackupStore;
+  shouldUseIndexedDBForNewUsers?: () => Promise<boolean>;
 };
+
+export type BackupStore = {
+  set: (values: Record<string, unknown>) => Promise<void>;
+  get: (keys: string[]) => Promise<unknown[]>;
+  reset: () => Promise<void>;
+};
+
+type PrimaryStoreBackend = 'local' | 'indexedDB';
 
 type WriteRetryOptions = {
   supersedable: boolean;
@@ -274,11 +285,19 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   #isExtensionInitialized: boolean = false;
 
-  #localStore: BaseStore;
+  #indexedDBStore?: BaseStore;
+
+  #primaryStore: BaseStore;
+
+  #localBackupStore?: BackupStore;
+
+  #backupStore?: BackupStore;
+
+  #primaryStoreBackend: PrimaryStoreBackend = 'local';
+
+  #shouldUseIndexedDBForNewUsers?: () => Promise<boolean>;
 
   #currentWriteRetryAbortController: AbortController | null = null;
-
-  #backupDb: IndexedDBStore | null = null;
 
   #backup?: string;
 
@@ -303,9 +322,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   #errorTypeBeforeCallbackRegistered: StorageWriteErrorType | null = null;
 
-  constructor({ localStore }: PersistenceManagerOptions) {
+  constructor({
+    localStore,
+    indexedDBStore,
+    localBackupStore,
+    shouldUseIndexedDBForNewUsers,
+  }: PersistenceManagerOptions) {
     super();
-    this.#localStore = localStore;
+    this.#primaryStore = localStore;
+    this.#indexedDBStore = indexedDBStore;
+    this.#localBackupStore = localBackupStore;
+    this.#shouldUseIndexedDBForNewUsers = shouldUseIndexedDBForNewUsers;
   }
 
   /**
@@ -443,7 +470,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     try {
       const db = new IndexedDBStore();
       await db.open('metamask-backup', 1);
-      this.#backupDb = db;
+      if (this.#primaryStoreBackend === 'local') {
+        this.#backupStore = db;
+      }
     } catch (error) {
       // `indexedDB` can't be used by addons in FF in some instances of
       // private browsing mode due to this bug:
@@ -518,7 +547,77 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         throw new Error('Simulated storage.local.get failure for testing');
       }
     }
-    return this.#localStore.get();
+    return this.#primaryStore.get();
+  }
+
+  async #getFromIndexedDBStore(): Promise<MetaMaskStorageStructure | null> {
+    return (await this.#indexedDBStore?.get()) ?? null;
+  }
+
+  #useIndexedDBForPrimaryStore(): void {
+    if (!this.#indexedDBStore || !this.#localBackupStore) {
+      return;
+    }
+
+    this.#primaryStore = this.#indexedDBStore;
+    this.#backupStore = this.#localBackupStore;
+    this.#primaryStoreBackend = 'indexedDB';
+  }
+
+  async #getShouldUseIndexedDBForNewUsers(): Promise<boolean> {
+    if (!this.#shouldUseIndexedDBForNewUsers) {
+      return false;
+    }
+
+    try {
+      return (await this.#shouldUseIndexedDBForNewUsers()) === true;
+    } catch (error) {
+      log.warn('Error resolving IndexedDB storage remote feature flag:', error);
+      return false;
+    }
+  }
+
+  async #maybeUseIndexedDBForPrimaryStore({
+    localStoreError,
+    result,
+  }: {
+    localStoreError: Error | undefined;
+    result: MetaMaskStorageStructure | null | undefined;
+  }): Promise<{
+    localStoreError: Error | undefined;
+    result: MetaMaskStorageStructure | null | undefined;
+  }> {
+    if (this.#primaryStoreBackend === 'indexedDB' || !this.#indexedDBStore) {
+      return { localStoreError, result };
+    }
+
+    if (!localStoreError && !isEmpty(result)) {
+      return { localStoreError, result };
+    }
+
+    const [indexedDBStoreError, indexedDBResult] =
+      await this.#getFromIndexedDBStore()
+        .then((res): [undefined, MetaMaskStorageStructure | null] => [
+          undefined,
+          res,
+        ])
+        .catch((error: Error): [Error, undefined] => [error, undefined]);
+
+    if (!indexedDBStoreError && !isEmpty(indexedDBResult)) {
+      this.#useIndexedDBForPrimaryStore();
+      return { localStoreError: undefined, result: indexedDBResult };
+    }
+
+    if (
+      localStoreError ||
+      indexedDBStoreError ||
+      !(await this.#getShouldUseIndexedDBForNewUsers())
+    ) {
+      return { localStoreError, result };
+    }
+
+    this.#useIndexedDBForPrimaryStore();
+    return { localStoreError, result: indexedDBResult };
   }
 
   /**
@@ -556,7 +655,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     data: Required<MetaMaskStorageStructure>,
   ): Promise<void> {
     this.#maybeSimulateSetFailure();
-    await this.#localStore.set(data);
+    await this.#primaryStore.set(data);
   }
 
   /**
@@ -569,7 +668,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   async #setKeyValuesInLocalStore(pairs: Map<string, unknown>): Promise<void> {
     this.#maybeSimulateSetFailure();
-    await this.#localStore.setKeyValues(pairs);
+    await this.#primaryStore.setKeyValues(pairs);
   }
 
   /**
@@ -640,10 +739,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               // save it to the backup DB - wrapped in try-catch to differentiate
               // backup failures from storage.local failures in Sentry
               try {
-                const backupDb = this.#backupDb;
-                if (backupDb) {
+                const backupStore = this.#backupStore;
+                if (backupStore) {
                   await this.#retryWrite(
-                    () => backupDb.set(backup),
+                    () => backupStore.set(backup),
                     'set-backup-retry-recovered',
                     { supersedable: false },
                   );
@@ -785,10 +884,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             // save it to the backup DB - wrapped in try-catch to differentiate
             // backup failures from storage.local failures in Sentry
             try {
-              const backupDb = this.#backupDb;
-              if (backupDb) {
+              const backupStore = this.#backupStore;
+              if (backupStore) {
                 await this.#retryWrite(
-                  () => backupDb.set(backup),
+                  () => backupStore.set(backup),
                   'persist-backup-retry-recovered',
                   { supersedable: false },
                 );
@@ -867,12 +966,18 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       async () => {
         // Capture both error and result to handle them in a unified way
         // This allows us to respect the validateVault flag consistently
-        const [localStoreError, result] = await this.#getFromLocalStore()
+        let [localStoreError, result] = await this.#getFromLocalStore()
           .then((res): [undefined, MetaMaskStorageStructure | null] => [
             undefined,
             res,
           ])
           .catch((error: Error): [Error, undefined] => [error, undefined]);
+
+        ({ localStoreError, result } =
+          await this.#maybeUseIndexedDBForPrimaryStore({
+            localStoreError,
+            result,
+          }));
 
         // Log and capture the error if one occurred, but don't throw yet
         if (localStoreError) {
@@ -899,7 +1004,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             localStoreError !== undefined || !hasVault(result?.data);
 
           if (needsVaultRecovery) {
-            // Check if we have a backup in IndexedDB. We need to throw an error
+            // Check if we have a backup. We need to throw an error
             // so that the user can be prompted to recover it.
             // Wrap in try-catch to prevent backup failures from masking the
             // original storage error (we care more about the error that got us here).
@@ -916,7 +1021,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               backup &&
               Object.values(backup).some((value) => value !== undefined)
             ) {
-              log.info('Backup vault found in IndexedDB, triggering recovery');
+              log.info('Backup vault found, triggering recovery');
 
               // Track vault corruption detected event directly to Segment.
               // We do this here (before throwing) because MetaMetricsController
@@ -939,11 +1044,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                 localStoreError,
               );
             } else if (localStoreError) {
-              log.error(
-                'No backup vault available in IndexedDB, cannot recover',
-              );
+              log.error('No backup vault available, cannot recover');
             } else {
-              log.info('No backup vault available in IndexedDB');
+              log.info('No backup vault available');
             }
           }
         }
@@ -984,8 +1087,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       { mode: 'exclusive' },
       async () => {
         await Promise.all([
-          this.#localStore.reset(),
-          await this.#backupDb?.reset(),
+          this.#primaryStore.reset(),
+          this.#backupStore?.reset(),
         ]);
         this.#backup = undefined;
         this.#isExtensionInitialized = false;
@@ -1006,11 +1109,24 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   async getBackup(): Promise<Backup | undefined> {
     await this.open();
-    const backupDb = this.#backupDb;
-    if (!backupDb) {
+    if (
+      this.#primaryStoreBackend === 'local' &&
+      this.#indexedDBStore &&
+      this.#localBackupStore
+    ) {
+      const indexedDBResult = await this.#getFromIndexedDBStore().catch(
+        () => null,
+      );
+      if (!isEmpty(indexedDBResult)) {
+        this.#useIndexedDBForPrimaryStore();
+      }
+    }
+
+    const backupStore = this.#backupStore;
+    if (!backupStore) {
       return undefined;
     }
-    const values = await backupDb.get([...backedUpStateKeys, `meta`]);
+    const values = await backupStore.get([...backedUpStateKeys, `meta`]);
     const backup: Backup = {};
     backedUpStateKeys.forEach((key, index) => {
       backup[key] = values[index];
