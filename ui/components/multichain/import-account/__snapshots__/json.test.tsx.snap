@@ -53,11 +53,18 @@ exports[`Json should match snapshot 1`] = `
       </span>
     </button>
     <button
-      class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+      aria-disabled="true"
+      class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed"
       data-testid="import-account-confirm-button"
       disabled=""
+      role="button"
+      tabindex="-1"
     >
-      Import
+      <span
+        class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Import
+      </span>
     </button>
   </div>
 </DocumentFragment>

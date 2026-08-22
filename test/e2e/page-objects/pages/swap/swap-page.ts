@@ -64,6 +64,10 @@ class SwapPage {
   private readonly bridgeDestinationButton =
     '[data-testid="bridge-destination-button"]';
 
+  private readonly bridgeQuotePage = {
+    testId: 'parent-selector-bridge-quote',
+  };
+
   private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
 
   private readonly closeButton = {
@@ -185,6 +189,7 @@ class SwapPage {
       await this.driver.waitForMultipleSelectors([
         this.reviewFromAmount,
         this.bridgeDestinationButton,
+        this.bridgeQuotePage,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for Swap page to be loaded', e);

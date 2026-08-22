@@ -120,7 +120,8 @@ app/scripts/services/legacy-background-api-service.test.ts @MetaMask/core-platfo
 ## UI-level messengers
 test/lib/mock-route-messenger.ts                           @MetaMask/core-platform
 test/lib/mock-ui-messenger.ts                              @MetaMask/core-platform
-ui/contexts/route-messenger.ts                             @MetaMask/core-platform
+ui/contexts/route-messenger.tsx                            @MetaMask/core-platform
+ui/contexts/route-messenger.test.tsx                       @MetaMask/core-platform
 ui/contexts/ui-messenger.tsx                               @MetaMask/core-platform
 ui/helpers/route-messenger-helpers.test.tsx                @MetaMask/core-platform
 ui/helpers/route-messenger-helpers.tsx                     @MetaMask/core-platform

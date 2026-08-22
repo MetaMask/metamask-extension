@@ -2,7 +2,10 @@ import { createSelector } from 'reselect';
 import { isObject } from '@metamask/utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
-import { isMoneyAccountEnabled } from '../../../shared/lib/money/feature-flags';
+import {
+  isMoneyAccountEnabled,
+  isMoneyEarningSectionEnabled,
+} from '../../../shared/lib/money/feature-flags';
 import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
 
 /**
@@ -53,6 +56,17 @@ const parseNonNegativeFinite = (raw: unknown): number | undefined => {
 export const selectMoneyAccountFeatureEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyAccountEnabled,
+);
+
+/**
+ * Selects whether the realized Earnings section on Money Home is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the Earnings section is enabled.
+ */
+export const selectMoneyEarningSectionEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyEarningSectionEnabled,
 );
 
 /**

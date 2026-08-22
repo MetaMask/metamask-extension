@@ -139,7 +139,6 @@ export function PayWithRow({
     displayToken,
     balanceUsdFormatted,
     label,
-    canEdit,
     from,
     ownerId,
     isPostQuoteWithdraw,
@@ -174,18 +173,18 @@ export function PayWithRow({
       >
         <Box
           data-testid="pay-with-pill"
-          onClick={canEdit ? openModal : undefined}
+          onClick={openModal}
           display={Display.InlineFlex}
           alignItems={AlignItems.center}
           gap={1}
-          style={{ cursor: canEdit ? 'pointer' : 'default' }}
+          style={{ cursor: 'pointer' }}
         >
           <PaySelectorContent
             displayToken={displayToken}
             emptyLabel={t('payWithEmptySelection')}
             balanceText={` (${balanceUsdFormatted})`}
             showBalance={Boolean(displayToken) && !isPostQuoteWithdraw}
-            showArrow={canEdit && Boolean(from)}
+            showArrow={Boolean(from)}
             isMoneyAccountSelected={isMoneyAccountSelected}
           />
         </Box>

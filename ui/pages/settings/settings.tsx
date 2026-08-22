@@ -55,7 +55,7 @@ import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import { toRelativeRoutePath } from '../routes/utils';
-import { RouteWithMessenger } from '../../layouts/route-with-messenger';
+import { RouteMessengerProvider } from '../../contexts/route-messenger';
 import {
   transitionBack,
   transitionForward,
@@ -506,7 +506,7 @@ const Settings = () => {
               element={
                 <SettingsLayout>
                   {messengerCapabilities ? (
-                    <RouteWithMessenger
+                    <RouteMessengerProvider
                       // Remount when the settings sub-route changes. Sibling
                       // routes share this component type, so without a key
                       // React reuses the instance and keeps the previous
@@ -516,7 +516,7 @@ const Settings = () => {
                       capabilities={messengerCapabilities}
                     >
                       {component}
-                    </RouteWithMessenger>
+                    </RouteMessengerProvider>
                   ) : (
                     component
                   )}
