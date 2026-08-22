@@ -226,6 +226,19 @@ export type LegacyBackgroundApiServiceAddTransactionAndWaitForPublishAction = {
 };
 
 /**
+ * Adds a network and (optionally) sets it as the active network.
+ *
+ * @param networkConfiguration - The network configuration to add.
+ * @param options - Options for post-add behavior.
+ * @param options.setActive - Whether to switch to the added network.
+ * @returns The added network configuration.
+ */
+export type LegacyBackgroundApiServiceAddNetworkAction = {
+  type: `LegacyBackgroundApiService:addNetwork`;
+  handler: LegacyBackgroundApiService['addNetwork'];
+};
+
+/**
  * Verifies the validity of the current vault's seed phrase.
  *
  * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -522,6 +535,19 @@ export type LegacyBackgroundApiServiceChangePasswordWithPasskeyVerificationActio
     type: `LegacyBackgroundApiService:changePasswordWithPasskeyVerification`;
     handler: LegacyBackgroundApiService['changePasswordWithPasskeyVerification'];
   };
+
+/**
+ * Exports and JSON-encodes a seed phrase after passkey verification.
+ *
+ * @param params - Passkey seed export parameters.
+ * @param params.authenticationResponse - WebAuthn authentication response.
+ * @param params.keyringId - Optional HD keyring id.
+ * @returns UTF-8 seed phrase bytes as a JSON-safe number array.
+ */
+export type LegacyBackgroundApiServiceExportSeedPhraseWithPasskeyAction = {
+  type: `LegacyBackgroundApiService:exportSeedPhraseWithPasskey`;
+  handler: LegacyBackgroundApiService['exportSeedPhraseWithPasskey'];
+};
 
 /**
  * Unlocks the vault with a passkey, then runs the post-unlock account
@@ -1013,6 +1039,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceDecodeTransactionDataAction
   | LegacyBackgroundApiServiceAddTransactionAction
   | LegacyBackgroundApiServiceAddTransactionAndWaitForPublishAction
+  | LegacyBackgroundApiServiceAddNetworkAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
   | LegacyBackgroundApiServiceLookupSelectedNetworksAction
@@ -1037,6 +1064,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
   | LegacyBackgroundApiServiceChangePasswordWithPasskeyVerificationAction
+  | LegacyBackgroundApiServiceExportSeedPhraseWithPasskeyAction
   | LegacyBackgroundApiServiceUnlockWithPasskeyAction
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction

@@ -71,7 +71,6 @@ import {
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
   showImportNftsModal,
-  showModal,
   updateBalancesFoAccounts,
 } from '../../../../../store/actions';
 import type { MetaMaskReduxState } from '../../../../../store/store';
@@ -86,7 +85,6 @@ import {
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
-import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
 import {
   getInternalAccountsFromGroupById,
@@ -132,7 +130,6 @@ const AssetListControlBar = ({
     selectAccountSupportsEnabledNetworks,
   );
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
   const isEvmOnlySelectedAccountGroup = useSelector(
     (state: MetaMaskReduxState) => {
@@ -315,11 +312,6 @@ const AssetListControlBar = ({
   };
 
   const handleNetworkFilterClick = () => {
-    if (!isNetworkManagementEnabled) {
-      dispatch(showModal({ name: 'NETWORK_MANAGER' }));
-      return;
-    }
-
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
@@ -495,13 +487,11 @@ const AssetListControlBar = ({
         </Box>
       </Box>
 
-      {isNetworkManagementEnabled && (
-        <HomeNetworkFilterModal
-          isOpen={isNetworkFilterModalOpen}
-          onClose={closePopover}
-          onPendingChange={setIsNetworkSwitchPending}
-        />
-      )}
+      <HomeNetworkFilterModal
+        isOpen={isNetworkFilterModalOpen}
+        onClose={closePopover}
+        onPendingChange={setIsNetworkSwitchPending}
+      />
 
       <Popover
         onClickOutside={closePopover}

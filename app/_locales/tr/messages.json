@@ -156,9 +156,6 @@
     "message": "$1 hesap",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Hesaplarınızı görün ve işlem önerin"
-  },
   "accountsSmallCase": {
     "message": "hesap"
   },
@@ -1589,9 +1586,6 @@
   "allNetworks": {
     "message": "Tüm ağlar"
   },
-  "allPermissions": {
-    "message": "Dapp bağlantıları"
-  },
   "allPopularNetworks": {
     "message": "Tüm popüler ağlar"
   },
@@ -2764,8 +2758,8 @@
   "connectAHardwareWalletDescription": {
     "message": "USB veya QR Kodu kullanımı"
   },
-  "connectAccounts": {
-    "message": "Hesapları bağla"
+  "connectAnyway": {
+    "message": "Yine de bağlan"
   },
   "connectAnyway": {
     "message": "Yine de bağlan"
@@ -2814,18 +2808,6 @@
   "connectedSnaps": {
     "message": "Bağlı Snap'ler"
   },
-  "connectedWithAccount": {
-    "message": "$1 hesap bağlandı",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "$1 ile bağlandı",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 ağ bağlandı",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Bağlanıyor"
   },
@@ -2862,6 +2844,9 @@
   },
   "connectionRequest": {
     "message": "Bağlantı talebi"
+  },
+  "connections": {
+    "message": "Bağlantılar"
   },
   "connectionsRemovedModalDescription": {
     "message": "Bu cihazdaki işlemsizlikten dolayı bazı bağlantılar (donanım cüzdanları ve snap'ler gibi) kaldırıldı. Dilediğiniz zaman Ayarlar kısmında tekrar ekleyebilirsiniz."
@@ -3068,9 +3053,6 @@
   },
   "customerSupport": {
     "message": "müşteri hizmetleri"
-  },
-  "dappConnections": {
-    "message": "Dapp Bağlantıları"
   },
   "dappSuggested": {
     "message": "Önerilen site"
@@ -3430,9 +3412,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Tüm dapp'lerin bağlantısı başarıyla kesildi."
   },
-  "disconnectMessage": {
-    "message": "Bu işlem bu siteyle bağlantınızı kesecektir"
-  },
   "disconnectPrompt": {
     "message": "$1 bağlantısını kes"
   },
@@ -3612,9 +3591,6 @@
   },
   "editNetworkLink": {
     "message": "orijinal ağı düzenleyin"
-  },
-  "editNetworksTitle": {
-    "message": "Ağları düzenle"
   },
   "editNonceField": {
     "message": "Nonce'u düzenle"
@@ -5240,6 +5216,48 @@
   "mmFee": {
     "message": "%$1 MetaMask ücreti"
   },
+  "money": {
+    "message": "Bakiye"
+  },
+  "moneyActivity": {
+    "message": "İşlemler"
+  },
+  "moneyAdd": {
+    "message": "Ekle"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Bakiye kullanılamıyor"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Kilitleme olmadan tam likidite alarak dilediğiniz zaman işlem yapabilir veya para çekebilirsiniz"
+  },
+  "moneyBenefitSend": {
+    "message": "MetaMask’teki herhangi bir cüzdanınıza gönderin"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Paranız 1:1 dolar destekli bir stabil kripto para olan mUSD'de güvende tutun"
+  },
+  "moneyBenefits": {
+    "message": "Faydalar"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Kriptonuzdan kazanç sağlayın"
+  },
+  "moneyFundDescription": {
+    "message": "Money account hesabınıza fon ekleyin ve bakiyenizin yükselişini izleyin."
+  },
+  "moneyHowItWorks": {
+    "message": "Nasıl çalışır?"
+  },
+  "moneyLearnMore": {
+    "message": "Daha fazla bilgi edin"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Gönder"
+  },
   "month": {
     "message": "ay"
   },
@@ -5248,10 +5266,6 @@
   },
   "more": {
     "message": "daha fazla"
-  },
-  "moreAccounts": {
-    "message": "+ $1 hesap daha",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Daha fazla"
@@ -5446,18 +5460,6 @@
     "message": "Bonusu al",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Alınabilir bonus",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "mUSD tuttuğunuz için kazandığınız yıllıklandırılmış bonus. Bonusunuzu günlük olarak Linea üzerinde alabilirsiniz. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Alınabilir bonus bilgileri",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD dönüştürme işlemine ağ maliyetleri dahildir ve sağlayıcı ücretleri dahil olabilir. mUSD dönüştürürken MetaMask ücreti uygulanmaz.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5482,10 +5484,6 @@
   "musdConvert": {
     "message": "Dönüştür"
   },
-  "musdEarnBonusPercentage": {
-    "message": "%$1 bonus kazan",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Başla"
   },
@@ -5498,10 +5496,6 @@
   },
   "musdGetMusd": {
     "message": "mUSD kazan"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5709,9 +5703,6 @@
   "networkOptions": {
     "message": "Ağ seçenekleri"
   },
-  "networkPermissionToast": {
-    "message": "Ağ izinleri güncellendi"
-  },
   "networkStatus": {
     "message": "Ağ durumu"
   },
@@ -5747,9 +5738,6 @@
   },
   "networks": {
     "message": "Ağlar"
-  },
-  "networksSmallCase": {
-    "message": "ağ"
   },
   "new": {
     "message": "Yeni!"
@@ -5863,15 +5851,16 @@
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
   },
-  "noConnectionDescription": {
-    "message": "MetaMask bu siteye bağlı değil. Başlamak için sitenin Bağla düğmesini seçin."
-  },
   "noDefaultAddress": {
     "message": "$1 adresi yok",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
+  },
+  "noFee": {
+    "message": "Ücret yok",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Geçerli tarayıcı sürümünüzle snap'ler ve çoğu donanım cüzdanı çalışmayacak."
@@ -6862,6 +6851,9 @@
   },
   "permissions": {
     "message": "İzinler"
+  },
+  "permissionsPageEmptyTitle": {
+    "message": "Burada gösterilecek bir şey yok"
   },
   "permitSimulationChange_approve": {
     "message": "Harcama üst limiti"
@@ -8279,9 +8271,6 @@
     "message": "Alış işlemi başarılı",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Diğer seçenekler"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "iş günü"
   },
@@ -8499,9 +8488,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Bu site tarafından onayınız isteniyor."
-  },
-  "requestingFor": {
-    "message": "Talep:"
   },
   "required": {
     "message": "Gerekli"
@@ -9324,9 +9310,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "NFT Otomatik Algılamayı etkinleştir"
-  },
-  "selectNetworkToFilter": {
-    "message": "Filtrelemek için ağ seç"
   },
   "selectPathHelp": {
     "message": "Beklediğiniz hesapları görmüyorsanız HD yoluna veya geçerli seçilen ağa geçmeyi deneyin."

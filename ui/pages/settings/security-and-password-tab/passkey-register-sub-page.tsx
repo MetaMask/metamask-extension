@@ -27,10 +27,6 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
-  hasPasskeyPRFResult,
-  startPasskeyRegistration,
-  startPasskeyAuthentication,
-  cancelPasskeyCeremony,
   translatePasskeyError,
   isPasskeyCeremonySilentError,
   PasskeyPRFRequiredError,
@@ -38,9 +34,6 @@ import {
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
-  protectVaultKeyWithPasskey,
-  generatePasskeyRegistrationOptions,
-  generatePasskeyPostRegistrationAuthenticationOptions,
   forceUpdateMetamaskState,
   verifyPassword,
 } from '../../../store/actions';
@@ -48,6 +41,7 @@ import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { SECOND } from '../../../../shared/constants/time';
 import { useDispatch } from '../../../store/hooks';
 import { usePasskeyPRFSupport } from '../../../hooks/usePasskeyPRFSupport';
+import { usePasskeyEnrollment } from '../../../hooks/passkey/usePasskeyEnrollment';
 
 import {
   MetaMetricsEventCategory,
@@ -83,6 +77,7 @@ export default function PasskeyRegisterSubPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const { enrollWithPasskey } = usePasskeyEnrollment();
   const t = useI18nContext() as (
     key: string,
     substitutions?: string[],
@@ -119,12 +114,13 @@ export default function PasskeyRegisterSubPage() {
     );
   const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
 
-  useEffect(
-    () => () => {
-      cancelPasskeyCeremony();
-    },
-    [],
-  );
+  usePasskeyPRFSupport({
+    enabled: !isPasskeyRegistered,
+    onUnsupported: useCallback(
+      () => navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
+      [navigate],
+    ),
+  });
 
   usePasskeyPRFSupport({
     enabled: !isPasskeyRegistered,
@@ -178,31 +174,17 @@ export default function PasskeyRegisterSubPage() {
     let registrationSucceeded = false;
 
     try {
-      const registrationOptions = await generatePasskeyRegistrationOptions();
-      const registrationResponse =
-        await startPasskeyRegistration(registrationOptions);
-      setRegisterStepStatus('success');
-      setVerifyStepStatus('loading');
-      registrationSucceeded = true;
-
-      currentStep = 'verify';
-      const postRegAuthOptions =
-        await generatePasskeyPostRegistrationAuthenticationOptions(
-          registrationResponse,
-        );
-      const postRegAuthenticationResponse =
-        await startPasskeyAuthentication(postRegAuthOptions);
-
-      if (!hasPasskeyPRFResult(postRegAuthenticationResponse)) {
-        throw new PasskeyPRFRequiredError();
-      }
-
-      currentStep = 'enroll';
-      await protectVaultKeyWithPasskey(
-        registrationResponse,
-        postRegAuthenticationResponse,
-        walletPassword,
-      );
+      await enrollWithPasskey({
+        password: walletPassword,
+        onStageChange: (stage) => {
+          currentStep = stage;
+          if (stage === 'verify') {
+            setRegisterStepStatus('success');
+            setVerifyStepStatus('loading');
+            registrationSucceeded = true;
+          }
+        },
+      });
       const newMetamaskState = await forceUpdateMetamaskState(dispatch);
       setVerifyStepStatus('success');
       setWalletPassword('');
@@ -312,6 +294,7 @@ export default function PasskeyRegisterSubPage() {
   }, [
     createEventBuilder,
     dispatch,
+    enrollWithPasskey,
     goToSettings,
     isPasskeyRegistered,
     passkeyMethodLabel,

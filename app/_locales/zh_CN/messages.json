@@ -156,9 +156,6 @@
     "message": "$1 个账户",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "查看您的账户并建议交易"
-  },
   "accountsSmallCase": {
     "message": "账户"
   },
@@ -1589,9 +1586,6 @@
   "allNetworks": {
     "message": "所有网络"
   },
-  "allPermissions": {
-    "message": "去中心化应用连接"
-  },
   "allPopularNetworks": {
     "message": "所有热门网络"
   },
@@ -2764,8 +2758,8 @@
   "connectAHardwareWalletDescription": {
     "message": "使用 USB 或二维码"
   },
-  "connectAccounts": {
-    "message": "连接账户"
+  "connectAnyway": {
+    "message": "仍然连接"
   },
   "connectAnyway": {
     "message": "仍然连接"
@@ -2814,18 +2808,6 @@
   "connectedSnaps": {
     "message": "连接的 Snap"
   },
-  "connectedWithAccount": {
-    "message": "已连接 $1 账户",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "已与 $1 连接",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "已连接 $1 网络",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "连接中……"
   },
@@ -2862,6 +2844,9 @@
   },
   "connectionRequest": {
     "message": "连接请求"
+  },
+  "connections": {
+    "message": "连接"
   },
   "connectionsRemovedModalDescription": {
     "message": "由于此设备长期未使用，部分连接项（如硬件钱包和 Snap）已被移除。您可随时在“设置”中重新添加这些连接项。"
@@ -3068,9 +3053,6 @@
   },
   "customerSupport": {
     "message": "客户支持团队"
-  },
-  "dappConnections": {
-    "message": "去中心化应用连接"
   },
   "dappSuggested": {
     "message": "建议的网站"
@@ -3430,9 +3412,6 @@
   "disconnectAllSitesSuccess": {
     "message": "所有去中心化应用均已成功断开连接。"
   },
-  "disconnectMessage": {
-    "message": "这将断开您与此站点的连接"
-  },
   "disconnectPrompt": {
     "message": "断开连接 $1"
   },
@@ -3612,9 +3591,6 @@
   },
   "editNetworkLink": {
     "message": "编辑原始网络"
-  },
-  "editNetworksTitle": {
-    "message": "编辑网络"
   },
   "editNonceField": {
     "message": "编辑 nonce"
@@ -5236,6 +5212,48 @@
   "mmFee": {
     "message": "$1% MetaMask 费用"
   },
+  "money": {
+    "message": "Money"
+  },
+  "moneyActivity": {
+    "message": "活动"
+  },
+  "moneyAdd": {
+    "message": "添加"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "余额不可用"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "享受完全流动性，无锁仓期限制，可随时交易或提现"
+  },
+  "moneyBenefitSend": {
+    "message": "转入您 MetaMask 中的任意钱包"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "将您的资金安全存放于 mUSD（一种 1:1 锚定美元的稳定币）"
+  },
+  "moneyBenefits": {
+    "message": "福利"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "用您的加密货币赚取收益"
+  },
+  "moneyFundDescription": {
+    "message": "为您的 Money Account 充值，见证余额增长。"
+  },
+  "moneyHowItWorks": {
+    "message": "如何运行"
+  },
+  "moneyLearnMore": {
+    "message": "了解更多。"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "发送"
+  },
   "month": {
     "message": "月"
   },
@@ -5244,10 +5262,6 @@
   },
   "more": {
     "message": "展开"
-  },
-  "moreAccounts": {
-    "message": "+ 另外 $1 个账户",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "展开"
@@ -5442,18 +5456,6 @@
     "message": "领取奖励",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "可领取奖励",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "您因持有 mUSD 而获得的年化奖励。您可以在 Linea 上每日领取奖励。$1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "可领取奖励详情",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 兑换费用包含网络费用，并可能包含提供商费用。兑换为 mUSD 时，MetaMask 不收取任何费用。",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5478,10 +5480,6 @@
   "musdConvert": {
     "message": "兑换"
   },
-  "musdEarnBonusPercentage": {
-    "message": "获得 $1% 的奖励",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "开始使用"
   },
@@ -5494,10 +5492,6 @@
   },
   "musdGetMusd": {
     "message": "获取 mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5705,9 +5699,6 @@
   "networkOptions": {
     "message": "网络选项"
   },
-  "networkPermissionToast": {
-    "message": "网络许可已更新"
-  },
   "networkStatus": {
     "message": "网络状态"
   },
@@ -5742,9 +5733,6 @@
     "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
-    "message": "网络"
-  },
-  "networksSmallCase": {
     "message": "网络"
   },
   "new": {
@@ -5859,15 +5847,16 @@
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
   },
-  "noConnectionDescription": {
-    "message": "要连接到网站，请找到并选择“连接”按钮。记住，MetaMask 仅限连接到 Web3 上的网站"
-  },
   "noDefaultAddress": {
     "message": "无 $1 地址",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "没有提供域名解析。"
+  },
+  "noFee": {
+    "message": "不收费",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps 和大多数硬件钱包与您的当前浏览器版本不兼容。"
@@ -6858,6 +6847,9 @@
   },
   "permissions": {
     "message": "权限"
+  },
+  "permissionsPageEmptyTitle": {
+    "message": "此处无内容"
   },
   "permitSimulationChange_approve": {
     "message": "支出上限"
@@ -8271,9 +8263,6 @@
     "message": "买入成功",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "其他选项"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "工作日"
   },
@@ -8491,9 +8480,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "这是要求您确认的网站。"
-  },
-  "requestingFor": {
-    "message": "请求"
   },
   "required": {
     "message": "必需"
@@ -9316,9 +9302,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "在设置中打开 NFT 检测"
-  },
-  "selectNetworkToFilter": {
-    "message": "选择要筛选的网络"
   },
   "selectPathHelp": {
     "message": "如果您没有看到期望的账户，请尝试切换 HD 路径或当前选定的网络。"

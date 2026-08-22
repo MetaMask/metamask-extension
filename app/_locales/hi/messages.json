@@ -156,9 +156,6 @@
     "message": "$1 एकाउंट्स",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "आपके अकाउंट को देखकर ट्रांसेक्शन का सुझाव दें"
-  },
   "accountsSmallCase": {
     "message": "एकाउंट्स"
   },
@@ -1589,9 +1586,6 @@
   "allNetworks": {
     "message": "सभी नेटवर्क"
   },
-  "allPermissions": {
-    "message": "Dapp कनेक्शन्स"
-  },
   "allPopularNetworks": {
     "message": "सभी लोकप्रिय नेटवर्क"
   },
@@ -2764,8 +2758,8 @@
   "connectAHardwareWalletDescription": {
     "message": "USB या QR कोड का उपयोग करना"
   },
-  "connectAccounts": {
-    "message": "खातों को कनेक्ट करें"
+  "connectAnyway": {
+    "message": "कैसे भी कनेक्ट करें"
   },
   "connectAnyway": {
     "message": "कैसे भी कनेक्ट करें"
@@ -2814,18 +2808,6 @@
   "connectedSnaps": {
     "message": "कनेक्टेड Snaps"
   },
-  "connectedWithAccount": {
-    "message": "$1 अकाउंट्स कनेक्ट किए गए",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "$1 से कनेक्ट किए गए",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 नेटवर्क कनेक्ट किए गए",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "कनेक्ट किया जा रहा है"
   },
@@ -2862,6 +2844,9 @@
   },
   "connectionRequest": {
     "message": "कनेक्शन के लिए अनुरोध"
+  },
+  "connections": {
+    "message": "कनेक्शन"
   },
   "connectionsRemovedModalDescription": {
     "message": "कुछ कनेक्शन्स (जैसे हार्डवेयर वॉलेट्स और Snaps) इस डिवाइस पर निष्क्रियता के कारण हटा दिए गए। आप उन्हें कभी भी सेटिंग्स में जाकर दोबारा जोड़ सकते हैं।"
@@ -3068,9 +3053,6 @@
   },
   "customerSupport": {
     "message": "ग्राहक सहायता"
-  },
-  "dappConnections": {
-    "message": "Dapp कनेक्शन्स"
   },
   "dappSuggested": {
     "message": "सुझावित साइट"
@@ -3430,9 +3412,6 @@
   "disconnectAllSitesSuccess": {
     "message": "सभी dapps सही से डिसकनेक्ट किए गए।"
   },
-  "disconnectMessage": {
-    "message": "यह आपको इस साइट से डिस्कनेक्ट कर देगा"
-  },
   "disconnectPrompt": {
     "message": "$1 डिस्कनेक्ट करें"
   },
@@ -3612,9 +3591,6 @@
   },
   "editNetworkLink": {
     "message": "मूल नेटवर्क को बदलें"
-  },
-  "editNetworksTitle": {
-    "message": "नेटवर्क बदलें"
   },
   "editNonceField": {
     "message": "Nonce बदलें"
@@ -5236,6 +5212,48 @@
   "mmFee": {
     "message": "$1% MetaMask फीस"
   },
+  "money": {
+    "message": "वित्त"
+  },
+  "moneyActivity": {
+    "message": "गतिविधि"
+  },
+  "moneyAdd": {
+    "message": "जोड़ें"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "बैलेंस अनुपलब्ध है"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "बिना किसी लॉकअप के पूरी लिक्विडिटी पाएं, इसलिए आप कभी भी ट्रेड कर सकते हैं या निकाल सकते हैं"
+  },
+  "moneyBenefitSend": {
+    "message": "MetaMask पर अपने किसी भी वॉलेट में भेजें"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "अपना पैसा mUSD में रखें, जो एक 1:1 डॉलर-बैक्ड स्टेबलकॉइन है"
+  },
+  "moneyBenefits": {
+    "message": "फ़ायदे"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "अपने क्रिप्टो पर कमाएं"
+  },
+  "moneyFundDescription": {
+    "message": "अपने Money Account में पैसे डालें और अपने बैलेंस को बढ़ते हुए देखें।"
+  },
+  "moneyHowItWorks": {
+    "message": "ये कैसे काम करता है"
+  },
+  "moneyLearnMore": {
+    "message": "ज्यादा जानें"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "भेजें"
+  },
   "month": {
     "message": "महीना"
   },
@@ -5244,10 +5262,6 @@
   },
   "more": {
     "message": "अधिक"
-  },
-  "moreAccounts": {
-    "message": "+ $1 और अकाउंट",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "अधिक"
@@ -5442,18 +5456,6 @@
     "message": "बोनस क्लेम करें",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "क्लेम करने योग्य बोनस",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "mUSD रखने पर आपको मिलने वाला वार्षिक बोनस। आपका बोनस Linea पर रोज़ाना क्लेम किया जा सकता है। $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "क्लेम करने लायक बोनस का विवरण",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD कन्वर्शन शुल्क में नेटवर्क लागत शामिल होती है और इसमें प्रदाता शुल्क भी शामिल हो सकता है। जब आप mUSD में कन्वर्ट करते हैं, तो कोई MetaMask शुल्क लागू नहीं होता।",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5478,10 +5480,6 @@
   "musdConvert": {
     "message": "कन्वर्ट करें"
   },
-  "musdEarnBonusPercentage": {
-    "message": "$1% बोनस कमाएं",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "शुरू करें"
   },
@@ -5494,10 +5492,6 @@
   },
   "musdGetMusd": {
     "message": "mUSD प्राप्त करें"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5705,9 +5699,6 @@
   "networkOptions": {
     "message": "नेटवर्क के विकल्प"
   },
-  "networkPermissionToast": {
-    "message": "नेटवर्क अनुमतियाँ अपडेट की गईं"
-  },
   "networkStatus": {
     "message": "नेटवर्क का स्टेटस"
   },
@@ -5742,9 +5733,6 @@
     "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
-    "message": "नेटवर्क"
-  },
-  "networksSmallCase": {
     "message": "नेटवर्क"
   },
   "new": {
@@ -5859,15 +5847,16 @@
   "noAccountsFound": {
     "message": "दी गई खोज क्वेरी के लिए कोई अकाउंट नहीं मिला"
   },
-  "noConnectionDescription": {
-    "message": "MetaMask इस साइट से कनेक्ट नहीं है। शुरू करने के लिए, साइट का कनेक्ट बटन चुनें।"
-  },
   "noDefaultAddress": {
     "message": "कोई $1 एड्रेस नहीं",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "डोमेन के लिए कोई रिज़ॉल्यूशन प्रदान नहीं किया गया।"
+  },
+  "noFee": {
+    "message": "कोई शुल्क नहीं",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap और अधिकांश हार्डवेयर वॉलेट, आपके वर्तमान ब्राउज़र वर्जन के साथ काम नहीं करेंगे।"
@@ -6858,6 +6847,9 @@
   },
   "permissions": {
     "message": "अनुमतियां"
+  },
+  "permissionsPageEmptyTitle": {
+    "message": "यहाँ देखने के लिए कुछ नहीं है।"
   },
   "permitSimulationChange_approve": {
     "message": "खर्च करने की लिमिट"
@@ -8271,9 +8263,6 @@
     "message": "खरीद सफल रही",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "अन्य विकल्प"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "व्यावसायिक दिन"
   },
@@ -8491,9 +8480,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "यह वही साइट है जो आपका कन्फर्मेशन मांग रही है।"
-  },
-  "requestingFor": {
-    "message": "के लिए अनुरोध कर रहे हैं"
   },
   "required": {
     "message": "जरुरी"
@@ -9316,9 +9302,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "NFT ऑटोडिटेक्शन चालू करें"
-  },
-  "selectNetworkToFilter": {
-    "message": "फ़िल्टर करने के लिए नेटवर्क चुनें"
   },
   "selectPathHelp": {
     "message": "यदि आपको अपनी पसंद के हिसाब से अकाउंट दिखाई नहीं देते हैं, तो HD पथ या मौजूदा चुना गया नेटवर्क बदलने की कोशिश करें।"

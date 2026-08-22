@@ -156,9 +156,6 @@
     "message": "$1 contas",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Ver suas contas e sugerir transações"
-  },
   "accountsSmallCase": {
     "message": "contas"
   },
@@ -1589,9 +1586,6 @@
   "allNetworks": {
     "message": "Todas as redes"
   },
-  "allPermissions": {
-    "message": "Conexões de dapps"
-  },
   "allPopularNetworks": {
     "message": "Todas as redes populares"
   },
@@ -2764,8 +2758,8 @@
   "connectAHardwareWalletDescription": {
     "message": "Utilização de USB ou de um código QR"
   },
-  "connectAccounts": {
-    "message": "Conectar contas"
+  "connectAnyway": {
+    "message": "Conectar mesmo assim"
   },
   "connectAnyway": {
     "message": "Conectar mesmo assim"
@@ -2814,18 +2808,6 @@
   "connectedSnaps": {
     "message": "Snaps conectados"
   },
-  "connectedWithAccount": {
-    "message": "$1 contas conectadas",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Conectado com $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 redes conectadas",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Conectando"
   },
@@ -2862,6 +2844,9 @@
   },
   "connectionRequest": {
     "message": "Solicitação de conexão"
+  },
+  "connections": {
+    "message": "Conexões"
   },
   "connectionsRemovedModalDescription": {
     "message": "Algumas conexões (como carteiras de hardware e Snaps) foram removidas devido à inatividade neste dispositivo. Você pode readicioná-las quando quiser nas Configurações."
@@ -3068,9 +3053,6 @@
   },
   "customerSupport": {
     "message": "suporte ao cliente"
-  },
-  "dappConnections": {
-    "message": "Conexões de dapps"
   },
   "dappSuggested": {
     "message": "Site sugerido"
@@ -3430,9 +3412,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Todos os dapps foram desconectados com sucesso."
   },
-  "disconnectMessage": {
-    "message": "Isso desconectará você deste site"
-  },
   "disconnectPrompt": {
     "message": "Desconectar $1"
   },
@@ -3612,9 +3591,6 @@
   },
   "editNetworkLink": {
     "message": "editar a rede original"
-  },
-  "editNetworksTitle": {
-    "message": "Editar redes"
   },
   "editNonceField": {
     "message": "Editar nonce"
@@ -5236,6 +5212,48 @@
   "mmFee": {
     "message": "Taxa de $1% da MetaMask"
   },
+  "money": {
+    "message": "Money"
+  },
+  "moneyActivity": {
+    "message": "Atividade"
+  },
+  "moneyAdd": {
+    "message": "Adicionar"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Saldo indisponível"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Obtenha liquidez total sem períodos de bloqueio, permitindo que você possa negociar ou sacar quando quiser"
+  },
+  "moneyBenefitSend": {
+    "message": "Envie para qualquer uma de suas carteiras na MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Mantenha seu dinheiro seguro em mUSD, uma stablecoin lastreada em dólar na proporção de 1:1"
+  },
+  "moneyBenefits": {
+    "message": "Benefícios"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Ganhe com suas criptomoedas"
+  },
+  "moneyFundDescription": {
+    "message": "Adicione fundos à sua Money Account e veja seu saldo crescer."
+  },
+  "moneyHowItWorks": {
+    "message": "Como funciona"
+  },
+  "moneyLearnMore": {
+    "message": "Saiba mais."
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Enviar"
+  },
   "month": {
     "message": "mês"
   },
@@ -5244,10 +5262,6 @@
   },
   "more": {
     "message": "mais"
-  },
-  "moreAccounts": {
-    "message": "Mais $1 contas adicionais",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Mais"
@@ -5442,18 +5456,6 @@
     "message": "Resgatar bônus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Bônus resgatável",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "O bônus anualizado que você ganhou por manter mUSD. Seu bônus pode ser resgatado diariamente na Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Detalhes do bônus resgatável",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "As taxas de conversão de mUSD incluem custos de rede e podem incluir taxas do provedor. A MetaMask não aplica taxas quando você converte para mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5478,10 +5480,6 @@
   "musdConvert": {
     "message": "Converter"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Ganhe um bônus de $1%",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Comece já"
   },
@@ -5494,10 +5492,6 @@
   },
   "musdGetMusd": {
     "message": "Obter mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "USD MetaMask",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5705,9 +5699,6 @@
   "networkOptions": {
     "message": "Opções da rede"
   },
-  "networkPermissionToast": {
-    "message": "Permissões de rede atualizadas"
-  },
   "networkStatus": {
     "message": "Status da rede"
   },
@@ -5743,9 +5734,6 @@
   },
   "networks": {
     "message": "Redes"
-  },
-  "networksSmallCase": {
-    "message": "redes"
   },
   "new": {
     "message": "Nova!"
@@ -5859,15 +5847,16 @@
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
   },
-  "noConnectionDescription": {
-    "message": "Para se conectar a um site, encontre e selecione o botão \"conectar\". Lembre-se de que a MetaMask só pode se conectar a sites na web3"
-  },
   "noDefaultAddress": {
     "message": "Nenhum endereço $1",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Nenhuma resolução fornecida para o domínio."
+  },
+  "noFee": {
+    "message": "Nenhuma taxa",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, e a maioria das carteiras de hardware, não funcionarão com a versão atual do navegador."
@@ -6858,6 +6847,9 @@
   },
   "permissions": {
     "message": "Permissões"
+  },
+  "permissionsPageEmptyTitle": {
+    "message": "Não há nada aqui"
   },
   "permitSimulationChange_approve": {
     "message": "Limite de gastos"
@@ -8271,9 +8263,6 @@
     "message": "Compra realizada com sucesso",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Outras opções"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "dia útil"
   },
@@ -8491,9 +8480,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Este é o site solicitando sua confirmação."
-  },
-  "requestingFor": {
-    "message": "Solicitando para"
   },
   "required": {
     "message": "Obrigatório"
@@ -9316,9 +9302,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Ativar detecção automática de NFTs"
-  },
-  "selectNetworkToFilter": {
-    "message": "Selecionar rede para filtrar"
   },
   "selectPathHelp": {
     "message": "Se as contas que você esperava não forem exibidas, tente mudar o caminho do HD ou a rede atualmente selecionada."

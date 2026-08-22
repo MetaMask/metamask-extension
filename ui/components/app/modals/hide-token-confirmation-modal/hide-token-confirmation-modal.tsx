@@ -28,7 +28,7 @@ import {
 } from '../../../../../shared/lib/selectors/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
-import { getIsAssetsUnifyStateEnabled } from '../../../../selectors/assets-unify-state/feature-flags';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
 import {
   getAssetsControllerCustomAssets,
   isAssetInAccountCustomAssets,
@@ -52,7 +52,6 @@ type HideTokenConfirmationModalProps = {
     getAccountForChain: (
       caipChainId: CaipChainId,
     ) => InternalAccount | null | undefined,
-    assetsUnifyStateFeatureEnabled: boolean,
     customAssets?: CustomAssetsState,
   ) => void;
   hideModal: () => void;
@@ -61,7 +60,6 @@ type HideTokenConfirmationModalProps = {
   getAccountForChain: (
     caipChainId: CaipChainId,
   ) => InternalAccount | null | undefined;
-  assetsUnifyStateFeatureEnabled: boolean;
   customAssets?: CustomAssetsState;
 };
 
@@ -78,7 +76,6 @@ function mapStateToProps(state: MetaMaskReduxState) {
     networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
     getAccountForChain: (caipChainId: CaipChainId) =>
       getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-    assetsUnifyStateFeatureEnabled: getIsAssetsUnifyStateEnabled(state),
     customAssets: getAssetsControllerCustomAssets(
       state as Parameters<typeof getAssetsControllerCustomAssets>[0],
     ),
@@ -95,12 +92,14 @@ function mapDispatchToProps(dispatch: MetaMaskReduxDispatch) {
       getAccountForChain: (
         caipChainId: CaipChainId,
       ) => InternalAccount | null | undefined,
-      assetsUnifyStateFeatureEnabled: boolean,
       customAssets?: CustomAssetsState,
     ) => {
       const isNonEvm = isNonEvmChainId(chainId);
 
-      if (assetsUnifyStateFeatureEnabled) {
+      // Write path: keep AssetsController preferences/customAssets in sync
+      // whenever unified assets state is included in the build. The runtime
+      // rollout flag is treated as always-on for writes.
+      if (getIsAssetsUnifiedStateIncludedInBuild()) {
         const assetId = toAssetId(address, chainId as Hex);
         const caipChainId = isNonEvmChainId(chainId)
           ? (chainId as CaipChainId)
@@ -163,7 +162,6 @@ export function HideTokenConfirmationModal({
   navigate,
   networkConfigurationsByChainId,
   getAccountForChain,
-  assetsUnifyStateFeatureEnabled,
   customAssets,
 }: HideTokenConfirmationModalProps) {
   const t = useI18nContext();
@@ -209,7 +207,6 @@ export function HideTokenConfirmationModal({
                 undefined,
                 chainIdToUse,
                 getAccountForChain,
-                assetsUnifyStateFeatureEnabled,
                 customAssets,
               );
             } else {
@@ -222,7 +219,6 @@ export function HideTokenConfirmationModal({
                 networkInstanceId,
                 chainIdToUse,
                 getAccountForChain,
-                assetsUnifyStateFeatureEnabled,
                 customAssets,
               );
             }
