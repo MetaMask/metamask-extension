@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useMoneyAccountDeposit } from '../../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../../hooks/money/useMoneyAccountInfo';
-import { RouteWithMessenger } from '../../../../../layouts/route-with-messenger';
+import { RouteMessengerProvider } from '../../../../../contexts/route-messenger';
 import { DeveloperButton } from '../developer-button';
 import { MONEY_ACCOUNT_DEPOSIT_BUTTON_ALLOWED_CAPABILITIES } from './messenger';
 
@@ -40,10 +40,10 @@ const MoneyAccountDepositButtonContent = () => {
  * its own messenger, so it carries its own.
  */
 export const MoneyAccountDepositButton = () => (
-  <RouteWithMessenger
+  <RouteMessengerProvider
     path="money-account-deposit-button"
     capabilities={MONEY_ACCOUNT_DEPOSIT_BUTTON_ALLOWED_CAPABILITIES}
   >
     <MoneyAccountDepositButtonContent />
-  </RouteWithMessenger>
+  </RouteMessengerProvider>
 );
