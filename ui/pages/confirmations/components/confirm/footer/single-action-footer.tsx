@@ -34,6 +34,8 @@ const BUTTON_TEXT_BY_TYPE: Partial<Record<TransactionType, string>> = {
  * `addTransactionBatch`, whose top-level type is always
  * `TransactionType.batch` — the money-account type lives on the nested
  * transactions, so the button text/gating must be resolved from there too.
+ *
+ * @param confirmation - The current transaction confirmation, if any.
  */
 function getSingleActionTransactionType(
   confirmation?: TransactionMeta,
