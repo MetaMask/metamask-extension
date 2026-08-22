@@ -16,6 +16,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { PAGES } from '../../webdriver/driver';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
+import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -154,6 +155,10 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+
+        const txToast = new TxToastNotification(driver);
+        await txToast.waitForToastNotification();
+        await txToast.closeToastNotification();
 
         await switchToNetworkFromNetworkSelect(driver, 'Localhost 8545');
 
