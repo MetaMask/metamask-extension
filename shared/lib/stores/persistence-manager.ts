@@ -107,6 +107,22 @@ function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
 }
 
 /**
+ * Checks whether IndexedDB mutations are blocked, as can happen for Firefox
+ * extensions in private browsing mode.
+ *
+ * @param error - The error thrown by IndexedDB.
+ * @returns Whether the error represents blocked IndexedDB mutations.
+ */
+export function isIndexedDBMutationBlockedError(error: unknown): boolean {
+  return (
+    error instanceof DOMException &&
+    error.name === 'InvalidStateError' &&
+    error.message ===
+      'A mutation operation was attempted on a database that did not allow mutations.'
+  );
+}
+
+/**
  * This Error represents an error that occurs during persistence operations.
  * It includes a backup of the state at the time of the error and optionally
  * a reference to the original error that caused the persistence failure.
@@ -433,13 +449,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // private browsing mode due to this bug:
       // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
       // cases we just won't have a backup vault.
-      if (
-        isObject(error) &&
-        error instanceof DOMException &&
-        error.name === 'InvalidStateError' &&
-        error.message ===
-          'A mutation operation was attempted on a database that did not allow mutations.'
-      ) {
+      if (isIndexedDBMutationBlockedError(error)) {
         // Custom fingerprint prevents Sentry's deduplication from dropping
         // this event when other persistence errors with the same underlying
         // error message (e.g., "An unexpected error occurred") are reported.

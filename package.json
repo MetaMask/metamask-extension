@@ -403,7 +403,7 @@
     "@metamask/eth-hd-keyring": "^15.0.0",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^24.0.0",
-    "@metamask/eth-ledger-bridge-keyring": "^13.0.1",
+    "@metamask/eth-ledger-bridge-keyring": "^13.1.0",
     "@metamask/eth-money-keyring": "3.0.0",
     "@metamask/eth-qr-keyring": "^3.0.0",
     "@metamask/eth-sig-util": "^8.2.0",

@@ -334,7 +334,9 @@ describe('Onboarding Flow', () => {
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
 
-      const createPassword = queryByTestId('create-password');
+      const createPassword = queryByTestId(
+        'parent-selector-onboarding-password',
+      );
       expect(createPassword).toBeInTheDocument();
     });
 
@@ -427,7 +429,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_IMPORT_WITH_SRP_ROUTE,
     );
 
-    const importSrp = queryByTestId('import-srp');
+    const importSrp = queryByTestId('parent-selector-onboarding-srp');
     expect(importSrp).toBeInTheDocument();
   });
 
@@ -560,7 +562,9 @@ describe('Onboarding Flow', () => {
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
     );
 
-    const privacySettings = queryByTestId('privacy-settings');
+    const privacySettings = queryByTestId(
+      'parent-selector-onboarding-privacy-settings',
+    );
     expect(privacySettings).toBeInTheDocument();
   });
 
@@ -572,7 +576,9 @@ describe('Onboarding Flow', () => {
     );
 
     await waitFor(() => {
-      const creationSuccessful = queryByTestId('wallet-ready');
+      const creationSuccessful = queryByTestId(
+        'parent-selector-onboarding-complete',
+      );
       expect(creationSuccessful).toBeInTheDocument();
     });
   });
@@ -635,7 +641,9 @@ describe('Onboarding Flow', () => {
       ONBOARDING_METAMETRICS,
     );
 
-    const onboardingMetametrics = queryByTestId('onboarding-metametrics');
+    const onboardingMetametrics = queryByTestId(
+      'parent-selector-onboarding-metrics',
+    );
     expect(onboardingMetametrics).toBeInTheDocument();
   });
 

@@ -19,6 +19,9 @@ class PrivateKeyModal {
 
   private driver: Driver;
 
+  private readonly parentSelector =
+    '[data-testid="parent-selector-multichain-account-private-key-list-page"]';
+
   private readonly privateKeyPasswordInput =
     '[data-testid="multichain-private-key-password-input"]';
 
@@ -31,6 +34,7 @@ class PrivateKeyModal {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.privateKeyPasswordInput,
         this.confirmButton,
       ]);

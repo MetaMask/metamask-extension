@@ -1,6 +1,10 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { AccountGroupType } from '@metamask/account-api';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
 import { CaipAccountId } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
@@ -9,12 +13,12 @@ import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import * as actions from '../../../../store/actions';
 import * as hooks from '../../../../hooks/useAccountGroupsForPermissions';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import {
   getTokenTransferPermissionsByOrigin,
   getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
+import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
 
 const mockUseNavigate = jest.fn();
@@ -50,10 +54,7 @@ jest.mock('../../../../store/actions', () => ({
     Promise.resolve('test-request-id'),
   ),
   setPermittedAccounts: jest.fn(() => ({ type: 'SET_PERMITTED_ACCOUNTS' })),
-  setPermittedChains: jest.fn(() => ({ type: 'SET_PERMITTED_CHAINS' })),
 }));
-
-jest.mock('../../../../../shared/lib/environment');
 
 jest.mock('../../../../selectors/gator-permissions/gator-permissions', () => ({
   getPermissionMetaDataByOrigin: jest.fn(),
@@ -125,14 +126,13 @@ const generateCaipAccountIds = (
 };
 
 const TEST_IDS = {
-  CONNECTIONS_PAGE: 'connections-page',
   MODAL_PAGE: 'modal-page',
-  EDIT_BUTTON: 'edit',
+  BACK_BUTTON: 'back-button',
   CONNECT_MORE_ACCOUNTS_BUTTON: 'connect-more-accounts-button',
   MULTICHAIN_ACCOUNT_CELL: (id: string) => `multichain-account-cell-${id}`,
-  SITE_CELL_CONNECTION_LIST_ITEM: 'site-cell-connection-list-item',
-  DISCONNECT_ALL_MODAL: 'disconnect-all-modal',
-  GATOR_PERMISSIONS_CELL: 'gator-permissions-cell',
+  DISCONNECT_BUTTON: 'disconnect-button',
+  DISCONNECT_ALL: 'disconnect-all',
+  DISCONNECT_PERMISSIONS_MODAL: 'disconnect-permissions-modal',
 } as const;
 
 const render = (state = {}) => {
@@ -160,123 +160,94 @@ const render = (state = {}) => {
   return renderWithProvider(<MultichainReviewPermissions />, store, pathname);
 };
 
+const mockConnectedAccountGroups = () => {
+  jest.spyOn(hooks, 'useAccountGroupsForPermissions').mockReturnValue({
+    supportedAccountGroups: mockAccountGroups,
+    connectedAccountGroups: [mockAccountGroups[0]],
+    existingConnectedCaipAccountIds: [
+      generateCaipAccountIds(mockAccountGroups)[0],
+    ],
+    connectedAccountGroupWithRequested: [mockAccountGroups[0]],
+    caipAccountIdsOfConnectedAndRequestedAccountGroups: [
+      generateCaipAccountIds(mockAccountGroups)[0],
+    ],
+    selectedAndRequestedAccountGroups: mockAccountGroups,
+  });
+};
+
 describe('MultichainReviewPermissions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest
-      .mocked(isGatorPermissionsRevocationFeatureEnabled)
-      .mockReturnValue(false);
     jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
+    jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
+      tokenTransfer: { count: 0, chains: [] },
+    });
   });
 
-  it('renders summary page when no account groups are connected', () => {
-    const { getByTestId } = render();
+  it('renders the edit accounts page', () => {
+    const { getByTestId, getByText } = render();
 
-    expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
+    expect(
+      getByText(messages.manageConnectedAccounts.message),
+    ).toBeInTheDocument();
   });
 
-  it('handles missing permissions gracefully', () => {
+  it('navigates back when the back button is clicked', () => {
     const { getByTestId } = render();
 
-    expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
-  });
+    fireEvent.click(getByTestId(TEST_IDS.BACK_BUTTON));
 
-  it('handles empty account groups gracefully', () => {
-    const { getByTestId } = render();
-
-    expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
-  });
-
-  it('decodes URL parameters correctly', () => {
-    const { getByTestId } = render();
-
-    expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
+    expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   describe('account selection', () => {
-    const expectedCaipAccountIds = generateCaipAccountIds(mockAccountGroups);
-
     beforeEach(() => {
-      const useAccountGroupsForPermissionsSpy = jest.spyOn(
-        hooks,
-        'useAccountGroupsForPermissions',
-      );
-      useAccountGroupsForPermissionsSpy.mockReturnValue({
-        supportedAccountGroups: mockAccountGroups,
-        connectedAccountGroups: [mockAccountGroups[0]], // Initially only first account group is connected
-        existingConnectedCaipAccountIds: [
-          expectedCaipAccountIds[0] as CaipAccountId, // First account from first group
-        ],
-        connectedAccountGroupWithRequested: [mockAccountGroups[0]],
-        caipAccountIdsOfConnectedAndRequestedAccountGroups: [
-          expectedCaipAccountIds[0] as CaipAccountId,
-        ],
-        selectedAndRequestedAccountGroups: mockAccountGroups,
-      });
+      mockConnectedAccountGroups();
     });
 
-    it('displays connected account groups in the site cell', () => {
-      const { getAllByTestId } = render();
-
-      const siteCellItems = getAllByTestId(
-        TEST_IDS.SITE_CELL_CONNECTION_LIST_ITEM,
-      );
-      expect(siteCellItems).toHaveLength(2);
-    });
-
-    it('shows edit accounts button when account groups are connected', () => {
-      const { getByText, getAllByTestId } = render();
+    it('shows connected account groups', () => {
+      const { getByTestId } = render();
 
       expect(
-        getByText(messages.accountsPermissionsTitle.message),
+        getByTestId(TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[0].id)),
       ).toBeInTheDocument();
-
-      const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
-      expect(editButtons[0]).toBeInTheDocument();
+      expect(
+        getByTestId(TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id)),
+      ).toBeInTheDocument();
     });
 
-    it('transitions to edit accounts page when edit accounts is clicked', async () => {
-      const { getAllByTestId, getByTestId } = render();
-
-      const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
-      const accountsEditButton = editButtons[0];
-      fireEvent.click(accountsEditButton);
-
-      await waitFor(() => {
-        expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
-      });
-    });
-
-    it('allows selecting additional account groups', async () => {
-      const { getAllByTestId, getByTestId } = render();
-
-      const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
-      const accountsEditButton = editButtons[0];
-      fireEvent.click(accountsEditButton);
-
-      await waitFor(() => {
-        expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
-      });
-
-      const secondAccountCell = getByTestId(
-        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id),
+    it('dispatches setPermittedAccounts and navigates back when accounts are saved', async () => {
+      const remainingCaipAccountIds = generateCaipAccountIds([
+        mockAccountGroups[0],
+        mockAccountGroups[1],
+      ]);
+      jest
+        .mocked(getCaip25AccountIdsFromAccountGroupAndScope)
+        .mockReturnValue(remainingCaipAccountIds);
+      const setPermittedAccountsSpy = jest.spyOn(
+        actions,
+        'setPermittedAccounts',
       );
-      fireEvent.click(secondAccountCell);
 
-      const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
-      fireEvent.click(submitButton);
+      const { getByTestId } = render();
+
+      fireEvent.click(
+        getByTestId(TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id)),
+      );
+      fireEvent.click(getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON));
 
       await waitFor(() => {
-        expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
+        expect(setPermittedAccountsSpy).toHaveBeenCalledWith(
+          'https://test.dapp',
+          remainingCaipAccountIds,
+        );
+        expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       });
     });
 
     it('dispatches setPermittedAccounts when deselecting some account groups', async () => {
-      const useAccountGroupsForPermissionsSpy = jest.spyOn(
-        hooks,
-        'useAccountGroupsForPermissions',
-      );
-      useAccountGroupsForPermissionsSpy.mockReturnValue({
+      jest.spyOn(hooks, 'useAccountGroupsForPermissions').mockReturnValue({
         supportedAccountGroups: mockAccountGroups,
         connectedAccountGroups: mockAccountGroups,
         existingConnectedCaipAccountIds:
@@ -290,203 +261,105 @@ describe('MultichainReviewPermissions', () => {
       const remainingCaipAccountIds = generateCaipAccountIds([
         mockAccountGroups[0],
       ]);
-
-      const mockGetCaip25AccountIds =
-        getCaip25AccountIdsFromAccountGroupAndScope as jest.MockedFunction<
-          typeof getCaip25AccountIdsFromAccountGroupAndScope
-        >;
-      mockGetCaip25AccountIds.mockReturnValue(remainingCaipAccountIds);
-
-      const { getAllByTestId, getByTestId } = render();
+      jest
+        .mocked(getCaip25AccountIdsFromAccountGroupAndScope)
+        .mockReturnValue(remainingCaipAccountIds);
       const setPermittedAccountsSpy = jest.spyOn(
         actions,
         'setPermittedAccounts',
       );
 
-      const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
-      const accountsEditButton = editButtons[0];
-      fireEvent.click(accountsEditButton);
+      const { getByTestId } = render();
 
-      await waitFor(() => {
-        expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
-      });
-
-      const secondAccountCell = getByTestId(
-        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id),
+      fireEvent.click(
+        getByTestId(TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id)),
       );
-      fireEvent.click(secondAccountCell);
-
-      const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
-      fireEvent.click(submitButton);
+      fireEvent.click(getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON));
 
       await waitFor(() => {
         expect(setPermittedAccountsSpy).toHaveBeenCalledWith(
           'https://test.dapp',
           remainingCaipAccountIds,
         );
-        expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
+        expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       });
     });
 
-    it('shows edit accounts page with proper header', async () => {
-      const { getAllByTestId, getByTestId, getByText } = render();
+    it('disables Save when all accounts are deselected', () => {
+      const { getByTestId } = render();
 
-      const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
-      const accountsEditButton = editButtons[0];
-      fireEvent.click(accountsEditButton);
-
-      await waitFor(() => {
-        expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
-      });
-
-      expect(
-        getByText(messages.manageConnectedAccounts.message),
-      ).toBeInTheDocument();
-    });
-
-    it('disables Save button when all accounts are deselected', async () => {
-      const { getAllByTestId, getByTestId } = render();
-
-      const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
-      const accountsEditButton = editButtons[0];
-      fireEvent.click(accountsEditButton);
-
-      await waitFor(() => {
-        expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
-      });
-
-      // Click on the account cell to deselect it
-      const accountCell = getByTestId(
-        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[0].id),
+      fireEvent.click(
+        getByTestId(TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[0].id)),
       );
-      fireEvent.click(accountCell);
 
-      await waitFor(() => {
-        const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
-        expect(submitButton).toBeDisabled();
-      });
+      expect(getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON)).toBeDisabled();
+    });
+  });
+
+  describe('disconnect', () => {
+    beforeEach(() => {
+      mockConnectedAccountGroups();
     });
 
-    it('dispatches setPermittedAccounts action when accounts are selected', async () => {
-      const { getAllByTestId, getByTestId } = render();
-      const setPermittedAccountsSpy = jest.spyOn(
+    it('disconnects and navigates back when there are no gator permissions', () => {
+      const removePermissionsForSpy = jest.spyOn(
         actions,
-        'setPermittedAccounts',
+        'removePermissionsFor',
       );
-
-      const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
-      const accountsEditButton = editButtons[0];
-      fireEvent.click(accountsEditButton);
-
-      await waitFor(() => {
-        expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
+      const { getByTestId } = render({
+        subjects: {
+          ...mockState.metamask.subjects,
+          'https://test.dapp': {
+            origin: 'https://test.dapp',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                parentCapability: Caip25EndowmentPermissionName,
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                          ],
+                        },
+                      },
+                      optionalScopes: {},
+                      sessionProperties: {},
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
       });
 
-      const secondAccountCell = getByTestId(
-        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id),
-      );
-      fireEvent.click(secondAccountCell);
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_BUTTON));
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_ALL));
 
-      const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
-      fireEvent.click(submitButton);
-
-      await waitFor(() => {
-        expect(setPermittedAccountsSpy).toHaveBeenCalled();
-      });
+      expect(removePermissionsForSpy).toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
 
-    it('updates the UI to reflect selected account groups', async () => {
-      const { getByText, getAllByTestId, getByTestId } = render();
-
-      const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
-      const accountsEditButton = editButtons[0];
-      fireEvent.click(accountsEditButton);
-
-      await waitFor(() => {
-        expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
+    it('shows the gator permissions modal when token transfer permissions exist', () => {
+      jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
+        tokenTransfer: {
+          count: 2,
+          chains: ['0x1'],
+        },
       });
 
-      const secondAccountCell = getByTestId(
-        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id),
-      );
-      fireEvent.click(secondAccountCell);
+      const { getByTestId } = render();
 
-      const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
-      fireEvent.click(submitButton);
-
-      await waitFor(() => {
-        expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
-      });
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_BUTTON));
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_ALL));
 
       expect(
-        getByText(messages.accountsPermissionsTitle.message),
+        getByTestId(TEST_IDS.DISCONNECT_PERMISSIONS_MODAL),
       ).toBeInTheDocument();
     });
-  });
-});
-
-describe('gator permissions', () => {
-  it('renders gator permissions cell when feature is enabled and there are permissions', () => {
-    jest
-      .mocked(isGatorPermissionsRevocationFeatureEnabled)
-      .mockReturnValue(true);
-
-    jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
-      tokenTransfer: {
-        count: 2,
-        chains: ['0x1'],
-      },
-    });
-
-    jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
-
-    const { getAllByTestId } = render();
-
-    const gatorPermissionsCells = getAllByTestId(
-      TEST_IDS.GATOR_PERMISSIONS_CELL,
-    );
-    expect(gatorPermissionsCells.length).toBeGreaterThan(0);
-  });
-
-  it('should not render gator permissions cell when feature is disabled and there are permissions', () => {
-    jest
-      .mocked(isGatorPermissionsRevocationFeatureEnabled)
-      .mockReturnValue(false);
-
-    jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
-      tokenTransfer: {
-        count: 2,
-        chains: ['0x1'],
-      },
-    });
-
-    jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
-
-    const { queryByTestId } = render();
-
-    expect(
-      queryByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL),
-    ).not.toBeInTheDocument();
-  });
-
-  it('should not render gator permissions cell when feature is enabled and there are no permissions', () => {
-    jest
-      .mocked(isGatorPermissionsRevocationFeatureEnabled)
-      .mockReturnValue(true);
-
-    jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
-      tokenTransfer: {
-        count: 0,
-        chains: [],
-      },
-    });
-
-    jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
-
-    const { queryByTestId } = render();
-
-    expect(
-      queryByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL),
-    ).not.toBeInTheDocument();
   });
 });

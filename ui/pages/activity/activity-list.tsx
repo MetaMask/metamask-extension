@@ -6,7 +6,7 @@ import { TransactionActivityEmptyState } from '../../components/app/transaction-
 import { SectionHeader } from '../../components/ui/section-header';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
-import { useFormatters } from '../../hooks/useFormatters';
+import { useRelativeMediumDate } from '../../hooks/useRelativeMediumDate';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
 import { useEventListener } from '../../hooks/useEventListener';
@@ -48,7 +48,7 @@ export function ActivityList({
 } = {}) {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { formatMediumDate } = useFormatters();
+  const formatRelativeMediumDate = useRelativeMediumDate();
   const scrollContainerRef = useScrollContainer();
   const dialogRef = useRef<HTMLDialogElement>(null);
   // null = not yet initialised by AssetListControlBar; [] = no filter applied
@@ -195,7 +195,7 @@ export function ActivityList({
           }
 
           if (row.type === 'date-header') {
-            return <SectionHeader label={formatMediumDate(row.date)} />;
+            return <SectionHeader label={formatRelativeMediumDate(row.date)} />;
           }
 
           return (
