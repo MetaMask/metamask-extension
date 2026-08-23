@@ -1165,18 +1165,6 @@
         "reselect": true
       }
     },
-    "@metamask/config-registry-controller": {
-      "globals": {
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/polling-controller": true,
-        "@metamask/profile-sync-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -1416,22 +1404,14 @@
     },
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
-        "TextEncoder": true
+        "TextEncoder": true,
+        "setTimeout": true
       },
       "packages": {
         "@metamask/eth-sig-util": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "@metamask/json-rpc-engine>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
@@ -2038,7 +2018,7 @@
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
@@ -2623,7 +2603,7 @@
         "console.warn": true
       }
     },
-    "@metamask/subscription-controller": {
+    "@metamask/wallet>@metamask/subscription-controller": {
       "globals": {
         "URL": true,
         "fetch": true
@@ -2640,7 +2620,7 @@
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
-        "@metamask/subscription-controller>bignumber.js": true,
+        "@metamask/wallet>@metamask/subscription-controller>bignumber.js": true,
         "cockatiel": true
       }
     },
@@ -2839,7 +2819,7 @@
         "@metamask/seedless-onboarding-controller": true,
         "@metamask/shield-controller": true,
         "@metamask/storage-service": true,
-        "@metamask/subscription-controller": true,
+        "@metamask/wallet>@metamask/subscription-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
@@ -4167,7 +4147,7 @@
         "crypto": true
       }
     },
-    "@metamask/subscription-controller>bignumber.js": {
+    "@metamask/wallet>@metamask/subscription-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
