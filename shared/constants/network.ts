@@ -661,7 +661,7 @@ export const GRAVITY_IMAGE_URL = './images/gravity.svg';
 export const SOMNIA_IMAGE_URL = './images/somnia.svg';
 export const SOMNIA_NATIVE_TOKEN_IMAGE_URL = './images/somnia.svg';
 export const CHEESE_BLOCKCHAIN_IMAGE_URL = './images/cheese-blockchain.png';
-export const CHEESE_BLOCKCHAIN_NATIVE_TOKEN_IMAGE_URL = './images/cheese-blockchain-native.png';
+export const CHEESE_BLOCKCHAIN_NATIVE_TOKEN_IMAGE_URL = './images/cheese-blockchain.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
