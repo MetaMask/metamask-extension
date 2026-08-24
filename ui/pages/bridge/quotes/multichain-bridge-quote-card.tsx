@@ -361,10 +361,8 @@ export const MultichainBridgeQuoteCard = ({
                   }
                 >
                   {t('swapGasFeesIncluded')}
-                  {BRIDGE_DEBUG_ENABLED
-                    ? activeQuote.quote?.gasIncluded7702
-                      ? '(7702)'
-                      : ''
+                  {BRIDGE_DEBUG_ENABLED && activeQuote.quote?.gasIncluded7702
+                    ? '(7702)'
                     : ''}
                 </Text>
               </Row>
