@@ -42,8 +42,8 @@ const EMPTY_FEE = '';
 const MIN_NATIVE_FEE_THRESHOLD = 0.0001;
 
 type UseFeeCalculationsOptions = {
-  /** Gas limit used only to calculate the maximum fee. */
-  maxFeeGasLimit?: Hex;
+  /** Whether the maximum fee should use the gas limits submitted on confirm. */
+  useBalanceCheckGasLimit?: boolean;
 };
 
 const ETH_CONVERSION_RATE_FALLBACK_CHAIN_IDS = [
@@ -102,7 +102,7 @@ function applySmallNativeFeeThreshold(nativeFee: string, hexFee: Hex): string {
 
 export function useFeeCalculations(
   transactionMeta: TransactionMeta,
-  { maxFeeGasLimit }: UseFeeCalculationsOptions = {},
+  { useBalanceCheckGasLimit }: UseFeeCalculationsOptions = {},
 ) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const { chainId } = transactionMeta;
@@ -128,6 +128,11 @@ export function useFeeCalculations(
 
   const { gasLimit: optimizedGasLimit, quotedGasLimit } =
     useTransactionGasLimit(transactionMeta);
+  const gasLimitForMaxFee = useBalanceCheckGasLimit
+    ? (quotedGasLimit ??
+      (transactionMeta.txParams?.gas as Hex | undefined) ??
+      optimizedGasLimit)
+    : optimizedGasLimit;
 
   const getFeesFromHex = useCallback(
     (hexFee: Hex) => {
@@ -243,15 +248,14 @@ export function useFeeCalculations(
         supportsEIP1559
           ? (decimalToHex(maxFeePerGas) as Hex)
           : (gasPrice as Hex),
-        maxFeeGasLimit ?? optimizedGasLimit,
+        gasLimitForMaxFee,
       ),
     ) as Hex;
   }, [
+    gasLimitForMaxFee,
     gasPrice,
     layer1GasFee,
-    maxFeeGasLimit,
     maxFeePerGas,
-    optimizedGasLimit,
     supportsEIP1559,
   ]);
 
