@@ -1,5 +1,6 @@
 import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
+import { TxToastNotification } from '../components/tx-toast-notification';
 import SnapTransactionConfirmation from '../pages/confirmations/snap-transaction-confirmation';
 import ActivityTab from '../pages/home/activity-tab';
 import HomePage from '../pages/home/homepage';
@@ -202,8 +203,15 @@ export async function confirmTronSendAndAssertActivity({
     await snapConfirmation.clickFooterConfirmButton();
   }
 
+  // Confirm returns as soon as the Confirm button is gone while the send is
+  // still broadcasting; when it finishes, the wallet navigates back to Home
+  // with a "Transaction submitted" toast, which would overwrite an Activity
+  // view opened too early. Wait for the toast so navigation has settled
+  // before opening Activity (same fix as main's #45624/#45596).
+  const txToast = new TxToastNotification(driver);
+  await txToast.checkTxSubmittedToast();
+
   const homePage = new HomePage(driver);
-  // Same mitigation as BTC Bug #43641: confirm may leave Assets/Home selected.
   await homePage.goToActivityList();
 
   const activityList = new ActivityTab(driver);
