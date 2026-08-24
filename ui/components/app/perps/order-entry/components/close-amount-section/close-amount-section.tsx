@@ -147,9 +147,10 @@ export const CloseAmountSection = ({
   const commitPercent = useCallback(
     (percent: number) => {
       onClosePercentChange(percent);
-      onInputMethodChange?.(
-        percent >= MAX_CLOSE_PERCENT ? 'max' : 'percentage',
-      );
+      // Always 'percentage', never 'max': mobile reserves 'max' for an explicit
+      // Max button, which this screen has no equivalent of. Inferring it from a
+      // typed 100 would label these events differently across platforms.
+      onInputMethodChange?.('percentage');
     },
     [onClosePercentChange, onInputMethodChange],
   );
@@ -217,16 +218,22 @@ export const CloseAmountSection = ({
       if (!(value === '' || isDigitsOnlyInput(value))) {
         return;
       }
-      setPercentInputValue(value);
-
       if (value === '') {
+        setPercentInputValue(value);
         setDidExceedPosition(false);
         commitPercent(0);
         return;
       }
 
       const parsed = Number.parseInt(value, 10);
-      setDidExceedPosition(parsed > MAX_CLOSE_PERCENT);
+      const exceedsMax = parsed > MAX_CLOSE_PERCENT;
+      setDidExceedPosition(exceedsMax);
+      // Show the capped percentage straight away rather than the typed one, so
+      // the field agrees with the slider and the cap message — the same moment
+      // the dollar field caps at the position value.
+      setPercentInputValue(
+        exceedsMax ? formatPercentForInput(MAX_CLOSE_PERCENT) : value,
+      );
       commitPercent(clampClosePercent(parsed));
     },
     [commitPercent],
@@ -252,7 +259,8 @@ export const CloseAmountSection = ({
       const percent = Array.isArray(value) ? value[0] : value;
       setDidExceedPosition(false);
       onClosePercentChange(percent);
-      onInputMethodChange?.(percent >= MAX_CLOSE_PERCENT ? 'max' : 'slider');
+      // Unconditionally 'slider', matching mobile — see commitPercent on 'max'.
+      onInputMethodChange?.('slider');
     },
     [onClosePercentChange, onInputMethodChange],
   );
@@ -304,8 +312,6 @@ export const CloseAmountSection = ({
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             gap={1}
-            role="radiogroup"
-            aria-label={t('perpsCloseAmount')}
             data-testid="close-amount-mode-selector"
           >
             <Button
@@ -315,8 +321,8 @@ export const CloseAmountSection = ({
               }
               type="button"
               onClick={handleSelectUsdUnit}
-              role="radio"
-              aria-checked={!isPercentUnit}
+              aria-pressed={!isPercentUnit}
+              aria-label={t('perpsCloseAmountInUsdLabel')}
               data-testid="close-amount-mode-usd"
             >
               {t('perpsCloseAmountInUsd')}
@@ -328,8 +334,8 @@ export const CloseAmountSection = ({
               }
               type="button"
               onClick={handleSelectPercentUnit}
-              role="radio"
-              aria-checked={isPercentUnit}
+              aria-pressed={isPercentUnit}
+              aria-label={t('perpsCloseAmountInPercentLabel')}
               data-testid="close-amount-mode-percent"
             >
               {t('perpsCloseAmountInPercent')}
@@ -415,7 +421,7 @@ export const CloseAmountSection = ({
             textAlign={TextAlign.Center}
             style={{ width: '100%', fontVariantNumeric: 'tabular-nums' }}
           >
-            {Math.round(closePercent)} %
+            {formatPercentForInput(closePercent)} %
           </Text>
         </Box>
       </Box>

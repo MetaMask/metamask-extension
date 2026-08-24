@@ -140,7 +140,9 @@ describe('CloseAmountSection', () => {
     it('starts in dollar mode', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
 
-      expect(screen.getByTestId('close-amount-unit')).toHaveTextContent('$');
+      expect(screen.getByTestId('close-amount-unit')).toHaveTextContent(
+        messages.perpsCloseAmountInUsd.message,
+      );
       expect(screen.getByTestId('close-amount-value')).toBeInTheDocument();
       expect(
         screen.queryByTestId('close-amount-percent'),
@@ -152,7 +154,9 @@ describe('CloseAmountSection', () => {
 
       fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
-      expect(screen.getByTestId('close-amount-unit')).toHaveTextContent('%');
+      expect(screen.getByTestId('close-amount-unit')).toHaveTextContent(
+        messages.perpsCloseAmountInPercent.message,
+      );
       expect(screen.getByTestId('close-amount-percent')).toBeInTheDocument();
       expect(
         screen.queryByTestId('close-amount-value'),
@@ -298,7 +302,7 @@ describe('CloseAmountSection', () => {
       expect(onInputMethodChange).toHaveBeenCalledWith('percentage');
     });
 
-    it('reports max as the input method for a full close', () => {
+    it('reports percentage, not max, for a typed full close', () => {
       const onInputMethodChange = jest.fn();
       renderInPercentMode({ onInputMethodChange, closePercent: 25 });
 
@@ -307,7 +311,10 @@ describe('CloseAmountSection', () => {
         .querySelector('input') as HTMLInputElement;
       fireEvent.change(input, { target: { value: '100' } });
 
-      expect(onInputMethodChange).toHaveBeenCalledWith('max');
+      // Mobile reserves 'max' for an explicit Max button, which this screen has
+      // no equivalent of, so inferring it from 100 would diverge the funnel.
+      expect(onInputMethodChange).toHaveBeenCalledWith('percentage');
+      expect(onInputMethodChange).not.toHaveBeenCalledWith('max');
     });
   });
 
@@ -365,6 +372,20 @@ describe('CloseAmountSection', () => {
       expect(
         screen.getByTestId('close-amount-over-close-error'),
       ).toHaveTextContent(messages.perpsClosePercentCappedAtMax.message);
+    });
+
+    it('shows the capped percentage in the field rather than the typed one', () => {
+      renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+
+      const input = screen
+        .getByTestId('close-amount-percent')
+        .querySelector('input') as HTMLInputElement;
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: '150' } });
+
+      // Matches the dollar field, which caps in place on the same keystroke.
+      expect(input.value).toBe('100');
     });
 
     it('never commits more than the whole position', () => {
@@ -491,34 +512,43 @@ describe('CloseAmountSection', () => {
   });
 
   describe('mode selector accessibility', () => {
-    it('exposes the modes as a radio group with the active unit checked', () => {
+    it('names each mode for screen readers rather than relying on the glyph', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
 
-      expect(screen.getByTestId('close-amount-mode-selector')).toHaveAttribute(
-        'role',
-        'radiogroup',
-      );
       expect(screen.getByTestId('close-amount-mode-usd')).toHaveAttribute(
-        'aria-checked',
+        'aria-label',
+        messages.perpsCloseAmountInUsdLabel.message,
+      );
+      expect(screen.getByTestId('close-amount-mode-percent')).toHaveAttribute(
+        'aria-label',
+        messages.perpsCloseAmountInPercentLabel.message,
+      );
+    });
+
+    it('marks the active unit as pressed', () => {
+      renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
+
+      expect(screen.getByTestId('close-amount-mode-usd')).toHaveAttribute(
+        'aria-pressed',
         'true',
       );
       expect(screen.getByTestId('close-amount-mode-percent')).toHaveAttribute(
-        'aria-checked',
+        'aria-pressed',
         'false',
       );
     });
 
-    it('moves the checked state to percent when percent mode is selected', () => {
+    it('moves the pressed state to percent when percent mode is selected', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
 
       fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
       expect(screen.getByTestId('close-amount-mode-percent')).toHaveAttribute(
-        'aria-checked',
+        'aria-pressed',
         'true',
       );
       expect(screen.getByTestId('close-amount-mode-usd')).toHaveAttribute(
-        'aria-checked',
+        'aria-pressed',
         'false',
       );
     });
