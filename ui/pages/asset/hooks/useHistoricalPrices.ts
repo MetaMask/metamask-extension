@@ -205,7 +205,6 @@ export const useHistoricalPrices = ({
     isFetchedAfterMount,
     isPlaceholderData,
   } = useQuery({
-    // @ts-expect-error - fix once extension in react-query v5
     queryKey,
     queryFn: async ({ queryKey: qk, signal }) => {
       if (qk[3] === 'disabled') {
@@ -228,7 +227,6 @@ export const useHistoricalPrices = ({
       );
     },
     enabled: Boolean(v3Params),
-    keepPreviousData: true,
     placeholderData: flatlinePlaceholder,
     retry: false,
     staleTime: STALE_TIMES.PRICES,

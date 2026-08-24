@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import {
+  keepPreviousData,
   useInfiniteQuery,
   type UseInfiniteQueryResult,
 } from '@tanstack/react-query';
@@ -107,15 +108,16 @@ export const useTokenSearch = ({
         signal,
       });
     },
+    initialPageParam: undefined,
     getNextPageParam: (lastPage) =>
       lastPage.pageInfo.hasNextPage
         ? lastPage.pageInfo.endCursor || undefined
         : undefined,
     enabled: isEnabled,
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
     retry: false,
     staleTime: TOKEN_SEARCH_STALE_TIME_MS,
-    cacheTime: TOKEN_SEARCH_GC_TIME_MS,
+    gcTime: TOKEN_SEARCH_GC_TIME_MS,
   });
 
   const data = useMemo(

@@ -102,7 +102,7 @@ export const useDiscoverStocksSearch = ({
         : undefined,
     enabled,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
+    gcTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
   const pages = stocksQuery.data?.pages ?? [];
