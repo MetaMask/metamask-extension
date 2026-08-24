@@ -18,11 +18,12 @@ exports[`PickerNetwork should render multiple avatars when avatarGroupProps is p
           style="margin-left: 0px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
           >
             <img
               alt="Network3"
               class="size-full object-contain"
+              data-testid="avatar-group-network-image"
               src="img2"
             />
           </div>
@@ -32,11 +33,12 @@ exports[`PickerNetwork should render multiple avatars when avatarGroupProps is p
           style="margin-left: -8px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
           >
             <img
               alt="Network1"
               class="size-full object-contain"
+              data-testid="avatar-group-network-image"
               src="img1"
             />
           </div>
@@ -80,11 +82,12 @@ exports[`PickerNetwork should render multiple avatars with a stacked tag when is
           style="margin-left: 0px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
           >
             <img
               alt="Network3"
               class="size-full object-contain"
+              data-testid="avatar-group-network-image"
               src="img2"
             />
           </div>
@@ -94,11 +97,12 @@ exports[`PickerNetwork should render multiple avatars with a stacked tag when is
           style="margin-left: -8px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
           >
             <img
               alt="Network1"
               class="size-full object-contain"
+              data-testid="avatar-group-network-image"
               src="img1"
             />
           </div>

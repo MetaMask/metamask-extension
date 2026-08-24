@@ -80,6 +80,7 @@ export const AvatarGroup = ({
                   name={member.symbol ?? ''}
                   size={AvatarNetworkSize.Xs}
                   hasBorder
+                  className="rounded-md"
                   imageProps={{
                     'data-testid': 'avatar-group-network-image',
                   }}

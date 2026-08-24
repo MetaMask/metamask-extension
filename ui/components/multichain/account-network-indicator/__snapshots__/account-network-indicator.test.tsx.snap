@@ -27,7 +27,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: 0px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
               >
                 <img
                   alt="Polygon"
@@ -42,7 +42,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: -8px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
               >
                 <img
                   alt="BNB Chain"
@@ -57,7 +57,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: -8px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
               >
                 <span
                   class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -71,7 +71,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: -8px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
               >
                 <img
                   alt="Custom Mainnet RPC"

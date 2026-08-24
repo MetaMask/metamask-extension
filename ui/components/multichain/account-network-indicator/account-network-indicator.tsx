@@ -59,7 +59,7 @@ export const AccountNetworkIndicator = ({ scopes }: { scopes: string[] }) => {
                       size={AvatarNetworkSize.Xs}
                       src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
                       name={network.name}
-                      className="border-none"
+                      className="rounded-md border-none"
                     />
                     <Text variant={TextVariant.bodyMdMedium} ellipsis>
                       {network.name}
