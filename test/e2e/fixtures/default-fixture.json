@@ -179,7 +179,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 223,
+      "currentMigrationVersion": 222,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -1057,8 +1057,7 @@
       "referrals": {
         "asterdex": {},
         "gmx": {},
-        "hyperliquid": {},
-        "variational": {}
+        "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
       "showSidePanelMigrationToast": false,
@@ -1214,6 +1213,7 @@
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/permissions-kernel-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
+        "npm:@metamask/stellar-wallet-snap": "mainnet",
         "npm:@metamask/tron-wallet-snap": "mainnet"
       }
     },
@@ -1266,6 +1266,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 223
+    "version": 222
   }
 }
