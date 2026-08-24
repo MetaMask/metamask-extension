@@ -92,8 +92,7 @@ function getApi(
         amountHuman,
         // The recipient follows the account the confirmation displays, which
         // is the Pay override once the user picks one in the account row.
-        messengerClient.state.transactionData?.[transactionId]
-          ?.accountOverride,
+        messengerClient.state.transactionData?.[transactionId]?.accountOverride,
       ),
     updateMoneyAccountDepositAmount: (
       transactionId: string,

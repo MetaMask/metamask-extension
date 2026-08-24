@@ -112,10 +112,10 @@ export function useUpdateTokenAmount() {
   // until the calldata pays the account on screen.
   const withdrawRecipient =
     moneyAccountFlow === MoneyAccountFlow.Withdraw
-      ? accountOverride ??
+      ? (accountOverride ??
         (selectedAccount && isEvmAccountType(selectedAccount.type)
           ? selectedAccount.address
-          : undefined)
+          : undefined))
       : undefined;
 
   // Records the amount (and, for withdrawals, the recipient) the user
