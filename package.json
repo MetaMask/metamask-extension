@@ -493,6 +493,7 @@
     "@metamask/snaps-utils": "^12.5.0",
     "@metamask/solana-wallet-snap": "^2.10.0",
     "@metamask/solana-wallet-standard": "^1.0.0",
+    "@metamask/stellar-wallet-snap": "0.1.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^7.0.0",
     "@metamask/transaction-controller": "^69.5.1",
