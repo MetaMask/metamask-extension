@@ -87,7 +87,7 @@ export default function NftsTab({
             />
           </Box>
         ) : (
-          <NftEmptyState className="mx-auto mt-5 mb-6" />
+          <NftEmptyState />
         )}
       </Box>
     </>

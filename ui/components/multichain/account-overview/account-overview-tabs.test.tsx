@@ -84,13 +84,11 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     variantFlag,
     perpsTabBadgeSeen = false,
     perpsAvailable = true,
-    showTokens = true,
     route,
   }: {
     variantFlag?: { name: string };
     perpsTabBadgeSeen?: boolean;
     perpsAvailable?: boolean;
-    showTokens?: boolean;
     route?: string;
   }) => {
     const store = configureStore({
@@ -111,9 +109,6 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
 
     return renderWithProvider(
       <AccountOverviewTabs
-        showTokens={showTokens}
-        showNfts={false}
-        showActivity={false}
         setBasicFunctionalityModalOpen={jest.fn()}
         onSupportLinkClick={jest.fn()}
       />,
@@ -307,9 +302,6 @@ describe('AccountOverviewTabs - TokenBalancesPoller', () => {
 
     renderWithProvider(
       <AccountOverviewTabs
-        showTokens={true}
-        showNfts={false}
-        showActivity={false}
         setBasicFunctionalityModalOpen={jest.fn()}
         onSupportLinkClick={jest.fn()}
       />,

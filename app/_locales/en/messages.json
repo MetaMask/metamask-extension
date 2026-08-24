@@ -3436,6 +3436,9 @@
   "defiTabErrorTitle": {
     "message": "We could not load this page."
   },
+  "defiUnsupportedEmptyDescription": {
+    "message": "DeFi isn't supported on this network."
+  },
   "delete": {
     "message": "Delete"
   },
@@ -6042,6 +6045,9 @@
   },
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
+  },
+  "nftUnsupportedEmptyDescription": {
+    "message": "NFTs aren't supported on this network."
   },
   "nftWarningContent": {
     "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer these NFTs from your wallet at any time without asking you until you revoke this approval. $2",
