@@ -248,6 +248,10 @@ describe('usePendingRedirectRoute', () => {
 describe('useLastVisitedPerpsRoute', () => {
   const FRESH_ENOUGH_OFFSET_MS = 60_000;
   const TTL_MS = 5 * 60_000;
+  const fresh = (paths: string[]) => ({
+    paths,
+    timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+  });
 
   it('does nothing when lastVisitedPerpsRoute is null', () => {
     const navigate = jest.fn();
@@ -265,22 +269,31 @@ describe('useLastVisitedPerpsRoute', () => {
     expect(clearLastVisitedPerpsRoute).not.toHaveBeenCalled();
   });
 
-  it('redirects to the persisted perps path when within the TTL', () => {
+  it('replays the persisted stack oldest first so back walks it', () => {
     const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
 
     renderHook(() =>
       useLastVisitedPerpsRoute({
-        lastVisitedPerpsRoute: {
-          path: '/perps/market/BTC',
-          timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
-        },
+        lastVisitedPerpsRoute: fresh([
+          '/perps/market-list',
+          '/perps/market/BTC',
+          '/perps/trade/BTC?direction=long',
+        ]),
         navigate,
         clearLastVisitedPerpsRoute,
       }),
     );
 
-    expect(navigate).toHaveBeenCalledWith('/perps/market/BTC');
+    const stack = [
+      '/perps/market-list',
+      '/perps/market/BTC',
+      '/perps/trade/BTC?direction=long',
+    ];
+    // Every replayed entry carries the stack so PerpsLayout can adopt it.
+    expect(navigate.mock.calls).toStrictEqual(
+      stack.map((path) => [path, { state: { perpsResumedStack: stack } }]),
+    );
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 
@@ -291,7 +304,7 @@ describe('useLastVisitedPerpsRoute', () => {
     renderHook(() =>
       useLastVisitedPerpsRoute({
         lastVisitedPerpsRoute: {
-          path: '/perps/market/BTC',
+          paths: ['/perps/market/BTC'],
           timestamp: Date.now() - (TTL_MS + 1_000),
         },
         navigate,
@@ -303,16 +316,13 @@ describe('useLastVisitedPerpsRoute', () => {
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 
-  it('ignores persisted path that does not start with /perps', () => {
+  it('ignores a stack containing a non-perps path', () => {
     const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
 
     renderHook(() =>
       useLastVisitedPerpsRoute({
-        lastVisitedPerpsRoute: {
-          path: '/settings',
-          timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
-        },
+        lastVisitedPerpsRoute: fresh(['/settings', '/perps/market/BTC']),
         navigate,
         clearLastVisitedPerpsRoute,
       }),
@@ -322,16 +332,13 @@ describe('useLastVisitedPerpsRoute', () => {
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 
-  it('rejects a path with the /perps prefix that is not actually a /perps subroute', () => {
+  it('rejects a path with the /perps prefix that is not a /perps subroute', () => {
     const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
 
     renderHook(() =>
       useLastVisitedPerpsRoute({
-        lastVisitedPerpsRoute: {
-          path: '/perpsNew/market/BTC',
-          timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
-        },
+        lastVisitedPerpsRoute: fresh(['/perpsNew/market/BTC']),
         navigate,
         clearLastVisitedPerpsRoute,
       }),
@@ -348,20 +355,13 @@ describe('useLastVisitedPerpsRoute', () => {
     renderHook(() =>
       useLastVisitedPerpsRoute({
         pendingRedirectRoute: { path: '/shield-plan' },
-        lastVisitedPerpsRoute: {
-          path: '/perps/market/BTC',
-          timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
-        },
+        lastVisitedPerpsRoute: fresh(['/perps/market/BTC']),
         navigate,
         clearLastVisitedPerpsRoute,
       }),
     );
 
-    // The pending redirect wins — perps resume must not fire.
     expect(navigate).not.toHaveBeenCalled();
-    // Even when pendingRedirectRoute wins, the perps entry must be cleared
-    // so a later home mount cannot replay it after the higher-priority
-    // redirect has already fired.
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 
@@ -380,10 +380,7 @@ describe('useLastVisitedPerpsRoute', () => {
 
       renderHook(() =>
         useLastVisitedPerpsRoute({
-          lastVisitedPerpsRoute: {
-            path: '/perps/market/BTC',
-            timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
-          },
+          lastVisitedPerpsRoute: fresh(['/perps/market/BTC']),
           navigate,
           clearLastVisitedPerpsRoute,
         }),
@@ -401,36 +398,28 @@ describe('useLastVisitedPerpsRoute', () => {
     const clearLastVisitedPerpsRoute = jest.fn();
 
     const { rerender } = renderHook(
-      ({ route }: { route: { path: string; timestamp: number } | null }) =>
+      ({ route }: { route: LastVisitedPerpsRoute | null }) =>
         useLastVisitedPerpsRoute({
           lastVisitedPerpsRoute: route,
           navigate,
           clearLastVisitedPerpsRoute,
         }),
-      {
-        initialProps: {
-          route: null as { path: string; timestamp: number } | null,
-        },
-      },
+      { initialProps: { route: null as LastVisitedPerpsRoute | null } },
     );
 
     expect(navigate).not.toHaveBeenCalled();
-    expect(clearLastVisitedPerpsRoute).not.toHaveBeenCalled();
 
     act(() => {
-      rerender({
-        route: {
-          path: '/perps/market/BTC',
-          timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
-        },
-      });
+      rerender({ route: fresh(['/perps/market/BTC']) });
     });
 
-    expect(navigate).toHaveBeenCalledWith('/perps/market/BTC');
+    expect(navigate).toHaveBeenCalledWith('/perps/market/BTC', {
+      state: { perpsResumedStack: ['/perps/market/BTC'] },
+    });
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 
-  it('redirects once when the selector hands back a new object identity every render', () => {
+  it('replays once when the selector hands back a new object identity every render', () => {
     // A repeated resume spins Home into "Maximum update depth exceeded".
     const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
@@ -445,14 +434,14 @@ describe('useLastVisitedPerpsRoute', () => {
         }),
       {
         initialProps: {
-          lastVisited: { path: '/perps/trade/BTC', timestamp },
+          lastVisited: { paths: ['/perps/trade/BTC'], timestamp },
         },
       },
     );
 
     for (let i = 0; i < 5; i++) {
       act(() => {
-        rerender({ lastVisited: { path: '/perps/trade/BTC', timestamp } });
+        rerender({ lastVisited: { paths: ['/perps/trade/BTC'], timestamp } });
       });
     }
 
@@ -463,17 +452,10 @@ describe('useLastVisitedPerpsRoute', () => {
   it('does not redirect again after perps route is cleared on remount', () => {
     const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
-    const route = {
-      path: '/perps/market/BTC',
-      timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
-    };
+    const route = fresh(['/perps/market/BTC']);
 
     const { rerender } = renderHook(
-      ({
-        lastVisited,
-      }: {
-        lastVisited: { path: string; timestamp: number } | null;
-      }) =>
+      ({ lastVisited }: { lastVisited: LastVisitedPerpsRoute | null }) =>
         useLastVisitedPerpsRoute({
           lastVisitedPerpsRoute: lastVisited,
           navigate,

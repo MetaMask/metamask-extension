@@ -5005,13 +5005,21 @@ describe('getLastQrScanCompletedSuccessfully', () => {
 });
 
 describe('getLastVisitedPerpsRoute', () => {
-  it('returns the perps lastVisitedRoute value when set', () => {
-    const entry = { path: '/perps/market/BTC', timestamp: 1700000000000 };
+  it('returns the perps route stack when set', () => {
     const state = {
-      metamask: { lastVisitedRoute: { name: 'perps', ...entry } },
+      metamask: {
+        lastVisitedRoute: {
+          name: 'perps',
+          paths: ['/perps/market/BTC', '/perps/trade/BTC'],
+          timestamp: 1700000000000,
+        },
+      },
     };
 
-    expect(selectors.getLastVisitedPerpsRoute(state)).toStrictEqual(entry);
+    expect(selectors.getLastVisitedPerpsRoute(state)).toStrictEqual({
+      paths: ['/perps/market/BTC', '/perps/trade/BTC'],
+      timestamp: 1700000000000,
+    });
   });
 
   it('returns null when lastVisitedRoute is for another feature', () => {
@@ -5019,7 +5027,7 @@ describe('getLastVisitedPerpsRoute', () => {
       metamask: {
         lastVisitedRoute: {
           name: 'bridge',
-          path: '/bridge',
+          paths: ['/bridge'],
           timestamp: 1700000000000,
         },
       },
@@ -5034,12 +5042,22 @@ describe('getLastVisitedPerpsRoute', () => {
     expect(selectors.getLastVisitedPerpsRoute(state)).toBeNull();
   });
 
+  it('returns null when the stored stack is empty', () => {
+    const state = {
+      metamask: {
+        lastVisitedRoute: { name: 'perps', paths: [], timestamp: 1 },
+      },
+    };
+
+    expect(selectors.getLastVisitedPerpsRoute(state)).toBeNull();
+  });
+
   it('returns a stable reference when a state push replaces the route object', () => {
     const buildState = () => ({
       metamask: {
         lastVisitedRoute: {
           name: 'perps',
-          path: '/perps/trade/BTC',
+          paths: ['/perps/trade/BTC'],
           timestamp: 1700000000000,
         },
       },

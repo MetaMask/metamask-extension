@@ -127,7 +127,7 @@ describe('PerpsLayout', () => {
     );
   });
 
-  it('persists the active perps path on mount and clears it on unmount', () => {
+  it('persists the active perps route stack on mount and clears it on unmount', () => {
     const { unmount } = renderWithProvider(
       <PerpsLayout />,
       store,
@@ -136,7 +136,7 @@ describe('PerpsLayout', () => {
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'setLastVisitedRoute',
-      ['perps', '/perps/market/BTC'],
+      ['perps', ['/perps/market/BTC']],
     );
 
     unmount();
@@ -156,7 +156,7 @@ describe('PerpsLayout', () => {
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'setLastVisitedRoute',
-      ['perps', '/perps/market/BTC?source=toast'],
+      ['perps', ['/perps/market/BTC?source=toast']],
     );
   });
 

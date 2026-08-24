@@ -214,6 +214,10 @@ export const MONEY_HOME_ROUTE = '/money-home';
 // do not hijack the user's home view after a long break.
 export const PERPS_REOPEN_TTL_MS = 5 * 60 * 1000;
 
+// Entries the close/reopen resume records and replays. Bounded so a long
+// browsing session cannot replay dozens of navigations on reopen.
+export const PERPS_RESUME_MAX_STACK_DEPTH = 5;
+
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
 export const ACTIVITY_ROUTE = '/activity';

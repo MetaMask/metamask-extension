@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import { PROVIDER_CONFIG } from '@metamask/perps-controller';
@@ -15,6 +15,13 @@ import {
 } from '../../../shared/lib/selectors/accounts';
 import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
 import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
+import {
+  buildRouteStack,
+  getRouterHistoryIndex,
+  readResumedStack,
+  resolveStackBase,
+} from '../../helpers/perps/route-history';
+import { PERPS_RESUME_MAX_STACK_DEPTH } from '../../helpers/constants/routes';
 import { PerpsAttributionProvider } from '../../providers/perps/PerpsAttributionContext';
 import { useDispatch } from '../../store/hooks';
 
@@ -58,7 +65,7 @@ export default function PerpsLayout() {
   usePerpsLifecycleBreadcrumbs();
 
   const dispatch = useDispatch();
-  const { pathname, search } = useLocation();
+  const { pathname, search, state: locationState } = useLocation();
 
   const selectedAddress = useSelector(
     (state: AccountsState) =>
@@ -111,17 +118,46 @@ export default function PerpsLayout() {
     );
   }, [cacheSnapshot, selectedAddress, useTerminalApi]);
 
-  // Persist the active Perps path on every in-Perps navigation so that a
-  // brief close/reopen within PERPS_REOPEN_TTL_MS returns the user to this
-  // exact screen. We do NOT clear on pathname change — only on true React
-  // unmount via the effect below — to avoid a null-vs-next-path race when
-  // the user navigates rapidly between Perps screens.
+  // Persist the Perps route stack on every in-Perps navigation so that a brief
+  // close/reopen within PERPS_REOPEN_TTL_MS restores this screen and the ones
+  // beneath it. We do NOT clear on pathname change — only on true React unmount
+  // via the effect below — to avoid a null-vs-next-path race when the user
+  // navigates rapidly between Perps screens.
+  //
+  // A path's stack position is its distance from the entry this layout mounted
+  // on, so pushes extend, pops truncate, and replaces overwrite in place.
+  const baseHistoryIndexRef = useRef<number | undefined>(undefined);
+  const routeStackRef = useRef<string[]>([]);
   useEffect(() => {
     const fullPath = search ? `${pathname}${search}` : pathname;
-    Promise.resolve(dispatch(setLastVisitedPerpsRoute(fullPath))).catch(() => {
+    const historyIndex = getRouterHistoryIndex();
+    if (baseHistoryIndexRef.current === undefined) {
+      const { base, stack } = resolveStackBase({
+        resumedStack: readResumedStack(locationState),
+        path: fullPath,
+        historyIndex,
+      });
+      baseHistoryIndexRef.current = base;
+      routeStackRef.current = stack;
+    }
+
+    const depth =
+      historyIndex === undefined || baseHistoryIndexRef.current === undefined
+        ? 0
+        : Math.max(historyIndex - baseHistoryIndexRef.current, 0);
+    routeStackRef.current = buildRouteStack({
+      previous: routeStackRef.current,
+      path: fullPath,
+      depth,
+      maxDepth: PERPS_RESUME_MAX_STACK_DEPTH,
+    });
+
+    Promise.resolve(
+      dispatch(setLastVisitedPerpsRoute(routeStackRef.current)),
+    ).catch(() => {
       // fire-and-forget — persistence failure should not break Perps
     });
-  }, [dispatch, pathname, search]);
+  }, [dispatch, pathname, search, locationState]);
 
   // Clear only when the user intentionally leaves Perps in-app. A popup
   // close kills the page before React processes this cleanup, so the
