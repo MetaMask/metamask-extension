@@ -2304,7 +2304,7 @@ async function resetFixtureStateForTest() {
 /* istanbul ignore next: test-only E2E control path */
 if (process.env.IN_TEST) {
   const { setFixtureStateResetHandler } =
-    // Use `require` to make it easier to exclude this test code from the Browserify build.
+    // Load conditionally so this test-only code is excluded from production builds and policies.
     // eslint-disable-next-line n/global-require
     require('../../test/e2e/background-socket/socket-background-to-mocha');
   setFixtureStateResetHandler(resetFixtureStateForTest);
