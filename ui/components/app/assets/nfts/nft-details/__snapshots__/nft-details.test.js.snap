@@ -73,7 +73,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
                     style="bottom: 4px; right: 4px;"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4 nft-item__network-badge border-2 border-background-default"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-4 w-4 nft-item__network-badge rounded-md border-2 border-background-default"
                       data-testid="nft-network-badge"
                     >
                       <span
