@@ -71,7 +71,9 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
           const visibleNetworks = ['Ethereum', 'Linea', 'Base'];
           for (const networkName of visibleNetworks) {
-            await accountAddressListPage.checkNetworkNameisDisplayed(networkName);
+            await accountAddressListPage.checkNetworkNameisDisplayed(
+              networkName,
+            );
           }
 
           await accountAddressListPage.clickQRbutton();
