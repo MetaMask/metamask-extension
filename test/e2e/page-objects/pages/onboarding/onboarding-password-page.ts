@@ -39,6 +39,8 @@ class OnboardingPasswordPage {
   private readonly newPasswordInput =
     '[data-testid="create-password-new-input"]';
 
+  private readonly page = '[data-testid="parent-selector-onboarding-password"]';
+
   private readonly passwordTerms = '[data-testid="create-password-terms"]';
 
   constructor(driver: Driver) {
@@ -61,6 +63,7 @@ class OnboardingPasswordPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.createPasswordMessage,
         this.newPasswordInput,
         this.confirmPasswordInput,

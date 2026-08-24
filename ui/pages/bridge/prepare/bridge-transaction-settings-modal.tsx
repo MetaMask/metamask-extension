@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '@metamask/design-system-react';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+} from '@metamask/design-system-react';
 import {
   Button,
   ButtonSize,
@@ -14,8 +18,6 @@ import {
   Text,
   TextField,
   TextFieldType,
-  BannerAlert,
-  BannerAlertSeverity,
   TextFieldSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -24,7 +26,6 @@ import {
   BorderColor,
   JustifyContent,
   TextVariant,
-  SEVERITIES,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import {
@@ -58,6 +59,9 @@ export const BridgeTransactionSettingsModal = ({
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [inputValue, setInputValue] = useState<string>('');
   const [isDirty, setIsDirty] = useState(false);
+  const [draftSlippageValue, setDraftSlippageValue] = useState<
+    number | undefined
+  >(slippage);
 
   /**
    * AUTO option shows for Solana-to-Solana swaps and any swap involving an RWA token.
@@ -66,22 +70,31 @@ export const BridgeTransactionSettingsModal = ({
   const isRWASwap = useSelector(getIsRWASwap);
   const shouldShowAutoOption = isSolanaSwap || isRWASwap;
 
-  const [slippageValue, setSlippageValue] = useState<number | undefined>(
-    undefined,
-  );
+  // While clean, follow the store value; drafts only apply after the user edits.
+  let slippageValue: number | undefined;
+  if (isDirty) {
+    slippageValue = draftSlippageValue;
+  } else if (isOpen) {
+    slippageValue = slippage;
+  } else {
+    slippageValue = undefined;
+  }
 
+  // Reset local draft UI when the modal closes (not during render).
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      return undefined;
+    }
+    queueMicrotask(() => {
       setIsDirty(false);
-    } else if (!isDirty) {
-      setSlippageValue(slippage);
       setInputValue('');
       setShowCustomInput(false);
-    }
-  }, [isOpen, isDirty, slippage]);
+    });
+    return undefined;
+  }, [isOpen]);
 
   const selectSlippageOption = (value: number | undefined) => {
-    setSlippageValue(value);
+    setDraftSlippageValue(value);
     setIsDirty(true);
   };
 
@@ -92,7 +105,7 @@ export const BridgeTransactionSettingsModal = ({
 
     if (slippageValue < 0.5) {
       return {
-        severity: SEVERITIES.WARNING,
+        severity: BannerAlertSeverity.Warning,
         text: t('swapSlippageLowDescription', [slippageValue]),
         title: t('swapSlippageLowTitle'),
       };
@@ -247,12 +260,11 @@ export const BridgeTransactionSettingsModal = ({
           {notificationConfig && (
             <Box marginTop={5}>
               <BannerAlert
-                severity={notificationConfig.severity as BannerAlertSeverity}
+                severity={notificationConfig.severity}
                 title={notificationConfig.title}
                 titleProps={{ 'data-testid': 'swaps-banner-title' }}
-              >
-                <Text>{notificationConfig.text}</Text>
-              </BannerAlert>
+                description={notificationConfig.text}
+              />
             </Box>
           )}
         </Column>

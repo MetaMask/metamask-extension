@@ -68,7 +68,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-08-11
+ * Production defaults last synced: 2026-08-18
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -92,7 +92,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   additionalNetworksBlacklist: {
     inProd: true,
     name: 'additionalNetworksBlacklist',
-    productionDefault: ['0x1079', '0x13b2'],
+    productionDefault: ['0x13b2'],
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -209,7 +209,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           enabled: true,
           featureVersion: '1',
           minimumVersion: '13.38.0',
-          tracesEnabled: true,
+          tracesEnabled: false,
         },
       },
     },
@@ -1068,9 +1068,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           gaslessEnabled: false,
         },
       },
-      depositLimit: {
-        moneyAccountDeposit: 500000,
-      },
       perpsWithdrawAnyToken: false,
       predictWithdrawAnyToken: true,
       relayDisabledGasStationChains: [],
@@ -1157,6 +1154,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               gaslessEnabled: true,
             },
           },
+          depositLimit: {
+            moneyAccountDeposit: 500000,
+          },
           prefilledAmount: {
             default: {
               enabled: false,
@@ -1165,11 +1165,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               musdConversion: {
                 enabled: false,
               },
+              moneyAccountDeposit: {
+                enabled: false,
+              },
             },
-          },
-          enableMoneyAccountTransactions: {
-            perpsDeposit: false,
-            perpsWithdraw: false,
           },
         },
       },
@@ -1186,6 +1185,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               gaslessEnabled: true,
             },
           },
+          depositLimit: {
+            moneyAccountDeposit: 500000,
+          },
           prefilledAmount: {
             default: {
               enabled: false,
@@ -1194,11 +1196,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               musdConversion: {
                 enabled: false,
               },
+              moneyAccountDeposit: {
+                enabled: true,
+              },
             },
-          },
-          enableMoneyAccountTransactions: {
-            perpsDeposit: false,
-            perpsWithdraw: false,
           },
         },
       },
@@ -1269,6 +1270,35 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
                 ],
               },
             },
+            moneyAccountWithdraw: {
+              enabled: true,
+              tokens: {
+                '0x38': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0x55d398326f99059fF775485246999027B3197955',
+                  '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                ],
+                '0x89': ['0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'],
+                '0x8f': ['0xacA92E438df0B2401fF60dA7E4337B687a2435DA'],
+                '0xa4b1': ['0xaf88d065e77c8cC2239327C5EDb3A432268e5831'],
+                '0xe708': [
+                  '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+                  '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
+                ],
+                '0x1': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                  '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                  '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+                  '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+                  '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+                ],
+                '0x2105': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                ],
+              },
+            },
           },
         },
       },
@@ -1281,18 +1311,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'confirmations_pay_tokens',
     productionDefault: {
-      preferredTokens: {
-        default: [],
-        overrides: {},
-      },
-      blockedTokens: {
-        default: {
-          chainIds: [],
-          tokens: [],
-        },
-        overrides: {},
-      },
-      minimumRequiredTokenBalance: 10,
+      enabled: false,
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2370,8 +2389,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'dappOpenSidepanelEnabled',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '13.41.0',
+      enabled: true,
+      minimumVersion: '13.44.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2470,8 +2489,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'earnMusdConversionFlowEnabled',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '0.0.0',
+      enabled: true,
+      minimumVersion: '13.44.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2499,8 +2518,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'earnMusdConversionTokenListItemCtaEnabled',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '0.0.0',
+      enabled: true,
+      minimumVersion: '13.44.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2549,17 +2568,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         'erc20-token-allowance',
         'token-approval-revocation',
       ],
-    },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
-    inProd: false,
-    name: MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
-    productionDefault: {
-      enabled: false,
-      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2656,7 +2664,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'extensionTrustAndSecurityTdp',
     productionDefault: {
-      enabled: false,
+      enabled: true,
       minimumVersion: '13.44.0',
     },
     status: FeatureFlagStatus.Active,
@@ -2830,6 +2838,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       lensAddress: '0xa3b5f71AB29BA99B9750327575Dcc456CadC550b',
       tellerAddress: '0xB30755C750E0A7E5BeD3dDAf0D9948Cf2b1CDc87',
       underlyingToken: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  moneyEnableMoneyAccount: {
+    inProd: false,
+    name: 'moneyEnableMoneyAccount',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3136,6 +3155,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'productSafetyScamQuestionnaireEnabled',
     productionDefault: [],
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  productSafetyScamQuestionnaireURLList: {
+    inProd: true,
+    name: 'productSafetyScamQuestionnaireURLList',
+    productionDefault: {
+      enabled: false,
+    },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -3527,6 +3556,13 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: true,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
+  },
+  productSafetyScamQuestionnaireDomainList: {
+    name: 'productSafetyScamQuestionnaireDomainList',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: [],
+    status: FeatureFlagStatus.Active,
   },
 };
 /* eslint-enable @typescript-eslint/naming-convention */

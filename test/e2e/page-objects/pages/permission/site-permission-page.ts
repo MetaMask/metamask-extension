@@ -30,7 +30,7 @@ class SitePermissionPage {
   private readonly disconnectButton = '[data-test-id="disconnect-all"]';
 
   private readonly disconnectConfirmMessage =
-    '[data-testid="no-connection-description"]';
+    '[data-testid="permissions-empty-state"]';
 
   private readonly disconnectModalTitle = {
     text: 'Disconnect',
@@ -54,6 +54,8 @@ class SitePermissionPage {
     text: 'Use your enabled networks',
     tag: 'p',
   };
+
+  private readonly page = '[data-testid="parent-selector-site-permission"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -97,6 +99,7 @@ class SitePermissionPage {
    */
   async checkPageIsLoaded(site: string): Promise<void> {
     try {
+      await this.driver.waitForSelector(this.page);
       await this.driver.waitForSelector(this.connectedAccountsInfo);
       await this.driver.waitForSelector(this.enabledNetworksInfo);
       await this.driver.waitForSelector({ text: site, tag: 'span' });
