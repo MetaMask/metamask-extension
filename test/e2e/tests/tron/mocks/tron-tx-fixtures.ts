@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { StatusTypes } from '@metamask/bridge-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { bytesToHex } from 'ethereum-cryptography/utils';
 import { base58AddressToHex } from '../../../seeder/tron/assets';
-import { SUN_PER_TRX, TRON_ACCOUNT_ADDRESS } from './common-tron';
+import {
+  SUN_PER_TRX,
+  TRON_ACCOUNT_ADDRESS,
+  TRON_CHAIN_ID,
+} from './common-tron';
 
 export type TronTxStatus = 'Confirmed' | 'Pending' | 'Failed';
 
@@ -21,6 +27,15 @@ export const MOCK_TRON_BLOCK_NUMBER = 77_000_000;
 // arbitrary placeholder strings here.
 const SUNSWAP_ROUTER_ADDRESS = 'TKzxdSv2FZKQrEqkKVgp5DcwEXBEKMg2Ax';
 const USDT_CONTRACT_ADDRESS = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+const ETH_MAINNET_CHAIN_ID = 1;
+const ETH_USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+// `as const` keeps the CAIP template-literal type required by the bridge
+// controllers' `assetId` fields (plain template consts widen to `string`).
+const ETH_USDC_ASSET_ID =
+  `eip155:${ETH_MAINNET_CHAIN_ID}/erc20:${ETH_USDC_ADDRESS}` as const;
+const TRON_MAINNET_CHAIN_ID = 728126428;
+const TRON_USDT_ASSET_ID =
+  `${TRON_CHAIN_ID}/trc20:${USDT_CONTRACT_ADDRESS}` as const;
 
 const TRC20_INFO = {
   USDT: {
@@ -335,10 +350,9 @@ function buildSwapTrc20(opts: {
 }
 
 /**
- * A bridge transaction without `bridgeHistoryItem` should fall back to the
- * Interaction (i.e. Unknown) rendering. The snap maps a TriggerSmartContract
- * with a TRC20 transfer of type='Approval' as TransactionType.Unknown, which
- * the activity hook renders as 'Interaction'.
+ * TronGrid's view of a USDT bridge is an Approval to the router. Pair this with
+ * {@link tronBridgeHistoryItem} keyed by `raw.txID` so Activity reclassifies the
+ * snap tx as a bridge. Without that history, the row stays a spending cap.
  * @param opts
  * @param opts.srcSymbol
  * @param opts.srcAmount
@@ -412,5 +426,79 @@ function buildBridgeTrc20(opts: {
     type: 'Approval',
     value: opts.srcAmount,
     final_result: STATUS_TO_CONTRACT_RET[opts.status],
+  };
+}
+
+/**
+ * Seeds BridgeStatusController txHistory so Activity can reclassify the matching
+ * snap tx (keyed by TronGrid `txID`) as a bridge instead of a spending cap.
+ *
+ * @param opts
+ * @param opts.txId - Must match `bridgeTx().raw.txID`
+ * @param opts.srcAmount - Atomic USDT amount sent on Tron
+ * @param opts.destAmount - Atomic dest-token amount received on Ethereum
+ * @param opts.timestamp
+ */
+export function tronBridgeHistoryItem(opts: {
+  txId: string;
+  srcAmount: string;
+  destAmount: string;
+  timestamp: number;
+}): BridgeHistoryItem {
+  const srcAsset = {
+    address: USDT_CONTRACT_ADDRESS,
+    assetId: TRON_USDT_ASSET_ID,
+    chainId: TRON_MAINNET_CHAIN_ID,
+    decimals: 6,
+    name: 'Tether USD',
+    symbol: 'USDT',
+  };
+  const destAsset = {
+    address: ETH_USDC_ADDRESS,
+    assetId: ETH_USDC_ASSET_ID,
+    chainId: ETH_MAINNET_CHAIN_ID,
+    decimals: 6,
+    name: 'USD Coin',
+    symbol: 'USDC',
+  };
+
+  return {
+    account: TRON_ACCOUNT_ADDRESS,
+    approvalTxId: opts.txId,
+    estimatedProcessingTimeInSeconds: 60,
+    hasApprovalTx: true,
+    slippagePercentage: 0,
+    startTime: opts.timestamp,
+    quote: {
+      bridgeId: 'rango',
+      destAsset,
+      destChainId: ETH_MAINNET_CHAIN_ID,
+      destTokenAmount: opts.destAmount,
+      feeData: {
+        metabridge: {
+          amount: '0',
+          asset: srcAsset,
+        },
+      },
+      requestId: `tron-bridge-${opts.txId}`,
+      srcAsset,
+      srcChainId: TRON_MAINNET_CHAIN_ID,
+      srcTokenAmount: opts.srcAmount,
+      steps: [],
+      bridges: ['rango'],
+    },
+    status: {
+      destChain: {
+        amount: opts.destAmount,
+        chainId: ETH_MAINNET_CHAIN_ID,
+        txHash: `0x${'ab'.repeat(32)}`,
+      },
+      srcChain: {
+        amount: opts.srcAmount,
+        chainId: TRON_MAINNET_CHAIN_ID,
+        txHash: opts.txId,
+      },
+      status: StatusTypes.COMPLETE,
+    },
   };
 }

@@ -119,6 +119,15 @@ class TransactionDetailsPage {
   async checkViewDetailsLink(): Promise<void> {
     await this.driver.waitForSelector(this.viewDetailsLink);
   }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Click transaction details back button');
+    await this.driver.clickElementAndWaitToDisappear(this.backButton);
+  }
+
+  async clickBackButtonIfPresent(): Promise<void> {
+    await this.driver.clickElementSafe(this.backButton, 1_000);
+  }
 }
 
 export default TransactionDetailsPage;
