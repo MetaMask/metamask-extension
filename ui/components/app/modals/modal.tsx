@@ -49,7 +49,7 @@ type CustomOnHideOpts = {
   args?: unknown[];
 };
 
-export type ModalConfig = {
+type ModalConfig = {
   contents: React.ReactNode;
   mobileModalStyle: React.CSSProperties;
   laptopModalStyle: React.CSSProperties;
@@ -60,7 +60,7 @@ export type ModalConfig = {
   customOnHideOpts?: CustomOnHideOpts;
 };
 
-export const MODALS: Record<string, ModalConfig> = {
+const MODALS: Record<string, ModalConfig> = {
   HIDE_TOKEN_CONFIRMATION: {
     contents: <HideTokenConfirmationModal />,
     testId: 'hide-token-confirmation-modal',
@@ -238,10 +238,6 @@ export const MODALS: Record<string, ModalConfig> = {
     laptopModalStyle: {},
   },
 };
-
-export const MODAL_NAMES = Object.keys(MODALS).filter(
-  (name) => name !== 'DEFAULT',
-);
 
 const BACKDROPSTYLE = {
   backgroundColor: 'var(--color-overlay-default)',

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { hideModal, qrCodeDetected } from '../../../../store/actions';
-import QRCodeScannerComponent from './qr-scanner.component';
+import QrScanner from './qr-scanner.component';
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -9,6 +9,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const QRCodeScanner = connect(null, mapDispatchToProps)(QRCodeScannerComponent);
-
-export default QRCodeScanner;
+export default connect(null, mapDispatchToProps)(QrScanner);
