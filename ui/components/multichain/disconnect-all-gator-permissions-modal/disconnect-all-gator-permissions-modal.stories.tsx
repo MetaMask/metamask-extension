@@ -1,5 +1,5 @@
 import React from 'react';
-import { DisconnectAllGatorPermissionsModal } from './disconnect-permissions-modal';
+import { DisconnectAllGatorPermissionsModal } from './disconnect-all-gator-permissions-modal';
 
 export default {
   title: 'Components/Multichain/DisconnectAllGatorPermissionsModal',

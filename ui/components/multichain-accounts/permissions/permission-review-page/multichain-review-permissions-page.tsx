@@ -20,7 +20,7 @@ import {
 } from '../../../../store/actions';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
 import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
-import { DisconnectAllGatorPermissionsModal } from '../../../multichain/disconnect-permissions-modal/disconnect-permissions-modal';
+import { DisconnectAllGatorPermissionsModal } from '../../../multichain/disconnect-all-gator-permissions-modal';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
 import { getCaip25CaveatValueFromPermissions } from '../../../../helpers/utils/caip25-permissions';
