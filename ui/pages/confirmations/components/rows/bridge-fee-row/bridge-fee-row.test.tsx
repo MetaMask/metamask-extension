@@ -14,7 +14,7 @@ import {
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
@@ -51,8 +51,8 @@ function getPerpsWithdrawState() {
 describe('BridgeFeeRow', () => {
   const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
   const useTransactionPayQuotesMock = jest.mocked(useTransactionPayQuotes);
-  const useIsTransactionPayLoadingMock = jest.mocked(
-    useIsTransactionPayLoading,
+  const useIsTransactionPayQuotePendingMock = jest.mocked(
+    useIsTransactionPayQuotePending,
   );
   const useIsPaidByMetaMaskMock = jest.mocked(useIsPaidByMetaMask);
 
@@ -67,7 +67,7 @@ describe('BridgeFeeRow', () => {
       },
     } as TransactionPayTotals);
 
-    useIsTransactionPayLoadingMock.mockReturnValue(false);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(false);
     useIsPaidByMetaMaskMock.mockReturnValue(false);
 
     useTransactionPayQuotesMock.mockReturnValue([
@@ -76,7 +76,7 @@ describe('BridgeFeeRow', () => {
   });
 
   it('renders skeleton with label when loading (Default variant)', () => {
-    useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(true);
 
     const { getByTestId, queryByTestId, getByText } = render();
 
@@ -86,7 +86,7 @@ describe('BridgeFeeRow', () => {
   });
 
   it('renders bridge fee skeleton only when loading (Small variant)', () => {
-    useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(true);
 
     const { getByTestId, queryByTestId, queryByText } = render({
       variant: ConfirmInfoRowSize.Small,

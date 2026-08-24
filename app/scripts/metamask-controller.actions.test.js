@@ -18,7 +18,6 @@ import { CHAIN_IDS } from '../../shared/constants/network';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
-import { convertEnglishWordlistIndicesToCodepoints } from './lib/util';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // so unify-state tests can exercise real feature-flag gating via controller state.
@@ -355,36 +354,6 @@ describe('MetaMaskController', function () {
       expect(token1).toStrictEqual(token2);
     });
 
-    it('networkClientId is used when provided', async function () {
-      const callSpy = jest
-        .spyOn(metamaskController.tokensController.messenger, 'call')
-        .mockReturnValueOnce({
-          configuration: { chainId: '0xa' },
-        })
-        .mockReturnValueOnce({
-          configuration: { chainId: '0xa' },
-        })
-        .mockReturnValueOnce({
-          networkConfigurationsByChainId: {
-            '0xa': {
-              nativeCurrency: 'ETH',
-              chainId: '0xa',
-            },
-          },
-        });
-
-      await metamaskController.getApi().addToken({
-        address,
-        symbol,
-        decimals,
-        networkClientId: 'networkClientId1',
-      });
-      expect(callSpy.mock.calls[0]).toStrictEqual([
-        'NetworkController:getNetworkClientById',
-        'networkClientId1',
-      ]);
-    });
-
     describe('with assets-unify state enabled', function () {
       let unifyController;
 
@@ -473,6 +442,25 @@ describe('MetaMaskController', function () {
         });
       });
 
+      it('uses networkClientId to resolve the chain for AssetsController', async function () {
+        const getNetworkClientByIdSpy = jest
+          .spyOn(unifyController.networkController, 'getNetworkClientById')
+          .mockReturnValue({
+            configuration: { chainId: '0xa' },
+          });
+
+        await unifyController.getApi().addToken({
+          address,
+          symbol,
+          decimals,
+          networkClientId: 'networkClientId1',
+        });
+
+        expect(getNetworkClientByIdSpy).toHaveBeenCalledWith(
+          'networkClientId1',
+        );
+      });
+
       it('omits iconUrl when image is not provided', async function () {
         const expectedAssetId = toAssetId(address, CHAIN_IDS.SEPOLIA);
 
@@ -551,331 +539,18 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('passkey methods', function () {
-    const registrationResponse = { id: 'credential-id' };
-    const authenticationResponse = { id: 'assertion-id' };
+  describe('resetWallet', function () {
+    it('delegates to LegacyBackgroundApiService', async function () {
+      const callSpy = jest
+        .spyOn(metamaskController.controllerMessenger, 'call')
+        .mockResolvedValue(undefined);
 
-    describe('#generatePasskeyRegistrationOptions', function () {
-      it('delegates to passkey controller with prf availability', async function () {
-        const generateRegistrationOptionsSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'generateRegistrationOptions',
-          )
-          .mockResolvedValue({ challenge: 'challenge' });
+      await metamaskController.getApi().resetWallet(true);
 
-        const result = await metamaskController
-          .getApi()
-          .generatePasskeyRegistrationOptions({
-            prfAvailable: true,
-          });
-
-        expect(generateRegistrationOptionsSpy).toHaveBeenCalledWith({
-          prfAvailable: true,
-        });
-        expect(result).toStrictEqual({ challenge: 'challenge' });
-      });
-    });
-
-    describe('#generatePasskeyAuthenticationOptions', function () {
-      it('delegates to passkey controller', async function () {
-        const generateAuthenticationOptionsSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'generateAuthenticationOptions',
-          )
-          .mockResolvedValue({ challenge: 'challenge' });
-
-        const result = await metamaskController
-          .getApi()
-          .generatePasskeyAuthenticationOptions();
-
-        expect(generateAuthenticationOptionsSpy).toHaveBeenCalledTimes(1);
-        expect(result).toStrictEqual({ challenge: 'challenge' });
-      });
-    });
-
-    describe('#generatePasskeyPostRegistrationAuthenticationOptions', function () {
-      it('delegates to passkey controller', async function () {
-        const spy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'generatePostRegistrationAuthenticationOptions',
-          )
-          .mockReturnValue({ challenge: 'post-reg' });
-
-        const result = await metamaskController
-          .getApi()
-          .generatePasskeyPostRegistrationAuthenticationOptions(
-            registrationResponse,
-          );
-
-        expect(spy).toHaveBeenCalledWith({ registrationResponse });
-        expect(result).toStrictEqual({ challenge: 'post-reg' });
-      });
-    });
-
-    describe('#protectVaultKeyWithPasskey', function () {
-      it('delegates to the passkey controller action with reshaped params', async function () {
-        const callSpy = jest
-          .spyOn(metamaskController.controllerMessenger, 'call')
-          .mockResolvedValue(undefined);
-
-        await metamaskController.getApi().protectVaultKeyWithPasskey({
-          registrationResponse,
-          authenticationResponse,
-          password: 'password',
-        });
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'PasskeyController:protectVaultKeyWithPasskey',
-          {
-            registrationResponse,
-            authenticationResponse,
-            password: 'password',
-          },
-        );
-      });
-
-      it('forwards an undefined password before onboarding completion', async function () {
-        const callSpy = jest
-          .spyOn(metamaskController.controllerMessenger, 'call')
-          .mockResolvedValue(undefined);
-
-        await metamaskController.getApi().protectVaultKeyWithPasskey({
-          registrationResponse,
-          authenticationResponse,
-          password: undefined,
-        });
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'PasskeyController:protectVaultKeyWithPasskey',
-          {
-            registrationResponse,
-            authenticationResponse,
-            password: undefined,
-          },
-        );
-      });
-    });
-
-    describe('#unlockWithPasskey', function () {
-      it('delegates to the legacy background API service unlock action', async function () {
-        const callSpy = jest
-          .spyOn(metamaskController.controllerMessenger, 'call')
-          .mockResolvedValue(undefined);
-
-        await metamaskController
-          .getApi()
-          .unlockWithPasskey(authenticationResponse);
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'LegacyBackgroundApiService:unlockWithPasskey',
-          authenticationResponse,
-        );
-      });
-    });
-
-    describe('#removePasskeyWithPasskeyVerification', function () {
-      it('delegates to the passkey controller', async function () {
-        const callSpy = jest
-          .spyOn(metamaskController.controllerMessenger, 'call')
-          .mockResolvedValue(undefined);
-
-        await metamaskController
-          .getApi()
-          .removePasskeyWithPasskeyVerification(authenticationResponse);
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'PasskeyController:removePasskeyWithPasskeyVerification',
-          authenticationResponse,
-        );
-      });
-    });
-
-    describe('#removePasskeyWithPasswordVerification', function () {
-      it('delegates to the passkey controller', async function () {
-        const callSpy = jest
-          .spyOn(metamaskController.controllerMessenger, 'call')
-          .mockResolvedValue(undefined);
-
-        await metamaskController
-          .getApi()
-          .removePasskeyWithPasswordVerification('password');
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'PasskeyController:removePasskeyWithPasswordVerification',
-          'password',
-        );
-      });
-    });
-
-    describe('#changePasswordWithPasskeyVerification', function () {
-      it('delegates to the legacy background API service action which serializes the change', async function () {
-        const callSpy = jest
-          .spyOn(metamaskController.controllerMessenger, 'call')
-          .mockResolvedValue(undefined);
-
-        await metamaskController
-          .getApi()
-          .changePasswordWithPasskeyVerification({
-            newPassword: 'new-password',
-            authenticationResponse,
-            options: undefined,
-          });
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
-          {
-            newPassword: 'new-password',
-            authenticationResponse,
-            options: undefined,
-          },
-        );
-      });
-
-      it('forwards the renewVaultKeyProtection option', async function () {
-        const callSpy = jest
-          .spyOn(metamaskController.controllerMessenger, 'call')
-          .mockResolvedValue(undefined);
-
-        await metamaskController
-          .getApi()
-          .changePasswordWithPasskeyVerification({
-            newPassword: 'new-password',
-            authenticationResponse,
-            options: { renewVaultKeyProtection: false },
-          });
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
-          {
-            newPassword: 'new-password',
-            authenticationResponse,
-            options: { renewVaultKeyProtection: false },
-          },
-        );
-      });
-    });
-
-    describe('#exportSeedPhraseWithPasskey', function () {
-      it('delegates to the passkey controller and re-encodes the result', async function () {
-        const mnemonic = new Uint8Array([0, 0, 0, 1]);
-        const exportSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'exportSeedPhraseWithPasskey',
-          )
-          .mockResolvedValue(mnemonic);
-
-        const result = await metamaskController.exportSeedPhraseWithPasskey(
-          authenticationResponse,
-          'keyring-id',
-        );
-
-        expect(exportSpy).toHaveBeenCalledWith(
-          authenticationResponse,
-          'keyring-id',
-        );
-        expect(result).toStrictEqual(
-          convertEnglishWordlistIndicesToCodepoints(mnemonic),
-        );
-      });
-
-      it('defaults to the primary keyring when no keyring id is provided', async function () {
-        const exportSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'exportSeedPhraseWithPasskey',
-          )
-          .mockResolvedValue(new Uint8Array([0, 0, 0, 1]));
-
-        await metamaskController.exportSeedPhraseWithPasskey(
-          authenticationResponse,
-        );
-
-        expect(exportSpy).toHaveBeenCalledWith(
-          authenticationResponse,
-          undefined,
-        );
-      });
-
-      it('propagates errors from the passkey controller', async function () {
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'exportSeedPhraseWithPasskey',
-          )
-          .mockRejectedValue(new Error('invalid assertion'));
-
-        await expect(
-          metamaskController.exportSeedPhraseWithPasskey(
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('invalid assertion');
-      });
-    });
-
-    describe('#exportAccountsWithPasskey', function () {
-      it('delegates to the passkey controller action and returns its result', async function () {
-        const addresses = ['0xAddressOne', '0xAddressTwo'];
-        const callSpy = jest
-          .spyOn(metamaskController.controllerMessenger, 'call')
-          .mockResolvedValue([
-            'priv-key-0xAddressOne',
-            'priv-key-0xAddressTwo',
-          ]);
-
-        const result = await metamaskController
-          .getApi()
-          .exportAccountsWithPasskey(authenticationResponse, addresses);
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'PasskeyController:exportAccountsWithPasskey',
-          authenticationResponse,
-          addresses,
-        );
-        expect(result).toStrictEqual([
-          'priv-key-0xAddressOne',
-          'priv-key-0xAddressTwo',
-        ]);
-      });
-
-      it('propagates errors from the passkey controller', async function () {
-        jest
-          .spyOn(metamaskController.controllerMessenger, 'call')
-          .mockRejectedValue(new Error('invalid assertion'));
-
-        await expect(
-          metamaskController
-            .getApi()
-            .exportAccountsWithPasskey(authenticationResponse, [
-              '0xAddressOne',
-            ]),
-        ).rejects.toThrow('invalid assertion');
-      });
-    });
-
-    describe('#getApi', function () {
-      it('exposes passkey api methods', function () {
-        const api = metamaskController.getApi();
-
-        expect(api).toStrictEqual(
-          expect.objectContaining({
-            generatePasskeyRegistrationOptions: expect.any(Function),
-            generatePasskeyPostRegistrationAuthenticationOptions:
-              expect.any(Function),
-            generatePasskeyAuthenticationOptions: expect.any(Function),
-            protectVaultKeyWithPasskey: expect.any(Function),
-            unlockWithPasskey: expect.any(Function),
-            removePasskeyWithPasskeyVerification: expect.any(Function),
-            removePasskeyWithPasswordVerification: expect.any(Function),
-            changePasswordWithPasskeyVerification: expect.any(Function),
-            exportSeedPhraseWithPasskey: expect.any(Function),
-            exportAccountsWithPasskey: expect.any(Function),
-          }),
-        );
-      });
+      expect(callSpy).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:resetWallet',
+        true,
+      );
     });
   });
 });

@@ -8,9 +8,10 @@ import { type KeyringAccountType } from '@metamask/keyring-api';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-  Tag,
+  AvatarToken,
   Button,
   ButtonVariant,
+  Tag,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -29,7 +30,6 @@ import {
 import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
 import { useRWAToken } from '../../../pages/bridge/hooks/useRWAToken';
 import {
-  AvatarToken,
   BadgeWrapper,
   Box,
   ButtonIcon,

@@ -69,7 +69,7 @@ import {
   getIsBridgeChain,
   getIsSwapsChain,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getShowFiatInTestnets,
 } from '../../../selectors';
@@ -106,6 +106,7 @@ import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
+import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
@@ -204,13 +205,11 @@ const AssetPage = ({
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = useMemo(
-    () => completedMetaMetricsOnboarding && isOptedIn,
-    [completedMetaMetricsOnboarding, isOptedIn],
+    () => consentDecisionMade && isOptedIn,
+    [consentDecisionMade, isOptedIn],
   );
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const analyticsId = useSelector(getAnalyticsId);
@@ -419,7 +418,10 @@ const AssetPage = ({
       assetId={caipAssetId as CaipAssetType}
       token={securityTrustToken}
     >
-      <Box className="asset__content">
+      <Box
+        className="asset__content"
+        data-testid="parent-selector-asset-details"
+      >
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
@@ -729,6 +731,14 @@ const AssetPage = ({
           onClose={() => setIsMarketClosedModalOpen(false)}
         />
       </Box>
+      {/* Sibling of `asset__content` so it is a direct child of the scrolling
+      container, which is what lets it stick to the bottom of the viewport. */}
+      <AssetStickyActions
+        asset={updatedAsset}
+        buyAssetId={caipAssetId as CaipAssetType}
+        isMarketClosed={isMarketClosed}
+        isSigningEnabled={isSigningEnabled}
+      />
     </AssetPageSecurityTrustProvider>
   );
 };

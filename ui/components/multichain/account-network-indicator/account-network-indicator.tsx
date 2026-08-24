@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import {
+import { AvatarTokenSize,
   AvatarNetwork,
-  AvatarNetworkSize,
-} from '@metamask/design-system-react';
+  AvatarNetworkSize } from '@metamask/design-system-react';
 import {
   AlignItems,
   Display,
@@ -15,7 +14,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { AvatarType } from '../avatar-group/avatar-group.types';
 import { AvatarGroup } from '../avatar-group';
-import { AvatarTokenSize, Box, Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { getNetworksByScopes } from '../../../../shared/lib/selectors/networks';

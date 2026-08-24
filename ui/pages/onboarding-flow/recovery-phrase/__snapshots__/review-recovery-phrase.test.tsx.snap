@@ -4,7 +4,7 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
 <div>
   <div
     class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"
-    data-testid="recovery-phrase"
+    data-testid="parent-selector-secure-wallet"
   >
     <div
       class=""
@@ -340,7 +340,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
 <div>
   <div
     class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"
-    data-testid="recovery-phrase"
+    data-testid="parent-selector-secure-wallet"
   >
     <div
       class=""
@@ -653,7 +653,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
 <div>
   <div
     class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"
-    data-testid="recovery-phrase"
+    data-testid="parent-selector-secure-wallet"
   >
     <div
       class=""
