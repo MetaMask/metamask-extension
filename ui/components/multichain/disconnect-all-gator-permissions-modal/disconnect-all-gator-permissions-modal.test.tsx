@@ -5,7 +5,10 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
-import { DisconnectPermissionsModal, DisconnectPermissionsModalProps } from '.';
+import {
+  DisconnectAllGatorPermissionsModal,
+  DisconnectAllGatorPermissionsModalProps,
+} from '.';
 
 // Mock the gator permissions utils
 jest.mock('../../../../shared/lib/gator-permissions', () => ({
@@ -34,12 +37,12 @@ jest.mock(
   }),
 );
 
-describe('DisconnectPermissionsModal', () => {
+describe('DisconnectAllGatorPermissionsModal', () => {
   const onSkip = jest.fn();
   const onRemoveAll = jest.fn();
   const onClose = jest.fn();
 
-  const args: DisconnectPermissionsModalProps = {
+  const args: DisconnectAllGatorPermissionsModalProps = {
     isOpen: true,
     onClose,
     onSkip,
@@ -93,7 +96,7 @@ describe('DisconnectPermissionsModal', () => {
 
   it('should fire onSkip when Skip button is clicked', () => {
     const { getByTestId } = renderWithProvider(
-      <DisconnectPermissionsModal {...args} />,
+      <DisconnectAllGatorPermissionsModal {...args} />,
       mockStore,
     );
     const skipButton = getByTestId('skip-disconnect-permissions');
@@ -103,7 +106,7 @@ describe('DisconnectPermissionsModal', () => {
 
   it('should fire onRemoveAll when Remove all button is clicked', () => {
     const { getByTestId } = renderWithProvider(
-      <DisconnectPermissionsModal {...args} />,
+      <DisconnectAllGatorPermissionsModal {...args} />,
       mockStore,
     );
     const removeAllButton = getByTestId('remove-all-disconnect-permissions');
@@ -113,7 +116,7 @@ describe('DisconnectPermissionsModal', () => {
 
   it('should fire onClose when close button is clicked', () => {
     const { getByRole } = renderWithProvider(
-      <DisconnectPermissionsModal {...args} />,
+      <DisconnectAllGatorPermissionsModal {...args} />,
       mockStore,
     );
     const closeButton = getByRole('button', { name: /close/iu });
@@ -123,7 +126,7 @@ describe('DisconnectPermissionsModal', () => {
 
   it('should display correct title and description', () => {
     const { getByText } = renderWithProvider(
-      <DisconnectPermissionsModal {...args} />,
+      <DisconnectAllGatorPermissionsModal {...args} />,
       mockStore,
     );
     // The test helpers provide actual translations
@@ -137,7 +140,7 @@ describe('DisconnectPermissionsModal', () => {
 
   it('should display permissions list', () => {
     const { getByText } = renderWithProvider(
-      <DisconnectPermissionsModal {...args} />,
+      <DisconnectAllGatorPermissionsModal {...args} />,
       mockStore,
     );
     expect(getByText(messages.tokenStream.message)).toBeInTheDocument();
