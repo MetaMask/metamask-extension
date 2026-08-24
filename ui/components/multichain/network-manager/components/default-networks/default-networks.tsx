@@ -8,7 +8,12 @@ import {
   TrxScope,
   XlmScope,
 } from '@metamask/keyring-api';
-import { IconName as MmdsIconName } from '@metamask/design-system-react';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
   getFeaturedEvmNetworks,
@@ -27,7 +32,6 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -41,10 +45,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  IconSize,
   SuccessPill,
   Text,
 } from '../../../../component-library';
@@ -119,10 +119,8 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
       </Box>
       <ButtonIcon
         size={ButtonIconSize.Sm}
-        color={IconColor.iconDefault}
         iconName={IconName.Add}
-        padding={0}
-        marginLeft={'auto'}
+        className="ml-auto"
         ariaLabel={t('addNetwork')}
         onClick={() => handleAdditionalNetworkClick(network)}
       />
@@ -423,7 +421,7 @@ const DefaultNetworks = memo(() => {
           <NetworkListItem
             name={t('allPopularNetworks')}
             onClick={selectAllDefaultNetworks}
-            iconSrc={MmdsIconName.Global}
+            iconSrc={IconName.Global}
             iconSize={IconSize.Xl}
             selected={isAllPopularNetworksSelected}
             focus={false}

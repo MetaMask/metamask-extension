@@ -8,9 +8,12 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  ButtonIcon as DsButtonIcon,
-  ButtonIconSize as DsButtonIconSize,
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconColor,
   IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import {
@@ -32,9 +35,6 @@ import {
   Box,
   ButtonBase,
   ButtonBaseSize,
-  Icon,
-  IconName as ComponentIconName,
-  IconSize,
   Popover,
   PopoverPosition,
   Text,
@@ -388,8 +388,6 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
-          startIconName={ComponentIconName.Filter}
-          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
           loading={isNetworkSwitchPending}
           disabled={isNetworkSwitchPending}
           backgroundColor={
@@ -407,6 +405,15 @@ const AssetListControlBar = ({
           ellipsis
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+            <Icon
+              name={IconName.Filter}
+              size={IconSize.Md}
+              color={
+                isSingleNetworkFilterSelected
+                  ? IconColor.PrimaryDefault
+                  : IconColor.IconDefault
+              }
+            />
             <Text
               variant={TextVariant.bodySmMedium}
               color={
@@ -434,14 +441,14 @@ const AssetListControlBar = ({
               distance={20}
               disabled={isTokenSortPopoverOpen}
             >
-              <DsButtonIcon
+              <ButtonIcon
                 ref={sortButtonRef}
                 data-testid="sort-by-popover-toggle"
                 className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
                   isTokenSortPopoverOpen ? 'bg-pressed' : 'bg-transparent'
                 } hover:bg-hover active:bg-pressed`}
                 onClick={toggleTokenSortPopover}
-                size={DsButtonIconSize.Sm}
+                size={ButtonIconSize.Sm}
                 iconName={IconName.ListArrow}
                 ariaLabel={t('sortBy')}
               />
@@ -465,12 +472,12 @@ const AssetListControlBar = ({
                 position="bottom"
                 distance={20}
               >
-                <DsButtonIcon
+                <ButtonIcon
                   ref={importButtonRef}
                   data-testid="importTokens-button"
                   className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
                   onClick={handleOpenTokenManagement}
-                  size={DsButtonIconSize.Sm}
+                  size={ButtonIconSize.Sm}
                   iconName={IconName.MoreVertical}
                   ariaLabel={t('manageTokens')}
                 />
@@ -531,17 +538,17 @@ const AssetListControlBar = ({
           className="min-h-12"
         >
           <Icon
-            name={ComponentIconName.Setting}
+            name={IconName.Setting}
             size={IconSize.Sm}
-            marginInlineEnd={2}
+            className="mr-2"
           />
           {t('manageTokens')}
         </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
           <Icon
-            name={ComponentIconName.Refresh}
+            name={IconName.Refresh}
             size={IconSize.Sm}
-            marginInlineEnd={2}
+            className="mr-2"
           />
           {t('refreshList')}
         </SelectableListItem>
@@ -563,11 +570,7 @@ const AssetListControlBar = ({
         }}
       >
         <SelectableListItem onClick={handleNftImportModal} testId="import-nfts">
-          <Icon
-            name={ComponentIconName.Add}
-            size={IconSize.Sm}
-            marginInlineEnd={2}
-          />
+          <Icon name={IconName.Add} size={IconSize.Sm} className="mr-2" />
 
           {t('importNFT')}
         </SelectableListItem>
@@ -579,9 +582,9 @@ const AssetListControlBar = ({
               testId="refresh-list-button"
             >
               <Icon
-                name={ComponentIconName.Refresh}
+                name={IconName.Refresh}
                 size={IconSize.Sm}
-                marginInlineEnd={2}
+                className="mr-2"
               />
 
               {t('refreshList')}
@@ -593,9 +596,9 @@ const AssetListControlBar = ({
               testId="enable-autodetect-button"
             >
               <Icon
-                name={ComponentIconName.Setting}
+                name={IconName.Setting}
                 size={IconSize.Sm}
-                marginInlineEnd={2}
+                className="mr-2"
               />
 
               {t('enableAutoDetect')}
@@ -624,9 +627,9 @@ const AssetListControlBar = ({
           testId="refreshList"
         >
           <Icon
-            name={ComponentIconName.Refresh}
+            name={IconName.Refresh}
             size={IconSize.Sm}
-            marginInlineEnd={2}
+            className="mr-2"
           />
           {t('refreshList')}
         </SelectableListItem>
