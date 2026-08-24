@@ -38,6 +38,7 @@ const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'TransactionController:unapprovedTransactionAdded',
   'AccountActivityService:balanceUpdated',
   'AccountActivityService:statusChanged',
+  'AccountActivityService:transactionUpdated',
   'RemoteFeatureFlagController:stateChange',
 ] as const;
 
