@@ -143,7 +143,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                 data-testid="network-list-item-0x1"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                 >
                   <img
                     alt="Ethereum"
@@ -184,7 +184,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                 data-testid="network-list-item-0xa"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                 >
                   <img
                     alt="OP"
@@ -320,7 +320,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                 data-testid="network-list-item-0x1"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                 >
                   <img
                     alt="Ethereum"
@@ -361,7 +361,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                 data-testid="network-list-item-0xa"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                 >
                   <img
                     alt="OP"
