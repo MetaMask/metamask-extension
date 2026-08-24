@@ -1,0 +1,425 @@
+import { Suite } from 'mocha';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { Driver } from '../../../webdriver/driver';
+import { login } from '../../../page-objects/flows/login.flow';
+import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
+import {
+  waitUntilAccountTreeSyncIdle,
+  addNHdAccountsForTronDerivation,
+} from '../../../page-objects/flows/tron-account-derivation.flow';
+import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../../constants';
+import { shortenAddress } from '../../../../../ui/helpers/utils/util';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import AccountListPage from '../../../page-objects/pages/account-list-page';
+import AddressListModal from '../../../page-objects/pages/multichain/address-list-modal';
+import NonEvmHomepage from '../../../page-objects/pages/home/non-evm-homepage';
+import { selectTronNetwork } from '../../../page-objects/flows/tron-network.flow';
+import { base58AddressToHex } from '../../../seeder/tron/assets';
+import { TronNode } from '../../../seeder/tron/node';
+import {
+  SUN_PER_TRX,
+  TRON_ACCOUNT_ADDRESS,
+  TRX_TO_USD_RATE,
+} from '../../tron/mocks/common-tron';
+import { EMPTY_TRON_ACCOUNT } from '../../tron/fixtures/environments';
+import { configureTronFixtureSession } from '../../tron/fixtures/tron-fixture-session';
+import {
+  buildTronNodeOptions,
+  type TronFixtureAccount,
+  withTronFixtures,
+} from '../../tron/fixtures/with-tron-fixtures';
+import { TRX } from '../../tron/fixtures/tokens';
+
+/* eslint-disable @typescript-eslint/naming-convention */
+function createDiscoveryTronTransaction(address: string) {
+  const timestamp = Date.now() - 60_000;
+  return {
+    ret: [{ contractRet: 'SUCCESS', fee: 0 }],
+    txID: `1${base58AddressToHex(address).slice(2)}`.padEnd(64, '0'),
+    blockNumber: 77_000_000,
+    block_timestamp: timestamp,
+    raw_data: {
+      contract: [
+        {
+          parameter: {
+            value: {
+              amount: SUN_PER_TRX,
+              owner_address: base58AddressToHex(TRON_ACCOUNT_ADDRESS),
+              to_address: base58AddressToHex(address),
+            },
+            type_url: 'type.googleapis.com/protocol.TransferContract',
+          },
+          type: 'TransferContract',
+        },
+      ],
+      expiration: timestamp + 60_000,
+      ref_block_bytes: '0000',
+      ref_block_hash: '0000000000000000',
+      timestamp,
+    },
+  };
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
+function buildDiscoveryAccountsThrough(total: number): TronFixtureAccount[] {
+  return EXPECTED_TRON_ADDRESSES_BY_INDEX.slice(0, total).map((address) => ({
+    address,
+    assets: [{ ...TRX, balance: SUN_PER_TRX, priceUsd: TRX_TO_USD_RATE }],
+    transactions: {
+      raw: [createDiscoveryTronTransaction(address)],
+      trc20: [],
+    },
+  }));
+}
+
+/**
+ * Opens the Addresses modal for one account, asserts the Tron network
+ * address, copies it and checks the clipboard, then backs out. Shared by the
+ * derivation test's incremental-add loop and assertTronAddressesForAccounts
+ * below: both perform the same per-index assertion, just with different
+ * account-membership setup around it.
+ *
+ * @param driver - The Selenium driver instance.
+ * @param index - Zero-based HD account index (Account 1 is index 0).
+ */
+async function assertTronAddressAtIndex(
+  driver: Driver,
+  index: number,
+): Promise<void> {
+  const accountList = new AccountListPage(driver);
+  const addressList = new AddressListModal(driver);
+  const accountLabel = `Account ${index + 1}`;
+  const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
+
+  console.log(`Checking Tron address for ${accountLabel}`);
+
+  await accountList.openMultichainAccountMenu({ accountLabel });
+  await accountList.clickMultichainAccountMenuItem('Addresses');
+  await addressList.checkPageIsLoaded();
+  await addressList.checkNetworkAddressIsDisplayedForNetwork({
+    networkName: 'Tron',
+    networkAddress: shortenAddress(expected),
+  });
+  await addressList.clickCopyButtonForNetworkAndAssertClipboard({
+    networkName: 'Tron',
+    expectedAddress: expected,
+  });
+  await addressList.goBack();
+}
+
+async function assertTronAddressesForAccounts(
+  driver: Driver,
+  total: number,
+  options: { absentAccountLabel?: string } = {},
+): Promise<void> {
+  const homepage = new HomePage(driver);
+  const accountList = new AccountListPage(driver);
+
+  await homepage.headerNavbar.openAccountMenu();
+  await accountList.checkPageIsLoaded();
+  await accountList.waitUntilSyncingIsCompleted();
+
+  for (let index = 0; index < total; index += 1) {
+    await assertTronAddressAtIndex(driver, index);
+  }
+
+  if (options.absentAccountLabel) {
+    await accountList.checkMultichainAccountNameNotDisplayed(
+      options.absentAccountLabel,
+    );
+  }
+
+  await accountList.closeMultichainAccountsPage();
+}
+
+/**
+ * Accounts 1–5 for asset-discovery tests. Each starts with 1 TRX and a mocked
+ * inbound transfer so discovery can find the next HD index.
+ *
+ * ```json
+ * {
+ *   "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": { "TRX": 1 },
+ *   "TQMPuQSHEiUevynTJSCDeh3QSBwJeFKC6W": { "TRX": 1 },
+ *   "TRQwNiQKov6hQ3pEKVGj2t8ge8YM9vu8ZY": { "TRX": 1 },
+ *   "TR5uG9oGNSr5hKcCLdN5zF498BTij5Yz1x": { "TRX": 1 },
+ *   "THbDj5zszwXFqBuzexjXF71uEU58BVcp3A": { "TRX": 1 }
+ * }
+ * ```
+ */
+const TRON_ACCOUNT_DERIVATION_DISCOVERY_ACCOUNTS: TronFixtureAccount[] =
+  buildDiscoveryAccountsThrough(5);
+
+/**
+ * Account 8 only, with 0 TRX. Used by tests that add HD groups in the UI
+ * instead of relying on asset discovery.
+ *
+ * ```json
+ * {
+ *   "TRnntwBfRqh4aXZVaZuLT9Htk1r9JBU4WY": { "TRX": 0 }
+ * }
+ * ```
+ */
+const TRON_ACCOUNT_DERIVATION_EMPTY_ACCOUNTS: TronFixtureAccount[] = [
+  {
+    ...EMPTY_TRON_ACCOUNT,
+    address: EXPECTED_TRON_ADDRESSES_BY_INDEX[7],
+  },
+];
+
+/**
+ * Combined seed for the suite-owned Java-Tron node: discovery accounts 1–5
+ * plus empty Account 8.
+ *
+ * ```json
+ * {
+ *   "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": { "TRX": 1 },
+ *   "TQMPuQSHEiUevynTJSCDeh3QSBwJeFKC6W": { "TRX": 1 },
+ *   "TRQwNiQKov6hQ3pEKVGj2t8ge8YM9vu8ZY": { "TRX": 1 },
+ *   "TR5uG9oGNSr5hKcCLdN5zF498BTij5Yz1x": { "TRX": 1 },
+ *   "THbDj5zszwXFqBuzexjXF71uEU58BVcp3A": { "TRX": 1 },
+ *   "TRnntwBfRqh4aXZVaZuLT9Htk1r9JBU4WY": { "TRX": 0 }
+ * }
+ * ```
+ */
+const TRON_ACCOUNT_DERIVATION_ALL_ACCOUNTS: TronFixtureAccount[] = [
+  ...TRON_ACCOUNT_DERIVATION_DISCOVERY_ACCOUNTS,
+  ...TRON_ACCOUNT_DERIVATION_EMPTY_ACCOUNTS,
+];
+
+/**
+ * Tron HD address derivation E2E cluster (WPN-685).
+ *
+ * Two concepts:
+ * - Tron address derivation (automatic): BIP44 Stage 2 derives Tron for each HD index once Tron is enabled (mocked via BIP44_STAGE_TWO).
+ * - HD account groups (manual in most tests): a fresh wallet only has Account 1; Accounts 2-8 are added via "Add account" or asset discovery.
+ *
+ * Shared Java-Tron node for every case. The derivation, quick-copy, and
+ * Receive tests reuse one `configureTronFixtureSession` browser: the
+ * derivation test creates Accounts 2-8 that the other two reuse. The
+ * alignment and discovery tests keep isolated `withTronFixtures` browsers
+ * because one must enable Tron only after adding groups and the other starts
+ * from onboarding.
+ *
+ * Coverage map:
+ * - incremental add 1-8: add + assert per step — derivation correct at each new HD index
+ * - 8 existing groups: add 8, then enable Tron — retroactive alignment when network enabled later
+ * - asset discovery 1-5: mocked txs, no manual add — automatic discovery; Account 6 absent
+ * - quick-copy / QR / Receive: add 8 upfront — Tron address on each surface for all indices
+ */
+describe('Tron account derivation', function (this: Suite) {
+  this.timeout(240_000);
+
+  const sharedTronNode = new TronNode();
+
+  before(async function () {
+    await sharedTronNode.start(
+      buildTronNodeOptions(TRON_ACCOUNT_DERIVATION_ALL_ACCOUNTS),
+    );
+  });
+
+  after(async function () {
+    await sharedTronNode.quit();
+  });
+
+  // One shared browser covers the three account-surface tests. Test order is
+  // load-bearing: the derivation test creates Accounts 2-8 that the
+  // quick-copy and Receive tests reuse, and the session fails fast so a
+  // derivation failure skips the dependent tests instead of cascading.
+  configureTronFixtureSession(
+    'shared session',
+    {
+      accounts: TRON_ACCOUNT_DERIVATION_EMPTY_ACCOUNTS,
+      fixtures: new FixtureBuilderV2().build(),
+      title: 'Tron account derivation shared session',
+      tronNode: sharedTronNode,
+    },
+    ({ getDriver }) => {
+      // Runs inside the session's nested suite at runtime, not as a sibling
+      // of the outer node-lifecycle `before`.
+      // eslint-disable-next-line mocha/no-sibling-hooks
+      before('Log in and select the Tron network', async function () {
+        const driver = getDriver();
+        await login(driver, { validateBalance: false });
+        await selectTronNetwork(driver);
+      });
+
+      it('derives Tron addresses while adding multichain accounts from Account 1 to Account 8', async function () {
+        const driver = getDriver();
+        const homepage = new HomePage(driver);
+        const accountList = new AccountListPage(driver);
+
+        // Open account menu to let the UI sync complete
+        await homepage.headerNavbar.openAccountMenu();
+        await accountList.checkPageIsLoaded();
+        await accountList.waitUntilSyncingIsCompleted();
+
+        for (let index = 0; index < 8; index += 1) {
+          if (index > 0) {
+            const accountLabel = `Account ${index + 1}`;
+            await waitUntilAccountTreeSyncIdle(driver);
+            await accountList.addMultichainAccount();
+            await accountList.checkMultichainAccountNameDisplayed(accountLabel);
+          }
+
+          await assertTronAddressAtIndex(driver, index);
+        }
+
+        await accountList.closeMultichainAccountsPage();
+      });
+
+      it('copies each account Tron address from the quick-copy popup', async function () {
+        const driver = getDriver();
+        const homepage = new HomePage(driver);
+        const accountList = new AccountListPage(driver);
+        const addressList = new AddressListModal(driver);
+
+        // Accounts 2-8 already exist: the derivation test above added them.
+        for (let index = 0; index < 8; index += 1) {
+          const accountLabel = `Account ${index + 1}`;
+          const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
+
+          console.log(
+            `Checking Tron address for ${accountLabel} on the quick-copy popup`,
+          );
+
+          await homepage.headerNavbar.openAccountMenu();
+          await accountList.checkPageIsLoaded();
+          await accountList.selectAccount(accountLabel);
+          await waitUntilAccountTreeSyncIdle(driver);
+
+          await homepage.headerNavbar.clickNetworkAddresses();
+          await addressList.checkQuickCopyPopoverIsLoaded();
+          await addressList.checkQuickCopyAddressIsDisplayedForNetwork({
+            networkName: 'Tron',
+            networkAddress: shortenAddress(expected),
+          });
+          await addressList.clickQuickCopyButtonForNetwork({
+            networkName: 'Tron',
+            expectedAddress: expected,
+          });
+        }
+
+        // Clicking a quick-copy row copies without closing the popover (it is
+        // hover-triggered, so clicks never dismiss it). Move the pointer off
+        // the trigger to let the hover popover close; the next test then
+        // starts from the plain homepage.
+        await homepage.headerNavbar.hoverAwayFromNetworkAddresses();
+        await addressList.checkQuickCopyPopoverIsClosed();
+      });
+
+      it('copies each account Tron address from the Receive page', async function () {
+        const driver = getDriver();
+        const homepage = new NonEvmHomepage(driver);
+        const accountList = new AccountListPage(driver);
+        const addressList = new AddressListModal(driver);
+
+        // Accounts 2-8 already exist: the derivation test above added them.
+        for (let index = 0; index < 8; index += 1) {
+          const accountLabel = `Account ${index + 1}`;
+          const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
+
+          console.log(
+            `Checking Tron address for ${accountLabel} on the Receive page`,
+          );
+
+          await homepage.headerNavbar.openAccountMenu();
+          await accountList.checkPageIsLoaded();
+          await accountList.selectAccount(accountLabel);
+          await waitUntilAccountTreeSyncIdle(driver);
+
+          await homepage.checkPageIsLoaded();
+          await homepage.clickOnReceiveButton();
+          await addressList.checkPageIsLoaded();
+          await addressList.checkNetworkAddressIsDisplayedForNetwork({
+            networkName: 'Tron',
+            networkAddress: shortenAddress(expected),
+          });
+          await addressList.clickCopyButtonForNetworkAndAssertClipboard({
+            networkName: 'Tron',
+            expectedAddress: expected,
+          });
+          await addressList.goBack();
+        }
+      });
+    },
+  );
+
+  it('aligns Tron addresses for 8 existing multichain account groups', async function () {
+    await withTronFixtures(
+      {
+        accounts: TRON_ACCOUNT_DERIVATION_EMPTY_ACCOUNTS,
+        borrowedTronNode: sharedTronNode,
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+
+        await addNHdAccountsForTronDerivation(driver, 8);
+
+        await selectTronNetwork(driver);
+
+        await assertTronAddressesForAccounts(driver, 8);
+      },
+    );
+  });
+
+  it('discovers Tron accounts through Account 5 when each account has assets', async function () {
+    await withTronFixtures(
+      {
+        accounts: TRON_ACCOUNT_DERIVATION_DISCOVERY_ACCOUNTS,
+        borrowedTronNode: sharedTronNode,
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await completeImportSRPOnboardingFlow({ driver });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+
+        await assertTronAddressesForAccounts(driver, 5, {
+          absentAccountLabel: 'Account 6',
+        });
+      },
+    );
+  });
+
+  // eslint-disable-next-line mocha/no-skipped-tests -- flaky clipboard copy in QR popup on CI; see #44165
+  it.skip('shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
+    await withTronFixtures(
+      {
+        accounts: TRON_ACCOUNT_DERIVATION_EMPTY_ACCOUNTS,
+        borrowedTronNode: sharedTronNode,
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+        await selectTronNetwork(driver);
+
+        const homepage = new HomePage(driver);
+        const accountList = new AccountListPage(driver);
+        const addressList = new AddressListModal(driver);
+        await homepage.headerNavbar.openAccountMenu();
+        await accountList.checkPageIsLoaded();
+
+        await accountList.openMultichainAccountMenu({
+          accountLabel: 'Account 1',
+        });
+        await accountList.clickMultichainAccountMenuItem('Addresses');
+        await addressList.checkPageIsLoaded();
+        await addressList.clickQRbuttonForNetwork('Tron');
+
+        await addressList.checkQrPopupShowsAddress(
+          EXPECTED_TRON_ADDRESSES_BY_INDEX[0],
+        );
+        await addressList.checkViewOnTronscanButton();
+        await addressList.clickQrCopyAddressLink(
+          EXPECTED_TRON_ADDRESSES_BY_INDEX[0],
+        );
+      },
+    );
+  });
+});

@@ -253,6 +253,18 @@ class HeaderNavbar {
     await this.navigateToNotificationsPage();
   }
 
+  /**
+   * Moves the pointer off the network-addresses trigger so its hover-triggered
+   * quick-copy popover can close. The popover opens/closes on hover only —
+   * clicking the trigger again does not toggle it closed — so the way to
+   * dismiss it is to move the mouse to another header element.
+   */
+  async hoverAwayFromNetworkAddresses(): Promise<void> {
+    console.log('Hover away from the network addresses trigger');
+    const target = await this.driver.findElement(this.globalMenuButton);
+    await this.driver.hoverElement(target);
+  }
+
   async lockMetaMask(): Promise<void> {
     await this.openGlobalMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
