@@ -1,4 +1,4 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Expanded notification detail for a single notification (including snaps).
@@ -18,7 +18,7 @@ class NotificationDetailsPage {
 
   private driver: Driver;
 
-  private readonly multichainPage =
+  private readonly parentSelector =
     '[data-testid="multichain-page"].mm-box--width-full.mm-box--height-full';
 
   private readonly snapAvatarIcon = (text: string) => ({
@@ -47,7 +47,7 @@ class NotificationDetailsPage {
 
   async checkExpandedViewIsFullPage(): Promise<void> {
     console.log('Validating expanded view notification');
-    await this.driver.waitForSelector(this.multichainPage);
+    await this.driver.waitForSelector(this.parentSelector);
   }
 
   async checkNotificationContent({
@@ -74,7 +74,10 @@ class NotificationDetailsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([this.detailsPageBackButton]);
+      await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
+        this.detailsPageBackButton,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Notifications Details page to be loaded',
