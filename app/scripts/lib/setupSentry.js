@@ -222,6 +222,15 @@ function setCITags() {
   }
 }
 
+/**
+ * Tag reports with the build vocabulary that decides service routing.
+ * This lets teams filter nightly events that still use the dev DSN.
+ */
+function setBuildTags() {
+  Sentry.setTag('metamask.environment', METAMASK_ENVIRONMENT);
+  Sentry.setTag('metamask.build_type', METAMASK_BUILD_TYPE);
+}
+
 function getSentryEnvironment() {
   if (METAMASK_BUILD_TYPE === 'main') {
     return METAMASK_ENVIRONMENT;
@@ -284,6 +293,7 @@ function setSentryClient() {
   );
 
   setCITags();
+  setBuildTags();
 
   addDebugListeners();
 

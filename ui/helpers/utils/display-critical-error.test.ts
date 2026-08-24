@@ -33,6 +33,7 @@ process.env = {
   ...originalEnv,
   SENTRY_DSN: MOCK_SENTRY_DSN,
   SENTRY_DSN_DEV: MOCK_SENTRY_DSN_DEV,
+  METAMASK_BUILD_TYPE: 'main',
   METAMASK_ENVIRONMENT: 'development',
 };
 
@@ -263,6 +264,10 @@ describe('displayCriticalError', () => {
         level: 'error',
         message: MOCK_ERROR_MESSAGE,
         release: MOCK_RELEASE_VERSION,
+        tags: {
+          'metamask.build_type': 'main',
+          'metamask.environment': 'development',
+        },
         extra: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_details: expect.any(Object), // Error object serialization varies by environment
