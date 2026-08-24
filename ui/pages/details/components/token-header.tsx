@@ -5,7 +5,13 @@ import { ActivityAvatar } from '../../../components/app/activity-list-item-avata
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensData } from '../../../hooks/useTokensData';
 
-export const TokenHeader = ({ token }: { token?: TokenAmount }) => {
+export const TokenHeader = ({
+  token,
+  amount,
+}: {
+  token?: TokenAmount;
+  amount?: string;
+}) => {
   const t = useI18nContext();
   const tokenAssetId = token?.assetId;
   const tokensByAssetId = useTokensData(tokenAssetId ? [tokenAssetId] : []);
@@ -14,12 +20,13 @@ export const TokenHeader = ({ token }: { token?: TokenAmount }) => {
     : undefined;
   const tokenLabel =
     token?.symbol ?? tokenMetadata?.symbol ?? tokenMetadata?.name ?? t('token');
+  const headerLabel = amount ? `${amount} ${tokenLabel}` : tokenLabel;
 
   return (
     <div className="flex items-center gap-2 py-4">
       <ActivityAvatar tokens={[token?.assetId]} />
 
-      <Text variant="heading-lg">{tokenLabel}</Text>
+      <Text variant="heading-lg">{headerLabel}</Text>
     </div>
   );
 };
