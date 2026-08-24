@@ -473,6 +473,7 @@ describe('ClosePositionModal', () => {
 
   describe('close amount input modes', () => {
     it('submits the token quantity equivalent to a typed dollar amount', async () => {
+      const user = userEvent.setup();
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -488,8 +489,9 @@ describe('ClosePositionModal', () => {
         screen.getByTestId('close-amount-value'),
       ).getByRole('textbox');
       // Half of the 2.5 ETH position at 2,900 is 3,625 USD.
-      fireEvent.change(usdInput, { target: { value: '3625' } });
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await user.clear(usdInput);
+      await user.type(usdInput, '3625');
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -500,6 +502,7 @@ describe('ClosePositionModal', () => {
     });
 
     it('submits the token quantity equivalent to a typed percentage', async () => {
+      const user = userEvent.setup();
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -511,12 +514,13 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+      await user.click(screen.getByTestId('close-amount-mode-percent'));
       const percentInput = within(
         screen.getByTestId('close-amount-percent'),
       ).getByRole('textbox');
-      fireEvent.change(percentInput, { target: { value: '50' } });
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await user.clear(percentInput);
+      await user.type(percentInput, '50');
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -527,6 +531,7 @@ describe('ClosePositionModal', () => {
     });
 
     it('caps a dollar amount above the position at a full close', async () => {
+      const user = userEvent.setup();
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -541,13 +546,14 @@ describe('ClosePositionModal', () => {
       const usdInput = within(
         screen.getByTestId('close-amount-value'),
       ).getByRole('textbox');
-      fireEvent.change(usdInput, { target: { value: '999999' } });
+      await user.clear(usdInput);
+      await user.type(usdInput, '999999');
 
       expect(
         screen.getByTestId('close-amount-over-close-error'),
       ).toBeInTheDocument();
 
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalled();
@@ -558,6 +564,7 @@ describe('ClosePositionModal', () => {
     });
 
     it('caps a percentage above 100 at a full close', async () => {
+      const user = userEvent.setup();
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -569,17 +576,18 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+      await user.click(screen.getByTestId('close-amount-mode-percent'));
       const percentInput = within(
         screen.getByTestId('close-amount-percent'),
       ).getByRole('textbox');
-      fireEvent.change(percentInput, { target: { value: '150' } });
+      await user.clear(percentInput);
+      await user.type(percentInput, '150');
 
       expect(
         screen.getByTestId('close-amount-over-close-error'),
       ).toBeInTheDocument();
 
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalled();
@@ -589,6 +597,7 @@ describe('ClosePositionModal', () => {
     });
 
     it('reports the percentage input method on the close request', async () => {
+      const user = userEvent.setup();
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -600,12 +609,13 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+      await user.click(screen.getByTestId('close-amount-mode-percent'));
       const percentInput = within(
         screen.getByTestId('close-amount-percent'),
       ).getByRole('textbox');
-      fireEvent.change(percentInput, { target: { value: '50' } });
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await user.clear(percentInput);
+      await user.type(percentInput, '50');
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -622,6 +632,7 @@ describe('ClosePositionModal', () => {
     });
 
     it('reports the keypad input method for a typed dollar amount', async () => {
+      const user = userEvent.setup();
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -636,8 +647,9 @@ describe('ClosePositionModal', () => {
       const usdInput = within(
         screen.getByTestId('close-amount-value'),
       ).getByRole('textbox');
-      fireEvent.change(usdInput, { target: { value: '3625' } });
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await user.clear(usdInput);
+      await user.type(usdInput, '3625');
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -654,6 +666,7 @@ describe('ClosePositionModal', () => {
     });
 
     it('reports the slider input method when the slider sets the amount', async () => {
+      const user = userEvent.setup();
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -669,7 +682,7 @@ describe('ClosePositionModal', () => {
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       fireEvent.change(slider, { target: { value: '50' } });
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -686,6 +699,7 @@ describe('ClosePositionModal', () => {
     });
 
     it('reports the default input method when the amount is untouched', async () => {
+      const user = userEvent.setup();
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -697,7 +711,7 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(

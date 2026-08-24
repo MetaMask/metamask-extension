@@ -24,11 +24,7 @@ import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { CloseAmountSectionProps } from '../../order-entry.types';
-import {
-  isUnsignedDecimalInput,
-  isDigitsOnlyInput,
-  formatNumberForInput,
-} from '../../utils';
+import { isUnsignedDecimalInput, formatNumberForInput } from '../../utils';
 
 /** Fixed width (rem) for the close-% chip so the slider row layout stays stable as digits change */
 const CLOSE_PERCENT_CHIP_WIDTH_REM = 4.75;
@@ -52,11 +48,16 @@ type CloseAmountUnit = 'usd' | 'percent';
 /**
  * Clamps a close percentage into the closable range.
  *
+ * `Infinity` is treated as an over-close rather than as "no amount": a pasted
+ * value long enough to overflow a double still means the trader asked for more
+ * than the position holds, and returning 0 there would show a 100% cap while
+ * committing nothing. Only a genuine non-number falls back to 0.
+ *
  * @param percent - Raw percentage, possibly out of range or non-finite.
  * @returns The percentage constrained to 0-100, or 0 when not a number.
  */
 const clampClosePercent = (percent: number): number => {
-  if (!Number.isFinite(percent)) {
+  if (Number.isNaN(percent)) {
     return 0;
   }
   return Math.min(MAX_CLOSE_PERCENT, Math.max(0, percent));
@@ -215,17 +216,22 @@ export const CloseAmountSection = ({
 
   const handlePercentInputChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-      if (!(value === '' || isDigitsOnlyInput(value))) {
+      // Decimals are accepted, not just digits: a percentage derived from a
+      // typed dollar amount is shown with fractional precision, so the trader
+      // has to be able to edit the value the field is actually displaying.
+      if (!(value === '' || isUnsignedDecimalInput(value))) {
         return;
       }
-      if (value === '') {
+
+      const parsed = Number.parseFloat(value);
+      if (Number.isNaN(parsed)) {
+        // '' and a lone '.' are both "no amount chosen yet".
         setPercentInputValue(value);
         setDidExceedPosition(false);
         commitPercent(0);
         return;
       }
 
-      const parsed = Number.parseInt(value, 10);
       const exceedsMax = parsed > MAX_CLOSE_PERCENT;
       setDidExceedPosition(exceedsMax);
       // Show the capped percentage straight away rather than the typed one, so
@@ -361,7 +367,7 @@ export const CloseAmountSection = ({
             isPercentUnit ? 'close-amount-percent' : 'close-amount-value'
           }
           inputProps={{
-            inputMode: isPercentUnit ? 'numeric' : 'decimal',
+            inputMode: 'decimal',
           }}
           startAccessory={
             <Text
