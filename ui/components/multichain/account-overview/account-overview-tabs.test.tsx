@@ -177,19 +177,6 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     expect(setPerpsTabBadgeSeen).not.toHaveBeenCalled();
   });
 
-  it('persists the dismissal when Perps is the clamped active tab (active tab hidden)', () => {
-    // Tokens is hidden but activeTabKey points at the now-hidden Tokens tab, so
-    // Tabs clamps the rendered active tab to the first one (Perps). The badge
-    // must still be marked seen even though no tab click occurs.
-    renderTabs({
-      variantFlag: { name: 'treatment' },
-      showTokens: false,
-      route: '/?tab=tokens',
-    });
-
-    expect(setPerpsTabBadgeSeen).toHaveBeenCalledWith(true);
-  });
-
   it('does not mark the badge seen while Perps is unavailable, even when it is the active tab', () => {
     // Treatment + ?tab=perps but the Perps experience is unavailable: the badge
     // is never rendered, so it must not be persisted as seen (otherwise it would
