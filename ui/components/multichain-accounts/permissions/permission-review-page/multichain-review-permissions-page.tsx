@@ -176,6 +176,9 @@ export const MultichainReviewPermissions = () => {
         disconnectAllPermissions();
         endTrace({ name: TraceName.DisconnectAllModal });
 
+        setShowDisconnectPermissionsModal(false);
+
+        // Revoke gator permissions if they exist (run in background)
         if (
           options?.revokeGatorPermissions &&
           tokenTransferPermissions.length > 0
@@ -192,7 +195,6 @@ export const MultichainReviewPermissions = () => {
       } catch (error) {
         log.error('Error removing permissions:', error);
       } finally {
-        setShowDisconnectPermissionsModal(false);
         navigate(PREVIOUS_ROUTE);
       }
     },
