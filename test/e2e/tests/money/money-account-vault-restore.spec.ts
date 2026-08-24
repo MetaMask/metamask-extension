@@ -1,7 +1,9 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import type { Mockttp } from 'mockttp';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -19,6 +21,31 @@ const MONEY_ACCOUNT_ADDRESS = '0xd5fe9b0579443e7025cf3309ba420977710e7183';
 
 const HD_KEYRING_TYPE = 'HD Key Tree';
 const MONEY_KEYRING_TYPE = 'Money Keyring';
+
+const MONEY_ACCOUNT_FLAG_VALUE = { enabled: true, minimumVersion: '0.0.0' };
+
+/**
+ * Serves the production remote flags plus the money-account flag from the
+ * mock server. Seeding `RemoteFeatureFlagController` state alone is not
+ * enough: the background controller refetches /v1/flags on load and would
+ * overwrite the seeded flag with the mocked production defaults, which do
+ * not include it — leaving the money account never created.
+ *
+ * @param server - The Mockttp server instance to register the mock on.
+ */
+async function mockMoneyAccountFlag(server: Mockttp): Promise<void> {
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({ client: 'extension', distribution: 'main' })
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: [
+        ...getProductionRemoteFlagApiResponse(),
+        { [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: MONEY_ACCOUNT_FLAG_VALUE },
+      ],
+    }));
+}
 
 type MoneyAccountRecord = {
   address: string;
@@ -38,17 +65,16 @@ describe('Money account', function (this: Suite) {
         // `MoneyAccountControllerInit`'s enablement check reads
         // `RemoteFeatureFlagController` state directly (background code does
         // not honour manifest overrides), so the flag must be seeded there
-        // rather than via `manifestFlags`.
+        // rather than via `manifestFlags`. The mock below keeps the flag set
+        // after the controller's own /v1/flags refetch replaces this state.
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withRemoteFeatureFlagController({
             remoteFeatureFlags: {
-              [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
-                enabled: true,
-                minimumVersion: '0.0.0',
-              },
+              [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: MONEY_ACCOUNT_FLAG_VALUE,
             },
           })
           .build(),
+        testSpecificMock: mockMoneyAccountFlag,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

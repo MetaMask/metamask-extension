@@ -733,6 +733,7 @@
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "mode": "string",
+    "moneyAccounts": {},
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
         "chainId": "string",
