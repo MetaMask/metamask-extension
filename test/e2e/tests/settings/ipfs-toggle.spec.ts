@@ -2,7 +2,7 @@ import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../page-objects/pages/nft-details-page';
 import NftsTab from '../../page-objects/pages/home/nfts-tab';

@@ -17,7 +17,7 @@ import { approveConnect } from '../../page-objects/flows/connect.flow';
 import { Driver, PAGES } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
 
 const OPTIMISM_CHAIN_ID = parseInt(CHAIN_IDS.OPTIMISM, 16);

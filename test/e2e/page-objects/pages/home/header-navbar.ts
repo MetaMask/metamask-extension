@@ -1,5 +1,4 @@
-import { strict as assert } from 'assert';
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Unlocked app header chrome: account menu, global menu, network picker.
@@ -57,8 +56,6 @@ class HeaderNavbar {
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
 
-  private readonly networkPicker = '.mm-picker-network';
-
   private readonly notificationCountOption =
     '[data-testid="global-menu-notification-count"]';
 
@@ -69,6 +66,10 @@ class HeaderNavbar {
 
   private readonly openAccountDetailsButton =
     '[data-testid="account-list-menu-details"]';
+
+  private readonly page = {
+    testId: 'parent-selector-header-navbar',
+  };
 
   private readonly selectedNetworkItem = (networkName: string) =>
     `.multichain-network-list-item--selected [data-testid="${networkName}"]`;
@@ -157,14 +158,6 @@ class HeaderNavbar {
     await this.driver.waitForSelector(this.dappNetworkButton);
   }
 
-  async checkIfNetworkPickerClickable(clickable: boolean): Promise<void> {
-    console.log('Check whether the network picker is clickable or not');
-    assert.equal(
-      await (await this.driver.findElement(this.networkPicker)).isEnabled(),
-      clickable,
-    );
-  }
-
   /**
    * Verifies the notification count in the open global menu, waits for the
    * drawer to settle after React re-renders, then opens the notifications list.
@@ -186,24 +179,8 @@ class HeaderNavbar {
     await this.driver.clickElement(this.notificationsButton);
   }
 
-  async checkNotificationCountInMenuOption(count: number): Promise<void> {
-    await this.openGlobalMenu();
-    await this.driver.findElement({
-      css: this.notificationCountOption,
-      text: count.toString(),
-    });
-  }
-
   async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.accountMenuButton,
-        this.globalMenuButton,
-      ]);
-    } catch (e) {
-      console.log('Timeout while waiting for header navbar to be loaded', e);
-      throw e;
-    }
+    await this.driver.waitForSelector(this.page);
     console.log('Header navbar is loaded');
   }
 

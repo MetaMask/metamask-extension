@@ -10,7 +10,7 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {

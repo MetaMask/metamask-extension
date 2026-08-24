@@ -163,61 +163,65 @@ export function ActivityList({
 
   return (
     <PendingTransactionCancelSpeedUpProvider>
-      {!filter && (
-        <AssetListControlBar
-          showSortControl={false}
-          showImportTokenButton={false}
-          onNetworkSelect={setNetworks}
-        />
-      )}
+      <div data-testid="parent-selector-activity-tab">
+        {!filter && (
+          <AssetListControlBar
+            showSortControl={false}
+            showImportTokenButton={false}
+            onNetworkSelect={setNetworks}
+          />
+        )}
 
-      <VirtualizedList
-        data={groupedItems}
-        estimatedItemSize={(row) =>
-          row.type === 'date-header' || row.type === 'pending-header'
-            ? headerHeight
-            : itemHeight
-        }
-        overscan={10}
-        keyExtractor={getItemKey}
-        itemRef={itemRef}
-        listEmptyComponent={
-          isInitialLoading ? (
-            <ActivityListSkeleton />
-          ) : (
-            <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
-          )
-        }
-        enableScrollMargin={Boolean(filter)}
-        renderItem={({ item: row }) => {
-          if (row.type === 'pending-header') {
-            return <SectionHeader label={t('pending')} />;
+        <VirtualizedList
+          data={groupedItems}
+          estimatedItemSize={(row) =>
+            row.type === 'date-header' || row.type === 'pending-header'
+              ? headerHeight
+              : itemHeight
           }
-
-          if (row.type === 'date-header') {
-            return <SectionHeader label={formatRelativeMediumDate(row.date)} />;
+          overscan={10}
+          keyExtractor={getItemKey}
+          itemRef={itemRef}
+          listEmptyComponent={
+            isInitialLoading ? (
+              <ActivityListSkeleton />
+            ) : (
+              <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+            )
           }
+          enableScrollMargin={Boolean(filter)}
+          renderItem={({ item: row }) => {
+            if (row.type === 'pending-header') {
+              return <SectionHeader label={t('pending')} />;
+            }
 
-          return (
-            <ActivityRow
-              data={row.item}
-              onClick={() => handleClick(row.item)}
-            />
-          );
-        }}
-      />
+            if (row.type === 'date-header') {
+              return (
+                <SectionHeader label={formatRelativeMediumDate(row.date)} />
+              );
+            }
 
-      <dialog
-        ref={dialogRef}
-        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default"
-        onClose={handleClose}
-      >
-        <TransactionDetails
-          chainId={selectedItem?.chainId}
-          txIdentifier={getActivityItemIdentifier(selectedItem)}
-          onBack={() => dialogRef.current?.close?.()}
+            return (
+              <ActivityRow
+                data={row.item}
+                onClick={() => handleClick(row.item)}
+              />
+            );
+          }}
         />
-      </dialog>
+
+        <dialog
+          ref={dialogRef}
+          className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default"
+          onClose={handleClose}
+        >
+          <TransactionDetails
+            chainId={selectedItem?.chainId}
+            txIdentifier={getActivityItemIdentifier(selectedItem)}
+            onBack={() => dialogRef.current?.close?.()}
+          />
+        </dialog>
+      </div>
     </PendingTransactionCancelSpeedUpProvider>
   );
 }

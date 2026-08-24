@@ -5,7 +5,7 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountAddressModal from '../../page-objects/pages/multichain/account-address-modal';
 import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';

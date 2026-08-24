@@ -229,12 +229,14 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__asset-tab"
           >
             <ErrorBoundary key="tokens">
-              <AssetList
-                showTokensLinks={showTokensLinks ?? true}
-                onClickAsset={onClickAsset}
-                safeChains={safeChains}
-                entryPoint={tabEntryPoint}
-              />
+              <div data-testid="parent-selector-tokens-tab">
+                <AssetList
+                  showTokensLinks={showTokensLinks ?? true}
+                  onClickAsset={onClickAsset}
+                  safeChains={safeChains}
+                  entryPoint={tabEntryPoint}
+                />
+              </div>
             </ErrorBoundary>
           </Tab>
         )}

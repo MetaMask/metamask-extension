@@ -17,15 +17,17 @@ export const AccountOverviewNonEvm = ({
   const hasAnyEvmNetworkEnabled = useSelector(getHasAnyEvmNetworkEnabled);
 
   return (
-    <AccountOverviewLayout
-      showTokens={true}
-      showTokensLinks={true}
-      showNfts={hasAnyEvmNetworkEnabled}
-      showDefi={hasAnyEvmNetworkEnabled && defiPositionsEnabled}
-      showActivity={true}
-      {...props}
-    >
-      <NonEvmOverview />
-    </AccountOverviewLayout>
+    <div data-testid="parent-selector-non-evm-home">
+      <AccountOverviewLayout
+        showTokens={true}
+        showTokensLinks={true}
+        showNfts={hasAnyEvmNetworkEnabled}
+        showDefi={hasAnyEvmNetworkEnabled && defiPositionsEnabled}
+        showActivity={true}
+        {...props}
+      >
+        <NonEvmOverview />
+      </AccountOverviewLayout>
+    </div>
   );
 };

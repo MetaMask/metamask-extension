@@ -5,7 +5,7 @@ import {
 } from '../../../stub/keyring-bridge';
 import AccountListPage from '../pages/account-list-page';
 import AddressListModal from '../pages/multichain/address-list-modal';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 

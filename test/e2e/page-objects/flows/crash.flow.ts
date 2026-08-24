@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import SettingsPage from '../pages/settings/settings-page';
 import DebugPage from '../pages/debug-page';
 

@@ -10,7 +10,7 @@ import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
-import BottomNavBar from '../../page-objects/pages/bottom-nav-bar-page';
+import BottomNavBar from '../../page-objects/pages/home/bottom-nav-bar-page';
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
