@@ -579,7 +579,7 @@ export class LedgerLegacyHandler {
 
       case LedgerAction.signDelegationAuthorization:
         throw new Error(
-          'Ledger delegation authorization signing requires DMK mode',
+          'Ledger delegation authorization signing is not supported',
         );
 
       default:

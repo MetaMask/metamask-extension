@@ -57,7 +57,6 @@ const SIGN_ACTIONS = new Set<LedgerAction>([
   LedgerAction.signTransaction,
   LedgerAction.signPersonalMessage,
   LedgerAction.signTypedData,
-  LedgerAction.signDelegationAuthorization,
 ]);
 
 function actionTimeoutMs(action: LedgerAction): number {

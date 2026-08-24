@@ -41,7 +41,6 @@ const mockBridgeGetPublicKey = jest.fn();
 const mockBridgeDeviceSignTransaction = jest.fn();
 const mockBridgeDeviceSignMessage = jest.fn();
 const mockBridgeDeviceSignTypedData = jest.fn();
-const mockBridgeDeviceSignDelegationAuthorization = jest.fn();
 const mockBridgeConnect = jest.fn();
 const mockBridgeStartDiscovering = jest.fn();
 let mockOnSessionStateChangeSubject = new Subject<{ connected: boolean }>();
@@ -54,8 +53,6 @@ const createMockBridge = () => ({
   deviceSignTransaction: mockBridgeDeviceSignTransaction,
   deviceSignMessage: mockBridgeDeviceSignMessage,
   deviceSignTypedData: mockBridgeDeviceSignTypedData,
-  deviceSignDelegationAuthorization:
-    mockBridgeDeviceSignDelegationAuthorization,
   connect: mockBridgeConnect,
   startDiscovering: mockBridgeStartDiscovering,
   onSessionStateChange: mockOnSessionStateChangeSubject.asObservable(),
@@ -487,48 +484,6 @@ describe('LedgerDmkBridgeHandler', () => {
         name: 'HardwareWalletError',
         message: 'Unknown Ledger action: not-a-real-action',
         code: ErrorCode.Unknown,
-      });
-    });
-
-    describe('signDelegationAuthorization', () => {
-      it('routes to bridge.deviceSignDelegationAuthorization()', async () => {
-        mockBridgeDeviceSignDelegationAuthorization.mockResolvedValue({
-          v: 27,
-          r: '0xabc',
-          s: '0xdef',
-        });
-        const result = await handler.handleAction(
-          LedgerAction.signDelegationAuthorization,
-          {
-            hdPath: "m/44'/60'/0'/0/0",
-            chainId: 1,
-            contractAddress: '0x1234',
-            nonce: 2,
-          },
-        );
-        expect(
-          mockBridgeDeviceSignDelegationAuthorization,
-        ).toHaveBeenCalledWith({
-          hdPath: "m/44'/60'/0'/0/0",
-          chainId: 1,
-          contractAddress: '0x1234',
-          nonce: 2,
-        });
-        expect(result).toEqual({ v: 27, r: '0xabc', s: '0xdef' });
-      });
-
-      it('throws when a required param is missing', async () => {
-        await expect(
-          handler.handleAction(LedgerAction.signDelegationAuthorization, {
-            hdPath: "m/44'/60'/0'/0/0",
-            chainId: 1,
-            nonce: 2,
-          }),
-        ).rejects.toMatchObject({
-          name: 'HardwareWalletError',
-          message: 'Missing delegation authorization parameter',
-          code: ErrorCode.Unknown,
-        });
       });
     });
   });

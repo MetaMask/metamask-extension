@@ -8,7 +8,6 @@
  */
 import {
   LedgerDmkBridge,
-  LedgerSignDelegationAuthorizationParams,
   LedgerSignTypedDataParams,
 } from '@metamask/eth-ledger-bridge-keyring';
 
@@ -505,29 +504,6 @@ export class LedgerDmkBridgeHandler {
             message: typedMessage,
           });
           return result;
-        }
-
-        case LedgerAction.signDelegationAuthorization: {
-          const { hdPath, chainId, contractAddress, nonce } =
-            requireActionParams(
-              params,
-              {
-                hdPath: 'string',
-                chainId: 'number',
-                contractAddress: 'string',
-                nonce: 'number',
-              },
-              'Missing delegation authorization parameter',
-            );
-          const delegationParams: LedgerSignDelegationAuthorizationParams = {
-            hdPath,
-            chainId,
-            contractAddress,
-            nonce,
-          };
-          return await bridge.deviceSignDelegationAuthorization(
-            delegationParams,
-          );
         }
 
         default:
