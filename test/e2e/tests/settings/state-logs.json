@@ -482,6 +482,28 @@
         "schedule": "string",
         "scheduledAt": "string",
         "snapId": "string"
+      },
+      "cronjob-npm:@metamask/stellar-wallet-snap-0": {
+        "date": "string",
+        "id": "string",
+        "recurring": "boolean",
+        "request": {
+          "method": "string"
+        },
+        "schedule": "string",
+        "scheduledAt": "string",
+        "snapId": "string"
+      },
+      "cronjob-npm:@metamask/stellar-wallet-snap-1": {
+        "date": "string",
+        "id": "string",
+        "recurring": "boolean",
+        "request": {
+          "method": "string"
+        },
+        "schedule": "string",
+        "scheduledAt": "string",
+        "snapId": "string"
       }
     },
     "fcmToken": "string",
@@ -1172,6 +1194,15 @@
         "version": "string"
       },
       "npm:@metamask/tron-wallet-snap": {
+        "extensionId": "null",
+        "iconUrl": "null",
+        "name": "string",
+        "origin": "string",
+        "subjectType": "string",
+        "svgIcon": "string",
+        "version": "string"
+      },
+      "npm:@metamask/stellar-wallet-snap": {
         "extensionId": "null",
         "iconUrl": "null",
         "name": "string",
