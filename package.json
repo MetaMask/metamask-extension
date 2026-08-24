@@ -334,7 +334,8 @@
     "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
     "@ledgerhq/context-module/ethers": "^6.15.0",
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
-    "@metamask/config-registry-controller": "npm:@metamask-previews/config-registry-controller@3.0.0-preview-06346349c"
+    "@metamask/config-registry-controller": "npm:@metamask-previews/config-registry-controller@3.0.0-preview-06346349c",
+    "@metamask/wallet": "npm:@metamask-previews/wallet@11.0.0-preview-06346349c"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",

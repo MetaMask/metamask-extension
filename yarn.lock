@@ -9016,9 +9016,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/wallet@npm:11.0.0"
+"@metamask/wallet@npm:@metamask-previews/wallet@11.0.0-preview-06346349c":
+  version: 11.0.0-preview-06346349c
+  resolution: "@metamask-previews/wallet@npm:11.0.0-preview-06346349c"
   dependencies:
     "@metamask/accounts-controller": "npm:^39.1.0"
     "@metamask/address-book-controller": "npm:^7.1.2"
@@ -9026,6 +9026,7 @@ __metadata:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/claims-controller": "npm:^0.6.0"
+    "@metamask/config-registry-controller": "npm:^3.0.0"
     "@metamask/connectivity-controller": "npm:^0.3.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/gas-fee-controller": "npm:^26.3.1"
@@ -9041,7 +9042,7 @@ __metadata:
     "@metamask/subscription-controller": "npm:^8.0.0"
     "@metamask/transaction-controller": "npm:^69.5.2"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/d865ba0ecc958d14fc0a037b8bb6ca0c6576bd44c1cdc953eebe7bf8c87c7d38bd0e83d50823a2ec5f6a11085134b504bcb44193a7095225cc166bc35ffd9a70
+  checksum: 10/c5f524784ff4ae77b10099f5dbf96f7c8d7cdbf4ab74aa3f157460abdc19999f2094402cff23c673a5b6afe53a790178a6ced657edf85076beceb441375bbbb2
   languageName: node
   linkType: hard
 
