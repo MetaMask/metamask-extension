@@ -270,11 +270,11 @@ describe('Tron - Activity', function (this: Suite) {
 
         // Test order is load-bearing: every test here runs against the Tron
         // network filter that `landOnTronActivity` selects in the `before`
-        // hook above. "All networks filter includes transactions from every
-        // enabled network" switches the filter to All networks and never
-        // restores it, so it must stay last.
+        // hook above. "includes transactions from every enabled network under
+        // the all networks filter" switches the filter to All networks and
+        // never restores it, so it must stay last.
 
-        it('Approve transaction is rendered as a spending cap approval', async function () {
+        it('renders an approve transaction as a spending cap approval', async function () {
           await activity.checkTransactionActivityByText(
             'Approved spending cap',
           );
@@ -291,7 +291,7 @@ describe('Tron - Activity', function (this: Suite) {
           await details.checkViewDetailsLink();
         });
 
-        it('Send transaction uses the outgoing transaction presentation', async function () {
+        it('renders a send transaction with the outgoing presentation', async function () {
           await activity.checkTransactionActivityByText('Sent TRX');
           await activity.checkTransactionAmount('-1 TRX');
           const details = await openTronTransactionDetails({
@@ -309,7 +309,7 @@ describe('Tron - Activity', function (this: Suite) {
           await details.checkAddressInLog(TRON_ACCOUNT_ADDRESS);
         });
 
-        it('Receive transaction uses the incoming transaction presentation', async function () {
+        it('renders a receive transaction with the incoming presentation', async function () {
           await activity.checkTransactionActivityByText('Received TRX');
           await activity.checkTransactionAmount('2.5 TRX');
           const details = await openTronTransactionDetails({
@@ -324,7 +324,7 @@ describe('Tron - Activity', function (this: Suite) {
           await details.checkAddressInLog(TRON_ACCOUNT_ADDRESS);
         });
 
-        it('Swap transaction uses the swap transaction presentation', async function () {
+        it('renders a swap transaction with the swap presentation', async function () {
           await activity.checkTransactionActivityByText('Swapped');
           // destAmount is USDT base units (6 decimals): 1420000 → 1.42 USDT.
           // Incoming swap legs are not prefixed with `+`.
@@ -340,7 +340,7 @@ describe('Tron - Activity', function (this: Suite) {
           await details.checkAmount('-5 TRX');
         });
 
-        it('Bridge transaction uses the bridge transaction presentation', async function () {
+        it('renders a bridge transaction with the bridge presentation', async function () {
           await activity.checkTransactionActivityByText('Bridged USDT');
           // destAmount is USDC base units (6 decimals): 5000000 → 5 USDC.
           await activity.checkTransactionAmount('5 USDC');
@@ -356,7 +356,7 @@ describe('Tron - Activity', function (this: Suite) {
           await details.checkHashLinkPresent();
         });
 
-        it('Tron-only filter hides EVM transactions', async function () {
+        it('hides EVM transactions under the Tron-only filter', async function () {
           await activity.checkTransactionActivityByText('Sent TRX');
           await activity.checkTransactionActivityNotPresentByText('Sent ETH');
           await activity.checkConfirmedTxNumberDisplayedInActivity(
@@ -366,7 +366,7 @@ describe('Tron - Activity', function (this: Suite) {
           await activity.checkTransactionAmountNotPresent('-4.56 ETH');
         });
 
-        it('All networks filter includes transactions from every enabled network', async function () {
+        it('includes transactions from every enabled network under the all networks filter', async function () {
           await selectAllNetworksFromNetworkSelect(driver);
           await activity.checkCompletedTxNumberDisplayedInActivity(
             CONFIRMED_TRON_ACTIVITY_COUNT + 1,

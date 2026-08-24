@@ -6,6 +6,8 @@ import {
   WindowProperties,
 } from './types';
 
+const RESPONSE_TIMEOUT_MS = 30_000;
+
 /**
  * This singleton class runs on the Mocha/Selenium test.
  * It's used to communicate from the Mocha/Selenium test to the Extension background script (service worker in MV3).
@@ -154,7 +156,7 @@ class ServerMochaToBackground {
       timeoutRef.id = setTimeout(() => {
         eventEmitter.removeListener('connection', onConnection);
         reject(new Error('Timed out waiting for background socket reconnect'));
-      }, 30000);
+      }, RESPONSE_TIMEOUT_MS);
 
       eventEmitter.on('connection', onConnection);
     });
@@ -162,13 +164,28 @@ class ServerMochaToBackground {
 
   async waitForFixtureStateResetResponse() {
     return new Promise<void>((resolve, reject) => {
-      const onResponse = () => {
-        this.eventEmitter.removeListener('error', reject);
-        resolve();
-      };
+      const { eventEmitter } = this;
 
-      this.eventEmitter.once('error', reject);
-      this.eventEmitter.once('fixtureStateReset', onResponse);
+      function onResponse() {
+        eventEmitter.removeListener('error', onError);
+        clearTimeout(timeoutId);
+        resolve();
+      }
+
+      function onError(error: Error) {
+        eventEmitter.removeListener('fixtureStateReset', onResponse);
+        clearTimeout(timeoutId);
+        reject(error);
+      }
+
+      const timeoutId = setTimeout(() => {
+        eventEmitter.removeListener('error', onError);
+        eventEmitter.removeListener('fixtureStateReset', onResponse);
+        reject(new Error('Timed out waiting for fixture state reset response'));
+      }, RESPONSE_TIMEOUT_MS);
+
+      eventEmitter.once('error', onError);
+      eventEmitter.once('fixtureStateReset', onResponse);
     });
   }
 

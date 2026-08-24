@@ -53,6 +53,10 @@ export type SwapQuote = {
  * @see ui/pages/swaps/swaps-banner-alert/swaps-banner-alert.js
  */
 class SwapPage {
+  private readonly assetPickerBackButton = '[aria-label="Back"]';
+
+  private readonly assetPickerCloseButton = '[aria-label="Close"]';
+
   private readonly assetPickerSearchInput =
     '[data-testid="bridge-asset-picker-search-input"]';
 
@@ -245,7 +249,9 @@ class SwapPage {
   }
 
   /**
-   * Waits until the swap amount fields match the expected quoted values.
+   * Waits until the swap amount fields match the expected quoted values. On
+   * timeout the wait error is swallowed and the final asserts fail instead,
+   * so the failure message names the mismatched field.
    *
    * @param expected - Expected from/to input values.
    * @param expected.fromAmount - Source amount field value.
@@ -258,13 +264,17 @@ class SwapPage {
     console.log(
       `Check swap amounts are ${expected.fromAmount} -> ${expected.toAmount}`,
     );
-    await this.driver.wait(async () => {
-      const fromAmount = await this.getFromAmountValue();
-      const toAmount = await this.getToAmountValue();
-      return (
-        fromAmount === expected.fromAmount && toAmount === expected.toAmount
-      );
-    });
+    await this.driver.wait(
+      async () => {
+        const fromAmount = await this.getFromAmountValue();
+        const toAmount = await this.getToAmountValue();
+        return (
+          fromAmount === expected.fromAmount && toAmount === expected.toAmount
+        );
+      },
+      this.driver.timeout,
+      true,
+    );
     const fromAmount = await this.getFromAmountValue();
     const toAmount = await this.getToAmountValue();
     assert.equal(
@@ -280,16 +290,21 @@ class SwapPage {
   }
 
   /**
-   * Waits until both swap amount fields have a non-empty value, then asserts
-   * they stayed populated so the timeout error names the empty field.
+   * Waits until both swap amount fields have a non-empty value. On timeout
+   * the wait error is swallowed and the final asserts fail instead, so the
+   * failure message names the empty field.
    */
   async checkSwapAmountsArePopulated(): Promise<void> {
     console.log('Check swap from-amount and to-amount are populated');
-    await this.driver.wait(async () => {
-      const fromAmount = await this.getFromAmountValue();
-      const toAmount = await this.getToAmountValue();
-      return fromAmount !== '' && toAmount !== '';
-    });
+    await this.driver.wait(
+      async () => {
+        const fromAmount = await this.getFromAmountValue();
+        const toAmount = await this.getToAmountValue();
+        return fromAmount !== '' && toAmount !== '';
+      },
+      this.driver.timeout,
+      true,
+    );
     const fromAmount = await this.getFromAmountValue();
     const toAmount = await this.getToAmountValue();
     assert.notEqual(
@@ -380,6 +395,17 @@ class SwapPage {
       text: 'Continue swapping',
       tag: 'button',
     });
+  }
+
+  /**
+   * Best-effort dismissal of a stuck asset-picker overlay: clicks the
+   * picker's Close and Back controls if present, without failing when
+   * either is absent.
+   */
+  async dismissStuckAssetPicker(): Promise<void> {
+    console.log('Dismiss stuck asset picker (best-effort)');
+    await this.driver.clickElementSafe(this.assetPickerCloseButton, 1000);
+    await this.driver.clickElementSafe(this.assetPickerBackButton, 1000);
   }
 
   async enterSwapAmount(amount: string): Promise<void> {

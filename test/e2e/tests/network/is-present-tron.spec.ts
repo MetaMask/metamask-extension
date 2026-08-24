@@ -137,7 +137,9 @@ describe('Tron - Network', function (this: Suite) {
   });
 
   describe('test networks enabled', function () {
-    it('shows Tron Nile when test networks are enabled', async function () {
+    // One behavior (testnets listed when the toggle is on) asserted across
+    // both rows of the same modal, so a single browser boot covers it.
+    it('shows Tron testnets when test networks are enabled', async function () {
       await withFixtures(
         {
           fixtures: buildTronNetworkFixture(),
@@ -151,27 +153,13 @@ describe('Tron - Network', function (this: Suite) {
           const networkFilter = new NetworkFilter(driver);
           await networkFilter.open();
           await selectNetworkModal.checkPageIsLoaded();
-          await selectNetworkModal.checkNetworkIsListed(TRON_NILE_NAME);
-          await selectNetworkModal.close();
-        },
-      );
-    });
 
-    it('shows Tron Shasta when test networks are enabled', async function () {
-      await withFixtures(
-        {
-          fixtures: buildTronNetworkFixture(),
-          title: this.test?.fullTitle(),
-          localNodeOptions: ['anvil'],
-          testSpecificMock: mockTronNetworkFlags,
-        },
-        async ({ driver }: { driver: Driver }) => {
-          await login(driver);
-          const selectNetworkModal = new SelectNetworkModal(driver);
-          const networkFilter = new NetworkFilter(driver);
-          await networkFilter.open();
-          await selectNetworkModal.checkPageIsLoaded();
+          console.log('Checking Tron Nile is listed in the network filter');
+          await selectNetworkModal.checkNetworkIsListed(TRON_NILE_NAME);
+
+          console.log('Checking Tron Shasta is listed in the network filter');
           await selectNetworkModal.checkNetworkIsListed(TRON_SHASTA_NAME);
+
           await selectNetworkModal.close();
         },
       );

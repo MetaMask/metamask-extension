@@ -52,7 +52,7 @@ describe('Swap on Tron', function (this: Suite) {
 
       // Runs first, while the snap's chain-parameters cache is still empty,
       // so the failed fee fetches have no last-known value to fall back on.
-      it('Swap disabled when Tron network fees cannot be estimated', async function () {
+      it('disables swapping when Tron network fees cannot be estimated', async function () {
         const homePage = new HomePage(driver);
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
@@ -147,7 +147,7 @@ describe('Swap on Tron', function (this: Suite) {
 
       // Runs last: switch the mocks to an empty quote list and back out of the
       // swap form again before reopening Swap.
-      it('No quotes available for the pair', async function () {
+      it('shows no quotes available for the pair', async function () {
         setMode('noQuotes');
         await returnToTronHome(driver, '106.07');
         const homePage = new HomePage(driver);

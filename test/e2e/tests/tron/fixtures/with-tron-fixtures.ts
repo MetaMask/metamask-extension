@@ -207,6 +207,11 @@ export async function withTronFixtures(
       // parse errors while extra HD accounts derive. withFixtures then opens
       // the background page to capture them; that navigate times out on
       // `.controller-loaded` and masks the real assertion result.
+      // TODO: Suppressing these is a temporary unblock. Remove both entries
+      // once the underlying Snap errors are fixed — file (and link here) a
+      // bug for the unmocked getSubscriptions RPC and the Snap JSON-RPC
+      // 'Unexpected end of JSON input' seen during extra HD account
+      // derivation; none exists yet.
       ignoredConsoleErrors: [
         'getSubscriptions',
         // Matches both `JsonRpcError: Unexpected end of JSON input` and the

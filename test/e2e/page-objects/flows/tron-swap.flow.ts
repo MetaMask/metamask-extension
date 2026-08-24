@@ -41,11 +41,10 @@ const CREATE_SWAP_MAX_ATTEMPTS = 2;
  * home-network-filter race: rather than trying to interact further with
  * sub-views that just proved unreliable, back out of both (best-effort —
  * either may already be closed) before retrying `createSwap` from scratch.
- * Both controls are clicked with a plain DOM `.click()` via `executeScript`
- * instead of `driver.clickElement`: they sit in the same churning picker
- * that broke the click above, so driving them through Selenium's
- * locate-then-wait-for-visible pipeline would be just as unreliable, and
- * this is best-effort recovery rather than an assertion.
+ * {@link SwapPage.dismissStuckAssetPicker} clicks the picker's Close and
+ * Back controls via `clickElementSafe` with short timeouts, so a control
+ * that is absent (its sub-view already closed) is simply skipped instead
+ * of failing the recovery.
  *
  * @param driver - WebDriver instance.
  * @param swapPage - Page object for the swap/bridge prepare screen.
@@ -68,12 +67,7 @@ export async function createTronSwap(
         `createSwap failed on attempt ${attempt}/${CREATE_SWAP_MAX_ATTEMPTS}, backing out of any stuck asset picker and retrying:`,
         error,
       );
-      await driver.executeScript(`
-        document.querySelector('[aria-label="Close"]')?.click();
-      `);
-      await driver.executeScript(`
-        document.querySelector('[aria-label="Back"]')?.click();
-      `);
+      await swapPage.dismissStuckAssetPicker();
     }
   }
 }

@@ -14,6 +14,10 @@ import {
   waitForPhishingBlocklistToBeLoaded,
 } from './helpers';
 
+// Shared by the blocklist mock below and the redirect tests inside the suite
+// so the mocked entry and the address the tests navigate to cannot drift.
+const blocked = '127.0.0.1';
+
 configureFixtureSession(
   'Phishing Detection - Redirect protections',
   {
@@ -23,7 +27,7 @@ configureFixtureSession(
       await setupPhishingDetectionMocks(mockServer, {
         statusCode: 200,
         blockProvider: BlockProvider.MetaMask,
-        blocklist: ['127.0.0.1'],
+        blocklist: [blocked],
         c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
         blocklistPaths: [],
       });
@@ -44,7 +48,6 @@ configureFixtureSession(
     const redirectableStatusCodes = [200, 301, 302, 303, 307, 308] as const;
 
     const destination = 'https://metamask.github.io/test-dapp/';
-    const blocked = '127.0.0.1';
 
     let server: Server;
 

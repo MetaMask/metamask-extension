@@ -153,7 +153,7 @@ describe('Tron - Assets', function (this: Suite) {
         });
       });
 
-      it('Lists TRX, TRC10, TRC20 with name, symbol, amount, fiat for portfolio account', async function () {
+      it('lists TRX, TRC10, TRC20 with name, symbol, amount, fiat for portfolio account', async function () {
         const driver = getDriver();
         await switchToPortfolioTronAccount(driver);
 
@@ -201,7 +201,7 @@ describe('Tron - Assets', function (this: Suite) {
         await tokensTab.checkConversionRateDisplayed();
       });
 
-      it('Current network filter shows only Tron assets', async function () {
+      it('shows only Tron assets under the current network filter', async function () {
         const driver = getDriver();
         await switchToPortfolioTronAccount(driver);
 
@@ -218,7 +218,7 @@ describe('Tron - Assets', function (this: Suite) {
         await tokensTab.checkAssetIsAbsent('Ethereum');
       });
 
-      it('TRX asset details: header, chart, action buttons, daily resource, sections', async function () {
+      it('shows TRX asset details: header, chart, action buttons, daily resource, sections', async function () {
         const driver = getDriver();
         await switchToPortfolioTronAccount(driver);
 
@@ -242,7 +242,7 @@ describe('Tron - Assets', function (this: Suite) {
         await returnToTronHome(driver);
       });
 
-      it('TRC20 asset details: header, chart, action buttons, sections — no daily resource', async function () {
+      it('shows TRC20 asset details: header, chart, action buttons, sections — no daily resource', async function () {
         const driver = getDriver();
         await switchToPortfolioTronAccount(driver);
 
@@ -261,7 +261,7 @@ describe('Tron - Assets', function (this: Suite) {
         await returnToTronHome(driver);
       });
 
-      it('All networks filter shows other chains alongside Tron', async function () {
+      it('shows other chains alongside Tron under the all networks filter', async function () {
         const driver = getDriver();
         await switchToPortfolioTronAccount(driver);
 
@@ -275,7 +275,7 @@ describe('Tron - Assets', function (this: Suite) {
       });
 
       // Runs last: leaves the low-value assets section expanded.
-      it('Low-value assets section hides tokens under $1 until expanded', async function () {
+      it('hides tokens under $1 in the low-value assets section until expanded', async function () {
         const driver = getDriver();
         await switchToPortfolioTronAccount(driver);
 
@@ -328,7 +328,7 @@ describe('Tron - Assets', function (this: Suite) {
         await prepareTronAssetsHomepage(getDriver());
       });
 
-      it('Portfolio account shows fiat as the main balance when native token is disabled', async function () {
+      it('shows fiat as the main balance for the portfolio account when native token is disabled', async function () {
         const driver = getDriver();
         await switchToPortfolioTronAccount(driver);
         const homePage = new HomePage(driver);

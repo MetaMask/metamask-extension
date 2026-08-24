@@ -29,9 +29,13 @@ const SUNSWAP_ROUTER_ADDRESS = 'TKzxdSv2FZKQrEqkKVgp5DcwEXBEKMg2Ax';
 const USDT_CONTRACT_ADDRESS = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 const ETH_MAINNET_CHAIN_ID = 1;
 const ETH_USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
-const ETH_USDC_ASSET_ID = `eip155:${ETH_MAINNET_CHAIN_ID}/erc20:${ETH_USDC_ADDRESS}`;
+// `as const` keeps the CAIP template-literal type required by the bridge
+// controllers' `assetId` fields (plain template consts widen to `string`).
+const ETH_USDC_ASSET_ID =
+  `eip155:${ETH_MAINNET_CHAIN_ID}/erc20:${ETH_USDC_ADDRESS}` as const;
 const TRON_MAINNET_CHAIN_ID = 728126428;
-const TRON_USDT_ASSET_ID = `${TRON_CHAIN_ID}/trc20:${USDT_CONTRACT_ADDRESS}`;
+const TRON_USDT_ASSET_ID =
+  `${TRON_CHAIN_ID}/trc20:${USDT_CONTRACT_ADDRESS}` as const;
 
 const TRC20_INFO = {
   USDT: {
@@ -496,5 +500,5 @@ export function tronBridgeHistoryItem(opts: {
       },
       status: StatusTypes.COMPLETE,
     },
-  } as BridgeHistoryItem;
+  };
 }
