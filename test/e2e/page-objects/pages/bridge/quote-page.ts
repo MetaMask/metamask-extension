@@ -49,6 +49,10 @@ class BridgeQuotePage {
 
   private backButton = '[aria-label="Back"]';
 
+  private readonly bridgeQuotePage = {
+    testId: 'parent-selector-bridge-quote',
+  };
+
   private closeButton = '[aria-label="Close"]';
 
   private confirmButton =
@@ -262,7 +266,7 @@ class BridgeQuotePage {
    */
   async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.sourceAssetPickerButton, {
+      await this.driver.waitForSelector(this.bridgeQuotePage, {
         timeout,
       });
     } catch (e) {

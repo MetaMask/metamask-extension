@@ -248,6 +248,23 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
+   * Waits until the Perps home view is visible and remains visible.
+   *
+   * @param timeout - Max wait time in ms (default 20 000).
+   */
+  async waitForPerpsViewStable(timeout = 20000): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.isElementPresentAndVisible(
+          this.perpsView,
+          1000,
+        );
+      },
+      { timeout, interval: 500, stableFor: 1000 },
+    );
+  }
+
+  /**
    * Waits until the number of position cards equals `expectedCount` (uses waitUntil to avoid race conditions).
    *
    * @param expectedCount - Expected number of position cards.

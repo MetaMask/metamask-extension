@@ -3,7 +3,7 @@
 exports[`RampsPaymentMethodListItem matches snapshot when showQuote with no matched quote amounts 1`] = `
 <div>
   <button
-    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
     data-testid="ramps-payment-method-item-debit-credit-card"
     role="button"
   >
@@ -14,10 +14,10 @@ exports[`RampsPaymentMethodListItem matches snapshot when showQuote with no matc
         class="flex flex-row gap-3 items-center min-w-0 flex-1"
       >
         <div
-          class="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+          class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
         >
           <svg
-            class="inline-block w-5 h-5 text-icon-default"
+            class="inline-block w-6 h-6 text-icon-alternative"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
@@ -30,11 +30,15 @@ exports[`RampsPaymentMethodListItem matches snapshot when showQuote with no matc
         <div
           class="flex flex-col items-start min-w-0 flex-1"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          <div
+            class="flex flex-row gap-2 items-center w-full min-w-0"
           >
-            Debit card
-          </p>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+            >
+              Debit card
+            </p>
+          </div>
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
             data-testid="ramps-payment-method-item-delay-debit-credit-card"
@@ -54,7 +58,7 @@ exports[`RampsPaymentMethodListItem matches snapshot when showQuote with no matc
 exports[`RampsPaymentMethodListItem matches snapshot while quote is loading 1`] = `
 <div>
   <button
-    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
     data-testid="ramps-payment-method-item-debit-credit-card"
     role="button"
   >
@@ -65,10 +69,10 @@ exports[`RampsPaymentMethodListItem matches snapshot while quote is loading 1`] 
         class="flex flex-row gap-3 items-center min-w-0 flex-1"
       >
         <div
-          class="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+          class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
         >
           <svg
-            class="inline-block w-5 h-5 text-icon-default"
+            class="inline-block w-6 h-6 text-icon-alternative"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
@@ -81,11 +85,15 @@ exports[`RampsPaymentMethodListItem matches snapshot while quote is loading 1`] 
         <div
           class="flex flex-col items-start min-w-0 flex-1"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          <div
+            class="flex flex-row gap-2 items-center w-full min-w-0"
           >
-            Debit card
-          </p>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+            >
+              Debit card
+            </p>
+          </div>
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
             data-testid="ramps-payment-method-item-delay-debit-credit-card"
@@ -131,7 +139,7 @@ exports[`RampsPaymentMethodListItem matches snapshot while quote is loading 1`] 
 exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] = `
 <div>
   <button
-    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
     data-testid="ramps-payment-method-item-debit-credit-card"
     role="button"
   >
@@ -142,10 +150,10 @@ exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] =
         class="flex flex-row gap-3 items-center min-w-0 flex-1"
       >
         <div
-          class="bg-primary-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+          class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
         >
           <svg
-            class="inline-block w-5 h-5 text-primary-default"
+            class="inline-block w-6 h-6 text-icon-alternative"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
@@ -158,22 +166,20 @@ exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] =
         <div
           class="flex flex-col items-start min-w-0 flex-1"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          <div
+            class="flex flex-row gap-2 items-center w-full min-w-0"
           >
-            Debit card
-          </p>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+            >
+              Debit card
+            </p>
+          </div>
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
             data-testid="ramps-payment-method-item-delay-debit-credit-card"
           >
-            5 - 10 mins
-          </p>
-          <p
-            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
-            data-testid="ramps-payment-method-item-limits-debit-credit-card"
-          >
-            $25.00 – $2,000.00
+            5 - 10 mins • $25.00 – $2,000.00
           </p>
         </div>
       </div>
@@ -181,7 +187,7 @@ exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] =
         class="flex flex-row gap-2 items-center shrink-0"
       >
         <svg
-          class="inline-block w-5 h-5 text-primary-default"
+          class="inline-block w-6 h-6 text-icon-default"
           data-testid="ramps-payment-method-item-selected"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -200,7 +206,7 @@ exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] =
 exports[`RampsPaymentMethodListItem matches snapshot with instant delay and no limits 1`] = `
 <div>
   <button
-    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
     data-testid="ramps-payment-method-item-bank-transfer"
     role="button"
   >
@@ -211,10 +217,10 @@ exports[`RampsPaymentMethodListItem matches snapshot with instant delay and no l
         class="flex flex-row gap-3 items-center min-w-0 flex-1"
       >
         <div
-          class="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+          class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
         >
           <svg
-            class="inline-block w-5 h-5 text-icon-default"
+            class="inline-block w-6 h-6 text-icon-alternative"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
@@ -227,11 +233,15 @@ exports[`RampsPaymentMethodListItem matches snapshot with instant delay and no l
         <div
           class="flex flex-col items-start min-w-0 flex-1"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          <div
+            class="flex flex-row gap-2 items-center w-full min-w-0"
           >
-            Bank transfer
-          </p>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+            >
+              Bank transfer
+            </p>
+          </div>
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
             data-testid="ramps-payment-method-item-delay-bank-transfer"
@@ -248,7 +258,7 @@ exports[`RampsPaymentMethodListItem matches snapshot with instant delay and no l
 exports[`RampsPaymentMethodListItem matches snapshot with quote amounts 1`] = `
 <div>
   <button
-    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
     data-testid="ramps-payment-method-item-debit-credit-card"
     role="button"
   >
@@ -259,10 +269,10 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote amounts 1`] = `
         class="flex flex-row gap-3 items-center min-w-0 flex-1"
       >
         <div
-          class="bg-primary-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+          class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
         >
           <svg
-            class="inline-block w-5 h-5 text-primary-default"
+            class="inline-block w-6 h-6 text-icon-alternative"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
@@ -275,11 +285,15 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote amounts 1`] = `
         <div
           class="flex flex-col items-start min-w-0 flex-1"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          <div
+            class="flex flex-row gap-2 items-center w-full min-w-0"
           >
-            Debit card
-          </p>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+            >
+              Debit card
+            </p>
+          </div>
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
             data-testid="ramps-payment-method-item-delay-debit-credit-card"
@@ -307,7 +321,7 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote amounts 1`] = `
           </p>
         </div>
         <svg
-          class="inline-block w-5 h-5 text-primary-default"
+          class="inline-block w-6 h-6 text-icon-default"
           data-testid="ramps-payment-method-item-selected"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -327,7 +341,7 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote error 1`] = `
 <div>
   <button
     aria-disabled="true"
-    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative cursor-not-allowed opacity-50 w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative cursor-not-allowed opacity-50 w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
     data-testid="ramps-payment-method-item-debit-credit-card"
     disabled=""
     role="button"
@@ -340,10 +354,10 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote error 1`] = `
         class="flex flex-row gap-3 items-center min-w-0 flex-1"
       >
         <div
-          class="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+          class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
         >
           <svg
-            class="inline-block w-5 h-5 text-icon-default"
+            class="inline-block w-6 h-6 text-icon-alternative"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
@@ -356,11 +370,15 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote error 1`] = `
         <div
           class="flex flex-col items-start min-w-0 flex-1"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          <div
+            class="flex flex-row gap-2 items-center w-full min-w-0"
           >
-            Debit card
-          </p>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+            >
+              Debit card
+            </p>
+          </div>
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
             data-testid="ramps-payment-method-item-delay-debit-credit-card"

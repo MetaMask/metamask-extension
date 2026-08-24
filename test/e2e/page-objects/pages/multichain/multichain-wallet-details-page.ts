@@ -14,11 +14,15 @@ import { Driver } from '../../../webdriver/driver';
 class MultichainWalletDetailsPage {
   private readonly driver: Driver;
 
+  private readonly parentSelector =
+    '[data-testid="parent-selector-multichain-wallet-details-page"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkPageIsLoaded(walletName: string): Promise<void> {
+    await this.driver.waitForSelector(this.parentSelector);
     await this.driver.waitForSelector({
       css: 'h4',
       text: `${walletName} / Accounts`,
