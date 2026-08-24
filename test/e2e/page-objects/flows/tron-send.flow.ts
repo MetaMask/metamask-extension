@@ -1,20 +1,20 @@
-import { WINDOW_TITLES } from "../../constants";
-import { Driver } from "../../webdriver/driver";
-import SnapTransactionConfirmation from "../pages/confirmations/snap-transaction-confirmation";
-import ActivityTab from "../pages/home/activity-tab";
-import HomePage from "../pages/home/homepage";
-import NonEvmHomepage from "../pages/home/non-evm-homepage";
-import SendPage from "../pages/send/send-page";
-import { TRON_CHAIN_ID } from "../../tests/tron/mocks/common-tron";
-import { switchToAccount } from "./account-list.flow";
-import { addMultipleAccounts } from "./add-account.flow";
-import { login } from "./login.flow";
-import { selectTronNetwork } from "./tron-network.flow";
-import { waitUntilAccountTreeSyncIdle } from "./tron-account-derivation.flow";
+import { WINDOW_TITLES } from '../../constants';
+import { Driver } from '../../webdriver/driver';
+import SnapTransactionConfirmation from '../pages/confirmations/snap-transaction-confirmation';
+import ActivityTab from '../pages/home/activity-tab';
+import HomePage from '../pages/home/homepage';
+import NonEvmHomepage from '../pages/home/non-evm-homepage';
+import SendPage from '../pages/send/send-page';
+import { TRON_CHAIN_ID } from '../../tests/tron/mocks/common-tron';
+import { switchToAccount } from './account-list.flow';
+import { addMultipleAccounts } from './add-account.flow';
+import { login } from './login.flow';
+import { selectTronNetwork } from './tron-network.flow';
+import { waitUntilAccountTreeSyncIdle } from './tron-account-derivation.flow';
 
 const TRON_CONFIRM_TIMEOUT_MS = 30_000;
 
-type TronSendSymbol = "TRX" | "USDT" | "USDD" | "HTX" | "SEED";
+type TronSendSymbol = 'TRX' | 'USDT' | 'USDD' | 'HTX' | 'SEED';
 
 /**
  * Logs in, selects Tron, and waits for homepage balances.
@@ -33,12 +33,12 @@ type TronSendSymbol = "TRX" | "USDT" | "USDD" | "HTX" | "SEED";
  * @param options.symbol - Token symbol used for the optional token balance wait.
  */
 export async function prepareTronHomepageForSend({
-  accountToSelect = "Account 1",
+  accountToSelect = 'Account 1',
   driver,
   extraHdAccountCount = 0,
-  expectedNativeBalance = "6.072",
+  expectedNativeBalance = '6.072',
   expectedTokenBalance,
-  symbol = "TRX",
+  symbol = 'TRX',
 }: {
   accountToSelect?: string;
   driver: Driver;
@@ -71,10 +71,16 @@ export async function prepareTronHomepageForSend({
   // every amount renders "Insufficient funds", leaving the Continue button
   // disabled. The local Tron node is seeded with 6.072 TRX in profiles.ts.
   if (expectedNativeBalance) {
-    await home.checkExpectedTokenBalanceIsDisplayed(expectedNativeBalance, "TRX");
+    await home.checkExpectedTokenBalanceIsDisplayed(
+      expectedNativeBalance,
+      'TRX',
+    );
   }
   if (expectedTokenBalance) {
-    await home.checkExpectedTokenBalanceIsDisplayed(expectedTokenBalance, symbol);
+    await home.checkExpectedTokenBalanceIsDisplayed(
+      expectedTokenBalance,
+      symbol,
+    );
   }
 }
 
@@ -97,13 +103,13 @@ export async function openTronSendAmountRecipient({
   const home = new HomePage(driver);
   const searchParams = new URLSearchParams({ chainId: TRON_CHAIN_ID });
   if (assetId) {
-    searchParams.set("asset", assetId);
+    searchParams.set('asset', assetId);
   }
   const sendUrl = `${driver.extensionUrl}/home.html#/send/amount-recipient?${searchParams.toString()}`;
   // Selenium `get()` is a no-op when the URL (including hash) is unchanged, so
   // leave Send first when a previous case already landed here.
   const currentUrl = await driver.getCurrentUrl();
-  if (currentUrl.includes("#/send")) {
+  if (currentUrl.includes('#/send')) {
     await home.navigateToHome();
   }
   await driver.openNewURL(sendUrl);
@@ -128,9 +134,9 @@ export async function openTronSendAmountRecipient({
 export async function switchToTronAccountForSend({
   accountName,
   driver,
-  expectedNativeBalance = "6.072",
+  expectedNativeBalance = '6.072',
   expectedTokenBalance,
-  symbol = "TRX",
+  symbol = 'TRX',
 }: {
   accountName: string;
   driver: Driver;
@@ -140,7 +146,7 @@ export async function switchToTronAccountForSend({
 }): Promise<void> {
   const home = new NonEvmHomepage(driver);
   const currentUrl = await driver.getCurrentUrl();
-  if (currentUrl.includes("#/send")) {
+  if (currentUrl.includes('#/send')) {
     await home.navigateToHome();
   }
 
@@ -151,10 +157,16 @@ export async function switchToTronAccountForSend({
   await home.goToTokensTab();
 
   if (expectedNativeBalance) {
-    await home.checkExpectedTokenBalanceIsDisplayed(expectedNativeBalance, "TRX");
+    await home.checkExpectedTokenBalanceIsDisplayed(
+      expectedNativeBalance,
+      'TRX',
+    );
   }
   if (expectedTokenBalance) {
-    await home.checkExpectedTokenBalanceIsDisplayed(expectedTokenBalance, symbol);
+    await home.checkExpectedTokenBalanceIsDisplayed(
+      expectedTokenBalance,
+      symbol,
+    );
   }
 }
 
@@ -168,7 +180,7 @@ export async function confirmTronSendAndAssertActivity({
   expectedConfirmedTxCount?: number;
 }): Promise<void> {
   const snapConfirmation = new SnapTransactionConfirmation(driver);
-  const extensionHandle = await driver.driver.getWindowHandle();
+  const extensionHandle = await driver.getCurrentWindowHandle();
   let usingDialog = false;
 
   try {
@@ -195,8 +207,12 @@ export async function confirmTronSendAndAssertActivity({
   await homePage.goToActivityList();
 
   const activityList = new ActivityTab(driver);
-  await activityList.checkPendingOrConfirmedTxNumberDisplayedInActivity(expectedConfirmedTxCount);
-  await activityList.checkConfirmedTxNumberDisplayedInActivity(expectedConfirmedTxCount);
+  await activityList.checkPendingOrConfirmedTxNumberDisplayedInActivity(
+    expectedConfirmedTxCount,
+  );
+  await activityList.checkConfirmedTxNumberDisplayedInActivity(
+    expectedConfirmedTxCount,
+  );
   if (expectedAmount) {
     await activityList.checkTxAmountInActivity(expectedAmount, 1);
   }
