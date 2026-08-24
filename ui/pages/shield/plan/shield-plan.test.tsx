@@ -27,6 +27,8 @@ describe('Change payment method', () => {
     const mockStore = configureMockStore([])(mockState);
     const { getByTestId } = renderWithProvider(<ShieldPlan />, mockStore);
 
-    expect(getByTestId('shield-plan-page')).toBeInTheDocument();
+    expect(
+      getByTestId('parent-selector-shield-plan-page'),
+    ).toBeInTheDocument();
   });
 });
