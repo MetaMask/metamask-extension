@@ -274,10 +274,7 @@ export default function Home() {
       <AppHeader />
       <div className="flex flex-col flex-1 min-h-0">
         <ScrollContainer className="main-container main-container--has-shadow">
-          <div
-            className="home__container"
-            data-testid="parent-selector-home"
-          >
+          <div className="home__container" data-testid="parent-selector-home">
             <MetaMetricsConsentContainer />
             <PasswordOutdatedModalContainer />
             <MultiRpcEditModalContainer />

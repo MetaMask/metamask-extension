@@ -75,12 +75,12 @@ export default function DeFiTab({
   // wrap only the V2 branch so integration tests (and other trees without a
   // UI messenger) keep working when the V2 flag is off.
   const content = isDefiControllerV2Enabled ? (
-      <RouteMessengerProvider
-        path="defi-tab"
-        capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
-      >
-        <DeFiTabContentV2 onClickAsset={onClickAsset} />
-      </RouteMessengerProvider>
+    <RouteMessengerProvider
+      path="defi-tab"
+      capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
+    >
+      <DeFiTabContentV2 onClickAsset={onClickAsset} />
+    </RouteMessengerProvider>
   ) : (
     <DeFiTabContentV1 onClickAsset={onClickAsset} />
   );
