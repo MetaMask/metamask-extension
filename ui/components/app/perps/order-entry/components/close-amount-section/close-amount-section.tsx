@@ -203,14 +203,14 @@ export const CloseAmountSection = ({
           ? formatNumberForInput(totalNotionalUsd, USD_INPUT_DECIMALS)
           : value,
       );
-      // Rounded to the precision the percent field renders, not to a whole
-      // percent: whole-percent rounding moves a typed dollar amount by several
-      // cents on a small position, while this keeps it within a hundredth of a
-      // cent and guarantees the committed value is the one displayed.
+      // Kept exact, deliberately un-rounded. The trader asked to close a precise
+      // dollar amount, and a percentage step is worth more the larger the
+      // position: 0.01% of a $112,500 position is $11.25, so rounding here would
+      // silently close more than was typed. The dollar field remains the source
+      // of truth for what it shows; the percent field, which can only render two
+      // decimals, is the approximation.
       onClosePercentChange(
-        clampClosePercent(
-          roundToPercentPrecision((parsed / totalNotionalUsd) * 100),
-        ),
+        clampClosePercent((parsed / totalNotionalUsd) * 100),
       );
     },
     [totalNotionalUsd, onClosePercentChange, onInputMethodChange],

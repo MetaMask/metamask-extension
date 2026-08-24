@@ -1,4 +1,5 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { act, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import mockState from '../../../../../test/data/mock-state.json';
@@ -407,7 +408,8 @@ describe('OrderEntry', () => {
       );
     });
 
-    it('reports the input method the trader used to size the close', () => {
+    it('reports the input method the trader used to size the close', async () => {
+      const user = userEvent.setup();
       const onInputMethodChange = jest.fn();
       renderWithProvider(
         <OrderEntry
@@ -419,11 +421,16 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+      await act(async () => {
+        await user.click(screen.getByTestId('close-amount-mode-percent'));
+      });
       const percentInput = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      fireEvent.change(percentInput, { target: { value: '50' } });
+      await act(async () => {
+        await user.clear(percentInput);
+        await user.type(percentInput, '50');
+      });
 
       // Without the forward in the close branch this route reports nothing and
       // every close from it is attributed to 'default'.

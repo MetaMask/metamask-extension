@@ -221,6 +221,24 @@ jest.mock('../perps-toast', () => ({
   }),
 }));
 
+/**
+ * Runs realistic user interactions with their React updates contained.
+ *
+ * `userEvent` resolves between keystrokes, so the re-renders it triggers land
+ * outside React's test scope and are reported as act warnings. Wrapping the
+ * whole interaction keeps the realistic input behaviour without adding noise.
+ *
+ * @param interact - Callback issuing the userEvent calls.
+ */
+const interactAs = async (
+  interact: (user: ReturnType<typeof userEvent.setup>) => Promise<void>,
+) => {
+  const user = userEvent.setup();
+  await act(async () => {
+    await interact(user);
+  });
+};
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -488,8 +506,13 @@ describe('ClosePositionModal', () => {
         screen.getByTestId('close-amount-value'),
       ).getByRole('textbox');
       // Half of the 2.5 ETH position at 2,900 is 3,625 USD.
-      fireEvent.change(usdInput, { target: { value: '3625' } });
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('3625');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -511,12 +534,19 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+      await interactAs((user) =>
+        user.click(screen.getByTestId('close-amount-mode-percent')),
+      );
       const percentInput = within(
         screen.getByTestId('close-amount-percent'),
       ).getByRole('textbox');
-      fireEvent.change(percentInput, { target: { value: '50' } });
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await interactAs(async (user) => {
+        await user.clear(percentInput);
+        await user.paste('50');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -541,13 +571,18 @@ describe('ClosePositionModal', () => {
       const usdInput = within(
         screen.getByTestId('close-amount-value'),
       ).getByRole('textbox');
-      fireEvent.change(usdInput, { target: { value: '999999' } });
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('999999');
+      });
 
       expect(
         screen.getByTestId('close-amount-over-close-error'),
       ).toBeInTheDocument();
 
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalled();
@@ -569,17 +604,24 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+      await interactAs((user) =>
+        user.click(screen.getByTestId('close-amount-mode-percent')),
+      );
       const percentInput = within(
         screen.getByTestId('close-amount-percent'),
       ).getByRole('textbox');
-      fireEvent.change(percentInput, { target: { value: '150' } });
+      await interactAs(async (user) => {
+        await user.clear(percentInput);
+        await user.paste('150');
+      });
 
       expect(
         screen.getByTestId('close-amount-over-close-error'),
       ).toBeInTheDocument();
 
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalled();
@@ -600,12 +642,19 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+      await interactAs((user) =>
+        user.click(screen.getByTestId('close-amount-mode-percent')),
+      );
       const percentInput = within(
         screen.getByTestId('close-amount-percent'),
       ).getByRole('textbox');
-      fireEvent.change(percentInput, { target: { value: '50' } });
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await interactAs(async (user) => {
+        await user.clear(percentInput);
+        await user.paste('50');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -636,8 +685,13 @@ describe('ClosePositionModal', () => {
       const usdInput = within(
         screen.getByTestId('close-amount-value'),
       ).getByRole('textbox');
-      fireEvent.change(usdInput, { target: { value: '3625' } });
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('3625');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -669,7 +723,9 @@ describe('ClosePositionModal', () => {
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       fireEvent.change(slider, { target: { value: '50' } });
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -697,7 +753,9 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
