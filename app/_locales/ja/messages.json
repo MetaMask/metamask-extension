@@ -156,9 +156,6 @@
     "message": "$1件のアカウント",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "アカウントを確認しトランザクションを提案する"
-  },
   "accountsSmallCase": {
     "message": "アカウント"
   },
@@ -2761,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "USBまたはQRコードを使用"
   },
-  "connectAccounts": {
-    "message": "アカウントの接続"
-  },
   "connectAnyway": {
     "message": "それでも接続する"
   },
@@ -2810,18 +2804,6 @@
   },
   "connectedSnaps": {
     "message": "接続されているSnap"
-  },
-  "connectedWithAccount": {
-    "message": "$1個のアカウントが接続されました",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "$1と接続済み",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1個のネットワークが接続されました",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "接続中"
@@ -3427,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "すべてのDAppの接続が解除されました。"
   },
-  "disconnectMessage": {
-    "message": "これにより、このサイトへの接続が解除されます"
-  },
   "disconnectPrompt": {
     "message": "$1を接続解除"
   },
@@ -3609,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "元のネットワークを編集"
-  },
-  "editNetworksTitle": {
-    "message": "ネットワークの編集"
   },
   "editNonceField": {
     "message": "ナンスを編集"
@@ -5288,10 +5264,6 @@
   "more": {
     "message": "さらに表示"
   },
-  "moreAccounts": {
-    "message": "+ $1個のアカウント",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "さらに表示"
   },
@@ -5728,9 +5700,6 @@
   "networkOptions": {
     "message": "ネットワークオプション"
   },
-  "networkPermissionToast": {
-    "message": "ネットワークのアクセス許可が更新されました"
-  },
   "networkStatus": {
     "message": "ネットワークステータス"
   },
@@ -5765,9 +5734,6 @@
     "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
-    "message": "ネットワーク"
-  },
-  "networksSmallCase": {
     "message": "ネットワーク"
   },
   "new": {
@@ -8298,9 +8264,6 @@
     "message": "購入成功",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "その他のオプション"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "営業日"
   },
@@ -8518,9 +8481,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "これが承認を要求しているサイトです。"
-  },
-  "requestingFor": {
-    "message": "次の要求:"
   },
   "required": {
     "message": "必須"

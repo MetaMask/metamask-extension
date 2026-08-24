@@ -4,7 +4,6 @@ import { Suite } from 'mocha';
 import {
   ACCOUNT_2,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-  DAPP_HOST_ADDRESS,
   DAPP_PATH,
   DAPP_URL,
   WINDOW_TITLES,
@@ -12,9 +11,9 @@ import {
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { buildEvmEip1193FixtureScopes } from '../../fixtures/permission-scopes';
 import { login } from '../../page-objects/flows/login.flow';
 import { approveConnect } from '../../page-objects/flows/connect.flow';
-import { updateConnectedSiteNetworkSelection } from '../../page-objects/flows/permissions.flow';
 import { Driver, PAGES } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
@@ -200,7 +199,18 @@ describe('MM Connect-EVM', function (this: Suite) {
     it('reflects dapp-initiated chain switch in the wallet', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2().build(),
+          // The dapp is seeded with an EIP-1193-compatible permission for
+          // Localhost 8545, Polygon, and Ethereum Mainnet so the switch only
+          // tests chain-switching, not the combined "approve new network +
+          // switch" flow. The dapp auto-connects the legacy provider from the
+          // seeded session (no connect click — the dapp's connect button
+          // would fire a fresh permission request) and switches to its default
+          // Mainnet chain on load, which is why eip155:1 must be permitted too.
+          fixtures: new FixtureBuilderV2()
+            .withPermissionControllerConnectedToTestDapp({
+              scopes: buildEvmEip1193FixtureScopes([1337, 137, 1]),
+            })
+            .build(),
           title: this.test?.fullTitle(),
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
@@ -209,17 +219,6 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
-          await testDapp.connectLegacy();
-          await approveConnect(driver);
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-          // Enable Polygon so the switch only tests chain-switching, not
-          // the combined "approve new network + switch" flow.
-          await updateConnectedSiteNetworkSelection(driver, DAPP_HOST_ADDRESS, [
-            { networkName: 'Polygon', shouldBeSelected: true },
-          ]);
-          await testDapp.switchTo();
           await testDapp.checkLegacyCardVisible();
 
           // Click "Switch to Polygon" in the card — triggers wallet_switchEthereumChain.

@@ -156,9 +156,6 @@
     "message": "$1 comptes",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Consultez vos comptes et suggérez des transactions"
-  },
   "accountsSmallCase": {
     "message": "comptes"
   },
@@ -2761,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Utilisation d’une clé USB ou d’un code QR"
   },
-  "connectAccounts": {
-    "message": "Connecter les comptes"
-  },
   "connectAnyway": {
     "message": "Se connecter quand même"
   },
@@ -2810,18 +2804,6 @@
   },
   "connectedSnaps": {
     "message": "Snaps connectés"
-  },
-  "connectedWithAccount": {
-    "message": "$1 comptes connectés",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Connecté avec $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 réseaux connectés",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Connexion…"
@@ -3427,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Toutes les dapps ont été déconnectées avec succès."
   },
-  "disconnectMessage": {
-    "message": "Cela vous déconnectera de ce site"
-  },
   "disconnectPrompt": {
     "message": "Déconnecter $1"
   },
@@ -3609,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "modifier le réseau d’origine"
-  },
-  "editNetworksTitle": {
-    "message": "Modifier les réseaux"
   },
   "editNonceField": {
     "message": "Modifier le nonce"
@@ -5284,10 +5260,6 @@
   "more": {
     "message": "plus"
   },
-  "moreAccounts": {
-    "message": "+ $1 comptes supplémentaires",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "Plus"
   },
@@ -5724,9 +5696,6 @@
   "networkOptions": {
     "message": "Options du réseau"
   },
-  "networkPermissionToast": {
-    "message": "Les autorisations réseau ont été mises à jour"
-  },
   "networkStatus": {
     "message": "Statut du réseau"
   },
@@ -5762,9 +5731,6 @@
   },
   "networks": {
     "message": "Réseaux"
-  },
-  "networksSmallCase": {
-    "message": "réseaux"
   },
   "new": {
     "message": "Nouveau!"
@@ -8294,9 +8260,6 @@
     "message": "Achat effectué avec succès",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Autres options"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "jour ouvrable"
   },
@@ -8514,9 +8477,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Il s’agit du site qui demande votre confirmation."
-  },
-  "requestingFor": {
-    "message": "Demande de"
   },
   "required": {
     "message": "Requis"

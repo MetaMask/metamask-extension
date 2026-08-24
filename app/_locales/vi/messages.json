@@ -156,9 +156,6 @@
     "message": "$1 tài khoản",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Xem tài khoản của bạn và đề xuất giao dịch"
-  },
   "accountsSmallCase": {
     "message": "tài khoản"
   },
@@ -2761,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Sử dụng USB hoặc mã QR"
   },
-  "connectAccounts": {
-    "message": "Kết nối tài khoản"
-  },
   "connectAnyway": {
     "message": "Vẫn kết nối"
   },
@@ -2810,18 +2804,6 @@
   },
   "connectedSnaps": {
     "message": "Snap đã kết nối"
-  },
-  "connectedWithAccount": {
-    "message": "Đã kết nối $1 tài khoản",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Đã kết nối với $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "Đã kết nối $1 mạng",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Đang kết nối"
@@ -3427,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Đã ngắt kết nối tất cả dapp thành công."
   },
-  "disconnectMessage": {
-    "message": "Hành động này sẽ ngắt kết nối bạn khỏi trang web này"
-  },
   "disconnectPrompt": {
     "message": "Ngắt kết nối $1"
   },
@@ -3609,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "chỉnh sửa mạng gốc"
-  },
-  "editNetworksTitle": {
-    "message": "Chỉnh sửa mạng"
   },
   "editNonceField": {
     "message": "Chỉnh sửa số nonce"
@@ -5288,10 +5264,6 @@
   "more": {
     "message": "thêm"
   },
-  "moreAccounts": {
-    "message": "+ $1 tài khoản nữa",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "Thêm"
   },
@@ -5728,9 +5700,6 @@
   "networkOptions": {
     "message": "Tùy chọn mạng"
   },
-  "networkPermissionToast": {
-    "message": "Đã cập nhật quyền truy cập mạng"
-  },
   "networkStatus": {
     "message": "Trạng thái mạng"
   },
@@ -5766,9 +5735,6 @@
   },
   "networks": {
     "message": "Mạng"
-  },
-  "networksSmallCase": {
-    "message": "mạng"
   },
   "new": {
     "message": "Mới!"
@@ -8302,9 +8268,6 @@
     "message": "Mua thành công",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Tùy chọn khác"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "ngày làm việc"
   },
@@ -8522,9 +8485,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Đây là trang web yêu cầu xác nhận của bạn."
-  },
-  "requestingFor": {
-    "message": "Yêu cầu cho"
   },
   "required": {
     "message": "Bắt buộc"
