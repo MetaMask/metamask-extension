@@ -20,7 +20,7 @@ import {
 } from '../../../../store/actions';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
 import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
-import { DisconnectPermissionsModal } from '../../../multichain/disconnect-permissions-modal/disconnect-permissions-modal';
+import { DisconnectAllGatorPermissionsModal } from '../../../multichain/disconnect-permissions-modal/disconnect-permissions-modal';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
 import { getCaip25CaveatValueFromPermissions } from '../../../../helpers/utils/caip25-permissions';
@@ -44,7 +44,7 @@ export const MultichainReviewPermissions = () => {
 
   const originParam = searchParams.get('origin');
   const securedOrigin = decodeURIComponent(originParam ?? '');
-  const [showDisconnectPermissionsModal, setShowDisconnectPermissionsModal] =
+  const [showGatorPermissionsModal, setShowGatorPermissionsModal] =
     useState(false);
   const activeTabOrigin: string = securedOrigin;
 
@@ -150,7 +150,7 @@ export const MultichainReviewPermissions = () => {
   const { revokeGatorPermissionsBatchMultiChain } =
     useRevokeGatorPermissionsMultiChain();
 
-  // Format permissions for the DisconnectPermissionsModal
+  // Format permissions for the DisconnectAllGatorPermissionsModal
   const formattedPermissions = useMemo(() => {
     return tokenTransferPermissions.map((permission) => ({
       permission,
@@ -176,7 +176,7 @@ export const MultichainReviewPermissions = () => {
         disconnectAllPermissions();
         endTrace({ name: TraceName.DisconnectAllModal });
 
-        setShowDisconnectPermissionsModal(false);
+        setShowGatorPermissionsModal(false);
 
         // Revoke gator permissions if they exist (run in background)
         if (
@@ -212,7 +212,7 @@ export const MultichainReviewPermissions = () => {
   // Shows gator permissions modal if needed, otherwise disconnects directly
   const handleDisconnectWithGatorCheck = useCallback(() => {
     if (hasTokenTransferPermissions) {
-      setShowDisconnectPermissionsModal(true);
+      setShowGatorPermissionsModal(true);
       return;
     }
     handleDisconnect();
@@ -263,10 +263,10 @@ export const MultichainReviewPermissions = () => {
         }}
         onDisconnect={handleDisconnectWithGatorCheck}
       />
-      {showDisconnectPermissionsModal ? (
-        <DisconnectPermissionsModal
-          isOpen={showDisconnectPermissionsModal}
-          onClose={() => setShowDisconnectPermissionsModal(false)}
+      {showGatorPermissionsModal ? (
+        <DisconnectAllGatorPermissionsModal
+          isOpen={showGatorPermissionsModal}
+          onClose={() => setShowGatorPermissionsModal(false)}
           onSkip={() => handleDisconnect()}
           onRemoveAll={() => handleDisconnect({ revokeGatorPermissions: true })}
           permissions={formattedPermissions}

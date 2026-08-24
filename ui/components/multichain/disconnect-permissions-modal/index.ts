@@ -1,7 +1,7 @@
-export { DisconnectPermissionsModal } from './disconnect-permissions-modal';
+export { DisconnectAllGatorPermissionsModal } from './disconnect-permissions-modal';
 export { PermissionItem } from './permission-item';
 export type {
-  DisconnectPermissionsModalProps,
+  DisconnectAllGatorPermissionsModalProps,
   GatorPermission,
   PermissionItemProps,
 } from './types';

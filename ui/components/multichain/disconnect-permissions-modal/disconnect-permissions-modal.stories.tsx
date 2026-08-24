@@ -1,9 +1,9 @@
 import React from 'react';
-import { DisconnectPermissionsModal } from './disconnect-permissions-modal';
+import { DisconnectAllGatorPermissionsModal } from './disconnect-permissions-modal';
 
 export default {
-  title: 'Components/Multichain/DisconnectPermissionsModal',
-  component: DisconnectPermissionsModal,
+  title: 'Components/Multichain/DisconnectAllGatorPermissionsModal',
+  component: DisconnectAllGatorPermissionsModal,
   parameters: {
     docs: {
       description: {
@@ -32,7 +32,7 @@ export default {
   },
 };
 
-const Template = (args) => <DisconnectPermissionsModal {...args} />;
+const Template = (args) => <DisconnectAllGatorPermissionsModal {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
