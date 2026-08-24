@@ -594,9 +594,6 @@ class ActivityTab extends HomePage {
     await this.driver.clickElement(this.confirmedTransactions);
   }
 
-  /**
-   * Clicks the copy transaction hash button.
-   */
   async clickCopyTransactionHashButton(): Promise<void> {
     console.log('Clicking copy transaction hash button');
     await this.driver.clickElement(this.copyTransactionHashButton);

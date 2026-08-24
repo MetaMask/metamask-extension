@@ -169,6 +169,12 @@ class SelectNetworkModal {
     await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
   }
 
+  async closeIfOpen(): Promise<void> {
+    console.log('Close the select network modal if it is still open');
+    await this.driver.clickElementSafe(this.modalCloseButton, 500);
+    await this.waitForModalToClose();
+  }
+
   async selectAllNetworks(): Promise<void> {
     console.log('Selecting all networks');
     await this.driver.clickElementAndWaitToDisappear(this.allNetworksItem);
@@ -190,6 +196,13 @@ class SelectNetworkModal {
     await this.driver.clickElementAndWaitToDisappear(
       this.networkListItemByName(networkName),
     );
+  }
+
+  async waitForModalToClose(): Promise<void> {
+    console.log('Wait for the select network modal to close');
+    await this.driver.assertElementNotPresent(this.allNetworksItem, {
+      timeout: 15_000,
+    });
   }
 }
 

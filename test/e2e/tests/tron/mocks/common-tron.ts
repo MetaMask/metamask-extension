@@ -1442,35 +1442,43 @@ const MOCK_TRON_TOKENS = [
 
 export async function mockBridgeGetTronTokens(
   mockServer: Mockttp,
-): Promise<MockedEndpoint> {
-  mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
-    statusCode: 200,
-    json: {
-      pageInfo: {
-        hasNextPage: false,
-        endCursor: null,
+): Promise<MockedEndpoint[]> {
+  const searchEndpoint = await mockServer
+    .forPost(/getTokens\/search/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+        },
+        data: MOCK_TRON_TOKENS,
       },
-      data: MOCK_TRON_TOKENS,
-    },
-  }));
+    }));
 
-  return mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
-    statusCode: 200,
-    json: MOCK_TRON_TOKENS,
-  }));
+  const popularEndpoint = await mockServer
+    .forPost(/getTokens\/popular/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: MOCK_TRON_TOKENS,
+    }));
+
+  return [searchEndpoint, popularEndpoint];
 }
 
-// Backwards-compatible default for existing tests (1 TRX → ~0.295 USDT)
+// Backwards-compatible default quote for existing tests (1 TRX → ~0.295 USDT)
+const DEFAULT_TRON_QUOTE_FIXTURE: TronQuoteFixture = {
+  src: 'TRX',
+  dest: 'USDT',
+  srcAmount: '991250',
+  destAmount: '294852',
+  feeSun: 8_750,
+};
+
 export async function mockBridgeGetTronQuote(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return mockBridgeGetTronQuoteFor(mockServer, {
-    src: 'TRX',
-    dest: 'USDT',
-    srcAmount: '991250',
-    destAmount: '294852',
-    feeSun: 8_750,
-  });
+  return mockBridgeGetTronQuoteFor(mockServer, DEFAULT_TRON_QUOTE_FIXTURE);
 }
 
 export async function mockBridgeGetTronQuoteEmpty(
@@ -1484,6 +1492,53 @@ export async function mockBridgeGetTronQuoteEmpty(
     }));
 }
 
+function buildTronChainParametersResponse() {
+  return {
+    chainParameter: [
+      { key: 'getMaintenanceTimeInterval', value: 21600000 },
+      { key: 'getAccountUpgradeCost', value: 9999000000 },
+      { key: 'getCreateNewAccountFeeInSystemContract', value: 1000000 },
+      { key: 'getCreateAccountFee', value: 100000 },
+      { key: 'getTransactionFee', value: 1000 },
+      { key: 'getAssetIssueFee', value: 1024000000 },
+      { key: 'getEnergyFee', value: 420 },
+      { key: 'getTotalEnergyLimit', value: 180000000000 },
+      { key: 'getAllowTvmTransferTrc10', value: 1 },
+      { key: 'getTotalEnergyCurrentLimit', value: 180000000000 },
+      { key: 'getAllowMultiSign', value: 1 },
+      { key: 'getAllowAdaptivEnergy', value: 1 },
+    ],
+  };
+}
+
+function buildTronNextMaintenanceTimeResponse() {
+  return { num: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR };
+}
+
+function buildTronTriggerConstantContractResponse() {
+  return {
+    result: { result: true },
+    energy_used: 1000,
+    energy_penalty: 0,
+    constant_result: [
+      '0000000000000000000000000000000000000000000000000000000000000001',
+    ],
+    transaction: {
+      ret: [{}],
+      visible: false,
+      txID: 'mock_trigger_constant_txid',
+      raw_data: {
+        contract: [],
+        ref_block_bytes: 'f733',
+        ref_block_hash: 'ff89d72ddc1ce1ea',
+        expiration: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+        timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+      },
+      raw_data_hex: '',
+    },
+  };
+}
+
 export async function mockTronGetChainParameters(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
@@ -1492,22 +1547,7 @@ export async function mockTronGetChainParameters(
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        chainParameter: [
-          { key: 'getMaintenanceTimeInterval', value: 21600000 },
-          { key: 'getAccountUpgradeCost', value: 9999000000 },
-          { key: 'getCreateNewAccountFeeInSystemContract', value: 1000000 },
-          { key: 'getCreateAccountFee', value: 100000 },
-          { key: 'getTransactionFee', value: 1000 },
-          { key: 'getAssetIssueFee', value: 1024000000 },
-          { key: 'getEnergyFee', value: 420 },
-          { key: 'getTotalEnergyLimit', value: 180000000000 },
-          { key: 'getAllowTvmTransferTrc10', value: 1 },
-          { key: 'getTotalEnergyCurrentLimit', value: 180000000000 },
-          { key: 'getAllowMultiSign', value: 1 },
-          { key: 'getAllowAdaptivEnergy', value: 1 },
-        ],
-      },
+      json: buildTronChainParametersResponse(),
     }));
 }
 
@@ -1519,7 +1559,7 @@ export async function mockTronGetNextMaintenanceTime(
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: { num: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR },
+      json: buildTronNextMaintenanceTimeResponse(),
     }));
 }
 
@@ -1531,27 +1571,7 @@ export async function mockTronTriggerConstantContract(
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        result: { result: true },
-        energy_used: 1000,
-        energy_penalty: 0,
-        constant_result: [
-          '0000000000000000000000000000000000000000000000000000000000000001',
-        ],
-        transaction: {
-          ret: [{}],
-          visible: false,
-          txID: 'mock_trigger_constant_txid',
-          raw_data: {
-            contract: [],
-            ref_block_bytes: 'f733',
-            ref_block_hash: 'ff89d72ddc1ce1ea',
-            expiration: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
-            timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
-          },
-          raw_data_hex: '',
-        },
-      },
+      json: buildTronTriggerConstantContractResponse(),
     }));
 }
 
@@ -1660,7 +1680,7 @@ export async function mockTronSwapApis(
 ): Promise<MockedEndpoint[]> {
   return [
     ...(await mockTronApis(mockServer, mockZeroBalance)),
-    await mockBridgeGetTronTokens(mockServer),
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockBridgeGetTronQuote(mockServer),
     await mockTronGetChainParameters(mockServer),
     await mockTronGetNextMaintenanceTime(mockServer),
@@ -1675,7 +1695,7 @@ export async function mockTronSwapApisNoQuotes(
 ): Promise<MockedEndpoint[]> {
   return [
     ...(await mockTronApis(mockServer, mockZeroBalance)),
-    await mockBridgeGetTronTokens(mockServer),
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockBridgeGetTronQuoteEmpty(mockServer),
   ];
 }
@@ -1686,7 +1706,7 @@ export async function mockTronSwapApisWithoutFeeEstimation(
 ): Promise<MockedEndpoint[]> {
   return [
     ...(await mockTronApis(mockServer, mockZeroBalance)),
-    await mockBridgeGetTronTokens(mockServer),
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockBridgeGetTronQuote(mockServer),
   ];
 }

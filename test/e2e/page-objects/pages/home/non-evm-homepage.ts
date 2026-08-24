@@ -2,8 +2,8 @@ import HomePage from './homepage';
 import TokensTab from './tokens-tab';
 
 /**
- * Home account overview when a non-EVM account (Solana, Bitcoin, etc.) is
- * selected.
+ * Home account overview when a non-EVM account (Solana, Bitcoin, Tron, etc.)
+ * is selected.
  *
  * Screen: `#/` (DEFAULT_ROUTE) with a non-EVM account active.
  * Owns: non-EVM token balance checks (delegates to `TokensTab`); inherits
