@@ -35,6 +35,13 @@ export const MONEY_EARNING_SECTION_ENABLED_FLAG_NAME =
   'earnMoneyEarningSectionEnabled';
 
 /**
+ * The LaunchDarkly flag that injects curated Money activity rows for UI
+ * review. Same name and plain-boolean shape as mobile.
+ */
+export const MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME =
+  'moneyActivityMockDataEnabled';
+
+/**
  * Whether the Money Account feature is enabled.
  *
  * The flag is version-gated, so an absent, malformed, or below-minimum-version
@@ -135,4 +142,26 @@ export function isMoneyEarningSectionEnabled(
       remoteFeatureFlags?.[MONEY_EARNING_SECTION_ENABLED_FLAG_NAME],
     ) ?? false
   );
+}
+
+/**
+ * Whether Money Home should render curated mock activity instead of a live
+ * transaction list.
+ *
+ * A remote boolean wins (including `false`). Any other remote value falls
+ * through to {@link MONEY_ACTIVITY_MOCK_DATA_ENABLED_ENV_VAR}.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether mock activity data is enabled.
+ */
+export function isMoneyActivityMockDataEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  const remote =
+    remoteFeatureFlags?.[MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME];
+  if (typeof remote === 'boolean') {
+    return remote;
+  }
+
+  return process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED?.toString() === 'true';
 }
