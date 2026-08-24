@@ -16,7 +16,7 @@ import {
 } from '../../confirmations/constants/perps';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { Footer, Row, Section } from '../components/shared';
-import { TokensSection } from '../components/sections';
+import { ContractRow, TokensSection } from '../components/sections';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useDestinationToken } from './helpers';
@@ -90,6 +90,7 @@ export function PerpsDetails({
             label={t('account')}
             value={<AccountName address={item.data.from} />}
           />
+          <ContractRow chainId={chainId} />
           <Row label={t('network')} value={<NetworkName chainId={chainId} />} />
         </Section>
 

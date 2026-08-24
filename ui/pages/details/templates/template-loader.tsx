@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import { TransactionDetailsContractProvider } from '../components/transaction-details-contract-context';
 import { ApprovalDetails } from './approval-details';
 import { BridgeDetails } from './bridge-details/bridge-details';
 import { ConvertDetails } from './convert-details';
@@ -14,9 +15,18 @@ import { AssetActivationDetails } from './asset-activation-details';
 
 type Props = {
   item: ActivityListItem | undefined;
+  contractAddress?: string;
 };
 
-export function TemplateLoader({ item }: Props) {
+export function TemplateLoader({ item, contractAddress }: Props) {
+  return (
+    <TransactionDetailsContractProvider contractAddress={contractAddress}>
+      {renderDetails(item)}
+    </TransactionDetailsContractProvider>
+  );
+}
+
+function renderDetails(item: Props['item']) {
   if (!item) {
     return null;
   }

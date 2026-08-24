@@ -12,6 +12,8 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Row, Section } from './shared';
 import { TokenRow } from './token-row';
+import { ContractName } from './contract-name';
+import { useTransactionDetailsContract } from './transaction-details-contract-context';
 
 export function TokensSection({
   tokens,
@@ -37,6 +39,22 @@ export function TokensSection({
         </div>
       ))}
     </div>
+  );
+}
+
+export function ContractRow({ chainId }: { chainId: string }) {
+  const t = useI18nContext();
+  const contractAddress = useTransactionDetailsContract();
+
+  return (
+    <Row
+      label={t('with')}
+      value={
+        contractAddress ? (
+          <ContractName address={contractAddress} chainId={chainId} />
+        ) : null
+      }
+    />
   );
 }
 
@@ -82,6 +100,10 @@ export function MetadataSection({
           label={t('account')}
           value={<AccountName address={accountAddress} />}
         />
+      )}
+
+      {item.type === 'send' || item.type === 'receive' ? null : (
+        <ContractRow chainId={item.chainId} />
       )}
 
       <Row

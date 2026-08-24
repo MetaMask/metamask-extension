@@ -5,6 +5,7 @@ import { isValidTransactionHash } from '../../../shared/lib/transactions.utils';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
+  selectLocalTransactionsByHash,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
@@ -26,6 +27,10 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   const localActivityItems = useSelector(selectLocalActivityItemsByIdentifier);
   const localActivityItem = txIdentifier
     ? localActivityItems.get(txIdentifier.toLowerCase())
+    : undefined;
+  const localTransactions = useSelector(selectLocalTransactionsByHash);
+  const localTransaction = txIdentifier
+    ? localTransactions.get(txIdentifier.toLowerCase())
     : undefined;
 
   const nonEvmActivityItems = useSelector(selectNonEvmActivityItemsById);
@@ -95,6 +100,12 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     rampsActivityItem,
     selectedAddress,
   ]);
+  const contractAddress =
+    isEvm && transaction?.type !== 'send' && transaction?.type !== 'receive'
+      ? (apiTransaction?.to ??
+        localTransaction?.initialTransaction.txParams?.to ??
+        undefined)
+      : undefined;
 
   return (
     <div className="flex h-full flex-col bg-background-default [container-name:list-item] [container-type:inline-size]">
@@ -104,7 +115,10 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
 
       <div className="flex flex-col flex-1 overflow-y-auto px-4 pb-4">
         <ErrorBoundary>
-          <TemplateLoader item={transaction} />
+          <TemplateLoader
+            item={transaction}
+            contractAddress={contractAddress}
+          />
         </ErrorBoundary>
       </div>
     </div>

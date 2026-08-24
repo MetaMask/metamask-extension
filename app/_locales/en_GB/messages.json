@@ -12052,6 +12052,9 @@
   "whatsThis": {
     "message": "What's this?"
   },
+  "with": {
+    "message": "With"
+  },
   "withdrawTo": {
     "message": "Receive",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

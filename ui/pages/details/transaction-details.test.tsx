@@ -4,6 +4,7 @@ import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
+  selectLocalTransactionsByHash,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
 import { useRampsDetailsItem } from './templates/ramps/hooks';
@@ -21,6 +22,7 @@ jest.mock('./components/header', () => ({
 jest.mock('./templates/template-loader', () => ({
   TemplateLoader: ({
     item,
+    contractAddress,
   }: {
     item?: {
       type?: string;
@@ -28,6 +30,7 @@ jest.mock('./templates/template-loader', () => ({
       status?: string;
       data?: { id?: string };
     };
+    contractAddress?: string;
   }) => (
     <div
       data-testid="template-loader"
@@ -35,6 +38,7 @@ jest.mock('./templates/template-loader', () => ({
       data-chain-id={item?.chainId}
       data-item-status={item?.status}
       data-order-id={item?.data?.id}
+      data-contract-address={contractAddress}
     />
   ),
 }));
@@ -50,6 +54,9 @@ const mockSelectEvmAddress = jest.mocked(selectEvmAddress);
 const mockSelectLocalActivityItemsByIdentifier = jest.mocked(
   selectLocalActivityItemsByIdentifier,
 );
+const mockSelectLocalTransactionsByHash = jest.mocked(
+  selectLocalTransactionsByHash,
+);
 const mockSelectNonEvmActivityItemsById = jest.mocked(
   selectNonEvmActivityItemsById,
 );
@@ -63,6 +70,7 @@ describe('TransactionDetails', () => {
     jest.clearAllMocks();
     mockSelectEvmAddress.mockReturnValue('0xabc');
     mockSelectLocalActivityItemsByIdentifier.mockReturnValue(new Map());
+    mockSelectLocalTransactionsByHash.mockReturnValue(new Map());
     mockSelectNonEvmActivityItemsById.mockReturnValue(new Map());
     mockUseApiTransaction.mockReturnValue(undefined as never);
     mockUseRampsDetailsItem.mockReturnValue(undefined);
@@ -130,6 +138,94 @@ describe('TransactionDetails', () => {
     expect(getByTestId('template-loader')).toHaveAttribute(
       'data-chain-id',
       'eip155:1',
+    );
+  });
+
+  it('passes the local transaction contract to the template loader', () => {
+    const contractAddress = '0x1234567890123456789012345678901234567890';
+    mockSelectLocalActivityItemsByIdentifier.mockReturnValue(
+      new Map([
+        [
+          'order-1',
+          {
+            type: 'contractInteraction',
+            chainId: 'eip155:1',
+            status: 'success',
+            timestamp: 1,
+            hash: 'order-1',
+            data: { from: '0x1', to: contractAddress },
+          } as never,
+        ],
+      ]),
+    );
+    mockSelectLocalTransactionsByHash.mockReturnValue(
+      new Map([
+        [
+          'order-1',
+          {
+            initialTransaction: {
+              txParams: { to: contractAddress },
+            },
+          } as never,
+        ],
+      ]),
+    );
+
+    const { getByTestId } = render(
+      <TransactionDetails
+        chainId="eip155:1"
+        txIdentifier="order-1"
+        onBack={jest.fn()}
+      />,
+    );
+
+    expect(getByTestId('template-loader')).toHaveAttribute(
+      'data-contract-address',
+      contractAddress,
+    );
+  });
+
+  it('does not pass a contract for send activities', () => {
+    mockSelectLocalActivityItemsByIdentifier.mockReturnValue(
+      new Map([
+        [
+          'order-1',
+          {
+            type: 'send',
+            chainId: 'eip155:1',
+            status: 'success',
+            timestamp: 1,
+            hash: 'order-1',
+            data: { from: '0x1', to: '0x2' },
+          } as never,
+        ],
+      ]),
+    );
+    mockSelectLocalTransactionsByHash.mockReturnValue(
+      new Map([
+        [
+          'order-1',
+          {
+            initialTransaction: {
+              txParams: {
+                to: '0x1234567890123456789012345678901234567890',
+              },
+            },
+          } as never,
+        ],
+      ]),
+    );
+
+    const { getByTestId } = render(
+      <TransactionDetails
+        chainId="eip155:1"
+        txIdentifier="order-1"
+        onBack={jest.fn()}
+      />,
+    );
+
+    expect(getByTestId('template-loader')).not.toHaveAttribute(
+      'data-contract-address',
     );
   });
 

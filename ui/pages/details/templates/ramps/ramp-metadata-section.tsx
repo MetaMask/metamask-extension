@@ -8,6 +8,7 @@ import { TransactionStatus } from '../../../../components/app/transaction/transa
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Row, Section } from '../../components/shared';
+import { ContractRow } from '../../components/sections';
 
 type RampOrderItem = Extract<
   ActivityListItem,
@@ -61,6 +62,8 @@ export function RampMetadataSection({
         label={t('account')}
         value={<AccountName address={accountAddress} />}
       />
+
+      <ContractRow chainId={item.chainId} />
 
       {item.chainId ? (
         <Row

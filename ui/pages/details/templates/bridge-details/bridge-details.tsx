@@ -13,6 +13,7 @@ import { AccountName } from '../../../../components/app/transaction/account-name
 import { TransactionId } from '../../../../components/app/transaction/transaction-id';
 import { isValidTransactionHash } from '../../../../../shared/lib/transactions.utils';
 import { Footer, Row, Section } from '../../components/shared';
+import { ContractRow } from '../../components/sections';
 import { TokenRow } from '../../components/token-row';
 import { FeesRows, TotalAmountRow } from '../../components/amounts-section';
 import { BridgeExplorerButtons } from '../../components/bridge-explorer-buttons';
@@ -149,6 +150,7 @@ export function BridgeDetails({
               value={<AccountName address={fromAddress} />}
             />
           )}
+          <ContractRow chainId={sourceChainId} />
           <Row
             label={t('network')}
             value={
