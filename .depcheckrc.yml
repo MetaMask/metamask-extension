@@ -16,6 +16,10 @@ ignores:
   - '@emotion/styled'
   # present for upcoming date-picker migration; not imported yet — depcheck would flag unused
   - '@mui/x-date-pickers'
+  # present for the upcoming Ledger DMK offscreen handler; not imported yet — depcheck would flag unused
+  - '@ledgerhq/device-management-kit'
+  - '@ledgerhq/device-transport-kit-web-hid'
+  - 'rxjs'
 
   #
   # dev deps

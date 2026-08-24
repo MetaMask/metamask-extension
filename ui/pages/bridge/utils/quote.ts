@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import {
   FeeType,
+  assetIdsMatch,
   sumAmounts,
   type QuoteResponse,
 } from '@metamask/bridge-controller';
@@ -47,6 +48,47 @@ export const formatCurrencyAmount = (
     }
   }
   return formatCurrency(amount.toString(), currency, precision);
+};
+
+export const convertTokenAmountToFiat = (
+  tokenAmount: string | null | undefined,
+  conversionRate: number | null | undefined,
+) => {
+  if (!tokenAmount || !conversionRate) {
+    return;
+  }
+  if (!Number.isFinite(conversionRate) || conversionRate <= 0) {
+    return;
+  }
+
+  try {
+    const amount = new BigNumber(tokenAmount).times(conversionRate.toString());
+    return new BigNumber(amount.toFixed(2)).toString();
+  } catch {
+    return undefined;
+  }
+};
+
+export const convertFiatToTokenAmount = (
+  fiatAmount: string | null | undefined,
+  conversionRate: number | null | undefined,
+  tokenDecimals: number | undefined,
+) => {
+  if (!fiatAmount || !conversionRate || tokenDecimals === undefined) {
+    return;
+  }
+  if (!Number.isFinite(conversionRate) || conversionRate <= 0) {
+    return;
+  }
+
+  try {
+    const amount = new BigNumber(fiatAmount).div(conversionRate.toString());
+    return new BigNumber(
+      amount.toFixed(tokenDecimals, BigNumber.ROUND_DOWN),
+    ).toString();
+  } catch {
+    return undefined;
+  }
 };
 
 /**
@@ -155,9 +197,9 @@ export const isQuoteExpiredOrInvalid = ({
 
   // 2. Ensure the quote still matches the currently selected destination asset / chain
   if (activeQuote && toToken) {
-    return (
-      activeQuote.quote.dest.asset.assetId.toLowerCase() !==
-      toToken.assetId.toLowerCase()
+    return !assetIdsMatch(
+      activeQuote.quote.dest.asset.assetId,
+      toToken.assetId,
     );
   }
 

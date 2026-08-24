@@ -4,6 +4,19 @@ import { getCleanAppState, regularDelayMs } from '../../helpers';
 
 const SIMPLE_KEYRING_SNAP_ID = 'npm:@metamask/snap-simple-keyring-snap';
 
+/**
+ * External Snap Simple Keyring test site for create/import/approve accounts.
+ *
+ * Screen: hosted simple-keyring site
+ * (`TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL`), not a MetaMask route.
+ * Owns: connect, create/import account, approve/reject request sections, and
+ * related MetaMask confirmation submit/cancel on that flow.
+ * Boundaries: the keyring site + its snap confirmations only. Extension
+ * account list after accounts are added belongs to `AccountListPage`.
+ * Related: confirmation page objects; `AccountListPage`.
+ *
+ * @see node_modules/@metamask/snap-simple-keyring-site/public/index.html
+ */
 class SnapSimpleKeyringPage {
   private readonly accountCreatedMessage = {
     text: 'Account created',
