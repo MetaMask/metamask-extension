@@ -855,10 +855,12 @@ describe('Swap on Solana', function () {
 
         const homePage = new HomePage(driver);
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        // Switch to Solana network
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
