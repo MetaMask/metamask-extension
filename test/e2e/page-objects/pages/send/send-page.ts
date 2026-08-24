@@ -103,6 +103,20 @@ class SendPage {
     text: 'Solana',
   };
 
+  private readonly swapAndBridgeBannerAlerts =
+    '[data-testid="bridge-banner-alerts"]';
+
+  private readonly swapAndBridgeCtaButton = '[data-testid="bridge-cta-button"]';
+
+  private readonly swapAndBridgeFetchingQuotesLabel = {
+    tag: 'p',
+    text: 'Fetching quotes...',
+  };
+
+  private readonly swapAndBridgeNoQuotes = '[data-testid="bridge-no-quotes"]';
+
+  private readonly swapsBannerTitle = '[data-testid="swaps-banner-title"]';
+
   private readonly tokenAsset = (chainId: string, symbol: string) => {
     return {
       testId: `token-asset-${chainId}-${symbol}`,
@@ -284,6 +298,23 @@ class SendPage {
   async checkSolanaNetworkIsPresent(): Promise<void> {
     console.log('Checking if Solana network is present');
     await this.driver.findElement(this.solanaNetwork);
+  }
+
+  /**
+   * Asserts that Swap/Bridge quote-error UI is not shown on the send form.
+   * Same-chain native sends must not surface cross-chain quote banners.
+   */
+  async checkSwapAndBridgeErrorUiIsAbsent(): Promise<void> {
+    console.log('Checking swap/bridge error UI is absent on send page');
+    await this.driver.assertElementNotPresent(this.swapAndBridgeBannerAlerts, {
+      waitAtLeastGuard: 1000,
+    });
+    await this.driver.assertElementNotPresent(this.swapsBannerTitle);
+    await this.driver.assertElementNotPresent(this.swapAndBridgeNoQuotes);
+    await this.driver.assertElementNotPresent(
+      this.swapAndBridgeFetchingQuotesLabel,
+    );
+    await this.driver.assertElementNotPresent(this.swapAndBridgeCtaButton);
   }
 
   /**
