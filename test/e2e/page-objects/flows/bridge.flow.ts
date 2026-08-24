@@ -54,7 +54,9 @@ export const verifySubmittedSwapTransaction = async ({
       confirmedTx: expectedTransactionsCount,
     });
     await activityTab.checkTxAction({
-      action: 'Approved spending cap',
+      action: expectedSrcToken
+        ? `Approved ${expectedSrcToken} spending cap`
+        : 'Approved spending cap',
       confirmedTx: expectedTransactionsCount,
       txIndex: 2,
     });

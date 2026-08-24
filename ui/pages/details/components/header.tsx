@@ -84,6 +84,21 @@ function getTitleConfig(item: ActivityListItem | undefined) {
         args: getDefinedArgs(item.data.token?.symbol),
       };
     }
+    case 'approveSpendingCap': {
+      const symbol = item.data.token?.symbol;
+
+      if (!symbol) {
+        return {
+          key: `activity_approveSpendingCapUnknownToken_${item.status}_title`,
+          args: undefined,
+        };
+      }
+
+      return {
+        key,
+        args: getDefinedArgs(symbol),
+      };
+    }
     default:
       return { key, args: [''] };
   }

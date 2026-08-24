@@ -71,6 +71,39 @@ const buildActivity = (type: 'assetActivation' | 'assetDeactivation') =>
     },
   }) as unknown as ActivityListItem;
 
+const tokenContractAddress = '0x1234567890abcdef1234567890abcdef12345678';
+const usdcAssetId = `eip155:1/erc20:${tokenContractAddress}`;
+
+const buildSpendingCapActivity = ({
+  type = 'approveSpendingCap',
+  status = 'success',
+  symbol = 'USDC',
+}: {
+  type?: 'approveSpendingCap' | 'increaseSpendingCap' | 'revokeSpendingCap';
+  status?: 'pending' | 'success';
+  symbol?: string;
+} = {}) =>
+  ({
+    type,
+    chainId: 'eip155:1',
+    status,
+    timestamp: 1,
+    hash: '0xabc',
+    data: {
+      from: '0x2222222222222222222222222222222222222222',
+      token: {
+        direction: 'out',
+        symbol,
+        assetId: usdcAssetId,
+      },
+    },
+  }) as ActivityListItem;
+
+const unchangedTitleCases = [
+  ['increaseSpendingCap', 'activity_increaseSpendingCap_success_title'],
+  ['revokeSpendingCap', 'activity_revokeSpendingCap_success_title'],
+] as const;
+
 describe('useActivityRowContent', () => {
   beforeEach(() => {
     mockGetDisplayName.mockImplementation((address?: string) =>
@@ -343,4 +376,81 @@ describe('useActivityRowContent', () => {
       'activity_receive_success_description|Bob',
     );
   });
+
+  it('includes the token symbol in pending approve titles', () => {
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(buildSpendingCapActivity({ status: 'pending' })),
+    );
+
+    expect(result.current?.title.props.children).toBe(
+      'activity_approveSpendingCap_pending_title|USDC',
+    );
+  });
+
+  it('includes the token symbol in successful approve titles', () => {
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(buildSpendingCapActivity()),
+    );
+
+    expect(result.current?.title.props.children).toBe(
+      'activity_approveSpendingCap_success_title|USDC',
+    );
+  });
+
+  it('shows the approved token contract name in the subtitle', () => {
+    mockGetDisplayName.mockReturnValue('USD Coin');
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(buildSpendingCapActivity()),
+    );
+
+    expect(mockGetDisplayName).toHaveBeenCalledWith(tokenContractAddress);
+    expect(result.current?.subtitle).toBe(
+      'activity_contractInteraction_success_description|USD Coin',
+    );
+  });
+
+  it('falls back to the truncated contract address in the subtitle', () => {
+    mockGetDisplayName.mockReturnValue('0x12345...45678');
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(buildSpendingCapActivity()),
+    );
+
+    expect(result.current?.subtitle).toBe(
+      'activity_contractInteraction_success_description|0x12345...45678',
+    );
+  });
+
+  it('uses a title without a symbol for an approve that has no token symbol', () => {
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(buildSpendingCapActivity({ symbol: '' })),
+    );
+
+    expect(result.current.title.props.children).toBe(
+      'activity_approveSpendingCapUnknownToken_success_title',
+    );
+  });
+
+  it('uses a title without a symbol for a pending approve that has no token symbol', () => {
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(
+        buildSpendingCapActivity({ status: 'pending', symbol: '' }),
+      ),
+    );
+
+    expect(result.current.title.props.children).toBe(
+      'activity_approveSpendingCapUnknownToken_pending_title',
+    );
+  });
+
+  for (const [type, expectedTitle] of unchangedTitleCases) {
+    it(`keeps the ${type} title unchanged`, () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(buildSpendingCapActivity({ type })),
+      );
+
+      expect(result.current?.title.props.children).toBe(expectedTitle);
+    });
+  }
 });

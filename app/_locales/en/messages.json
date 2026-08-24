@@ -174,26 +174,35 @@
   "activityEmptyNoFundsDescription": {
     "message": "Add funds to your wallet to get started."
   },
+  "activity_approveSpendingCapUnknownToken_failed_title": {
+    "message": "Approval failed"
+  },
+  "activity_approveSpendingCapUnknownToken_pending_title": {
+    "message": "Approving spending cap"
+  },
+  "activity_approveSpendingCapUnknownToken_success_title": {
+    "message": "Approved spending cap"
+  },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
   "activity_approveSpendingCap_failed_title": {
-    "message": "Approval failed"
+    "message": "$1 approval failed"
   },
   "activity_approveSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
   "activity_approveSpendingCap_pending_title": {
-    "message": "Approving spending cap"
+    "message": "Approving $1 spending cap"
   },
   "activity_approveSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
   "activity_approveSpendingCap_success_title": {
-    "message": "Approved spending cap"
+    "message": "Approved $1 spending cap"
   },
   "activity_assetActivation_failed_description": {
     "message": "$1",

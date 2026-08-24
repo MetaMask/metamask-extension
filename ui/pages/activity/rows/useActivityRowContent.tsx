@@ -1,7 +1,12 @@
 import React, { type ReactNode } from 'react';
 import cn from 'clsx';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import {
+  isCaipAssetType,
+  KnownCaipNamespace,
+  parseCaipAssetType,
+  parseCaipChainId,
+} from '@metamask/utils';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
@@ -32,6 +37,12 @@ type ActivityContent = {
   avatarTokens: ActivityListItemAvatarTokens;
 };
 
+const approveUnknownTokenTitleKeys: Record<string, string> = {
+  pending: 'activity_approveSpendingCapUnknownToken_pending_title',
+  success: 'activity_approveSpendingCapUnknownToken_success_title',
+  failed: 'activity_approveSpendingCapUnknownToken_failed_title',
+};
+
 function getChainDisplay(caipChainId: CaipChainId) {
   const { namespace } = parseCaipChainId(caipChainId);
   const chainId =
@@ -59,7 +70,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
     type: activity.type,
     status: activity.status,
   });
-
   const getContent = (): ActivityContent => {
     switch (activity.type) {
       case 'send':
@@ -291,11 +301,32 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       case 'increaseSpendingCap':
       case 'revokeSpendingCap': {
         const { token } = activity.data;
+        const isApprove = activity.type === 'approveSpendingCap';
+        const contractAddress =
+          isApprove && token?.assetId && isCaipAssetType(token.assetId)
+            ? parseCaipAssetType(token.assetId).assetReference
+            : undefined;
+        const contractDisplayName = isApprove
+          ? formatDisplayName(contractAddress)
+          : '';
+        const symbol = token?.symbol;
+        // NFT and unwatched-token approvals reach the list without a symbol,
+        // so they use titles that read correctly without one.
+        const approveTitleKey = symbol
+          ? labelKeys.title.key
+          : (approveUnknownTokenTitleKeys[activity.status] ??
+            labelKeys.title.key);
 
         return {
           avatarTokens: [token?.assetId],
-          title: t(labelKeys.title.key),
-          subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
+          title: isApprove
+            ? t(approveTitleKey, symbol ? [symbol] : undefined)
+            : t(labelKeys.title.key),
+          subtitle: isApprove
+            ? t(`activity_contractInteraction_${activity.status}_description`, [
+                contractDisplayName,
+              ])
+            : t(labelKeys.description.key, [token?.symbol ?? '']),
           primaryAmount: token?.amount
             ? formatTokenAmount(token, { showPlus: false })
             : undefined,

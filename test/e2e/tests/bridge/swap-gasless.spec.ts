@@ -79,7 +79,7 @@ describe('Gasless swap tests', function (this: Suite) {
           txIndex: 1,
         });
         await activityTab.checkTxAction({
-          action: 'Approved spending cap',
+          action: 'Approved USDC spending cap',
           confirmedTx: 0,
           txIndex: 2,
         });
