@@ -77,6 +77,24 @@ const clampClosePercent = (percent: number): number => {
 const formatPercentForInput = (percent: number): string =>
   formatNumberForInput(percent, PERCENT_INPUT_DECIMALS);
 
+/** Scale used to round a percentage to the precision the field renders. */
+const PERCENT_PRECISION_SCALE = 10 ** PERCENT_INPUT_DECIMALS;
+
+/**
+ * Rounds a percentage to the precision the percent field displays.
+ *
+ * Keeping the committed value and the rendered value at the same precision
+ * means the trader never reads a number the position does not actually match —
+ * e.g. a 99.999% close rendering as "100" while a sliver stays open.
+ *
+ * @param percent - The raw percentage.
+ * @returns The percentage rounded to the displayed precision.
+ */
+const roundToPercentPrecision = (percent: number): number =>
+  Number.isFinite(percent)
+    ? Math.round(percent * PERCENT_PRECISION_SCALE) / PERCENT_PRECISION_SCALE
+    : percent;
+
 /**
  * CloseAmountSection - Section for selecting how much of a position to close
  *
@@ -185,11 +203,14 @@ export const CloseAmountSection = ({
           ? formatNumberForInput(totalNotionalUsd, USD_INPUT_DECIMALS)
           : value,
       );
-      // Deliberately NOT rounded to a whole percent: the trader asked to close
-      // an exact dollar amount, and on a small position one percentage point is
-      // several cents. The percent field renders this faithfully.
+      // Rounded to the precision the percent field renders, not to a whole
+      // percent: whole-percent rounding moves a typed dollar amount by several
+      // cents on a small position, while this keeps it within a hundredth of a
+      // cent and guarantees the committed value is the one displayed.
       onClosePercentChange(
-        clampClosePercent((parsed / totalNotionalUsd) * 100),
+        clampClosePercent(
+          roundToPercentPrecision((parsed / totalNotionalUsd) * 100),
+        ),
       );
     },
     [totalNotionalUsd, onClosePercentChange, onInputMethodChange],
@@ -240,7 +261,10 @@ export const CloseAmountSection = ({
       setPercentInputValue(
         exceedsMax ? formatPercentForInput(MAX_CLOSE_PERCENT) : value,
       );
-      commitPercent(clampClosePercent(parsed));
+      // Commit only the precision the field can show. Otherwise a typed 99.999
+      // renders as "100" once blurred while a 0.001% sliver of the position
+      // stays open — the trader would read that as a full close.
+      commitPercent(clampClosePercent(roundToPercentPrecision(parsed)));
     },
     [commitPercent],
   );

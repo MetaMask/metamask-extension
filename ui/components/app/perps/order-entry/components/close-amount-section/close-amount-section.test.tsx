@@ -1,6 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../store/store';
@@ -150,11 +149,10 @@ describe('CloseAmountSection', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('swaps the field to a percent input when percent mode is selected', async () => {
-      const user = userEvent.setup();
+    it('swaps the field to a percent input when percent mode is selected', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
 
-      await user.click(screen.getByTestId('close-amount-mode-percent'));
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
       expect(screen.getByTestId('close-amount-unit')).toHaveTextContent(
         messages.perpsCloseAmountInPercent.message,
@@ -167,8 +165,7 @@ describe('CloseAmountSection', () => {
   });
 
   describe('dollar amount entry', () => {
-    it('converts a typed dollar amount to the equivalent close percentage', async () => {
-      const user = userEvent.setup();
+    it('converts a typed dollar amount to the equivalent close percentage', () => {
       const onClosePercentChange = jest.fn();
       renderWithProvider(
         <CloseAmountSection
@@ -181,15 +178,13 @@ describe('CloseAmountSection', () => {
       const input = screen
         .getByTestId('close-amount-value')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('56250');
+      fireEvent.change(input, { target: { value: '56250' } });
 
       // 56,250 of a 112,500 position (2.5 BTC at 45,000) is half of it.
       expect(onClosePercentChange).toHaveBeenCalledWith(50);
     });
 
-    it('converts a quarter-position dollar amount to 25 percent', async () => {
-      const user = userEvent.setup();
+    it('converts a quarter-position dollar amount to 25 percent', () => {
       const onClosePercentChange = jest.fn();
       renderWithProvider(
         <CloseAmountSection
@@ -202,14 +197,12 @@ describe('CloseAmountSection', () => {
       const input = screen
         .getByTestId('close-amount-value')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('28125');
+      fireEvent.change(input, { target: { value: '28125' } });
 
       expect(onClosePercentChange).toHaveBeenCalledWith(25);
     });
 
-    it('reports keypad as the input method for a typed dollar amount', async () => {
-      const user = userEvent.setup();
+    it('reports keypad as the input method for a typed dollar amount', () => {
       const onInputMethodChange = jest.fn();
       renderWithProvider(
         <CloseAmountSection
@@ -222,69 +215,59 @@ describe('CloseAmountSection', () => {
       const input = screen
         .getByTestId('close-amount-value')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('56250');
+      fireEvent.change(input, { target: { value: '56250' } });
 
       expect(onInputMethodChange).toHaveBeenCalledWith('keypad');
     });
   });
 
   describe('percent amount entry', () => {
-    const renderInPercentMode = async (
-      user: ReturnType<typeof userEvent.setup>,
-      props = {},
-    ) => {
+    const renderInPercentMode = (props = {}) => {
       const result = renderWithProvider(
         <CloseAmountSection {...defaultProps} {...props} />,
         mockStore,
       );
-      await user.click(screen.getByTestId('close-amount-mode-percent'));
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
       return result;
     };
 
-    it('commits a typed percentage', async () => {
-      const user = userEvent.setup();
+    it('commits a typed percentage', () => {
       const onClosePercentChange = jest.fn();
-      await renderInPercentMode(user, { onClosePercentChange });
+      renderInPercentMode({ onClosePercentChange });
 
       const input = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('50');
+      fireEvent.change(input, { target: { value: '50' } });
 
       expect(onClosePercentChange).toHaveBeenCalledWith(50);
     });
 
-    it('commits a quarter close from a typed percentage', async () => {
-      const user = userEvent.setup();
+    it('commits a quarter close from a typed percentage', () => {
       const onClosePercentChange = jest.fn();
-      await renderInPercentMode(user, { onClosePercentChange });
+      renderInPercentMode({ onClosePercentChange });
 
       const input = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('25');
+      fireEvent.change(input, { target: { value: '25' } });
 
       expect(onClosePercentChange).toHaveBeenCalledWith(25);
     });
 
-    it('treats an emptied percent field as closing nothing', async () => {
-      const user = userEvent.setup();
+    it('treats an emptied percent field as closing nothing', () => {
       const onClosePercentChange = jest.fn();
-      await renderInPercentMode(user, { onClosePercentChange });
+      renderInPercentMode({ onClosePercentChange });
 
       const input = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
+      fireEvent.change(input, { target: { value: '' } });
 
       expect(onClosePercentChange).toHaveBeenCalledWith(0);
     });
 
-    it('leaves the field empty while the trader clears it to retype', async () => {
-      const user = userEvent.setup();
+    it('leaves the field empty while the trader clears it to retype', () => {
       const ControlledHarness = () => {
         const [percent, setPercent] = React.useState(100);
         return (
@@ -296,43 +279,37 @@ describe('CloseAmountSection', () => {
         );
       };
       renderWithProvider(<ControlledHarness />, mockStore);
-      await user.click(screen.getByTestId('close-amount-mode-percent'));
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
       const input = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: '' } });
 
       expect(input.value).toBe('');
     });
 
-    it('reports percentage as the input method for a typed percentage', async () => {
-      const user = userEvent.setup();
+    it('reports percentage as the input method for a typed percentage', () => {
       const onInputMethodChange = jest.fn();
-      await renderInPercentMode(user, { onInputMethodChange });
+      renderInPercentMode({ onInputMethodChange });
 
       const input = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('50');
+      fireEvent.change(input, { target: { value: '50' } });
 
       expect(onInputMethodChange).toHaveBeenCalledWith('percentage');
     });
 
-    it('reports percentage, not max, for a typed full close', async () => {
-      const user = userEvent.setup();
+    it('reports percentage, not max, for a typed full close', () => {
       const onInputMethodChange = jest.fn();
-      await renderInPercentMode(user, {
-        onInputMethodChange,
-        closePercent: 25,
-      });
+      renderInPercentMode({ onInputMethodChange, closePercent: 25 });
 
       const input = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('100');
+      fireEvent.change(input, { target: { value: '100' } });
 
       // Mobile reserves 'max' for an explicit Max button, which this screen has
       // no equivalent of, so inferring it from 100 would diverge the funnel.
@@ -342,8 +319,7 @@ describe('CloseAmountSection', () => {
   });
 
   describe('over-close protection', () => {
-    it('caps a dollar amount above the position value and explains the cap', async () => {
-      const user = userEvent.setup();
+    it('caps a dollar amount above the position value and explains the cap', () => {
       const onClosePercentChange = jest.fn();
       renderWithProvider(
         <CloseAmountSection
@@ -356,8 +332,7 @@ describe('CloseAmountSection', () => {
       const input = screen
         .getByTestId('close-amount-value')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('999999');
+      fireEvent.change(input, { target: { value: '999999' } });
 
       expect(onClosePercentChange).toHaveBeenCalledWith(100);
       expect(
@@ -365,22 +340,19 @@ describe('CloseAmountSection', () => {
       ).toHaveTextContent(messages.perpsCloseAmountCappedAtPosition.message);
     });
 
-    it('shows the capped dollar amount in the field rather than the typed one', async () => {
-      const user = userEvent.setup();
+    it('shows the capped dollar amount in the field rather than the typed one', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
 
       const input = screen
         .getByTestId('close-amount-value')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('999999');
+      fireEvent.change(input, { target: { value: '999999' } });
 
       // 2.5 BTC at 45,000 is a 112,500 position.
       expect(input.value).toBe('112500');
     });
 
-    it('caps a percentage above 100 and explains the cap', async () => {
-      const user = userEvent.setup();
+    it('caps a percentage above 100 and explains the cap', () => {
       const onClosePercentChange = jest.fn();
       renderWithProvider(
         <CloseAmountSection
@@ -389,13 +361,12 @@ describe('CloseAmountSection', () => {
         />,
         mockStore,
       );
-      await user.click(screen.getByTestId('close-amount-mode-percent'));
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
       const input = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('150');
+      fireEvent.change(input, { target: { value: '150' } });
 
       expect(onClosePercentChange).toHaveBeenCalledWith(100);
       expect(
@@ -403,23 +374,21 @@ describe('CloseAmountSection', () => {
       ).toHaveTextContent(messages.perpsClosePercentCappedAtMax.message);
     });
 
-    it('shows the capped percentage in the field rather than the typed one', async () => {
-      const user = userEvent.setup();
+    it('shows the capped percentage in the field rather than the typed one', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
-      await user.click(screen.getByTestId('close-amount-mode-percent'));
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
       const input = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('150');
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: '150' } });
 
       // Matches the dollar field, which caps in place on the same keystroke.
       expect(input.value).toBe('100');
     });
 
-    it('never commits more than the whole position', async () => {
-      const user = userEvent.setup();
+    it('never commits more than the whole position', () => {
       const onClosePercentChange = jest.fn();
       renderWithProvider(
         <CloseAmountSection
@@ -428,20 +397,18 @@ describe('CloseAmountSection', () => {
         />,
         mockStore,
       );
-      await user.click(screen.getByTestId('close-amount-mode-percent'));
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
       const input = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('150');
+      fireEvent.change(input, { target: { value: '150' } });
 
       const committed = onClosePercentChange.mock.calls.map(([value]) => value);
       expect(Math.max(...committed)).toBe(100);
     });
 
-    it('caps a dollar amount too large to hold in a number', async () => {
-      const user = userEvent.setup();
+    it('caps a dollar amount too large to hold in a number', () => {
       const onClosePercentChange = jest.fn();
       renderWithProvider(
         <CloseAmountSection
@@ -454,8 +421,8 @@ describe('CloseAmountSection', () => {
       const input = screen
         .getByTestId('close-amount-value')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('9'.repeat(320));
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: '9'.repeat(320) } });
 
       // Overflows to Infinity, which still means "more than the position".
       // Committing 0 here would show a 100% cap while closing nothing.
@@ -465,8 +432,7 @@ describe('CloseAmountSection', () => {
       ).toBeInTheDocument();
     });
 
-    it('caps a percentage too large to hold in a number', async () => {
-      const user = userEvent.setup();
+    it('caps a percentage too large to hold in a number', () => {
       const onClosePercentChange = jest.fn();
       renderWithProvider(
         <CloseAmountSection
@@ -475,29 +441,26 @@ describe('CloseAmountSection', () => {
         />,
         mockStore,
       );
-      await user.click(screen.getByTestId('close-amount-mode-percent'));
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
       const input = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('9'.repeat(320));
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: '9'.repeat(320) } });
 
       expect(onClosePercentChange).toHaveBeenLastCalledWith(100);
     });
 
-    it('clears the cap message once an amount that fits is entered', async () => {
-      const user = userEvent.setup();
+    it('clears the cap message once an amount that fits is entered', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
-      await user.click(screen.getByTestId('close-amount-mode-percent'));
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
       const input = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('150');
-      await user.clear(input);
-      await user.paste('40');
+      fireEvent.change(input, { target: { value: '150' } });
+      fireEvent.change(input, { target: { value: '40' } });
 
       expect(
         screen.queryByTestId('close-amount-over-close-error'),
@@ -506,8 +469,7 @@ describe('CloseAmountSection', () => {
   });
 
   describe('unusable market data', () => {
-    it('closes nothing when the position has no value', async () => {
-      const user = userEvent.setup();
+    it('closes nothing when the position has no value', () => {
       const onClosePercentChange = jest.fn();
       renderWithProvider(
         <CloseAmountSection
@@ -521,15 +483,13 @@ describe('CloseAmountSection', () => {
       const input = screen
         .getByTestId('close-amount-value')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('500');
+      fireEvent.change(input, { target: { value: '500' } });
 
       // A typed amount must never leave a stale percentage behind it.
       expect(onClosePercentChange).toHaveBeenCalledWith(0);
     });
 
-    it('closes nothing while only a decimal point has been typed', async () => {
-      const user = userEvent.setup();
+    it('closes nothing while only a decimal point has been typed', () => {
       const onClosePercentChange = jest.fn();
       renderWithProvider(
         <CloseAmountSection
@@ -542,16 +502,14 @@ describe('CloseAmountSection', () => {
       const input = screen
         .getByTestId('close-amount-value')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(input);
-      await user.paste('.');
+      fireEvent.change(input, { target: { value: '.' } });
 
       expect(onClosePercentChange).toHaveBeenCalledWith(0);
     });
   });
 
   describe('cross-unit precision', () => {
-    it('keeps the exact percentage a dollar amount resolves to', async () => {
-      const user = userEvent.setup();
+    it('commits a dollar amount at the precision the percent field shows', () => {
       const onClosePercentChange = jest.fn();
       renderWithProvider(
         <CloseAmountSection
@@ -565,15 +523,16 @@ describe('CloseAmountSection', () => {
         .getByTestId('close-amount-value')
         .querySelector('input') as HTMLInputElement;
       // 1,000 of a 112,500 position is 0.888…%, not a whole percent.
-      await user.clear(input);
-      await user.paste('1000');
+      fireEvent.change(input, { target: { value: '1000' } });
 
       const [committed] = onClosePercentChange.mock.calls.at(-1) as [number];
-      expect(committed).toBeCloseTo((1000 / 112500) * 100, 10);
+      // Rounded to the two decimals the percent field renders, so the committed
+      // value is always the one on screen. Whole-percent rounding would move the
+      // typed dollar amount by cents; this keeps it under a hundredth of one.
+      expect(committed).toBe(0.89);
     });
 
-    it('lets the trader edit a fractional percentage the field is showing', async () => {
-      const user = userEvent.setup();
+    it('lets the trader edit a fractional percentage the field is showing', () => {
       const ControlledHarness = () => {
         const [percent, setPercent] = React.useState(100);
         return (
@@ -589,22 +548,76 @@ describe('CloseAmountSection', () => {
       const usdInput = screen
         .getByTestId('close-amount-value')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(usdInput);
-      await user.type(usdInput, '1000');
-      await user.click(screen.getByTestId('close-amount-mode-percent'));
+      fireEvent.change(usdInput, { target: { value: '1000' } });
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
       const percentInput = screen
         .getByTestId('close-amount-percent')
         .querySelector('input') as HTMLInputElement;
       // The field displays 0.89, so a decimal edit of it must be accepted.
-      await user.clear(percentInput);
-      await user.type(percentInput, '0.5');
+      fireEvent.focus(percentInput);
+      fireEvent.change(percentInput, { target: { value: '0.5' } });
 
       expect(percentInput.value).toBe('0.5');
     });
 
-    it('shows a fractional percentage in the percent field rather than rounding it away', async () => {
-      const user = userEvent.setup();
+    it('commits the same percentage the field shows after blur', () => {
+      let committed = 100;
+      const ControlledHarness = () => {
+        const [percent, setPercent] = React.useState(100);
+        committed = percent;
+        return (
+          <CloseAmountSection
+            {...defaultProps}
+            closePercent={percent}
+            onClosePercentChange={setPercent}
+          />
+        );
+      };
+      renderWithProvider(<ControlledHarness />, mockStore);
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+
+      const input = screen
+        .getByTestId('close-amount-percent')
+        .querySelector('input') as HTMLInputElement;
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: '99.999' } });
+      fireEvent.blur(input);
+
+      // The field can only render two decimals, so committing 99.999 would show
+      // "100" while leaving a sliver of the position open.
+      expect(input.value).toBe('100');
+      expect(committed).toBe(100);
+    });
+
+    it('keeps a percentage within the displayed precision intact', () => {
+      let committed = 100;
+      const ControlledHarness = () => {
+        const [percent, setPercent] = React.useState(100);
+        committed = percent;
+        return (
+          <CloseAmountSection
+            {...defaultProps}
+            closePercent={percent}
+            onClosePercentChange={setPercent}
+          />
+        );
+      };
+      renderWithProvider(<ControlledHarness />, mockStore);
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+
+      const input = screen
+        .getByTestId('close-amount-percent')
+        .querySelector('input') as HTMLInputElement;
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: '12.34' } });
+      fireEvent.blur(input);
+
+      expect(input.value).toBe('12.34');
+      expect(committed).toBe(12.34);
+    });
+
+    it('shows a fractional percentage in the percent field rather than rounding it away', () => {
       const ControlledHarness = () => {
         const [percent, setPercent] = React.useState(100);
         return (
@@ -620,9 +633,8 @@ describe('CloseAmountSection', () => {
       const usdInput = screen
         .getByTestId('close-amount-value')
         .querySelector('input') as HTMLInputElement;
-      await user.clear(usdInput);
-      await user.paste('1000');
-      await user.click(screen.getByTestId('close-amount-mode-percent'));
+      fireEvent.change(usdInput, { target: { value: '1000' } });
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
       const percentInput = screen
         .getByTestId('close-amount-percent')
@@ -658,11 +670,10 @@ describe('CloseAmountSection', () => {
       );
     });
 
-    it('moves the pressed state to percent when percent mode is selected', async () => {
-      const user = userEvent.setup();
+    it('moves the pressed state to percent when percent mode is selected', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
 
-      await user.click(screen.getByTestId('close-amount-mode-percent'));
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
 
       expect(screen.getByTestId('close-amount-mode-percent')).toHaveAttribute(
         'aria-pressed',
