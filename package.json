@@ -182,7 +182,7 @@
     }
   },
   "resolutions": {
-    "@metamask/bridge-controller@79.2.0": "@metamask-previews/bridge-controller@79.3.0-preview-364dd6413",
+    "@metamask/bridge-controller": "npm:@metamask-previews/bridge-controller@79.3.0-preview-364dd6413",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "35.0.0",
     "follow-redirects": "^1.16.0",
@@ -388,8 +388,8 @@
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.14.2",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
-    "@metamask/bridge-controller": "^79.2.0",
-    "@metamask/bridge-status-controller": "^75.1.0",
+    "@metamask/bridge-controller": "^79.3.0",
+    "@metamask/bridge-status-controller": "^75.2.0",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.6.2",
     "@metamask/claims-controller": "^0.6.0",
