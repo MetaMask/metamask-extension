@@ -180,9 +180,7 @@ describe('displayCriticalError', () => {
       rootContainer.querySelector('#critical-error-content')?.innerHTML,
     ).toContain('critical-error-button');
     expect(
-      rootContainer.querySelector(
-        '[data-testid="critical-error-content"]',
-      ),
+      rootContainer.querySelector('[data-testid="critical-error-content"]'),
     ).not.toBeNull();
   });
 

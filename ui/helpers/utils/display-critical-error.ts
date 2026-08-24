@@ -301,10 +301,7 @@ export function displayCriticalErrorPage(
 
   const criticalErrorContainer = document.createElement('div');
   criticalErrorContainer.setAttribute('id', 'critical-error-content');
-  criticalErrorContainer.setAttribute(
-    'data-testid',
-    'critical-error-content',
-  );
+  criticalErrorContainer.setAttribute('data-testid', 'critical-error-content');
   criticalErrorContainer.innerHTML = html;
 
   // Prevent app contents from writing over critical error by removing application root.

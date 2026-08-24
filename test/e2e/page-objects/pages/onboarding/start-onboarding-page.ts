@@ -268,7 +268,6 @@ class StartOnboardingPage {
       await this.driver.clickElement(this.onboardingImportWithSrpButton);
     }
   }
-
 }
 
 export default StartOnboardingPage;
