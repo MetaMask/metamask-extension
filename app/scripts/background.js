@@ -106,6 +106,7 @@ import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
+import { createPostUpdateReloadDecisionTracker } from './lib/post-update-reload-decision';
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {
@@ -205,6 +206,14 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+const postUpdateReloadDecisionTracker =
+  createPostUpdateReloadDecisionTracker();
+
+if (!isFirefox) {
+  browser.action.enable().catch((error) => {
+    log.warn('[post-update-reload] Failed to enable the toolbar action', error);
+  });
+}
 
 /**
  * Parses port connection info for routing decisions.
@@ -251,9 +260,12 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
   );
 }
 
-lazyListener.once('runtime', 'onInstalled').then((details) => {
-  handleOnInstalled(details);
-});
+lazyListener
+  .once('runtime', 'onInstalled')
+  .then((details) => handleOnInstalled(details))
+  .catch((error) => {
+    log.error('MetaMask - Failed to handle runtime.onInstalled', error);
+  });
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -407,6 +419,13 @@ const criticalErrorHandler = new CriticalErrorHandler();
  */
 const handleOnConnect = async (port) => {
   const { isMetaMaskUIPort } = parsePortInfo(port);
+  if (
+    isMetaMaskUIPort &&
+    !postUpdateReloadDecisionTracker.hasInternalUiConnectionAttempt()
+  ) {
+    log.info('[post-update-reload] Internal UI connection attempt observed');
+    postUpdateReloadDecisionTracker.recordInternalUiConnectionAttempt();
+  }
   if (process.env.IN_TEST) {
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
@@ -1971,7 +1990,9 @@ async function handleOnInstalled([details]) {
       return;
     }
     await isInitialized;
-    onUpdate(controller, platform, previousVersion, requestSafeReload);
+    await onUpdate(controller, platform, previousVersion, requestSafeReload, {
+      postUpdateReloadDecisionTracker,
+    });
   }
 }
 
