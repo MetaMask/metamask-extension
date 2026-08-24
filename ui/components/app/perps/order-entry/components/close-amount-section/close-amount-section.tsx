@@ -77,6 +77,29 @@ const clampClosePercent = (percent: number): number => {
 const formatPercentForInput = (percent: number): string =>
   formatNumberForInput(percent, PERCENT_INPUT_DECIMALS);
 
+/**
+ * Truncates a typed dollar amount to whole cents.
+ *
+ * Mirrors mobile's keypad handling: the fractional part is cut rather than
+ * rounded, and a trailing "." is preserved so an in-progress "2." survives.
+ * Cutting at the input keeps the committed percentage exact for what was
+ * actually entered, instead of rounding the derived percentage afterwards.
+ *
+ * @param value - The raw field text.
+ * @returns The text limited to two decimal places.
+ */
+const truncateToUsdCents = (value: string): string => {
+  const separatorIndex = value.indexOf('.');
+  if (separatorIndex === -1) {
+    return value;
+  }
+  const integerPart = value.slice(0, separatorIndex);
+  const decimalPart = value.slice(separatorIndex + 1);
+  return decimalPart.length === 0
+    ? `${integerPart}.`
+    : `${integerPart}.${decimalPart.slice(0, USD_INPUT_DECIMALS)}`;
+};
+
 /** Scale used to round a percentage to the precision the field renders. */
 const PERCENT_PRECISION_SCALE = 10 ** PERCENT_INPUT_DECIMALS;
 
@@ -181,12 +204,17 @@ export const CloseAmountSection = ({
       }
       onInputMethodChange?.('keypad');
 
-      const parsed = Number.parseFloat(value);
+      // Constrain the entry to cents, matching mobile. Without this a sub-cent
+      // amount just under the position — 112,499.995 of 112,500 — stays a
+      // "partial" close while its size rounds up to the whole position, sending
+      // a partial order for everything the trader holds.
+      const truncatedValue = truncateToUsdCents(value);
+      const parsed = Number.parseFloat(truncatedValue);
       // `''`, `'.'` and a zero-valued position all mean "no amount chosen".
       // Committing 0 here keeps the field and `closePercent` in agreement; a
       // partially typed value must never leave a stale percentage behind it.
       if (Number.isNaN(parsed) || totalNotionalUsd <= 0) {
-        setRawInput(value);
+        setRawInput(truncatedValue);
         setDidExceedPosition(false);
         onClosePercentChange(0);
         return;
@@ -201,7 +229,7 @@ export const CloseAmountSection = ({
       setRawInput(
         exceedsPosition
           ? formatNumberForInput(totalNotionalUsd, USD_INPUT_DECIMALS)
-          : value,
+          : truncatedValue,
       );
       // Kept exact, deliberately un-rounded. The trader asked to close a precise
       // dollar amount, and a percentage step is worth more the larger the

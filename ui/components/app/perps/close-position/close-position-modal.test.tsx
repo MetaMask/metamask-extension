@@ -556,6 +556,73 @@ describe('ClosePositionModal', () => {
       });
     });
 
+    it('never sends the whole position size on a partial close', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={45000}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      // A hair under the 112,500 position. Rounding the size to 4 decimals
+      // formats 99.99999% of 2.5 as "2.5000", so without a floor this partial
+      // close would carry the trader's entire position.
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('112499.995');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalled();
+      });
+      const [, [request]] = mockSubmitRequestToBackground.mock.calls[0];
+      expect(request.size).toBe('2.4999');
+      expect(Number.parseFloat(request.size)).toBeLessThan(
+        Math.abs(Number.parseFloat(basePosition.size)),
+      );
+    });
+
+    it('leaves an ordinary partial size untouched', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={45000}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('56250');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [expect.objectContaining({ size: '1.2500' })],
+        );
+      });
+    });
+
     it('caps a dollar amount above the position at a full close', async () => {
       renderWithProvider(
         <ClosePositionModal

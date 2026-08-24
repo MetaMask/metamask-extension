@@ -229,6 +229,36 @@ describe('CloseAmountSection', () => {
       expect(onClosePercentChange).toHaveBeenCalledWith(25);
     });
 
+    it('limits a typed dollar amount to whole cents', async () => {
+      renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
+
+      const input = screen
+        .getByTestId('close-amount-value')
+        .querySelector('input') as HTMLInputElement;
+      // Matches mobile, which slices the decimal part to two digits rather than
+      // rounding it, so the committed percentage reflects what was entered.
+      await interactAs(async (user) => {
+        await user.clear(input);
+        await user.paste('1234.5678');
+      });
+
+      expect(input.value).toBe('1234.56');
+    });
+
+    it('keeps a trailing decimal point while the trader is still typing', async () => {
+      renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
+
+      const input = screen
+        .getByTestId('close-amount-value')
+        .querySelector('input') as HTMLInputElement;
+      await interactAs(async (user) => {
+        await user.clear(input);
+        await user.paste('12.');
+      });
+
+      expect(input.value).toBe('12.');
+    });
+
     it('reports keypad as the input method for a typed dollar amount', async () => {
       const onInputMethodChange = jest.fn();
       renderWithProvider(

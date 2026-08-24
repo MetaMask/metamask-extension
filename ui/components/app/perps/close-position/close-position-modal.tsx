@@ -108,6 +108,7 @@ const buildCloseRequestParams = ({
   currentPrice,
   isPartialClose,
   closeSize,
+  positionSize,
   sizeDecimals,
   orderType,
   limitPrice,
@@ -117,15 +118,25 @@ const buildCloseRequestParams = ({
   currentPrice: number;
   isPartialClose: boolean;
   closeSize: number;
+  positionSize: number;
   sizeDecimals?: number;
   orderType: OrderType;
   limitPrice?: string;
   position: Position;
 }): ClosePositionParams => {
-  const size =
+  // Round-half-up can lift a partial size onto the whole position — closing
+  // 99.999% of 2.5 at 4 decimals formats as "2.5000". A partial close must stay
+  // strictly under the position, so step the last decimal back when it does.
+  const roundedSize =
     sizeDecimals === undefined
       ? closeSize.toString()
       : closeSize.toFixed(sizeDecimals);
+  const size =
+    isPartialClose &&
+    sizeDecimals !== undefined &&
+    Number.parseFloat(roundedSize) >= positionSize
+      ? Math.max(positionSize - 10 ** -sizeDecimals, 0).toFixed(sizeDecimals)
+      : roundedSize;
 
   if (orderType === 'limit') {
     return {
@@ -674,6 +685,7 @@ export const ClosePositionModal = ({
           currentPrice,
           isPartialClose,
           closeSize,
+          positionSize,
           sizeDecimals,
           orderType: effectiveOrderType,
           limitPrice:
@@ -765,6 +777,7 @@ export const ClosePositionModal = ({
     isPartialClose,
     position,
     closeSize,
+    positionSize,
     displayName,
     t,
     formatNumber,
