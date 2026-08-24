@@ -120,8 +120,7 @@ class SnapSimpleKeyringPage {
     tag: 'p',
   };
 
-  private readonly parentSelector =
-    '[data-testid="parent-selector-snap-simple-keyring-page"]';
+  private readonly parentSelector = '#gatsby-focus-wrapper';
 
   private readonly rejectRequestButton = {
     text: 'Reject Request',

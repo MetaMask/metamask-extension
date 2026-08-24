@@ -61,8 +61,7 @@ class SnapAccountAbstractionKeyringPage {
     text: 'Ok',
   };
 
-  private readonly parentSelector =
-    '[data-testid="parent-selector-snap-account-abstraction-keyring-page"]';
+  private readonly parentSelector = '#gatsby-focus-wrapper';
 
   private readonly setChainConfigButton = {
     tag: 'button',
