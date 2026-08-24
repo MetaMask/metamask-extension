@@ -68,9 +68,7 @@ export const useBridgeAlerts = () => {
   const toTokenAssetId = toToken?.assetId;
 
   const isDestAssetRequireActivate = useSelector((state: BridgeAppState) =>
-    toTokenAssetId
-      ? getIsAssetRequireActivate(state, { assetId: toTokenAssetId })
-      : false,
+    getIsAssetRequireActivate(state, { assetId: toTokenAssetId ?? '' }),
   );
 
   const {
