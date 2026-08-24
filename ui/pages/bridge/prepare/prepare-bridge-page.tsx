@@ -18,7 +18,7 @@ import {
   BRIDGE_DEBUG_ENABLED,
   BRIDGE_ONLY_CHAINS,
 } from '../../../../shared/constants/bridge';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -327,6 +327,11 @@ const PrepareBridgePage = ({
   // making it safe not to worry about recreating this function on dependency updates.
   const debouncedUpdateQuoteRequestInController = useRef(
     debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
+      const [params] = args;
+      if (isValidQuoteRequest(params)) {
+        endTrace({ name: TraceName.SwapQuoteFetch });
+        trace({ name: TraceName.SwapQuoteFetch });
+      }
       dispatch(updateQuoteRequestParams(...args));
     }, 300),
   );
