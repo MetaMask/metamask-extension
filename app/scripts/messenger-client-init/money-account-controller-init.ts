@@ -20,7 +20,13 @@ const log = createProjectLogger('money-account-controller');
  * conditions can change after this function returns, so both triggers are
  * subscribed to and each re-checks the other. `init()` is idempotent (it
  * returns the existing account, guarded by the controller's own mutex), so
- * being driven from two places is safe.
+ * being driven from several places is safe.
+ *
+ * A sync also runs once at construction. Today this is a no-op — the wallet is
+ * always locked while controllers are constructed, because `isUnlocked` is
+ * volatile state and every unlock path fires `KeyringController:unlock` after
+ * the subscription above exists — but the eager sync makes creation correct by
+ * construction rather than dependent on that event ordering.
  *
  * Creating the account is deliberately **not** gated on the money account being
  * usable. A user with no EIP-7702 delegation on the money chain still gets the
@@ -107,6 +113,7 @@ export const MoneyAccountControllerInit: MessengerClientInitFunction<
 
   initMessenger.subscribe('RemoteFeatureFlagController:stateChange', onTrigger);
   initMessenger.subscribe('KeyringController:unlock', onTrigger);
+  onTrigger();
 
   return { messengerClient: controller };
 };

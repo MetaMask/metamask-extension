@@ -56,16 +56,22 @@ type BaseMessenger = Messenger<
 
 /**
  * Build a base messenger with the flag and lock state the init function reads.
+ * The returned `config` is read live by the action handlers, so tests can flip
+ * either value between triggers.
  *
  * @param options - Options.
  * @param options.isEnabled - Whether the Money Account feature flag is on.
  * @param options.isUnlocked - Whether the wallet is unlocked.
- * @returns The base messenger.
+ * @returns The base messenger and its mutable config.
  */
 function buildBaseMessenger({
   isEnabled = true,
   isUnlocked = true,
-}: { isEnabled?: boolean; isUnlocked?: boolean } = {}): BaseMessenger {
+}: { isEnabled?: boolean; isUnlocked?: boolean } = {}): {
+  messenger: BaseMessenger;
+  config: { isEnabled: boolean; isUnlocked: boolean };
+} {
+  const config = { isEnabled, isUnlocked };
   const messenger: BaseMessenger = new Messenger({
     namespace: MOCK_ANY_NAMESPACE,
   });
@@ -76,7 +82,7 @@ function buildBaseMessenger({
       ({
         remoteFeatureFlags: {
           [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
-            enabled: isEnabled,
+            enabled: config.isEnabled,
             minimumVersion: '0.0.1',
           },
         },
@@ -86,10 +92,14 @@ function buildBaseMessenger({
 
   messenger.registerActionHandler(
     'KeyringController:getState',
-    () => ({ isUnlocked, keyrings: [] }) as KeyringControllerState,
+    () =>
+      ({
+        isUnlocked: config.isUnlocked,
+        keyrings: [],
+      }) as KeyringControllerState,
   );
 
-  return messenger;
+  return { messenger, config };
 }
 
 /**
@@ -180,7 +190,7 @@ describe('MoneyAccountControllerInit', () => {
   });
 
   it('initializes the controller with its messenger and persisted state', () => {
-    const request = getInitRequestMock(buildBaseMessenger());
+    const request = getInitRequestMock(buildBaseMessenger().messenger);
     request.persistedState = { MoneyAccountController: { moneyAccounts: {} } };
 
     const { messengerClient } = MoneyAccountControllerInit(request);
@@ -196,7 +206,7 @@ describe('MoneyAccountControllerInit', () => {
 
   it('persists its state, so the account survives a restart', () => {
     const result = MoneyAccountControllerInit(
-      getInitRequestMock(buildBaseMessenger()),
+      getInitRequestMock(buildBaseMessenger().messenger),
     );
 
     // Both undefined means "use the controller name", i.e. persisted and
@@ -205,16 +215,34 @@ describe('MoneyAccountControllerInit', () => {
     expect(result.memStateKey).toBeUndefined();
   });
 
-  it('does not create the account at construction time', () => {
-    MoneyAccountControllerInit(getInitRequestMock(buildBaseMessenger()));
+  it('creates the account at construction when the flag is on and the wallet is unlocked', async () => {
+    const { messenger } = buildBaseMessenger();
+
+    MoneyAccountControllerInit(getInitRequestMock(messenger));
+    await Promise.resolve();
+
+    // No event is needed: a wallet that is already unlocked with the flag
+    // already on would otherwise never get an account, since neither trigger
+    // fires again.
+    expect(init).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not create the account at construction while the wallet is locked', async () => {
+    const { messenger } = buildBaseMessenger({ isUnlocked: false });
+
+    MoneyAccountControllerInit(getInitRequestMock(messenger));
+    await Promise.resolve();
 
     expect(init).not.toHaveBeenCalled();
   });
 
   it('creates the account when the remote flags arrive', async () => {
-    const messenger = buildBaseMessenger();
+    const { messenger, config } = buildBaseMessenger({ isEnabled: false });
     MoneyAccountControllerInit(getInitRequestMock(messenger));
+    await Promise.resolve();
+    expect(init).not.toHaveBeenCalled();
 
+    config.isEnabled = true;
     publishFlagChange(messenger);
     await Promise.resolve();
 
@@ -222,9 +250,12 @@ describe('MoneyAccountControllerInit', () => {
   });
 
   it('creates the account on unlock', async () => {
-    const messenger = buildBaseMessenger();
+    const { messenger, config } = buildBaseMessenger({ isUnlocked: false });
     MoneyAccountControllerInit(getInitRequestMock(messenger));
+    await Promise.resolve();
+    expect(init).not.toHaveBeenCalled();
 
+    config.isUnlocked = true;
     publishUnlock(messenger);
     await Promise.resolve();
 
@@ -232,7 +263,7 @@ describe('MoneyAccountControllerInit', () => {
   });
 
   it('does not create the account while the wallet is locked', async () => {
-    const messenger = buildBaseMessenger({ isUnlocked: false });
+    const { messenger } = buildBaseMessenger({ isUnlocked: false });
     MoneyAccountControllerInit(getInitRequestMock(messenger));
 
     publishFlagChange(messenger);
@@ -243,7 +274,7 @@ describe('MoneyAccountControllerInit', () => {
   });
 
   it('does not create the account when the feature flag is off', async () => {
-    const messenger = buildBaseMessenger({ isEnabled: false });
+    const { messenger } = buildBaseMessenger({ isEnabled: false });
     MoneyAccountControllerInit(getInitRequestMock(messenger));
 
     publishFlagChange(messenger);
@@ -255,8 +286,9 @@ describe('MoneyAccountControllerInit', () => {
   });
 
   it('does not create a second account once one exists', async () => {
-    const messenger = buildBaseMessenger();
+    const { messenger } = buildBaseMessenger();
     MoneyAccountControllerInit(getInitRequestMock(messenger));
+    await Promise.resolve();
 
     publishFlagChange(messenger);
     await Promise.resolve();
@@ -267,11 +299,12 @@ describe('MoneyAccountControllerInit', () => {
   });
 
   it('creates a fresh account after a vault restore, when the recorded one belongs to a previous seed', async () => {
-    const messenger = buildBaseMessenger();
+    const { messenger, config } = buildBaseMessenger({ isUnlocked: false });
     state.moneyAccounts = { old: moneyAccountFor('a-previous-seed') };
 
     MoneyAccountControllerInit(getInitRequestMock(messenger));
 
+    config.isUnlocked = true;
     publishUnlock(messenger);
     await Promise.resolve();
 
@@ -281,34 +314,13 @@ describe('MoneyAccountControllerInit', () => {
   });
 
   it('clears its state when the flag is turned off after an account was created', async () => {
-    let isEnabled = true;
-    const messenger: BaseMessenger = new Messenger({
-      namespace: MOCK_ANY_NAMESPACE,
-    });
-    messenger.registerActionHandler(
-      'RemoteFeatureFlagController:getState',
-      () =>
-        ({
-          remoteFeatureFlags: {
-            [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
-              enabled: isEnabled,
-              minimumVersion: '0.0.1',
-            },
-          },
-        }) as unknown as RemoteFeatureFlagControllerState,
-    );
-    messenger.registerActionHandler(
-      'KeyringController:getState',
-      () => ({ isUnlocked: true, keyrings: [] }) as KeyringControllerState,
-    );
+    const { messenger, config } = buildBaseMessenger();
 
     MoneyAccountControllerInit(getInitRequestMock(messenger));
-
-    publishFlagChange(messenger);
     await Promise.resolve();
     expect(init).toHaveBeenCalledTimes(1);
 
-    isEnabled = false;
+    config.isEnabled = false;
     publishFlagChange(messenger);
     await Promise.resolve();
 
@@ -316,10 +328,14 @@ describe('MoneyAccountControllerInit', () => {
   });
 
   it('swallows a creation failure, leaving the next trigger to retry', async () => {
-    const messenger = buildBaseMessenger();
+    const { messenger } = buildBaseMessenger();
     init.mockRejectedValue(new Error('vault is busy'));
 
-    MoneyAccountControllerInit(getInitRequestMock(messenger));
+    expect(() =>
+      MoneyAccountControllerInit(getInitRequestMock(messenger)),
+    ).not.toThrow();
+    await Promise.resolve();
+    await Promise.resolve();
 
     expect(() => publishFlagChange(messenger)).not.toThrow();
     await Promise.resolve();
@@ -328,6 +344,6 @@ describe('MoneyAccountControllerInit', () => {
     publishUnlock(messenger);
     await Promise.resolve();
 
-    expect(init).toHaveBeenCalledTimes(2);
+    expect(init).toHaveBeenCalledTimes(3);
   });
 });
