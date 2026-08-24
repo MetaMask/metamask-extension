@@ -4,16 +4,16 @@ import {
   calcLatestSrcBalance,
   isNonEvmChainId,
   formatChainIdToHex,
-  type QuoteResponseV1,
   isNativeAddress,
   RequestStatus,
-  type QuoteMetadata,
+  assetIdsMatch,
+  type QuoteResponse,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { fetchTxAlerts } from '../../../shared/lib/bridge-utils/security-alerts-api.util';
 import { trace, TraceName } from '../../../shared/lib/trace';
-import { assetIdsMatch, getTokenExchangeRate, toBridgeToken } from './utils';
+import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, TokenPayload } from './types';
 
 const clearSlippageState = (state: BridgeState) => {
@@ -22,10 +22,10 @@ const clearSlippageState = (state: BridgeState) => {
 };
 
 const didAssetPairChange = (
-  previousFromAssetId: string | undefined,
-  previousToAssetId: string | undefined,
-  nextFromAssetId: string | undefined,
-  nextToAssetId: string | undefined,
+  previousFromAssetId: CaipAssetType | undefined,
+  previousToAssetId: CaipAssetType | undefined,
+  nextFromAssetId: CaipAssetType | undefined,
+  nextToAssetId: CaipAssetType | undefined,
 ) =>
   !assetIdsMatch(previousFromAssetId, nextFromAssetId) ||
   !assetIdsMatch(previousToAssetId, nextToAssetId);
@@ -124,19 +124,16 @@ const bridgeSlice = createSlice({
       const newFromToken = toBridgeToken(payload);
       state.isSrcAssetPickerOpen = false;
       // Set toToken to previous fromToken if new fromToken is the same as the current toToken
-      if (
-        state.toToken?.assetId &&
-        newFromToken?.assetId &&
-        newFromToken.assetId.toLowerCase() ===
-          state.toToken.assetId.toLowerCase()
-      ) {
+      if (assetIdsMatch(state.toToken?.assetId, newFromToken?.assetId)) {
         state.toToken = currentFromToken;
+      }
+      if (!assetIdsMatch(previousFromAssetId, newFromToken?.assetId)) {
+        state.fromTokenInputValue = initialState.fromTokenInputValue;
       }
       state.fromToken = newFromToken;
       state.fromTokenBalance = initialState.fromTokenBalance;
       state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
       state.fromNativeBalance = initialState.fromNativeBalance;
-      state.fromTokenInputValue = initialState.fromTokenInputValue;
       state.txAlertStatus = initialState.txAlertStatus;
       state.txAlert = initialState.txAlert;
       if (
@@ -213,20 +210,18 @@ const bridgeSlice = createSlice({
     },
     restoreQuoteRequestFromState: (
       state,
-      {
-        payload: { sentAmount, quote },
-      }: { payload: QuoteResponseV1 & QuoteMetadata },
+      { payload: { quote } }: { payload: QuoteResponse },
     ) => {
       const pairChanged = didAssetPairChange(
         state.fromToken?.assetId,
         state.toToken?.assetId,
-        quote.srcAsset.assetId,
-        quote.destAsset.assetId,
+        quote.src.asset.assetId,
+        quote.dest.asset.assetId,
       );
 
-      state.fromToken = toBridgeToken(quote.srcAsset);
-      state.toToken = toBridgeToken(quote.destAsset);
-      state.fromTokenInputValue = sentAmount?.amount ?? null;
+      state.fromToken = toBridgeToken(quote.src.asset);
+      state.toToken = toBridgeToken(quote.dest.asset);
+      state.fromTokenInputValue = quote.src.normalizedAmount ?? null;
       if (pairChanged || !state.isSlippageUserOverride) {
         clearSlippageState(state);
         state.slippage = quote.slippage ?? undefined;
@@ -285,8 +280,7 @@ const bridgeSlice = createSlice({
     builder.addCase(setEVMSrcTokenBalance.fulfilled, (state, action) => {
       if (
         state.fromToken
-          ? action.meta.arg.assetId.toLowerCase() ===
-            state.fromToken.assetId.toLowerCase()
+          ? assetIdsMatch(action.meta.arg.assetId, state.fromToken.assetId)
           : true
       ) {
         state.fromTokenBalance =

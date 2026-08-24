@@ -47,7 +47,7 @@ export const SearchInput = ({
   return (
     <TextFieldSearch
       autoFocus={autoFocus}
-      className="app-text-field-search"
+      className="w-full"
       clearButtonOnClick={onClear}
       data-testid="search-input-container"
       inputProps={

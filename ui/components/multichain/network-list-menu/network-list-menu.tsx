@@ -39,7 +39,6 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
   setEditedNetwork,
-  showPermittedNetworkToast,
   updateCustomNonce,
   setNextNonce,
   addPermittedChain,
@@ -430,7 +429,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
           if (!isNetworkPermitted) {
             await dispatch(addPermittedChain(selectedTabOrigin, chainId));
-            dispatch(showPermittedNetworkToast());
           }
 
           await setNetworkClientIdForDomain(

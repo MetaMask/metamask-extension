@@ -1,5 +1,17 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * DeFi protocol position details for a single protocol on a chain.
+ *
+ * Screen: `#/defi/:chainId/:protocolId`, reached from the home DeFi tab.
+ * Owns: protocol name/title, total market value, supplied heading, and token
+ * list item balance/value assertions on the details page.
+ * Boundaries: the details page only. The DeFi tab list and back-navigation
+ * landing content belong to `DeFiTab` / `HomePage`.
+ * Related: `DeFiTab` (list entry point).
+ *
+ * @see ui/pages/defi/components/defi-details-page.tsx
+ */
 class DeFiDetailsPage {
   private readonly defiBackButton =
     '[data-testid="defi-details-page-back-button"]';

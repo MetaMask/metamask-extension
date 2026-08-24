@@ -55,7 +55,6 @@ const setup = ({
   mockLoadShieldConfig.mockReturnValue({
     subscriptionEnv: SubscriptionEnv.PRD,
     gatewayUrl: gatewayUrl ?? undefined,
-    ruleEngineUrl: 'https://ruleset-engine.api.cx.metamask.io',
   });
 
   return {

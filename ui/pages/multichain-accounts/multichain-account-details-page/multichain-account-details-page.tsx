@@ -183,7 +183,10 @@ export const MultichainAccountDetailsPage = () => {
   }, [accountGroupId, multichainAccount, navigate]);
 
   return accountGroupId && multichainAccount ? (
-    <Page className="multichain-account-details-page">
+    <Page
+      className="multichain-account-details-page"
+      data-testid="parent-selector-multichain-account-details-page"
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,

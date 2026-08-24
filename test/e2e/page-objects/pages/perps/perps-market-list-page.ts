@@ -1,7 +1,16 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the Perps Market List (search / explore crypto).
+ * The Perps Market List: search, filter/sort, and picking a market to open.
+ *
+ * Screen: `#/perps/market-list`, reached from `PerpsTab.clickExploreMarketsRow`.
+ * Owns: the market list view, filter/sort controls, market rows, dismissing
+ * the perps toast that can intercept clicks, and header back.
+ * Boundaries: selecting a row only navigates — market detail interactions
+ * belong to `PerpsMarketDetailPage`. Toast content beyond the close control
+ * is out of scope.
+ * Related: `PerpsTab` (how tests get here), `PerpsMarketDetailPage` (opened
+ * by choosing a market row).
  *
  * @see ui/pages/perps/market-list/index.tsx
  */
@@ -24,11 +33,22 @@ export class PerpsMarketListPage {
 
   private readonly headerBackButton = { testId: 'back-button' };
 
-  private readonly marketListView = { testId: 'market-list-view' };
-
   private readonly marketRow = {
     xpath: "//*[starts-with(@data-testid,'market-row-')]",
   };
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-perps-market-list',
+  };
+
+  /**
+   * Perps toast close control. Dismissing avoids click intercept when the banner
+   * overlays Explore markets after favoriting.
+   *
+   * @see ui/components/multichain/toast/toast.tsx
+   */
+  private readonly perpsToastCloseButton =
+    '[data-testid="perps-toast-banner-base"] .mm-banner-base__close-button';
 
   /** CSS selector for the search input; driver.fill() expects a string locator. */
   private readonly searchInput = '[data-testid="search-input"]';
@@ -54,7 +74,7 @@ export class PerpsMarketListPage {
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
       this.filterSortRow,
-      this.marketListView,
+      this.parentSelector,
     ]);
   }
 
@@ -84,15 +104,22 @@ export class PerpsMarketListPage {
     return { testId: `filter-select-option-${optionId}` };
   }
 
+  async isPageLoaded(timeout = 2000): Promise<boolean> {
+    return this.driver.isElementPresentAndVisible(this.parentSelector, timeout);
+  }
+
   /**
    * Navigates to the Perps Market List by clicking the "Explore markets" row.
    * Requires the Perps Home view to be visible (e.g. after navigateToPerpsHome()).
-   * Dismisses any visible toast first so it does not intercept the click; then uses
-   * clickElementUsingMouseMove for the row to avoid ElementClickInterceptedError.
+   * Dismisses any visible toast that may cover the row, waits for the row to stop
+   * moving (watchlist mount / toast dismiss can shift layout), then clicks with
+   * {@link Driver.clickElement}.
    */
   async navigateToMarketList(): Promise<void> {
     await this.driver.waitForSelector(this.exploreMarketsRow);
-    await this.driver.clickElementUsingMouseMove(this.exploreMarketsRow);
+    await this.driver.clickElementSafe(this.perpsToastCloseButton, 2000);
+    await this.driver.waitForElementToStopMoving(this.exploreMarketsRow);
+    await this.driver.clickElement(this.exploreMarketsRow);
     await this.checkPageIsLoaded();
   }
 

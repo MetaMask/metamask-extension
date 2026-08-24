@@ -7,7 +7,6 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
-import { Mutex } from 'async-mutex';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import ExtensionPlatform from '../platforms/extension';
@@ -150,17 +149,6 @@ export type MessengerClientInitRequest<
    */
   persistedState: MessengerClientPersistedState;
 
-  // TODO: Remove this once the migration to the LegacyBackgroundApiService is complete.
-  /**
-   * The mutex used to ensure that only one seedless onboarding operation can occur at a time.
-   */
-  seedlessOperationMutex: Mutex;
-
-  /**
-   * The mutex used to serialize vault creation, seed export, and locking.
-   */
-  createVaultMutex: Mutex;
-
   /**
    * Create a multiplexed stream for connecting to an untrusted context like a
    * like a website, Snap, or other extension.
@@ -238,6 +226,21 @@ export type MessengerClientInitRequest<
    * Gets the record of open MetaMask tab IDs.
    */
   getOpenMetamaskTabsIds: () => Record<string, number>;
+
+  /**
+   * Returns the current URL of the given browser tab.
+   *
+   * @param tabId - The ID of the tab to read.
+   */
+  getTabUrl: (tabId: number) => Promise<string | undefined>;
+
+  /**
+   * Navigates the given browser tab to the given URL.
+   *
+   * @param tabId - The ID of the tab to update.
+   * @param url - The URL to navigate the tab to.
+   */
+  updateTabUrl: (tabId: number, url: string) => Promise<void>;
 
   /**
    * Marks the notification popup as having been automatically closed.

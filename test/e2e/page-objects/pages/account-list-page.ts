@@ -3,6 +3,22 @@ import { largeDelayMs } from '../../helpers';
 import { quoteXPathText } from '../../../helpers/quoteXPathText';
 import { ACCOUNT_TYPE } from '../../constants';
 
+/**
+ * Multichain account list: wallets, accounts, add/hide/pin, and related menus.
+ *
+ * Screen: `#/account-list`, usually opened from `HeaderNavbar.openAccountMenu`.
+ * Owns: listing and selecting accounts/wallets, add-wallet / choose-wallet-type
+ * flows, pin/hide/remove account actions, SRP export entry, search, and balance
+ * assertions on list items.
+ * Boundaries: the account list surface only. Account details, wallet details,
+ * hardware connect, and confirmation dialogs belong to their own page objects
+ * once navigated away.
+ * Related: `HeaderNavbar` (how tests open this), `WalletDetailsPage`,
+ * `MultichainAccountDetailsPage`.
+ *
+ * @see ui/pages/multichain-accounts/account-list/account-list.tsx
+ * @see ui/components/multichain-accounts/multichain-account-list/multichain-account-list.tsx
+ */
 class AccountListPage {
   private readonly accountDetailsTab = {
     text: 'Account details',
@@ -23,6 +39,11 @@ class AccountListPage {
   private readonly accountValueAndSuffix =
     '[data-testid="account-value-and-suffix"]';
 
+  private readonly addAccountButtonSyncing = {
+    css: '[data-testid="add-multichain-account-button"]',
+    text: 'Syncing...',
+  };
+
   private readonly addHardwareWalletButton =
     '[data-testid="choose-wallet-type-hardware-wallet"]';
 
@@ -33,6 +54,18 @@ class AccountListPage {
 
   private readonly addMultichainAccountButton =
     '[data-testid="add-multichain-account-button"]';
+
+  private readonly addMultichainAccountButtonByIndex = (
+    buttonIndex: number,
+  ) => ({
+    xpath: `(//*[@data-testid="add-multichain-account-button"])[${buttonIndex + 1}]`,
+  });
+
+  private readonly addMultichainAccountButtonReadyByIndex = (
+    buttonIndex: number,
+  ) => ({
+    xpath: `(//*[@data-testid="add-multichain-account-button"])[${buttonIndex + 1}][normalize-space(.)="Add account"]`,
+  });
 
   private readonly addMultichainWalletButton =
     '[data-testid="account-list-add-wallet-button"]';
@@ -59,7 +92,7 @@ class AccountListPage {
     'header button[aria-label="Close"]';
 
   private readonly closeMultichainAccountsPageButton =
-    '.multichain-page-header button[aria-label="Back"]';
+    '[data-testid="account-list-page-back-button"]';
 
   private readonly currentSelectedAccount =
     '.multichain-account-list-item--selected';
@@ -268,27 +301,10 @@ class AccountListPage {
     console.log(`Adding new multichain account`);
     await this.waitUntilSyncingIsCompleted();
     const buttonIndex = options?.srpIndex ?? 0;
-    const expectedCount = buttonIndex + 1;
-    let createMultichainAccountButtons: Awaited<
-      ReturnType<typeof this.driver.findElements>
-    > = [];
-    await this.driver.waitUntil(
-      async () => {
-        createMultichainAccountButtons = await this.driver.findElements(
-          this.addMultichainAccountButton,
-        );
-        return createMultichainAccountButtons.length >= expectedCount;
-      },
-      { timeout: 10000, interval: 500 },
+    await this.waitForAddAccountButtonStablyReady(buttonIndex);
+    await this.driver.clickElement(
+      this.addMultichainAccountButtonByIndex(buttonIndex),
     );
-    await createMultichainAccountButtons[buttonIndex].click();
-
-    // Wait for the account creation to complete by waiting for loading state to finish
-    // The button shows "Adding account..." during loading and "Add account" when done
-    await this.driver.assertElementNotPresent({
-      css: this.addMultichainAccountButton,
-      text: 'Adding account...',
-    });
   }
 
   /**
@@ -532,6 +548,42 @@ class AccountListPage {
   }
 
   /**
+   * Check that the SRP is imported through a single field, rather than one
+   * input per word.
+   */
+  async checkImportSrpInputIsDisplayed(): Promise<void> {
+    console.log('Check that the import SRP input is displayed');
+    await this.driver.waitForSelector(this.importSrpInput);
+  }
+
+  /**
+   * Wait until the import SRP input displays the expected value. A textarea
+   * holds its value as a property rather than an attribute, so this polls the
+   * value instead of matching it with a locator.
+   *
+   * @param expectedValue - The expected value.
+   */
+  async checkImportSrpInputValue(expectedValue: string): Promise<void> {
+    console.log(`Check that the import SRP input value is "${expectedValue}"`);
+    let actualValue: string | null = null;
+    try {
+      await this.driver.waitUntil(
+        async () => {
+          const srpInput = await this.driver.findElement(this.importSrpInput);
+          actualValue = await srpInput.getAttribute('value');
+          return actualValue === expectedValue;
+        },
+        { interval: 100, timeout: this.driver.timeout },
+      );
+    } catch (error: unknown) {
+      const reason = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Import SRP input value should match the typed word. Expected "${expectedValue}", got "${actualValue}". ${reason}`,
+      );
+    }
+  }
+
+  /**
    * Checks that the account balance is displayed on the multichain account list page
    * for a specific account, optionally scoped under a specific wallet.
    *
@@ -601,6 +653,23 @@ class AccountListPage {
       `Check that multichain account label ${expectedLabel} is displayed on account list page`,
     );
     await this.driver.waitForSelector({
+      css: this.multichainAccountListItem,
+      text: expectedLabel,
+    });
+  }
+
+  /**
+   * Checks that the multichain account label is not displayed on the multichain account list page.
+   *
+   * @param expectedLabel - The label that should not be displayed.
+   */
+  async checkMultichainAccountNameNotDisplayed(
+    expectedLabel: string,
+  ): Promise<void> {
+    console.log(
+      `Check that multichain account label ${expectedLabel} is not displayed on account list page`,
+    );
+    await this.driver.assertElementNotPresent({
       css: this.multichainAccountListItem,
       text: expectedLabel,
     });
@@ -753,7 +822,9 @@ class AccountListPage {
 
   async closeChooseWalletTypePage(): Promise<void> {
     console.log(`Navigate back from choose wallet type page`);
-    await this.driver.clickElement(this.chooseWalletTypeBackButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.chooseWalletTypeBackButton,
+    );
   }
 
   async closeMultichainAccountsPage(): Promise<void> {
@@ -947,6 +1018,17 @@ class AccountListPage {
     });
   }
 
+  /**
+   * Type into the import SRP input.
+   *
+   * @param text - The text to type.
+   */
+  async typeIntoImportSrpInput(text: string): Promise<void> {
+    console.log(`Type "${text}" into the import SRP input`);
+    const srpInput = await this.driver.findVisibleElement(this.importSrpInput);
+    await srpInput.sendKeys(text);
+  }
+
   async unhideAccount(): Promise<void> {
     console.log(`Unhide account in account list`);
     await this.openAccountOptionsMenu();
@@ -970,6 +1052,34 @@ class AccountListPage {
     );
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.viewAccountOnExplorerButton);
+  }
+
+  /**
+   * Wait for the add account button at the specified index to be stably ready.
+   * @param buttonIndex - Zero-based index of the add-multichain-account button
+   */
+  async waitForAddAccountButtonStablyReady(
+    buttonIndex: number = 0,
+  ): Promise<void> {
+    console.log(
+      `Wait for add account button at index ${buttonIndex} to be stably ready`,
+    );
+    await this.driver.waitUntil(
+      async () => {
+        const syncing = await this.driver.isElementPresentAndVisible(
+          this.addAccountButtonSyncing,
+          500,
+        );
+        if (syncing) {
+          return false;
+        }
+        return await this.driver.isElementPresentAndVisible(
+          this.addMultichainAccountButtonReadyByIndex(buttonIndex),
+          500,
+        );
+      },
+      { timeout: 20000, interval: 500, stableFor: 1000 },
+    );
   }
 
   /**

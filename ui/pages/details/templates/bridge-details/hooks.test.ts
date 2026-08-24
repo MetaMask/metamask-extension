@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { selectBridgeHistoryItemByHash } from '../../../../ducks/bridge-status/selectors';
 import { useBridgeHistoryItem, useHistoryTokens } from './hooks';

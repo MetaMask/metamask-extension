@@ -1,9 +1,11 @@
 import React from 'react';
 import type { PaymentMethod, Quote } from '@metamask/ramps-controller';
 import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  AvatarIconSize,
   Box,
   BoxAlignItems,
-  BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
   ButtonBase,
@@ -11,6 +13,8 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Tag,
+  TagSeverity,
   Text,
   TextColor,
   FontWeight,
@@ -18,6 +22,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getRampsListItemClassName } from '../../components/get-ramps-list-item-class-name';
 import { formatPaymentMethodDelay } from '../utils/format-payment-method-delay';
 import { getPaymentMethodIconName } from '../utils/get-payment-method-icon';
 import RampsQuoteDisplay from './ramps-quote-display';
@@ -26,7 +31,7 @@ export type RampsPaymentMethodListItemProps = {
   paymentMethod: PaymentMethod;
   isSelected?: boolean;
   isDisabled?: boolean;
-  /** Buy limits label when published by the selected provider. */
+  isPreviouslyUsed?: boolean;
   limitText?: string | null;
   showQuote?: boolean;
   quote?: Quote | null;
@@ -41,11 +46,11 @@ export type RampsPaymentMethodListItemProps = {
 /**
  * Payment method row matching mobile `PaymentMethodListItem` layout:
  * logo, name, time estimate, optional limits, and optional quote preview.
- *
  * @param options0
  * @param options0.paymentMethod
  * @param options0.isSelected
  * @param options0.isDisabled
+ * @param options0.isPreviouslyUsed
  * @param options0.limitText
  * @param options0.showQuote
  * @param options0.quote
@@ -60,6 +65,7 @@ export default function RampsPaymentMethodListItem({
   paymentMethod,
   isSelected = false,
   isDisabled = false,
+  isPreviouslyUsed = false,
   limitText = null,
   showQuote = false,
   quote = null,
@@ -77,8 +83,9 @@ export default function RampsPaymentMethodListItem({
     paymentMethod.icon,
   );
   const delayText = formatPaymentMethodDelay(paymentMethod.delay, t);
+  const detailText = [delayText, limitText].filter(Boolean).join(' • ');
   const subtitleText =
-    quoteError && quoteErrorMessage ? quoteErrorMessage : delayText;
+    quoteError && quoteErrorMessage ? quoteErrorMessage : detailText;
 
   const cryptoAmount =
     quote?.quote?.amountOut !== undefined &&
@@ -99,7 +106,7 @@ export default function RampsPaymentMethodListItem({
     <ButtonBase
       onClick={onClick}
       isDisabled={isDisabled}
-      className="w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+      className={getRampsListItemClassName(isSelected)}
       data-testid={`ramps-payment-method-item-${paymentMethod.id}`}
     >
       <Box
@@ -115,36 +122,40 @@ export default function RampsPaymentMethodListItem({
           alignItems={BoxAlignItems.Center}
           gap={3}
         >
-          <Box
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
-            backgroundColor={
-              isSelected
-                ? BoxBackgroundColor.PrimaryMuted
-                : BoxBackgroundColor.BackgroundMuted
-            }
-            alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.Center}
-          >
-            <Icon
-              name={iconName}
-              size={IconSize.Md}
-              color={
-                isSelected ? IconColor.PrimaryDefault : IconColor.IconDefault
-              }
-            />
-          </Box>
+          <AvatarIcon
+            iconName={iconName}
+            size={AvatarIconSize.Lg}
+            severity={AvatarIconSeverity.Neutral}
+            className="shrink-0"
+          />
           <Box
             className="min-w-0 flex-1"
             flexDirection={BoxFlexDirection.Column}
             alignItems={BoxAlignItems.Start}
           >
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              className="truncate text-left"
+            <Box
+              className="w-full min-w-0"
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
             >
-              {paymentMethod.name}
-            </Text>
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                className="truncate text-left"
+              >
+                {paymentMethod.name}
+              </Text>
+              {isPreviouslyUsed ? (
+                <Tag
+                  severity={TagSeverity.Info}
+                  className="shrink-0"
+                  data-testid={`ramps-payment-method-item-tag-${paymentMethod.id}`}
+                >
+                  {t('rampsPreviouslyUsed')}
+                </Tag>
+              ) : null}
+            </Box>
             {subtitleText ? (
               <Text
                 variant={TextVariant.BodySm}
@@ -155,16 +166,6 @@ export default function RampsPaymentMethodListItem({
                 {subtitleText}
               </Text>
             ) : null}
-            {quoteError || !limitText ? null : (
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-                className="truncate text-left"
-                data-testid={`ramps-payment-method-item-limits-${paymentMethod.id}`}
-              >
-                {limitText}
-              </Text>
-            )}
           </Box>
         </Box>
         {showQuote || isSelected ? (
@@ -185,8 +186,8 @@ export default function RampsPaymentMethodListItem({
             {isSelected ? (
               <Icon
                 name={IconName.Check}
-                size={IconSize.Md}
-                color={IconColor.PrimaryDefault}
+                size={IconSize.Lg}
+                color={IconColor.IconDefault}
                 data-testid="ramps-payment-method-item-selected"
               />
             ) : null}

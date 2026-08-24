@@ -19,6 +19,7 @@ import { createMockMultichainAccountsState } from '../../../../selectors/multich
 import * as assetsSelectors from '../../../../selectors/assets';
 import {
   MultichainEditAccountsPage,
+  SiteMetadata,
   SnapsPermissionsRequestType,
 } from './multichain-edit-accounts-page';
 
@@ -57,6 +58,9 @@ const TEST_IDS = {
   MULTICHAIN_ACCOUNT_CELL: (groupId: string) =>
     `multichain-account-cell-${groupId}`,
   BACK_BUTTON: 'back-button',
+  DISCONNECT_BUTTON: 'disconnect-button',
+  SITE_INFO_BANNER: 'connected-site-info-banner',
+  DISCONNECT_ALL_MODAL: 'disconnect-all-modal',
 } as const;
 
 const mockEvmAccount1 = createMockInternalAccount({
@@ -307,6 +311,8 @@ const render = (
     onSubmit?: (accountGroups: AccountGroupId[]) => void;
     onClose?: () => void;
     snapsPermissionsRequestType?: SnapsPermissionsRequestType;
+    siteMetadata?: SiteMetadata;
+    onDisconnect?: () => void;
   } = {},
   state = {},
 ) => {
@@ -515,7 +521,7 @@ describe('MultichainEditAccountsPage', () => {
         ).not.toBeDisabled();
       });
 
-      it('enables button when None and no accounts selected', () => {
+      it('disables button when None and no accounts selected', () => {
         const { getByTestId } = render({
           defaultSelectedAccountGroups: [],
           snapsPermissionsRequestType: None,
@@ -523,7 +529,7 @@ describe('MultichainEditAccountsPage', () => {
 
         expect(
           getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
-        ).not.toBeDisabled();
+        ).toBeDisabled();
       });
     });
 
@@ -583,6 +589,87 @@ describe('MultichainEditAccountsPage', () => {
 
         expect(queryByTestId(TEST_IDS.BACK_BUTTON)).not.toBeInTheDocument();
       });
+    });
+  });
+
+  describe('site metadata banner', () => {
+    it('does not render banner when siteMetadata is not provided', () => {
+      const { queryByTestId } = render();
+
+      expect(queryByTestId(TEST_IDS.SITE_INFO_BANNER)).not.toBeInTheDocument();
+    });
+
+    it('renders banner when siteMetadata is provided', () => {
+      const { getByTestId } = render({
+        siteMetadata: {
+          origin: 'https://example.com',
+          name: 'Example Dapp',
+          iconUrl: 'https://example.com/icon.png',
+        },
+      });
+
+      expect(getByTestId(TEST_IDS.SITE_INFO_BANNER)).toBeInTheDocument();
+    });
+
+    it('shows site origin in banner', () => {
+      const { getByText, getByTestId } = render({
+        siteMetadata: {
+          origin: 'https://example.com',
+          name: 'Example Dapp',
+        },
+      });
+
+      const banner = getByTestId(TEST_IDS.SITE_INFO_BANNER);
+      expect(banner).toBeInTheDocument();
+      expect(getByText('example.com')).toBeInTheDocument();
+      expect(getByText(/can see your connected accounts/u)).toBeInTheDocument();
+    });
+  });
+
+  describe('disconnect button and modal', () => {
+    it('does not render disconnect button when onDisconnect is not provided', () => {
+      const { queryByTestId } = render();
+
+      expect(queryByTestId(TEST_IDS.DISCONNECT_BUTTON)).not.toBeInTheDocument();
+    });
+
+    it('renders disconnect button when onDisconnect is provided', () => {
+      const { getByTestId } = render({
+        onDisconnect: jest.fn(),
+        siteMetadata: {
+          origin: 'https://example.com',
+        },
+      });
+
+      expect(getByTestId(TEST_IDS.DISCONNECT_BUTTON)).toBeInTheDocument();
+    });
+
+    it('opens disconnect modal when disconnect button is clicked', () => {
+      const { getByTestId } = render({
+        onDisconnect: jest.fn(),
+        siteMetadata: {
+          origin: 'https://example.com',
+        },
+      });
+
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_BUTTON));
+
+      expect(getByTestId(TEST_IDS.DISCONNECT_ALL_MODAL)).toBeInTheDocument();
+    });
+
+    it('calls onDisconnect when modal confirm is clicked', () => {
+      const onDisconnect = jest.fn();
+      const { getByTestId } = render({
+        onDisconnect,
+        siteMetadata: {
+          origin: 'https://example.com',
+        },
+      });
+
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_BUTTON));
+      fireEvent.click(getByTestId('disconnect-all'));
+
+      expect(onDisconnect).toHaveBeenCalled();
     });
   });
 });
