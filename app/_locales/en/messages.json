@@ -7216,6 +7216,15 @@
   "perpsCloseAmount": {
     "message": "Close amount"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "Close amount capped at your position value."
+  },
+  "perpsCloseAmountInPercent": {
+    "message": "%"
+  },
+  "perpsCloseAmountInUsd": {
+    "message": "$"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "Price can't be more than 95% away from the market price"
   },
@@ -7227,6 +7236,9 @@
   },
   "perpsClosePartialMinNotional": {
     "message": "Partial closes must be at least $1 in USD value. Increase the close amount or close the full position."
+  },
+  "perpsClosePercentCappedAtMax": {
+    "message": "Close percentage capped at 100%."
   },
   "perpsClosePosition": {
     "message": "Close position"

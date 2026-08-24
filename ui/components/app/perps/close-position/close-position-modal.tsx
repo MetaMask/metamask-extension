@@ -25,6 +25,7 @@ import {
 } from '@metamask/design-system-react';
 import type {
   ClosePositionParams,
+  InputMethod,
   OrderType,
 } from '@metamask/perps-controller';
 import {
@@ -365,6 +366,11 @@ export const ClosePositionModal = ({
   const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
   const hasConfirmedCloseRef = useRef(false);
 
+  // Which control the trader last used to set the close amount. Mirrors mobile:
+  // a ref (not state) so recording it never re-renders the form, last-touched
+  // wins, and it rides `trackingData` to the controller's close event.
+  const inputMethodRef = useRef<InputMethod>('default');
+
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
   if (isOpen !== prevIsOpen) {
     setPrevIsOpen(isOpen);
@@ -383,6 +389,7 @@ export const ClosePositionModal = ({
   useEffect(() => {
     if (isOpen) {
       hasConfirmedCloseRef.current = false;
+      inputMethodRef.current = 'default';
     }
   }, [isOpen]);
 
@@ -681,6 +688,7 @@ export const ClosePositionModal = ({
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
           hlFeeRate: protocolFeeRate,
+          inputMethod: inputMethodRef.current,
         });
         const result = await submitRequestToBackground<{
           success: boolean;
@@ -779,6 +787,10 @@ export const ClosePositionModal = ({
     setError(null);
   }, []);
 
+  const handleInputMethodChange = useCallback((inputMethod: InputMethod) => {
+    inputMethodRef.current = inputMethod;
+  }, []);
+
   const handleOrderTypeChange = useCallback(
     (orderType: OrderType) => {
       setSelectedOrderType(orderType);
@@ -850,6 +862,7 @@ export const ClosePositionModal = ({
                 asset={displayName}
                 currentPrice={effectivePrice}
                 sizeDecimals={sizeDecimals}
+                onInputMethodChange={handleInputMethodChange}
               />
 
               {isPartialCloseBelowMinNotional ? (

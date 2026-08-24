@@ -471,6 +471,249 @@ describe('ClosePositionModal', () => {
     });
   });
 
+  describe('close amount input modes', () => {
+    it('submits the token quantity equivalent to a typed dollar amount', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      // Half of the 2.5 ETH position at 2,900 is 3,625 USD.
+      fireEvent.change(usdInput, { target: { value: '3625' } });
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [expect.objectContaining({ size: '1.2500' })],
+        );
+      });
+    });
+
+    it('submits the token quantity equivalent to a typed percentage', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+      const percentInput = within(
+        screen.getByTestId('close-amount-percent'),
+      ).getByRole('textbox');
+      fireEvent.change(percentInput, { target: { value: '50' } });
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [expect.objectContaining({ size: '1.2500' })],
+        );
+      });
+    });
+
+    it('caps a dollar amount above the position at a full close', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      fireEvent.change(usdInput, { target: { value: '999999' } });
+
+      expect(
+        screen.getByTestId('close-amount-over-close-error'),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalled();
+      });
+      // A full close omits size entirely, so no over-sized order can be sent.
+      const [, [request]] = mockSubmitRequestToBackground.mock.calls[0];
+      expect(request.size).toBeUndefined();
+    });
+
+    it('caps a percentage above 100 at a full close', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+      const percentInput = within(
+        screen.getByTestId('close-amount-percent'),
+      ).getByRole('textbox');
+      fireEvent.change(percentInput, { target: { value: '150' } });
+
+      expect(
+        screen.getByTestId('close-amount-over-close-error'),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalled();
+      });
+      const [, [request]] = mockSubmitRequestToBackground.mock.calls[0];
+      expect(request.size).toBeUndefined();
+    });
+
+    it('reports the percentage input method on the close request', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('close-amount-mode-percent'));
+      const percentInput = within(
+        screen.getByTestId('close-amount-percent'),
+      ).getByRole('textbox');
+      fireEvent.change(percentInput, { target: { value: '50' } });
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                inputMethod: 'percentage',
+              }),
+            }),
+          ],
+        );
+      });
+    });
+
+    it('reports the keypad input method for a typed dollar amount', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      fireEvent.change(usdInput, { target: { value: '3625' } });
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                inputMethod: 'keypad',
+              }),
+            }),
+          ],
+        );
+      });
+    });
+
+    it('reports the slider input method when the slider sets the amount', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                inputMethod: 'slider',
+              }),
+            }),
+          ],
+        );
+      });
+    });
+
+    it('reports the default input method when the amount is untouched', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                inputMethod: 'default',
+              }),
+            }),
+          ],
+        );
+      });
+    });
+  });
+
   describe('auto-focus', () => {
     it('auto-focuses the Close Position submit button on mount', async () => {
       renderWithProvider(
