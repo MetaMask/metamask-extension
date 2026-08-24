@@ -12,10 +12,8 @@ import { MultichainNetworks } from '../../../shared/constants/multichain/network
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
-import { toAssetId } from '../../../shared/lib/asset-utils';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
 import * as bridgeActions from '../../ducks/bridge/actions';
-import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -47,27 +45,6 @@ const BRIDGE_PREPARE_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 
 const renderUseBridging = (mockStoreState: object, pathname?: string) =>
   renderHookWithProvider(() => useBridging(), mockStoreState, pathname);
-
-function getExpectedMetricSource(token?: Record<string, unknown>) {
-  if (!token) {
-    return { assetId: undefined, chainId: undefined };
-  }
-
-  const { address, chainId } = token;
-  if (
-    typeof address !== 'string' ||
-    (typeof chainId !== 'string' && typeof chainId !== 'number') ||
-    !isSupportedBridgeChain(chainId)
-  ) {
-    return { assetId: undefined, chainId: undefined };
-  }
-
-  const caipChainId = formatChainIdToCaip(chainId);
-  return {
-    assetId: toAssetId(address, caipChainId),
-    chainId: caipChainId,
-  };
-}
 
 describe('useBridging', () => {
   beforeAll(() => {
@@ -153,9 +130,7 @@ describe('useBridging', () => {
         expectedUrl: string,
         token: Record<string, unknown>,
         location: string,
-        expectedState: {
-          token: { chainId: string; assetId?: string } | null;
-        } = { token: null },
+        expectedState: { token: { chainId: string } | null } = { token: null },
       ) => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
@@ -211,7 +186,6 @@ describe('useBridging', () => {
         );
 
         result.current.openBridgeExperience(location, token);
-        const expectedMetricSource = getExpectedMetricSource(token);
 
         expect(mockDispatch.mock.calls.length).toStrictEqual(4);
         expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
@@ -220,10 +194,6 @@ describe('useBridging', () => {
             UnifiedSwapBridgeEventName.ButtonClicked,
             {
               location: location as never,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              chain_id_source: expectedMetricSource.chainId,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              token_address_source: expectedMetricSource.assetId,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_source: token?.symbol ?? 'ETH',
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -510,11 +480,9 @@ describe('useBridging', () => {
       async (
         pathname: string,
         expectedUrl: string,
-        token: Record<string, unknown> & { symbol: string },
+        token: { symbol: string },
         location: string,
-        expectedState: {
-          token: { chainId: string; assetId?: string } | null;
-        } = { token: null },
+        expectedState: { token: { chainId: string } | null } = { token: null },
       ) => {
         const trackUnifiedSwapBridgeEventSpy = jest
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
@@ -574,7 +542,6 @@ describe('useBridging', () => {
         );
 
         result.current.openBridgeExperience(location, token);
-        const expectedMetricSource = getExpectedMetricSource(token);
 
         expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
         expect(mockDispatch.mock.calls.length).toStrictEqual(4);
@@ -583,10 +550,6 @@ describe('useBridging', () => {
             UnifiedSwapBridgeEventName.ButtonClicked,
             {
               location: location as never,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              chain_id_source: expectedMetricSource.chainId,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              token_address_source: expectedMetricSource.assetId,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_destination: '',
               // eslint-disable-next-line @typescript-eslint/naming-convention
