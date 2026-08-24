@@ -30,7 +30,7 @@ export class TestDappSolana {
   };
 
   private readonly connectionStatusLocator = (
-    text: 'Connected' | 'Disconnected',
+    text: 'Connected' | 'Not connected',
   ) => ({
     testId: dataTestIds.testPage.header.connectionStatus,
     text,
@@ -146,7 +146,7 @@ export class TestDappSolana {
           endpoint,
         ),
       verifyConnectionStatus: async (
-        expectedStatus: 'Connected' | 'Disconnected',
+        expectedStatus: 'Connected' | 'Not connected',
       ) => {
         await this.driver.waitForSelector(
           this.connectionStatusLocator(expectedStatus),

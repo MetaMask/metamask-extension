@@ -156,9 +156,6 @@
     "message": "$1 hesap",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Hesaplarınızı görün ve işlem önerin"
-  },
   "accountsSmallCase": {
     "message": "hesap"
   },
@@ -2761,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "USB veya QR Kodu kullanımı"
   },
-  "connectAccounts": {
-    "message": "Hesapları bağla"
-  },
   "connectAnyway": {
     "message": "Yine de bağlan"
   },
@@ -2810,18 +2804,6 @@
   },
   "connectedSnaps": {
     "message": "Bağlı Snap'ler"
-  },
-  "connectedWithAccount": {
-    "message": "$1 hesap bağlandı",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "$1 ile bağlandı",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 ağ bağlandı",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Bağlanıyor"
@@ -3427,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Tüm dapp'lerin bağlantısı başarıyla kesildi."
   },
-  "disconnectMessage": {
-    "message": "Bu işlem bu siteyle bağlantınızı kesecektir"
-  },
   "disconnectPrompt": {
     "message": "$1 bağlantısını kes"
   },
@@ -3609,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "orijinal ağı düzenleyin"
-  },
-  "editNetworksTitle": {
-    "message": "Ağları düzenle"
   },
   "editNonceField": {
     "message": "Nonce'u düzenle"
@@ -5288,10 +5264,6 @@
   "more": {
     "message": "daha fazla"
   },
-  "moreAccounts": {
-    "message": "+ $1 hesap daha",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "Daha fazla"
   },
@@ -5728,9 +5700,6 @@
   "networkOptions": {
     "message": "Ağ seçenekleri"
   },
-  "networkPermissionToast": {
-    "message": "Ağ izinleri güncellendi"
-  },
   "networkStatus": {
     "message": "Ağ durumu"
   },
@@ -5766,9 +5735,6 @@
   },
   "networks": {
     "message": "Ağlar"
-  },
-  "networksSmallCase": {
-    "message": "ağ"
   },
   "new": {
     "message": "Yeni!"
@@ -8302,9 +8268,6 @@
     "message": "Alış işlemi başarılı",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Diğer seçenekler"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "iş günü"
   },
@@ -8522,9 +8485,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Bu site tarafından onayınız isteniyor."
-  },
-  "requestingFor": {
-    "message": "Talep:"
   },
   "required": {
     "message": "Gerekli"

@@ -1,14 +1,39 @@
-import React, { ReactNode, useRef } from 'react';
+import React, { createContext, ReactNode, useContext, useRef } from 'react';
+
+import {
+  createRouteMessenger,
+  RouteMessenger,
+} from '../messengers/route-messenger';
 import {
   UIMessengerActions,
   UIMessengerEvents,
 } from '../messengers/ui-messenger';
-import { RouteMessengerContext } from '../contexts/route-messenger';
-import { useUIMessenger } from '../contexts/ui-messenger';
-import {
-  createRouteMessenger,
-  type RouteMessenger,
-} from '../messengers/route-messenger';
+import { useUIMessenger } from './ui-messenger';
+
+/**
+ * Context that holds the messenger for the current route.
+ *
+ * @see {@link RouteMessengerProvider}
+ */
+export const RouteMessengerContext = createContext<RouteMessenger | null>(null);
+
+/**
+ * Hook to access the messenger for the current route from context.
+ *
+ * @returns The route messenger in context.
+ * @throws If the route messenger has not been set.
+ */
+export function useRouteMessenger(): RouteMessenger {
+  const messenger = useContext(RouteMessengerContext);
+
+  if (!messenger) {
+    throw new Error(
+      'useRouteMessenger must be used within a route messenger context',
+    );
+  }
+
+  return messenger;
+}
 
 /**
  * Utility component which creates a messenger representing a route and
@@ -25,7 +50,7 @@ import {
  * messenger.
  * @param props.children - Child components.
  */
-export const RouteWithMessenger = ({
+export const RouteMessengerProvider = ({
   path,
   capabilities,
   children,
@@ -42,6 +67,7 @@ export const RouteWithMessenger = ({
 
   // `useMemo` doesn't work here because `capabilities` is an object, so we use
   // a ref instead to ensure that we only create the route messenger once.
+  // eslint-disable-next-line react-hooks/refs
   if (!routeMessengerRef.current) {
     routeMessengerRef.current = createRouteMessenger({
       path,
@@ -50,6 +76,8 @@ export const RouteWithMessenger = ({
     });
   }
 
+  // See above.
+  // eslint-disable-next-line react-hooks/refs
   const routeMessenger = routeMessengerRef.current;
 
   return (

@@ -156,9 +156,6 @@
     "message": "계정 $1개",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "계정 보기 및 트랜잭션 제안"
-  },
   "accountsSmallCase": {
     "message": "계정"
   },
@@ -2761,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "USB 또는 QR 코드 사용"
   },
-  "connectAccounts": {
-    "message": "계정 연결"
-  },
   "connectAnyway": {
     "message": "연결 계속하기"
   },
@@ -2810,18 +2804,6 @@
   },
   "connectedSnaps": {
     "message": "연결된 Snap"
-  },
-  "connectedWithAccount": {
-    "message": "$1 계정 연결됨",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "$1(으)로 연결됨",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 네트워크 연결됨",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "연결 중"
@@ -3427,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "모든 디앱의 연결이 성공적으로 해제되었습니다."
   },
-  "disconnectMessage": {
-    "message": "이렇게 하면 이 사이트와의 연결이 해제됩니다"
-  },
   "disconnectPrompt": {
     "message": "$1 연결 해제"
   },
@@ -3609,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "원본 네트워크 편집"
-  },
-  "editNetworksTitle": {
-    "message": "네트워크 편집"
   },
   "editNonceField": {
     "message": "논스 편집"
@@ -5288,10 +5264,6 @@
   "more": {
     "message": "더 보기"
   },
-  "moreAccounts": {
-    "message": "$1개의 계정 추가",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "더 보기"
   },
@@ -5728,9 +5700,6 @@
   "networkOptions": {
     "message": "네트워크 옵션"
   },
-  "networkPermissionToast": {
-    "message": "네트워크 권한 업데이트됨"
-  },
   "networkStatus": {
     "message": "네트워크 상태"
   },
@@ -5765,9 +5734,6 @@
     "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
-    "message": "네트워크"
-  },
-  "networksSmallCase": {
     "message": "네트워크"
   },
   "new": {
@@ -8302,9 +8268,6 @@
     "message": "매수 성공",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "기타 옵션"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "영업일"
   },
@@ -8522,9 +8485,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "컨펌이 필요한 사이트입니다."
-  },
-  "requestingFor": {
-    "message": "요청 중:"
   },
   "required": {
     "message": "필수"

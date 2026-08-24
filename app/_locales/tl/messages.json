@@ -156,9 +156,6 @@
     "message": "$1 (na) account",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Tingnan ang mga account mo at magmungkahi ng mga transaksyon"
-  },
   "accountsSmallCase": {
     "message": "mga account"
   },
@@ -2761,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Paggamit ng USB o QR Code"
   },
-  "connectAccounts": {
-    "message": "Ikonekta ang mga account"
-  },
   "connectAnyway": {
     "message": "Kumonekta pa rin"
   },
@@ -2810,18 +2804,6 @@
   },
   "connectedSnaps": {
     "message": "Mga konektadong Snap"
-  },
-  "connectedWithAccount": {
-    "message": "$1 (na) account ang nakakonekta",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Konektado sa $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 (na) network ang nakakonekta",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Kumonekta"
@@ -3427,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Matagumpay na naidiskonekta ang lahat ng dapp."
   },
-  "disconnectMessage": {
-    "message": "Ididiskonekta ka nito mula sa site na ito"
-  },
   "disconnectPrompt": {
     "message": "Idiskonekta $1"
   },
@@ -3609,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "i-edit ang orihinal na network"
-  },
-  "editNetworksTitle": {
-    "message": "I-edit ang mga network"
   },
   "editNonceField": {
     "message": "I-edit sa Nonce"
@@ -5284,10 +5260,6 @@
   "more": {
     "message": "iba pa"
   },
-  "moreAccounts": {
-    "message": "+ $1 pang mga account",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "Higit pa"
   },
@@ -5724,9 +5696,6 @@
   "networkOptions": {
     "message": "Mga pagpipilian na network"
   },
-  "networkPermissionToast": {
-    "message": "Na-update ang mga pahintulot sa network"
-  },
   "networkStatus": {
     "message": "Katayuan ng network"
   },
@@ -5762,9 +5731,6 @@
   },
   "networks": {
     "message": "Mga Network"
-  },
-  "networksSmallCase": {
-    "message": "mga network"
   },
   "new": {
     "message": "Bago!"
@@ -8294,9 +8260,6 @@
     "message": "Matagumpay na nabili",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Iba pang opsyon"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"
   },
@@ -8514,9 +8477,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Ito ang site na humihiling ng iyong kumpirmasyon."
-  },
-  "requestingFor": {
-    "message": "Humihiling ng"
   },
   "required": {
     "message": "Kinakailangan"

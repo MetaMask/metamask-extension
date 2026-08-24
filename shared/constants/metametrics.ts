@@ -944,7 +944,6 @@ export enum MetaMetricsEventName {
   VaultCorruptionRestoreWalletButtonPressed = 'Vault Corruption Restore Wallet Button Pressed',
   CriticalErrorScreenViewed = 'Critical Error Screen Viewed',
   CriticalErrorRestoreWalletButtonPressed = 'Critical Error Restore Wallet Button Pressed',
-  ViewPermissionedNetworks = 'View Permissioned Networks',
   ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',
   NavSettingsOpened = 'Settings Opened',

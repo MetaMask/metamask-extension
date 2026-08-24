@@ -156,9 +156,6 @@
     "message": "$1 счета(-ов)",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Просматривать ваши счета и предлагать транзакции"
-  },
   "accountsSmallCase": {
     "message": "счета"
   },
@@ -2761,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Использование USB или QR-кода"
   },
-  "connectAccounts": {
-    "message": "Подключить счета"
-  },
   "connectAnyway": {
     "message": "Все равно подключиться"
   },
@@ -2810,18 +2804,6 @@
   },
   "connectedSnaps": {
     "message": "Подключенные Snaps"
-  },
-  "connectedWithAccount": {
-    "message": "Счета ($1) не подключены",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Подключено с помощью $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "Сети ($1) не подключены",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Подключение"
@@ -3427,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Все приложения dapp успешно отключены."
   },
-  "disconnectMessage": {
-    "message": "Это отключит вас от этого сайта"
-  },
   "disconnectPrompt": {
     "message": "Отключить $1"
   },
@@ -3609,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "изменить исходную сеть"
-  },
-  "editNetworksTitle": {
-    "message": "Изменить сети"
   },
   "editNonceField": {
     "message": "Изменить одноразовый номер"
@@ -5284,10 +5260,6 @@
   "more": {
     "message": "больше"
   },
-  "moreAccounts": {
-    "message": "+ еще $1 счета(-ов)",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "Еще"
   },
@@ -5724,9 +5696,6 @@
   "networkOptions": {
     "message": "Параметры сети"
   },
-  "networkPermissionToast": {
-    "message": "Сетевые разрешения обновлены"
-  },
   "networkStatus": {
     "message": "Статус сети"
   },
@@ -5762,9 +5731,6 @@
   },
   "networks": {
     "message": "Сети"
-  },
-  "networksSmallCase": {
-    "message": "сети"
   },
   "new": {
     "message": "Новые!"
@@ -8294,9 +8260,6 @@
     "message": "Успешная покупка",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Другие варианты"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "рабочий день"
   },
@@ -8514,9 +8477,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Это сайт, запрашивающий ваше подтверждение."
-  },
-  "requestingFor": {
-    "message": "Запрашивается для"
   },
   "required": {
     "message": "Требуется"

@@ -214,6 +214,51 @@ exports[`RampsProviderSelectionScreen matches snapshot when empty 1`] = `
 </div>
 `;
 
+exports[`RampsProviderSelectionScreen matches snapshot when no providers return quotes 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-provider-selection-empty"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-provider-selection-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Providers
+      </p>
+    </div>
+    <div
+      class="flex flex-col gap-2 items-center justify-center flex-1 px-4 py-8"
+    >
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        No providers available.
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`RampsProviderSelectionScreen matches snapshot while loading 1`] = `
 <div>
   <div
@@ -333,7 +378,7 @@ exports[`RampsProviderSelectionScreen matches snapshot while loading 1`] = `
 </div>
 `;
 
-exports[`RampsProviderSelectionScreen matches snapshot with provider quotes 1`] = `
+exports[`RampsProviderSelectionScreen matches snapshot with only providers that returned quotes 1`] = `
 <div>
   <div
     class="flex h-full flex-col bg-background-default"
@@ -432,48 +477,6 @@ exports[`RampsProviderSelectionScreen matches snapshot with provider quotes 1`] 
                 />
               </svg>
             </div>
-          </div>
-        </button>
-        <div
-          class="px-4 py-3"
-          data-testid="ramps-provider-separator"
-        >
-          <p
-            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
-          >
-            Other options
-          </p>
-        </div>
-        <button
-          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
-          data-testid="ramps-provider-item-/providers/moonpay"
-          role="button"
-        >
-          <div
-            class="flex flex-row gap-3 items-center justify-between w-full"
-          >
-            <div
-              class="flex flex-col gap-1 items-start min-w-0 flex-1"
-            >
-              <div
-                class="flex flex-row gap-2 items-center w-full min-w-0"
-              >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
-                >
-                  MoonPay
-                </p>
-              </div>
-              <p
-                class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
-                data-testid="ramps-provider-item-subtitle-/providers/moonpay"
-              >
-                Quote unavailable.
-              </p>
-            </div>
-            <div
-              class="flex flex-row gap-2 items-center shrink-0"
-            />
           </div>
         </button>
       </div>
