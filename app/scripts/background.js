@@ -206,8 +206,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-const postUpdateReloadDecisionTracker =
-  createPostUpdateReloadDecisionTracker();
+const postUpdateReloadDecisionTracker = createPostUpdateReloadDecisionTracker();
 
 if (!isFirefox) {
   browser.action.enable().catch((error) => {

@@ -1,9 +1,6 @@
 import { jest } from '@jest/globals';
 import browser, { Runtime } from 'webextension-polyfill';
-import {
-  PLATFORM_CHROME,
-  PLATFORM_FIREFOX,
-} from '../../shared/constants/app';
+import { PLATFORM_CHROME, PLATFORM_FIREFOX } from '../../shared/constants/app';
 import * as util from './lib/util';
 import { createPostUpdateReloadDecisionTracker } from './lib/post-update-reload-decision';
 import { onUpdate } from './on-update';
