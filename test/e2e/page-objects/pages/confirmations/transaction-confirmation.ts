@@ -177,6 +177,23 @@ class TransactionConfirmation extends Confirmation {
     text: estimatedTime,
   });
 
+  private readonly swapAndBridgeBannerAlerts: RawLocator =
+    '[data-testid="bridge-banner-alerts"]';
+
+  private readonly swapAndBridgeCtaButton: RawLocator =
+    '[data-testid="bridge-cta-button"]';
+
+  private readonly swapAndBridgeFetchingQuotesLabel: RawLocator = {
+    tag: 'p',
+    text: 'Fetching quotes...',
+  };
+
+  private readonly swapAndBridgeNoQuotes: RawLocator =
+    '[data-testid="bridge-no-quotes"]';
+
+  private readonly swapsBannerTitle: RawLocator =
+    '[data-testid="swaps-banner-title"]';
+
   private readonly tokenGasFeeDropdown =
     '[data-testid="selected-gas-fee-token-arrow"]';
 
@@ -417,6 +434,25 @@ class TransactionConfirmation extends Confirmation {
       `Check Site suggested time ${time} on transaction confirmation page.`,
     );
     await this.driver.waitForSelector(this.siteSuggestedGasFee(time));
+  }
+
+  /**
+   * Asserts that Swap/Bridge quote-error UI is not shown on confirmation.
+   * Same-chain native sends must remain a normal send, not a swap/bridge flow.
+   */
+  async checkSwapAndBridgeErrorUiIsAbsent(): Promise<void> {
+    console.log(
+      'Checking swap/bridge error UI is absent on transaction confirmation',
+    );
+    await this.driver.assertElementNotPresent(this.swapAndBridgeBannerAlerts, {
+      waitAtLeastGuard: 1000,
+    });
+    await this.driver.assertElementNotPresent(this.swapsBannerTitle);
+    await this.driver.assertElementNotPresent(this.swapAndBridgeNoQuotes);
+    await this.driver.assertElementNotPresent(
+      this.swapAndBridgeFetchingQuotesLabel,
+    );
+    await this.driver.assertElementNotPresent(this.swapAndBridgeCtaButton);
   }
 
   async checkWalletInitiatedHeadingTitle() {
