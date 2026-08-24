@@ -37,6 +37,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
 import { useIsNetworkGasSponsored } from '../../../hooks/useIsNetworkGasSponsored';
+import { getAvatarNetworkStyle } from '../../../helpers/utils/accounts';
 
 const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
   Object.values(IconName).includes(iconSrc as IconName);
@@ -224,6 +225,7 @@ export const NetworkListItem = ({
           name={name}
           src={iconSrc}
           size={iconSize as AvatarNetworkSize}
+          style={getAvatarNetworkStyle(name)}
         />
       )}
       <Box

@@ -22,7 +22,15 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
+import {
+  getIpfsGateway,
+  getOpenSeaEnabled,
+  getTestNetworkBackgroundColor,
+} from '../../../selectors';
+import {
+  getAvatarNetworkStyle,
+  getAvatarNetworkStyleFromBackgroundColor,
+} from '../../../helpers/utils/accounts';
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -55,6 +63,7 @@ export const NftItem = ({
   isIpfsURL,
   name,
 }: NftItemProps) => {
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
   const openSeaEnabled = useSelector(getOpenSeaEnabled);
 
@@ -141,6 +150,9 @@ export const NftItem = ({
               size={AvatarNetworkSize.Xs}
               name={networkName}
               src={networkSrc}
+              style={getAvatarNetworkStyleFromBackgroundColor(
+                testNetworkBackgroundColor,
+              )}
             />
           }
         >

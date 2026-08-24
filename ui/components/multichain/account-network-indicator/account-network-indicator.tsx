@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { AvatarTokenSize,
+import {
+  AvatarTokenSize,
   AvatarNetwork,
-  AvatarNetworkSize } from '@metamask/design-system-react';
+  AvatarNetworkSize,
+} from '@metamask/design-system-react';
 import {
   AlignItems,
   Display,

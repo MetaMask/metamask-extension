@@ -27,7 +27,6 @@ import {
 import {
   AlignItems,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
@@ -103,7 +102,6 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
         name={network.name}
         size={AvatarNetworkSize.Md}
         src={networkImageUrl}
-        className="rounded-lg"
       />
       <Box
         display={Display.Flex}

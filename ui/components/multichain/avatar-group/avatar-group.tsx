@@ -79,6 +79,10 @@ export const AvatarGroup = ({
                   src={member.avatarValue}
                   name={member.symbol ?? ''}
                   size={AvatarNetworkSize.Xs}
+                  hasBorder
+                  imageProps={{
+                    'data-testid': 'avatar-group-network-image',
+                  }}
                 />
               )}
             </Box>

@@ -27,11 +27,12 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: 0px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
               >
                 <img
                   alt="Polygon"
                   class="size-full object-contain"
+                  data-testid="avatar-group-network-image"
                   src="./images/pol-token.svg"
                 />
               </div>
@@ -41,11 +42,12 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: -8px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
               >
                 <img
                   alt="BNB Chain"
                   class="size-full object-contain"
+                  data-testid="avatar-group-network-image"
                   src="./images/bnb.svg"
                 />
               </div>
@@ -55,7 +57,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: -8px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
               >
                 <span
                   class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -69,11 +71,12 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: -8px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
               >
                 <img
                   alt="Custom Mainnet RPC"
                   class="size-full object-contain"
+                  data-testid="avatar-group-network-image"
                   src="./images/eth_logo.svg"
                 />
               </div>

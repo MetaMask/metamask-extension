@@ -32,7 +32,6 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
-  BorderColor,
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';

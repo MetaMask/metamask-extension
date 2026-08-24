@@ -3,7 +3,7 @@
 exports[`NetworkListItem renders properly 1`] = `
 <div>
   <div
-    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    class="flex flex-row gap-4 items-center justify-between pt-4 pr-4 pb-4 pl-4 bg-transparent multichain-network-list-item w-full multichain-network-list-item--deselected"
     data-testid="network-list-item-0x1"
   >
     <div
@@ -16,11 +16,10 @@ exports[`NetworkListItem renders properly 1`] = `
       />
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
-      style="overflow: hidden;"
+      class="flex flex-col items-start justify-start w-full overflow-hidden"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
+        class="flex flex-row gap-2 items-center w-full"
         data-testid="Polygon"
       >
         <div
@@ -32,12 +31,12 @@ exports[`NetworkListItem renders properly 1`] = `
             tabindex="0"
             title=""
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+            <span
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
               tabindex="0"
             >
               Polygon
-            </p>
+            </span>
           </div>
         </div>
       </div>
