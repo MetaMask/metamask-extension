@@ -566,6 +566,7 @@ export default function OnboardingWelcome() {
       justifyContent={BoxJustifyContent.Center}
       alignItems={BoxAlignItems.Center}
       className="welcome-container h-full w-full"
+      data-testid="parent-selector-onboarding-welcome"
     >
       {!isLoggingIn && (
         <Suspense fallback={<Box />}>

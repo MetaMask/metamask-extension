@@ -7,7 +7,6 @@ import {
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import {
-  getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
   getConsentDecisionMade,
 } from '../../../selectors';

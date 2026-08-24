@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useDispatch } from '../store/hooks';
 import { useModalProps } from './useModalProps';
 

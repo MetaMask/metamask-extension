@@ -3,6 +3,11 @@ import defaultFixtureJson from './fixtures/default-fixture.json';
 /** Persisted versioned-data version for fixtures. */
 export const FIXTURE_STATE_METADATA_VERSION = defaultFixtureJson.meta.version;
 
+export const E2E_DRIVER = Object.freeze({
+  SELENIUM: 'selenium',
+  PLAYWRIGHT: 'playwright',
+} as const);
+
 /** Address of the first account generated from {@link E2E_SRP}. */
 export const LOCAL_NODE_ACCOUNT = '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
 
@@ -338,10 +343,7 @@ export const MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES = {
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,
   feature2: false,
-  feature3: {
-    name: 'groupA',
-    value: 'valueA',
-  },
+  feature3: 'valueA',
 };
 
 /* Mock customized remote feature flags response*/

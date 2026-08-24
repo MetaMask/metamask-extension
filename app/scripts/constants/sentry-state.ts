@@ -177,10 +177,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     unapprovedEncryptionPublicKeyMsgs: false,
     unapprovedEncryptionPublicKeyMsgCount: true,
   },
-  EnsController: {
-    ensResolutionsByAddress: false,
-    ensEntries: false,
-  },
   GasFeeController: {
     estimatedGasFeeTimeBounds: true,
     gasEstimateType: true,

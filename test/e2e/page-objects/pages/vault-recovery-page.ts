@@ -3,9 +3,18 @@ import { WINDOW_TITLES } from '../../constants';
 import CriticalErrorPage from './critical-error-page';
 
 /**
- * Page object for the vault recovery page.
- * This extends CriticalErrorPage as the recovery UI appears on the same
- * critical error page when a vault backup exists in IndexedDB.
+ * Critical-error recovery controls when a vault backup exists in IndexedDB.
+ *
+ * Screen: same critical-error HTML as `CriticalErrorPage`, with the recovery/
+ * reset button available when a backup is present (not a hash route).
+ * Owns: recovery button presence checks and confirm/dismiss alert handling for
+ * the recovery/reset action, including post-confirm window reattachment.
+ * Boundaries: recovery-button specialization only. Shared critical-error
+ * title/links/attempt-recovery helpers remain on `CriticalErrorPage`.
+ * Related: `CriticalErrorPage` (base).
+ *
+ * @see ui/helpers/utils/display-critical-error.ts
+ * @see shared/lib/error-utils.ts
  */
 class VaultRecoveryPage extends CriticalErrorPage {
   // Locators

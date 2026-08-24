@@ -209,22 +209,36 @@ describe('selectNonEvmActivityItems', () => {
   });
 
   it('keeps unmatched non-EVM sends classified as sends', () => {
-    const accountId = mockState.metamask.internalAccounts.selectedAccount;
+    const state = structuredClone(
+      typedMockState,
+    ) as unknown as MetaMaskReduxState & MultichainAccountsState;
 
-    const state = buildState({
-      [accountId]: {
+    state.metamask.internalAccounts.selectedAccount =
+      MOCK_ACCOUNT_SOLANA_MAINNET.id;
+    state.metamask.internalAccounts.accounts = {
+      ...state.metamask.internalAccounts.accounts,
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        address: solanaAddress,
+      },
+    };
+    state.metamask.accountTree.wallets[
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'].accounts.push(
+      MOCK_ACCOUNT_SOLANA_MAINNET.id,
+    );
+    state.metamask.nonEvmTransactions = {
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
         [MultichainNetworks.SOLANA]: {
-          transactions: [
-            {
-              ...solanaSendTransaction,
-              account: accountId,
-            },
-          ],
+          transactions: [solanaSendTransaction],
           next: null,
           lastUpdated: 0,
         },
       },
-    }) as unknown as MetaMaskReduxState & MultichainAccountsState;
+    };
+    state.metamask.enabledNetworkMap = {
+      solana: { [MultichainNetworks.SOLANA]: true },
+    };
 
     const [activity] = selectNonEvmActivityItems(state);
 

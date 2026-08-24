@@ -4,6 +4,26 @@ import {
   LANGUAGE_ROUTE,
 } from '../../../../../ui/helpers/constants/routes';
 
+/**
+ * Settings → Preferences and display (plus shared assets-tab helpers).
+ *
+ * Screen: `#/settings/preferences-and-display` and sub-routes
+ * (`#/settings/preferences-and-display/language`,
+ * `#/settings/preferences-and-display/account-identicon`); also used on
+ * `#/settings/assets` via `AssetsSettingsPage` / `goToAssetsSettings`.
+ * Owns: language change, identicon options, show-default-address and
+ * native-token balance toggles, and assets helpers (hide zero balance,
+ * token/NFT autodetect) reused by the assets tab.
+ * Boundaries: not the Settings hub. Theme/currency-only surfaces without
+ * helpers here stay on their UI routes; use `AssetsSettingsPage` when the
+ * test is specifically on Assets.
+ * Related: `SettingsPage`, `AssetsSettingsPage`, `flows/settings.flow.ts`.
+ *
+ * @see ui/pages/settings/preferences-and-display-tab/preferences-and-display-tab.tsx
+ * @see ui/pages/settings/preferences-and-display-tab/language-sub-page.tsx
+ * @see ui/pages/settings/preferences-and-display-tab/account-identicon-sub-page.tsx
+ * @see ui/pages/settings/assets-tab/assets-tab.tsx
+ */
 class PreferencesAndDisplaySettings {
   private readonly accountIdenticonList =
     '[data-testid="account-identicon-list"]';
@@ -11,6 +31,9 @@ class PreferencesAndDisplaySettings {
   private readonly accountIdenticonSubpageLink = `a[href="#${ACCOUNT_IDENTICON_ROUTE}"]`;
 
   private readonly assetsTabButton = '[data-testid="settings-tab-item-assets"]';
+
+  private readonly autodetectNftsToggleLabel =
+    "label.toggle-button:has([data-testid='use-nft-detection-input'])";
 
   private readonly autoDetectTokensToggleLabel =
     "label.toggle-button:has([data-testid='autodetect-tokens'])";
@@ -151,6 +174,13 @@ class PreferencesAndDisplaySettings {
     await this.driver.clickElement(this.preferencesTabButton);
     await this.checkNoLoadingOverlaySpinner();
     await this.driver.assertElementNotPresent(this.showDefaultAddressToggle);
+  }
+
+  async toggleAutodetectNfts(): Promise<void> {
+    console.log('Toggle autodetect NFTs on Assets settings page');
+    await this.checkAssetsPageIsLoaded();
+    await this.driver.waitForSelector(this.autodetectNftsToggleLabel);
+    await this.driver.clickElement(this.autodetectNftsToggleLabel);
   }
 
   async toggleAutoDetectTokens(): Promise<void> {

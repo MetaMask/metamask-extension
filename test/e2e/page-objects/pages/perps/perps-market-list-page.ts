@@ -1,7 +1,16 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the Perps Market List (search / explore crypto).
+ * The Perps Market List: search, filter/sort, and picking a market to open.
+ *
+ * Screen: `#/perps/market-list`, reached from `PerpsTab.clickExploreMarketsRow`.
+ * Owns: the market list view, filter/sort controls, market rows, dismissing
+ * the perps toast that can intercept clicks, and header back.
+ * Boundaries: selecting a row only navigates — market detail interactions
+ * belong to `PerpsMarketDetailPage`. Toast content beyond the close control
+ * is out of scope.
+ * Related: `PerpsTab` (how tests get here), `PerpsMarketDetailPage` (opened
+ * by choosing a market row).
  *
  * @see ui/pages/perps/market-list/index.tsx
  */
@@ -24,10 +33,12 @@ export class PerpsMarketListPage {
 
   private readonly headerBackButton = { testId: 'back-button' };
 
-  private readonly marketListView = { testId: 'market-list-view' };
-
   private readonly marketRow = {
     xpath: "//*[starts-with(@data-testid,'market-row-')]",
+  };
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-perps-market-list',
   };
 
   /**
@@ -63,7 +74,7 @@ export class PerpsMarketListPage {
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
       this.filterSortRow,
-      this.marketListView,
+      this.parentSelector,
     ]);
   }
 
@@ -91,6 +102,10 @@ export class PerpsMarketListPage {
    */
   private getFilterOptionSelector(optionId: string): { testId: string } {
     return { testId: `filter-select-option-${optionId}` };
+  }
+
+  async isPageLoaded(timeout = 2000): Promise<boolean> {
+    return this.driver.isElementPresentAndVisible(this.parentSelector, timeout);
   }
 
   /**

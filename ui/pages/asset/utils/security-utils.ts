@@ -1,4 +1,9 @@
 import { IconColor, IconName, TextColor } from '@metamask/design-system-react';
+import {
+  getSecurityTrustBadgeConfig,
+  type SecurityTrustInlineBadgeConfig,
+  type SecurityTrustTranslate,
+} from '../../../components/app/security-trust';
 import type {
   FeatureTag,
   TokenSecurityData,
@@ -6,11 +11,6 @@ import type {
   TokenSecurityFees,
   TokenSecurityFinancialStats,
 } from '../types/security-trust';
-
-export type SecurityTrustTranslate = (
-  key: string,
-  substitutions?: string[],
-) => string;
 
 export type SecurityAlertSeverity = 'success' | 'warning' | 'danger';
 
@@ -21,14 +21,7 @@ export type ResultTypeConfig = {
   icon?: IconName;
   iconColor?: IconColor;
   alertSeverity?: SecurityAlertSeverity;
-  badge?: {
-    icon: IconName;
-    iconColor: IconColor;
-    alertSeverity?: SecurityAlertSeverity;
-    label: string | null;
-    backgroundColor?: 'warning-muted' | 'error-muted';
-    textColor?: TextColor;
-  } | null;
+  badge?: SecurityTrustInlineBadgeConfig | null;
   sheetTitle?: string;
   getSheetDescription?: (tokenSymbol: string | undefined) => string;
 };
@@ -46,13 +39,7 @@ export const getResultTypeConfig = (
         icon: IconName.SecurityTick,
         iconColor: IconColor.SuccessDefault,
         alertSeverity: 'success',
-        badge: {
-          icon: IconName.VerifiedFilled,
-          iconColor: IconColor.InfoDefault,
-          label: null,
-          backgroundColor: undefined,
-          textColor: undefined,
-        },
+        badge: getSecurityTrustBadgeConfig('Verified', t),
         sheetTitle: t('securityTrustVerifiedTokenTitle'),
         getSheetDescription: (symbol) =>
           t('securityTrustVerifiedTokenDescription', [symbol ?? '']),
@@ -76,14 +63,7 @@ export const getResultTypeConfig = (
         icon: IconName.Warning,
         iconColor: IconColor.WarningDefault,
         alertSeverity: 'warning',
-        badge: {
-          icon: IconName.Warning,
-          iconColor: IconColor.WarningDefault,
-          alertSeverity: 'warning',
-          label: t('securityTrustRisky'),
-          backgroundColor: 'warning-muted',
-          textColor: TextColor.WarningDefault,
-        },
+        badge: getSecurityTrustBadgeConfig(resultType, t),
         sheetTitle: t('securityTrustRiskyTokenTitle'),
         getSheetDescription: (symbol) =>
           symbol
@@ -98,14 +78,7 @@ export const getResultTypeConfig = (
         icon: IconName.Error,
         iconColor: IconColor.ErrorDefault,
         alertSeverity: 'danger',
-        badge: {
-          icon: IconName.Danger,
-          iconColor: IconColor.ErrorDefault,
-          alertSeverity: 'danger',
-          label: t('securityTrustMalicious'),
-          backgroundColor: 'error-muted',
-          textColor: TextColor.ErrorDefault,
-        },
+        badge: getSecurityTrustBadgeConfig('Malicious', t),
         sheetTitle: t('securityTrustMaliciousTokenTitle'),
         getSheetDescription: (symbol) =>
           symbol

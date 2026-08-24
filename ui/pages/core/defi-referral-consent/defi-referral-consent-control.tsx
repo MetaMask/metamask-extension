@@ -53,6 +53,7 @@ export const DefiReferralConsentControl: React.FC<DefiReferralConsentProps> = ({
   t('hyperliquidReferralSubtitle');
   t('gmxReferralSubtitle');
   t('asterdexReferralSubtitle');
+  t('variationalReferralSubtitle');
 
   return (
     <Box

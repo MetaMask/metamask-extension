@@ -49,7 +49,7 @@ describe('Bitcoin account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -80,7 +80,7 @@ describe('Bitcoin account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
 
         const homepage = new HomePage(driver);
         const addressList = new AddressListModal(driver);

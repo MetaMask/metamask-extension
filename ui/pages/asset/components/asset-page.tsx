@@ -41,6 +41,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
@@ -105,6 +106,7 @@ import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
+import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
@@ -112,7 +114,6 @@ import { AssetActivateCard } from './asset-activation-card';
 import { SpendableBalanceSection } from './spendable-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
-import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
 import {
   AssetPageSecurityTrustBanner,
@@ -279,13 +280,13 @@ const AssetPage = ({
     () => ({
       symbol,
       name,
-      chainId: String(chainId),
+      chainId: caipChainId,
       address,
       decimals: asset.decimals,
       isNative: type === AssetType.native,
       image,
     }),
-    [address, asset.decimals, chainId, image, name, symbol, type],
+    [address, asset.decimals, caipChainId, image, name, symbol, type],
   );
 
   const networkName = networkConfigurationsByChainId[chainId]?.name;
@@ -417,7 +418,10 @@ const AssetPage = ({
       assetId={caipAssetId as CaipAssetType}
       token={securityTrustToken}
     >
-      <Box className="asset__content">
+      <Box
+        className="asset__content"
+        data-testid="parent-selector-asset-details"
+      >
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
@@ -432,7 +436,7 @@ const AssetPage = ({
               size={ButtonIconSize.Md}
               ariaLabel={t('back') as string}
               iconName={IconName.ArrowLeft}
-              onClick={() => transitionBack(() => navigate(-1))}
+              onClick={() => transitionBack(() => navigate(PREVIOUS_ROUTE))}
               className="asset-page__back-button"
             />
           </Box>
@@ -546,12 +550,6 @@ const AssetPage = ({
                   className="asset-page__divider"
                 />
               )}
-              <MusdConvertSection />
-              <Box
-                marginTop={5}
-                marginBottom={5}
-                className="asset-page__divider"
-              />
             </>
           ) : null}
           {!isMusdAssetPage && spendableBalanceData.hasSpendableBalance ? (
@@ -733,6 +731,14 @@ const AssetPage = ({
           onClose={() => setIsMarketClosedModalOpen(false)}
         />
       </Box>
+      {/* Sibling of `asset__content` so it is a direct child of the scrolling
+      container, which is what lets it stick to the bottom of the viewport. */}
+      <AssetStickyActions
+        asset={updatedAsset}
+        buyAssetId={caipAssetId as CaipAssetType}
+        isMarketClosed={isMarketClosed}
+        isSigningEnabled={isSigningEnabled}
+      />
     </AssetPageSecurityTrustProvider>
   );
 };

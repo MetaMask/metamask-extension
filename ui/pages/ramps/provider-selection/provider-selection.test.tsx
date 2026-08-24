@@ -10,6 +10,7 @@ import type {
 } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { RampsProviderSelectionScreen } from './provider-selection';
 
 const mockNavigate = jest.fn();
@@ -37,8 +38,15 @@ jest.mock('../../../hooks/ramps/useRampsQuotes', () => ({
   useRampsQuotes: (...args: unknown[]) => mockUseRampsQuotes(...args),
 }));
 
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(() => null),
+}));
+
 const { useRampsController } = jest.requireMock(
   '../../../hooks/ramps/useRampsController',
+);
+const { getInternalAccountBySelectedAccountGroupAndCaip } = jest.requireMock(
+  '../../../selectors/multichain-accounts/account-tree',
 );
 
 const createStore = () =>
@@ -222,13 +230,48 @@ describe('RampsProviderSelectionScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('matches snapshot with provider quotes', () => {
+  it('matches snapshot with only providers that returned quotes', () => {
     mockLocationState = { amount: 100 };
     mockUseRampsQuotes.mockReturnValue({
       data: {
         success: [transakQuote],
         sorted: [{ sortBy: 'reliability', ids: [transak.id, moonpay.id] }],
         error: [
+          {
+            provider: moonpay.id,
+            error: 'Quote unavailable',
+          },
+        ],
+        customActions: [],
+      },
+      loading: false,
+      status: 'success',
+      isSuccess: true,
+      error: null,
+      getQuotes: jest.fn(),
+      getBuyWidgetData: jest.fn(),
+    });
+
+    const { container } = renderWithProvider(
+      <RampsProviderSelectionScreen />,
+      createStore(),
+      '/ramps/provider-selection',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot when no providers return quotes', () => {
+    mockLocationState = { amount: 100 };
+    mockUseRampsQuotes.mockReturnValue({
+      data: {
+        success: [],
+        sorted: [],
+        error: [
+          {
+            provider: transak.id,
+            error: 'Quote unavailable',
+          },
           {
             provider: moonpay.id,
             error: 'Quote unavailable',
@@ -267,7 +310,7 @@ describe('RampsProviderSelectionScreen', () => {
     });
 
     expect(mockSetSelectedProvider).toHaveBeenCalledWith(moonpay);
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('navigates back from the header', () => {
@@ -278,6 +321,51 @@ describe('RampsProviderSelectionScreen', () => {
     );
 
     fireEvent.click(screen.getByTestId('ramps-provider-selection-back'));
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('uses the chain-matching account address for non-EVM assets', () => {
+    mockLocationState = { amount: 100 };
+
+    const solanaAccount = {
+      id: 'sol-account-1',
+      address: '7NpQ2kKqLhB5rJ3mF8vXcYaZ9wEd1tGsR2VnQ4bHkU',
+      metadata: { name: 'Solana Account' },
+    };
+    const solanaToken = {
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      symbol: 'SOL',
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    };
+    const solanaProvider = {
+      id: '/providers/solana-ramp',
+      name: 'Solana Ramp',
+      supportedCryptoCurrencies: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': true,
+      },
+    } as unknown as Provider;
+
+    jest
+      .mocked(getInternalAccountBySelectedAccountGroupAndCaip)
+      .mockReturnValue(solanaAccount);
+
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      providers: [solanaProvider],
+      selectedProvider: solanaProvider,
+      selectedToken: solanaToken,
+    });
+
+    renderWithProvider(
+      <RampsProviderSelectionScreen />,
+      createStore(),
+      '/ramps/provider-selection',
+    );
+
+    expect(mockUseRampsQuotes).toHaveBeenCalledWith(
+      expect.objectContaining({
+        walletAddress: '7NpQ2kKqLhB5rJ3mF8vXcYaZ9wEd1tGsR2VnQ4bHkU',
+      }),
+    );
   });
 });

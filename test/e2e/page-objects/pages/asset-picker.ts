@@ -1,6 +1,19 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Shared asset picker modal chrome for choosing tokens or NFTs.
+ *
+ * Screen: overlay modal chrome (not a full page route), opened from send/swap/
+ * bridge and similar flows via the asset-picker button.
+ * Owns: opening source/dest pickers, NFT tab, search, token-list selection, and
+ * empty/disabled NFT or token assertions inside the modal.
+ * Boundaries: the picker modal only. Parent flow pages own amount entry,
+ * quotes, and submit; confirmation pages own post-selection approvals.
+ * Related: `SendPage`, `SwapPage`, `BridgeQuotePage` (hosts that open this).
+ *
+ * @see ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx
+ */
 class AssetPicker {
   // Selectors
   private readonly assetPickerButton = '[data-testid="asset-picker-button"]';
