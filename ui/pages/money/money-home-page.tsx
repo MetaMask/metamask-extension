@@ -160,6 +160,14 @@ export function MoneyHomePage() {
       ? t('moneyBalanceUnavailable')
       : totalFiatFormatted;
   const apyDisplay = apyPercentFormatted;
+  const earnOnYourCryptoSection = (
+    <MoneyPotentialEarnings
+      tokens={depositTokens}
+      apyDecimal={apyDecimal}
+      isNoFeeToken={isNoFeeToken}
+      privacyMode={privacyMode}
+    />
+  );
 
   return (
     <main
@@ -272,6 +280,8 @@ export function MoneyHomePage() {
             ) : null}
             <MoneyActivityPlaceholder />
             <MoneySectionDivider />
+            {earnOnYourCryptoSection}
+            <MoneySectionDivider />
             <MoneyCondensedInfoCards />
           </>
         ) : (
@@ -310,12 +320,7 @@ export function MoneyHomePage() {
             <MoneyActivityPlaceholder />
 
             <MoneySectionDivider />
-            <MoneyPotentialEarnings
-              tokens={depositTokens}
-              apyDecimal={apyDecimal}
-              isNoFeeToken={isNoFeeToken}
-              privacyMode={privacyMode}
-            />
+            {earnOnYourCryptoSection}
 
             <MoneySectionDivider />
             <section className="px-4 py-3">

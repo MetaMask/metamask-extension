@@ -1,9 +1,11 @@
 import { strict as assert } from 'assert';
+import { SolScope } from '@metamask/keyring-api';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { buildSolanaFixtureScopes } from '../../fixtures/permission-scopes';
 import { login } from '../../page-objects/flows/login.flow';
 import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
@@ -13,7 +15,17 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
     it('Should sign and send multiple WSOL transactions', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2().build(),
+          // The dapp needs the Devnet scope, which a live connect cannot
+          // grant, so the session is seeded with Mainnet + Devnet and
+          // restored silently on connect.
+          fixtures: new FixtureBuilderV2()
+            .withPermissionControllerConnectedToTestDapp({
+              scopes: buildSolanaFixtureScopes([
+                SolScope.Mainnet,
+                SolScope.Devnet,
+              ]),
+            })
+            .build(),
           title: this.test?.fullTitle(),
           dappOptions: {
             customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
@@ -30,7 +42,7 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
-            includeDevnet: true,
+            expectExistingSession: true,
           });
 
           // 1. Sign multiple transactions

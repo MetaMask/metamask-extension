@@ -1,59 +1,81 @@
 /**
  * This test suite is for testing connecting to a dapp with different wallet providers (EVM and Solana).
  */
-import { SolScope } from '@metamask/keyring-api';
+import { strict as assert } from 'assert';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   ACCOUNT_2,
   DAPP_HOST_ADDRESS,
   DAPP_PATH,
+  DAPP_URL,
   DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
-import {
-  BASE_DISPLAY_NAME,
-  LINEA_MAINNET_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-  ARBITRUM_DISPLAY_NAME,
-  BSC_DISPLAY_NAME,
-  POLYGON_DISPLAY_NAME,
-  OPTIMISM_DISPLAY_NAME,
-  MONAD_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
+import { Driver } from '../../webdriver/driver';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
-import {
-  checkAccountsAndNetworksDisplayed,
-  getPermissionsPageForHost,
-} from '../../page-objects/flows/permissions.flow';
+import { getEditConnectedAccountsPageForHost } from '../../page-objects/flows/permissions.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { buildSolanaFixtureScopes } from '../../fixtures/permission-scopes';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
-import { account1 as SOLANA_ADDRESS_ONE } from '../../flask/solana-wallet-standard/testHelpers';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
+  getPermittedChainIdsForOrigin,
   getRequestPermissionsRequestObject,
   getRestrictedNetworks,
 } from './helpers';
 
 const EVM_ADDRESS_TWO = ACCOUNT_2;
-const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;
 
 const EVM_ACCOUNT_LABEL_ONE = 'Account 1';
 const EVM_ACCOUNT_LABEL_TWO = 'Account 2';
 
-const SOLANA_PERMISSIONS = {
-  isMultichainOrigin: true,
-  sessionProperties: {},
-  requiredScopes: {},
-  optionalScopes: {
-    [SolScope.Mainnet]: {
-      accounts: [SOLANA_ACCOUNT_ONE],
-    },
-  },
-};
+const SOLANA_PERMISSIONS = buildSolanaFixtureScopes();
+
+/**
+ * CAIP chain IDs granted by a default connect: every non-test network in the
+ * default fixture.
+ */
+const DEFAULT_PERMITTED_CAIP_CHAIN_IDS = [
+  toEvmCaipChainId(CHAIN_IDS.MAINNET),
+  toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
+  toEvmCaipChainId(CHAIN_IDS.BASE),
+  toEvmCaipChainId(CHAIN_IDS.ARBITRUM),
+  toEvmCaipChainId(CHAIN_IDS.BSC),
+  toEvmCaipChainId(CHAIN_IDS.POLYGON),
+  toEvmCaipChainId(CHAIN_IDS.OPTIMISM),
+  toEvmCaipChainId(CHAIN_IDS.MONAD),
+  SolScope.Mainnet,
+  BtcScope.Mainnet,
+  TrxScope.Mainnet,
+];
+
+/**
+ * Asserts, from the PermissionController state, that the dapp's permitted
+ * chains exactly match the expected CAIP chain IDs.
+ *
+ * @param driver - The webdriver instance.
+ * @param expectedCaipChainIds - The expected permitted CAIP chain IDs.
+ */
+async function checkPermittedChainIds(
+  driver: Driver,
+  expectedCaipChainIds: string[],
+): Promise<void> {
+  const permittedChainIds = await getPermittedChainIdsForOrigin(
+    driver,
+    DAPP_URL,
+  );
+  assert.deepEqual(
+    [...permittedChainIds].sort(),
+    [...expectedCaipChainIds].sort(),
+  );
+}
 
 describe('Multiple Standard Dapp Connections', function () {
   it('should default account selection to already permitted account(s) plus the selected account (if not already permissioned) when `wallet_requestPermissions` is called with no accounts specified', async function () {
@@ -188,33 +210,15 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const sitePermissionPage = await getPermissionsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
-        await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(11);
+        await editConnectedAccountsPage.checkAccountsAreSelected([
+          EVM_ACCOUNT_LABEL_ONE,
+          EVM_ACCOUNT_LABEL_TWO,
+        ]);
 
-        await checkAccountsAndNetworksDisplayed(
-          driver,
-          sitePermissionPage,
-          DAPP_HOST_ADDRESS,
-          [
-            MAINNET_DISPLAY_NAME,
-            LINEA_MAINNET_DISPLAY_NAME,
-            BASE_DISPLAY_NAME,
-            ARBITRUM_DISPLAY_NAME,
-            BSC_DISPLAY_NAME,
-            POLYGON_DISPLAY_NAME,
-            OPTIMISM_DISPLAY_NAME,
-            MONAD_DISPLAY_NAME,
-            'Solana',
-            'Bitcoin',
-            'Tron',
-          ],
-          [EVM_ACCOUNT_LABEL_ONE, EVM_ACCOUNT_LABEL_TWO],
-        );
+        await checkPermittedChainIds(driver, DEFAULT_PERMITTED_CAIP_CHAIN_IDS);
       },
     );
   });
@@ -246,33 +250,14 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const sitePermissionPage = await getPermissionsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
-        await sitePermissionPage.checkConnectedAccountsNumber(1);
-        await sitePermissionPage.checkConnectedNetworksNumber(11);
+        await editConnectedAccountsPage.checkAccountsAreSelected([
+          EVM_ACCOUNT_LABEL_ONE,
+        ]);
 
-        await checkAccountsAndNetworksDisplayed(
-          driver,
-          sitePermissionPage,
-          DAPP_HOST_ADDRESS,
-          [
-            MAINNET_DISPLAY_NAME,
-            BASE_DISPLAY_NAME,
-            BSC_DISPLAY_NAME,
-            POLYGON_DISPLAY_NAME,
-            OPTIMISM_DISPLAY_NAME,
-            ARBITRUM_DISPLAY_NAME,
-            LINEA_MAINNET_DISPLAY_NAME,
-            MONAD_DISPLAY_NAME,
-            'Bitcoin',
-            'Solana',
-            'Tron',
-          ],
-          [EVM_ACCOUNT_LABEL_ONE],
-        );
+        await checkPermittedChainIds(driver, DEFAULT_PERMITTED_CAIP_CHAIN_IDS);
       },
     );
   });
@@ -326,33 +311,15 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const sitePermissionPage = await getPermissionsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
-        await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(11);
+        await editConnectedAccountsPage.checkAccountsAreSelected([
+          EVM_ACCOUNT_LABEL_ONE,
+          EVM_ACCOUNT_LABEL_TWO,
+        ]);
 
-        await checkAccountsAndNetworksDisplayed(
-          driver,
-          sitePermissionPage,
-          DAPP_HOST_ADDRESS,
-          [
-            MAINNET_DISPLAY_NAME,
-            LINEA_MAINNET_DISPLAY_NAME,
-            BASE_DISPLAY_NAME,
-            ARBITRUM_DISPLAY_NAME,
-            BSC_DISPLAY_NAME,
-            POLYGON_DISPLAY_NAME,
-            OPTIMISM_DISPLAY_NAME,
-            MONAD_DISPLAY_NAME,
-            'Solana',
-            'Bitcoin',
-            'Tron',
-          ],
-          [EVM_ACCOUNT_LABEL_TWO],
-        );
+        await checkPermittedChainIds(driver, DEFAULT_PERMITTED_CAIP_CHAIN_IDS);
       },
     );
   });
@@ -396,21 +363,17 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const sitePermissionPage = await getPermissionsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
-        await sitePermissionPage.checkConnectedAccountsNumber(1);
-        await sitePermissionPage.checkConnectedNetworksNumber(2);
+        await editConnectedAccountsPage.checkAccountsAreSelected([
+          EVM_ACCOUNT_LABEL_ONE,
+        ]);
 
-        await checkAccountsAndNetworksDisplayed(
-          driver,
-          sitePermissionPage,
-          DAPP_HOST_ADDRESS,
-          [MAINNET_DISPLAY_NAME, 'Solana'],
-          [EVM_ACCOUNT_LABEL_ONE],
-        );
+        await checkPermittedChainIds(driver, [
+          toEvmCaipChainId(CHAIN_IDS.MAINNET),
+          SolScope.Mainnet,
+        ]);
       },
     );
   });
