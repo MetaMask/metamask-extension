@@ -225,13 +225,6 @@ class StartOnboardingPage {
     );
   }
 
-  async createWalletWithSocialLogin(
-    authConnection = AuthConnection.Google,
-  ): Promise<void> {
-    await this.clickCreateWalletButton();
-    await this.clickCreateWalletSocialLoginButton(authConnection);
-  }
-
   async createWalletWithSrp(socialLoginEnabled = true): Promise<void> {
     await this.clickCreateWalletButton();
     if (socialLoginEnabled) {
@@ -276,12 +269,6 @@ class StartOnboardingPage {
     }
   }
 
-  async importWalletWithSocialLogin(
-    authConnection = AuthConnection.Google,
-  ): Promise<void> {
-    await this.clickImportWalletButton();
-    await this.clickImportWalletSocialLoginButton(authConnection);
-  }
 }
 
 export default StartOnboardingPage;

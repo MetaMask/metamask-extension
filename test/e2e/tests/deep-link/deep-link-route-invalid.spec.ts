@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/deep-link-page';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   bytesToB64,

@@ -179,6 +179,11 @@ describe('displayCriticalError', () => {
     expect(
       rootContainer.querySelector('#critical-error-content')?.innerHTML,
     ).toContain('critical-error-button');
+    expect(
+      rootContainer.querySelector(
+        '[data-testid="critical-error-content"]',
+      ),
+    ).not.toBeNull();
   });
 
   it('clicking restart button calls fetch and reload if checkbox checked', async () => {

@@ -1,4 +1,4 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Forgot-password / restore-vault flow: SRP then new password.
@@ -18,6 +18,10 @@ class ResetPasswordPage {
   private createPasswordTermsCheckbox: string;
 
   private driver: Driver;
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-reset-password-page',
+  };
 
   private passwordInput: string;
 
@@ -40,6 +44,7 @@ class ResetPasswordPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.seedPhraseInput,
         this.srpWordInputContinueButton,
       ]);
