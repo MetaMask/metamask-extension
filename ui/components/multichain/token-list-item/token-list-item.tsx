@@ -333,7 +333,7 @@ export const TokenListItemComponent = ({
               size={AvatarNetworkSize.Xs}
               name={allNetworks?.[chainId as Hex]?.name}
               src={tokenChainImage || undefined}
-              className="multichain-token-list-item__badge__avatar-network bg-background-default border-2 border-background-default"
+              className="multichain-token-list-item__badge__avatar-network rounded-md bg-background-default border-2 border-background-default"
               style={getAvatarNetworkStyle(allNetworks?.[chainId as Hex]?.name)}
             />
           }

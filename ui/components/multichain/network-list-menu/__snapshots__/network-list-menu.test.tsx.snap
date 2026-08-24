@@ -117,7 +117,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     data-testid="network-list-item-eip155:1"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                     >
                       <img
                         alt="Ethereum"
@@ -186,7 +186,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     data-testid="network-list-item-eip155:59144"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                     >
                       <img
                         alt="Linea"
@@ -255,7 +255,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     data-testid="network-list-item-eip155:56"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                     >
                       <img
                         alt="BNB Chain"
@@ -324,7 +324,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     data-testid="network-list-item-eip155:143"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                     >
                       <img
                         alt="Monad"
@@ -402,7 +402,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     data-testid="network-list-item-eip155:5"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                     >
                       <span
                         class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -1552,7 +1552,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     data-testid="network-list-item-eip155:1"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                     >
                       <img
                         alt="Ethereum"
@@ -1621,7 +1621,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     data-testid="network-list-item-eip155:59144"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                     >
                       <img
                         alt="Linea"
@@ -1690,7 +1690,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     data-testid="network-list-item-eip155:56"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                     >
                       <img
                         alt="BNB Chain"
@@ -1759,7 +1759,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     data-testid="network-list-item-eip155:143"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                     >
                       <img
                         alt="Monad"
@@ -1837,7 +1837,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     data-testid="network-list-item-eip155:5"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-6 w-6 rounded-md"
                     >
                       <span
                         class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"

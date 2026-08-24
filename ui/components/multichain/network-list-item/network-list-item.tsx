@@ -225,6 +225,7 @@ export const NetworkListItem = ({
           name={name}
           src={iconSrc}
           size={iconSize as AvatarNetworkSize}
+          className="rounded-md"
           style={getAvatarNetworkStyle(name)}
         />
       )}

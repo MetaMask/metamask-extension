@@ -161,11 +161,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: 0px;"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
                             alt="Network logo"
                             class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/arbitrum.svg"
                           />
                         </div>
@@ -175,11 +176,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
                             alt="Network logo"
                             class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/pol-token.svg"
                           />
                         </div>
@@ -189,11 +191,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
                             alt="Network logo"
                             class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/bnb.svg"
                           />
                         </div>
@@ -203,11 +206,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
                             alt="Network logo"
                             class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/eth_logo.svg"
                           />
                         </div>

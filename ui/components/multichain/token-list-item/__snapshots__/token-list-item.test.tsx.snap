@@ -28,7 +28,7 @@ exports[`TokenListItem handles clicking staking opens tab 1`] = `
           class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm h-4 w-4 multichain-token-list-item__badge__avatar-network bg-background-default border-2 border-background-default"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden h-4 w-4 multichain-token-list-item__badge__avatar-network rounded-md bg-background-default border-2 border-background-default"
           >
             <img
               alt="Network logo"
@@ -129,7 +129,7 @@ exports[`TokenListItem should display warning scam modal 1`] = `
           class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm h-4 w-4 multichain-token-list-item__badge__avatar-network bg-background-default border-2 border-background-default"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden h-4 w-4 multichain-token-list-item__badge__avatar-network rounded-md bg-background-default border-2 border-background-default"
           >
             <span
               class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -217,7 +217,7 @@ exports[`TokenListItem should display warning scam modal fallback when safechain
           class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm h-4 w-4 multichain-token-list-item__badge__avatar-network bg-background-default border-2 border-background-default"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden h-4 w-4 multichain-token-list-item__badge__avatar-network rounded-md bg-background-default border-2 border-background-default"
           >
             <span
               class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -306,7 +306,7 @@ exports[`TokenListItem should render correctly 1`] = `
           class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm h-4 w-4 multichain-token-list-item__badge__avatar-network bg-background-default border-2 border-background-default"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden h-4 w-4 multichain-token-list-item__badge__avatar-network rounded-md bg-background-default border-2 border-background-default"
           >
             <img
               alt="Network logo"
@@ -380,7 +380,7 @@ exports[`TokenListItem should render crypto balance 1`] = `
           class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm h-4 w-4 multichain-token-list-item__badge__avatar-network bg-background-default border-2 border-background-default"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden h-4 w-4 multichain-token-list-item__badge__avatar-network rounded-md bg-background-default border-2 border-background-default"
           >
             <span
               class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -456,7 +456,7 @@ exports[`TokenListItem should render crypto balance with warning scam 1`] = `
           class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm h-4 w-4 multichain-token-list-item__badge__avatar-network bg-background-default border-2 border-background-default"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden h-4 w-4 multichain-token-list-item__badge__avatar-network rounded-md bg-background-default border-2 border-background-default"
           >
             <span
               class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"

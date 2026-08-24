@@ -27,10 +27,7 @@ import {
   getOpenSeaEnabled,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
-import {
-  getAvatarNetworkStyle,
-  getAvatarNetworkStyleFromBackgroundColor,
-} from '../../../helpers/utils/accounts';
+import { getAvatarNetworkStyleFromBackgroundColor } from '../../../helpers/utils/accounts';
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -145,7 +142,7 @@ export const NftItem = ({
           display={Display.Block}
           badge={
             <AvatarNetwork
-              className="nft-item__network-badge border-2 border-background-default"
+              className="nft-item__network-badge rounded-md border-2 border-background-default"
               data-testid="nft-network-badge"
               size={AvatarNetworkSize.Xs}
               name={networkName}
