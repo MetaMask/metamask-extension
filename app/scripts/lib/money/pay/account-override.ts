@@ -23,8 +23,10 @@ import { getSelectedAccount, type MoneyPayMessenger } from './pay-context';
  * deliberately not ported: the Card-link approve discriminator (the extension
  * has no Card product), and the nested-transaction address replacement for
  * withdrawals (the extension's placeholder batches carry no calldata, and the
- * withdraw commit path re-resolves the recipient from the selected account on
- * every amount commit). Mobile's eager balance refresh is also skipped: the
+ * withdraw commit path re-resolves the recipient from this override — falling
+ * back to the selected account — on every amount commit, with the UI
+ * re-committing when the override changes). Mobile's eager balance refresh is
+ * also skipped: the
  * override is the selected account, whose balances the extension already
  * polls while the UI is open.
  *

@@ -25,6 +25,8 @@ const TELLER_INTERFACE = new Interface(TELLER_ABI);
 
 const MUSD_ADDRESS = MUSD_TOKEN_ADDRESS_BY_CHAIN[VAULT_CONFIG_MOCK.chainId];
 const RECIPIENT_MOCK = '0x1234567890123456789012345678901234567890' as Hex;
+const OVERRIDE_RECIPIENT_MOCK =
+  '0xabcabcabcabcabcabcabcabcabcabcabcabcabca' as Hex;
 
 /** 1.0000004 mUSD: base units 1000000.4, so ROUND_DOWN → 1000000. */
 const AMOUNT_HUMAN = '1.0000004';
@@ -95,7 +97,10 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       AMOUNT_HUMAN,
     );
 
-    expect(result).toBe(true);
+    expect(result).toStrictEqual({
+      didCommit: true,
+      recipient: RECIPIENT_MOCK,
+    });
     const meta = committed.meta as TransactionMeta;
 
     const withdraw = TELLER_INTERFACE.decodeFunctionData(
@@ -123,7 +128,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     expect(meta.simulationData).toBeUndefined();
   });
 
-  it('resolves false for a zero amount without building', async () => {
+  it('resolves uncommitted for a zero amount without building', async () => {
     const transaction = buildTemplateTransaction();
     const { messenger, committed, provider } = setup(transaction);
 
@@ -133,7 +138,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       '0',
     );
 
-    expect(result).toBe(false);
+    expect(result).toStrictEqual({ didCommit: false });
     expect(committed.meta).toBeUndefined();
     expect(provider.request).not.toHaveBeenCalledWith(
       expect.objectContaining({ method: 'eth_call' }),
@@ -152,7 +157,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
   });
 
-  it('rejects when no recipient account resolves', async () => {
+  it('throws when no recipient account resolves', () => {
     const transaction = buildTemplateTransaction();
     const { messenger } = setup(transaction, {
       handlers: {
@@ -160,14 +165,14 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       },
     });
 
-    await expect(
+    expect(() =>
       updateMoneyAccountWithdrawAmount(messenger, transaction.id, AMOUNT_HUMAN),
-    ).rejects.toThrow(
+    ).toThrow(
       'Update Amount: Money Account Withdrawal: missing recipient account',
     );
   });
 
-  it('rejects when the selected account is not an EVM account', async () => {
+  it('throws when the selected account is not an EVM account', () => {
     const transaction = buildTemplateTransaction();
     const { messenger } = setup(transaction, {
       handlers: {
@@ -178,14 +183,89 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       },
     });
 
-    await expect(
+    expect(() =>
       updateMoneyAccountWithdrawAmount(messenger, transaction.id, AMOUNT_HUMAN),
-    ).rejects.toThrow(
-      'Update Amount: Money Account Withdrawal: selected account is not an EVM account',
+    ).toThrow(
+      'Update Amount: Money Account Withdrawal: recipient is not an EVM account',
     );
   });
 
-  it('rejects when the selected account address is not hex', async () => {
+  it('resolves the recipient from the Pay account override when provided', async () => {
+    const transaction = buildTemplateTransaction();
+    const { messenger, committed } = setup(transaction, {
+      handlers: {
+        'AccountsController:getAccountByAddress': (address) => ({
+          address,
+          type: 'eip155:eoa',
+        }),
+      },
+    });
+
+    const result = await updateMoneyAccountWithdrawAmount(
+      messenger,
+      transaction.id,
+      AMOUNT_HUMAN,
+      OVERRIDE_RECIPIENT_MOCK,
+    );
+
+    expect(result).toStrictEqual({
+      didCommit: true,
+      recipient: OVERRIDE_RECIPIENT_MOCK,
+    });
+
+    const meta = committed.meta as TransactionMeta;
+    const transfer = ERC20_INTERFACE.decodeFunctionData(
+      'transfer',
+      meta.nestedTransactions?.[1].data as string,
+    );
+    expect(transfer.recipient.toLowerCase()).toBe(OVERRIDE_RECIPIENT_MOCK);
+  });
+
+  it('throws when the account override is not a wallet account', () => {
+    const transaction = buildTemplateTransaction();
+    const { messenger, committed } = setup(transaction, {
+      handlers: {
+        'AccountsController:getAccountByAddress': () => undefined,
+      },
+    });
+
+    expect(() =>
+      updateMoneyAccountWithdrawAmount(
+        messenger,
+        transaction.id,
+        AMOUNT_HUMAN,
+        OVERRIDE_RECIPIENT_MOCK,
+      ),
+    ).toThrow(
+      'Update Amount: Money Account Withdrawal: missing recipient account',
+    );
+    expect(committed.meta).toBeUndefined();
+  });
+
+  it('throws when the account override resolves to a non-EVM account', () => {
+    const transaction = buildTemplateTransaction();
+    const { messenger } = setup(transaction, {
+      handlers: {
+        'AccountsController:getAccountByAddress': (address) => ({
+          address,
+          type: 'solana:data-account',
+        }),
+      },
+    });
+
+    expect(() =>
+      updateMoneyAccountWithdrawAmount(
+        messenger,
+        transaction.id,
+        AMOUNT_HUMAN,
+        OVERRIDE_RECIPIENT_MOCK,
+      ),
+    ).toThrow(
+      'Update Amount: Money Account Withdrawal: recipient is not an EVM account',
+    );
+  });
+
+  it('throws when the selected account address is not hex', () => {
     const transaction = buildTemplateTransaction();
     const { messenger } = setup(transaction, {
       handlers: {
@@ -196,9 +276,9 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       },
     });
 
-    await expect(
+    expect(() =>
       updateMoneyAccountWithdrawAmount(messenger, transaction.id, AMOUNT_HUMAN),
-    ).rejects.toThrow(
+    ).toThrow(
       'Update Amount: Money Account Withdrawal: invalid recipient address',
     );
   });
@@ -233,6 +313,42 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
 
     expect(second).toBe(first);
-    await expect(first).resolves.toBe(true);
+    await expect(first).resolves.toStrictEqual({
+      didCommit: true,
+      recipient: RECIPIENT_MOCK,
+    });
+  });
+
+  it('treats the same amount aimed at a different recipient as a new intent', async () => {
+    const transaction = buildTemplateTransaction();
+    const { messenger } = setup(transaction, {
+      handlers: {
+        'AccountsController:getAccountByAddress': (address) => ({
+          address,
+          type: 'eip155:eoa',
+        }),
+      },
+    });
+
+    const first = updateMoneyAccountWithdrawAmount(
+      messenger,
+      transaction.id,
+      AMOUNT_HUMAN,
+    );
+    const second = updateMoneyAccountWithdrawAmount(
+      messenger,
+      transaction.id,
+      AMOUNT_HUMAN,
+      OVERRIDE_RECIPIENT_MOCK,
+    );
+
+    expect(second).not.toBe(first);
+    // The first intent is superseded before it can commit calldata paying
+    // the old recipient.
+    await expect(first).resolves.toStrictEqual({ didCommit: false });
+    await expect(second).resolves.toStrictEqual({
+      didCommit: true,
+      recipient: OVERRIDE_RECIPIENT_MOCK,
+    });
   });
 });

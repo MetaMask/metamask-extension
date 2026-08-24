@@ -23,8 +23,8 @@ const MONEY_ACCOUNT_DEPOSIT_ERROR_PREFIX = 'Money Account Deposit: ';
  *
  * The amount arrives already in mUSD base units (Pay resolves decimals before
  * calling), so no rounding happens here — the rounding decisions live at the
- * sites that convert human amounts (deposits round up, the withdraw override
- * rounds down; see `payment-override-callback.ts`).
+ * sites that convert human amounts (deposits and withdrawals both round down;
+ * see `payment-override-callback.ts`).
  *
  * Every guard returns `{ updates: [] }` rather than throwing: Pay calls this
  * for every transaction it processes, and "not a money deposit" or "money not

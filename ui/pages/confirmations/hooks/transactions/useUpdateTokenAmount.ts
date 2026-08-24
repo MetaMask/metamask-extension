@@ -1,9 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { Interface } from '@ethersproject/abi';
 import { useConfirmContext } from '../../context/confirm';
+import { usePrevious } from '../../../../hooks/usePrevious';
+import { getMaybeSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
+import {
+  selectTransactionPayAccountOverrideByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
 import { parseStandardTokenTransactionData } from '../../../../../shared/lib/transaction.utils';
 import {
   getMoneyAccountFlow,
@@ -39,6 +47,7 @@ export function useUpdateTokenAmount() {
   const {
     currentConfirmation: transactionMeta,
     isMoneyAccountAmountCommitPending: isMoneyAmountCommitPending,
+    moneyAccountDisplayedAmount,
     setMoneyAccountDisplayedAmount,
     setMoneyAccountCommittedAmount,
   } = useConfirmContext<TransactionMeta>();
@@ -91,23 +100,108 @@ export function useUpdateTokenAmount() {
     [transactionMeta],
   );
 
-  // Records the amount the user currently sees, the moment an edit is
-  // scheduled (see `useTransactionCustomAmount`). Confirm stays disabled
-  // until the same amount comes back through
-  // `setMoneyAccountCommittedAmount`, so a dropped debounce, a failed
-  // commit, or overlapping edits all leave Confirm disabled instead of
-  // signable against stale calldata. Idempotent for repeated identical
-  // values, so the scheduling call and the eventual commit recording the
-  // same amount is harmless.
+  const accountOverride = useSelector((state: TransactionPayState) =>
+    selectTransactionPayAccountOverrideByTransactionId(state, transactionId),
+  );
+  const selectedAccount = useSelector(getMaybeSelectedInternalAccount);
+
+  // The account the withdrawal confirmation displays as the destination: the
+  // Pay override once the user picks one in the account row, otherwise the
+  // selected account the background falls back to. Tracked through the
+  // displayed/committed gate alongside the amount, so Confirm stays disabled
+  // until the calldata pays the account on screen.
+  const withdrawRecipient =
+    moneyAccountFlow === MoneyAccountFlow.Withdraw
+      ? accountOverride ??
+        (selectedAccount && isEvmAccountType(selectedAccount.type)
+          ? selectedAccount.address
+          : undefined)
+      : undefined;
+
+  // Records the amount (and, for withdrawals, the recipient) the user
+  // currently sees, the moment an edit is scheduled (see
+  // `useTransactionCustomAmount`). Confirm stays disabled until the same
+  // values come back through `setMoneyAccountCommittedAmount`, so a dropped
+  // debounce, a failed commit, or overlapping edits all leave Confirm
+  // disabled instead of signable against stale calldata. Idempotent for
+  // repeated identical values, so the scheduling call and the eventual
+  // commit recording the same values is harmless.
   const markAmountAsDisplayed = useCallback(
     (amountHuman: string) => {
       if (moneyAccountFlow === undefined) {
         return;
       }
-      setMoneyAccountDisplayedAmount(amountHuman, transactionId);
+      setMoneyAccountDisplayedAmount(
+        amountHuman,
+        transactionId,
+        withdrawRecipient,
+      );
     },
-    [moneyAccountFlow, setMoneyAccountDisplayedAmount, transactionId],
+    [
+      moneyAccountFlow,
+      setMoneyAccountDisplayedAmount,
+      transactionId,
+      withdrawRecipient,
+    ],
   );
+
+  const commitWithdrawAmount = useCallback(
+    (amountHuman: string) => {
+      setMoneyAccountDisplayedAmount(
+        amountHuman,
+        transactionId,
+        withdrawRecipient,
+      );
+      updateMoneyAccountWithdrawAmount(transactionId, amountHuman)
+        .then((result) => {
+          if (result.didCommit) {
+            setMoneyAccountCommittedAmount(
+              amountHuman,
+              transactionId,
+              result.recipient,
+            );
+          }
+        })
+        .catch((error) => {
+          // Deliberately no committed-amount update: displayed !== committed
+          // keeps Confirm disabled rather than signable against calldata
+          // that still encodes the previous amount or recipient.
+          console.error(
+            'Failed to update money account withdrawal amount',
+            error,
+          );
+        });
+    },
+    [
+      setMoneyAccountCommittedAmount,
+      setMoneyAccountDisplayedAmount,
+      transactionId,
+      withdrawRecipient,
+    ],
+  );
+
+  const previousWithdrawRecipient = usePrevious(withdrawRecipient);
+
+  // A recipient change (the account row, or the global selection) invalidates
+  // the committed calldata exactly like an amount edit: re-mark and re-commit
+  // the amount already entered so the transfer pays the account now shown.
+  useEffect(() => {
+    if (
+      moneyAccountFlow !== MoneyAccountFlow.Withdraw ||
+      previousWithdrawRecipient === undefined ||
+      withdrawRecipient === previousWithdrawRecipient ||
+      moneyAccountDisplayedAmount === undefined
+    ) {
+      return;
+    }
+    commitWithdrawAmount(moneyAccountDisplayedAmount);
+  }, [
+    commitWithdrawAmount,
+    moneyAccountDisplayedAmount,
+    moneyAccountFlow,
+    previousWithdrawRecipient,
+    withdrawRecipient,
+  ]);
 
   const updateTokenAmount = useCallback(
     (amountHuman: string) => {
@@ -140,22 +234,10 @@ export function useUpdateTokenAmount() {
 
       // Same shape as deposits: the placeholder withdraw + transfer batch has
       // no calldata to parse, and the background commit path resolves the
-      // recipient (the selected account) and the vault rate.
+      // recipient (the Pay override or the selected account) and the vault
+      // rate.
       if (moneyAccountFlow === MoneyAccountFlow.Withdraw) {
-        setMoneyAccountDisplayedAmount(amountHuman, transactionId);
-        updateMoneyAccountWithdrawAmount(transactionId, amountHuman)
-          .then((didCommit) => {
-            if (didCommit) {
-              setMoneyAccountCommittedAmount(amountHuman, transactionId);
-            }
-          })
-          .catch((error) => {
-            // Deliberately no committed-amount update; see the deposit path.
-            console.error(
-              'Failed to update money account withdrawal amount',
-              error,
-            );
-          });
+        commitWithdrawAmount(amountHuman);
         return;
       }
 
@@ -206,6 +288,7 @@ export function useUpdateTokenAmount() {
     },
     [
       amountRaw,
+      commitWithdrawAmount,
       data,
       decimals,
       dispatch,

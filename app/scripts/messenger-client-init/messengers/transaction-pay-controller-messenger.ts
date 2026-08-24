@@ -4,7 +4,10 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import type { TransactionPayControllerMessenger } from '@metamask/transaction-pay-controller';
-import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import type {
+  AccountsControllerGetAccountByAddressAction,
+  AccountsControllerGetSelectedAccountAction,
+} from '@metamask/accounts-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
 import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
@@ -81,6 +84,7 @@ export function getTransactionPayControllerMessenger(
 }
 
 type InitMessengerActions =
+  | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
@@ -121,6 +125,7 @@ export function getTransactionPayControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
+      'AccountsController:getAccountByAddress',
       'AccountsController:getSelectedAccount',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',

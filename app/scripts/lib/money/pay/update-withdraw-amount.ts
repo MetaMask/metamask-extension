@@ -12,8 +12,10 @@ import {
 import { isStrictHexString, type Hex } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
 import { calcTokenValue } from '../../../../../shared/lib/swaps-utils';
+import type { WithdrawAmountCommitResult } from '../../../../../shared/lib/money/withdraw-amount-commit';
 import {
   findTransaction,
+  getAccountByAddress,
   getMoneyPayContext,
   getSelectedAccount,
   resetTransactionEstimates,
@@ -24,7 +26,10 @@ import {
 
 const UPDATE_ERROR_PREFIX = 'Update Amount: Money Account Withdrawal: ';
 
-const amountUpdates = new Map<string, AmountUpdateIntent<boolean>>();
+const amountUpdates = new Map<
+  string,
+  AmountUpdateIntent<WithdrawAmountCommitResult>
+>();
 
 function failUpdate(message: string): never {
   throw new Error(`${UPDATE_ERROR_PREFIX}${message}`);
@@ -47,12 +52,45 @@ function validateTransactionTemplate(transaction: TransactionMeta): void {
   }
 }
 
+/**
+ * Resolves and validates the account the redeemed mUSD is forwarded to: the
+ * Pay account override when the user picked a destination on the
+ * confirmation, otherwise the globally selected account (mobile's
+ * `selectEvmAddress` default). The override is looked up as a wallet account
+ * rather than trusted as an address — the UI can only ever direct a
+ * withdrawal at an account the wallet holds.
+ *
+ * @param messenger - The messenger to resolve the account through.
+ * @param accountOverride - The Pay account override for the transaction.
+ * @returns The validated recipient address.
+ */
+function resolveRecipient(
+  messenger: MoneyPayMessenger,
+  accountOverride: Hex | undefined,
+): Hex {
+  const account = accountOverride
+    ? getAccountByAddress(messenger, accountOverride)
+    : getSelectedAccount(messenger);
+  if (!account) {
+    failUpdate('missing recipient account');
+  }
+  if (!isEvmAccountType(account.type)) {
+    failUpdate('recipient is not an EVM account');
+  }
+  const recipient = account.address;
+  if (!isStrictHexString(recipient)) {
+    failUpdate('invalid recipient address');
+  }
+  return recipient;
+}
+
 async function updateMoneyAccountWithdrawAmountInternal(
   messenger: MoneyPayMessenger,
   transaction: TransactionMeta,
   amountHuman: string,
+  recipient: Hex,
   isCurrentIntent: () => boolean,
-): Promise<boolean> {
+): Promise<WithdrawAmountCommitResult> {
   validateTransactionTemplate(transaction);
 
   const chainId = transaction.chainId as Hex;
@@ -76,24 +114,7 @@ async function updateMoneyAccountWithdrawAmountInternal(
   // A cleared amount field arrives as zero; the builder throws on zero rather
   // than encoding a redemption of no shares.
   if (BigInt(amountRaw) === 0n) {
-    return false;
-  }
-
-  // The redeemed mUSD is forwarded to the user's currently selected account,
-  // resolved at commit time — the same rule as mobile's `selectEvmAddress`
-  // default. Validated rather than cast: the selected account is global
-  // state the user can change mid-flow, including to a non-EVM account whose
-  // address would otherwise reach the ABI encoder as a bogus recipient.
-  const selectedAccount = getSelectedAccount(messenger);
-  if (!selectedAccount) {
-    failUpdate('missing recipient account');
-  }
-  if (!isEvmAccountType(selectedAccount.type)) {
-    failUpdate('selected account is not an EVM account');
-  }
-  const recipient = selectedAccount.address;
-  if (!isStrictHexString(recipient)) {
-    failUpdate('invalid recipient address');
+    return { didCommit: false };
   }
 
   const { withdrawTx, transferTx } = await buildMoneyAccountWithdrawBatch({
@@ -107,7 +128,7 @@ async function updateMoneyAccountWithdrawAmountInternal(
   });
 
   if (!isCurrentIntent()) {
-    return false;
+    return { didCommit: false };
   }
 
   const withdrawData = withdrawTx.params.data;
@@ -148,7 +169,7 @@ async function updateMoneyAccountWithdrawAmountInternal(
     },
   });
 
-  return true;
+  return { didCommit: true, recipient };
 }
 
 /**
@@ -160,18 +181,25 @@ async function updateMoneyAccountWithdrawAmountInternal(
  * The concurrency contract mirrors `updateMoneyAccountDepositAmount`:
  * identical in-flight intents share a promise, and a newer intent for the
  * same transaction prevents an older preparation from committing stale
- * calldata — the superseded call resolves `false`.
+ * calldata — the superseded call resolves `{ didCommit: false }`. The
+ * recipient is part of the intent identity: the same amount aimed at a
+ * different recipient is a different intent, and the committed recipient is
+ * returned so the UI's Confirm gate can compare it against the one displayed.
  *
  * @param messenger - The messenger to resolve and commit through.
  * @param transactionId - Id of the Money Account withdrawal transaction.
  * @param amountHuman - Exact human-readable amount.
- * @returns Whether this intent committed transaction metadata.
+ * @param accountOverride - The Pay account override for the transaction; the
+ * recipient falls back to the selected account when unset.
+ * @returns Whether this intent committed transaction metadata, and the
+ * recipient it encoded if so.
  */
 export function updateMoneyAccountWithdrawAmount(
   messenger: MoneyPayMessenger,
   transactionId: string,
   amountHuman: string,
-): Promise<boolean> {
+  accountOverride?: Hex,
+): Promise<WithdrawAmountCommitResult> {
   const transaction = findTransaction(
     messenger,
     ({ id }) => id === transactionId,
@@ -180,7 +208,9 @@ export function updateMoneyAccountWithdrawAmount(
     failUpdate('transaction not found');
   }
 
-  const intentKey = JSON.stringify({ amountHuman, transactionId });
+  const recipient = resolveRecipient(messenger, accountOverride);
+
+  const intentKey = JSON.stringify({ amountHuman, recipient, transactionId });
 
   return runSingleFlightAmountUpdate(
     amountUpdates,
@@ -191,6 +221,7 @@ export function updateMoneyAccountWithdrawAmount(
         messenger,
         transaction,
         amountHuman,
+        recipient,
         isCurrentIntent,
       ),
   );

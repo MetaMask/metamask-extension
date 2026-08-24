@@ -61,14 +61,6 @@ const SINGLE_ACTION_FOOTER_TYPES = [
   TransactionType.perpsWithdraw,
 ];
 
-/**
- * The only companion legs a single-action batch is ever built with: a
- * deposit's approve-then-deposit batch, and a withdrawal's withdraw-then-
- * transfer batch (see `create-deposit-transaction.ts` /
- * `create-withdraw-transaction.ts`). Allowed alongside
- * `SINGLE_ACTION_FOOTER_TYPES` so those two-leg batches still route to the
- * single-action footer, while anything else mixed in falls through.
- */
 const SINGLE_ACTION_FOOTER_COMPANION_TYPES = [
   TransactionType.tokenMethodApprove,
   TransactionType.tokenMethodTransfer,

@@ -3,7 +3,9 @@ import { act, waitFor } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import type { WithdrawAmountCommitResult } from '../../../../../shared/lib/money/withdraw-amount-commit';
 import { updateEditableParams } from '../../../../store/actions';
+import { UPDATE_METAMASK_STATE } from '../../../../store/actionConstants';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';
 import {
   updateMoneyAccountDepositAmount,
@@ -43,6 +45,7 @@ jest.mock('../pay/useTransactionPayData');
 jest.mock('../../utils/transaction-pay');
 
 const MOCK_RECIPIENT = '0x1234567890123456789012345678901234567890';
+const MOCK_OVERRIDE_RECIPIENT = '0xabcabcabcabcabcabcabcabcabcabcabcabcabca';
 const MOCK_TOKEN_ADDRESS = '0xabcdef0123456789abcdef0123456789abcdef01';
 const MOCK_DECIMALS = 18;
 
@@ -71,6 +74,7 @@ function runHook({
     index: undefined as number | undefined,
   },
   requiredTokens = [{ decimals: MOCK_DECIMALS, skipIfBalance: false }],
+  accountOverride,
 }: {
   transactionMeta?: TransactionMeta;
   tokenTransferData?: {
@@ -79,6 +83,7 @@ function runHook({
     index: number | undefined;
   };
   requiredTokens?: { decimals: number; skipIfBalance?: boolean }[];
+  accountOverride?: string;
 } = {}) {
   jest
     .mocked(transactionPayUtils.getTokenTransferData)
@@ -103,6 +108,12 @@ function runHook({
     );
 
   const state = getMockConfirmStateForTransaction(transactionMeta);
+
+  if (accountOverride) {
+    (state.metamask as Record<string, unknown>).transactionData = {
+      [transactionMeta.id]: { accountOverride },
+    };
+  }
 
   return renderHookWithConfirmContextProvider(useUpdateTokenAmount, state);
 }
@@ -156,7 +167,7 @@ describe('useUpdateTokenAmount', () => {
     it('dispatches the withdrawal commit path for a money account withdrawal batch', async () => {
       const updateWithdrawAmountMock = jest
         .mocked(updateMoneyAccountWithdrawAmount)
-        .mockResolvedValue(true);
+        .mockResolvedValue({ didCommit: true, recipient: MOCK_RECIPIENT });
 
       const transactionMeta = createMockTransactionMeta({
         nestedTransactions: [
@@ -367,7 +378,8 @@ describe('useUpdateTokenAmount', () => {
     });
 
     it('is true while a money withdrawal amount commit is in flight, and false once it resolves', async () => {
-      let resolveCommit: (value: boolean) => void = () => undefined;
+      let resolveCommit: (value: WithdrawAmountCommitResult) => void = () =>
+        undefined;
       jest.mocked(updateMoneyAccountWithdrawAmount).mockReturnValue(
         new Promise((resolve) => {
           resolveCommit = resolve;
@@ -388,6 +400,7 @@ describe('useUpdateTokenAmount', () => {
           to: undefined,
           index: undefined,
         },
+        accountOverride: MOCK_OVERRIDE_RECIPIENT,
       });
 
       act(() => {
@@ -397,9 +410,93 @@ describe('useUpdateTokenAmount', () => {
       await waitFor(() => expect(result.current.isUpdating).toBe(true));
 
       await act(async () => {
-        resolveCommit(true);
+        resolveCommit({ didCommit: true, recipient: MOCK_OVERRIDE_RECIPIENT });
       });
 
+      await waitFor(() => expect(result.current.isUpdating).toBe(false));
+    });
+
+    it('stays true when a withdrawal commit resolves for a different recipient than displayed', async () => {
+      // The transfer calldata pays an account other than the one the
+      // confirmation shows; Confirm must stay disabled until a commit for
+      // the displayed recipient lands.
+      jest
+        .mocked(updateMoneyAccountWithdrawAmount)
+        .mockResolvedValue({ didCommit: true, recipient: MOCK_RECIPIENT });
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'moneyAccountWithdraw' },
+          { to: MOCK_RECIPIENT, type: 'transfer' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+        accountOverride: MOCK_OVERRIDE_RECIPIENT,
+      });
+
+      await act(async () => {
+        result.current.updateTokenAmount('2');
+      });
+
+      expect(result.current.isUpdating).toBe(true);
+    });
+
+    it('re-commits the displayed amount when the destination account changes', async () => {
+      const updateWithdrawAmountMock = jest
+        .mocked(updateMoneyAccountWithdrawAmount)
+        .mockResolvedValueOnce({
+          didCommit: true,
+          recipient: MOCK_OVERRIDE_RECIPIENT,
+        })
+        .mockResolvedValueOnce({ didCommit: true, recipient: MOCK_RECIPIENT });
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'moneyAccountWithdraw' },
+          { to: MOCK_RECIPIENT, type: 'transfer' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result, store } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+        accountOverride: MOCK_OVERRIDE_RECIPIENT,
+      });
+
+      await act(async () => {
+        result.current.updateTokenAmount('2');
+      });
+      expect(result.current.isUpdating).toBe(false);
+
+      // Picking a different account in the row invalidates the committed
+      // calldata and re-commits the amount for the new recipient.
+      await act(async () => {
+        store.dispatch({
+          type: UPDATE_METAMASK_STATE,
+          value: {
+            transactionData: {
+              [transactionMeta.id]: { accountOverride: MOCK_RECIPIENT },
+            },
+          },
+        });
+      });
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledTimes(2);
+      expect(updateWithdrawAmountMock).toHaveBeenLastCalledWith(
+        transactionMeta.id,
+        '2',
+      );
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
     });
 

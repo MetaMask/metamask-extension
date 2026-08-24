@@ -1,5 +1,6 @@
 import type { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
+import type { WithdrawAmountCommitResult } from '../../../shared/lib/money/withdraw-amount-commit';
 import { submitRequestToBackground } from '../background-connection';
 
 export async function updateTransactionPaymentToken({
@@ -83,17 +84,19 @@ export async function createMoneyAccountWithdrawTransaction(): Promise<{
 /**
  * Prepares and commits a Money Account withdrawal amount in the background:
  * re-encodes the withdraw + transfer calldata for the new amount, with the
- * redeemed mUSD forwarded to the currently selected account. Superseded
- * intents resolve `false`.
+ * redeemed mUSD forwarded to the Pay account override (the account shown on
+ * the confirmation) or, when unset, the currently selected account.
+ * Superseded intents resolve `{ didCommit: false }`.
  *
  * @param transactionId - Id of the Money Account withdrawal transaction.
  * @param amountHuman - Exact human-readable amount.
- * @returns Whether this intent committed transaction metadata.
+ * @returns Whether this intent committed transaction metadata, and the
+ * recipient it encoded if so.
  */
 export async function updateMoneyAccountWithdrawAmount(
   transactionId: string,
   amountHuman: string,
-): Promise<boolean> {
+): Promise<WithdrawAmountCommitResult> {
   return await submitRequestToBackground('updateMoneyAccountWithdrawAmount', [
     transactionId,
     amountHuman,

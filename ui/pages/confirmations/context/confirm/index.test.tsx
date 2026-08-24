@@ -185,6 +185,93 @@ describe('ConfirmContextProvider', () => {
     expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
   });
 
+  it('stays pending when the user reverts to the committed amount while another amount is in flight', () => {
+    const store = createStore();
+    const { result } = renderContextProvider(store);
+
+    // "5" committed: displayed === committed, gate open.
+    act(() => {
+      result.current.setMoneyAccountDisplayedAmount('5', 'test-id');
+      result.current.setMoneyAccountCommittedAmount('5', 'test-id');
+    });
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
+
+    // Type "6" (commit starts), then revert to "5" before the "6" commit
+    // lands. The stale committed "5" must NOT reopen the gate: the "6"
+    // commit can still write calldata for 6 while the user sees 5.
+    act(() => {
+      result.current.setMoneyAccountDisplayedAmount('6', 'test-id');
+      result.current.setMoneyAccountDisplayedAmount('5', 'test-id');
+    });
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
+
+    // The in-flight "6" commit landing keeps it pending; only the fresh "5"
+    // commit reopens the gate.
+    act(() => result.current.setMoneyAccountCommittedAmount('6', 'test-id'));
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
+
+    act(() => result.current.setMoneyAccountCommittedAmount('5', 'test-id'));
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
+  });
+
+  it('keeps the committed amount when the same displayed amount is re-recorded', () => {
+    const store = createStore();
+    const { result } = renderContextProvider(store);
+
+    act(() => {
+      result.current.setMoneyAccountDisplayedAmount('5', 'test-id');
+      result.current.setMoneyAccountCommittedAmount('5', 'test-id');
+    });
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
+
+    act(() => result.current.setMoneyAccountDisplayedAmount('5', 'test-id'));
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
+  });
+
+  it('stays pending until the committed recipient matches the displayed one', () => {
+    const store = createStore();
+    const { result } = renderContextProvider(store);
+
+    act(() => {
+      result.current.setMoneyAccountDisplayedAmount('5', 'test-id', '0xaaa');
+      result.current.setMoneyAccountCommittedAmount('5', 'test-id', '0xAAA');
+    });
+    // Recipient comparison is case-insensitive.
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
+
+    // Picking a different recipient invalidates the committed calldata even
+    // though the amount is unchanged.
+    act(() =>
+      result.current.setMoneyAccountDisplayedAmount('5', 'test-id', '0xbbb'),
+    );
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
+
+    // A late commit for the old recipient must not reopen the gate.
+    act(() =>
+      result.current.setMoneyAccountCommittedAmount('5', 'test-id', '0xaaa'),
+    );
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(true);
+
+    act(() =>
+      result.current.setMoneyAccountCommittedAmount('5', 'test-id', '0xbbb'),
+    );
+    expect(result.current.isMoneyAccountAmountCommitPending).toBe(false);
+  });
+
+  it('exposes the displayed amount for the current confirmation only', () => {
+    const store = createStore();
+    const { result, rerender } = renderContextProvider(store);
+
+    expect(result.current.moneyAccountDisplayedAmount).toBeUndefined();
+
+    act(() => result.current.setMoneyAccountDisplayedAmount('5', 'test-id'));
+    expect(result.current.moneyAccountDisplayedAmount).toBe('5');
+
+    mockCurrentConfirmation = { id: 'next-id', type: 'transaction' };
+    rerender();
+    expect(result.current.moneyAccountDisplayedAmount).toBeUndefined();
+  });
+
   it('does not carry money account amount state across a confirmation change', () => {
     const store = createStore();
     const { result, rerender } = renderContextProvider(store);

@@ -9,8 +9,7 @@ import { MONEY_ACCOUNT_DEPOSIT_BUTTON_ALLOWED_CAPABILITIES } from './messenger';
 /**
  * Developer trigger for the real Money Account deposit flow: the placeholder
  * approve + deposit batch from the money account, re-encoded by Pay once an
- * amount is chosen. Hidden entirely — not disabled — when the money account
- * is unavailable, the same rule every production entry point follows.
+ * amount is chosen.
  */
 const MoneyAccountDepositButtonContent = () => {
   const { hasMoneyAccount } = useMoneyAccountInfo();

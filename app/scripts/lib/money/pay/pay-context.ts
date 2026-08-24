@@ -1,5 +1,8 @@
 import { Web3Provider, type ExternalProvider } from '@ethersproject/providers';
-import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import type {
+  AccountsControllerGetAccountByAddressAction,
+  AccountsControllerGetSelectedAccountAction,
+} from '@metamask/accounts-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
@@ -45,9 +48,10 @@ type MoneyPayActions =
   // Deposit initiation submits the placeholder batch
   // (`create-deposit-transaction.ts`).
   | TransactionControllerAddTransactionBatchAction
-  // The withdraw commit path resolves the recipient from the selected
-  // account (`update-withdraw-amount.ts`).
-  | AccountsControllerGetSelectedAccountAction;
+  // The withdraw commit path resolves the recipient from the Pay account
+  // override or the selected account (`update-withdraw-amount.ts`).
+  | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetAccountByAddressAction;
 
 /**
  * The messenger surface the Money Pay callbacks need.
@@ -156,6 +160,23 @@ export function getSelectedAccount(
   messenger: MoneyPayMessenger,
 ): InternalAccount | undefined {
   return messenger.call('AccountsController:getSelectedAccount') as
+    | InternalAccount
+    | undefined;
+}
+
+/**
+ * Resolves an internal account by address, `undefined` when the address is
+ * not a wallet account. Same cast rationale as `getSelectedAccount`.
+ *
+ * @param messenger - The messenger to resolve the account through.
+ * @param address - The address to look up.
+ * @returns The internal account, or `undefined` if none matches.
+ */
+export function getAccountByAddress(
+  messenger: MoneyPayMessenger,
+  address: string,
+): InternalAccount | undefined {
+  return messenger.call('AccountsController:getAccountByAddress', address) as
     | InternalAccount
     | undefined;
 }

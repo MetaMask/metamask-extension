@@ -49,6 +49,7 @@ describe('BridgeTimeRow', () => {
       setIsScrollToBottomCompleted: jest.fn(),
       goBackTo: undefined,
       isMoneyAccountAmountCommitPending: false,
+      moneyAccountDisplayedAmount: undefined,
       setMoneyAccountDisplayedAmount: jest.fn(),
       setMoneyAccountCommittedAmount: jest.fn(),
     } as ReturnType<typeof useConfirmContext>);

@@ -27,38 +27,57 @@ export type ConfirmContextType = {
   /** Route to use for cancel / reject / auto-exit; captured once from URL on mount. */
   goBackTo: string | undefined;
   /**
-   * Whether the Money Account deposit/withdrawal amount the user currently
-   * sees differs from the amount last committed to the transaction's
-   * calldata. Read by the footer to keep Confirm disabled, so a Confirm
-   * click can't sign against stale/placeholder calldata.
+   * Whether the Money Account deposit/withdrawal amount (and, for
+   * withdrawals, the recipient) the user currently sees differs from what
+   * was last committed to the transaction's calldata. Read by the footer to
+   * keep Confirm disabled, so a Confirm click can't sign against
+   * stale/placeholder calldata.
    *
    * Derived from `displayed !== committed` rather than tracked as in-flight
    * commit bookkeeping: a dropped debounce, a failed commit, or overlapping
-   * edits all leave the amounts unequal and therefore fail closed, where
+   * edits all leave the values unequal and therefore fail closed, where
    * pending counters kept re-enabling Confirm the moment any one commit
-   * settled.
+   * settled. Recording a *changed* displayed value clears the committed one
+   * (see `setMoneyAccountDisplayedAmount`), so reverting to the
+   * last-committed value cannot reopen the gate while a commit for a
+   * different value is still in flight.
    */
   isMoneyAccountAmountCommitPending: boolean;
   /**
-   * Records the amount the user currently sees, the moment an edit is
-   * scheduled. `confirmationId` must be the confirmation the edit belongs
-   * to: `ConfirmContextProvider` is not remounted between confirmations, so
-   * amounts are keyed by confirmation and a write for a confirmation the
-   * user has already left cannot leak into the next one.
+   * The displayed amount recorded for the current confirmation, if any.
+   * Lets an edit triggered by something other than typing (e.g. a
+   * withdrawal recipient change) re-commit the amount the user already
+   * entered.
+   */
+  moneyAccountDisplayedAmount: string | undefined;
+  /**
+   * Records the amount (and, for withdrawals, the recipient) the user
+   * currently sees, the moment an edit is scheduled. `confirmationId` must
+   * be the confirmation the edit belongs to: `ConfirmContextProvider` is not
+   * remounted between confirmations, so amounts are keyed by confirmation
+   * and a write for a confirmation the user has already left cannot leak
+   * into the next one.
+   *
+   * A changed value discards the entry's committed value: only the commit
+   * for the newest displayed value may reopen the gate. Re-recording an
+   * identical value keeps it.
    */
   setMoneyAccountDisplayedAmount: (
     amountHuman: string,
     confirmationId: string,
+    recipient?: string,
   ) => void;
   /**
-   * Records the amount a background commit actually wrote into the
-   * transaction's calldata. Only ever called with the amount the resolved
-   * commit was started for, so a superseded or abandoned commit landing
-   * late cannot mark a newer displayed amount as committed.
+   * Records the amount (and, for withdrawals, the recipient) a background
+   * commit actually wrote into the transaction's calldata. Only ever called
+   * with the values the resolved commit was started for, so a superseded or
+   * abandoned commit landing late cannot mark a newer displayed value as
+   * committed.
    */
   setMoneyAccountCommittedAmount: (
     amountHuman: string,
     confirmationId: string,
+    recipient?: string,
   ) => void;
 };
 
@@ -72,8 +91,13 @@ export type ConfirmContextType = {
 type MoneyAccountAmountState = {
   confirmationId: string;
   displayedAmount: string;
+  displayedRecipient?: string;
   committedAmount?: string;
+  committedRecipient?: string;
 };
+
+const normalizeRecipient = (recipient?: string): string | undefined =>
+  recipient?.toLowerCase();
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
   undefined,
@@ -101,22 +125,39 @@ export const ConfirmContextProvider = ({
   const currentConfirmation =
     currentConfirmationOverride ?? currentConfirmationFromHook;
   const setMoneyAccountDisplayedAmount = useCallback(
-    (amountHuman: string, forConfirmationId: string) => {
-      setMoneyAccountAmountState((previous) =>
-        previous?.confirmationId === forConfirmationId
-          ? { ...previous, displayedAmount: amountHuman }
-          : // A displayed amount for a new confirmation starts a fresh entry,
-            // discarding whatever the previous confirmation had committed.
-            { confirmationId: forConfirmationId, displayedAmount: amountHuman },
-      );
+    (amountHuman: string, forConfirmationId: string, recipient?: string) => {
+      setMoneyAccountAmountState((previous) => {
+        const displayedRecipient = normalizeRecipient(recipient);
+        if (
+          previous?.confirmationId === forConfirmationId &&
+          previous.displayedAmount === amountHuman &&
+          previous.displayedRecipient === displayedRecipient
+        ) {
+          return previous;
+        }
+        // A changed displayed value drops the committed one, so Confirm
+        // stays disabled until the commit for *this* value lands — reverting
+        // to the last-committed value must not reopen the gate while a
+        // commit for a different value is still in flight. A new
+        // confirmation starts a fresh entry the same way.
+        return {
+          confirmationId: forConfirmationId,
+          displayedAmount: amountHuman,
+          displayedRecipient,
+        };
+      });
     },
     [],
   );
   const setMoneyAccountCommittedAmount = useCallback(
-    (amountHuman: string, forConfirmationId: string) => {
+    (amountHuman: string, forConfirmationId: string, recipient?: string) => {
       setMoneyAccountAmountState((previous) =>
         previous?.confirmationId === forConfirmationId
-          ? { ...previous, committedAmount: amountHuman }
+          ? {
+              ...previous,
+              committedAmount: amountHuman,
+              committedRecipient: normalizeRecipient(recipient),
+            }
           : // A commit landing for a confirmation whose entry is gone was
             // abandoned (the user moved on); it must not seed a new entry.
             previous,
@@ -126,16 +167,23 @@ export const ConfirmContextProvider = ({
   );
 
   /**
-   * Pending unless the amounts match for the *current* confirmation. State
-   * belonging to a confirmation the user has left never disables the next
-   * one's Confirm — the id comparison happens here at read time, so no reset
-   * effect is needed when the confirmation changes.
+   * Pending unless the amounts (and recipients) match for the *current*
+   * confirmation. State belonging to a confirmation the user has left never
+   * disables the next one's Confirm — the id comparison happens here at read
+   * time, so no reset effect is needed when the confirmation changes.
    */
-  const isMoneyAccountAmountCommitPending =
+  const isCurrentConfirmationAmountState =
     moneyAccountAmountState !== undefined &&
-    moneyAccountAmountState.confirmationId === currentConfirmation?.id &&
-    moneyAccountAmountState.displayedAmount !==
-      moneyAccountAmountState.committedAmount;
+    moneyAccountAmountState.confirmationId === currentConfirmation?.id;
+  const isMoneyAccountAmountCommitPending =
+    isCurrentConfirmationAmountState &&
+    (moneyAccountAmountState.displayedAmount !==
+      moneyAccountAmountState.committedAmount ||
+      moneyAccountAmountState.displayedRecipient !==
+        moneyAccountAmountState.committedRecipient);
+  const moneyAccountDisplayedAmount = isCurrentConfirmationAmountState
+    ? moneyAccountAmountState.displayedAmount
+    : undefined;
 
   useSyncConfirmPath(
     currentConfirmationOverride === undefined ? currentConfirmation : undefined,
@@ -180,6 +228,7 @@ export const ConfirmContextProvider = ({
       setIsScrollToBottomCompleted,
       goBackTo,
       isMoneyAccountAmountCommitPending,
+      moneyAccountDisplayedAmount,
       setMoneyAccountDisplayedAmount,
       setMoneyAccountCommittedAmount,
     }),
@@ -189,6 +238,7 @@ export const ConfirmContextProvider = ({
       setIsScrollToBottomCompleted,
       goBackTo,
       isMoneyAccountAmountCommitPending,
+      moneyAccountDisplayedAmount,
       setMoneyAccountDisplayedAmount,
       setMoneyAccountCommittedAmount,
     ],
@@ -215,13 +265,16 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
     isMoneyAccountAmountCommitPending: boolean;
+    moneyAccountDisplayedAmount: string | undefined;
     setMoneyAccountDisplayedAmount: (
       amountHuman: string,
       confirmationId: string,
+      recipient?: string,
     ) => void;
     setMoneyAccountCommittedAmount: (
       amountHuman: string,
       confirmationId: string,
+      recipient?: string,
     ) => void;
   };
 };

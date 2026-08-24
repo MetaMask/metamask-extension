@@ -62,6 +62,7 @@ describe('useConfirmationAlertActions', () => {
       setIsScrollToBottomCompleted: jest.fn(),
       goBackTo: undefined,
       isMoneyAccountAmountCommitPending: false,
+      moneyAccountDisplayedAmount: undefined,
       setMoneyAccountDisplayedAmount: jest.fn(),
       setMoneyAccountCommittedAmount: jest.fn(),
     });
@@ -96,6 +97,7 @@ describe('useConfirmationAlertActions', () => {
       setIsScrollToBottomCompleted: jest.fn(),
       goBackTo: undefined,
       isMoneyAccountAmountCommitPending: false,
+      moneyAccountDisplayedAmount: undefined,
       setMoneyAccountDisplayedAmount: jest.fn(),
       setMoneyAccountCommittedAmount: jest.fn(),
     });
