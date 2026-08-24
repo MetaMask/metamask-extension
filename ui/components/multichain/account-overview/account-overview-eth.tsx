@@ -7,8 +7,6 @@ export type AccountOverviewEthProps = AccountOverviewCommonProps;
 
 export const AccountOverviewEth = (props: AccountOverviewEthProps) => {
   return (
-    <AccountOverviewLayout {...props}>
-      {<EthOverview />}
-    </AccountOverviewLayout>
+    <AccountOverviewLayout {...props}>{<EthOverview />}</AccountOverviewLayout>
   );
 };

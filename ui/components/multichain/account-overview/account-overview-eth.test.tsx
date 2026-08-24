@@ -105,9 +105,7 @@ describe('AccountOverviewEth', () => {
     expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
-    expect(
-      queryByTestId('account-overview__defi-tab'),
-    ).not.toBeInTheDocument();
+    expect(queryByTestId('account-overview__defi-tab')).not.toBeInTheDocument();
   });
 
   describe('when the bottom nav bar is shown', () => {

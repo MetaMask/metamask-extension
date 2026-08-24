@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { TabEmptyState } from '../../../../ui/tab-empty-state';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getTheme, getIsEvmMultichainNetworkSelected } from '../../../../../selectors';
+import {
+  getTheme,
+  getIsEvmMultichainNetworkSelected,
+} from '../../../../../selectors';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
