@@ -7,7 +7,7 @@ import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-k
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import { Driver } from '../../webdriver/driver';
 import {
   DAPP_PATH,

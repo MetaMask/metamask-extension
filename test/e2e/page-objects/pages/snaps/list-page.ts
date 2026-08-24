@@ -1,4 +1,4 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Installed Snaps list and per-snap management (enable, remove, home page).
@@ -50,6 +50,9 @@ class SnapListPage {
   };
 
   private readonly noSnapsInstalledContainer = '.mm-box';
+
+  private readonly parentSelector =
+    '[data-testid="parent-selector-snap-list-page"]';
 
   private readonly popoverRemoveSnapButton = '#popoverRemoveSnapButton';
 
@@ -105,6 +108,11 @@ class SnapListPage {
       text: "You don't have any snaps installed.",
       tag: 'p',
     });
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    console.log('Checking snap list page is loaded');
+    await this.driver.waitForSelector(this.parentSelector);
   }
 
   /**

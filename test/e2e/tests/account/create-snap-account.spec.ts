@@ -5,7 +5,7 @@ import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
