@@ -1,8 +1,10 @@
 import { shallowEqual, useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BannerAlertSeverity } from '@metamask/design-system-react';
 import { isCrossChain } from '@metamask/bridge-controller';
 import { getNativeAssetId } from '../../../../shared/lib/asset-utils';
+import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import {
   getActiveQuoteInsufficientNativeReserveError,
   type BridgeAppState,
@@ -22,7 +24,6 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { isQuoteExpiredOrInvalid, getDestChainId } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useDispatch } from '../../../store/hooks';
@@ -64,10 +65,11 @@ export const useBridgeAlerts = () => {
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
+  const toTokenAssetId = toToken?.assetId;
 
   const isDestAssetRequireActivate = useSelector((state: BridgeAppState) =>
-    toToken?.assetId
-      ? getIsAssetRequireActivate(state, { assetId: toToken.assetId })
+    toTokenAssetId
+      ? getIsAssetRequireActivate(state, { assetId: toTokenAssetId })
       : false,
   );
 
@@ -80,8 +82,18 @@ export const useBridgeAlerts = () => {
 
   const { txAlert } = useSecurityAlerts(toToken);
   const { goToBuy } = useRampsNavigation();
-  const { navigateToAssetPage } = useBridgeNavigation();
+  const navigate = useNavigate();
   const fromChain = useSelector(getFromChain);
+
+  // Lightweight CTA navigation — avoid useBridgeNavigation here because this
+  // hook mounts in multiple prepare-page children and the heavier bridge
+  // navigation hook spikes React act-warning counts in integration-style tests.
+  const navigateToDestAssetPage = useCallback(() => {
+    if (!toTokenAssetId) {
+      return;
+    }
+    navigate(buildAssetRoutePath(toTokenAssetId));
+  }, [navigate, toTokenAssetId]);
 
   const activeQuotePriceData = useSelector(getActiveQuotePriceData);
 
@@ -263,7 +275,7 @@ export const useBridgeAlerts = () => {
           actionButtonLabel: t('bridgeStellarTrustlineWarningCta', [
             toToken.symbol,
           ]),
-          actionButtonOnClick: () => navigateToAssetPage(toToken),
+          actionButtonOnClick: () => navigateToDestAssetPage(),
         },
       });
     }
@@ -360,7 +372,7 @@ export const useBridgeAlerts = () => {
     insufficientNativeReserveError,
     dispatch,
     goToBuy,
-    navigateToAssetPage,
+    navigateToDestAssetPage,
     fromChain,
     fromToken,
     ticker,

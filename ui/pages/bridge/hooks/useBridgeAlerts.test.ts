@@ -7,7 +7,6 @@ import { DEFAULT_VALIDATION_ERRORS } from '../../../../test/data/bridge/mock-bri
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import {
   getActiveQuoteInsufficientNativeReserveError,
   getActiveQuotePriceData,
@@ -31,7 +30,6 @@ import { useBridgeAlerts } from './useBridgeAlerts';
 jest.mock('../../../hooks/useI18nContext');
 jest.mock('../../../hooks/useMultichainSelector');
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation');
-jest.mock('../../../hooks/bridge/useBridgeNavigation');
 jest.mock('./useSecurityAlerts');
 jest.mock('./useAssetSecurityData');
 jest.mock('../utils/quote', () => ({
@@ -56,6 +54,13 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getActiveQuoteInsufficientNativeReserveError: jest.fn(),
   getBridgeQuotes: jest.fn(),
   getFromChain: jest.fn(),
+}));
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => ({ state: {}, pathname: '/', search: '' }),
 }));
 
 const MOCK_FROM_CHAIN_ID = 'eip155:1';
@@ -137,7 +142,6 @@ const MOCK_STELLAR_USDC = toBridgeToken({
 
 describe('useBridgeAlerts', () => {
   const mockGoToBuy = jest.fn();
-  const mockNavigateToAssetPage = jest.fn();
 
   const renderHook = () =>
     renderHookWithProvider(() => useBridgeAlerts(), { metamask: {} });
@@ -149,9 +153,6 @@ describe('useBridgeAlerts', () => {
     jest.mocked(useMultichainSelector).mockReturnValue('ETH');
     jest.mocked(useRampsNavigation).mockReturnValue({
       goToBuy: mockGoToBuy,
-    } as never);
-    jest.mocked(useBridgeNavigation).mockReturnValue({
-      navigateToAssetPage: mockNavigateToAssetPage,
     } as never);
     jest
       .mocked(getFromChain)
@@ -745,7 +746,9 @@ describe('useBridgeAlerts', () => {
         'stellar-trustline'
       ]?.bannerAlertProps?.actionButtonOnClick?.();
 
-      expect(mockNavigateToAssetPage).toHaveBeenCalledWith(MOCK_STELLAR_USDC);
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `/asset/stellar:pubnet/${encodeURIComponent(MOCK_STELLAR_USDC.assetId)}`,
+      );
     });
 
     it('does not add stellar-trustline when the destination asset does not require activation', () => {
