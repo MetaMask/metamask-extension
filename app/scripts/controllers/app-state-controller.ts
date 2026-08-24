@@ -157,11 +157,16 @@ export type AppStateControllerState = {
    */
   pendingRedirectRoute: PendingRedirectRoute | null;
   /**
-   * The last visited feature route together with the timestamp it was recorded.
-   * Used by feature flows that resume a recent in-extension route after a brief
-   * close/reopen, then clear the entry once inspected.
+   * The route stack a feature was showing, oldest first, and when it was
+   * recorded. Used by feature flows that resume a recent in-extension route
+   * after a brief close/reopen, then clear the entry once inspected. A stack
+   * rather than one path, so the resumed screen's back control still works.
    */
-  lastVisitedRoute: { name: string; path: string; timestamp: number } | null;
+  lastVisitedRoute: {
+    name: string;
+    paths: string[];
+    timestamp: number;
+  } | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
@@ -1680,12 +1685,13 @@ export class AppStateController extends BaseController<
    * route after a brief close/reopen.
    *
    * @param name - The feature route namespace.
-   * @param path - The route path to persist, or `null` to clear.
+   * @param paths - The route stack to persist, oldest first, or `null`/empty to
+   * clear.
    */
-  setLastVisitedRoute(name: string, path: string | null): void {
+  setLastVisitedRoute(name: string, paths: string[] | null): void {
     this.update((state) => {
-      if (path) {
-        state.lastVisitedRoute = { name, path, timestamp: Date.now() };
+      if (paths?.length) {
+        state.lastVisitedRoute = { name, paths, timestamp: Date.now() };
       } else if (state.lastVisitedRoute?.name === name) {
         state.lastVisitedRoute = null;
       }

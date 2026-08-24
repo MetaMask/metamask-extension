@@ -3988,7 +3988,7 @@ export async function setDefaultHomeActiveTabName(
 }
 
 export function setLastVisitedPerpsRoute(
-  path: string | null,
+  paths: string[] | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
     // Fire-and-forget: this write is a pure navigation hint for the next
@@ -3998,7 +3998,7 @@ export function setLastVisitedPerpsRoute(
     // (persist:false) and every Perps route change would otherwise pull
     // the entire background state.
     try {
-      await submitRequestToBackground('setLastVisitedRoute', ['perps', path]);
+      await submitRequestToBackground('setLastVisitedRoute', ['perps', paths]);
     } catch (error) {
       log.error('[setLastVisitedPerpsRoute] error', error);
     }

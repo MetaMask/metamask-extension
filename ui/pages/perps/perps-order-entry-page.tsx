@@ -55,6 +55,7 @@ import {
 } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { hasInAppHistoryEntry } from '../../helpers/perps/route-history';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
@@ -1166,7 +1167,7 @@ const PerpsOrderEntryPage = () => {
   // market-detail -> order-entry -> market-detail loop, since the
   // market-detail back button uses navigate(-1).
   const navigateBack = useCallback(() => {
-    if (typeof window !== 'undefined' && window.history.length > 1) {
+    if (hasInAppHistoryEntry()) {
       navigate(PREVIOUS_ROUTE);
       return;
     }

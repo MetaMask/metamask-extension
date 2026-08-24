@@ -18,7 +18,8 @@ export type RedirectAfterDefaultPage = {
 };
 
 export type LastVisitedPerpsRoute = {
-  path: string;
+  /** The Perps route stack, oldest entry first. */
+  paths: string[];
   timestamp: number;
 };
 
@@ -96,9 +97,12 @@ export function usePendingRedirectRoute({
 }
 
 /**
- * When `lastVisitedPerpsRoute` is set, resumes the persisted perps path when all
- * guards pass. Always clears the persisted entry so a later home mount cannot
- * replay it.
+ * When `lastVisitedPerpsRoute` is set, resumes the persisted perps stack when
+ * all guards pass. Always clears the persisted entry so a later home mount
+ * cannot replay it.
+ *
+ * Pushes every entry, not just the last, so back walks the screens the user came
+ * through — no per-screen "my parent is X" rule for each new Perps route.
  *
  * Navigates directly rather than via `redirectAfterDefaultPage`: the
  * `pageChanged` reducer cancels that flag while the path is the default route,
@@ -123,39 +127,45 @@ export function useLastVisitedPerpsRoute({
   navigate?: NavigateFunction;
   clearLastVisitedPerpsRoute?: () => void;
 }) {
-  // One resume per path, so the dispatching effect below cannot repeat even if a
-  // caller passes a new object identity every render.
-  const resumedPathRef = useRef<string | null>(null);
-  const path = lastVisitedPerpsRoute?.path ?? null;
+  // One resume per stack, so the dispatching effect below cannot repeat even if
+  // a caller passes a new object identity every render.
+  const resumedStackRef = useRef<string | null>(null);
+  const stackKey = lastVisitedPerpsRoute?.paths?.join('\n') ?? null;
   const timestamp = lastVisitedPerpsRoute?.timestamp;
   const hasPendingRedirect = Boolean(pendingRedirectRoute);
   const pendingEnvironmentType = pendingRedirectRoute?.environmentType;
 
   useEffect(() => {
-    if (path === null || timestamp === undefined) {
+    if (!stackKey || timestamp === undefined) {
       return;
     }
-    if (resumedPathRef.current === path) {
+    if (resumedStackRef.current === stackKey) {
       return;
     }
-    resumedPathRef.current = path;
+    resumedStackRef.current = stackKey;
 
     clearLastVisitedPerpsRoute?.();
 
+    const paths = stackKey.split('\n');
     const isFresh = Date.now() - timestamp < PERPS_REOPEN_TTL_MS;
-    const pathname = typeof path === 'string' ? path.split(/[?#]/u)[0] : '';
-    const isPerpsPath =
-      pathname === PERPS_ROUTE || pathname.startsWith(`${PERPS_ROUTE}/`);
+    const isPerpsStack = paths.every((path) => {
+      const pathname = path.split(/[?#]/u)[0];
+      return pathname === PERPS_ROUTE || pathname.startsWith(`${PERPS_ROUTE}/`);
+    });
     const pendingApplies =
       hasPendingRedirect &&
       (!pendingEnvironmentType || pendingEnvironmentType === envType);
     const justLeftPerpsInApp = wasPerpsUnmountedInAppRecently(1500);
 
-    if (!pendingApplies && !justLeftPerpsInApp && isFresh && isPerpsPath) {
-      navigate?.(path);
+    if (!pendingApplies && !justLeftPerpsInApp && isFresh && isPerpsStack) {
+      // Carried on every replayed entry so PerpsLayout can adopt this stack
+      // whichever entry its first effect observes.
+      paths.forEach((path) =>
+        navigate?.(path, { state: { perpsResumedStack: paths } }),
+      );
     }
   }, [
-    path,
+    stackKey,
     timestamp,
     hasPendingRedirect,
     pendingEnvironmentType,

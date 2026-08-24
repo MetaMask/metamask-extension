@@ -28,6 +28,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import {
   mockPositions,
   mockAccountState,
@@ -1311,6 +1312,20 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         replace: true,
       });
+    });
+
+    it('pops history when an in-app entry exists below the order screen', () => {
+      const originalState = window.history.state;
+      window.history.replaceState({ idx: 2 }, '');
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+
+      window.history.replaceState(originalState, '');
     });
 
     it('navigates back in history for encoded symbol markets', () => {

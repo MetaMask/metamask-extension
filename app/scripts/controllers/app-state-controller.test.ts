@@ -236,17 +236,21 @@ describe('AppStateController', () => {
   });
 
   describe('setLastVisitedRoute', () => {
-    it('stores the route namespace, path, and current timestamp', async () => {
+    it('stores the route namespace, stack, and current timestamp', async () => {
       await withController(({ controller }) => {
         const before = Date.now();
-        controller.setLastVisitedRoute('perps', '/perps/market/BTC');
+        controller.setLastVisitedRoute('perps', [
+          '/perps/market-list',
+          '/perps/market/BTC',
+        ]);
         const after = Date.now();
 
         expect(controller.state.lastVisitedRoute).not.toBeNull();
         expect(controller.state.lastVisitedRoute?.name).toBe('perps');
-        expect(controller.state.lastVisitedRoute?.path).toBe(
+        expect(controller.state.lastVisitedRoute?.paths).toStrictEqual([
+          '/perps/market-list',
           '/perps/market/BTC',
-        );
+        ]);
         const { timestamp } = controller.state.lastVisitedRoute ?? {
           timestamp: 0,
         };
@@ -257,7 +261,7 @@ describe('AppStateController', () => {
 
     it('clears the stored route when passed null', async () => {
       await withController(({ controller }) => {
-        controller.setLastVisitedRoute('perps', '/perps/trade/ETH');
+        controller.setLastVisitedRoute('perps', ['/perps/trade/ETH']);
         expect(controller.state.lastVisitedRoute).not.toBeNull();
 
         controller.setLastVisitedRoute('perps', null);
@@ -265,14 +269,24 @@ describe('AppStateController', () => {
       });
     });
 
+    it('clears the stored route when passed an empty stack', async () => {
+      await withController(({ controller }) => {
+        controller.setLastVisitedRoute('perps', ['/perps/trade/ETH']);
+        expect(controller.state.lastVisitedRoute).not.toBeNull();
+
+        controller.setLastVisitedRoute('perps', []);
+        expect(controller.state.lastVisitedRoute).toBeNull();
+      });
+    });
+
     it('does not clear a route stored for another namespace', async () => {
       await withController(({ controller }) => {
-        controller.setLastVisitedRoute('bridge', '/bridge');
+        controller.setLastVisitedRoute('bridge', ['/bridge']);
 
         controller.setLastVisitedRoute('perps', null);
 
         expect(controller.state.lastVisitedRoute).toStrictEqual(
-          expect.objectContaining({ name: 'bridge', path: '/bridge' }),
+          expect.objectContaining({ name: 'bridge', paths: ['/bridge'] }),
         );
       });
     });

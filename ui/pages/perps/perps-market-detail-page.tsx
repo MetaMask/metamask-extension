@@ -54,6 +54,7 @@ import {
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { hasInAppHistoryEntry } from '../../helpers/perps/route-history';
 import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
@@ -825,7 +826,7 @@ const PerpsMarketDetailPage = () => {
   }, []);
 
   const handleBackClick = useCallback(() => {
-    if (typeof window !== 'undefined' && window.history.length > 1) {
+    if (hasInAppHistoryEntry()) {
       navigate(PREVIOUS_ROUTE);
       return;
     }
