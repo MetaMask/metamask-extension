@@ -6,6 +6,7 @@ import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { Hex, createProjectLogger } from '@metamask/utils';
+import { isAddressScanSupportedChainId } from '../address-scan-support';
 import {
   CachedScanAddressResponse,
   createCacheKey,
@@ -132,10 +133,13 @@ export function getEnforcedSimulationsSlippageBasisPoints(
 /**
  * Determines whether a transaction is eligible for enforced simulations.
  *
- * Also requires that at least one recipient address is loaded and not
- * trusted, based on cached trust signal scan results keyed by chain and
- * address. A recipient with no cache entry, or one still loading, does not
- * disqualify the transaction; only a cached non-Trusted verdict does.
+ * Also requires that Blockaid address screening supports the chain. On
+ * unsupported chains, `scanAddress` returns Error without hitting the API;
+ * that must not turn enforcement on. Then requires that at least one
+ * recipient address is loaded and not trusted, based on cached trust signal
+ * scan results keyed by chain and address. A recipient with no cache entry,
+ * or one still loading, does not disqualify the transaction; only a cached
+ * non-Trusted verdict does.
  *
  * @param transactionMeta - The transaction metadata.
  * @param state - Trust signal state and EIP-7702 supported chains.
@@ -169,6 +173,14 @@ export function isEnforcedSimulationsEligible(
     return true;
   }
 
+  if (!isAddressScanSupportedChainId(chainId)) {
+    log('Not eligible - address screening does not support chain', {
+      chainId,
+      type,
+    });
+    return false;
+  }
+
   if (isTrusted(transactionMeta, state)) {
     log('Not eligible - transaction trusted', { type });
     return false;
@@ -193,10 +205,11 @@ function isTrusted(
   const { chainId, type, txParams, txParamsOriginal, nestedTransactions } =
     transactionMeta;
 
-  // Trust verdicts are cache-driven on every chain: only a cached non-Trusted
-  // verdict disqualifies a recipient, and chains the Security Alerts API
-  // cannot screen resolve to ErrorResult once scanned, which is non-Trusted
-  // and therefore enforces.
+  // Trust verdicts are cache-driven. Only a cached non-Trusted verdict
+  // disqualifies a recipient. Unsupported chains are excluded earlier in
+  // isEnforcedSimulationsEligible, so an ErrorResult here is a scan failure
+  // on a supported chain (timeout / API error), not "this chain isn't
+  // supported".
   //
   // Recipients that no scan path covers stay cache misses and are treated as
   // trusted here. The trust-signals middleware only scans a transaction's own
