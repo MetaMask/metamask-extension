@@ -2761,9 +2761,6 @@
   "connectAnyway": {
     "message": "Tetap hubungkan"
   },
-  "connectAnyway": {
-    "message": "Tetap hubungkan"
-  },
   "connectHardwareDevice": {
     "message": "Hubungkan $1",
     "description": "$1 is the hardware wallet device name"
