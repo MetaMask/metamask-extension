@@ -128,6 +128,7 @@ const MOCK_PRIMARY_REQUIRED_TOKEN = {
 
 function render(
   options: {
+    amountDetails?: (amountFiat: string) => React.ReactNode;
     disableAutomaticToken?: boolean;
     disablePay?: boolean;
     displayPercentageButtons?: boolean;
@@ -150,6 +151,7 @@ function render(
   } = {},
 ) {
   const {
+    amountDetails,
     disableAutomaticToken,
     disablePay = false,
     displayPercentageButtons = false,
@@ -265,6 +267,7 @@ function render(
 
   return renderWithConfirmContextProvider(
     <CustomAmountInfo
+      amountDetails={amountDetails}
       disableAutomaticToken={disableAutomaticToken}
       disablePay={disablePay}
       displayPercentageButtons={displayPercentageButtons}
@@ -328,6 +331,16 @@ describe('CustomAmountInfo', () => {
 
     expect(getByTestId('custom-amount')).toHaveTextContent('123');
     expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
+  });
+
+  it('renders amount details under the amount input', () => {
+    const { getByTestId } = render({
+      amountDetails: (amountFiat) => (
+        <div data-testid="amount-details">{amountFiat}</div>
+      ),
+    });
+
+    expect(getByTestId('amount-details')).toHaveTextContent('100');
   });
 
   it('calls useAutomaticTransactionPayToken with disable false when both props unset', () => {
