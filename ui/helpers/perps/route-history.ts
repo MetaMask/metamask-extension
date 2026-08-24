@@ -39,7 +39,8 @@ export type PerpsResumeRouteState = {
  */
 export function readResumedStack(state: unknown): string[] | undefined {
   const stack = (state as PerpsResumeRouteState | null)?.perpsResumedStack;
-  return Array.isArray(stack) && stack.every((entry) => typeof entry === 'string')
+  return Array.isArray(stack) &&
+    stack.every((entry) => typeof entry === 'string')
     ? stack
     : undefined;
 }
