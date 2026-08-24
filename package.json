@@ -182,6 +182,7 @@
     }
   },
   "resolutions": {
+    "@metamask/bridge-controller@79.2.0": "@metamask-previews/bridge-controller@79.3.0-preview-364dd6413",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "35.0.0",
     "follow-redirects": "^1.16.0",
