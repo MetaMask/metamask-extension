@@ -238,9 +238,8 @@ export class MoneyAccountAvailabilityService {
   async #isGeoEligible(
     remoteFeatureFlags: Record<string, unknown> | undefined,
   ): Promise<boolean> {
-    const blockedCountries = getMoneyAccountGeoBlockedCountries(
-      remoteFeatureFlags,
-    );
+    const blockedCountries =
+      getMoneyAccountGeoBlockedCountries(remoteFeatureFlags);
     const location = await this.#messenger.call(
       'GeolocationController:getGeolocation',
     );
