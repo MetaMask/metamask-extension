@@ -75,9 +75,17 @@ export const Dropdown = <OptionId extends string>({
   }, [isOpen]);
 
   // Focus the selected option when dropdown opens
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const [prevSelectedIndex, setPrevSelectedIndex] = useState(selectedIndex);
+  if (isOpen !== prevIsOpen || selectedIndex !== prevSelectedIndex) {
+    setPrevIsOpen(isOpen);
+    setPrevSelectedIndex(selectedIndex);
     if (isOpen && selectedIndex >= 0) {
       setFocusedIndex(selectedIndex);
+    }
+  }
+  useEffect(() => {
+    if (isOpen && selectedIndex >= 0) {
       optionRefs.current[selectedIndex]?.focus();
     }
   }, [isOpen, selectedIndex]);

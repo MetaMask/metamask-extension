@@ -16,47 +16,32 @@ import {
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
-  // Register the chain-1 specific mock BEFORE the catch-all so it wins
-  // Mockttp's FIFO rule-matching order. The catch-all (registered after)
-  // handles all other chain IDs but must not steal chain-1 requests that
-  // the "toggle on" assertion checks.
-  const tokenListChain1Mock = await mockServer
-    .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/1(\?.*)?$/u)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        // Must include a valid `address` field — TokenListService passes this
-        // response through buildTokenListMap which calls token.address.toLowerCase().
-        // Without a valid address the queryFn throws, TanStack Query marks the
-        // entry as failed, and every subsequent fetchTokensByChainId call
-        // re-fetches from the network instead of returning the cached result.
-        json: [
-          {
-            address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-            symbol: 'BAT',
-            decimals: 18,
-            name: 'Basic Attention Token',
-            aggregators: [],
-          },
-        ],
-      };
-    });
-
-  // The unified-assets feature prefetches token lists for all popular chains
-  // via the old token-list API regardless of the privacy toggles.
-  // Mock every chainId variant to prevent real network requests, but do not
-  // include this endpoint in the returned array so it is not subject to the
-  // "0 requests when privacy is off / 1 request when privacy is on" assertions.
-  await mockServer
-    .forGet(/https:\/\/token\.api\.cx\.metamask\.io\/tokens\/\d+/u)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: [],
-    }));
-
   return [
-    tokenListChain1Mock,
+    // Token metadata under unified assets. This endpoint replaced the legacy
+    // token.api.cx.metamask.io/tokens/<chainId> list, and it is gated behind
+    // the advanced assets functionality toggle these tests exercise.
+    await mockServer
+      .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+      .always()
+      .thenCallback((request) => {
+        const assetIds = new URL(request.url).searchParams
+          .getAll('assetIds')
+          .join(',');
+
+        return {
+          statusCode: 200,
+          json: assetIds.includes('eip155:1/slip44:60')
+            ? [
+                {
+                  assetId: 'eip155:1/slip44:60',
+                  name: 'Ethereum',
+                  symbol: 'ETH',
+                  decimals: 18,
+                },
+              ]
+            : [],
+        };
+      }),
     await mockServer
       .forGet('https://chainid.network/chains.json')
       .thenCallback(() => {
@@ -134,12 +119,6 @@ describe('MetaMask onboarding ', function () {
           if (mockUrl.includes('chainid.network')) {
             continue;
           }
-          // unified-assets always prefetches /tokens/1 regardless of the
-          // privacy toggle — exclude it from the "0 requests" check here;
-          // the "toggle on" test verifies it is called when enabled.
-          if (mockUrl.includes('token\\.api\\.cx\\.metamask\\.io/tokens/1')) {
-            continue;
-          }
           const requests = await m.getSeenRequests();
           assert.ok(
             requests.length === 0,
@@ -206,8 +185,9 @@ describe('MetaMask onboarding ', function () {
             continue;
           }
 
-          // token api may be called more than once (initial load + mUSD added by default)
-          if (mockUrl.includes('token\\.api\\.cx\\.metamask\\.io/tokens/1')) {
+          // Asset metadata is fetched once per batch of asset ids, so several
+          // requests are expected across the enabled networks.
+          if (mockUrl.includes('/v3/assets')) {
             assert.ok(
               requests.length >= 1,
               `${m} should make at least 1 request after onboarding (actual: ${requests.length})`,

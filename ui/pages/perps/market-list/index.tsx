@@ -601,7 +601,7 @@ export const MarketListView = () => {
     <Box
       className="flex h-full flex-col bg-background-default"
       flexDirection={BoxFlexDirection.Column}
-      data-testid="market-list-view"
+      data-testid="parent-selector-perps-market-list"
     >
       {/* Header */}
       <Box

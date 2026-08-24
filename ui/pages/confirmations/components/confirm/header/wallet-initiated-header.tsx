@@ -50,6 +50,7 @@ export const WalletInitiatedHeader = () => {
 
     if (
       currentConfirmation.type === TransactionType.moneyAccountDeposit ||
+      currentConfirmation.type === TransactionType.moneyAccountWithdraw ||
       currentConfirmation.type === TransactionType.musdClaim ||
       currentConfirmation.type === TransactionType.perpsDeposit ||
       currentConfirmation.type === TransactionType.perpsWithdraw
@@ -88,6 +89,9 @@ export const WalletInitiatedHeader = () => {
     }
     if (currentConfirmation?.type === TransactionType.moneyAccountDeposit) {
       return t('addFunds');
+    }
+    if (currentConfirmation?.type === TransactionType.moneyAccountWithdraw) {
+      return t('send');
     }
     if (currentConfirmation?.type === TransactionType.musdClaim) {
       return null;

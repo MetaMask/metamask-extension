@@ -29,6 +29,9 @@ import {
   selectPerpsPerpsBalances,
   selectPerpsMarketFilterPreferences,
   selectPerpsShouldShowDepositToast,
+  selectProLayoutPreferences,
+  selectOrderBookPosition,
+  selectOrderBookExpanded,
 } from './perps-controller';
 
 function buildState(overrides: Record<string, unknown> = {}) {
@@ -785,6 +788,89 @@ describe('perps-controller selectors', () => {
 
     it('defaults to null', () => {
       expect(selectPerpsMarketFilterPreferences(buildState())).toBeNull();
+    });
+  });
+
+  describe('selectProLayoutPreferences', () => {
+    it('fills missing fields from the controller defaults', () => {
+      expect(
+        selectProLayoutPreferences(
+          buildState({ proLayoutPreferences: { orderBookPosition: 'right' } }),
+        ),
+      ).toStrictEqual({
+        orderBookExpanded: false,
+        chartExpanded: false,
+        orderBookPosition: 'right',
+        orderFormPosition: 'right',
+        positionsSideFilter: 'all',
+        positionsSortField: 'positionValue',
+        positionsSortDirection: 'desc',
+        ordersSideFilter: 'all',
+        ordersSortField: 'time',
+        ordersSortDirection: 'desc',
+      });
+    });
+
+    it('returns the defaults when nothing is persisted', () => {
+      expect(selectProLayoutPreferences(buildState())).toStrictEqual({
+        orderBookExpanded: false,
+        chartExpanded: false,
+        orderBookPosition: 'left',
+        orderFormPosition: 'right',
+        positionsSideFilter: 'all',
+        positionsSortField: 'positionValue',
+        positionsSortDirection: 'desc',
+        ordersSideFilter: 'all',
+        ordersSortField: 'time',
+        ordersSortDirection: 'desc',
+      });
+    });
+
+    it('returns a stable reference for unrelated state changes', () => {
+      // Unmemoized, the fresh merge object would fail useSelector's check.
+      const preferences = { orderBookPosition: 'right' as const };
+      const first = selectProLayoutPreferences(
+        buildState({ proLayoutPreferences: preferences, isEligible: true }),
+      );
+      const second = selectProLayoutPreferences(
+        buildState({ proLayoutPreferences: preferences, isEligible: false }),
+      );
+
+      expect(second).toBe(first);
+    });
+  });
+
+  describe('selectOrderBookPosition', () => {
+    it('returns the persisted position', () => {
+      expect(
+        selectOrderBookPosition(
+          buildState({ proLayoutPreferences: { orderBookPosition: 'right' } }),
+        ),
+      ).toBe('right');
+    });
+
+    it("defaults to 'left'", () => {
+      expect(selectOrderBookPosition(buildState())).toBe('left');
+      expect(
+        selectOrderBookPosition(buildState({ proLayoutPreferences: {} })),
+      ).toBe('left');
+    });
+  });
+
+  describe('selectOrderBookExpanded', () => {
+    it('returns the persisted open state', () => {
+      expect(
+        selectOrderBookExpanded(
+          buildState({ proLayoutPreferences: { orderBookExpanded: true } }),
+        ),
+      ).toBe(true);
+    });
+
+    it('defaults to closed', () => {
+      expect(selectOrderBookExpanded(buildState())).toBe(false);
+      expect(
+        selectOrderBookExpanded(buildState({ proLayoutPreferences: {} })),
+      ).toBe(false);
     });
   });
 });

@@ -1,7 +1,13 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import {
+  BtcScope,
+  EthScope,
+  SolScope,
+  TrxScope,
+  XlmScope,
+} from '@metamask/keyring-api';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
   getFeaturedEvmNetworks,
@@ -137,7 +143,8 @@ const DefaultNetworks = memo(() => {
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
 
   // Use the shared network change handlers hook
-  const { handleNetworkChange } = useNetworkChangeHandlers();
+  const { handleNetworkChange, isPending, startTransition } =
+    useNetworkChangeHandlers();
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
@@ -166,6 +173,10 @@ const DefaultNetworks = memo(() => {
 
   const trxAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
+  );
+
+  const xlmAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, XlmScope.Pubnet),
   );
 
   // Get blacklisted chain IDs from feature flag
@@ -264,11 +275,10 @@ const DefaultNetworks = memo(() => {
 
     dispatch(setEnabledAllPopularNetworks());
     dispatch(hideModal());
-    // deferring execution to keep select all unblocked
-    setTimeout(() => {
+    startTransition(() => {
       dispatch(setActiveNetwork(finalNetworkClientId));
-    }, 0);
-  }, [dispatch, evmNetworks, orderedNetworks]);
+    });
+  }, [dispatch, evmNetworks, orderedNetworks, startTransition]);
 
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
@@ -303,6 +313,9 @@ const DefaultNetworks = memo(() => {
           return true;
         }
         if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
+          return true;
+        }
+        if (xlmAccountGroup && network.chainId === XlmScope.Pubnet) {
           return true;
         }
         return false;
@@ -363,6 +376,9 @@ const DefaultNetworks = memo(() => {
           onDiscoverClick={onDiscoverClick}
           onRpcEndpointClick={onRpcSelect}
           selected={isSelected}
+          // Last-remaining stays clickable so the modal can still close; the
+          // switch itself is no-op'd in handleNetworkChangeCallback.
+          disabled={isPending && !isLastRemainingNetwork}
         />
       );
     });
@@ -377,11 +393,13 @@ const DefaultNetworks = memo(() => {
     btcAccountGroup,
     solAccountGroup,
     trxAccountGroup,
+    xlmAccountGroup,
     evmAccountGroup,
     dispatch,
     enabledChainIds,
     useExternalServices,
     selectedNonEvmChainId,
+    isPending,
   ]);
 
   // Memoize the additional network list items
