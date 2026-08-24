@@ -192,6 +192,10 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-activity-placeholder'),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyEarnOnCrypto.message),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('money-condensed-info-cards'),
     ).toBeInTheDocument();
@@ -215,9 +219,6 @@ describe('MoneyHomePage', () => {
     ).not.toBeInTheDocument();
     expect(
       screen.queryByText(messages.moneyBenefits.message),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId('money-potential-earnings'),
     ).not.toBeInTheDocument();
     screen.getAllByRole('button').forEach((button) => {
       expect(button).toBeDisabled();
@@ -370,6 +371,7 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-activity-placeholder'),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
   });
 
   it('keeps a balance below the funded threshold in the empty state', () => {
@@ -477,6 +479,46 @@ describe('MoneyHomePage', () => {
   });
 
   it('previews eligible wallet assets using their existing balances', () => {
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [
+        {
+          address: '0x0000000000000000000000000000000000000001',
+          chainId: '0x1',
+          decimals: 6,
+          image: 'usdc.png',
+          moneyFiatAmountUsd: 12,
+          secondary: '$12.00',
+          symbol: 'USDC',
+          title: 'USD Coin',
+          tokenFiatAmount: 12,
+        },
+      ],
+      isNoFeeToken: () => true,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
+    expect(screen.getByText('USD Coin')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyEarnOnCryptoNoFee.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-potential-earnings-projection'),
+    ).toHaveTextContent('+$0.50');
+  });
+
+  it('previews eligible wallet assets on a funded Money account', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      totalFiatRaw: '3475.45',
+      vaultApyQuery: { isLoading: false },
+    });
     mockUseMoneyDepositTokens.mockReturnValue({
       tokens: [
         {
