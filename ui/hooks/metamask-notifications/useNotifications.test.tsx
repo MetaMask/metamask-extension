@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
@@ -9,6 +9,7 @@ import {
   useCreateNotifications,
   useDisableNotifications,
   useEnableNotifications,
+  useListNotifications,
 } from './useNotifications';
 
 const middlewares = [thunk];
@@ -106,6 +107,29 @@ describe('useNotifications', () => {
     expect(actions.enableMetamaskNotifications).toHaveBeenCalledWith({
       hasMarketingConsent: true,
       productAnnouncementEnabled: false,
+    });
+  });
+
+  it('applies fetched notification list data after listNotifications resolves', async () => {
+    const notifications = [{ id: 'n1' }];
+    (actions.fetchAndUpdateMetamaskNotifications as jest.Mock).mockReturnValue(
+      () => Promise.resolve(notifications),
+    );
+
+    const { result } = renderHook(() => useListNotifications(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
+    });
+
+    await act(async () => {
+      await result.current.listNotifications();
+    });
+
+    expect(actions.fetchAndUpdateMetamaskNotifications).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(result.current.notificationsData).toEqual(notifications);
+      expect(result.current.isLoading).toBe(false);
     });
   });
 });

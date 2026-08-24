@@ -593,7 +593,9 @@ describe('PerpsMarketDetailPage', () => {
 
       const { getByTestId } = await renderPage(store);
 
-      expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-perps-market-detail'),
+      ).toBeInTheDocument();
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsActivatePriceStream',
         [{ symbols: ['ETH'], includeMarketData: true }],
@@ -882,7 +884,9 @@ describe('PerpsMarketDetailPage', () => {
 
       const { getByTestId } = await renderPage(store);
 
-      expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-perps-market-detail'),
+      ).toBeInTheDocument();
       expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
         'Bitcoin',
       );
@@ -1109,7 +1113,9 @@ describe('PerpsMarketDetailPage', () => {
 
       const { getByTestId } = await renderPage(store);
 
-      expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-perps-market-detail'),
+      ).toBeInTheDocument();
       // Should display the full name and the ticker-collateral pair (stripped display name)
       expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
         'Tesla',

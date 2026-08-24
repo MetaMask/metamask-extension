@@ -156,9 +156,6 @@
     "message": "$1 tài khoản",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Xem tài khoản của bạn và đề xuất giao dịch"
-  },
   "accountsSmallCase": {
     "message": "tài khoản"
   },
@@ -2761,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Sử dụng USB hoặc mã QR"
   },
-  "connectAccounts": {
-    "message": "Kết nối tài khoản"
-  },
   "connectAnyway": {
     "message": "Vẫn kết nối"
   },
@@ -2810,18 +2804,6 @@
   },
   "connectedSnaps": {
     "message": "Snap đã kết nối"
-  },
-  "connectedWithAccount": {
-    "message": "Đã kết nối $1 tài khoản",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Đã kết nối với $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "Đã kết nối $1 mạng",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Đang kết nối"
@@ -3427,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Đã ngắt kết nối tất cả dapp thành công."
   },
-  "disconnectMessage": {
-    "message": "Hành động này sẽ ngắt kết nối bạn khỏi trang web này"
-  },
   "disconnectPrompt": {
     "message": "Ngắt kết nối $1"
   },
@@ -3609,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "chỉnh sửa mạng gốc"
-  },
-  "editNetworksTitle": {
-    "message": "Chỉnh sửa mạng"
   },
   "editNonceField": {
     "message": "Chỉnh sửa số nonce"
@@ -5288,10 +5264,6 @@
   "more": {
     "message": "thêm"
   },
-  "moreAccounts": {
-    "message": "+ $1 tài khoản nữa",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "Thêm"
   },
@@ -5485,18 +5457,6 @@
     "message": "Nhận thưởng",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Thưởng có thể nhận",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "Phần thưởng quy đổi theo năm bạn đã nhận được khi nắm giữ mUSD. Bạn có thể nhận thưởng hằng ngày trên Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Chi tiết phần thưởng có thể nhận",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Phí chuyển đổi mUSD bao gồm phí mạng và có thể bao gồm phí từ nhà cung cấp. Không áp dụng phí MetaMask khi bạn chuyển đổi sang mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5521,10 +5481,6 @@
   "musdConvert": {
     "message": "Chuyển đổi"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Nhận thưởng $1%",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Bắt đầu"
   },
@@ -5537,10 +5493,6 @@
   },
   "musdGetMusd": {
     "message": "Nhận mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5748,9 +5700,6 @@
   "networkOptions": {
     "message": "Tùy chọn mạng"
   },
-  "networkPermissionToast": {
-    "message": "Đã cập nhật quyền truy cập mạng"
-  },
   "networkStatus": {
     "message": "Trạng thái mạng"
   },
@@ -5786,9 +5735,6 @@
   },
   "networks": {
     "message": "Mạng"
-  },
-  "networksSmallCase": {
-    "message": "mạng"
   },
   "new": {
     "message": "Mới!"
@@ -8322,9 +8268,6 @@
     "message": "Mua thành công",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Tùy chọn khác"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "ngày làm việc"
   },
@@ -8542,9 +8485,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Đây là trang web yêu cầu xác nhận của bạn."
-  },
-  "requestingFor": {
-    "message": "Yêu cầu cho"
   },
   "required": {
     "message": "Bắt buộc"
@@ -9367,9 +9307,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Bật tính năng Tự động phát hiện NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Chọn mạng để lọc"
   },
   "selectPathHelp": {
     "message": "Nếu bạn không thấy các tài khoản như mong đợi, hãy chuyển đổi đường dẫn HD hoặc mạng đã chọn hiện tại."
