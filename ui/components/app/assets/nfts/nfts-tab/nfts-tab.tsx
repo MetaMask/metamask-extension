@@ -67,12 +67,12 @@ export default function NftsTab({
   });
 
   return (
-    <div data-testid="parent-selector-nfts-tab">
+    <>
       <Box>
         <AssetListControlBar />
       </Box>
 
-      <Box className="nfts-tab">
+      <Box className="nfts-tab" data-testid="parent-selector-nfts-tab">
         {isMainnet && !useNftDetection ? (
           <Box paddingTop={4} paddingHorizontal={4}>
             <NFTsDetectionNoticeNFTsTab />
@@ -90,6 +90,6 @@ export default function NftsTab({
           <NftEmptyState className="mx-auto mt-5 mb-6" />
         )}
       </Box>
-    </div>
+    </>
   );
 }

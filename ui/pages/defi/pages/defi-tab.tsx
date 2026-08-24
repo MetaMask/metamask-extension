@@ -36,6 +36,7 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
       <AssetListControlBar
         showImportTokenButton={false}
         onRefresh={handleRefresh}
+        data-testid="parent-selector-defi-tab"
       />
       <DefiListV2
         onClick={onClickAsset}
@@ -58,7 +59,10 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
 function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
   return (
     <>
-      <AssetListControlBar showImportTokenButton={false} />
+      <AssetListControlBar
+        showImportTokenButton={false}
+        data-testid="parent-selector-defi-tab"
+      />
       <DefiList onClick={onClickAsset} />
     </>
   );
@@ -74,16 +78,16 @@ export default function DeFiTab({
   // V2 needs a route messenger for `fetchDeFiPositions`. Legacy V1 does not —
   // wrap only the V2 branch so integration tests (and other trees without a
   // UI messenger) keep working when the V2 flag is off.
-  const content = isDefiControllerV2Enabled ? (
-    <RouteMessengerProvider
-      path="defi-tab"
-      capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
-    >
-      <DeFiTabContentV2 onClickAsset={onClickAsset} />
-    </RouteMessengerProvider>
-  ) : (
-    <DeFiTabContentV1 onClickAsset={onClickAsset} />
-  );
+  if (isDefiControllerV2Enabled) {
+    return (
+      <RouteMessengerProvider
+        path="defi-tab"
+        capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
+      >
+        <DeFiTabContentV2 onClickAsset={onClickAsset} />
+      </RouteMessengerProvider>
+    );
+  }
 
-  return <div data-testid="parent-selector-defi-tab">{content}</div>;
+  return <DeFiTabContentV1 onClickAsset={onClickAsset} />;
 }
