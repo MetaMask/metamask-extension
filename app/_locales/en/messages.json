@@ -2482,6 +2482,18 @@
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Use max allowed"
   },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "Activate $1",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "This swap may fail. On Stellar your account can't receive $1 until the token is activated in your wallet with a valid trustline.",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "Activate $1 on Stellar first",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "You don't have enough $1 to pay the gas fee for this bridge. Enter a smaller amount or buy more $1."
   },

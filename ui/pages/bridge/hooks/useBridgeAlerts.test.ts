@@ -7,6 +7,7 @@ import { DEFAULT_VALIDATION_ERRORS } from '../../../../test/data/bridge/mock-bri
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import {
   getActiveQuoteInsufficientNativeReserveError,
   getActiveQuotePriceData,
@@ -15,9 +16,11 @@ import {
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
+  getFromToken,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
+import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
@@ -28,6 +31,7 @@ import { useBridgeAlerts } from './useBridgeAlerts';
 jest.mock('../../../hooks/useI18nContext');
 jest.mock('../../../hooks/useMultichainSelector');
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation');
+jest.mock('../../../hooks/bridge/useBridgeNavigation');
 jest.mock('./useSecurityAlerts');
 jest.mock('./useAssetSecurityData');
 jest.mock('../utils/quote', () => ({
@@ -35,10 +39,16 @@ jest.mock('../utils/quote', () => ({
   isQuoteExpiredOrInvalid: jest.fn(),
 }));
 
+jest.mock('../../../selectors/stellar-assets', () => ({
+  ...jest.requireActual('../../../selectors/stellar-assets'),
+  getIsAssetRequireActivate: jest.fn(),
+}));
+
 jest.mock('../../../ducks/bridge/selectors', () => ({
   ...jest.requireActual('../../../ducks/bridge/selectors'),
   getValidationErrors: jest.fn(),
   getBridgeUnavailableQuoteReason: jest.fn(),
+  getFromToken: jest.fn(),
   getToToken: jest.fn(),
   getActiveQuotePriceData: jest.fn(),
   getFormattedPriceImpactPercentage: jest.fn(),
@@ -103,6 +113,13 @@ const MOCK_SWAP_QUOTE = merge({}, MOCK_BRIDGE_QUOTE, {
   },
 });
 
+const MOCK_FROM_TOKEN = toBridgeToken({
+  symbol: 'ETH',
+  decimals: 18,
+  assetId: 'eip155:1/slip44:60' as const,
+  name: 'Ether',
+});
+
 const MOCK_TO_TOKEN = toBridgeToken({
   symbol: 'USDC',
   decimals: 6,
@@ -110,8 +127,17 @@ const MOCK_TO_TOKEN = toBridgeToken({
   name: 'USD Coin',
 });
 
+const MOCK_STELLAR_USDC = toBridgeToken({
+  symbol: 'USDC',
+  decimals: 7,
+  assetId:
+    'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as const,
+  name: 'USD Coin',
+});
+
 describe('useBridgeAlerts', () => {
   const mockGoToBuy = jest.fn();
+  const mockNavigateToAssetPage = jest.fn();
 
   const renderHook = () =>
     renderHookWithProvider(() => useBridgeAlerts(), { metamask: {} });
@@ -123,6 +149,9 @@ describe('useBridgeAlerts', () => {
     jest.mocked(useMultichainSelector).mockReturnValue('ETH');
     jest.mocked(useRampsNavigation).mockReturnValue({
       goToBuy: mockGoToBuy,
+    } as never);
+    jest.mocked(useBridgeNavigation).mockReturnValue({
+      navigateToAssetPage: mockNavigateToAssetPage,
     } as never);
     jest
       .mocked(getFromChain)
@@ -141,11 +170,13 @@ describe('useBridgeAlerts', () => {
       assetHasSecurityData: false,
     });
     jest.mocked(isQuoteExpiredOrInvalid).mockReturnValue(false);
+    jest.mocked(getIsAssetRequireActivate).mockReturnValue(false);
 
     jest.mocked(getValidationErrors).mockReturnValue(DEFAULT_VALIDATION_ERRORS);
     jest
       .mocked(getBridgeUnavailableQuoteReason)
       .mockReturnValue('noOptionsAvailableMessage');
+    jest.mocked(getFromToken).mockReturnValue(MOCK_FROM_TOKEN as never);
     jest.mocked(getToToken).mockReturnValue(null as never);
     jest.mocked(getActiveQuotePriceData).mockReturnValue(undefined);
     jest.mocked(getFormattedPriceImpactPercentage).mockReturnValue('7.0%');
@@ -670,6 +701,94 @@ describe('useBridgeAlerts', () => {
       expect(
         result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
       ).not.toContain('insufficient-gas');
+    });
+  });
+
+  describe('stellar-trustline alert', () => {
+    beforeEach(() => {
+      jest.mocked(getFromToken).mockReturnValue(MOCK_FROM_TOKEN as never);
+      jest.mocked(getToToken).mockReturnValue(MOCK_STELLAR_USDC as never);
+      jest.mocked(getIsAssetRequireActivate).mockReturnValue(true);
+    });
+
+    it('adds a non-blocking warning banner with activate CTA for cross-chain Stellar destinations that need a trustline', () => {
+      const { result } = renderHook();
+
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('stellar-trustline');
+      const alert = result.current.alertsById['stellar-trustline'];
+      expect(alert).toStrictEqual(
+        expect.objectContaining({
+          id: 'stellar-trustline',
+          severity: 'warning',
+          title: 'bridgeStellarTrustlineWarningTitle:USDC',
+          description: 'bridgeStellarTrustlineWarningMessage:USDC',
+          isConfirmationAlert: false,
+        }),
+      );
+      expect(alert?.bannerAlertProps).toStrictEqual(
+        expect.objectContaining({
+          severity: BannerAlertSeverity.Warning,
+          actionButtonLabel: 'bridgeStellarTrustlineWarningCta:USDC',
+        }),
+      );
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('stellar-trustline');
+    });
+
+    it('navigates to the destination asset page when the activate CTA is clicked', () => {
+      const { result } = renderHook();
+
+      result.current.alertsById[
+        'stellar-trustline'
+      ]?.bannerAlertProps?.actionButtonOnClick?.();
+
+      expect(mockNavigateToAssetPage).toHaveBeenCalledWith(MOCK_STELLAR_USDC);
+    });
+
+    it('does not add stellar-trustline when the destination asset does not require activation', () => {
+      jest.mocked(getIsAssetRequireActivate).mockReturnValue(false);
+
+      const { result } = renderHook();
+
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('stellar-trustline');
+    });
+
+    it('does not add stellar-trustline for same-chain Stellar swaps', () => {
+      const stellarFromToken = toBridgeToken({
+        symbol: 'XLM',
+        decimals: 7,
+        assetId: 'stellar:pubnet/slip44:148' as const,
+        name: 'Lumens',
+      });
+      jest.mocked(getFromToken).mockReturnValue(stellarFromToken as never);
+
+      const { result } = renderHook();
+
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('stellar-trustline');
+    });
+
+    it('can appear alongside the insufficient-gas banner', () => {
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isInsufficientGasForQuote: true,
+      });
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue({} as never);
+
+      const { result } = renderHook();
+
+      const bannerIds = result.current.bannerAlerts.map(
+        (a: BridgeAlert) => a.id,
+      );
+      expect(bannerIds).toContain('stellar-trustline');
+      expect(bannerIds).toContain('insufficient-gas');
     });
   });
 

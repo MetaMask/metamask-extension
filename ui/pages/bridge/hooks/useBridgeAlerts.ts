@@ -1,6 +1,7 @@
 import { shallowEqual, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import { BannerAlertSeverity } from '@metamask/design-system-react';
+import { isCrossChain } from '@metamask/bridge-controller';
 import { getNativeAssetId } from '../../../../shared/lib/asset-utils';
 import {
   getActiveQuoteInsufficientNativeReserveError,
@@ -10,6 +11,7 @@ import {
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
+  getFromToken,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -18,7 +20,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
+import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { isQuoteExpiredOrInvalid, getDestChainId } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useDispatch } from '../../../store/hooks';
@@ -57,8 +61,15 @@ export const useBridgeAlerts = () => {
     getBridgeUnavailableQuoteReason,
   );
 
+  const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
+
+  const isDestAssetRequireActivate = useSelector((state: BridgeAppState) =>
+    toToken?.assetId
+      ? getIsAssetRequireActivate(state, { assetId: toToken.assetId })
+      : false,
+  );
 
   const {
     assetIsMalicious,
@@ -69,6 +80,7 @@ export const useBridgeAlerts = () => {
 
   const { txAlert } = useSecurityAlerts(toToken);
   const { goToBuy } = useRampsNavigation();
+  const { navigateToAssetPage } = useBridgeNavigation();
   const fromChain = useSelector(getFromChain);
 
   const activeQuotePriceData = useSelector(getActiveQuotePriceData);
@@ -229,6 +241,33 @@ export const useBridgeAlerts = () => {
       });
     }
 
+    // Non-blocking warning: destination Stellar classic asset still needs a
+    // trustline. Can appear alongside other banners (e.g. insufficient gas).
+    if (
+      fromToken &&
+      toToken &&
+      isCrossChain(fromToken.chainId, toToken.chainId) &&
+      isDestAssetRequireActivate
+    ) {
+      categorizeAlert({
+        id: 'stellar-trustline',
+        isDismissable: false,
+        severity: 'warning',
+        title: t('bridgeStellarTrustlineWarningTitle', [toToken.symbol]),
+        description: t('bridgeStellarTrustlineWarningMessage', [
+          toToken.symbol,
+        ]),
+        isConfirmationAlert: false,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Warning,
+          actionButtonLabel: t('bridgeStellarTrustlineWarningCta', [
+            toToken.symbol,
+          ]),
+          actionButtonOnClick: () => navigateToAssetPage(toToken),
+        },
+      });
+    }
+
     if (
       !isInsufficientBalance &&
       !isInsufficientGasForQuote &&
@@ -321,9 +360,12 @@ export const useBridgeAlerts = () => {
     insufficientNativeReserveError,
     dispatch,
     goToBuy,
+    navigateToAssetPage,
     fromChain,
+    fromToken,
     ticker,
     toToken,
+    isDestAssetRequireActivate,
     assetIsMalicious,
     assetIsSuspicious,
     assetMaliciousLocalizedFeatures,
