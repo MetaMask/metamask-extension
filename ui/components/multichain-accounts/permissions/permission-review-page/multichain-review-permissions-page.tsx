@@ -176,13 +176,19 @@ export const MultichainReviewPermissions = () => {
         disconnectAllPermissions();
         endTrace({ name: TraceName.DisconnectAllModal });
 
-        if (options?.revokeGatorPermissions && tokenTransferPermissions.length > 0) {
+        if (
+          options?.revokeGatorPermissions &&
+          tokenTransferPermissions.length > 0
+        ) {
           await revokeGatorPermissionsBatchMultiChain(permissionsByChainId);
         }
 
-        toast.success(t('disconnectSiteSuccess', [getURLHost(activeTabOrigin)]), {
-          id: 'disconnect-site-success-toast',
-        });
+        toast.success(
+          t('disconnectSiteSuccess', [getURLHost(activeTabOrigin)]),
+          {
+            id: 'disconnect-site-success-toast',
+          },
+        );
       } catch (error) {
         log.error('Error removing permissions:', error);
       } finally {
