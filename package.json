@@ -509,7 +509,7 @@
     "@simplewebauthn/browser": "^13.3.0",
     "@solana/addresses": "2.0.0-rc.4",
     "@swc/core": "^1.13.2",
-    "@tanstack/react-query": "^4.36.1",
+    "@tanstack/react-query": "^5.101.0",
     "@tanstack/react-virtual": "^3.10.8",
     "@trezor/connect-web": "~9.6.0",
     "@zxing/browser": "^0.1.5",
@@ -896,5 +896,27 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/base-data-service": {
+      "type": "non-breaking",
+      "previewVersion": "0.1.3-preview-7cfd8be"
+    },
+    "@metamask/react-data-query": {
+      "type": "non-breaking",
+      "previewVersion": "0.2.2-preview-7cfd8be"
+    },
+    "@metamask/money-account-api-data-service": {
+      "type": "non-breaking",
+      "previewVersion": "0.4.0-preview-7cfd8be"
+    },
+    "@metamask/shield-controller": {
+      "type": "non-breaking",
+      "previewVersion": "6.0.0-preview-7cfd8be"
+    },
+    "@metamask/subscription-controller": {
+      "type": "non-breaking",
+      "previewVersion": "8.0.0-preview-7cfd8be"
+    }
   }
 }

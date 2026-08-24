@@ -7572,17 +7572,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-api-data-service@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/money-account-api-data-service@npm:0.4.0"
+"@metamask/money-account-api-data-service@npm:@metamask-previews/money-account-api-data-service@0.4.0-preview-7cfd8be":
+  version: 0.4.0-preview-7cfd8be
+  resolution: "@metamask-previews/money-account-api-data-service@npm:0.4.0-preview-7cfd8be"
   dependencies:
     "@metamask/base-data-service": "npm:^0.1.3"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
-    "@tanstack/query-core": "npm:^4.43.0"
-  checksum: 10/cb3106f2c40e776a9876844aaa5778f79308b23a7f0ff9eaee8cc2c7fbdf0489532b7bd2463e740051c1b7da0fb980aa59ad3f5272a3c19898744294d89a002a
+    "@tanstack/query-core": "npm:^5.62.16"
+  checksum: 10/827528e559e4decf1a0eb0503a8e9016e4ac3f2eea5b90e238b272abf51227b45c1a8a02353f7a2aff7613e8401dbcbcf51c33d41972510bf1e8a4af9a7c1bb4
   languageName: node
   linkType: hard
 
@@ -8260,14 +8260,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/react-data-query@npm:^0.2.2":
-  version: 0.2.2
-  resolution: "@metamask/react-data-query@npm:0.2.2"
+"@metamask/react-data-query@npm:@metamask-previews/react-data-query@0.2.2-preview-7cfd8be":
+  version: 0.2.2-preview-7cfd8be
+  resolution: "@metamask-previews/react-data-query@npm:0.2.2-preview-7cfd8be"
   dependencies:
     "@metamask/base-data-service": "npm:^0.1.3"
     "@metamask/utils": "npm:^11.11.0"
-    "@tanstack/query-core": "npm:^4.43.0"
-    "@tanstack/react-query": "npm:^4.43.0"
+    "@tanstack/query-core": "npm:^5.62.16"
+    "@tanstack/react-query": "npm:^5.62.16"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -8277,7 +8277,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 10/43f4f647e717de073bfc8b2177b328b3ae1ff95e25ab33f3a1aa0965060ea5d5317c9451387c5943ad8e43644bc46e27395561ca7813b5bb8f42a5121dd23e02
+  checksum: 10/f628b34c295a07b91b59151e03d6cae503cc721721bcda38d7327a643c4b02ed26fe36e8f476bac84cddd30b9a2ad146fea5b50ee46a0bd7adc614b9823b6643
   languageName: node
   linkType: hard
 
@@ -8405,9 +8405,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/shield-controller@npm:6.0.0"
+"@metamask/shield-controller@npm:@metamask-previews/shield-controller@6.0.0-preview-7cfd8be":
+  version: 6.0.0-preview-7cfd8be
+  resolution: "@metamask-previews/shield-controller@npm:6.0.0-preview-7cfd8be"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/base-data-service": "npm:^0.1.3"
@@ -8415,11 +8415,11 @@ __metadata:
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/profile-sync-controller": "npm:^29.0.0"
     "@metamask/signature-controller": "npm:^39.2.9"
-    "@metamask/transaction-controller": "npm:^69.5.1"
+    "@metamask/transaction-controller": "npm:^69.5.2"
     "@metamask/utils": "npm:^11.11.0"
-    "@tanstack/query-core": "npm:^4.43.0"
+    "@tanstack/query-core": "npm:^5.62.16"
     cockatiel: "npm:^3.1.2"
-  checksum: 10/ed471ef9aa41d61f0529dcadbafeeb371c02d65c969ce9dbeccc171f9c13c12874909d1bb7d6c949ef227bd04dcd0f060b05c27381489e295039128f949b793c
+  checksum: 10/451fb051f164fb9abfab75d3ecee1bec9c586223d3de70a1df5fec053bf6c9925fc06d5501f848af9738d6579514e14dacca4aee5aa91494ce6c0d88028a6486
   languageName: node
   linkType: hard
 
@@ -8772,9 +8772,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/subscription-controller@npm:8.0.0"
+"@metamask/subscription-controller@npm:@metamask-previews/subscription-controller@8.0.0-preview-7cfd8be":
+  version: 8.0.0-preview-7cfd8be
+  resolution: "@metamask-previews/subscription-controller@npm:8.0.0-preview-7cfd8be"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/base-data-service": "npm:^0.1.3"
@@ -8785,9 +8785,9 @@ __metadata:
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/transaction-controller": "npm:^69.5.2"
     "@metamask/utils": "npm:^11.11.0"
-    "@tanstack/query-core": "npm:^4.43.0"
+    "@tanstack/query-core": "npm:^5.62.16"
     bignumber.js: "npm:^9.1.2"
-  checksum: 10/5707c2513daa3f84b526cff8b626f5c9227c5225b0b82337c365a05629cf57356d23f8b264ecd2edc341fcaa97c6320ae031bda839f4195494ce9b819ccad7e3
+  checksum: 10/595d521517eb912631608ff3b6ca6d538388492fe8155117951e9decfb332cc49c1bf6e87e3a5ed39aa2c4d9ccc9489aaa353ccf711cac12e5c9f717d10d9424
   languageName: node
   linkType: hard
 
@@ -15718,36 +15718,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:4.43.0, @tanstack/query-core@npm:^4.43.0":
+"@tanstack/query-core@npm:5.101.4, @tanstack/query-core@npm:^5.62.16":
+  version: 5.101.4
+  resolution: "@tanstack/query-core@npm:5.101.4"
+  checksum: 10/df86031035ac9a5cf54efece85718b90e93fca62068a44a176da232b6dd49b27168840f2da18c64a0eb25d171bc3fb1aab417db4643025cd194ff887833bd73f
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-core@npm:^4.43.0":
   version: 4.43.0
   resolution: "@tanstack/query-core@npm:4.43.0"
   checksum: 10/c2a5a151c7adaea8311e01a643255f31946ae3164a71567ba80048242821ae14043f13f5516b695baebe5ea7e4b2cf717fd60908a929d18a5c5125fee925ff67
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:^5.62.16":
-  version: 5.90.20
-  resolution: "@tanstack/query-core@npm:5.90.20"
-  checksum: 10/25e38f4382442bc15e0f6cce8d787e9df8d8822c61d3f3e9427e89e01b1e2506f848292e086dae29aeb55f8ce71b097c34221f3c5eda37fb4a688b5ceca5d1b3
-  languageName: node
-  linkType: hard
-
-"@tanstack/react-query@npm:^4.36.1, @tanstack/react-query@npm:^4.43.0":
-  version: 4.43.0
-  resolution: "@tanstack/react-query@npm:4.43.0"
+"@tanstack/react-query@npm:^5.101.0, @tanstack/react-query@npm:^5.62.16":
+  version: 5.101.4
+  resolution: "@tanstack/react-query@npm:5.101.4"
   dependencies:
-    "@tanstack/query-core": "npm:4.43.0"
-    use-sync-external-store: "npm:^1.6.0"
+    "@tanstack/query-core": "npm:5.101.4"
   peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    react-native: "*"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: 10/23f9d18d130fa2a1238d8fba8bc914c67e33753b7fc3a3c7856354a9873c4cbc5d18ce24dbf6364ecf86b8ea787575e1e60998ea75baa2b9e9647ad4b9127e10
+    react: ^18 || ^19
+  checksum: 10/926dabad8e2c2cee89c0f10456c8338474abfe75c9baea2fa0619206cfcb7b38f7edcfe9cc8903f8a5c4f018bba44a487fc19687aac8f945c6a20630dbfceb96
   languageName: node
   linkType: hard
 
@@ -33492,7 +33484,7 @@ __metadata:
     "@swc/core": "npm:^1.13.2"
     "@swc/helpers": "npm:^0.5.17"
     "@swc/types": "npm:^0.1.23"
-    "@tanstack/react-query": "npm:^4.36.1"
+    "@tanstack/react-query": "npm:^5.101.0"
     "@tanstack/react-virtual": "npm:^3.10.8"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -43518,7 +43510,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.0.0, use-sync-external-store@npm:^1.6.0":
+"use-sync-external-store@npm:^1.0.0":
   version: 1.6.0
   resolution: "use-sync-external-store@npm:1.6.0"
   peerDependencies:
