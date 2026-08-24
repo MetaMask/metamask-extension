@@ -73,7 +73,14 @@ jest.mock('../../hooks/useFormatters', () => ({
 
 jest.mock(
   '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar',
-  () => () => null,
+  () =>
+    function MockAssetListControlBar({
+      'data-testid': dataTestId,
+    }: {
+      'data-testid'?: string;
+    }) {
+      return <div data-testid={dataTestId} />;
+    },
 );
 
 jest.mock(
@@ -114,6 +121,9 @@ describe('ActivityList', () => {
 
     render(<ActivityList />);
     expect(screen.getByTestId('activity-list-skeleton')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('parent-selector-activity-tab'),
+    ).toBeInTheDocument();
   });
 
   it('does not show the activity list skeleton when not loading', () => {

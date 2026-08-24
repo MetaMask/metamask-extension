@@ -228,6 +228,9 @@ describe('AssetList', () => {
       expect(
         screen.getByTestId('asset-list-control-bar-action-button'),
       ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-tokens-tab'),
+      ).toBeInTheDocument();
     });
   });
 
