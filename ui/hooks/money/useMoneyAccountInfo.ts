@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { selectMoneyAccountFeatureEnabled } from '../../selectors/money/money-account-feature-flags';
+import type { RouteMessengerInstance } from '../../pages/money/messenger';
 import { useMessenger } from '../useMessenger';
 
 export type MoneyAccount = {
@@ -35,7 +36,7 @@ export function useMoneyAccountInfo(): UseMoneyAccountInfoResult {
   const isMoneyAccountFeatureEnabled = useSelector(
     selectMoneyAccountFeatureEnabled,
   );
-  const messenger = useMessenger();
+  const messenger = useMessenger<RouteMessengerInstance>();
 
   // Skipped entirely when the flag is off
   const { data: availability } = useQuery({

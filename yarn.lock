@@ -6710,9 +6710,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^13.0.1":
-  version: 13.0.2
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:13.0.2"
+"@metamask/eth-ledger-bridge-keyring@npm:^13.1.0":
+  version: 13.1.0
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:13.1.0"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6724,11 +6724,11 @@ __metadata:
     "@ledgerhq/hw-transport": "npm:^6.31.3"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/hw-wallet-sdk": "npm:^1.0.0"
-    "@metamask/keyring-api": "npm:^24.0.0"
+    "@metamask/keyring-api": "npm:^24.1.0"
     "@metamask/keyring-sdk": "npm:^3.1.0"
     hdkey: "npm:^2.1.0"
     rxjs: "npm:^7.8.2"
-  checksum: 10/b4c06bead6c998601ac4bd06fecf8d09216f0d60e6a07e6e41e00ab58a965cb516405316c828b2970aac51c2534ae7b2456b3bc5067ff7cf544e3d70d223c25a
+  checksum: 10/9639ee6b5139fa447c0486417963dfaa4bb023e78d88f449c4cdcc9b4d21a0407298fc91cb42e3087b63bd2bb1a05cd7e8fd6dcce8884d725df67755a3dc40ff
   languageName: node
   linkType: hard
 
@@ -8659,6 +8659,13 @@ __metadata:
     "@wallet-standard/wallet": "npm:^1.1.0"
     bs58: "npm:^6.0.0"
   checksum: 10/d5a21e964d1f31b3c08d28859332b7005646005de03836412c45bdfd8d9caf88ac633936f7e4fdc573591149171d0d08f8a8c9c679d99ac080f4d1d5762e333f
+  languageName: node
+  linkType: hard
+
+"@metamask/stellar-wallet-snap@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/stellar-wallet-snap@npm:0.1.0"
+  checksum: 10/373cebc4af1b95e3a9228b0ce2bea79fb71d6d61f86abb03f3160ed040469392307d4f932fe0189b13d555d729c14205eaad20ab6957ab6291888a4c00a3cc6e
   languageName: node
   linkType: hard
 
@@ -33241,7 +33248,7 @@ __metadata:
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^24.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^13.0.1"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^13.1.0"
     "@metamask/eth-money-keyring": "npm:3.0.0"
     "@metamask/eth-qr-keyring": "npm:^3.0.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
@@ -33332,6 +33339,7 @@ __metadata:
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
     "@metamask/solana-wallet-snap": "npm:^2.10.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
+    "@metamask/stellar-wallet-snap": "npm:0.1.0"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^7.0.0"
     "@metamask/superstruct": "npm:^3.2.1"

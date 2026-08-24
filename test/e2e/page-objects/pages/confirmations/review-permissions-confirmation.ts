@@ -1,19 +1,15 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Review permissions page for connected-site network/account permissions.
+ * Review permissions dialog for dapp-initiated permission requests (e.g. a
+ * `wallet_switchEthereumChain` request for a chain the dapp is not yet
+ * permitted to use).
  *
- * Screen: permissions review UI reached from a connected site (not a
- * `#/confirmation` redesign route).
+ * Screen: "Review permissions" confirmation dialog.
  * Owns: "Review permissions" title, enabled-networks messaging, network
- * presence checks, connect-more-chains, and page-container confirm/cancel.
- * Boundaries: initial dapp connect is `ConnectAccountConfirmation`. Editing
- * the chain set after "connect more chains" moves into the edit-networks
- * page/modal.
+ * presence checks, and page-container confirm/cancel.
+ * Boundaries: initial dapp connect is `ConnectAccountConfirmation`.
  * Related: `ConnectAccountConfirmation`.
- *
- * @see ui/components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page.tsx
- * @see ui/components/multichain-accounts/permissions/multichain-edit-networks-page/multichain-edit-networks-page.tsx
  */
 class ReviewPermissionsConfirmation {
   private readonly cancelReviewPermissionsButton =
@@ -21,9 +17,6 @@ class ReviewPermissionsConfirmation {
 
   private readonly confirmReviewPermissionsButton =
     '[data-testid="page-container-footer-next"]';
-
-  private readonly connectMoreChainsButton =
-    '[data-testid="connect-more-chains-button"]';
 
   driver: Driver;
 
@@ -86,19 +79,6 @@ class ReviewPermissionsConfirmation {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmReviewPermissionsButton,
     );
-  }
-
-  async clickConnectMoreChainsButton(): Promise<void> {
-    console.log('Click connect more chains button');
-    await this.driver.clickElement(this.connectMoreChainsButton);
-  }
-
-  async clickDisconnectNetwork(networkName: string): Promise<void> {
-    console.log(`Click to disconnect network: ${networkName}`);
-    await this.driver.clickElement({
-      text: networkName,
-      tag: 'p',
-    });
   }
 
   async confirmReviewPermissions(): Promise<void> {
