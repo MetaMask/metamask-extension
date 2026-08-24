@@ -13,7 +13,7 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Mockttp } from 'mockttp';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import NFTDetailsPage from '../../page-objects/pages/nft-details-page';
+import NFTDetailsPage from '../../page-objects/pages/asset/nft-details-page';
 import NftsTab from '../../page-objects/pages/home/nfts-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
