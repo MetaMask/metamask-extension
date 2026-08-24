@@ -173,7 +173,7 @@ const ShieldPlan = () => {
     subscriptionPricing,
   );
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
-    'crypto' as PaymentType,
+    PAYMENT_TYPES.byCrypto,
     subscriptionPricing,
   );
 
