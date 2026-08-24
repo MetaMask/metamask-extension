@@ -620,6 +620,7 @@ async function withFixtures(options, testSuite) {
       bundlerServer,
       contractRegistry,
       driver: effectiveDriver,
+      fixtureServer,
       localNodes,
       mockedEndpoint,
       mockServer,
