@@ -41,6 +41,11 @@ const EMPTY_FEE = '';
 
 const MIN_NATIVE_FEE_THRESHOLD = 0.0001;
 
+type UseFeeCalculationsOptions = {
+  /** Gas limit used only to calculate the maximum fee. */
+  maxFeeGasLimit?: Hex;
+};
+
 const ETH_CONVERSION_RATE_FALLBACK_CHAIN_IDS = [
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.LINEA_SEPOLIA,
@@ -95,7 +100,10 @@ function applySmallNativeFeeThreshold(nativeFee: string, hexFee: Hex): string {
   return nativeFee;
 }
 
-export function useFeeCalculations(transactionMeta: TransactionMeta) {
+export function useFeeCalculations(
+  transactionMeta: TransactionMeta,
+  { maxFeeGasLimit }: UseFeeCalculationsOptions = {},
+) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const { chainId } = transactionMeta;
   const fiatFormatter = useFiatFormatter();
@@ -235,12 +243,13 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
         supportsEIP1559
           ? (decimalToHex(maxFeePerGas) as Hex)
           : (gasPrice as Hex),
-        optimizedGasLimit as Hex,
+        maxFeeGasLimit ?? optimizedGasLimit,
       ),
     ) as Hex;
   }, [
     gasPrice,
     layer1GasFee,
+    maxFeeGasLimit,
     maxFeePerGas,
     optimizedGasLimit,
     supportsEIP1559,

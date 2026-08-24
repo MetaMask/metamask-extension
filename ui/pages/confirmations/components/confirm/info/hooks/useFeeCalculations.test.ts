@@ -276,6 +276,25 @@ describe('useFeeCalculations', () => {
     `);
   });
 
+  it('uses a max fee gas limit override without changing the estimated fee', () => {
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    transactionMeta.gasUsed = toHex(37000);
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () =>
+        useFeeCalculations(transactionMeta, {
+          maxFeeGasLimit: '0xab77',
+        }),
+      mockState,
+    );
+
+    expect(result.current.estimatedFeeNativeHex).toBe('0x60183e087418');
+    expect(result.current.maxFeeHex).toBe('0x720087dcfc95');
+  });
+
   it('returns the correct estimate for a transaction with layer1GasFee', () => {
     const transactionMeta = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
