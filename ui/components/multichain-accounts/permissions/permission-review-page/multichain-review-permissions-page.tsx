@@ -33,6 +33,8 @@ import {
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
 import { useDispatch } from '../../../../store/hooks';
+import { toast } from '../../../ui/toast/toast';
+import { getURLHost } from '../../../../helpers/utils/util';
 
 export const MultichainReviewPermissions = () => {
   const t = useI18nContext();
@@ -157,56 +159,56 @@ export const MultichainReviewPermissions = () => {
     }));
   }, [tokenTransferPermissions]);
 
-  // Handle disconnect flow with gator permissions check: if token transfer
-  // permissions exist, shows the permissions modal, else disconnect directly
-  const handleDisconnectWithGatorCheck = useCallback(() => {
-    const hasTokenTransferPermissions =
+  const hasTokenTransferPermissions = useMemo(
+    () =>
       gatorPermissionsGroupMetaData &&
       Object.values(gatorPermissionsGroupMetaData).some(
         (details) => details.count > 0,
-      );
+      ),
+    [gatorPermissionsGroupMetaData],
+  );
 
+  // Unified disconnect handler
+  const handleDisconnect = useCallback(
+    async (options?: { revokeGatorPermissions?: boolean }) => {
+      try {
+        trace({ name: TraceName.DisconnectAllModal });
+        disconnectAllPermissions();
+        endTrace({ name: TraceName.DisconnectAllModal });
+
+        if (options?.revokeGatorPermissions && tokenTransferPermissions.length > 0) {
+          await revokeGatorPermissionsBatchMultiChain(permissionsByChainId);
+        }
+
+        toast.success(t('disconnectSiteSuccess', [getURLHost(activeTabOrigin)]), {
+          id: 'disconnect-site-success-toast',
+        });
+      } catch (error) {
+        log.error('Error removing permissions:', error);
+      } finally {
+        setShowDisconnectPermissionsModal(false);
+        navigate(PREVIOUS_ROUTE);
+      }
+    },
+    [
+      activeTabOrigin,
+      disconnectAllPermissions,
+      navigate,
+      permissionsByChainId,
+      revokeGatorPermissionsBatchMultiChain,
+      t,
+      tokenTransferPermissions.length,
+    ],
+  );
+
+  // Shows gator permissions modal if needed, otherwise disconnects directly
+  const handleDisconnectWithGatorCheck = useCallback(() => {
     if (hasTokenTransferPermissions) {
       setShowDisconnectPermissionsModal(true);
       return;
     }
-
-    trace({ name: TraceName.DisconnectAllModal });
-    disconnectAllPermissions();
-    endTrace({ name: TraceName.DisconnectAllModal });
-    navigate(PREVIOUS_ROUTE);
-  }, [disconnectAllPermissions, gatorPermissionsGroupMetaData, navigate]);
-
-  const handleSkipPermissions = () => {
-    setShowDisconnectPermissionsModal(false);
-    // Skip permissions and disconnect directly
-    trace({ name: TraceName.DisconnectAllModal });
-    disconnectAllPermissions();
-    endTrace({ name: TraceName.DisconnectAllModal });
-    navigate(PREVIOUS_ROUTE);
-  };
-
-  const handleRemoveAllPermissions = async () => {
-    try {
-      trace({ name: TraceName.DisconnectAllModal });
-      disconnectAllPermissions();
-      endTrace({ name: TraceName.DisconnectAllModal });
-
-      // Close the permissions modal immediately for better UX
-      setShowDisconnectPermissionsModal(false);
-
-      // Revoke gator permissions if they exist (run in background)
-      if (tokenTransferPermissions.length > 0) {
-        await revokeGatorPermissionsBatchMultiChain(permissionsByChainId);
-      }
-    } catch (error) {
-      log.error('Error removing permissions:', error);
-      // Still proceed to disconnect even if revocation fails
-      setShowDisconnectPermissionsModal(false);
-    } finally {
-      navigate(PREVIOUS_ROUTE);
-    }
-  };
+    handleDisconnect();
+  }, [handleDisconnect, hasTokenTransferPermissions]);
 
   const handleAccountGroupIdsSelected = useCallback(
     (accountGroupIds: string[]) => {
@@ -257,8 +259,8 @@ export const MultichainReviewPermissions = () => {
         <DisconnectPermissionsModal
           isOpen={showDisconnectPermissionsModal}
           onClose={() => setShowDisconnectPermissionsModal(false)}
-          onSkip={handleSkipPermissions}
-          onRemoveAll={handleRemoveAllPermissions}
+          onSkip={() => handleDisconnect()}
+          onRemoveAll={() => handleDisconnect({ revokeGatorPermissions: true })}
           permissions={formattedPermissions}
         />
       ) : null}
