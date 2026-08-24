@@ -537,19 +537,11 @@ const AssetListControlBar = ({
           testId="manageTokens"
           className="min-h-12"
         >
-          <Icon
-            name={IconName.Setting}
-            size={IconSize.Sm}
-            className="mr-2"
-          />
+          <Icon name={IconName.Setting} size={IconSize.Sm} className="mr-2" />
           {t('manageTokens')}
         </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
-          <Icon
-            name={IconName.Refresh}
-            size={IconSize.Sm}
-            className="mr-2"
-          />
+          <Icon name={IconName.Refresh} size={IconSize.Sm} className="mr-2" />
           {t('refreshList')}
         </SelectableListItem>
       </Popover>
@@ -626,11 +618,7 @@ const AssetListControlBar = ({
           onClick={handleRefreshListOnly}
           testId="refreshList"
         >
-          <Icon
-            name={IconName.Refresh}
-            size={IconSize.Sm}
-            className="mr-2"
-          />
+          <Icon name={IconName.Refresh} size={IconSize.Sm} className="mr-2" />
           {t('refreshList')}
         </SelectableListItem>
       </Popover>
