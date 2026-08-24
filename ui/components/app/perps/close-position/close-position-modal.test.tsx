@@ -592,6 +592,71 @@ describe('ClosePositionModal', () => {
       );
     });
 
+    it('sends a full close when the size floor would reach zero', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={{ ...basePosition, size: '1' }}
+          currentPrice={50000}
+          sizeDecimals={0}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      // A 1-unit position on an integer-size market: the smallest step is the
+      // whole position, so stepping back off a rounded-up size lands on zero.
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('49999.99');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalled();
+      });
+      const [, [request]] = mockSubmitRequestToBackground.mock.calls[0];
+      // Omitting size is the full-close shape. A "0" size is a no-op the venue
+      // rejects, which is worse than the rounded-up size it replaced.
+      expect(request.size).toBeUndefined();
+    });
+
+    it('still floors a partial size on a market with room to step back', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={{ ...basePosition, size: '5' }}
+          currentPrice={50000}
+          sizeDecimals={0}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('249999.99');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [expect.objectContaining({ size: '4' })],
+        );
+      });
+    });
+
     it('leaves an ordinary partial size untouched', async () => {
       renderWithProvider(
         <ClosePositionModal

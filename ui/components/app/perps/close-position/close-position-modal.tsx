@@ -131,19 +131,29 @@ const buildCloseRequestParams = ({
     sizeDecimals === undefined
       ? closeSize.toString()
       : closeSize.toFixed(sizeDecimals);
-  const size =
+  const roundsOntoWholePosition =
     isPartialClose &&
     sizeDecimals !== undefined &&
-    Number.parseFloat(roundedSize) >= positionSize
-      ? Math.max(positionSize - 10 ** -sizeDecimals, 0).toFixed(sizeDecimals)
-      : roundedSize;
+    Number.parseFloat(roundedSize) >= positionSize;
+  const flooredSize =
+    sizeDecimals === undefined
+      ? roundedSize
+      : (positionSize - 10 ** -sizeDecimals).toFixed(sizeDecimals);
+  // On a market whose smallest step is the position itself — a 1-unit position
+  // on an integer-size market — stepping back lands on zero, which the venue
+  // rejects or treats as a no-op. The trader asked for all but a rounding
+  // sliver, so send it as the full close it effectively is.
+  const closesWholePosition =
+    roundsOntoWholePosition && Number.parseFloat(flooredSize) <= 0;
+  const size = roundsOntoWholePosition ? flooredSize : roundedSize;
+  const includeSize = isPartialClose && !closesWholePosition;
 
   if (orderType === 'limit') {
     return {
       symbol,
       orderType: 'limit',
       price: limitPrice,
-      ...(isPartialClose ? { size } : {}),
+      ...(includeSize ? { size } : {}),
       position,
     };
   }
@@ -152,7 +162,7 @@ const buildCloseRequestParams = ({
     symbol,
     orderType: 'market',
     currentPrice,
-    ...(isPartialClose ? { size } : {}),
+    ...(includeSize ? { size } : {}),
     position,
   };
 };
