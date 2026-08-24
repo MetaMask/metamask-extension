@@ -61,10 +61,6 @@ describe('useConfirmationAlertActions', () => {
       isScrollToBottomCompleted: true,
       setIsScrollToBottomCompleted: jest.fn(),
       goBackTo: undefined,
-      isMoneyAccountAmountCommitPending: false,
-      moneyAccountDisplayedAmount: undefined,
-      setMoneyAccountDisplayedAmount: jest.fn(),
-      setMoneyAccountCommittedAmount: jest.fn(),
     });
   });
 
@@ -96,10 +92,6 @@ describe('useConfirmationAlertActions', () => {
       isScrollToBottomCompleted: true,
       setIsScrollToBottomCompleted: jest.fn(),
       goBackTo: undefined,
-      isMoneyAccountAmountCommitPending: false,
-      moneyAccountDisplayedAmount: undefined,
-      setMoneyAccountDisplayedAmount: jest.fn(),
-      setMoneyAccountCommittedAmount: jest.fn(),
     });
 
     processAlertActionKey(AlertActionKey.ShowAdvancedGasFeeModal);

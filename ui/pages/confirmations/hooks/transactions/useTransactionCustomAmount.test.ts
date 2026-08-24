@@ -57,7 +57,6 @@ function runHook({
   isMaxAmount = false,
   requiredTokens = [],
   updateTokenAmountMock = jest.fn(),
-  markAmountAsDisplayedMock = jest.fn(),
   prefillMaxOnLoad = false,
   transactionMeta = MOCK_TRANSACTION_META,
   depositPrefill = DISABLED_DEPOSIT_PREFILL,
@@ -75,7 +74,6 @@ function runHook({
   isMaxAmount?: boolean;
   requiredTokens?: { amountUsd?: string; skipIfBalance?: boolean }[];
   updateTokenAmountMock?: jest.Mock;
-  markAmountAsDisplayedMock?: jest.Mock;
   prefillMaxOnLoad?: boolean;
   transactionMeta?: TransactionMeta;
   depositPrefill?: ReturnType<typeof useDepositPrefillAmount>;
@@ -121,7 +119,6 @@ function runHook({
   });
   jest.mocked(useUpdateTokenAmountModule.useUpdateTokenAmount).mockReturnValue({
     updateTokenAmount: updateTokenAmountMock,
-    markAmountAsDisplayed: markAmountAsDisplayedMock,
     isUpdating: false,
   });
   useDepositPrefillAmountMock.mockReturnValue(depositPrefill);
@@ -535,90 +532,6 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(updateTokenAmountMock).toHaveBeenCalledWith('50');
-    });
-
-    it('records the displayed amount synchronously, before the debounce fires updateTokenAmount', () => {
-      // Confirm must stay disabled for the whole edit-to-commit window, not
-      // just once the 500ms debounce actually invokes updateTokenAmount -
-      // otherwise a fast Confirm click inside the debounce window can submit
-      // stale, pre-edit calldata.
-      const updateTokenAmountMock = jest.fn();
-      const markAmountAsDisplayedMock = jest.fn();
-
-      const { result } = runHook({
-        disableUpdate: false,
-        updateTokenAmountMock,
-        markAmountAsDisplayedMock,
-      });
-
-      act(() => {
-        result.current.updatePendingAmount('50');
-      });
-
-      expect(markAmountAsDisplayedMock).toHaveBeenCalledWith('50');
-      expect(updateTokenAmountMock).not.toHaveBeenCalled();
-
-      act(() => {
-        jest.advanceTimersByTime(500);
-      });
-
-      expect(updateTokenAmountMock).toHaveBeenCalledWith('50');
-    });
-
-    it('does not record the displayed amount when disableUpdate is true', () => {
-      const updateTokenAmountMock = jest.fn();
-      const markAmountAsDisplayedMock = jest.fn();
-
-      const { result } = runHook({
-        disableUpdate: true,
-        updateTokenAmountMock,
-        markAmountAsDisplayedMock,
-      });
-
-      act(() => {
-        result.current.updatePendingAmount('50');
-      });
-
-      expect(markAmountAsDisplayedMock).not.toHaveBeenCalled();
-    });
-
-    it('re-schedules a pending debounced edit when the debounce is recreated', () => {
-      // A landed commit rewrites nested calldata, changing
-      // updateTokenAmount's identity and recreating the debounce; the
-      // cancel that recreation performs must not silently drop an edit the
-      // user has typed but which has not yet fired.
-      const updateTokenAmountMock = jest.fn();
-      const { result, rerender } = runHook({
-        disableUpdate: false,
-        updateTokenAmountMock,
-      });
-
-      // Flush the mount-time schedule so only the typed edit is pending.
-      act(() => {
-        jest.advanceTimersByTime(500);
-      });
-      updateTokenAmountMock.mockClear();
-
-      act(() => {
-        result.current.updatePendingAmount('50');
-      });
-
-      // Recreate the debounce mid-window, as a landing commit would.
-      const newUpdateTokenAmountMock = jest.fn();
-      jest
-        .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
-        .mockReturnValue({
-          updateTokenAmount: newUpdateTokenAmountMock,
-          markAmountAsDisplayed: jest.fn(),
-          isUpdating: false,
-        });
-      rerender();
-
-      act(() => {
-        jest.advanceTimersByTime(500);
-      });
-
-      expect(newUpdateTokenAmountMock).toHaveBeenCalledWith('50');
     });
 
     it('does not call updateTokenAmount when disableUpdate is true and percentage button is clicked', () => {
@@ -1223,7 +1136,6 @@ describe('useTransactionCustomAmount', () => {
         .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
         .mockReturnValue({
           updateTokenAmount: newUpdateTokenAmountMock,
-          markAmountAsDisplayed: jest.fn(),
           isUpdating: false,
         });
 
@@ -1265,7 +1177,6 @@ describe('useTransactionCustomAmount', () => {
           .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
           .mockReturnValue({
             updateTokenAmount: newMock,
-            markAmountAsDisplayed: jest.fn(),
             isUpdating: false,
           });
 

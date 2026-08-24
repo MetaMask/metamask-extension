@@ -66,26 +66,12 @@ export function useTransactionCustomAmount({
     payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
   );
 
-  const {
-    updateTokenAmount: updateTokenAmountCallback,
-    markAmountAsDisplayed,
-  } = useUpdateTokenAmount();
+  const { updateTokenAmount: updateTokenAmountCallback } =
+    useUpdateTokenAmount();
 
   const debounceRef = useRef<DebouncedFunc<(value: string) => void> | null>(
     null,
   );
-  // The amount currently scheduled on the debounce but not yet passed to
-  // `updateTokenAmount`. Recreating the debounced function cancels whatever
-  // it had scheduled, so this is what lets the recreation effect re-schedule
-  // the user's latest edit instead of silently dropping it.
-  const scheduledAmountRef = useRef<string | null>(null);
-  // Read via ref (not a dependency) in the scheduling effect below, matching
-  // `updateTokenAmountCallback`'s exclusion from that effect: recreation of
-  // this callback alone must not re-trigger it and restart the debounce.
-  const markAmountAsDisplayedRef = useRef(markAmountAsDisplayed);
-  useEffect(() => {
-    markAmountAsDisplayedRef.current = markAmountAsDisplayed;
-  }, [markAmountAsDisplayed]);
   const hasPrefilledMaxRef = useRef(false);
   const userEditedRef = useRef(false);
   // Full-precision human amount from payToken.balanceRaw for money-account
@@ -110,10 +96,6 @@ export function useTransactionCustomAmount({
     isMoneyAccountDeposit && depositPrefill.enabled;
   const prevDepositHasPrefilledRef = useRef(depositPrefill.hasPrefilled);
 
-  // Tracks which transaction the scheduled amount belongs to, so a scheduled
-  // edit is only ever re-played onto the same transaction's debounce.
-  const scheduledTransactionIdRef = useRef(transactionId);
-
   // Create and update debounced function
   useEffect(() => {
     // Cancel any existing debounced calls
@@ -121,7 +103,6 @@ export function useTransactionCustomAmount({
 
     // Create new debounced function
     const debouncedFn = debounce((value: string) => {
-      scheduledAmountRef.current = null;
       setAmountHumanDebounced(value);
       if (!disableUpdate) {
         updateTokenAmountCallback(value);
@@ -140,19 +121,6 @@ export function useTransactionCustomAmount({
 
     // Store in ref
     debounceRef.current = debouncedFn;
-
-    // The cancel above dropped whatever the previous debounced function still
-    // had scheduled. Re-schedule it, or the user's latest edit is silently
-    // lost — recreation is routine here (a landed commit rewrites nested
-    // calldata, changing `updateTokenAmountCallback`'s identity). An edit
-    // scheduled against a previous transaction is discarded instead: it must
-    // not commit onto the one that replaced it.
-    if (scheduledTransactionIdRef.current !== transactionId) {
-      scheduledAmountRef.current = null;
-      scheduledTransactionIdRef.current = transactionId;
-    } else if (scheduledAmountRef.current !== null) {
-      debouncedFn(scheduledAmountRef.current);
-    }
 
     // Cleanup: cancel on unmount or when dependencies change
     return () => {
@@ -216,25 +184,9 @@ export function useTransactionCustomAmount({
     // Deposit Max keeps the raw-balance human amount so the fiat-derived
     // `amountHuman` cannot overwrite it after debounce.
     if (debounceRef.current) {
-      const scheduledAmount = depositMaxHumanRef.current ?? amountHuman;
-      // Recorded synchronously, before the debounce delay elapses, so Confirm
-      // stays disabled for the whole edit-to-commit window. Recording only
-      // once the debounce fires (as `updateTokenAmount` itself does) would
-      // leave a ~500ms gap where the button is enabled but the transaction
-      // still carries the pre-edit amount.
-      if (!disableUpdate) {
-        markAmountAsDisplayedRef.current(scheduledAmount);
-      }
-      scheduledAmountRef.current = scheduledAmount;
-      debounceRef.current(scheduledAmount);
+      debounceRef.current(depositMaxHumanRef.current ?? amountHuman);
     }
-  }, [
-    amountHuman,
-    disableUpdate,
-    isMaxAmount,
-    payToken?.address,
-    payToken?.chainId,
-  ]);
+  }, [amountHuman, isMaxAmount, payToken?.address, payToken?.chainId]);
 
   useEffect(() => {
     if (amountHumanDebounced !== '0') {
@@ -376,10 +328,8 @@ export function useTransactionCustomAmount({
         );
 
       // Percentage / prefill updates apply immediately, so drop any pending
-      // debounced typing update that would otherwise overwrite them — from
-      // the scheduled ref too, or a debounce recreation would replay it.
+      // debounced typing update that would otherwise overwrite them.
       debounceRef.current?.cancel();
-      scheduledAmountRef.current = null;
       setAmountHumanDebounced(newAmountHuman);
       if (!disableUpdate) {
         updateTokenAmountCallback(newAmountHuman);
@@ -451,7 +401,6 @@ export function useTransactionCustomAmount({
       );
 
       debounceRef.current?.cancel();
-      scheduledAmountRef.current = null;
       setAmountHumanDebounced(newAmountHuman);
       if (!disableUpdate) {
         updateTokenAmountCallback(newAmountHuman);

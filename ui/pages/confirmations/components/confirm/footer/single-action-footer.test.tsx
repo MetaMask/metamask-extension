@@ -12,7 +12,6 @@ import {
   useTransactionPayHasExecutableQuote,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
-import * as confirmContext from '../../../context/confirm';
 import { SingleActionFooter } from './single-action-footer';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
@@ -39,29 +38,6 @@ function genPerpsWithdraw() {
   return { ...base, type: TransactionType.perpsWithdraw, origin: 'metamask' };
 }
 
-function genMoneyAccountDeposit() {
-  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
-  return {
-    ...base,
-    // Money account transactions are submitted via `addTransactionBatch`,
-    // which always sets the top-level type to `batch` — the money-account
-    // type only appears on the nested transactions.
-    type: TransactionType.batch,
-    nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
-    origin: 'metamask',
-  };
-}
-
-function genMoneyAccountWithdraw() {
-  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
-  return {
-    ...base,
-    type: TransactionType.batch,
-    nestedTransactions: [{ type: TransactionType.moneyAccountWithdraw }],
-    origin: 'metamask',
-  };
-}
-
 function render({
   isGaslessLoading = false,
   confirmation = genMusdConversion(),
@@ -77,9 +53,7 @@ function render({
   confirmation?:
     | ReturnType<typeof genMusdConversion>
     | ReturnType<typeof genPerpsDeposit>
-    | ReturnType<typeof genPerpsWithdraw>
-    | ReturnType<typeof genMoneyAccountDeposit>
-    | ReturnType<typeof genMoneyAccountWithdraw>;
+    | ReturnType<typeof genPerpsWithdraw>;
   alerts?: {
     key: string;
     severity: string;
@@ -316,37 +290,5 @@ describe('<SingleActionFooter />', () => {
     fireEvent.click(getByTestId('confirm-footer-button'));
 
     expect(MOCK_ON_SUBMIT).toHaveBeenCalledTimes(1);
-  });
-
-  it('shows Withdraw label for money account withdraw transaction type', () => {
-    const { getByTestId } = render({ confirmation: genMoneyAccountWithdraw() });
-
-    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
-      messages.perpsWithdraw.message,
-    );
-  });
-
-  it('disables the button while a money account amount commit is pending', () => {
-    const confirmation = genMoneyAccountDeposit();
-    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: confirmation,
-      isMoneyAccountAmountCommitPending: true,
-    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
-
-    const { getByTestId } = render({ confirmation });
-
-    expect(getByTestId('confirm-footer-button')).toBeDisabled();
-  });
-
-  it('re-enables the button once the money account amount commit resolves', () => {
-    const confirmation = genMoneyAccountDeposit();
-    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: confirmation,
-      isMoneyAccountAmountCommitPending: false,
-    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
-
-    const { getByTestId } = render({ confirmation });
-
-    expect(getByTestId('confirm-footer-button')).not.toBeDisabled();
   });
 });

@@ -84,10 +84,6 @@ export function renderWithConfirmContext(
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: () => undefined,
     goBackTo: undefined,
-    isMoneyAccountAmountCommitPending: false,
-    moneyAccountDisplayedAmount: undefined,
-    setMoneyAccountDisplayedAmount: () => undefined,
-    setMoneyAccountCommittedAmount: () => undefined,
   });
 }
 
