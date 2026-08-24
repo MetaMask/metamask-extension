@@ -997,7 +997,8 @@
     "referrals": {
       "asterdex": {},
       "gmx": {},
-      "hyperliquid": {}
+      "hyperliquid": {},
+      "variational": {}
     },
     "region": "string",
     "requests": {
