@@ -1,4 +1,6 @@
-import { act, renderHook } from '@testing-library/react';
+import { act } from '@testing-library/react';
+import { EthAccountType, BtcAccountType } from '@metamask/keyring-api';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { getMoneyAccountDepositIntent } from '../../helpers/money/deposit-intent';
 import {
   ConfirmationLoader,
@@ -24,6 +26,24 @@ const createDepositTransactionMock = jest.mocked(
 const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 
 const TRANSACTION_ID = 'transaction-id-mock';
+const ACCOUNT_ID = 'account-id-mock';
+
+const stateWithSelectedAccount = (accountType: string) => ({
+  metamask: {
+    internalAccounts: {
+      selectedAccount: ACCOUNT_ID,
+      accounts: {
+        [ACCOUNT_ID]: {
+          id: ACCOUNT_ID,
+          type: accountType,
+          address: '0x1234567890123456789012345678901234567890',
+        },
+      },
+    },
+  },
+});
+
+const EVM_ACCOUNT_STATE = stateWithSelectedAccount(EthAccountType.Eoa);
 
 describe('useMoneyAccountDeposit', () => {
   const navigateToTransactionMock = jest.fn();
@@ -42,7 +62,10 @@ describe('useMoneyAccountDeposit', () => {
   });
 
   it('creates the batch and navigates to the custom-amount confirmation', async () => {
-    const { result } = renderHook(() => useMoneyAccountDeposit());
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
 
     await act(async () => {
       await result.current.initiateDeposit();
@@ -63,7 +86,10 @@ describe('useMoneyAccountDeposit', () => {
       return { transactionId: TRANSACTION_ID, batchId };
     });
 
-    const { result } = renderHook(() => useMoneyAccountDeposit());
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
 
     await act(async () => {
       await result.current.initiateDeposit({ intent: 'addMusd' });
@@ -79,7 +105,10 @@ describe('useMoneyAccountDeposit', () => {
       return { transactionId: TRANSACTION_ID, batchId };
     });
 
-    const { result } = renderHook(() => useMoneyAccountDeposit());
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
 
     await act(async () => {
       await result.current.initiateDeposit();
@@ -97,7 +126,10 @@ describe('useMoneyAccountDeposit', () => {
     });
     const onDepositSetupFailure = jest.fn();
 
-    const { result } = renderHook(() => useMoneyAccountDeposit());
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
 
     await act(async () => {
       await expect(
@@ -112,5 +144,43 @@ describe('useMoneyAccountDeposit', () => {
     expect(onDepositSetupFailure).toHaveBeenCalledWith(error);
     expect(navigateToTransactionMock).not.toHaveBeenCalled();
     expect(result.current.isLoading).toBe(false);
+  });
+
+  it('fails fast without creating the batch when the selected account is not EVM', async () => {
+    const onDepositSetupFailure = jest.fn();
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      stateWithSelectedAccount(BtcAccountType.P2wpkh),
+    );
+
+    await act(async () => {
+      await expect(
+        result.current.initiateDeposit({ onDepositSetupFailure }),
+      ).rejects.toThrow('[Money Account] Missing funding EVM account');
+    });
+
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+    expect(onDepositSetupFailure).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: '[Money Account] Missing funding EVM account',
+      }),
+    );
+    expect(result.current.isLoading).toBe(false);
+  });
+
+  it('fails fast when no account is selected', async () => {
+    const { result } = renderHookWithProvider(() => useMoneyAccountDeposit(), {
+      metamask: { internalAccounts: { selectedAccount: '', accounts: {} } },
+    });
+
+    await act(async () => {
+      await expect(result.current.initiateDeposit()).rejects.toThrow(
+        '[Money Account] Missing funding EVM account',
+      );
+    });
+
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
   });
 });

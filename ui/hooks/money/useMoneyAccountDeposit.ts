@@ -1,6 +1,9 @@
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { bytesToHex } from '@metamask/utils';
 import { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
+import { getMaybeSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   clearMoneyAccountDepositIntent,
   setMoneyAccountDepositIntent,
@@ -33,6 +36,12 @@ export type InitiateDepositOptions = {
  * unavailable money account is a thrown error here, not a rendered state,
  * because the surface is supposed to be hidden entirely.
  *
+ * Fails fast (as `useMoneyAccountWithdrawal` does) when no EVM account is
+ * selected: the funding account is only seeded later by
+ * `handleUnapprovedTransactionAddedForMoneyAccount`, which silently skips
+ * non-EVM selections, so without this guard the user would reach the
+ * confirmation with Pay having no funding account to quote against.
+ *
  * Two deliberate differences from mobile's hook, both consequences of the
  * extension navigating **after** creation rather than early with a skeleton:
  * there is no navigation to roll back on failure, and there is no
@@ -45,6 +54,7 @@ export type InitiateDepositOptions = {
  */
 export function useMoneyAccountDeposit() {
   const { navigateToTransaction } = useConfirmationNavigation();
+  const selectedAccount = useSelector(getMaybeSelectedInternalAccount);
   const [isLoading, setIsLoading] = useState(false);
 
   const initiateDeposit = useCallback(
@@ -59,6 +69,10 @@ export function useMoneyAccountDeposit() {
 
       setIsLoading(true);
       try {
+        if (!selectedAccount || !isEvmAccountType(selectedAccount.type)) {
+          throw new Error('[Money Account] Missing funding EVM account');
+        }
+
         const { transactionId } =
           await createMoneyAccountDepositTransaction(batchId);
 
@@ -78,7 +92,7 @@ export function useMoneyAccountDeposit() {
         setIsLoading(false);
       }
     },
-    [navigateToTransaction],
+    [navigateToTransaction, selectedAccount],
   );
 
   return { initiateDeposit, isLoading };
