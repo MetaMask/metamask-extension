@@ -8,12 +8,14 @@ import {
   completeCreateNewWalletOnboardingFlow,
   completeVaultRecoveryOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import { reloadAndUnlock } from '../../page-objects/flows/login.flow';
 import {
   getBackupVault,
   getFirstAddress,
   onboardThenTriggerCorruptionFlow,
 } from '../../page-objects/flows/vault-corruption.flow';
 import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
+import { pausePersistence } from '../state-persistence/helpers';
 import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 describe('Vault Corruption', function () {
@@ -112,6 +114,10 @@ describe('Vault Corruption', function () {
           breakPrimaryDatabaseOnlyScript,
         );
 
+        // Disable debounced writes so this test verifies that recovery itself
+        // persists the restored vault before initialization completes.
+        await pausePersistence(driver);
+
         // start recovery
         const vaultRecoveryPage = new VaultRecoveryPage(driver);
         await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
@@ -130,6 +136,18 @@ describe('Vault Corruption', function () {
           restoredFirstAddress,
           initialFirstAddress,
           'Addresses should match',
+        );
+
+        // Verify recovery survives a restart without relying on a later
+        // debounced controller state write.
+        await reloadAndUnlock(driver);
+        const persistedFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
+        assert.equal(
+          persistedFirstAddress,
+          initialFirstAddress,
+          'Address should persist after extension restart',
         );
       },
     );

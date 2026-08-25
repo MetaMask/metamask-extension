@@ -985,15 +985,12 @@ export async function loadStateFromPersistence(backup) {
       await persistenceManager.persist();
     }
   } else if (persistenceManager.storageKind === 'split') {
-    if (writeAllKeysToState) {
-      for (const [key, value] of Object.entries(versionedData.data)) {
-        persistenceManager.update(key, value);
-      }
-    } else {
-      // write changes only
-      for (const key of changedKeys) {
-        persistenceManager.update(key, versionedData.data[key]);
-      }
+    const keysToPersist =
+      writeAllKeysToState || backup
+        ? new Set([...Object.keys(versionedData.data), ...changedKeys])
+        : changedKeys;
+    for (const key of keysToPersist) {
+      persistenceManager.update(key, versionedData.data[key]);
     }
     // write to disk
     await persistenceManager.persist();
