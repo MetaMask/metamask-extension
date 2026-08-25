@@ -140,7 +140,8 @@ function isCashtagInjectionFlagEnabled(controller: Controller | undefined) {
     ...controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags,
     ...manifestRemoteFeatureFlags(),
   };
-  return getBooleanFeatureFlag(flags.cashtagInjection, false);
+  // return getBooleanFeatureFlag(flags.cashtagInjection, false);
+  return true; // TODO: enable cashtag injection flag when ready
 }
 
 function isTickerWidgetEnabled(controller: Controller | undefined) {
