@@ -934,7 +934,7 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
         "@metamask/superstruct": true
       }
@@ -947,13 +947,15 @@
         "immer": true
       }
     },
-    "@metamask/react-data-query>@metamask/base-data-service": {
+    "@metamask/base-data-service": {
       "packages": {
-        "@metamask/controller-utils": true,
         "@metamask/messenger": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": true,
-        "eslint>fast-deep-equal": true
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "cockatiel": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
       }
     },
     "@metamask/bridge-controller": {
@@ -1042,7 +1044,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true
@@ -1856,7 +1858,7 @@
         ]
       },
       "packages": {
-        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1876,7 +1878,7 @@
       "packages": {
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/superstruct": true,
@@ -2374,7 +2376,7 @@
         ]
       },
       "packages": {
-        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -2393,7 +2395,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
         "@metamask/transaction-controller": true,
@@ -2596,7 +2598,7 @@
         ]
       },
       "packages": {
-        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
@@ -3662,18 +3664,6 @@
       "packages": {
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary": true,
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
-      }
-    },
-    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
-      "globals": {
-        "AbortController": true,
-        "addEventListener": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "navigator": true,
-        "removeEventListener": true,
-        "setTimeout": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {
