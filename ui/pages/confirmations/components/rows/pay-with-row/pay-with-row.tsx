@@ -61,6 +61,7 @@ type PaySelectorContentProps = {
   balanceText: string;
   showBalance: boolean;
   showArrow: boolean;
+  isMoneyAccountSelected?: boolean;
 };
 
 function PaySelectorContent({
@@ -69,6 +70,7 @@ function PaySelectorContent({
   balanceText,
   showBalance,
   showArrow,
+  isMoneyAccountSelected = false,
 }: PaySelectorContentProps) {
   return (
     <>
@@ -79,12 +81,22 @@ function PaySelectorContent({
             alignItems={AlignItems.center}
             marginRight={1}
           >
-            <TokenIcon
-              chainId={displayToken.chainId as `0x${string}`}
-              tokenAddress={displayToken.address as `0x${string}`}
-              symbol={displayToken.symbol}
-              size="xs"
-            />
+            {isMoneyAccountSelected ? (
+              <img
+                src="./images/money.png"
+                alt=""
+                width={16}
+                height={16}
+                data-testid="pay-with-money-account-icon"
+              />
+            ) : (
+              <TokenIcon
+                chainId={displayToken.chainId as `0x${string}`}
+                tokenAddress={displayToken.address as `0x${string}`}
+                symbol={displayToken.symbol}
+                size="xs"
+              />
+            )}
           </Box>
           <Text data-testid="pay-with-symbol">
             {displayToken.symbol}
@@ -127,10 +139,10 @@ export function PayWithRow({
     displayToken,
     balanceUsdFormatted,
     label,
-    canEdit,
     from,
     ownerId,
-    isPerpsWithdraw,
+    isPostQuoteWithdraw,
+    isMoneyAccountSelected,
     openModal,
     modal,
   } = usePayWithToken();
@@ -143,7 +155,9 @@ export function PayWithRow({
 
   // When the selected account has no funding tokens, show an empty
   // "Select payment method" placeholder instead of an endless skeleton.
-  if (!displayToken && !hasAccountNoFunds) {
+  // Post-quote withdraws also avoid an endless skeleton — destination tokens
+  // may still be importing/enriching; show an empty Receive selector instead.
+  if (!displayToken && !hasAccountNoFunds && !isPostQuoteWithdraw) {
     return <PayWithRowSkeleton />;
   }
 
@@ -159,18 +173,19 @@ export function PayWithRow({
       >
         <Box
           data-testid="pay-with-pill"
-          onClick={canEdit ? openModal : undefined}
+          onClick={openModal}
           display={Display.InlineFlex}
           alignItems={AlignItems.center}
           gap={1}
-          style={{ cursor: canEdit ? 'pointer' : 'default' }}
+          style={{ cursor: 'pointer' }}
         >
           <PaySelectorContent
             displayToken={displayToken}
             emptyLabel={t('payWithEmptySelection')}
             balanceText={` (${balanceUsdFormatted})`}
-            showBalance={Boolean(displayToken) && !isPerpsWithdraw}
-            showArrow={canEdit && Boolean(from)}
+            showBalance={Boolean(displayToken) && !isPostQuoteWithdraw}
+            showArrow={Boolean(from)}
+            isMoneyAccountSelected={isMoneyAccountSelected}
           />
         </Box>
       </ConfirmInfoAlertRow>

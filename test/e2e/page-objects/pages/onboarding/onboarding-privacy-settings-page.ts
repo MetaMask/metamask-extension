@@ -58,13 +58,11 @@ class OnboardingPrivacySettingsPage {
   private readonly chainIdInput = '[data-testid="network-form-chain-id"]';
 
   private readonly confirmAddCustomNetworkButton = {
-    text: 'Save',
-    tag: 'button',
+    testId: 'page-container-footer-next',
   };
 
   private readonly confirmAddRpcUrlButton = {
-    text: 'Add URL',
-    tag: 'button',
+    testId: 'add-rpc-url-button',
   };
 
   private readonly currencySymbolInput =
@@ -78,6 +76,9 @@ class OnboardingPrivacySettingsPage {
 
   private readonly networkNameInput =
     '[data-testid="network-form-network-name"]';
+
+  private readonly page =
+    '[data-testid="parent-selector-onboarding-privacy-settings"]';
 
   private readonly privacySettingsBackButton =
     '[data-testid="privacy-settings-back-button"]';
@@ -132,6 +133,7 @@ class OnboardingPrivacySettingsPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.generalSettings,
         this.assetsSettings,
         this.securitySettings,

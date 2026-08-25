@@ -5,6 +5,7 @@ import { TransactionType } from '@metamask/transaction-controller';
  */
 export const PAY_TRANSACTION_TYPES = [
   TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
   TransactionType.musdClaim,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
