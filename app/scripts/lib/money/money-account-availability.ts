@@ -42,12 +42,10 @@ export type MoneyAccountAvailabilityServiceGetAvailabilityAction = {
   handler: MoneyAccountAvailabilityService['getAvailability'];
 };
 
-type MoneyAccountAvailabilityActions =
-  MoneyAccountAvailabilityServiceGetAvailabilityAction;
-
 export type MoneyAccountAvailabilityMessenger = Messenger<
   typeof serviceName,
-  MoneyAccountAvailabilityActions | MoneyAccountAvailabilityAllowedActions,
+  | MoneyAccountAvailabilityServiceGetAvailabilityAction
+  | MoneyAccountAvailabilityAllowedActions,
   MoneyAccountAvailabilityEvents
 >;
 
