@@ -6,9 +6,9 @@
  *
  * - Exact p-value via DP enumeration for small samples without ties (n1*n2 <= 400)
  * - Normal approximation with continuity correction and tie correction otherwise
- * - Effect size: rank-biserial r = 1 - 2U/(n1*n2), range [-1, 1]
- *
- * Reference: mann-whitney-u.py in repo root (scipy.stats.mannwhitneyu validation)
+ * - Effect size: signed rank-biserial r = 1 - 2*U2/(n1*n2), range [-1, 1].
+ *   Deliberately U2 rather than the `uStatistic` field's min(U1, U2), so the
+ *   sign survives: positive = current slower, negative = current faster.
  */
 
 /** Minimum effective sample count (after warm-up exclusion + IQR trimming) required to emit a Mann-Whitney verdict. */

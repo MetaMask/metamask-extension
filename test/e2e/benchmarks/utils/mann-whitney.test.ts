@@ -13,10 +13,11 @@ describe('mannWhitneyU', () => {
       expect(result.exact).toBe(true);
     });
 
-    it('returns U = n1*n2/2 for identical distributions', () => {
+    it('returns a near-central U and no significance for interleaved samples', () => {
       const a = [10, 20, 30, 40, 50];
       const b = [15, 25, 35, 45, 55];
-      // Interleaved → U close to n1*n2/2 = 12.5
+      // `uStatistic` is min(U1, U2), so it cannot reach the n1*n2/2 = 12.5
+      // midpoint; 10 is the closest an interleaved 5x5 split gets.
       const result = mannWhitneyU(a, b);
       expect(result.uStatistic).toBe(10);
       expect(result.pValue).toBeGreaterThan(0.05);
@@ -157,12 +158,11 @@ describe('isSignificantRegression', () => {
       [1070, 1080, 1060, 1075, 1065],
       [1000, 1005, 995, 1010, 990],
     );
-    // With n=5, may not reach significance — but if it does:
-    if (result.significant) {
-      expect(result.verdict).toBe('warn');
-    } else {
-      expect(result.verdict).toBe('pass');
-    }
+    // Fully non-overlapping at n1=n2=5, so the exact two-sided p is 2/252
+    // ≈ 0.0079 and significance is deterministic — asserted, not branched on.
+    expect(result.significant).toBe(true);
+    expect(result.pValue).toBeCloseTo(0.0079, 4);
+    expect(result.verdict).toBe('warn');
   });
 
   it('returns pass verdict when not significant', () => {
@@ -204,14 +204,14 @@ describe('isSignificantRegression', () => {
     expect(lenient.significant).toBe(true);
   });
 
-  describe('validates against reference implementation (mann-whitney-u.py)', () => {
+  describe('matches scipy.stats.mannwhitneyu on recorded benchmark samples', () => {
     it('matches R5 Rapid Route Cycling: homeToSend', () => {
       const result = isSignificantRegression(
         'homeToSend',
         [75.9, 74.5, 110.3, 76.1, 72.5], // treatment (fix applied)
         [408.1, 1288.3, 1039.0, 396.4, 235.5], // baseline (before fix)
       );
-      // Python reference: p ≈ 0.0079, r = -1.0 (current is faster)
+      // scipy.stats.mannwhitneyu on these samples: p ≈ 0.0079, r = -1.0 (current is faster)
       expect(result.pValue).toBeCloseTo(0.0079, 3);
       expect(result.deltaPercent).toBeLessThan(0); // Improvement
       expect(result.verdict).toBe('pass'); // Improvement, not regression
@@ -223,7 +223,7 @@ describe('isSignificantRegression', () => {
         [353.0, 361.6, 113.5, 164.5, 143.8], // treatment
         [200.7, 84.6, 86.3, 126.5, 105.2], // baseline
       );
-      // Python reference: p ≈ 0.15, not significant
+      // scipy.stats.mannwhitneyu on these samples: p ≈ 0.15, not significant
       expect(result.pValue).toBeGreaterThan(0.05);
       expect(result.verdict).toBe('pass');
     });
