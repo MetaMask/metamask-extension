@@ -27,9 +27,6 @@ export default function WelcomeLogin({
   skipTransition?: boolean;
 }) {
   const t = useI18nContext();
-  const [showLoginOptions, setShowLoginOptions] = useState(false);
-  const [loginOption, setLoginOption] = useState<LoginOptionType | null>(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const dispatch = useDispatch();
@@ -38,6 +35,18 @@ export default function WelcomeLogin({
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const loginParam = searchParams.get('login');
+  const [localLoginOption, setLocalLoginOption] =
+    useState<LoginOptionType | null>(null);
+  const [hiddenForLoginParam, setHiddenForLoginParam] = useState<string | null>(
+    null,
+  );
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const loginOption =
+    (loginParam as LoginOptionType | null) ?? localLoginOption;
+  const showLoginOptions = loginParam
+    ? hiddenForLoginParam !== loginParam
+    : localLoginOption !== null;
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -48,28 +57,22 @@ export default function WelcomeLogin({
     };
   }, []);
 
-  useEffect(() => {
-    if (loginParam) {
-      setShowLoginOptions(true);
-      setLoginOption(loginParam as LoginOptionType);
-    } else {
-      setShowLoginOptions(false);
-      setLoginOption(null);
-    }
-  }, [loginParam]);
-
   const handleLogin = useCallback(
     async (loginType: LoginType) => {
       if (!loginOption) {
         return;
       }
-      setShowLoginOptions(false);
+      if (loginParam) {
+        setHiddenForLoginParam(loginParam);
+      } else {
+        setLocalLoginOption(null);
+      }
 
       await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
       await onLogin(loginType, loginOption);
     },
-    [dispatch, loginOption, onLogin],
+    [dispatch, loginOption, loginParam, onLogin],
   );
 
   const handleButtonClick = async (
@@ -77,6 +80,7 @@ export default function WelcomeLogin({
     loginType?: LoginType,
   ) => {
     if (isSeedlessOnboardingFeatureEnabled) {
+      setHiddenForLoginParam(null);
       setIsTransitioning(true);
       // Clear any existing timeout
       if (timeoutRef.current) {
@@ -84,15 +88,13 @@ export default function WelcomeLogin({
       }
       // Wait for fade-out animation
       timeoutRef.current = setTimeout(() => {
-        setShowLoginOptions(true);
-        setLoginOption(option);
         setIsTransitioning(false);
         timeoutRef.current = null;
+        setLocalLoginOption(option);
         navigate(`${ONBOARDING_WELCOME_ROUTE}?login=${option}`);
       }, 100);
     } else {
-      setShowLoginOptions(true);
-      setLoginOption(option);
+      setLocalLoginOption(option);
       if (loginType) {
         await onLogin(loginType, option);
       }
@@ -125,9 +127,7 @@ export default function WelcomeLogin({
           <Box
             flexDirection={BoxFlexDirection.Column}
             gap={4}
-            className={`w-full ${
-              isTransitioning ? 'welcome-login__cta--fade-out' : ''
-            }`}
+            className={`w-full ${isTransitioning ? 'welcome-login__cta--fade-out' : ''}`}
           >
             <Button
               data-testid="onboarding-create-wallet"

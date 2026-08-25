@@ -152,8 +152,9 @@
   "accountsConnected": {
     "message": "Đã kết nối tài khoản"
   },
-  "accountsPermissionsTitle": {
-    "message": "Xem tài khoản của bạn và đề xuất giao dịch"
+  "accountsCount": {
+    "message": "$1 tài khoản",
+    "description": "Label showing number of accounts selected, $1 is the count"
   },
   "accountsSmallCase": {
     "message": "tài khoản"
@@ -1397,6 +1398,12 @@
   "alert": {
     "message": "Cảnh báo"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "Không có tiền khả dụng. Hãy sử dụng tài khoản khác."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "Không đủ tiền"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "Bạn đang nâng cấp tài khoản lên tài khoản thông minh. Địa chỉ tài khoản hiện tại của bạn sẽ được giữ nguyên, nhưng giao dịch sẽ nhanh hơn và phí mạng sẽ thấp hơn. $1"
   },
@@ -1423,6 +1430,10 @@
   },
   "alertContentMultipleApprovals": {
     "message": "Bạn đang cấp cho người khác quyền rút token của bạn, mặc dù điều đó không cần thiết cho giao dịch này."
+  },
+  "alertDepositLimit": {
+    "message": "Tiền nạp tối đa: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
   },
   "alertDisableTooltip": {
     "message": "Bạn có thể thay đổi trong phần \"Cài đặt > Cảnh báo\""
@@ -1574,9 +1585,6 @@
   },
   "allNetworks": {
     "message": "Tất cả mạng"
-  },
-  "allPermissions": {
-    "message": "Kết nối Dapp"
   },
   "allPopularNetworks": {
     "message": "Tất cả mạng phổ biến"
@@ -1768,6 +1776,9 @@
   },
   "back": {
     "message": "Quay lại"
+  },
+  "backToSafety": {
+    "message": "Quay lại mục an toàn"
   },
   "backUpIncomplete": {
     "message": "Sao lưu chưa hoàn tất"
@@ -1990,54 +2001,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Nếu tiếp tục, tất cả tài sản bạn đã niêm yết trên Blur có thể gặp rủi ro."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Bạn đang tương tác với một trang web độc hại. Nếu tiếp tục, bạn sẽ bị mất tài sản."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Nếu tiếp tục, tất cả tài sản bạn đã niêm yết trên OpenSea có thể gặp rủi ro."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Nếu bạn xác nhận yêu cầu này, bạn có thể bị mất tài sản. Chúng tôi khuyên bạn nên hủy yêu cầu này."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Bạn đang gửi tài sản của mình cho kẻ lừa đảo. Nếu tiếp tục, bạn sẽ bị mất những tài sản đó."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Nếu bạn xác nhận yêu cầu này, bạn đang cho phép kẻ lừa đảo rút và chi tiêu tài sản của mình. Bạn sẽ không lấy lại được tài sản."
-  },
-  "blockaidDescriptionApproveFarming": {
-    "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo có thể lấy hết tài sản của bạn."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Nếu bạn chấp thuận yêu cầu này, người khác có thể đánh cắp tài sản được niêm yết trên Blur của bạn."
-  },
-  "blockaidDescriptionErrored": {
-    "message": "Do có lỗi, chúng tôi không thể kiểm tra các cảnh báo bảo mật. Chỉ tiếp tục nếu bạn tin tưởng tất cả các địa chỉ liên quan."
-  },
-  "blockaidDescriptionMaliciousDomain": {
-    "message": "Bạn đang tương tác với một tên miền độc hại. Nếu bạn chấp thuận yêu cầu này, bạn có thể mất tài sản của mình."
-  },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Nếu bạn chấp thuận yêu cầu này, bạn có thể mất tài sản của mình."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Nếu bạn chấp thuận yêu cầu này, người khác có thể đánh cắp tài sản được niêm yết trên OpenSea của bạn."
-  },
-  "blockaidDescriptionTransferFarming": {
-    "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo sẽ lấy hết tài sản của bạn."
-  },
-  "blockaidTitleDeceptive": {
-    "message": "Đây là một yêu cầu lừa đảo"
-  },
-  "blockaidTitleMayNotBeSafe": {
-    "message": "Hãy cẩn thận"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Đây là một yêu cầu đáng ngờ"
   },
   "blockies": {
     "message": "Blockies"
@@ -2771,9 +2734,6 @@
   "confirmationAlertDetails": {
     "message": "Để bảo vệ tài sản của bạn, chúng tôi đề nghị bạn từ chối yêu cầu này."
   },
-  "confirmationAlertModalTitleDescription": {
-    "message": "Tài sản của bạn có thể gặp rủi ro"
-  },
   "confirmed": {
     "message": "Đã xác nhận"
   },
@@ -2798,8 +2758,8 @@
   "connectAHardwareWalletDescription": {
     "message": "Sử dụng USB hoặc mã QR"
   },
-  "connectAccounts": {
-    "message": "Kết nối tài khoản"
+  "connectAnyway": {
+    "message": "Vẫn kết nối"
   },
   "connectHardwareDevice": {
     "message": "Kết nối $1",
@@ -2845,18 +2805,6 @@
   "connectedSnaps": {
     "message": "Snap đã kết nối"
   },
-  "connectedWithAccount": {
-    "message": "Đã kết nối $1 tài khoản",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Đã kết nối với $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "Đã kết nối $1 mạng",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Đang kết nối"
   },
@@ -2894,6 +2842,9 @@
   "connectionRequest": {
     "message": "Yêu cầu kết nối"
   },
+  "connections": {
+    "message": "Kết nối"
+  },
   "connectionsRemovedModalDescription": {
     "message": "Một số kết nối (chẳng hạn như ví cứng và snap) đã bị xóa do không hoạt động trên thiết bị này. Bạn có thể thêm lại bất kỳ lúc nào trong phần Cài đặt."
   },
@@ -2921,6 +2872,9 @@
   },
   "continue": {
     "message": "Tiếp tục"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "Bạn tự chịu rủi ro khi tiếp tục"
   },
   "contract": {
     "message": "Hợp đồng"
@@ -3096,9 +3050,6 @@
   },
   "customerSupport": {
     "message": "hỗ trợ khách hàng"
-  },
-  "dappConnections": {
-    "message": "Kết nối Dapp"
   },
   "dappSuggested": {
     "message": "Trang web đề xuất"
@@ -3446,6 +3397,9 @@
   "disconnectAllSites": {
     "message": "Ngắt kết nối tất cả"
   },
+  "disconnectAllSitesDescriptionText": {
+    "message": "Thao tác này sẽ ngắt kết nối tất cả tài khoản của bạn khỏi tất cả dapp. Bạn sẽ cần kết nối lại để sử dụng lại các tài khoản đó."
+  },
   "disconnectAllSitesError": {
     "message": "Không thể ngắt kết nối một số dapp. Vui lòng thử lại."
   },
@@ -3455,14 +3409,15 @@
   "disconnectAllSitesSuccess": {
     "message": "Đã ngắt kết nối tất cả dapp thành công."
   },
-  "disconnectMessage": {
-    "message": "Hành động này sẽ ngắt kết nối bạn khỏi trang web này"
-  },
   "disconnectPrompt": {
     "message": "Ngắt kết nối $1"
   },
   "disconnectQuestion": {
     "message": "Ngắt kết nối?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "Thao tác này sẽ ngắt kết nối tất cả tài khoản của bạn khỏi $1. Bạn sẽ cần kết nối lại để sử dụng lại dapp này.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "Ngắt kết nối tài khoản này"
@@ -3633,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "chỉnh sửa mạng gốc"
-  },
-  "editNetworksTitle": {
-    "message": "Chỉnh sửa mạng"
   },
   "editNonceField": {
     "message": "Chỉnh sửa số nonce"
@@ -5093,6 +5045,9 @@
   "manage": {
     "message": "Quản lý"
   },
+  "manageConnectedAccounts": {
+    "message": "Quản lý tài khoản đã kết nối"
+  },
   "manageDefaultSettings": {
     "message": "Quản lý cài đặt mặc định"
   },
@@ -5258,6 +5213,48 @@
   "mmFee": {
     "message": "Phí MetaMask $1%"
   },
+  "money": {
+    "message": "Tài chính"
+  },
+  "moneyActivity": {
+    "message": "Hoạt động"
+  },
+  "moneyAdd": {
+    "message": "Thêm"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Số dư không khả dụng"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Có khả năng thanh khoản cao, không bị khóa vốn, cho phép giao dịch hoặc rút tiền bất cứ lúc nào"
+  },
+  "moneyBenefitSend": {
+    "message": "Gửi đến bất kỳ ví nào của bạn trên MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Giữ tiền của bạn an toàn dưới dạng mUSD, một đồng ổn định được bảo chứng 1:1 theo USD"
+  },
+  "moneyBenefits": {
+    "message": "Quyền lợi"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Kiếm lợi nhuận từ tiền mã hóa của bạn"
+  },
+  "moneyFundDescription": {
+    "message": "Nạp tiền vào Money Account và theo dõi số dư tăng trưởng."
+  },
+  "moneyHowItWorks": {
+    "message": "Cách hoạt động"
+  },
+  "moneyLearnMore": {
+    "message": "Tìm hiểu thêm"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Gửi"
+  },
   "month": {
     "message": "tháng"
   },
@@ -5266,10 +5263,6 @@
   },
   "more": {
     "message": "thêm"
-  },
-  "moreAccounts": {
-    "message": "+ $1 tài khoản nữa",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Thêm"
@@ -5464,18 +5457,6 @@
     "message": "Nhận thưởng",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Thưởng có thể nhận",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "Phần thưởng quy đổi theo năm bạn đã nhận được khi nắm giữ mUSD. Bạn có thể nhận thưởng hằng ngày trên Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Chi tiết phần thưởng có thể nhận",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Phí chuyển đổi mUSD bao gồm phí mạng và có thể bao gồm phí từ nhà cung cấp. Không áp dụng phí MetaMask khi bạn chuyển đổi sang mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5500,10 +5481,6 @@
   "musdConvert": {
     "message": "Chuyển đổi"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Nhận thưởng $1%",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Bắt đầu"
   },
@@ -5516,10 +5493,6 @@
   },
   "musdGetMusd": {
     "message": "Nhận mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5727,9 +5700,6 @@
   "networkOptions": {
     "message": "Tùy chọn mạng"
   },
-  "networkPermissionToast": {
-    "message": "Đã cập nhật quyền truy cập mạng"
-  },
   "networkStatus": {
     "message": "Trạng thái mạng"
   },
@@ -5765,9 +5735,6 @@
   },
   "networks": {
     "message": "Mạng"
-  },
-  "networksSmallCase": {
-    "message": "mạng"
   },
   "new": {
     "message": "Mới!"
@@ -5881,15 +5848,16 @@
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
-  "noConnectionDescription": {
-    "message": "MetaMask chưa được kết nối với trang web này. Để bắt đầu, hãy chọn nút Kết nối của trang web."
-  },
   "noDefaultAddress": {
     "message": "Không có địa chỉ $1",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Không có nội dung phân giải cho tên miền được cung cấp."
+  },
+  "noFee": {
+    "message": "Không tốn phí",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap và hầu hết các ví cứng sẽ không hoạt động với phiên bản trình duyệt hiện tại của bạn."
@@ -6115,12 +6083,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Bạn chưa nhận được bất kỳ thông báo nào."
-  },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "Yêu cầu kết nối CLI, phê duyệt và cập nhật phiên cho Agentic"
-  },
-  "notificationsSettingsAgenticCliTitle": {
-    "message": "Agentic CLI"
   },
   "notificationsSettingsBoxError": {
     "message": "Đã xảy ra lỗi. Vui lòng thử lại."
@@ -6561,9 +6523,29 @@
     "message": "Thanh toán bằng",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "Crypto",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "Chọn phương thức thanh toán",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "Thanh toán bằng",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "Tài sản khác",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "Chọn từ các token của bạn",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "Người nhận thanh toán"
@@ -6596,6 +6578,10 @@
   "percentChange": {
     "message": "Phần trăm thay đổi"
   },
+  "permissionCannotMoveFunds": {
+    "message": "Không thể chuyển tiền nếu không có sự cho phép của bạn",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "Quyền cho"
   },
@@ -6615,6 +6601,14 @@
   "permissionRevokedForAccounts": {
     "message": "Đã thu hồi trong bản cập nhật này cho $1",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "Xem địa chỉ, số dư và hoạt động",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "Gửi yêu cầu giao dịch",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "Kết nối với $1.",
@@ -6855,8 +6849,8 @@
   "permissions": {
     "message": "Quyền"
   },
-  "permissionsPageEmptyDescription": {
-    "message": "Không phát hiện quyền nào. Sau khi bạn cấp quyền cho một trang web hoặc cài đặt một Snap, thông tin chi tiết sẽ xuất hiện ở đây."
+  "permissionsPageEmptyTitle": {
+    "message": "Không có thông báo nào ở đây"
   },
   "permitSimulationChange_approve": {
     "message": "Hạn mức chi tiêu"
@@ -7002,6 +6996,9 @@
   },
   "perpsClosePosition": {
     "message": "Đóng vị thế"
+  },
+  "perpsClosePrice": {
+    "message": "Giá đóng vị thế"
   },
   "perpsClosePriceUnavailable": {
     "message": "Giá hiện tại không khả dụng. Hãy thử lại sau ít phút."
@@ -7320,6 +7317,15 @@
   "perpsOrderBookGroupBy": {
     "message": "Nhóm theo"
   },
+  "perpsOrderBookLayout": {
+    "message": "Bố cục sổ lệnh"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "Trái"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "Phải"
+  },
   "perpsOrderBookListedBy": {
     "message": "Niêm yết bởi"
   },
@@ -7379,6 +7385,9 @@
   "perpsOrderFailed": {
     "message": "Không thể đặt lệnh. Hãy thử lại."
   },
+  "perpsOrderFilled": {
+    "message": "Đã khớp"
+  },
   "perpsOrderOriginalSize": {
     "message": "Kích thước ban đầu"
   },
@@ -7387,6 +7396,12 @@
   },
   "perpsOrderStatus": {
     "message": "Trạng thái"
+  },
+  "perpsOrderTotalFee": {
+    "message": "Tổng phí"
+  },
+  "perpsOrderType": {
+    "message": "Loại lệnh"
   },
   "perpsOrderValue": {
     "message": "Giá trị lệnh"
@@ -8253,9 +8268,6 @@
     "message": "Mua thành công",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Tùy chọn khác"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "ngày làm việc"
   },
@@ -8473,9 +8485,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Đây là trang web yêu cầu xác nhận của bạn."
-  },
-  "requestingFor": {
-    "message": "Yêu cầu cho"
   },
   "required": {
     "message": "Bắt buộc"
@@ -9135,6 +9144,9 @@
   "securityTrustMalicious": {
     "message": "Độc hại"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "Độc hại—đã bị gắn cờ là không an toàn"
+  },
   "securityTrustMaliciousLabel": {
     "message": "Độc hại"
   },
@@ -9275,6 +9287,9 @@
   "select": {
     "message": "Chọn"
   },
+  "selectAccounts": {
+    "message": "Chọn tài khoản"
+  },
   "selectAll": {
     "message": "Chọn tất cả"
   },
@@ -9292,9 +9307,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Bật tính năng Tự động phát hiện NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Chọn mạng để lọc"
   },
   "selectPathHelp": {
     "message": "Nếu bạn không thấy các tài khoản như mong đợi, hãy chuyển đổi đường dẫn HD hoặc mạng đã chọn hiện tại."
@@ -10057,6 +10069,12 @@
   "showTestnetNetworks": {
     "message": "Hiển thị các mạng thử nghiệm"
   },
+  "showTickerWidget": {
+    "message": "Hiển thị tiện ích web trên X"
+  },
+  "showTickerWidgetDescription": {
+    "message": "Hiển thị tiện ích MetaMask với thông tin chi tiết về token khi bạn sử dụng X.com."
+  },
   "sidePanelMigrationToast": {
     "message": "MetaMask hiện mở trong bảng bên theo mặc định. $1 bất kỳ lúc nào từ menu.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -10158,8 +10176,9 @@
   "singleNetwork": {
     "message": "1 mạng"
   },
-  "sites": {
-    "message": "Trang web"
+  "sitePermissionsBanner": {
+    "message": "$1 có thể xem các tài khoản đã kết nối của bạn và đề xuất giao dịch.",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "Đã phát hành"
@@ -11430,6 +11449,9 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask gặp sự cố khi khởi động."
+  },
+  "trustSignalPhishingWarning": {
+    "message": "Trang web này có dấu hiệu của hành động lừa đảo hoặc chiếm đoạt tiền trong ví. Trang web này có thể yêu cầu bạn thực hiện các giao dịch được thiết kế để đánh cắp tiền của bạn."
   },
   "tryAgain": {
     "message": "Thử lại"

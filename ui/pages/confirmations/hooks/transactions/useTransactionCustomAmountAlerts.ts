@@ -1,5 +1,3 @@
-'use no memo';
-
 import { useMemo } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import useAlerts from '../../../../hooks/useAlerts';
@@ -11,6 +9,7 @@ const ALERTS_HIDE_RESULTS: string[] = [
   AlertsName.DepositLimit,
   AlertsName.InsufficientPayTokenBalance,
   AlertsName.PayHardwareAccount,
+  AlertsName.PerpsWithdrawBalanceUnavailable,
   AlertsName.SigningOrSubmitting,
 ];
 

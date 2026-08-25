@@ -1,9 +1,11 @@
 import {
   BridgeController,
   BridgeControllerMessenger,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getRootMessenger } from '../lib/messenger';
+import { trackEvent } from '../controllers/analytics';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -19,6 +21,11 @@ jest.mock('@metamask/bridge-controller', () => {
     BridgeController: jest.fn(),
   };
 });
+
+jest.mock('../controllers/analytics', () => ({
+  ...jest.requireActual('../controllers/analytics'),
+  trackEvent: jest.fn(),
+}));
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
@@ -65,5 +72,39 @@ describe('BridgeControllerInit', () => {
       traceFn: expect.any(Function),
       getUseAssetsControllerForRates: expect.any(Function),
     });
+  });
+
+  it('correctly sets up trackMetaMetricsFn', () => {
+    BridgeControllerInit(getInitRequestMock());
+    const constructorOptions = jest.mocked(BridgeController).mock.calls[0][0];
+    const { trackMetaMetricsFn } = constructorOptions;
+    const properties = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      error_message: 'Snap request failed',
+    };
+
+    trackMetaMetricsFn(UnifiedSwapBridgeEventName.Failed, properties as never);
+
+    expect(trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: UnifiedSwapBridgeEventName.Failed,
+        properties: expect.objectContaining(properties),
+      }),
+    );
+  });
+
+  it('handles trackMetaMetricsFn with no properties', () => {
+    BridgeControllerInit(getInitRequestMock());
+    const constructorOptions = jest.mocked(BridgeController).mock.calls[0][0];
+    const { trackMetaMetricsFn } = constructorOptions;
+
+    trackMetaMetricsFn(UnifiedSwapBridgeEventName.Failed, {} as never);
+
+    expect(trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: UnifiedSwapBridgeEventName.Failed,
+        properties: expect.any(Object),
+      }),
+    );
   });
 });

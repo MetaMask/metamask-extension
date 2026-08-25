@@ -10,8 +10,8 @@ import {
 import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../constants';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
 import { base58AddressToHex } from '../../seeder/tron/assets';
@@ -73,7 +73,7 @@ async function assertTronAddressesForAccounts(
 ): Promise<void> {
   const homepage = new HomePage(driver);
   const accountList = new AccountListPage(driver);
-  const addressList = new AddressListModal(driver);
+  const addressList = new AccountAddressListPage(driver);
 
   await homepage.headerNavbar.openAccountMenu();
   await accountList.checkPageIsLoaded();
@@ -136,7 +136,7 @@ describe('Tron account derivation', function (this: Suite) {
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
-        const addressList = new AddressListModal(driver);
+        const addressList = new AccountAddressListPage(driver);
 
         // Open account menu to let the UI sync complete
         await homepage.headerNavbar.openAccountMenu();
@@ -229,7 +229,7 @@ describe('Tron account derivation', function (this: Suite) {
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
-        const addressList = new AddressListModal(driver);
+        const addressList = new AccountAddressListPage(driver);
 
         for (let index = 0; index < 8; index += 1) {
           const accountLabel = `Account ${index + 1}`;
@@ -270,7 +270,7 @@ describe('Tron account derivation', function (this: Suite) {
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
-        const addressList = new AddressListModal(driver);
+        const addressList = new AccountAddressListPage(driver);
         await homepage.headerNavbar.openAccountMenu();
         await accountList.checkPageIsLoaded();
 
@@ -307,7 +307,7 @@ describe('Tron account derivation', function (this: Suite) {
 
         const homepage = new NonEvmHomepage(driver);
         const accountList = new AccountListPage(driver);
-        const addressList = new AddressListModal(driver);
+        const addressList = new AccountAddressListPage(driver);
 
         for (let index = 0; index < 8; index += 1) {
           const accountLabel = `Account ${index + 1}`;
