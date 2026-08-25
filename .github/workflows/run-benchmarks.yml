@@ -79,10 +79,16 @@ jobs:
       TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
-      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
-      GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
-      # main or release/* only — for S3 / AWS CLI (same ref semantics as Sentry).
-      MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
+      HEAD_COMMIT_HASH: ${{ inputs.measured-sha || github.event.pull_request.head.sha || github.sha }}
+      # `measured-ref` first: on a `schedule` event `github.ref` is the default
+      # branch, so without it a run measuring a release tag stamps its Sentry
+      # events `ci.branch:main` and contaminates the mocked-main population that
+      # the threshold recalibration query reads back.
+      GITHUB_REF_NAME: ${{ inputs.measured-ref || github.head_ref || github.ref_name }}
+      # Gates the Sentry send: only populations with a stable identity are worth
+      # a series. A named `measured-ref` is a release tag, which is neither
+      # `main` nor `release/*`, so it has to be named explicitly.
+      MAIN_OR_RELEASE: ${{ inputs.measured-ref != '' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
       BENCHMARK_MOCK_MODE: ${{ inputs.benchmark-mock-mode }}
     steps:
       - name: Checkout and setup environment
@@ -133,7 +139,9 @@ jobs:
             --buildType "${{ matrix.buildType }}"
         shell: bash
         env:
-          GH_HEAD_REF: ${{ github.head_ref }}
+          # `measured-ref` leads: the step re-exports GITHUB_REF_NAME from these,
+          # so the job-level value is shadowed and this pair is what Sentry sees.
+          GH_HEAD_REF: ${{ inputs.measured-ref || github.head_ref }}
           GH_REF_NAME: ${{ github.ref_name }}
 
       - name: Upload benchmark to S3
@@ -182,7 +190,9 @@ jobs:
       BENCHMARK_BROWSER_LOADS: '10'
       BENCHMARK_PAGE_LOADS: '10'
       DAPP_BENCHMARK_JSON: benchmark-chrome-webpack-pageLoadBenchmark.json
-      MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
+      # See the `benchmarks` job for why `measured-ref` leads here.
+      GITHUB_REF_NAME: ${{ inputs.measured-ref || github.head_ref || github.ref_name }}
+      MAIN_OR_RELEASE: ${{ inputs.measured-ref != '' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
       BENCHMARK_MOCK_MODE: ${{ inputs.benchmark-mock-mode }}
     steps:
       - name: Checkout and setup environment
@@ -224,7 +234,9 @@ jobs:
             --buildType "webpack"
         shell: bash
         env:
-          GH_HEAD_REF: ${{ github.head_ref }}
+          # `measured-ref` leads: the step re-exports GITHUB_REF_NAME from these,
+          # so the job-level value is shadowed and this pair is what Sentry sees.
+          GH_HEAD_REF: ${{ inputs.measured-ref || github.head_ref }}
           GH_REF_NAME: ${{ github.ref_name }}
 
       - name: Upload benchmark to S3
