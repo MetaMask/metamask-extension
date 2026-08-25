@@ -23,6 +23,7 @@ import {
   Severity,
 } from '../../../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
+import { SEND_TRANSACTION_TYPES } from '../../../constants/send';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
@@ -288,6 +289,15 @@ const Footer = () => {
     currentConfirmation?.type,
   );
   const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
+  // Send pushes the confirm route onto history (perps/mUSD replace into it),
+  // so Cancel must pop that entry via history.back() rather than replace() to
+  // goBackTo, which would leave a duplicate send-amount entry in history.
+  const isWalletInitiatedSend =
+    currentConfirmation?.origin === 'metamask' &&
+    Boolean(currentConfirmation?.type) &&
+    SEND_TRANSACTION_TYPES.includes(
+      currentConfirmation?.type as TransactionType,
+    );
 
   const onUserRejectedHardwareWalletError = useCallback(async () => {
     // User intentionally rejected on device; follow the cancel flow.
@@ -416,13 +426,14 @@ const Footer = () => {
 
     await onCancel({
       location: MetaMetricsEventLocation.Confirmation,
-      navigateBackToPreviousPage: Boolean(goBackTo),
+      navigateBackForSend: isWalletInitiatedSend,
+      navigateBackToPreviousPage: !isWalletInitiatedSend && Boolean(goBackTo),
     });
 
     onDappSwapCompleted();
     dismissErrorModal();
 
-    if (goBackTo) {
+    if (isWalletInitiatedSend || goBackTo) {
       return;
     }
 
@@ -438,6 +449,7 @@ const Footer = () => {
     navigateNext,
     onCancel,
     goBackTo,
+    isWalletInitiatedSend,
     shouldThrottleOrigin,
     currentConfirmationId,
     isAddEthereumChain,

@@ -211,9 +211,10 @@ jest.mock('../../../hooks/transactions/useTransactionConfirm', () => ({
     onTransactionConfirm: mockOnTransactionConfirm,
   })),
 }));
+const mockNavigateBackIfSend = jest.fn();
 jest.mock('../../../hooks/useConfirmSendNavigation', () => ({
   useConfirmSendNavigation: jest.fn(() => ({
-    navigateBackIfSend: jest.fn(),
+    navigateBackIfSend: mockNavigateBackIfSend,
   })),
 }));
 
@@ -289,6 +290,7 @@ describe('ConfirmFooter', () => {
     setErrorModalSuppressedMock.mockReset();
     mockNavigateNext.mockReset();
     mockNavigateToId.mockReset();
+    mockNavigateBackIfSend.mockReset();
     mockUseHardwareWalletState.mockReset();
     mockUseHardwareWalletConfig.mockReset();
     mockUseHardwareWalletActions.mockReset();
@@ -1448,6 +1450,44 @@ describe('ConfirmFooter', () => {
       await waitFor(() => {
         expect(navigateNextMock).toHaveBeenCalled();
       });
+    });
+
+    it('pops history via navigateBackIfSend for wallet-initiated send instead of replacing to goBackTo', async () => {
+      const navigateNextMock = jest.fn();
+      useConfirmationNavigationMock.mockReturnValue({
+        navigateNext: navigateNextMock,
+        navigateToId: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmationNavigation>);
+
+      const goBackTo = '/send/amount-recipient';
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: genUnapprovedTokenTransferConfirmation({
+          isWalletInitiatedConfirmation: true,
+        }),
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+        goBackTo,
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+      const rejectSpy = jest
+        .spyOn(Actions, 'rejectPendingApproval')
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockImplementation(() => Promise.resolve() as any);
+      mockUseNavigate.mockClear();
+
+      const { getAllByRole } = render();
+      fireEvent.click(getAllByRole('button')[0]);
+
+      await waitFor(() => {
+        expect(rejectSpy).toHaveBeenCalled();
+      });
+
+      expect(mockNavigateBackIfSend).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(goBackTo, {
+        replace: true,
+      });
+      expect(navigateNextMock).not.toHaveBeenCalled();
     });
   });
 });
