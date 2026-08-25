@@ -12,7 +12,7 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { login } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';

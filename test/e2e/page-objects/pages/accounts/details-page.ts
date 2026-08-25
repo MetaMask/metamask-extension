@@ -9,15 +9,15 @@ import { largeDelayMs } from '../../../helpers';
  * key and SRP entry points, networks row, remove-account confirm/cancel, and
  * common loaded/error checks.
  * Boundaries: the account details page. Address list / QR and private-key
- * password UI belong to `AddressListModal`, `AccountAddressModal`, and
+ * password UI belong to `AccountAddressListPage`, `AccountAddressModal`, and
  * `PrivateKeyModal`; wallet-level details are
- * `MultichainWalletDetailsPage`.
- * Related: `AddressListModal`, `AccountAddressModal`, `PrivateKeyModal`,
- * `MultichainWalletDetailsPage`.
+ * `WalletDetailsPage`.
+ * Related: `AccountAddressListPage`, `AccountAddressModal`, `PrivateKeyModal`,
+ * `WalletDetailsPage`.
  *
  * @see ui/pages/multichain-accounts/multichain-account-details-page/multichain-account-details-page.tsx
  */
-class MultichainAccountDetailsPage {
+class AccountDetailsPage {
   // First row is account name
 
   private readonly accountAddressRow =
@@ -426,4 +426,4 @@ class MultichainAccountDetailsPage {
   }
 }
 
-export default MultichainAccountDetailsPage;
+export default AccountDetailsPage;
