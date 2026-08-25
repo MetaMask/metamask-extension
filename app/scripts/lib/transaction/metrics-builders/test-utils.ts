@@ -66,7 +66,6 @@ export const createBuilderRequest = (
     eventName: 'added' as any,
     transactionEventPayload: { transactionMeta: {} as any },
     context: {
-      contractAddress: '0x2222222222222222222222222222222222222222',
       contractMethodName: 'transfer',
       contractMethod4Byte: '0xa9059cbb',
       transactionTypeForMetrics: 'simpleSend',

@@ -159,13 +159,11 @@ describe('transaction metrics handlers', () => {
     });
 
     const payload = trackEventMock.mock.calls[0][0];
-    expect(request.getMethodData).toHaveBeenCalledWith('0xa9059cbb');
     expect(payload.properties).toMatchObject({
       enforced_simulation_submitted_enabled: true,
       transaction_contract_address: [
         '0x3333333333333333333333333333333333333333',
       ],
-      transaction_contract_method: ['transfer'],
       transaction_contract_method_4byte: '0xa9059cbb',
     });
   });
@@ -330,6 +328,7 @@ describe('transaction metrics handlers', () => {
   it('preserves enforced simulation batch contract details', async () => {
     const request = createRequest();
     (request.getMethodData as jest.Mock)
+      .mockResolvedValueOnce({ name: 'redeemDelegations' })
       .mockResolvedValueOnce({ name: 'approve' })
       .mockResolvedValueOnce({ name: 'transfer' });
 

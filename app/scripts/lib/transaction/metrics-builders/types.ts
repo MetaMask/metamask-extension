@@ -25,7 +25,6 @@ export type TransactionMetricsBuilderRequest = {
   transactionMeta: TransactionMeta;
   transactionMetricsRequest: TransactionMetricsRequest;
   context: {
-    contractAddress?: string;
     contractMethodName?: string;
     contractMethod4Byte?: string;
     transactionTypeForMetrics: TransactionType | string;
