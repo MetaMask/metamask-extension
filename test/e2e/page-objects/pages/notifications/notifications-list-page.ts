@@ -1,4 +1,4 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Notifications inbox list with entry to settings and notification details.
@@ -28,6 +28,8 @@ class NotificationsListPage {
   private readonly notificationsSettingsButton =
     '[data-testid="notifications-settings-button"]';
 
+  private readonly parentSelector = '[data-testid="notifications-page"]';
+
   private readonly snapsNotificationMessage =
     '.snap-notifications__item__details__message';
 
@@ -45,6 +47,7 @@ class NotificationsListPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.notificationsListPageTitle,
         this.notificationsSettingsButton,
       ]);

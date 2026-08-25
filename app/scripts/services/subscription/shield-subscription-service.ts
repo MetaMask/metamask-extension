@@ -1,11 +1,9 @@
-import { Messenger } from '@metamask/messenger';
 import {
   COHORT_NAMES,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   StartSubscriptionRequest,
   Subscription,
-  type SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction,
   SubscriptionServiceError,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
@@ -62,10 +60,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'submitSubscriptionSponsorshipIntent',
   'linkRewardToExistingSubscription',
 ] as const;
-
-type ShieldSubscriptionCryptoApprovalTransactionMeta = Parameters<
-  SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction['handler']
->[0];
 
 export class ShieldSubscriptionService {
   // Required for modular initialisation.
@@ -193,7 +187,7 @@ export class ShieldSubscriptionService {
       const rewardAccountId = await this.#getRewardCaipAccountId();
 
       const { checkoutSessionUrl } = await this.#messenger.call(
-        'SubscriptionController:startShieldSubscriptionWithCard',
+        'SubscriptionController:startSubscriptionWithCard',
         {
           ...params,
           successUrl: redirectUrl,
@@ -473,10 +467,13 @@ export class ShieldSubscriptionService {
       const rewardAccountId = await this.#getRewardCaipAccountId();
 
       await this.#messenger.call(
-        'SubscriptionController:submitShieldSubscriptionCryptoApproval',
-        txMeta as ShieldSubscriptionCryptoApprovalTransactionMeta,
-        isSponsored,
-        rewardAccountId,
+        'SubscriptionController:submitSubscriptionCryptoApproval',
+        {
+          productType: PRODUCT_TYPES.SHIELD,
+          txMeta,
+          isSponsored,
+          rewardAccountId,
+        },
       );
 
       if (currentShieldSubscription && isCurrentShieldSubscriptionActive) {

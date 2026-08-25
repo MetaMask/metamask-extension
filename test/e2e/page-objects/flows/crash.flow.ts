@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../pages/header-navbar';
 import SettingsPage from '../pages/settings/settings-page';
-import DebugPage from '../pages/debug-page';
+import DebugPage from '../pages/settings/debug-page';
 
 /**
  * Trigger a UI crash.

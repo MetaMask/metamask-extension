@@ -1,4 +1,4 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Single NFT details view: image, metadata, send, and remove actions.
@@ -58,6 +58,8 @@ class NFTDetailsPage {
   private readonly nftRenderedImage = '[data-testid="nft-image"]';
 
   private readonly nftSendButton = '[data-testid="nft-send-button"]';
+
+  private readonly parentSelector = '[data-testid="multichain-page"]';
 
   private readonly removeNftSuccessToast =
     '[data-testid="nft-remove-success-toast"]';
@@ -125,6 +127,7 @@ class NFTDetailsPage {
     console.log('Check if NFT details page is loaded');
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.nftSendButton,
         this.nftOptionsButton,
         this.nftBackButton,
