@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   ButtonIcon,
   ButtonIconSize,
   Icon,
@@ -11,8 +13,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   Text,
-  AvatarNetwork,
-  AvatarNetworkSize,
   ButtonLinkSize,
   ButtonLink,
   Popover,
@@ -32,7 +32,6 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
-  BorderColor,
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
@@ -151,7 +150,6 @@ const PopularNetworkList = ({
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
-                borderColor={BorderColor.backgroundDefault}
                 size={AvatarNetworkSize.Sm}
                 src={
                   network.imageUrl ??

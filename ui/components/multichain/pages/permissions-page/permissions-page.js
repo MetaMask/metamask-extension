@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   createSearchParams,
   useNavigate,
@@ -63,7 +63,6 @@ const PermissionsPage = () => {
       navigate(DEFAULT_ROUTE);
     }
   };
-  const [totalConnections, setTotalConnections] = useState(0);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
 
   const mergedConnectionsList = useSelector((state) => {
@@ -75,16 +74,15 @@ const PermissionsPage = () => {
 
   const subjects = useSelector(getPermissionSubjects);
 
-  useEffect(() => {
-    setTotalConnections(Object.keys(mergedConnectionsList).length);
+  const nonSnapConnections = useMemo(() => {
+    return Object.entries(mergedConnectionsList).filter(
+      ([origin]) => !isSnapId(origin),
+    );
   }, [mergedConnectionsList]);
 
   const handleDisconnectAll = useCallback(() => {
     const errors = [];
-    // Get all non-snap origins from the merged connections list
-    const origins = Object.keys(mergedConnectionsList).filter(
-      (origin) => !isSnapId(origin),
-    );
+    const origins = nonSnapConnections.map(([origin]) => origin);
 
     origins.forEach((origin) => {
       try {
@@ -116,7 +114,7 @@ const PermissionsPage = () => {
         id: 'disconnect-all-success-toast',
       });
     }
-  }, [dispatch, mergedConnectionsList, subjects, t]);
+  }, [dispatch, nonSnapConnections, subjects, t]);
 
   const handleConnectionClick = (connection) => {
     const hasOnlyAdvancedPermissions =
@@ -140,18 +138,15 @@ const PermissionsPage = () => {
     });
   };
 
-  const renderConnectionsList = (connectionList) =>
-    Object.entries(connectionList).map(([itemKey, connection]) => {
-      const isSnap = isSnapId(connection.origin);
-      return isSnap ? null : (
-        <ConnectionListItem
-          data-testid="connection-list-item"
-          key={itemKey}
-          connection={connection}
-          onClick={() => handleConnectionClick(connection)}
-        />
-      );
-    });
+  const renderConnectionsList = () =>
+    nonSnapConnections.map(([itemKey, connection]) => (
+      <ConnectionListItem
+        data-testid="connection-list-item"
+        key={itemKey}
+        connection={connection}
+        onClick={() => handleConnectionClick(connection)}
+      />
+    ));
 
   return (
     <Page
@@ -176,8 +171,8 @@ const PermissionsPage = () => {
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
-        {totalConnections > 0 ? (
-          renderConnectionsList(mergedConnectionsList)
+        {nonSnapConnections.length > 0 ? (
+          renderConnectionsList()
         ) : (
           <Box
             data-testid="no-connections"
@@ -191,7 +186,7 @@ const PermissionsPage = () => {
           </Box>
         )}
       </Content>
-      {totalConnections > 0 && (
+      {nonSnapConnections.length > 0 && (
         <Footer>
           <Box
             display={Display.Flex}

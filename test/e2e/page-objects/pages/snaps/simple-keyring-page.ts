@@ -1,6 +1,6 @@
-import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES } from '../../constants';
-import { getCleanAppState, regularDelayMs } from '../../helpers';
+import { Driver } from '../../../webdriver/driver';
+import { WINDOW_TITLES } from '../../../constants';
+import { getCleanAppState, regularDelayMs } from '../../../helpers';
 
 const SIMPLE_KEYRING_SNAP_ID = 'npm:@metamask/snap-simple-keyring-snap';
 
@@ -120,6 +120,8 @@ class SnapSimpleKeyringPage {
     tag: 'p',
   };
 
+  private readonly parentSelector = '#gatsby-focus-wrapper';
+
   private readonly rejectRequestButton = {
     text: 'Reject Request',
     tag: 'button',
@@ -229,6 +231,7 @@ class SnapSimpleKeyringPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.pageTitle,
         this.useSyncApprovalToggle,
       ]);
