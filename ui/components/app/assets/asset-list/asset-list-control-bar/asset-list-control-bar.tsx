@@ -379,6 +379,13 @@ const AssetListControlBar = ({
     closePopover();
   };
 
+  let networkFilterTextColor = TextColor.textDefault;
+  if (isNetworkSwitchPending) {
+    networkFilterTextColor = TextColor.transparent;
+  } else if (isSingleNetworkFilterSelected) {
+    networkFilterTextColor = TextColor.primaryDefault;
+  }
+
   return (
     <Box className="asset-list-control-bar" marginLeft={4} marginRight={4}>
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
@@ -418,13 +425,7 @@ const AssetListControlBar = ({
             )}
             <Text
               variant={TextVariant.bodySmMedium}
-              color={
-                isNetworkSwitchPending
-                  ? TextColor.transparent
-                  : isSingleNetworkFilterSelected
-                    ? TextColor.primaryDefault
-                    : TextColor.textDefault
-              }
+              color={networkFilterTextColor}
               ellipsis
             >
               {networkButtonText}
