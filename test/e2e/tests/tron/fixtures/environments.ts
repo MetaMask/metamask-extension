@@ -1,4 +1,8 @@
-import { TRON_ACCOUNT_ADDRESS, TRX_TO_USD_RATE } from '../mocks/common-tron';
+import {
+  TRON_ACCOUNT_ADDRESS,
+  TRX_BALANCE,
+  TRX_TO_USD_RATE,
+} from '../mocks/common-tron';
 import { TronFixtureAccount } from './with-tron-fixtures';
 import { GAS_FREE, HTX, SEED, TRX, USDD, USDT } from './tokens';
 
@@ -43,6 +47,17 @@ export const TRON_PORTFOLIO_ACCOUNT: TronFixtureAccount = {
     { ...USDD, balance: '289757448699320931', priceUsd: 0.999959 },
     { ...USDT, balance: '2804595', priceUsd: 0.999176 },
   ],
+};
+
+/**
+ * Funded Account 1 profile from the former check-balance spec (`mockTronApis`).
+ * Header expectations: `106.072 TRX` with native-as-main on, `$39.65` with it off.
+ */
+export const TRON_CHECK_BALANCE_ACCOUNT: TronFixtureAccount = {
+  address: TRON_ACCOUNT_ADDRESS,
+  assets: (TRON_PORTFOLIO_ACCOUNT.assets ?? []).map((asset) =>
+    asset.type === 'native' ? { ...asset, balance: TRX_BALANCE } : { ...asset },
+  ),
 };
 
 export const TRON_LOW_TRX_WITH_USDT_ACCOUNT: TronFixtureAccount = {
