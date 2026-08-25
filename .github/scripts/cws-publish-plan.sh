@@ -26,14 +26,14 @@ matches_expected_crx() {
 
 submitted_state="$(jq -r '.submittedItemRevisionStatus.state // empty' "${FETCH_STATUS_JSON}")"
 submitted_crx="$(jq -r '
-  (.submittedItemRevisionStatus.distributionChannels // [])[0].crxVersion // empty
-' "${FETCH_STATUS_JSON}")"
-item_crx="$(jq -r '
-  (.itemRevisionStatus.distributionChannels // [])[0].crxVersion // empty
+  [
+    .submittedItemRevisionStatus.distributionChannels[]?.crxVersion // empty
+  ] | map(select(length > 0)) | first // empty
 ' "${FETCH_STATUS_JSON}")"
 published_crx="$(jq -r '
   (.publishedItemRevisionStatus.distributionChannels // [])[0].crxVersion // empty
 ' "${FETCH_STATUS_JSON}")"
+async_state="$(jq -r '.lastAsyncUploadState // empty' "${FETCH_STATUS_JSON}")"
 
 if matches_expected_crx '.publishedItemRevisionStatus.distributionChannels'; then
   echo "::error::Version ${CRX_VERSION} is already the live published revision (crxVersion=${published_crx}). Use adjust-cws-rollout.yml to ramp."
@@ -71,15 +71,18 @@ if ! [[ "${PERCENTAGE}" =~ ^[0-9]+$ ]] || (( PERCENTAGE < 1 || PERCENTAGE > 100 
 fi
 
 draft_ready=false
-if matches_expected_crx '.itemRevisionStatus.distributionChannels'; then
-  draft_ready=true
-elif matches_expected_crx '.submittedItemRevisionStatus.distributionChannels' \
+if matches_expected_crx '.submittedItemRevisionStatus.distributionChannels' \
   && [[ "${submitted_state}" != "STAGED" && "${submitted_state}" != "PENDING_REVIEW" ]]; then
   draft_ready=true
 fi
 
+# ponytail: after :upload alone, submittedItemRevisionStatus may be unset (CWS API); SUCCEEDED upload still leaves a draft for :publish.
+if [[ "${draft_ready}" != "true" && "${async_state}" == "SUCCEEDED" && -z "${submitted_crx}" ]]; then
+  draft_ready=true
+fi
+
 if [[ "${draft_ready}" != "true" ]]; then
-  echo "::error::No uploaded draft for version ${CRX_VERSION} (item crx=${item_crx:-<none>}, submitted state=${submitted_state:-<none>}, submitted crx=${submitted_crx:-<none>}). Run upload-extension-to-cws.yml first."
+  echo "::error::No uploaded draft for version ${CRX_VERSION} (submitted state=${submitted_state:-<none>}, submitted crx=${submitted_crx:-<none>}, lastAsyncUploadState=${async_state:-<none>}). Run upload-extension-to-cws.yml first."
   cat "${FETCH_STATUS_JSON}"
   exit 1
 fi
