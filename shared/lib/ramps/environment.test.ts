@@ -19,6 +19,8 @@ const EXPECTED_RAMPS_ENVIRONMENT_BY_METAMASK_ENVIRONMENT: Record<
   [ENVIRONMENT.TESTING]: RampsEnvironment.Staging,
 };
 
+const ENVIRONMENT_ALIASES = ['beta', 'dev', 'rc', 'test'];
+
 describe('getRampsEnvironment', () => {
   const originalEnv = process.env.METAMASK_ENVIRONMENT;
   const originalBuildType = process.env.METAMASK_BUILD_TYPE;
@@ -28,14 +30,14 @@ describe('getRampsEnvironment', () => {
     process.env.METAMASK_BUILD_TYPE = originalBuildType;
   });
 
-  // @ts-expect-error ESLint is misconfigured and not applying Jest types to this file
-  it.each(Object.entries(EXPECTED_RAMPS_ENVIRONMENT_BY_METAMASK_ENVIRONMENT))(
-    'maps METAMASK_ENVIRONMENT=%s to %s in main builds',
-    (metamaskEnvironment, rampsEnvironment) => {
+  Object.entries(EXPECTED_RAMPS_ENVIRONMENT_BY_METAMASK_ENVIRONMENT).forEach(
+    ([metamaskEnvironment, rampsEnvironment]) => {
+      it(`maps METAMASK_ENVIRONMENT=${metamaskEnvironment} to ${rampsEnvironment} in main builds`, () => {
       process.env.METAMASK_ENVIRONMENT = metamaskEnvironment;
       process.env.METAMASK_BUILD_TYPE = 'main';
 
       expect(getRampsEnvironment()).toBe(rampsEnvironment);
+      });
     },
   );
 
@@ -51,13 +53,11 @@ describe('getRampsEnvironment', () => {
     expect(getRampsEnvironment()).toBe(RampsEnvironment.Staging);
   });
 
-  // @ts-expect-error ESLint is misconfigured and not applying Jest types to this file
-  it.each(['beta', 'dev', 'rc', 'test'])(
-    'returns Staging for remote-feature-flag environment alias "%s"',
-    (metamaskEnvironment) => {
+  ENVIRONMENT_ALIASES.forEach((metamaskEnvironment) => {
+    it(`returns Staging for remote-feature-flag environment alias "${metamaskEnvironment}"`, () => {
       process.env.METAMASK_ENVIRONMENT = metamaskEnvironment;
 
       expect(getRampsEnvironment()).toBe(RampsEnvironment.Staging);
-    },
-  );
+    });
+  });
 });
