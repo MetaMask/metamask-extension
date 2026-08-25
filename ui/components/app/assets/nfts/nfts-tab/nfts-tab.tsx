@@ -18,7 +18,7 @@ import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
 import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
-import { NftEmptyState } from '../nft-empty-state';
+import { NftEmptyState } from '../nft-empty-state/nft-empty-state';
 import { transitionForward } from '../../../../ui/transition';
 import { useScreenViewedEvent } from '../../../../../hooks/useScreenViewedEvent';
 import {
@@ -87,7 +87,7 @@ export default function NftsTab({
             />
           </Box>
         ) : (
-          <NftEmptyState className="mx-auto mt-5 mb-6" />
+          <NftEmptyState />
         )}
       </Box>
     </>
