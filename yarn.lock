@@ -7544,7 +7544,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-controller@npm:0.3.3":
+"@metamask/money-account-controller@npm:^0.3.3":
   version: 0.3.3
   resolution: "@metamask/money-account-controller@npm:0.3.3"
   dependencies:
@@ -33304,7 +33304,7 @@ __metadata:
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
     "@metamask/money-account-api-data-service": "npm:^0.4.0"
     "@metamask/money-account-balance-service": "npm:2.4.0"
-    "@metamask/money-account-controller": "npm:0.3.3"
+    "@metamask/money-account-controller": "npm:^0.3.3"
     "@metamask/money-account-utils": "npm:^1.1.0"
     "@metamask/multichain-account-service": "npm:^13.0.1"
     "@metamask/multichain-api-client": "npm:^0.10.1"
