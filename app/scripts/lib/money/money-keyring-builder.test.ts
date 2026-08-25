@@ -4,8 +4,8 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { encodeMnemonic } from '@metamask/keyring-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
-  moneyKeyringBuilder,
-  moneyKeyringV2Builder,
+  buildMoneyKeyringBuilder,
+  buildMoneyKeyringV2Builder,
   type MoneyKeyringBuilderMessenger,
 } from './money-keyring-builder';
 
@@ -75,24 +75,24 @@ function buildMessengerMock({
   return { messenger, calls };
 }
 
-describe('moneyKeyringBuilder', () => {
+describe('buildMoneyKeyringBuilder', () => {
   it('is keyed by the Money keyring type', () => {
     const { messenger } = buildMessengerMock();
 
-    expect(moneyKeyringBuilder(messenger).type).toBe(KeyringTypes.money);
-    expect(moneyKeyringBuilder(messenger).type).toBe('Money Keyring');
+    expect(buildMoneyKeyringBuilder(messenger).type).toBe(KeyringTypes.money);
+    expect(buildMoneyKeyringBuilder(messenger).type).toBe('Money Keyring');
   });
 
   it('builds a MoneyKeyring', () => {
     const { messenger } = buildMessengerMock();
 
-    expect(moneyKeyringBuilder(messenger)()).toBeInstanceOf(MoneyKeyring);
+    expect(buildMoneyKeyringBuilder(messenger)()).toBeInstanceOf(MoneyKeyring);
   });
 
   it('derives the money account for the primary seed', async () => {
     const { messenger } = buildMessengerMock();
 
-    const keyring = moneyKeyringBuilder(messenger)();
+    const keyring = buildMoneyKeyringBuilder(messenger)();
     // The keyring holds only the entropy source; the mnemonic is resolved
     // through the callback when it first has to derive.
     await keyring.deserialize({ entropySource: ENTROPY_SOURCE });
@@ -105,7 +105,7 @@ describe('moneyKeyringBuilder', () => {
   it('reads the mnemonic without taking the controller lock', async () => {
     const { messenger, calls } = buildMessengerMock();
 
-    const keyring = moneyKeyringBuilder(messenger)();
+    const keyring = buildMoneyKeyringBuilder(messenger)();
     await keyring.deserialize({ entropySource: ENTROPY_SOURCE });
     await keyring.addAccounts(1);
 
@@ -118,7 +118,7 @@ describe('moneyKeyringBuilder', () => {
   it('selects the HD keyring matching the entropy source, and no other', async () => {
     const { messenger, calls } = buildMessengerMock();
 
-    const keyring = moneyKeyringBuilder(messenger)();
+    const keyring = buildMoneyKeyringBuilder(messenger)();
     await keyring.deserialize({ entropySource: ENTROPY_SOURCE });
     await keyring.addAccounts(1);
 
@@ -138,7 +138,7 @@ describe('moneyKeyringBuilder', () => {
   it('encodes the mnemonic the way MoneyKeyring expects it', async () => {
     const { messenger, calls } = buildMessengerMock();
 
-    const keyring = moneyKeyringBuilder(messenger)();
+    const keyring = buildMoneyKeyringBuilder(messenger)();
     await keyring.deserialize({ entropySource: ENTROPY_SOURCE });
     await keyring.addAccounts(1);
 
@@ -152,7 +152,7 @@ describe('moneyKeyringBuilder', () => {
   it('throws when the selected keyring has no mnemonic', async () => {
     const { messenger } = buildMessengerMock({ mnemonic: null });
 
-    const keyring = moneyKeyringBuilder(messenger)();
+    const keyring = buildMoneyKeyringBuilder(messenger)();
     await keyring.deserialize({ entropySource: ENTROPY_SOURCE });
 
     await expect(keyring.addAccounts(1)).rejects.toThrow(
@@ -163,25 +163,27 @@ describe('moneyKeyringBuilder', () => {
   it('does not read the mnemonic until the keyring needs it', () => {
     const { messenger, calls } = buildMessengerMock();
 
-    moneyKeyringBuilder(messenger)();
+    buildMoneyKeyringBuilder(messenger)();
 
     expect(calls).toStrictEqual([]);
   });
 });
 
-describe('moneyKeyringV2Builder', () => {
+describe('buildMoneyKeyringV2Builder', () => {
   it('is keyed by the legacy Money keyring type, which is how the controller dispatches it', () => {
-    expect(moneyKeyringV2Builder().type).toBe(MoneyKeyring.type);
+    expect(buildMoneyKeyringV2Builder().type).toBe(MoneyKeyring.type);
   });
 
   it('wraps the legacy keyring, which it takes directly rather than in an options object', async () => {
-    const legacyKeyring = moneyKeyringBuilder(buildMessengerMock().messenger)();
+    const legacyKeyring = buildMoneyKeyringBuilder(
+      buildMessengerMock().messenger,
+    )();
     await legacyKeyring.deserialize({ entropySource: ENTROPY_SOURCE });
     await legacyKeyring.addAccounts(1);
 
     // The metadata argument the hardware V2 builders use for their entropy
     // source is deliberately ignored: the Money keyring already knows its own.
-    const wrapper = moneyKeyringV2Builder()(legacyKeyring as never, {
+    const wrapper = buildMoneyKeyringV2Builder()(legacyKeyring as never, {
       id: 'ignored-metadata-id',
       name: '',
     }) as unknown as MoneyKeyringV2;

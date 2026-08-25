@@ -72,7 +72,9 @@ async function getMnemonic(
  * @param messenger - The messenger used to resolve the mnemonic.
  * @returns The Money keyring builder.
  */
-export function moneyKeyringBuilder(messenger: MoneyKeyringBuilderMessenger) {
+export function buildMoneyKeyringBuilder(
+  messenger: MoneyKeyringBuilderMessenger,
+) {
   const builder = () =>
     new MoneyKeyring({
       getMnemonic: async (entropySource: string) =>
@@ -93,7 +95,7 @@ export function moneyKeyringBuilder(messenger: MoneyKeyringBuilderMessenger) {
  *
  * @returns The Money keyring V2 builder.
  */
-export function moneyKeyringV2Builder(): KeyringV2Builder {
+export function buildMoneyKeyringV2Builder(): KeyringV2Builder {
   const builder = Object.assign(
     (keyring: unknown) => new MoneyKeyringV2(keyring as MoneyKeyring),
     { type: MoneyKeyring.type },

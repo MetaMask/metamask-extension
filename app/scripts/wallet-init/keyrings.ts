@@ -18,8 +18,8 @@ import {
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import {
-  moneyKeyringBuilder,
-  moneyKeyringV2Builder,
+  buildMoneyKeyringBuilder,
+  buildMoneyKeyringV2Builder,
 } from '../lib/money/money-keyring-builder';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
@@ -105,7 +105,7 @@ export function getKeyringV2Builders(): KeyringV2Builder[] {
     buildHardwareV2Builder(QrKeyringV2, QrKeyring.type),
     buildHardwareV2Builder(TrezorKeyringV2, TrezorKeyring.type),
     buildHardwareV2Builder(OneKeyKeyringV2, OneKeyKeyring.type),
-    moneyKeyringV2Builder(),
+    buildMoneyKeyringV2Builder(),
     // The v2 Snap keyring is registered via `SnapKeyringV1Adapter`, which owns the
     // inner `SnapKeyring` (v2) instance and exposes a proper v1-compatible face for
     // KeyringController vault management. The same inner instance is retrieved via
@@ -187,8 +187,8 @@ export function getKeyringBuilders(
 
   // Registered unconditionally, not behind the Money feature flag, so the
   // `KeyringController` can always recognise the Money keyring type while
-  // deserializing the vault. See `moneyKeyringBuilder`.
-  keyrings.push(moneyKeyringBuilder(messenger));
+  // deserializing the vault. See `buildMoneyKeyringBuilder`.
+  keyrings.push(buildMoneyKeyringBuilder(messenger));
 
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
   keyrings.push(snapKeyringBuilder(getSnapKeyringBuilderMessenger(messenger)));
