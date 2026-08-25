@@ -46,8 +46,10 @@ export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =
           }),
       ...(context.isContractInteraction
         ? {
-            transaction_contract_method_4byte:
-              transactionParams.data?.slice(0, 10),
+            transaction_contract_method_4byte: transactionParams.data?.slice(
+              0,
+              10,
+            ),
           }
         : {}),
       ...finalizedExtras,
