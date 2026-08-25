@@ -8,7 +8,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
   >
     <div
       class="mm-box main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
-      data-testid="connect-page"
+      data-testid="parent-selector-connect-page"
     >
       <div
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
@@ -289,7 +289,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
   >
     <div
       class="mm-box main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
-      data-testid="connect-page"
+      data-testid="parent-selector-connect-page"
     >
       <div
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
@@ -570,7 +570,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
   >
     <div
       class="mm-box main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
-      data-testid="connect-page"
+      data-testid="parent-selector-connect-page"
     >
       <div
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
