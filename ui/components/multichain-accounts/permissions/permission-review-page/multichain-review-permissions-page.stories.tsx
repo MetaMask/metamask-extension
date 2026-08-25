@@ -17,7 +17,7 @@ export default {
     docs: {
       description: {
         component:
-          'A page for reviewing and managing multichain account permissions for a connected site',
+          'A page for editing which account groups a connected site can use',
       },
     },
     path: '/review-permissions/:origin',
@@ -108,7 +108,7 @@ WithOneConnectedAccount.args = {
 WithOneConnectedAccount.parameters = {
   docs: {
     description: {
-      story: 'Shows the page with one connected account group',
+      story: 'Shows the edit accounts page with one connected account group',
     },
   },
   initialEntries: [
@@ -123,7 +123,7 @@ NoConnectedAccounts.args = {
 NoConnectedAccounts.parameters = {
   docs: {
     description: {
-      story: 'Shows the page with no connected account groups',
+      story: 'Shows the edit accounts page with no connected account groups',
     },
   },
   initialEntries: [

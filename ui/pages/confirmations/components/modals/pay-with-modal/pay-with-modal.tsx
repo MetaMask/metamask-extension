@@ -217,7 +217,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
               }
             : {})}
         >
-          {t('payWithModalTitle')}
+          {t(isPostQuoteWithdraw ? 'withdrawTo' : 'payWithModalTitle')}
         </ModalHeader>
         <ScrollContainer
           style={{
@@ -238,6 +238,9 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
               tokenFilter={tokenFilter}
               onAssetSelect={handleTokenSelect}
               tagRenderers={tagRenderers}
+              searchPlaceholder={
+                isPostQuoteWithdraw ? t('searchTokens') : undefined
+              }
             />
           )}
         </ScrollContainer>

@@ -748,6 +748,28 @@ class HomePage {
     }
   }
 
+  /**
+   * Waits until the selected network's metadata status is `'available'`.
+   */
+  async waitForNetworkStatusAvailable(): Promise<void> {
+    console.log('Waiting for selected network status to be available in Redux');
+    await this.driver.waitUntil(
+      async () => {
+        const uiState = await getCleanAppState(this.driver);
+        if (!uiState?.metamask) {
+          return false;
+        }
+        const { networksMetadata, selectedNetworkClientId } = uiState.metamask;
+        if (!networksMetadata || !selectedNetworkClientId) {
+          return false;
+        }
+        const metadata = networksMetadata[selectedNetworkClientId];
+        return metadata?.status === 'available';
+      },
+      { timeout: 15000, interval: 500, stableFor: 5000 },
+    );
+  }
+
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
     // See the removal TODO on `NON_EVM_ICON_TIMEOUT`. Still polled: returns

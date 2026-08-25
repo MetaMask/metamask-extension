@@ -9,6 +9,7 @@ import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import {
   PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
+  isIndexedDBMutationBlockedError,
 } from './persistence-manager';
 import { IndexedDBStore } from './indexeddb-store';
 import ExtensionStore from './extension-store';
@@ -52,6 +53,36 @@ jest.mock('../trace', () => ({
 const mockedCaptureException = jest.mocked(captureException);
 const mockedCaptureMessage = jest.mocked(captureMessage);
 const mockedGetManifestFlags = jest.mocked(getManifestFlags);
+
+describe('isIndexedDBMutationBlockedError', () => {
+  it('identifies the Firefox mutation-blocked error', () => {
+    const error = new DOMException(
+      'A mutation operation was attempted on a database that did not allow mutations.',
+      'InvalidStateError',
+    );
+
+    expect(isIndexedDBMutationBlockedError(error)).toBe(true);
+  });
+
+  it('rejects other errors', () => {
+    expect(isIndexedDBMutationBlockedError(new Error('Other error'))).toBe(
+      false,
+    );
+    expect(
+      isIndexedDBMutationBlockedError(
+        new DOMException('Browser-provided message', 'InvalidStateError'),
+      ),
+    ).toBe(false);
+    expect(
+      isIndexedDBMutationBlockedError(
+        new DOMException(
+          'A mutation operation was attempted on a database that did not allow mutations.',
+          'QuotaExceededError',
+        ),
+      ),
+    ).toBe(false);
+  });
+});
 
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;

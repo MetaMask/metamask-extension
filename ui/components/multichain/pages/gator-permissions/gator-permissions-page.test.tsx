@@ -92,7 +92,9 @@ describe('Gator Permissions Page', () => {
         store,
       );
 
-      expect(getByTestId('gator-permissions-page')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-gator-permissions'),
+      ).toBeInTheDocument();
     });
 
     it('renders empty state when no permissions exist', () => {

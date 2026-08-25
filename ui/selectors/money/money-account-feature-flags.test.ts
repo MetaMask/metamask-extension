@@ -5,6 +5,7 @@ import {
   selectMoneyAccountDepositQuotePipelineEnabled,
   selectMoneyAccountFeatureEnabled,
   selectMoneyAccountVaultConfig,
+  selectMoneyEarningSectionEnabled,
   selectMoneyDepositMinBalance,
   selectMoneyVaultApyRemoteConfig,
 } from './money-account-feature-flags';
@@ -55,6 +56,56 @@ describe('selectMoneyAccountFeatureEnabled', () => {
       selectMoneyAccountFeatureEnabled(
         mockState({
           moneyEnableMoneyAccount: {
+            enabled: true,
+            minimumVersion: '9999.0.0',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+});
+
+describe('selectMoneyEarningSectionEnabled', () => {
+  it('is true for an enabled, version-satisfied flag', () => {
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({
+          earnMoneyEarningSectionEnabled: {
+            enabled: true,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false for a disabled flag', () => {
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({
+          earnMoneyEarningSectionEnabled: {
+            enabled: false,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false when the flag is unserved or malformed', () => {
+    expect(selectMoneyEarningSectionEnabled(mockState())).toBe(false);
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({ earnMoneyEarningSectionEnabled: true }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false when the current version is below the flag minimum', () => {
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({
+          earnMoneyEarningSectionEnabled: {
             enabled: true,
             minimumVersion: '9999.0.0',
           },
