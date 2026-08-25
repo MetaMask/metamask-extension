@@ -555,11 +555,6 @@
       "count": 1
     }
   },
-  "ui/hooks/hardware-wallets/useHwSignTracker.ts": {
-    "react-hooks/refs": {
-      "count": 3
-    }
-  },
   "ui/hooks/hardware-wallets/useHwSwapConfirmationMonitoring.ts": {
     "react-hooks/refs": {
       "count": 2
