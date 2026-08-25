@@ -78,16 +78,16 @@ export default function DeFiTab({
   // V2 needs a route messenger for `fetchDeFiPositions`. Legacy V1 does not —
   // wrap only the V2 branch so integration tests (and other trees without a
   // UI messenger) keep working when the V2 flag is off.
-  const content = isDefiControllerV2Enabled ? (
-    <RouteMessengerProvider
-      path="defi-tab"
-      capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
-    >
-      <DeFiTabContentV2 onClickAsset={onClickAsset} />
-    </RouteMessengerProvider>
-  ) : (
-    <DeFiTabContentV1 onClickAsset={onClickAsset} />
-  );
+  if (isDefiControllerV2Enabled) {
+    return (
+      <RouteMessengerProvider
+        path="defi-tab"
+        capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
+      >
+        <DeFiTabContentV2 onClickAsset={onClickAsset} />
+      </RouteMessengerProvider>
+    );
+  }
 
-  return content;
+  return <DeFiTabContentV1 onClickAsset={onClickAsset} />;
 }
