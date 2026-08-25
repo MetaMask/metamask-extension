@@ -32,7 +32,7 @@ on:
         type: string
         default: ''
       percentage:
-        description: 'Submit only: initial rollout 1–100 (default immediate path uses 1%). Leave empty for promote.'
+        description: 'Submit only: initial rollout 1–100 (typical immediate path uses 1). Leave empty for promote.'
         required: false
         type: string
         default: ''
