@@ -49,6 +49,9 @@ class ActivityTab extends HomePage {
   private readonly gasPrice =
     '[data-testid="transaction-breakdown__gas-price"]';
 
+  private readonly pendingOrConfirmedTransactions =
+    '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"], [data-tx-status="confirmed"]';
+
   private readonly pendingTransactionItems =
     '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
 
@@ -354,6 +357,34 @@ class ActivityTab extends HomePage {
     }, 60000);
     console.log(
       `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
+    );
+  }
+
+  /**
+   * Waits until at least `expectedNumber` activity rows are pending or
+   * confirmed. Local java-tron can confirm before a pending row is observable,
+   * so Tron send flows use this before asserting confirmed count.
+   *
+   * @param expectedNumber - Minimum number of pending or confirmed rows.
+   */
+  async checkPendingOrConfirmedTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} pending or confirmed transactions in activity list`,
+    );
+    await this.driver.wait(async () => {
+      try {
+        const activityItems = await this.driver.findElements(
+          this.pendingOrConfirmedTransactions,
+        );
+        return activityItems.length >= expectedNumber;
+      } catch {
+        return false;
+      }
+    }, 30_000);
+    console.log(
+      `${expectedNumber} pending or confirmed transactions found in activity list`,
     );
   }
 
