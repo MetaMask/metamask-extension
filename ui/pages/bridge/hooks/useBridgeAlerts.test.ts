@@ -737,7 +737,9 @@ describe('useBridgeAlerts', () => {
     });
 
     it('does not add stellar-trustline when the destination asset does not require activation', () => {
-      jest.mocked(getValidationErrors).mockReturnValue(DEFAULT_VALIDATION_ERRORS);
+      jest
+        .mocked(getValidationErrors)
+        .mockReturnValue(DEFAULT_VALIDATION_ERRORS);
 
       const { result } = renderHook();
 

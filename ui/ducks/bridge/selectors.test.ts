@@ -3305,14 +3305,16 @@ describe('Bridge selectors', () => {
 
         const state = createBridgeMockStore({
           bridgeSliceOverrides: {
-            fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+            fromToken: toBridgeToken(
+              getNativeAssetForChainId(CHAIN_IDS.MAINNET),
+            ),
             toToken: stellarUsdcToken,
           },
         });
 
-        expect(getValidationErrors(state as never).isDestAssetRequireActivate).toBe(
-          true,
-        );
+        expect(
+          getValidationErrors(state as never).isDestAssetRequireActivate,
+        ).toBe(true);
       });
 
       it('returns false for same-chain Stellar swaps even when activation is required', () => {
@@ -3329,9 +3331,9 @@ describe('Bridge selectors', () => {
           },
         });
 
-        expect(getValidationErrors(state as never).isDestAssetRequireActivate).toBe(
-          false,
-        );
+        expect(
+          getValidationErrors(state as never).isDestAssetRequireActivate,
+        ).toBe(false);
       });
 
       it('returns false when the destination does not require activation', () => {
@@ -3341,14 +3343,16 @@ describe('Bridge selectors', () => {
 
         const state = createBridgeMockStore({
           bridgeSliceOverrides: {
-            fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+            fromToken: toBridgeToken(
+              getNativeAssetForChainId(CHAIN_IDS.MAINNET),
+            ),
             toToken: stellarUsdcToken,
           },
         });
 
-        expect(getValidationErrors(state as never).isDestAssetRequireActivate).toBe(
-          false,
-        );
+        expect(
+          getValidationErrors(state as never).isDestAssetRequireActivate,
+        ).toBe(false);
       });
     });
   });
