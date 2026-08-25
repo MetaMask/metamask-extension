@@ -1010,13 +1010,20 @@
         "lastFetchedAt": "number"
       }
     },
-    "featureFlagThresholdGroups": {
-      "feature3": "string"
-    },
+    "featureFlagThresholdGroups": {},
     "remoteFeatureFlags": {
       "feature1": "boolean",
       "feature2": "boolean",
-      "feature3": "string"
+      "feature3": [
+        {
+          "name": "string",
+          "value": "string",
+          "scope": {
+            "type": "string",
+            "value": "number"
+          }
+        }
+      ]
     },
     "rawRemoteFeatureFlags": {
       "feature1": "boolean",
