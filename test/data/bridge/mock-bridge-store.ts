@@ -45,6 +45,7 @@ export const DEFAULT_VALIDATION_ERRORS: ReturnType<typeof getValidationErrors> =
     isTxAlertLoading: false,
     isNetworkFeeUnavailable: false,
     isEstimatedReturnLow: false,
+    isDestAssetRequireActivate: false,
   };
 export const MOCK_LEDGER_ACCOUNT = {
   id: 'bf588376-0492-4a35-b653-0f1304a6c5f1',

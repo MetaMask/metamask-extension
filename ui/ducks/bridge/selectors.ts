@@ -104,6 +104,7 @@ import {
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 import { type MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 import { getIsRWATokensEnabled } from '../../selectors/rwa/feature-flags';
+import { getIsAssetRequireActivate } from '../../selectors/stellar-assets';
 import {
   isStockRWAToken,
   isTokenTradingOpenAt,
@@ -1164,6 +1165,26 @@ export const computeQuoteValidationErrors = (
   };
 };
 
+/**
+ * True when bridging cross-chain to a Stellar classic asset that still needs a
+ * trustline. Same-chain Stellar swaps are excluded (activation is handled
+ * elsewhere in that flow).
+ * @param state
+ */
+const getIsDestAssetRequireActivate = createDeepEqualSelector(
+  [getFromToken, getToToken, (state: BridgeAppState) => state],
+  (fromToken, toToken, state) => {
+    if (
+      !fromToken ||
+      !toToken?.assetId ||
+      !isCrossChain(fromToken.chainId, toToken.chainId)
+    ) {
+      return false;
+    }
+    return getIsAssetRequireActivate(state, { assetId: toToken.assetId });
+  },
+);
+
 const _getBaseValidationErrors = createDeepEqualSelector(
   [
     getBridgeQuotes,
@@ -1181,6 +1202,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     (state: BridgeAppState) => isHardwareWallet(state as never),
     getQuoteStreamComplete,
     getActiveQuoteInsufficientNativeReserveError,
+    getIsDestAssetRequireActivate,
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -1197,6 +1219,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     isHardwareWalletAccount,
     quoteStreamCompleteData,
     insufficientNativeReserveError,
+    isDestAssetRequireActivate,
   ) => {
     const quoteValidation = computeQuoteValidationErrors(activeQuote, {
       priceImpactThresholds,
@@ -1224,6 +1247,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           !isLoading &&
           quotesRefreshCount > 0,
         ),
+      isDestAssetRequireActivate,
     };
   },
 );
@@ -1278,6 +1302,7 @@ export const getWarningLabels = (
     isTxAlertPresent,
     isStockMarketClosed,
     isQuoteExpired,
+    isDestAssetRequireActivate,
   } = getValidationErrors(state, currentTimeInMs);
   const warnings: QuoteWarning[] = [];
   isEstimatedReturnLow && warnings.push('low_return');
@@ -1295,6 +1320,8 @@ export const getWarningLabels = (
   isInsufficientNativeReserve && warnings.push('insufficient_native_reserve');
   isNetworkFeeUnavailable &&
     warnings.push('network_fee_unavailable' as QuoteWarning);
+  // @ts-expect-error: dest_asset_require_activate is not a valid QuoteWarning yet
+  isDestAssetRequireActivate && warnings.push('dest_asset_require_activate');
   return warnings;
 };
 

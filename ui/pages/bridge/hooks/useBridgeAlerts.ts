@@ -2,7 +2,6 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BannerAlertSeverity } from '@metamask/design-system-react';
-import { isCrossChain } from '@metamask/bridge-controller';
 import { getNativeAssetId } from '../../../../shared/lib/asset-utils';
 import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import {
@@ -13,7 +12,6 @@ import {
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
-  getFromToken,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -22,7 +20,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
-import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { isQuoteExpiredOrInvalid, getDestChainId } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
@@ -54,6 +51,7 @@ export const useBridgeAlerts = () => {
     isQuoteExpired,
     isPriceImpactWarning,
     isPriceImpactError,
+    isDestAssetRequireActivate,
   } = useSelector(
     (state: BridgeAppState) => getValidationErrors(state, Date.now()),
     shallowEqual,
@@ -62,14 +60,9 @@ export const useBridgeAlerts = () => {
     getBridgeUnavailableQuoteReason,
   );
 
-  const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
   const toTokenAssetId = toToken?.assetId;
-
-  const isDestAssetRequireActivate = useSelector((state: BridgeAppState) =>
-    getIsAssetRequireActivate(state, { assetId: toTokenAssetId ?? '' }),
-  );
 
   const {
     assetIsMalicious,
@@ -253,12 +246,9 @@ export const useBridgeAlerts = () => {
 
     // Non-blocking warning: destination Stellar classic asset still needs a
     // trustline. Can appear alongside other banners (e.g. insufficient gas).
-    if (
-      fromToken &&
-      toToken &&
-      isCrossChain(fromToken.chainId, toToken.chainId) &&
-      isDestAssetRequireActivate
-    ) {
+    // Cross-chain + activation gating lives in getValidationErrors /
+    // getWarningLabels (MixPanel).
+    if (isDestAssetRequireActivate && toToken) {
       categorizeAlert({
         id: 'stellar-trustline',
         isDismissable: false,
@@ -372,7 +362,6 @@ export const useBridgeAlerts = () => {
     goToBuy,
     navigateToDestAssetPage,
     fromChain,
-    fromToken,
     ticker,
     toToken,
     isDestAssetRequireActivate,

@@ -15,11 +15,9 @@ import {
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
-  getFromToken,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
-import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
@@ -37,16 +35,10 @@ jest.mock('../utils/quote', () => ({
   isQuoteExpiredOrInvalid: jest.fn(),
 }));
 
-jest.mock('../../../selectors/stellar-assets', () => ({
-  ...jest.requireActual('../../../selectors/stellar-assets'),
-  getIsAssetRequireActivate: jest.fn(),
-}));
-
 jest.mock('../../../ducks/bridge/selectors', () => ({
   ...jest.requireActual('../../../ducks/bridge/selectors'),
   getValidationErrors: jest.fn(),
   getBridgeUnavailableQuoteReason: jest.fn(),
-  getFromToken: jest.fn(),
   getToToken: jest.fn(),
   getActiveQuotePriceData: jest.fn(),
   getFormattedPriceImpactPercentage: jest.fn(),
@@ -118,13 +110,6 @@ const MOCK_SWAP_QUOTE = merge({}, MOCK_BRIDGE_QUOTE, {
   },
 });
 
-const MOCK_FROM_TOKEN = toBridgeToken({
-  symbol: 'ETH',
-  decimals: 18,
-  assetId: 'eip155:1/slip44:60' as const,
-  name: 'Ether',
-});
-
 const MOCK_TO_TOKEN = toBridgeToken({
   symbol: 'USDC',
   decimals: 6,
@@ -171,13 +156,11 @@ describe('useBridgeAlerts', () => {
       assetHasSecurityData: false,
     });
     jest.mocked(isQuoteExpiredOrInvalid).mockReturnValue(false);
-    jest.mocked(getIsAssetRequireActivate).mockReturnValue(false);
 
     jest.mocked(getValidationErrors).mockReturnValue(DEFAULT_VALIDATION_ERRORS);
     jest
       .mocked(getBridgeUnavailableQuoteReason)
       .mockReturnValue('noOptionsAvailableMessage');
-    jest.mocked(getFromToken).mockReturnValue(MOCK_FROM_TOKEN as never);
     jest.mocked(getToToken).mockReturnValue(null as never);
     jest.mocked(getActiveQuotePriceData).mockReturnValue(undefined);
     jest.mocked(getFormattedPriceImpactPercentage).mockReturnValue('7.0%');
@@ -707,9 +690,11 @@ describe('useBridgeAlerts', () => {
 
   describe('stellar-trustline alert', () => {
     beforeEach(() => {
-      jest.mocked(getFromToken).mockReturnValue(MOCK_FROM_TOKEN as never);
       jest.mocked(getToToken).mockReturnValue(MOCK_STELLAR_USDC as never);
-      jest.mocked(getIsAssetRequireActivate).mockReturnValue(true);
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isDestAssetRequireActivate: true,
+      });
     });
 
     it('adds a non-blocking warning banner with activate CTA for cross-chain Stellar destinations that need a trustline', () => {
@@ -752,23 +737,7 @@ describe('useBridgeAlerts', () => {
     });
 
     it('does not add stellar-trustline when the destination asset does not require activation', () => {
-      jest.mocked(getIsAssetRequireActivate).mockReturnValue(false);
-
-      const { result } = renderHook();
-
-      expect(
-        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
-      ).not.toContain('stellar-trustline');
-    });
-
-    it('does not add stellar-trustline for same-chain Stellar swaps', () => {
-      const stellarFromToken = toBridgeToken({
-        symbol: 'XLM',
-        decimals: 7,
-        assetId: 'stellar:pubnet/slip44:148' as const,
-        name: 'Lumens',
-      });
-      jest.mocked(getFromToken).mockReturnValue(stellarFromToken as never);
+      jest.mocked(getValidationErrors).mockReturnValue(DEFAULT_VALIDATION_ERRORS);
 
       const { result } = renderHook();
 
@@ -780,6 +749,7 @@ describe('useBridgeAlerts', () => {
     it('can appear alongside the insufficient-gas banner', () => {
       jest.mocked(getValidationErrors).mockReturnValue({
         ...DEFAULT_VALIDATION_ERRORS,
+        isDestAssetRequireActivate: true,
         isInsufficientGasForQuote: true,
       });
       jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);

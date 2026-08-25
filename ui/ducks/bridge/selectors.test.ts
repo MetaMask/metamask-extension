@@ -34,6 +34,7 @@ import { DummyQuotesNoApproval } from '../../../test/data/bridge/dummy-quotes';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { getBatchSellQuotes } from '../batch-sell/selectors';
+import * as stellarAssetsSelectors from '../../selectors/stellar-assets';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -3280,6 +3281,76 @@ describe('Bridge selectors', () => {
       // We don't apply such logic in Solana because this is handled by another validator
       expect(result.isInsufficientNativeReserve).toBe(false);
     });
+
+    describe('isDestAssetRequireActivate', () => {
+      const STELLAR_USDC_ASSET_ID =
+        'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+
+      const stellarUsdcToken = toBridgeToken({
+        symbol: 'USDC',
+        decimals: 7,
+        assetId: STELLAR_USDC_ASSET_ID,
+        name: 'USDC',
+        chainId: MultichainNetworks.STELLAR,
+      });
+
+      afterEach(() => {
+        jest.restoreAllMocks();
+      });
+
+      it('returns true for cross-chain destinations that require Stellar trustline activation', () => {
+        jest
+          .spyOn(stellarAssetsSelectors, 'getIsAssetRequireActivate')
+          .mockReturnValue(true);
+
+        const state = createBridgeMockStore({
+          bridgeSliceOverrides: {
+            fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+            toToken: stellarUsdcToken,
+          },
+        });
+
+        expect(getValidationErrors(state as never).isDestAssetRequireActivate).toBe(
+          true,
+        );
+      });
+
+      it('returns false for same-chain Stellar swaps even when activation is required', () => {
+        jest
+          .spyOn(stellarAssetsSelectors, 'getIsAssetRequireActivate')
+          .mockReturnValue(true);
+
+        const state = createBridgeMockStore({
+          bridgeSliceOverrides: {
+            fromToken: toBridgeToken(
+              getNativeAssetForChainId(MultichainNetworks.STELLAR),
+            ),
+            toToken: stellarUsdcToken,
+          },
+        });
+
+        expect(getValidationErrors(state as never).isDestAssetRequireActivate).toBe(
+          false,
+        );
+      });
+
+      it('returns false when the destination does not require activation', () => {
+        jest
+          .spyOn(stellarAssetsSelectors, 'getIsAssetRequireActivate')
+          .mockReturnValue(false);
+
+        const state = createBridgeMockStore({
+          bridgeSliceOverrides: {
+            fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+            toToken: stellarUsdcToken,
+          },
+        });
+
+        expect(getValidationErrors(state as never).isDestAssetRequireActivate).toBe(
+          false,
+        );
+      });
+    });
   });
 
   describe('getFromTokenBalance', () => {
@@ -4647,6 +4718,34 @@ describe('Bridge selectors', () => {
       });
       const result = getWarningLabels(state as never);
       expect(result).toContain('price_impact');
+    });
+
+    it('returns dest_asset_require_activate when destination Stellar trustline is required', () => {
+      jest
+        .spyOn(stellarAssetsSelectors, 'getIsAssetRequireActivate')
+        .mockReturnValue(true);
+
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          toToken: toBridgeToken({
+            symbol: 'USDC',
+            decimals: 7,
+            assetId:
+              'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+            name: 'USDC',
+            chainId: MultichainNetworks.STELLAR,
+          }),
+        },
+      });
+
+      try {
+        expect(getWarningLabels(state as never)).toContain(
+          'dest_asset_require_activate',
+        );
+      } finally {
+        jest.restoreAllMocks();
+      }
     });
   });
 
