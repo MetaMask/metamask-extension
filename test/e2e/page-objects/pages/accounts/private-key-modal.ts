@@ -8,8 +8,8 @@ import { Driver } from '../../../webdriver/driver';
  * Owns: password input, confirm, and wrong-password messaging.
  * Boundaries: authentication only. The revealed key list/rows belong to the
  * private-key list UI; account details entry is
- * `MultichainAccountDetailsPage`.
- * Related: `MultichainAccountDetailsPage` (export entry point).
+ * `AccountDetailsPage`.
+ * Related: `AccountDetailsPage` (export entry point).
  *
  * @see ui/components/multichain-accounts/multichain-private-key-list/multichain-private-key-list.tsx
  * @see ui/pages/multichain-accounts/multichain-account-private-key-list-page/multichain-account-private-key-list-page.tsx
