@@ -1,7 +1,7 @@
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftsTab from '../../../page-objects/pages/home/nfts-tab';

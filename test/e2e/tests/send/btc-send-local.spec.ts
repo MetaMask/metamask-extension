@@ -5,6 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
@@ -105,10 +106,11 @@ describe('BTC Account - Send with local bitcoind', function (this: Suite) {
         await bitcoinReviewTxPage.checkPageIsLoaded();
         await bitcoinReviewTxPage.clickConfirmButton();
 
-        // Wait for the transaction to appear in the activity list.
-        // Note: the transaction shows as "Pending" immediately after
-        // broadcast; the BTC snap stores it as "Unconfirmed".
+        const txToast = new TxToastNotification(driver);
+        await txToast.checkTxSubmittedToast();
+
         const activityTab = new ActivityTab(driver);
+        await homePage.goToActivityList();
         await activityTab.checkTransactionActivityByText('Sending');
         await activityTab.checkWaitForTransactionStatus('pending');
       },

@@ -452,6 +452,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       ref={setSettingsRootRef}
+      data-testid="parent-selector-settings-page"
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
       className="h-full w-full shadow-xs"

@@ -2,9 +2,9 @@ import { WALLET_PASSWORD } from '../../constants';
 import { type Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import HeaderNavbar from '../pages/header-navbar';
-import AccountListPage from '../pages/account-list-page';
-import AccountAddressModal from '../pages/multichain/account-address-modal';
-import AddressListModal from '../pages/multichain/address-list-modal';
+import AccountListPage from '../pages/accounts/list-page';
+import AccountAddressModal from '../pages/accounts/address-modal';
+import AccountAddressListPage from '../pages/accounts/address-list-page';
 import CriticalErrorPage from '../pages/critical-error-page';
 import VaultRecoveryPage from '../pages/vault-recovery-page';
 import {
@@ -40,13 +40,13 @@ export async function getFirstAddress(
 
   await accountListPage.clickMultichainAccountMenuItem('Addresses');
 
-  const addressListModal = new AddressListModal(driver);
-  await addressListModal.clickQRbutton();
+  const accountAddressListPage = new AccountAddressListPage(driver);
+  await accountAddressListPage.clickQRbutton();
 
   const accountAddressModal = new AccountAddressModal(driver);
   const accountAddress = await accountAddressModal.getAccountAddress();
   await accountAddressModal.goBack();
-  await addressListModal.goBack();
+  await accountAddressListPage.goBack();
   await accountListPage.closeMultichainAccountsPage();
 
   return accountAddress;
