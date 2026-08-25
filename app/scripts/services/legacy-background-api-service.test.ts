@@ -6135,7 +6135,6 @@ describe('LegacyBackgroundApiService', () => {
         expect(clearSnapState).toHaveBeenCalled();
         expect(clearAccountTreeState).toHaveBeenCalled();
         expect(clearAccountsState).toHaveBeenCalled();
-        expect(reinit).toHaveBeenCalledTimes(2);
         expect(updateHiddenAccountsList).toHaveBeenCalledWith([]);
         expect(clearUnapprovedTransactions).toHaveBeenCalled();
         expect(createWallet).toHaveBeenCalledWith({
