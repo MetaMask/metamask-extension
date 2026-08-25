@@ -1883,6 +1883,25 @@ describe('getAssetsBySelectedAccountGroup', () => {
     // The same address on a non-Arc chain is untouched.
     expect(result['0x1']).toStrictEqual([arcUsdcErc20]);
   });
+
+  it('keeps the Arc USDC ERC20 when the native token is absent, so USDC is never missing', () => {
+    const arcUsdcErc20 = {
+      address: '0x3600000000000000000000000000000000000000',
+      isNative: false,
+    };
+    const otherToken = {
+      address: '0x1111111111111111111111111111111111111111',
+      isNative: false,
+    };
+
+    jest.mocked(selectAssetsBySelectedAccountGroup).mockReturnValueOnce({
+      '0x13b2': [arcUsdcErc20, otherToken],
+    } as unknown as ReturnType<typeof selectAssetsBySelectedAccountGroup>);
+
+    const result = getAssetsBySelectedAccountGroup(mockState);
+
+    expect(result['0x13b2']).toStrictEqual([arcUsdcErc20, otherToken]);
+  });
 });
 
 describe('getAssetsBySelectedAccountGroupIncludingHidden', () => {

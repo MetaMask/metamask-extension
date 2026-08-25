@@ -755,8 +755,9 @@ export const TokenManagementPage = () => {
     );
 
     // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
-    // display duplicate. Drop it from search/browse results too.
-    return filterExcludedAssetList(results);
+    // display duplicate. Drop it from search/browse results too - it must
+    // never be offered for import, even when the native token is not held.
+    return filterExcludedAssetList(results, { keepWhenNativeAbsent: false });
   }, [deferredNormalizedQuery.length, hasQuery, searchResponse?.data]);
   const searchResults = useMemo(
     () => (hasQuery ? apiTokenResults : EMPTY_TOKEN_SEARCH_RESULTS),
