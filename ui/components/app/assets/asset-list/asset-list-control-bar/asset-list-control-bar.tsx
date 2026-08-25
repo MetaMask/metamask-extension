@@ -405,21 +405,25 @@ const AssetListControlBar = ({
           ellipsis
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            <Icon
-              name={IconName.Filter}
-              size={IconSize.Md}
-              color={
-                isSingleNetworkFilterSelected
-                  ? IconColor.PrimaryDefault
-                  : IconColor.IconDefault
-              }
-            />
+            {!isNetworkSwitchPending && (
+              <Icon
+                name={IconName.Filter}
+                size={IconSize.Md}
+                color={
+                  isSingleNetworkFilterSelected
+                    ? IconColor.PrimaryDefault
+                    : IconColor.IconDefault
+                }
+              />
+            )}
             <Text
               variant={TextVariant.bodySmMedium}
               color={
-                isSingleNetworkFilterSelected
-                  ? TextColor.primaryDefault
-                  : TextColor.textDefault
+                isNetworkSwitchPending
+                  ? TextColor.transparent
+                  : isSingleNetworkFilterSelected
+                    ? TextColor.primaryDefault
+                    : TextColor.textDefault
               }
               ellipsis
             >
