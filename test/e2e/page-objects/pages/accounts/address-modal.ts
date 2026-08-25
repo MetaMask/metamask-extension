@@ -8,8 +8,8 @@ import { Driver } from '../../../webdriver/driver';
  * Owns: reading the displayed address, view-on-Etherscan presence, and close /
  * back.
  * Boundaries: the QR modal only. The per-network address list is
- * `AddressListModal`.
- * Related: `AddressListModal` (how tests open this overlay).
+ * `AccountAddressListPage`.
+ * Related: `AccountAddressListPage` (how tests open this overlay).
  *
  * @see ui/components/multichain-accounts/address-qr-code-modal/address-qr-code-modal.tsx
  */

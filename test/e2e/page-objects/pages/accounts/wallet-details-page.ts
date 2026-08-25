@@ -1,14 +1,14 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Multichain wallet details: accounts in a wallet and add-account entry.
  *
- * Screen: `#/multichain-wallet-details-page`, reached from the account list.
+ * Screen: `#/multichain-wallet-details-page`.
  * Owns: wallet details container, account items/balances, and add-account
  * type modal (Ethereum / Solana options).
  * Boundaries: wallet details only. Account list and per-account details
- * belong to `AccountListPage` / `MultichainAccountDetailsPage`.
- * Related: `AccountListPage`, `MultichainAccountDetailsPage`.
+ * belong to `AccountListPage` / `AccountDetailsPage`.
+ * Related: `AccountDetailsPage`.
  *
  * @see ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.tsx
  */
@@ -28,12 +28,13 @@ class WalletDetailsPage {
     tag: 'button',
   };
 
+  private readonly parentSelector =
+    '[data-testid="parent-selector-multichain-wallet-details-page"]';
+
   private readonly solanaAccountOption = {
     text: 'Solana account',
     tag: 'button',
   };
-
-  private readonly walletDetailsPage = '.wallet-details-page';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -94,9 +95,12 @@ class WalletDetailsPage {
     }
   }
 
-  async checkPageIsLoaded(): Promise<void> {
-    console.log('Check wallet details page is loaded');
-    await this.driver.waitForSelector(this.walletDetailsPage);
+  async checkPageIsLoaded(walletName: string): Promise<void> {
+    await this.driver.waitForSelector(this.parentSelector);
+    await this.driver.waitForSelector({
+      css: 'h4',
+      text: `${walletName} / Accounts`,
+    });
   }
 
   async checkSolanaAccountOptionIsDisplayed(): Promise<void> {
