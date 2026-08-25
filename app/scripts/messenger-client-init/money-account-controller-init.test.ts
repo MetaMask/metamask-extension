@@ -12,7 +12,7 @@ import {
 import type {
   KeyringControllerGetStateAction,
   KeyringControllerState,
-  KeyringControllerUnlockEvent,
+  KeyringControllerStateChangeEvent,
 } from '@metamask/keyring-controller';
 import type {
   RemoteFeatureFlagControllerGetStateAction,
@@ -51,27 +51,36 @@ type BaseMessenger = Messenger<
   | ActionConstraint
   | KeyringControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction,
-  KeyringControllerUnlockEvent | RemoteFeatureFlagControllerStateChangeEvent
+  | KeyringControllerStateChangeEvent
+  | RemoteFeatureFlagControllerStateChangeEvent
 >;
 
 /**
- * Build a base messenger with the flag and lock state the init function reads.
- * The returned `config` is read live by the action handlers, so tests can flip
- * either value between triggers.
+ * Build a base messenger with the flag and keyring state the init function
+ * reads. The returned `config` is read live by the action handlers, so tests
+ * can flip any value between triggers.
  *
  * @param options - Options.
  * @param options.isEnabled - Whether the Money Account feature flag is on.
  * @param options.isUnlocked - Whether the wallet is unlocked.
+ * @param options.keyringIds - The metadata ids of the HD keyrings in the
+ * vault. Defaults to just the primary; pass `[]` to model the mid-restore
+ * window where the wallet is unlocked but the keyring list is still empty.
  * @returns The base messenger and its mutable config.
  */
 function buildBaseMessenger({
   isEnabled = true,
   isUnlocked = true,
-}: { isEnabled?: boolean; isUnlocked?: boolean } = {}): {
+  keyringIds = [PRIMARY_ENTROPY_SOURCE],
+}: {
+  isEnabled?: boolean;
+  isUnlocked?: boolean;
+  keyringIds?: string[];
+} = {}): {
   messenger: BaseMessenger;
-  config: { isEnabled: boolean; isUnlocked: boolean };
+  config: { isEnabled: boolean; isUnlocked: boolean; keyringIds: string[] };
 } {
-  const config = { isEnabled, isUnlocked };
+  const config = { isEnabled, isUnlocked, keyringIds };
   const messenger: BaseMessenger = new Messenger({
     namespace: MOCK_ANY_NAMESPACE,
   });
@@ -95,7 +104,15 @@ function buildBaseMessenger({
     () =>
       ({
         isUnlocked: config.isUnlocked,
-        keyrings: [],
+        // As in the real controller, the keyring list is empty while locked;
+        // the stale-account check and the mid-restore guard depend on it.
+        keyrings: config.isUnlocked
+          ? config.keyringIds.map((id) => ({
+              type: 'HD Key Tree',
+              accounts: [],
+              metadata: { id, name: '' },
+            }))
+          : [],
       }) as KeyringControllerState,
   );
 
@@ -137,12 +154,17 @@ function publishFlagChange(messenger: BaseMessenger) {
 }
 
 /**
- * Publish an unlock.
+ * Publish a keyring state change, as fired on unlock and when the keyring
+ * list is (re)populated.
  *
  * @param messenger - The base messenger.
  */
-function publishUnlock(messenger: BaseMessenger) {
-  messenger.publish('KeyringController:unlock');
+function publishKeyringStateChange(messenger: BaseMessenger) {
+  messenger.publish(
+    'KeyringController:stateChange',
+    {} as KeyringControllerState,
+    [],
+  );
 }
 
 describe('MoneyAccountControllerInit', () => {
@@ -249,14 +271,14 @@ describe('MoneyAccountControllerInit', () => {
     expect(init).toHaveBeenCalledTimes(1);
   });
 
-  it('creates the account on unlock', async () => {
+  it('creates the account when the keyring state change lands the unlock', async () => {
     const { messenger, config } = buildBaseMessenger({ isUnlocked: false });
     MoneyAccountControllerInit(getInitRequestMock(messenger));
     await Promise.resolve();
     expect(init).not.toHaveBeenCalled();
 
     config.isUnlocked = true;
-    publishUnlock(messenger);
+    publishKeyringStateChange(messenger);
     await Promise.resolve();
 
     expect(init).toHaveBeenCalledTimes(1);
@@ -278,7 +300,7 @@ describe('MoneyAccountControllerInit', () => {
     MoneyAccountControllerInit(getInitRequestMock(messenger));
 
     publishFlagChange(messenger);
-    publishUnlock(messenger);
+    publishKeyringStateChange(messenger);
     await Promise.resolve();
 
     expect(init).not.toHaveBeenCalled();
@@ -292,25 +314,74 @@ describe('MoneyAccountControllerInit', () => {
 
     publishFlagChange(messenger);
     await Promise.resolve();
-    publishUnlock(messenger);
+    publishKeyringStateChange(messenger);
     await Promise.resolve();
 
     expect(init).toHaveBeenCalledTimes(1);
+    // An account whose entropy source still exists is not stale, so the
+    // repeated triggers must not have wiped it.
+    expect(clearState).not.toHaveBeenCalled();
   });
 
-  it('creates a fresh account after a vault restore, when the recorded one belongs to a previous seed', async () => {
+  it('replaces a stale account after a vault restore, when the recorded one belongs to a previous seed', async () => {
     const { messenger, config } = buildBaseMessenger({ isUnlocked: false });
     state.moneyAccounts = { old: moneyAccountFor('a-previous-seed') };
 
     MoneyAccountControllerInit(getInitRequestMock(messenger));
 
     config.isUnlocked = true;
-    publishUnlock(messenger);
+    publishKeyringStateChange(messenger);
     await Promise.resolve();
 
+    // The stale record must be removed — its entropy source no longer exists,
+    // so leaving it would expose an address this wallet does not control.
+    expect(clearState).toHaveBeenCalledTimes(1);
     // Counting entries would have found one and skipped, leaving the restored
     // wallet permanently without a money account.
     expect(init).toHaveBeenCalledTimes(1);
+    expect(Object.values(state.moneyAccounts)).toStrictEqual([
+      moneyAccountFor(PRIMARY_ENTROPY_SOURCE),
+    ]);
+  });
+
+  it('leaves stale accounts untouched while the wallet is locked', async () => {
+    const { messenger } = buildBaseMessenger({ isUnlocked: false });
+    state.moneyAccounts = { old: moneyAccountFor('a-previous-seed') };
+
+    MoneyAccountControllerInit(getInitRequestMock(messenger));
+    publishFlagChange(messenger);
+    await Promise.resolve();
+
+    // While locked the keyring list is empty, so every account would look
+    // stale; the check must not run until the vault is readable.
+    expect(clearState).not.toHaveBeenCalled();
+    expect(init).not.toHaveBeenCalled();
+  });
+
+  it('does nothing during the mid-restore window, then completes when the keyrings land', async () => {
+    // A vault restore fires the unlock while the keyring list is still empty;
+    // the restored keyrings only reach state at the end of the operation.
+    const { messenger, config } = buildBaseMessenger({ keyringIds: [] });
+    state.moneyAccounts = { old: moneyAccountFor('a-previous-seed') };
+
+    MoneyAccountControllerInit(getInitRequestMock(messenger));
+    publishKeyringStateChange(messenger);
+    await Promise.resolve();
+
+    // With no HD keyring nothing can be judged stale and nothing can be
+    // created, so both must wait rather than wipe state or warn-and-skip.
+    expect(clearState).not.toHaveBeenCalled();
+    expect(init).not.toHaveBeenCalled();
+
+    config.keyringIds = [PRIMARY_ENTROPY_SOURCE];
+    publishKeyringStateChange(messenger);
+    await Promise.resolve();
+
+    expect(clearState).toHaveBeenCalledTimes(1);
+    expect(init).toHaveBeenCalledTimes(1);
+    expect(Object.values(state.moneyAccounts)).toStrictEqual([
+      moneyAccountFor(PRIMARY_ENTROPY_SOURCE),
+    ]);
   });
 
   it('clears its state when the flag is turned off after an account was created', async () => {
@@ -341,7 +412,7 @@ describe('MoneyAccountControllerInit', () => {
     await Promise.resolve();
     await Promise.resolve();
 
-    publishUnlock(messenger);
+    publishKeyringStateChange(messenger);
     await Promise.resolve();
 
     expect(init).toHaveBeenCalledTimes(3);

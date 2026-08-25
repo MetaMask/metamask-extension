@@ -64,7 +64,10 @@ const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
  * also be ready for use.
  *
  * A money account being available doesn’t mean that the account has been
- * upgraded yet.
+ * upgraded yet, nor that the Money keyring exists in the vault yet. The
+ * address is derived straight from the seed, so it is the same whether or not
+ * `MoneyAccountController.init()` has run; creating the keyring is that
+ * controller's job, and it creates it on demand before any signing.
  *
  * Callers are expected to gate on the `moneyEnableMoneyAccount` flag
  * themselves before calling; this service does not check it, to avoid

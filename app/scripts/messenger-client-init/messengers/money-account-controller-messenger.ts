@@ -6,7 +6,7 @@ import {
 import type { MoneyAccountControllerMessenger } from '@metamask/money-account-controller';
 import type {
   KeyringControllerGetStateAction,
-  KeyringControllerUnlockEvent,
+  KeyringControllerStateChangeEvent,
 } from '@metamask/keyring-controller';
 import type {
   RemoteFeatureFlagControllerGetStateAction,
@@ -55,7 +55,7 @@ type AllowedInitializationActions =
   | RemoteFeatureFlagControllerGetStateAction;
 
 type AllowedInitializationEvents =
-  | KeyringControllerUnlockEvent
+  | KeyringControllerStateChangeEvent
   | RemoteFeatureFlagControllerStateChangeEvent;
 
 export type MoneyAccountControllerInitMessenger = ReturnType<
@@ -67,8 +67,10 @@ export type MoneyAccountControllerInitMessenger = ReturnType<
  * MoneyAccountController.
  *
  * Money account creation is gated on the feature flag and on the wallet being
- * unlocked, and neither is knowable at construction time — hence the flag
- * state change and the unlock event.
+ * unlocked with its keyrings loaded, and none of that is knowable at
+ * construction time — hence both state change events. The keyring trigger is
+ * `stateChange` rather than `unlock` because a vault restore fires `unlock`
+ * before the restored keyrings land in state.
  *
  * @param messenger - The root messenger.
  * @returns The MoneyAccountController init messenger.
@@ -96,7 +98,7 @@ export function getMoneyAccountControllerInitMessenger(
       'RemoteFeatureFlagController:getState',
     ],
     events: [
-      'KeyringController:unlock',
+      'KeyringController:stateChange',
       'RemoteFeatureFlagController:stateChange',
     ],
   });

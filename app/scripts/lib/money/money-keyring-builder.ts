@@ -10,9 +10,8 @@ import { encodeMnemonic } from '@metamask/keyring-sdk';
 import type { Messenger } from '@metamask/messenger';
 
 export type MoneyKeyringBuilderMessenger = Messenger<
-  string,
-  KeyringControllerWithKeyringUnsafeAction,
-  never
+  'MoneyKeyringBuilder',
+  KeyringControllerWithKeyringUnsafeAction
 >;
 
 /**

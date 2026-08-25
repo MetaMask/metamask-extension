@@ -42,7 +42,7 @@ describe('getMoneyAccountControllerInitMessenger', () => {
     );
   });
 
-  it('delegates the flag and unlock state the creation gate reads', () => {
+  it('delegates the flag and keyring state the creation gate reads', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
 
@@ -55,7 +55,7 @@ describe('getMoneyAccountControllerInitMessenger', () => {
           'RemoteFeatureFlagController:getState',
         ],
         events: [
-          'KeyringController:unlock',
+          'KeyringController:stateChange',
           'RemoteFeatureFlagController:stateChange',
         ],
       }),

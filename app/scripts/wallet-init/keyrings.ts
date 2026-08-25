@@ -34,6 +34,7 @@ import {
   RootMessengerActions,
   RootMessengerEvents,
 } from '../lib/messenger';
+import { getMoneyKeyringBuilderMessenger } from '../messenger-client-init/messengers/accounts/money-keyring-builder-messenger';
 import { getSnapKeyringBuilderMessenger } from '../messenger-client-init/messengers/accounts/snap-keyring-builder-messenger';
 import {
   getSnapKeyringV2BuilderMessenger,
@@ -188,7 +189,9 @@ export function getKeyringBuilders(
   // Registered unconditionally, not behind the Money feature flag, so the
   // `KeyringController` can always recognise the Money keyring type while
   // deserializing the vault. See `buildMoneyKeyringBuilder`.
-  keyrings.push(buildMoneyKeyringBuilder(messenger));
+  keyrings.push(
+    buildMoneyKeyringBuilder(getMoneyKeyringBuilderMessenger(messenger)),
+  );
 
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
   keyrings.push(snapKeyringBuilder(getSnapKeyringBuilderMessenger(messenger)));
