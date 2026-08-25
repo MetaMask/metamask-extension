@@ -1,5 +1,5 @@
 {
-  "content_security_policy": "frame-ancestors 'none'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; font-src 'self';",
+  "content_security_policy": "frame-ancestors 'self' https://x.com https://www.x.com; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; font-src 'self';",
   "cross_origin_opener_policy": {
     "value": "same-origin-allow-popups"
   },
