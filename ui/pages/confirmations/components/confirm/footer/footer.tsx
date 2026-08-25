@@ -440,16 +440,27 @@ const Footer = () => {
       return;
     }
 
+    if (isWalletInitiatedSend) {
+      // Cancelling a wallet-initiated send abandons the draft and returns Home.
+      // The encoded goBackTo would otherwise make the auto-exit return to the
+      // send amount page, so suppress it and navigate Home explicitly.
+      suppressAutoExit();
+      await onCancel({ location: MetaMetricsEventLocation.Confirmation });
+      onDappSwapCompleted();
+      dismissErrorModal();
+      navigate(DEFAULT_ROUTE, { replace: true });
+      return;
+    }
+
     await onCancel({
       location: MetaMetricsEventLocation.Confirmation,
-      navigateBackForSend: isWalletInitiatedSend,
-      navigateBackToPreviousPage: !isWalletInitiatedSend && Boolean(goBackTo),
+      navigateBackToPreviousPage: Boolean(goBackTo),
     });
 
     onDappSwapCompleted();
     dismissErrorModal();
 
-    if (isWalletInitiatedSend || goBackTo) {
+    if (goBackTo) {
       return;
     }
 
@@ -466,6 +477,7 @@ const Footer = () => {
     onCancel,
     goBackTo,
     isWalletInitiatedSend,
+    suppressAutoExit,
     shouldThrottleOrigin,
     currentConfirmationId,
     isAddEthereumChain,

@@ -1452,13 +1452,14 @@ describe('ConfirmFooter', () => {
       });
     });
 
-    it('pops history via navigateBackIfSend for wallet-initiated send instead of replacing to goBackTo', async () => {
+    it('navigates Home when cancelling a wallet-initiated send instead of returning to goBackTo', async () => {
       const navigateNextMock = jest.fn();
       useConfirmationNavigationMock.mockReturnValue({
         navigateNext: navigateNextMock,
         navigateToId: jest.fn(),
       } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
+      const suppressAutoExitMock = jest.fn();
       const goBackTo = '/send/amount-recipient';
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
         currentConfirmation: genUnapprovedTokenTransferConfirmation({
@@ -1467,6 +1468,7 @@ describe('ConfirmFooter', () => {
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: () => undefined,
         goBackTo,
+        suppressAutoExit: suppressAutoExitMock,
       } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const rejectSpy = jest
@@ -1483,7 +1485,10 @@ describe('ConfirmFooter', () => {
         expect(rejectSpy).toHaveBeenCalled();
       });
 
-      expect(mockNavigateBackIfSend).toHaveBeenCalledTimes(1);
+      expect(suppressAutoExitMock).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
       expect(mockUseNavigate).not.toHaveBeenCalledWith(goBackTo, {
         replace: true,
       });
