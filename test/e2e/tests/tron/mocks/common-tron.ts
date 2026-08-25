@@ -1674,39 +1674,85 @@ export async function mockTronApis(
   ];
 }
 
-export async function mockTronSwapApis(
-  mockServer: Mockttp,
-  mockZeroBalance?: boolean,
-): Promise<MockedEndpoint[]> {
-  return [
-    ...(await mockTronApis(mockServer, mockZeroBalance)),
-    ...(await mockBridgeGetTronTokens(mockServer)),
-    await mockBridgeGetTronQuote(mockServer),
-    await mockTronGetChainParameters(mockServer),
-    await mockTronGetNextMaintenanceTime(mockServer),
-    await mockTronTriggerConstantContract(mockServer),
-    await mockTronGetContract(mockServer),
-  ];
-}
+export type TronSwapMockMode = 'default' | 'noFeeEstimation' | 'noQuotes';
 
-export async function mockTronSwapApisNoQuotes(
-  mockServer: Mockttp,
-  mockZeroBalance?: boolean,
-): Promise<MockedEndpoint[]> {
-  return [
-    ...(await mockTronApis(mockServer, mockZeroBalance)),
-    ...(await mockBridgeGetTronTokens(mockServer)),
-    await mockBridgeGetTronQuoteEmpty(mockServer),
-  ];
-}
+export type SwitchableTronSwapMocks = {
+  testSpecificMock: (mockServer: Mockttp) => Promise<MockedEndpoint[]>;
+  setMode: (mode: TronSwapMockMode) => void;
+};
 
-export async function mockTronSwapApisWithoutFeeEstimation(
-  mockServer: Mockttp,
-  mockZeroBalance?: boolean,
-): Promise<MockedEndpoint[]> {
-  return [
-    ...(await mockTronApis(mockServer, mockZeroBalance)),
+/**
+ * Creates the Tron swap API mocks with a runtime-switchable mode so a shared
+ * fixture session can flip between quote behaviors without restarting the
+ * browser. The handlers are registered once and consult the current mode on
+ * every request. In 'default' mode, bridge getQuote serves the standard
+ * TRX → USDT quote and the Tron fee-estimation endpoints answer with real
+ * payloads. In 'noFeeEstimation' mode, getQuote still serves the quote, but
+ * the fee-estimation endpoints return the same empty 200 the E2E catch-all
+ * produced when these endpoints were left unmocked. In 'noQuotes' mode,
+ * getQuote returns an empty quote list, and the fee-estimation endpoints
+ * answer with the empty 200 as well (they are never consulted without a
+ * quote).
+ *
+ * IMPORTANT: within one shared session, 'noFeeEstimation' must be exercised
+ * BEFORE any successful fee estimation in 'default' mode. The Tron snap
+ * persists fetched chain parameters in its state cache and, when a fetch
+ * fails, falls back to the last-known cached parameters even after they
+ * expire (`peekCachedChainParameters` in the snap's FeeCalculatorService), so
+ * fee estimation can never hard-fail again once it has succeeded in the
+ * session.
+ */
+export function createSwitchableTronSwapMocks(): SwitchableTronSwapMocks {
+  let mode: TronSwapMockMode = 'default';
+
+  // Fee-estimation payloads only exist in 'default' mode; the other modes
+  // mimic the unmocked catch-all, which answers with a bodyless 200.
+  const feeEstimationResponse = (buildJson: () => unknown) => () =>
+    mode === 'default'
+      ? { statusCode: 200, json: buildJson() }
+      : { statusCode: 200 };
+
+  const testSpecificMock = async (
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> => [
+    ...(await mockTronApis(mockServer)),
     ...(await mockBridgeGetTronTokens(mockServer)),
-    await mockBridgeGetTronQuote(mockServer),
+    await mockServer
+      .forGet(/^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u)
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json:
+          mode === 'noQuotes'
+            ? []
+            : [buildTronQuoteResponseV1(DEFAULT_TRON_QUOTE_FIXTURE)],
+      })),
+    await mockServer
+      .forGet(tronInfuraUrl('/wallet/getchainparameters'))
+      .always()
+      .thenCallback(feeEstimationResponse(buildTronChainParametersResponse)),
+    await mockServer
+      .forPost(tronInfuraUrl('/wallet/getnextmaintenancetime'))
+      .always()
+      .thenCallback(
+        feeEstimationResponse(buildTronNextMaintenanceTimeResponse),
+      ),
+    await mockServer
+      .forPost(tronInfuraUrl('/wallet/triggerconstantcontract'))
+      .always()
+      .thenCallback(
+        feeEstimationResponse(buildTronTriggerConstantContractResponse),
+      ),
+    await mockServer
+      .forPost(tronInfuraUrl('/wallet/getcontract'))
+      .always()
+      .thenCallback(feeEstimationResponse(() => ({}))),
   ];
+
+  return {
+    testSpecificMock,
+    setMode: (nextMode: TronSwapMockMode) => {
+      mode = nextMode;
+    },
+  };
 }
