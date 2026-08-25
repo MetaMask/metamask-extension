@@ -216,7 +216,6 @@ import {
   AccountTreeControllerClearStateAction,
   AccountTreeControllerGetSelectedAccountGroupAction,
   AccountTreeControllerInitAction,
-  AccountTreeControllerReinitAction,
   AccountTreeControllerSyncWithUserStorageAction,
   AccountTreeControllerSyncWithUserStorageAtLeastOnceAction,
 } from '@metamask/account-tree-controller';
@@ -559,7 +558,6 @@ type AllowedActions =
   | AccountTreeControllerClearStateAction
   | AccountTreeControllerGetSelectedAccountGroupAction
   | AccountTreeControllerInitAction
-  | AccountTreeControllerReinitAction
   | AccountTreeControllerSyncWithUserStorageAction
   | AccountTreeControllerSyncWithUserStorageAtLeastOnceAction
   | AccountsControllerClearStateAction
@@ -4007,9 +4005,6 @@ export class LegacyBackgroundApiService {
     // there are some account migration happening in that function).
     await this.#messenger.call('AccountsController:updateAccounts');
 
-    // Then we can build the initial tree.
-    this.#messenger.call('AccountTreeController:reinit');
-
     return primaryKeyring;
   }
 
@@ -4432,12 +4427,6 @@ export class LegacyBackgroundApiService {
 
       // Init multichain accounts after creating internal accounts.
       await this.#messenger.call('MultichainAccountService:init');
-
-      // And we re-init the account tree controller too, to use the
-      // newly created accounts.
-      // TODO: Remove this once the `accounts-controller` once only
-      // depends only on keyrings `:stateChange`.
-      this.#messenger.call('AccountTreeController:reinit');
 
       if (completedOnboarding) {
         // check if external services are enabled

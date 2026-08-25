@@ -126,7 +126,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'AccountOrderController:updateHiddenAccountsList',
       'AccountTreeController:clearState',
       'AccountTreeController:init',
-      'AccountTreeController:reinit',
       'AccountTreeController:getSelectedAccountGroup',
       'AccountTreeController:syncWithUserStorage',
       'AccountTreeController:syncWithUserStorageAtLeastOnce',
