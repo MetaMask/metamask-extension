@@ -196,9 +196,7 @@ export function ActivityList({
           }
 
           if (row.type === 'date-header') {
-            return (
-              <SectionHeader label={formatRelativeMediumDate(row.date)} />
-            );
+            return <SectionHeader label={formatRelativeMediumDate(row.date)} />;
           }
 
           return (
