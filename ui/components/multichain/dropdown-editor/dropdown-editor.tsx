@@ -238,6 +238,7 @@ export const DropdownEditor = <Item,>({
             items && items.length > 0 ? 'py-2' : 'py-0',
           )}
           referenceElement={dropdown.current}
+          referenceHidden={false}
           position={PopoverPosition.Bottom}
           isOpen={isDropdownOpen}
           onClickOutside={() => setIsDropdownOpen(false)}
