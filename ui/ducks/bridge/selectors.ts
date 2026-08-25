@@ -107,6 +107,7 @@ import { getIsRWATokensEnabled } from '../../selectors/rwa/feature-flags';
 import {
   isStockRWAToken,
   isTokenTradingOpenAt,
+  isTokenInOffHoursAt,
 } from '../../pages/bridge/hooks/useRWAToken';
 import { getQuoteStreamReasonString } from '../../pages/bridge/utils/quote-stream';
 import {
@@ -762,12 +763,44 @@ export const getIsStockMarketClosed = (
   }
   const fromToken = getFromToken(state);
   const toToken = getToToken(state);
+  // Off-hours sessions occur while the regular market window is closed, but
+  // trading remains available — so those tokens are not treated as closed.
+  // `nextPause` is regular-hours-only (see `isTokenInOffHoursAt`); a pause
+  // must not keep a token closed when its off-hours window is open.
   const isFromClosed =
     isStockRWAToken(fromToken) &&
-    !isTokenTradingOpenAt(fromToken, currentTimeInMs);
+    !isTokenTradingOpenAt(fromToken, currentTimeInMs) &&
+    !isTokenInOffHoursAt(fromToken, currentTimeInMs);
   const isToClosed =
-    isStockRWAToken(toToken) && !isTokenTradingOpenAt(toToken, currentTimeInMs);
+    isStockRWAToken(toToken) &&
+    !isTokenTradingOpenAt(toToken, currentTimeInMs) &&
+    !isTokenInOffHoursAt(toToken, currentTimeInMs);
   return isFromClosed || isToClosed;
+};
+
+export const getIsInOffHoursTrading = (
+  state: BridgeAppState,
+  currentTimeInMs: number,
+): boolean => {
+  const isRWAEnabled = getIsRWATokensEnabled(state);
+  if (!isRWAEnabled) {
+    return false;
+  }
+  // If any stock leg is fully closed (not tradable even via off-hours),
+  // market-closed takes precedence — keep these flags mutually exclusive
+  // so the UI does not show both the danger market-closed banner and the
+  // dismissable off-hours warning (e.g. weekends when only one RWA supports
+  // extended hours).
+  if (getIsStockMarketClosed(state, currentTimeInMs)) {
+    return false;
+  }
+  const fromToken = getFromToken(state);
+  const toToken = getToToken(state);
+  return (
+    (isStockRWAToken(fromToken) &&
+      isTokenInOffHoursAt(fromToken, currentTimeInMs)) ||
+    (isStockRWAToken(toToken) && isTokenInOffHoursAt(toToken, currentTimeInMs))
+  );
 };
 
 export const getBridgeQuotes = createSelector(
@@ -1241,6 +1274,10 @@ const getValidationErrorsAtTime = createParameterizedSelector(20)(
       currentTimeInMs === undefined
         ? false
         : getIsStockMarketClosed(state, currentTimeInMs),
+    isInOffHoursTrading:
+      currentTimeInMs === undefined
+        ? false
+        : getIsInOffHoursTrading(state, currentTimeInMs),
   }),
 );
 
@@ -1277,6 +1314,7 @@ export const getWarningLabels = (
     isPriceImpactError,
     isTxAlertPresent,
     isStockMarketClosed,
+    isInOffHoursTrading,
     isQuoteExpired,
   } = getValidationErrors(state, currentTimeInMs);
   const warnings: QuoteWarning[] = [];
@@ -1290,6 +1328,7 @@ export const getWarningLabels = (
   isPriceImpactError && warnings.push('price_impact');
   isTxAlertPresent && warnings.push('tx_alert');
   isStockMarketClosed && warnings.push('market_closed');
+  isInOffHoursTrading && warnings.push('off_hours' as QuoteWarning);
   isQuoteExpired && warnings.push('quote_expired');
   // @ts-expect-error: insufficient_native_reserve is not a valid QuoteWarning yet
   isInsufficientNativeReserve && warnings.push('insufficient_native_reserve');
