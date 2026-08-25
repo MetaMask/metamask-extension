@@ -84,6 +84,25 @@ describe('ReceiveRow', () => {
     expect(getByTestId('receive-value')).toHaveTextContent('$8.50');
   });
 
+  it('uses the quote target amount for exact-input deposits', () => {
+    useTransactionPayTotalsMock.mockReturnValue({
+      fees: {
+        provider: { usd: '1.00' },
+        sourceNetwork: { estimate: { usd: '0.20' } },
+        targetNetwork: { usd: '0.05' },
+        metaMask: { usd: '0.25' },
+      },
+      targetAmount: { fiat: '9', usd: '9' },
+    } as TransactionPayTotals);
+
+    const { getByTestId } = render({
+      inputAmountUsd: '10',
+      useQuoteTargetAmount: true,
+    });
+
+    expect(getByTestId('receive-value')).toHaveTextContent('$9.00');
+  });
+
   it('treats a missing metaMask fee as zero', () => {
     useTransactionPayTotalsMock.mockReturnValue({
       fees: {

@@ -13,6 +13,7 @@ import {
 import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
 import {
+  useIsRelayExactInputDeposit,
   useIsTransactionPayQuotePending,
   useIsTransactionPayLoading,
   useTransactionPayHasExecutableQuote,
@@ -149,6 +150,65 @@ describe('useTransactionPayData', () => {
           wrapper: createWrapper({ quotes: undefined }),
         },
       );
+
+      expect(result.current).toBe(false);
+    });
+  });
+
+  describe('useIsRelayExactInputDeposit', () => {
+    [TransactionType.perpsDeposit, TransactionType.predictDeposit].forEach(
+      (transactionType) => {
+        it(`returns true for Relay ${transactionType} transactions`, () => {
+          const { result } = renderHook(() => useIsRelayExactInputDeposit(), {
+            wrapper: createWrapper({}, transactionType),
+          });
+
+          expect(result.current).toBe(true);
+        });
+      },
+    );
+
+    [TransactionType.perpsDeposit, TransactionType.predictDeposit].forEach(
+      (transactionType) => {
+        it(`returns false for Across ${transactionType} transactions`, () => {
+          const { result } = renderHook(() => useIsRelayExactInputDeposit(), {
+            wrapper: createWrapper(
+              {
+                quotes: [
+                  {
+                    strategy: TransactionPayStrategy.Across,
+                  } as TransactionPayQuote<Json>,
+                ],
+              },
+              transactionType,
+            ),
+          });
+
+          expect(result.current).toBe(false);
+        });
+      },
+    );
+
+    [
+      TransactionType.perpsDepositAndOrder,
+      TransactionType.predictDepositAndOrder,
+    ].forEach((transactionType) => {
+      it(`returns false for Relay ${transactionType} transactions`, () => {
+        const { result } = renderHook(() => useIsRelayExactInputDeposit(), {
+          wrapper: createWrapper({}, transactionType),
+        });
+
+        expect(result.current).toBe(false);
+      });
+    });
+
+    it('returns false before a quote is available', () => {
+      const { result } = renderHook(() => useIsRelayExactInputDeposit(), {
+        wrapper: createWrapper(
+          { quotes: undefined },
+          TransactionType.perpsDeposit,
+        ),
+      });
 
       expect(result.current).toBe(false);
     });

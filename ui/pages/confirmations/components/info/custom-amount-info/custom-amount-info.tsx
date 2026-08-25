@@ -39,6 +39,7 @@ import { useTransactionPayPostQuote } from '../../../hooks/pay/useTransactionPay
 import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
+  useIsRelayExactInputDeposit,
   useIsTransactionPayQuotePending,
   useTransactionPayHasExecutableQuote,
   useTransactionPayHasPositiveRequiredAmount,
@@ -376,11 +377,12 @@ function BottomContainer({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-  // Gate the Receive row on the flag, not the transaction type: with post-quote
-  // disabled the withdraw falls back to a direct transfer, which has a regular
-  // total rather than a bridged "you'll receive" amount. Mirrors mobile
-  // `CustomAmountTotals`.
+  // Withdrawals show Receive only when post-quote token selection is enabled;
+  // otherwise the direct transfer keeps its regular Total. Plain Perps and
+  // Predict deposits show Receive only for Relay exact-input quotes, preserving
+  // Across behavior. Mirrors mobile `CustomAmountTotals`.
   const { canSelectWithdrawToken } = useTransactionPayWithdraw();
+  const isRelayExactInputDeposit = useIsRelayExactInputDeposit();
 
   return (
     <Box
@@ -406,9 +408,11 @@ function BottomContainer({
               <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
             </>
           )}
-          {canSelectWithdrawToken && disablePay !== true ? (
+          {(canSelectWithdrawToken || isRelayExactInputDeposit) &&
+          disablePay !== true ? (
             <ReceiveRow
               inputAmountUsd={amountFiat}
+              useQuoteTargetAmount={isRelayExactInputDeposit}
               variant={ConfirmInfoRowSize.Small}
             />
           ) : (

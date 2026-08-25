@@ -25,6 +25,7 @@ import { usePayWithNoFeeToken } from '../pay/usePayWithNoFeeToken';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import {
+  useIsRelayExactInputDeposit,
   useTransactionPayIsMaxAmount,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayTotals,
@@ -76,6 +77,7 @@ export function useTransactionCustomAmount({
   const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
     TransactionType.moneyAccountWithdraw,
   ]);
+  const isRelayExactInputDeposit = useIsRelayExactInputDeposit();
   const tokenAddress = getTokenAddress(transactionMeta);
   const payTokenFiatRate = useTokenFiatRate(
     tokenAddress,
@@ -170,9 +172,14 @@ export function useTransactionCustomAmount({
   }, [disableUpdate, transactionId, updateTokenAmountCallback]);
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+  // A remounted exact-input confirmation must restore the source total, not
+  // the post-fee target amount stored on the required token.
+  const initialAmountUsd = isRelayExactInputDeposit
+    ? totals?.sourceAmount.usd
+    : primaryRequiredToken?.amountUsd;
 
   const [amountFiatState, setAmountFiat] = useState(
-    new BigNumber(primaryRequiredToken?.amountUsd ?? '0')
+    new BigNumber(initialAmountUsd ?? '0')
       .round(2, BigNumber.ROUND_HALF_UP)
       .toString(10),
   );
@@ -184,8 +191,12 @@ export function useTransactionCustomAmount({
     // fees, not the mUSD being withdrawn — keep the typed amount.
     const targetAmountUsd = totals?.targetAmount?.usd;
 
+    // For Relay exact-input deposits, the quote target is the amount received
+    // after fees, not the total source amount selected by Max. Keep the input
+    // amount in state so it does not jump down when the quote resolves.
     if (
       !isMoneyAccountWithdraw &&
+      !isRelayExactInputDeposit &&
       isMaxAmount &&
       targetAmountUsd &&
       targetAmountUsd !== '0'
@@ -200,6 +211,7 @@ export function useTransactionCustomAmount({
     amountFiatState,
     isMaxAmount,
     isMoneyAccountWithdraw,
+    isRelayExactInputDeposit,
     totals?.targetAmount?.usd,
   ]);
 
