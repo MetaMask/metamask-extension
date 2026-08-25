@@ -4,7 +4,6 @@ import thunk from 'redux-thunk';
 import { renderHook, act } from '@testing-library/react';
 import {
   type QuoteMetadata,
-  QuoteMetadataMigrationPhase,
   type QuoteResponse,
   mergeQuoteMetadata,
 } from '@metamask/bridge-controller';
@@ -32,6 +31,7 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
 import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
 import { CHAIN_VALUE_ORDER_AB_KEY } from '../../../shared/lib/ab-testing/configs/chain-value-order';
+import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 jest.mock('../../../shared/lib/sentry', () => ({
@@ -619,7 +619,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         accountAddress: expect.any(String),
         location: 'Main View',
         tokenSecurityTypeDestination: null,
-        migrationPhase: QuoteMetadataMigrationPhase.V2WithV1Fallback,
+        migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
         activeAbTests: undefined,
         inputPrimaryDenomination: 'fiat_value',
       });

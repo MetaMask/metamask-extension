@@ -47,7 +47,6 @@ import {
   formatCurrencyAmount,
   formatTokenAmount,
 } from '../utils/quote';
-import { BRIDGE_DEBUG_ENABLED } from '../../../../shared/constants/bridge';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -203,9 +202,6 @@ export const BridgeQuotesModal = ({
                         dest.normalizedAmount,
                         dest.asset.symbol,
                       )}
-                      {BRIDGE_DEBUG_ENABLED
-                        ? ` (${quote.toTokenAmount?.amount ?? '0'})`
-                        : ''}
                     </Text>
                   </Row>
 
@@ -227,19 +223,13 @@ export const BridgeQuotesModal = ({
                                 priceImpact.valueInCurrency,
                                 currency,
                                 2,
-                              ) +
-                              (BRIDGE_DEBUG_ENABLED
-                                ? ` (${quote.cost?.valueInCurrency?.slice(0, 6) ?? '0'})`
-                                : '')
+                              )
                             : totalNetworkFee?.normalizedAmount &&
                               formatTokenAmount(
                                 locale,
                                 totalNetworkFee.normalizedAmount,
                                 nativeCurrency,
-                              ) +
-                                (BRIDGE_DEBUG_ENABLED
-                                  ? ` (${quote.totalNetworkFee?.amount?.slice(0, 10) ?? '0'})`
-                                  : ''),
+                              ),
                         ])}
                       </Text>
                       {isRecommended && (
@@ -265,14 +255,7 @@ export const BridgeQuotesModal = ({
                       color={TextColor.textAlternative}
                       style={{ whiteSpace: 'nowrap' }}
                     >
-                      {(formatCurrencyAmount(
-                        dest.valueInCurrency,
-                        currency,
-                        2,
-                      ) ?? '') +
-                        (BRIDGE_DEBUG_ENABLED
-                          ? ` (${quote.toTokenAmount?.valueInCurrency?.slice(0, 10) ?? '0'})`
-                          : '')}
+                      {formatCurrencyAmount(dest.valueInCurrency, currency, 2)}
                     </Text>
                   </Row>
                 </Column>

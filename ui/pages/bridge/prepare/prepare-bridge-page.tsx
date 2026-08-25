@@ -14,10 +14,6 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import {
-  BRIDGE_DEBUG_ENABLED,
-  BRIDGE_ONLY_CHAINS,
-} from '../../../../shared/constants/bridge';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,

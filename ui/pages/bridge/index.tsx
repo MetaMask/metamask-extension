@@ -18,7 +18,6 @@ import {
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
-import { BRIDGE_DEBUG_ENABLED } from '../../../shared/constants/bridge';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -46,7 +45,6 @@ import AwaitingSignatures from './awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
 import { clearAllBridgeCacheItems } from './utils/cache';
-import { Column } from './layout';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -103,18 +101,6 @@ const CrossChainSwap = () => {
       <Text variant={DsTextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
         {t('swap')}
       </Text>
-      {BRIDGE_DEBUG_ENABLED ? (
-        <Column>
-          <Text variant={DsTextVariant.BodySm} fontWeight={FontWeight.Regular}>
-            {
-              'TESTING: Verify that the difference between displayed numbers is acceptable'
-            }
-          </Text>
-          <Text variant={DsTextVariant.BodySm} fontWeight={FontWeight.Regular}>
-            {'BRIDGE_API_METADATA ( LEGACY_QUOTE_METADATA )'}
-          </Text>
-        </Column>
-      ) : null}
       <ButtonIcon
         iconName={IconName.Setting}
         size={ButtonIconSize.Md}

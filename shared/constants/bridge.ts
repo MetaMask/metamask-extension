@@ -74,11 +74,7 @@ export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number];
 
 export const BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE =
-  (process.env
-    .BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE as QuoteMetadataMigrationPhase) ??
   QuoteMetadataMigrationPhase.V2WithV1Fallback;
-
-export const BRIDGE_DEBUG_ENABLED = process.env.BRIDGE_DEBUG === '1';
 
 /**
  * Resolves the Bridge API base URL to use based on the current MetaMask
@@ -89,10 +85,6 @@ export const BRIDGE_DEBUG_ENABLED = process.env.BRIDGE_DEBUG === '1';
 export const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
   if (process.env.BRIDGE_USE_CUSTOM_BASE_URL) {
     return process.env.BRIDGE_USE_CUSTOM_BASE_URL;
-  }
-
-  if (BRIDGE_DEBUG_ENABLED) {
-    return 'http://localhost:4000';
   }
 
   switch (process.env.METAMASK_ENVIRONMENT) {
