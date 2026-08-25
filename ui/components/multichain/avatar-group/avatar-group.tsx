@@ -25,11 +25,17 @@ import {
 import { AvatarGroupProps, AvatarType } from './avatar-group.types';
 
 /**
- * @deprecated This component is deprecated and will be removed in a future release.
- * Please use the AvatarGroup component from @metamask/design-system-react instead.
+ * @param options0
+ * @param options0.className
+ * @param options0.limit
+ * @param options0.members
+ * @param options0.size
+ * @param options0.avatarType
+ * @param options0.isTagOverlay
+ * @param options0.variant
+ * @deprecated Please update your code to use `AvatarGroup` from `@metamask/design-system-react`.
  * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#avatargroup-component | Migration Guide}
  * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-avatargroup--docs | Storybook Documentation}
- * @see {@link https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components/AvatarGroup | Component Source}
  */
 export const AvatarGroup = ({
   className = '',
