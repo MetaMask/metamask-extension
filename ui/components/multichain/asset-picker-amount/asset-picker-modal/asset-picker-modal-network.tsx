@@ -7,6 +7,7 @@ import {
 } from '@metamask/network-controller';
 import type { CaipChainId } from '@metamask/utils';
 import {
+  AvatarNetworkSize,
   Checkbox,
   FontWeight,
   IconName,
@@ -33,7 +34,6 @@ import {
   Box,
   ButtonLink,
   Text,
-  AvatarNetworkSize,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NetworkListItem } from '../../network-list-item';

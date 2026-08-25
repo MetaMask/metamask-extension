@@ -17,15 +17,15 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PermissionItem } from './permission-item';
-import { DisconnectPermissionsModalProps } from './types';
+import { DisconnectAllGatorPermissionsModalProps } from './types';
 
-export const DisconnectPermissionsModal = ({
+export const DisconnectAllGatorPermissionsModal = ({
   isOpen,
   onClose,
   onSkip,
   onRemoveAll,
   permissions = [],
-}: DisconnectPermissionsModalProps) => {
+}: DisconnectAllGatorPermissionsModalProps) => {
   const t = useI18nContext();
 
   return (

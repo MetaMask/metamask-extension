@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Shared asset picker modal chrome for choosing tokens or NFTs.
@@ -23,6 +23,8 @@ class AssetPicker {
   private readonly nftTab = { css: 'button', text: 'NFTs' };
 
   private readonly noNftInfo = '[data-testid="nft-tab-empty-state"]';
+
+  private readonly parentSelector = '[data-testid="asset-picker-modal"]';
 
   private readonly searchInput =
     '[data-testid="asset-picker-modal-search-input"]';
@@ -72,6 +74,7 @@ class AssetPicker {
     const buttons = await this.driver.findElements(this.assetPickerButton);
     const indexOfButtonToClick = context === 'dest' ? 1 : 0;
     await buttons[indexOfButtonToClick].click();
+    await this.driver.waitForSelector(this.parentSelector);
   }
 
   async openNftAssetPicker(): Promise<void> {

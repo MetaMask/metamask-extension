@@ -1,4 +1,4 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Gate shown when Basic functionality is off and a feature requires it.
@@ -26,6 +26,10 @@ export default class BasicFunctionalityOffPage {
   private readonly openFeatureButton =
     '[data-testid="basic-functionality-off-open-feature"]';
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-basic-functionality-off-page',
+  };
+
   private readonly toggleButton =
     '[data-testid="basic-functionality-off-toggle-row"] .toggle-button';
 
@@ -52,9 +56,12 @@ export default class BasicFunctionalityOffPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.descriptionBox);
-      await this.driver.waitForSelector(this.goHomeLink);
-      await this.driver.waitForSelector(this.toggleRow);
+      await this.driver.waitForMultipleSelectors([
+        this.descriptionBox,
+        this.goHomeLink,
+        this.parentSelector,
+        this.toggleRow,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Basic Functionality Off page to be loaded',

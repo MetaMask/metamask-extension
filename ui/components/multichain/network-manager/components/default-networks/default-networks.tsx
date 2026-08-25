@@ -9,6 +9,8 @@ import {
   XlmScope,
 } from '@metamask/keyring-api';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -29,7 +31,6 @@ import {
 import {
   AlignItems,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
@@ -42,8 +43,6 @@ import {
   setActiveNetwork,
 } from '../../../../../store/actions';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   Box,
   SuccessPill,
   Text,
@@ -102,7 +101,6 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
         name={network.name}
         size={AvatarNetworkSize.Md}
         src={networkImageUrl}
-        borderRadius={BorderRadius.LG}
       />
       <Box
         display={Display.Flex}
