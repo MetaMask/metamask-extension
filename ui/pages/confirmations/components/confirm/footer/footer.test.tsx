@@ -1489,5 +1489,46 @@ describe('ConfirmFooter', () => {
       });
       expect(navigateNextMock).not.toHaveBeenCalled();
     });
+
+    it('navigates Home after confirming a wallet-initiated send instead of returning to goBackTo', async () => {
+      const navigateNextMock = jest.fn();
+      useConfirmationNavigationMock.mockReturnValue({
+        navigateNext: navigateNextMock,
+        navigateToId: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmationNavigation>);
+
+      const suppressAutoExitMock = jest.fn();
+      const goBackTo = '/send/amount-recipient';
+      const sendConfirmation = genUnapprovedTokenTransferConfirmation({
+        isWalletInitiatedConfirmation: true,
+      });
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: sendConfirmation,
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+        goBackTo,
+        suppressAutoExit: suppressAutoExitMock,
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+      mockOnTransactionConfirm.mockResolvedValue(true);
+      mockUseNavigate.mockClear();
+
+      const { getByText } = render(
+        getMockConfirmStateForTransaction(sendConfirmation),
+      );
+      fireEvent.click(getByText(messages.confirm.message));
+
+      await waitFor(() => {
+        expect(mockOnTransactionConfirm).toHaveBeenCalled();
+      });
+
+      expect(suppressAutoExitMock).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(goBackTo, {
+        replace: true,
+      });
+      expect(navigateNextMock).not.toHaveBeenCalled();
+    });
   });
 });

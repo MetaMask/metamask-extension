@@ -261,8 +261,12 @@ const Footer = () => {
   const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
-  const { currentConfirmation, isScrollToBottomCompleted, goBackTo } =
-    useConfirmContext<TransactionMeta>();
+  const {
+    currentConfirmation,
+    isScrollToBottomCompleted,
+    goBackTo,
+    suppressAutoExit,
+  } = useConfirmContext<TransactionMeta>();
   const currentConfirmationId = currentConfirmation?.id;
   const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
@@ -368,7 +372,16 @@ const Footer = () => {
       if (isTransactionConfirmation) {
         const didConfirm = await onTransactionConfirm();
         if (didConfirm && currentConfirmationId) {
-          navigateNext(currentConfirmationId);
+          // A successful send must land on Home, not the send amount page. The
+          // encoded goBackTo would otherwise make the auto-exit return there,
+          // so suppress it and navigate Home explicitly for wallet-initiated
+          // send.
+          if (isWalletInitiatedSend && goBackTo) {
+            suppressAutoExit();
+            navigate(DEFAULT_ROUTE, { replace: true });
+          } else {
+            navigateNext(currentConfirmationId);
+          }
         }
         return;
       }
@@ -407,6 +420,9 @@ const Footer = () => {
     shouldRunHardwareWalletPreflight,
     isAddEthereumChain,
     isTransactionConfirmation,
+    isWalletInitiatedSend,
+    goBackTo,
+    suppressAutoExit,
     onAddEthereumChain,
     navigate,
     onTransactionConfirm,
