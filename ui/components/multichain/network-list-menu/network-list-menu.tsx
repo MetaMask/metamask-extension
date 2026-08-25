@@ -21,6 +21,7 @@ import {
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import {
+  AvatarNetworkSize,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -90,7 +91,6 @@ import {
   Text,
   ModalContent,
   ModalHeader,
-  AvatarNetworkSize,
 } from '../../component-library';
 import {
   MetaMetricsEventCategory,

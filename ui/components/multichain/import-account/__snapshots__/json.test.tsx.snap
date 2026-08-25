@@ -7,7 +7,7 @@ exports[`Json should match snapshot 1`] = `
   >
     Used by a variety of different clients
     <a
-      class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      class="items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed inline"
       href="https://support.metamask.io/start/how-to-import-an-account/?utm_source=extension#how-can-i-import-my-private-key-using-a-json-file"
       rel="noopener noreferrer"
       target="_blank"

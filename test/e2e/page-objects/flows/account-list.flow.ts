@@ -3,8 +3,8 @@ import {
   KNOWN_PUBLIC_KEY_ADDRESSES,
   KNOWN_QR_ACCOUNTS,
 } from '../../../stub/keyring-bridge';
-import AccountListPage from '../pages/account-list-page';
-import AddressListModal from '../pages/multichain/address-list-modal';
+import AccountListPage from '../pages/accounts/list-page';
+import AccountAddressListPage from '../pages/accounts/address-list-page';
 import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
@@ -36,7 +36,7 @@ export async function checkAccountAddressDisplayedInAccountList(
     type === 'QR' ? KNOWN_QR_ACCOUNTS : KNOWN_PUBLIC_KEY_ADDRESSES;
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded();
-  const addressListModal = new AddressListModal(driver);
+  const accountAddressListPage = new AccountAddressListPage(driver);
   for (let index = 0; index < count; index++) {
     const accountName = `${type} Account ${index + 1}`;
     await accountListPage.checkAccountDisplayedInAccountList(accountName);
@@ -45,10 +45,10 @@ export async function checkAccountAddressDisplayedInAccountList(
     });
     await accountListPage.checkMultiChainAccountMenuIsDisplayed();
     await accountListPage.clickMultichainAccountMenuItem('Addresses');
-    await addressListModal.checkNetworkAddressIsDisplayed(
+    await accountAddressListPage.checkNetworkAddressIsDisplayed(
       shortenAddress(addresses[index].address),
     );
-    await addressListModal.goBack();
+    await accountAddressListPage.goBack();
   }
 }
 

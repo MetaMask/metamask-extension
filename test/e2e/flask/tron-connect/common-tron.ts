@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import Homepage from '../../page-objects/pages/home/homepage';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { DAPP_PATH } from '../../constants';
 import { mockTronFeatureFlag } from './mocks/feature-flag';
