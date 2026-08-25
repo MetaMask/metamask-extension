@@ -96,6 +96,7 @@ export const useDiscoverStocksSearch = ({
         pageInfo: response.pageInfo,
       };
     },
+    initialPageParam: undefined,
     getNextPageParam: (lastPage) =>
       lastPage.pageInfo.hasNextPage
         ? (lastPage.pageInfo.nextCursor ?? undefined)
