@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   createSearchParams,
   useNavigate,
@@ -30,6 +30,7 @@ import {
 import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
 import {
   getConnectedSitesListWithNetworkInfo,
@@ -53,18 +54,15 @@ const PermissionsPage = () => {
   const dispatch = useDispatch();
   const headerRef = useRef();
 
-  const fromPath = searchParams.get('from') ?? undefined;
+  const fromPath = searchParams.get('from') ?? DEFAULT_ROUTE;
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      // Came directly from home via auto-redirect - close with animation
       runCloseTransition(() => navigate(-1));
     } else {
-      // Came from Gator hub or other navigation - just go back through history
-      navigate(-1);
+      navigate(DEFAULT_ROUTE);
     }
   };
-  const [totalConnections, setTotalConnections] = useState(0);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
 
   const mergedConnectionsList = useSelector((state) => {
@@ -76,16 +74,15 @@ const PermissionsPage = () => {
 
   const subjects = useSelector(getPermissionSubjects);
 
-  useEffect(() => {
-    setTotalConnections(Object.keys(mergedConnectionsList).length);
+  const nonSnapConnections = useMemo(() => {
+    return Object.entries(mergedConnectionsList).filter(
+      ([origin]) => !isSnapId(origin),
+    );
   }, [mergedConnectionsList]);
 
   const handleDisconnectAll = useCallback(() => {
     const errors = [];
-    // Get all non-snap origins from the merged connections list
-    const origins = Object.keys(mergedConnectionsList).filter(
-      (origin) => !isSnapId(origin),
-    );
+    const origins = nonSnapConnections.map(([origin]) => origin);
 
     origins.forEach((origin) => {
       try {
@@ -117,31 +114,39 @@ const PermissionsPage = () => {
         id: 'disconnect-all-success-toast',
       });
     }
-  }, [dispatch, mergedConnectionsList, subjects, t]);
+  }, [dispatch, nonSnapConnections, subjects, t]);
 
   const handleConnectionClick = (connection) => {
-    transitionForward(() =>
+    const hasOnlyAdvancedPermissions =
+      !connection.addresses?.length &&
+      (connection.advancedPermissionsCount ?? 0) > 0;
+
+    transitionForward(() => {
+      if (hasOnlyAdvancedPermissions) {
+        navigate(
+          `${TOKEN_TRANSFER_ROUTE}/${encodeURIComponent(connection.origin)}`,
+        );
+        return;
+      }
+
       navigate({
         pathname: REVIEW_PERMISSIONS,
         search: createSearchParams({
           origin: connection.origin,
         }).toString(),
-      }),
-    );
+      });
+    });
   };
 
-  const renderConnectionsList = (connectionList) =>
-    Object.entries(connectionList).map(([itemKey, connection]) => {
-      const isSnap = isSnapId(connection.origin);
-      return isSnap ? null : (
-        <ConnectionListItem
-          data-testid="connection-list-item"
-          key={itemKey}
-          connection={connection}
-          onClick={() => handleConnectionClick(connection)}
-        />
-      );
-    });
+  const renderConnectionsList = () =>
+    nonSnapConnections.map(([itemKey, connection]) => (
+      <ConnectionListItem
+        data-testid="connection-list-item"
+        key={itemKey}
+        connection={connection}
+        onClick={() => handleConnectionClick(connection)}
+      />
+    ));
 
   return (
     <Page
@@ -166,8 +171,8 @@ const PermissionsPage = () => {
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
-        {totalConnections > 0 ? (
-          renderConnectionsList(mergedConnectionsList)
+        {nonSnapConnections.length > 0 ? (
+          renderConnectionsList()
         ) : (
           <Box
             data-testid="no-connections"
@@ -181,7 +186,7 @@ const PermissionsPage = () => {
           </Box>
         )}
       </Content>
-      {totalConnections > 0 && (
+      {nonSnapConnections.length > 0 && (
         <Footer>
           <Box
             display={Display.Flex}
@@ -194,7 +199,6 @@ const PermissionsPage = () => {
               size={ButtonSize.Lg}
               block
               variant={ButtonVariant.Secondary}
-              startIconName={IconName.Logout}
               danger
               onClick={() => setShowDisconnectAllModal(true)}
               data-testid="disconnect-all-button"

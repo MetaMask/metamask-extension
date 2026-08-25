@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { useMusdBalance, useMusdCtaVisibility } from '../../../../hooks/musd';
+import { useMusdCtaVisibility } from '../../../../hooks/musd';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getSafeNativeCurrencySymbol,
@@ -89,27 +89,22 @@ export default function TokenCell({
   });
 
   const { shouldShowTokenListItemCta } = useMusdCtaVisibility();
-  const { hasMusdBalance } = useMusdBalance();
 
   const showMusdCta = useMemo(() => {
     if (!musd?.convert || !token.address || !token.chainId) {
       return false;
     }
-    return shouldShowTokenListItemCta(
-      {
-        address: token.address as Hex,
-        chainId: token.chainId as Hex,
-        symbol: token.symbol,
-      },
-      { hasMusdBalance },
-    );
+    return shouldShowTokenListItemCta({
+      address: token.address as Hex,
+      chainId: token.chainId as Hex,
+      symbol: token.symbol,
+    });
   }, [
     musd?.convert,
     token.address,
     token.chainId,
     token.symbol,
     shouldShowTokenListItemCta,
-    hasMusdBalance,
   ]);
 
   const tokenDisplayInfo = useTokenDisplayInfo({

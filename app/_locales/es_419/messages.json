@@ -156,9 +156,6 @@
     "message": "$1 cuentas",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Ver sus cuentas y sugerir transacciones"
-  },
   "accountsSmallCase": {
     "message": "cuentas"
   },
@@ -2761,9 +2758,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Usando USB o un código QR"
   },
-  "connectAccounts": {
-    "message": "Conectar cuentas"
-  },
   "connectAnyway": {
     "message": "Conectarse de todos modos"
   },
@@ -2810,18 +2804,6 @@
   },
   "connectedSnaps": {
     "message": "Snaps conectados"
-  },
-  "connectedWithAccount": {
-    "message": "$1 cuentas conectadas",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Conectado con $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 redes conectadas",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Conectando"
@@ -3427,9 +3409,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Todas las dapps se desconectaron con éxito."
   },
-  "disconnectMessage": {
-    "message": "Esto lo desconectará de este sitio"
-  },
   "disconnectPrompt": {
     "message": "Desconectar $1"
   },
@@ -3609,9 +3588,6 @@
   },
   "editNetworkLink": {
     "message": "editar la red original"
-  },
-  "editNetworksTitle": {
-    "message": "Editar redes"
   },
   "editNonceField": {
     "message": "Editar nonce"
@@ -5288,10 +5264,6 @@
   "more": {
     "message": "más"
   },
-  "moreAccounts": {
-    "message": "Más de $1 cuentas adicionales",
-    "description": "$1 is the number of accounts"
-  },
   "moreCapital": {
     "message": "Más"
   },
@@ -5485,18 +5457,6 @@
     "message": "Reclamar bono",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Bonificación reclamable",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "El bono anualizado que has ganado por mantener mUSD. Puedes reclamar tu bono diariamente en Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Detalles del bono reclamable",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Las tarifas de conversión a mUSD incluyen costos de red y pueden incluir tarifas del proveedor. No se aplica ninguna tarifa de MetaMask al convertir a mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5521,10 +5481,6 @@
   "musdConvert": {
     "message": "Convertir"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Gana un bono del $1 %",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Comenzar"
   },
@@ -5537,10 +5493,6 @@
   },
   "musdGetMusd": {
     "message": "Obtener USDC"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5748,9 +5700,6 @@
   "networkOptions": {
     "message": "Opciones de red"
   },
-  "networkPermissionToast": {
-    "message": "Se actualizaron los permisos de la red"
-  },
   "networkStatus": {
     "message": "Estado de la red"
   },
@@ -5786,9 +5735,6 @@
   },
   "networks": {
     "message": "Redes"
-  },
-  "networksSmallCase": {
-    "message": "redes"
   },
   "new": {
     "message": "Nuevo!"
@@ -8322,9 +8268,6 @@
     "message": "Compra exitosa",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Otras opciones"
-  },
   "rampsPaymentDelayBusinessDay": {
     "message": "día hábil"
   },
@@ -8542,9 +8485,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Este es el sitio que le pide su confirmación."
-  },
-  "requestingFor": {
-    "message": "Solicitando para"
   },
   "required": {
     "message": "Requerido"
@@ -9367,9 +9307,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Habilite la autodetección de NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Selecciona la red para filtrar"
   },
   "selectPathHelp": {
     "message": "Si no ve las cuentas previstas, intente cambiar la ruta HD o la red seleccionada actualmente."

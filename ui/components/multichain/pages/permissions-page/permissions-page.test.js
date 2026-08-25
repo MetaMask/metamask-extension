@@ -9,6 +9,14 @@ import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../share
 import * as actions from '../../../../store/actions';
 import PermissionsPage from './permissions-page';
 
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockNavigate,
+  };
+});
+
 mockState.metamask.subjectMetadata = {
   'https://metamask.github.io': {
     iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
@@ -234,6 +242,55 @@ describe('All Connections', () => {
       expect(queryByTestId('disconnect-all-button')).not.toBeInTheDocument();
     });
 
+    it('shows empty state and hides Disconnect All button when only snaps exist', () => {
+      const stateWithOnlySnaps = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+          subjectMetadata: {
+            'npm:@metamask/testSnap1': {
+              name: 'Test Snap 1',
+              version: '1.2.3',
+              subjectType: 'snap',
+            },
+          },
+          subjects: {
+            'npm:@metamask/testSnap1': {
+              origin: 'npm:@metamask/testSnap1',
+              permissions: {
+                'endowment:ethereum-provider': {
+                  caveats: null,
+                  date: 1698071087770,
+                  id: 'test-snap-permission',
+                  invoker: 'npm:@metamask/testSnap1',
+                  parentCapability: 'endowment:ethereum-provider',
+                },
+              },
+            },
+          },
+          snaps: {
+            'npm:@metamask/testSnap1': {
+              id: 'npm:@metamask/testSnap1',
+              origin: 'npm:@metamask/testSnap1',
+              version: '1.2.3',
+              iconUrl: null,
+              initialPermissions: {
+                'endowment:ethereum-provider': {},
+              },
+            },
+          },
+        },
+      };
+      const snapsOnlyStore = configureStore(stateWithOnlySnaps);
+      const { queryByTestId, getByTestId } = renderWithProvider(
+        <PermissionsPage />,
+        snapsOnlyStore,
+      );
+      expect(queryByTestId('disconnect-all-button')).not.toBeInTheDocument();
+      expect(getByTestId('no-connections')).toBeInTheDocument();
+    });
+
     it('opens Disconnect All Sites modal when button is clicked', () => {
       const { getByTestId } = renderWithProvider(
         <PermissionsPage />,
@@ -285,6 +342,120 @@ describe('All Connections', () => {
       });
 
       removePermissionsForMock.mockRestore();
+    });
+  });
+
+  describe('connection click', () => {
+    const accountConnectionStore = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+        subjectMetadata: {
+          'https://metamask.github.io': {
+            iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+            name: 'E2E Test Dapp',
+            subjectType: 'website',
+            origin: 'https://metamask.github.io',
+            extensionId: null,
+          },
+        },
+        subjects: {
+          'https://metamask.github.io': {
+            origin: 'https://metamask.github.io',
+            permissions: {
+              'endowment:caip25': {
+                caveats: [
+                  {
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+                date: 1698071087770,
+                id: 'BIko27gpEajmo_CcNYPxD',
+                invoker: 'https://metamask.github.io',
+                parentCapability: 'endowment:caip25',
+              },
+            },
+          },
+        },
+        snaps: {},
+      },
+    });
+
+    it('navigates to review permissions for account connections', () => {
+      const { getByTestId } = renderWithProvider(
+        <PermissionsPage />,
+        accountConnectionStore,
+      );
+
+      fireEvent.click(getByTestId('connection-list-item'));
+
+      expect(mockNavigate).toHaveBeenCalledWith({
+        pathname: '/review-permissions',
+        search: 'origin=https%3A%2F%2Fmetamask.github.io',
+      });
+    });
+
+    it('navigates to token transfer for connections with only advanced permissions', () => {
+      jest
+        .mocked(isGatorPermissionsRevocationFeatureEnabled)
+        .mockReturnValue(true);
+
+      const gatorOnlyOrigin = 'https://gator-only.com';
+      const gatorOnlyStore = configureStore({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+          subjectMetadata: {},
+          subjects: {},
+          snaps: {},
+          grantedPermissions: [
+            {
+              permissionResponse: {
+                chainId: '0x1',
+                from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                permission: {
+                  type: 'native-token-periodic',
+                  isAdjustmentAllowed: false,
+                  data: {
+                    periodAmount: '0x22b1c8c1227a0000',
+                    periodDuration: 1747699200,
+                    startTime: 1747699200,
+                    justification: 'Test justification',
+                  },
+                },
+                context: '0x00000000',
+                delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+              },
+              siteOrigin: gatorOnlyOrigin,
+              status: 'Active',
+            },
+          ],
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <PermissionsPage />,
+        gatorOnlyStore,
+      );
+
+      fireEvent.click(getByTestId('connection-list-item'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `/gator-permissions/token-transfer/${encodeURIComponent(gatorOnlyOrigin)}`,
+      );
     });
   });
 });

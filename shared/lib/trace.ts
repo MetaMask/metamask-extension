@@ -42,6 +42,7 @@ export enum TraceName {
   SendCompleted = 'Send Completed',
   SetupStore = 'Setup Store',
   Signature = 'Signature',
+  SwapQuoteFetch = 'Swap Quote Fetch',
   SwapQuotesFetched = 'Swap Quotes Fetched',
   SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
