@@ -67,9 +67,9 @@ export default function NftsTab({
   });
 
   return (
-    <div data-testid="parent-selector-nfts-tab">
+    <>
       <Box>
-        <AssetListControlBar />
+        <AssetListControlBar data-testid="parent-selector-nfts-tab" />
       </Box>
 
       <Box className="nfts-tab">
@@ -90,6 +90,6 @@ export default function NftsTab({
           <NftEmptyState className="mx-auto mt-5 mb-6" />
         )}
       </Box>
-    </div>
+    </>
   );
 }
