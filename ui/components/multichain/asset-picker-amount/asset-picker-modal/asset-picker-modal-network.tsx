@@ -7,12 +7,15 @@ import {
 } from '@metamask/network-controller';
 import type { CaipChainId } from '@metamask/utils';
 import {
+  AvatarNetworkSize,
   Checkbox,
   FontWeight,
   IconName,
   Text as DsText,
   TextColor as DsTextColor,
   TextVariant as DsTextVariant,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import {
   Display,
@@ -31,9 +34,7 @@ import {
   ModalBody,
   Modal,
   Box,
-  ButtonLink,
   Text,
-  AvatarNetworkSize,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NetworkListItem } from '../../network-list-item';
@@ -195,9 +196,9 @@ export const AssetPickerModalNetwork = ({
           onClose={isMultiselectEnabled ? undefined : onClose}
           endAccessory={
             isMultiselectEnabled && selectedChainIds ? (
-              <ButtonLink
-                variant={TextVariant.bodyMdMedium}
-                disabled={Object.values(checkedChainIds).every((v) => !v)}
+              <TextButton
+                size={TextButtonSize.BodyMd}
+                isDisabled={Object.values(checkedChainIds).every((v) => !v)}
                 onClick={() => {
                   onMultiselectSubmit?.(
                     Object.keys(checkedChainIds).filter(
@@ -208,7 +209,7 @@ export const AssetPickerModalNetwork = ({
                 }}
               >
                 {t('apply')}
-              </ButtonLink>
+              </TextButton>
             ) : undefined
           }
         >
@@ -228,18 +229,15 @@ export const AssetPickerModalNetwork = ({
                 handleToggleAllNetworks();
               }}
             />
-            <ButtonLink
-              variant={TextVariant.bodyMdMedium}
+            <TextButton
+              size={TextButtonSize.BodyMd}
               onClick={() => {
                 handleToggleAllNetworks();
               }}
-              style={{
-                alignSelf: AlignItems.flexStart,
-                paddingInline: 16,
-              }}
+              className="self-start px-4"
             >
               {t('selectAll')}
-            </ButtonLink>
+            </TextButton>
           </Box>
         )}
         <ModalBody
