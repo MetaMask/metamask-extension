@@ -905,7 +905,7 @@
     },
     "@metamask/react-data-query": {
       "type": "non-breaking",
-      "previewVersion": "0.2.2-preview-95f5bf775"
+      "previewVersion": "0.2.2-preview-a81bf03"
     },
     "@metamask/money-account-api-data-service": {
       "type": "non-breaking",
