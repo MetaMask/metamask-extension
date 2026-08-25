@@ -36,8 +36,8 @@ export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =
         ? {}
         : {
             transaction_contract_address:
-              context.isContractInteraction && transactionMeta.txParams?.to
-                ? [transactionMeta.txParams.to]
+              context.isContractInteraction && context.contractAddress
+                ? [context.contractAddress]
                 : [],
           }),
       ...(context.isContractInteraction

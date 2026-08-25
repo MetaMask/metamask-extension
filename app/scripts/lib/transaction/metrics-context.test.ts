@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionContainerType,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { TransactionApprovalAmountType } from '../../../../shared/constants/transaction';
 import { buildTransactionMetricsContext } from './metrics-context';
 
@@ -38,10 +41,62 @@ describe('buildTransactionMetricsContext', () => {
     });
 
     expect(context.isContractInteraction).toBe(true);
+    expect(context.contractAddress).toBeUndefined();
     expect(context.contractMethodName).toBe('Approve');
     expect(context.contractMethod4Byte).toBe('0x095ea7b3');
     expect(context.transactionTypeForMetrics).toBe('contractInteraction');
     expect(context.isApproveMethod).toBe(true);
+  });
+
+  it('uses original contract details for enforced simulations', async () => {
+    const getMethodData = jest.fn().mockResolvedValue({ name: 'Transfer' });
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        containerTypes: [TransactionContainerType.EnforcedSimulations],
+        txParams: {
+          to: '0xdb9b1e94b5b69df7e401ddbede43491141047db3',
+          data: '0x1cff79cd',
+        },
+        txParamsOriginal: {
+          to: '0x2222222222222222222222222222222222222222',
+          data: '0xa9059cbb',
+        },
+      }),
+      transactionMetricsRequest: createRequest({ getMethodData }),
+    });
+
+    expect(getMethodData).toHaveBeenCalledWith('0xa9059cbb');
+    expect(context.contractAddress).toBe(
+      '0x2222222222222222222222222222222222222222',
+    );
+    expect(context.contractMethodName).toBe('Transfer');
+    expect(context.contractMethod4Byte).toBe('0xa9059cbb');
+  });
+
+  it('uses current contract details without enforced simulations', async () => {
+    const getMethodData = jest
+      .fn()
+      .mockResolvedValue({ name: 'RedeemDelegations' });
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        txParams: {
+          to: '0xdb9b1e94b5b69df7e401ddbede43491141047db3',
+          data: '0x1cff79cd',
+        },
+        txParamsOriginal: {
+          to: '0x2222222222222222222222222222222222222222',
+          data: '0xa9059cbb',
+        },
+      }),
+      transactionMetricsRequest: createRequest({ getMethodData }),
+    });
+
+    expect(getMethodData).toHaveBeenCalledWith('0x1cff79cd');
+    expect(context.contractAddress).toBe(
+      '0xdb9b1e94b5b69df7e401ddbede43491141047db3',
+    );
+    expect(context.contractMethodName).toBe('RedeemDelegations');
+    expect(context.contractMethod4Byte).toBe('0x1cff79cd');
   });
 
   it('derives approval amount type', async () => {

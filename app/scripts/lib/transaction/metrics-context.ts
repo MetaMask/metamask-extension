@@ -1,5 +1,6 @@
 import {
-  TransactionMeta,
+  TransactionContainerType,
+  type TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import {
@@ -50,11 +51,12 @@ export async function buildTransactionMetricsContext({
       transactionMeta.type ?? '',
       transactionMeta.originalType,
     );
+  const transactionParams = getTransactionParamsForMetrics(transactionMeta);
 
   let contractMethodName;
-  if (transactionMeta.txParams.data) {
+  if (transactionParams.data) {
     const methodData = await transactionMetricsRequest.getMethodData(
-      transactionMeta.txParams.data,
+      transactionParams.data,
     );
     contractMethodName = methodData?.name;
   }
@@ -75,8 +77,9 @@ export async function buildTransactionMetricsContext({
   });
 
   return {
+    contractAddress: transactionParams.to,
     contractMethodName,
-    contractMethod4Byte: transactionMeta.txParams?.data?.slice(0, 10),
+    contractMethod4Byte: transactionParams.data?.slice(0, 10),
     transactionTypeForMetrics: transactionType,
     isContractInteraction,
     isApproveMethod,
@@ -84,6 +87,18 @@ export async function buildTransactionMetricsContext({
     tokenStandard,
     transactionApprovalAmountType,
   };
+}
+
+function getTransactionParamsForMetrics(
+  transactionMeta: TransactionMeta,
+): TransactionMeta['txParams'] {
+  const isEnforcedSimulation = transactionMeta.containerTypes?.includes(
+    TransactionContainerType.EnforcedSimulations,
+  );
+
+  return isEnforcedSimulation && transactionMeta.txParamsOriginal
+    ? transactionMeta.txParamsOriginal
+    : transactionMeta.txParams;
 }
 
 function determineTransactionTypeAndContractInteraction(
