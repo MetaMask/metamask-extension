@@ -72,7 +72,12 @@ class SnapTransactionConfirmation {
     try {
       const waitOptions = timeout === undefined ? undefined : { timeout };
       await this.driver.waitForMultipleSelectors(
-        [this.parentSelector, this.header, this.cancelButton, this.confirmButton],
+        [
+          this.parentSelector,
+          this.header,
+          this.cancelButton,
+          this.confirmButton,
+        ],
         waitOptions,
       );
     } catch (e) {
