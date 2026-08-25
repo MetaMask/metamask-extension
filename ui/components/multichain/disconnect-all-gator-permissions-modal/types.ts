@@ -7,7 +7,7 @@ export type GatorPermission = {
   permissionType: string;
 };
 
-export type DisconnectPermissionsModalProps = {
+export type DisconnectAllGatorPermissionsModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSkip: () => void;

@@ -1,4 +1,4 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * DeFi protocol position details for a single protocol on a chain.
@@ -22,6 +22,8 @@ class DeFiDetailsPage {
     '[data-testid="defi-details-page-market-value"]';
 
   private readonly driver: Driver;
+
+  private readonly parentSelector = '.main-container.asset__container';
 
   private readonly suppliedHeading =
     '[data-testid="defi-details-list-supply-position"]';
@@ -61,6 +63,11 @@ class DeFiDetailsPage {
       css: this.defiProtocolName,
       text: description,
     });
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    console.log('Check if DeFi details page is loaded');
+    await this.driver.waitForSelector(this.parentSelector);
   }
 
   async checkSuppliedHeadingIsDisplayed(): Promise<void> {
