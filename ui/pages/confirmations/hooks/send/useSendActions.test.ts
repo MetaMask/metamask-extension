@@ -80,7 +80,9 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        '/confirm-transaction?maxValueMode=true&loader=send',
+        expect.stringMatching(
+          /^\/confirm-transaction\?.*loader=send.*goBackTo=/u,
+        ),
       );
     });
   });

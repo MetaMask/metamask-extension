@@ -61,7 +61,7 @@ describe('useConfirmActions', () => {
     });
   });
 
-  it('call navigateBackIfSend when onCancel is called, if navigateBackForSend is true', () => {
+  it('calls navigateBackIfSend when onCancel is called with navigateBackForSend true', () => {
     const mockNavigateBackIfSend = jest.fn();
     jest
       .spyOn(ConfirmSendNavigation, 'useConfirmSendNavigation')
@@ -79,6 +79,13 @@ describe('useConfirmActions', () => {
     const result = renderHook();
     result.onCancel({ location: 'dummy' });
     expect(mockNavigateBackIfSend).not.toHaveBeenCalled();
+  });
+
+  it('does not navigate when onCancel is called by default', async () => {
+    mockDispatch.mockResolvedValue(undefined);
+    const result = renderHook('/?goBackTo=%2Fsome-page');
+    await result.onCancel({ location: 'dummy' });
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   // TAT-3131: navigating back from a transient wallet-initiated confirmation
@@ -106,12 +113,5 @@ describe('useConfirmActions', () => {
       navigateBackToPreviousPage: true,
     });
     expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
-  });
-
-  it('does not navigate back by default', async () => {
-    mockDispatch.mockResolvedValue(undefined);
-    const result = renderHook('/?goBackTo=%2Fsome-page');
-    await result.onCancel({ location: 'dummy' });
-    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

@@ -2,7 +2,7 @@ import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { errorCodes } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -34,6 +34,7 @@ export const useSendActions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { pathname, search } = useLocation();
   const {
     asset,
     chainId,
@@ -72,6 +73,10 @@ export const useSendActions = () => {
         params.set('maxValueMode', String(maxValueMode));
       }
       params.set('loader', ConfirmationLoader.Send);
+      // Capture the current send URL so ConfirmContext auto-exit and the Back
+      // button both navigate back here (replace) instead of going to Home.
+      // This eliminates the race between navigate(-1) and the auto-exit replace.
+      params.set('goBackTo', `${pathname}${search}`);
       const route = `${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`;
       navigate(route);
     } else {
@@ -125,6 +130,8 @@ export const useSendActions = () => {
     navigate,
     isEvmSendType,
     maxValueMode,
+    pathname,
+    search,
     t,
     to,
     updateNonEVMSubmitError,
