@@ -33,10 +33,10 @@ describe('getRampsEnvironment', () => {
   Object.entries(EXPECTED_RAMPS_ENVIRONMENT_BY_METAMASK_ENVIRONMENT).forEach(
     ([metamaskEnvironment, rampsEnvironment]) => {
       it(`maps METAMASK_ENVIRONMENT=${metamaskEnvironment} to ${rampsEnvironment} in main builds`, () => {
-      process.env.METAMASK_ENVIRONMENT = metamaskEnvironment;
-      process.env.METAMASK_BUILD_TYPE = 'main';
+        process.env.METAMASK_ENVIRONMENT = metamaskEnvironment;
+        process.env.METAMASK_BUILD_TYPE = 'main';
 
-      expect(getRampsEnvironment()).toBe(rampsEnvironment);
+        expect(getRampsEnvironment()).toBe(rampsEnvironment);
       });
     },
   );
