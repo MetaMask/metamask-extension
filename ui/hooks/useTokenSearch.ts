@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import {
+  type InfiniteData,
   keepPreviousData,
   useInfiniteQuery,
   type UseInfiniteQueryResult,
@@ -28,7 +29,7 @@ export type UseTokenSearchOptions = {
 };
 
 export type UseTokenSearchResult = Omit<
-  UseInfiniteQueryResult<TokenSearchResponse, Error>,
+  UseInfiniteQueryResult<InfiniteData<TokenSearchResponse>, Error>,
   'data'
 > & {
   data?: TokenSearchResponse;
@@ -76,7 +77,7 @@ export const useTokenSearch = ({
   const isBrowseMode = enableTokenBrowse && trimmedQuery.length === 0;
   const isEnabled = enabled && (isBrowseMode || trimmedQuery.length > 0);
 
-  const queryResult = useInfiniteQuery<TokenSearchResponse, Error>({
+  const queryResult = useInfiniteQuery({
     queryKey: [
       ...TOKEN_SEARCH_QUERY_KEY_ROOT,
       isBrowseMode ? 'browse' : 'search',
@@ -84,13 +85,7 @@ export const useTokenSearch = ({
       networksKey,
       first,
     ] as const,
-    queryFn: async ({
-      signal,
-      pageParam,
-    }: {
-      signal?: AbortSignal;
-      pageParam?: string;
-    }) => {
+    queryFn: async ({ signal, pageParam }) => {
       if (isBrowseMode) {
         return browseTokens({
           networks: networksKey.length > 0 ? networksKey : undefined,
@@ -108,7 +103,7 @@ export const useTokenSearch = ({
         signal,
       });
     },
-    initialPageParam: undefined,
+    initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) =>
       lastPage.pageInfo.hasNextPage
         ? lastPage.pageInfo.endCursor || undefined
