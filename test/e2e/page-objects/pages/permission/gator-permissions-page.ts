@@ -7,7 +7,7 @@ import { Driver } from '../../../webdriver/driver';
  * Owns: page-loaded / displayed checks, navigating into Connections (Dapps) or Token
  * transfer (Assets), and back toward home.
  * Boundaries: the category hub only. Site list and per-site management are
- * `PermissionListPage` / `SitePermissionPage`.
+ * `PermissionListPage` / `EditConnectedAccountsPage`.
  * Related: `PermissionListPage`, `flows/permissions.flow.ts`.
  *
  * @see ui/components/multichain/pages/gator-permissions/gator-permissions-page.tsx
@@ -17,17 +17,16 @@ class GatorPermissionsPage {
   private readonly assetsButton = { text: 'Token transfer', tag: 'p' };
 
   private readonly backButton =
-    '[data-testid="gator-permissions-page"] button[aria-label="Back"]';
+    '[data-testid="parent-selector-gator-permissions"] button[aria-label="Back"]';
 
   private readonly connectionsButton = { text: 'Connections', tag: 'p' };
 
   private readonly driver: Driver;
 
-  private readonly gatorPermissionsPage =
-    '[data-testid="gator-permissions-page"]';
-
   private readonly loadingIndicator =
     '[data-testid="gator-permissions-loading"]';
+
+  private readonly page = '[data-testid="parent-selector-gator-permissions"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -38,7 +37,7 @@ class GatorPermissionsPage {
    */
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.gatorPermissionsPage);
+      await this.driver.waitForSelector(this.page);
     } catch (e) {
       console.log(
         'Timeout while waiting for Gator Permissions page to be loaded',
@@ -93,9 +92,7 @@ class GatorPermissionsPage {
    * Useful for flow logic to detect whether we landed on this intermediate page.
    */
   async isPageDisplayed(): Promise<boolean> {
-    return await this.driver.isElementPresentAndVisible(
-      this.gatorPermissionsPage,
-    );
+    return await this.driver.isElementPresentAndVisible(this.page);
   }
 
   /**

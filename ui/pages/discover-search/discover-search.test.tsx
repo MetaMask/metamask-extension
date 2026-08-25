@@ -29,8 +29,8 @@ jest.mock('../../hooks/discover-search/useDiscoverSearch', () => ({
   useDiscoverSearch: (options: unknown) => mockUseDiscoverSearch(options),
 }));
 
-jest.mock('../../hooks/discover-search/useDiscoverAssetPress', () => ({
-  useEnableDiscoverAssetNetwork: () => mockEnsureNetworkEnabled,
+jest.mock('../../hooks/useEnableFeaturedEvmNetwork', () => ({
+  useEnableFeaturedEvmNetwork: () => mockEnsureNetworkEnabled,
 }));
 
 jest.mock('../../components/ui/toast/toast', () => ({
@@ -341,7 +341,7 @@ describe('DiscoverSearchPage', () => {
   });
 
   it('shows a success toast when it enables a popular network', async () => {
-    mockEnsureNetworkEnabled.mockResolvedValue('Base');
+    mockEnsureNetworkEnabled.mockResolvedValue({ name: 'Base' });
     renderPage();
 
     fireEvent.click(
