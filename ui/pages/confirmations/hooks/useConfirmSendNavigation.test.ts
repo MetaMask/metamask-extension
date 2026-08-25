@@ -43,47 +43,59 @@ describe('useConfirmSendNavigation', () => {
     expect(result.navigateBackIfSend).toBeDefined();
   });
 
-  it('navigates back when confirmation is metamask simpleSend', () => {
+  it('navigates back and suppresses auto-exit when confirmation is metamask simpleSend', () => {
+    const mockSuppressAutoExit = jest.fn();
     jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: { origin: 'metamask', type: 'simpleSend' },
+      suppressAutoExit: mockSuppressAutoExit,
     } as unknown as ConfirmContext.ConfirmContextType);
 
     const result = renderHook();
     result.navigateBackIfSend();
 
+    expect(mockSuppressAutoExit).toHaveBeenCalled();
     expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('does not navigate back when origin is not metamask', () => {
+    const mockSuppressAutoExit = jest.fn();
     jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: { origin: 'dapp', type: 'simpleSend' },
+      suppressAutoExit: mockSuppressAutoExit,
     } as unknown as ConfirmContext.ConfirmContextType);
 
     const result = renderHook();
     result.navigateBackIfSend();
 
+    expect(mockSuppressAutoExit).not.toHaveBeenCalled();
     expect(mockUseNavigate).not.toHaveBeenCalledWith(-1);
   });
 
   it('does not navigate back when type is not simpleSend', () => {
+    const mockSuppressAutoExit = jest.fn();
     jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: { origin: 'metamask', type: 'contractInteraction' },
+      suppressAutoExit: mockSuppressAutoExit,
     } as unknown as ConfirmContext.ConfirmContextType);
 
     const result = renderHook();
     result.navigateBackIfSend();
 
+    expect(mockSuppressAutoExit).not.toHaveBeenCalled();
     expect(mockUseNavigate).not.toHaveBeenCalledWith(-1);
   });
 
   it('does not navigate back when both origin and type do not match', () => {
+    const mockSuppressAutoExit = jest.fn();
     jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: { origin: 'dapp', type: 'contractInteraction' },
+      suppressAutoExit: mockSuppressAutoExit,
     } as unknown as ConfirmContext.ConfirmContextType);
 
     const result = renderHook();
     result.navigateBackIfSend();
 
+    expect(mockSuppressAutoExit).not.toHaveBeenCalled();
     expect(mockUseNavigate).not.toHaveBeenCalledWith(-1);
   });
 });

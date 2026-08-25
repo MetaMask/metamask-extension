@@ -1,6 +1,7 @@
 import React, {
   ReactElement,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -25,6 +26,13 @@ export type ConfirmContextType = {
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
   /** Route to use for cancel / reject / auto-exit; captured once from URL on mount. */
   goBackTo: string | undefined;
+  /**
+   * Call before rejecting an approval when the caller will handle navigation
+   * itself (e.g. send Back uses history.back()). Prevents the ConfirmContext
+   * auto-exit from firing a competing navigate() after the confirmation
+   * disappears from state.
+   */
+  suppressAutoExit: () => void;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -56,9 +64,14 @@ export const ConfirmContextProvider = ({
   const navigate = useNavigate();
   const previousConfirmation = usePrevious(currentConfirmation);
   const shouldNavigateHomeRef = useRef(false);
+  const autoExitSuppressedRef = useRef(false);
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
   );
+
+  const suppressAutoExit = useCallback(() => {
+    autoExitSuppressedRef.current = true;
+  }, []);
 
   /**
    * The hook below takes care of navigating to the home page when the confirmation not acted on by user
@@ -75,7 +88,10 @@ export const ConfirmContextProvider = ({
 
     if (shouldNavigateHomeRef.current && !isHardwareWalletErrorModalVisible) {
       shouldNavigateHomeRef.current = false;
-      navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
+      if (!autoExitSuppressedRef.current) {
+        navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
+      }
+      autoExitSuppressedRef.current = false;
     }
   }, [
     currentConfirmationOverride,
@@ -92,12 +108,14 @@ export const ConfirmContextProvider = ({
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
+      suppressAutoExit,
     }),
     [
       currentConfirmation,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
+      suppressAutoExit,
     ],
   );
 
@@ -121,5 +139,6 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
+    suppressAutoExit: () => void;
   };
 };

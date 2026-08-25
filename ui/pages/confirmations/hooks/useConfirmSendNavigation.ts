@@ -17,14 +17,16 @@ const SendTransactionTypes = [
 
 export const useConfirmSendNavigation = () => {
   const navigate = useNavigate();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, suppressAutoExit } =
+    useConfirmContext<TransactionMeta>();
 
   const navigateBackIfSend = useCallback(() => {
     const { origin, type } = currentConfirmation;
     if (origin === 'metamask' && type && SendTransactionTypes.includes(type)) {
+      suppressAutoExit();
       navigate(PREVIOUS_ROUTE);
     }
-  }, [currentConfirmation, navigate]);
+  }, [currentConfirmation, navigate, suppressAutoExit]);
 
   return { navigateBackIfSend };
 };
