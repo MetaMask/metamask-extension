@@ -1,57 +1,39 @@
 import { getAccountGroupDisplayBalance } from './account-group-balance';
 
 describe('getAccountGroupDisplayBalance', () => {
-  const formatCurrency = jest.fn(
-    (value: number, currency: string) => `${currency}:${value}`,
-  );
-
-  beforeEach(() => {
-    formatCurrency.mockClear();
-  });
-
-  it('formats a non-zero balance', () => {
+  it('returns the amount and currency for a non-zero balance', () => {
     expect(
-      getAccountGroupDisplayBalance(
-        { totalBalanceInUserCurrency: 2400, userCurrency: 'usd' },
-        formatCurrency,
-      ),
-    ).toBe('usd:2400');
-    expect(formatCurrency).toHaveBeenCalledWith(2400, 'usd');
+      getAccountGroupDisplayBalance({
+        totalBalanceInUserCurrency: 2400,
+        userCurrency: 'usd',
+      }),
+    ).toStrictEqual({ amount: 2400, currency: 'usd' });
   });
 
   it('returns undefined when the group balance is missing', () => {
-    expect(
-      getAccountGroupDisplayBalance(undefined, formatCurrency),
-    ).toBeUndefined();
-    expect(formatCurrency).not.toHaveBeenCalled();
+    expect(getAccountGroupDisplayBalance(undefined)).toBeUndefined();
   });
 
   // An account group whose balance has not been fetched yet aggregates to 0,
   // exactly like a genuinely empty one, so neither renders a balance.
   it('returns undefined when the balance is zero', () => {
     expect(
-      getAccountGroupDisplayBalance(
-        { totalBalanceInUserCurrency: 0, userCurrency: 'usd' },
-        formatCurrency,
-      ),
+      getAccountGroupDisplayBalance({
+        totalBalanceInUserCurrency: 0,
+        userCurrency: 'usd',
+      }),
     ).toBeUndefined();
-    expect(formatCurrency).not.toHaveBeenCalled();
   });
 
   it('returns undefined when the balance is undefined', () => {
     expect(
-      getAccountGroupDisplayBalance({ userCurrency: 'usd' }, formatCurrency),
+      getAccountGroupDisplayBalance({ userCurrency: 'usd' }),
     ).toBeUndefined();
-    expect(formatCurrency).not.toHaveBeenCalled();
   });
 
   it('returns undefined when the currency is missing', () => {
     expect(
-      getAccountGroupDisplayBalance(
-        { totalBalanceInUserCurrency: 2400 },
-        formatCurrency,
-      ),
+      getAccountGroupDisplayBalance({ totalBalanceInUserCurrency: 2400 }),
     ).toBeUndefined();
-    expect(formatCurrency).not.toHaveBeenCalled();
   });
 });

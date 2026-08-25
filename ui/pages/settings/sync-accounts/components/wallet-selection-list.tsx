@@ -185,10 +185,15 @@ export const WalletSelectionList = ({
 
       // Undefined when this group has no known balance yet, so the cell renders
       // nothing instead of a misleading "$0.00".
-      const balance = getAccountGroupDisplayBalance(
+      const groupBalance = getAccountGroupDisplayBalance(
         allBalances?.wallets?.[item.walletId]?.groups?.[item.groupId],
-        formatCurrencyWithMinThreshold,
       );
+      const balance =
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        );
 
       return (
         <MultichainAccountCell

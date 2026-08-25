@@ -8,8 +8,16 @@ type AccountGroupBalanceLike = {
 };
 
 /**
- * Formats an account group's aggregated balance for display in an account cell,
- * returning `undefined` when nothing should be rendered.
+ * An account group balance that is known and worth rendering.
+ */
+type DisplayableAccountGroupBalance = {
+  amount: number;
+  currency: string;
+};
+
+/**
+ * Returns an account group's aggregated balance when it should be rendered in
+ * an account cell, and `undefined` when nothing should be rendered.
  *
  * Balances are only fetched eagerly for the selected account group — for
  * performance, the rest are filled in lazily. An account group whose balance has
@@ -18,20 +26,21 @@ type AccountGroupBalanceLike = {
  * both makes users believe their funds are gone, so we render nothing until a
  * non-zero balance is known. This mirrors `AccountCell` on mobile.
  *
+ * Formatting is left to the call site, which already has a currency formatter.
+ *
  * @param groupBalance - The account group's aggregated balance, if present.
- * @param formatCurrency - Currency formatter, e.g. `formatCurrencyWithMinThreshold`.
- * @returns The formatted balance, or `undefined` when it should not be rendered.
+ * @returns The amount and currency to format, or `undefined` when nothing
+ * should be rendered.
  */
 export function getAccountGroupDisplayBalance(
   groupBalance: AccountGroupBalanceLike | undefined,
-  formatCurrency: (value: number, currency: string) => string,
-): string | undefined {
-  const total = groupBalance?.totalBalanceInUserCurrency;
-  const currency = groupBalance?.userCurrency;
+): DisplayableAccountGroupBalance | undefined {
+  const { totalBalanceInUserCurrency: amount, userCurrency: currency } =
+    groupBalance ?? {};
 
-  if (!total || !currency) {
+  if (!amount || !currency) {
     return undefined;
   }
 
-  return formatCurrency(total, currency);
+  return { amount, currency };
 }

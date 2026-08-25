@@ -301,10 +301,15 @@ export const MultichainAccountList = ({
     ) => {
       // Undefined when this group has no known balance yet, so the cell renders
       // nothing instead of a misleading "$0.00".
-      const balance = getAccountGroupDisplayBalance(
+      const groupBalance = getAccountGroupDisplayBalance(
         allBalances?.wallets?.[walletId]?.groups?.[groupId],
-        formatCurrencyWithMinThreshold,
       );
+      const balance =
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        );
 
       // TODO: Implement logic for removable accounts
       const isRemovable = false;

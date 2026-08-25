@@ -154,13 +154,18 @@ export const MultichainTriggeredAddressRowsList = ({
 
   const { balance, accountGroup } = useMemo(() => {
     const group = allAccountGroups.find((g) => g.id === groupId);
+    // Undefined when this group has no known balance yet, so nothing is
+    // rendered instead of a misleading "$0.00".
+    const groupBalance = getAccountGroupDisplayBalance(
+      allBalances?.wallets?.[group?.walletId]?.groups?.[groupId],
+    );
     return {
-      // Undefined when this group has no known balance yet, so nothing is
-      // rendered instead of a misleading "$0.00".
-      balance: getAccountGroupDisplayBalance(
-        allBalances?.wallets?.[group?.walletId]?.groups?.[groupId],
-        formatCurrencyWithMinThreshold,
-      ),
+      balance:
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        ),
       accountGroup: group,
     };
   }, [allBalances, groupId, allAccountGroups, formatCurrencyWithMinThreshold]);

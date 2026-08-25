@@ -553,14 +553,19 @@ export const MultichainAccountsConnectPage = ({
     const account = accountGroup
       ? wallets?.[accountGroup.walletId]?.groups?.[accountGroupId]
       : undefined;
+    // Undefined when this group has no known balance yet, so the cell renders
+    // nothing instead of a misleading "$0.00".
+    const groupBalance = getAccountGroupDisplayBalance(account);
 
     return {
       accountGroupId,
       accountName: accountGroup?.metadata.name ?? 'Unknown Account',
-      balance: getAccountGroupDisplayBalance(
-        account,
-        formatCurrencyWithMinThreshold,
-      ),
+      balance:
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        ),
     };
   }, [
     selectedAccountGroupIds,
