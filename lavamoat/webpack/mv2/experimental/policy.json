@@ -1954,7 +1954,7 @@
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
-        "@metamask/remote-feature-flag-controller": true,
+        "@metamask/network-controller>@metamask/remote-feature-flag-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
         "@metamask/utils": true,
@@ -2258,17 +2258,17 @@
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
         "uuid": true
       }
     },
-    "@metamask/wallet>@metamask/remote-feature-flag-controller": {
+    "@metamask/network-controller>@metamask/remote-feature-flag-controller": {
       "globals": {
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/base-controller": true,
         "@metamask/utils": true,
         "uuid": true
       }
@@ -2747,7 +2747,7 @@
         "@metamask/messenger": true,
         "@metamask/network-controller": true,
         "@metamask/passkey-controller": true,
-        "@metamask/wallet>@metamask/remote-feature-flag-controller": true,
+        "@metamask/remote-feature-flag-controller": true,
         "@metamask/seedless-onboarding-controller": true,
         "@metamask/shield-controller": true,
         "@metamask/storage-service": true,
