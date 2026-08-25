@@ -2761,9 +2761,6 @@
   "connectAnyway": {
     "message": "Все равно подключиться"
   },
-  "connectAnyway": {
-    "message": "Все равно подключиться"
-  },
   "connectHardwareDevice": {
     "message": "Подключиться к $1",
     "description": "$1 is the hardware wallet device name"

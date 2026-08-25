@@ -2761,9 +2761,6 @@
   "connectAnyway": {
     "message": "연결 계속하기"
   },
-  "connectAnyway": {
-    "message": "연결 계속하기"
-  },
   "connectHardwareDevice": {
     "message": "$1 연결",
     "description": "$1 is the hardware wallet device name"
