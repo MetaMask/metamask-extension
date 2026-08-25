@@ -239,6 +239,7 @@ export const DropdownEditor = <Item,>({
           )}
           referenceElement={dropdown.current}
           referenceHidden={false}
+          isPortal={true}
           position={PopoverPosition.Bottom}
           isOpen={isDropdownOpen}
           onClickOutside={() => setIsDropdownOpen(false)}
