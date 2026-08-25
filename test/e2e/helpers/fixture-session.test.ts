@@ -31,10 +31,7 @@ jest.mock('../helpers', () => ({
   ),
 }));
 
-type MochaHook = (
-  title: string,
-  callback: () => void | Promise<void>,
-) => void;
+type MochaHook = (title: string, callback: () => void | Promise<void>) => void;
 
 function wrapJestHook(
   jestHook: (callback: () => void | Promise<void>) => void,
@@ -56,10 +53,11 @@ const runnerContext: RunnerContext = {
   driver: {} as Driver,
 };
 
-const runFixtures: FixtureSessionRunner<RunnerOptions, RunnerContext> =
-  jest.fn(async (_options, testSuite) => {
+const runFixtures: FixtureSessionRunner<RunnerOptions, RunnerContext> = jest.fn(
+  async (_options, testSuite) => {
     await testSuite(runnerContext);
-  });
+  },
+);
 
 const fixtureOptions: RunnerOptions = {
   customOption: 'custom-option',
