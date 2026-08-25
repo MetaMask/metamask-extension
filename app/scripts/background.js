@@ -986,15 +986,19 @@ export async function loadStateFromPersistence(backup) {
     }
   } else if (persistenceManager.storageKind === 'split') {
     if (writeAllKeysToState) {
+      // New state needs every controller persisted.
       for (const key of Object.keys(versionedData.data)) {
         persistenceManager.update(key, versionedData.data[key]);
       }
     } else {
+      // Existing state starts with explicitly changed controllers.
       for (const key of changedKeys) {
         persistenceManager.update(key, versionedData.data[key]);
       }
       if (backup) {
+        // Recovery also needs every backed-up controller.
         for (const key of backedUpStateKeys) {
+          // Avoid queuing the same key twice.
           if (!changedKeys.has(key)) {
             persistenceManager.update(key, versionedData.data[key]);
           }
