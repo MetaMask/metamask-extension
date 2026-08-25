@@ -14,12 +14,10 @@ import { SignatureRequestType } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
-import { useSendingAssetsFiatTotal } from './useSendingAssetsFiatTotal';
 
 export function useAddressTrustSignalAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext();
   const t = useI18nContext();
-  const sendingFiatTotal = useSendingAssetsFiatTotal();
 
   const addressToCheck = useMemo(() => {
     if (!currentConfirmation) {
@@ -71,11 +69,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'trustSignalMalicious',
-        message: sendingFiatTotal
-          ? t('alertMessageAddressTrustSignalMaliciousWithAmount', [
-              sendingFiatTotal,
-            ])
-          : t('alertMessageAddressTrustSignalMalicious'),
+        message: t('alertMessageAddressTrustSignalMalicious'),
         reason: t('alertReasonAddressTrustSignalMalicious'),
         severity: Severity.Danger,
       });
@@ -85,14 +79,12 @@ export function useAddressTrustSignalAlerts(): Alert[] {
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'trustSignalWarning',
-        message: sendingFiatTotal
-          ? t('alertMessageAddressTrustSignalWithAmount', [sendingFiatTotal])
-          : t('alertMessageAddressTrustSignal'),
+        message: t('alertMessageAddressTrustSignal'),
         reason: t('alertReasonAddressTrustSignalWarning'),
         severity: Severity.Warning,
       });
     }
 
     return alerts;
-  }, [addressToCheck, trustSignalDisplayState, sendingFiatTotal, t]);
+  }, [addressToCheck, trustSignalDisplayState, t]);
 }

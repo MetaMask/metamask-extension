@@ -1509,18 +1509,10 @@
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
   "alertMessageAddressTrustSignal": {
-    "message": "We don't have enough reliable history to verify this address. If you continue, your funds can't be recovered."
+    "message": "Security partners don't have enough reliable history to verify this address."
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "Security partners have flagged this address for malicious activity. If this is a scam, your funds can't be recovered."
-  },
-  "alertMessageAddressTrustSignalMaliciousWithAmount": {
-    "message": "Security partners have flagged this address for malicious activity. If this is a scam, your $1 can't be recovered.",
-    "description": "$1 is the formatted fiat value at risk"
-  },
-  "alertMessageAddressTrustSignalWithAmount": {
-    "message": "We don't have enough reliable history to verify this address. If you continue, your $1 can't be recovered.",
-    "description": "$1 is the formatted fiat value at risk"
+    "message": "Security partners have flagged this address for malicious activity."
   },
   "alertMessageBurnAddress": {
     "message": "You're sending your assets to a burn address. If you continue, you'll lose your assets."
@@ -5764,7 +5756,7 @@
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
   "nameInstructionsMalicious": {
-    "message": "This has been identified as malicious. We recommend not interacting with this address.",
+    "message": "Security partners have flagged this address for malicious activity.",
     "description": "Instruction text in name component modal when address is malicious."
   },
   "nameInstructionsNew": {
@@ -5780,7 +5772,7 @@
     "description": "Instruction text in name component modal when value is saved."
   },
   "nameInstructionsWarning": {
-    "message": "We can't verify this address. It may be new or unverified. Set a personal display name to identify it going forward.",
+    "message": "Security partners don't have enough reliable history to verify this address.",
     "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
