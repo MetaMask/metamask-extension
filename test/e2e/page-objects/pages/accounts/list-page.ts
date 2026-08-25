@@ -1,7 +1,7 @@
-import { Driver } from '../../webdriver/driver';
-import { largeDelayMs } from '../../helpers';
-import { quoteXPathText } from '../../../helpers/quoteXPathText';
-import { ACCOUNT_TYPE } from '../../constants';
+import { Driver } from '../../../webdriver/driver';
+import { largeDelayMs } from '../../../helpers';
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
+import { ACCOUNT_TYPE } from '../../../constants';
 
 /**
  * Multichain account list: wallets, accounts, add/hide/pin, and related menus.
@@ -14,7 +14,7 @@ import { ACCOUNT_TYPE } from '../../constants';
  * hardware connect, and confirmation dialogs belong to their own page objects
  * once navigated away.
  * Related: `HeaderNavbar` (how tests open this), `WalletDetailsPage`,
- * `MultichainAccountDetailsPage`.
+ * `AccountDetailsPage`.
  *
  * @see ui/pages/multichain-accounts/account-list/account-list.tsx
  * @see ui/components/multichain-accounts/multichain-account-list/multichain-account-list.tsx
@@ -197,6 +197,9 @@ class AccountListPage {
     `(//*[@data-testid="multichain-account-cell-end-accessory" and @aria-label=${quoteXPathText(
       `${accountLabel} options`,
     )}])[${srpIndex + 1}]`;
+
+  private readonly parentSelector =
+    '[data-testid="parent-selector-account-list-page"]';
 
   private readonly pinAccountButton =
     '[data-testid="multichain-account-menu-item-pinToTop"]';
@@ -740,7 +743,11 @@ class AccountListPage {
   ): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
-        [this.addMultichainAccountButton, this.multichainAccountListSearch],
+        [
+          this.parentSelector,
+          this.addMultichainAccountButton,
+          this.multichainAccountListSearch,
+        ],
         { timeout },
       );
     } catch (e) {

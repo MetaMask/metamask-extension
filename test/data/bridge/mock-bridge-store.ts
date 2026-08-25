@@ -36,6 +36,7 @@ export const DEFAULT_VALIDATION_ERRORS: ReturnType<typeof getValidationErrors> =
     isInsufficientGasForQuote: false,
     isInsufficientBalance: false,
     isStockMarketClosed: false,
+    isInOffHoursTrading: false,
     isQuoteExpired: false,
     isPriceImpactWarning: false,
     isPriceImpactError: false,
