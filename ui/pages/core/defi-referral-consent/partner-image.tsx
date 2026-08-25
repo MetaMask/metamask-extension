@@ -1,14 +1,9 @@
 import React from 'react';
+import {
+  DEFI_REFERRAL_PARTNERS,
+  DefiReferralPartner,
+} from '../../../../shared/constants/defi-referrals';
 
-/**
- * Partner referral hero images are loaded dynamically via partnerId — do not
- * remove these assets from app/images/:
- *
- * - app/images/hyperliquid-referral.png
- * - app/images/gmx-referral.png
- * - app/images/asterdex-referral.png
- * - app/images/variational-referral.png
- */
 type PartnerImageProps = {
   partnerId: string;
   partnerName: string;
@@ -20,10 +15,13 @@ export const PartnerImage: React.FC<PartnerImageProps> = ({
   partnerName,
   className,
 }) => {
+  const { referralImageUrl } =
+    DEFI_REFERRAL_PARTNERS[partnerId as DefiReferralPartner];
+
   return (
     <img
       className={className}
-      src={`./images/${partnerId}-referral.png`}
+      src={referralImageUrl}
       alt={`${partnerName} referral`}
     />
   );
