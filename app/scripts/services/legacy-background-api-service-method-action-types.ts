@@ -537,6 +537,19 @@ export type LegacyBackgroundApiServiceChangePasswordWithPasskeyVerificationActio
   };
 
 /**
+ * Exports and JSON-encodes a seed phrase after passkey verification.
+ *
+ * @param params - Passkey seed export parameters.
+ * @param params.authenticationResponse - WebAuthn authentication response.
+ * @param params.keyringId - Optional HD keyring id.
+ * @returns UTF-8 seed phrase bytes as a JSON-safe number array.
+ */
+export type LegacyBackgroundApiServiceExportSeedPhraseWithPasskeyAction = {
+  type: `LegacyBackgroundApiService:exportSeedPhraseWithPasskey`;
+  handler: LegacyBackgroundApiService['exportSeedPhraseWithPasskey'];
+};
+
+/**
  * Unlocks the vault with a passkey, then runs the post-unlock account
  * initialization sequence.
  *
@@ -1051,6 +1064,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
   | LegacyBackgroundApiServiceChangePasswordWithPasskeyVerificationAction
+  | LegacyBackgroundApiServiceExportSeedPhraseWithPasskeyAction
   | LegacyBackgroundApiServiceUnlockWithPasskeyAction
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction

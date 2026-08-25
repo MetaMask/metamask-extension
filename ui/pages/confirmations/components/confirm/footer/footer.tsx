@@ -40,7 +40,7 @@ import {
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
 import ScamQuestionnaire from '../../../../../components/app/product-safety/scam-questionnaire/scam-questionnaire';
-import { useSendScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useSendScamQuestionnaire';
+import { useScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useScamQuestionnaire';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {
@@ -55,6 +55,7 @@ import { SingleActionFooter } from './single-action-footer';
 
 const SINGLE_ACTION_FOOTER_TYPES = [
   TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,
@@ -143,7 +144,7 @@ const ConfirmButton = ({
     isScamQuestionnaireVisible,
     showScamQuestionnaire,
     scamQuestionnaireProps,
-  } = useSendScamQuestionnaire({ ownerId: alertOwnerId, onCancel });
+  } = useScamQuestionnaire({ ownerId: alertOwnerId, onCancel });
 
   const handleSubmitConfirmModal = useCallback(async () => {
     if (currentConfirmation?.id && alertOwnerId === currentConfirmation.id) {
@@ -207,7 +208,9 @@ const ConfirmButton = ({
           block
           data-testid="confirm-footer-button"
           disabled={disabled}
-          onClick={onSubmit}
+          onClick={
+            isScamQuestionnaireRequired ? showScamQuestionnaire : onSubmit
+          }
           size={ButtonSize.Lg}
         >
           {currentConfirmation?.type ===

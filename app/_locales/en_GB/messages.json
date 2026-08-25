@@ -156,9 +156,6 @@
     "message": "$1 accounts",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "See your accounts and suggest transactions"
-  },
   "accountsSmallCase": {
     "message": "accounts"
   },
@@ -939,14 +936,14 @@
     "description": "$1 is the token symbol"
   },
   "activity_receive_failed_description": {
-    "message": "From: $1",
+    "message": "From $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_failed_title": {
     "message": "Receive failed"
   },
   "activity_receive_pending_description": {
-    "message": "From: $1",
+    "message": "From $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
@@ -954,7 +951,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_receive_success_description": {
-    "message": "From: $1",
+    "message": "From $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
@@ -1005,14 +1002,14 @@
     "description": "$1 is the token symbol"
   },
   "activity_send_failed_description": {
-    "message": "To: $1",
+    "message": "To $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_failed_title": {
     "message": "Send failed"
   },
   "activity_send_pending_description": {
-    "message": "To: $1",
+    "message": "To $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
@@ -1020,7 +1017,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_send_success_description": {
-    "message": "To: $1",
+    "message": "To $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
@@ -1351,7 +1348,7 @@
     "message": "Added"
   },
   "addedProtectionDescription": {
-    "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
+    "message": "Because you're interacting with an unknown address, protection can prevent some malicious transactions."
   },
   "addedProtectionIncludesNetworkFee": {
     "message": "Includes $1 for added protection",
@@ -1591,6 +1588,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "Wallet not supported"
   },
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "Couldn't check your Perps balance. Try again."
+  },
   "alertReasonAddressTrustSignalMalicious": {
     "message": "Address flagged as high risk"
   },
@@ -1629,6 +1629,9 @@
   },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
+  },
+  "alertReasonPerpsWithdrawBalanceUnavailable": {
+    "message": "Balance unavailable"
   },
   "alertReasonSignIn": {
     "message": "Suspicious sign-in request"
@@ -2237,6 +2240,12 @@
   },
   "bridgeNoPriceInfoTitle": {
     "message": "No price information"
+  },
+  "bridgeOffHoursDescription": {
+    "message": "Market closed: Price is issuer-calculated, not live market data. It may differ when markets reopen at the next available trading session."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Off-hours trading"
   },
   "bridgePoints": {
     "message": "Est. points",
@@ -2907,9 +2916,6 @@
   "connectAHardwareWalletDescription": {
     "message": "Using USB or a QR Code"
   },
-  "connectAccounts": {
-    "message": "Connect accounts"
-  },
   "connectAnyway": {
     "message": "Connect anyway"
   },
@@ -2956,18 +2962,6 @@
   },
   "connectedSnaps": {
     "message": "Connected Snaps"
-  },
-  "connectedWithAccount": {
-    "message": "$1 accounts connected",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Connected with $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 networks connected",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Connecting"
@@ -3462,6 +3456,9 @@
   "defiTabErrorTitle": {
     "message": "We could not load this page."
   },
+  "defiUnsupportedEmptyDescription": {
+    "message": "DeFi isn't supported on this network."
+  },
   "delete": {
     "message": "Delete"
   },
@@ -3576,9 +3573,6 @@
   "disconnectAllSitesSuccess": {
     "message": "All dapps successfully disconnected."
   },
-  "disconnectMessage": {
-    "message": "This will disconnect you from this site"
-  },
   "disconnectPrompt": {
     "message": "Disconnect $1"
   },
@@ -3587,6 +3581,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "This will disconnect all your accounts from $1. You'll need to reconnect to use this dapp again.",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "Successfully disconnected from $1.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -3758,9 +3756,6 @@
   },
   "editNetworkLink": {
     "message": "edit the original network"
-  },
-  "editNetworksTitle": {
-    "message": "Edit networks"
   },
   "editNonceField": {
     "message": "Edit nonce"
@@ -5402,6 +5397,112 @@
   "mmFee": {
     "message": "$1% MetaMask fee"
   },
+  "money": {
+    "message": "Money"
+  },
+  "moneyActivity": {
+    "message": "Activity"
+  },
+  "moneyActivityPlaceholderDescription": {
+    "message": "Your Money activity will appear here."
+  },
+  "moneyAdd": {
+    "message": "Add"
+  },
+  "moneyApy": {
+    "message": "$1 APY"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Balance unavailable"
+  },
+  "moneyBenefitAutoEarn": {
+    "message": "Auto-earn yield on your Money balance"
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Auto-earn up to ~$1 APY"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Get full liquidity with no lockups, so you can trade or withdraw anytime"
+  },
+  "moneyBenefitSend": {
+    "message": "Send to any of your wallets across MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Keep your money secure in mUSD, a 1:1 dollar-backed stablecoin"
+  },
+  "moneyBenefits": {
+    "message": "Benefits"
+  },
+  "moneyEarnApyTitle": {
+    "message": "Earn up to $1 APY"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Earn on your crypto"
+  },
+  "moneyEarnOnCryptoDescription": {
+    "message": "See how your money can grow over time by converting your crypto to mUSD."
+  },
+  "moneyEarnOnCryptoDescriptionMiddle": {
+    "message": "in assets and you could earn up to"
+  },
+  "moneyEarnOnCryptoDescriptionPrefix": {
+    "message": "Add your"
+  },
+  "moneyEarnOnCryptoDescriptionSuffix": {
+    "message": "in one year."
+  },
+  "moneyEarnOnCryptoNoFee": {
+    "message": "No fee"
+  },
+  "moneyEarnTitle": {
+    "message": "Earn on your balance"
+  },
+  "moneyEarnings": {
+    "message": "Earnings"
+  },
+  "moneyExploreBenefits": {
+    "message": "Explore your benefits"
+  },
+  "moneyFundDescription": {
+    "message": "Fund your Money account and watch your balance grow."
+  },
+  "moneyFundDescriptionWithApy": {
+    "message": "Fund your Money account and watch your balance grow with up to $1 APY."
+  },
+  "moneyHowItWorks": {
+    "message": "How it works"
+  },
+  "moneyHowItWorksDescription": {
+    "message": "Add mUSD and your dollar-backed balance is ready to spend, trade, or send anytime."
+  },
+  "moneyHowItWorksDescriptionWithApy": {
+    "message": "Add mUSD and earn up to $1. Your balance is dollar-backed and ready to spend, trade, or send anytime.",
+    "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowYourMoneyGrows": {
+    "message": "How your money grows"
+  },
+  "moneyLearnMore": {
+    "message": "Learn more"
+  },
+  "moneyLifetime": {
+    "message": "Lifetime"
+  },
+  "moneyMeetMusd": {
+    "message": "Meet mUSD"
+  },
+  "moneyMoreInformation": {
+    "message": "More information"
+  },
+  "moneyMoreOptions": {
+    "message": "More options"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Send"
+  },
   "month": {
     "message": "month"
   },
@@ -5410,10 +5511,6 @@
   },
   "more": {
     "message": "more"
-  },
-  "moreAccounts": {
-    "message": "+ $1 more accounts",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "More"
@@ -5608,18 +5705,6 @@
     "message": "Claim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Claimable bonus",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "The annualized bonus you've earned for holding mUSD. Your bonus is claimable daily on Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Claimable bonus details",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD conversion fees include network costs and may include provider fees. No MetaMask fee applies when you convert to mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5644,10 +5729,6 @@
   "musdConvert": {
     "message": "Convert"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Earn a $1% bonus",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Get started"
   },
@@ -5660,10 +5741,6 @@
   },
   "musdGetMusd": {
     "message": "Get mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5871,9 +5948,6 @@
   "networkOptions": {
     "message": "Network options"
   },
-  "networkPermissionToast": {
-    "message": "Network permissions updated"
-  },
   "networkStatus": {
     "message": "Network status"
   },
@@ -5909,9 +5983,6 @@
   },
   "networks": {
     "message": "Networks"
-  },
-  "networksSmallCase": {
-    "message": "networks"
   },
   "new": {
     "message": "New!"
@@ -5999,6 +6070,9 @@
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
   },
+  "nftUnsupportedEmptyDescription": {
+    "message": "NFTs aren't supported on this network."
+  },
   "nftWarningContent": {
     "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer these NFTs from your wallet at any time without asking you until you revoke this approval. $2",
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
@@ -6031,6 +6105,10 @@
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
+  },
+  "noFee": {
+    "message": "No fee",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
@@ -6258,10 +6336,10 @@
     "message": "You have not received any notifications yet."
   },
   "notificationsSettingsAgenticCliDescription": {
-    "message": "CLI connection requests, approvals, and session updates for Agentic"
+    "message": "CLI connection requests, approvals, and session updates for Agent wallet"
   },
   "notificationsSettingsAgenticCliTitle": {
-    "message": "Agentic CLI"
+    "message": "Agent wallet"
   },
   "notificationsSettingsBoxError": {
     "message": "Something went wrong. Please try again."
@@ -6583,6 +6661,10 @@
   "passkeyErrorNotEnrolled": {
     "message": "$1 isn't set up for this wallet. Turn on $1 in Settings.",
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotSupported": {
+    "message": "Passkey not supported",
+    "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "$1 setup failed. Try again",
@@ -8450,8 +8532,8 @@
     "message": "Buy successful",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "Other options"
+  "rampsPayWith": {
+    "message": "Pay with"
   },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"
@@ -8670,9 +8752,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "This is the site asking for your confirmation."
-  },
-  "requestingFor": {
-    "message": "Requesting for"
   },
   "required": {
     "message": "Required"
@@ -9495,9 +9574,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Enable NFT Autodetection"
-  },
-  "selectNetworkToFilter": {
-    "message": "Select network to filter"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
@@ -11867,6 +11943,10 @@
   },
   "value": {
     "message": "Value"
+  },
+  "variationalReferralSubtitle": {
+    "message": "Get +15% Omni points and Silver tier for 90 days with a MetaMask referral code.",
+    "description": "The subtitle of the Variational referral confirmation screen"
   },
   "version": {
     "message": "Version"

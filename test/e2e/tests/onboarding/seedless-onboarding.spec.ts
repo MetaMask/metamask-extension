@@ -9,9 +9,9 @@ import {
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
-import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
+import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
@@ -230,8 +230,8 @@ describe('Metamask onboarding (with social login)', function () {
           accountLabel: 'Account 1',
         });
         await accountListPage.clickMultichainAccountMenuItem('Addresses');
-        const addressListModal = new AddressListModal(driver);
-        await addressListModal.checkNetworkAddressIsDisplayed(
+        const accountAddressListPage = new AccountAddressListPage(driver);
+        await accountAddressListPage.checkNetworkAddressIsDisplayed(
           shortenAddress(
             normalizeSafeAddress(MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS),
           ),
@@ -277,8 +277,8 @@ describe('Metamask onboarding (with social login)', function () {
           accountLabel: 'Account 1',
         });
         await accountListPage.clickMultichainAccountMenuItem('Addresses');
-        const addressListModal = new AddressListModal(driver);
-        await addressListModal.checkNetworkAddressIsDisplayed(
+        const accountAddressListPage = new AccountAddressListPage(driver);
+        await accountAddressListPage.checkNetworkAddressIsDisplayed(
           shortenAddress(
             normalizeSafeAddress(MOCK_TELEGRAM_ACCOUNT_WALLET_ADDRESS),
           ),
