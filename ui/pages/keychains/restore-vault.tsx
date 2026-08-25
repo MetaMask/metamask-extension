@@ -229,7 +229,7 @@ function RestoreVaultPage() {
       justifyContent={BoxJustifyContent.Between}
       gap={4}
       className="import-srp-restore-vault h-full rounded-lg border border-solid"
-      data-testid="parent-selector-reset-password-page"
+      data-testid="parent-selector-import-srp-restore-vault"
       borderColor={BoxBorderColor.BorderMuted}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >

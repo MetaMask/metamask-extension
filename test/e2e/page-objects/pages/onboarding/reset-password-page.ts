@@ -20,7 +20,7 @@ class ResetPasswordPage {
   private driver: Driver;
 
   private readonly parentSelector = {
-    testId: 'parent-selector-reset-password-page',
+    testId: 'parent-selector-import-srp-restore-vault',
   };
 
   private passwordInput: string;
