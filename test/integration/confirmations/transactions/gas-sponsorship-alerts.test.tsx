@@ -216,13 +216,6 @@ describe('Gas sponsorship confirmation alerts', () => {
     expect(
       await screen.findByTestId('confirm-footer-button'),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        tEn('gasSponsorshipReserveBalanceWarning', ['10', 'MON']),
-      ),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(tEn('alertMinimumReserve')),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('inline-alert')).not.toBeInTheDocument();
   });
 });
