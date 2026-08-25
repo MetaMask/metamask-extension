@@ -3292,7 +3292,6 @@ describe('Bridge selectors', () => {
         decimals: 7,
         assetId: STELLAR_USDC_ASSET_ID,
         name: 'USDC',
-        chainId: MultichainNetworks.STELLAR,
       });
 
       afterEach(() => {
@@ -4895,7 +4894,6 @@ describe('Bridge selectors', () => {
             assetId:
               'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
             name: 'USDC',
-            chainId: MultichainNetworks.STELLAR,
           }),
         },
       });
