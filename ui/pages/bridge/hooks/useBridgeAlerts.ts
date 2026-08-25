@@ -48,6 +48,7 @@ export const useBridgeAlerts = () => {
     isInsufficientGasForQuote,
     isInsufficientBalance,
     isStockMarketClosed,
+    isInOffHoursTrading,
     isQuoteExpired,
     isPriceImpactWarning,
     isPriceImpactError,
@@ -130,6 +131,20 @@ export const useBridgeAlerts = () => {
         isConfirmationAlert: false,
         bannerAlertProps: {
           severity: BannerAlertSeverity.Danger,
+        },
+      });
+    }
+
+    if (isInOffHoursTrading) {
+      categorizeAlert({
+        id: 'off-hours',
+        isDismissable: false,
+        severity: 'warning',
+        title: t('bridgeOffHoursTitle'),
+        description: t('bridgeOffHoursDescription'),
+        isConfirmationAlert: false,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Warning,
         },
       });
     }
@@ -349,6 +364,7 @@ export const useBridgeAlerts = () => {
     formattedPriceImpactPercentage,
     formattedPriceImpactFiat,
     isInsufficientBalance,
+    isInOffHoursTrading,
     isInsufficientGasForQuote,
     isLoading,
     isNoQuotesAvailable,

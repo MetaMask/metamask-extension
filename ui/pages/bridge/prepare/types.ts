@@ -70,6 +70,7 @@ export type MinimalBridgeAlert = {
     | 'price-impact'
     | 'tx-alert'
     | 'market-closed'
+    | 'off-hours'
     | 'no-quotes'
     | 'insufficient-gas'
     | 'price-data-unavailable'

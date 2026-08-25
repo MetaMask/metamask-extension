@@ -202,12 +202,57 @@ const SOLANA_DISCOVERY_RPC_RESULTS = {
   },
 };
 
+// Every host the Tron snap sends provider requests to: mainnet via Infura or
+// TronGrid, plus the Shasta/Nile testnets (current `*.api.trongrid.io` and
+// legacy `*.trongrid.io` hostnames).
+const TRON_PROVIDER_HOSTS =
+  'https:\\/\\/(?:tron-mainnet\\.infura\\.io\\/v3\\/[^/]+|(?:api|shasta\\.api|nile\\.api|shasta|nile)\\.trongrid\\.io)';
+
+// TronGrid account endpoints polled during discovery and the snap's account
+// sync cronjob. Group 1 is the base58 address, group 2 the list-endpoint
+// suffix (`/transactions`, `/transactions/trc20`, or `/trc20/balance`).
+const TRON_ACCOUNT_URL_RE = new RegExp(
+  `^${TRON_PROVIDER_HOSTS}\\/v1\\/accounts\\/([A-Za-z0-9]{20,})(\\/transactions(?:\\/trc20)?|\\/trc20\\/balance)?(\\?.*)?$`,
+  'u',
+);
+
+// The JSON-RPC endpoint TronWeb hits when initialising a network provider.
+const TRON_JSONRPC_URL_RE = new RegExp(
+  `^${TRON_PROVIDER_HOSTS}\\/jsonrpc$`,
+  'u',
+);
+
+// Zero-balance TronGrid account, mirroring the shape produced by
+// `createTronGridAccountResponse` in `test/e2e/seeder/tron/assets.ts`, which
+// the snap's response validation is known to accept.
+const tronEmptyAccountResponse = (address) => ({
+  data: [
+    {
+      address,
+      assetV2: [],
+      balance: 0,
+      free_asset_net_usageV2: [],
+      frozenV2: [],
+      trc20: [],
+    },
+  ],
+  success: true,
+  meta: { at: Date.now(), page_size: 1 },
+});
+
+const tronEmptyListResponse = () => ({
+  data: [],
+  success: true,
+  meta: { at: Date.now(), page_size: 0 },
+});
+
 /**
  * Registers default non-EVM discovery mocks for the shared E2E environment.
  *
- * These handlers keep Bitcoin esplora discovery and Solana signature lookups
- * from falling through to the generic empty-200 catch-all, which otherwise
- * causes provider retries and slow non-EVM icon rendering in multichain flows.
+ * These handlers keep Bitcoin esplora discovery, Solana signature lookups, and
+ * Tron account polling from falling through to the generic empty-200
+ * catch-all, which otherwise causes provider retries and slow non-EVM icon
+ * rendering in multichain flows.
  *
  * @param {Mockttp} server - The mock server used for E2E network mocks.
  * @returns {Promise<void>}
@@ -334,6 +379,41 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
         };
       });
   }
+
+  // The Tron snap (preinstalled, v3+) polls TronGrid account state during
+  // BIP44 discovery and its 60-second sync cronjob, and TronWeb POSTs to
+  // `/jsonrpc` when initialising the Shasta/Nile testnet providers. None of
+  // these had shared mocks, so in flows without Tron-specific mocks (e.g. the
+  // benchmarks) every call fell to the empty-200 catch-all and retry-stormed
+  // the snap's service policy. Registered at FALLBACK priority like the
+  // Solana defaults above so Tron-specific spec mocks take precedence.
+  await server
+    .forGet(TRON_ACCOUNT_URL_RE)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback((request) => {
+      const match = request.url.match(TRON_ACCOUNT_URL_RE);
+      const address = match?.[1] ?? '';
+      const isListEndpoint = Boolean(match?.[2]);
+      return {
+        statusCode: 200,
+        json: isListEndpoint
+          ? tronEmptyListResponse()
+          : tronEmptyAccountResponse(address),
+      };
+    });
+
+  await server
+    .forPost(TRON_JSONRPC_URL_RE)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback(async (request) => {
+      const body = await request.body.getJson();
+      return {
+        statusCode: 200,
+        json: { jsonrpc: '2.0', id: body?.id ?? 1, result: null },
+      };
+    });
 }
 
 /**

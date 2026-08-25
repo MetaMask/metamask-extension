@@ -19,7 +19,15 @@ import {
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
+import { toast } from '../../../ui/toast/toast';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
+
+jest.mock('../../../ui/toast/toast', () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -360,6 +368,128 @@ describe('MultichainReviewPermissions', () => {
       expect(
         getByTestId(TEST_IDS.DISCONNECT_PERMISSIONS_MODAL),
       ).toBeInTheDocument();
+    });
+
+    it('shows success toast after disconnecting site permissions only', () => {
+      const { getByTestId } = render({
+        subjects: {
+          ...mockState.metamask.subjects,
+          'https://test.dapp': {
+            origin: 'https://test.dapp',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                parentCapability: Caip25EndowmentPermissionName,
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      sessionProperties: {},
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      });
+
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_BUTTON));
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_ALL));
+
+      expect(toast.success).toHaveBeenCalledTimes(1);
+      expect(toast.success).toHaveBeenCalledWith(
+        expect.stringContaining('test.dapp'),
+        expect.objectContaining({ id: 'disconnect-site-success-toast' }),
+      );
+    });
+
+    it('shows success toast when skipping gator permissions in modal', async () => {
+      jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
+        tokenTransfer: { count: 1, chains: ['0x1'] },
+      });
+
+      const { getByTestId } = render({
+        subjects: {
+          ...mockState.metamask.subjects,
+          'https://test.dapp': {
+            origin: 'https://test.dapp',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                parentCapability: Caip25EndowmentPermissionName,
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      sessionProperties: {},
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      });
+
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_BUTTON));
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_ALL));
+      fireEvent.click(getByTestId('skip-disconnect-permissions'));
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledTimes(1);
+        expect(toast.success).toHaveBeenCalledWith(
+          expect.stringContaining('test.dapp'),
+          expect.objectContaining({ id: 'disconnect-site-success-toast' }),
+        );
+      });
+    });
+
+    it('shows success toast when removing all permissions in modal', async () => {
+      jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
+        tokenTransfer: { count: 1, chains: ['0x1'] },
+      });
+
+      const { getByTestId } = render({
+        subjects: {
+          ...mockState.metamask.subjects,
+          'https://test.dapp': {
+            origin: 'https://test.dapp',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                parentCapability: Caip25EndowmentPermissionName,
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      sessionProperties: {},
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      });
+
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_BUTTON));
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_ALL));
+      fireEvent.click(getByTestId('remove-all-disconnect-permissions'));
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledTimes(1);
+        expect(toast.success).toHaveBeenCalledWith(
+          expect.stringContaining('test.dapp'),
+          expect.objectContaining({ id: 'disconnect-site-success-toast' }),
+        );
+      });
     });
   });
 });
