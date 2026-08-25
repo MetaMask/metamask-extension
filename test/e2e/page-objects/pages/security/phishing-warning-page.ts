@@ -1,5 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Phishing warning interstitial served when a blocked site is detected.
@@ -25,6 +25,10 @@ class PhishingWarningPage {
 
   private readonly openWarningInNewTabLink = '#open-self-in-new-tab';
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-phishing-warning-page',
+  };
+
   private readonly phishingWarningPageTitle = {
     text: 'This website might be harmful',
   };
@@ -43,7 +47,10 @@ class PhishingWarningPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.phishingWarningPageTitle);
+      await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
+        this.phishingWarningPageTitle,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Phishing Warning page to be loaded',
