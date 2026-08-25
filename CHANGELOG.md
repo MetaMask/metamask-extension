@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Improved storage resilience and stability (#44010)
 - Improved extension storage efficiency when enumerating StorageService keys (#45510)
 - Updated the withdrawal token picker to say "Receive" and "Search tokens" instead of "Pay with" and "Search for an asset to send" (#45613)
 - Updated security alert titles and messages to describe the flagged risk per attack type and to show the simulated value at risk where available (#45509)
