@@ -283,6 +283,23 @@ function notifyModeSwitchListenerReady(): void {
 }
 
 /**
+ * Retires a handler after it has been swapped out of `activeHandler`.
+ *
+ * Destroy is fire-and-forget: WebHID `destroy()`/`close()` can hang (see
+ * `forceReset`), and awaiting it here would permanently stick `switchInProgress`
+ * / `initInProgress` so later mode swaps never run. Sync cleanup inside
+ * `destroy()` still runs before the first await (HID listeners, transport
+ * refs); only the hung close stays in the background.
+ *
+ * @param handler - The handler that was just swapped out.
+ */
+function retireHandler(handler: LedgerHandler): void {
+  Promise.resolve(handler.destroy()).catch((error: unknown) => {
+    console.error('[ledger-router] previous handler destroy failed:', error);
+  });
+}
+
+/**
  * Initialises the Ledger offscreen handler for the first time.
  *
  * Registers a central `chrome.runtime.onMessage` listener (idempotently) and
@@ -301,7 +318,7 @@ export default async function initLedger(
     ensureMessageListener();
 
     if (previous) {
-      await previous.destroy();
+      retireHandler(previous);
     }
   })();
 
@@ -320,8 +337,8 @@ export default async function initLedger(
  *
  * Creates the new handler first, atomically swaps it into `activeHandler`
  * (zero gap — no message loss window, the listener is not touched), then
- * lazily destroys the old handler.  If creation throws, the old handler
- * stays intact.
+ * retires the old handler without awaiting destroy (WebHID close can hang;
+ * see `retireHandler`). If creation throws, the old handler stays intact.
  *
  * If called before any handler has been initialised (e.g., a
  * `switchLedgerMode` event arrives during bootstrap before `initLedger`
@@ -359,7 +376,7 @@ async function performSwitch(mode: LedgerHandlerMode): Promise<void> {
   ensureMessageListener();
 
   if (previous) {
-    await previous.destroy();
+    retireHandler(previous);
   }
 }
 

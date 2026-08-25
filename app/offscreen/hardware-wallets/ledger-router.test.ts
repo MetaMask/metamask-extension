@@ -618,6 +618,27 @@ describe('LedgerRouter', () => {
       expect(mockedDmkCtor).toHaveBeenCalledTimes(1);
       expect(mockLegacyDestroy).toHaveBeenCalledTimes(1);
     });
+
+    it('does not block later switches when previous.destroy() hangs', async () => {
+      await initLedger(LedgerHandlerMode.Legacy);
+      jest.clearAllMocks();
+
+      // Simulate a wedged WebHID close: destroy never settles.
+      mockLegacyDestroy.mockReturnValueOnce(new Promise(() => undefined));
+
+      await expect(
+        switchLedgerHandler(LedgerHandlerMode.DMK),
+      ).resolves.toBeUndefined();
+      expect(mockLegacyDestroy).toHaveBeenCalledTimes(1);
+
+      // A subsequent switch must still run; awaiting hung destroy would
+      // permanently stick switchInProgress.
+      await expect(
+        switchLedgerHandler(LedgerHandlerMode.Legacy),
+      ).resolves.toBeUndefined();
+      expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
+      expect(mockDmkDestroy).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('bootstrapLedger', () => {
@@ -742,15 +763,17 @@ describe('LedgerRouter', () => {
   });
 
   describe('initLedger handler lifecycle', () => {
-    it('calls destroy() on the previous handler before overwriting with a new one', async () => {
+    it('retires the previous handler without awaiting hung destroy', async () => {
       await initLedger(LedgerHandlerMode.DMK);
+      jest.clearAllMocks();
 
-      const dmkDestroyBefore = mockDmkDestroy.mock.calls.length;
-      const legacyDestroyBefore = mockLegacyDestroy.mock.calls.length;
+      mockDmkDestroy.mockReturnValueOnce(new Promise(() => undefined));
 
-      await initLedger(LedgerHandlerMode.Legacy);
-      expect(mockDmkDestroy.mock.calls).toHaveLength(dmkDestroyBefore + 1);
-      expect(mockLegacyDestroy.mock.calls).toHaveLength(legacyDestroyBefore);
+      await expect(
+        initLedger(LedgerHandlerMode.Legacy),
+      ).resolves.toBeUndefined();
+      expect(mockDmkDestroy).toHaveBeenCalledTimes(1);
+      expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
     });
   });
 });
