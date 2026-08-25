@@ -1,0 +1,197 @@
+name: CWS publish (submit or promote)
+
+# INFRA-3881 — workflow_dispatch submit-for-review or promote staged revision via CWS API v2 :publish.
+#
+# Upload stays on upload-extension-to-cws.yml (Runway, draft only). This workflow is human-gated:
+#   - Submit: draft → Google review (+ initial deploy %; default path immediate publish on approval)
+#   - Promote: STAGED → live at submit-time percentage
+#
+# Authorization (NOT Runway):
+#   GitHub Environment reviewers on cws-rollout-{dev,production,flask} (same envs as adjust-cws-rollout.yml)
+#   WIF human OIDC — see va-mmc-extension-submission-infra/gcloud/shared/wif-cel-reference.md
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'crxVersion — production/dev: 4-part numeric (e.g. 13.43.0.0). Flask: release semver without -flask.0 (e.g. 13.43.0); workflow maps to {version}-flask.0'
+        required: true
+        type: string
+      target:
+        description: 'CWS target — dev (UAT), production (PRD main), flask (PRD Flask build)'
+        required: true
+        type: choice
+        default: production
+        options:
+          - dev
+          - production
+          - flask
+      publish_type:
+        description: 'Submit only: immediate or deferred. Leave empty for promote.'
+        required: false
+        type: string
+        default: ''
+      percentage:
+        description: 'Submit only: initial rollout 1–100 (default immediate path uses 1%). Leave empty for promote.'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  cws-publish:
+    name: CWS publish (${{ inputs.target }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: ${{ github.workflow }}-${{ inputs.target }}
+      cancel-in-progress: false
+    environment: ${{ inputs.target == 'production' && 'cws-rollout-production' || inputs.target == 'flask' && 'cws-rollout-flask' || inputs.target == 'dev' && 'cws-rollout-dev' || null }}
+    env:
+      VERSION: ${{ inputs.version }}
+      TARGET: ${{ inputs.target }}
+      PUBLISH_TYPE: ${{ inputs.publish_type }}
+      PERCENTAGE: ${{ inputs.percentage }}
+      ROLLOUT_ENV: ${{ inputs.target == 'production' && 'cws-rollout-production' || inputs.target == 'flask' && 'cws-rollout-flask' || inputs.target == 'dev' && 'cws-rollout-dev' || '' }}
+    steps:
+      - name: Reject non-human dispatch
+        env:
+          SENDER_TYPE: ${{ github.event.sender.type }}
+          SENDER_LOGIN: ${{ github.event.sender.login }}
+        run: |
+          set -euo pipefail
+          echo "sender.type=${SENDER_TYPE} actor=${{ github.actor }} sender=${SENDER_LOGIN}"
+          if [[ "${SENDER_TYPE}" == "Bot" ]]; then
+            echo "::error::CWS publish is human-initiated with GitHub Environment reviewer approval (cws-rollout-*). Bot dispatch is not permitted."
+            exit 1
+          fi
+          echo "Human dispatch confirmed."
+
+      - name: Checkout scripts
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github/scripts/cws-target-config.sh
+            .github/scripts/cws-publish-plan.sh
+          sparse-checkout-cone-mode: false
+
+      - name: Resolve target configuration
+        id: config
+        env:
+          WIF_PROVIDER_DEV: ${{ vars.WIF_PROVIDER_DEV }}
+          WIF_SERVICE_ACCOUNT_DEV: ${{ vars.WIF_SERVICE_ACCOUNT_DEV }}
+          EXTENSION_ID_DEV: ${{ vars.EXTENSION_ID_DEV }}
+          PUBLISHER_ID_DEV: ${{ vars.PUBLISHER_ID_DEV }}
+          WIF_PROVIDER_PROD: ${{ vars.WIF_PROVIDER }}
+          WIF_SERVICE_ACCOUNT_PROD: ${{ vars.WIF_SERVICE_ACCOUNT }}
+          EXTENSION_ID_PROD: ${{ vars.EXTENSION_ID }}
+          EXTENSION_ID_FLASK: ${{ vars.EXTENSION_ID_FLASK }}
+          PUBLISHER_ID_PROD: ${{ vars.PUBLISHER_ID }}
+          PUBLISHER_ID_FLASK: ${{ vars.PUBLISHER_ID_FLASK }}
+        run: |
+          set -euo pipefail
+          GITHUB_REF="${{ github.ref }}"
+          if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+            echo "::error::CWS publish must run from refs/heads/main (current: ${GITHUB_REF})"
+            exit 1
+          fi
+          bash .github/scripts/cws-target-config.sh
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.WIF_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/chromewebstore
+
+      - name: Fetch CWS status and plan action
+        id: plan
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        run: |
+          set -euo pipefail
+          FETCH_STATUS_URL="https://chromewebstore.googleapis.com/v2/publishers/${PUBLISHER_ID}/items/${EXTENSION_ID}:fetchStatus"
+          http_code=$(curl -sS \
+            -o /tmp/cws-fetch-status.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            "${FETCH_STATUS_URL}")
+          if [[ "${http_code}" != "200" ]]; then
+            echo "::error::fetchStatus failed with HTTP ${http_code}"
+            cat /tmp/cws-fetch-status.json
+            exit 1
+          fi
+          export FETCH_STATUS_JSON=/tmp/cws-fetch-status.json
+          bash .github/scripts/cws-publish-plan.sh
+
+      - name: Publish to CWS
+        id: publish
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          ACTION: ${{ steps.plan.outputs.action }}
+          API_PUBLISH_TYPE: ${{ steps.plan.outputs.api_publish_type }}
+        run: |
+          set -euo pipefail
+          PUBLISH_URL="https://chromewebstore.googleapis.com/v2/publishers/${PUBLISHER_ID}/items/${EXTENSION_ID}:publish"
+          if [[ "${ACTION}" == "promote" ]]; then
+            body='{}'
+          else
+            body=$(jq -n \
+              --arg publishType "${API_PUBLISH_TYPE}" \
+              --argjson pct "${PERCENTAGE}" \
+              '{publishType: $publishType, deployInfos: [{deployPercentage: $pct}]}')
+          fi
+          http_code=$(curl -sS \
+            -o /tmp/cws-publish-response.json -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "${body}" \
+            "${PUBLISH_URL}")
+          echo "http_code=${http_code}" >> "${GITHUB_OUTPUT}"
+          if [[ "${http_code}" != "200" ]]; then
+            echo "::error:::publish failed with HTTP ${http_code}"
+            cat /tmp/cws-publish-response.json
+            exit 1
+          fi
+          echo "CWS :publish succeeded (action=${ACTION})."
+
+      - name: Audit summary
+        if: always()
+        env:
+          CONFIG_OK: ${{ steps.config.outcome }}
+          AUTH_OK: ${{ steps.auth.outcome }}
+          PLAN_OK: ${{ steps.plan.outcome }}
+          PUBLISH_OK: ${{ steps.publish.outcome }}
+          ACTION: ${{ steps.plan.outputs.action }}
+          BRANCH: ${{ steps.plan.outputs.branch }}
+          HTTP_CODE: ${{ steps.publish.outputs.http_code }}
+        run: |
+          {
+            echo "### CWS publish audit (INFRA-3881)"
+            echo ""
+            echo "| Field | Value |"
+            echo "| --- | --- |"
+            echo "| GitHub Environment | \`${{ env.ROLLOUT_ENV }}\` |"
+            echo "| Triggered by | \`${{ github.actor }}\` |"
+            echo "| Target | \`${{ inputs.target }}\` |"
+            echo "| Version input | \`${{ inputs.version }}\` |"
+            echo "| crxVersion | \`${{ env.CRX_VERSION }}\` |"
+            echo "| publish_type | \`${{ inputs.publish_type }}\` |"
+            echo "| percentage | \`${{ inputs.percentage }}\` |"
+            echo "| Planned action | \`${ACTION:-n/a}\` |"
+            echo "| Plan | ${BRANCH:-n/a} |"
+            echo "| Config | \`${CONFIG_OK:-skipped}\` |"
+            echo "| GCP auth | \`${AUTH_OK:-skipped}\` |"
+            echo "| Plan step | \`${PLAN_OK:-skipped}\` |"
+            echo "| Publish step | \`${PUBLISH_OK:-skipped}\` |"
+            echo "| CWS HTTP | \`${HTTP_CODE:-n/a}\` |"
+            echo "| Workflow run | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |"
+          } >> "${GITHUB_STEP_SUMMARY}"
+          if [[ "${{ job.status }}" == "failure" ]]; then
+            exit 1
+          fi

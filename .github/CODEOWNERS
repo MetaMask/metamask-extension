@@ -311,6 +311,7 @@ development/metamaskbot-build-announce/               @MetaMask/extension-platfo
 
 # Store submission
 /.github/workflows/upload-extension-to-cws.yml             @MetaMask/extension-security-team @MetaMask/release-team
+/.github/workflows/cws-publish.yml                         @MetaMask/extension-security-team @MetaMask/release-team
 /.github/workflows/adjust-cws-rollout.yml                  @MetaMask/extension-security-team @MetaMask/release-team
 /.github/workflows/upload-extension-to-amo.yml             @MetaMask/extension-security-team @MetaMask/release-team
 /.github/scripts/release-create-gh-release.sh              @MetaMask/extension-security-team @MetaMask/release-team
