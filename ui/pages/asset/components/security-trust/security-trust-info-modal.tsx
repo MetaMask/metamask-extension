@@ -32,6 +32,8 @@ import {
   getFeatureTags,
   getSecurityAlertIconProps,
 } from '../../utils/security-utils';
+import { ButtonLink, ButtonLinkSize } from '../../../../component-library';
+import { useTokenFalsePositiveReportUrl } from '../../../../hooks/useTokenFalsePositiveReportUrl';
 import { SecurityBanner } from './security-banner';
 import {
   getSheetAnalyticsSource,
@@ -172,6 +174,17 @@ export const SecurityTrustInfoModal = ({
     onClose();
   }, [onClose, trackBottomSheetAction]);
 
+  const shouldOfferReport =
+    severity === 'Malicious' ||
+    severity === 'Warning' ||
+    severity === 'Spam';
+
+  const reportUrl = useTokenFalsePositiveReportUrl({
+    enabled: Boolean(isOpen && sheetParams && shouldOfferReport),
+    chainId: sheetParams?.chainId,
+    tokenAddress: sheetParams?.tokenAddress,
+  });
+
   if (!isOpen || !sheetParams) {
     return null;
   }
@@ -302,6 +315,27 @@ export const SecurityTrustInfoModal = ({
                   </Box>
                 ))}
               </Box>
+            ) : null}
+
+            {reportUrl ? (
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+                className="text-center w-full"
+                data-testid="security-trust-info-modal-report"
+              >
+                {t('somethingDoesntLookRight', [
+                  <ButtonLink
+                    key="security-trust-report-link"
+                    data-testid="security-trust-info-modal-report-link"
+                    size={ButtonLinkSize.Inherit}
+                    href={reportUrl}
+                    externalLink
+                  >
+                    {t('reportIssue')}
+                  </ButtonLink>,
+                ])}
+              </Text>
             ) : null}
 
             {showProceedActions ? (

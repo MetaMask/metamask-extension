@@ -32,6 +32,8 @@ export enum TrustSignalDisplayState {
 export type TrustSignalResult = {
   state: TrustSignalDisplayState;
   label: string | null;
+  /** Blockaid scan request id for false-positive reporting, when available. */
+  requestId?: string;
 };
 
 /**
@@ -110,6 +112,9 @@ export function useTrustSignals(
         return {
           state: trustState,
           label,
+          // Cached address scans may include Blockaid request_id once the API forwards it.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          requestId: (securityAlertResponse as any).request_id,
         };
       }),
     isEqual,

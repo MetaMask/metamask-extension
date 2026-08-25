@@ -1,6 +1,8 @@
 import { shallowEqual, useSelector } from 'react-redux';
 import { useMemo } from 'react';
+import { parseCaipAssetType } from '@metamask/utils';
 import { getNativeAssetId } from '../../../../shared/lib/asset-utils';
+import { decimalToPrefixedHex } from '../../../../shared/lib/conversion.utils';
 import {
   getActiveQuoteInsufficientNativeReserveError,
   type BridgeAppState,
@@ -19,6 +21,7 @@ import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import { useTokenFalsePositiveReportUrl } from '../../../hooks/useTokenFalsePositiveReportUrl';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useDispatch } from '../../../store/hooks';
@@ -66,6 +69,30 @@ export const useBridgeAlerts = () => {
     assetMaliciousLocalizedFeatures,
     assetSuspiciousLocalizedFeatures,
   } = useAssetSecurityData(toToken);
+
+  const tokenReportTarget = useMemo(() => {
+    if (!toToken?.assetId || !(assetIsMalicious || assetIsSuspicious)) {
+      return { chainId: undefined as string | undefined, tokenAddress: undefined as string | undefined };
+    }
+    try {
+      const { chain, assetReference } = parseCaipAssetType(toToken.assetId);
+      if (chain.namespace !== 'eip155') {
+        return { chainId: undefined, tokenAddress: undefined };
+      }
+      return {
+        chainId: decimalToPrefixedHex(chain.reference),
+        tokenAddress: assetReference,
+      };
+    } catch {
+      return { chainId: undefined, tokenAddress: undefined };
+    }
+  }, [toToken?.assetId, assetIsMalicious, assetIsSuspicious]);
+
+  const tokenSecurityReportUrl = useTokenFalsePositiveReportUrl({
+    enabled: Boolean(assetIsMalicious || assetIsSuspicious),
+    chainId: tokenReportTarget.chainId,
+    tokenAddress: tokenReportTarget.tokenAddress,
+  });
 
   const { txAlert } = useSecurityAlerts(toToken);
   const { goToBuy } = useRampsNavigation();
@@ -168,6 +195,9 @@ export const useBridgeAlerts = () => {
           infoList: assetIsMalicious
             ? assetMaliciousLocalizedFeatures
             : assetSuspiciousLocalizedFeatures,
+          ...(tokenSecurityReportUrl
+            ? { reportUrl: tokenSecurityReportUrl }
+            : {}),
         },
         isConfirmationAlert: assetIsMalicious,
         isDismissable: false,
@@ -326,6 +356,7 @@ export const useBridgeAlerts = () => {
     assetIsSuspicious,
     assetMaliciousLocalizedFeatures,
     assetSuspiciousLocalizedFeatures,
+    tokenSecurityReportUrl,
     txAlert,
     t,
   ]);

@@ -98,6 +98,42 @@ export async function fetchTokenAlert(
   return getTokenFeatureTitleDescriptionIds(tokenAlert);
 }
 
+/**
+ * Fetches a Blockaid scan `request_id` for a token via security-alerts-api.
+ * Used to deep-link false-positive reports when the assets/PhishingController
+ * caches do not yet store request_id (pending core changes).
+ *
+ * @param chain - Blockaid chain name (e.g. 'ethereum').
+ * @param tokenAddress - Token contract address.
+ * @returns request_id string or null when unavailable.
+ */
+export async function fetchTokenScanRequestId(
+  chain: string,
+  tokenAddress: string,
+): Promise<string | null> {
+  if (!isSecurityAlertsAPIEnabled()) {
+    return null;
+  }
+
+  const url = getUrl('token/scan');
+  const body = getSecurityApiScanTokenRequestBody(chain, tokenAddress);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const respBody = await response.json();
+  return typeof respBody?.request_id === 'string' ? respBody.request_id : null;
+}
+
 export function getTokenFeatureTitleDescriptionIds(
   tokenFeature: TokenFeature,
 ): TokenAlertWithLabelIds {

@@ -103,6 +103,30 @@ export const FALSE_POSITIVE_REPORT_BASE_URL =
 
 export const SECURITY_PROVIDER_UTM_SOURCE = 'metamask-ppom';
 
+/**
+ * Builds a deep-link into the MetaMask false-positive portal using a Blockaid
+ * scan `request_id` (from the original scan's `x-request-id` header).
+ * Used for token/address/site trust-signal reports — not PPOM gzip reconstruction.
+ *
+ * @param options.requestId - Blockaid request id from the original scan response.
+ * @param options.utmSource - Optional utm_source override.
+ * @returns Portal URL with request_id query param.
+ */
+export function buildFalsePositiveReportUrl({
+  requestId,
+  utmSource = SECURITY_PROVIDER_UTM_SOURCE,
+}: {
+  requestId: string;
+  utmSource?: string;
+}): string {
+  const params = new URLSearchParams({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    request_id: requestId,
+    utm_source: utmSource,
+  });
+  return `${FALSE_POSITIVE_REPORT_BASE_URL}?${params.toString()}`;
+}
+
 export const SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES = [
   TransactionType.swap,
   TransactionType.swapApproval,

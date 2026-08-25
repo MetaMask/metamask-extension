@@ -28,20 +28,24 @@ export function useOriginTrustSignalAlerts(): Alert[] {
     const alerts: Alert[] = [];
 
     if (trustSignalState === TrustSignalDisplayState.Malicious) {
+      const message = t('alertMessageOriginTrustSignalMalicious');
       alerts.push({
         key: 'originTrustSignalMalicious',
         reason: t('alertReasonOriginTrustSignalMalicious'),
         field: RowAlertKey.RequestFrom,
         severity: Severity.Danger,
-        message: t('alertMessageOriginTrustSignalMalicious'),
+        message,
+        alertDetails: [message],
       });
     } else if (trustSignalState === TrustSignalDisplayState.Warning) {
+      const message = t('alertMessageOriginTrustSignalWarning');
       alerts.push({
         key: 'originTrustSignalWarning',
         reason: t('alertReasonOriginTrustSignalWarning'),
         field: RowAlertKey.RequestFrom,
         severity: Severity.Warning,
-        message: t('alertMessageOriginTrustSignalWarning'),
+        message,
+        alertDetails: [message],
       });
     }
 

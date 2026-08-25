@@ -32,6 +32,7 @@ import { useShieldCoverageAlert } from './alerts/useShieldCoverageAlert';
 import { useAddEthereumChainAlerts } from './alerts/useAddEthereumChainAlerts';
 import { useBurnAddressAlert } from './alerts/transactions/useBurnAddressAlert';
 import { useTokenContractAlert } from './alerts/transactions/useTokenContractAlert';
+import { applyTrustSignalBannerPromotion } from './alerts/trust-signal-banner-promotion';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -67,7 +68,6 @@ function useTransactionAlerts(): Alert[] {
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   const suggestedGasFeeHighAlert = useSuggestedGasFeeHighAlert();
   const tokenContractAlert = useTokenContractAlert();
-  const tokenTrustSignalAlerts = useTokenTrustSignalAlerts();
 
   return useMemo(
     () => [
@@ -92,7 +92,6 @@ function useTransactionAlerts(): Alert[] {
       ...signingOrSubmittingAlerts,
       ...suggestedGasFeeHighAlert,
       ...tokenContractAlert,
-      ...tokenTrustSignalAlerts,
     ],
     [
       accountTypeUpgradeAlerts,
@@ -116,7 +115,6 @@ function useTransactionAlerts(): Alert[] {
       signingOrSubmittingAlerts,
       suggestedGasFeeHighAlert,
       tokenContractAlert,
-      tokenTrustSignalAlerts,
     ],
   );
 }
@@ -131,32 +129,43 @@ export default function useConfirmationAlerts(): Alert[] {
   const addressTrustSignalAlerts = useAddressTrustSignalAlerts();
   const originTrustSignalAlerts = useOriginTrustSignalAlerts();
   const spenderAlerts = useSpenderAlerts();
+  const tokenTrustSignalAlerts = useTokenTrustSignalAlerts();
   const addEthereumChainAlerts = useAddEthereumChainAlerts();
 
-  return useMemo(
-    () => [
+  return useMemo(() => {
+    const trustSignalAlerts = [
+      ...addressTrustSignalAlerts,
+      ...originTrustSignalAlerts,
+      ...spenderAlerts,
+      ...tokenTrustSignalAlerts,
+    ];
+
+    const promotedTrustSignalAlerts = applyTrustSignalBannerPromotion(
+      blockaidAlerts,
+      trustSignalAlerts,
+    );
+
+    return [
       ...blockaidAlerts,
       ...confirmationOriginAlerts,
       ...signatureAlerts,
       ...transactionAlerts,
       ...selectedAccountAlerts,
       ...networkAndOriginSwitchingAlerts,
-      ...addressTrustSignalAlerts,
-      ...originTrustSignalAlerts,
-      ...spenderAlerts,
+      ...promotedTrustSignalAlerts,
       ...addEthereumChainAlerts,
-    ],
-    [
-      blockaidAlerts,
-      confirmationOriginAlerts,
-      signatureAlerts,
-      transactionAlerts,
-      selectedAccountAlerts,
-      networkAndOriginSwitchingAlerts,
-      addressTrustSignalAlerts,
-      originTrustSignalAlerts,
-      spenderAlerts,
-      addEthereumChainAlerts,
-    ],
-  );
+    ];
+  }, [
+    blockaidAlerts,
+    confirmationOriginAlerts,
+    signatureAlerts,
+    transactionAlerts,
+    selectedAccountAlerts,
+    networkAndOriginSwitchingAlerts,
+    addressTrustSignalAlerts,
+    originTrustSignalAlerts,
+    spenderAlerts,
+    tokenTrustSignalAlerts,
+    addEthereumChainAlerts,
+  ]);
 }

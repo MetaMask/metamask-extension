@@ -61,6 +61,8 @@ export type BridgeAlertModalProps = {
    * @default text
    */
   alertModalDescriptionType?: 'banner' | 'text';
+  /** False-positive portal URL when a Blockaid request_id is available. */
+  reportUrl?: string;
 };
 
 /** An alert transformed for display purposes */

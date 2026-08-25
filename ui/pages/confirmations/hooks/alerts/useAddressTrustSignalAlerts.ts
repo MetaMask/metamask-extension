@@ -13,6 +13,24 @@ import { SignatureRequestType } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
+import {
+  buildFalsePositiveReportUrl,
+  SecurityProvider,
+} from '../../../../../shared/constants/security-provider';
+
+function buildTrustSignalAlertFields(requestId: string | undefined): {
+  provider?: SecurityProvider;
+  reportUrl?: string;
+  alertDetails?: string[];
+} {
+  if (!requestId) {
+    return {};
+  }
+  return {
+    provider: SecurityProvider.Blockaid,
+    reportUrl: buildFalsePositiveReportUrl({ requestId }),
+  };
+}
 
 export function useAddressTrustSignalAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext();
@@ -49,7 +67,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
     return null;
   }, [currentConfirmation]);
 
-  const { state: trustSignalDisplayState } = useTrustSignal(
+  const { state: trustSignalDisplayState, requestId } = useTrustSignal(
     addressToCheck || '',
     NameType.ETHEREUM_ADDRESS,
     currentConfirmation?.chainId,
@@ -60,30 +78,37 @@ export function useAddressTrustSignalAlerts(): Alert[] {
       return [];
     }
 
+    const reportFields = buildTrustSignalAlertFields(requestId);
     const alerts: Alert[] = [];
 
     if (trustSignalDisplayState === TrustSignalDisplayState.Malicious) {
+      const message = t('alertMessageAddressTrustSignalMalicious');
       alerts.push({
         actions: [],
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'trustSignalMalicious',
-        message: t('alertMessageAddressTrustSignalMalicious'),
+        message,
         reason: t('nameModalTitleMalicious'),
         severity: Severity.Danger,
+        alertDetails: [message],
+        ...reportFields,
       });
     } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
+      const message = t('alertMessageAddressTrustSignal');
       alerts.push({
         actions: [],
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'trustSignalWarning',
-        message: t('alertMessageAddressTrustSignal'),
+        message,
         reason: t('nameModalTitleWarning'),
         severity: Severity.Warning,
+        alertDetails: [message],
+        ...reportFields,
       });
     }
 
     return alerts;
-  }, [addressToCheck, trustSignalDisplayState, t]);
+  }, [addressToCheck, trustSignalDisplayState, requestId, t]);
 }

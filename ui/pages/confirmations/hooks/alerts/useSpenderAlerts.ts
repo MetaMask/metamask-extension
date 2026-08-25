@@ -23,6 +23,10 @@ import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/const
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
+import {
+  buildFalsePositiveReportUrl,
+  SecurityProvider,
+} from '../../../../../shared/constants/security-provider';
 
 function isZeroAmount(amount: string | number | undefined): boolean {
   return amount === '0' || amount === 0;
@@ -201,7 +205,7 @@ export function useSpenderAlerts(): Alert[] {
     return null;
   }, [currentConfirmation]);
 
-  const { state: trustSignalDisplayState } = useTrustSignal(
+  const { state: trustSignalDisplayState, requestId } = useTrustSignal(
     spenderAddress || '',
     NameType.ETHEREUM_ADDRESS,
     currentConfirmation?.chainId,
@@ -212,30 +216,44 @@ export function useSpenderAlerts(): Alert[] {
       return [];
     }
 
+    const reportFields =
+      requestId
+        ? {
+            provider: SecurityProvider.Blockaid,
+            reportUrl: buildFalsePositiveReportUrl({ requestId }),
+          }
+        : {};
+
     const alerts: Alert[] = [];
 
     if (trustSignalDisplayState === TrustSignalDisplayState.Malicious) {
+      const message = t('alertMessageAddressTrustSignalMalicious');
       alerts.push({
         actions: [],
         field: RowAlertKey.Spender,
         isBlocking: false,
         key: 'spenderTrustSignalMalicious',
-        message: t('alertMessageAddressTrustSignalMalicious'),
+        message,
         reason: t('nameModalTitleMalicious'),
         severity: Severity.Danger,
+        alertDetails: [message],
+        ...reportFields,
       });
     } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
+      const message = t('alertMessageAddressTrustSignal');
       alerts.push({
         actions: [],
         field: RowAlertKey.Spender,
         isBlocking: false,
         key: 'spenderTrustSignalWarning',
-        message: t('alertMessageAddressTrustSignal'),
+        message,
         reason: t('nameModalTitleWarning'),
         severity: Severity.Warning,
+        alertDetails: [message],
+        ...reportFields,
       });
     }
 
     return alerts;
-  }, [spenderAddress, isSafeToSkipAlert, trustSignalDisplayState, t]);
+  }, [spenderAddress, isSafeToSkipAlert, trustSignalDisplayState, requestId, t]);
 }

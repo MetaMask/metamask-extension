@@ -141,6 +141,12 @@ export type ScanAddressResponse = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: ResultType;
   label: string;
+  /**
+   * Blockaid `x-request-id` from the original scan, used for false-positive reports.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  request_id?: string;
 };
 
 export type CachedScanAddressResponse = ScanAddressResponse & {

@@ -55,28 +55,32 @@ export function useTokenTrustSignalAlerts(): Alert[] {
     );
 
     if (hasMaliciousToken) {
+      const message = t('alertMessageTokenTrustSignalMalicious');
       return [
         {
           actions: EMPTY_ACTIONS,
           field: RowAlertKey.IncomingTokens,
           isBlocking: false,
           key: 'tokenTrustSignalMalicious',
-          message: t('alertMessageTokenTrustSignalMalicious'),
+          message,
           reason: t('alertReasonTokenTrustSignalMalicious'),
           severity: Severity.Danger,
+          alertDetails: [message],
         },
       ];
     }
     if (hasWarningToken) {
+      const message = t('alertMessageTokenTrustSignalWarning');
       return [
         {
           actions: EMPTY_ACTIONS,
           field: RowAlertKey.IncomingTokens,
           isBlocking: false,
           key: 'tokenTrustSignalWarning',
-          message: t('alertMessageTokenTrustSignalWarning'),
+          message,
           reason: t('alertReasonTokenTrustSignalWarning'),
           severity: Severity.Warning,
+          alertDetails: [message],
         },
       ];
     }

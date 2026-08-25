@@ -20,9 +20,17 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  ButtonLink,
+  ButtonLinkSize,
+  Text as LegacyText,
+  TextVariant as LegacyTextVariant,
 } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { AlignItems } from '../../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  Display,
+  TextColor as LegacyTextColor,
+} from '../../../../helpers/constants/design-system';
 import { useIsTxSubmittable } from '../../../../hooks/bridge/useIsTxSubmittable';
 import {
   BridgeAppState,
@@ -196,6 +204,26 @@ export const BridgeAlertModal = ({
               description={modalBannerErrorMessage}
             />
           )}
+          {activeAlert.modalProps?.reportUrl ? (
+            <LegacyText
+              variant={LegacyTextVariant.bodyMd}
+              color={LegacyTextColor.textAlternative}
+              display={Display.Flex}
+              data-testid="bridge-alert-modal-report"
+            >
+              {t('somethingDoesntLookRight', [
+                <ButtonLink
+                  key="bridge-alert-report-link"
+                  data-testid="bridge-alert-modal-report-link"
+                  size={ButtonLinkSize.Inherit}
+                  href={activeAlert.modalProps.reportUrl}
+                  externalLink
+                >
+                  {t('reportIssue')}
+                </ButtonLink>,
+              ])}
+            </LegacyText>
+          ) : null}
         </Column>
         <ModalFooter>
           <Row gap={4}>
