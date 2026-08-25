@@ -6,7 +6,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
+import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
 import { getBridgeFixtures } from '../bridge/bridge-test-utils';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 
