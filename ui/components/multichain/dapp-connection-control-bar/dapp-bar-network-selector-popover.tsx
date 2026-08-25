@@ -14,12 +14,14 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { Popover, PopoverPosition, PopoverRole } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
@@ -260,10 +262,9 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
       offset={[0, 8]}
       flip
       preventOverflow
-      padding={0}
       referenceHidden={false}
       data-testid="dapp-bar-network-selector-popover"
-      className="dapp-bar-network-selector-popover"
+      className="dapp-bar-network-selector-popover p-0"
     >
       <Box
         flexDirection={BoxFlexDirection.Column}

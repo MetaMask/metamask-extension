@@ -2,7 +2,14 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { IconName, Text, TextVariant } from '@metamask/design-system-react';
+import {
+  IconName,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useEventListener } from '../../../hooks/useEventListener';
 import {
@@ -13,9 +20,6 @@ import {
 import { MenuItem } from '../../ui/menu';
 import {
   ModalFocus,
-  Popover,
-  PopoverPosition,
-  PopoverRole,
 } from '../../component-library';
 import {
   updateAccountsList,
@@ -118,12 +122,11 @@ export const AccountListItemMenu = ({
 
   return (
     <Popover
-      className="multichain-account-list-item-menu__popover"
+      className="multichain-account-list-item-menu__popover p-0"
       referenceElement={anchorElement}
       role={PopoverRole.Dialog}
       position={PopoverPosition.Bottom}
       offset={[0, 0]}
-      padding={0}
       isOpen={isOpen}
       isPortal
       preventOverflow

@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
+import { Popover, PopoverPosition } from '@metamask/design-system-react';
 import {
   Box,
   ButtonIcon,
@@ -9,8 +10,6 @@ import {
   IconSize,
   Input,
   Label,
-  Popover,
-  PopoverPosition,
   Text,
 } from '../../component-library';
 import {
@@ -233,12 +232,11 @@ export const DropdownEditor = <Item,>({
       )}
       {style === DropdownEditorStyle.PopoverStyle ? (
         <Popover
-          paddingTop={items && items.length > 0 ? 2 : 0}
-          paddingBottom={items && items.length > 0 ? 2 : 0}
-          paddingLeft={0}
           matchWidth={true}
-          paddingRight={0}
-          className="dropdown-editor__item-popover"
+          className={classnames(
+            'dropdown-editor__item-popover px-0',
+            items && items.length > 0 ? 'py-2' : 'py-0',
+          )}
           referenceElement={dropdown.current}
           position={PopoverPosition.Bottom}
           isOpen={isDropdownOpen}
