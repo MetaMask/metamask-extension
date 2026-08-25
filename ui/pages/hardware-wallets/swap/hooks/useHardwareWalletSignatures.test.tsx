@@ -850,17 +850,19 @@ describe('useHardwareWalletSignatures', () => {
     it('navigates back to the bridge page when cancelling a non-sendBundle flow', async () => {
       mockUseHwSwapQuoteData.mockReturnValue({
         activeQuote: {
-          quote: { requestId: 'quote-1' },
-          sentAmount: { amount: '1' },
+          quote: {
+            requestId: 'quote-1',
+            src: { normalizedAmount: '1' },
+            dest: { normalizedAmount: '2' },
+          },
           trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
         },
         lockedQuote: {
           quote: {
             requestId: 'quote-1',
-            srcTokenAmount: '1',
-            destTokenAmount: '2',
+            src: { normalizedAmount: '1' },
+            dest: { normalizedAmount: '2' },
           },
-          sentAmount: { amount: '1' },
           trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
         },
         fromToken: { symbol: 'ETH' },
