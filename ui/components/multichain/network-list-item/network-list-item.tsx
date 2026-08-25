@@ -8,6 +8,8 @@ import React, {
 import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   ButtonIcon as DsButtonIcon,
   ButtonIconSize as DsButtonIconSize,
   IconName as DsIconName,
@@ -22,11 +24,8 @@ import {
   TextColor,
   IconColor,
   TextVariant,
-  BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   Box,
   Icon,
   IconName,
@@ -35,10 +34,10 @@ import {
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
 import { useIsNetworkGasSponsored } from '../../../hooks/useIsNetworkGasSponsored';
+import { getAvatarNetworkStyle } from '../../../helpers/utils/accounts';
 
 const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
   Object.values(IconName).includes(iconSrc as IconName);
@@ -223,11 +222,11 @@ export const NetworkListItem = ({
         <Icon name={iconSrc} size={iconSize as IconSize} />
       ) : (
         <AvatarNetwork
-          borderColor={BorderColor.backgroundDefault}
-          backgroundColor={getAvatarNetworkColor(name)}
           name={name}
           src={iconSrc}
           size={iconSize as AvatarNetworkSize}
+          className="rounded-md"
+          style={getAvatarNetworkStyle(name)}
         />
       )}
       <Box
