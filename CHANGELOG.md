@@ -9,17 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.46.0]
 
-### Uncategorized
-
-- Hid Money Account from users in geo-blocked regions (#45653)
-- Simplify mUSD conversion (#45629)
-- Support for adding featured networks when enabling tokens found by address search (#45636)
-- Prevented Perps withdrawals from submitting before a payment quote was ready (#45604)
-- Renamed the Agentic CLI notifications category to Agent wallet in Settings (#45540)
-- Rename Dapp Connections global menu item to Permissions and update child page UX (#45461)
-- Patch @metamask/assets-controller to default-track Arc native USDC (#45500)
-- Switch Arc bridge asset id to slip44:5042 (#45270)
-
 ### Added
 
 - Added live monthly and lifetime earnings to funded Money Accounts (#45632)
@@ -33,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added money balance hook (#45534)
 - Added the initial Money Home screen with live balance and APY information (#45466)
 - Added the option to withdraw Perps funds to Money account (#45453)
+- Hid Money Account from users in geo-blocked regions (#45653)
+- Simplify mUSD conversion (#45629)
+- Support for adding featured networks when enabling tokens found by address search (#45636)
+- Prevented Perps withdrawals from submitting before a payment quote was ready (#45604)
 
 ### Changed
 
@@ -40,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the withdrawal token picker to say "Receive" and "Search tokens" instead of "Pay with" and "Search for an asset to send" (#45613)
 - Updated security alert titles and messages to describe the flagged risk per attack type and to show the simulated value at risk where available (#45509)
 - Changed address security screening to use the shared PhishingController chain support instead of a hardcoded network list (#45107)
+- Renamed the Agentic CLI notifications category to Agent wallet in Settings (#45540)
+- Rename Dapp Connections global menu item to Permissions and update child page UX (#45461)
+- Patch @metamask/assets-controller to default-track Arc native USDC (#45500)
+- Switch Arc bridge asset id to slip44:5042 (#45270)
 
 ### Removed
 
