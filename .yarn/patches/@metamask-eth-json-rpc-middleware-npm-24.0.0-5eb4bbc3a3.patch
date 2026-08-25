@@ -1,0 +1,26 @@
+diff --git a/dist/utils/validation.cjs b/dist/utils/validation.cjs
+index 9e150df1d23cc5996e9fcacadbc4e927ca8c2006..0879d9948a9463ef1f49610548538665263b616b 100644
+--- a/dist/utils/validation.cjs
++++ b/dist/utils/validation.cjs
+@@ -202,7 +202,7 @@ exports.TransactionParamsStruct = (0, superstruct_1.object)({
+         s: (0, superstruct_1.optional)((0, superstruct_1.string)()),
+         yParity: (0, superstruct_1.optional)((0, superstruct_1.string)()),
+     }))),
+-    chainId: (0, superstruct_1.optional)((0, superstruct_1.string)()),
++    chainId: (0, superstruct_1.optional)(QuantityStruct),
+     data: (0, superstruct_1.optional)((0, superstruct_1.string)()),
+     from: (0, superstruct_1.string)(),
+     gas: (0, superstruct_1.optional)(QuantityStruct),
+diff --git a/dist/utils/validation.mjs b/dist/utils/validation.mjs
+index 5929e1fe251a593a3fb3b17addd6e294bc790b37..4bff55631e1e0c282e4fee303074f0d82fab5033 100644
+--- a/dist/utils/validation.mjs
++++ b/dist/utils/validation.mjs
+@@ -193,7 +193,7 @@ export const TransactionParamsStruct = object({
+         s: optional(string()),
+         yParity: optional(string()),
+     }))),
+-    chainId: optional(string()),
++    chainId: optional(QuantityStruct),
+     data: optional(string()),
+     from: string(),
+     gas: optional(QuantityStruct),
