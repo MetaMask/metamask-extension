@@ -1,9 +1,5 @@
-const fs = require('fs');
-const http = require('http');
 const path = require('path');
-const serveHandler = require('serve-handler');
-
-const PARENT_SELECTOR_TEST_ID = 'parent-selector-phishing-warning-page';
+const createStaticServer = require('../../development/create-static-server');
 
 const phishingWarningDirectory = path.resolve(
   __dirname,
@@ -15,37 +11,9 @@ const phishingWarningDirectory = path.resolve(
   'dist',
 );
 
-function getPatchedIndexHtml() {
-  const html = fs.readFileSync(
-    path.join(phishingWarningDirectory, 'index.html'),
-    'utf8',
-  );
-  if (html.includes(`data-testid="${PARENT_SELECTOR_TEST_ID}"`)) {
-    return html;
-  }
-  return html.replace(
-    '<div class="content">',
-    `<div class="content" data-testid="${PARENT_SELECTOR_TEST_ID}">`,
-  );
-}
-
 class PhishingWarningPageServer {
   constructor() {
-    const patchedIndexHtml = getPatchedIndexHtml();
-    this._server = http.createServer((request, response) => {
-      const urlPath = request.url?.split('?')[0];
-      if (urlPath === '/' || urlPath === '/index.html') {
-        response.writeHead(200, {
-          'Content-Type': 'text/html; charset=utf-8',
-        });
-        response.end(patchedIndexHtml);
-        return;
-      }
-      serveHandler(request, response, {
-        directoryListing: false,
-        public: phishingWarningDirectory,
-      });
-    });
+    this._server = createStaticServer({ public: phishingWarningDirectory });
   }
 
   async start({ port = 9999 } = {}) {

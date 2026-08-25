@@ -25,10 +25,6 @@ class PhishingWarningPage {
 
   private readonly openWarningInNewTabLink = '#open-self-in-new-tab';
 
-  private readonly parentSelector = {
-    testId: 'parent-selector-phishing-warning-page',
-  };
-
   private readonly phishingWarningPageTitle = {
     text: 'This website might be harmful',
   };
@@ -47,10 +43,7 @@ class PhishingWarningPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.parentSelector,
-        this.phishingWarningPageTitle,
-      ]);
+      await this.driver.waitForSelector(this.phishingWarningPageTitle);
     } catch (e) {
       console.log(
         'Timeout while waiting for Phishing Warning page to be loaded',
