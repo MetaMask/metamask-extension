@@ -18,9 +18,7 @@ import {
 } from '../../../selectors';
 
 import { MenuItem } from '../../ui/menu';
-import {
-  ModalFocus,
-} from '../../component-library';
+import { ModalFocus } from '../../component-library';
 import {
   updateAccountsList,
   updateHiddenAccountsList,

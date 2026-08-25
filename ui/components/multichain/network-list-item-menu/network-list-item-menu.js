@@ -6,12 +6,7 @@ import {
   PopoverRole,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  Box,
-  IconName,
-  ModalFocus,
-  Text,
-} from '../../component-library';
+import { Box, IconName, ModalFocus, Text } from '../../component-library';
 import { MenuItem } from '../../ui/menu';
 
 export const NetworkListItemMenu = ({
