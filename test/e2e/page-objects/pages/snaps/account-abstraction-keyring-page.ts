@@ -1,5 +1,5 @@
-import { ERC_4337_ACCOUNT_SNAP_URL, WINDOW_TITLES } from '../../constants';
-import { Driver } from '../../webdriver/driver';
+import { ERC_4337_ACCOUNT_SNAP_URL, WINDOW_TITLES } from '../../../constants';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * External ERC-4337 account-abstraction keyring snap test site.
@@ -61,6 +61,8 @@ class SnapAccountAbstractionKeyringPage {
     text: 'Ok',
   };
 
+  private readonly parentSelector = '#gatsby-focus-wrapper';
+
   private readonly setChainConfigButton = {
     tag: 'button',
     text: 'Set Chain Config',
@@ -76,6 +78,7 @@ class SnapAccountAbstractionKeyringPage {
   async createAccount(privateKey: string, salt: string): Promise<void> {
     console.log('Create Account Abstraction Snap account');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
+    await this.driver.waitForSelector(this.parentSelector);
     await this.driver.clickElement(this.createAccountLink);
     await this.driver.fill(this.createAccountPrivateKeyInput, privateKey);
     await this.driver.fill(this.createAccountSaltInput, salt);
@@ -102,6 +105,7 @@ class SnapAccountAbstractionKeyringPage {
   }): Promise<void> {
     console.log('Set Account Abstraction Snap chain config');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
+    await this.driver.waitForSelector(this.parentSelector);
     await this.driver.clickElement(this.chainIdSelect);
     await this.driver.clickElement(this.chainIdOption1337);
     await this.driver.fill(this.bundlerUrlInput, bundlerUrl);
@@ -130,6 +134,7 @@ class SnapAccountAbstractionKeyringPage {
   ): Promise<void> {
     console.log('Start Account Abstraction Snap install');
     await this.driver.openNewPage(snapUrl);
+    await this.driver.waitForSelector(this.parentSelector);
     await this.driver.clickElement(this.connectButton);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   }
