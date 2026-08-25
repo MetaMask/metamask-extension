@@ -5394,6 +5394,21 @@
   "moneyActivityDepositing": {
     "message": "Depositing"
   },
+  "moneyActivityEmpty": {
+    "message": "No activity yet"
+  },
+  "moneyActivityFilterAll": {
+    "message": "All"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "Deposits"
+  },
+  "moneyActivityFilterSends": {
+    "message": "Sends"
+  },
+  "moneyActivityPending": {
+    "message": "Pending"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "Your Money activity will appear here."
   },
