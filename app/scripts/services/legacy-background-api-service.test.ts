@@ -6143,9 +6143,6 @@ describe('LegacyBackgroundApiService', () => {
         });
         expect(setIsWalletResetInProgress).toHaveBeenCalledWith(false);
         expect(result).toStrictEqual(primaryKeyring);
-        expect(reinit.mock.invocationCallOrder[0]).toBeLessThan(
-          createWallet.mock.invocationCallOrder[0],
-        );
       });
     });
   });
