@@ -1,6 +1,6 @@
 import HomePage from '../pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
-import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
+import SnapSimpleKeyringPage from '../pages/snaps/simple-keyring-page';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 import ActivityTab from '../pages/home/activity-tab';
 import { createInternalTransaction } from './transaction.flow';
