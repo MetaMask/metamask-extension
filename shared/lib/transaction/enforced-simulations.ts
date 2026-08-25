@@ -5,8 +5,8 @@ import {
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { isAddressScanSupportedChainId } from '@metamask/phishing-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
-import { isAddressScanSupportedChainId } from '../address-scan-support';
 import {
   CachedScanAddressResponse,
   createCacheKey,
@@ -173,7 +173,7 @@ export function isEnforcedSimulationsEligible(
     return true;
   }
 
-  if (!isAddressScanSupportedChainId(chainId)) {
+  if (!chainId || !isAddressScanSupportedChainId(chainId)) {
     log('Not eligible - address screening does not support chain', {
       chainId,
       type,
