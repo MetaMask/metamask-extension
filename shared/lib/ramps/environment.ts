@@ -20,6 +20,9 @@ export function getRampsEnvironment(): RampsEnvironment {
     case ENVIRONMENT.RELEASE_CANDIDATE:
       return RampsEnvironment.Production;
     case ENVIRONMENT.STAGING:
+      // MetaMask's staging environment is used for nightly builds from main,
+      // which should use production Ramps. Experimental nightlies also use
+      // MetaMask's staging environment, but must use Ramps staging/UAT.
       return process.env.METAMASK_BUILD_TYPE === 'experimental'
         ? RampsEnvironment.Staging
         : RampsEnvironment.Production;
