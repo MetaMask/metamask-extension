@@ -582,6 +582,19 @@ class ActivityTab extends HomePage {
     });
   }
 
+  /**
+   * Clicks the activity row whose action text matches.
+   *
+   * @param text - Visible activity action, e.g. `Sent TRX`
+   */
+  async clickActivityByText(text: string): Promise<void> {
+    console.log(`Clicking activity with text: ${text}`);
+    await this.driver.clickElement({
+      css: this.activityListAction,
+      text,
+    });
+  }
+
   async clickCancelTransaction() {
     // Ensure the Speed Up button is present before canceling
     // to avoid component re-render, resulting in auto-closing the modal
