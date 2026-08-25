@@ -7,7 +7,7 @@ import AccountListPage from '../pages/account-list-page';
 import ActivityTab from '../pages/home/activity-tab';
 import BridgeQuotePage, { type BridgeQuote } from '../pages/bridge/quote-page';
 import HomePage from '../pages/home/homepage';
-import TokenOverviewPage from '../pages/token-overview-page';
+import TokenOverviewPage from '../pages/asset/token-overview-page';
 
 export const verifySubmittedSwapTransaction = async ({
   driver,

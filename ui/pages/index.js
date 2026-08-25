@@ -20,7 +20,6 @@ import { queryClient } from '../contexts/query-client';
 import RampsBootstrap from '../hooks/ramps/RampsBootstrap';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import { UIMessengerProvider } from '../contexts/ui-messenger';
-import { AppPureBlackProvider } from '../contexts/pure-black/pure-black-provider';
 import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
@@ -53,9 +52,7 @@ function AppProviders() {
                 <HardwareWalletErrorProvider>
                   <ShieldSubscriptionProvider>
                     <RiveWasmProvider>
-                      <AppPureBlackProvider>
-                        <Routes />
-                      </AppPureBlackProvider>
+                      <Routes />
                     </RiveWasmProvider>
                   </ShieldSubscriptionProvider>
                 </HardwareWalletErrorProvider>
