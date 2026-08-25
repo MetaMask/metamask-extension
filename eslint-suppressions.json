@@ -286,11 +286,6 @@
       "count": 1
     }
   },
-  "ui/components/multichain-accounts/permissions/multichain-edit-networks-page/multichain-edit-networks-page.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 2
-    }
-  },
   "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-network.tsx": {
     "react-hooks/set-state-in-effect": {
       "count": 1
@@ -385,11 +380,6 @@
     }
   },
   "ui/components/multichain/networks-form/use-safe-chains.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/multichain/pages/permissions-page/permissions-page.js": {
     "react-hooks/set-state-in-effect": {
       "count": 1
     }

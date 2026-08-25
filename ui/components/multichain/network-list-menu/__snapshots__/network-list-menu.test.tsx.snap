@@ -26,7 +26,7 @@ exports[`NetworkListMenu renders properly 1`] = `
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm multichain-network-list-menu-content-wrapper__dialog mm-box--padding-top-0 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm multichain-network-list-menu-content-wrapper__dialog mm-box--padding-top-0 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--rounded-lg mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
           role="dialog"
         >
           <header
@@ -1183,7 +1183,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm multichain-network-list-menu-content-wrapper__dialog mm-box--padding-top-0 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm multichain-network-list-menu-content-wrapper__dialog mm-box--padding-top-0 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--rounded-lg mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
           role="dialog"
         >
           <header
@@ -1457,7 +1457,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm multichain-network-list-menu-content-wrapper__dialog mm-box--padding-top-0 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm multichain-network-list-menu-content-wrapper__dialog mm-box--padding-top-0 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--rounded-lg mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
           role="dialog"
         >
           <header

@@ -174,7 +174,7 @@ class TokensTab extends HomePage {
     '[data-testid="token-management-custom-token-success-toast"]';
 
   private readonly tokenManagementPage =
-    '[data-testid="token-management-page"]';
+    '[data-testid="parent-selector-token-management-page"]';
 
   private readonly tokenManagementSearchInput =
     '[data-testid="token-management-search-input"]';
