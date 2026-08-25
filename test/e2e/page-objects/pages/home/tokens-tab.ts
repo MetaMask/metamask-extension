@@ -174,7 +174,7 @@ class TokensTab extends HomePage {
     '[data-testid="token-management-custom-token-success-toast"]';
 
   private readonly tokenManagementPage =
-    '[data-testid="token-management-page"]';
+    '[data-testid="parent-selector-token-management-page"]';
 
   private readonly tokenManagementSearchInput =
     '[data-testid="token-management-search-input"]';
@@ -277,6 +277,19 @@ class TokensTab extends HomePage {
   async checkMultichainTokenListButtonIsPresent(): Promise<void> {
     console.log(`Verify the multichain-token-list-button is displayed`);
     await this.driver.waitForSelector(this.tokenListItem);
+  }
+
+  /**
+   * Checks that the Tokens tab shows the "—" (em dash) fiat placeholder because
+   * no conversion rate is available (e.g. price API does not support the asset).
+   *
+   * @param timeout - How long to wait for the placeholder to appear.
+   */
+  async checkNoConversionRateDisplayed(timeout: number = 10000): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
+    await this.driver.waitForSelector(this.noPriceAvailableMessage, {
+      timeout,
+    });
   }
 
   /**

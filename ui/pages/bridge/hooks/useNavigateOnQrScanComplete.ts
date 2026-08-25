@@ -1,18 +1,13 @@
 import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
   getActiveQrCodeScanRequest,
   getLastQrScanCompletedSuccessfully,
 } from '../../../selectors/selectors';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import { useDispatch } from '../../../store/hooks';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 
 /**
  * Navigates away from awaiting signatures page when QR scan completes successfully.
@@ -22,7 +17,8 @@ import { useDispatch } from '../../../store/hooks';
  * For USB wallets (Ledger): navigation is handled by useSubmitBridgeTransaction after transaction submission.
  */
 export function useNavigateOnQrScanComplete(): void {
-  const navigate = useNavigate();
+  const { navigateToBridgePage, navigateToDefaultRoute } =
+    useBridgeNavigation();
   const dispatch = useDispatch();
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
   const lastQrScanCompletedSuccessfully = useSelector(
@@ -46,10 +42,7 @@ export function useNavigateOnQrScanComplete(): void {
       isQrScanCleared &&
       lastQrScanCompletedSuccessfully === true
     ) {
-      navigate(DEFAULT_ROUTE, {
-        replace: true,
-        state: { stayOnHomePage: true },
-      });
+      navigateToDefaultRoute({ replace: true }, false);
       return;
     }
 
@@ -59,14 +52,13 @@ export function useNavigateOnQrScanComplete(): void {
       lastQrScanCompletedSuccessfully === false
     ) {
       dispatch(setWasTxDeclined(true));
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
-        replace: true,
-      });
+      navigateToBridgePage();
     }
   }, [
     activeQrCodeScanRequest,
     dispatch,
     lastQrScanCompletedSuccessfully,
-    navigate,
+    navigateToBridgePage,
+    navigateToDefaultRoute,
   ]);
 }

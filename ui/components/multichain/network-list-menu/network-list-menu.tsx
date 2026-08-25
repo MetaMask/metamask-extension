@@ -21,6 +21,7 @@ import {
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import {
+  AvatarNetworkSize,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -29,7 +30,6 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';
-import { usePermittedNetworkToast } from '../../../hooks/multichain-accounts/usePermittedNetworkToast';
 import { NetworkListItem } from '../network-list-item';
 import {
   removeNetwork,
@@ -91,7 +91,6 @@ import {
   Text,
   ModalContent,
   ModalHeader,
-  AvatarNetworkSize,
 } from '../../component-library';
 import {
   MetaMetricsEventCategory,
@@ -171,7 +170,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
-  const { showPermittedNetworkToast } = usePermittedNetworkToast();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const showTestnets = useSelector(getShowTestNetworks);
@@ -431,10 +429,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
           if (!isNetworkPermitted) {
             await dispatch(addPermittedChain(selectedTabOrigin, chainId));
-            showPermittedNetworkToast({
-              origin: selectedTabOrigin,
-              network: getMultichainNetworkConfigurationOrThrow(chainId),
-            });
           }
 
           await setNetworkClientIdForDomain(
@@ -472,8 +466,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       allChainIds,
       tokenNetworkFilter,
       dispatch,
-      getMultichainNetworkConfigurationOrThrow,
-      showPermittedNetworkToast,
     ],
   );
 

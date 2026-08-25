@@ -28,10 +28,6 @@ export function getBenchmarkMockMode(): BenchmarkMockMode {
 /**
  * Check if mocked requests should be used for performance benchmarks.
  *
- * Uses GITHUB_REF_NAME (already available in CI) to determine mode:
- * - Push to main or release/* branches → use real server requests
- * - Everything else (PRs, local dev, etc.) → use mocked HTTP responses
- *
  * @returns true if mocks should be used, false for real server requests
  */
 export function shouldUseMockedRequests(): boolean {

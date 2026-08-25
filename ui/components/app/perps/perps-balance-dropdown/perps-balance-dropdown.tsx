@@ -2,7 +2,6 @@ import React, { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   twMerge,
-  usePureBlack,
   TextVariant,
   TextColor,
   IconColor,
@@ -31,7 +30,7 @@ import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { useSelectedAccountComplianceGate } from '../../compliance';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsControlBarSkeleton } from '../perps-skeletons';
-import { useOnClickOutside } from '../hooks/useClickOutside';
+import { useOnClickOutside } from '../../../../hooks/useClickOutside';
 import { getPrivacyAwareColor } from '../utils';
 
 /** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */
@@ -87,9 +86,6 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const { privacyMode } = useSelector(getPreferences);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
-
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-  const isPureBlack = usePureBlack();
 
   const totalBalance = account?.totalBalance ?? '0';
   const unrealizedPnl = account?.unrealizedPnl ?? '0';
@@ -212,10 +208,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
         {isDropdownOpen && (
           <Box
             className={twMerge(
-              'absolute right-0 top-full z-10 mt-1 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg',
-              isPureBlack
-                ? 'bg-background-alternative'
-                : 'bg-background-default',
+              'absolute right-0 top-full z-10 mt-1 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg bg-elevated2',
             )}
             flexDirection={BoxFlexDirection.Column}
             data-testid="perps-balance-dropdown-panel"

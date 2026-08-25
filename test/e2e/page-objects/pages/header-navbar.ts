@@ -1,6 +1,23 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Unlocked app header chrome: account menu, global menu, network picker.
+ *
+ * Screen: chrome component (not a full page), rendered across unlocked home
+ * and related routes above page content.
+ * Owns: account menu icon/open account list, global options menu (settings,
+ * lock, notifications, networks, contacts, connected sites), network picker,
+ * and dapp connection control bar entry points.
+ * Boundaries: header/menu chrome only. Destinations (settings, notifications,
+ * account list, etc.) belong to their page objects after navigation.
+ * Related: `AccountListPage`, `SettingsPage`, `NotificationsListPage`,
+ * `SelectNetworkModal` / networks flows.
+ *
+ * @see ui/components/multichain/app-header/app-header-unlocked-content.tsx
+ * @see ui/components/multichain/global-menu/global-menu-list.tsx
+ * @see ui/components/multichain/global-menu-drawer/global-menu-drawer.tsx
+ */
 class HeaderNavbar {
   private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
 

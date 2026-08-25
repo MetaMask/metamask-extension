@@ -26,16 +26,22 @@ jest.mock('../../../../store/actions.ts', () => ({
   removeCustomAsset: (...args) => mockRemoveCustomAsset(...args),
 }));
 
-const mockGetIsAssetsUnifyStateEnabled = jest.fn().mockReturnValue(false);
-jest.mock('../../../../selectors/assets-unify-state/feature-flags', () => ({
-  ...jest.requireActual(
-    '../../../../selectors/assets-unify-state/feature-flags',
-  ),
-  getIsAssetsUnifyStateEnabled: (state) =>
-    mockGetIsAssetsUnifyStateEnabled(state),
+const mockGetIsAssetsUnifiedStateIncludedInBuild = jest
+  .fn()
+  .mockReturnValue(false);
+jest.mock('../../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../../shared/lib/environment'),
+  getIsAssetsUnifiedStateIncludedInBuild: () =>
+    mockGetIsAssetsUnifiedStateIncludedInBuild(),
 }));
 
 describe('Hide Token Confirmation Modal', () => {
+  beforeEach(() => {
+    mockGetIsAssetsUnifiedStateIncludedInBuild.mockReturnValue(false);
+    mockHideAsset.mockClear();
+    mockRemoveCustomAsset.mockClear();
+  });
+
   const tokenState = {
     address: '0xTokenAddress',
     symbol: 'TKN',
@@ -148,7 +154,7 @@ describe('Hide Token Confirmation Modal', () => {
     });
   });
 
-  describe('assets unify state', () => {
+  describe('when the unified assets state is included in the build', () => {
     const SELECTED_ACCOUNT_ID = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
     const TOKEN_ADDRESS = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
     const CHAIN_ID_GOERLI = '0x5';
@@ -167,14 +173,6 @@ describe('Hide Token Confirmation Modal', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        remoteFeatureFlags: {
-          ...mockState.metamask.remoteFeatureFlags,
-          assetsUnifyState: {
-            enabled: true,
-            featureVersion: '1',
-            minimumVersion: null,
-          },
-        },
         internalAccounts: {
           ...mockState.metamask.internalAccounts,
           accounts: {
@@ -202,12 +200,12 @@ describe('Hide Token Confirmation Modal', () => {
     };
 
     beforeEach(() => {
-      mockGetIsAssetsUnifyStateEnabled.mockReturnValue(true);
+      mockGetIsAssetsUnifiedStateIncludedInBuild.mockReturnValue(true);
       mockHideAsset.mockClear();
       mockRemoveCustomAsset.mockClear();
     });
 
-    it('dispatches removeCustomAsset when unify enabled and asset is in customAssets', async () => {
+    it('dispatches removeCustomAsset when the asset is in customAssets', async () => {
       const stateWithCustomAsset = {
         ...baseUnifyState,
         metamask: {
@@ -234,7 +232,7 @@ describe('Hide Token Confirmation Modal', () => {
       });
     });
 
-    it('dispatches hideAsset when unify enabled and asset is not in customAssets', async () => {
+    it('dispatches hideAsset when the asset is not in customAssets', async () => {
       const stateWithoutCustomAsset = {
         ...baseUnifyState,
         metamask: {

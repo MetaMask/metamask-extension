@@ -1,6 +1,19 @@
 import { Driver } from '../../webdriver/driver';
 import { DAPP_URL } from '../../constants';
 
+/**
+ * Local fixture dapp that sends ETH using a private key (not MetaMask).
+ *
+ * Screen: served from `test/e2e/send-eth-with-private-key-test` (often at
+ * `DAPP_URL` when that fixture is the active static server).
+ * Owns: address paste, send button, and success-message wait.
+ * Boundaries: this fixture page only. On-chain balance checks and MetaMask UI
+ * belong to other page objects.
+ * Related: send/activity tests that fund accounts via this dapp.
+ *
+ * @see test/e2e/send-eth-with-private-key-test/index.html
+ * @see test/e2e/send-eth-with-private-key-test/send-eth-with-private-key.js
+ */
 class TestDappSendEthWithPrivateKey {
   private readonly addressInput = '#address';
 

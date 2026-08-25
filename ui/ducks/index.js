@@ -13,6 +13,7 @@ import historyReducer from './history/history';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
 import smartAccountsReducer from './smart-accounts/smart-accounts';
 import rewardsReducer from './rewards';
+import moneyBalanceReducer from './money-balance';
 import { perpsTutorialReducer } from './perps';
 
 export default combineReducers({
@@ -32,4 +33,5 @@ export default combineReducers({
   smartAccounts: smartAccountsReducer,
   rewards: rewardsReducer,
   perpsTutorial: perpsTutorialReducer,
+  moneyBalance: moneyBalanceReducer,
 });

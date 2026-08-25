@@ -3,6 +3,18 @@ import { By } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 import { regularDelayMs } from '../../helpers';
 
+/**
+ * Deep-link security interstitial before continuing into an in-app route.
+ *
+ * Screen: `#/link` (and related deep-link interstitial UI).
+ * Owns: description text, continue/cancel, skip-interstitial checkbox, and
+ * loading-indicator absence checks on the interstitial.
+ * Boundaries: the interstitial only. Destination routes after Continue belong
+ * to their own page objects.
+ * Related: deep-link helpers and destination screens opened after continue.
+ *
+ * @see ui/pages/deep-link/deep-link.tsx
+ */
 export default class DeepLink {
   private readonly cancelButton = '[data-testid="deep-link-cancel-button"]';
 

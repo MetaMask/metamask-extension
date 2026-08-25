@@ -15,7 +15,6 @@ import {
 } from '../../component-library';
 import {
   BlockSize,
-  BorderColor,
   Display,
   TextAlign,
   TextColor,
@@ -140,7 +139,6 @@ export const PermissionCellStatus = ({
                 variant={avatarAccountVariant}
                 size={AvatarTokenSize.Xs}
                 width={BlockSize.Min}
-                borderColor={BorderColor.backgroundDefault}
                 marginLeft={4}
                 paddingLeft={4}
               />
