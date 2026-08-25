@@ -10,13 +10,13 @@ import {
   IconColor,
   Popover,
   PopoverPosition,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   Text,
-  ButtonLinkSize,
-  ButtonLink,
 } from '../../../component-library';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import {
@@ -105,9 +105,8 @@ const PopularNetworkList = ({
                 {t('popularNetworkAddToolTip')}{' '}
               </Text>
               <Box key="learn-more-link">
-                <ButtonLink
-                  size={ButtonLinkSize.Auto}
-                  externalLink
+                <TextButton
+                  size={TextButtonSize.BodyMd}
                   onClick={() => {
                     global.platform.openTab({
                       url: ZENDESK_URLS.UNKNOWN_NETWORK,
@@ -115,7 +114,7 @@ const PopularNetworkList = ({
                   }}
                 >
                   {t('learnMoreUpperCase')}
-                </ButtonLink>
+                </TextButton>
               </Box>
             </Popover>
           </Box>
