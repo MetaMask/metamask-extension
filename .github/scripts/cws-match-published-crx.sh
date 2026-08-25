@@ -45,6 +45,8 @@ if [[ -z "${current_pct}" || "${current_pct}" == "null" ]]; then
   exit 1
 fi
 
-echo "matched_crx_version=${matched_crx}" >> "${GITHUB_OUTPUT}"
-echo "current_percentage=${current_pct}" >> "${GITHUB_OUTPUT}"
+{
+  echo "matched_crx_version=${matched_crx}"
+  echo "current_percentage=${current_pct}"
+} >> "${GITHUB_OUTPUT}"
 echo "Current rollout for crxVersion ${matched_crx}: ${current_pct}%"

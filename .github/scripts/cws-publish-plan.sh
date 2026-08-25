@@ -45,8 +45,10 @@ if [[ "${submitted_state}" == "STAGED" ]] && matches_expected_crx '.submittedIte
     echo "::error::Promote requires publish_type and percentage to be empty (state=STAGED, crxVersion=${submitted_crx})."
     exit 1
   fi
-  echo "action=promote" >> "${GITHUB_OUTPUT}"
-  echo "branch=Promote staged revision ${submitted_crx} to live" >> "${GITHUB_OUTPUT}"
+  {
+    echo "action=promote"
+    echo "branch=Promote staged revision ${submitted_crx} to live"
+  } >> "${GITHUB_OUTPUT}"
   exit 0
 fi
 
@@ -93,6 +95,8 @@ else
   api_publish_type="STAGED_PUBLISH"
 fi
 
-echo "action=submit" >> "${GITHUB_OUTPUT}"
-echo "api_publish_type=${api_publish_type}" >> "${GITHUB_OUTPUT}"
-echo "branch=Submit ${CRX_VERSION} for review (${PUBLISH_TYPE}, ${PERCENTAGE}%)" >> "${GITHUB_OUTPUT}"
+{
+  echo "action=submit"
+  echo "api_publish_type=${api_publish_type}"
+  echo "branch=Submit ${CRX_VERSION} for review (${PUBLISH_TYPE}, ${PERCENTAGE}%)"
+} >> "${GITHUB_OUTPUT}"
