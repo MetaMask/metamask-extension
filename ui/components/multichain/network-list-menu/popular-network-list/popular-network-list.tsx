@@ -9,6 +9,7 @@ import {
   IconSize,
   IconColor,
   TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -107,7 +108,7 @@ const PopularNetworkList = ({
               </Text>
               <Box key="learn-more-link">
                 <TextButton
-                  size="body-md"
+                  size={TextButtonSize.BodyMd}
                   onClick={() => {
                     global.platform.openTab({
                       url: ZENDESK_URLS.UNKNOWN_NETWORK,
