@@ -936,14 +936,14 @@
     "description": "$1 is the token symbol"
   },
   "activity_receive_failed_description": {
-    "message": "From: $1",
+    "message": "From $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_failed_title": {
     "message": "Receive failed"
   },
   "activity_receive_pending_description": {
-    "message": "From: $1",
+    "message": "From $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
@@ -951,7 +951,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_receive_success_description": {
-    "message": "From: $1",
+    "message": "From $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
@@ -1002,14 +1002,14 @@
     "description": "$1 is the token symbol"
   },
   "activity_send_failed_description": {
-    "message": "To: $1",
+    "message": "To $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_failed_title": {
     "message": "Send failed"
   },
   "activity_send_pending_description": {
-    "message": "To: $1",
+    "message": "To $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
@@ -1017,7 +1017,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_send_success_description": {
-    "message": "To: $1",
+    "message": "To $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
