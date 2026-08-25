@@ -42,11 +42,7 @@ import {
   hideModal,
   setActiveNetwork,
 } from '../../../../../store/actions';
-import {
-  Box,
-  SuccessPill,
-  Text,
-} from '../../../../component-library';
+import { Box, SuccessPill, Text } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
 import { useAdditionalNetworkHandlers } from '../../hooks/useAdditionalNetworkHandlers';
 import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
