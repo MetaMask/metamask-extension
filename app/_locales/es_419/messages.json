@@ -152,8 +152,9 @@
   "accountsConnected": {
     "message": "Cuentas conectadas"
   },
-  "accountsPermissionsTitle": {
-    "message": "Ver sus cuentas y sugerir transacciones"
+  "accountsCount": {
+    "message": "$1 cuentas",
+    "description": "Label showing number of accounts selected, $1 is the count"
   },
   "accountsSmallCase": {
     "message": "cuentas"
@@ -851,6 +852,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Retiro de predicciones"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Compra fallida"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Compra fallida"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Comprando $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Comprando $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Compraste $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Compraste $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Error al vender"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Error al vender"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Vendiendo $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Vendiendo $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "$1 vendido",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "$1 vendido",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "De: $1",
     "description": "$1 is the shortened sender address"
@@ -1353,6 +1398,12 @@
   "alert": {
     "message": "Alerta"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "No hay fondos disponibles. Usa otra cuenta."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "Fondos insuficientes"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "Está actualizando su cuenta a una cuenta inteligente. Mantendrá la misma dirección de cuenta y accederá a transacciones más rápidas y tarifas de red más bajas. $1"
   },
@@ -1379,6 +1430,10 @@
   },
   "alertContentMultipleApprovals": {
     "message": "Estás dando permiso a otra persona para retirar tus tokens, aunque no sea necesario para esta transacción."
+  },
+  "alertDepositLimit": {
+    "message": "Depósito máx.: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
   },
   "alertDisableTooltip": {
     "message": "Esto se puede modificar en \"Configuración > Alertas\""
@@ -1530,9 +1585,6 @@
   },
   "allNetworks": {
     "message": "Todas las redes"
-  },
-  "allPermissions": {
-    "message": "Conexiones de Dapp"
   },
   "allPopularNetworks": {
     "message": "Todas las redes populares"
@@ -1725,6 +1777,9 @@
   "back": {
     "message": "Volver"
   },
+  "backToSafety": {
+    "message": "Volver a Seguridad"
+  },
   "backUpIncomplete": {
     "message": "Copia de seguridad incompleta"
   },
@@ -1769,9 +1824,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Más información sobre cómo protegemos su privacidad"
-  },
-  "backupApprovalInfo": {
-    "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a su monedero en otro dispositivo."
   },
   "backupApprovalNotice": {
     "message": "Cree una copia de seguridad de su frase secreta de recuperación para mantener protegidos sus fondos y su monedero."
@@ -1950,54 +2002,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Si continúa, todos los activos que ha registrado en Blur podrían estar en peligro."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Está interactuando con un sitio malicioso. Si continúa, perderá sus activos."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Si continúa, todos los activos que ha incluido en OpenSea podrían estar en peligro."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Si confirma esta solicitud, podría perder sus activos. Le recomendamos que cancele esta solicitud."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Está enviando sus activos a un estafador. Si continúa, perderá esos activos."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Si confirma esta solicitud, permitirá que un estafador retire y gaste sus activos. No los podrá recuperar."
-  },
-  "blockaidDescriptionApproveFarming": {
-    "message": "Si aprueba esta solicitud, un tercero conocido por estafas podría quedarse con todos sus activos."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Si aprueba esta solicitud, alguien puede robar sus activos enlistados en Blur."
-  },
-  "blockaidDescriptionErrored": {
-    "message": "Debido a un error, no pudimos comprobar si hay alertas de seguridad. Continúe solo si confía en todas las direcciones involucradas."
-  },
-  "blockaidDescriptionMaliciousDomain": {
-    "message": "Está interactuando con un dominio malicioso. Si aprueba esta solicitud, podría perder sus activos."
-  },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Si aprueba esta solicitud, podría perder sus activos."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Si aprueba esta solicitud, alguien puede robar sus activos enlistados en OpenSea."
-  },
-  "blockaidDescriptionTransferFarming": {
-    "message": "Si aprueba esta solicitud, un tercero conocido por estafar, tomará todos sus activos."
-  },
-  "blockaidTitleDeceptive": {
-    "message": "Esta es una solicitud engañosa"
-  },
-  "blockaidTitleMayNotBeSafe": {
-    "message": "Tenga cuidado"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Esta es una solicitud sospechosa"
-  },
   "blockies": {
     "message": "Blockies"
   },
@@ -2087,6 +2091,12 @@
   },
   "bridgeNoPriceInfoTitle": {
     "message": "No hay información de precios"
+  },
+  "bridgeOffHoursDescription": {
+    "message": "Mercado cerrado: El precio es calculado por el emisor y no refleja datos de mercado en tiempo real. Puede ser diferente cuando los mercados reabran en la próxima sesión de trading disponible."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Trading fuera de horario"
   },
   "bridgePoints": {
     "message": "Puntos estimados",
@@ -2730,9 +2740,6 @@
   "confirmationAlertDetails": {
     "message": "Para proteger sus activos, le sugerimos que rechace la solicitud."
   },
-  "confirmationAlertModalTitleDescription": {
-    "message": "Sus activos podrían estar en riesgo"
-  },
   "confirmed": {
     "message": "Confirmado"
   },
@@ -2757,8 +2764,8 @@
   "connectAHardwareWalletDescription": {
     "message": "Usando USB o un código QR"
   },
-  "connectAccounts": {
-    "message": "Conectar cuentas"
+  "connectAnyway": {
+    "message": "Conectarse de todos modos"
   },
   "connectHardwareDevice": {
     "message": "Conectar $1",
@@ -2804,18 +2811,6 @@
   "connectedSnaps": {
     "message": "Snaps conectados"
   },
-  "connectedWithAccount": {
-    "message": "$1 cuentas conectadas",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Conectado con $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 redes conectadas",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Conectando"
   },
@@ -2853,6 +2848,9 @@
   "connectionRequest": {
     "message": "Solicitud de conexión"
   },
+  "connections": {
+    "message": "Conexiones"
+  },
   "connectionsRemovedModalDescription": {
     "message": "Algunas conexiones (como billeteras físicas y snaps) se eliminaron por inactividad en este dispositivo. Puedes volver a agregarlas en cualquier momento en Configuración."
   },
@@ -2880,6 +2878,9 @@
   },
   "continue": {
     "message": "Continuar"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "Continúa bajo tu propio riesgo"
   },
   "contract": {
     "message": "Contrato"
@@ -3055,9 +3056,6 @@
   },
   "customerSupport": {
     "message": "atención al cliente"
-  },
-  "dappConnections": {
-    "message": "Conexiones de Dapp"
   },
   "dappSuggested": {
     "message": "Sitio sugerido"
@@ -3402,26 +3400,30 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "¿Está seguro de que se quiere desconectar? Podría perder la funcionalidad del sitio."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Si se desconecta de este sitio, tendrá que volver a conectar sus cuentas y redes para volver a utilizarlo."
-  },
   "disconnectAllSites": {
     "message": "Desconectar todo"
   },
   "disconnectAllSitesDescriptionText": {
-    "message": "Si te desconectas de todos los sitios, deberás volver a conectar tus cuentas y redes para volver a utilizarlas."
+    "message": "Esto desconectará todas tus cuentas de todas las dapps. Tendrás que volver a conectarlas para usarlas nuevamente."
   },
   "disconnectAllSitesError": {
     "message": "No se pudieron desconectar algunas dapps. Inténtalo de nuevo."
   },
+  "disconnectAllSitesQuestion": {
+    "message": "Desconectar todos/as?"
+  },
   "disconnectAllSitesSuccess": {
     "message": "Todas las dapps se desconectaron con éxito."
   },
-  "disconnectMessage": {
-    "message": "Esto lo desconectará de este sitio"
-  },
   "disconnectPrompt": {
     "message": "Desconectar $1"
+  },
+  "disconnectQuestion": {
+    "message": "Desconectar?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "Esto desconectará todas tus cuentas de $1. Tendrás que volver a conectarlas para usar esta dapp nuevamente.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "Desconectar esta cuenta"
@@ -3429,9 +3431,17 @@
   "discover": {
     "message": "Descubrir"
   },
+  "discoverSearchCap": {
+    "message": "cap.",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "No se encontraron resultados",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "No se encontraron resultados para \"$1\"",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "Descubre otros activos populares",
@@ -3585,17 +3595,11 @@
   "editNetworkLink": {
     "message": "editar la red original"
   },
-  "editNetworksTitle": {
-    "message": "Editar redes"
-  },
   "editNonceField": {
     "message": "Editar nonce"
   },
   "editNonceMessage": {
     "message": "Esta es una función avanzada, úsela con precaución."
-  },
-  "editPermissions": {
-    "message": "Editar permisos"
   },
   "editSpendingCap": {
     "message": "Editar límite de gasto"
@@ -5047,6 +5051,9 @@
   "manage": {
     "message": "Gestionar"
   },
+  "manageConnectedAccounts": {
+    "message": "Administrar cuentas conectadas"
+  },
   "manageDefaultSettings": {
     "message": "Gestionar la configuración por defecto"
   },
@@ -5212,6 +5219,48 @@
   "mmFee": {
     "message": "Tarifa de MetaMask del $1 %"
   },
+  "money": {
+    "message": "Money"
+  },
+  "moneyActivity": {
+    "message": "Actividad"
+  },
+  "moneyAdd": {
+    "message": "Añadir"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Saldo no disponible"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Obtén liquidez total sin bloqueos, para que puedas operar o retirar fondos en cualquier momento"
+  },
+  "moneyBenefitSend": {
+    "message": "Envía a cualquiera de tus billeteras en MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Mantén tu dinero seguro en mUSD, una moneda estable respaldada por el dólar en una proporción de 1:1"
+  },
+  "moneyBenefits": {
+    "message": "Beneficios"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Gana con tus criptomonedas"
+  },
+  "moneyFundDescription": {
+    "message": "Deposita fondos en tu Money Account y observa cómo tu saldo crece."
+  },
+  "moneyHowItWorks": {
+    "message": "Cómo funciona"
+  },
+  "moneyLearnMore": {
+    "message": "Conozca más"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Enviar"
+  },
   "month": {
     "message": "mes"
   },
@@ -5220,10 +5269,6 @@
   },
   "more": {
     "message": "más"
-  },
-  "moreAccounts": {
-    "message": "Más de $1 cuentas adicionales",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Más"
@@ -5418,18 +5463,6 @@
     "message": "Reclamar bono",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "Bonificación reclamable",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "El bono anualizado que has ganado por mantener mUSD. Puedes reclamar tu bono diariamente en Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Detalles del bono reclamable",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Las tarifas de conversión a mUSD incluyen costos de red y pueden incluir tarifas del proveedor. No se aplica ninguna tarifa de MetaMask al convertir a mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5454,10 +5487,6 @@
   "musdConvert": {
     "message": "Convertir"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Gana un bono del $1 %",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Comenzar"
   },
@@ -5470,10 +5499,6 @@
   },
   "musdGetMusd": {
     "message": "Obtener USDC"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5681,9 +5706,6 @@
   "networkOptions": {
     "message": "Opciones de red"
   },
-  "networkPermissionToast": {
-    "message": "Se actualizaron los permisos de la red"
-  },
   "networkStatus": {
     "message": "Estado de la red"
   },
@@ -5719,9 +5741,6 @@
   },
   "networks": {
     "message": "Redes"
-  },
-  "networksSmallCase": {
-    "message": "redes"
   },
   "new": {
     "message": "Nuevo!"
@@ -5835,15 +5854,16 @@
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
   },
-  "noConnectionDescription": {
-    "message": "MetaMask no está conectado a este sitio. Para empezar, selecciona el botón \"Conectar\" del sitio."
-  },
   "noDefaultAddress": {
     "message": "Sin dirección de $1",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "No se proporcionó resolución para el dominio."
+  },
+  "noFee": {
+    "message": "Sin tarifa",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, y la mayoría de los monederos físicos, no funcionarán con la versión actual de su navegador."
@@ -6069,12 +6089,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Aún no ha recibido ninguna notificación."
-  },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "Solicitudes de conexión, aprobaciones y actualizaciones de sesión de CLI para Agentic"
-  },
-  "notificationsSettingsAgenticCliTitle": {
-    "message": "CLI de Agentic"
   },
   "notificationsSettingsBoxError": {
     "message": "Se produjo un error. Inténtalo de nuevo."
@@ -6515,9 +6529,29 @@
     "message": "Pagar con",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "Cripto",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "Seleccionar método de pago",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "Pagar con",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "Otros activos",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "Selecciona entre tus tokens",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "Beneficiario"
@@ -6550,6 +6584,10 @@
   "percentChange": {
     "message": "Cambio porcentual"
   },
+  "permissionCannotMoveFunds": {
+    "message": "No puede mover fondos sin tu permiso",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "Permiso para"
   },
@@ -6569,6 +6607,14 @@
   "permissionRevokedForAccounts": {
     "message": "Revocado en esta actualización por $1",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "Ver direcciones, saldos y actividad",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "Enviar solicitudes de transacciones",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "Conectarse a $1.",
@@ -6809,8 +6855,8 @@
   "permissions": {
     "message": "Permisos"
   },
-  "permissionsPageEmptyDescription": {
-    "message": "No se detectaron permisos. Una vez que otorgues permisos a un sitio o instales un Snap, los detalles aparecerán aquí."
+  "permissionsPageEmptyTitle": {
+    "message": "No hay nada que ver aquí"
   },
   "permitSimulationChange_approve": {
     "message": "Límite de gasto"
@@ -6835,9 +6881,6 @@
   },
   "permitSimulationDetailInfo": {
     "message": "Le está dando permiso al gastador para gastar esta cantidad de tokens de su cuenta."
-  },
-  "permittedChainToastUpdate": {
-    "message": "$1 tiene acceso a $2."
   },
   "perps": {
     "message": "Perps"
@@ -6917,6 +6960,10 @@
   "perpsCancelOrder": {
     "message": "Cancelar orden"
   },
+  "perpsCancelOrderFailed": {
+    "message": "No se pudo cancelar la orden. Inténtalo de nuevo.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Establecer intervalo de velas"
   },
@@ -6955,6 +7002,9 @@
   },
   "perpsClosePosition": {
     "message": "Cerrar posición"
+  },
+  "perpsClosePrice": {
+    "message": "Precio de cierre"
   },
   "perpsClosePriceUnavailable": {
     "message": "El precio actual no está disponible. Inténtalo de nuevo en un momento."
@@ -7055,6 +7105,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "P&L estimado en toma de ganancias",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "Agrega fondos para comenzar a operar.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Explorar mercados"
@@ -7252,11 +7306,31 @@
   "perpsOrderBookApply": {
     "message": "Aplicar"
   },
+  "perpsOrderBookBuy": {
+    "message": "Comprar: $1 %",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Publicado por y Agrupar por"
+  },
   "perpsOrderBookConnectionError": {
     "message": "Se perdió la conexión con el libro de órdenes"
   },
+  "perpsOrderBookDepthRatio": {
+    "message": "Comprar $1 %, vender $2 %",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
+  },
   "perpsOrderBookGroupBy": {
     "message": "Agrupar por"
+  },
+  "perpsOrderBookLayout": {
+    "message": "Diseño del libro de órdenes"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "Izquierda"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "Derecha"
   },
   "perpsOrderBookListedBy": {
     "message": "Ordenado por"
@@ -7264,11 +7338,24 @@
   "perpsOrderBookLoading": {
     "message": "Cargando libro de órdenes"
   },
+  "perpsOrderBookNoData": {
+    "message": "No hay datos del libro de órdenes"
+  },
   "perpsOrderBookPrice": {
     "message": "Precio"
   },
   "perpsOrderBookReconnect": {
     "message": "Reconectar"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Reconectando al libro de órdenes"
+  },
+  "perpsOrderBookResize": {
+    "message": "Redimensionar el libro de órdenes"
+  },
+  "perpsOrderBookSell": {
+    "message": "Vender: $1 %",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "Tamaño"
@@ -7279,14 +7366,33 @@
   "perpsOrderBookTotal": {
     "message": "Total"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Usar $1 como precio límite",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Tipo de valor"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Libro de órdenes que muestra las ofertas de compra y venta",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Libro de órdenes que solo muestra las ofertas de compra",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Libro de órdenes que solo muestra las ofertas de venta",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Fecha"
   },
   "perpsOrderFailed": {
     "message": "No se pudo realizar la orden. Inténtalo de nuevo."
+  },
+  "perpsOrderFilled": {
+    "message": "Completado"
   },
   "perpsOrderOriginalSize": {
     "message": "Tamaño original"
@@ -7296,6 +7402,12 @@
   },
   "perpsOrderStatus": {
     "message": "Estado"
+  },
+  "perpsOrderTotalFee": {
+    "message": "Tarifa total"
+  },
+  "perpsOrderType": {
+    "message": "Tipo de orden"
   },
   "perpsOrderValue": {
     "message": "Valor de la orden"
@@ -7501,6 +7613,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "La toma de ganancias debe estar por $1 del precio $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Esta orden ya no está abierta",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Error al cancelar la orden",
@@ -8084,8 +8200,79 @@
     "message": "en $1",
     "description": "$1 is the network name"
   },
-  "rampsOtherOptions": {
-    "message": "Otras opciones"
+  "rampsOrderDetailsBankDetails": {
+    "message": "Datos de la transferencia bancaria"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Comprar de nuevo"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Tarifas"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Id. de orden"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Pagado con",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "Tarifa de $1",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Total"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Ver en $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Se produjo un error con tu orden.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Compra fallida",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Tu orden se está procesando.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Compra en curso",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Se produjo un error con tu orden.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Error al vender",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Tu orden se está procesando.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Venta en curso",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Tus fondos están en camino.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Venta exitosa",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Tus criptomonedas están en camino.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Compra exitosa",
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsPaymentDelayBusinessDay": {
     "message": "día hábil"
@@ -8304,9 +8491,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Este es el sitio que le pide su confirmación."
-  },
-  "requestingFor": {
-    "message": "Solicitando para"
   },
   "required": {
     "message": "Requerido"
@@ -8966,6 +9150,9 @@
   "securityTrustMalicious": {
     "message": "Malicioso"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "Malicioso: marcado como no seguro"
+  },
   "securityTrustMaliciousLabel": {
     "message": "Malicioso"
   },
@@ -9106,8 +9293,8 @@
   "select": {
     "message": "Seleccionar"
   },
-  "selectAccountToConnect": {
-    "message": "Seleccione una cuenta para conectarse"
+  "selectAccounts": {
+    "message": "Seleccionar cuentas"
   },
   "selectAll": {
     "message": "Seleccionar todo"
@@ -9126,9 +9313,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Habilite la autodetección de NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Selecciona la red para filtrar"
   },
   "selectPathHelp": {
     "message": "Si no ve las cuentas previstas, intente cambiar la ruta HD o la red seleccionada actualmente."
@@ -9891,6 +10075,12 @@
   "showTestnetNetworks": {
     "message": "Mostrar redes de prueba"
   },
+  "showTickerWidget": {
+    "message": "Mostrar widget web en X"
+  },
+  "showTickerWidgetDescription": {
+    "message": "Muestra un widget de MetaMask con detalles del token cuando navegas por X.com."
+  },
   "sidePanelMigrationToast": {
     "message": "MetaMask ahora se abre en el panel lateral por defecto. $1 en cualquier momento desde el menú.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -9992,8 +10182,9 @@
   "singleNetwork": {
     "message": "1 red"
   },
-  "sites": {
-    "message": "Sitios"
+  "sitePermissionsBanner": {
+    "message": "$1 puede ver tus cuentas conectadas y sugerir transacciones.",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "Emitido"
@@ -11265,14 +11456,8 @@
   "troubleStartingTitle": {
     "message": "MetaMask tuvo problemas al iniciar."
   },
-  "trustSignalBlockDescription": {
-    "message": "Si te conectas a este sitio, podrías perder todos tus activos."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Sitio malicioso detectado"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Conectarse de todos modos"
+  "trustSignalPhishingWarning": {
+    "message": "Este sitio muestra señales de phishing o de actividad para vaciar billeteras. Puede solicitar transacciones diseñadas para robar tus fondos."
   },
   "tryAgain": {
     "message": "Inténtalo de nuevo"
@@ -11531,6 +11716,10 @@
   },
   "viewTokenDetails": {
     "message": "Ver detalles del token"
+  },
+  "viewXMore": {
+    "message": "Ver $1 más",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Ver $1 en el explorador",

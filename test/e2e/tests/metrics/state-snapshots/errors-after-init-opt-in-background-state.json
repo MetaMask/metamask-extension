@@ -59,7 +59,6 @@
     "lastVisitedRoute": null,
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
-    "networkConnectionBanner": "object",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDropdownState": {},
@@ -137,13 +136,7 @@
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
-    "currencyRates": {
-      "ETH": {
-        "conversionDate": "object",
-        "conversionRate": 1700,
-        "usdConversionRate": null
-      }
-    },
+    "currencyRates": {},
     "currentCurrency": "usd"
   },
   "DeFiPositionsController": "object",
@@ -156,10 +149,6 @@
   "EncryptionPublicKeyController": {
     "unapprovedEncryptionPublicKeyMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object"
-  },
-  "EnsController": {
-    "ensEntries": "object",
-    "ensResolutionsByAddress": "object"
   },
   "GasFeeController": {
     "estimatedGasFeeTimeBounds": {},
@@ -211,6 +200,7 @@
   },
   "MultichainTransactionsController": "object",
   "NameController": { "nameSources": "object", "names": "object" },
+  "NetworkConnectionBannerController": "object",
   "NetworkController": {
     "networkConfigurationsByChainId": "object",
     "networksMetadata": "object",
@@ -343,12 +333,13 @@
   },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
+    "featureFlagThresholdGroups": "object",
     "localOverrides": "object",
     "rawRemoteFeatureFlags": "object",
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupA", "value": "valueA" }
+      "feature3": "valueA"
     },
     "thresholdCache": "object"
   },

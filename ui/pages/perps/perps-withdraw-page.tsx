@@ -199,11 +199,11 @@ const PerpsWithdrawPage = () => {
 
   useEffect(() => {
     let cancelled = false;
-    setRoutesError(null);
 
     submitRequestToBackground<AssetRoute[]>('perpsGetWithdrawalRoutes', [])
       .then((routes) => {
         if (!cancelled) {
+          setRoutesError(null);
           setWithdrawalRoutes(Array.isArray(routes) ? routes : []);
         }
       })
@@ -570,7 +570,7 @@ const PerpsWithdrawPage = () => {
   const amountHasAlert = Boolean(validationMessage);
 
   return (
-    <Page data-testid="perps-withdraw-page">
+    <Page data-testid="parent-selector-perps-withdraw">
       <Box
         alignItems={BoxAlignItems.Center}
         className="bg-background-default"

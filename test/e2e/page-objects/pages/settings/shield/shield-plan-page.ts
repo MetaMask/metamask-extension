@@ -1,6 +1,19 @@
-// Enhanced ShieldPlanPage class
 import { Driver } from '../../../../webdriver/driver';
 
+/**
+ * Shield plan picker: annual/monthly and continue into checkout.
+ *
+ * Screen: `#/shield-plan`, reached from the Shield entry modal or from
+ * manage-plan flows off `ShieldDetailPage`.
+ * Owns: plan page load, annual/monthly selection (card vs crypto monthly),
+ * continue, back, and the combined subscribe helper.
+ * Boundaries: plan choice only. After continue, Stripe/checkout or
+ * `ShieldSubscriptionApprovePage` takes over; membership detail is
+ * `ShieldDetailPage`.
+ * Related: `ShieldDetailPage`, `ShieldSubscriptionApprovePage`.
+ *
+ * @see ui/pages/shield/plan/shield-plan.tsx
+ */
 export default class ShieldPlanPage {
   private readonly annualPlanButton =
     '[data-testid="shield-plan-annual-button"]';
@@ -16,6 +29,10 @@ export default class ShieldPlanPage {
     paymentMethod === 'crypto'
       ? '[data-testid="shield-plan-monthly*-button"]'
       : '[data-testid="shield-plan-monthly-button"]';
+
+  private readonly page = {
+    testId: 'parent-selector-shield-plan-page',
+  };
 
   private readonly shieldPlanPageAnnualPlan = {
     text: 'Annual',
@@ -43,6 +60,7 @@ export default class ShieldPlanPage {
       this.shieldPlanPageMonthlyPlan,
     ]);
     await this.driver.waitForMultipleSelectors([
+      this.page,
       this.shieldPlanPageTitle,
       this.shieldPlanPageAnnualPlan,
       this.shieldPlanPageMonthlyPlan,

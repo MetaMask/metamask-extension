@@ -1,19 +1,29 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
+  AddNetworkFields,
+  NetworkConfiguration,
+  NetworkControllerAddNetworkAction,
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetNetworkConfigurationByNetworkClientIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
   NetworkControllerLookupNetworkAction,
   NetworkControllerResetConnectionAction,
+  NetworkControllerSetActiveNetworkAction,
   Provider,
 } from '@metamask/network-controller';
 import {
+  NetworkEnablementControllerActions,
   NetworkEnablementControllerEnableAllPopularNetworksAction,
   NetworkEnablementControllerEnableNetworkAction,
   NetworkEnablementControllerGetStateAction,
+  NetworkEnablementControllerIsNetworkEnabledAction,
+  NetworkEnablementControllerState,
+  NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
+import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import {
   add0x,
   bytesToHex,
@@ -40,6 +50,7 @@ import {
   KeyringControllerExportAccountAction,
   KeyringControllerExportEncryptionKeyAction,
   KeyringControllerExportSeedPhraseAction,
+  KeyringControllerGetKeyringForAccountAction,
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerGetStateAction,
   KeyringControllerImportAccountWithStrategyAction,
@@ -82,14 +93,28 @@ import { KeyringType } from '@metamask/keyring-api/v2';
 import { normalize } from '@metamask/eth-sig-util';
 import {
   TransactionContainerType,
+  TransactionControllerAddTransactionAction,
+  TransactionControllerAddTransactionBatchAction,
   TransactionControllerClearUnapprovedTransactionsAction,
   TransactionControllerEstimateGasAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateEditableParamsAction,
+  TransactionControllerUpdateSecurityAlertResponseAction,
   TransactionControllerWipeTransactionsAction,
+  type TransactionMeta,
+  type TransactionParams,
 } from '@metamask/transaction-controller';
+import {
+  UserOperationControllerAddUserOperationFromTransactionAction,
+  UserOperationControllerStartPollingByNetworkClientIdAction,
+} from '@metamask/user-operation-controller';
+import {
+  GetSignatureState,
+  SignatureStateChange,
+} from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
   CurrencyRateControllerSetCurrentCurrencyAction,
@@ -111,6 +136,7 @@ import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   PhishingControllerMaybeUpdateStateAction,
+  PhishingControllerScanAddressAction,
   PhishingControllerTestOriginAction,
 } from '@metamask/phishing-controller';
 import {
@@ -132,6 +158,7 @@ import {
   SeedlessOnboardingControllerAddNewSecretDataAction,
   SeedlessOnboardingControllerChangePasswordAction,
   SeedlessOnboardingControllerCheckIsPasswordOutdatedAction,
+  SeedlessOnboardingControllerClearStateAction,
   SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction,
   SeedlessOnboardingControllerErrorMessage,
   SeedlessOnboardingControllerFetchAllSecretDataAction,
@@ -200,17 +227,23 @@ import {
   rpcErrors,
 } from '@metamask/rpc-errors';
 import {
+  AuthenticationControllerGetBearerTokenAction,
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
 import {
+  SubscriptionControllerClearStateAction,
   SubscriptionControllerGetStateAction,
+  SubscriptionControllerGetSubscriptionByProductAction,
   SubscriptionControllerStopAllPollingAction,
 } from '@metamask/subscription-controller';
 import {
+  ShieldControllerClearStateAction,
   ShieldControllerStartAction,
   ShieldControllerStopAction,
 } from '@metamask/shield-controller';
+import { ClaimsControllerClearStateAction } from '@metamask/claims-controller';
+import { AddressBookControllerClearAction } from '@metamask/address-book-controller';
 import {
   GasFeeControllerDisableNonRPCGasFeeApisAction,
   GasFeeControllerEnableNonRPCGasFeeApisAction,
@@ -219,6 +252,8 @@ import { DelegationControllerSignDelegationAction } from '@metamask/delegation-c
 import type {
   PasskeyAuthenticationResponse,
   PasskeyControllerChangePasswordWithPasskeyVerificationAction,
+  PasskeyControllerClearStateAction,
+  PasskeyControllerExportSeedPhraseWithPasskeyAction,
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
@@ -257,7 +292,11 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
-import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
+import type { UsePPOMAction } from '../lib/ppom/ppom-util';
+import {
+  OnboardingControllerGetIsSocialLoginFlowAction,
+  OnboardingControllerResetOnboardingAction,
+} from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import {
   getSentinelNetworkFlags,
@@ -268,12 +307,18 @@ import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
+import {
+  addTransaction as addTransactionToPipeline,
+  type AddTransactionOptions,
+  type AddTransactionRequest,
+} from '../lib/transaction/util';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import {
   PreferencesControllerAddReferralApprovedAccountAction,
   PreferencesControllerAddReferralDeclinedAccountAction,
   PreferencesControllerAddReferralPassedAccountAction,
   PreferencesControllerRemoveReferralDeclinedAccountAction,
+  PreferencesControllerResetStateAction,
   PreferencesControllerSetAccountsReferralApprovedAction,
   PreferencesControllerSetPasswordForgottenAction,
   PreferencesControllerToggleExternalServicesAction,
@@ -313,6 +358,9 @@ import {
   trace,
 } from '../../../shared/lib/trace';
 import {
+  AppStateControllerAddAddressSecurityAlertResponseAction,
+  AppStateControllerAddSignatureSecurityAlertResponseAction,
+  AppStateControllerGetAddressSecurityAlertResponseAction,
   AppStateControllerGetIsWalletResetInProgressAction,
   AppStateControllerSetIsWalletResetInProgressAction,
   AppStateControllerSetPasskeyAutoUnlockSuppressedAction,
@@ -331,9 +379,8 @@ import {
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
 } from '../../../shared/lib/hardware-wallets';
-import { ENABLE_DMK_FEATURE_FLAG } from '../../../shared/lib/hardware-wallets/feature-flags';
+import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
-import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   LatticeKeyringV2,
@@ -408,6 +455,9 @@ type TokenStandardAndDetails = {
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
+  'addNetwork',
+  'addTransaction',
+  'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
   'attemptLedgerTransportCreation',
   'captureTestError',
@@ -425,6 +475,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
+  'exportSeedPhraseWithPasskey',
   'forgetDevice',
   'getAccountsBySnapId',
   'getAppNameAndVersion',
@@ -467,6 +518,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'removePermissionsFor',
   'requestSafeReload',
   'resetAccount',
+  'resetWallet',
   'restoreSocialBackupAndGetSeedPhrase',
   'setAccountLabel',
   'setCurrentCurrency',
@@ -493,6 +545,15 @@ const MESSENGER_EXPOSED_METHODS = [
 export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
 
+// `@metamask/network-enablement-controller`@6.0.0 defines this action type but
+// omits it from the package's public exports, so derive it from the exported
+// actions union. Import it directly once the package re-exports
+// `NetworkEnablementControllerRestoreEnabledNetworkMapAction`.
+type NetworkEnablementControllerRestoreEnabledNetworkMapAction = Extract<
+  NetworkEnablementControllerActions,
+  { type: 'NetworkEnablementController:restoreEnabledNetworkMap' }
+>;
+
 type AllowedActions =
   | AccountOrderControllerUpdateHiddenAccountsListAction
   | AccountTreeControllerClearStateAction
@@ -510,11 +571,15 @@ type AllowedActions =
   | AccountsControllerSetAccountNameAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
+  | AddressBookControllerClearAction
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerAddAction
   | ApprovalControllerGetStateAction
   | ApprovalControllerHasRequestAction
   | ApprovalControllerRejectRequestAction
+  | AppStateControllerAddAddressSecurityAlertResponseAction
+  | AppStateControllerAddSignatureSecurityAlertResponseAction
+  | AppStateControllerGetAddressSecurityAlertResponseAction
   | AppStateControllerGetIsWalletResetInProgressAction
   | AppStateControllerGetStateAction
   | AppStateControllerSetIsWalletResetInProgressAction
@@ -524,9 +589,11 @@ type AllowedActions =
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
+  | AuthenticationControllerGetBearerTokenAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
+  | ClaimsControllerClearStateAction
   | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerDisableNonRPCGasFeeApisAction
@@ -536,6 +603,7 @@ type AllowedActions =
   | KeyringControllerExportAccountAction
   | KeyringControllerExportEncryptionKeyAction
   | KeyringControllerExportSeedPhraseAction
+  | KeyringControllerGetKeyringForAccountAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerGetStateAction
   | KeyringControllerImportAccountWithStrategyAction
@@ -560,18 +628,26 @@ type AllowedActions =
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceRemoveMultichainAccountWalletAction
   | MultichainAccountServiceResyncAccountsAction
+  | NetworkControllerAddNetworkAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetNetworkConfigurationByNetworkClientIdAction
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
   | NetworkControllerLookupNetworkAction
   | NetworkControllerResetConnectionAction
+  | NetworkControllerSetActiveNetworkAction
   | NetworkEnablementControllerEnableAllPopularNetworksAction
   | NetworkEnablementControllerEnableNetworkAction
+  | NetworkEnablementControllerIsNetworkEnabledAction
   | NetworkEnablementControllerGetStateAction
+  | NetworkEnablementControllerRestoreEnabledNetworkMapAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | OnboardingControllerResetOnboardingAction
   | PasskeyControllerChangePasswordWithPasskeyVerificationAction
+  | PasskeyControllerClearStateAction
+  | PasskeyControllerExportSeedPhraseWithPasskeyAction
   | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
@@ -579,12 +655,14 @@ type AllowedActions =
   | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PhishingControllerMaybeUpdateStateAction
+  | PhishingControllerScanAddressAction
   | PhishingControllerTestOriginAction
   | PreferencesControllerAddReferralApprovedAccountAction
   | PreferencesControllerAddReferralDeclinedAccountAction
   | PreferencesControllerAddReferralPassedAccountAction
   | PreferencesControllerGetStateAction
   | PreferencesControllerRemoveReferralDeclinedAccountAction
+  | PreferencesControllerResetStateAction
   | PreferencesControllerSetAccountsReferralApprovedAction
   | PreferencesControllerSetPasswordForgottenAction
   | PreferencesControllerToggleExternalServicesAction
@@ -592,6 +670,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerChangePasswordAction
   | SeedlessOnboardingControllerCheckIsPasswordOutdatedAction
+  | SeedlessOnboardingControllerClearStateAction
   | SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction
   | SeedlessOnboardingControllerFetchAllSecretDataAction
   | SeedlessOnboardingControllerGetSecretDataBackupStateAction
@@ -605,24 +684,46 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | SelectedNetworkControllerGetNetworkClientIdForDomainAction
+  | GetSignatureState
+  | ShieldControllerClearStateAction
   | ShieldControllerStartAction
   | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapControllerClearStateAction
   | SnapInterfaceControllerDeleteInterfaceAction
+  | SubscriptionControllerClearStateAction
   | SubscriptionControllerGetStateAction
+  | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
   | GetTokenListState
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
   | TokensControllerGetStateAction
+  | TransactionControllerAddTransactionAction
+  | TransactionControllerAddTransactionBatchAction
   | TransactionControllerClearUnapprovedTransactionsAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateEditableParamsAction
-  | TransactionControllerWipeTransactionsAction;
+  | TransactionControllerUpdateSecurityAlertResponseAction
+  | TransactionControllerWipeTransactionsAction
+  | UsePPOMAction
+  | UserOperationControllerAddUserOperationFromTransactionAction
+  | UserOperationControllerStartPollingByNetworkClientIdAction;
+
+/**
+ * The events that the {@link LegacyBackgroundApiService} can subscribe to.
+ *
+ * Consumed by the shared transaction-add pipeline to await the pending
+ * transaction or signature request while running PPOM security validation.
+ */
+type AllowedEvents =
+  | NetworkEnablementControllerStateChangeEvent
+  | TransactionControllerUnapprovedTransactionAddedEvent
+  | SignatureStateChange;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
@@ -630,7 +731,7 @@ type AllowedActions =
 export type LegacyBackgroundApiServiceMessenger = Messenger<
   typeof serviceName,
   LegacyBackgroundApiServiceActions | AllowedActions,
-  never
+  AllowedEvents
 >;
 
 /**
@@ -639,7 +740,6 @@ export type LegacyBackgroundApiServiceMessenger = Messenger<
 type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
   infuraProjectId: string;
-  seedlessOperationMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   getPermittedAccounts: (origin: string) => Promise<string[]>;
@@ -704,7 +804,6 @@ export class LegacyBackgroundApiService {
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
-   * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
   constructor({
@@ -718,7 +817,6 @@ export class LegacyBackgroundApiService {
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
-    seedlessOperationMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
@@ -733,11 +831,7 @@ export class LegacyBackgroundApiService {
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
-    // Temporarily get the mutex from `MetamaskController` until
-    // changePasswordWithPasskeyVerification is migrated here (the only remaining
-    // MetamaskController user of this mutex).
-    // TODO: Remove this injection once that migration is complete.
-    this.#seedlessOperationMutex = seedlessOperationMutex;
+    this.#seedlessOperationMutex = new Mutex();
     this.#createVaultMutex = new Mutex();
     this.#offscreenPromise = offscreenPromise;
 
@@ -1022,6 +1116,177 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Adds a transaction to the TransactionController (or a user operation for
+   * smart accounts) after running security validation, without waiting for the
+   * transaction to be published.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @returns The transaction metadata.
+   */
+  async addTransaction(
+    transactionParams: TransactionParams,
+    transactionOptions?: Partial<AddTransactionOptions>,
+  ): Promise<TransactionMeta> {
+    return addTransactionToPipeline(
+      this.#buildAddTransactionRequest(
+        transactionParams,
+        transactionOptions,
+        false,
+      ),
+    );
+  }
+
+  /**
+   * Adds a transaction to the TransactionController (or a user operation for
+   * smart accounts) after running security validation, waiting for the
+   * transaction to be published and returning the final transaction metadata.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @returns The final transaction metadata.
+   */
+  async addTransactionAndWaitForPublish(
+    transactionParams: TransactionParams,
+    transactionOptions?: Partial<AddTransactionOptions>,
+  ): Promise<TransactionMeta> {
+    return addTransactionToPipeline(
+      this.#buildAddTransactionRequest(
+        transactionParams,
+        transactionOptions,
+        true,
+      ),
+    );
+  }
+
+  /**
+   * Builds the request consumed by the shared transaction-add pipeline from the
+   * messenger, mirroring the former `MetamaskController.getAddTransactionRequest`.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @param waitForSubmit - Whether to wait for the transaction to be published.
+   * @returns The transaction-add request.
+   */
+  #buildAddTransactionRequest(
+    transactionParams: TransactionParams,
+    transactionOptions: Partial<AddTransactionOptions> | undefined,
+    waitForSubmit: boolean,
+  ): AddTransactionRequest {
+    const networkClientId = transactionOptions?.networkClientId;
+    const { chainId } = this.#messenger.call(
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
+      networkClientId as string,
+    ) as NetworkConfiguration;
+
+    return {
+      messenger: this.#messenger,
+      internalAccounts: this.#messenger.call('AccountsController:listAccounts'),
+      selectedAccount: this.#messenger.call(
+        'AccountsController:getAccountByAddress',
+        transactionParams.from,
+      ) as InternalAccount,
+      networkClientId: networkClientId as string,
+      chainId,
+      transactionParams,
+      transactionOptions: { ...transactionOptions, isInternal: true },
+      securityAlertsEnabled: this.#messenger.call(
+        'PreferencesController:getState',
+      ).securityAlertsEnabled,
+      waitForSubmit,
+    };
+  }
+
+  /**
+   * Adds a network and (optionally) sets it as the active network.
+   *
+   * @param networkConfiguration - The network configuration to add.
+   * @param options - Options for post-add behavior.
+   * @param options.setActive - Whether to switch to the added network.
+   * @returns The added network configuration.
+   */
+  async addNetwork(
+    networkConfiguration: AddNetworkFields,
+    { setActive = true } = {},
+  ): Promise<NetworkConfiguration> {
+    if (setActive) {
+      const addedNetwork = this.#messenger.call(
+        'NetworkController:addNetwork',
+        networkConfiguration,
+      );
+      const { networkClientId } =
+        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+        {};
+      await this.#messenger.call(
+        'NetworkController:setActiveNetwork',
+        networkClientId,
+      );
+      return addedNetwork;
+    }
+
+    const { enabledNetworkMap } = this.#messenger.call(
+      'NetworkEnablementController:getState',
+    );
+    const previousEnabledNetworkMap = Object.fromEntries(
+      Object.entries(enabledNetworkMap).map(([namespace, networks]) => [
+        namespace,
+        { ...networks },
+      ]),
+    ) as NetworkEnablementControllerState['enabledNetworkMap'];
+
+    const addedNetwork = this.#messenger.call(
+      'NetworkController:addNetwork',
+      networkConfiguration,
+    );
+    await this.lookupSelectedNetworks();
+
+    // The NetworkEnablementController enables the newly added network
+    // asynchronously (its `onAddNetwork` handler awaits a SLIP-44 lookup before
+    // updating state), which switches the active network filter. Wait for that
+    // enablement to land, then restore the previous map.
+    //
+    // The restore runs here in the linear flow rather than from a
+    // `NetworkEnablementController:stateChange` subscriber on purpose: calling
+    // the `restoreEnabledNetworkMap` action synchronously from inside the
+    // subscriber re-enters the messenger's publish and the restore update is
+    // dropped. Awaiting first defers the restore to a microtask outside that
+    // publish.
+    await this.#waitForNetworkToBeEnabled(networkConfiguration.chainId);
+    this.#messenger.call(
+      'NetworkEnablementController:restoreEnabledNetworkMap',
+      previousEnabledNetworkMap,
+    );
+
+    return addedNetwork;
+  }
+
+  /**
+   * Resolves once the given network is enabled in the
+   * NetworkEnablementController. `NetworkEnablementController.onAddNetwork`
+   * always enables a newly added network, so this is guaranteed to resolve.
+   *
+   * @param chainId - The chain ID of the newly added network.
+   */
+  async #waitForNetworkToBeEnabled(chainId: Hex): Promise<void> {
+    if (
+      this.#messenger.call(
+        'NetworkEnablementController:isNetworkEnabled',
+        chainId,
+      )
+    ) {
+      return;
+    }
+
+    await this.#messenger.waitUntil('NetworkEnablementController:stateChange', {
+      condition: () =>
+        this.#messenger.call(
+          'NetworkEnablementController:isNetworkEnabled',
+          chainId,
+        ),
+    });
+  }
+
+  /**
    * Verifies the validity of the current vault's seed phrase.
    *
    * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -1140,6 +1405,48 @@ export class LegacyBackgroundApiService {
     }
 
     await this.lookupSelectedNetworks();
+  }
+
+  /**
+   * Resets the wallet to a clean state, clearing sensitive controller state and
+   * signing the user out.
+   *
+   * @param restoreOnly - When `true`, onboarding state is preserved (used by the
+   * restore-vault flow); when `false`, onboarding is also reset and the wallet
+   * reset progress flag is set.
+   */
+  async resetWallet(restoreOnly = false): Promise<void> {
+    // sign out from Authentication service and clear the Session Data
+    this.#messenger.call('AuthenticationController:performSignOut');
+
+    // clear SeedlessOnboardingController state
+    this.#messenger.call('SeedlessOnboardingController:clearState');
+
+    // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
+    this.#messenger.call('PasskeyController:clearState');
+
+    // stop subscription polling
+    this.#messenger.call('SubscriptionController:stopAllPolling');
+
+    // clear States
+    this.#messenger.call('SubscriptionController:clearState');
+    this.#messenger.call('ShieldController:clearState');
+    this.#messenger.call('ClaimsController:clearState');
+
+    // clear contacts (address book)
+    this.#messenger.call('AddressBookController:clear');
+
+    // reset preferences to defaults
+    this.#messenger.call('PreferencesController:resetState');
+
+    if (!restoreOnly) {
+      // reset onboarding state
+      this.#messenger.call('OnboardingController:resetOnboarding');
+      this.#messenger.call(
+        'AppStateController:setIsWalletResetInProgress',
+        true,
+      );
+    }
   }
 
   /**
@@ -2135,6 +2442,27 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Exports and JSON-encodes a seed phrase after passkey verification.
+   *
+   * @param params - Passkey seed export parameters.
+   * @param params.authenticationResponse - WebAuthn authentication response.
+   * @param params.keyringId - Optional HD keyring id.
+   * @returns UTF-8 seed phrase bytes as a JSON-safe number array.
+   */
+  async exportSeedPhraseWithPasskey(params: {
+    authenticationResponse: PasskeyAuthenticationResponse;
+    keyringId?: string;
+  }): Promise<number[]> {
+    const mnemonic = await this.#messenger.call(
+      'PasskeyController:exportSeedPhraseWithPasskey',
+      params.authenticationResponse,
+      params.keyringId,
+    );
+
+    return Array.from(convertEnglishWordlistIndicesToCodepoints(mnemonic));
+  }
+
+  /**
    * Unlocks the vault with a passkey, then runs the post-unlock account
    * initialization sequence.
    *
@@ -2766,7 +3094,7 @@ export class LegacyBackgroundApiService {
       state.remoteFeatureFlags ?? {},
       getManifestFlags().remoteFeatureFlags ?? {},
     );
-    return getBooleanFeatureFlag(merged[ENABLE_DMK_FEATURE_FLAG], false)
+    return isDmkFeatureEnabled(merged)
       ? LedgerHandlerMode.DMK
       : LedgerHandlerMode.Legacy;
   }
@@ -4305,6 +4633,25 @@ export class LegacyBackgroundApiService {
 
     if (hasPendingApproval) {
       return;
+    }
+
+    // If the partner requires a specific chain and user's chain doesn't match,
+    // return early to avoid the referral code potentially not being applied.
+    // Don't write any account status so that the prompt can show on the next
+    // trigger (NewConnection or OnNavigateConnectedTab) once the user has switched chain
+    if (partner.requiredChainId) {
+      const networkClientId = this.#messenger.call(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        partner.origin,
+      );
+      const networkConfig = this.#messenger.call(
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        networkClientId,
+      );
+      const currentChainId = networkConfig?.chainId;
+      if (currentChainId !== partner.requiredChainId) {
+        return;
+      }
     }
 
     const { activePermittedAddressOverride } = options;

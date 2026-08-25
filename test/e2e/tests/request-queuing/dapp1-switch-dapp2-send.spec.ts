@@ -1,22 +1,22 @@
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import {
-  DAPP_HOST_ADDRESS,
   DAPP_ONE_URL,
   DAPP_URL,
+  DEFAULT_FIXTURE_ACCOUNT,
   DEFAULT_FIXTURE_ACCOUNT_ID,
+  SECOND_NODE_NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } from '../../constants';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
-import { confirmConnectAndUpdateSiteNetworks } from '../../page-objects/flows/connect.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
-import { PAGES } from '../../webdriver/driver';
 
 const EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
   aggregators: [],
@@ -48,7 +48,14 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
               'eip155:1000/slip44:60': EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
             },
           })
-          .withSelectedNetworkControllerPerDomain()
+          // Seed Dapp One's connection to chain 1338 only
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1338] })
+          .withSelectedNetworkController({
+            domains: {
+              [DAPP_URL]: SECOND_NODE_NETWORK_CLIENT_ID,
+              [DAPP_ONE_URL]: SECOND_NODE_NETWORK_CLIENT_ID,
+            },
+          })
           .build(),
         localNodeOptions: [
           {
@@ -79,22 +86,20 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
 
-        // Connect to dapp
-        await testDapp.clickConnectAccountButton();
+        // Dapp One is seeded with a connection to Localhost 8546
+        // (chain 1338) only, so no live connect is needed
+        await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
 
-        await confirmConnectAndUpdateSiteNetworks(driver, DAPP_HOST_ADDRESS, [
-          {
-            networkName: 'Localhost 8545',
-            shouldBeSelected: false,
-          },
-        ]);
-
-        await driver.navigate(PAGES.HOME);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // Network Selector
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectNetworkByName('Localhost 8546');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByName('Localhost 8546');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -180,7 +185,15 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
               '0x53a': true,
             },
           })
-          .withSelectedNetworkControllerPerDomain()
+          // Seed Dapp One's connection to chain 1338 only, since network
+          // permissions can no longer be edited from the wallet UI.
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1338] })
+          .withSelectedNetworkController({
+            domains: {
+              [DAPP_URL]: SECOND_NODE_NETWORK_CLIENT_ID,
+              [DAPP_ONE_URL]: SECOND_NODE_NETWORK_CLIENT_ID,
+            },
+          })
           .build(),
         localNodeOptions: [
           {
@@ -211,22 +224,20 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
 
-        // Connect to dapp
-        await testDapp.clickConnectAccountButton();
+        // Dapp One is seeded with a connection to Localhost 8546
+        // (chain 1338) only, so no live connect is needed
+        await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
 
-        await confirmConnectAndUpdateSiteNetworks(driver, DAPP_HOST_ADDRESS, [
-          {
-            networkName: 'Localhost 8545',
-            shouldBeSelected: false,
-          },
-        ]);
-
-        await driver.navigate(PAGES.HOME);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // Network Selector
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectNetworkByName('Localhost 8546');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByName('Localhost 8546');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two

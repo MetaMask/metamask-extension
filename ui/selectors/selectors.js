@@ -1,4 +1,3 @@
-import { toUnicode } from 'punycode/punycode.js';
 import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -203,7 +202,7 @@ import {
 import { getApprovalRequestsByType } from './approvals';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 import { getIsSocialLoginFlow } from './first-time-flow';
-import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
+import { getInternalAccounts } from './accounts';
 
 const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
@@ -265,10 +264,6 @@ export function getCustomNonceValue(state) {
 
 export function getNextSuggestedNonce(state) {
   return Number(state.appState.nextNonce);
-}
-
-export function getShowPermittedNetworkToastOpen(state) {
-  return state.appState.showPermittedNetworkToastOpen;
 }
 
 /**
@@ -798,7 +793,9 @@ export const getCrossChainMetaMaskCachedBalances = createSelector(
  * @returns {object} An object of tokens with balances for the given account. Data relationship will be chainId => balance
  */
 function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
-  const { accountsByChainId } = state.metamask;
+  // AccountTrackerController no longer holds balances once AssetsController owns
+  // them, so read through the selector that falls back to unified assets state.
+  const accountsByChainId = getAccountTrackerControllerAccountsByChainId(state);
   const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
   const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
@@ -1178,21 +1175,6 @@ export const getCompleteAddressBook = createShallowResultSelector(
       )
       .flat(),
 );
-
-export function getEnsResolutionByAddress(state, address) {
-  if (state.metamask.ensResolutionsByAddress[address]) {
-    const ensResolution = state.metamask.ensResolutionsByAddress[address];
-    // ensResolution is a punycode encoded string hence toUnicode is used to decode it from same package
-    const normalizedEnsResolution = toUnicode(ensResolution);
-    return normalizedEnsResolution;
-  }
-
-  const entry =
-    getAddressBookEntry(state, address) ||
-    getInternalAccountByAddress(state, address);
-
-  return entry?.name || '';
-}
 
 export function getAddressBookEntry(state, address) {
   const addressBook = getCompleteAddressBook(state);
@@ -3013,6 +2995,16 @@ export function getPasskeyDerivationMethod(state) {
 }
 
 /**
+ * Passkey authenticator AAGUID from the enrolled credential.
+ *
+ * @param {object} state - Redux state
+ * @returns {string | undefined}
+ */
+export function getPasskeyAuthenticatorId(state) {
+  return state.metamask?.passkeyRecord?.credential?.aaguid;
+}
+
+/**
  * True when the enrolled passkey's AAGUID is in the sidepanel-incompatible set
  * (defer passkey flows to a normal browser tab when also in sidepanel).
  *
@@ -4040,14 +4032,6 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
 );
 
 /**
- * @param {MetaMaskReduxState} state - The Redux state
- * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
- */
-export function getNetworkConnectionBanner(state) {
-  return state.metamask.networkConnectionBanner;
-}
-
-/**
  * Check if the device is offline.
  *
  * @param {MetaMaskReduxState} state - The Redux state
@@ -4070,18 +4054,20 @@ export function getPendingRedirectRoute(state) {
 /**
  * Get the last visited Perps route and the timestamp it was recorded.
  *
+ * Keyed on the primitive fields, not on `lastVisitedRoute`: state pushes replace
+ * nested objects, and a fresh reference per push re-runs the dispatching effect
+ * in `useLastVisitedPerpsRoute` on every render.
+ *
  * @param {MetaMaskReduxState} state - The Redux state
  * @returns {{ path: string, timestamp: number } | null} The last visited Perps route, or null if none.
  */
-export function getLastVisitedPerpsRoute(state) {
-  const lastVisitedRoute = state.metamask?.lastVisitedRoute;
-  return lastVisitedRoute?.name === 'perps'
-    ? {
-        path: lastVisitedRoute.path,
-        timestamp: lastVisitedRoute.timestamp,
-      }
-    : null;
-}
+export const getLastVisitedPerpsRoute = createSelector(
+  (state) => state.metamask?.lastVisitedRoute?.name,
+  (state) => state.metamask?.lastVisitedRoute?.path,
+  (state) => state.metamask?.lastVisitedRoute?.timestamp,
+  (name, path, timestamp) =>
+    name === 'perps' && path !== undefined ? { path, timestamp } : null,
+);
 
 /**
  * Retrieves the deferred deep link from the MetaMask state.
@@ -4102,7 +4088,7 @@ export function getDeferredDeepLink(state) {
 export const getDeferredDeepLinkParameters = createResultEqualSelector(
   getDeferredDeepLink,
   (deferredDeepLink) => {
-    if (!deferredDeepLink) {
+    if (!deferredDeepLink?.referringLink) {
       return null;
     }
 

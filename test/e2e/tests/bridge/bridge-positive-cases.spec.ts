@@ -7,8 +7,9 @@ import {
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import NetworkManager from '../../page-objects/pages/network-manager';
-import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
+import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
 import BottomNavBar from '../../page-objects/pages/bottom-nav-bar-page';
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
@@ -140,7 +141,8 @@ describe('Bridge tests', function (this: Suite) {
       }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
-        const networkManager = new NetworkManager(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
@@ -165,9 +167,10 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         // check if the Linea network is selected
-        await networkManager.openNetworkManager();
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await driver.delay(veryLargeDelayMs);
-        await networkManager.checkAllPopularNetworksIsSelected();
+        await selectNetworkModal.checkAllPopularNetworksIsSelected();
       },
     );
   });
@@ -373,7 +376,8 @@ describe('Bridge tests', function (this: Suite) {
       }),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
-        const networkManager = new NetworkManager(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
 
         const bottomNav = new BottomNavBar(driver);
         await bottomNav.checkPageIsLoaded();
@@ -399,10 +403,11 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         // check if the Linea network is selected
-        await networkManager.openNetworkManager();
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await driver.delay(veryLargeDelayMs);
 
-        await networkManager.checkAllPopularNetworksIsSelected();
+        await selectNetworkModal.checkAllPopularNetworksIsSelected();
       },
     );
   });

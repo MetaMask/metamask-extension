@@ -45,7 +45,13 @@ export type BridgeState = {
   isSlippageUserOverride: boolean;
   txAlert: TxAlert | null;
   txAlertStatus: RequestStatus;
+  /**
+   * @deprecated - use the new URLSearchParams(search).get('field') === 'src' instead
+   */
   isSrcAssetPickerOpen: boolean;
+  /**
+   * @deprecated - use the new URLSearchParams(search).get('field') === 'dest' instead
+   */
   isDestAssetPickerOpen: boolean;
 };
 
