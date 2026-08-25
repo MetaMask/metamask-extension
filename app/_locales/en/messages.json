@@ -9418,10 +9418,10 @@
     "message": "Malicious"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "$1 is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+    "message": "Security partners flag $1 as high risk."
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "This token is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+    "message": "Security partners flag this token as high risk."
   },
   "securityTrustMaliciousTokenSheetDescription": {
     "message": "Security partners flag $1 as high risk."
@@ -9457,10 +9457,10 @@
     "message": "Risky"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 is flagged as suspicious. Take a look at the risks before you continue."
+    "message": "$1 has limited history or risk signals."
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "This token is flagged as suspicious. Take a look at the risks before you continue."
+    "message": "This token has limited history or risk signals."
   },
   "securityTrustRiskyTokenTitle": {
     "message": "Suspicious token"
@@ -9472,13 +9472,13 @@
     "message": "No risk signals detected. Always research any asset before trading."
   },
   "securityTrustSubtitleMalicious": {
-    "message": "Serious risk signals detected. We recommend avoiding this asset."
+    "message": "Security partners flag this token as high risk."
   },
   "securityTrustSubtitleNoIssues": {
     "message": "No risk signals detected. Always research any asset before trading."
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "Cautionary signals detected. Review the flagged issues carefully before trading this asset."
+    "message": "This token has limited history or risk signals."
   },
   "securityTrustSubtitleUnavailable": {
     "message": "Security analysis could not be loaded for this token."
