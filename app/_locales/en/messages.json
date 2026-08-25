@@ -3560,6 +3560,10 @@
     "message": "This will disconnect all your accounts from $1. You'll need to reconnect to use this dapp again.",
     "description": "$1 is the site hostname"
   },
+  "disconnectSiteSuccess": {
+    "message": "Successfully disconnected from $1.",
+    "description": "$1 is the site hostname"
+  },
   "disconnectThisAccount": {
     "message": "Disconnect this account"
   },
