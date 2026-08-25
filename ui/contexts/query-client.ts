@@ -8,7 +8,9 @@ import {
   subscribeToMessengerEvent,
 } from '../store/background-connection';
 
-type DataServiceHandler = (payload: DataServiceGranularCacheUpdatedPayload) => void;
+type DataServiceHandler = (
+  payload: DataServiceGranularCacheUpdatedPayload,
+) => void;
 
 const subscriptions = new Map();
 
