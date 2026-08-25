@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.45.0]
+
+### Added
+
+- Added a maximum deposit limit for MetaMask Pay deposit flows based on remote feature flags (#45139)
+- Added 0G network icon and currency symbol (#45153)
+- Added trust signal pills to Dapp connection screen and updated trust signal modal (#45490)
+- Added a details view for Perps orders, trades, and funding payments, and fixed activity list items that opened the wrong screen or did nothing when clicked (#44738)
+- Added an order book layout setting to pin the order book to the left or right of the order entry screen (#45430)
+- Added currency formatting to search results (#45353)
+- Added the network and token logos for Gravity Mainnet (L1) (#45436)
+- Added a fiat/token denomination toggle for source amounts in the swap and bridge flow (#45147)
+- Added support for Somnia (#45089)
+- Added value-based network ordering for eligible Unified Swaps users (#45308)
+- Added status toasts for ramp buy and sell orders (#45186)
+- Migrated to QuoteResponse V2 (phase 1) (#44202)
+- Added ramp buy and sell orders to Activity with order details (#45185)
+- Added a Money Account balance service (#45371)
+- Added the total result count to search (#45298)
+
+### Changed
+
+- Updated `@metamask/eth-json-rpc-middleware` to `^24.0.0` which adds strict validation for `eth_sendTransaction`/`eth_signTransaction` params to prevent malformed requests from bypassing PPOM security scans (#45273)
+- Improved Secret Recovery Phrase backup screen styling and automatically showed confirmation after selecting the quiz words (#45480)
+- Updated the logos for Ape Chain (#45441)
+- Bumped `@metamask/assets-controller` from `^13.1.1` to `^13.1.2` (#45382)
+- Updated edit accounts page UI for dapp connection management and disconnection modal UI (#45363)
+- Updated the mUSD convert CTA to say "Get mUSD" and removed the convert section from the mUSD asset page (#45292)
+- Updated the dapp connection screen to the latest design (#45407)
+- Updated Money Account utilities and configuration (#45295)
+- Reduced logging storage use (#45486)
+
+### Removed
+
+- Removed the permitted network toast shown on dapp connection network switch (#45442)
+- Removed the Permissions tab from Dapp Connection screen (#45197)
+
+### Fixed
+
+- Fixed QR code not being fully scannable in popup mode (#45384)
+- Fixed the swap price impact display and updated related controllers (#45476)
+- Fixed the missing swap no-price banner when price impact is unavailable (#45426)
+- Fixed Ledger reconnect repair showing “Device not detected” when blind signing was disabled instead of prompting to enable blind signing (#45433)
+- Fixed Tabs so keyboard users can switch tabs with arrow keys, Home, and End (#45383)
+- Fixed the swap source amount becoming undefined or uncontrolled after switching tokens (#45469)
+- Fixed institutional wallet onboarding issues by upgrading to snap version 2.0.0 (#45299)
+- Fixed the connection screen to pre-select all enabled networks for MetaMask Connect (EIP-1193 compatible) connection requests, matching the behavior of injected provider connections (#45261)
+- Fixed an issue that prevented importing longer Secret Recovery Phrases when their first 12 words formed a valid phrase (#45391)
+- Fixed gas estimation failing on networks whose RPC nodes reject hex values with leading zeros (such as `0x00`) (#45289)
+- Fixed POL detection on token pages (#45311)
+- Fixed layout jump when pasting a Secret Recovery Phrase during import (#45290)
+- Fixed a bug where the Buy token selection loading spinner could prevent users from navigating back if the token list never loaded (#45318)
+- Fixed component mount state handling to prevent ref issues in StrictMode (#45285)
+
 ## [13.44.0]
 
 ### Added
@@ -2953,7 +3007,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.44.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.45.0...HEAD
+[13.45.0]: https://github.com/MetaMask/metamask-extension/compare/v13.44.0...v13.45.0
 [13.44.0]: https://github.com/MetaMask/metamask-extension/compare/v13.43.0...v13.44.0
 [13.43.0]: https://github.com/MetaMask/metamask-extension/compare/v13.42.0...v13.43.0
 [13.42.0]: https://github.com/MetaMask/metamask-extension/compare/v13.41.0...v13.42.0
