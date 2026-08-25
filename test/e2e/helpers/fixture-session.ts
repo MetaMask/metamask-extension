@@ -12,17 +12,52 @@ type FixtureSessionContext = Parameters<WithFixturesTestSuite>[0] & {
 };
 
 /**
- * Options accepted by the shared fixture-session runner.
+ * Options accepted by the default (plain `withFixtures`) runner. Wrappers
+ * with richer option shapes (e.g. `withTronFixtures`, whose `testSpecificMock`
+ * takes a second `context` argument and whose `fixtures` is optional) pass
+ * their own `TRunnerOptions` to `configureFixtureSession` instead of this
+ * default.
  */
-type FixtureSessionOptions = WithFixturesOptions & {
+type BaseFixtureSessionRunnerOptions = WithFixturesOptions & {
   fixtures: unknown;
-  resetAfterEach?: boolean;
   testSpecificMock?: (mockServer: Mockttp) => unknown | Promise<unknown>;
 };
 
-export type FixtureSessionAccessors = {
+/**
+ * Fixture runner used to start the shared session. Generic so wrappers with
+ * richer option/context shapes (e.g. `withTronFixtures`) can be plugged in
+ * via `runFixtures` without casting: `TRunnerOptions` is whatever options the
+ * runner itself expects, and `TRunnerContext` is the context it hands to the
+ * test suite callback.
+ */
+export type FixtureSessionRunner<
+  TRunnerOptions extends object = BaseFixtureSessionRunnerOptions,
+  TRunnerContext extends { driver: Driver } = FixtureSessionContext,
+> = (
+  options: TRunnerOptions,
+  testSuite: (context: TRunnerContext) => Promise<void> | void,
+) => Promise<void>;
+
+export type FixtureSessionOptions<
+  TRunnerOptions extends object = BaseFixtureSessionRunnerOptions,
+  TRunnerContext extends { driver: Driver } = FixtureSessionContext,
+> = TRunnerOptions & {
+  // When true, skip the remaining tests in the suite after the first test
+  // failure (fail-fast). Defaults to false.
+  failFast?: boolean;
+  // When false, the between-test afterEach neither closes auxiliary windows
+  // nor navigates to about:blank. Defaults to true (current behavior).
+  navigateAfterEach?: boolean;
+  resetAfterEach?: boolean;
+  // Fixture runner that starts the shared session. Defaults to `withFixtures`.
+  runFixtures?: FixtureSessionRunner<TRunnerOptions, TRunnerContext>;
+};
+
+export type FixtureSessionAccessors<
+  TRunnerContext extends { driver: Driver } = FixtureSessionContext,
+> = {
   getDriver: () => Driver;
-  getFixtures: () => FixtureSessionContext;
+  getFixtures: () => TRunnerContext;
 };
 
 const OFFSCREEN_PAGE_PATH = '/offscreen.html';
@@ -201,25 +236,30 @@ async function resetSharedFixtureSession(fixtureContext: {
  * across all tests in the suite to reduce repeated E2E setup cost.
  *
  * @param suiteTitle - The Mocha suite title for the shared-session tests.
- * @param fixtureOptions - The `withFixtures` options used to start the shared
- * session, plus the `resetAfterEach` behavior flag.
+ * @param fixtureOptions - The fixture-runner options used to start the shared
+ * session, plus the session behavior flags (`resetAfterEach`, `failFast`,
+ * `navigateAfterEach`, `runFixtures`).
  * @param defineSuite - Callback that defines the suite's tests and hooks using
  * the shared driver and fixture accessors.
  */
-export function configureFixtureSession(
+export function configureFixtureSession<
+  TRunnerOptions extends object = BaseFixtureSessionRunnerOptions,
+  TRunnerContext extends { driver: Driver } = FixtureSessionContext,
+>(
   suiteTitle: string,
-  fixtureOptions: FixtureSessionOptions,
-  defineSuite: (accessors: FixtureSessionAccessors) => void,
+  fixtureOptions: FixtureSessionOptions<TRunnerOptions, TRunnerContext>,
+  defineSuite: (accessors: FixtureSessionAccessors<TRunnerContext>) => void,
 ): void {
   const sharedSuite = describe(suiteTitle, function () {
-    const fixtureSetup = createDeferredPromise<FixtureSessionContext>();
+    const fixtureSetup = createDeferredPromise<TRunnerContext>();
     const suiteFinished = createDeferredPromise<void>();
 
+    let firstTestFailureError: Error | undefined;
     let fixturePromise: Promise<void> | undefined;
-    let fixtures: FixtureSessionContext | undefined;
+    let fixtures: TRunnerContext | undefined;
     let sessionPoisonedError: Error | undefined;
 
-    const getFixtures = (): FixtureSessionContext => {
+    const getFixtures = (): TRunnerContext => {
       if (!fixtures) {
         throw new Error(
           'Fixture session is not ready yet; call getDriver()/getFixtures() only inside test or hook bodies after the shared fixture session `before` hook has run.',
@@ -234,16 +274,28 @@ export function configureFixtureSession(
     };
 
     before('Set up shared fixture session', async function () {
-      const { resetAfterEach: _resetAfterEach, ...withFixturesOptions } =
-        fixtureOptions;
+      const {
+        failFast: _failFast,
+        navigateAfterEach: _navigateAfterEach,
+        resetAfterEach: _resetAfterEach,
+        // The default runner only matches `TRunnerOptions`/`TRunnerContext`
+        // when the caller uses the default type parameters (plain
+        // `withFixtures`); callers that pass their own `TRunnerOptions` (e.g.
+        // Tron's `withTronFixtures`) always supply their own `runFixtures`.
+        runFixtures = withFixtures as unknown as FixtureSessionRunner<
+          TRunnerOptions,
+          TRunnerContext
+        >,
+        ...withFixturesOptions
+      } = fixtureOptions;
       const { title } = withFixturesOptions as { title?: string };
       const options = {
         ...withFixturesOptions,
         title: title ?? suiteTitle,
-      };
+      } as TRunnerOptions;
 
-      fixturePromise = withFixtures(options, async (fixtureContext) => {
-        fixtures = fixtureContext as FixtureSessionContext;
+      fixturePromise = runFixtures(options, async (fixtureContext) => {
+        fixtures = fixtureContext;
         fixtureSetup.resolve(fixtures);
         await suiteFinished.promise;
       });
@@ -261,6 +313,10 @@ export function configureFixtureSession(
           `Shared fixture session is no longer reusable because reset failed: ${sessionPoisonedError.message}`,
         );
       }
+
+      if ((fixtureOptions.failFast ?? false) && firstTestFailureError) {
+        this.skip();
+      }
     });
 
     defineSuite({ getDriver, getFixtures });
@@ -270,7 +326,19 @@ export function configureFixtureSession(
     afterEach(
       'Reset shared fixture session state between tests',
       async function () {
+        if (this.currentTest?.state === 'failed' && !firstTestFailureError) {
+          firstTestFailureError =
+            this.currentTest.err ??
+            new Error(`Test failed: ${this.currentTest.fullTitle()}`);
+        }
+
         if (sessionPoisonedError) {
+          return;
+        }
+
+        const resetAfterEach = fixtureOptions.resetAfterEach ?? true;
+        const navigateAfterEach = fixtureOptions.navigateAfterEach ?? true;
+        if (!resetAfterEach && !navigateAfterEach) {
           return;
         }
 
@@ -279,15 +347,17 @@ export function configureFixtureSession(
           const { driver } = fixtureContext;
 
           if (
-            (fixtureOptions.resetAfterEach ?? true) &&
+            resetAfterEach &&
             this.currentTest &&
             shouldResetSharedFixtureSession(sharedSuite, this.currentTest)
           ) {
             await resetSharedFixtureSession(fixtureContext);
           }
 
-          await closeAuxiliaryWindows(driver);
-          await driver.openNewURL('about:blank');
+          if (navigateAfterEach) {
+            await closeAuxiliaryWindows(driver);
+            await driver.openNewURL('about:blank');
+          }
         } catch (error) {
           sessionPoisonedError =
             error instanceof Error ? error : new Error(String(error));
