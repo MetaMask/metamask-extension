@@ -67,11 +67,16 @@ export class StellarNode {
       throw new Error('Stellar local node has already started');
     }
 
+    const startTotalMs = Date.now();
     try {
       await assertDockerAvailable();
       const horizonPort = await resolveHorizonPort(options.horizonPort);
       const containerName = `stellar-e2e-${process.pid}-${Date.now()}`;
       const image = options.image ?? STELLAR_QUICKSTART_IMAGE;
+      const imageCached = await isDockerImagePresent(image);
+      logStellarTiming(
+        `image ${image} cached=${imageCached} (uncached docker run includes pull)`,
+      );
       const dockerArgs = [
         'run',
         '-d',
@@ -85,14 +90,19 @@ export class StellarNode {
       }
       dockerArgs.push(image, '--local');
 
+      const dockerRunMs = Date.now();
       await execFileAsync('docker', dockerArgs, {
         timeout: DOCKER_RUN_TIMEOUT_MS,
         maxBuffer: 10 * 1024 * 1024,
       });
+      logStellarTiming(`docker run: ${elapsedSeconds(dockerRunMs)}`);
 
       this.#containerName = containerName;
       this.#horizonPort = horizonPort;
+      const readyMs = Date.now();
       await this.waitForReady();
+      logStellarTiming(`waitForReady: ${elapsedSeconds(readyMs)}`);
+      logStellarTiming(`start total: ${elapsedSeconds(startTotalMs)}`);
     } catch (error) {
       await this.quit();
       throw error;
@@ -103,6 +113,7 @@ export class StellarNode {
     address: string,
     timeoutMs = DEFAULT_FUND_TIMEOUT_MS,
   ): Promise<StellarHorizonAccount> {
+    const fundMs = Date.now();
     const deadline = Date.now() + timeoutMs;
     let lastError: unknown;
 
@@ -119,6 +130,9 @@ export class StellarNode {
         } else {
           const account = await this.getAccount(address);
           if (account) {
+            logStellarTiming(
+              `fundAccount ${address}: ${elapsedSeconds(fundMs)}`,
+            );
             return account;
           }
           lastError = new Error(
@@ -131,6 +145,9 @@ export class StellarNode {
       await wait(POLL_INTERVAL_MS);
     }
 
+    logStellarTiming(
+      `fundAccount ${address} FAILED after ${elapsedSeconds(fundMs)}`,
+    );
     throw new Error(
       `Failed to fund Stellar account ${address} within ${timeoutMs}ms${formatUnknownError(
         lastError,
@@ -209,6 +226,7 @@ export class StellarNode {
       return;
     }
 
+    const quitMs = Date.now();
     try {
       await execFileAsync('docker', ['rm', '-f', containerName], {
         timeout: 30_000,
@@ -216,6 +234,7 @@ export class StellarNode {
     } catch {
       // Container may already have been removed.
     }
+    logStellarTiming(`docker rm: ${elapsedSeconds(quitMs)}`);
   }
 
   async #detectRpcPath(): Promise<(typeof RPC_PATHS)[number] | undefined> {
@@ -305,6 +324,25 @@ export async function isDockerAvailable(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+async function isDockerImagePresent(image: string): Promise<boolean> {
+  try {
+    await execFileAsync('docker', ['image', 'inspect', image], {
+      timeout: 10_000,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function elapsedSeconds(startedAtMs: number): string {
+  return `${((Date.now() - startedAtMs) / 1000).toFixed(2)}s`;
+}
+
+function logStellarTiming(message: string): void {
+  console.log(`[stellar-node] ${message}`);
 }
 
 /**

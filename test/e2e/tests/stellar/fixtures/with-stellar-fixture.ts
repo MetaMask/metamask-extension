@@ -22,20 +22,19 @@ export type WithStellarFixtureOptions = Omit<
   'localNodeOptions'
 > & {
   accounts?: string[];
+  /** Suite-owned Quickstart node started in Mocha `before`, stopped in `after`. */
+  stellarNode: StellarNode;
 };
 
 /**
- * Starts `stellar/quickstart --local` in Docker via `withFixtures`, funds the
- * given accounts with Friendbot, and proxies Infura Horizon/RPC to that node.
+ * Runs a Stellar E2E against a suite-owned `stellar/quickstart` container.
  *
- * The wallet stays on built-in Stellar (`stellar:pubnet`). No custom network
- * or localhost RPC is added — the snap still calls Infura, and mockttp
- * forwards those requests to Quickstart.
+ * Docker start/stop is the spec's job (`before` / `after`). This helper only
+ * Friendbot-funds the given accounts, then boots the wallet with Infura
+ * Horizon/RPC proxied to that node. Client-service mocks (flags, tokens,
+ * prices) stay in place — those are not the chain.
  *
- * Tokens API, price, and feature-flag mocks stay in place — those are client
- * services, not the chain.
- *
- * @param options - Fixture options plus optional Friendbot accounts
+ * @param options - Fixture options plus the running node and Friendbot accounts
  * @param testSuite - Test body
  */
 export async function withStellarFixture(
@@ -46,16 +45,18 @@ export async function withStellarFixture(
     accounts = [DEFAULT_STELLAR_ADDRESS],
     fixtures = buildDefaultStellarFixtures(),
     manifestFlags,
+    stellarNode,
     testSpecificMock,
     ...withFixtureOptions
   } = options;
 
-  let capturedLocalNodes: unknown[] = [];
-
+  const fixtureMs = Date.now();
   await withFixtures(
     {
       ...withFixtureOptions,
       fixtures,
+      // Node is already running; do not start Anvil or another Quickstart.
+      localNodeOptions: [{ type: 'none' }],
       manifestFlags: {
         ...STELLAR_MANIFEST_FLAGS,
         ...manifestFlags,
@@ -64,27 +65,48 @@ export async function withStellarFixture(
           ...manifestFlags?.remoteFeatureFlags,
         },
       },
-      localNodeOptions: [{ type: 'stellar' }],
-      afterLocalNodesStart: async (context: { localNodes: unknown[] }) => {
-        capturedLocalNodes = context.localNodes;
-        const stellarNode = requireStellarNode(context.localNodes);
+      afterLocalNodesStart: async () => {
+        const fundMs = Date.now();
         for (const address of accounts) {
           await stellarNode.fundAccount(address);
         }
+        console.log(
+          `[stellar-fixture] friendbot ${accounts.length} account(s): ${elapsedSeconds(fundMs)}`,
+        );
       },
       testSpecificMock: async (mockServer: Mockttp) => {
         const customEndpoints = (await testSpecificMock?.(mockServer)) ?? [];
         return [
           ...customEndpoints,
-          ...(await mockStellarLocalNodeClientApis(
-            mockServer,
-            requireStellarNode(capturedLocalNodes),
-          )),
+          ...(await mockStellarLocalNodeClientApis(mockServer, stellarNode)),
         ];
       },
     },
     testSuite,
   );
+  console.log(
+    `[stellar-fixture] withFixtures total: ${elapsedSeconds(fixtureMs)} (fund + browser + test body; docker start excluded)`,
+  );
+}
+
+/**
+ * Narrows the suite-owned node after Mocha `before`. Throws if `before`
+ * skipped or failed to start.
+ *
+ * @param stellarNode - Node assigned in `before`, or undefined
+ * @returns Started {@link StellarNode}
+ */
+export function requireSuiteStellarNode(
+  stellarNode: StellarNode | undefined,
+): StellarNode {
+  if (!stellarNode) {
+    throw new Error('Stellar local node was not started in before()');
+  }
+  return stellarNode;
+}
+
+function elapsedSeconds(startedAtMs: number): string {
+  return `${((Date.now() - startedAtMs) / 1000).toFixed(2)}s`;
 }
 
 function buildDefaultStellarFixtures() {
@@ -115,14 +137,4 @@ async function mockStellarLocalNodeClientApis(
     await mockStellarSpotPrices(mockServer),
     ...(await proxyStellarBlockchainCalls(mockServer, stellarNode)),
   ];
-}
-
-function requireStellarNode(localNodes: unknown[]): StellarNode {
-  const stellarNode = localNodes.find(
-    (node): node is StellarNode => node instanceof StellarNode,
-  );
-  if (!stellarNode) {
-    throw new Error('Stellar local node was not started');
-  }
-  return stellarNode;
 }

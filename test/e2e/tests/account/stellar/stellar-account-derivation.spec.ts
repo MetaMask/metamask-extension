@@ -1,67 +1,26 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { EXPECTED_STELLAR_ADDRESSES_BY_INDEX } from '../../constants';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { withFixtures } from '../../helpers';
-import { login } from '../../page-objects/flows/login.flow';
-import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
-import { waitUntilAccountTreeSyncIdle } from '../../page-objects/flows/stellar-account-derivation.flow';
-import { selectStellarNetwork } from '../../page-objects/flows/stellar-network.flow';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HomePage from '../../page-objects/pages/home/homepage';
-import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import { Driver } from '../../webdriver/driver';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../../helpers';
+import { login } from '../../../page-objects/flows/login.flow';
+import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
+import {
+  assertStellarAddressesForAccounts,
+  waitUntilAccountTreeSyncIdle,
+} from '../../../page-objects/flows/stellar-account-derivation.flow';
+import { selectStellarNetwork } from '../../../page-objects/flows/stellar-network.flow';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import { Driver } from '../../../webdriver/driver';
 import {
   STELLAR_BIP44_FLAGS,
   STELLAR_MANIFEST_FLAGS,
   mockStellarAccountDerivationMocks,
   mockStellarAccountDiscoveryMocks,
-} from './mocks/common-stellar';
+} from '../../stellar/mocks/common-stellar';
 
-const STELLAR_NETWORK_NAME = 'Stellar';
 const TOTAL_HD_ACCOUNTS = 4;
 const DISCOVERED_ACCOUNTS = 5;
-
-async function assertStellarAddressesForAccounts(
-  driver: Driver,
-  total: number,
-  options: { absentAccountLabel?: string } = {},
-): Promise<void> {
-  const homepage = new HomePage(driver);
-  const accountList = new AccountListPage(driver);
-  const addressList = new AddressListModal(driver);
-
-  await homepage.headerNavbar.openAccountMenu();
-  await accountList.checkPageIsLoaded();
-  await accountList.waitUntilSyncingIsCompleted();
-
-  for (let index = 0; index < total; index += 1) {
-    const accountLabel = `Account ${index + 1}`;
-    const expected = EXPECTED_STELLAR_ADDRESSES_BY_INDEX[index];
-
-    await accountList.openMultichainAccountMenu({ accountLabel });
-    await accountList.clickMultichainAccountMenuItem('Addresses');
-    await addressList.checkPageIsLoaded();
-    await addressList.checkNetworkAddressIsDisplayedForNetwork({
-      networkName: STELLAR_NETWORK_NAME,
-      networkAddress: shortenAddress(expected),
-    });
-    await addressList.clickCopyButtonForNetworkAndAssertClipboard({
-      networkName: STELLAR_NETWORK_NAME,
-      expectedAddress: expected,
-    });
-    await addressList.goBack();
-  }
-
-  if (options.absentAccountLabel) {
-    await accountList.checkMultichainAccountNameNotDisplayed(
-      options.absentAccountLabel,
-    );
-  }
-
-  await accountList.closeMultichainAccountsPage();
-}
 
 /**
  * Stellar HD address derivation E2E.
@@ -72,8 +31,7 @@ async function assertStellarAddressesForAccounts(
  *
  * Coverage map:
  * - incremental add 1-N: add Accounts 2-N, then assert Addresses for all
- * - Account discovery 1-5: Soroban RPC-activated accounts (getLedgerEntries), no
- *   manual add — automatic discovery; Account 6 absent
+ * - Account discovery 1-5: Soroban RPC-activated accounts (getLedgerEntries), no manual add — automatic discovery; Account 6 absent
  */
 describe('Stellar account derivation', function (this: Suite) {
   this.timeout(360_000);
