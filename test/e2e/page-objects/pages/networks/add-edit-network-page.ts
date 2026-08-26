@@ -53,6 +53,10 @@ class AddEditNetworkPage {
     testId: 'network-form-network-name',
   };
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-add-edit-network-page',
+  };
+
   private readonly rpcDropDownButton = '[data-testid="test-add-rpc-drop-down"]';
 
   private readonly saveButton = {
@@ -112,6 +116,7 @@ class AddEditNetworkPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.networkNameInputField,
         this.rpcDropDownButton,
       ]);

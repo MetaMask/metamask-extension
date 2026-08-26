@@ -77,6 +77,16 @@ const NETWORKS_PAGE_VIEW_DEPTH: Record<string, number> = {
   'select-rpc': 2,
 };
 
+const NETWORKS_PAGE_TEST_ID_BY_VIEW: Record<string, string | undefined> = {
+  '': 'parent-selector-networks-page',
+  add: 'parent-selector-add-edit-network-page',
+  edit: 'parent-selector-add-edit-network-page',
+  'add-rpc': 'parent-selector-add-edit-rpc-url-page',
+  'edit-rpc': 'parent-selector-add-edit-rpc-url-page',
+  'add-explorer-url': 'parent-selector-add-edit-block-explorer-page',
+  'edit-explorer-url': 'parent-selector-add-edit-block-explorer-page',
+};
+
 const NetworksPageFormHeader = ({
   title,
   onBack,
@@ -426,7 +436,10 @@ export const NetworksPage = () => {
   }, [dispatch, navigate, runCloseTransition, searchParams]);
 
   return (
-    <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
+    <Box
+      className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default"
+      data-testid={NETWORKS_PAGE_TEST_ID_BY_VIEW[view]}
+    >
       {view === '' ? (
         <>
           <PageHeaderWithSearch

@@ -387,7 +387,12 @@ const AssetListControlBar = ({
   }
 
   return (
-    <Box className="asset-list-control-bar" marginLeft={4} marginRight={4}>
+    <Box
+      className="asset-list-control-bar"
+      marginLeft={4}
+      marginRight={4}
+      data-testid="parent-selector-network-filter"
+    >
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <ButtonBase
           data-testid="sort-by-networks"

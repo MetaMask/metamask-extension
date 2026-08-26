@@ -237,11 +237,11 @@ export const NetworkSelectionModal = ({
       onClose={onClose}
       isClosedOnOutsideClick
       isClosedOnEscapeKey
-      data-testid={dataTestId}
     >
       <ModalOverlay />
       {isOpen ? (
         <ModalContent
+          data-testid={dataTestId}
           size={ModalContentSize.Sm}
           modalDialogProps={{
             padding: 0,
@@ -636,6 +636,7 @@ const HomeNetworkFilterModalContent = ({
 
   return (
     <NetworkSelectionModal
+      data-testid="parent-selector-select-network-modal"
       isOpen
       onClose={handleClose}
       title={t('bridgeSelectNetwork')}

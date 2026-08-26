@@ -45,6 +45,10 @@ class AddEditRpcUrlPage {
     tag: 'p',
   };
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-add-edit-rpc-url-page',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -80,6 +84,7 @@ class AddEditRpcUrlPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.addRpcUrlInput,
         this.addRpcUrlButton,
       ]);
