@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import {
   AvatarIcon,
   AvatarIconSeverity,
+  IconColor,
   IconName,
 } from '@metamask/design-system-react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
@@ -16,7 +17,6 @@ import {
   FontWeight,
   JustifyContent,
   TextVariant,
-  IconColor,
   Display,
   BorderRadius,
   BlockSize,
@@ -208,11 +208,11 @@ export default function SnapUpdate({
             <Box className="snap-update__scroll-button-area">
               {isScrollable && !hasScrolledToBottom && !showAllPermissions ? (
                 <AvatarIcon
-                  className="snap-install__scroll-button"
+                  className="snap-install__scroll-button bg-info-default"
                   data-testid="snap-update-scroll"
                   iconName={IconName.Arrow2Down}
                   severity={AvatarIconSeverity.Info}
-                  iconProps={{ color: IconColor.primaryInverse }}
+                  iconProps={{ color: IconColor.PrimaryInverse }}
                   onClick={scrollToBottom}
                   style={{ cursor: 'pointer' }}
                 />

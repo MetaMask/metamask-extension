@@ -210,7 +210,7 @@ export default function SnapInstall({
             <Box className="snap-install__scroll-button-area">
               {isScrollable && !hasScrolledToBottom && !showAllPermissions ? (
                 <AvatarIcon
-                  className="snap-install__scroll-button"
+                  className="snap-install__scroll-button bg-info-default"
                   data-testid="snap-install-scroll"
                   iconName={IconName.Arrow2Down}
                   severity={AvatarIconSeverity.Info}
