@@ -232,7 +232,9 @@ describe('Send Ink native max', function () {
           driver,
           mockedEndpoint,
         );
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickScrollToBottomButton();
+        await transactionConfirmation.clickFooterConfirmButton();
+        await homePage.checkPageIsLoaded();
 
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
