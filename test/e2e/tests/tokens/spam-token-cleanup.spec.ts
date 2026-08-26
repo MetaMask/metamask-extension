@@ -299,8 +299,12 @@ describe('Spam token cleanup', function (this: Suite) {
         }
         for (const { assetId, name } of [LEGITIMATE_ASSET, CUSTOM_ASSET]) {
           assert.ok(
-            assetsInfo.includes(assetId) && assetsBalance.includes(assetId),
-            `Expected ${name} to be kept in state`,
+            assetsInfo.includes(assetId),
+            `Expected ${name} to be kept in assetsInfo`,
+          );
+          assert.ok(
+            assetsBalance.includes(assetId),
+            `Expected ${name} to be kept in assetsBalance`,
           );
         }
       },
