@@ -192,7 +192,7 @@ export default function Home() {
     lastVisitedPerpsRoute,
     pendingRedirectRoute,
     envType,
-    setRedirectAfterDefaultPage: setRedirectAfterDefaultPageAction,
+    navigate,
     clearLastVisitedPerpsRoute,
   });
 
