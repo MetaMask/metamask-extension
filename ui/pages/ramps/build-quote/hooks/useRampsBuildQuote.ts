@@ -324,7 +324,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     currencySymbol,
     amount,
     amountTextClassName: `text-[56px] font-normal leading-none ${
-      displayedQuoteError ? 'text-error-default' : 'text-default'
+      (continueError ?? displayedError)
+        ? 'text-error-default'
+        : 'text-default'
     }`,
     paymentMethodLabel,
     showPaymentMethodSpinner:
