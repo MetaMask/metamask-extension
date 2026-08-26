@@ -1,0 +1,7 @@
+{
+  "name": "@metamask/dummy-sentry",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts"
+}
