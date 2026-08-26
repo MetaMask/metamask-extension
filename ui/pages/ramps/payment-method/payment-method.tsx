@@ -21,12 +21,14 @@ import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
+import { useFormatters } from '../../../hooks/useFormatters';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import RampsListSkeleton from '../components/ramps-list-skeleton';
 import {
   RampsSelectionCenteredMessage,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
+import { getProviderLimitMessage } from '../utils/getProviderLimitMessage';
 import RampsChangeProviderFooter from './components/ramps-change-provider-footer';
 import RampsPaymentMethodListItem from './components/ramps-payment-method-list-item';
 import {
@@ -64,6 +66,7 @@ export function RampsPaymentMethodScreen() {
   const fiatCurrency = userRegion?.country?.currency ?? 'USD';
   const regionCode = userRegion?.regionCode ?? '';
   const formatFiat = useFiatFormatter({ overrideCurrency: fiatCurrency });
+  const { formatCurrency } = useFormatters();
   useRampsScreenViewed('Payment Method');
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
@@ -212,7 +215,19 @@ export function RampsPaymentMethodScreen() {
             const hasQuoteError =
               !quotesLoading && quotes !== null && matchedQuote === null;
             const quoteErrorMessage = hasQuoteError
-              ? t('rampsQuoteUnavailable')
+              ? (getProviderLimitMessage({
+                  provider: selectedProvider,
+                  fiatCurrency,
+                  paymentMethodId: paymentMethod.id,
+                  amount,
+                  currency: fiatCurrency,
+                  formatCurrency,
+                  t,
+                  backendError: quotes?.error?.find(
+                    (error) =>
+                      error.provider === selectedProvider?.id && error.error,
+                  )?.error,
+                }) ?? t('rampsQuoteUnavailable'))
               : undefined;
 
             return (
