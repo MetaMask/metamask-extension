@@ -94,7 +94,9 @@ export default class DeepLink {
   }
 
   async getSkipDeepLinkInterstitialCheckBoxState(): Promise<boolean> {
-    const skipCheckbox = await this.driver.findElement(this.checkbox);
+    const skipCheckbox = await this.driver.findElement(
+      '#dont-remind-me-checkbox',
+    );
     return await skipCheckbox.isSelected();
   }
 
