@@ -5989,16 +5989,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/authenticated-user-storage@npm:^3.0.0, @metamask/authenticated-user-storage@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "@metamask/authenticated-user-storage@npm:3.0.1"
+"@metamask/authenticated-user-storage@npm:^3.0.1, @metamask/authenticated-user-storage@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@metamask/authenticated-user-storage@npm:3.0.2"
   dependencies:
-    "@metamask/base-data-service": "npm:^0.1.3"
+    "@metamask/base-data-service": "npm:^1.0.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/e5aa35932cde6564b362a1b05d0706b241f5474c4ede386be6290d69e99370e6dbac6a575535d2269305c1d48029b27b26724ad2509150223e6eeeaf91e07231
+  checksum: 10/b368bce476e7d56af7b0bb321c4885bc1f4a60a9bee3a97234aa37fdae016cf072eee5eb010ef7c272b90c41574e0e661503bb4519738facbc4adbd781ffc967
   languageName: node
   linkType: hard
 
@@ -6033,19 +6033,6 @@ __metadata:
     "@metamask/utils": "npm:^11.9.0"
     immer: "npm:^9.0.6"
   checksum: 10/752b70b35026fdf31ea8feef638f06286dbbde8d17e1ba804085fdbedbb076d900d2d7b6db3d2af284b3aa8fa84c95a0ceea6a3a46ee7b7e29433f037e9afc69
-  languageName: node
-  linkType: hard
-
-"@metamask/base-data-service@npm:^0.1.3":
-  version: 0.1.3
-  resolution: "@metamask/base-data-service@npm:0.1.3"
-  dependencies:
-    "@metamask/controller-utils": "npm:^12.1.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/utils": "npm:^11.9.0"
-    "@tanstack/query-core": "npm:^4.43.0"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/f5a714b4d6954cef1ab203c164d2e549937ecd185104a2cc0eef2954a7a150b0c35608671df281fc71574022204823b633c486efac0e98d6018a1a111a2edaf0
   languageName: node
   linkType: hard
 
@@ -6183,20 +6170,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/claims-controller@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/claims-controller@npm:0.6.0"
+"@metamask/claims-controller@npm:^0.6.0, @metamask/claims-controller@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "@metamask/claims-controller@npm:0.6.1"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/base-data-service": "npm:^0.1.3"
+    "@metamask/base-data-service": "npm:^1.0.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/keyring-controller": "npm:^27.1.1"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/profile-sync-controller": "npm:^29.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
-    "@tanstack/query-core": "npm:^4.43.0"
-  checksum: 10/a722287b05d0f195fca372b1709d5f7396f0125795038356ba1ebd1598bf32029b0e09f5db4644e563ebc6e69feca1d71b66e33057979e063b8e212a2146e9d5
+    "@tanstack/query-core": "npm:^5.62.16"
+  checksum: 10/590f72b519191612d1c824611c12bc1d54476cd334e007bb9aff97ac020b7cbb9548bab71c08266a973ae385ae4eaa1f809bd75a8d4a4a85b63c87d817f3807b
   languageName: node
   linkType: hard
 
@@ -7576,7 +7563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-api-data-service@npm:^0.4.0, @metamask/money-account-api-data-service@npm:^0.4.1":
+"@metamask/money-account-api-data-service@npm:^0.4.1":
   version: 0.4.1
   resolution: "@metamask/money-account-api-data-service@npm:0.4.1"
   dependencies:
@@ -7590,22 +7577,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-balance-service@npm:2.4.0":
-  version: 2.4.0
-  resolution: "@metamask/money-account-balance-service@npm:2.4.0"
+"@metamask/money-account-balance-service@npm:^2.4.3":
+  version: 2.4.3
+  resolution: "@metamask/money-account-balance-service@npm:2.4.3"
   dependencies:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-data-service": "npm:^0.1.3"
+    "@metamask/base-data-service": "npm:^1.0.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/money-account-api-data-service": "npm:^0.4.0"
-    "@metamask/network-controller": "npm:^34.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
-    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/money-account-api-data-service": "npm:^0.4.1"
+    "@metamask/network-controller": "npm:^36.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^6.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/064ebd057c871b3ee861d901efdca9eaea7e52aa5681c8d539913cfbb2e474651f85ece5c7afcc873f4c681e02152eba8e29e1eba1a7356e4cc99c2b47781bac
+  checksum: 10/2c46287ae2097be0772218efa120c2a352df070207c891d4c8e4bd30b7bd1eb8907a8c71f5af931e8cf0e439b468066ca41f1e6cef29587a95c51ec9619bcca1
   languageName: node
   linkType: hard
 
@@ -8395,17 +8382,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/sentinel-api-service@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/sentinel-api-service@npm:1.0.0"
+"@metamask/sentinel-api-service@npm:^1.0.0, @metamask/sentinel-api-service@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/sentinel-api-service@npm:1.0.1"
   dependencies:
-    "@metamask/base-data-service": "npm:^0.1.3"
+    "@metamask/base-data-service": "npm:^1.0.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
-    "@tanstack/query-core": "npm:^4.43.0"
-  checksum: 10/4c56a05eb998705be78469dcda737805a059bee144e01a8f225db83045b8b3048c9382526294b3a6d2f084ff3db4b17dbfba3bda8ca085a7689b8554ee520f7e
+    "@tanstack/query-core": "npm:^5.62.16"
+  checksum: 10/c4dc093a97cedc5b1fc61a0e6bd34695ffe3cc35132bf920698218de4a89fab79606d646529830df8a80ec9ab197d4a415d1bade91ba2122c52a254f6810535a
   languageName: node
   linkType: hard
 
@@ -15726,13 +15713,6 @@ __metadata:
   version: 5.101.4
   resolution: "@tanstack/query-core@npm:5.101.4"
   checksum: 10/df86031035ac9a5cf54efece85718b90e93fca62068a44a176da232b6dd49b27168840f2da18c64a0eb25d171bc3fb1aab417db4643025cd194ff887833bd73f
-  languageName: node
-  linkType: hard
-
-"@tanstack/query-core@npm:^4.43.0":
-  version: 4.43.0
-  resolution: "@tanstack/query-core@npm:4.43.0"
-  checksum: 10/c2a5a151c7adaea8311e01a643255f31946ae3164a71567ba80048242821ae14043f13f5516b695baebe5ea7e4b2cf717fd60908a929d18a5c5125fee925ff67
   languageName: node
   linkType: hard
 
@@ -33295,7 +33275,7 @@ __metadata:
     "@metamask/approval-controller": "npm:^9.0.0"
     "@metamask/assets-controller": "npm:^13.1.3"
     "@metamask/assets-controllers": "npm:^111.1.2"
-    "@metamask/authenticated-user-storage": "npm:^3.0.0"
+    "@metamask/authenticated-user-storage": "npm:^3.0.2"
     "@metamask/auto-changelog": "npm:^6.2.0"
     "@metamask/base-controller": "npm:^9.0.1"
     "@metamask/base-data-service": "npm:^1.0.0"
@@ -33307,7 +33287,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.8.1"
     "@metamask/chain-agnostic-permission": "npm:^1.6.2"
-    "@metamask/claims-controller": "npm:^0.6.0"
+    "@metamask/claims-controller": "npm:^0.6.1"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.5.0"
     "@metamask/client-utils": "npm:^2.0.2"
@@ -33374,7 +33354,7 @@ __metadata:
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
     "@metamask/money-account-api-data-service": "npm:^0.4.1"
-    "@metamask/money-account-balance-service": "npm:2.4.0"
+    "@metamask/money-account-balance-service": "npm:^2.4.3"
     "@metamask/money-account-controller": "npm:^0.3.3"
     "@metamask/money-account-utils": "npm:^1.1.0"
     "@metamask/multichain-account-service": "npm:^13.0.1"
@@ -33413,7 +33393,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^10.1.1"
     "@metamask/selected-network-controller": "npm:^26.1.4"
-    "@metamask/sentinel-api-service": "npm:^1.0.0"
+    "@metamask/sentinel-api-service": "npm:^1.0.1"
     "@metamask/shield-controller": "npm:^6.0.1"
     "@metamask/signature-controller": "npm:^39.2.6"
     "@metamask/skills": "npm:^0.1.0"
