@@ -8,6 +8,7 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
@@ -26,6 +27,51 @@ const REDEEM_DELEGATIONS_SELECTOR = '0xcef6d209';
 export const isSignatureTransactionType = (request?: Record<string, unknown>) =>
   request &&
   SIGNATURE_TRANSACTION_TYPES.includes(request.type as TransactionType);
+
+const MONEY_ACCOUNT_TRANSACTION_TYPES = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
+] as const;
+
+/**
+ * Resolves the money-account type of a transaction, including batches.
+ *
+ * Money-account deposits and withdrawals are created via
+ * `addTransactionBatch`, so the top-level `type` is `batch` and the
+ * meaningful type sits on a nested transaction — and not necessarily the
+ * first one: deposits are `[approve, deposit]`, so `getTransactionType`
+ * would resolve them to `tokenMethodApprove`.
+ *
+ * @param transactionMeta - The transaction metadata to inspect.
+ * @returns The money-account type when present anywhere in the transaction,
+ * otherwise undefined.
+ */
+export function getMoneyAccountTransactionType(
+  transactionMeta: TransactionMeta | undefined,
+): TransactionType | undefined {
+  return MONEY_ACCOUNT_TRANSACTION_TYPES.find((transactionType) =>
+    hasTransactionType(transactionMeta, [transactionType]),
+  );
+}
+
+/**
+ * Resolves the type to route a confirmation by, accounting for money-account
+ * batches.
+ *
+ * Money-account batches carry their meaningful type on a nested transaction
+ * (the top-level `type` is `batch`), so prefer that type when present and
+ * fall back to the transaction's own type otherwise.
+ *
+ * @param transactionMeta - The transaction metadata to inspect.
+ * @returns The money-account type when present, otherwise the top-level type.
+ */
+export function getConfirmationTransactionType(
+  transactionMeta: TransactionMeta | undefined,
+): TransactionType | undefined {
+  return (
+    getMoneyAccountTransactionType(transactionMeta) ?? transactionMeta?.type
+  );
+}
 
 export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
   const { message, primaryType, types } = parseTypedDataMessage(dataToParse);

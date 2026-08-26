@@ -11,6 +11,8 @@ import {
 } from '../../../../test/data/confirmations/typed_sign';
 import { SignatureRequestType } from '../types/confirm';
 import {
+  getConfirmationTransactionType,
+  getMoneyAccountTransactionType,
   isOrderSignatureRequest,
   isPermitSignatureRequest,
   isProtectedByEnforcedSimulations,
@@ -35,6 +37,78 @@ describe('confirm util', () => {
       expect(() => {
         parseSanitizeTypedDataMessage('{}');
       }).toThrow();
+    });
+  });
+
+  describe('getMoneyAccountTransactionType', () => {
+    it('returns moneyAccountDeposit when it is a nested transaction of a batch', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.moneyAccountDeposit },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(getMoneyAccountTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountDeposit,
+      );
+    });
+
+    it('returns moneyAccountWithdraw when it is the top-level type', () => {
+      const transactionMeta = {
+        type: TransactionType.moneyAccountWithdraw,
+      } as TransactionMeta;
+
+      expect(getMoneyAccountTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountWithdraw,
+      );
+    });
+
+    it('returns undefined for unrelated batch transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.tokenMethodTransfer },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(getMoneyAccountTransactionType(transactionMeta)).toBeUndefined();
+    });
+
+    it('returns undefined when transactionMeta is undefined', () => {
+      expect(getMoneyAccountTransactionType(undefined)).toBeUndefined();
+    });
+  });
+
+  describe('getConfirmationTransactionType', () => {
+    it('returns the nested money-account type for batch transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.moneyAccountDeposit },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(getConfirmationTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountDeposit,
+      );
+    });
+
+    it('returns the top-level type when no money-account type is present', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+      } as TransactionMeta;
+
+      expect(getConfirmationTransactionType(transactionMeta)).toBe(
+        TransactionType.simpleSend,
+      );
+    });
+
+    it('returns undefined when the transaction is undefined', () => {
+      expect(getConfirmationTransactionType(undefined)).toBeUndefined();
     });
   });
 
