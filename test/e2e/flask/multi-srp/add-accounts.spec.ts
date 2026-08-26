@@ -8,7 +8,7 @@ import {
   verifyAccountBelongsToSrp,
 } from '../../page-objects/flows/multi-srp.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { mockActiveNetworks } from './common-multi-srp';
 
