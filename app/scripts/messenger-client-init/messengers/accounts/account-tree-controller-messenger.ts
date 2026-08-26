@@ -48,8 +48,13 @@ export function getAccountTreeControllerMessenger(
       'AuthenticationController:getSessionProfile',
       'MultichainAccountService:createMultichainAccountGroup',
       'MultichainAccountService:createMultichainAccountGroups',
+      'MultichainAccountService:createMultichainAccountWallet',
       'SnapController:getSnap',
       'KeyringController:getState',
+      'KeyringController:verifyPassword',
+      'KeyringController:withController',
+      'KeyringController:withKeyringV2',
+      'KeyringController:withKeyringV2Unsafe',
     ],
   });
   return accountTreeControllerMessenger;
