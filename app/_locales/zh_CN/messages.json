@@ -5635,10 +5635,6 @@
     "message": "仅保存您信任的地址。",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "已确定其为恶意。我们建议不要与此地址交互。",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "如果您知道此地址，则为其添加昵称，以便将来识别。",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5650,10 +5646,6 @@
   "nameInstructionsSaved": {
     "message": "您以前为此地址添加过昵称。您可以编辑或查看其他建议的昵称。",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "我们无法验证此地址。它可能是新地址或未经验证的地址。请设置个人显示名称以便后续识别。",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "昵称",
@@ -5682,10 +5674,6 @@
   "nameModalTitleVerified": {
     "message": "已验证地址",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "地址需要审核",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "由 $1 提议",

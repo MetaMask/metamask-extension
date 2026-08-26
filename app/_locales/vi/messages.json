@@ -5639,10 +5639,6 @@
     "message": "Chỉ lưu những địa chỉ mà bạn tin tưởng.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Địa chỉ này đã được xác định là độc hại. Chúng tôi khuyên bạn không nên tương tác với địa chỉ này.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Nếu bạn biết địa chỉ này, hãy đặt biệt danh để dễ nhận biết trong tương lai.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5654,10 +5650,6 @@
   "nameInstructionsSaved": {
     "message": "Trước đây bạn đã thêm biệt danh cho địa chỉ này rồi. Bạn có thể chỉnh sửa hoặc xem các biệt danh được đề xuất khác.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Chúng tôi không thể xác minh địa chỉ này. Có thể đây là địa chỉ mới hoặc chưa được xác minh. Hãy đặt tên hiển thị cá nhân để nhận dạng sau này.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Biệt danh",
@@ -5686,10 +5678,6 @@
   "nameModalTitleVerified": {
     "message": "Địa chỉ đã xác minh",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Cần xem xét địa chỉ",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Được đề xuất bởi $1",

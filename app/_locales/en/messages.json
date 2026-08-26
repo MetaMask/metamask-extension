@@ -5755,10 +5755,6 @@
     "message": "Only save addresses you trust.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Security partners have flagged this address for malicious activity.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5770,10 +5766,6 @@
   "nameInstructionsSaved": {
     "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Security partners don't have enough reliable history to verify this address.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Nickname",
@@ -5802,10 +5794,6 @@
   "nameModalTitleVerified": {
     "message": "Verified address",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Address needs review",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Proposed by $1",

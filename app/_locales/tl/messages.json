@@ -5635,10 +5635,6 @@
     "message": "I-save lamang ang mga address na pinagkakatiwalaan mo.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Natukoy ito bilang mapaminsala. Inirerekomenda namin na huwag makipag-ugnayan sa address na ito.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Kung alam mo ang address na ito, bigyan ito ng palayaw para makilala ito sa hinaharap.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5650,10 +5646,6 @@
   "nameInstructionsSaved": {
     "message": "Nagdagdag ka ng palayaw para sa address na ito noon. Maaari mong i-edit o tingnan ang iba pang mungkahing palayaw.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Hindi namin maberipika ang address na ito. Maaring ito ay bago o hindi pa nabeberipika. Magtakda ng personal na display name para makilala ito sa susunod.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Palayaw",
@@ -5682,10 +5674,6 @@
   "nameModalTitleVerified": {
     "message": "Na-verify na address",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Kailangang suriin ang address",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Minungkahi ng $1",

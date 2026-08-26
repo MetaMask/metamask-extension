@@ -5639,10 +5639,6 @@
     "message": "Yalnızca güvendiğiniz adresleri kaydedin.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Bu, kötü amaçlı olarak tanımlanmış. Bu adresle etkileşimde bulunulmamasını öneriyoruz.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Bu adresi biliyorsanız gelecekte tanıyabilmek için ona bir takma ad verin.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5654,10 +5650,6 @@
   "nameInstructionsSaved": {
     "message": "Daha önce bu adres için bir takma ad eklediniz. Bu takma adı düzenleyebilir veya önerilen diğer takma adları görüntüleyebilirsiniz.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Bu adresi doğrulayamıyoruz. Yeni veya doğrulanmamış olabilir. İleride bunu tanımlamak için kişisel bir görüntü adı belirleyin.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Takma Ad",
@@ -5686,10 +5678,6 @@
   "nameModalTitleVerified": {
     "message": "Doğrulanmış adres",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Adresin incelenmesi gerekiyor",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "$1 tarafından önerilir",

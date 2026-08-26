@@ -5635,10 +5635,6 @@
     "message": "Сохраняйте только те адреса, которым доверяете.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Этот адрес идентифицирован как вредоносный. Рекомендуем не взаимодействовать с ним.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Если вы знаете этот адрес, присвойте ему псевдоним, чтобы узнавать его в будущем.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5650,10 +5646,6 @@
   "nameInstructionsSaved": {
     "message": "Вы уже добавили псевдоним для этого адреса ранее. Вы можете редактировать или просматривать другие рекомендованные псевдонимы.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Нам не удалось проверить этот адрес. Он может быть новым или неподтверждённым. Задайте персональное отображаемое имя, чтобы в дальнейшем его можно было идентифицировать.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Ник",
@@ -5682,10 +5674,6 @@
   "nameModalTitleVerified": {
     "message": "Проверенный адрес",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Адрес требует проверки",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Предложено $1",
