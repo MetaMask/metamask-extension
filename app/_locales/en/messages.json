@@ -4373,6 +4373,10 @@
     "message": "Almost there! Confirm on your device again",
     "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
   },
+  "hardwareApprovalTokenAndSpender": {
+    "message": "Token: $1, Spender: $2",
+    "description": "Shows the token contract and the spender being granted approval for a hardware-wallet bridge approval signature. $1 is the shortened token address, $2 is the shortened spender address."
+  },
   "hardwareApproveAmount": {
     "message": "Approve $1 $2",
     "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
@@ -4412,6 +4416,18 @@
   "hardwareSpender": {
     "message": "Spender: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
+  },
+  "hardwareSwapAmount": {
+    "message": "Swap $1 $2 for $3 $4",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "Swapped $1 $2 for $3 $4",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "Swapping $1 $2 for $3 $4",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
   },
   "hardwareToAddress": {
     "message": "To: $1",
