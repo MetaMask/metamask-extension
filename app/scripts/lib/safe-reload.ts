@@ -12,8 +12,8 @@ import { OperationSafener } from './operation-safener';
 const RELOAD_AFTER_EVACUATE_MS = 150;
 
 type SafePersistOptions = {
-  /** Whether to persist pending split state without waiting for the debounce. */
-  immediate?: boolean;
+  /** Whether to flush pending split-state persistence without waiting for the debounce. */
+  flush?: boolean;
 };
 
 /**
@@ -68,7 +68,7 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
       if (
         didQueuePersist &&
         isSplitStorage &&
-        (stateOrOptions as SafePersistOptions | undefined)?.immediate
+        (stateOrOptions as SafePersistOptions | undefined)?.flush
       ) {
         await operationSafener.flush();
       }

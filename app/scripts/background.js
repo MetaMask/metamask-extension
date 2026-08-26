@@ -1345,7 +1345,7 @@ export function setupController(
       });
       // then persist it
       safePersist({
-        immediate: changedControllerKeys.includes('KeyringController'),
+        flush: changedControllerKeys.includes('KeyringController'),
       }).catch((error) => {
         log.error('Error persisting updated state:', error);
         sentry?.captureException(error);
@@ -1391,7 +1391,7 @@ export function setupController(
         }
         try {
           await safePersist({
-            immediate: controllerKey === 'KeyringController',
+            flush: controllerKey === 'KeyringController',
           });
         } catch (error) {
           log.error('Error persisting state change:', error);
