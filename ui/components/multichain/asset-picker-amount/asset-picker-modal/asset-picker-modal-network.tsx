@@ -186,7 +186,10 @@ export const AssetPickerModalNetwork = ({
       <ModalOverlay />
       <ModalContent
         className="p-0"
-        modalDialogProps={{ padding: 0, className: 'h-full' }}
+        modalDialogProps={{
+          padding: 0,
+          className: 'h-full overflow-hidden',
+        }}
       >
         <ModalHeader
           {...({
