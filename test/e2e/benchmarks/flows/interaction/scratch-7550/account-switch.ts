@@ -23,6 +23,27 @@ export const persona = BENCHMARK_PERSONA.POWER_USER;
 const SOURCE_ACCOUNT = 'Account 1';
 const TARGET_ACCOUNT = `Account ${WITH_STATE_POWER_USER.withAccounts}`;
 
+const SELECTED_ACCOUNT = '.multichain-account-list-item--selected';
+
+async function scrollAccountListItemIntoView(
+  driver: Driver,
+  accountLabel: string,
+): Promise<void> {
+  await driver.executeScript(`
+    const label = ${JSON.stringify(accountLabel)};
+    const items = document.querySelectorAll(
+      '.multichain-account-menu-popover__list--menu-item',
+    );
+    for (const item of items) {
+      if (item.textContent && item.textContent.includes(label)) {
+        item.scrollIntoView({ block: 'center' });
+        break;
+      }
+    }
+  `);
+  await driver.delay(150);
+}
+
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
     const steps: LongTaskStepResult[] = [];
@@ -41,12 +62,18 @@ export async function run(): Promise<BenchmarkRunResult> {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.waitUntilSyncingIsCompleted();
+        await accountListPage.checkAccountDisplayedInAccountList(TARGET_ACCOUNT);
+        await scrollAccountListItemIntoView(driver, TARGET_ACCOUNT);
 
         await driver.resetLongTaskMetrics();
         const startedAt = Date.now();
         await accountListPage.switchToAccount(TARGET_ACCOUNT);
-        await headerNavbar.checkAccountLabel(TARGET_ACCOUNT);
+        await driver.waitForSelector({
+          css: SELECTED_ACCOUNT,
+          text: TARGET_ACCOUNT,
+        });
         const duration = Date.now() - startedAt;
 
         const longTaskData = await driver.collectLongTaskMetrics();

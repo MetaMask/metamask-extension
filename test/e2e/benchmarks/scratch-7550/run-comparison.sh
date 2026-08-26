@@ -41,9 +41,16 @@ run_preset() {
     --out "$out_file"
 }
 
+APP_SOURCE_PATHS=(
+  app
+  ui
+  shared
+  types
+)
+
 checkout_app_at_sha() {
   local sha="$1"
-  git checkout "$sha" -- .
+  git checkout "$sha" -- "${APP_SOURCE_PATHS[@]}"
   restore_harness_files
 }
 
@@ -54,6 +61,7 @@ restore_full_tree() {
 build_and_run() {
   local label="$1"
   echo "=== Building test extension for ${label} ($(git rev-parse HEAD)) ==="
+  yarn webpack:tsc
   yarn build:test
   run_preset "$label"
 }

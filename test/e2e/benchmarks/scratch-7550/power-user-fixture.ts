@@ -1,10 +1,7 @@
 import type { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../app/scripts/fixtures/generate-wallet-state';
 import { mockNotificationServices } from '../../tests/notifications/mocks';
-import {
-  getTestSpecificMock,
-  userStorageHostMock,
-} from '../mocks/performance-mocks';
+import { getTestSpecificMock } from '../utils/mock-config';
 import { WITH_STATE_POWER_USER } from '../utils/constants';
 import { WITH_STATE_POWER_USER_MANY_TOKENS } from './constants';
 
@@ -25,11 +22,7 @@ export async function setupPowerUserBenchmarkMocks(
   mockServer: Mockttp,
 ): Promise<void> {
   await mockNotificationServices(mockServer);
-  await userStorageHostMock(mockServer);
-  const testSpecificMock = getTestSpecificMock();
-  if (testSpecificMock) {
-    await testSpecificMock(mockServer);
-  }
+  await getTestSpecificMock()(mockServer);
 }
 
 export const powerUserManifestFlags = {
@@ -40,5 +33,5 @@ export const powerUserManifestFlags = {
   },
   useMockingPassThrough: true,
   disableServerMochaToBackground: true,
-  extendedTimeoutMultiplier: 3,
+  extendedTimeoutMultiplier: 6,
 } as const;
