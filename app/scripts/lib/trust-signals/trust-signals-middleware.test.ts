@@ -776,9 +776,10 @@ describe('createTrustSignalsMiddleware', () => {
     });
 
     it('scans on chains outside any hardcoded allowlist', async () => {
-      // Chain support is delegated to the PhishingController, which resolves
-      // unsupported chains to an ErrorResult verdict — non-Trusted, so
-      // enforced simulations stay on. There must be no client-side gate.
+      // Scan path: no client-side chain gate. PhishingController still
+      // writes ErrorResult for unsupported chains. Display is fail-open in
+      // isEnforcedSimulationsEligible via isAddressScanSupportedChainId
+      // (#45732), so that ErrorResult must not turn Added protection on.
       scanAddressMockAndAddToCache.mockResolvedValue(
         MOCK_SCAN_RESPONSES.BENIGN,
       );
