@@ -1587,7 +1587,7 @@
     "message": "Address flagged as high risk"
   },
   "alertReasonAddressTrustSignalWarning": {
-    "message": "Limited or mixed address signals"
+    "message": "Limited address signals"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1st interaction"
@@ -9437,10 +9437,10 @@
     "message": "Risky"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 has limited history or risk signals."
+    "message": "Security partners found risk signals in $1's contract or trading activity."
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "This token has limited history or risk signals."
+    "message": "Security partners found risk signals in this token's contract or trading activity."
   },
   "securityTrustRiskyTokenTitle": {
     "message": "Suspicious token"
@@ -9458,7 +9458,7 @@
     "message": "No risk signals detected. Always research any asset before trading."
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "This token has limited history or risk signals."
+    "message": "Security partners found risk signals in this token's contract or trading activity."
   },
   "securityTrustSubtitleUnavailable": {
     "message": "Security analysis could not be loaded for this token."
@@ -9467,10 +9467,10 @@
     "message": "Suspicious"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "$1 has limited history or risk signals."
+    "message": "Security partners found risk signals in $1's contract or trading activity."
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "This token has limited history or risk signals."
+    "message": "Security partners found risk signals in this token's contract or trading activity."
   },
   "securityTrustTelegram": {
     "message": "Telegram"
