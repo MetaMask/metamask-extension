@@ -14,10 +14,10 @@ a[interestfor='mm-cashtag-popover'] {
   inset: auto;
   border: none;
   padding: 0;
-  width: max-content;
-  height: max-content;
+  width: 576px;
+  height: 503px;
   border-radius: 12px;
-  overflow: visible;
+  overflow: hidden;
   background: transparent;
   opacity: 0;
   transform: scale(0.92) translateY(8px);

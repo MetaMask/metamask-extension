@@ -43,15 +43,22 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
 
       <div className="min-h-0 flex-1 overflow-x-auto">
         <table className="w-full table-fixed border-collapse text-left">
+          <colgroup>
+            <col className="w-[140px]" />
+            <col />
+            <col />
+            {showLiquidity ? <col /> : null}
+            <col />
+          </colgroup>
           <thead>
             <tr className="text-s-body-sm font-medium text-alternative">
               <th className="pb-3 pl-6 pr-3 font-medium">Name</th>
-              <th className="pb-3 pr-3 text-right font-medium">Price</th>
-              <th className="pb-3 pr-3 text-right font-medium">Market cap</th>
+              <th className="pb-3 pr-3 text-end font-medium">Price</th>
+              <th className="pb-3 pr-3 text-end font-medium">Market cap</th>
               {showLiquidity ? (
-                <th className="pb-3 pr-3 text-right font-medium">Liquidity</th>
+                <th className="pb-3 pr-3 text-end font-medium">Liquidity</th>
               ) : null}
-              <th className="pb-3 pr-6 text-right font-medium">24h volume</th>
+              <th className="pb-3 pr-6 text-end font-medium">24h volume</th>
             </tr>
           </thead>
           <tbody>
@@ -71,18 +78,18 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
                       </span>
                     </div>
                   </td>
-                  <td className="py-3 pr-3 text-right tabular-nums">
+                  <td className="py-3 pr-3 text-end tabular-nums">
                     {asset.price === null ? '—' : formatUsd(asset.price)}
                   </td>
-                  <td className="py-3 pr-3 text-right tabular-nums">
+                  <td className="py-3 pr-3 text-end tabular-nums">
                     {formatCell(asset.marketCap)}
                   </td>
                   {showLiquidity ? (
-                    <td className="py-3 pr-3 text-right tabular-nums">
+                    <td className="py-3 pr-3 text-end tabular-nums">
                       {formatCell(asset.liquidity)}
                     </td>
                   ) : null}
-                  <td className="py-3 pr-6 text-right tabular-nums">
+                  <td className="py-3 pr-6 text-end tabular-nums">
                     {formatCell(asset.volume24h)}
                   </td>
                 </tr>

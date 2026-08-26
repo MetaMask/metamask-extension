@@ -55,7 +55,7 @@ export function TokenDetail({
       : null;
 
   return (
-    <div className="flex flex-col p-6">
+    <div className="flex flex-col h-full p-6">
       <header className="mb-7 flex items-center justify-between">
         <div className="flex min-w-0 items-center gap-4">
           <TokenAvatar asset={data} size="lg" />
