@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import type { QuoteResponse } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useAppSelector } from '../../../../store/store';
 
@@ -133,11 +133,11 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       : undefined,
   );
 
-  const { lockedQuote, fromToken, toToken } = useHwSwapQuoteData();
+  const { lockedQuote, fromToken } = useHwSwapQuoteData();
   const needsTwoConfirmations = isSendBundleFlow
     ? Boolean(sendBundleState?.needsTwoConfirmations)
     : Boolean(lockedQuote?.approval);
-  const fromAmount = lockedQuote?.sentAmount?.amount;
+  const fromAmount = lockedQuote?.quote.src?.normalizedAmount;
   const activeSigningRequestId =
     lockedQuote?.quote.requestId ?? sendBundleTxMeta?.id ?? '';
   const expectedSignTrackerTxIds = useMemo(() => {
@@ -232,7 +232,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
    * submission started).
    */
   const submitBridgeTransaction = useCallback(
-    async (quoteResponse: QuoteResponse & QuoteMetadata) => {
+    async (quoteResponse: QuoteResponse) => {
       const submissionGeneration = retryGenerationRef.current;
 
       try {
