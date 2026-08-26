@@ -546,7 +546,9 @@ describe('TokenManagementPage', () => {
 
   it('renders without crashing', () => {
     renderPage();
-    expect(screen.getByTestId('token-management-page')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('parent-selector-token-management-page'),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('token-management-header-back-button'),
     ).toBeInTheDocument();

@@ -936,14 +936,14 @@
     "description": "$1 is the token symbol"
   },
   "activity_receive_failed_description": {
-    "message": "From: $1",
+    "message": "From $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_failed_title": {
     "message": "Receive failed"
   },
   "activity_receive_pending_description": {
-    "message": "From: $1",
+    "message": "From $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
@@ -951,7 +951,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_receive_success_description": {
-    "message": "From: $1",
+    "message": "From $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
@@ -1002,14 +1002,14 @@
     "description": "$1 is the token symbol"
   },
   "activity_send_failed_description": {
-    "message": "To: $1",
+    "message": "To $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_failed_title": {
     "message": "Send failed"
   },
   "activity_send_pending_description": {
-    "message": "To: $1",
+    "message": "To $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
@@ -1017,7 +1017,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_send_success_description": {
-    "message": "To: $1",
+    "message": "To $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
@@ -2226,6 +2226,12 @@
   },
   "bridgeNoPriceInfoTitle": {
     "message": "No price information"
+  },
+  "bridgeOffHoursDescription": {
+    "message": "Market closed: Price is issuer-calculated, not live market data. It may differ when markets reopen at the next available trading session."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Off-hours trading"
   },
   "bridgePoints": {
     "message": "Est. points",
@@ -3436,6 +3442,9 @@
   "defiTabErrorTitle": {
     "message": "We could not load this page."
   },
+  "defiUnsupportedEmptyDescription": {
+    "message": "DeFi isn't supported on this network."
+  },
   "delete": {
     "message": "Delete"
   },
@@ -3558,6 +3567,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "This will disconnect all your accounts from $1. You'll need to reconnect to use this dapp again.",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "Successfully disconnected from $1.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -5376,8 +5389,47 @@
   "moneyActivity": {
     "message": "Activity"
   },
+  "moneyActivityConversionFailed": {
+    "message": "Conversion failed"
+  },
+  "moneyActivityConverted": {
+    "message": "Converted"
+  },
+  "moneyActivityConverting": {
+    "message": "Converting"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "Deposit failed"
+  },
+  "moneyActivityDeposited": {
+    "message": "Deposited"
+  },
+  "moneyActivityDepositing": {
+    "message": "Depositing"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "Your Money activity will appear here."
+  },
+  "moneyActivityReceived": {
+    "message": "Received"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "From: $1"
+  },
+  "moneyActivityReceiving": {
+    "message": "Receiving"
+  },
+  "moneyActivitySendFailed": {
+    "message": "Send failed"
+  },
+  "moneyActivitySending": {
+    "message": "Sending"
+  },
+  "moneyActivitySent": {
+    "message": "Sent"
+  },
+  "moneyActivityViewAll": {
+    "message": "View all"
   },
   "moneyAdd": {
     "message": "Add"
@@ -6043,6 +6095,9 @@
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
   },
+  "nftUnsupportedEmptyDescription": {
+    "message": "NFTs aren't supported on this network."
+  },
   "nftWarningContent": {
     "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer these NFTs from your wallet at any time without asking you until you revoke this approval. $2",
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
@@ -6633,7 +6688,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "Passkey not supported",
+    "message": "MetaMask can't use passkeys saved here. Try again and save it to a password manager.",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
