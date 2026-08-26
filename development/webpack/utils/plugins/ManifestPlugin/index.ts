@@ -109,6 +109,7 @@ export class ManifestPlugin<Z extends boolean> {
     'snow.prod',
     'use-snow',
     'bootstrap',
+    'cashtag-widget-frame',
     BACKGROUND_CLIENT_ENTRY_NAME,
   ]);
 

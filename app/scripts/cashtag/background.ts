@@ -35,15 +35,18 @@ function parsedUrl(value: string | undefined) {
   }
 }
 
-function isXContentScriptSender(sender: chrome.runtime.MessageSender) {
+function isXPageSender(sender: chrome.runtime.MessageSender) {
   const url = parsedUrl(sender.url);
   return (
     sender.id === chrome.runtime.id &&
-    sender.frameId === 0 &&
     url !== null &&
     (url.protocol === 'https:' || url.protocol === 'http:') &&
     xHosts.has(url.hostname)
   );
+}
+
+function isXContentScriptSender(sender: chrome.runtime.MessageSender) {
+  return sender.frameId === 0 && isXPageSender(sender);
 }
 
 function isWidgetFrameSender(sender: chrome.runtime.MessageSender) {
@@ -67,7 +70,7 @@ export function isAllowedCashtagSender(
   sender: chrome.runtime.MessageSender,
 ) {
   if (messageType === EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED) {
-    return isXContentScriptSender(sender);
+    return isXPageSender(sender);
   }
   if (messageType === EXTENSION_MESSAGES.GET_DATA) {
     return isXContentScriptSender(sender) || isWidgetFrameSender(sender);
@@ -88,10 +91,14 @@ async function broadcastTickerWidgetEnabled(enabled: boolean) {
       tabs.map((tab) =>
         typeof tab.id === 'number'
           ? browser.tabs
-              .sendMessage(tab.id, {
-                type: EXTENSION_MESSAGES.X_WIDGET_ENABLED_CHANGED,
-                body: { enabled },
-              })
+              .sendMessage(
+                tab.id,
+                {
+                  type: EXTENSION_MESSAGES.X_WIDGET_ENABLED_CHANGED,
+                  body: { enabled },
+                },
+                { frameId: 0 },
+              )
               .catch(() => undefined)
           : Promise.resolve(),
       ),
@@ -307,7 +314,10 @@ export function registerCashtagBackgroundBridge({
       if (message?.type === EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED) {
         return Promise.resolve({
           type: EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
-          body: { enabled: isTickerWidgetEnabled(getController()) },
+          body: {
+            enabled:
+              sender.frameId === 0 && isTickerWidgetEnabled(getController()),
+          },
         });
       }
 
@@ -480,4 +490,8 @@ export function registerCashtagBackgroundBridge({
       .catch(() => sendResponse(undefined));
     return true;
   });
+
+  broadcastTickerWidgetEnabled(isTickerWidgetEnabled(getController())).catch(
+    () => undefined,
+  );
 }
