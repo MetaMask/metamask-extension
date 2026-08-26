@@ -1,12 +1,12 @@
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { KNOWN_QR_ACCOUNTS } from '../../../stub/keyring-bridge';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import ConnectHardwareWalletPage from '../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
-import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
+import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { checkAccountAddressDisplayedInAccountList } from '../../page-objects/flows/account-list.flow';
 
@@ -97,7 +97,7 @@ describe.skip('QR Hardware', function () {
           accountLabel: `QR Account 1`,
         });
         await accountListPage.clickMultichainAccountMenuItem('Account details');
-        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        const accountDetailsPage = new AccountDetailsPage(driver);
         await accountDetailsPage.checkPageIsLoaded();
         await accountDetailsPage.clickRemoveAccountButton();
         await accountDetailsPage.clickRemoveAccountConfirmButton();
