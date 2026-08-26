@@ -130,6 +130,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedToken?.assetId &&
     tokenStateIsSettled &&
     debouncedAmount > 0 &&
+    hasSettledQuoteAmount &&
     !amountLimitError,
   );
 
