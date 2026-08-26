@@ -88,7 +88,7 @@ import {
   getPriceImpactNumber,
   getTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
-import { getInternalAccountsByScope } from '../../selectors/accounts';
+import { getInternalAccountsByScope, getInternalAccountByAddress } from '../../selectors/accounts';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getGasFeesSponsoredNetworkEnabled } from '../../selectors';
 import {
@@ -1200,13 +1200,15 @@ export const computeQuoteValidationErrors = (
 
 /**
  * True when bridging cross-chain to a Stellar classic asset that still needs a
- * trustline. Same-chain Stellar swaps are excluded (activation is handled
- * elsewhere in that flow).
+ * trustline on the **destination** account (quote `destWalletAddress`), not
+ * merely the currently selected account group. Same-chain Stellar swaps are
+ * excluded (activation is handled elsewhere in that flow). External recipients
+ * with no matching internal account return false (no in-app activate CTA).
  * @param state
  */
 const getIsDestAssetRequireActivate = createDeepEqualSelector(
-  [getFromToken, getToToken, (state: BridgeAppState) => state],
-  (fromToken, toToken, state) => {
+  [getFromToken, getToToken, getQuoteRequest, (state: BridgeAppState) => state],
+  (fromToken, toToken, quoteRequest, state) => {
     if (
       !fromToken ||
       !toToken?.assetId ||
@@ -1214,7 +1216,22 @@ const getIsDestAssetRequireActivate = createDeepEqualSelector(
     ) {
       return false;
     }
-    return getIsAssetRequireActivate(state, { assetId: toToken.assetId });
+
+    const destWalletAddress = quoteRequest?.destWalletAddress;
+    if (!destWalletAddress) {
+      return false;
+    }
+
+    const destAccount = getInternalAccountByAddress(state, destWalletAddress);
+    if (!destAccount?.id) {
+      // External / unknown recipient — cannot check or activate trustline here.
+      return false;
+    }
+
+    return getIsAssetRequireActivate(state, {
+      assetId: toToken.assetId,
+      accountId: destAccount.id,
+    });
   },
 );
 
