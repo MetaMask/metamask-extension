@@ -301,7 +301,32 @@
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": "valueA"
+        "feature3": [
+          {
+            "name": "groupA",
+            "scope": {
+              "type": "threshold",
+              "value": 0.3
+            },
+            "value": "valueA"
+          },
+          {
+            "name": "groupB",
+            "scope": {
+              "type": "threshold",
+              "value": 0.5
+            },
+            "value": "valueB"
+          },
+          {
+            "name": "groupC",
+            "scope": {
+              "type": "threshold",
+              "value": 1
+            },
+            "value": "valueC"
+          }
+        ]
       },
       "thresholdCache": "object"
     },

@@ -19,6 +19,7 @@ import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controlle
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import { getConfigRegistryApiServiceInstanceOptions } from './instance-options/config-registry-api-service';
 import {
   getShieldApiServiceInstanceOptions,
   getShieldControllerInstanceOptions,
@@ -44,6 +45,11 @@ jest.mock('./instance-options/connectivity-controller', () => ({
 }));
 jest.mock('./instance-options/claims-service', () => ({
   getClaimsServiceInstanceOptions: jest.fn(() => 'claims-options'),
+}));
+jest.mock('./instance-options/config-registry-api-service', () => ({
+  getConfigRegistryApiServiceInstanceOptions: jest.fn(
+    () => 'config-registry-api-service-options',
+  ),
 }));
 jest.mock('./instance-options/shield-controller', () => ({
   getShieldApiServiceInstanceOptions: jest.fn(
@@ -138,6 +144,7 @@ describe('initializeWallet', () => {
       instanceOptions: {
         approvalController: 'approval-options',
         claimsService: 'claims-options',
+        configRegistryApiService: 'config-registry-api-service-options',
         connectivityController: 'connectivity-options',
         gasFeeController: 'gas-fee-controller-options',
         keyringController: 'keyring-options',
@@ -202,6 +209,7 @@ describe('initializeWallet', () => {
       showApprovalRequest,
     });
     expect(getClaimsServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getConfigRegistryApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldControllerInstanceOptions).toHaveBeenCalledWith();
     expect(getSubscriptionServiceInstanceOptions).toHaveBeenCalledWith();
