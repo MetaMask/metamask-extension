@@ -4,7 +4,9 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
+import { SecurityTrustInlineBadge } from '#ui/components/app/security-trust';
 import { formatUsd, formatUsdCompact } from '../../lib/helpers';
+import { getSecurityInlineBadge } from '../../lib/security-badge';
 import type { AssetData } from '../../lib/types';
 import { TokenAvatar } from './token-avatar';
 
@@ -64,6 +66,7 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
           <tbody>
             {results.map((asset, index) => {
               const rowKey = asset.caipAssetId ?? `${asset.ticker}-${index}`;
+              const securityBadge = getSecurityInlineBadge(asset.resultType);
               return (
                 <tr
                   key={rowKey}
@@ -73,9 +76,14 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
                   <td className="py-3 pl-6 pr-3">
                     <div className="flex min-w-0 items-center gap-2">
                       <TokenAvatar asset={asset} />
-                      <span className="truncate font-medium">
-                        {asset.ticker}
-                      </span>
+                      <div className="flex min-w-0 items-center gap-1">
+                        <span className="truncate font-medium">
+                          {asset.ticker}
+                        </span>
+                        {securityBadge ? (
+                          <SecurityTrustInlineBadge badge={securityBadge} />
+                        ) : null}
+                      </div>
                     </div>
                   </td>
                   <td className="py-3 pr-3 text-end tabular-nums">

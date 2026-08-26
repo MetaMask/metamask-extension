@@ -6,7 +6,7 @@ export type AssetData = {
   caipAssetId: string | null;
   chainId: string | null;
   isNative: boolean;
-  verified: boolean;
+  resultType: string | null;
   price: number | null;
   change24hPercent: number | null;
   marketCap: number | null;

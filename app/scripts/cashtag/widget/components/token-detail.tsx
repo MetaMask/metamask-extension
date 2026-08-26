@@ -17,6 +17,7 @@ import {
   formatUsd,
   formatUsdCompact,
 } from '../../lib/helpers';
+import { getSecurityStatusBadge } from '../../lib/security-badge';
 import type { AssetData } from '../../lib/types';
 import { PriceChart } from './price-chart';
 import { MoreMenu } from './more-menu';
@@ -53,6 +54,7 @@ export function TokenDetail({
     data.price !== null && data.change24hPercent !== null
       ? data.price * (data.change24hPercent / 100)
       : null;
+  const securityBadge = getSecurityStatusBadge(data.resultType);
 
   return (
     <div className="flex flex-col h-full p-6">
@@ -62,10 +64,14 @@ export function TokenDetail({
           <div className="flex min-w-0 flex-col justify-center">
             <div className="flex items-center gap-2 leading-none">
               <Label>{data.ticker}</Label>
-              {data.verified ? (
+              {securityBadge ? (
                 <span className="inline-flex h-[19px] items-center gap-1 rounded-md border border-success-muted bg-muted px-2 text-[10px] font-medium leading-none text-success-default">
-                  <Icon name={IconName.SecurityTick} size={IconSize.Xs} />
-                  Verified
+                  <Icon
+                    name={securityBadge.icon}
+                    size={IconSize.Xs}
+                    color={securityBadge.iconColor}
+                  />
+                  {securityBadge.label}
                 </span>
               ) : null}
             </div>
