@@ -12,7 +12,7 @@ type SearchHit = {
   assetId: CaipAssetType;
   symbol: string;
   name: string;
-  isVerified?: boolean;
+  securityData?: { resultType?: string };
   price?: string | number | null;
   marketCap?: string | number | null;
   aggregatedUsdVolume?: string | number | null;
@@ -46,7 +46,7 @@ function toAssetData(hit: SearchHit, ticker: string): AssetData {
     caipAssetId: hit.assetId,
     chainId: chainIdFromAssetId(hit.assetId),
     isNative: hit.assetId.includes('/slip44:'),
-    verified: hit.isVerified === true,
+    resultType: hit.securityData?.resultType ?? null,
     price: num(hit.price),
     change24hPercent: num(hit.pricePercentChange1d),
     marketCap: num(hit.marketCap),
@@ -71,6 +71,7 @@ async function searchBySymbol(symbol: string): Promise<SearchHit[]> {
     query: symbol,
     first: '25',
     includeMarketData: 'true',
+    includeTokenSecurityData: 'true',
   });
   const response = await globalThis.fetch(`${tokenSearchUrl}?${params}`, {
     method: 'GET',
