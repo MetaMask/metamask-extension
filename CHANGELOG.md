@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.45.1]
+
 ## [13.45.0]
 
 ### Added
@@ -3007,7 +3009,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.45.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.45.1...HEAD
+[13.45.1]: https://github.com/MetaMask/metamask-extension/compare/v13.45.0...v13.45.1
 [13.45.0]: https://github.com/MetaMask/metamask-extension/compare/v13.44.0...v13.45.0
 [13.44.0]: https://github.com/MetaMask/metamask-extension/compare/v13.43.0...v13.44.0
 [13.43.0]: https://github.com/MetaMask/metamask-extension/compare/v13.42.0...v13.43.0
