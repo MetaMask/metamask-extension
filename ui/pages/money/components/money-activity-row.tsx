@@ -19,7 +19,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getMoneyActivityDisplayInfo } from '../utils/money-activity-display';
+import {
+  getMoneyActivityDisplayInfo,
+  type MoneyActivityTranslate,
+} from '../utils/money-activity-display';
 import type { MoneyActivityItem } from '../types/money-activity';
 
 export type MoneyActivityRowProps = {
@@ -27,20 +30,34 @@ export type MoneyActivityRowProps = {
   privacyMode?: boolean;
 };
 
+function getAmountColor({
+  isFailed,
+  isIncoming,
+}: {
+  isFailed: boolean;
+  isIncoming: boolean;
+}) {
+  if (isFailed) {
+    return TextColor.TextAlternative;
+  }
+  if (isIncoming) {
+    return TextColor.SuccessDefault;
+  }
+  return TextColor.TextDefault;
+}
+
 export function MoneyActivityRow({
   item,
   privacyMode = false,
 }: MoneyActivityRowProps) {
-  const t = useI18nContext();
+  const t = useI18nContext() as MoneyActivityTranslate;
   const display = getMoneyActivityDisplayInfo(item.tx, t);
   const isFailed = display.status === 'failed';
   const isPending = display.status === 'pending';
-  let amountColor = TextColor.TextDefault;
-  if (isFailed) {
-    amountColor = TextColor.TextAlternative;
-  } else if (display.isIncoming) {
-    amountColor = TextColor.SuccessDefault;
-  }
+  const amountColor = getAmountColor({
+    isFailed,
+    isIncoming: display.isIncoming,
+  });
 
   return (
     <Box

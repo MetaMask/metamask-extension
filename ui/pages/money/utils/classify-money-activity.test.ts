@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import {
   type TransactionMeta,
   TransactionStatus,
@@ -11,6 +12,7 @@ import {
   isIncomingMoneyActivityKind,
   moneyActivityKindToIcon,
   moneyActivityLabelKey,
+  type MoneyActivityKind,
 } from './classify-money-activity';
 
 const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
@@ -148,12 +150,12 @@ describe('moneyActivityLabelKey', () => {
 });
 
 describe('moneyActivityKindToIcon', () => {
-  it.each([
+  it.each<[MoneyActivityKind, IconName]>([
     ['deposited', IconName.Add],
     ['received', IconName.Arrow2Down],
     ['converted', IconName.Refresh],
     ['sent', IconName.SwapHorizontal],
-  ] as const)('maps %s to the matching icon', (kind, icon) => {
+  ])('maps %s to the matching icon', (kind, icon) => {
     expect(moneyActivityKindToIcon(kind)).toBe(icon);
   });
 });
@@ -163,7 +165,7 @@ describe('isIncomingMoneyActivityKind', () => {
     expect(isIncomingMoneyActivityKind('sent')).toBe(false);
   });
 
-  it.each(['deposited', 'received', 'converted'] as const)(
+  it.each<MoneyActivityKind>(['deposited', 'received', 'converted'])(
     'treats %s as incoming',
     (kind) => {
       expect(isIncomingMoneyActivityKind(kind)).toBe(true);
