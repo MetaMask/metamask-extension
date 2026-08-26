@@ -1,9 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import type {
-  TransactionPayQuote,
-  TransactionPayTotals,
-} from '@metamask/transaction-pay-controller';
+import type { TransactionPayQuote } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
 import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -11,6 +8,7 @@ import {
   useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
+  type TransactionPayTotalsWithInputBased,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -46,13 +44,14 @@ describe('ReceiveRow', () => {
     useIsPaidByMetaMaskMock.mockReturnValue(false);
 
     useTransactionPayTotalsMock.mockReturnValue({
+      isInputBased: false,
       fees: {
         provider: { usd: '1.00' },
         sourceNetwork: { estimate: { usd: '0.20' } },
         targetNetwork: { usd: '0.05' },
         metaMask: { usd: '0.25' },
       },
-    } as TransactionPayTotals);
+    } as TransactionPayTotalsWithInputBased);
 
     useIsTransactionPayQuotePendingMock.mockReturnValue(false);
 
@@ -84,8 +83,9 @@ describe('ReceiveRow', () => {
     expect(getByTestId('receive-value')).toHaveTextContent('$8.50');
   });
 
-  it('uses the quote target amount for exact-input deposits', () => {
+  it('uses the target amount for input-based totals', () => {
     useTransactionPayTotalsMock.mockReturnValue({
+      isInputBased: true,
       fees: {
         provider: { usd: '1.00' },
         sourceNetwork: { estimate: { usd: '0.20' } },
@@ -93,24 +93,21 @@ describe('ReceiveRow', () => {
         metaMask: { usd: '0.25' },
       },
       targetAmount: { fiat: '9', usd: '9' },
-    } as TransactionPayTotals);
+    } as TransactionPayTotalsWithInputBased);
 
-    const { getByTestId } = render({
-      inputAmountUsd: '10',
-      useQuoteTargetAmount: true,
-    });
+    const { getByTestId } = render({ inputAmountUsd: '10' });
 
     expect(getByTestId('receive-value')).toHaveTextContent('$9.00');
   });
 
-  it('treats a missing metaMask fee as zero', () => {
+  it('uses withdrawal fee calculation when isInputBased is missing', () => {
     useTransactionPayTotalsMock.mockReturnValue({
       fees: {
         provider: { usd: '1.00' },
         sourceNetwork: { estimate: { usd: '0.20' } },
         targetNetwork: { usd: '0.05' },
       },
-    } as TransactionPayTotals);
+    } as TransactionPayTotalsWithInputBased);
 
     const { getByTestId } = render({ inputAmountUsd: '10' });
 
@@ -141,9 +138,7 @@ describe('ReceiveRow', () => {
   });
 
   it('renders an empty value when totals are not available', () => {
-    useTransactionPayTotalsMock.mockReturnValue(
-      undefined as unknown as TransactionPayTotals,
-    );
+    useTransactionPayTotalsMock.mockReturnValue(undefined);
 
     const { getByTestId } = render();
 

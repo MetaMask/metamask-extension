@@ -16,6 +16,7 @@ import * as useIsMoneyAccountFlagDefaultModule from '../../../hooks/pay/useIsMon
 import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
+import type { TransactionPayTotalsWithInputBased } from '../../../hooks/pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import * as useTransactionPayWithdrawModule from '../../../hooks/pay/useTransactionPayWithdraw';
 import * as usePayWithNoFeeTokenModule from '../../../hooks/pay/usePayWithNoFeeToken';
@@ -158,7 +159,7 @@ function render(
     hasPositiveRequiredAmount?: boolean;
     isNativePayToken?: boolean;
     isNoFeePayToken?: boolean;
-    isRelayExactInputDeposit?: boolean;
+    totals?: TransactionPayTotalsWithInputBased;
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
@@ -184,7 +185,7 @@ function render(
     hasPositiveRequiredAmount = true,
     isNativePayToken = false,
     isNoFeePayToken = false,
-    isRelayExactInputDeposit = false,
+    totals,
     sourceAmounts = [],
     requiredTokens = [],
     withdraw = { isWithdraw: false, canSelectWithdrawToken: false },
@@ -235,8 +236,8 @@ function render(
         : undefined,
     );
   jest
-    .mocked(useTransactionPayDataModule.useIsRelayExactInputDeposit)
-    .mockReturnValue(isRelayExactInputDeposit);
+    .mocked(useTransactionPayDataModule.useTransactionPayTotals)
+    .mockReturnValue(totals);
   jest
     .mocked(useTransactionPayDataModule.useIsTransactionPayQuotePending)
     .mockReturnValue(
@@ -685,21 +686,33 @@ describe('CustomAmountInfo', () => {
       expect(getByTestId('total-row')).toBeInTheDocument();
     });
 
-    it('renders the receive row for exact-input Relay deposits', () => {
+    it('renders the receive row for input-based totals', () => {
       const { getByTestId, queryByTestId } = render({
         hasQuotes: true,
-        isRelayExactInputDeposit: true,
+        totals: {
+          isInputBased: true,
+          targetAmount: { fiat: '95', usd: '95' },
+        } as TransactionPayTotalsWithInputBased,
       });
 
       expect(getByTestId('receive-row')).toBeInTheDocument();
       expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
 
-    it('keeps the total row for non-Relay deposits', () => {
+    it('keeps the total row for output-based totals', () => {
       const { getByTestId, queryByTestId } = render({
         hasQuotes: true,
-        isRelayExactInputDeposit: false,
+        totals: {
+          isInputBased: false,
+        } as TransactionPayTotalsWithInputBased,
       });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+
+    it('keeps the total row when totals are missing', () => {
+      const { getByTestId, queryByTestId } = render({ hasQuotes: true });
 
       expect(getByTestId('total-row')).toBeInTheDocument();
       expect(queryByTestId('receive-row')).not.toBeInTheDocument();

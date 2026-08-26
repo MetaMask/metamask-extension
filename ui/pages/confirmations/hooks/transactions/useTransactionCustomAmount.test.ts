@@ -13,6 +13,7 @@ import * as TransactionPayControllerActions from '../../../../store/controller-a
 import * as useTokenFiatRatesModule from '../tokens/useTokenFiatRates';
 import * as usePayWithNoFeeTokenModule from '../pay/usePayWithNoFeeToken';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
+import type { TransactionPayTotalsWithInputBased } from '../pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../pay/useTransactionPayToken';
 import * as usePayTokenAccountBalanceModule from '../pay/usePayTokenAccountBalance';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
@@ -66,7 +67,6 @@ function runHook({
   balanceUsdOverride,
   isNoFeePayToken = true,
   isMaxAmount = false,
-  isRelayExactInputDeposit = false,
   requiredTokens = [],
   totals,
   updateTokenAmountMock = jest.fn(),
@@ -88,12 +88,8 @@ function runHook({
   balanceUsdOverride?: number;
   isNoFeePayToken?: boolean;
   isMaxAmount?: boolean;
-  isRelayExactInputDeposit?: boolean;
   requiredTokens?: { amountUsd?: string; skipIfBalance?: boolean }[];
-  totals?: {
-    sourceAmount?: { usd?: string };
-    targetAmount?: { usd?: string };
-  };
+  totals?: TransactionPayTotalsWithInputBased;
   updateTokenAmountMock?: jest.Mock;
   prefillMaxOnLoad?: boolean;
   transactionMeta?: TransactionMeta;
@@ -115,9 +111,6 @@ function runHook({
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayIsMaxAmount)
     .mockReturnValue(isMaxAmount);
-  jest
-    .mocked(useTransactionPayDataModule.useIsRelayExactInputDeposit)
-    .mockReturnValue(isRelayExactInputDeposit);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayTotals)
     .mockReturnValue(
@@ -216,10 +209,13 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('0');
     });
 
-    it('returns target amount USD when isMaxAmount is true and target amount exists', () => {
+    it('returns target amount USD for output-based Max totals', () => {
       const { result } = runHook({
         isMaxAmount: true,
-        totals: { targetAmount: { usd: '123.456' } },
+        totals: {
+          isInputBased: false,
+          targetAmount: { usd: '123.456' },
+        } as TransactionPayTotalsWithInputBased,
       });
 
       expect(result.current.amountFiat).toBe('123.46');
@@ -232,16 +228,21 @@ describe('useTransactionCustomAmount', () => {
           type: TransactionType.moneyAccountWithdraw,
         } as TransactionMeta,
         isMaxAmount: true,
-        totals: { targetAmount: { usd: '123.456' } },
+        totals: {
+          targetAmount: { usd: '123.456' },
+        } as TransactionPayTotalsWithInputBased,
         requiredTokens: [{ amountUsd: '10', skipIfBalance: false }],
       });
 
       expect(result.current.amountFiat).toBe('10');
     });
 
-    it('keeps the entered total when a Relay exact-input Max quote resolves', () => {
+    it('keeps the entered total when an input-based Max quote resolves', () => {
       const { result, rerender } = runHook({
-        isRelayExactInputDeposit: true,
+        totals: {
+          isInputBased: true,
+          sourceAmount: { usd: '0' },
+        } as TransactionPayTotalsWithInputBased,
       });
 
       act(() => {
@@ -267,20 +268,20 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('100');
     });
 
-    it('restores the source total when mounting with a Relay exact-input quote', () => {
+    it('restores the source total when mounting with input-based totals', () => {
       const { result } = runHook({
         isMaxAmount: true,
-        isRelayExactInputDeposit: true,
         requiredTokens: [{ amountUsd: '95', skipIfBalance: false }],
         totals: {
+          isInputBased: true,
           sourceAmount: { usd: '100' },
-        },
+        } as TransactionPayTotalsWithInputBased,
       });
 
       expect(result.current.amountFiat).toBe('100');
     });
 
-    it('pre-populates from transaction data when user has not typed yet', () => {
+    it('pre-populates from transaction data when totals are missing', () => {
       const { result } = runHook({
         isMaxAmount: false,
         requiredTokens: [{ amountUsd: '123.456', skipIfBalance: false }],

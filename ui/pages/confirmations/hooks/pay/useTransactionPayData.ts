@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
-  TransactionType,
-  type TransactionMeta,
-} from '@metamask/transaction-controller';
-import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
+  TransactionPayStrategy,
+  type TransactionPayTotals,
+} from '@metamask/transaction-pay-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
@@ -34,29 +34,6 @@ export function useTransactionPayHasExecutableQuote() {
   );
 }
 
-const RELAY_EXACT_INPUT_DEPOSIT_TYPES = [
-  TransactionType.perpsDeposit,
-  TransactionType.predictDeposit,
-];
-
-/**
- * Whether the current confirmation is a plain Perps or Predict deposit using
- * Relay's exact-input flow. Deposit-and-order transactions are intentionally
- * excluded because they require a guaranteed output for order margin.
- *
- * @returns Whether the current confirmation uses Relay exact-input semantics.
- */
-export function useIsRelayExactInputDeposit(): boolean {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const currentQuote = useTransactionPayQuotes()?.[0];
-
-  return (
-    currentQuote?.strategy === TransactionPayStrategy.Relay &&
-    currentConfirmation?.type !== undefined &&
-    RELAY_EXACT_INPUT_DEPOSIT_TYPES.includes(currentConfirmation.type)
-  );
-}
-
 export function useTransactionPayRequiredTokens() {
   return useTransactionPayData(selectTransactionPayTokensByTransactionId);
 }
@@ -82,8 +59,19 @@ export function useIsTransactionPayLoading() {
   return useTransactionPayData(selectIsTransactionPayLoadingByTransactionId);
 }
 
-export function useTransactionPayTotals() {
-  return useTransactionPayData(selectTransactionPayTotalsByTransactionId);
+// Compatibility type until the installed controller package declares the
+// controller-owned field. The field remains optional for totals created before
+// the controller calculated it.
+export type TransactionPayTotalsWithInputBased = TransactionPayTotals & {
+  isInputBased?: boolean;
+};
+
+export function useTransactionPayTotals():
+  | TransactionPayTotalsWithInputBased
+  | undefined {
+  return useTransactionPayData(
+    selectTransactionPayTotalsByTransactionId,
+  ) as TransactionPayTotalsWithInputBased | undefined;
 }
 
 export function useTransactionPayIsMaxAmount() {

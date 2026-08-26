@@ -23,30 +23,23 @@ import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 export type ReceiveRowProps = {
   /** The user's input amount in USD / fiat */
   inputAmountUsd: string;
-  /** Whether to display the exact-input quote's authoritative target amount. */
-  useQuoteTargetAmount?: boolean;
   variant?: ConfirmInfoRowSize;
 };
 
 /**
- * Row that displays "You'll receive" for withdrawals and exact-input
- * deposits. Calculates: input - (provider + sourceNetwork + targetNetwork +
- * metamask) fees.
- *
- * Exact-input deposits use the quote target amount because some fees, such as
- * source-network gas, can be paid separately rather than deducted from the
- * destination amount.
+ * Row that displays "You'll receive" for withdrawals and input-based deposits.
+ * Withdrawals calculate input minus provider, source-network, target-network,
+ * and MetaMask fees. Input-based deposits display the controller's target
+ * amount.
  *
  * Mirrors the mobile `ReceiveRow`.
  *
  * @param options0
  * @param options0.inputAmountUsd
- * @param options0.useQuoteTargetAmount
  * @param options0.variant
  */
 export function ReceiveRow({
   inputAmountUsd,
-  useQuoteTargetAmount = false,
   variant = ConfirmInfoRowSize.Default,
 }: ReceiveRowProps) {
   const t = useI18nContext();
@@ -74,7 +67,7 @@ export function ReceiveRow({
       return '';
     }
 
-    if (useQuoteTargetAmount) {
+    if (totals.isInputBased === true) {
       return formatFiat(new BigNumber(totals.targetAmount.usd).toNumber());
     }
 
@@ -105,14 +98,7 @@ export function ReceiveRow({
     return formatFiat(
       (youReceive.gte(0) ? youReceive : new BigNumber(0)).toNumber(),
     );
-  }, [
-    formatFiat,
-    hasQuotes,
-    inputAmountUsd,
-    isPaidByMetaMask,
-    totals,
-    useQuoteTargetAmount,
-  ]);
+  }, [formatFiat, hasQuotes, inputAmountUsd, isPaidByMetaMask, totals]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;

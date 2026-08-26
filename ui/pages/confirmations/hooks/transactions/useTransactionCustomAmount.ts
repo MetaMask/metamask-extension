@@ -25,7 +25,6 @@ import { usePayWithNoFeeToken } from '../pay/usePayWithNoFeeToken';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import {
-  useIsRelayExactInputDeposit,
   useTransactionPayIsMaxAmount,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayTotals,
@@ -77,7 +76,6 @@ export function useTransactionCustomAmount({
   const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
     TransactionType.moneyAccountWithdraw,
   ]);
-  const isRelayExactInputDeposit = useIsRelayExactInputDeposit();
   const tokenAddress = getTokenAddress(transactionMeta);
   const payTokenFiatRate = useTokenFiatRate(
     tokenAddress,
@@ -172,10 +170,11 @@ export function useTransactionCustomAmount({
   }, [disableUpdate, transactionId, updateTokenAmountCallback]);
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-  // A remounted exact-input confirmation must restore the source total, not
+  const isInputBased = totals?.isInputBased === true;
+  // A remounted input-based confirmation must restore the source total, not
   // the post-fee target amount stored on the required token.
-  const initialAmountUsd = isRelayExactInputDeposit
-    ? totals?.sourceAmount.usd
+  const initialAmountUsd = isInputBased
+    ? totals.sourceAmount.usd
     : primaryRequiredToken?.amountUsd;
 
   const [amountFiatState, setAmountFiat] = useState(
@@ -191,12 +190,12 @@ export function useTransactionCustomAmount({
     // fees, not the mUSD being withdrawn — keep the typed amount.
     const targetAmountUsd = totals?.targetAmount?.usd;
 
-    // For Relay exact-input deposits, the quote target is the amount received
-    // after fees, not the total source amount selected by Max. Keep the input
-    // amount in state so it does not jump down when the quote resolves.
+    // For input-based quotes, the quote target is the amount received after
+    // fees, not the total source amount selected by Max. Keep the input amount
+    // in state so it does not jump down when the quote resolves.
     if (
+      !isInputBased &&
       !isMoneyAccountWithdraw &&
-      !isRelayExactInputDeposit &&
       isMaxAmount &&
       targetAmountUsd &&
       targetAmountUsd !== '0'
@@ -209,9 +208,9 @@ export function useTransactionCustomAmount({
     return amountFiatState;
   }, [
     amountFiatState,
+    isInputBased,
     isMaxAmount,
     isMoneyAccountWithdraw,
-    isRelayExactInputDeposit,
     totals?.targetAmount?.usd,
   ]);
 
