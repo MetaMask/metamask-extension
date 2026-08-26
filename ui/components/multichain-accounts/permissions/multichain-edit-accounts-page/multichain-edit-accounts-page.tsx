@@ -32,7 +32,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { MultichainAccountList } from '../../multichain-account-list';
-import { useAccountListSearch } from '../../hooks';
+import { useAccountListSearch } from '../../hooks/useAccountListSearch';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { Footer, Header, Page } from '../../../multichain/pages/page';

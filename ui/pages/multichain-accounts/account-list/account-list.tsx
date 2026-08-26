@@ -27,7 +27,7 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
-import { useAccountListSearch } from '../../../components/multichain-accounts/hooks';
+import { useAccountListSearch } from '../../../components/multichain-accounts/hooks/useAccountListSearch';
 import {
   getAccountTree,
   getSelectedAccountGroup,
