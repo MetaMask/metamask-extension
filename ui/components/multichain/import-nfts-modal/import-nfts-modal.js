@@ -273,6 +273,7 @@ export const ImportNftsModal = ({ onClose }) => {
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader
+          closeButtonProps={{ ariaLabel: t('close') }}
           onClose={() => {
             onClose();
             navigate(DEFAULT_ROUTE);

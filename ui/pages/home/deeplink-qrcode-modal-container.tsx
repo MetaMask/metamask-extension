@@ -47,8 +47,9 @@ export function DeeplinkQrCodeModalContainer() {
         }}
       >
         <ModalHeader
+          className="pb-0"
           closeButtonProps={{
-            className: 'absolute z-10 pb-0',
+            className: 'absolute z-10',
             ariaLabel: t('close'),
             style: {
               top: '24px',
