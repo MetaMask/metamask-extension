@@ -156,9 +156,6 @@
     "message": "$1 cuentas",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Ver sus cuentas y sugerir transacciones"
-  },
   "accountsSmallCase": {
     "message": "cuentas"
   },
@@ -899,24 +896,12 @@
     "message": "$1 vendido",
     "description": "$1 is the token symbol"
   },
-  "activity_receive_failed_description": {
-    "message": "De: $1",
-    "description": "$1 is the shortened sender address"
-  },
   "activity_receive_failed_title": {
     "message": "Error al recibir"
-  },
-  "activity_receive_pending_description": {
-    "message": "De: $1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "Recibiendo $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_receive_success_description": {
-    "message": "De: $1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "$1 recibido",
@@ -965,24 +950,12 @@
     "message": "$1 vendido",
     "description": "$1 is the token symbol"
   },
-  "activity_send_failed_description": {
-    "message": "Para: $1",
-    "description": "$1 is the shortened recipient address"
-  },
   "activity_send_failed_title": {
     "message": "Error al enviar"
-  },
-  "activity_send_pending_description": {
-    "message": "Para: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "Enviando $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_send_success_description": {
-    "message": "Para: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "$1 enviado",
@@ -1294,7 +1267,7 @@
     "message": "Agregada"
   },
   "addedProtectionDescription": {
-    "message": "Estás interactuando con una dirección desconocida. Esto ayuda a prevenir transacciones maliciosas."
+    "message": "Debido a que estás interactuando con una dirección desconocida, la protección puede evitar algunas transacciones maliciosas."
   },
   "addedProtectionIncludesNetworkFee": {
     "message": "Incluye $1 para mayor protección",
@@ -1526,6 +1499,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "Billetera no admitida"
   },
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "No se pudo consultar el saldo de tu cuenta de Perps. Inténtalo de nuevo."
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "1.ª interacción"
   },
@@ -1558,6 +1534,9 @@
   },
   "alertReasonPendingTransactions": {
     "message": "Transacción pendiente"
+  },
+  "alertReasonPerpsWithdrawBalanceUnavailable": {
+    "message": "Saldo no disponible"
   },
   "alertReasonSignIn": {
     "message": "Solicitud de inicio de sesión sospechosa"
@@ -2004,6 +1983,78 @@
   },
   "blockaid": {
     "message": "Blockaid"
+  },
+  "blockaidAlertModalMessage": {
+    "message": "Nuestros socios de seguridad detectaron señales de alto riesgo en esta $1. Si continúas, no podrás recuperar tus fondos.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request"
+  },
+  "blockaidAlertModalMessageWithAmount": {
+    "message": "Nuestros socios de seguridad detectaron señales de alto riesgo en esta $1. Si continúas, no podrás recuperar tus $2.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request; $2 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionApproveFarming": {
+    "message": "Le estás dando permiso a una dirección marcada por nuestros socios de seguridad para transferir tus activos."
+  },
+  "blockaidDescriptionErrored": {
+    "message": "No pudimos completar esta verificación de seguridad. Continúa solo si confías en el sitio y en las direcciones involucradas."
+  },
+  "blockaidDescriptionHighRiskSignature": {
+    "message": "Nuestros socios de seguridad marcaron esta firma como de alto riesgo. Firmar podría autorizar acciones con tus activos sin tu permiso."
+  },
+  "blockaidDescriptionMaliciousDomain": {
+    "message": "Nuestros socios de seguridad marcaron este sitio como malicioso. Si se trata de una estafa, no podrás recuperar tus fondos."
+  },
+  "blockaidDescriptionMaliciousDomainWithAmount": {
+    "message": "Nuestros socios de seguridad marcaron este sitio como malicioso. Si se trata de una estafa, no podrás recuperar tus $1.",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionMarketplaceFarming": {
+    "message": "Le estás dando permiso a una dirección marcada por nuestros socios de seguridad para transferir tus activos incluidos en $1.",
+    "description": "$1 is a marketplace name such as OpenSea or Blur"
+  },
+  "blockaidDescriptionRiskSignals": {
+    "message": "Nuestros socios de seguridad detectaron señales de riesgo en esta solicitud. Revísala antes de continuar."
+  },
+  "blockaidDescriptionTransferFarming": {
+    "message": "Estás enviando activos a una dirección marcada por nuestros socios de seguridad. Si se trata de una estafa, no podrás recuperar tus fondos."
+  },
+  "blockaidDescriptionTransferFarmingWithAmount": {
+    "message": "Estás enviando activos a una dirección marcada por nuestros socios de seguridad. Si se trata de una estafa, no podrás recuperar tus $1.",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidRequestTypeApproval": {
+    "message": "aprobación",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeRequest": {
+    "message": "solicitar",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeSignature": {
+    "message": "firma",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeTransfer": {
+    "message": "transferir",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidTitleHighRiskApproval": {
+    "message": "Aprobación de alto riesgo"
+  },
+  "blockaidTitleHighRiskSignature": {
+    "message": "Firma de alto riesgo"
+  },
+  "blockaidTitleHighRiskTransfer": {
+    "message": "Transferencia de alto riesgo"
+  },
+  "blockaidTitleMayNotBeSafe": {
+    "message": "Verificación de seguridad no disponible"
+  },
+  "blockaidTitleRiskSignalsDetected": {
+    "message": "Se detectaron señales de riesgo"
+  },
+  "blockaidTitleSiteFlaggedUnsafe": {
+    "message": "Sitio marcado como no seguro"
   },
   "blockies": {
     "message": "Blockies"
@@ -2737,6 +2788,9 @@
   "confirmationAlertDetails": {
     "message": "Para proteger sus activos, le sugerimos que rechace la solicitud."
   },
+  "confirmationAlertModalTitleDescription": {
+    "message": "Solicitud de alto riesgo"
+  },
   "confirmed": {
     "message": "Confirmado"
   },
@@ -2760,9 +2814,6 @@
   },
   "connectAHardwareWalletDescription": {
     "message": "Usando USB o un código QR"
-  },
-  "connectAccounts": {
-    "message": "Conectar cuentas"
   },
   "connectAnyway": {
     "message": "Conectarse de todos modos"
@@ -2810,18 +2861,6 @@
   },
   "connectedSnaps": {
     "message": "Snaps conectados"
-  },
-  "connectedWithAccount": {
-    "message": "$1 cuentas conectadas",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Conectado con $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 redes conectadas",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Conectando"
@@ -3093,6 +3132,9 @@
   },
   "dappSwapRewardText": {
     "message": "Gana $1 puntos"
+  },
+  "dapps": {
+    "message": "Aplicaciones descentralizadas (Dapps)"
   },
   "darkTheme": {
     "message": "Oscuro"
@@ -3427,9 +3469,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Todas las dapps se desconectaron con éxito."
   },
-  "disconnectMessage": {
-    "message": "Esto lo desconectará de este sitio"
-  },
   "disconnectPrompt": {
     "message": "Desconectar $1"
   },
@@ -3609,9 +3648,6 @@
   },
   "editNetworkLink": {
     "message": "editar la red original"
-  },
-  "editNetworksTitle": {
-    "message": "Editar redes"
   },
   "editNonceField": {
     "message": "Editar nonce"
@@ -5243,11 +5279,23 @@
   "moneyActivity": {
     "message": "Actividad"
   },
+  "moneyActivityPlaceholderDescription": {
+    "message": "Tu actividad en Money aparecerá aquí."
+  },
   "moneyAdd": {
     "message": "Añadir"
   },
+  "moneyApy": {
+    "message": "$1 de APY"
+  },
   "moneyBalanceUnavailable": {
     "message": "Saldo no disponible"
+  },
+  "moneyBenefitAutoEarn": {
+    "message": "Obtén rendimiento automático en tu saldo de Money"
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Obtén un rendimiento automático de hasta ~$1 APY"
   },
   "moneyBenefitLiquidity": {
     "message": "Obtén liquidez total sin bloqueos, para que puedas operar o retirar fondos en cualquier momento"
@@ -5261,17 +5309,69 @@
   "moneyBenefits": {
     "message": "Beneficios"
   },
+  "moneyEarnApyTitle": {
+    "message": "Gana hasta un $1 de APY"
+  },
   "moneyEarnOnCrypto": {
     "message": "Gana con tus criptomonedas"
+  },
+  "moneyEarnOnCryptoDescription": {
+    "message": "Descubre cómo tu dinero puede crecer con el tiempo al convertir tus criptomonedas a mUSD."
+  },
+  "moneyEarnOnCryptoDescriptionMiddle": {
+    "message": "en activos y podrías ganar hasta"
+  },
+  "moneyEarnOnCryptoDescriptionPrefix": {
+    "message": "Agrega tu"
+  },
+  "moneyEarnOnCryptoDescriptionSuffix": {
+    "message": "en un año."
+  },
+  "moneyEarnOnCryptoNoFee": {
+    "message": "Sin tarifa"
+  },
+  "moneyEarnTitle": {
+    "message": "Gana en tu saldo"
+  },
+  "moneyEarnings": {
+    "message": "Ganancias"
+  },
+  "moneyExploreBenefits": {
+    "message": "Explora tus beneficios"
   },
   "moneyFundDescription": {
     "message": "Deposita fondos en tu Money Account y observa cómo tu saldo crece."
   },
+  "moneyFundDescriptionWithApy": {
+    "message": "Deposita fondos en tu Money Account y observa cómo tu saldo crece con hasta un $1 de APY."
+  },
   "moneyHowItWorks": {
     "message": "Cómo funciona"
   },
+  "moneyHowItWorksDescription": {
+    "message": "Agrega mUSD y tu saldo respaldado en dólares estará listo para gastar, intercambiar o enviar en cualquier momento."
+  },
+  "moneyHowItWorksDescriptionWithApy": {
+    "message": "Agrega mUSD y gana hasta $1. Tu saldo está respaldado por dólares y disponible para gastar, operar o enviar en cualquier momento.",
+    "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowYourMoneyGrows": {
+    "message": "Cómo crece tu dinero"
+  },
   "moneyLearnMore": {
     "message": "Conozca más"
+  },
+  "moneyLifetime": {
+    "message": "Total acumulado"
+  },
+  "moneyMeetMusd": {
+    "message": "Conoce mUSD"
+  },
+  "moneyMoreInformation": {
+    "message": "Más información"
+  },
+  "moneyMoreOptions": {
+    "message": "Más opciones"
   },
   "moneyMusd": {
     "message": "mUSD"
@@ -5287,10 +5387,6 @@
   },
   "more": {
     "message": "más"
-  },
-  "moreAccounts": {
-    "message": "Más de $1 cuentas adicionales",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Más"
@@ -5728,9 +5824,6 @@
   "networkOptions": {
     "message": "Opciones de red"
   },
-  "networkPermissionToast": {
-    "message": "Se actualizaron los permisos de la red"
-  },
   "networkStatus": {
     "message": "Estado de la red"
   },
@@ -5766,9 +5859,6 @@
   },
   "networks": {
     "message": "Redes"
-  },
-  "networksSmallCase": {
-    "message": "redes"
   },
   "new": {
     "message": "Nuevo!"
@@ -6118,6 +6208,12 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Aún no ha recibido ninguna notificación."
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "Solicitudes de conexión, aprobaciones y actualizaciones de sesión de CLI para Agent Wallet"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "Agent Wallet"
+  },
   "notificationsSettingsBoxError": {
     "message": "Se produjo un error. Inténtalo de nuevo."
   },
@@ -6438,6 +6534,10 @@
   "passkeyErrorNotEnrolled": {
     "message": "$1 no se ha configurado para esta billetera. Activa $1 en Configuración.",
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotSupported": {
+    "message": "Clave de acceso no admitida",
+    "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "Error al configurar $1. Inténtalo de nuevo",
@@ -6882,6 +6982,9 @@
   },
   "permissions": {
     "message": "Permisos"
+  },
+  "permissionsPageEmptyDescription": {
+    "message": "Cuando otorgues los permisos, los detalles aparecerán aquí."
   },
   "permissionsPageEmptyTitle": {
     "message": "No hay nada que ver aquí"
@@ -8302,6 +8405,9 @@
     "message": "Compra exitosa",
     "description": "Title for the successful ramp buy order toast"
   },
+  "rampsPayWith": {
+    "message": "Pagar con"
+  },
   "rampsPaymentDelayBusinessDay": {
     "message": "día hábil"
   },
@@ -8519,9 +8625,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Este es el sitio que le pide su confirmación."
-  },
-  "requestingFor": {
-    "message": "Solicitando para"
   },
   "required": {
     "message": "Requerido"
@@ -11713,6 +11816,10 @@
   },
   "value": {
     "message": "Valor"
+  },
+  "variationalReferralSubtitle": {
+    "message": "Consigue un 15 % más de puntos Omni y el nivel Plata durante 90 días con un código de recomendación de MetaMask.",
+    "description": "The subtitle of the Variational referral confirmation screen"
   },
   "version": {
     "message": "Versión"

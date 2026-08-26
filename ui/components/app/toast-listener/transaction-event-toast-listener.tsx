@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteWithMessenger } from '../../../layouts/route-with-messenger';
+import { RouteMessengerProvider } from '../../../contexts/route-messenger';
 import { useActivityCacheInvalidation } from '../../../hooks/activity/useActivityCacheInvalidation';
 import {
   toastListenerCapabilities,
@@ -14,11 +14,11 @@ const TransactionEventToastListenerInner = () => {
 
 export function TransactionEventToastListener() {
   return (
-    <RouteWithMessenger
+    <RouteMessengerProvider
       path="toast-listener"
       capabilities={toastListenerCapabilities}
     >
       <TransactionEventToastListenerInner />
-    </RouteWithMessenger>
+    </RouteMessengerProvider>
   );
 }

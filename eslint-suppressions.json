@@ -286,11 +286,6 @@
       "count": 1
     }
   },
-  "ui/components/multichain-accounts/permissions/multichain-edit-networks-page/multichain-edit-networks-page.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 2
-    }
-  },
   "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-network.tsx": {
     "react-hooks/set-state-in-effect": {
       "count": 1
@@ -324,14 +319,6 @@
       "count": 1
     },
     "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/components/multichain/edit-networks-modal/edit-networks-modal.js": {
-    "react-hooks/exhaustive-deps": {
-      "count": 2
-    },
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -393,11 +380,6 @@
     }
   },
   "ui/components/multichain/networks-form/use-safe-chains.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/multichain/pages/permissions-page/permissions-page.js": {
     "react-hooks/set-state-in-effect": {
       "count": 1
     }
@@ -561,11 +543,6 @@
   "ui/hooks/gator-permissions/useRevokeGatorPermissions.ts": {
     "react-hooks/immutability": {
       "count": 1
-    }
-  },
-  "ui/hooks/hardware-wallets/useHwSignTracker.ts": {
-    "react-hooks/refs": {
-      "count": 3
     }
   },
   "ui/hooks/hardware-wallets/useHwSwapConfirmationMonitoring.ts": {
@@ -810,11 +787,6 @@
   "ui/hooks/useTokenTracker.js": {
     "react-hooks/set-state-in-effect": {
       "count": 1
-    }
-  },
-  "ui/layouts/route-with-messenger.tsx": {
-    "react-hooks/refs": {
-      "count": 2
     }
   },
   "ui/pages/activity/activity-list.tsx": {

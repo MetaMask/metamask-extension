@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
-import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
+import EditConnectedAccountsPage from '../../page-objects/pages/permission/edit-connected-accounts-page';
 import GatorPermissionsPage from '../../page-objects/pages/permission/gator-permissions-page';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -25,7 +25,7 @@ describe('Permissions Page', function () {
         await permissionListPage.checkPageIsLoaded();
 
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        await new SitePermissionPage(driver).checkPageIsLoaded(
+        await new EditConnectedAccountsPage(driver).checkPageIsLoaded(
           DAPP_HOST_ADDRESS,
         );
       },

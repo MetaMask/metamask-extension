@@ -156,9 +156,6 @@
     "message": "$1 akun",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "Melihat akun Anda dan menyarankan transaksi"
-  },
   "accountsSmallCase": {
     "message": "akun"
   },
@@ -899,24 +896,12 @@
     "message": "$1 dijual",
     "description": "$1 is the token symbol"
   },
-  "activity_receive_failed_description": {
-    "message": "Dari: $1",
-    "description": "$1 is the shortened sender address"
-  },
   "activity_receive_failed_title": {
     "message": "Penerimaan gagal"
-  },
-  "activity_receive_pending_description": {
-    "message": "Dari: $1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "Menerima $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_receive_success_description": {
-    "message": "Dari: $1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "Menerima $1",
@@ -965,24 +950,12 @@
     "message": "$1 dijual",
     "description": "$1 is the token symbol"
   },
-  "activity_send_failed_description": {
-    "message": "Ke: $1",
-    "description": "$1 is the shortened recipient address"
-  },
   "activity_send_failed_title": {
     "message": "Pengiriman gagal"
-  },
-  "activity_send_pending_description": {
-    "message": "Ke: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "Mengirim $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_send_success_description": {
-    "message": "Ke: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "Kirim $1",
@@ -1294,7 +1267,7 @@
     "message": "Ditambahkan"
   },
   "addedProtectionDescription": {
-    "message": "Anda berinteraksi dengan alamat yang tidak dikenal. Ini membantu mencegah transaksi berbahaya."
+    "message": "Karena Anda berinteraksi dengan alamat yang tidak dikenal, fitur perlindungan dapat mencegah beberapa transaksi berbahaya."
   },
   "addedProtectionIncludesNetworkFee": {
     "message": "Termasuk $1 untuk perlindungan tambahan",
@@ -1526,6 +1499,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "Dompet tidak didukung"
   },
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "Tidak dapat memeriksa saldo Perp Anda. Coba lagi."
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "Interaksi pertama"
   },
@@ -1558,6 +1534,9 @@
   },
   "alertReasonPendingTransactions": {
     "message": "Transaksi tertunda"
+  },
+  "alertReasonPerpsWithdrawBalanceUnavailable": {
+    "message": "Saldo tidak tersedia"
   },
   "alertReasonSignIn": {
     "message": "Permintaan masuk yang mencurigakan"
@@ -2004,6 +1983,78 @@
   },
   "blockaid": {
     "message": "Blockaid"
+  },
+  "blockaidAlertModalMessage": {
+    "message": "Mitra keamanan menemukan sinyal berisiko tinggi dalam $1 ini. Jika dilanjutkan, dana Anda tidak dapat dipulihkan.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request"
+  },
+  "blockaidAlertModalMessageWithAmount": {
+    "message": "Mitra keamanan menemukan sinyal berisiko tinggi dalam $1 ini. Jika dilanjutkan, $2 Anda tidak dapat dipulihkan.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request; $2 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionApproveFarming": {
+    "message": "Anda memberikan alamat yang ditandai oleh izin mitra keamanan untuk memindahkan aset Anda."
+  },
+  "blockaidDescriptionErrored": {
+    "message": "Kami tidak dapat menyelesaikan pemeriksaan keamanan ini. Lanjutkan hanya jika Anda memercayai situs dan alamat yang terlibat."
+  },
+  "blockaidDescriptionHighRiskSignature": {
+    "message": "Mitra keamanan menandai tanda tangan ini sebagai risiko tinggi. Penandatanganan dapat mengotorisasi tindakan terhadap aset Anda tanpa izin Anda."
+  },
+  "blockaidDescriptionMaliciousDomain": {
+    "message": "Mitra keamanan menandai situs ini sebagai berbahaya. Jika ini adalah penipuan, dana Anda tidak dapat dipulihkan."
+  },
+  "blockaidDescriptionMaliciousDomainWithAmount": {
+    "message": "Mitra keamanan menandai situs ini sebagai berbahaya. Jika ini adalah penipuan, $1 Anda tidak dapat dipulihkan.",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionMarketplaceFarming": {
+    "message": "Anda memberikan alamat yang ditandai oleh izin mitra keamanan untuk memindahkan aset Anda yang terdaftar di $1.",
+    "description": "$1 is a marketplace name such as OpenSea or Blur"
+  },
+  "blockaidDescriptionRiskSignals": {
+    "message": "Mitra keamanan menemukan sinyal risiko dalam permintaan ini. Tinjau sebelum melanjutkan."
+  },
+  "blockaidDescriptionTransferFarming": {
+    "message": "Anda mengirim aset ke alamat yang ditandai oleh mitra keamanan. Jika ini adalah penipuan, dana Anda tidak dapat dipulihkan."
+  },
+  "blockaidDescriptionTransferFarmingWithAmount": {
+    "message": "Anda mengirim aset ke alamat yang ditandai oleh mitra keamanan. Jika ini adalah penipuan, $1 Anda tidak dapat dipulihkan.",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidRequestTypeApproval": {
+    "message": "persetujuan",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeRequest": {
+    "message": "minta",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeSignature": {
+    "message": "tanda tangan",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeTransfer": {
+    "message": "transfer",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidTitleHighRiskApproval": {
+    "message": "Persetujuan berisiko tinggi"
+  },
+  "blockaidTitleHighRiskSignature": {
+    "message": "Tanda tangan berisiko tinggi"
+  },
+  "blockaidTitleHighRiskTransfer": {
+    "message": "Transfer berisiko tinggi"
+  },
+  "blockaidTitleMayNotBeSafe": {
+    "message": "Pemeriksaan keamanan tidak tersedia"
+  },
+  "blockaidTitleRiskSignalsDetected": {
+    "message": "Sinyal risiko terdeteksi"
+  },
+  "blockaidTitleSiteFlaggedUnsafe": {
+    "message": "Situs yang ditandai sebagai tidak aman"
   },
   "blockies": {
     "message": "Blockies"
@@ -2737,6 +2788,9 @@
   "confirmationAlertDetails": {
     "message": "Untuk melindungi aset Anda, sebaiknya tolak permintaan tersebut."
   },
+  "confirmationAlertModalTitleDescription": {
+    "message": "Permintaan berisiko tinggi"
+  },
   "confirmed": {
     "message": "Dikonfirmasi"
   },
@@ -2760,9 +2814,6 @@
   },
   "connectAHardwareWalletDescription": {
     "message": "Menggunakan USB atau Kode QR"
-  },
-  "connectAccounts": {
-    "message": "Hubungkan akun"
   },
   "connectAnyway": {
     "message": "Tetap hubungkan"
@@ -2810,18 +2861,6 @@
   },
   "connectedSnaps": {
     "message": "Snaps yang Terhubung"
-  },
-  "connectedWithAccount": {
-    "message": "$1 akun terhubung",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Terhubung dengan $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 jaringan terhubung",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Menghubungkan"
@@ -3093,6 +3132,9 @@
   },
   "dappSwapRewardText": {
     "message": "Dapatkan $1 poin"
+  },
+  "dapps": {
+    "message": "Dapp"
   },
   "darkTheme": {
     "message": "Gelap"
@@ -3427,9 +3469,6 @@
   "disconnectAllSitesSuccess": {
     "message": "Semua dapp berhasil diputus koneksinya."
   },
-  "disconnectMessage": {
-    "message": "Ini akan memutus koneksi dari situs ini"
-  },
   "disconnectPrompt": {
     "message": "Putuskan koneksi $1"
   },
@@ -3609,9 +3648,6 @@
   },
   "editNetworkLink": {
     "message": "edit jaringan asli"
-  },
-  "editNetworksTitle": {
-    "message": "Edit jaringan"
   },
   "editNonceField": {
     "message": "Edit nonce"
@@ -5243,11 +5279,23 @@
   "moneyActivity": {
     "message": "Aktivitas"
   },
+  "moneyActivityPlaceholderDescription": {
+    "message": "Aktivitas Money akan ditampilkan di sini."
+  },
   "moneyAdd": {
     "message": "Tambah"
   },
+  "moneyApy": {
+    "message": "$1 APY"
+  },
   "moneyBalanceUnavailable": {
     "message": "Saldo tidak tersedia"
+  },
+  "moneyBenefitAutoEarn": {
+    "message": "Persentase hasil otomatis pada saldo Money Anda"
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Hasil otomatis hingga ~ $1 APY"
   },
   "moneyBenefitLiquidity": {
     "message": "Dapatkan likuiditas penuh tanpa penguncian, sehingga Anda dapat melakukan perdagangan atau penarikan setiap saat"
@@ -5261,17 +5309,69 @@
   "moneyBenefits": {
     "message": "Manfaat"
   },
+  "moneyEarnApyTitle": {
+    "message": "Dapatkan hingga $1 APY"
+  },
   "moneyEarnOnCrypto": {
     "message": "Raih pendapatan dari kripto"
+  },
+  "moneyEarnOnCryptoDescription": {
+    "message": "Lihat bagaimana uang Anda dapat bertambah nilainya dari waktu ke waktu dengan mengonversikan kripto menjadi mUSD."
+  },
+  "moneyEarnOnCryptoDescriptionMiddle": {
+    "message": "dalam aset dan Anda bisa mendapatkan keuntungan hingga"
+  },
+  "moneyEarnOnCryptoDescriptionPrefix": {
+    "message": "Tambahkan"
+  },
+  "moneyEarnOnCryptoDescriptionSuffix": {
+    "message": "dalam satu tahun."
+  },
+  "moneyEarnOnCryptoNoFee": {
+    "message": "Tidak ada biaya"
+  },
+  "moneyEarnTitle": {
+    "message": "Hasilkan pada saldo Anda"
+  },
+  "moneyEarnings": {
+    "message": "Pendapatan"
+  },
+  "moneyExploreBenefits": {
+    "message": "Jelajahi manfaat Anda"
   },
   "moneyFundDescription": {
     "message": "Danai Money Account dan lihat saldo Anda bertambah."
   },
+  "moneyFundDescriptionWithApy": {
+    "message": "Danai Money account dan lihat saldo Anda bertambah hingga $1 APY."
+  },
   "moneyHowItWorks": {
     "message": "Cara kerjanya"
   },
+  "moneyHowItWorksDescription": {
+    "message": "Tambahkan mUSD dan saldo yang didukung dolar siap untuk digunakan, diperdagangkan, atau dikirim setiap saat."
+  },
+  "moneyHowItWorksDescriptionWithApy": {
+    "message": "Tambahkan mUSD dan dapatkan hingga $1. Saldo Anda didukung dolar dan siap untuk digunakan, diperdagangkan, atau dikirim setiap saat.",
+    "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowYourMoneyGrows": {
+    "message": "Bagaimana uang Anda bertambah"
+  },
   "moneyLearnMore": {
     "message": "Selengkapnya"
+  },
+  "moneyLifetime": {
+    "message": "Seumur Hidup"
+  },
+  "moneyMeetMusd": {
+    "message": "Jumpai mUSD"
+  },
+  "moneyMoreInformation": {
+    "message": "Informasi selengkapnya"
+  },
+  "moneyMoreOptions": {
+    "message": "Opsi lain"
   },
   "moneyMusd": {
     "message": "mUSD"
@@ -5287,10 +5387,6 @@
   },
   "more": {
     "message": "lainnya"
-  },
-  "moreAccounts": {
-    "message": "+ $1 akun lain",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Selengkapnya"
@@ -5728,9 +5824,6 @@
   "networkOptions": {
     "message": "Opsi jaringan"
   },
-  "networkPermissionToast": {
-    "message": "Izin jaringan diperbarui"
-  },
   "networkStatus": {
     "message": "Status jaringan"
   },
@@ -5766,9 +5859,6 @@
   },
   "networks": {
     "message": "Jaringan"
-  },
-  "networksSmallCase": {
-    "message": "jaringan"
   },
   "new": {
     "message": "Baru!"
@@ -6118,6 +6208,12 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Anda belum menerima notifikasi."
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "Permintaan koneksi CLI, persetujuan, dan pembaruan sesi untuk dompet Agen"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "Dompet agen"
+  },
   "notificationsSettingsBoxError": {
     "message": "Terjadi kesalahan. Coba lagi."
   },
@@ -6438,6 +6534,10 @@
   "passkeyErrorNotEnrolled": {
     "message": "$1 belum diatur untuk dompet ini. Aktifkan $1 di Pengaturan.",
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotSupported": {
+    "message": "Kode sandi tidak didukung",
+    "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "Pengaturan $1 gagal. Coba lagi",
@@ -6882,6 +6982,9 @@
   },
   "permissions": {
     "message": "Izin"
+  },
+  "permissionsPageEmptyDescription": {
+    "message": "Saat Anda memberikan izin, detailnya akan ditampilkan di sini."
   },
   "permissionsPageEmptyTitle": {
     "message": "Tak ada apa pun di sini"
@@ -8302,6 +8405,9 @@
     "message": "Pembelian berhasil",
     "description": "Title for the successful ramp buy order toast"
   },
+  "rampsPayWith": {
+    "message": "Bayar melalui"
+  },
   "rampsPaymentDelayBusinessDay": {
     "message": "hari kerja"
   },
@@ -8519,9 +8625,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Ini merupakan situs yang meminta konfirmasi Anda."
-  },
-  "requestingFor": {
-    "message": "Meminta untuk"
   },
   "required": {
     "message": "Diperlukan"
@@ -11713,6 +11816,10 @@
   },
   "value": {
     "message": "Nilai"
+  },
+  "variationalReferralSubtitle": {
+    "message": "Dapatkan +15% poin Omni dan tingkatan Perak selama 90 hari dengan kode referensi MetaMask.",
+    "description": "The subtitle of the Variational referral confirmation screen"
   },
   "version": {
     "message": "Versi"

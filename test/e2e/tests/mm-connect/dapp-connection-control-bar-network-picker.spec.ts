@@ -1,16 +1,17 @@
 import { Suite } from 'mocha';
-import { SolScope } from '@metamask/keyring-api';
 
 import {
   DAPP_PATH,
   DAPP_URL,
-  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-  DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   LOCALHOST_NETWORK_CLIENT_ID,
   MM_CONNECT_EVM_CHAINS,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import {
+  EVM_AND_SOLANA_FIXTURE_SCOPES_WITH_EIP1193_COMPATIBLE,
+  EVM_AND_SOLANA_FIXTURE_SCOPES_WITHOUT_EIP1193_COMPATIBLE,
+} from '../../fixtures/permission-scopes';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
 import { approveConnect } from '../../page-objects/flows/connect.flow';
@@ -18,30 +19,6 @@ import { Driver, PAGES } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-
-// ── Shared fixture options ─────────────────────────────────────────────────
-
-const EVM_AND_SOLANA_FIXTURE_SCOPES_WITH_EIP1193_COMPATIBLE = {
-  isMultichainOrigin: true,
-  requiredScopes: {},
-  optionalScopes: {
-    'eip155:1337': {
-      accounts: [`eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`],
-    },
-    'wallet:eip155': {
-      accounts: [`wallet:eip155:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`],
-    },
-    [SolScope.Mainnet]: {
-      accounts: [`${SolScope.Mainnet}:${DEFAULT_FIXTURE_SOLANA_ACCOUNT}`],
-    },
-  },
-  sessionProperties: { 'eip1193-compatible': true },
-};
-
-const EVM_AND_SOLANA_FIXTURE_SCOPES_WITHOUT_EIP1193_COMPATIBLE = {
-  ...EVM_AND_SOLANA_FIXTURE_SCOPES_WITH_EIP1193_COMPATIBLE,
-  sessionProperties: {},
-};
 
 // ── Shared helpers ─────────────────────────────────────────────────────────
 

@@ -62,7 +62,10 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
-import { createEvent } from '../../shared/lib/deep-links/metrics';
+import {
+  createEvent,
+  shouldTrackDeepLinkNavigation,
+} from '../../shared/lib/deep-links/metrics';
 import {
   backedUpStateKeys,
   hasVault,
@@ -724,7 +727,7 @@ async function initialize(backup) {
   })
     .on('navigate', async ({ url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)
-      if (!('redirectTo' in parsed)) {
+      if (shouldTrackDeepLinkNavigation(parsed)) {
         trackEvent(createEvent({ signature: parsed.signature, url }));
       }
     })

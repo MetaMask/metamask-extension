@@ -61,6 +61,10 @@ class Confirmation {
 
   private nextPageButton = '[data-testid="confirm-nav__next-confirmation"]';
 
+  private parentSelector = {
+    testId: 'parent-selector-confirmation-page',
+  };
+
   private previousPageButton =
     '[data-testid="confirm-nav__previous-confirmation"]';
 
@@ -108,6 +112,7 @@ class Confirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.footerCancelButton,
         this.footerConfirmButton,
       ]);

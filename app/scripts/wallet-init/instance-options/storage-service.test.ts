@@ -1,8 +1,8 @@
-import { BrowserStorageAdapter } from '../../../../shared/lib/stores/browser-storage-adapter';
+import { IndexedDBStorageAdapter } from '../../../../shared/lib/stores/indexeddb-storage-adapter';
 import { getStorageServiceInstanceOptions } from './storage-service';
 
-jest.mock('../../../../shared/lib/stores/browser-storage-adapter', () => ({
-  BrowserStorageAdapter: jest
+jest.mock('../../../../shared/lib/stores/indexeddb-storage-adapter', () => ({
+  IndexedDBStorageAdapter: jest
     .fn()
     .mockImplementation(() => ({ name: 'mock-storage-adapter' })),
 }));
@@ -12,10 +12,10 @@ describe('getStorageServiceInstanceOptions', () => {
     jest.clearAllMocks();
   });
 
-  it('builds options with a browser storage adapter', () => {
+  it('builds options with an IndexedDB storage adapter', () => {
     const options = getStorageServiceInstanceOptions();
 
-    expect(BrowserStorageAdapter).toHaveBeenCalledTimes(1);
+    expect(IndexedDBStorageAdapter).toHaveBeenCalledTimes(1);
     expect(options).toStrictEqual({
       storage: { name: 'mock-storage-adapter' },
     });
