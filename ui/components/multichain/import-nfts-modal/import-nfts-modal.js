@@ -7,6 +7,10 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  ModalContent,
+  Modal,
+  ModalOverlay,
+  ModalHeader
 } from '@metamask/design-system-react';
 import {
   MetaMetricsEventName,
@@ -54,10 +58,6 @@ import {
   IconName,
   IconSize,
   Label,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
 } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import Tooltip from '../../ui/tooltip';

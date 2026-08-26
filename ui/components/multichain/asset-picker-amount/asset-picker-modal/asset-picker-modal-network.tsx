@@ -16,6 +16,11 @@ import {
   TextVariant as DsTextVariant,
   TextButton,
   TextButtonSize,
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  ModalHeader,
+  ModalBody,
 } from '@metamask/design-system-react';
 import {
   Display,
@@ -28,11 +33,6 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  Modal,
   Box,
   Text,
 } from '../../../component-library';
@@ -188,12 +188,24 @@ export const AssetPickerModalNetwork = ({
     >
       <ModalOverlay />
       <ModalContent
-        padding={0}
-        modalDialogProps={{ padding: 0, height: BlockSize.Full }}
+        className="p-0"
+        modalDialogProps={{ padding: 0, className: 'h-full' }}
       >
         <ModalHeader
-          onBack={network ? onBack : undefined}
-          onClose={isMultiselectEnabled ? undefined : onClose}
+          {...({
+            ...(network
+              ? {
+                  onBack: onBack as () => void,
+                  backButtonProps: { ariaLabel: t('back') },
+                }
+              : {}),
+            ...(isMultiselectEnabled
+              ? {}
+              : {
+                  onClose,
+                  closeButtonProps: { ariaLabel: t('close') },
+                }),
+          } as React.ComponentProps<typeof ModalHeader>)}
           endAccessory={
             isMultiselectEnabled && selectedChainIds ? (
               <TextButton
@@ -241,9 +253,7 @@ export const AssetPickerModalNetwork = ({
           </Box>
         )}
         <ModalBody
-          paddingLeft={0}
-          paddingRight={0}
-          className="multichain-asset-picker__network-list flex min-h-0 flex-1 flex-col overflow-auto"
+          className="multichain-asset-picker__network-list min-h-0 flex-1 overflow-auto px-0"
         >
           {networkSections.map((section, index) => (
             <Box

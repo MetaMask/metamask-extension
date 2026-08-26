@@ -1,16 +1,12 @@
-import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
 import {
-  AlignItems,
-  JustifyContent,
-} from '../../helpers/constants/design-system';
-import {
-  Modal,
-  ModalContent,
   ModalContentSize,
+  ModalContent,
+  Modal,
   ModalHeader,
   ModalOverlay,
-} from '../../components/component-library';
+} from '@metamask/design-system-react';
+import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { DeeplinkQRCode } from '../../components/app/deeplink-qr-code';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -38,8 +34,7 @@ export function DeeplinkQrCodeModalContainer() {
     <Modal data-testid="deeplink-qrcode-modal" isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        className="items-center justify-center"
         size={ModalContentSize.Md}
         modalDialogProps={{
           paddingTop: 0,
@@ -53,13 +48,13 @@ export function DeeplinkQrCodeModalContainer() {
       >
         <ModalHeader
           closeButtonProps={{
-            className: 'absolute z-10',
+            className: 'absolute z-10 pb-0',
+            ariaLabel: t('close'),
             style: {
               top: '24px',
               right: '12px',
             },
           }}
-          paddingBottom={0}
           onClose={onClose}
         />
         <DeeplinkQRCode
