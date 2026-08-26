@@ -402,7 +402,7 @@
     "@metamask/ens-resolver-snap": "^1.2.0",
     "@metamask/eth-hd-keyring": "^15.0.0",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
-    "@metamask/eth-json-rpc-middleware": "^24.0.0",
+    "@metamask/eth-json-rpc-middleware": "npm:@metamask-previews/eth-json-rpc-middleware@24.0.0-preview-9a81434",
     "@metamask/eth-ledger-bridge-keyring": "^13.1.0",
     "@metamask/eth-money-keyring": "3.0.0",
     "@metamask/eth-qr-keyring": "^3.0.0",
