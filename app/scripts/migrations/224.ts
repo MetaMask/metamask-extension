@@ -1,10 +1,5 @@
 import { hasProperty, isObject } from '@metamask/utils';
-import { cloneDeep } from 'lodash';
-
-type VersionedData = {
-  meta: { version: number };
-  data: Record<string, unknown>;
-};
+import type { Migrate } from './types';
 
 export const version = 224;
 
@@ -14,31 +9,30 @@ export const version = 224;
  * now cached (and persisted) by the PhishingDataService query cache instead
  * of controller state.
  *
- * @param originalVersionedData - The original state data to migrate
+ * @param versionedData - The versioned data object to migrate.
+ * @param changedControllers - A set used to record controllers that were modified.
  */
-export async function migrate(
-  originalVersionedData: VersionedData,
-): Promise<VersionedData> {
-  const versionedData = cloneDeep(originalVersionedData);
+export const migrate = (async (versionedData, changedControllers) => {
   versionedData.meta.version = version;
-  transformState(versionedData.data);
-  return versionedData;
-}
 
-function transformState(state: Record<string, unknown>) {
+  const state = versionedData.data;
+
   if (
-    hasProperty(state, 'PhishingController') &&
-    isObject(state.PhishingController)
+    !hasProperty(state, 'PhishingController') ||
+    !isObject(state.PhishingController)
   ) {
-    const phishingController = state.PhishingController as Record<
-      string,
-      unknown
-    >;
-
-    delete phishingController.urlScanCache;
-    delete phishingController.tokenScanCache;
-    delete phishingController.addressScanCache;
+    return;
   }
 
-  return state;
-}
+  const phishingController = state.PhishingController;
+  const caches = ['urlScanCache', 'tokenScanCache', 'addressScanCache'];
+
+  if (caches.some((cache) => hasProperty(phishingController, cache))) {
+    for (const cache of caches) {
+      delete phishingController[cache];
+    }
+    changedControllers.add('PhishingController');
+  }
+}) satisfies Migrate;
+
+export default migrate;

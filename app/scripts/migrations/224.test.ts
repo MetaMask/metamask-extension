@@ -1,22 +1,30 @@
+import { cloneDeep } from 'lodash';
 import { migrate, version } from './224';
 
-const oldVersion = 223;
-const newVersion = version;
+const VERSION = version;
+const PREVIOUS_VERSION = VERSION - 1;
 
-describe('migration #224', () => {
-  it('updates the version metadata', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
+type VersionedData = {
+  meta: { version: number };
+  data: Record<string, unknown>;
+};
+
+describe(`migration #${VERSION}`, () => {
+  it('bumps the version', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: PREVIOUS_VERSION },
       data: {},
     };
 
-    const newState = await migrate(oldState);
-    expect(newState.meta.version).toBe(newVersion);
+    const versionedData = cloneDeep(oldStorage);
+    await migrate(versionedData, new Set<string>());
+
+    expect(versionedData.meta.version).toBe(VERSION);
   });
 
   it('removes the scan caches from PhishingController state', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
+    const oldStorage: VersionedData = {
+      meta: { version: PREVIOUS_VERSION },
       data: {
         PhishingController: {
           c2DomainBlocklistLastFetched: 1757993558,
@@ -52,9 +60,11 @@ describe('migration #224', () => {
       },
     };
 
-    const newState = await migrate(oldState);
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
-    expect(newState.data.PhishingController).toStrictEqual({
+    expect(versionedData.data.PhishingController).toStrictEqual({
       c2DomainBlocklistLastFetched: 1757993558,
       hotlistLastFetched: 1757993558,
       phishingLists: [{ name: 'MetaMask' }],
@@ -62,11 +72,12 @@ describe('migration #224', () => {
       whitelist: [],
       whitelistPaths: {},
     });
+    expect(changedControllers.has('PhishingController')).toBe(true);
   });
 
   it('does nothing if the scan caches do not exist', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
+    const oldStorage: VersionedData = {
+      meta: { version: PREVIOUS_VERSION },
       data: {
         PhishingController: {
           phishingLists: [],
@@ -74,40 +85,49 @@ describe('migration #224', () => {
       },
     };
 
-    const newState = await migrate(oldState);
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
-    expect(newState.data.PhishingController).toStrictEqual({
+    expect(versionedData.data.PhishingController).toStrictEqual({
       phishingLists: [],
     });
+    expect(changedControllers.has('PhishingController')).toBe(false);
   });
 
   it('does nothing if PhishingController state is missing', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
+    const oldStorage: VersionedData = {
+      meta: { version: PREVIOUS_VERSION },
       data: {
         OtherController: {},
       },
     };
 
-    const newState = await migrate(oldState);
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
-    expect(newState.data).toStrictEqual({
+    expect(versionedData.data).toStrictEqual({
       OtherController: {},
     });
+    expect(changedControllers.size).toBe(0);
   });
 
   it('does nothing if PhishingController state is not an object', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
+    const oldStorage: VersionedData = {
+      meta: { version: PREVIOUS_VERSION },
       data: {
         PhishingController: 'not an object',
       },
     };
 
-    const newState = await migrate(oldState);
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
-    expect(newState.data).toStrictEqual({
+    expect(versionedData.data).toStrictEqual({
       PhishingController: 'not an object',
     });
+    expect(changedControllers.size).toBe(0);
   });
 });
