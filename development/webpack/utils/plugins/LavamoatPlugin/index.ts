@@ -109,7 +109,7 @@ export const lavamoatPlugin = (args: Args) =>
     readableResourceIds: true,
     // we apply lockdown to 'runtime.<hash>.js', 'scripts/contentscript.js', and 'service-worker.js'.
     inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js)$/u,
+      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js|cashtag-widget-frame\.js)$/u,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -150,6 +150,18 @@ export const lavamoatPlugin = (args: Args) =>
               enabled: true,
               // Globals used by the contentscript
               exceptions: ['browser', 'chrome', 'btoa'],
+            },
+          },
+        };
+      } else if (chunk.name === 'cashtag-widget-frame') {
+        // The iframed X widget has its own SES/LavaMoat runtime
+        return {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              // Globals used by the X widget
+              exceptions: ['browser', 'chrome', 'devicePixelRatio'],
             },
           },
         };

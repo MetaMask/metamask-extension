@@ -182,6 +182,14 @@ const plugins: WebpackPluginInstance[] = [
     data: { isTest: args.test },
     // In watch mode, inject the dev-only background client into the relevant HTML page.
     beforeEmit: (content, entry, compilation) => {
+      // When the source HTML directly imported the entry script, the HtmlBundler automatically pulled
+      // it into the shared UI chunk. That shared runtime contained Snow which caused the cashtag widget to break.
+      if (entry.name === 'cashtag-widget') {
+        content = content.replace(
+          '</body>',
+          '<script src="cashtag-widget-frame.js" defer></script></body>',
+        );
+      }
       if (!args.watch) {
         return content;
       }
@@ -351,10 +359,16 @@ const reactRefreshJsxLoader = getSwcLoader(
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
+const isCashtagWidgetEntry = (chunk: Chunk) =>
+  chunk.name === 'cashtag-widget-frame';
 const isChunkableInitial = (chunk: Chunk) =>
-  manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
+  !isCashtagWidgetEntry(chunk) &&
+  manifestPlugin.canBeChunked(chunk) &&
+  chunk.canBeInitial();
 const isChunkableAsync = (chunk: Chunk) =>
-  manifestPlugin.canBeChunked(chunk) && !chunk.canBeInitial();
+  !isCashtagWidgetEntry(chunk) &&
+  manifestPlugin.canBeChunked(chunk) &&
+  !chunk.canBeInitial();
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
@@ -365,9 +379,14 @@ const reactCompiler = getReactCompilerLoader({
 });
 
 const config = {
-  // All entries are added dynamically by ManifestPlugin
-  // an empty entry object prevents webpack's default entry.
-  entry: {},
+  // Most entries are added dynamically by ManifestPlugin. The cashtag frame
+  // stays explicit so it can be self-contained when embedded by x.com.
+  entry: {
+    'cashtag-widget-frame': {
+      import: join(context, 'scripts', 'cashtag', 'widget', 'frame.tsx'),
+      filename: 'cashtag-widget-frame.js',
+    },
+  },
   cache,
   plugins,
   context,
@@ -639,7 +658,9 @@ const config = {
       // casting to string as webpack's types are wrong, `false` is allowed, and
       // is actually the default value.
       name: (chunk) =>
-        (manifestPlugin.canBeChunked(chunk) ? 'runtime' : false) as string,
+        (isCashtagWidgetEntry(chunk) || !manifestPlugin.canBeChunked(chunk)
+          ? false
+          : 'runtime') as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations

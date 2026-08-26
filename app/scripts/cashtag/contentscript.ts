@@ -136,8 +136,8 @@ function onDomReady() {
 
 export function initCashtag() {
   // Runs inside contentscript.js, which is injected into every frame at
-  // document_start; the widget only belongs in the top frame of X.
-  if (window.top !== window.self || !xHosts.has(window.location.hostname)) {
+  // document_start. The background bridge enables only frame 0.
+  if (!xHosts.has(window.location.hostname)) {
     return;
   }
 
