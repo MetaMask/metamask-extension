@@ -2227,6 +2227,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "No price information"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Market closed: Price is issuer-calculated, not live market data. It may differ when markets reopen at the next available trading session."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Off-hours trading"
+  },
   "bridgePoints": {
     "message": "Est. points",
     "description": "Label for estimated points that can be earned from a bridge or swap"
@@ -3435,6 +3441,9 @@
   },
   "defiTabErrorTitle": {
     "message": "We could not load this page."
+  },
+  "defiUnsupportedEmptyDescription": {
+    "message": "DeFi isn't supported on this network."
   },
   "delete": {
     "message": "Delete"
@@ -6046,6 +6055,9 @@
   },
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
+  },
+  "nftUnsupportedEmptyDescription": {
+    "message": "NFTs aren't supported on this network."
   },
   "nftWarningContent": {
     "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer these NFTs from your wallet at any time without asking you until you revoke this approval. $2",
