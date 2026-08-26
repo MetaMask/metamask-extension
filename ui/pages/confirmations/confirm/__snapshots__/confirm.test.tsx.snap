@@ -8,6 +8,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
   >
     <div
       class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      data-testid="parent-selector-confirmation-page"
     >
       <div
         class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -306,6 +307,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
   >
     <div
       class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      data-testid="parent-selector-confirmation-page"
     >
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -783,6 +785,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
   >
     <div
       class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      data-testid="parent-selector-confirmation-page"
     >
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -1207,6 +1210,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
   >
     <div
       class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      data-testid="parent-selector-confirmation-page"
     >
       <div
         class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -2056,6 +2060,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
   >
     <div
       class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      data-testid="parent-selector-confirmation-page"
     >
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -2476,6 +2481,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
   >
     <div
       class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      data-testid="parent-selector-confirmation-page"
     >
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -3180,6 +3186,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
   >
     <div
       class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      data-testid="parent-selector-confirmation-page"
     >
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -3270,6 +3277,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
   >
     <div
       class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      data-testid="parent-selector-confirmation-page"
     >
       <div
         class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
