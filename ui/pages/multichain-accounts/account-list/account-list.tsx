@@ -27,7 +27,7 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
-import { useFilteredAccountWallets } from '../../../components/multichain-accounts/hooks/useFilteredAccountWallets';
+import { useAccountListSearch } from '../../../components/multichain-accounts/hooks';
 import {
   getAccountTree,
   getSelectedAccountGroup,
@@ -96,7 +96,7 @@ export const AccountList = () => {
     filteredWallets,
     hasFilteredWallets,
     isInSearchMode,
-  } = useFilteredAccountWallets(wallets);
+  } = useAccountListSearch(wallets);
 
   const handleNavigateToChooseNewWalletType = useCallback(() => {
     navigate(CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE);

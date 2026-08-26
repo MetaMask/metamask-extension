@@ -4,7 +4,7 @@ import { getNormalizedGroupsMetadata } from '../../../selectors/multichain-accou
 import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { filterWalletsByGroupNameOrAddress } from '../../../pages/multichain-accounts/account-list/utils';
 
-type UseFilteredAccountWalletsReturn = {
+type UseAccountListSearchReturn = {
   searchPattern: string;
   onSearchBarChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   clearSearch: () => void;
@@ -20,9 +20,9 @@ type UseFilteredAccountWalletsReturn = {
  * @param wallets - The wallets collection to filter.
  * @returns Search state, handlers, and filtered wallet data for account list UIs.
  */
-export function useFilteredAccountWallets(
+export function useAccountListSearch(
   wallets: AccountTreeWallets,
-): UseFilteredAccountWalletsReturn {
+): UseAccountListSearchReturn {
   const [searchPattern, setSearchPattern] = useState('');
   const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
 

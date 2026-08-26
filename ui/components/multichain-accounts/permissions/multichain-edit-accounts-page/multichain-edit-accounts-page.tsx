@@ -32,7 +32,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { MultichainAccountList } from '../../multichain-account-list';
-import { useFilteredAccountWallets } from '../../hooks/useFilteredAccountWallets';
+import { useAccountListSearch } from '../../hooks';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { Footer, Header, Page } from '../../../multichain/pages/page';
@@ -122,7 +122,7 @@ export const MultichainEditAccountsPage = ({
     filteredWallets,
     hasFilteredWallets,
     isInSearchMode,
-  } = useFilteredAccountWallets(walletsWithSupportedAccountGroups);
+  } = useAccountListSearch(walletsWithSupportedAccountGroups);
 
   const handleAccountClick = useCallback(
     (accountGroupId: AccountGroupId) => {
