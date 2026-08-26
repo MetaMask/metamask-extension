@@ -227,7 +227,7 @@ export const useHistoricalPrices = ({
       );
     },
     enabled: Boolean(v3Params),
-    placeholderData: flatlinePlaceholder,
+    placeholderData: (previousData) => previousData ?? flatlinePlaceholder,
     retry: false,
     staleTime: STALE_TIMES.PRICES,
     gcTime: GC_TIMES.DEFAULT,
