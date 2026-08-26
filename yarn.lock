@@ -5801,7 +5801,46 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^13.1.0, @metamask/assets-controller@npm:^13.1.2, @metamask/assets-controller@npm:^13.1.3":
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@14.0.1-preview-4165cebcf":
+  version: 14.0.1-preview-4165cebcf
+  resolution: "@metamask-previews/assets-controller@npm:14.0.1-preview-4165cebcf"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/account-tree-controller": "npm:^8.0.0"
+    "@metamask/accounts-controller": "npm:^39.1.0"
+    "@metamask/assets-controllers": "npm:^111.1.2"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/client-controller": "npm:^1.0.1"
+    "@metamask/config-registry-controller": "npm:^3.0.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/core-backend": "npm:^9.0.0"
+    "@metamask/keyring-api": "npm:^24.0.0"
+    "@metamask/keyring-controller": "npm:^27.1.1"
+    "@metamask/keyring-internal-api": "npm:^12.0.0"
+    "@metamask/keyring-snap-client": "npm:^10.0.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/network-controller": "npm:^35.0.1"
+    "@metamask/network-enablement-controller": "npm:^6.0.4"
+    "@metamask/permission-controller": "npm:^13.1.1"
+    "@metamask/phishing-controller": "npm:^17.4.0"
+    "@metamask/polling-controller": "npm:^16.0.9"
+    "@metamask/preferences-controller": "npm:^23.1.0"
+    "@metamask/remote-feature-flag-controller": "npm:^6.0.0"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/snaps-utils": "npm:^12.1.2"
+    "@metamask/transaction-controller": "npm:^69.6.0"
+    "@metamask/utils": "npm:^11.11.0"
+    async-mutex: "npm:^0.5.0"
+    bignumber.js: "npm:^9.1.2"
+    lodash: "npm:^4.17.21"
+    p-limit: "npm:^3.1.0"
+  checksum: 10/f3b58ac7555bbfb592e398adecd0e9a908d75938e041bd20f6ea6214eb51aef9d0b3930a45b3224a243ed6f4c4203f984da059c93021771e71b04a5ec9d64c1a
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controller@npm:^13.1.0, @metamask/assets-controller@npm:^13.1.2":
   version: 13.1.4
   resolution: "@metamask/assets-controller@npm:13.1.4"
   dependencies:
@@ -33297,7 +33336,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^13.1.3"
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@14.0.1-preview-4165cebcf"
     "@metamask/assets-controllers": "npm:^111.1.2"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^6.2.0"
