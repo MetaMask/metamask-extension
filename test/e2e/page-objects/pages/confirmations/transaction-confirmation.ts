@@ -3,6 +3,7 @@ import { By, Key } from 'selenium-webdriver';
 import { tEn } from '../../../../lib/i18n-helpers';
 import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
+import { assertSwapAndBridgeErrorUiIsAbsent } from '../../components/swap-and-bridge-error-ui';
 import Confirmation from './confirmation';
 
 /**
@@ -176,23 +177,6 @@ class TransactionConfirmation extends Confirmation {
     testId: 'gas-timing-time',
     text: estimatedTime,
   });
-
-  private readonly swapAndBridgeBannerAlerts: RawLocator =
-    '[data-testid="bridge-banner-alerts"]';
-
-  private readonly swapAndBridgeCtaButton: RawLocator =
-    '[data-testid="bridge-cta-button"]';
-
-  private readonly swapAndBridgeFetchingQuotesLabel: RawLocator = {
-    tag: 'p',
-    text: 'Fetching quotes...',
-  };
-
-  private readonly swapAndBridgeNoQuotes: RawLocator =
-    '[data-testid="bridge-no-quotes"]';
-
-  private readonly swapsBannerTitle: RawLocator =
-    '[data-testid="swaps-banner-title"]';
 
   private readonly tokenGasFeeDropdown =
     '[data-testid="selected-gas-fee-token-arrow"]';
@@ -444,15 +428,7 @@ class TransactionConfirmation extends Confirmation {
     console.log(
       'Checking swap/bridge error UI is absent on transaction confirmation',
     );
-    await this.driver.assertElementNotPresent(this.swapAndBridgeBannerAlerts, {
-      waitAtLeastGuard: 1000,
-    });
-    await this.driver.assertElementNotPresent(this.swapsBannerTitle);
-    await this.driver.assertElementNotPresent(this.swapAndBridgeNoQuotes);
-    await this.driver.assertElementNotPresent(
-      this.swapAndBridgeFetchingQuotesLabel,
-    );
-    await this.driver.assertElementNotPresent(this.swapAndBridgeCtaButton);
+    await assertSwapAndBridgeErrorUiIsAbsent(this.driver);
   }
 
   async checkWalletInitiatedHeadingTitle() {
