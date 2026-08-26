@@ -23,22 +23,26 @@ export const CORRUPTION_BLOCK_CHECKSUM_MISMATCH =
 export const BROWSER_SHUTTING_DOWN_ERROR = 'The browser is shutting down.';
 
 /**
- * Reads the `message` of a thrown value.
+ * Checks whether a thrown value has the shape of an error.
  *
  * Deliberately avoids `instanceof Error`, which is unreliable here: an
  * extension has separate realms for the service worker, the offscreen document
  * and each UI context, and an error that crosses one keeps its shape but loses
- * its prototype identity. The message is what identifies these errors anyway.
+ * its prototype identity. Errors serialized over the critical-error port are
+ * plain objects for the same reason.
+ *
+ * Both `message` and `name` are checked so the narrowing is sound - callers can
+ * rely on every property `ErrorLike` declares.
  *
  * @param error - The thrown value to inspect.
- * @returns The message, or `undefined` if the value does not carry one.
+ * @returns True if the value carries a string `message` and `name`.
  */
-function getThrownErrorMessage(error: unknown): string | undefined {
+function isErrorLike(error: unknown): error is ErrorLike {
   if (typeof error !== 'object' || error === null) {
-    return undefined;
+    return false;
   }
-  const { message } = error as { message?: unknown };
-  return typeof message === 'string' ? message : undefined;
+  const { message, name } = error as { message?: unknown; name?: unknown };
+  return typeof message === 'string' && typeof name === 'string';
 }
 
 /**
@@ -49,10 +53,10 @@ function getThrownErrorMessage(error: unknown): string | undefined {
  * @returns True if the error indicates state corruption.
  */
 export function isStateCorruptionError(error: unknown): error is ErrorLike {
-  const message = getThrownErrorMessage(error);
   return (
-    message === MISSING_VAULT_ERROR ||
-    message === CORRUPTION_BLOCK_CHECKSUM_MISMATCH
+    isErrorLike(error) &&
+    (error.message === MISSING_VAULT_ERROR ||
+      error.message === CORRUPTION_BLOCK_CHECKSUM_MISMATCH)
   );
 }
 
@@ -65,5 +69,5 @@ export function isStateCorruptionError(error: unknown): error is ErrorLike {
  * @returns True if the error is the browser shutdown rejection.
  */
 export function isBrowserShuttingDownError(error: unknown): error is ErrorLike {
-  return getThrownErrorMessage(error) === BROWSER_SHUTTING_DOWN_ERROR;
+  return isErrorLike(error) && error.message === BROWSER_SHUTTING_DOWN_ERROR;
 }

@@ -69,6 +69,20 @@ describe('isBrowserShuttingDownError', () => {
     expect(isBrowserShuttingDownError({})).toBe(false);
     expect(isBrowserShuttingDownError({ message: 42 })).toBe(false);
   });
+
+  it('requires a name, so the ErrorLike narrowing is sound', () => {
+    // The predicate narrows to `ErrorLike`, which declares `name`. Callers may
+    // read it, so it has to be validated rather than assumed.
+    expect(
+      isBrowserShuttingDownError({ message: BROWSER_SHUTTING_DOWN_ERROR }),
+    ).toBe(false);
+    expect(
+      isBrowserShuttingDownError({
+        name: 'Error',
+        message: BROWSER_SHUTTING_DOWN_ERROR,
+      }),
+    ).toBe(true);
+  });
 });
 
 describe('isStateCorruptionError', () => {
