@@ -56,7 +56,7 @@ const AccountCellAvatar = ({
 };
 
 type BalanceDisplayProps = {
-  balance: string;
+  balance?: string;
   isSubtitle?: boolean;
   isHidden?: boolean;
 };
@@ -66,6 +66,12 @@ const BalanceDisplay = ({
   isSubtitle = false,
   isHidden = false,
 }: BalanceDisplayProps) => {
+  // Account group balances are fetched lazily, so a cell may have no balance to
+  // show yet. Render nothing rather than a placeholder that reads as "no funds".
+  if (!balance) {
+    return null;
+  }
+
   return (
     <SensitiveText
       className="multichain-account-cell__account-balance"
@@ -87,7 +93,11 @@ export type MultichainAccountCellProps = {
   accountName: string | React.ReactNode;
   accountNameString?: string; // Optional string version for accessibility labels
   onClick?: (accountGroupId: AccountGroupId) => void;
-  balance: string;
+  /**
+   * Formatted balance to display. Omit (or pass an empty string) when no
+   * balance is known yet so that nothing is rendered in its place.
+   */
+  balance?: string;
   balancePosition?: 'end' | 'subtitle';
   startAccessory?: React.ReactNode;
   endAccessory?: React.ReactNode;

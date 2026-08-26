@@ -147,12 +147,6 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                   >
                     Test Account Group 1
                   </p>
-                  <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
-                    data-testid="balance-display-subtitle"
-                  >
-                    0.00
-                  </p>
                 </div>
               </div>
               <div
@@ -428,12 +422,6 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                   >
                     Test Account Group 1
                   </p>
-                  <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
-                    data-testid="balance-display-subtitle"
-                  >
-                    0.00
-                  </p>
                 </div>
               </div>
               <div
@@ -708,12 +696,6 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     data-testid="multichain-account-cell-name-Test Account Group 1"
                   >
                     Test Account Group 1
-                  </p>
-                  <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
-                    data-testid="balance-display-subtitle"
-                  >
-                    0.00
                   </p>
                 </div>
               </div>
