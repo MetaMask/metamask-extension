@@ -25,7 +25,10 @@ import {
   MOCK_LEDGER_ACCOUNT,
   MOCK_SOLANA_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
-import { MOCK_ACCOUNT_TRON_MAINNET, MOCK_ACCOUNT_STELLAR_PUBNET } from '../../../test/data/mock-accounts';
+import {
+  MOCK_ACCOUNT_TRON_MAINNET,
+  MOCK_ACCOUNT_STELLAR_PUBNET,
+} from '../../../test/data/mock-accounts';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20';

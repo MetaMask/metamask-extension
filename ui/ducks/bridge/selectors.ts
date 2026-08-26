@@ -88,7 +88,10 @@ import {
   getPriceImpactNumber,
   getTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
-import { getInternalAccountsByScope, getInternalAccountByAddress } from '../../selectors/accounts';
+import {
+  getInternalAccountsByScope,
+  getInternalAccountByAddress,
+} from '../../selectors/accounts';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getGasFeesSponsoredNetworkEnabled } from '../../selectors';
 import {
