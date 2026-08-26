@@ -998,9 +998,11 @@ export async function loadStateFromPersistence(backup) {
       if (backup) {
         // Recovery also needs every backed-up controller.
         for (const key of backedUpStateKeys) {
+          const value = versionedData.data[key];
           // Avoid queuing the same key twice.
-          if (!changedKeys.has(key)) {
-            persistenceManager.update(key, versionedData.data[key]);
+          // Missing backup values would delete existing state.
+          if (!changedKeys.has(key) && value !== undefined) {
+            persistenceManager.update(key, value);
           }
         }
       }
