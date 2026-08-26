@@ -27,6 +27,10 @@ import {
   useHardwareWalletActions,
 } from '../../../../contexts/hardware-wallets';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
+import {
+  getTransactionDataRecipient,
+  parseApprovalTransactionData,
+} from '../../../../../shared/lib/transaction.utils';
 import useSubmitBridgeTransaction from '../../../../hooks/bridge/useSubmitBridgeTransaction';
 import { useHwSignTracker } from '../../../../hooks/hardware-wallets/useHwSignTracker';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
@@ -260,6 +264,43 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     getTransactionField(lockedQuote?.trade, field);
   const fromAddress = getPrimaryTxField('from');
 
+  // sendBundle flow: for token sends, `txParams.to` is the token contract —
+  // the real recipient is decoded from the ERC20 transfer calldata (same
+  // logic the activity list and confirmations flow use). Native sends carry
+  // no data, so they fall back to `to`. `txParamsOriginal` is preferred so
+  // container wrapping (e.g. enforced simulations) that replaced `to`/`data`
+  // does not show the delegation manager as the recipient.
+  const sendBundleData =
+    sendBundleTxMeta?.txParamsOriginal?.data ??
+    sendBundleTxMeta?.txParams?.data;
+  const sendBundleRecipient =
+    (sendBundleData
+      ? getTransactionDataRecipient(sendBundleData)
+      : undefined) ??
+    sendBundleTxMeta?.txParamsOriginal?.to ??
+    sendBundleTxMeta?.txParams?.to;
+
+  // Approval step: decode the spender (grantee) and, when encoded in the
+  // calldata (e.g. Permit2), the token contract from the approve data.
+  // `approval.to` is the token contract for standard ERC20 approvals — never
+  // the spender — so when the calldata is undecodable the spender is left
+  // undefined rather than showing `approval.to` as "Spender".
+  const approvalData = getTransactionField(lockedQuote?.approval, 'data');
+  const parsedApproval = approvalData
+    ? parseApprovalTransactionData(approvalData as `0x${string}`)
+    : undefined;
+  const approvalTokenAddress =
+    parsedApproval?.tokenAddress ??
+    getTransactionField(lockedQuote?.approval, 'to');
+  const approvalSpenderAddress = parsedApproval?.spender;
+
+  // Same source and destination chain means this is a swap (vs a bridge).
+  // Both chainIds must be defined — missing token metadata must not make a
+  // bridge render swap labels.
+  const isSwap =
+    fromToken?.chainId !== undefined &&
+    fromToken?.chainId === toToken?.chainId;
+
   const { retrySubmission, hasStartedSubmission } = useHwSwapSubmission({
     lockedQuote,
     needsTwoConfirmations,
@@ -444,10 +485,16 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     signatureState,
     isSendBundleFlow,
     needsTwoConfirmations,
-    toAddress: getPrimaryTxField('to'),
-    spenderAddress: getTransactionField(lockedQuote?.approval, 'to'),
+    toAddress: isSendBundleFlow
+      ? sendBundleRecipient
+      : getTransactionField(lockedQuote?.trade, 'to'),
+    spenderAddress: approvalSpenderAddress,
+    approvalTokenAddress,
     fromAmount,
     fromTokenSymbol: fromToken?.symbol,
+    isSwap,
+    toTokenSymbol: toToken?.symbol,
+    toAmount: lockedQuote?.toTokenAmount?.amount,
     sendAmount: sendBundleState?.sendAmount,
     sendSymbol: sendBundleState?.sendSymbol,
     gasSymbol: sendBundleState?.gasSymbol,

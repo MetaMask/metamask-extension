@@ -107,16 +107,16 @@ export const cleanupPendingApproval = (
 };
 
 /**
- * Extracts a 'from' or 'to' address string from a transaction object.
+ * Extracts a 'from', 'to', or 'data' string from a transaction object.
  * Returns undefined if the field is missing or not a string.
  *
  * @param transaction - The transaction object to inspect.
- * @param field - The field name to extract ('from' or 'to').
- * @returns The address string, or undefined if not present or not a string.
+ * @param field - The field name to extract ('from', 'to', or 'data').
+ * @returns The field's string value, or undefined if not present or not a string.
  */
 export const getTransactionField = (
   transaction: unknown,
-  field: 'from' | 'to',
+  field: 'from' | 'to' | 'data',
 ): string | undefined => {
   if (
     transaction &&
@@ -270,11 +270,18 @@ export const getQrHardwareSigningPageTitle = ({
 /**
  * Returns the label for the final step in the signature progress indicator.
  *
+ * When `isSwap`, `toTokenSymbol`, and `toAmount` are all present, the label
+ * describes the swap destination (Swap/Swapping/Swapped X FROM for Y TO);
+ * otherwise it falls back to the send tense (Send/Sending/Sent).
+ *
  * @param options - Configuration object.
  * @param options.status - The current signature state machine status.
  * @param options.finalStepStatus - The display status of the final step.
  * @param options.fromAmount - The amount being sent.
  * @param options.fromTokenSymbol - The symbol of the token being sent.
+ * @param options.isSwap - True when the flow is a same-chain swap.
+ * @param options.toTokenSymbol - The symbol of the destination token (swap only).
+ * @param options.toAmount - The destination token amount (swap only).
  * @param options.t - The i18n translation function.
  * @returns The localized step label.
  */
@@ -283,14 +290,34 @@ export const getFinalStepLabel = ({
   finalStepStatus,
   fromAmount,
   fromTokenSymbol,
+  isSwap,
+  toTokenSymbol,
+  toAmount,
   t,
 }: {
   status: HardwareWalletSignatureStatus;
   finalStepStatus: SignatureStepStatus;
   fromAmount?: string;
   fromTokenSymbol?: string;
+  isSwap?: boolean;
+  toTokenSymbol?: string;
+  toAmount?: string;
   t: ReturnType<typeof useI18nContext>;
 }) => {
+  const swapAmounts = [fromAmount, fromTokenSymbol, toAmount, toTokenSymbol];
+
+  if (isSwap && toTokenSymbol && toAmount) {
+    if (status === HardwareWalletSignatureStatus.Submitted) {
+      return t('hardwareSwappedAmount', swapAmounts);
+    }
+
+    if (finalStepStatus === SignatureStepStatus.Active) {
+      return t('hardwareSwappingAmount', swapAmounts);
+    }
+
+    return t('hardwareSwapAmount', swapAmounts);
+  }
+
   if (status === HardwareWalletSignatureStatus.Submitted) {
     return t('hardwareSentAmount', [fromAmount, fromTokenSymbol]);
   }
@@ -304,21 +331,26 @@ export const getFinalStepLabel = ({
 
 /**
  * Returns the description text for the first (approval) step in the signature
- * progress indicator. Shows error states or the spender address.
+ * progress indicator. Shows error states, or the token contract and spender
+ * (grantee) addresses decoded from the approve calldata.
  *
  * @param options - Configuration object.
  * @param options.firstStepStatus - The display status of the first step.
- * @param options.spenderAddress - The spender contract address, if applicable.
+ * @param options.spenderAddress - The spender (grantee) address decoded from
+ * the approve calldata, if available.
+ * @param options.approvalTokenAddress - The token contract being approved.
  * @param options.t - The i18n translation function.
  * @returns The localized description string, or undefined.
  */
 export const getFirstStepDescription = ({
   firstStepStatus,
   spenderAddress,
+  approvalTokenAddress,
   t,
 }: {
   firstStepStatus: SignatureStepStatus;
   spenderAddress?: string;
+  approvalTokenAddress?: string;
   t: ReturnType<typeof useI18nContext>;
 }) => {
   if (firstStepStatus === SignatureStepStatus.Rejected) {
@@ -334,7 +366,12 @@ export const getFirstStepDescription = ({
   }
 
   if (spenderAddress) {
-    return t('hardwareSpender', [shortenAddress(spenderAddress)]);
+    return approvalTokenAddress
+      ? t('hardwareApprovalTokenAndSpender', [
+          shortenAddress(approvalTokenAddress),
+          shortenAddress(spenderAddress),
+        ])
+      : t('hardwareSpender', [shortenAddress(spenderAddress)]);
   }
 
   return undefined;
@@ -386,6 +423,12 @@ export const getFinalStepDescription = ({
  * @param options.fromAmount - The amount being sent (bridge/swap only).
  * @param options.fromTokenSymbol - The symbol of the token being sent
  * (bridge/swap only).
+ * @param options.isSwap - True when the flow is a same-chain swap. When
+ * combined with `toTokenSymbol` and `toAmount`, the final step label
+ * describes the swap destination instead of the send.
+ * @param options.toTokenSymbol - The symbol of the destination token
+ * (bridge/swap only).
+ * @param options.toAmount - The destination token amount (bridge/swap only).
  * @param options.sendAmount - The amount being sent (sendBundle flow).
  * @param options.sendSymbol - The symbol of the token being sent
  * (sendBundle flow).
@@ -404,6 +447,9 @@ export const getStepLabels = ({
   finalStepStatus,
   fromAmount,
   fromTokenSymbol,
+  isSwap,
+  toTokenSymbol,
+  toAmount,
   sendAmount,
   sendSymbol,
   gasSymbol,
@@ -416,6 +462,9 @@ export const getStepLabels = ({
   finalStepStatus: SignatureStepStatus;
   fromAmount?: string;
   fromTokenSymbol?: string;
+  isSwap?: boolean;
+  toTokenSymbol?: string;
+  toAmount?: string;
   sendAmount?: string;
   sendSymbol?: string;
   gasSymbol?: string;
@@ -473,6 +522,9 @@ export const getStepLabels = ({
       finalStepStatus,
       fromAmount,
       fromTokenSymbol,
+      isSwap,
+      toTokenSymbol,
+      toAmount,
       t,
     }),
   };
@@ -495,7 +547,10 @@ export const getStepLabels = ({
  * @param options.needsTwoConfirmations - Whether the flow renders two steps
  * (true) or a single step (false).
  * @param options.firstStepStatus - The display status of the first step.
- * @param options.spenderAddress - The spender contract address (bridge only).
+ * @param options.spenderAddress - The spender (grantee) address decoded from
+ * the approve calldata (bridge only).
+ * @param options.approvalTokenAddress - The token contract being approved
+ * (bridge only).
  * @param options.toAddress - The destination address.
  * @param options.t - The i18n translation function.
  * @returns An object containing optional `firstStepDescription` and
@@ -506,6 +561,7 @@ export const getStepDescriptions = ({
   needsTwoConfirmations,
   firstStepStatus,
   spenderAddress,
+  approvalTokenAddress,
   toAddress,
   t,
 }: {
@@ -513,6 +569,7 @@ export const getStepDescriptions = ({
   needsTwoConfirmations: boolean;
   firstStepStatus: SignatureStepStatus;
   spenderAddress?: string;
+  approvalTokenAddress?: string;
   toAddress?: string;
   t: ReturnType<typeof useI18nContext>;
 }): {
@@ -539,6 +596,7 @@ export const getStepDescriptions = ({
     firstStepDescription: getFirstStepDescription({
       firstStepStatus,
       spenderAddress,
+      approvalTokenAddress,
       t,
     }),
     finalStepDescription: getFinalStepDescription({ toAddress, t }),
@@ -712,8 +770,12 @@ export type HardwareWalletSignatureViewModelParams = {
   needsTwoConfirmations: boolean;
   toAddress?: string;
   spenderAddress?: string;
+  approvalTokenAddress?: string;
   fromAmount?: string;
   fromTokenSymbol?: string;
+  isSwap?: boolean;
+  toTokenSymbol?: string;
+  toAmount?: string;
   sendAmount?: string;
   sendSymbol?: string;
   gasSymbol?: string;
@@ -758,8 +820,12 @@ export type HardwareWalletSignatureViewModel = {
  * @param params.needsTwoConfirmations
  * @param params.toAddress
  * @param params.spenderAddress
+ * @param params.approvalTokenAddress
  * @param params.fromAmount
  * @param params.fromTokenSymbol
+ * @param params.isSwap
+ * @param params.toTokenSymbol
+ * @param params.toAmount
  * @param params.sendAmount
  * @param params.sendSymbol
  * @param params.gasSymbol
@@ -779,8 +845,12 @@ export function getHardwareWalletSignatureViewModel({
   needsTwoConfirmations,
   toAddress,
   spenderAddress,
+  approvalTokenAddress,
   fromAmount,
   fromTokenSymbol,
+  isSwap,
+  toTokenSymbol,
+  toAmount,
   sendAmount,
   sendSymbol,
   gasSymbol,
@@ -803,6 +873,9 @@ export function getHardwareWalletSignatureViewModel({
     finalStepStatus,
     fromAmount,
     fromTokenSymbol,
+    isSwap,
+    toTokenSymbol,
+    toAmount,
     sendAmount,
     sendSymbol,
     gasSymbol,
@@ -813,6 +886,7 @@ export function getHardwareWalletSignatureViewModel({
     needsTwoConfirmations,
     firstStepStatus,
     spenderAddress,
+    approvalTokenAddress,
     toAddress,
     t,
   });

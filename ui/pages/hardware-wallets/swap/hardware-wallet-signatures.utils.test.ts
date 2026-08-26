@@ -518,6 +518,70 @@ describe('hardware-wallet-signatures utils', () => {
         }),
       ).toBe('hardwareSendAmount[1.5,ETH]');
     });
+
+    describe('swap destination', () => {
+      const swapBase = {
+        fromAmount: '10',
+        fromTokenSymbol: 'USDC',
+        isSwap: true,
+        toAmount: '9.9',
+        toTokenSymbol: 'USDT',
+        t,
+      };
+
+      it('returns swapped amounts when submitted', () => {
+        expect(
+          getFinalStepLabel({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.Submitted,
+            finalStepStatus: SignatureStepStatus.Complete,
+          }),
+        ).toBe('hardwareSwappedAmount[10,USDC,9.9,USDT]');
+      });
+
+      it('returns swapping amounts when active', () => {
+        expect(
+          getFinalStepLabel({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toBe('hardwareSwappingAmount[10,USDC,9.9,USDT]');
+      });
+
+      it('returns swap amounts when pending', () => {
+        expect(
+          getFinalStepLabel({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            finalStepStatus: SignatureStepStatus.Pending,
+          }),
+        ).toBe('hardwareSwapAmount[10,USDC,9.9,USDT]');
+      });
+
+      it('falls back to send labels when not a swap', () => {
+        expect(
+          getFinalStepLabel({
+            ...swapBase,
+            isSwap: false,
+            status: HardwareWalletSignatureStatus.Submitted,
+            finalStepStatus: SignatureStepStatus.Complete,
+          }),
+        ).toBe('hardwareSentAmount[10,USDC]');
+      });
+
+      it('falls back to send labels when destination token data is missing', () => {
+        expect(
+          getFinalStepLabel({
+            ...swapBase,
+            toAmount: undefined,
+            toTokenSymbol: undefined,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toBe('hardwareSendingAmount[10,USDC]');
+      });
+    });
   });
 
   describe('getStepLabels', () => {
@@ -695,6 +759,91 @@ describe('hardware-wallet-signatures utils', () => {
         });
       });
     });
+
+    describe('swap flow with destination token data', () => {
+      const swapBase = {
+        isSendBundleFlow: false,
+        needsTwoConfirmations: true,
+        fromAmount: '10',
+        fromTokenSymbol: 'USDC',
+        isSwap: true,
+        toAmount: '9.9',
+        toTokenSymbol: 'USDT',
+        t,
+      };
+
+      it('uses Swapped for the final step when submitted', () => {
+        expect(
+          getStepLabels({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.Submitted,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Complete,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[10,USDC]',
+          finalStepLabel: 'hardwareSwappedAmount[10,USDC,9.9,USDT]',
+        });
+      });
+
+      it('uses Swapping for the final step when active', () => {
+        expect(
+          getStepLabels({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[10,USDC]',
+          finalStepLabel: 'hardwareSwappingAmount[10,USDC,9.9,USDT]',
+        });
+      });
+
+      it('uses Swap for the final step when pending', () => {
+        expect(
+          getStepLabels({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            firstStepStatus: SignatureStepStatus.Active,
+            finalStepStatus: SignatureStepStatus.Pending,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApproveAmount[10,USDC]',
+          finalStepLabel: 'hardwareSwapAmount[10,USDC,9.9,USDT]',
+        });
+      });
+
+      it('keeps send labels for bridges even with destination token data', () => {
+        expect(
+          getStepLabels({
+            ...swapBase,
+            isSwap: false,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[10,USDC]',
+          finalStepLabel: 'hardwareSendingAmount[10,USDC]',
+        });
+      });
+
+      it('keeps send labels when the destination amount is missing', () => {
+        expect(
+          getStepLabels({
+            ...swapBase,
+            toAmount: undefined,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[10,USDC]',
+          finalStepLabel: 'hardwareSendingAmount[10,USDC]',
+        });
+      });
+    });
   });
 
   describe('getStepDescriptions', () => {
@@ -747,6 +896,24 @@ describe('hardware-wallet-signatures utils', () => {
           }),
         ).toEqual({
           firstStepDescription: 'hardwareSpender[0xabcde...def12]',
+          finalStepDescription: 'hardwareToAddress[0x12345...45678]',
+        });
+      });
+
+      it('threads the approval token address into the first-step description', () => {
+        expect(
+          getStepDescriptions({
+            isSendBundleFlow: false,
+            needsTwoConfirmations: true,
+            firstStepStatus: SignatureStepStatus.Active,
+            spenderAddress,
+            approvalTokenAddress: toAddress,
+            toAddress,
+            t,
+          }),
+        ).toEqual({
+          firstStepDescription:
+            'hardwareApprovalTokenAndSpender[0x12345...45678,0xabcde...def12]',
           finalStepDescription: 'hardwareToAddress[0x12345...45678]',
         });
       });
@@ -808,6 +975,41 @@ describe('hardware-wallet-signatures utils', () => {
           t,
         }),
       ).toBe('hardwareSpender[0x12345...45678]');
+    });
+
+    it('returns token and spender text when both addresses are available', () => {
+      expect(
+        getFirstStepDescription({
+          firstStepStatus: SignatureStepStatus.Active,
+          spenderAddress: '0xabcdef1234567890abcdef1234567890abcdef12',
+          approvalTokenAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          t,
+        }),
+      ).toBe(
+        'hardwareApprovalTokenAndSpender[0x12345...45678,0xabcde...def12]',
+      );
+    });
+
+    it('falls back to spender-only text when the token address is missing', () => {
+      expect(
+        getFirstStepDescription({
+          firstStepStatus: SignatureStepStatus.Active,
+          spenderAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          approvalTokenAddress: undefined,
+          t,
+        }),
+      ).toBe('hardwareSpender[0x12345...45678]');
+    });
+
+    it('returns undefined when the approval calldata is undecodable (no spender)', () => {
+      expect(
+        getFirstStepDescription({
+          firstStepStatus: SignatureStepStatus.Active,
+          spenderAddress: undefined,
+          approvalTokenAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          t,
+        }),
+      ).toBeUndefined();
     });
 
     it('returns undefined when no spender address', () => {
