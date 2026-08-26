@@ -92,7 +92,7 @@ export function validateChainId(chainId: unknown): Hex {
     typeof chainId === 'string' ? chainId.toLowerCase() : null;
   if (!isPrefixedFormattedHexString(lowercasedChainId)) {
     throw rpcErrors.invalidParams({
-      message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${JSON.stringify(chainId)}`,
+      message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${String(chainId)}`,
     });
   }
 
@@ -100,7 +100,7 @@ export function validateChainId(chainId: unknown): Hex {
 
   if (!isSafeChainId(parseInt(validatedChainId, 16))) {
     throw rpcErrors.invalidParams({
-      message: `Invalid chain ID "${lowercasedChainId}": numerical value greater than max safe value. Received:\n${JSON.stringify(chainId)}`,
+      message: `Invalid chain ID "${lowercasedChainId}": numerical value greater than max safe value. Received:\n${String(chainId)}`,
     });
   }
 
@@ -123,9 +123,9 @@ export function validateSwitchEthereumChainParams(req: {
 
   if (Object.keys(otherParams).length > 0) {
     throw rpcErrors.invalidParams({
-      message: `Received unexpected keys on object parameter. Unsupported keys:\n${JSON.stringify(
-        Object.keys(otherParams),
-      )}`,
+      message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
+        otherParams,
+      ).join(',')}`,
     });
   }
 
@@ -159,14 +159,14 @@ export function validateAddEthereumChainParams(
 
   if (otherKeys.length > 0) {
     throw rpcErrors.invalidParams({
-      message: `Received unexpected keys on object parameter. Unsupported keys:\n${JSON.stringify(otherKeys)}`,
+      message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys.join(',')}`,
     });
   }
 
   const validatedChainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
     throw rpcErrors.invalidParams({
-      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${JSON.stringify(rpcUrls)}`,
+      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${String(rpcUrls)}`,
     });
   }
 
@@ -189,7 +189,7 @@ export function validateAddEthereumChainParams(
 
   if (!firstValidRPCUrl) {
     throw rpcErrors.invalidParams({
-      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${JSON.stringify(rpcUrls)}`,
+      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${String(rpcUrls)}`,
     });
   }
 
@@ -205,7 +205,7 @@ export function validateAddEthereumChainParams(
   if (nativeCurrency !== null) {
     if (typeof nativeCurrency !== 'object' || Array.isArray(nativeCurrency)) {
       throw rpcErrors.invalidParams({
-        message: `Expected null or object 'nativeCurrency'. Received:\n${JSON.stringify(nativeCurrency)}`,
+        message: `Expected null or object 'nativeCurrency'. Received:\n${String(nativeCurrency)}`,
       });
     }
     if (nativeCurrency.decimals !== 18) {
