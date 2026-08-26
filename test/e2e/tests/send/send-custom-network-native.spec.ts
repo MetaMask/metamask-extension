@@ -14,6 +14,7 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import { prepareCustomNetwork } from '../../helpers/custom-network-harness';
 import { login } from '../../page-objects/flows/login.flow';
+import { SwapAndBridgeErrorUi } from '../../page-objects/components/swap-and-bridge-error-ui';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -75,6 +76,7 @@ describe('Send native on custom network', function () {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
         const transactionConfirmation = new TransactionConfirmation(driver);
+        const swapAndBridgeErrorUi = new SwapAndBridgeErrorUi(driver);
         const activityTab = new ActivityTab(driver);
 
         await homePage.startSendFlow();
@@ -82,12 +84,12 @@ describe('Send native on custom network', function () {
         await sendPage.selectToken(network.chainIdHex, network.nativeSymbol);
         await sendPage.fillRecipient({ recipientAddress: DEFAULT_RECIPIENT });
         await sendPage.fillAmount(SEND_AMOUNT);
-        await sendPage.checkSwapAndBridgeErrorUiIsAbsent();
+        await swapAndBridgeErrorUi.checkErrorUiIsAbsent();
         await sendPage.pressContinueButton();
 
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkWalletInitiatedHeadingTitle();
-        await transactionConfirmation.checkSwapAndBridgeErrorUiIsAbsent();
+        await swapAndBridgeErrorUi.checkErrorUiIsAbsent();
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
         await homePage.goToActivityList();

@@ -8,43 +8,57 @@ const notPresentGuards = {
 };
 
 /**
- * Shared Swap/Bridge quote-error UI locators. Send and confirmation can both
- * surface these banners when a same-chain native send is mis-routed.
+ * Shared Swap/Bridge quote-error UI. Send and confirmation can both surface
+ * these banners when a same-chain native send is mis-routed.
  */
-const swapAndBridgeBannerAlerts: RawLocator =
-  '[data-testid="bridge-banner-alerts"]';
+export class SwapAndBridgeErrorUi {
+  private readonly driver: Driver;
 
-const swapAndBridgeCtaButton: RawLocator = '[data-testid="bridge-cta-button"]';
+  private readonly swapAndBridgeBannerAlerts: RawLocator =
+    '[data-testid="bridge-banner-alerts"]';
 
-const swapAndBridgeFetchingQuotesLabel: RawLocator = {
-  tag: 'p',
-  text: 'Fetching quotes...',
-};
+  private readonly swapAndBridgeCtaButton: RawLocator =
+    '[data-testid="bridge-cta-button"]';
 
-const swapAndBridgeNoQuotes: RawLocator = '[data-testid="bridge-no-quotes"]';
+  private readonly swapAndBridgeFetchingQuotesLabel: RawLocator = {
+    tag: 'p',
+    text: 'Fetching quotes...',
+  };
 
-const swapsBannerTitle: RawLocator = '[data-testid="swaps-banner-title"]';
+  private readonly swapAndBridgeNoQuotes: RawLocator =
+    '[data-testid="bridge-no-quotes"]';
 
-/**
- * Asserts that Swap/Bridge quote-error UI is not shown.
- *
- * @param driver - WebDriver wrapper.
- */
-export async function assertSwapAndBridgeErrorUiIsAbsent(
-  driver: Driver,
-): Promise<void> {
-  await driver.assertElementNotPresent(
-    swapAndBridgeBannerAlerts,
-    notPresentGuards,
-  );
-  await driver.assertElementNotPresent(swapsBannerTitle, notPresentGuards);
-  await driver.assertElementNotPresent(swapAndBridgeNoQuotes, notPresentGuards);
-  await driver.assertElementNotPresent(
-    swapAndBridgeFetchingQuotesLabel,
-    notPresentGuards,
-  );
-  await driver.assertElementNotPresent(
-    swapAndBridgeCtaButton,
-    notPresentGuards,
-  );
+  private readonly swapsBannerTitle: RawLocator =
+    '[data-testid="swaps-banner-title"]';
+
+  constructor(driver: Driver) {
+    this.driver = driver;
+  }
+
+  /**
+   * Asserts that Swap/Bridge quote-error UI is not shown.
+   */
+  async checkErrorUiIsAbsent(): Promise<void> {
+    console.log('Checking swap/bridge error UI is absent');
+    await this.driver.assertElementNotPresent(
+      this.swapAndBridgeBannerAlerts,
+      notPresentGuards,
+    );
+    await this.driver.assertElementNotPresent(
+      this.swapsBannerTitle,
+      notPresentGuards,
+    );
+    await this.driver.assertElementNotPresent(
+      this.swapAndBridgeNoQuotes,
+      notPresentGuards,
+    );
+    await this.driver.assertElementNotPresent(
+      this.swapAndBridgeFetchingQuotesLabel,
+      notPresentGuards,
+    );
+    await this.driver.assertElementNotPresent(
+      this.swapAndBridgeCtaButton,
+      notPresentGuards,
+    );
+  }
 }
