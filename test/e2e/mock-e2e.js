@@ -606,6 +606,42 @@ async function setupMocking(
       };
     });
 
+  // CHOMP service details — fetched by the Money Account upgrade bootstrap
+  // on unlock whenever a test serves both the `moneyEnableMoneyAccount` and
+  // `moneyAccountVaultConfig` flags, so a valid default keeps such tests off
+  // the live network. The chain matches the Monad chain id the vault config
+  // carries.
+  await server
+    .forGet('https://chomp.api.cx.metamask.io/v1/chomp')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          auth: { message: '' },
+          chains: {
+            '0x8f': {
+              autoDepositDelegate:
+                '0x0000000000000000000000000000000000000001',
+              protocol: {
+                vedaProtocol: {
+                  supportedTokens: [
+                    {
+                      tokenAddress:
+                        '0x00000000000000000000000000000000000000aa',
+                      tokenDecimals: 6,
+                    },
+                  ],
+                  adapterAddress:
+                    '0x0000000000000000000000000000000000000002',
+                  intentTypes: ['cash-deposit', 'cash-withdrawal'],
+                },
+              },
+            },
+          },
+        },
+      };
+    });
+
   // Account link
   const accountLinkRegex =
     /^https:\/\/etherscan.io\/address\/0x[a-fA-F0-9]{40}$/u;

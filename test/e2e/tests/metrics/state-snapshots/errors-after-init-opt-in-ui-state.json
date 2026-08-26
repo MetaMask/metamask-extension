@@ -426,6 +426,7 @@
     "unapprovedTypedMessagesCount": 0,
     "unconnectedAccountAlertShownOrigins": "object",
     "updateModalLastDismissedAt": null,
+    "upgradedAccounts": "object",
     "urlScanCache": "object",
     "use4ByteResolution": true,
     "useAddressBarEnsResolution": true,

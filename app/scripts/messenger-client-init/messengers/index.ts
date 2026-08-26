@@ -203,6 +203,8 @@ import {
   getMoneyAccountControllerInitMessenger,
   getMoneyAccountControllerMessenger,
 } from './money-account-controller-messenger';
+import { getMoneyAccountUpgradeControllerMessenger } from './money-account-upgrade-controller-messenger';
+import { getMoneyAccountUpgradeServiceMessenger } from './money-account-upgrade-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -283,6 +285,8 @@ export {
   getMoneyAccountControllerInitMessenger,
   getMoneyAccountControllerMessenger,
 } from './money-account-controller-messenger';
+export { getMoneyAccountUpgradeControllerMessenger } from './money-account-upgrade-controller-messenger';
+export { getMoneyAccountUpgradeServiceMessenger } from './money-account-upgrade-service-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
 export type { ComplianceServiceMessenger } from './compliance-service-messenger';
@@ -505,6 +509,14 @@ export const MESSENGER_FACTORIES = {
   MoneyAccountController: {
     getMessenger: getMoneyAccountControllerMessenger,
     getInitMessenger: getMoneyAccountControllerInitMessenger,
+  },
+  MoneyAccountUpgradeController: {
+    getMessenger: getMoneyAccountUpgradeControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MoneyAccountUpgradeService: {
+    getMessenger: getMoneyAccountUpgradeServiceMessenger,
+    getInitMessenger: noop,
   },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
