@@ -74,6 +74,7 @@ import { MultichainEditAccountsPage } from '../../../components/multichain-accou
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../shared/lib/multichain/scope-utils';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
@@ -116,7 +117,7 @@ export enum MultichainAccountsConnectPageMode {
 type SingleAccountCellProps = {
   accountGroupId: AccountGroupObject['id'];
   accountName: string;
-  balance: string;
+  balance?: string;
   onEdit: () => void;
   privacyMode?: boolean;
 };
@@ -552,13 +553,19 @@ export const MultichainAccountsConnectPage = ({
     const account = accountGroup
       ? wallets?.[accountGroup.walletId]?.groups?.[accountGroupId]
       : undefined;
-    const balance = account?.totalBalanceInUserCurrency ?? 0;
-    const currency = account?.userCurrency ?? '';
+    // Undefined when this group has no known balance yet, so the cell renders
+    // nothing instead of a misleading "$0.00".
+    const groupBalance = getAccountGroupDisplayBalance(account);
 
     return {
       accountGroupId,
       accountName: accountGroup?.metadata.name ?? 'Unknown Account',
-      balance: formatCurrencyWithMinThreshold(balance, currency),
+      balance:
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        ),
     };
   }, [
     selectedAccountGroupIds,

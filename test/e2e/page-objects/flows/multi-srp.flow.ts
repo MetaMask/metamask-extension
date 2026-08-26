@@ -1,6 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../constants';
-import AccountListPage from '../pages/account-list-page';
+import AccountListPage from '../pages/accounts/list-page';
 import TokensTab from '../pages/home/tokens-tab';
 import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';

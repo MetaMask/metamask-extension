@@ -76,7 +76,10 @@ const ShieldSubscriptionApproveInfo = () => {
   }
 
   return (
-    <Box paddingTop={4}>
+    <Box
+      paddingTop={4}
+      data-testid="parent-selector-shield-subscription-approve-page"
+    >
       <SubscriptionDetails showTrial={!isTrialed} productPrice={productPrice} />
       <EstimatedChanges
         approvalAmount={approvalAmount}

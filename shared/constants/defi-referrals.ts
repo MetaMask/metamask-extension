@@ -29,6 +29,8 @@ export type DefiReferralPartnerConfig = {
   referralUrl: string;
   /** URL for link in the consent UI description */
   learnMoreUrl: string;
+  /** Hero image shown on the referral consent screen */
+  referralImageUrl: string;
   /** Approval type string for ApprovalController */
   approvalType: string;
   /** Connection flow prior to showing the referral screen */
@@ -54,6 +56,7 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     origin: 'https://app.hyperliquid.xyz',
     referralUrl: 'https://app.hyperliquid.xyz/join/MMREFCSI',
     learnMoreUrl: 'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals',
+    referralImageUrl: './images/hyperliquid-referral.png',
     approvalType: 'hyperliquid_referral_consent',
     connectionFlow: 'permissions',
   },
@@ -63,6 +66,7 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     origin: 'https://app.gmx.io',
     referralUrl: 'https://app.gmx.io/#/referrals/?ref=MMREFCSI2',
     learnMoreUrl: 'https://docs.gmx.io/docs/referrals/',
+    referralImageUrl: './images/gmx-referral.png',
     approvalType: 'gmx_referral_consent',
     connectionFlow: 'permissions',
   },
@@ -74,6 +78,7 @@ export const DEFI_REFERRAL_PARTNERS: Record<
       'https://www.asterdex.com/en/trade/pro/futures/BTCUSDT?ref=82636D',
     learnMoreUrl:
       'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
+    referralImageUrl: './images/asterdex-referral.png',
     approvalType: 'asterdex_referral_consent',
     connectionFlow: 'permissions_then_signature',
   },
@@ -83,6 +88,7 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     origin: 'https://omni.variational.io',
     referralUrl: 'https://omni.variational.io?ref=OMNIMETAMASK',
     learnMoreUrl: 'https://docs.variational.io/omni/rewards/referrals',
+    referralImageUrl: './images/variational-referral.png',
     approvalType: 'variational_referral_consent',
     connectionFlow: 'permissions',
     requiredChainId: '0xa4b1', // Arbitrum
