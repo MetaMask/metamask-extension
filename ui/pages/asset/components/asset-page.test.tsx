@@ -424,6 +424,15 @@ describe('AssetPage', () => {
     },
   } as const;
 
+  it('renders token decimals with a dedicated test id', () => {
+    const { getByTestId } = renderWithProvider(
+      <AssetPage asset={token} optionsButton={null} />,
+      store,
+    );
+
+    expect(getByTestId('asset-token-decimals')).toHaveTextContent('18');
+  });
+
   it('should not show a modal when token passed in props is not an ERC721', () => {
     renderWithProvider(<AssetPage asset={token} optionsButton={null} />, store);
     const actions = store.getActions();

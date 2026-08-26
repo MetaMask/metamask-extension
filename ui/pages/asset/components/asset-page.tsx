@@ -664,6 +664,7 @@ const AssetPage = ({
                             <Text
                               variant={TextVariant.BodyMd}
                               fontWeight={FontWeight.Medium}
+                              data-testid="asset-token-decimals"
                             >
                               {asset.decimals}
                             </Text>,

@@ -139,8 +139,16 @@ class TokensTab extends HomePage {
   private readonly tokenConfirmListItem =
     '.import-tokens-modal__confirm-token-list-item-wrapper';
 
+  private readonly tokenDecimalsInDetails =
+    '[data-testid="asset-token-decimals"]';
+
   private readonly tokenDecimalsInput =
     '[data-testid="import-tokens-modal-custom-decimals"]';
+
+  private readonly tokenDecimalsLabelInDetails = {
+    text: 'Token decimal',
+    tag: 'p',
+  };
 
   private readonly tokenDecimalsTitle = {
     css: '.mm-label',
@@ -387,12 +395,10 @@ class TokensTab extends HomePage {
    */
   async checkTokenDecimalsInDetails(decimals: number): Promise<void> {
     console.log(`Verifying token decimal ${decimals} on asset details`);
+    await this.driver.waitForSelector(this.tokenDecimalsLabelInDetails);
     await this.driver.waitForSelector({
-      text: 'Token decimal',
-      tag: 'p',
-    });
-    await this.driver.waitForSelector({
-      xpath: `//p[normalize-space()='Token decimal']/following-sibling::*[contains(normalize-space(), '${decimals}')]`,
+      css: this.tokenDecimalsInDetails,
+      text: String(decimals),
     });
   }
 
@@ -669,6 +675,19 @@ class TokensTab extends HomePage {
       `Checking token row "${tokenName}" does not contain "${unexpectedText}"`,
     );
     const row = await this.findTokenRowByName(tokenName);
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const amountElement = await row.findElement(
+            By.css(this.tokenAmountValue),
+          );
+          return (await amountElement.getText()).trim().length > 0;
+        } catch {
+          return false;
+        }
+      },
+      { timeout: this.driver.timeout, interval: 100 },
+    );
     assert.ok(
       !(await row.getText()).includes(unexpectedText),
       `Expected "${tokenName}" row not to contain "${unexpectedText}"`,
