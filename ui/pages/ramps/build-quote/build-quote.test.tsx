@@ -243,6 +243,27 @@ describe('RampsBuildQuoteScreen', () => {
     expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
   });
 
+  it('does not fetch a quote for a stale debounced amount', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    fireEvent.change(screen.getByTestId('ramps-build-quote-amount-input'), {
+      target: { value: '25' },
+    });
+    fireEvent.change(screen.getByTestId('ramps-build-quote-amount-input'), {
+      target: { value: '100' },
+    });
+
+    expect(useRampsQuotes).not.toHaveBeenCalledWith(
+      expect.objectContaining({ amount: 25 }),
+    );
+  });
+
   it('opens the provider widget via background watch and returns home on continue', async () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
