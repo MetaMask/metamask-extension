@@ -1389,6 +1389,29 @@
         "@metamask/eth-money-keyring>@metamask/keyring-sdk>ethereum-cryptography": true
       }
     },
+    "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring": {
+      "globals": {
+        "Buffer.concat": true,
+        "Buffer.from": true,
+        "Buffer.isBuffer": true,
+        "TextEncoder": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography' reexports from '@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/scure-bip39": true,
+        "@metamask/utils": true,
+        "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": true,
+        "buffer": true,
+        "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography": true
+      }
+    },
     "@metamask/eth-json-rpc-filters": {
       "globals": {
         "console.error": true
@@ -1476,6 +1499,16 @@
     "@metamask/eth-money-keyring": {
       "packages": {
         "@metamask/eth-money-keyring>@metamask/eth-hd-keyring": true,
+        "@metamask/keyring-api": true,
+        "@metamask/eth-money-keyring>@metamask/keyring-sdk": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "async-mutex": true
+      }
+    },
+    "@metamask/money-account-controller>@metamask/eth-money-keyring": {
+      "packages": {
+        "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/superstruct": true,
         "async-mutex": true
@@ -1797,6 +1830,18 @@
         "@metamask/keyring-sdk>uuid": true
       }
     },
+    "@metamask/eth-money-keyring>@metamask/keyring-sdk": {
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-api": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/eth-money-keyring>@metamask/keyring-sdk>ethereum-cryptography": true,
+        "@metamask/eth-money-keyring>@metamask/keyring-sdk>uuid": true
+      }
+    },
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -1923,6 +1968,20 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "cockatiel": true
+      }
+    },
+    "@metamask/money-account-controller": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/accounts-controller": true,
+        "@metamask/base-controller": true,
+        "@metamask/money-account-controller>@metamask/eth-money-keyring": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/utils": true,
+        "async-mutex": true
       }
     },
     "@metamask/money-account-utils": {
@@ -3098,6 +3157,14 @@
         "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true
       }
     },
+    "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true
+      }
+    },
     "@metamask/eth-sig-util>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -3162,6 +3229,12 @@
       }
     },
     "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -3361,6 +3434,12 @@
         "TextEncoder": true
       }
     },
+    "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
     "@metamask/eth-money-keyring>@metamask/keyring-sdk>ethereum-cryptography>@scure/bip32>@scure/base": {
       "globals": {
         "TextDecoder": true,
@@ -3372,6 +3451,13 @@
         "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": true,
         "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true,
         "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@scure/base": true
+      }
+    },
+    "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": {
+      "packages": {
+        "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": true,
+        "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true,
+        "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@scure/base": true
       }
     },
     "@metamask/eth-money-keyring>@metamask/keyring-sdk>ethereum-cryptography>@scure/bip32": {
@@ -4862,6 +4948,16 @@
       },
       "packages": {
         "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true,
+        "module": true
+      },
+      "packages": {
+        "@metamask/money-account-controller>@metamask/eth-money-keyring>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/eth-sig-util>ethereum-cryptography": {
@@ -7039,6 +7135,11 @@
       }
     },
     "@metamask/keyring-sdk>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/eth-money-keyring>@metamask/keyring-sdk>uuid": {
       "globals": {
         "crypto": true
       }
