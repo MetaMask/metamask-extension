@@ -267,7 +267,6 @@
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
     "@ledgerhq/errors": "^6.21.0",
     "@trezor/connect-web": "~9.6.0",
-    "nanoid@npm:^5.1.5": "^3.3.18",
     "lodash": "patch:lodash@npm%3A4.18.1#~/.yarn/patches/lodash-npm-4.18.1-a64c3070ac.patch",
     "dompurify": "patch:dompurify@npm%3A3.4.13#~/.yarn/patches/dompurify-npm-3.4.13-71386e31f7.patch",
     "jest-process-manager/wait-on": "^9.0.5",
