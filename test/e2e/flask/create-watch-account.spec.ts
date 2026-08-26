@@ -4,8 +4,8 @@ import { NETWORK_CLIENT_ID } from '../constants';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import MultichainAccountDetailsPage from '../page-objects/pages/multichain/multichain-account-details-page';
-import AccountListPage from '../page-objects/pages/account-list-page';
+import AccountDetailsPage from '../page-objects/pages/accounts/details-page';
+import AccountListPage from '../page-objects/pages/accounts/list-page';
 import ExperimentalSettings from '../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
@@ -215,7 +215,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           await headerNavbar.openAccountDetailsModalDetailsTab();
 
           // check 'Show private key' button should not be displayed
-          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+          const accountDetailsPage = new AccountDetailsPage(driver);
           await accountDetailsPage.checkPageIsLoaded();
           await accountDetailsPage.checkShowPrivateKeyButtonIsNotDisplayed();
         },

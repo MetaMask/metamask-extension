@@ -1,7 +1,7 @@
 import { ERC_4337_ACCOUNT_SNAP_URL } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import SnapInstall from '../pages/dialog/snap-install';
-import SnapAccountAbstractionKeyringPage from '../pages/snap-account-abstraction-keyring-page';
+import SnapAccountAbstractionKeyringPage from '../pages/snaps/account-abstraction-keyring-page';
 
 /**
  * Go to the Account Abstraction Snap page and install the snap.
