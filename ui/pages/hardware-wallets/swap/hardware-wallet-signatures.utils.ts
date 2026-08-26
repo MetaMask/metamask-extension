@@ -330,9 +330,50 @@ export const getFinalStepLabel = ({
 };
 
 /**
- * Returns the description text for the first (approval) step in the signature
- * progress indicator. Shows error states, or the token contract and spender
- * (grantee) addresses decoded from the approve calldata.
+ * Structured description for a signature step. Each defined field renders as
+ * its own line beneath the step label, in a fixed order (see
+ * {@link getSignatureStepDescriptionLines}).
+ */
+export type SignatureStepDescription = {
+  /** Localized error message, shown instead of any detail lines. */
+  error?: string;
+  /** Localized "Token: …" line (approval flow). */
+  token?: string;
+  /** Localized "Spender: …" line (approval flow). */
+  spender?: string;
+  /** Localized "To: …" line (send flow). */
+  to?: string;
+};
+
+/**
+ * Flattens a signature-step description into ordered display lines. Error
+ * text replaces detail lines; otherwise lines render token, spender, then
+ * to. Returns an empty array when there is nothing to display.
+ *
+ * @param description - The structured description to flatten.
+ * @returns The ordered display lines.
+ */
+export function getSignatureStepDescriptionLines(
+  description: SignatureStepDescription | undefined,
+): string[] {
+  if (!description) {
+    return [];
+  }
+
+  if (description.error) {
+    return [description.error];
+  }
+
+  return [description.token, description.spender, description.to].filter(
+    (line): line is string => Boolean(line),
+  );
+}
+
+/**
+ * Returns the structured description for the first (approval) step in the
+ * signature progress indicator. Shows error states, or the token contract
+ * and spender (grantee) addresses decoded from the approve calldata — each
+ * on its own line.
  *
  * @param options - Configuration object.
  * @param options.firstStepStatus - The display status of the first step.
@@ -340,7 +381,7 @@ export const getFinalStepLabel = ({
  * the approve calldata, if available.
  * @param options.approvalTokenAddress - The token contract being approved.
  * @param options.t - The i18n translation function.
- * @returns The localized description string, or undefined.
+ * @returns The structured description, or undefined.
  */
 export const getFirstStepDescription = ({
   firstStepStatus,
@@ -352,39 +393,43 @@ export const getFirstStepDescription = ({
   spenderAddress?: string;
   approvalTokenAddress?: string;
   t: ReturnType<typeof useI18nContext>;
-}) => {
+}): SignatureStepDescription | undefined => {
   if (firstStepStatus === SignatureStepStatus.Rejected) {
-    return t('hardwareRejected');
+    return { error: t('hardwareRejected') };
   }
 
   if (firstStepStatus === SignatureStepStatus.Disconnected) {
-    return t('hardwareReconnectDevice');
+    return { error: t('hardwareReconnectDevice') };
   }
 
   if (firstStepStatus === SignatureStepStatus.Failed) {
-    return t('transactionFailed');
+    return { error: t('transactionFailed') };
   }
 
   if (spenderAddress) {
-    return approvalTokenAddress
-      ? t('hardwareApprovalTokenAndSpender', [
-          shortenAddress(approvalTokenAddress),
-          shortenAddress(spenderAddress),
-        ])
-      : t('hardwareSpender', [shortenAddress(spenderAddress)]);
+    return {
+      ...(approvalTokenAddress
+        ? {
+            token: t('hardwareToken', [
+              shortenAddress(approvalTokenAddress),
+            ]),
+          }
+        : {}),
+      spender: t('hardwareSpender', [shortenAddress(spenderAddress)]),
+    };
   }
 
   return undefined;
 };
 
 /**
- * Returns the description text for the final (send) step, showing the
+ * Returns the structured description for the final (send) step, showing the
  * destination address.
  *
  * @param options - Configuration object.
  * @param options.toAddress - The destination address, if available.
  * @param options.t - The i18n translation function.
- * @returns The localized description string, or undefined.
+ * @returns The structured description, or undefined.
  */
 export const getFinalStepDescription = ({
   toAddress,
@@ -392,12 +437,12 @@ export const getFinalStepDescription = ({
 }: {
   toAddress?: string;
   t: ReturnType<typeof useI18nContext>;
-}) => {
+}): SignatureStepDescription | undefined => {
   if (!toAddress) {
     return undefined;
   }
 
-  return t('hardwareToAddress', [shortenAddress(toAddress)]);
+  return { to: t('hardwareToAddress', [shortenAddress(toAddress)]) };
 };
 
 /**
@@ -554,7 +599,7 @@ export const getStepLabels = ({
  * @param options.toAddress - The destination address.
  * @param options.t - The i18n translation function.
  * @returns An object containing optional `firstStepDescription` and
- * `finalStepDescription` strings (either may be `undefined`).
+ * `finalStepDescription` structured descriptions (either may be `undefined`).
  */
 export const getStepDescriptions = ({
   isSendBundleFlow,
@@ -573,8 +618,8 @@ export const getStepDescriptions = ({
   toAddress?: string;
   t: ReturnType<typeof useI18nContext>;
 }): {
-  firstStepDescription?: string;
-  finalStepDescription?: string;
+  firstStepDescription?: SignatureStepDescription;
+  finalStepDescription?: SignatureStepDescription;
 } => {
   if (isSendBundleFlow) {
     // Two-step sendBundle: destination shows on the first (SEND) step.
@@ -794,8 +839,8 @@ export type HardwareWalletSignatureViewModel = {
   finalStepStatus: SignatureStepStatus;
   firstStepLabel: string;
   finalStepLabel: string;
-  firstStepDescription?: string;
-  finalStepDescription?: string;
+  firstStepDescription?: SignatureStepDescription;
+  finalStepDescription?: SignatureStepDescription;
   isRetryable: boolean;
   showStuckRetryButton: boolean;
   showFooter: boolean;

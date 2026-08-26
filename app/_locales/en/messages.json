@@ -4373,10 +4373,6 @@
     "message": "Almost there! Confirm on your device again",
     "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
   },
-  "hardwareApprovalTokenAndSpender": {
-    "message": "Token: $1, Spender: $2",
-    "description": "Shows the token contract and the spender being granted approval for a hardware-wallet bridge approval signature. $1 is the shortened token address, $2 is the shortened spender address."
-  },
   "hardwareApproveAmount": {
     "message": "Approve $1 $2",
     "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
@@ -4432,6 +4428,10 @@
   "hardwareToAddress": {
     "message": "To: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "Token: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "You rejected this transaction on your device",

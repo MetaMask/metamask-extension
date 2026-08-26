@@ -426,12 +426,12 @@ describe('useHardwareWalletSignatures', () => {
         );
       });
 
-      expect(result.current.stepList.firstStepDescription).toBe(
-        'To: 0x22222...22222',
-      );
-      expect(result.current.stepList.firstStepDescription).not.toContain(
-        '0xa0b86',
-      );
+      expect(result.current.stepList.firstStepDescription).toStrictEqual({
+        to: 'To: 0x22222...22222',
+      });
+      expect(
+        result.current.stepList.firstStepDescription?.to,
+      ).not.toContain('0xa0b86');
     });
 
     it('marks the flow failed when the pending approval is gone', async () => {
@@ -918,14 +918,15 @@ describe('useHardwareWalletSignatures', () => {
 
       const { result } = await renderUseHardwareWalletSignaturesAndFlush();
 
-      expect(result.current.stepList.firstStepDescription).toBe(
-        'Token: 0xa0b86...6eb48, Spender: 0xB9035...8ca0e',
-      );
+      expect(result.current.stepList.firstStepDescription).toStrictEqual({
+        token: 'Token: 0xa0b86...6eb48',
+        spender: 'Spender: 0xB9035...8ca0e',
+      });
       // The spender is decoded from the calldata args, not from
       // `approval.to` (which is the token contract).
-      expect(result.current.stepList.firstStepDescription).not.toContain(
-        'Spender: 0xa0b86...6eb48',
-      );
+      expect(
+        result.current.stepList.firstStepDescription?.spender,
+      ).not.toBe('Spender: 0xa0b86...6eb48');
     });
 
     it('labels the final step with the swap destination for same-chain quotes', async () => {

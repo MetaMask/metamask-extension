@@ -19,6 +19,7 @@ import {
   getStepLabels,
   getFirstStepDescription,
   getFinalStepDescription,
+  getSignatureStepDescriptionLines,
   isAwaitingSignature,
   isErrorStepStatus,
   isQrHardwareSignRequest,
@@ -861,7 +862,7 @@ describe('hardware-wallet-signatures utils', () => {
             t,
           }),
         ).toEqual({
-          firstStepDescription: 'hardwareToAddress[0x12345...45678]',
+          firstStepDescription: { to: 'hardwareToAddress[0x12345...45678]' },
           finalStepDescription: undefined,
         });
       });
@@ -878,7 +879,7 @@ describe('hardware-wallet-signatures utils', () => {
             t,
           }),
         ).toEqual({
-          finalStepDescription: 'hardwareToAddress[0x12345...45678]',
+          finalStepDescription: { to: 'hardwareToAddress[0x12345...45678]' },
         });
       });
     });
@@ -895,8 +896,8 @@ describe('hardware-wallet-signatures utils', () => {
             t,
           }),
         ).toEqual({
-          firstStepDescription: 'hardwareSpender[0xabcde...def12]',
-          finalStepDescription: 'hardwareToAddress[0x12345...45678]',
+          firstStepDescription: { spender: 'hardwareSpender[0xabcde...def12]' },
+          finalStepDescription: { to: 'hardwareToAddress[0x12345...45678]' },
         });
       });
 
@@ -912,9 +913,11 @@ describe('hardware-wallet-signatures utils', () => {
             t,
           }),
         ).toEqual({
-          firstStepDescription:
-            'hardwareApprovalTokenAndSpender[0x12345...45678,0xabcde...def12]',
-          finalStepDescription: 'hardwareToAddress[0x12345...45678]',
+          firstStepDescription: {
+            token: 'hardwareToken[0x12345...45678]',
+            spender: 'hardwareSpender[0xabcde...def12]',
+          },
+          finalStepDescription: { to: 'hardwareToAddress[0x12345...45678]' },
         });
       });
 
@@ -929,8 +932,8 @@ describe('hardware-wallet-signatures utils', () => {
             t,
           }),
         ).toEqual({
-          firstStepDescription: 'hardwareRejected',
-          finalStepDescription: 'hardwareToAddress[0x12345...45678]',
+          firstStepDescription: { error: 'hardwareRejected' },
+          finalStepDescription: { to: 'hardwareToAddress[0x12345...45678]' },
         });
       });
     });
@@ -944,7 +947,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('hardwareRejected');
+      ).toStrictEqual({ error: 'hardwareRejected' });
     });
 
     it('returns reconnect text', () => {
@@ -954,7 +957,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('hardwareReconnectDevice');
+      ).toStrictEqual({ error: 'hardwareReconnectDevice' });
     });
 
     it('returns failed text', () => {
@@ -964,7 +967,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('transactionFailed');
+      ).toStrictEqual({ error: 'transactionFailed' });
     });
 
     it('returns spender address text', () => {
@@ -974,10 +977,10 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x1234567890abcdef1234567890abcdef12345678',
           t,
         }),
-      ).toBe('hardwareSpender[0x12345...45678]');
+      ).toStrictEqual({ spender: 'hardwareSpender[0x12345...45678]' });
     });
 
-    it('returns token and spender text when both addresses are available', () => {
+    it('returns token and spender on separate lines when both addresses are available', () => {
       expect(
         getFirstStepDescription({
           firstStepStatus: SignatureStepStatus.Active,
@@ -985,9 +988,10 @@ describe('hardware-wallet-signatures utils', () => {
           approvalTokenAddress: '0x1234567890abcdef1234567890abcdef12345678',
           t,
         }),
-      ).toBe(
-        'hardwareApprovalTokenAndSpender[0x12345...45678,0xabcde...def12]',
-      );
+      ).toStrictEqual({
+        token: 'hardwareToken[0x12345...45678]',
+        spender: 'hardwareSpender[0xabcde...def12]',
+      });
     });
 
     it('falls back to spender-only text when the token address is missing', () => {
@@ -998,7 +1002,7 @@ describe('hardware-wallet-signatures utils', () => {
           approvalTokenAddress: undefined,
           t,
         }),
-      ).toBe('hardwareSpender[0x12345...45678]');
+      ).toStrictEqual({ spender: 'hardwareSpender[0x12345...45678]' });
     });
 
     it('returns undefined when the approval calldata is undecodable (no spender)', () => {
@@ -1030,7 +1034,7 @@ describe('hardware-wallet-signatures utils', () => {
           toAddress: '0x1234567890abcdef1234567890abcdef12345678',
           t,
         }),
-      ).toBe('hardwareToAddress[0x12345...45678]');
+      ).toStrictEqual({ to: 'hardwareToAddress[0x12345...45678]' });
     });
 
     it('returns undefined when no to address', () => {
@@ -1040,6 +1044,39 @@ describe('hardware-wallet-signatures utils', () => {
           t,
         }),
       ).toBeUndefined();
+    });
+  });
+
+  describe('getSignatureStepDescriptionLines', () => {
+    it('returns an empty array for undefined', () => {
+      expect(getSignatureStepDescriptionLines(undefined)).toStrictEqual([]);
+    });
+
+    it('returns only the error line when present', () => {
+      expect(
+        getSignatureStepDescriptionLines({
+          error: 'Rejected',
+          token: 'Token: 0x1',
+          spender: 'Spender: 0x2',
+          to: 'To: 0x3',
+        }),
+      ).toStrictEqual(['Rejected']);
+    });
+
+    it('flattens detail lines in token, spender, to order', () => {
+      expect(
+        getSignatureStepDescriptionLines({
+          token: 'Token: 0x1',
+          spender: 'Spender: 0x2',
+          to: 'To: 0x3',
+        }),
+      ).toStrictEqual(['Token: 0x1', 'Spender: 0x2', 'To: 0x3']);
+    });
+
+    it('omits missing detail lines', () => {
+      expect(
+        getSignatureStepDescriptionLines({ spender: 'Spender: 0x2' }),
+      ).toStrictEqual(['Spender: 0x2']);
     });
   });
 
