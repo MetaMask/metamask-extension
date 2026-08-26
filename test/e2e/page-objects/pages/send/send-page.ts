@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { assertSwapAndBridgeErrorUiIsAbsent } from '../../components/swap-and-bridge-error-ui';
 
 /**
  * Multichain send flow: asset, recipient, amount, and continue.
@@ -102,20 +103,6 @@ class SendPage {
   private readonly solanaNetwork = {
     text: 'Solana',
   };
-
-  private readonly swapAndBridgeBannerAlerts =
-    '[data-testid="bridge-banner-alerts"]';
-
-  private readonly swapAndBridgeCtaButton = '[data-testid="bridge-cta-button"]';
-
-  private readonly swapAndBridgeFetchingQuotesLabel = {
-    tag: 'p',
-    text: 'Fetching quotes...',
-  };
-
-  private readonly swapAndBridgeNoQuotes = '[data-testid="bridge-no-quotes"]';
-
-  private readonly swapsBannerTitle = '[data-testid="swaps-banner-title"]';
 
   private readonly tokenAsset = (chainId: string, symbol: string) => {
     return {
@@ -306,15 +293,7 @@ class SendPage {
    */
   async checkSwapAndBridgeErrorUiIsAbsent(): Promise<void> {
     console.log('Checking swap/bridge error UI is absent on send page');
-    await this.driver.assertElementNotPresent(this.swapAndBridgeBannerAlerts, {
-      waitAtLeastGuard: 1000,
-    });
-    await this.driver.assertElementNotPresent(this.swapsBannerTitle);
-    await this.driver.assertElementNotPresent(this.swapAndBridgeNoQuotes);
-    await this.driver.assertElementNotPresent(
-      this.swapAndBridgeFetchingQuotesLabel,
-    );
-    await this.driver.assertElementNotPresent(this.swapAndBridgeCtaButton);
+    await assertSwapAndBridgeErrorUiIsAbsent(this.driver);
   }
 
   /**
