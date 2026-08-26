@@ -8,13 +8,13 @@ import {
 import { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
 import { OperationSafener } from './operation-safener';
 
-/** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
-const RELOAD_AFTER_EVACUATE_MS = 150;
-
 type SafePersistOptions = {
   /** Whether to flush pending split-state persistence without waiting for the debounce. */
   flush?: boolean;
 };
+
+/** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
+const RELOAD_AFTER_EVACUATE_MS = 150;
 
 /**
  * Creates a request-safe reload mechanism for the given persistence manager.
