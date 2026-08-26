@@ -121,9 +121,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   });
   const debouncedAmountLimitError = useDebouncedValue(amountLimitError);
   const displayedAmountLimitError =
-    amountLimitError === debouncedAmountLimitError
-      ? amountLimitError
-      : null;
+    amountLimitError === debouncedAmountLimitError ? amountLimitError : null;
 
   const quoteFetchEnabled = Boolean(
     walletAddress &&
@@ -193,7 +191,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const displayedError =
     displayedAmountLimitError ??
     (displayedQuoteError && providerQuoteError === displayedQuoteError
-      ? getProviderLimitMessage({
+      ? (getProviderLimitMessage({
           provider: selectedProvider,
           fiatCurrency: userRegion?.country?.currency,
           paymentMethodId: selectedPaymentMethod?.id,
@@ -202,7 +200,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           formatCurrency,
           t,
           backendError: providerQuoteError,
-        }) ?? t('rampsQuoteUnavailable')
+        }) ?? t('rampsQuoteUnavailable'))
       : displayedQuoteError);
 
   const paymentMethodLabel = useMemo(
@@ -324,9 +322,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     currencySymbol,
     amount,
     amountTextClassName: `text-[56px] font-normal leading-none ${
-      (continueError ?? displayedError)
-        ? 'text-error-default'
-        : 'text-default'
+      (continueError ?? displayedError) ? 'text-error-default' : 'text-default'
     }`,
     paymentMethodLabel,
     showPaymentMethodSpinner:
