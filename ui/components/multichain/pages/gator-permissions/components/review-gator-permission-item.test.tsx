@@ -777,7 +777,8 @@ describe('Permission List Item', () => {
         // Verify that when token metadata is loading, it shows a skeleton
         const skeletonSelector =
           'div[aria-hidden="true"][style*="width: 100px"]';
-        const skeletonCount = container.querySelectorAll(skeletonSelector).length;
+        const skeletonCount =
+          container.querySelectorAll(skeletonSelector).length;
         expect(container.querySelector(skeletonSelector)).toBeInTheDocument();
 
         // The amount label should still be in the DOM but wrapped by skeleton
