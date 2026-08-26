@@ -71,7 +71,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-08-18
+ * Production defaults last synced: 2026-08-25
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -990,7 +990,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   confirmations_enforced_simulations: {
     inProd: true,
     name: 'confirmations_enforced_simulations',
-    productionDefault: {},
+    productionDefault: {
+      versions: {
+        '0.0.0': {
+          enabled: false,
+        },
+        '13.45.0': {
+          enabled: true,
+        },
+      },
+    },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -1157,18 +1166,12 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               gaslessEnabled: true,
             },
           },
-          depositLimit: {
-            moneyAccountDeposit: 500000,
-          },
           prefilledAmount: {
             default: {
               enabled: false,
             },
             overrides: {
               musdConversion: {
-                enabled: false,
-              },
-              moneyAccountDeposit: {
                 enabled: false,
               },
             },
@@ -1188,9 +1191,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               gaslessEnabled: true,
             },
           },
-          depositLimit: {
-            moneyAccountDeposit: 500000,
-          },
           prefilledAmount: {
             default: {
               enabled: false,
@@ -1198,9 +1198,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             overrides: {
               musdConversion: {
                 enabled: false,
-              },
-              moneyAccountDeposit: {
-                enabled: true,
               },
             },
           },
@@ -1270,35 +1267,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
                 '0xe708': [
                   '0x0000000000000000000000000000000000000000',
                   '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-                ],
-              },
-            },
-            moneyAccountWithdraw: {
-              enabled: true,
-              tokens: {
-                '0x38': [
-                  '0x0000000000000000000000000000000000000000',
-                  '0x55d398326f99059fF775485246999027B3197955',
-                  '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                ],
-                '0x89': ['0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'],
-                '0x8f': ['0xacA92E438df0B2401fF60dA7E4337B687a2435DA'],
-                '0xa4b1': ['0xaf88d065e77c8cC2239327C5EDb3A432268e5831'],
-                '0xe708': [
-                  '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-                  '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
-                ],
-                '0x1': [
-                  '0x0000000000000000000000000000000000000000',
-                  '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-                  '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-                  '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-                  '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-                  '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-                ],
-                '0x2105': [
-                  '0x0000000000000000000000000000000000000000',
-                  '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
                 ],
               },
             },
@@ -2466,6 +2434,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  earnMoneyEarningSectionEnabled: {
+    inProd: false,
+    name: 'earnMoneyEarningSectionEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   earnMusdConversionAssetOverviewCtaEnabled: {
     inProd: true,
     name: 'earnMusdConversionAssetOverviewCtaEnabled',
@@ -2521,8 +2500,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'earnMusdConversionTokenListItemCtaEnabled',
     productionDefault: {
-      enabled: true,
-      minimumVersion: '13.44.0',
+      enabled: false,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2762,8 +2741,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'extensionUXSearch',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '13.41.0',
+      enabled: true,
+      minimumVersion: '13.45.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2831,16 +2810,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  moneyAccountGeoBlockedCountries: {
-    inProd: true,
-    name: 'moneyAccountGeoBlockedCountries',
-    productionDefault: {
-      blockedRegions: ['GB'],
-    },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
   moneyAccountVaultConfig: {
     inProd: true,
     name: 'moneyAccountVaultConfig',
@@ -2856,23 +2825,11 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
-    inProd: false,
-    name: MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
+  moneyEnableMoneyAccount: {
+    inProd: true,
+    name: 'moneyEnableMoneyAccount',
     productionDefault: {
       enabled: false,
-      minimumVersion: '0.0.0',
-    },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  [MONEY_EARNING_SECTION_ENABLED_FLAG_NAME]: {
-    inProd: false,
-    name: MONEY_EARNING_SECTION_ENABLED_FLAG_NAME,
-    productionDefault: {
-      enabled: false,
-      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3175,20 +3132,33 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  productSafetyScamQuestionnaireEnabled: {
-    inProd: true,
-    name: 'productSafetyScamQuestionnaireEnabled',
+  productSafetyScamQuestionnaireDomainList: {
+    inProd: false,
+    name: 'productSafetyScamQuestionnaireDomainList',
     productionDefault: [],
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
 
-  productSafetyScamQuestionnaireURLList: {
+  productSafetyScamQuestionnaireEnabled: {
     inProd: true,
-    name: 'productSafetyScamQuestionnaireURLList',
-    productionDefault: {
-      enabled: false,
-    },
+    name: 'productSafetyScamQuestionnaireEnabled',
+    productionDefault: [
+      {
+        name: 'control',
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+      },
+      {
+        name: 'treatment',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+      },
+    ],
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -3580,13 +3550,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: true,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
-  },
-  productSafetyScamQuestionnaireDomainList: {
-    name: 'productSafetyScamQuestionnaireDomainList',
-    type: FeatureFlagType.Remote,
-    inProd: false,
-    productionDefault: [],
-    status: FeatureFlagStatus.Active,
   },
 };
 /* eslint-enable @typescript-eslint/naming-convention */
