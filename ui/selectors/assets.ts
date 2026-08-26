@@ -92,6 +92,10 @@ import {
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
 import {
+  fromStateLog,
+  withStateLog,
+} from '../../shared/lib/selectors/dev-state-log';
+import {
   augmentAssetControllersState,
   filterExcludedAssets,
   filterExcludedTokenBalances,
@@ -928,7 +932,7 @@ const selectAssetsControllerStateForBalances = createSelector(
  * @param state - Redux state from which the required slices are derived.
  * @returns Aggregated balances structure for all wallets and groups.
  */
-export const selectBalanceForAllWallets = createDeepEqualSelector(
+const selectBalanceForAllWalletsFromState = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
     selectAssetsControllerStateForBalances,
@@ -984,13 +988,17 @@ export const selectBalanceForAllWallets = createDeepEqualSelector(
   },
 );
 
+export const selectBalanceForAllWallets = fromStateLog(
+  selectBalanceForAllWalletsFromState,
+);
+
 /**
  * Computes balance change for the currently selected account group.
  * Returns null when no group is selected.
  *
  * @param period - Balance change period.
  */
-export const selectBalanceChangeBySelectedAccountGroup = (
+const selectBalanceChangeBySelectedAccountGroupFromState = (
   period: BalanceChangePeriod,
 ) =>
   createSelector(
@@ -1053,6 +1061,10 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       );
     },
   );
+
+export const selectBalanceChangeBySelectedAccountGroup = (
+  period: BalanceChangePeriod,
+) => fromStateLog(selectBalanceChangeBySelectedAccountGroupFromState(period));
 
 /**
  * Creates an enabledNetworkMap from all non-test networks for balance calculations.
@@ -1124,7 +1136,7 @@ function getBalanceOrDefault(
  * @param state - Redux state containing account tree, balances, and assets.
  * @returns true if the account group has any non-zero token balances, false otherwise.
  */
-export const selectAccountGroupBalanceForEmptyState = createSelector(
+const selectAccountGroupBalanceForEmptyStateFromState = createSelector(
   [
     selectAccountTreeStateForBalances,
     selectAccountsStateForBalances,
@@ -1281,6 +1293,10 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
   },
 );
 
+export const selectAccountGroupBalanceForEmptyState = fromStateLog(
+  selectAccountGroupBalanceForEmptyStateFromState,
+);
+
 /**
  * Determines whether balance data has loaded for the selected account group.
  * A missing balance record means the wallet can still be hydrating, so the UI
@@ -1289,7 +1305,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
  * @param state - Redux state containing account tree, accounts, and balances.
  * @returns true if the account group has at least one mainnet balance record.
  */
-export const selectAccountGroupBalanceIsLoadedForEmptyState = createSelector(
+const selectAccountGroupBalanceIsLoadedForEmptyStateFromState = createSelector(
   [
     selectAccountTreeStateForBalances,
     selectAccountsStateForBalances,
@@ -1387,32 +1403,38 @@ export const selectAccountGroupBalanceIsLoadedForEmptyState = createSelector(
   },
 );
 
+export const selectAccountGroupBalanceIsLoadedForEmptyState = fromStateLog(
+  selectAccountGroupBalanceIsLoadedForEmptyStateFromState,
+);
+
 /**
  * Selects the selected account group's balance entry from the aggregated
  * balances output, returning a minimal fallback when not present.
  *
  * @param state - Redux state used to read selection and aggregated balances.
  */
-export const selectBalanceBySelectedAccountGroup = createSelector(
-  [selectAccountTreeStateForBalances, selectBalanceForAllWallets],
-  (accountTreeState, allBalances) => {
-    const selectedGroupId = accountTreeState?.selectedAccountGroup;
-    if (!selectedGroupId) {
-      return null;
-    }
-    const walletId = selectedGroupId.split('/')[0];
-    const wallet = allBalances.wallets[walletId] ?? null;
-    const { userCurrency } = allBalances;
-    if (!wallet?.groups[selectedGroupId]) {
-      return {
-        walletId,
-        groupId: selectedGroupId,
-        totalBalanceInUserCurrency: 0,
-        userCurrency,
-      };
-    }
-    return wallet.groups[selectedGroupId];
-  },
+export const selectBalanceBySelectedAccountGroup = fromStateLog(
+  createSelector(
+    [selectAccountTreeStateForBalances, selectBalanceForAllWallets],
+    (accountTreeState, allBalances) => {
+      const selectedGroupId = accountTreeState?.selectedAccountGroup;
+      if (!selectedGroupId) {
+        return null;
+      }
+      const walletId = selectedGroupId.split('/')[0];
+      const wallet = allBalances.wallets[walletId] ?? null;
+      const { userCurrency } = allBalances;
+      if (!wallet?.groups[selectedGroupId]) {
+        return {
+          walletId,
+          groupId: selectedGroupId,
+          totalBalanceInUserCurrency: 0,
+          userCurrency,
+        };
+      }
+      return wallet.groups[selectedGroupId];
+    },
+  ),
 );
 
 /**
@@ -1423,25 +1445,27 @@ export const selectBalanceBySelectedAccountGroup = createSelector(
  * @param state - Redux state object.
  * @returns Account group balance or null when no group is selected.
  */
-export const selectUnifiedBalanceBySelectedAccountGroup = createSelector(
-  [
-    selectAssetsControllerStateForBalances,
-    selectAccountTreeStateForBalances,
-    getEnabledNetworks,
-  ],
-  (assetsControllerState, accountTreeState, enabledNetworkMap) => {
-    const selectedGroupId = accountTreeState?.selectedAccountGroup;
-    if (!selectedGroupId) {
-      return null;
-    }
+export const selectUnifiedBalanceBySelectedAccountGroup = fromStateLog(
+  createSelector(
+    [
+      selectAssetsControllerStateForBalances,
+      selectAccountTreeStateForBalances,
+      getEnabledNetworks,
+    ],
+    (assetsControllerState, accountTreeState, enabledNetworkMap) => {
+      const selectedGroupId = accountTreeState?.selectedAccountGroup;
+      if (!selectedGroupId) {
+        return null;
+      }
 
-    return getUnifiedBalanceForAccountGroup(
-      augmentAssetControllersState(assetsControllerState),
-      accountTreeState,
-      selectedGroupId,
-      enabledNetworkMap,
-    );
-  },
+      return getUnifiedBalanceForAccountGroup(
+        augmentAssetControllersState(assetsControllerState),
+        accountTreeState,
+        selectedGroupId,
+        enabledNetworkMap,
+      );
+    },
+  ),
 );
 
 export const selectBalanceByAccountGroup = (groupId: string) =>
@@ -1490,7 +1514,7 @@ export const selectBalanceByWallet = (walletId: string) =>
 
 const getStateForAssetSelector = createSelector(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
-  (state: any) => state.metamask,
+  (state: any) => withStateLog(state).metamask,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
   (metamask: any) => {
     const initialState = {
