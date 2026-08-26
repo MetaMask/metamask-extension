@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTriggerMoneyUpgrade } from '../../../../../../hooks/money/use-trigger-money-upgrade';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
 import {
@@ -16,6 +17,11 @@ export const MoneyAccountDepositInfo = () => {
     symbol: MUSD_TOKEN.symbol,
     tokenAddress: MUSD_TOKEN_ADDRESS,
   });
+
+  // A deposit reached without visiting the Money home page must still ensure
+  // the account is upgraded, mirroring mobile's trigger on its confirmation
+  // stack.
+  useTriggerMoneyUpgrade({ enabled: true });
 
   return (
     <CustomAmountInfo
