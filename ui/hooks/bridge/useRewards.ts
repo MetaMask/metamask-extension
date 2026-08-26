@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -206,39 +206,31 @@ export const useRewardsWithQuote = ({
   );
   const { accounts: primaryWalletGroupAccounts } =
     usePrimaryWalletGroupAccounts();
-  // Per-account linked timestamps + current account's value. Updated during render
-  // when fromAddress / global timestamp change (avoids setState-in-effect).
-  const [accountLinkSync, setAccountLinkSync] = useState<{
-    fromAddress: string | null | undefined;
-    globalTimestamp: number | null;
-    currentTimestamp: number | null;
-    byAccount: Map<string, number | null>;
-  }>(() => ({
-    fromAddress: undefined,
-    globalTimestamp: null,
-    currentTimestamp: null,
-    byAccount: new Map(),
-  }));
-  if (
-    fromAddress !== accountLinkSync.fromAddress ||
-    rewardsAccountLinkedTimestamp !== accountLinkSync.globalTimestamp
-  ) {
-    const byAccount = new Map(accountLinkSync.byAccount);
-    let currentTimestamp: number | null = null;
-    if (fromAddress && rewardsAccountLinkedTimestamp !== null) {
-      byAccount.set(fromAddress, rewardsAccountLinkedTimestamp);
-      currentTimestamp = rewardsAccountLinkedTimestamp;
-    } else if (fromAddress) {
-      currentTimestamp = byAccount.get(fromAddress) ?? null;
-    }
-    setAccountLinkSync({
-      fromAddress,
-      globalTimestamp: rewardsAccountLinkedTimestamp,
-      currentTimestamp,
-      byAccount,
+  const accountLinkedTimestampsRef = useRef(new Map<string, number | null>());
+  const [currentAccountLinkedTimestamp, setCurrentAccountLinkedTimestamp] =
+    useState<number | null>(null);
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      if (!fromAddress) {
+        setCurrentAccountLinkedTimestamp(null);
+        return;
+      }
+
+      if (rewardsAccountLinkedTimestamp !== null) {
+        accountLinkedTimestampsRef.current.set(
+          fromAddress,
+          rewardsAccountLinkedTimestamp,
+        );
+        setCurrentAccountLinkedTimestamp(rewardsAccountLinkedTimestamp);
+        return;
+      }
+
+      setCurrentAccountLinkedTimestamp(
+        accountLinkedTimestampsRef.current.get(fromAddress) ?? null,
+      );
     });
-  }
-  const currentAccountLinkedTimestamp = accountLinkSync.currentTimestamp;
+  }, [fromAddress, rewardsAccountLinkedTimestamp]);
 
   // `debounce()` returns a new stateful function on every call, so it has to be
   // built inside a `useMemo` factory — passing it to `useCallback` would construct

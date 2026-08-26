@@ -192,6 +192,10 @@ import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger
 import { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 import { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 import { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
+import {
+  getMoneyAccountControllerInitMessenger,
+  getMoneyAccountControllerMessenger,
+} from './money-account-controller-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -260,6 +264,10 @@ export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger
 export { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 export { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 export { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
+export {
+  getMoneyAccountControllerInitMessenger,
+  getMoneyAccountControllerMessenger,
+} from './money-account-controller-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
 export type { ComplianceServiceMessenger } from './compliance-service-messenger';
@@ -474,6 +482,10 @@ export const MESSENGER_FACTORIES = {
   MoneyAccountBalanceService: {
     getMessenger: getMoneyAccountBalanceServiceMessenger,
     getInitMessenger: noop,
+  },
+  MoneyAccountController: {
+    getMessenger: getMoneyAccountControllerMessenger,
+    getInitMessenger: getMoneyAccountControllerInitMessenger,
   },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,

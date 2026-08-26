@@ -1,9 +1,12 @@
 import type { Json } from '@metamask/utils';
 import type { RemoteFeatureFlagsState } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
+  FALLBACK_MONEY_DEPOSIT_MIN_BALANCE,
   selectMoneyAccountDepositQuotePipelineEnabled,
   selectMoneyAccountFeatureEnabled,
   selectMoneyAccountVaultConfig,
+  selectMoneyEarningSectionEnabled,
+  selectMoneyDepositMinBalance,
   selectMoneyVaultApyRemoteConfig,
 } from './money-account-feature-flags';
 
@@ -53,6 +56,56 @@ describe('selectMoneyAccountFeatureEnabled', () => {
       selectMoneyAccountFeatureEnabled(
         mockState({
           moneyEnableMoneyAccount: {
+            enabled: true,
+            minimumVersion: '9999.0.0',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+});
+
+describe('selectMoneyEarningSectionEnabled', () => {
+  it('is true for an enabled, version-satisfied flag', () => {
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({
+          earnMoneyEarningSectionEnabled: {
+            enabled: true,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false for a disabled flag', () => {
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({
+          earnMoneyEarningSectionEnabled: {
+            enabled: false,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false when the flag is unserved or malformed', () => {
+    expect(selectMoneyEarningSectionEnabled(mockState())).toBe(false);
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({ earnMoneyEarningSectionEnabled: true }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false when the current version is below the flag minimum', () => {
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({
+          earnMoneyEarningSectionEnabled: {
             enabled: true,
             minimumVersion: '9999.0.0',
           },
@@ -132,6 +185,42 @@ describe('selectMoneyVaultApyRemoteConfig', () => {
         vaultApyFallback: undefined,
         vaultApyOverride: undefined,
       });
+    });
+  }
+});
+
+describe('selectMoneyDepositMinBalance', () => {
+  it('reads a numeric remote value', () => {
+    expect(
+      selectMoneyDepositMinBalance(
+        mockState({ earnMoneyDepositMinAssetBalance: 5 }),
+      ),
+    ).toBe(5);
+  });
+
+  it('accepts a numeric string', () => {
+    expect(
+      selectMoneyDepositMinBalance(
+        mockState({ earnMoneyDepositMinAssetBalance: '1.25' }),
+      ),
+    ).toBe(1.25);
+  });
+
+  const INVALID_MIN_BALANCES: [string, Json | undefined][] = [
+    ['an unserved value', undefined],
+    ['a negative value', -1],
+    ['a non-numeric value', 'invalid'],
+  ];
+
+  for (const [description, remoteValue] of INVALID_MIN_BALANCES) {
+    it(`uses the fallback for ${description}`, () => {
+      expect(
+        selectMoneyDepositMinBalance(
+          mockState({
+            earnMoneyDepositMinAssetBalance: remoteValue as Json,
+          }),
+        ),
+      ).toBe(FALLBACK_MONEY_DEPOSIT_MIN_BALANCE);
     });
   }
 });
