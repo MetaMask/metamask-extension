@@ -25,6 +25,26 @@
         "Weakmap": true
       }
     },
+    "@ledgerhq/device-management-kit": {
+      "globals": {
+        "document": false,
+        "document.createElement": false,
+        "fetch": false,
+        "fetch.bind": false,
+        "vi.fn": false
+      }
+    },
+    "@ledgerhq/device-management-kit>isomorphic-ws": {
+      "globals": {
+        "MozWebSocket": false,
+        "WebSocket": false
+      }
+    },
+    "@ledgerhq/device-transport-kit-web-hid": {
+      "packages": {
+        "@ledgerhq/device-management-kit>@sentry/minimal": false
+      }
+    },
     "@metamask/keyring-controller>ulid": {
       "globals": {
         "crypto": true
