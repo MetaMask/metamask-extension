@@ -375,7 +375,7 @@
     "@metamask/assets-controllers": "^111.1.2",
     "@metamask/authenticated-user-storage": "^3.0.0",
     "@metamask/base-controller": "^9.0.1",
-    "@metamask/base-data-service": "^0.1.3",
+    "@metamask/base-data-service": "^1.0.0",
     "@metamask/bitcoin-wallet-snap": "^2.0.1",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
     "@metamask/bridge-controller": "^79.2.0",
@@ -435,7 +435,7 @@
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/mobile-wallet-protocol-core": "^0.4.0",
     "@metamask/mobile-wallet-protocol-dapp-client": "^0.3.0",
-    "@metamask/money-account-api-data-service": "^0.4.0",
+    "@metamask/money-account-api-data-service": "^0.4.1",
     "@metamask/money-account-balance-service": "2.4.0",
     "@metamask/money-account-controller": "^0.3.3",
     "@metamask/money-account-utils": "^1.1.0",
@@ -466,7 +466,7 @@
     "@metamask/providers": "^22.1.1",
     "@metamask/ramps-controller": "^15.0.0",
     "@metamask/rate-limit-controller": "^7.0.0",
-    "@metamask/react-data-query": "^0.2.2",
+    "@metamask/react-data-query": "^1.0.0",
     "@metamask/remote-feature-flag-controller": "^5.0.0",
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
@@ -474,7 +474,7 @@
     "@metamask/seedless-onboarding-controller": "^10.1.1",
     "@metamask/selected-network-controller": "^26.1.4",
     "@metamask/sentinel-api-service": "^1.0.0",
-    "@metamask/shield-controller": "^6.0.0",
+    "@metamask/shield-controller": "^6.0.1",
     "@metamask/signature-controller": "^39.2.6",
     "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A25.0.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-25.0.0-3afc599382.patch",
     "@metamask/snap-account-service": "^2.1.2",
@@ -487,7 +487,7 @@
     "@metamask/solana-wallet-standard": "^1.0.0",
     "@metamask/stellar-wallet-snap": "0.1.0",
     "@metamask/storage-service": "^1.0.0",
-    "@metamask/subscription-controller": "^8.0.0",
+    "@metamask/subscription-controller": "^8.0.1",
     "@metamask/transaction-controller": "^69.5.1",
     "@metamask/transaction-pay-controller": "^26.2.0",
     "@metamask/tron-wallet-snap": "^3.1.0",
@@ -897,27 +897,5 @@
       }
     },
     "version": "v0.3.0"
-  },
-  "previewBuilds": {
-    "@metamask/base-data-service": {
-      "type": "non-breaking",
-      "previewVersion": "0.1.3-preview-7cfd8be"
-    },
-    "@metamask/react-data-query": {
-      "type": "non-breaking",
-      "previewVersion": "0.2.2-preview-a81bf03"
-    },
-    "@metamask/money-account-api-data-service": {
-      "type": "non-breaking",
-      "previewVersion": "0.4.0-preview-7cfd8be"
-    },
-    "@metamask/shield-controller": {
-      "type": "non-breaking",
-      "previewVersion": "6.0.0-preview-7cfd8be"
-    },
-    "@metamask/subscription-controller": {
-      "type": "non-breaking",
-      "previewVersion": "8.0.0-preview-7cfd8be"
-    }
   }
 }
