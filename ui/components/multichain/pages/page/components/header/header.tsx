@@ -10,11 +10,10 @@ import {
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-interface HeaderProps
-  extends Omit<
-    React.ComponentPropsWithoutRef<typeof HeaderBase>,
-    'children' | 'className' | 'startAccessory' | 'endAccessory'
-  > {
+interface HeaderProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof HeaderBase>,
+  'children' | 'className' | 'startAccessory' | 'endAccessory'
+> {
   /**
    * Elements that go in the page footer
    */
