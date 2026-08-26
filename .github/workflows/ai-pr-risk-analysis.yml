@@ -21,6 +21,12 @@ on:
       AI_ANALYZER_LITELLM_KEY:
         description: LiteLLM API key for AI PR analysis
         required: true
+      AI_ANALYZER_LANGFUSE_PUBLIC_KEY:
+        description: Optional Langfuse public key for analyzer tracing (diffs redacted)
+        required: false
+      AI_ANALYZER_LANGFUSE_SECRET_KEY:
+        description: Optional Langfuse secret key; pair with public key to enable tracing
+        required: false
 
 jobs:
   analyze:
@@ -53,7 +59,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: MetaMask/ai-analyzer
-          ref: b89c011b1515c193e0c3514393c38ad7066e21c4
+          ref: 0e1df7687faf2925d210cf92fcb9370766dac376
           path: .ai-analyzer-action
           token: ${{ secrets.AI_ANALYZER_TOKEN }}
 
@@ -66,6 +72,8 @@ jobs:
           add-comment: false
           add-label: true
           litellm-api-key: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+          langfuse-public-key: ${{ secrets.AI_ANALYZER_LANGFUSE_PUBLIC_KEY }}
+          langfuse-secret-key: ${{ secrets.AI_ANALYZER_LANGFUSE_SECRET_KEY }}
           # Gate override for Runway release-branch cherry-picks
           gate-override-risk-threshold: medium
           gate-override-base-pattern: '^release/'

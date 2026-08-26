@@ -21,6 +21,8 @@ This list is a **complementary signal** for the AI risk model. It does **not** r
 |--------|---------|
 | `AI_ANALYZER_TOKEN` | Checkout private `MetaMask/ai-analyzer` |
 | `AI_ANALYZER_LITELLM_KEY` | LiteLLM endpoint for analysis |
+| `AI_ANALYZER_LANGFUSE_PUBLIC_KEY` | Optional Langfuse tracing (pair with secret key) |
+| `AI_ANALYZER_LANGFUSE_SECRET_KEY` | Optional Langfuse tracing (diffs/file bodies redacted in traces) |
 
 ## Pin bump
 
