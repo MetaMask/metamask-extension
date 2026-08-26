@@ -1,113 +1,62 @@
+import { cloneDeep } from 'lodash';
 import { migrate, version } from './222';
 
-const oldVersion = 221;
-const newVersion = version;
+const VERSION = version;
+const PREVIOUS_VERSION = VERSION - 1;
 
-describe('migration #222', () => {
-  it('updates the version metadata', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
+type VersionedData = {
+  meta: { version: number };
+  data: Record<string, unknown>;
+};
+
+describe(`migration #${VERSION}`, () => {
+  it('bumps the version', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: PREVIOUS_VERSION },
       data: {},
     };
 
-    const newState = await migrate(oldState);
-    expect(newState.meta.version).toBe(newVersion);
+    const versionedData = cloneDeep(oldStorage);
+    await migrate(versionedData, new Set<string>());
+
+    expect(versionedData.meta.version).toBe(VERSION);
   });
 
-  it('removes the scan caches from PhishingController state', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
+  it('deletes EnsController state', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: PREVIOUS_VERSION },
       data: {
-        PhishingController: {
-          c2DomainBlocklistLastFetched: 1757993558,
-          hotlistLastFetched: 1757993558,
-          phishingLists: [{ name: 'MetaMask' }],
-          stalelistLastFetched: 1755694779,
-          whitelist: [],
-          whitelistPaths: {},
-          urlScanCache: {
-            'app.uniswap.org': {
-              data: {
-                hostname: 'app.uniswap.org',
-                recommendedAction: 'VERIFIED',
-              },
-              timestamp: 1757993550,
-            },
-          },
-          tokenScanCache: {
-            '0x1:0x1234567890123456789012345678901234567890': {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              data: { result_type: 'Benign' },
-              timestamp: 1757993550,
-            },
-          },
-          addressScanCache: {
-            '0x1:0x1234567890123456789012345678901234567890': {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              data: { result_type: 'Benign', label: '' },
-              timestamp: 1757993550,
-            },
-          },
+        EnsController: {
+          ensResolutionsByAddress: { '0x123': 'vitalik.eth' },
         },
+        OtherController: { foo: 'bar' },
       },
     };
 
-    const newState = await migrate(oldState);
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
-    expect(newState.data.PhishingController).toStrictEqual({
-      c2DomainBlocklistLastFetched: 1757993558,
-      hotlistLastFetched: 1757993558,
-      phishingLists: [{ name: 'MetaMask' }],
-      stalelistLastFetched: 1755694779,
-      whitelist: [],
-      whitelistPaths: {},
-    });
+    expect(versionedData.data).not.toHaveProperty('EnsController');
+    expect(versionedData.data.OtherController).toStrictEqual({ foo: 'bar' });
+    expect(changedControllers.has('EnsController')).toBe(true);
   });
 
-  it('does nothing if the scan caches do not exist', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
+  it('does nothing if EnsController state is missing', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: PREVIOUS_VERSION },
       data: {
-        PhishingController: {
-          phishingLists: [],
-        },
+        OtherController: { foo: 'bar' },
       },
     };
 
-    const newState = await migrate(oldState);
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
-    expect(newState.data.PhishingController).toStrictEqual({
-      phishingLists: [],
+    expect(versionedData.data).toStrictEqual({
+      OtherController: { foo: 'bar' },
     });
-  });
-
-  it('does nothing if PhishingController state is missing', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
-      data: {
-        OtherController: {},
-      },
-    };
-
-    const newState = await migrate(oldState);
-
-    expect(newState.data).toStrictEqual({
-      OtherController: {},
-    });
-  });
-
-  it('does nothing if PhishingController state is not an object', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
-      data: {
-        PhishingController: 'not an object',
-      },
-    };
-
-    const newState = await migrate(oldState);
-
-    expect(newState.data).toStrictEqual({
-      PhishingController: 'not an object',
-    });
+    expect(changedControllers.has('EnsController')).toBe(false);
   });
 });

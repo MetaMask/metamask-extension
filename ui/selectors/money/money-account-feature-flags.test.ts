@@ -1,9 +1,12 @@
 import type { Json } from '@metamask/utils';
 import type { RemoteFeatureFlagsState } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
-  parseMoneyAccountVaultConfig,
+  FALLBACK_MONEY_DEPOSIT_MIN_BALANCE,
   selectMoneyAccountDepositQuotePipelineEnabled,
+  selectMoneyAccountFeatureEnabled,
   selectMoneyAccountVaultConfig,
+  selectMoneyEarningSectionEnabled,
+  selectMoneyDepositMinBalance,
   selectMoneyVaultApyRemoteConfig,
 } from './money-account-feature-flags';
 
@@ -20,99 +23,96 @@ const VALID_CONFIG = {
   tellerAddress: '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117',
   accountantAddress: '0x7382c5b8B51B8C4f127B3123C1039581BAA5A06B',
   lensAddress: '0xA816ECd922de94c6879AD23B9A884dB257F20947',
+  underlyingToken: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
 } as const;
 
-const ADDRESS_KEYS = [
-  'boringVault',
-  'tellerAddress',
-  'accountantAddress',
-  'lensAddress',
-] as const;
-
-const INVALID_CHAIN_IDS: [string, unknown][] = [
-  ['is not prefixed', '8f'],
-  ['has non-hex digits', '0xmonad'],
-  ['is missing', undefined],
-  ['is a number', 143],
-  ['is null', null],
-  ['is empty', ''],
-];
-
-const INVALID_ADDRESSES: [string, unknown][] = [
-  ['is not hex', 'not-an-address'],
-  ['is truncated', '0xb4563bcD3B7764CCBf497f5'],
-  // The shipped address with its final byte upper-cased: still 20 hex bytes,
-  // but no longer a valid ERC-55 checksum.
-  ['has a bad ERC-55 checksum', '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5AE'],
-  ['is missing', undefined],
-  ['is not a string', 1234],
-  ['is null', null],
-  ['is empty', ''],
-];
-
-const NON_OBJECT_FLAGS: [string, unknown][] = [
-  ['a string', 'moneyAccountVaultConfig'],
-  ['a number', 1],
-  ['null', null],
-  ['undefined', undefined],
-  ['an array', [VALID_CONFIG]],
-  ['an empty object', {}],
-];
-
-describe('parseMoneyAccountVaultConfig', () => {
-  it('parses a well-formed config', () => {
-    expect(parseMoneyAccountVaultConfig(VALID_CONFIG)).toStrictEqual(
-      VALID_CONFIG,
-    );
-  });
-
-  it('passes checksummed addresses through unchanged, without normalising', () => {
-    const parsed = parseMoneyAccountVaultConfig(VALID_CONFIG);
-
-    expect(parsed?.boringVault).toBe(VALID_CONFIG.boringVault);
-    expect(parsed?.tellerAddress).toBe(VALID_CONFIG.tellerAddress);
-    expect(parsed?.accountantAddress).toBe(VALID_CONFIG.accountantAddress);
-    expect(parsed?.lensAddress).toBe(VALID_CONFIG.lensAddress);
-  });
-
-  it('accepts all-lowercase addresses', () => {
-    const lowercased = {
-      ...VALID_CONFIG,
-      boringVault: VALID_CONFIG.boringVault.toLowerCase(),
-    };
-
-    expect(parseMoneyAccountVaultConfig(lowercased)).toStrictEqual(lowercased);
-  });
-
-  it('ignores unknown extra fields', () => {
+describe('selectMoneyAccountFeatureEnabled', () => {
+  it('is true for an enabled, version-satisfied flag', () => {
     expect(
-      parseMoneyAccountVaultConfig({ ...VALID_CONFIG, someFutureField: 1 }),
-    ).toStrictEqual(VALID_CONFIG);
+      selectMoneyAccountFeatureEnabled(
+        mockState({
+          moneyEnableMoneyAccount: { enabled: true, minimumVersion: '0.0.1' },
+        }),
+      ),
+    ).toBe(true);
   });
 
-  for (const [description, chainId] of INVALID_CHAIN_IDS) {
-    it(`rejects a config whose chain id ${description}`, () => {
-      expect(
-        parseMoneyAccountVaultConfig({ ...VALID_CONFIG, chainId }),
-      ).toBeUndefined();
-    });
-  }
+  it('is false for a disabled flag', () => {
+    expect(
+      selectMoneyAccountFeatureEnabled(
+        mockState({
+          moneyEnableMoneyAccount: { enabled: false, minimumVersion: '0.0.1' },
+        }),
+      ),
+    ).toBe(false);
+  });
 
-  for (const key of ADDRESS_KEYS) {
-    for (const [description, value] of INVALID_ADDRESSES) {
-      it(`rejects a config whose ${key} ${description}`, () => {
-        expect(
-          parseMoneyAccountVaultConfig({ ...VALID_CONFIG, [key]: value }),
-        ).toBeUndefined();
-      });
-    }
-  }
+  it('is false when the flag is unserved', () => {
+    expect(selectMoneyAccountFeatureEnabled(mockState())).toBe(false);
+  });
 
-  for (const [description, raw] of NON_OBJECT_FLAGS) {
-    it(`rejects a flag that is ${description}`, () => {
-      expect(parseMoneyAccountVaultConfig(raw)).toBeUndefined();
-    });
-  }
+  it('is false when the current version is below the flag minimum', () => {
+    expect(
+      selectMoneyAccountFeatureEnabled(
+        mockState({
+          moneyEnableMoneyAccount: {
+            enabled: true,
+            minimumVersion: '9999.0.0',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+});
+
+describe('selectMoneyEarningSectionEnabled', () => {
+  it('is true for an enabled, version-satisfied flag', () => {
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({
+          earnMoneyEarningSectionEnabled: {
+            enabled: true,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false for a disabled flag', () => {
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({
+          earnMoneyEarningSectionEnabled: {
+            enabled: false,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false when the flag is unserved or malformed', () => {
+    expect(selectMoneyEarningSectionEnabled(mockState())).toBe(false);
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({ earnMoneyEarningSectionEnabled: true }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false when the current version is below the flag minimum', () => {
+    expect(
+      selectMoneyEarningSectionEnabled(
+        mockState({
+          earnMoneyEarningSectionEnabled: {
+            enabled: true,
+            minimumVersion: '9999.0.0',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
 });
 
 describe('selectMoneyAccountVaultConfig', () => {
@@ -185,6 +185,42 @@ describe('selectMoneyVaultApyRemoteConfig', () => {
         vaultApyFallback: undefined,
         vaultApyOverride: undefined,
       });
+    });
+  }
+});
+
+describe('selectMoneyDepositMinBalance', () => {
+  it('reads a numeric remote value', () => {
+    expect(
+      selectMoneyDepositMinBalance(
+        mockState({ earnMoneyDepositMinAssetBalance: 5 }),
+      ),
+    ).toBe(5);
+  });
+
+  it('accepts a numeric string', () => {
+    expect(
+      selectMoneyDepositMinBalance(
+        mockState({ earnMoneyDepositMinAssetBalance: '1.25' }),
+      ),
+    ).toBe(1.25);
+  });
+
+  const INVALID_MIN_BALANCES: [string, Json | undefined][] = [
+    ['an unserved value', undefined],
+    ['a negative value', -1],
+    ['a non-numeric value', 'invalid'],
+  ];
+
+  for (const [description, remoteValue] of INVALID_MIN_BALANCES) {
+    it(`uses the fallback for ${description}`, () => {
+      expect(
+        selectMoneyDepositMinBalance(
+          mockState({
+            earnMoneyDepositMinAssetBalance: remoteValue as Json,
+          }),
+        ),
+      ).toBe(FALLBACK_MONEY_DEPOSIT_MIN_BALANCE);
     });
   }
 });

@@ -161,11 +161,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: 0px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/arbitrum.svg"
                           />
                         </div>
@@ -175,11 +176,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/pol-token.svg"
                           />
                         </div>
@@ -189,11 +191,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/bnb.svg"
                           />
                         </div>
@@ -203,11 +206,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/eth_logo.svg"
                           />
                         </div>
@@ -257,11 +261,11 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
           </button>
         </div>
         <dialog
-          class="global-menu-drawer"
+          class="group box-border border-0 bg-transparent p-0 m-0 ms-auto me-[max(0px,calc((100vw-var(--width-max))/2))] h-full max-h-full w-[min(400px,100%)] overflow-clip [translate:none] transition-[display,overlay] transition-discrete duration-300 ease-in-out motion-reduce:duration-[0.01ms] backdrop:opacity-0 open:backdrop:opacity-100 backdrop:transition-[opacity,display,overlay] backdrop:transition-discrete backdrop:duration-[var(--global-drawer-open,300ms)] backdrop:ease-linear starting:open:backdrop:opacity-0 motion-reduce:backdrop:duration-[0.01ms] max-[575px]:mx-0 max-[575px]:w-full max-[575px]:max-w-full"
           closedby="any"
         >
           <div
-            class="global-menu-drawer__frame"
+            class="h-full w-full [translate:100%_0] transition-[translate] duration-300 ease-in-out motion-reduce:duration-[0.01ms] group-open:[translate:0_0] group-open:[animation:var(--global-drawer-open,slide-in-from-right_300ms_ease-in-out_backwards)] starting:group-open:[translate:var(--global-drawer-open,100%_0)] motion-reduce:group-open:animate-none"
           >
             <div
               class="bg-default h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
@@ -271,7 +275,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
               >
                 <button
                   aria-label="Close"
-                  class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-alternative"
+                  class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                   data-testid="drawer-close-button"
                 >
                   <svg
@@ -289,8 +293,8 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
               <div
                 class="flex flex-col flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
               >
-                <div
-                  class="flex flex-col global-menu-list"
+                <nav
+                  class="global-menu-list "
                 >
                   <div
                     class="flex flex-col"
@@ -324,8 +328,8 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                     <div
                       class="w-full px-2 py-2"
                     >
-                      <div
-                        class="w-full border-t border-muted"
+                      <hr
+                        class="m-0 w-full border-0 border-t border-muted"
                       />
                     </div>
                     <div
@@ -407,7 +411,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                             <div
                               class="flex-1 min-w-0"
                             >
-                              Dapp connections
+                              Permissions
                             </div>
                             <div
                               class="flex flex-row items-center ml-2 flex-shrink-0"
@@ -546,8 +550,8 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                     <div
                       class="w-full px-2 py-2"
                     >
-                      <div
-                        class="w-full border-t border-muted"
+                      <hr
+                        class="m-0 w-full border-0 border-t border-muted"
                       />
                     </div>
                     <div
@@ -636,8 +640,8 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                     <div
                       class="w-full px-2 py-2"
                     >
-                      <div
-                        class="w-full border-t border-muted"
+                      <hr
+                        class="m-0 w-full border-0 border-t border-muted"
                       />
                     </div>
                     <button
@@ -663,7 +667,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                       </div>
                     </button>
                   </div>
-                </div>
+                </nav>
               </div>
             </div>
           </div>

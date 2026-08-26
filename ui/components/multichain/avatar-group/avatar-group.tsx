@@ -6,6 +6,10 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { Text } from '../../component-library/text';
 import {
@@ -15,15 +19,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarTokenSize,
-  AvatarToken,
-} from '../../component-library/avatar-token';
 import { Box } from '../../component-library/box';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-} from '../../component-library/avatar-network';
 import { AvatarGroupProps, AvatarType } from './avatar-group.types';
 
 export const AvatarGroup = ({
@@ -32,7 +28,6 @@ export const AvatarGroup = ({
   members = [],
   size = AvatarTokenSize.Xs,
   avatarType = AvatarType.TOKEN,
-  borderColor,
   isTagOverlay = false,
   variant = AvatarAccountVariant.Maskicon,
 }: AvatarGroupProps): JSX.Element => {
@@ -70,7 +65,6 @@ export const AvatarGroup = ({
                   src={member.avatarValue}
                   name={member.symbol}
                   size={size}
-                  borderColor={borderColor}
                 />
               )}
               {avatarType === AvatarType.ACCOUNT && (
@@ -85,6 +79,11 @@ export const AvatarGroup = ({
                   src={member.avatarValue}
                   name={member.symbol ?? ''}
                   size={AvatarNetworkSize.Xs}
+                  hasBorder
+                  className="rounded-md"
+                  imageProps={{
+                    'data-testid': 'avatar-group-network-image',
+                  }}
                 />
               )}
             </Box>

@@ -30,7 +30,7 @@ type UseSourceInputAmountParams = {
 };
 
 type UseSourceInputAmountResult = {
-  amount: string | undefined;
+  amount: string;
   tokenAmount: string | null;
   selectedDenomination: InputPrimaryDenomination;
   isFiatPrimary: boolean;
@@ -180,7 +180,7 @@ export const useSourceInputAmount = ({
   ]);
 
   return {
-    amount: isFiatPrimary ? displayedFiatAmount : (sourceAmount ?? undefined),
+    amount: (isFiatPrimary ? displayedFiatAmount : sourceAmount) ?? '',
     tokenAmount: sourceAmount,
     selectedDenomination,
     isFiatPrimary,
