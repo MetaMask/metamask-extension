@@ -10,8 +10,12 @@ export function isSecurityAlertsEnabledByUser(
   return securityAlertsEnabled;
 }
 
+export function isEthSendTransactionMethod(method: string): boolean {
+  return method === MESSAGE_TYPE.ETH_SEND_TRANSACTION;
+}
+
 export function isEthSendTransaction(req: JsonRpcRequest): boolean {
-  return req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION;
+  return isEthSendTransactionMethod(req.method);
 }
 
 export function isEip7715AdvancedPermissionsRequest(
@@ -51,13 +55,17 @@ export function hasValidTransactionParams(
   );
 }
 
-export function isEthSignTypedData(req: JsonRpcRequest): boolean {
+export function isEthSignTypedDataMethod(method: string): boolean {
   return (
-    req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA ||
-    req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1 ||
-    req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 ||
-    req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
+    method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA ||
+    method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1 ||
+    method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 ||
+    method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
   );
+}
+
+export function isEthSignTypedData(req: JsonRpcRequest): boolean {
+  return isEthSignTypedDataMethod(req.method);
 }
 
 export function isConnected(
@@ -92,4 +100,94 @@ export function hasValidTypedDataParams(
   }
 
   return req.params[1] !== undefined && req.params[1] !== null;
+}
+
+export function isWalletCreateSession(req: JsonRpcRequest): boolean {
+  return req.method === MESSAGE_TYPE.WALLET_CREATE_SESSION;
+}
+
+/**
+ * The Multichain API analogue of `isConnected`. `wallet_getSession` reads the
+ * origin's CAIP-25 caveat without prompting, exactly as `eth_accounts` reads
+ * permitted accounts, so an origin that already holds one is a connected read.
+ *
+ * @param req - The request being inspected
+ * @param hasCaip25Permission - Whether the origin holds a CAIP-25 caveat
+ */
+export function isCaipConnected(
+  req: JsonRpcRequest & { origin?: string },
+  hasCaip25Permission: (origin: string) => boolean,
+): boolean {
+  if (!req.origin || req.method !== MESSAGE_TYPE.WALLET_GET_SESSION) {
+    return false;
+  }
+  return hasCaip25Permission(req.origin);
+}
+
+/**
+ * Read the inner method of a `wallet_invokeMethod` request. Returns undefined
+ * for any other method, or when the wrapped request is malformed.
+ *
+ * @param req - The request being inspected
+ */
+export function getWrappedRequestMethod(
+  req: JsonRpcRequest,
+): string | undefined {
+  if (req.method !== MESSAGE_TYPE.WALLET_INVOKE_METHOD) {
+    return undefined;
+  }
+
+  const params = req.params as { request?: { method?: unknown } } | undefined;
+  const wrappedMethod = params?.request?.method;
+
+  return typeof wrappedMethod === 'string' ? wrappedMethod : undefined;
+}
+
+/**
+ * Build the EIP-1193 gate for origin scanning.
+ *
+ * @param getPermittedAccounts - Returns the accounts an origin may use
+ */
+export function createEip1193OriginScanGate(
+  getPermittedAccounts: (origin: string) => string[],
+) {
+  return (req: JsonRpcRequest & { origin?: string }): boolean =>
+    isEthSendTransaction(req) ||
+    isEthSignTypedData(req) ||
+    isConnected(req, getPermittedAccounts) ||
+    connectScreenHasBeenPrompted(req) ||
+    isEip7715AdvancedPermissionsRequest(req);
+}
+
+/**
+ * Build the Multichain API gate for origin scanning. Authored independently of
+ * the EIP-1193 gate rather than derived from it, since none of those method
+ * names exist on this transport.
+ *
+ * Action requests are matched on the method wrapped inside `wallet_invokeMethod`
+ * rather than on `wallet_invokeMethod` itself. A granted `eip155` scope permits
+ * nearly the entire RPC surface, so gating on the outer method alone would scan
+ * the origin on routine polling reads.
+ *
+ * @param hasCaip25Permission - Whether the origin holds a CAIP-25 caveat
+ */
+export function createCaipOriginScanGate(
+  hasCaip25Permission: (origin: string) => boolean,
+) {
+  return (req: JsonRpcRequest & { origin?: string }): boolean => {
+    if (
+      isWalletCreateSession(req) ||
+      isCaipConnected(req, hasCaip25Permission)
+    ) {
+      return true;
+    }
+
+    const wrappedMethod = getWrappedRequestMethod(req);
+
+    return Boolean(
+      wrappedMethod &&
+      (isEthSendTransactionMethod(wrappedMethod) ||
+        isEthSignTypedDataMethod(wrappedMethod)),
+    );
+  };
 }
