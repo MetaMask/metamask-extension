@@ -2,6 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
@@ -145,7 +146,11 @@ export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, simulationData, type } = transactionMeta;
+  const { chainId, origin, simulationData, type } = transactionMeta;
+
+  if (!origin || origin === ORIGIN_METAMASK) {
+    return false;
+  }
 
   if (
     !state.eip7702SupportedChains?.some(
