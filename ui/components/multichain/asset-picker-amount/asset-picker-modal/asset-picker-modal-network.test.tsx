@@ -100,6 +100,10 @@ describe('AssetPickerModalNetwork', () => {
       />,
       store,
     );
+
+    expect(
+      screen.getByTestId(`network-list-item-${CHAIN_IDS.MAINNET}`),
+    ).toHaveClass('multichain-network-list-item--deselected');
   });
 
   it('should use passed in network as default when network prop is passed in', () => {
@@ -107,6 +111,13 @@ describe('AssetPickerModalNetwork', () => {
       <AssetPickerModalNetwork {...defaultProps} {...networkProps} />,
       store,
     );
+
+    expect(
+      screen.getByTestId(`network-list-item-${CHAIN_IDS.MAINNET}`),
+    ).toHaveClass('multichain-network-list-item--selected');
+    expect(
+      screen.getByTestId(`network-list-item-${CHAIN_IDS.OPTIMISM}`),
+    ).toHaveClass('multichain-network-list-item--deselected');
   });
 
   it('should call onClose and onBack when header buttons are clicked', () => {
