@@ -851,6 +851,16 @@
     "node": ">=24.13.0",
     "yarn": "^4.14.1"
   },
+  "previewBuilds": {
+    "@metamask/bridge-controller": {
+      "type": "non-breaking",
+      "previewVersion": "79.3.1-preview-264a60683"
+    },
+    "@metamask/bridge-status-controller": {
+      "type": "non-breaking",
+      "previewVersion": "75.2.1-preview-264a60683"
+    }
+  },
   "lavamoat": {
     "allowScripts": {
       "$root$": true,
