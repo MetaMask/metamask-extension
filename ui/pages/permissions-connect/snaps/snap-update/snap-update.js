@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  IconName,
+} from '@metamask/design-system-react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -25,9 +30,7 @@ import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import {
-  AvatarIcon,
   Box,
-  IconName,
   Text,
 } from '../../../../components/component-library';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
@@ -211,8 +214,8 @@ export default function SnapUpdate({
                   className="snap-install__scroll-button"
                   data-testid="snap-update-scroll"
                   iconName={IconName.Arrow2Down}
-                  backgroundColor={BackgroundColor.infoDefault}
-                  color={IconColor.primaryInverse}
+                  severity={AvatarIconSeverity.Info}
+                  iconProps={{ color: IconColor.primaryInverse }}
                   onClick={scrollToBottom}
                   style={{ cursor: 'pointer' }}
                 />
