@@ -1,9 +1,9 @@
 import { strict as assert } from 'assert';
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 import {
   MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
   MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
-} from '../../constants';
+} from '../../../constants';
 
 /**
  * Developer / Debug settings tab for feature-flag inspection and crash hooks.
@@ -29,6 +29,10 @@ class DebugOptions {
   private readonly generatePageCrashButton: string =
     '[data-testid="developer-options-generate-page-crash-button"]';
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly remoteFeatureFlagsDetailsToggle: string =
     '[data-testid="remote-feature-flags-toggle"]';
 
@@ -38,9 +42,10 @@ class DebugOptions {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(
+      await this.driver.waitForMultipleSelectors([
         this.developerOptionsRemoteFeatureFlagsState,
-      );
+        this.parentSelector,
+      ]);
     } catch (e) {
       console.log('Timeout while waiting for Debug page to be loaded', e);
       throw e;

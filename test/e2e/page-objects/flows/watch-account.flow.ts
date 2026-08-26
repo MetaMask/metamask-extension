@@ -1,6 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
-import AccountListPage from '../pages/account-list-page';
+import AccountListPage from '../pages/accounts/list-page';
 
 /**
  * Initiates the flow of watching an EOA address.

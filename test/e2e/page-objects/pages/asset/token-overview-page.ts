@@ -1,4 +1,4 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Token / coin asset overview: send, swap, receive, and explorer actions.
@@ -20,6 +20,9 @@ class TokenOverviewPage {
   private driver: Driver;
 
   private readonly moreButton = '[data-testid="coin-overview-more"]';
+
+  private readonly parentSelector =
+    '[data-testid="parent-selector-asset-details"]';
 
   private readonly receiveButton = '[data-testid="coin-overview-receive"]';
 
@@ -43,6 +46,8 @@ class TokenOverviewPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.parentSelector);
+
     // Try send button check
     try {
       const sendButtonFound = await this.driver.waitForSelector(
