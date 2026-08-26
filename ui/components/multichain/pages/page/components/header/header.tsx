@@ -1,20 +1,20 @@
 import React from 'react';
 import classnames from 'clsx';
-import { HeaderBase, Text } from '../../../../../component-library';
+import { HeaderBase } from '@metamask/design-system-react';
+import { Text } from '../../../../../component-library';
 import {
-  BlockSize,
   Display,
   TextAlign,
   TextVariant,
-  JustifyContent,
-  AlignItems,
 } from '../../../../../../helpers/constants/design-system';
-
-import type { StyleUtilityProps } from '../../../../../component-library/box';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-interface HeaderProps extends StyleUtilityProps {
+interface HeaderProps
+  extends Omit<
+    React.ComponentPropsWithoutRef<typeof HeaderBase>,
+    'children' | 'className' | 'startAccessory' | 'endAccessory'
+  > {
   /**
    * Elements that go in the page footer
    */
@@ -47,11 +47,7 @@ export const Header = ({
 }: HeaderProps) => {
   return (
     <HeaderBase
-      padding={4}
-      width={BlockSize.Full}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      className={classnames('multichain-page-header', className)}
+      className={classnames('multichain-page-header p-4 w-full', className)}
       startAccessory={startAccessory}
       endAccessory={endAccessory}
       {...props}
