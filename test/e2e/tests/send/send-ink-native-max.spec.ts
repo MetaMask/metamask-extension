@@ -174,41 +174,6 @@ async function mockInkApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [suggestedGasFees];
 }
 
-async function assertMaxAmountDoesNotExceedBalanceMinusGas(
-  driver: Driver,
-  sendPage: SendPage,
-): Promise<void> {
-  await sendPage.waitForSendAmountBalance();
-  await driver.waitUntil(
-    async () => {
-      const amount = parseFloat(await sendPage.getAmountInputValue());
-      return amount > 0;
-    },
-    { interval: 100, timeout: 15000 },
-  );
-  await sendPage.waitForContinueButtonStablyEnabled();
-
-  const availableBalance = await sendPage.getAvailableBalanceNumeric();
-  const maxAmount = parseFloat(await sendPage.getAmountInputValue());
-
-  assert.ok(
-    Number.isFinite(availableBalance) && availableBalance > 0,
-    `Available balance must be a positive number, got ${availableBalance}`,
-  );
-  assert.ok(
-    Number.isFinite(maxAmount) && maxAmount > 0,
-    `Max amount must be a positive number, got ${maxAmount}`,
-  );
-  assert.ok(
-    maxAmount <= availableBalance,
-    `Max amount ${maxAmount} must be <= available balance ${availableBalance}`,
-  );
-  assert.ok(
-    maxAmount < availableBalance,
-    `Max amount ${maxAmount} must reserve gas (available ${availableBalance})`,
-  );
-}
-
 async function assertDecimalChainIdGasEstimatesWereRequested(
   driver: Driver,
   mockedEndpoints: MockedEndpoint[],
@@ -248,8 +213,9 @@ describe('Send Ink native max', function () {
       }) => {
         await login(driver, { validateBalance: false });
 
-        await driver.delay(1000);
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkSendButtonIsClickable();
         await homePage.startSendFlow();
 
         const sendPage = new SendPage(driver);
@@ -257,7 +223,7 @@ describe('Send Ink native max', function () {
         await sendPage.selectToken(INK_CHAIN_ID_HEX, 'ETH');
         await sendPage.fillRecipient({ recipientAddress: DEFAULT_RECIPIENT });
         await sendPage.clickMaxButton();
-        await assertMaxAmountDoesNotExceedBalanceMinusGas(driver, sendPage);
+        await sendPage.checkMaxAmountReservesGas();
         await sendPage.pressContinueButton();
 
         const transactionConfirmation = new TransactionConfirmation(driver);

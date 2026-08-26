@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -237,6 +238,43 @@ class SendPage {
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
     await this.driver.waitForSelector(this.invalidAddressError);
+  }
+
+  /**
+   * Waits until Max has populated a positive amount, then asserts it is less
+   * than the available balance so native sends reserve gas.
+   */
+  async checkMaxAmountReservesGas(): Promise<void> {
+    console.log('Checking that Max amount reserves gas from available balance');
+    await this.waitForSendAmountBalance();
+    await this.driver.waitUntil(
+      async () => {
+        const amount = parseFloat(await this.getAmountInputValue());
+        return amount > 0;
+      },
+      { interval: 100, timeout: 15000 },
+    );
+    await this.waitForContinueButtonStablyEnabled();
+
+    const availableBalance = await this.getAvailableBalanceNumeric();
+    const maxAmount = parseFloat(await this.getAmountInputValue());
+
+    assert.ok(
+      Number.isFinite(availableBalance) && availableBalance > 0,
+      `Available balance must be a positive number, got ${availableBalance}`,
+    );
+    assert.ok(
+      Number.isFinite(maxAmount) && maxAmount > 0,
+      `Max amount must be a positive number, got ${maxAmount}`,
+    );
+    assert.ok(
+      maxAmount <= availableBalance,
+      `Max amount ${maxAmount} must be <= available balance ${availableBalance}`,
+    );
+    assert.ok(
+      maxAmount < availableBalance,
+      `Max amount ${maxAmount} must reserve gas (available ${availableBalance})`,
+    );
   }
 
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
