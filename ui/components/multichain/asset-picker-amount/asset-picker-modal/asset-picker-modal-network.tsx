@@ -32,10 +32,7 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  Text,
-} from '../../../component-library';
+import { Box, Text } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NetworkListItem } from '../../network-list-item';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
@@ -252,9 +249,7 @@ export const AssetPickerModalNetwork = ({
             </TextButton>
           </Box>
         )}
-        <ModalBody
-          className="multichain-asset-picker__network-list min-h-0 flex-1 overflow-auto px-0"
-        >
+        <ModalBody className="multichain-asset-picker__network-list min-h-0 flex-1 overflow-auto px-0">
           {networkSections.map((section, index) => (
             <Box
               key={section.key}

@@ -11,9 +11,7 @@ import {
   ModalOverlay,
   ModalContent,
 } from '@metamask/design-system-react';
-import {
-  Button,
-} from '../../component-library';
+import { Button } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getURLHost } from '../../../helpers/utils/util';
 

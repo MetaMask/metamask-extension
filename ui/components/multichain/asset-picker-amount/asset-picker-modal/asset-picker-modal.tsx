@@ -17,11 +17,7 @@ import {
   ModalHeader,
   ModalContent,
 } from '@metamask/design-system-react';
-import {
-  Box,
-  Text,
-  PickerNetwork,
-} from '../../../component-library';
+import { Box, Text, PickerNetwork } from '../../../component-library';
 import {
   TextVariant,
   TextAlign,

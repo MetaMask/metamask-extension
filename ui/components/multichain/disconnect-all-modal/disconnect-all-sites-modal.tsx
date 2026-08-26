@@ -10,11 +10,7 @@ import {
   ModalOverlay,
   ModalContent,
 } from '@metamask/design-system-react';
-import {
-  Button,
-  ButtonSize,
-  ButtonVariant,
-} from '../../component-library';
+import { Button, ButtonSize, ButtonVariant } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export type DisconnectAllSitesModalProps = {
