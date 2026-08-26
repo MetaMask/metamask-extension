@@ -3,9 +3,13 @@
 import 'navigator.locks';
 import log from 'loglevel';
 
+import { checkOrSetAlreadyCaught } from '@sentry/core';
 import { captureException, captureMessage } from '../sentry';
 import { getManifestFlags } from '../manifestFlags';
-import { MISSING_VAULT_ERROR } from '../../constants/errors';
+import {
+  BROWSER_SHUTTING_DOWN_ERROR,
+  MISSING_VAULT_ERROR,
+} from '../../constants/errors';
 import {
   PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
@@ -39,6 +43,9 @@ jest.mock('loglevel', () => ({
   info: jest.fn(),
 }));
 jest.mock('../sentry', () => ({
+  // Keep the real `markErrorAsCaptured` so the marking assertions below
+  // exercise the actual behaviour rather than a stub of it.
+  ...jest.requireActual('../sentry'),
   captureException: jest.fn(),
   captureMessage: jest.fn(),
 }));
@@ -378,6 +385,108 @@ describe('PersistenceManager', () => {
       expect(mockedCaptureException).toHaveBeenCalledTimes(1);
     });
 
+    describe('when the browser is shutting down', () => {
+      it('does not report the failure, and marks it', async () => {
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10 });
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        mockStoreSet
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(shutdownError);
+
+        const setPromise = manager.set({ appState: { broken: true } });
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        const [result, setError] = await setPromise;
+
+        expect(result).toBe(false);
+        expect(setError).toBe(shutdownError);
+        expect(mockedCaptureException).not.toHaveBeenCalled();
+        // `migrateToSplitState` re-throws this error, so without the mark
+        // `handleOnConnect` would report it.
+        expect(checkOrSetAlreadyCaught(shutdownError)).toBe(true);
+      });
+
+      it('does not report it when the backup write is the one that fails', async () => {
+        // The backup write has its own try/catch that sets `backupFailed` and
+        // rethrows into the same outer catch, so it reaches the guard with the
+        // primary write already succeeded. Without a guard this would report
+        // under the `set-backup-failed` tag.
+        await manager.open();
+        jest.useFakeTimers();
+        manager.setMetadata({ version: 10 });
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        const backupSetSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'set')
+          .mockRejectedValue(shutdownError);
+        mockStoreSet.mockResolvedValue(undefined);
+
+        const setPromise = manager.set({
+          KeyringController: { vault: 'encrypted-vault' },
+        } as unknown as MetaMaskStateType);
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        const [result, setError] = await setPromise;
+
+        expect(backupSetSpy).toHaveBeenCalled();
+        expect(result).toBe(false);
+        expect(setError).toBe(shutdownError);
+        expect(mockedCaptureException).not.toHaveBeenCalled();
+        expect(checkOrSetAlreadyCaught(shutdownError)).toBe(true);
+
+        backupSetSpy.mockRestore();
+      });
+
+      it('does not flag a storage write error for the UI', async () => {
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10 });
+        const onSetFailed = jest.fn();
+        manager.setOnSetFailed(onSetFailed);
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        mockStoreSet
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(shutdownError);
+
+        const setPromise = manager.set({ appState: { broken: true } });
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await setPromise;
+
+        // This persists `storageWriteErrorType` into AppStateController, which
+        // would surface a false storage-error warning in the next session.
+        expect(onSetFailed).not.toHaveBeenCalled();
+      });
+
+      it('does not latch the duplicate-report flag, so a later real failure still reports', async () => {
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10 });
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        const realError = new Error('store.set error');
+        mockStoreSet
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(realError)
+          .mockRejectedValueOnce(realError);
+
+        const firstSetPromise = manager.set({ appState: { broken: true } });
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await firstSetPromise;
+
+        const secondSetPromise = manager.set({ appState: { broken: true } });
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await secondSetPromise;
+
+        // If the shutdown error had set `#dataPersistenceFailing`, this real
+        // failure would have been silently swallowed as a duplicate.
+        expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+        expect(mockedCaptureException).toHaveBeenCalledWith(realError, {
+          tags: { 'persistence.error': 'set-failed' },
+          fingerprint: ['persistence-error', 'set-failed'],
+        });
+      });
+    });
+
     it('captures exception twice if store.set fails, then succeeds and then fails again', async () => {
       prepareForWriteRetry();
       manager.setMetadata({ version: 17 });
@@ -556,6 +665,83 @@ describe('PersistenceManager', () => {
       await expect(manager.get({ validateVault: true })).rejects.toThrow(
         MISSING_VAULT_ERROR,
       );
+    });
+
+    describe('when the browser is shutting down', () => {
+      /**
+       * A non-empty backup, so the tests prove vault recovery is deliberately
+       * skipped rather than merely unavailable.
+       */
+      function mockShutdownDuringRead(): Error {
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        mockStoreGet.mockRejectedValueOnce(shutdownError);
+        jest.spyOn(manager, 'getBackup').mockResolvedValue({
+          KeyringController: { vault: 'vault' },
+        });
+        return shutdownError;
+      }
+
+      it('re-throws the original error rather than a vault error', async () => {
+        const shutdownError = mockShutdownDuringRead();
+
+        // Not MISSING_VAULT_ERROR: the vault is fine, the browser is closing.
+        // It still throws so callers abort instead of treating the store as
+        // empty and regenerating initial state over the top of it.
+        await expect(manager.get({ validateVault: true })).rejects.toThrow(
+          shutdownError,
+        );
+      });
+
+      it('does not report it to Sentry', async () => {
+        mockShutdownDuringRead();
+
+        await expect(manager.get({ validateVault: true })).rejects.toThrow(
+          BROWSER_SHUTTING_DOWN_ERROR,
+        );
+
+        expect(mockedCaptureException).not.toHaveBeenCalled();
+        expect(log.error).not.toHaveBeenCalled();
+      });
+
+      it('marks the error so no layer above reports it', async () => {
+        const shutdownError = mockShutdownDuringRead();
+
+        await expect(manager.get({ validateVault: true })).rejects.toThrow(
+          BROWSER_SHUTTING_DOWN_ERROR,
+        );
+
+        // What stops `handleOnConnect` and the SDK's global
+        // unhandled-rejection handler filing this same failure again.
+        expect(checkOrSetAlreadyCaught(shutdownError)).toBe(true);
+      });
+
+      it('does not emit vaultCorruptionDetected', async () => {
+        mockShutdownDuringRead();
+        const vaultCorruptionListener = jest.fn();
+        manager.on('vaultCorruptionDetected', vaultCorruptionListener);
+
+        await expect(manager.get({ validateVault: true })).rejects.toThrow(
+          BROWSER_SHUTTING_DOWN_ERROR,
+        );
+
+        // Would otherwise send a false-positive `VaultCorruptionDetected`
+        // event to Segment for a browser that is merely closing.
+        expect(vaultCorruptionListener).not.toHaveBeenCalled();
+      });
+
+      it('still reports genuine read failures', async () => {
+        const realError = new Error('Corruption: block checksum mismatch');
+        mockStoreGet.mockRejectedValueOnce(realError);
+
+        await expect(manager.get({ validateVault: false })).rejects.toThrow(
+          realError,
+        );
+
+        expect(mockedCaptureException).toHaveBeenCalledWith(realError, {
+          tags: { 'persistence.error': 'get-failed' },
+          fingerprint: ['persistence-error', 'get-failed'],
+        });
+      });
     });
   });
 
@@ -863,6 +1049,87 @@ describe('PersistenceManager', () => {
       expect(retryMap.get('meta')).toEqual({ version: 10 });
       expect(retryMap.get('FooController')).toEqual({ foo: 'bar' });
       /* eslint-enable jest/prefer-strict-equal */
+    });
+
+    describe('when the browser is shutting down', () => {
+      it('does not report the failure, and marks it', async () => {
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10 });
+        manager.update('FooController', { foo: 'bar' });
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        mockStoreSetKeyValues
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(shutdownError);
+
+        const persistPromise = manager.persist();
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        const [result, persistError] = await persistPromise;
+
+        expect(result).toBe(false);
+        expect(persistError).toBe(shutdownError);
+        expect(mockedCaptureException).not.toHaveBeenCalled();
+        expect(checkOrSetAlreadyCaught(shutdownError)).toBe(true);
+      });
+
+      it('does not latch the duplicate-report flag, so a later real failure still reports', async () => {
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10 });
+        manager.update('FooController', { foo: 'bar' });
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        const realError = new Error('store.setKeyValues error');
+        mockStoreSetKeyValues
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(realError)
+          .mockRejectedValueOnce(realError);
+
+        const firstPersistPromise = manager.persist();
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await firstPersistPromise;
+
+        manager.update('FooController', { foo: 'baz' });
+        const secondPersistPromise = manager.persist();
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await secondPersistPromise;
+
+        expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+        expect(mockedCaptureException).toHaveBeenCalledWith(realError, {
+          tags: { 'persistence.error': 'persist-failed' },
+          fingerprint: ['persistence-error', 'persist-failed'],
+        });
+      });
+
+      it('keeps pending pairs so the next write can retry them', async () => {
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10 });
+        manager.update('FooController', { foo: 'bar' });
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        mockStoreSetKeyValues
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(shutdownError)
+          .mockResolvedValueOnce(undefined);
+
+        const persistPromise = manager.persist();
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await persistPromise;
+
+        // The early return must not skip the pending-pairs restore that runs
+        // before it, or the update would be lost.
+        await manager.persist();
+
+        const retriedPairs = mockStoreSetKeyValues.mock.calls.at(
+          -1,
+        )?.[0] as Map<string, unknown>;
+        // Spread into a fresh object first: the value has been through
+        // `structuredClone`, so its prototype comes from another realm and a
+        // strict comparison against a literal would fail on that alone.
+        expect({
+          ...(retriedPairs.get('FooController') as object),
+        }).toStrictEqual({ foo: 'bar' });
+      });
     });
 
     it('captures exception only once if store.setKeyValues throws multiple times', async () => {

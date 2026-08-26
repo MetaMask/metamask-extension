@@ -1,4 +1,9 @@
-import { captureException, captureMessage } from './sentry';
+import { checkOrSetAlreadyCaught } from '@sentry/core';
+import {
+  captureException,
+  captureMessage,
+  markErrorAsCaptured,
+} from './sentry';
 
 describe('Sentry', () => {
   beforeEach(() => {
@@ -81,6 +86,70 @@ describe('Sentry', () => {
       captureMessage('Test message', 'info');
 
       expect(captureMessageSpy).toHaveBeenCalledWith('Test message', 'info');
+    });
+  });
+
+  describe('markErrorAsCaptured', () => {
+    it('returns the same error', () => {
+      const testError = new Error('Test error');
+
+      expect(markErrorAsCaptured(testError)).toBe(testError);
+    });
+
+    it('keeps the mark off enumerable output', () => {
+      // Must stay invisible to `extraErrorDataIntegration` and to any
+      // serialization of the error, e.g. over the critical-error port.
+      const testError = markErrorAsCaptured(
+        Object.assign(new Error('Test error'), { detail: 'kept' }),
+      );
+
+      expect(Object.keys(testError)).toStrictEqual(['detail']);
+      expect(JSON.stringify(testError)).toStrictEqual('{"detail":"kept"}');
+    });
+
+    it('handles primitives without throwing', () => {
+      // Primitives cannot carry the mark, matching the SDK's own behaviour.
+      const primitives = ['not an error', null, undefined, 42];
+
+      for (const value of primitives) {
+        expect(markErrorAsCaptured(value)).toBe(value);
+      }
+    });
+
+    it('marks any value the SDK could also mark', () => {
+      // The SDK attempts `defineProperty` on whatever it is given, so gating on
+      // `typeof === 'object'` would leave a thrown function markable by the SDK
+      // but not by us, and it would then be reported twice.
+      const thrownFunction = markErrorAsCaptured(function boom() {
+        // Never called; only thrown.
+      });
+
+      expect(checkOrSetAlreadyCaught(thrownFunction)).toBe(true);
+    });
+
+    it('does not throw when the error is frozen', () => {
+      const frozenError = Object.freeze(new Error('Test error'));
+
+      expect(() => markErrorAsCaptured(frozenError)).not.toThrow();
+      // The mark could not be applied, so the error stays reportable. This
+      // fails open: it may be reported, never silently lost.
+      expect(checkOrSetAlreadyCaught(frozenError)).toBe(false);
+    });
+
+    // Pins our marker to the Sentry SDK internal it piggybacks on. If an SDK
+    // upgrade renames `__sentry_captured__` this fails, which is the signal to
+    // revisit `markErrorAsCaptured`. Without the pin, a rename would silently
+    // start reporting errors we intend to suppress.
+    it('marks errors with the property the SDK itself checks', () => {
+      const testError = markErrorAsCaptured(new Error('Test error'));
+
+      // `checkOrSetAlreadyCaught` is what `Client.captureException` and
+      // `Client.captureEvent` call to drop repeat captures of one object.
+      expect(checkOrSetAlreadyCaught(testError)).toBe(true);
+    });
+
+    it('leaves an unmarked error reportable', () => {
+      expect(checkOrSetAlreadyCaught(new Error('Test error'))).toBe(false);
     });
   });
 });

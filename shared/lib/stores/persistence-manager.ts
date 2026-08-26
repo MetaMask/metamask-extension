@@ -2,8 +2,15 @@ import EventEmitter from 'events';
 import log from 'loglevel';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
-import { captureException, captureMessage } from '../sentry';
-import { MISSING_VAULT_ERROR } from '../../constants/errors';
+import {
+  captureException,
+  captureMessage,
+  markErrorAsCaptured,
+} from '../sentry';
+import {
+  MISSING_VAULT_ERROR,
+  isBrowserShuttingDownError,
+} from '../../constants/errors';
 import { getManifestFlags } from '../manifestFlags';
 import { VaultCorruptionType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
@@ -672,6 +679,18 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           return [true, undefined];
         } catch (err) {
+          // See `get`: a write that fails only because the browser is closing is
+          // not a storage problem. Skipping the whole block matters, not just
+          // the capture - latching `#dataPersistenceFailing` here would suppress
+          // the report of a later real failure, and `#notifySetFailed` persists
+          // a storage-error flag in `AppStateController` that would surface a
+          // false warning in the next session.
+          if (isBrowserShuttingDownError(err)) {
+            log.info(
+              'MetaMask - storage write failed because the browser is shutting down',
+            );
+            return [false, markErrorAsCaptured(err)];
+          }
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             // Use different tags to differentiate storage.local vs IndexedDB backup failures.
@@ -815,6 +834,18 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           return [true, undefined];
         } catch (err) {
+          // See `get`: a write that fails only because the browser is closing is
+          // not a storage problem. Skipping the whole block matters, not just
+          // the capture - latching `#dataPersistenceFailing` here would suppress
+          // the report of a later real failure, and `#notifySetFailed` persists
+          // a storage-error flag in `AppStateController` that would surface a
+          // false warning in the next session.
+          if (isBrowserShuttingDownError(err)) {
+            log.info(
+              'MetaMask - storage write failed because the browser is shutting down',
+            );
+            return [false, markErrorAsCaptured(err)];
+          }
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             // Use different tags to differentiate storage.local vs IndexedDB backup failures.
@@ -873,6 +904,24 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             res,
           ])
           .catch((error: Error): [Error, undefined] => [error, undefined]);
+
+        // The browser shutting down mid-read is not a storage problem, so none
+        // of the failure handling below applies: reporting it, emitting
+        // `vaultCorruptionDetected`, and throwing `MISSING_VAULT_ERROR` would
+        // all be false positives. Mark it so no layer above - nor the SDK's
+        // global unhandled-rejection handler, which the uncaught
+        // `await isInitialized` call sites reach - reports it either, then
+        // re-throw so callers abort exactly as they would for a real failure.
+        //
+        // Re-throwing matters: returning `undefined` would let `background.js`
+        // treat this as an empty store, call `generateInitialState`, and
+        // overwrite persisted state on the next write.
+        if (isBrowserShuttingDownError(localStoreError)) {
+          log.info(
+            'MetaMask - storage.local.get rejected because the browser is shutting down',
+          );
+          throw markErrorAsCaptured(localStoreError);
+        }
 
         // Log and capture the error if one occurred, but don't throw yet
         if (localStoreError) {
