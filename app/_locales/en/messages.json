@@ -2470,7 +2470,11 @@
   },
   "bridgeStellarTrustlineWarningMessage": {
     "message": "This swap may fail. On Stellar your account can't receive $1 until the token is activated in your wallet with a valid trustline.",
-    "description": "Body of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "This swap may fail. On Stellar $1 can't receive $2 until you switch to that account and activate the token with a valid trustline.",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
   },
   "bridgeStellarTrustlineWarningTitle": {
     "message": "Activate $1 on Stellar first",

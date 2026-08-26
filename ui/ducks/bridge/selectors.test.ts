@@ -83,6 +83,7 @@ import {
   getBridgeUnavailableQuoteReason,
   resolveMinimumBalanceToKeep,
   getChainValueOrderOverride,
+  getDestTrustlineAlertContext,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -3469,6 +3470,67 @@ describe('Bridge selectors', () => {
           }),
         );
       });
+    });
+  });
+
+  describe('getDestTrustlineAlertContext', () => {
+    const STELLAR_USDC_ASSET_ID =
+      'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+
+    const stellarUsdcToken = toBridgeToken({
+      symbol: 'USDC',
+      decimals: 7,
+      assetId: STELLAR_USDC_ASSET_ID,
+      name: 'USDC',
+    });
+
+    it('defaults to same-as-active when destWalletAddress is missing', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: stellarUsdcToken,
+        },
+      });
+
+      expect(getDestTrustlineAlertContext(state as never)).toStrictEqual({
+        isDestSameAsActiveAccount: true,
+        destAccountDisplayName: null,
+      });
+    });
+
+    it('marks dest as different when destWalletAddress is not the active dest-chain account', () => {
+      const OTHER_STELLAR_ACCOUNT = {
+        ...MOCK_ACCOUNT_STELLAR_PUBNET,
+        id: 'other-stellar-account-id',
+        address: 'GBOTHERSTELLARACCOUNT00000000000000000000000000000000000',
+        metadata: {
+          ...MOCK_ACCOUNT_STELLAR_PUBNET.metadata,
+          name: 'Other Stellar',
+        },
+      };
+
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: stellarUsdcToken,
+        },
+        bridgeStateOverrides: {
+          quoteRequest: {
+            destWalletAddress: OTHER_STELLAR_ACCOUNT.address,
+          },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_EVM_ACCOUNT.id,
+            accounts: {
+              [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+              [OTHER_STELLAR_ACCOUNT.id]: OTHER_STELLAR_ACCOUNT,
+            },
+          },
+        },
+      });
+
+      const result = getDestTrustlineAlertContext(state as never);
+      expect(result.isDestSameAsActiveAccount).toBe(false);
+      expect(result.destAccountDisplayName).toBe('Other Stellar');
     });
   });
 

@@ -9,6 +9,7 @@ import {
   type BridgeAppState,
   getActiveQuotePriceData,
   getBridgeUnavailableQuoteReason,
+  getDestTrustlineAlertContext,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
@@ -64,6 +65,10 @@ export const useBridgeAlerts = () => {
   const toToken = useSelector(getToToken);
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
   const toTokenAssetId = toToken?.assetId;
+  const { isDestSameAsActiveAccount, destAccountDisplayName } = useSelector(
+    getDestTrustlineAlertContext,
+    shallowEqual,
+  );
 
   const {
     assetIsMalicious,
@@ -263,24 +268,42 @@ export const useBridgeAlerts = () => {
     // trustline. Can appear alongside other banners (e.g. insufficient gas).
     // Cross-chain + activation gating lives in getValidationErrors /
     // getWarningLabels (MixPanel).
+    // Same as active account → Activate CTA. Different dest → no CTA + switch copy.
     if (isDestAssetRequireActivate && toToken) {
-      categorizeAlert({
-        id: 'stellar-trustline',
-        isDismissable: false,
-        severity: 'warning',
-        title: t('bridgeStellarTrustlineWarningTitle', [toToken.symbol]),
-        description: t('bridgeStellarTrustlineWarningMessage', [
-          toToken.symbol,
-        ]),
-        isConfirmationAlert: false,
-        bannerAlertProps: {
-          severity: BannerAlertSeverity.Warning,
-          actionButtonLabel: t('bridgeStellarTrustlineWarningCta', [
+      if (isDestSameAsActiveAccount) {
+        categorizeAlert({
+          id: 'stellar-trustline',
+          isDismissable: false,
+          severity: 'warning',
+          title: t('bridgeStellarTrustlineWarningTitle', [toToken.symbol]),
+          description: t('bridgeStellarTrustlineWarningMessage', [
             toToken.symbol,
           ]),
-          actionButtonOnClick: () => navigateToDestAssetPage(),
-        },
-      });
+          isConfirmationAlert: false,
+          bannerAlertProps: {
+            severity: BannerAlertSeverity.Warning,
+            actionButtonLabel: t('bridgeStellarTrustlineWarningCta', [
+              toToken.symbol,
+            ]),
+            actionButtonOnClick: () => navigateToDestAssetPage(),
+          },
+        });
+      } else {
+        categorizeAlert({
+          id: 'stellar-trustline',
+          isDismissable: false,
+          severity: 'warning',
+          title: t('bridgeStellarTrustlineWarningTitle', [toToken.symbol]),
+          description: t(
+            'bridgeStellarTrustlineWarningMessageDifferentAccount',
+            [destAccountDisplayName ?? '', toToken.symbol],
+          ),
+          isConfirmationAlert: false,
+          bannerAlertProps: {
+            severity: BannerAlertSeverity.Warning,
+          },
+        });
+      }
     }
 
     if (
@@ -381,6 +404,8 @@ export const useBridgeAlerts = () => {
     ticker,
     toToken,
     isDestAssetRequireActivate,
+    isDestSameAsActiveAccount,
+    destAccountDisplayName,
     assetIsMalicious,
     assetIsSuspicious,
     assetMaliciousLocalizedFeatures,

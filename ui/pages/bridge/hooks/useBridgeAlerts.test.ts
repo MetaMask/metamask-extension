@@ -12,6 +12,7 @@ import {
   getActiveQuotePriceData,
   getBridgeQuotes,
   getBridgeUnavailableQuoteReason,
+  getDestTrustlineAlertContext,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
@@ -46,6 +47,7 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getActiveQuoteInsufficientNativeReserveError: jest.fn(),
   getBridgeQuotes: jest.fn(),
   getFromChain: jest.fn(),
+  getDestTrustlineAlertContext: jest.fn(),
 }));
 
 const mockNavigate = jest.fn();
@@ -158,6 +160,10 @@ describe('useBridgeAlerts', () => {
     jest.mocked(isQuoteExpiredOrInvalid).mockReturnValue(false);
 
     jest.mocked(getValidationErrors).mockReturnValue(DEFAULT_VALIDATION_ERRORS);
+    jest.mocked(getDestTrustlineAlertContext).mockReturnValue({
+      isDestSameAsActiveAccount: true,
+      destAccountDisplayName: null,
+    });
     jest
       .mocked(getBridgeUnavailableQuoteReason)
       .mockReturnValue('noOptionsAvailableMessage');
@@ -798,6 +804,32 @@ describe('useBridgeAlerts', () => {
       expect(
         result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
       ).not.toContain('stellar-trustline');
+    });
+
+    it('uses different-account copy and omits the Activate CTA when dest differs from the active account', () => {
+      jest.mocked(getDestTrustlineAlertContext).mockReturnValue({
+        isDestSameAsActiveAccount: false,
+        destAccountDisplayName: 'Account 2',
+      });
+
+      const { result } = renderHook();
+
+      const alert = result.current.alertsById['stellar-trustline'];
+      expect(alert).toStrictEqual(
+        expect.objectContaining({
+          id: 'stellar-trustline',
+          severity: 'warning',
+          title: 'bridgeStellarTrustlineWarningTitle:USDC',
+          description:
+            'bridgeStellarTrustlineWarningMessageDifferentAccount:Account 2,USDC',
+          isConfirmationAlert: false,
+        }),
+      );
+      expect(alert?.bannerAlertProps).toStrictEqual({
+        severity: BannerAlertSeverity.Warning,
+      });
+      expect(alert?.bannerAlertProps).not.toHaveProperty('actionButtonLabel');
+      expect(alert?.bannerAlertProps).not.toHaveProperty('actionButtonOnClick');
     });
 
     it('can appear alongside the insufficient-gas banner', () => {

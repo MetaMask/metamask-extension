@@ -1202,6 +1202,43 @@ export const computeQuoteValidationErrors = (
 };
 
 /**
+ * Context for the Stellar trustline banner: whether the quote destination
+ * matches the active account for the destination chain, plus a display name
+ * for the different-account copy.
+ * Defaults to "same as active" when dest is unknown so the Activate CTA path
+ * remains available before quote params settle.
+ * @param state
+ */
+export const getDestTrustlineAlertContext = createDeepEqualSelector(
+  [getQuoteRequest, getToToken, (state: BridgeAppState) => state],
+  (quoteRequest, toToken, state) => {
+    const destWalletAddress = quoteRequest?.destWalletAddress;
+    if (!destWalletAddress || !toToken?.chainId) {
+      return {
+        isDestSameAsActiveAccount: true,
+        destAccountDisplayName: null as string | null,
+      };
+    }
+
+    const destAccount = getInternalAccountByAddress(state, destWalletAddress);
+    const activeAccount = getInternalAccountBySelectedAccountGroupAndCaip(
+      state,
+      toToken.chainId,
+    );
+    const destAccountDisplayName =
+      getAccountGroupNameByInternalAccount(state, destAccount ?? null) ??
+      destAccount?.metadata?.name ??
+      null;
+
+    return {
+      isDestSameAsActiveAccount:
+        Boolean(destAccount?.id) && destAccount.id === activeAccount?.id,
+      destAccountDisplayName,
+    };
+  },
+);
+
+/**
  * True when bridging cross-chain to a Stellar classic asset that still needs a
  * trustline on the **destination** account (quote `destWalletAddress`), not
  * merely the currently selected account group. Same-chain Stellar swaps are
