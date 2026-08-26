@@ -9,11 +9,7 @@ import {
 } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import Confusable from '../../ui/confusable';
-import {
-  Box,
-  BadgeWrapper,
-  Text,
-} from '../../component-library';
+import { Box, BadgeWrapper, Text } from '../../component-library';
 import {
   AlignItems,
   Display,

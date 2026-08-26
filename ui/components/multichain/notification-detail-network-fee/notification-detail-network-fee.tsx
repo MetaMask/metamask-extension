@@ -24,10 +24,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 
 import { NotificationDetail } from '../notification-detail';
-import {
-  Box,
-  Text,
-} from '../../component-library';
+import { Box, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,

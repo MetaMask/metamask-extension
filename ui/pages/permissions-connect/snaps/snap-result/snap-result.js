@@ -23,9 +23,7 @@ import {
   TextAlign,
   Display,
 } from '../../../../helpers/constants/design-system';
-import {
-  Text,
-} from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';

@@ -29,10 +29,7 @@ import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
-import {
-  Box,
-  Text,
-} from '../../../../components/component-library';
+import { Box, Text } from '../../../../components/component-library';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
