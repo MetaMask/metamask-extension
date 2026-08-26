@@ -9,6 +9,7 @@ import {
   createSidepanelOpener,
   setupSidePanelToolbarBehavior,
   shouldUseSidepanel,
+  type SidePanelApiWithBehavior,
   type SidePanelBehaviorApi,
   type SidePanelToolbarBehaviorController,
 } from './background';
@@ -215,12 +216,13 @@ describe('createSidepanelOpener', () => {
   });
 });
 
-function createSidePanelMock() {
+function createSidePanelMock(): {
+  sidePanelApi: SidePanelApiWithBehavior;
+  setPanelBehavior: jest.Mock;
+} {
   const setPanelBehavior = jest.fn().mockResolvedValue(undefined);
-  return {
-    sidePanel: { setPanelBehavior } satisfies SidePanelBehaviorApi,
-    setPanelBehavior,
-  };
+  const sidePanelApi = { setPanelBehavior } satisfies SidePanelApiWithBehavior;
+  return { sidePanelApi, setPanelBehavior };
 }
 
 function createSidePanelWithoutBehaviorMock(): {
@@ -247,27 +249,20 @@ function createToolbarController(
 
 describe('applyEarlySidePanelToolbarBehavior', () => {
   it('sets openPanelOnActionClick to true when sidePanel API is available', () => {
-    const { sidePanel, setPanelBehavior } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
 
-    applyEarlySidePanelToolbarBehavior(sidePanel);
+    applyEarlySidePanelToolbarBehavior(sidePanelApi);
 
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
   });
 
-  it('does nothing when setPanelBehavior is unavailable', () => {
-    const { sidePanel } = createSidePanelWithoutBehaviorMock();
-
-    expect(sidePanel.setPanelBehavior).toBeUndefined();
-    applyEarlySidePanelToolbarBehavior(sidePanel);
-  });
-
   it('ignores setPanelBehavior rejection', async () => {
-    const { sidePanel, setPanelBehavior } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
     setPanelBehavior.mockRejectedValue(new Error('side panel unavailable'));
 
-    applyEarlySidePanelToolbarBehavior(sidePanel);
+    applyEarlySidePanelToolbarBehavior(sidePanelApi);
 
     await Promise.resolve();
     expect(setPanelBehavior).toHaveBeenCalledTimes(1);
@@ -276,11 +271,11 @@ describe('applyEarlySidePanelToolbarBehavior', () => {
 
 describe('applyToolbarSidePanelBehavior', () => {
   it('applies the persisted useSidePanelAsDefault preference', async () => {
-    const { sidePanel, setPanelBehavior } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
 
     await applyToolbarSidePanelBehavior(
       () => createToolbarController(false),
-      sidePanel,
+      sidePanelApi,
     );
 
     expect(setPanelBehavior).toHaveBeenCalledWith({
@@ -289,23 +284,13 @@ describe('applyToolbarSidePanelBehavior', () => {
   });
 
   it('defaults to true when preference is missing', async () => {
-    const { sidePanel, setPanelBehavior } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
 
-    await applyToolbarSidePanelBehavior(() => ({}), sidePanel);
+    await applyToolbarSidePanelBehavior(() => ({}), sidePanelApi);
 
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
-  });
-
-  it('does nothing when setPanelBehavior is unavailable', async () => {
-    const { sidePanel } = createSidePanelWithoutBehaviorMock();
-    const getController = jest.fn(() => createToolbarController(false));
-
-    await expect(
-      applyToolbarSidePanelBehavior(getController, sidePanel),
-    ).resolves.toBeUndefined();
-    expect(getController).not.toHaveBeenCalled();
   });
 });
 
@@ -321,7 +306,7 @@ describe('setupSidePanelToolbarBehavior', () => {
   });
 
   it('applies early toolbar behavior before init, then preference and subscription', async () => {
-    const { sidePanel, setPanelBehavior } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
     const subscribe = jest.fn();
     let resolveInitialization: () => void = () => undefined;
     const waitUntilInitialized = new Promise<void>((resolve) => {
@@ -339,7 +324,7 @@ describe('setupSidePanelToolbarBehavior', () => {
         getController,
         waitUntilInitialized,
       },
-      sidePanel,
+      sidePanelApi,
     );
 
     expect(setPanelBehavior).toHaveBeenCalledWith({
@@ -359,7 +344,7 @@ describe('setupSidePanelToolbarBehavior', () => {
   });
 
   it('updates panel behavior when preference subscription fires', async () => {
-    const { sidePanel, setPanelBehavior } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
     let preferenceChangeHandler:
       | ((useSidePanelAsDefault: boolean) => void)
       | undefined;
@@ -377,7 +362,7 @@ describe('setupSidePanelToolbarBehavior', () => {
         }),
         waitUntilInitialized: Promise.resolve(),
       },
-      sidePanel,
+      sidePanelApi,
     );
 
     setPanelBehavior.mockClear();
@@ -390,7 +375,7 @@ describe('setupSidePanelToolbarBehavior', () => {
   });
 
   it('uses the selector to read useSidePanelAsDefault from preferences state', async () => {
-    const { sidePanel } = createSidePanelMock();
+    const { sidePanelApi } = createSidePanelMock();
     let selector: ((state: PreferencesControllerState) => boolean) | undefined;
     const subscribe = jest.fn(
       (
@@ -411,7 +396,7 @@ describe('setupSidePanelToolbarBehavior', () => {
         }),
         waitUntilInitialized: Promise.resolve(),
       },
-      sidePanel,
+      sidePanelApi,
     );
 
     expect(
@@ -429,14 +414,14 @@ describe('setupSidePanelToolbarBehavior', () => {
   });
 
   it('logs an error when initialization fails', async () => {
-    const { sidePanel } = createSidePanelMock();
+    const { sidePanelApi } = createSidePanelMock();
 
     await setupSidePanelToolbarBehavior(
       {
         getController: () => createToolbarController(),
         waitUntilInitialized: Promise.reject(new Error('init failed')),
       },
-      sidePanel,
+      sidePanelApi,
     );
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -446,7 +431,7 @@ describe('setupSidePanelToolbarBehavior', () => {
   });
 
   it('logs an error when preference updates fail', async () => {
-    const { sidePanel, setPanelBehavior } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
     let preferenceChangeHandler:
       | ((useSidePanelAsDefault: boolean) => void)
       | undefined;
@@ -463,7 +448,7 @@ describe('setupSidePanelToolbarBehavior', () => {
         }),
         waitUntilInitialized: Promise.resolve(),
       },
-      sidePanel,
+      sidePanelApi,
     );
 
     setPanelBehavior.mockRejectedValueOnce(new Error('update failed'));

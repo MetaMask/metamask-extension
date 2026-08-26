@@ -37,6 +37,10 @@ export type SidePanelBehaviorApi = {
   }) => Promise<void>;
 };
 
+export type SidePanelApiWithBehavior = SidePanelBehaviorApi & {
+  setPanelBehavior: NonNullable<SidePanelBehaviorApi['setPanelBehavior']>;
+};
+
 export function shouldUseSidepanel(
   controller: {
     preferencesController?: {
@@ -154,11 +158,11 @@ export function createSidepanelOpener() {
 
 function getSidePanelApi(
   sidePanel: SidePanelBehaviorApi | undefined = chrome.sidePanel,
-): SidePanelBehaviorApi | undefined {
+): SidePanelApiWithBehavior | undefined {
   if (typeof sidePanel?.setPanelBehavior !== 'function') {
     return undefined;
   }
-  return sidePanel;
+  return sidePanel as SidePanelApiWithBehavior;
 }
 
 function getUseSidePanelAsDefault(
@@ -175,15 +179,11 @@ function getUseSidePanelAsDefault(
  * Without this, the first click after a cold start can use manifest `default_popup` until
  * {@link setupSidePanelToolbarBehavior} runs after initialization.
  *
- * @param sidePanel - Optional side panel API override for tests.
+ * @param sidePanelApi - Side panel API with `setPanelBehavior` (validated by caller).
  */
 export function applyEarlySidePanelToolbarBehavior(
-  sidePanel: SidePanelBehaviorApi | undefined = chrome.sidePanel,
+  sidePanelApi: SidePanelApiWithBehavior,
 ): void {
-  const sidePanelApi = getSidePanelApi(sidePanel);
-  if (!sidePanelApi?.setPanelBehavior) {
-    return;
-  }
   sidePanelApi.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {
     // Non-fatal: `applyToolbarSidePanelBehavior` applies persisted preference once ready.
   });
@@ -191,12 +191,8 @@ export function applyEarlySidePanelToolbarBehavior(
 
 export async function applyToolbarSidePanelBehavior(
   getController: SidePanelToolbarBehaviorDeps['getController'],
-  sidePanel: SidePanelBehaviorApi | undefined = chrome.sidePanel,
+  sidePanelApi: SidePanelApiWithBehavior,
 ): Promise<void> {
-  const sidePanelApi = getSidePanelApi(sidePanel);
-  if (!sidePanelApi?.setPanelBehavior) {
-    return;
-  }
   const useSidePanelAsDefault = getUseSidePanelAsDefault(getController());
   await sidePanelApi.setPanelBehavior({
     openPanelOnActionClick: useSidePanelAsDefault,
@@ -215,7 +211,7 @@ export async function setupSidePanelToolbarBehavior(
   sidePanel: SidePanelBehaviorApi | undefined = chrome.sidePanel,
 ): Promise<void> {
   const sidePanelApi = getSidePanelApi(sidePanel);
-  if (!sidePanelApi?.setPanelBehavior) {
+  if (!sidePanelApi) {
     return;
   }
 
@@ -229,9 +225,6 @@ export async function setupSidePanelToolbarBehavior(
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
       (useSidePanelAsDefault) => {
-        if (!sidePanelApi.setPanelBehavior) {
-          return;
-        }
         sidePanelApi
           .setPanelBehavior({
             openPanelOnActionClick: useSidePanelAsDefault,
