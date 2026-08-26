@@ -8,10 +8,7 @@ import {
 const log = createProjectLogger('sourcify');
 
 export type SourcifyResponse = {
-  files: {
-    name: string;
-    content: string;
-  }[];
+  metadata?: SourcifyMetadata;
 };
 
 export type SourcifyMetadata = {
@@ -146,34 +143,30 @@ function decodeParam(
 }
 
 async function fetchSourcifyMetadata(address: Hex, chainId: Hex) {
-  const response = await fetchSourcifyFiles(address, chainId);
-
-  const metadata = response.files?.find((file) =>
-    file.name.includes('metadata.json'),
-  );
+  const { metadata } = await fetchSourcifyContract(address, chainId);
 
   if (!metadata) {
     throw new Error('Metadata not found');
   }
 
-  return JSON.parse(metadata.content) as SourcifyMetadata;
+  return metadata;
 }
 
-async function fetchSourcifyFiles(
+async function fetchSourcifyContract(
   address: Hex,
   chainId: Hex,
 ): Promise<SourcifyResponse> {
   const chainIdDecimal = parseInt(chainId, 16);
 
-  const respose = await fetch(
-    `https://sourcify.dev/server/files/any/${chainIdDecimal}/${address}`,
+  const response = await fetch(
+    `https://sourcify.dev/server/v2/contract/${chainIdDecimal}/${address}?fields=metadata`,
   );
 
-  if (!respose.ok) {
-    throw new Error('Failed to fetch Sourcify files');
+  if (!response.ok) {
+    throw new Error('Failed to fetch Sourcify contract');
   }
 
-  return respose.json();
+  return response.json();
 }
 
 function buildSignature(name: string | undefined, inputs: ParamType[]): string {
