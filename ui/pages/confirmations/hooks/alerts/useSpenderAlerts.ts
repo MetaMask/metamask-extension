@@ -238,10 +238,5 @@ export function useSpenderAlerts(): Alert[] {
     }
 
     return alerts;
-  }, [
-    spenderAddress,
-    isSafeToSkipAlert,
-    trustSignalDisplayState,
-    t,
-  ]);
+  }, [spenderAddress, isSafeToSkipAlert, trustSignalDisplayState, t]);
 }
