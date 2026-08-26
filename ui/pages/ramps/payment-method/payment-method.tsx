@@ -223,10 +223,6 @@ export function RampsPaymentMethodScreen() {
                   currency: fiatCurrency,
                   formatCurrency,
                   t,
-                  backendError: quotes?.error?.find(
-                    (error) =>
-                      error.provider === selectedProvider?.id && error.error,
-                  )?.error,
                 }) ?? t('rampsQuoteUnavailable'))
               : undefined;
 
