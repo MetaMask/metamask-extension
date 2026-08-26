@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.45.1]
 
+### Fixed
+
+- Fixed transactions from dapps that send a numeric `chainId` being rejected with an "Invalid params" error instead of opening a confirmation (#45774)
+
 ## [13.45.0]
 
 ### Added
