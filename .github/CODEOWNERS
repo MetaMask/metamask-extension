@@ -120,7 +120,8 @@ app/scripts/services/legacy-background-api-service.test.ts @MetaMask/core-platfo
 ## UI-level messengers
 test/lib/mock-route-messenger.ts                           @MetaMask/core-platform
 test/lib/mock-ui-messenger.ts                              @MetaMask/core-platform
-ui/contexts/route-messenger.ts                             @MetaMask/core-platform
+ui/contexts/route-messenger.tsx                            @MetaMask/core-platform
+ui/contexts/route-messenger.test.tsx                       @MetaMask/core-platform
 ui/contexts/ui-messenger.tsx                               @MetaMask/core-platform
 ui/helpers/route-messenger-helpers.test.tsx                @MetaMask/core-platform
 ui/helpers/route-messenger-helpers.tsx                     @MetaMask/core-platform
@@ -162,13 +163,15 @@ ui/components/multichain/account-list-item/      @MetaMask/accounts-engineers @M
 ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 
 # Web3Auth / Onboarding
-app/scripts/services/oauth            @MetaMask/web3auth
-ui/pages/onboarding-flow              @MetaMask/web3auth
+app/scripts/wallet-init/instance-options/seedless-onboarding-controller*  @MetaMask/web3auth
+app/scripts/wallet-init/messengers/seedless-onboarding-controller*        @MetaMask/web3auth
+app/scripts/wallet-init/instance-options/passkey-controller*              @MetaMask/web3auth
+app/scripts/services/oauth                                                @MetaMask/web3auth
+ui/pages/onboarding-flow                                                  @MetaMask/web3auth
+ui/hooks/passkey                                                          @MetaMask/web3auth
+shared/lib/passkey                                                        @MetaMask/web3auth
 
 # Web3Auth / Shield
-app/scripts/messenger-client-init/claims              @MetaMask/web3auth
-app/scripts/messenger-client-init/shield              @MetaMask/web3auth
-app/scripts/messenger-client-init/subscription        @MetaMask/web3auth
 shared/lib/shield.ts                                  @MetaMask/web3auth
 ui/components/app/modals/add-funds-modal              @MetaMask/web3auth
 ui/components/app/shield-entry-modal                  @MetaMask/web3auth
@@ -178,6 +181,14 @@ ui/hooks/claims                                       @MetaMask/web3auth
 ui/hooks/subscription                                 @MetaMask/web3auth
 ui/pages/shield                                       @MetaMask/web3auth
 ui/pages/settings/transaction-shield-tab              @MetaMask/web3auth
+
+# Web3Auth / Subscriptions
+app/scripts/wallet-init/instance-options/shield-controller*       @MetaMask/web3auth
+app/scripts/wallet-init/instance-options/subscription-service*    @MetaMask/web3auth
+app/scripts/wallet-init/instance-options/claims-service*          @MetaMask/web3auth
+app/scripts/messenger-client-init/subscription                    @MetaMask/web3auth
+app/scripts/messenger-client-init/messengers/subscription         @MetaMask/web3auth
+app/scripts/services/subscription                                 @MetaMask/web3auth
 
 # Web3Auth / QrSync
 app/scripts/controllers/qr-sync                       @MetaMask/web3auth

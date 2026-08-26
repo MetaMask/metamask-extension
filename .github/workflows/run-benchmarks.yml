@@ -17,6 +17,7 @@ jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
+    # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
     strategy:
       fail-fast: false
@@ -76,6 +77,10 @@ jobs:
         run: .github/scripts/pin-geckodriver.sh
 
       - name: Run the benchmark
+        # Job timeouts propogate to later jobs, step timeouts just cause job failure.
+        # This must be set below the job timeout so that the job itself does not timeout.
+        timeout-minutes: 25
+        id: run-benchmark
         run: >-
           ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
         shell: bash
@@ -120,9 +125,15 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+      - name: Gate this benchmark leg
+        if: ${{ steps.run-benchmark.outcome == 'success' }}
+        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
+        shell: bash
+
   benchmarks-page-load:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: chrome-webpack-pageLoadBenchmark
+    # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -158,6 +169,10 @@ jobs:
           browsers: chromium
 
       - name: Run dapp page load benchmarks
+        # Job timeouts propogate to later jobs, step timeouts just cause job failure.
+        # This must be set below the job timeout so that the job itself does not timeout.
+        timeout-minutes: 25
+        id: run-page-load
         run: yarn test:e2e:benchmark --preset=pageLoadBenchmark
 
       - name: Send benchmark results to Sentry (main/release only)
@@ -199,6 +214,11 @@ jobs:
           path: test-artifacts/benchmarks/${{ env.DAPP_BENCHMARK_JSON }}
           retention-days: 7
           if-no-files-found: ignore
+
+      - name: Gate this benchmark leg
+        if: ${{ steps.run-page-load.outcome == 'success' }}
+        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
+        shell: bash
 
   # Evaluates benchmark results against constant thresholds (THRESHOLD_REGISTRY).
   # Rollout across 4 phases:

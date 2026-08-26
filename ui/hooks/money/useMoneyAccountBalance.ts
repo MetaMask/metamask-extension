@@ -221,24 +221,14 @@ export function useMoneyAccountBalance({
 
   const serviceApy = vaultApyQuery.data?.apy;
 
-  // During first load with no cache, do not show fallback to avoid flicker.
-  // Show fallback on explicit APY query errors (service outage path) or when
-  // a settled query still yields no APY value.
-  const shouldUseFallback =
-    !vaultApyQuery.isLoading &&
-    (vaultApyQuery.isError || serviceApy === undefined);
-
-  // Override always wins when set; otherwise use live service value; then use
-  // fallback only when the APY query is settled/error and no live APY exists.
-  const apyDecimal =
-    vaultApyOverride === undefined
-      ? (serviceApy ?? (shouldUseFallback ? vaultApyFallback : undefined))
-      : vaultApyOverride;
+  // Override always wins when set; otherwise use the live service value, then
+  // the configured fallback so projected earnings remain available on load.
+  const apyDecimal = vaultApyOverride ?? serviceApy ?? vaultApyFallback;
 
   const apyPercent =
     apyDecimal === undefined
       ? undefined
-      : new BigNumber(apyDecimal)
+      : new BigNumber(apyDecimal.toString())
           .times(PERCENT)
           // `round(dp, rm)`, not mobile's `dp(dp, rm)`: in `bignumber.js@4`
           // `decimalPlaces`/`dp` is a getter that ignores both arguments and
