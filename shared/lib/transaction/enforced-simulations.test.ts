@@ -150,56 +150,23 @@ describe('enforced-simulations', () => {
       ).toBe(true);
     });
 
-    for (const { description, origin } of [
-      { description: 'no origin', origin: undefined },
-      { description: 'the MetaMask origin', origin: ORIGIN_METAMASK },
-    ]) {
-      describe(`with a wallet-initiated transaction using ${description}`, () => {
-        it('returns true when all conditions are met', () => {
-          expect(
-            isEnforcedSimulationsEligible(
-              { ...BASE_TRANSACTION_META, origin },
-              buildState(ResultType.Benign),
-            ),
-          ).toBe(true);
-        });
+    it('returns false when origin is undefined', () => {
+      expect(
+        isEnforcedSimulationsEligible(
+          { ...BASE_TRANSACTION_META, origin: undefined },
+          buildState(ResultType.Benign),
+        ),
+      ).toBe(false);
+    });
 
-        it('returns false when the chain is unsupported', () => {
-          expect(
-            isEnforcedSimulationsEligible(
-              {
-                ...BASE_TRANSACTION_META,
-                origin,
-                chainId: UNSUPPORTED_CHAIN_ID,
-              },
-              buildState(ResultType.Benign),
-            ),
-          ).toBe(false);
-        });
-
-        it('returns true when there are no balance changes', () => {
-          expect(
-            isEnforcedSimulationsEligible(
-              {
-                ...BASE_TRANSACTION_META,
-                origin,
-                simulationData: { tokenBalanceChanges: [] },
-              },
-              buildState(ResultType.Benign),
-            ),
-          ).toBe(true);
-        });
-
-        it('returns false when the recipient is trusted', () => {
-          expect(
-            isEnforcedSimulationsEligible(
-              { ...BASE_TRANSACTION_META, origin },
-              buildState(ResultType.Trusted),
-            ),
-          ).toBe(false);
-        });
-      });
-    }
+    it('returns false when origin is MetaMask internal', () => {
+      expect(
+        isEnforcedSimulationsEligible(
+          { ...BASE_TRANSACTION_META, origin: ORIGIN_METAMASK },
+          buildState(ResultType.Benign),
+        ),
+      ).toBe(false);
+    });
 
     it('returns false when chain is not in eip7702 supported chains', () => {
       expect(
@@ -619,7 +586,7 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
-      it('returns true when a chain with no slug mapping has a non-trusted cached result', () => {
+      it('returns false when the chain is not address-scan supported even with a non-trusted cached result', () => {
         expect(
           isEnforcedSimulationsEligible(
             {
@@ -632,7 +599,37 @@ describe('enforced-simulations', () => {
               UNSUPPORTED_CHAIN_ID,
             ),
           ),
-        ).toBe(true);
+        ).toBe(false);
+      });
+
+      it('returns false when the chain is not address-scan supported and the cached verdict is ErrorResult', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNSUPPORTED_CHAIN_ID,
+            },
+            buildState(
+              ResultType.ErrorResult,
+              [UNSUPPORTED_CHAIN_ID],
+              UNSUPPORTED_CHAIN_ID,
+            ),
+          ),
+        ).toBe(false);
+      });
+
+      it('returns false on a 7702 chain that Blockaid cannot address-screen', () => {
+        const celoChainId = '0xa4ec' as Hex;
+
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: celoChainId,
+            },
+            buildState(ResultType.ErrorResult, [celoChainId], celoChainId),
+          ),
+        ).toBe(false);
       });
 
       it('returns false when an unmapped chain recipient has a cached Trusted verdict', () => {
@@ -667,7 +664,7 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
-      it('still enforces when the cached verdict is ErrorResult', () => {
+      it('still enforces when the cached verdict is ErrorResult on an address-scan supported chain', () => {
         expect(
           isEnforcedSimulationsEligible(
             {
@@ -928,6 +925,22 @@ describe('enforced-simulations', () => {
         ).toBe(true);
       });
 
+      it('returns true even when the chain is not address-scan supported', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNSUPPORTED_CHAIN_ID,
+            },
+            buildState(
+              ResultType.Trusted,
+              [UNSUPPORTED_CHAIN_ID],
+              UNSUPPORTED_CHAIN_ID,
+            ),
+          ),
+        ).toBe(true);
+      });
+
       it('returns true even when all nested addresses are trusted', () => {
         expect(
           isEnforcedSimulationsEligible(
@@ -959,13 +972,13 @@ describe('enforced-simulations', () => {
         ).toBe(true);
       });
 
-      it('returns true when origin is MetaMask internal', () => {
+      it('still returns false when origin is MetaMask internal', () => {
         expect(
           isEnforcedSimulationsEligible(
             { ...BASE_TRANSACTION_META, origin: ORIGIN_METAMASK },
             buildState(ResultType.Trusted),
           ),
-        ).toBe(true);
+        ).toBe(false);
       });
 
       it('is ignored when value is not the string "true"', () => {
