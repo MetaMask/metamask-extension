@@ -185,6 +185,9 @@
     "MoneyAccountController": {
       "moneyAccounts": {}
     },
+    "MoneyAccountUpgradeController": {
+      "upgradedAccounts": {}
+    },
     "MultichainAssetsController": {
       "accountsAssets": {},
       "allIgnoredAssets": {},

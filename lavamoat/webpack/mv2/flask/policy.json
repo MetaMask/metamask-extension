@@ -1923,6 +1923,17 @@
         "async-mutex": true
       }
     },
+    "@metamask/money-account-upgrade-controller": {
+      "globals": {
+        "crypto.getRandomValues": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/delegation-core": true,
+        "@metamask/delegation-deployments": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/money-account-utils": {
       "packages": {
         "@ethersproject/abi": true,
