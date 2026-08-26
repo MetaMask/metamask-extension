@@ -30,6 +30,10 @@ export default class ShieldPlanPage {
       ? '[data-testid="shield-plan-monthly*-button"]'
       : '[data-testid="shield-plan-monthly-button"]';
 
+  private readonly page = {
+    testId: 'parent-selector-shield-plan-page',
+  };
+
   private readonly shieldPlanPageAnnualPlan = {
     text: 'Annual',
     tag: 'p',
@@ -56,6 +60,7 @@ export default class ShieldPlanPage {
       this.shieldPlanPageMonthlyPlan,
     ]);
     await this.driver.waitForMultipleSelectors([
+      this.page,
       this.shieldPlanPageTitle,
       this.shieldPlanPageAnnualPlan,
       this.shieldPlanPageMonthlyPlan,

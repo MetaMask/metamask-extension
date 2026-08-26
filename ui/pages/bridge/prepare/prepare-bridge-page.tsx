@@ -14,13 +14,11 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToToken,
   updateQuoteRequestParams,
   trackUnifiedSwapBridgeEvent,
   setIsSrcAssetPickerOpen,
@@ -37,7 +35,6 @@ import {
   getSlippage,
   getIsSlippageUserOverride,
   getToChain,
-  getToChains,
   getToToken,
   getWasTxDeclined,
   getFromAmountInCurrency,
@@ -47,8 +44,6 @@ import {
   getFromAccount,
   getIsStxEnabled,
   getValidatedFromValue,
-  getIsSrcAssetPickerOpen,
-  getIsDestAssetPickerOpen,
   getQuoteRequestInsufficientBal,
 } from '../../../ducks/bridge/selectors';
 import {
@@ -85,7 +80,6 @@ import {
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
-import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
 import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
 import { getTokenSecurityAssetKey } from '../utils/token-security';
 import { useDispatch } from '../../../store/hooks';
@@ -118,7 +112,6 @@ const PrepareBridgePage = ({
   );
 
   const fromChains = useSelector(getFromChains);
-  const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
@@ -145,8 +138,6 @@ const PrepareBridgePage = ({
   const { dest } = unvalidatedQuote?.quote ?? {};
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
-  const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
-  const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
 
   const isQuoteRequestInsufficientBal = useSelector(
     getQuoteRequestInsufficientBal,
@@ -236,8 +227,6 @@ const PrepareBridgePage = ({
   } = useDestinationAccount();
 
   useLatestBalance();
-
-  const ensureNetworkEnabled = useEnsureNetworkEnabled();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -334,6 +323,11 @@ const PrepareBridgePage = ({
   // making it safe not to worry about recreating this function on dependency updates.
   const debouncedUpdateQuoteRequestInController = useRef(
     debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
+      const [params] = args;
+      if (isValidQuoteRequest(params)) {
+        endTrace({ name: TraceName.SwapQuoteFetch });
+        trace({ name: TraceName.SwapQuoteFetch });
+      }
       dispatch(updateQuoteRequestParams(...args));
     }, 300),
   );
@@ -440,24 +434,16 @@ const PrepareBridgePage = ({
         data-testid="parent-selector-bridge-quote"
       >
         <BridgeInputGroup
-          isAssetPickerOpen={isSrcAssetPickerOpen}
           setIsAssetPickerOpen={(isOpen) =>
             dispatch(setIsSrcAssetPickerOpen(isOpen))
           }
-          header={t('swapSelectToken')}
           token={fromToken}
           tokenSecurityData={
             selectedTokenSecurityData[
               getTokenSecurityAssetKey(fromToken.assetId)
             ]
           }
-          accountAddress={selectedAccount?.address}
           onAmountChange={sourceInputAmount.handleAmountChange}
-          onAssetChange={async (token) => {
-            await ensureNetworkEnabled(token.chainId);
-            dispatch(setFromToken(token));
-          }}
-          networks={fromChains}
           onMaxButtonClick={
             shouldShowMaxButton
               ? (value: string) => {
@@ -604,13 +590,8 @@ const PrepareBridgePage = ({
           />
 
           <BridgeInputGroup
-            isAssetPickerOpen={isDestAssetPickerOpen}
             setIsAssetPickerOpen={(isOpen) =>
               dispatch(setIsDestAssetPickerOpen(isOpen))
-            }
-            header={t('swapSelectToken')}
-            accountAddress={
-              selectedDestinationAccount?.address ?? selectedAccount.address
             }
             token={toToken}
             tokenSecurityData={
@@ -618,18 +599,6 @@ const PrepareBridgePage = ({
                 getTokenSecurityAssetKey(toToken.assetId)
               ]
             }
-            // If the fromChain is a bridge-only chain, disable it in the toChain picker
-            disabledChainId={
-              fromChain?.chainId &&
-              BRIDGE_ONLY_CHAINS.includes(fromChain.chainId)
-                ? fromChain.chainId
-                : undefined
-            }
-            onAssetChange={async (newToToken) => {
-              await ensureNetworkEnabled(newToToken.chainId);
-              dispatch(setToToken(newToToken));
-            }}
-            networks={toChains}
             secondaryDisplay={destinationSecondaryDisplay}
             amountInputPrefix={
               isDestinationFiatPrimary ? getCurrencySymbol(currency) : undefined

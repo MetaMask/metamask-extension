@@ -8,6 +8,7 @@ import HomePage from './homepage';
 const TOKEN_IMPORT_CONFIRM_TIMEOUT_MS = 20_000;
 
 const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
+  AUDD: 'stellar:pubnet/asset:AUDD-GDC7X2MXTYSAKUUGAIQ7J7RPEIM7GXSAIWFYWWH4GLNFECQVJJLB2EEU',
   BAT: 'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
   CHAI: 'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215',
   CHAIN: 'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
@@ -174,7 +175,7 @@ class TokensTab extends HomePage {
     '[data-testid="token-management-custom-token-success-toast"]';
 
   private readonly tokenManagementPage =
-    '[data-testid="token-management-page"]';
+    '[data-testid="parent-selector-token-management-page"]';
 
   private readonly tokenManagementSearchInput =
     '[data-testid="token-management-search-input"]';
@@ -1006,6 +1007,44 @@ class TokensTab extends HomePage {
     );
     const toggleControl = this.tokenManagementSearchToggleControl(tokenName);
     await this.clickTokenManagementToggle(toggleControl);
+    await this.returnFromTokenManagementToHome();
+  }
+
+  /**
+   * Imports a token via Manage tokens from the non-EVM asset list control bar.
+   * On Stellar/Bitcoin/etc. the overflow control is `importTokens-button` and
+   * opens Manage tokens directly (the EVM Import tokens modal is unavailable).
+   *
+   * @param options - Search import options.
+   * @param options.tokenName - Token name to search for and toggle on.
+   */
+  async importTokenBySearchViaManageTokensNonEvm({
+    tokenName,
+  }: {
+    tokenName: string;
+  }): Promise<void> {
+    console.log(
+      `Import token ${tokenName} via Manage tokens (non-EVM asset list)`,
+    );
+    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.clickElement(this.importTokensButton);
+    await this.driver.waitForSelector(this.tokenManagementPage);
+    const toggleControl = this.tokenManagementSearchToggleControl(tokenName);
+    // Stellar catalog browse rows already use the `search-` cell testids; prefer
+    // toggling from the list to avoid flaky clipboard paste into the search box.
+    try {
+      await this.driver.waitForSelector(toggleControl, { timeout: 5_000 });
+    } catch {
+      await this.driver.waitForSelector(this.tokenManagementSearchInput);
+      await this.driver.pasteIntoField(
+        this.tokenManagementSearchInput,
+        tokenName,
+      );
+      await this.driver.waitForSelector(toggleControl);
+    }
+    // Click off→on. Do not wait for `--on` on this same search-cell selector:
+    // enabling remounts the row under a non-search testid.
+    await this.driver.clickElement(`${toggleControl} .toggle-button--off`);
     await this.returnFromTokenManagementToHome();
   }
 

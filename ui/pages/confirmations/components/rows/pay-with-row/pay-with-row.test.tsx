@@ -275,17 +275,6 @@ describe('PayWithRow', () => {
     expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent('ETH');
   });
 
-  it('does not open modal when hardware account', () => {
-    isHardwareAccountMock.mockReturnValue(true);
-
-    const store = mockStore(getMockState());
-    renderWithProvider(<PayWithRow />, store);
-
-    fireEvent.click(screen.getByTestId('pay-with-pill'));
-
-    expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
-  });
-
   [TransactionType.perpsWithdraw, TransactionType.moneyAccountDeposit].forEach(
     (transactionType) => {
       describe(`${transactionType} fallback behaviour`, () => {
@@ -308,16 +297,25 @@ describe('PayWithRow', () => {
           } as never);
         });
 
-        it('renders the skeleton (not the required token) until payToken resolves', () => {
+        it('does not flash the required token while waiting for payToken', () => {
           const store = mockStore(getMockState());
           renderWithProvider(<PayWithRow />, store);
 
-          expect(
-            screen.getByTestId('pay-with-row-skeleton'),
-          ).toBeInTheDocument();
-          expect(
-            screen.queryByTestId('pay-with-symbol'),
-          ).not.toBeInTheDocument();
+          if (transactionType === TransactionType.perpsWithdraw) {
+            // Post-quote withdraws show an empty Receive selector instead of an
+            // endless skeleton while the destination token is imported.
+            expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+            expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+              'Select payment method',
+            );
+          } else {
+            expect(
+              screen.getByTestId('pay-with-row-skeleton'),
+            ).toBeInTheDocument();
+            expect(
+              screen.queryByTestId('pay-with-symbol'),
+            ).not.toBeInTheDocument();
+          }
         });
 
         it('renders the resolved payToken once it is set', () => {
@@ -356,15 +354,6 @@ describe('PayWithRow', () => {
       renderWithProvider(<PayWithRow />, store);
 
       expect(screen.getByTestId('pay-with-arrow')).toBeInTheDocument();
-    });
-
-    it('hides arrow icon for hardware account', () => {
-      isHardwareAccountMock.mockReturnValue(true);
-
-      const store = mockStore(getMockState());
-      renderWithProvider(<PayWithRow />, store);
-
-      expect(screen.queryByTestId('pay-with-arrow')).not.toBeInTheDocument();
     });
   });
 

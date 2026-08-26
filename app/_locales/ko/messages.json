@@ -156,9 +156,6 @@
     "message": "계정 $1개",
     "description": "Label showing number of accounts selected, $1 is the count"
   },
-  "accountsPermissionsTitle": {
-    "message": "계정 보기 및 트랜잭션 제안"
-  },
   "accountsSmallCase": {
     "message": "계정"
   },
@@ -899,24 +896,12 @@
     "message": "$1 매도 완료",
     "description": "$1 is the token symbol"
   },
-  "activity_receive_failed_description": {
-    "message": "발신: $1",
-    "description": "$1 is the shortened sender address"
-  },
   "activity_receive_failed_title": {
     "message": "받기 실패"
-  },
-  "activity_receive_pending_description": {
-    "message": "발신: $1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "$1 받는 중",
     "description": "$1 is the token symbol"
-  },
-  "activity_receive_success_description": {
-    "message": "발신: $1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "$1 받음",
@@ -965,24 +950,12 @@
     "message": "$1 매도 완료",
     "description": "$1 is the token symbol"
   },
-  "activity_send_failed_description": {
-    "message": "수신: $1",
-    "description": "$1 is the shortened recipient address"
-  },
   "activity_send_failed_title": {
     "message": "전송 실패"
-  },
-  "activity_send_pending_description": {
-    "message": "수신: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "$1 전송하기",
     "description": "$1 is the token symbol"
-  },
-  "activity_send_success_description": {
-    "message": "수신: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "$1 전송됨",
@@ -1294,7 +1267,7 @@
     "message": "추가함"
   },
   "addedProtectionDescription": {
-    "message": "알 수 없는 주소에 접근하고 있습니다. 이는 악성 트랜잭션을 방지하는 데 도움이 됩니다."
+    "message": "알 수 없는 주소에 접근하고 있으므로 보호 기능을 사용하면 일부 악성 거래를 차단할 수 있습니다."
   },
   "addedProtectionIncludesNetworkFee": {
     "message": "추가 보호 비용 $1이(가) 포함되어 있습니다",
@@ -1526,6 +1499,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "지원되지 않는 지갑"
   },
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "무기한 선물 잔액을 확인할 수 없습니다. 다시 시도하세요."
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "첫 상호작용"
   },
@@ -1558,6 +1534,9 @@
   },
   "alertReasonPendingTransactions": {
     "message": "보류 중인 트랜잭션"
+  },
+  "alertReasonPerpsWithdrawBalanceUnavailable": {
+    "message": "잔액을 확인할 수 없음"
   },
   "alertReasonSignIn": {
     "message": "의심스러운 로그인 요청"
@@ -2004,6 +1983,78 @@
   },
   "blockaid": {
     "message": "Blockaid"
+  },
+  "blockaidAlertModalMessage": {
+    "message": "보안 파트너가 이 $1에서 고위험 신호를 발견했습니다. 계속 진행하면 자금을 복구할 수 없습니다.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request"
+  },
+  "blockaidAlertModalMessageWithAmount": {
+    "message": "보안 파트너가 이 $1에서 고위험 신호를 발견했습니다. 계속 진행하면 $2을(를) 복구할 수 없습니다.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request; $2 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionApproveFarming": {
+    "message": "보안 파트너가 위험 주소로 표시한 주소에 자산을 이동할 수 있는 권한을 사용자가 허용하려고 합니다."
+  },
+  "blockaidDescriptionErrored": {
+    "message": "이 안전성 검사를 완료할 수 없습니다. 해당 사이트와 관련 주소를 신뢰하는 경우에만 계속 진행하세요."
+  },
+  "blockaidDescriptionHighRiskSignature": {
+    "message": "보안 파트너가 이 서명을 고위험으로 표시했습니다. 서명하면 사용자의 승인 없이도 자산 관련 작업이 승인될 수 있습니다."
+  },
+  "blockaidDescriptionMaliciousDomain": {
+    "message": "보안 파트너가 이 사이트를 악성으로 표시했습니다. 사기인 경우 자금을 복구할 수 없습니다."
+  },
+  "blockaidDescriptionMaliciousDomainWithAmount": {
+    "message": "보안 파트너가 이 사이트를 악성으로 표시했습니다. 사기인 경우 $1은(는) 복구할 수 없습니다.",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionMarketplaceFarming": {
+    "message": "보안 파트너가 위험 주소로 표시한 주소에 $1 등록 자산을 이동할 수 있는 권한을 사용자가 허용하려고 합니다.",
+    "description": "$1 is a marketplace name such as OpenSea or Blur"
+  },
+  "blockaidDescriptionRiskSignals": {
+    "message": "보안 파트너가 이 요청에서 위험 신호를 발견했습니다. 계속 진행하기 전에 검토하세요."
+  },
+  "blockaidDescriptionTransferFarming": {
+    "message": "보안 파트너가 안전하지 않은 것으로 표시한 주소로 자산을 전송하려고 합니다. 사기인 경우 자금을 복구할 수 없습니다."
+  },
+  "blockaidDescriptionTransferFarmingWithAmount": {
+    "message": "보안 파트너가 안전하지 않은 것으로 표시한 주소로 자산을 전송하려고 합니다. 사기인 경우 $1을(를) 복구할 수 없습니다.",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidRequestTypeApproval": {
+    "message": "승인",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeRequest": {
+    "message": "요청",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeSignature": {
+    "message": "서명",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeTransfer": {
+    "message": "송금",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidTitleHighRiskApproval": {
+    "message": "고위험 승인"
+  },
+  "blockaidTitleHighRiskSignature": {
+    "message": "고위험 서명"
+  },
+  "blockaidTitleHighRiskTransfer": {
+    "message": "고위험 전송"
+  },
+  "blockaidTitleMayNotBeSafe": {
+    "message": "보안 검사 사용할 수 없음"
+  },
+  "blockaidTitleRiskSignalsDetected": {
+    "message": "위험 신호 감지됨"
+  },
+  "blockaidTitleSiteFlaggedUnsafe": {
+    "message": "안전하지 않은 사이트로 표시됨"
   },
   "blockies": {
     "message": "블로키즈"
@@ -2737,6 +2788,9 @@
   "confirmationAlertDetails": {
     "message": "자산을 보호하기 위해 요청을 거부하는 것이 좋습니다."
   },
+  "confirmationAlertModalTitleDescription": {
+    "message": "고위험 요청"
+  },
   "confirmed": {
     "message": "컨펌"
   },
@@ -2760,9 +2814,6 @@
   },
   "connectAHardwareWalletDescription": {
     "message": "USB 또는 QR 코드 사용"
-  },
-  "connectAccounts": {
-    "message": "계정 연결"
   },
   "connectAnyway": {
     "message": "연결 계속하기"
@@ -2810,18 +2861,6 @@
   },
   "connectedSnaps": {
     "message": "연결된 Snap"
-  },
-  "connectedWithAccount": {
-    "message": "$1 계정 연결됨",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "$1(으)로 연결됨",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 네트워크 연결됨",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "연결 중"
@@ -3093,6 +3132,9 @@
   },
   "dappSwapRewardText": {
     "message": "$1포인트 획득"
+  },
+  "dapps": {
+    "message": "디앱"
   },
   "darkTheme": {
     "message": "어둡게"
@@ -3427,9 +3469,6 @@
   "disconnectAllSitesSuccess": {
     "message": "모든 디앱의 연결이 성공적으로 해제되었습니다."
   },
-  "disconnectMessage": {
-    "message": "이렇게 하면 이 사이트와의 연결이 해제됩니다"
-  },
   "disconnectPrompt": {
     "message": "$1 연결 해제"
   },
@@ -3609,9 +3648,6 @@
   },
   "editNetworkLink": {
     "message": "원본 네트워크 편집"
-  },
-  "editNetworksTitle": {
-    "message": "네트워크 편집"
   },
   "editNonceField": {
     "message": "논스 편집"
@@ -5243,11 +5279,23 @@
   "moneyActivity": {
     "message": "활동"
   },
+  "moneyActivityPlaceholderDescription": {
+    "message": "머니 활동 내역이 여기에 표시됩니다."
+  },
   "moneyAdd": {
     "message": "추가"
   },
+  "moneyApy": {
+    "message": "$1 APY"
+  },
   "moneyBalanceUnavailable": {
     "message": "잔액을 확인할 수 없음"
+  },
+  "moneyBenefitAutoEarn": {
+    "message": "머니 잔액에 대한 수익을 자동으로 적립하세요."
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "최대 $1 APY로 자동 수익을 적립하세요"
   },
   "moneyBenefitLiquidity": {
     "message": "락업 없이 완전한 유동성을 제공하므로 언제든지 거래하거나 출금할 수 있습니다"
@@ -5261,17 +5309,69 @@
   "moneyBenefits": {
     "message": "혜택"
   },
+  "moneyEarnApyTitle": {
+    "message": "최대 $1 APY 수익 적립"
+  },
   "moneyEarnOnCrypto": {
     "message": "암호화폐로 수익 얻기"
+  },
+  "moneyEarnOnCryptoDescription": {
+    "message": "암호화폐를 mUSD로 전환했을 때 자금이 시간에 따라 어떻게 늘어날 수 있는지 확인해 보세요."
+  },
+  "moneyEarnOnCryptoDescriptionMiddle": {
+    "message": "자산을 환전하여 얻을 수 있는 최대 수익:"
+  },
+  "moneyEarnOnCryptoDescriptionPrefix": {
+    "message": "추가:"
+  },
+  "moneyEarnOnCryptoDescriptionSuffix": {
+    "message": "1년 후."
+  },
+  "moneyEarnOnCryptoNoFee": {
+    "message": "요금 없음"
+  },
+  "moneyEarnTitle": {
+    "message": "잔액으로 수익을 적립하세요"
+  },
+  "moneyEarnings": {
+    "message": "수익"
+  },
+  "moneyExploreBenefits": {
+    "message": "혜택 살펴보기"
   },
   "moneyFundDescription": {
     "message": "Money Account에 자금을 추가하고 잔액이 늘어나는 것을 확인하세요."
   },
+  "moneyFundDescriptionWithApy": {
+    "message": "머니 계정에 자금을 추가하면 최대 $1 APY로 잔액이 늘어납니다."
+  },
   "moneyHowItWorks": {
     "message": "작동 방식"
   },
+  "moneyHowItWorksDescription": {
+    "message": "mUSD를 추가하면 언제든지 달러 기반 잔액을 결제 또는 거래에 사용하거나 송금할 수 있습니다."
+  },
+  "moneyHowItWorksDescriptionWithApy": {
+    "message": "mUSD를 추가하면 최대 $1의 수익이 적립됩니다. 잔액은 달러 연동 방식으로 유지되며 언제든지 결제 또는 거래에 사용하거나 송금할 수 있습니다.",
+    "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowYourMoneyGrows": {
+    "message": "자산이 늘어나는 방식"
+  },
   "moneyLearnMore": {
     "message": "자세히 알아보세요."
+  },
+  "moneyLifetime": {
+    "message": "전체 기간"
+  },
+  "moneyMeetMusd": {
+    "message": "mUSD 소개"
+  },
+  "moneyMoreInformation": {
+    "message": "더 많은 정보"
+  },
+  "moneyMoreOptions": {
+    "message": "옵션 더 보기"
   },
   "moneyMusd": {
     "message": "mUSD"
@@ -5287,10 +5387,6 @@
   },
   "more": {
     "message": "더 보기"
-  },
-  "moreAccounts": {
-    "message": "$1개의 계정 추가",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "더 보기"
@@ -5485,18 +5581,6 @@
     "message": "보너스 수령",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
-  "musdClaimableBonus": {
-    "message": "청구 가능한 보너스",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "mUSD를 보유하여 받은 연 환산 보너스입니다. 보너스는 Linea에서 매일 수령할 수 있습니다. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "수령 가능한 보너스 정보",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 환전 수수료에는 네트워크 비용이 포함되며 제공업체 수수료가 포함될 수 있습니다. mUSD로 환전할 때 MetaMask 수수료는 적용되지 않습니다.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5521,10 +5605,6 @@
   "musdConvert": {
     "message": "전환"
   },
-  "musdEarnBonusPercentage": {
-    "message": "$1% 보너스 받기",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "시작하기"
   },
@@ -5537,10 +5617,6 @@
   },
   "musdGetMusd": {
     "message": "mUSD 받기"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5748,9 +5824,6 @@
   "networkOptions": {
     "message": "네트워크 옵션"
   },
-  "networkPermissionToast": {
-    "message": "네트워크 권한 업데이트됨"
-  },
   "networkStatus": {
     "message": "네트워크 상태"
   },
@@ -5785,9 +5858,6 @@
     "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
-    "message": "네트워크"
-  },
-  "networksSmallCase": {
     "message": "네트워크"
   },
   "new": {
@@ -6138,6 +6208,12 @@
   "notificationsPageNoNotificationsContent": {
     "message": "아직 알림을 받지 못했습니다."
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "에이전트 지갑을 위한 CLI 연결 요청, 승인, 세션 업데이트"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "에이전트 지갑"
+  },
   "notificationsSettingsBoxError": {
     "message": "오류가 발생했습니다. 다시 시도해 주세요."
   },
@@ -6458,6 +6534,10 @@
   "passkeyErrorNotEnrolled": {
     "message": "이 지갑에 $1이(가) 설정되지 않았습니다. 설정에서 $1을(를) 켜주세요.",
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotSupported": {
+    "message": "지원되지 않는 패스키",
+    "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "$1 설정에 실패했습니다. 다시 시도해 주세요",
@@ -6902,6 +6982,9 @@
   },
   "permissions": {
     "message": "권한"
+  },
+  "permissionsPageEmptyDescription": {
+    "message": "권한을 허용하면 세부 정보가 여기에 표시됩니다."
   },
   "permissionsPageEmptyTitle": {
     "message": "표시할 항목이 없습니다"
@@ -8322,8 +8405,8 @@
     "message": "매수 성공",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOtherOptions": {
-    "message": "기타 옵션"
+  "rampsPayWith": {
+    "message": "결제 수단:"
   },
   "rampsPaymentDelayBusinessDay": {
     "message": "영업일"
@@ -8542,9 +8625,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "컨펌이 필요한 사이트입니다."
-  },
-  "requestingFor": {
-    "message": "요청 중:"
   },
   "required": {
     "message": "필수"
@@ -9367,9 +9447,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "NFT 자동 감기 지능 켜기"
-  },
-  "selectNetworkToFilter": {
-    "message": "필터링할 네트워크 선택"
   },
   "selectPathHelp": {
     "message": "원하는 계정이 표시되지 않으면 HD 경로나 현재 선택한 네트워크를 바꿔 보세요."
@@ -11739,6 +11816,10 @@
   },
   "value": {
     "message": "가격"
+  },
+  "variationalReferralSubtitle": {
+    "message": "MetaMask 추천 코드를 사용하면 15%의 Omni 포인트를 추가로 받고 90일간 실버 티어를 이용할 수 있습니다.",
+    "description": "The subtitle of the Variational referral confirmation screen"
   },
   "version": {
     "message": "버전"
