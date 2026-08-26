@@ -9,9 +9,6 @@ import { Driver } from '../../webdriver/driver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { DEFAULT_FIXTURE_ACCOUNT_ID, NETWORK_CLIENT_ID } from '../../constants';
 
-const TOKEN_API_URL = 'https://token.api.cx.metamask.io';
-const TOKENS_API_URL = 'https://tokens.api.cx.metamask.io';
-
 /** Above Mockttp's `RulePriority.DEFAULT`, so these rules beat the global mocks. */
 const MOCK_OVERRIDE_PRIORITY = 99;
 
@@ -138,10 +135,20 @@ const CUSTOM_ASSET: TrackedAsset = {
   amount: '42000',
 };
 
+const MUSD_ASSET: TrackedAsset = {
+  assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+  name: 'MetaMask USD',
+  symbol: 'MUSD',
+  decimals: 18,
+  occurrences: 1,
+  amount: '0',
+};
+
 const TRACKED_ASSETS: TrackedAsset[] = [
   ...SPAM_ASSETS,
   LEGITIMATE_ASSET,
   CUSTOM_ASSET,
+  MUSD_ASSET, // Adding to avoid future balance flakiness with mUSD token addition
 ];
 
 /** Native rows seeded for the enabled networks by the default fixture. */
@@ -199,8 +206,7 @@ async function mockOccurrenceApis(
 ) {
   return [
     await mockServer
-      .forGet(`${TOKEN_API_URL}/v1/suggestedOccurrenceFloors`)
-      .asPriority(MOCK_OVERRIDE_PRIORITY)
+      .forGet(`https://token.api.cx.metamask.io/v1/suggestedOccurrenceFloors`)
       .always()
       .thenCallback(() =>
         failOccurrenceFloors
@@ -208,9 +214,8 @@ async function mockOccurrenceApis(
           : { statusCode: 200, json: SUGGESTED_OCCURRENCE_FLOORS },
       ),
     await mockServer
-      .forGet(`${TOKENS_API_URL}/v3/assets`)
+      .forGet(`https://tokens.api.cx.metamask.io/v3/assets`)
       .withQuery({ includeOccurrences: 'true' })
-      .asPriority(MOCK_OVERRIDE_PRIORITY)
       .always()
       .thenCallback((request) => {
         const requested = new Set(
@@ -232,6 +237,45 @@ async function mockOccurrenceApis(
             decimals,
             occurrences,
           })),
+        };
+      }),
+
+    // Mock balances as so it doesn't impact the original cleanup unlock logic.
+    await mockServer
+      .forGet(`https://accounts.api.cx.metamask.io/v5/multiaccount/balances`)
+      .always()
+      .thenCallback((request) => {
+        const accountIds = (
+          new URL(request.url).searchParams.get('accountIds') ?? ''
+        )
+          .split(',')
+          .filter(Boolean);
+
+        const keptAssets = failOccurrenceFloors
+          ? TRACKED_ASSETS
+          : [LEGITIMATE_ASSET, CUSTOM_ASSET];
+        const balances = [];
+        for (const accountId of accountIds) {
+          const chainRef = accountId.split(':')[1];
+          balances.push({
+            accountId,
+            assetId: `eip155:${chainRef}/slip44:60`,
+            balance: '25',
+          });
+          for (const { assetId, amount } of keptAssets) {
+            if (assetId.startsWith(`eip155:${chainRef}/`)) {
+              balances.push({ accountId, assetId, balance: amount });
+            }
+          }
+        }
+
+        return {
+          statusCode: 200,
+          json: {
+            count: balances.length,
+            balances,
+            unprocessedNetworks: [],
+          },
         };
       }),
   ];
@@ -327,6 +371,7 @@ describe('Spam token cleanup', function (this: Suite) {
           ...SPAM_ASSETS.map(({ name }) => name),
           LEGITIMATE_ASSET.name,
           CUSTOM_ASSET.name,
+          MUSD_ASSET.name,
         ]);
       },
     );
