@@ -92,7 +92,6 @@ describe('build-quote utils', () => {
         }),
       }).toMatchSnapshot();
     });
-
   });
 
   describe('findSelectedQuote', () => {
