@@ -340,11 +340,6 @@
       "count": 1
     }
   },
-  "ui/components/multichain/pages/permissions-page/permissions-page.js": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/components/multichain/toast/toast.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -504,11 +499,6 @@
   "ui/hooks/gator-permissions/useRevokeGatorPermissions.ts": {
     "react-hooks/immutability": {
       "count": 1
-    }
-  },
-  "ui/hooks/hardware-wallets/useHwSignTracker.ts": {
-    "react-hooks/refs": {
-      "count": 3
     }
   },
   "ui/hooks/hardware-wallets/useHwSwapConfirmationMonitoring.ts": {
