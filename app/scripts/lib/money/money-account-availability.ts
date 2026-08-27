@@ -12,7 +12,6 @@ import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
 import {
   getMoneyAccountGeoBlockedCountries,
-  isMoneyAccountEnabled,
   isMoneyAccountGeoEligible,
 } from '../../../../shared/lib/money/feature-flags';
 import { getMoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
@@ -43,22 +42,10 @@ export type MoneyAccountAvailabilityServiceGetAvailabilityAction = {
   handler: MoneyAccountAvailabilityService['getAvailability'];
 };
 
-/**
- * The action other clients use to call {@link MoneyAccountAvailabilityService.getAddress}
- * directly through the messenger, instead of via a controller wrapper method.
- */
-export type MoneyAccountAvailabilityServiceGetAddressAction = {
-  type: `${typeof serviceName}:getAddress`;
-  handler: MoneyAccountAvailabilityService['getAddress'];
-};
-
-type MoneyAccountAvailabilityActions =
-  | MoneyAccountAvailabilityServiceGetAvailabilityAction
-  | MoneyAccountAvailabilityServiceGetAddressAction;
-
 export type MoneyAccountAvailabilityMessenger = Messenger<
   typeof serviceName,
-  MoneyAccountAvailabilityActions | MoneyAccountAvailabilityAllowedActions,
+  | MoneyAccountAvailabilityServiceGetAvailabilityAction
+  | MoneyAccountAvailabilityAllowedActions,
   MoneyAccountAvailabilityEvents
 >;
 
@@ -69,17 +56,24 @@ const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
 /**
  * Resolves whether the Money Account surface should be shown at all.
  *
- * We look at the state of the `moneyEnableMoneyAccount` flag, whether the
- * user's region is allowed (`moneyAccountGeoBlockedCountries`), and whether
- * a money address can be derived from an unlocked wallet. The configured
- * Money Account chain must also be ready for use.
+ * We look at whether the user's region is allowed
+ * (`moneyAccountGeoBlockedCountries`), and whether a money address can be
+ * derived from an unlocked wallet. The configured Money Account chain must
+ * also be ready for use.
  *
  * A money account being available doesn’t mean that the account has been
- * upgraded yet.
+ * upgraded yet, nor that the Money keyring exists in the vault yet. The
+ * address is derived straight from the seed, so it is the same whether or not
+ * `MoneyAccountController.init()` has run; creating the keyring is that
+ * controller's job, and it creates it on demand before any signing.
  *
- * The flag and geo check are never cached because they can change when
- * remote feature flags update or geolocation refreshes. Unknown or failed
- * geolocation is treated as blocked (fail closed).
+ * Callers are expected to gate on the `moneyEnableMoneyAccount` flag
+ * themselves before calling; this service does not check it, to avoid
+ * re-implementing a check every caller already has to make.
+ *
+ * The geo check is never cached because it can change when remote feature
+ * flags update or geolocation refreshes. Unknown or failed geolocation is
+ * treated as blocked (fail closed).
  *
  * The derived address is cached as a promise until the next unlock,
  * so concurrent callers share one in-flight derivation; failures are not
@@ -108,10 +102,7 @@ export class MoneyAccountAvailabilityService {
       this.#address = undefined;
     });
 
-    this.#messenger.registerMethodActionHandlers(this, [
-      'getAvailability',
-      'getAddress',
-    ]);
+    this.#messenger.registerMethodActionHandlers(this, ['getAvailability']);
   }
 
   /**
@@ -124,15 +115,12 @@ export class MoneyAccountAvailabilityService {
       const { remoteFeatureFlags } = this.#messenger.call(
         'RemoteFeatureFlagController:getState',
       );
-      if (!isMoneyAccountEnabled(remoteFeatureFlags)) {
-        return UNAVAILABLE;
-      }
 
       if (!(await this.#isGeoEligible(remoteFeatureFlags))) {
         return UNAVAILABLE;
       }
 
-      const address = await this.getAddress();
+      const address = await this.#getAddress();
       await this.#ensureChainConfigured(remoteFeatureFlags);
 
       return { isAvailable: true, address };
@@ -156,7 +144,7 @@ export class MoneyAccountAvailabilityService {
    *
    * @returns The money account address.
    */
-  async getAddress(): Promise<Hex> {
+  async #getAddress(): Promise<Hex> {
     if (!this.#address) {
       const address = deriveMoneyAccountAddress(this.#messenger);
 
