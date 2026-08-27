@@ -107,16 +107,15 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
 
         // Ensure that accounts within the wallets are displayed
-        // The balance is not loaded for a non-selected account (which was never selected before)
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        // The balance is not loaded for a non-selected account (which was never
+        // selected before), so nothing is rendered rather than a misleading $0.00
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'Wallet 1',
           account: 'Account 1',
-          balance: '$0.00',
         });
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'Ledger',
           account: 'Ledger 1',
-          balance: '$0.00',
         });
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
         await accountListPage.checkMultichainAccountNameDisplayed('Ledger 1');
@@ -180,10 +179,9 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
           account: 'Account 1',
           balance: '$85,025.00',
         });
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'MetaMask Simple Snap Keyring',
           account: 'Snap Account 1',
-          balance: '$0.00',
         });
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
         await accountListPage.checkMultichainAccountNameDisplayed(

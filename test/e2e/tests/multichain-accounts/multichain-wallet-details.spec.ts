@@ -46,10 +46,9 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
           balance: '$85,025.00',
         });
 
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'Wallet 2',
           account: 'Account 1',
-          balance: '$0.00',
         });
       },
     );

@@ -4,6 +4,7 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
 <div>
   <div
     class="request-encryption-public-key__container"
+    data-testid="parent-selector-get-encryption-key-confirmation"
   >
     <div
       class="request-encryption-public-key__header"

@@ -5389,8 +5389,47 @@
   "moneyActivity": {
     "message": "Activity"
   },
+  "moneyActivityConversionFailed": {
+    "message": "Conversion failed"
+  },
+  "moneyActivityConverted": {
+    "message": "Converted"
+  },
+  "moneyActivityConverting": {
+    "message": "Converting"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "Deposit failed"
+  },
+  "moneyActivityDeposited": {
+    "message": "Deposited"
+  },
+  "moneyActivityDepositing": {
+    "message": "Depositing"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "Your Money activity will appear here."
+  },
+  "moneyActivityReceived": {
+    "message": "Received"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "From: $1"
+  },
+  "moneyActivityReceiving": {
+    "message": "Receiving"
+  },
+  "moneyActivitySendFailed": {
+    "message": "Send failed"
+  },
+  "moneyActivitySending": {
+    "message": "Sending"
+  },
+  "moneyActivitySent": {
+    "message": "Sent"
+  },
+  "moneyActivityViewAll": {
+    "message": "View all"
   },
   "moneyAdd": {
     "message": "Add"
@@ -6649,7 +6688,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "Passkey not supported",
+    "message": "MetaMask can't use passkeys saved here. Try again and save it to a password manager.",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
