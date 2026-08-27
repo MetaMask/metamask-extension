@@ -292,6 +292,7 @@ export const HyperliquidDepositPrompt: React.FC<
           <ModalHeader
             onClose={() => setIsPickerOpen(false)}
             closeButtonProps={{
+              ariaLabel: t('close'),
               'data-testid': 'hyperliquid-deposit-picker-close',
             }}
           >

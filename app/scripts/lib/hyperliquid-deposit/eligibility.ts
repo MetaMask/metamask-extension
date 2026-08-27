@@ -90,9 +90,6 @@ export async function isHyperliquidDepositPromptEligible({
   tokenBalancesController,
   tokensController,
 }: IsHyperliquidDepositPromptEligibleOptions): Promise<boolean> {
-  // TODO: remove bypass
-  return true;
-
   // Return false if perps is not available
   if (!isPerpsExperienceAvailable(remoteFeatureFlagController)) {
     return false;
@@ -291,9 +288,12 @@ async function getHyperliquidAccountState({
       userAddress: signerAddress,
     });
   } catch (error) {
-    logger.warn('Unable to fetch Hyperliquid account state for deposit prompt', {
-      error,
-    });
+    logger.warn(
+      'Unable to fetch Hyperliquid account state for deposit prompt',
+      {
+        error,
+      },
+    );
     return undefined;
   }
 }
@@ -317,9 +317,12 @@ async function refreshArbitrumUsdcBalance({
     });
     return true;
   } catch (error) {
-    logger.warn('Unable to refresh Arbitrum USDC balance for Hyperliquid deposit prompt', {
-      error,
-    });
+    logger.warn(
+      'Unable to refresh Arbitrum USDC balance for Hyperliquid deposit prompt',
+      {
+        error,
+      },
+    );
     return false;
   }
 }

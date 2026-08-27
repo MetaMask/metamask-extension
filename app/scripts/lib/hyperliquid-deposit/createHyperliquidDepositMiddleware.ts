@@ -37,9 +37,7 @@ type CreateHyperliquidDepositMiddlewareOptions = {
   isEligible?: (
     context: HyperliquidDepositContext,
   ) => boolean | Promise<boolean>;
-  openDepositFlow: (
-    context: HyperliquidDepositContext,
-  ) => void | Promise<void>;
+  openDepositFlow: (context: HyperliquidDepositContext) => void | Promise<void>;
   startDepositPromptFlow?: (
     context: HyperliquidDepositContext,
   ) => HyperliquidDepositPromptFlow | undefined;

@@ -1,3 +1,4 @@
+import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   HYPERLIQUID_DEPOSIT_CHAIN_ID,
@@ -12,8 +13,24 @@ import {
   isHyperliquidDepositPromptEligible,
 } from './eligibility';
 
-const SIGNER_ADDRESS = '0x1111111111111111111111111111111111111111';
-const TOKEN_ADDRESS = '0x2222222222222222222222222222222222222222';
+const SIGNER_ADDRESS = '0x1111111111111111111111111111111111111111' as Hex;
+const TOKEN_ADDRESS = '0x2222222222222222222222222222222222222222' as Hex;
+
+/**
+ * Helper to build tokenBalances with proper Hex typing.
+ * @param address
+ * @param chainId
+ * @param tokenAddress
+ * @param balance
+ */
+function buildTokenBalances(
+  address: Hex,
+  chainId: Hex,
+  tokenAddress: Hex,
+  balance: Hex,
+): Record<Hex, Record<Hex, Record<Hex, Hex>>> {
+  return { [address]: { [chainId]: { [tokenAddress]: balance } } };
+}
 
 describe('hyperliquid-deposit eligibility', () => {
   describe('hasZeroHyperliquidPerpsBalance', () => {
@@ -79,51 +96,51 @@ describe('hyperliquid-deposit eligibility', () => {
 
     it('returns true when Arbitrum USDC balance is below $10 threshold', () => {
       // $9.99 USDC = 9,990,000 raw units = 0x989670
-      const belowThreshold = `0x${(HYPERLIQUID_DEPOSIT_USDC_THRESHOLD - 1n).toString(16)}`;
+      const belowThreshold =
+        `0x${(HYPERLIQUID_DEPOSIT_USDC_THRESHOLD - 1n).toString(16)}` as Hex;
       expect(
         hasLowArbitrumUsdcBalance({
           address: SIGNER_ADDRESS,
-          tokenBalances: {
-            [SIGNER_ADDRESS]: {
-              [HYPERLIQUID_DEPOSIT_CHAIN_ID]: {
-                [HYPERLIQUID_DEPOSIT_USDC_ADDRESS]: belowThreshold,
-              },
-            },
-          },
+          tokenBalances: buildTokenBalances(
+            SIGNER_ADDRESS,
+            HYPERLIQUID_DEPOSIT_CHAIN_ID,
+            HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
+            belowThreshold,
+          ),
         }),
       ).toBe(true);
     });
 
     it('returns false when Arbitrum USDC balance is at $10 threshold', () => {
       // Exactly $10 USDC = 10,000,000 raw units
-      const atThreshold = `0x${HYPERLIQUID_DEPOSIT_USDC_THRESHOLD.toString(16)}`;
+      const atThreshold =
+        `0x${HYPERLIQUID_DEPOSIT_USDC_THRESHOLD.toString(16)}` as Hex;
       expect(
         hasLowArbitrumUsdcBalance({
           address: SIGNER_ADDRESS,
-          tokenBalances: {
-            [SIGNER_ADDRESS]: {
-              [HYPERLIQUID_DEPOSIT_CHAIN_ID]: {
-                [HYPERLIQUID_DEPOSIT_USDC_ADDRESS]: atThreshold,
-              },
-            },
-          },
+          tokenBalances: buildTokenBalances(
+            SIGNER_ADDRESS,
+            HYPERLIQUID_DEPOSIT_CHAIN_ID,
+            HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
+            atThreshold,
+          ),
         }),
       ).toBe(false);
     });
 
     it('returns false when Arbitrum USDC balance is above $10 threshold', () => {
       // $100 USDC = 100,000,000 raw units = 0x5F5E100
-      const aboveThreshold = `0x${(HYPERLIQUID_DEPOSIT_USDC_THRESHOLD * 10n).toString(16)}`;
+      const aboveThreshold =
+        `0x${(HYPERLIQUID_DEPOSIT_USDC_THRESHOLD * 10n).toString(16)}` as Hex;
       expect(
         hasLowArbitrumUsdcBalance({
           address: SIGNER_ADDRESS,
-          tokenBalances: {
-            [SIGNER_ADDRESS]: {
-              [HYPERLIQUID_DEPOSIT_CHAIN_ID]: {
-                [HYPERLIQUID_DEPOSIT_USDC_ADDRESS]: aboveThreshold,
-              },
-            },
-          },
+          tokenBalances: buildTokenBalances(
+            SIGNER_ADDRESS,
+            HYPERLIQUID_DEPOSIT_CHAIN_ID,
+            HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
+            aboveThreshold,
+          ),
         }),
       ).toBe(false);
     });
@@ -398,7 +415,8 @@ describe('hyperliquid-deposit eligibility', () => {
 
     it('returns false when the signer has ≥$10 Arbitrum USDC', async () => {
       // $10 USDC = 10,000,000 raw units (at threshold)
-      const atThreshold = `0x${HYPERLIQUID_DEPOSIT_USDC_THRESHOLD.toString(16)}`;
+      const atThreshold =
+        `0x${HYPERLIQUID_DEPOSIT_USDC_THRESHOLD.toString(16)}` as Hex;
 
       await expect(
         isHyperliquidDepositPromptEligible({
@@ -427,13 +445,12 @@ describe('hyperliquid-deposit eligibility', () => {
           signerAddress: SIGNER_ADDRESS,
           tokenBalancesController: {
             state: {
-              tokenBalances: {
-                [SIGNER_ADDRESS]: {
-                  [HYPERLIQUID_DEPOSIT_CHAIN_ID]: {
-                    [HYPERLIQUID_DEPOSIT_USDC_ADDRESS]: atThreshold,
-                  },
-                },
-              },
+              tokenBalances: buildTokenBalances(
+                SIGNER_ADDRESS,
+                HYPERLIQUID_DEPOSIT_CHAIN_ID,
+                HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
+                atThreshold,
+              ),
             },
             updateBalances: jest.fn().mockResolvedValue(undefined),
           },
