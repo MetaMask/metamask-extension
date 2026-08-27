@@ -922,17 +922,20 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               fingerprint: ['persistence-error', 'get-failed'],
             });
           }
+
+          // A read that failed only because the browser is closing says nothing
+          // about the state of the data, so it must not trigger vault recovery:
+          // emitting `vaultCorruptionDetected` and throwing `MISSING_VAULT_ERROR`
+          // would both be false positives. Re-throw the original error here, as
+          // we would for any other read failure below, so callers abort the same
+          // way. We still reported it above; whether that event is kept is
+          // decided by `ignoreErrors` in `setupSentry.js`, not here.
+          if (isBrowserShuttingDownError(localStoreError)) {
+            throw localStoreError;
+          }
         }
 
-        // A read that failed only because the browser is closing says nothing
-        // about the state of the data, so it must not trigger vault recovery:
-        // emitting `vaultCorruptionDetected` and throwing `MISSING_VAULT_ERROR`
-        // would both be false positives. The error still propagates below,
-        // unchanged, so callers abort as they would for a real failure.
-        //
-        // Whether it reaches Sentry is decided by `ignoreErrors` in
-        // `setupSentry.js`, not here.
-        if (validateVault && !isBrowserShuttingDownError(localStoreError)) {
+        if (validateVault) {
           // Check if we need to trigger vault recovery:
           // 1. If localStore.get() failed entirely (e.g., Firefox's "Error: An unexpected error occurred")
           // 2. If we got a result but the vault is missing
