@@ -13,6 +13,12 @@ concurrency:
   group: react18-concurrent-perf-7550-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  BENCHMARK_ITERATIONS: 5
+  BENCHMARK_RETRIES: 1
+  PRE_7475_SHA: 23a9a0e2284fb7aa2e8fc51cb40553f93249ed30
+  PRE_7476_SHA: 384fb12684915651d4a82f6344de354309a9ed01
+
 jobs:
   build-test-webpack:
     name: build-test-webpack
@@ -45,18 +51,28 @@ jobs:
             builds
             dist
 
-  compare:
-    name: before/after benchmarks + report
+  benchmark:
+    name: benchmark / ${{ matrix.scenario }}
     needs: build-test-webpack
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - scenario: token-search-power-user
+            before_sha: 23a9a0e2284fb7aa2e8fc51cb40553f93249ed30
+          - scenario: account-switch
+            before_sha: 384fb12684915651d4a82f6344de354309a9ed01
+          - scenario: network-switch
+            before_sha: 384fb12684915651d4a82f6344de354309a9ed01
+          - scenario: activity-scroll
+            before_sha: 384fb12684915651d4a82f6344de354309a9ed01
     env:
       SELENIUM_BROWSER: chrome
       SELENIUM_HEADLESS: true
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
-      BENCHMARK_ITERATIONS: 5
-      BENCHMARK_RETRIES: 1
       SKIP_AFTER_BUILD: 1
     steps:
       - name: Checkout and setup environment
@@ -82,10 +98,46 @@ jobs:
           retry_wait_seconds: 30
           command: yarn mm-foundryup
 
-      - name: Run before/after comparison
+      - name: Run scenario before/after
         run: |
-          chmod +x test/e2e/benchmarks/scratch-7550/run-comparison.sh
-          ./test/e2e/benchmarks/scratch-7550/run-comparison.sh test-artifacts/scratch-7550
+          chmod +x test/e2e/benchmarks/scratch-7550/run-scenario-comparison.sh
+          ./test/e2e/benchmarks/scratch-7550/run-scenario-comparison.sh \
+            "${{ matrix.scenario }}" \
+            "${{ matrix.before_sha }}" \
+            test-artifacts/scratch-7550
+
+      - name: Upload scenario results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scratch-7550-${{ matrix.scenario }}
+          path: test-artifacts/scratch-7550/benchmark-chrome-webpack-*.json
+          if-no-files-found: error
+
+  report:
+    name: merge + report
+    needs: benchmark
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: always()
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Download scenario artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: scratch-7550-*
+          merge-multiple: true
+          path: test-artifacts/scratch-7550
+
+      - name: Merge results and generate report
+        run: |
+          chmod +x test/e2e/benchmarks/scratch-7550/merge-for-report.sh
+          ./test/e2e/benchmarks/scratch-7550/merge-for-report.sh test-artifacts/scratch-7550
 
       - name: Summary
         if: always()
@@ -94,10 +146,10 @@ jobs:
             echo '### React 18 concurrent perf report' >> "$GITHUB_STEP_SUMMARY"
             cat test-artifacts/scratch-7550/react18-concurrent-perf-report.md >> "$GITHUB_STEP_SUMMARY"
           else
-            echo 'Report not generated — check job logs.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Report not generated — one or more benchmark jobs may have failed.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Upload scratch-7550 artifacts
+      - name: Upload scratch-7550 report
         if: always()
         uses: actions/upload-artifact@v4
         with:
