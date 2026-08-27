@@ -61,6 +61,7 @@ export default class DeepLink {
         const hashParams = new URLSearchParams(hashQuery);
 
         return (
+          currentUrl.host !== source.host &&
           currentUrl.pathname === '/home.html' &&
           hashPath === '#/link' &&
           hashParams.get('u') === `${source.pathname}${source.search}`
@@ -73,6 +74,7 @@ export default class DeepLink {
     const [hashPath, hashQuery = ''] = currentUrl.hash.split('?');
     const hashParams = new URLSearchParams(hashQuery);
 
+    assert.notEqual(currentUrl.host, source.host);
     assert.equal(currentUrl.pathname, '/home.html');
     assert.equal(hashPath, '#/link');
     assert.equal(hashParams.get('u'), `${source.pathname}${source.search}`);

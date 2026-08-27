@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
+import { createDeferredPromise } from '@metamask/utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { parse } from '../../../shared/lib/deep-links/parse';
@@ -177,5 +178,67 @@ describe('DeepLink', () => {
       ).toBeInTheDocument();
     });
     expect(screen.getByTestId('deep-link-checkbox')).toBeInTheDocument();
+  });
+
+  it('hides stale interstitial content while a different URL is parsed', async () => {
+    let currentSearch = '?u=%2Fbuy';
+    mockUseLocation.mockImplementation(
+      () =>
+        ({
+          pathname: '/link',
+          search: currentSearch,
+          hash: '',
+          key: '',
+          state: undefined,
+        }) as ReturnType<typeof useLocation>,
+    );
+
+    mockParse.mockResolvedValueOnce({
+      destination: {
+        path: '/buy',
+        query: new URLSearchParams(),
+      },
+      signature: 'valid',
+      route: {
+        getTitle: () => 'deepLink_theBuyPage',
+      },
+    } as never);
+
+    const { rerender } = render(<DeepLink />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('deep-link-continue-button'),
+      ).toBeInTheDocument();
+    });
+
+    const nextParse =
+      createDeferredPromise<Awaited<ReturnType<typeof parse>>>();
+    mockParse.mockReturnValueOnce(nextParse.promise);
+    currentSearch = '?u=%2Fhome';
+
+    rerender(<DeepLink />);
+
+    expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('deep-link-continue-button'),
+    ).not.toBeInTheDocument();
+
+    nextParse.resolve({
+      destination: {
+        path: '/home',
+        query: new URLSearchParams(),
+      },
+      signature: 'valid',
+      route: {
+        getTitle: () => 'deepLink_theHomePage',
+      },
+    } as never);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('deep-link-continue-button'),
+      ).toBeInTheDocument();
+    });
   });
 });

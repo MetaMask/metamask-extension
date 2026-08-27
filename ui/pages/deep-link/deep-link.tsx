@@ -56,7 +56,7 @@ type ResolvedDeepLinkState = {
 
 type DeepLinkViewState =
   | { kind: 'loading' }
-  | ({ kind: 'ready' } & ResolvedDeepLinkState);
+  | ({ kind: 'ready'; viewKey: string } & ResolvedDeepLinkState);
 
 type PreParsedDeepLinkResult =
   | {
@@ -86,10 +86,18 @@ const getExtensionURL = (path: string, query?: string | null) =>
 
 const toReadyViewState = (
   resolvedState: ResolvedDeepLinkState,
+  viewKey: string,
 ): DeepLinkViewState => ({
   kind: 'ready',
+  viewKey,
   ...resolvedState,
 });
+
+function getDeepLinkViewKey(search: string): string {
+  const params = new URLSearchParams(search);
+  params.delete('id');
+  return params.toString();
+}
 
 function build404State(
   t: TranslateFunction,
@@ -339,6 +347,7 @@ export const DeepLink = () => {
       const params = new URLSearchParams(location.search);
       const urlPathAndQuery = params.get('u');
       const errorCode = params.get('errorCode');
+      const viewKey = getDeepLinkViewKey(location.search);
 
       if (isPendingDeepLinkRequest) {
         if (urlPathAndQuery) {
@@ -360,6 +369,7 @@ export const DeepLink = () => {
             errorCode === '404'
               ? build404State(t, false)
               : buildMissingUrlState(t),
+            viewKey,
           ),
         );
         return;
@@ -367,13 +377,13 @@ export const DeepLink = () => {
 
       if (errorCode) {
         if (errorCode !== '404') {
-          setViewState(toReadyViewState(buildMissingUrlState(t)));
+          setViewState(toReadyViewState(buildMissingUrlState(t), viewKey));
           return;
         }
 
         // Match the existing behavior by showing the 404 immediately, then
         // adding the update link after signature verification completes.
-        setViewState(toReadyViewState(build404State(t, false)));
+        setViewState(toReadyViewState(build404State(t, false), viewKey));
 
         const existingTask = getMatchingPreParseTask(
           preParseTaskRef,
@@ -405,7 +415,7 @@ export const DeepLink = () => {
         }
 
         if (signed) {
-          setViewState(toReadyViewState(build404State(t, true)));
+          setViewState(toReadyViewState(build404State(t, true), viewKey));
         }
         return;
       }
@@ -417,7 +427,7 @@ export const DeepLink = () => {
         return;
       }
 
-      setViewState(toReadyViewState(buildResolvedState(result, t)));
+      setViewState(toReadyViewState(buildResolvedState(result, t), viewKey));
     };
 
     // intentionally not awaited to allow the page to render immediately
@@ -442,9 +452,16 @@ export const DeepLink = () => {
     dispatch(setSkipDeepLinkInterstitial(newValue));
   }
 
-  const isLoading = viewState.kind === 'loading';
+  const currentViewKey = getDeepLinkViewKey(location.search);
+  const visibleViewState =
+    !isPendingDeepLinkRequest &&
+    viewState.kind === 'ready' &&
+    viewState.viewKey === currentViewKey
+      ? viewState
+      : LOADING_VIEW_STATE;
+  const isLoading = visibleViewState.kind === 'loading';
   const pageNotFoundError =
-    viewState.kind === 'ready' && viewState.pageNotFoundError;
+    visibleViewState.kind === 'ready' && visibleViewState.pageNotFoundError;
 
   return (
     <Container
@@ -497,9 +514,9 @@ export const DeepLink = () => {
             />
           )}
         </Box>
-        {viewState.kind === 'ready' && (
+        {visibleViewState.kind === 'ready' && (
           <>
-            {viewState.title && (
+            {visibleViewState.title && (
               <Text
                 as="h1"
                 variant={TextVariant.headingLg}
@@ -507,10 +524,10 @@ export const DeepLink = () => {
                 marginTop={4}
                 marginBottom={4}
               >
-                {viewState.title}
+                {visibleViewState.title}
               </Text>
             )}
-            {viewState.description && (
+            {visibleViewState.description && (
               <Box
                 as="div"
                 data-testid="deep-link-description"
@@ -522,11 +539,11 @@ export const DeepLink = () => {
                   variant={TextVariant.bodyMd}
                   color={TextColor.textAlternative}
                 >
-                  {viewState.description}
+                  {visibleViewState.description}
                 </Text>
-                {viewState.extraDescription ? (
+                {visibleViewState.extraDescription ? (
                   <Box key="extra-description">
-                    {viewState.extraDescription}
+                    {visibleViewState.extraDescription}
                   </Box>
                 ) : (
                   ''
@@ -535,7 +552,7 @@ export const DeepLink = () => {
             )}
 
             <Box width={BlockSize.Full} marginTop={12}>
-              {viewState.route?.signed ? (
+              {visibleViewState.route?.signed ? (
                 <Box
                   display={Display.Flex}
                   width={BlockSize.Full}
@@ -566,11 +583,11 @@ export const DeepLink = () => {
               <Button
                 width={BlockSize.Full}
                 variant={ButtonVariant.Primary}
-                href={viewState.route?.href ?? getExtensionURL('/')}
+                href={visibleViewState.route?.href ?? getExtensionURL('/')}
                 size={ButtonSize.Lg}
                 data-testid="deep-link-continue-button"
               >
-                {viewState.cta}
+                {visibleViewState.cta}
               </Button>
             </Box>
           </>

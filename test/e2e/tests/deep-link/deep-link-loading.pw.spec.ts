@@ -1,6 +1,6 @@
 import { test as pwTest } from '@playwright/test';
 import { E2E_DRIVER } from '../../constants';
-import DeepLink from '../../page-objects/pages/deep-link-page';
+import DeepLink from '../../page-objects/pages/security/deep-link-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import { withFixtures } from '../../helpers';
