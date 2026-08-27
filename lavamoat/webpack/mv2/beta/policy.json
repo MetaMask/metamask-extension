@@ -1901,6 +1901,8 @@
     },
     "@metamask/money-account-utils": {
       "packages": {
+        "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
         "@metamask/transaction-controller": true
       }
     },
