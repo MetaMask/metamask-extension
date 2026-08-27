@@ -108,11 +108,11 @@ export function isWalletCreateSession(req: JsonRpcRequest): boolean {
 
 /**
  * The Multichain API analogue of `isConnected`. `wallet_getSession` reads the
- * origin's CAIP-25 caveat without prompting, exactly as `eth_accounts` reads
+ * origin's CAIP-25 permission without prompting, exactly as `eth_accounts` reads
  * permitted accounts, so an origin that already holds one is a connected read.
  *
  * @param req - The request being inspected
- * @param hasCaip25Permission - Whether the origin holds a CAIP-25 caveat
+ * @param hasCaip25Permission - Whether the origin holds a CAIP-25 permission
  */
 export function isCaipConnected(
   req: JsonRpcRequest & { origin?: string },
@@ -169,7 +169,7 @@ export function createEip1193OriginScanGate(
  * nearly the entire RPC surface, so gating on the outer method alone would scan
  * the origin on routine polling reads.
  *
- * @param hasCaip25Permission - Whether the origin holds a CAIP-25 caveat
+ * @param hasCaip25Permission - Whether the origin holds a CAIP-25 permission
  */
 export function createCaipOriginScanGate(
   hasCaip25Permission: (origin: string) => boolean,

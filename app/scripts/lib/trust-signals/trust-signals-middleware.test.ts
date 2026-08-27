@@ -201,7 +201,7 @@ const createInvokeMethodRequest = (
     },
   }) as unknown as TrustSignalsMiddlewareRequest;
 
-describe('createTrustSignalsMiddleware', () => {
+describe('trust signals middleware', () => {
   const scanAddressMockAndAddToCache = jest.mocked(scanAddressAndAddToCache);
   const parseApprovalTransactionDataMock = jest.mocked(
     parseApprovalTransactionData,

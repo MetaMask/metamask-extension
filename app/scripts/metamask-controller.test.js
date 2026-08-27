@@ -2792,12 +2792,6 @@ describe('MetaMaskController', () => {
           const scanUrlSpy = jest
             .spyOn(localMetamaskController.phishingController, 'scanUrl')
             .mockResolvedValue({});
-          jest
-            .spyOn(
-              localMetamaskController.permissionController,
-              'requestPermissions',
-            )
-            .mockResolvedValue([{}]);
 
           const messageSender = { url: 'http://mycrypto.com' };
           const streamTest = createThroughStream((chunk, _, cb) => {
