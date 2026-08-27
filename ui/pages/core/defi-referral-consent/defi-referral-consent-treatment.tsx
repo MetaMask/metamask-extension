@@ -15,19 +15,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBoolean } from '../../../hooks/useBoolean';
 import { DefiReferralConsentProps } from './defi-referral-consent.types';
-
-const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
-  partnerId,
-  partnerName,
-}) => {
-  return (
-    <img
-      className="h-[190px]"
-      src={`./images/${partnerId}-referral.png`}
-      alt={`${partnerName} referral`}
-    />
-  );
-};
+import { PartnerImage } from './partner-image';
 
 export const DefiReferralConsentTreatment: React.FC<
   DefiReferralConsentProps
@@ -56,7 +44,11 @@ export const DefiReferralConsentTreatment: React.FC<
         className="flex-1 justify-center"
       >
         <Box className="mx-auto">
-          <PartnerImage partnerId={partnerId} partnerName={partnerName} />
+          <PartnerImage
+            partnerId={partnerId}
+            partnerName={partnerName}
+            className="h-[190px]"
+          />
         </Box>
         <Box flexDirection={BoxFlexDirection.Column} gap={4}>
           <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>

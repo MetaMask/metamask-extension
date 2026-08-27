@@ -11,9 +11,9 @@ import {
   verifyAccountBelongsToSrp,
 } from '../../page-objects/flows/multi-srp.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
+import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { mockActiveNetworks } from './common-multi-srp';
 
@@ -69,7 +69,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
           srpIndex: 1,
         });
         await accountListPage.clickMultichainAccountMenuItem('Account details');
-        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        const accountDetailsPage = new AccountDetailsPage(driver);
         await accountDetailsPage.clickRevealRow();
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.completeRevealSrpQuiz();

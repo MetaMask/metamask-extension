@@ -1,25 +1,27 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
+import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  AvatarIconSize,
+  AvatarToken,
+  AvatarTokenSize,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import { isIpfsURL } from '../../../helpers/utils/notification.util';
-
 import {
-  AvatarIcon,
-  AvatarIconSize,
   BadgeWrapper,
   BadgeWrapperPosition,
   Box,
-  IconName,
-  IconSize,
 } from '../../component-library';
 import {
   BackgroundColor,
-  BorderColor,
   BorderRadius,
   Display,
-  IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
@@ -103,12 +105,10 @@ const getBadge = (badge: BadgeProps, children: JSX.Element): JSX.Element => {
         <AvatarIcon
           iconName={badge.icon}
           size={AvatarIconSize.Sm}
-          backgroundColor={BackgroundColor.infoDefault}
-          borderColor={BorderColor.backgroundDefault}
-          borderWidth={2}
+          severity={AvatarIconSeverity.Info}
+          className="border-2 border-background-default bg-info-default"
           iconProps={{
-            name: badge.icon,
-            color: IconColor.infoInverse,
+            color: IconColor.InfoInverse,
             size: IconSize.Xs,
           }}
         />

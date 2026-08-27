@@ -896,24 +896,12 @@
     "message": "$1 बेचा गया",
     "description": "$1 is the token symbol"
   },
-  "activity_receive_failed_description": {
-    "message": "भेजने वाले: $1",
-    "description": "$1 is the shortened sender address"
-  },
   "activity_receive_failed_title": {
     "message": "प्राप्त नहीं हो पाया"
-  },
-  "activity_receive_pending_description": {
-    "message": "भेजने वाले: $1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "$1 प्राप्त कर रहे हैं",
     "description": "$1 is the token symbol"
-  },
-  "activity_receive_success_description": {
-    "message": "भेजने वाले: $1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "$1 प्राप्त किया गया",
@@ -962,24 +950,12 @@
     "message": "$1 बेचा गया",
     "description": "$1 is the token symbol"
   },
-  "activity_send_failed_description": {
-    "message": "प्रति: $1",
-    "description": "$1 is the shortened recipient address"
-  },
   "activity_send_failed_title": {
     "message": "भेजना नहीं हो पाया"
-  },
-  "activity_send_pending_description": {
-    "message": "प्रति: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "$1 भेजा जा रहा है",
     "description": "$1 is the token symbol"
-  },
-  "activity_send_success_description": {
-    "message": "प्रति: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "$1 भेजा गया",
@@ -1291,7 +1267,7 @@
     "message": "जोड़ा गया"
   },
   "addedProtectionDescription": {
-    "message": "आप किसी अज्ञात एड्रेस से इंटरैक्ट कर रहे हैं। इससे बुरी नीयत वाले ट्रांसेक्शन को रोकने में मदद मिलती है।"
+    "message": "चूंकि आप किसी अज्ञात एड्रेस से इंटरैक्ट कर रहे हैं, इसलिए प्रोटेक्शन द्वारा बुरी नीयत वाले कुछ ट्रांसेक्शन को रोका जा सकता है।"
   },
   "addedProtectionIncludesNetworkFee": {
     "message": "इसमें अतिरिक्त सुरक्षा के लिए $1 शामिल है",
@@ -1523,6 +1499,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "वॉलेट सपोर्टेड नहीं है"
   },
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "आपका पर्प्स बैलेंस चेक नहीं किया जा सका। फिर से कोशिश करें।"
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "पहला इंटरैक्शन"
   },
@@ -1555,6 +1534,9 @@
   },
   "alertReasonPendingTransactions": {
     "message": "पेंडिंग ट्रांसेक्शन"
+  },
+  "alertReasonPerpsWithdrawBalanceUnavailable": {
+    "message": "बैलेंस अनुपलब्ध है"
   },
   "alertReasonSignIn": {
     "message": "संदिग्ध साइन-इन अनुरोध"
@@ -2001,6 +1983,78 @@
   },
   "blockaid": {
     "message": "Blockaid"
+  },
+  "blockaidAlertModalMessage": {
+    "message": "सिक्योरिटी पार्टनर को इस $1 में हाई-रिस्क सिग्नल मिले हैं। अगर आप जारी रखते हैं, तो आपके फंड वापस नहीं मिल पाएंगे।",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request"
+  },
+  "blockaidAlertModalMessageWithAmount": {
+    "message": "सिक्योरिटी पार्टनर को इस $1 में हाई-रिस्क सिग्नल मिले हैं। अगर आप जारी रखते हैं, तो आपके $2 वापस नहीं मिल पाएंगे।",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request; $2 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionApproveFarming": {
+    "message": "आप सिक्योरिटी पार्टनर द्वारा फ़्लैग किए गए एड्रेस को अपने एसेट्स मूव करने की परमिशन दे रहे हैं।"
+  },
+  "blockaidDescriptionErrored": {
+    "message": "हम यह सेफ़्टी चेक पूरा नहीं कर सके। सिर्फ़ तभी जारी रखें जब आपको साइट और इसमें शामिल एड्रेस पर भरोसा हो।"
+  },
+  "blockaidDescriptionHighRiskSignature": {
+    "message": "सिक्योरिटी पार्टनर इस सिग्नेचर को हाई रिस्क के तौर पर फ़्लैग करते हैं। साइन करने से आपकी परमिशन के बिना आपके एसेट्स के साथ एक्शन ऑथराइज़ किए जा सकते हैं।"
+  },
+  "blockaidDescriptionMaliciousDomain": {
+    "message": "सिक्योरिटी पार्टनर इस साइट को मैलिशियस के तौर पर फ़्लैग करते हैं। अगर यह एक स्कैम है, तो आपके फंड वापस नहीं मिल पाएंगे।"
+  },
+  "blockaidDescriptionMaliciousDomainWithAmount": {
+    "message": "सिक्योरिटी पार्टनर इस साइट को मैलिशियस के तौर पर फ़्लैग करते हैं। अगर यह एक स्कैम है, तो आपका $1 वापस नहीं मिल पाएगा।",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionMarketplaceFarming": {
+    "message": "आप सिक्योरिटी पार्टनर द्वारा फ़्लैग किए गए एड्रेस को $1 पर लिस्टेड अपने एसेट्स मूव करने की परमिशन दे रहे हैं।",
+    "description": "$1 is a marketplace name such as OpenSea or Blur"
+  },
+  "blockaidDescriptionRiskSignals": {
+    "message": "सिक्योरिटी पार्टनर को इस रिक्वेस्ट में रिस्क सिग्नल मिले हैं। आगे बढ़ने से पहले रिव्यू करें।"
+  },
+  "blockaidDescriptionTransferFarming": {
+    "message": "आप सिक्योरिटी पार्टनर द्वारा फ़्लैग किए गए एड्रेस पर एसेट्स भेज रहे हैं। अगर यह एक स्कैम है, तो आपके फंड वापस नहीं मिल पाएंगे।"
+  },
+  "blockaidDescriptionTransferFarmingWithAmount": {
+    "message": "आप सिक्योरिटी पार्टनर द्वारा फ़्लैग किए गए एड्रेस पर एसेट्स भेज रहे हैं। अगर यह एक स्कैम है, तो आपका $1 वापस नहीं मिल पाएगा।",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidRequestTypeApproval": {
+    "message": "एप्रूवल",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeRequest": {
+    "message": "रिक्वेस्ट करें",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeSignature": {
+    "message": "सिग्नेचर",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeTransfer": {
+    "message": "ट्रांसफ़र",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidTitleHighRiskApproval": {
+    "message": "हाई-रिस्क अप्रूवल"
+  },
+  "blockaidTitleHighRiskSignature": {
+    "message": "हाई-रिस्क सिग्नेचर"
+  },
+  "blockaidTitleHighRiskTransfer": {
+    "message": "हाई-रिस्क ट्रांसफर"
+  },
+  "blockaidTitleMayNotBeSafe": {
+    "message": "सिक्योरिटी चेक उपलब्ध नहीं है"
+  },
+  "blockaidTitleRiskSignalsDetected": {
+    "message": "रिस्क सिग्नल पहचाने गए"
+  },
+  "blockaidTitleSiteFlaggedUnsafe": {
+    "message": "साइट को अनसेफ के तौर पर फ़्लैग किया गया"
   },
   "blockies": {
     "message": "ब्लॉकी"
@@ -2734,6 +2788,9 @@
   "confirmationAlertDetails": {
     "message": "आपकी एसेट्स की सुरक्षा के लिए, हम आपको अनुरोध को रिजेक्ट करने का सुझाव देते हैं।"
   },
+  "confirmationAlertModalTitleDescription": {
+    "message": "हाई-रिस्क रिक्वेस्ट"
+  },
   "confirmed": {
     "message": "कन्फर्म किया गया"
   },
@@ -3078,6 +3135,9 @@
   },
   "dappSwapRewardText": {
     "message": "$1 पॉइंट कमाएँ"
+  },
+  "dapps": {
+    "message": "डैप्स"
   },
   "darkTheme": {
     "message": "गहरा"
@@ -5218,11 +5278,23 @@
   "moneyActivity": {
     "message": "गतिविधि"
   },
+  "moneyActivityPlaceholderDescription": {
+    "message": "आपकी मनी एक्टिविटी यहाँ दिखेंगी।"
+  },
   "moneyAdd": {
     "message": "जोड़ें"
   },
+  "moneyApy": {
+    "message": "$1 APY"
+  },
   "moneyBalanceUnavailable": {
     "message": "बैलेंस अनुपलब्ध है"
+  },
+  "moneyBenefitAutoEarn": {
+    "message": "आपके मनी बैलेंस पर ऑटो-अर्न यील्ड"
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "~$1 APY तक ऑटो-अर्न"
   },
   "moneyBenefitLiquidity": {
     "message": "बिना किसी लॉकअप के पूरी लिक्विडिटी पाएं, इसलिए आप कभी भी ट्रेड कर सकते हैं या निकाल सकते हैं"
@@ -5236,17 +5308,69 @@
   "moneyBenefits": {
     "message": "फ़ायदे"
   },
+  "moneyEarnApyTitle": {
+    "message": "$1 APY तक कमाएं"
+  },
   "moneyEarnOnCrypto": {
     "message": "अपने क्रिप्टो पर कमाएं"
+  },
+  "moneyEarnOnCryptoDescription": {
+    "message": "देखें कि अपने क्रिप्टो को mUSD में बदलकर आपका पैसा समय के साथ कैसे बढ़ सकता है।"
+  },
+  "moneyEarnOnCryptoDescriptionMiddle": {
+    "message": "को एसेट्स में और आप इतना कमा सकते हैं"
+  },
+  "moneyEarnOnCryptoDescriptionPrefix": {
+    "message": "अपना जोड़ें"
+  },
+  "moneyEarnOnCryptoDescriptionSuffix": {
+    "message": "एक साल में।"
+  },
+  "moneyEarnOnCryptoNoFee": {
+    "message": "कोई शुल्क नहीं"
+  },
+  "moneyEarnTitle": {
+    "message": "आपके बैलेंस पर कमाएं"
+  },
+  "moneyEarnings": {
+    "message": "कमाई"
+  },
+  "moneyExploreBenefits": {
+    "message": "अपने फ़ायदे जानें"
   },
   "moneyFundDescription": {
     "message": "अपने Money Account में पैसे डालें और अपने बैलेंस को बढ़ते हुए देखें।"
   },
+  "moneyFundDescriptionWithApy": {
+    "message": "अपने Money Account में पैसे डालें और अपने बैलेंस को $1 APY तक बढ़ते हुए देखें।"
+  },
   "moneyHowItWorks": {
     "message": "ये कैसे काम करता है"
   },
+  "moneyHowItWorksDescription": {
+    "message": "mUSD जोड़ें और आपका डॉलर-बैक्ड बैलेंस कभी भी खर्च करने, ट्रेड करने या भेजने के लिए तैयार है।"
+  },
+  "moneyHowItWorksDescriptionWithApy": {
+    "message": "mUSD जोड़ें और $1 तक कमाएं। आपका बैलेंस डॉलर-बैक्ड है और कभी भी खर्च करने, ट्रेड करने या भेजने के लिए तैयार है।",
+    "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowYourMoneyGrows": {
+    "message": "आपका पैसा कैसे बढ़ता है"
+  },
   "moneyLearnMore": {
     "message": "ज्यादा जानें"
+  },
+  "moneyLifetime": {
+    "message": "जीवन भर की"
+  },
+  "moneyMeetMusd": {
+    "message": "mUSD से मिलें"
+  },
+  "moneyMoreInformation": {
+    "message": "अधिक जानकारी"
+  },
+  "moneyMoreOptions": {
+    "message": "ज़्यादा विकल्प"
   },
   "moneyMusd": {
     "message": "mUSD"
@@ -6083,6 +6207,12 @@
   "notificationsPageNoNotificationsContent": {
     "message": "आपको अभी तक कोई नोटिफिकेशंस नहीं मिली है।"
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "एजेंट वॉलेट के लिए CLI कनेक्शन रिक्वेस्ट, एप्रूवल और सेशन अपडेट"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "एजेंट वॉलेट"
+  },
   "notificationsSettingsBoxError": {
     "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें।"
   },
@@ -6403,6 +6533,10 @@
   "passkeyErrorNotEnrolled": {
     "message": "इस वॉलेट के लिए $1 सेटअप नहीं है। सेटिंग्स में जाकर $1 को चालू करें।",
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotSupported": {
+    "message": "पासकी सपोर्टेड नहीं है",
+    "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "$1 सेटअप नहीं हो पाया। फिर से प्रयास करें",
@@ -6847,6 +6981,9 @@
   },
   "permissions": {
     "message": "अनुमतियां"
+  },
+  "permissionsPageEmptyDescription": {
+    "message": "जब आप अनुमतियाँ देंगे, तो डिटेल्स यहाँ दिखाई देंगी।"
   },
   "permissionsPageEmptyTitle": {
     "message": "यहाँ देखने के लिए कुछ नहीं है।"
@@ -8262,6 +8399,9 @@
   "rampsOrderToastSuccessTitle": {
     "message": "खरीद सफल रही",
     "description": "Title for the successful ramp buy order toast"
+  },
+  "rampsPayWith": {
+    "message": "के साथ भुगतान करें"
   },
   "rampsPaymentDelayBusinessDay": {
     "message": "व्यावसायिक दिन"
@@ -11629,6 +11769,10 @@
   },
   "value": {
     "message": "मूल्य"
+  },
+  "variationalReferralSubtitle": {
+    "message": "MetaMask रेफरल कोड के साथ 90 दिनों के लिए +15% Omni पॉइंट्स और सिल्वर टियर पाएँ।",
+    "description": "The subtitle of the Variational referral confirmation screen"
   },
   "version": {
     "message": "वर्शन"

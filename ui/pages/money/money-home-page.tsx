@@ -22,10 +22,11 @@ import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
+import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { moneyFormatUsd } from '../../helpers/money/format';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
-import { MoneyActivityPlaceholder } from './components/money-activity-placeholder';
+import { MoneyActivityList } from './components/money-activity-list';
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyPositionPlaceholder } from './components/money-position-placeholder';
@@ -136,6 +137,7 @@ export function MoneyHomePage() {
   const isLifetimeEarningsLoading = sinceInceptionQuery.isInitialLoading;
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
   const privacyMode = useSelector(getPrivacyMode);
+  const activityItems = useMoneyActivityItems();
 
   if (isAvailabilityLoading || (availability.isAvailable && isBalanceLoading)) {
     return (
@@ -160,6 +162,14 @@ export function MoneyHomePage() {
       ? t('moneyBalanceUnavailable')
       : totalFiatFormatted;
   const apyDisplay = apyPercentFormatted;
+  const earnOnYourCryptoSection = (
+    <MoneyPotentialEarnings
+      tokens={depositTokens}
+      apyDecimal={apyDecimal}
+      isNoFeeToken={isNoFeeToken}
+      privacyMode={privacyMode}
+    />
+  );
 
   return (
     <main
@@ -270,7 +280,12 @@ export function MoneyHomePage() {
                 <MoneySectionDivider />
               </>
             ) : null}
-            <MoneyActivityPlaceholder />
+            <MoneyActivityList
+              items={activityItems}
+              privacyMode={privacyMode}
+            />
+            <MoneySectionDivider />
+            {earnOnYourCryptoSection}
             <MoneySectionDivider />
             <MoneyCondensedInfoCards />
           </>
@@ -307,15 +322,13 @@ export function MoneyHomePage() {
             </section>
 
             <MoneySectionDivider />
-            <MoneyActivityPlaceholder />
-
-            <MoneySectionDivider />
-            <MoneyPotentialEarnings
-              tokens={depositTokens}
-              apyDecimal={apyDecimal}
-              isNoFeeToken={isNoFeeToken}
+            <MoneyActivityList
+              items={activityItems}
               privacyMode={privacyMode}
             />
+
+            <MoneySectionDivider />
+            {earnOnYourCryptoSection}
 
             <MoneySectionDivider />
             <section className="px-4 py-3">
