@@ -8223,16 +8223,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ramps-controller@npm:@metamask-previews/ramps-controller@20.0.0-preview-ad42c53":
-  version: 20.0.0-preview-ad42c53
-  resolution: "@metamask-previews/ramps-controller@npm:20.0.0-preview-ad42c53"
+"@metamask/ramps-controller@npm:@metamask-previews/ramps-controller@20.0.0-preview-619d07f55":
+  version: 20.0.0-preview-619d07f55
+  resolution: "@metamask-previews/ramps-controller@npm:20.0.0-preview-619d07f55"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/profile-sync-controller": "npm:^29.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^6.0.0"
-  checksum: 10/c66b58e91b5c183d482d3228e2740dbbe31a1d6f66e71bfd5a740df48e5e11dbfea5ddd76ef64a757dc3b32e2771d334afd55db6b50265b625ccbe9bfdb2394c
+  checksum: 10/0107cbc4db0a1ae5cf59100ebdc726d89867c5239fc16464ee06dea14ba3f0bfeca72790c5764d9aa46695e5a667ba62f8f52030e57d75756dba59a0a1d16f34
   languageName: node
   linkType: hard
 
@@ -33408,7 +33408,7 @@ __metadata:
     "@metamask/profile-metrics-controller": "npm:^4.0.3"
     "@metamask/profile-sync-controller": "npm:^29.0.0"
     "@metamask/providers": "npm:^22.1.1"
-    "@metamask/ramps-controller": "npm:@metamask-previews/ramps-controller@20.0.0-preview-ad42c53"
+    "@metamask/ramps-controller": "npm:@metamask-previews/ramps-controller@20.0.0-preview-619d07f55"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/react-data-query": "npm:^0.2.2"
     "@metamask/remote-feature-flag-controller": "npm:^5.0.0"

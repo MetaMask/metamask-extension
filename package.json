@@ -462,7 +462,7 @@
     "@metamask/profile-metrics-controller": "^4.0.3",
     "@metamask/profile-sync-controller": "^29.0.0",
     "@metamask/providers": "^22.1.1",
-    "@metamask/ramps-controller": "npm:@metamask-previews/ramps-controller@20.0.0-preview-ad42c53",
+    "@metamask/ramps-controller": "npm:@metamask-previews/ramps-controller@20.0.0-preview-619d07f55",
     "@metamask/rate-limit-controller": "^7.0.0",
     "@metamask/react-data-query": "^0.2.2",
     "@metamask/remote-feature-flag-controller": "^5.0.0",
