@@ -393,6 +393,19 @@ describe('MultichainEditAccountsPage', () => {
     expect(queryByText('Test Group 3')).not.toBeInTheDocument();
   });
 
+  it('filters accounts when search text is an address', () => {
+    const { getByTestId, getByText, queryByText } = render();
+
+    const searchContainer = getByTestId(TEST_IDS.SEARCH);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    // search for the first 4 characters of mockEvmAccount2's address
+    fireEvent.change(searchInput, { target: { value: '0x2222' } });
+
+    expect(getByText('Test Group 2')).toBeInTheDocument();
+    expect(queryByText('Test Group 1')).not.toBeInTheDocument();
+    expect(queryByText('Test Group 3')).not.toBeInTheDocument();
+  });
+
   it('shows "No accounts found" message when no accounts match search criteria', () => {
     const { getByTestId, getByText } = render();
 
