@@ -11,9 +11,6 @@ import type { RootMessenger } from '../../lib/messenger';
  * Create a messenger for the ChompApiService, scoped to the actions and events
  * it is allowed to use.
  *
- * Every CHOMP request is authenticated with a JWT, which the service mints
- * through `AuthenticationController:getBearerToken`.
- *
  * @param messenger - The root messenger.
  * @returns The ChompApiService messenger.
  */

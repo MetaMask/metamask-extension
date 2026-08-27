@@ -15,11 +15,11 @@ export const DEFAULT_CHOMP_API_URL = 'https://chomp.api.cx.metamask.io';
  * Initialize the ChompApiService.
  *
  * The base URL comes from the `moneyAccountChompConfig` remote feature flag,
- * falling back to the production CHOMP API when the flag is unserved or
- * malformed — on a first launch the flags may not have hydrated yet, and prod
- * is the right environment for the JWTs AuthenticationController mints in a
- * production build. The URL is frozen at construction; a flag change is picked
- * up on the next background start.
+ * always falling back to the production CHOMP API when the flag is missing or
+ * malformed
+ *
+ * The URL is frozen at construction so flag changes are only picked up
+ * when the background process restarts.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the service.

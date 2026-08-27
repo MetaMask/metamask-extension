@@ -1,9 +1,5 @@
 import { isObject } from '@metamask/utils';
 
-/**
- * The LaunchDarkly flag carrying the CHOMP API configuration. The same flag
- * mobile reads, so both clients talk to the same CHOMP environment.
- */
 export const MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME = 'moneyAccountChompConfig';
 
 export type MoneyAccountChompConfig = {
@@ -19,9 +15,9 @@ const isValidUrl = (value: string): boolean => {
 };
 
 /**
- * Parses the raw `moneyAccountChompConfig` remote feature flag.
+ * Parses the `moneyAccountChompConfig` feature flag.
  *
- * @param raw - The raw remote feature flag value.
+ * @param raw - The raw feature flag value.
  * @returns The parsed config, or `undefined` if the base URL is missing or not
  * a valid URL, so callers fall back to their default rather than fetch from a
  * malformed origin.
