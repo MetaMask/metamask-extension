@@ -586,7 +586,7 @@ export const MultichainAccountsConnectPage = ({
         />
       )}
       <Page
-        data-testid="connect-page"
+        data-testid="parent-selector-connect-page"
         className="main-container multichain-connect-page"
         backgroundColor={BackgroundColor.backgroundDefault}
       >

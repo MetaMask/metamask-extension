@@ -1372,6 +1372,7 @@
     },
     "@metamask/design-system-react": {
       "globals": {
+        "ResizeObserver": true,
         "console.warn": true,
         "document.addEventListener": true,
         "document.body": true,

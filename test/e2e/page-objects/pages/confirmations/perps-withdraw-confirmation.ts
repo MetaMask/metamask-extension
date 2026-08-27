@@ -47,6 +47,10 @@ export class PerpsWithdrawConfirmation {
     )}']`,
   };
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-confirmation-page',
+  };
+
   private readonly payWithRow = { testId: 'pay-with-row' };
 
   private readonly payWithSymbol = { testId: 'pay-with-symbol' };
@@ -97,6 +101,7 @@ export class PerpsWithdrawConfirmation {
 
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
+      this.parentSelector,
       this.headerBackButton,
       this.headerTitle,
       this.customAmountInfo,
