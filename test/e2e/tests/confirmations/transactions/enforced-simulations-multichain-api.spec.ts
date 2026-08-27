@@ -1,14 +1,12 @@
 import { MockttpServer } from 'mockttp';
 import { Suite } from 'mocha';
 import { ResultType } from '../../../../../shared/lib/trust-signals';
-import { DAPP_PATH, WINDOW_TITLES } from '../../../constants';
+import { DAPP_PATH } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { MockedEndpoint } from '../../../mock-e2e';
 import { login } from '../../../page-objects/flows/login.flow';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
-import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import { Driver } from '../../../webdriver/driver';
+import { invokeCaipTransaction } from '../../../page-objects/flows/multichain-dapp.flow';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { mockSimulationApi } from '../mocks/simulation';
 import { mockTrustSignal } from '../mocks/trust-signals';
@@ -68,7 +66,13 @@ describe('Enforced Simulations - Multichain API', function (this: Suite) {
     await withFixtures(
       fixtureOptions(title, setupMocks(ResultType.Malicious)),
       async ({ driver, extensionId }) => {
-        const confirmation = await invokeCaipTransaction(driver, extensionId);
+        await login(driver, { expectedBalance: '10' });
+
+        const confirmation = await invokeCaipTransaction(driver, extensionId, {
+          scope: EVM_SCOPE,
+          method: 'eth_sendTransaction',
+          params: [TRANSACTION_MOCK],
+        });
 
         await confirmation.checkEnforcedSimulationsRowIsDisplayed();
       },
@@ -81,7 +85,13 @@ describe('Enforced Simulations - Multichain API', function (this: Suite) {
     await withFixtures(
       fixtureOptions(title, setupMocks(ResultType.Trusted)),
       async ({ driver, extensionId }) => {
-        const confirmation = await invokeCaipTransaction(driver, extensionId);
+        await login(driver, { expectedBalance: '10' });
+
+        const confirmation = await invokeCaipTransaction(driver, extensionId, {
+          scope: EVM_SCOPE,
+          method: 'eth_sendTransaction',
+          params: [TRANSACTION_MOCK],
+        });
 
         await confirmation.checkEstimatedSimulationDetails('- <0.000001');
         await confirmation.checkEnforcedSimulationsRowIsNotDisplayed();
@@ -89,54 +99,6 @@ describe('Enforced Simulations - Multichain API', function (this: Suite) {
     );
   });
 });
-
-async function invokeCaipTransaction(
-  driver: Driver,
-  extensionId: string,
-): Promise<TransactionConfirmation> {
-  await login(driver, { expectedBalance: '10' });
-
-  const testDapp = new TestDappMultichain(driver);
-  await testDapp.openTestDappPage();
-  await testDapp.checkPageIsLoaded();
-  await testDapp.connectExternallyConnectable(extensionId);
-
-  await testDapp.invokeMethod({
-    scope: EVM_SCOPE,
-    method: 'eth_sendTransaction',
-    params: [TRANSACTION_MOCK],
-  });
-
-  await switchToDialog(driver);
-
-  const confirmation = new TransactionConfirmation(driver);
-  await confirmation.checkPageIsLoaded();
-
-  return confirmation;
-}
-
-/**
- * The dialog lookup resolves window titles through the background service
- * worker, which intermittently reports the confirmation popup as missing even
- * once it is open. Retrying absorbs that without masking a genuinely absent
- * confirmation, since a real absence still fails every attempt.
- *
- * @param driver - The webdriver instance.
- * @param attempts - How many times to look for the dialog window.
- */
-async function switchToDialog(driver: Driver, attempts = 3): Promise<void> {
-  for (let attempt = 1; attempt <= attempts; attempt++) {
-    try {
-      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      return;
-    } catch (error) {
-      if (attempt === attempts) {
-        throw error;
-      }
-      await driver.delay(2000);
-    }
-  }
-}
 
 function setupMocks(trustResultType: ResultType) {
   return async (mockServer: MockttpServer): Promise<MockedEndpoint[]> => {
