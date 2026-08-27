@@ -137,16 +137,13 @@ export default class ExtensionPlatform {
     }
   }
 
-  getPlatformInfo(cb: (platformInfo: unknown) => void): void {
+  async getPlatformInfo(
+    cb: (result: browser.Runtime.PlatformInfo | unknown) => void,
+  ): Promise<void> {
     try {
-      const platformInfo = browser.runtime.getPlatformInfo();
-      cb(platformInfo);
-      // eslint-disable-next-line no-useless-return
-      return;
+      cb(await browser.runtime.getPlatformInfo());
     } catch (error) {
       cb(error);
-      // eslint-disable-next-line no-useless-return
-      return;
     }
   }
 

@@ -1,7 +1,7 @@
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
-let __define: unknown;
+let cachedDefine: unknown;
 
 const globalObject = global as typeof globalThis & {
   define?: unknown;
@@ -13,7 +13,7 @@ const globalObject = global as typeof globalThis & {
  * AMD's define function
  */
 const cleanContextForImports = (): void => {
-  __define = globalObject.define;
+  cachedDefine = globalObject.define;
   try {
     globalObject.define = undefined;
   } catch (_) {
@@ -26,7 +26,7 @@ const cleanContextForImports = (): void => {
  */
 const restoreContextAfterImports = (): void => {
   try {
-    globalObject.define = __define;
+    globalObject.define = cachedDefine;
   } catch (_) {
     console.warn('MetaMask - global.define could not be overwritten.');
   }
@@ -105,25 +105,25 @@ if (shouldInjectProvider()) {
    * This is intentional because:
    *
    * 1. CONTEXT DIFFERENCE:
-   *    - inpage.js runs in PAGE CONTEXT (web pages)
-   *    - Background streams run in EXTENSION CONTEXT (persistent background)
+   * - inpage.js runs in PAGE CONTEXT (web pages)
+   * - Background streams run in EXTENSION CONTEXT (persistent background)
    *
    * 2. AUTOMATIC CLEANUP:
-   *    - When a page navigates/unloads, the browser automatically destroys the entire
-   *      script execution context, including all streams and event listeners
-   *    - No explicit cleanup is needed - the browser handles it naturally
+   * - When a page navigates/unloads, the browser automatically destroys the entire
+   * script execution context, including all streams and event listeners
+   * - No explicit cleanup is needed - the browser handles it naturally
    *
    * 3. AVOIDING PREMATURE DISCONNECTION:
-   *    - Adding handlers that call mux.end() or connectionStream.end() can actually
-   *      CAUSE disconnection errors when pages navigate to external URLs
-   *    - Tests showed that explicit handlers in page context trigger "Disconnected from
-   *      MetaMask background" errors during rapid navigation scenarios (e.g., deep links)
+   * - Adding handlers that call mux.end() or connectionStream.end() can actually
+   * CAUSE disconnection errors when pages navigate to external URLs
+   * - Tests showed that explicit handlers in page context trigger "Disconnected from
+   * MetaMask background" errors during rapid navigation scenarios (e.g., deep links)
    *
    * 4. DIFFERENT ERROR SOURCE:
-   *    - "Premature close" errors in page context are typically harmless - they occur
-   *      during normal page navigation and don't indicate a real problem
-   *    - The critical "Premature close" issues (3.8M/month in Sentry) come from the
-   *      BACKGROUND streams that persist across page loads
+   * - "Premature close" errors in page context are typically harmless - they occur
+   * during normal page navigation and don't indicate a real problem
+   * - The critical "Premature close" issues (3.8M/month in Sentry) come from the
+   * BACKGROUND streams that persist across page loads
    *
    * For context on the "Premature close" issue, see:
    * - https://github.com/MetaMask/metamask-extension/issues/26337

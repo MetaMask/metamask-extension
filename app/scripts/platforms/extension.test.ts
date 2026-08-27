@@ -14,6 +14,7 @@ jest.mock('webextension-polyfill', () => ({
     runtime: {
       getManifest: jest.fn(),
       getURL: jest.fn(),
+      getPlatformInfo: jest.fn(),
     },
     notifications: {
       create: jest.fn(),
@@ -101,6 +102,30 @@ describe('extension platform', () => {
       const version = extensionPlatform.getVersion();
 
       expect(version).toBe('1.2.3-beta.0');
+    });
+  });
+
+  describe('getPlatformInfo', () => {
+    it('passes resolved platform info to the callback', async () => {
+      const platformInfo = { os: 'mac', arch: 'x86-64' } as const;
+      mockedBrowser.runtime.getPlatformInfo.mockResolvedValue(platformInfo);
+      const extensionPlatform = new ExtensionPlatform();
+      const callback = jest.fn();
+
+      await extensionPlatform.getPlatformInfo(callback);
+
+      expect(callback).toHaveBeenCalledWith(platformInfo);
+    });
+
+    it('passes the error to the callback when getPlatformInfo rejects', async () => {
+      const error = new Error('unavailable');
+      mockedBrowser.runtime.getPlatformInfo.mockRejectedValue(error);
+      const extensionPlatform = new ExtensionPlatform();
+      const callback = jest.fn();
+
+      await extensionPlatform.getPlatformInfo(callback);
+
+      expect(callback).toHaveBeenCalledWith(error);
     });
   });
 
