@@ -8,28 +8,22 @@ import {
 const log = createProjectLogger('sourcify');
 
 export type SourcifyResponse = {
-  metadata?: SourcifyMetadata;
-};
-
-export type SourcifyMetadata = {
-  output: {
-    abi: {
-      inputs: { name: string; type: string }[];
-    }[];
-    devdoc?: {
-      methods: {
-        [signature: string]: {
-          details?: string;
-          params?: { [name: string]: string };
-        };
+  abi?: {
+    inputs: { name: string; type: string }[];
+  }[];
+  devdoc?: {
+    methods: {
+      [signature: string]: {
+        details?: string;
+        params?: { [name: string]: string };
       };
     };
-    userdoc?: {
-      methods: {
-        [signature: string]: {
-          notice?: string;
-          params?: { [name: string]: string };
-        };
+  };
+  userdoc?: {
+    methods: {
+      [signature: string]: {
+        notice?: string;
+        params?: { [name: string]: string };
       };
     };
   };
@@ -40,15 +34,23 @@ export async function decodeTransactionDataWithSourcify(
   contractAddress: Hex,
   chainId: Hex,
 ): Promise<DecodedTransactionDataMethod | undefined> {
-  const metadata = await fetchSourcifyMetadata(contractAddress, chainId);
-
-  log('Retrieved Sourcify metadata', {
+  const { abi, userdoc, devdoc } = await fetchSourcifyContract(
     contractAddress,
     chainId,
-    metadata,
+  );
+
+  log('Retrieved Sourcify contract', {
+    contractAddress,
+    chainId,
+    abi,
+    userdoc,
+    devdoc,
   });
 
-  const { abi } = metadata.output;
+  if (!abi) {
+    throw new Error('ABI not found');
+  }
+
   const contractInterface = new Interface(abi);
   const functionSignature = transactionData.slice(0, 10);
 
@@ -67,8 +69,8 @@ export async function decodeTransactionDataWithSourcify(
 
   const { name, inputs } = functionData;
   const signature = buildSignature(name, inputs);
-  const userDoc = metadata.output.userdoc?.methods[signature];
-  const devDoc = metadata.output.devdoc?.methods[signature];
+  const userDoc = userdoc?.methods[signature];
+  const devDoc = devdoc?.methods[signature];
   const description = userDoc?.notice ?? devDoc?.details;
 
   log('Extracted NatSpec', { signature, userDoc, devDoc });
@@ -142,16 +144,6 @@ function decodeParam(
   };
 }
 
-async function fetchSourcifyMetadata(address: Hex, chainId: Hex) {
-  const { metadata } = await fetchSourcifyContract(address, chainId);
-
-  if (!metadata) {
-    throw new Error('Metadata not found');
-  }
-
-  return metadata;
-}
-
 async function fetchSourcifyContract(
   address: Hex,
   chainId: Hex,
@@ -159,7 +151,7 @@ async function fetchSourcifyContract(
   const chainIdDecimal = parseInt(chainId, 16);
 
   const response = await fetch(
-    `https://sourcify.dev/server/v2/contract/${chainIdDecimal}/${address}?fields=metadata`,
+    `https://sourcify.dev/server/v2/contract/${chainIdDecimal}/${address}?fields=abi,userdoc,devdoc`,
   );
 
   if (!response.ok) {

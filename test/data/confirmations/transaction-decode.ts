@@ -437,41 +437,37 @@ export const TRANSACTION_DECODE_NESTED = {
 };
 
 export const SOURCIFY_RESPONSE = {
-  metadata: {
-    output: {
-      abi: [
+  abi: [
+    {
+      constant: false,
+      inputs: [
         {
-          constant: false,
-          inputs: [
-            {
-              name: 'to',
-              type: 'address',
-            },
-            {
-              name: 'value',
-              type: 'uint256',
-            },
-          ],
-          name: 'transfer',
-          outputs: [
-            {
-              name: 'success',
-              type: 'bool',
-            },
-          ],
-          payable: false,
-          type: 'function',
+          name: 'to',
+          type: 'address',
+        },
+        {
+          name: 'value',
+          type: 'uint256',
         },
       ],
-      userdoc: {
-        methods: {
-          'transfer(address,uint256)': {
-            notice: 'Transfer tokens',
-            params: {
-              to: 'The address to transfer to',
-              value: 'The amount to transfer',
-            },
-          },
+      name: 'transfer',
+      outputs: [
+        {
+          name: 'success',
+          type: 'bool',
+        },
+      ],
+      payable: false,
+      type: 'function',
+    },
+  ],
+  userdoc: {
+    methods: {
+      'transfer(address,uint256)': {
+        notice: 'Transfer tokens',
+        params: {
+          to: 'The address to transfer to',
+          value: 'The amount to transfer',
         },
       },
     },
@@ -479,99 +475,95 @@ export const SOURCIFY_RESPONSE = {
 };
 
 export const SOURCIFY_RESPONSE_NESTED = {
-  metadata: {
-    output: {
-      abi: [
+  abi: [
+    {
+      inputs: [
         {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+        {
+          components: [
             {
               components: [
                 {
-                  components: [
-                    {
-                      internalType: 'address',
-                      name: 'token',
-                      type: 'address',
-                    },
-                    {
-                      internalType: 'uint160',
-                      name: 'amount',
-                      type: 'uint160',
-                    },
-                    {
-                      internalType: 'uint48',
-                      name: 'expiration',
-                      type: 'uint48',
-                    },
-                    {
-                      internalType: 'uint48',
-                      name: 'nonce',
-                      type: 'uint48',
-                    },
-                  ],
-                  internalType: 'struct IAllowanceTransfer.PermitDetails[]',
-                  name: 'details',
-                  type: 'tuple[]',
-                },
-                {
                   internalType: 'address',
-                  name: 'spender',
+                  name: 'token',
                   type: 'address',
                 },
                 {
-                  internalType: 'uint256',
-                  name: 'sigDeadline',
-                  type: 'uint256',
+                  internalType: 'uint160',
+                  name: 'amount',
+                  type: 'uint160',
+                },
+                {
+                  internalType: 'uint48',
+                  name: 'expiration',
+                  type: 'uint48',
+                },
+                {
+                  internalType: 'uint48',
+                  name: 'nonce',
+                  type: 'uint48',
                 },
               ],
-              internalType: 'struct IAllowanceTransfer.PermitBatch',
-              name: 'permitBatch',
-              type: 'tuple',
+              internalType: 'struct IAllowanceTransfer.PermitDetails[]',
+              name: 'details',
+              type: 'tuple[]',
             },
             {
-              internalType: 'bytes',
-              name: 'signature',
-              type: 'bytes',
+              internalType: 'address',
+              name: 'spender',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'sigDeadline',
+              type: 'uint256',
             },
           ],
-          name: 'permit',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
+          internalType: 'struct IAllowanceTransfer.PermitBatch',
+          name: 'permitBatch',
+          type: 'tuple',
+        },
+        {
+          internalType: 'bytes',
+          name: 'signature',
+          type: 'bytes',
         },
       ],
-      devdoc: {
-        methods: {
-          'permit(address,((address,uint160,uint48,uint48)[],address,uint256),bytes)':
-            {
-              details:
-                "May fail if the owner's nonce was invalidated in-flight by invalidateNonce",
-              params: {
-                owner: 'The owner of the tokens being approved',
-                permitBatch:
-                  'Data signed over by the owner specifying the terms of approval',
-                signature: "The owner's signature over the permit data",
-              },
-            },
-        },
-      },
-      userdoc: {
-        methods: {
-          'permit(address,((address,uint160,uint48,uint48)[],address,uint256),bytes)':
-            {
-              notice:
-                "Permit a spender to the signed amounts of the owners tokens via the owner's EIP-712 signature",
-            },
-        },
-        notice:
-          'Permit2 handles signature-based transfers in SignatureTransfer and allowance-based transfers in AllowanceTransfer.',
-      },
+      name: 'permit',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
     },
+  ],
+  devdoc: {
+    methods: {
+      'permit(address,((address,uint160,uint48,uint48)[],address,uint256),bytes)':
+        {
+          details:
+            "May fail if the owner's nonce was invalidated in-flight by invalidateNonce",
+          params: {
+            owner: 'The owner of the tokens being approved',
+            permitBatch:
+              'Data signed over by the owner specifying the terms of approval',
+            signature: "The owner's signature over the permit data",
+          },
+        },
+    },
+  },
+  userdoc: {
+    methods: {
+      'permit(address,((address,uint160,uint48,uint48)[],address,uint256),bytes)':
+        {
+          notice:
+            "Permit a spender to the signed amounts of the owners tokens via the owner's EIP-712 signature",
+        },
+    },
+    notice:
+      'Permit2 handles signature-based transfers in SignatureTransfer and allowance-based transfers in AllowanceTransfer.',
   },
 };
 
