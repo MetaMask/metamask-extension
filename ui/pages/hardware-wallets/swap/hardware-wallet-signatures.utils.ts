@@ -55,6 +55,9 @@ const DEVICE_UNAVAILABLE_ERROR_CODES = new Set<ErrorCode>([
  * direct signing catch handlers, so a given error always yields the same
  * inline recovery UI.
  *
+ * Wrapped `KeyringControllerError` causes are unwrapped by
+ * `isUserRejectedHardwareWalletError` and `getHardwareWalletErrorCode`.
+ *
  * @param error - The error from a signing attempt (may cross the RPC boundary).
  * @returns The state-machine event for the error.
  */

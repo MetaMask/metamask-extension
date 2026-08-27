@@ -611,12 +611,34 @@ function mapCodeToErrorCode(code: string | number): ErrorCode {
 }
 
 /**
- * Get HardwareWalletError code from a JsonRpcError
+ * Get a hardware-wallet ErrorCode from an unknown error.
+ *
+ * Signing failures are often a `KeyringControllerError` whose real hardware
+ * wallet code lives on `error.cause`. Unwrap that nested code first so callers
+ * do not need to inspect the wrapper themselves.
  *
  * @param error - The error to extract from
  * @returns The ErrorCode if found, null otherwise
  */
 export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
+  if (error instanceof KeyringControllerError) {
+    const causeCode = getHardwareWalletErrorCode(error.cause);
+    if (causeCode !== null) {
+      return causeCode;
+    }
+  } else {
+    const errorAsAny = error as { name?: string; cause?: unknown };
+    if (
+      errorAsAny?.name === 'KeyringControllerError' &&
+      errorAsAny.cause !== error
+    ) {
+      const causeCode = getHardwareWalletErrorCode(errorAsAny.cause);
+      if (causeCode !== null) {
+        return causeCode;
+      }
+    }
+  }
+
   // Check for serialized RPC error with cause
   if (isSerializedRpcHardwareWalletError(error)) {
     return mapNumericCodeToErrorCode(error.data.cause.code);
@@ -720,9 +742,17 @@ export function isUserRejectedHardwareWalletError(error: unknown): boolean {
   // Some provider errors are transported as EIP-1193 userRejectedRequest (4001)
   // without preserving the full HardwareWalletError shape.
   const errorAsAny = error as { code?: unknown; data?: { code?: unknown } };
-  return (
+  if (
     errorAsAny?.code === errorCodes.provider.userRejectedRequest ||
     errorAsAny?.data?.code === errorCodes.provider.userRejectedRequest
+  ) {
+    return true;
+  }
+
+  return (
+    errorCause !== undefined &&
+    errorCause !== error &&
+    isUserRejectedHardwareWalletError(errorCause)
   );
 }
 

@@ -8,6 +8,7 @@ import {
   HardwareWalletError,
   Severity,
 } from '@metamask/hw-wallet-sdk';
+import { KeyringControllerError } from '@metamask/keyring-controller';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
@@ -1212,6 +1213,73 @@ describe('hardware-wallet-signatures utils', () => {
         category: Category.Connection,
         userMessage: 'Connection closed',
       });
+      expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
+        type: HardwareWalletSignatureEvent.DeviceDisconnected,
+      });
+    });
+
+    it.each([
+      ['AuthenticationDeviceLocked', ErrorCode.AuthenticationDeviceLocked],
+      ['ConnectionTimeout', ErrorCode.ConnectionTimeout],
+      ['DeviceDisconnected', ErrorCode.DeviceDisconnected],
+    ])(
+      'returns DeviceDisconnected for KeyringControllerError wrapping %s on cause',
+      (_label, code) => {
+        const error = Object.assign(
+          Object.create(KeyringControllerError.prototype),
+          {
+            name: 'KeyringControllerError',
+            message: 'sign operation failed',
+            cause: {
+              code,
+              message: 'device unavailable',
+            },
+          },
+        );
+
+        expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
+          type: HardwareWalletSignatureEvent.DeviceDisconnected,
+        });
+      },
+    );
+
+    it('returns TransactionRejected for KeyringControllerError wrapping EIP-1193 4001 on cause', () => {
+      // Plain { code: 4001 } is ambiguous with ConnectionClosed. At the top
+      // level, isUserRejected treats it as EIP-1193 userRejectedRequest. The
+      // same payload on a KeyringControllerError cause must not flip to
+      // DeviceDisconnected just because we now read nested codes.
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            code: 4001,
+            message: 'error',
+          },
+        },
+      );
+
+      expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
+    });
+
+    it('returns DeviceDisconnected for KeyringControllerError wrapping ConnectionClosed HardwareWalletError on cause', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: new HardwareWalletError('Connection closed', {
+            code: ErrorCode.ConnectionClosed,
+            severity: Severity.Err,
+            category: Category.Connection,
+            userMessage: 'Connection closed',
+          }),
+        },
+      );
+
       expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
         type: HardwareWalletSignatureEvent.DeviceDisconnected,
       });

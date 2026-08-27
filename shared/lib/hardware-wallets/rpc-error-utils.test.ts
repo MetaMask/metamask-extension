@@ -210,6 +210,24 @@ describe('rpc-error-utils', () => {
 
       expect(result).toBe(ErrorCode.Unknown);
     });
+
+    it('extracts code from KeyringControllerError cause', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            code: ErrorCode.DeviceDisconnected,
+            message: 'device unavailable',
+          },
+        },
+      );
+
+      expect(getHardwareWalletErrorCode(error)).toBe(
+        ErrorCode.DeviceDisconnected,
+      );
+    });
   });
 
   describe('toHardwareWalletError', () => {
@@ -1030,6 +1048,39 @@ describe('rpc-error-utils', () => {
         code: ErrorCode.ConnectionClosed,
         message: 'Connection closed',
       };
+
+      expect(isUserRejectedHardwareWalletError(error)).toBe(false);
+    });
+
+    it('returns true for KeyringControllerError wrapping EIP-1193 userRejectedRequest on cause', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            code: 4001,
+            message: 'error',
+          },
+        },
+      );
+
+      expect(isUserRejectedHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns false for KeyringControllerError wrapping ConnectionClosed HardwareWalletError', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            name: 'HardwareWalletError',
+            code: ErrorCode.ConnectionClosed,
+            message: 'Connection closed',
+          },
+        },
+      );
 
       expect(isUserRejectedHardwareWalletError(error)).toBe(false);
     });
