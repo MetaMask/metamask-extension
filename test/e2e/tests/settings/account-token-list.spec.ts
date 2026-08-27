@@ -2,7 +2,7 @@ import { MockttpServer, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

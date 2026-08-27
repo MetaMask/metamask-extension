@@ -609,7 +609,7 @@
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
-      "MetaMask: Background connection not initialized": 36
+      "MetaMask: Background connection not initialized": 40
     },
     "ui/pages/confirmations/components/confirm/info/info.test.tsx": {
       "MetaMask: Background connection not initialized": 61,
@@ -802,7 +802,7 @@
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/hooks/useHasInsufficientBalance.test.ts": {
-      "MetaMask: Background connection not initialized": 36
+      "MetaMask: Background connection not initialized": 40
     },
     "ui/pages/confirmations/hooks/useSmartTransactionFeatureFlags.test.ts": {
       "Reselect: Identity function warnings": 1
