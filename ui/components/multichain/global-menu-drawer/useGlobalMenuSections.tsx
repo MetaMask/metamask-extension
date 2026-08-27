@@ -56,7 +56,7 @@ import {
   getAnySnapUpdateAvailable,
   getUseExternalServices,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getDataCollectionForMarketing,
 } from '../../../selectors';
@@ -128,11 +128,9 @@ export function useGlobalMenuSections(
   );
 
   const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const supportText =
@@ -335,7 +333,7 @@ export function useGlobalMenuSections(
         {
           id: 'global-menu-connected-sites',
           iconName: IconName.SecurityTick,
-          label: t('allPermissions'),
+          label: t('permissions'),
           to: isGatorPermissionsRevocationFeatureEnabled()
             ? `${GATOR_PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
             : `${PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`,

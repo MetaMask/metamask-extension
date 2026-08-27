@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -16,6 +16,7 @@ import { ScrollContainer } from '../../../../../contexts/scroll-container';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
+import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import {
   clearPaymentOverride,
   getAvailableTokens,
@@ -33,6 +34,7 @@ import {
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
 import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { useDispatch } from '../../../../../store/hooks';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
@@ -52,8 +54,10 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const blockedTokens = useTransactionPayBlockedTokens();
   const [showOtherAssets, setShowOtherAssets] = useState(false);
 
+  const confirmationType = getConfirmationTransactionType(currentConfirmation);
+
   const isMoneyAccountPayEnabled = useSelector((state) =>
-    selectIsMoneyAccountTransactionEnabled(state, currentConfirmation?.type),
+    selectIsMoneyAccountTransactionEnabled(state, confirmationType),
   );
 
   const { filterTokens: musdTokenFilter } = useMusdConversionTokens({
@@ -70,6 +74,13 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
 
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
+  const isMoneyAccountDeposit =
+    confirmationType === TransactionType.moneyAccountDeposit;
+  const { renderNoFeeTag } = usePayWithNoFeeToken();
+  const tagRenderers = useMemo(
+    () => (isMoneyAccountDeposit ? [renderNoFeeTag] : undefined),
+    [isMoneyAccountDeposit, renderNoFeeTag],
+  );
 
   const handleClose = useCallback(() => {
     setShowOtherAssets(false);
@@ -88,6 +99,16 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const handleTokenSelect = useCallback(
     async (token: AssetType) => {
       if (token.disabled) {
+        return;
+      }
+
+      if (
+        payToken &&
+        payToken.address.toLowerCase() === token.address?.toLowerCase() &&
+        payToken.chainId.toLowerCase() ===
+          (token.chainId as string)?.toLowerCase()
+      ) {
+        handleClose();
         return;
       }
 
@@ -152,6 +173,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       handleClose,
       isPostQuoteWithdraw,
       onMusdPaymentTokenChange,
+      payToken,
       setPayToken,
     ],
   );
@@ -184,8 +206,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
     ],
   );
 
-  const showSections =
-    isMoneyAccountPayEnabled && !showOtherAssets && !isPostQuoteWithdraw;
+  const showSections = isMoneyAccountPayEnabled && !showOtherAssets;
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} isClosedOnOutsideClick={false}>
@@ -199,7 +220,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
               }
             : {})}
         >
-          {t('payWithModalTitle')}
+          {t(isPostQuoteWithdraw ? 'withdrawTo' : 'payWithModalTitle')}
         </ModalHeader>
         <ScrollContainer
           style={{
@@ -219,6 +240,10 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
               hideNfts
               tokenFilter={tokenFilter}
               onAssetSelect={handleTokenSelect}
+              tagRenderers={tagRenderers}
+              searchPlaceholder={
+                isPostQuoteWithdraw ? t('searchTokens') : undefined
+              }
             />
           )}
         </ScrollContainer>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -13,6 +13,8 @@ const mockNavigate = jest.fn();
 const mockRunCloseTransition = jest.fn((callback: () => void) => callback());
 const mockUseDiscoverSearch = jest.fn();
 const mockGetIsPerpsExperienceAvailable = jest.fn();
+const mockEnsureNetworkEnabled = jest.fn();
+const mockToastSuccess = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -25,6 +27,23 @@ jest.mock('../routes/global-menu-route-transition', () => ({
 
 jest.mock('../../hooks/discover-search/useDiscoverSearch', () => ({
   useDiscoverSearch: (options: unknown) => mockUseDiscoverSearch(options),
+}));
+
+jest.mock('../../hooks/useEnableFeaturedEvmNetwork', () => ({
+  useEnableFeaturedEvmNetwork: () => mockEnsureNetworkEnabled,
+}));
+
+jest.mock('../../components/ui/toast/toast', () => ({
+  toast: {
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+  },
+  ToastContent: ({
+    title,
+    dataTestId,
+  }: {
+    title: string;
+    dataTestId?: string;
+  }) => <div data-testid={dataTestId}>{title}</div>,
 }));
 
 const getDefaultDiscoverSearchResult = () => ({
@@ -114,6 +133,8 @@ describe('DiscoverSearchPage', () => {
     mockRunCloseTransition.mockClear();
     mockGetIsPerpsExperienceAvailable.mockReturnValue(false);
     mockUseDiscoverSearch.mockReturnValue(getDefaultDiscoverSearchResult());
+    mockEnsureNetworkEnabled.mockResolvedValue(null);
+    mockToastSuccess.mockClear();
   });
 
   const renderPage = ({
@@ -305,19 +326,43 @@ describe('DiscoverSearchPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
-  it('navigates to the CAIP asset route when an asset result is clicked', () => {
+  it('navigates to the CAIP asset route when an asset result is clicked', async () => {
     renderPage();
 
     fireEvent.click(
       screen.getByTestId('discover-crypto-preview-eip155:1/slip44:60'),
     );
 
-    expect(mockNavigate).toHaveBeenCalledWith(
-      '/asset/eip155:1/eip155%3A1%2Fslip44%3A60',
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/asset/eip155:1/eip155%3A1%2Fslip44%3A60',
+      ),
     );
   });
 
-  it('renders no-results search design and opens popular assets', () => {
+  it('shows a success toast when it enables a popular network', async () => {
+    mockEnsureNetworkEnabled.mockResolvedValue({ name: 'Base' });
+    renderPage();
+
+    fireEvent.click(
+      screen.getByTestId('discover-crypto-preview-eip155:1/slip44:60'),
+    );
+
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/asset/eip155:1/eip155%3A1%2Fslip44%3A60',
+      ),
+    );
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          dataTestId: 'discover-network-added-success-toast',
+        }),
+      }),
+    );
+  });
+
+  it('renders no-results search design and opens popular assets', async () => {
     const searchQuery = 'erwerwqer';
 
     mockUseDiscoverSearch.mockReturnValue(getEmptyDiscoverSearchResult());
@@ -350,8 +395,10 @@ describe('DiscoverSearchPage', () => {
 
     fireEvent.click(screen.getByTestId('discover-search-popular-asset-btc'));
 
-    expect(mockNavigate).toHaveBeenCalledWith(
-      '/asset/bip122:000000000019d6689c085ae165831e93/bip122%3A000000000019d6689c085ae165831e93%2Fslip44%3A0',
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/asset/bip122:000000000019d6689c085ae165831e93/bip122%3A000000000019d6689c085ae165831e93%2Fslip44%3A0',
+      ),
     );
   });
 

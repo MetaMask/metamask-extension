@@ -79,12 +79,14 @@ function buildState({
   transaction,
   selectedNetworkClientId,
   chainId,
+  remoteFeatureFlags,
 }: {
   balance?: number;
   currentConfirmation?: Partial<TransactionMeta>;
   transaction?: Partial<TransactionMeta>;
   selectedNetworkClientId?: string;
   chainId?: string;
+  remoteFeatureFlags?: Record<string, unknown>;
 } = {}) {
   const accountAddress = transaction?.txParams?.from as string;
 
@@ -102,6 +104,7 @@ function buildState({
     metamask: {
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
+      ...(remoteFeatureFlags ? { remoteFeatureFlags } : {}),
       accountsByChainId: {
         [chainId ?? '0x5']: {
           [toChecksumHexAddress(accountAddress)]: {
@@ -379,6 +382,43 @@ describe('useInsufficientBalanceAlerts', () => {
     });
 
     expect(alerts).toEqual(ALERT);
+  });
+
+  describe('post-quote withdraws', () => {
+    const WITHDRAW_TRANSACTION_MOCK = {
+      ...TRANSACTION_MOCK,
+      type: TransactionType.moneyAccountWithdraw,
+    } as Partial<TransactionMeta>;
+
+    const buildPostQuoteFlags = (enabled: boolean) => ({
+      /* eslint-disable @typescript-eslint/naming-convention */
+      confirmations_pay_post_quote: {
+        overrides: { moneyAccountWithdraw: { enabled } },
+      },
+      /* eslint-enable @typescript-eslint/naming-convention */
+    });
+
+    it('returns no alerts when post-quote is enabled for the type', () => {
+      const alerts = runHook({
+        balance: 7,
+        currentConfirmation: WITHDRAW_TRANSACTION_MOCK,
+        transaction: WITHDRAW_TRANSACTION_MOCK,
+        remoteFeatureFlags: buildPostQuoteFlags(true),
+      });
+
+      expect(alerts).toEqual([]);
+    });
+
+    it('returns alert when post-quote is disabled for the type, since the direct transfer spends native balance', () => {
+      const alerts = runHook({
+        balance: 7,
+        currentConfirmation: WITHDRAW_TRANSACTION_MOCK,
+        transaction: WITHDRAW_TRANSACTION_MOCK,
+        remoteFeatureFlags: buildPostQuoteFlags(false),
+      });
+
+      expect(alerts).toEqual(ALERT);
+    });
   });
 
   it('returns correct alert if selected chain is different from chain in confirmation', () => {

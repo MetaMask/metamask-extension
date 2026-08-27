@@ -35,6 +35,15 @@ jest.mock(
   }),
 );
 
+const mockScreenViewed = jest.fn();
+
+jest.mock('../../../../hooks/ramps/useRampsScreenViewed', () => ({
+  useRampsScreenViewed: (
+    location: string,
+    options?: { waitForRegion?: boolean },
+  ) => mockScreenViewed(location, options),
+}));
+
 jest.mock('../../../../hooks/ramps/useRampsOrders', () => ({
   useRampsOrders: () => ({
     getOrderById: () => ({
@@ -130,6 +139,14 @@ const buildItem = (overrides: Partial<RampOrderItem> = {}): RampOrderItem =>
   }) as RampOrderItem;
 
 describe('RampOrderDetails', () => {
+  it('tracks the Order Details screen view without waiting for a region', () => {
+    render(<RampOrderDetails item={buildItem()} />);
+
+    expect(mockScreenViewed).toHaveBeenCalledWith('Order Details', {
+      waitForRegion: false,
+    });
+  });
+
   it('renders the token hero, metadata, and fees sections', () => {
     const { getByTestId } = render(
       <RampOrderDetails

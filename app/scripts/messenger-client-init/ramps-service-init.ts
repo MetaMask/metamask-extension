@@ -19,7 +19,7 @@ export const RampsServiceInit: MessengerClientInitFunction<
   const messengerClient = new RampsService({
     messenger: controllerMessenger,
     environment: getRampsEnvironment(),
-    context: 'extension',
+    context: 'browser',
     fetch: globalThis.fetch.bind(globalThis),
   });
 
