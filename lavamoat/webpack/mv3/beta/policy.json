@@ -3792,36 +3792,6 @@
         "process": true
       }
     },
-    "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub": {
-      "globals": {
-        "__SENTRY_DEBUG__": true
-      },
-      "packages": {
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/utils": true,
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>tslib": true
-      }
-    },
-    "@ledgerhq/device-management-kit>@sentry/minimal": {
-      "packages": {
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub": true,
-        "@ledgerhq/device-management-kit>@sentry/minimal>tslib": true
-      }
-    },
-    "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/utils": {
-      "globals": {
-        "CustomEvent": true,
-        "Element": true,
-        "Event": true,
-        "__SENTRY_BROWSER_BUNDLE__": true,
-        "__SENTRY_DEBUG__": true,
-        "module": true,
-        "process": true
-      },
-      "packages": {
-        "process": true,
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/utils>tslib": true
-      }
-    },
     "@simplewebauthn/browser": {
       "globals": {
         "AbortController": true,
