@@ -36,7 +36,7 @@ export const MONEY_ACCOUNT_BALANCE_INFO_TEST_ID = 'money-account-balance-info';
 
 // The vault APY isn't wired up to a data source yet, so this is shown as a
 // fixed placeholder until a hook for it exists.
-const PLACEHOLDER_APY = '4%';
+const PLACEHOLDER_APY = '88%';
 
 /**
  * The Money Account balance, or nothing.
