@@ -688,7 +688,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             log.info(
               'MetaMask - storage write failed because the browser is shutting down',
             );
-            return [false, this.#normalizePersistError(err)];
+            return [false, err];
           }
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
@@ -846,7 +846,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             log.info(
               'MetaMask - storage write failed because the browser is shutting down',
             );
-            return [false, this.#normalizePersistError(err)];
+            return [false, err];
           }
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
