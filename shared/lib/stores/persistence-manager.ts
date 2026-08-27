@@ -106,6 +106,9 @@ function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
   });
 }
 
+export type PersistenceManagerResetOptions = {
+  initializeStore?: boolean;
+};
 /**
  * Checks whether IndexedDB mutations are blocked, as can happen for Firefox
  * extensions in private browsing mode.
@@ -976,15 +979,18 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * Resets the local store and the backup database. This method is used to
    * clear the state and metadata, effectively resetting the application to
    * its initial state.
+   *
+   * @param options - Reset behavior options.
+   * @param options.initializeStore - Whether the local store should initialize after reset.
    */
-  async reset() {
+  async reset({ initializeStore = true }: PersistenceManagerResetOptions = {}) {
     this.#supersedeWriteRetry();
     await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive' },
       async () => {
         await Promise.all([
-          this.#localStore.reset(),
+          this.#localStore.reset({ initialize: initializeStore }),
           await this.#backupDb?.reset(),
         ]);
         this.#backup = undefined;

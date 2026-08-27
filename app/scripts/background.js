@@ -2416,12 +2416,24 @@ initOrRestoreBackground().catch((error) => {
   log.error('initOrRestoreBackground failed', error);
 });
 
+/* istanbul ignore next: test-only E2E control path */
+async function resetFixtureStateForTest() {
+  await evacuate();
+  await persistenceManager.reset({ initializeStore: false });
+}
+
+/* istanbul ignore next: test-only E2E control path */
 if (process.env.IN_TEST) {
+  const { setFixtureStateResetHandler } =
+    // Load conditionally so this test-only code is excluded from production builds and policies.
+    // eslint-disable-next-line n/global-require
+    require('../../test/e2e/background-socket/socket-background-to-mocha');
+  setFixtureStateResetHandler(resetFixtureStateForTest);
   // listen for test messages from the background
-  // maintenance note: if you can't find any tests containing 'STOP_PERSISTENCE'
-  // you can remove this, and probably the evacuate function in app\scripts\lib\safe-reload.ts too.
   browser.runtime.onMessage.addListener(async (message, _sender) => {
     if (message.type === 'STOP_PERSISTENCE') {
+      // Maintenance note: if no tests contain 'STOP_PERSISTENCE',
+      // remove this message branch. Only remove `evacuate` if it is otherwise unused.
       await evacuate();
       return { status: 'PERSISTENCE_STOPPED' };
     }
