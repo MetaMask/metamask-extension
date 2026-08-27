@@ -1,28 +1,12 @@
 import { createSelector } from 'reselect';
-import {
-  isStrictHexString,
-  isValidHexAddress,
-  type Hex,
-} from '@metamask/utils';
+import { isObject } from '@metamask/utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
-
-/**
- * The Money Account vault contracts, parsed from the
- * `moneyAccountVaultConfig` remote feature flag.
- *
- * Every field is `Hex` because these values are handed to
- * `@metamask/money-account-utils`, which types them that way: `boringVault`
- * becomes the `spender` of an ERC-20 `approve`, and the other three are call
- * targets.
- */
-export type MoneyAccountVaultConfig = {
-  chainId: Hex;
-  boringVault: Hex;
-  tellerAddress: Hex;
-  accountantAddress: Hex;
-  lensAddress: Hex;
-};
+import {
+  isMoneyAccountEnabled,
+  isMoneyEarningSectionEnabled,
+} from '../../../shared/lib/money/feature-flags';
+import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
 
 /**
  * The APY controls from the `earnMoneyVaultApyControl` remote feature flag.
@@ -34,65 +18,7 @@ export type MoneyVaultApyRemoteConfig = {
   vaultApyOverride: number | undefined;
 };
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
-
-/**
- * Parses one raw vault-config field into an address.
- *
- * `isValidHexAddress` accepts an all-lowercase address or a valid ERC-55
- * checksum, which is what ethers accepts when it encodes the calldata. The
- * address is deliberately not normalised, so a checksummed address passes
- * through unchanged.
- *
- * @param value - The raw field value.
- * @returns The address, or `undefined` if it is missing or malformed.
- */
-const parseAddress = (value: unknown): Hex | undefined =>
-  isStrictHexString(value) && isValidHexAddress(value) ? value : undefined;
-
-/**
- * Parses the raw `moneyAccountVaultConfig` remote feature flag into a config
- * whose chain id and addresses are known-good `Hex`.
- *
- * Parsing happens once, here, rather than being asserted with `as Hex` at each
- * call site: a malformed flag yields `undefined`, which callers treat as "the
- * Money Account is unavailable", so the entry points stay hidden instead of
- * failing partway through a confirmation.
- *
- * @param raw - The raw remote feature flag value.
- * @returns The parsed vault config, or `undefined` if any field is missing or
- * malformed.
- */
-export const parseMoneyAccountVaultConfig = (
-  raw: unknown,
-): MoneyAccountVaultConfig | undefined => {
-  if (!isRecord(raw)) {
-    return undefined;
-  }
-
-  const { chainId } = raw;
-  if (!isStrictHexString(chainId)) {
-    return undefined;
-  }
-
-  const boringVault = parseAddress(raw.boringVault);
-  const tellerAddress = parseAddress(raw.tellerAddress);
-  const accountantAddress = parseAddress(raw.accountantAddress);
-  const lensAddress = parseAddress(raw.lensAddress);
-
-  if (!boringVault || !tellerAddress || !accountantAddress || !lensAddress) {
-    return undefined;
-  }
-
-  return {
-    chainId,
-    boringVault,
-    tellerAddress,
-    accountantAddress,
-    lensAddress,
-  };
-};
+export const FALLBACK_MONEY_DEPOSIT_MIN_BALANCE = 0.01;
 
 /**
  * Parses a raw flag value into a non-negative finite number.
@@ -113,6 +39,37 @@ const parseNonNegativeFinite = (raw: unknown): number | undefined => {
 };
 
 /**
+ * Selects whether the `moneyEnableMoneyAccount` flag is on.
+ *
+ * Deliberately the same parser the background's availability gate calls
+ * (`isMoneyAccountEnabled`) over the same `RemoteFeatureFlagController` state,
+ * read here through its Redux mirror. One flag, one version-gate
+ * interpretation, so the UI cannot disagree with the gate about whether the
+ * feature is on.
+ *
+ * On its own this is **not** enough to show anything: an enabled flag with no
+ * upgraded money account still shows nothing. Use `useMoneyAccountInfo`.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the Money Account feature flag is enabled.
+ */
+export const selectMoneyAccountFeatureEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyAccountEnabled,
+);
+
+/**
+ * Selects whether the realized Earnings section on Money Home is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the Earnings section is enabled.
+ */
+export const selectMoneyEarningSectionEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyEarningSectionEnabled,
+);
+
+/**
  * Selects the Money Account vault config, or `undefined` when the flag is
  * unserved or malformed.
  *
@@ -121,7 +78,7 @@ const parseNonNegativeFinite = (raw: unknown): number | undefined => {
  */
 export const selectMoneyAccountVaultConfig = createSelector(
   getRemoteFeatureFlags,
-  (flags) => parseMoneyAccountVaultConfig(flags?.moneyAccountVaultConfig),
+  getMoneyAccountVaultConfig,
 );
 
 /**
@@ -134,13 +91,26 @@ export const selectMoneyVaultApyRemoteConfig = createSelector(
   getRemoteFeatureFlags,
   (flags): MoneyVaultApyRemoteConfig => {
     const raw = flags?.earnMoneyVaultApyControl;
-    const control = isRecord(raw) ? raw : undefined;
+    const control = isObject(raw) ? raw : undefined;
 
     return {
       vaultApyFallback: parseNonNegativeFinite(control?.vaultApyFallback),
       vaultApyOverride: parseNonNegativeFinite(control?.vaultApyOverride),
     };
   },
+);
+
+/**
+ * Selects the minimum wallet-asset balance required for Money deposits.
+ *
+ * @param state - The MetaMask state object.
+ * @returns The minimum fiat balance, defaulting to one cent.
+ */
+export const selectMoneyDepositMinBalance = createSelector(
+  getRemoteFeatureFlags,
+  (flags): number =>
+    parseNonNegativeFinite(flags?.earnMoneyDepositMinAssetBalance) ??
+    FALLBACK_MONEY_DEPOSIT_MIN_BALANCE,
 );
 
 /**

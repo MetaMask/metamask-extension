@@ -38,23 +38,25 @@ export class PerpsOrderEntryPage {
 
   private readonly limitPriceInput = '[data-testid="limit-price-input"] input';
 
-  private readonly orderEntryPage = { testId: 'perps-order-entry-page' };
-
   private readonly orderSubmitError = { testId: 'perps-order-submit-error' };
 
   private readonly orderTypeLimitButton = { testId: 'order-type-limit' };
 
   private readonly orderTypeMarketButton = { testId: 'order-type-market' };
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-perps-order-entry',
+  };
+
   private readonly slPriceInput =
-    '[data-testid="perps-order-entry-page"] [data-testid="sl-price-input"]';
+    '[data-testid="parent-selector-perps-order-entry"] [data-testid="sl-price-input"]';
 
   private readonly slValidationError = { testId: 'sl-validation-error' };
 
   private readonly submitOrderButton = { testId: 'submit-order-button' };
 
   private readonly tpPriceInput =
-    '[data-testid="perps-order-entry-page"] [data-testid="tp-price-input"]';
+    '[data-testid="parent-selector-perps-order-entry"] [data-testid="tp-price-input"]';
 
   private readonly tpValidationError = { testId: 'tp-validation-error' };
 
@@ -70,7 +72,7 @@ export class PerpsOrderEntryPage {
    */
   async checkPageIsLoaded(options?: { timeout?: number }): Promise<void> {
     await this.driver.waitForMultipleSelectors(
-      [this.orderEntryPage, this.submitOrderButton],
+      [this.parentSelector, this.submitOrderButton],
       {
         timeout: options?.timeout ?? 20000,
       },
@@ -204,7 +206,7 @@ export class PerpsOrderEntryPage {
    * @param timeout - Max wait in ms (default 15_000).
    */
   async waitForPageClosed(timeout = 15000): Promise<void> {
-    await this.driver.assertElementNotPresent(this.orderEntryPage, { timeout });
+    await this.driver.assertElementNotPresent(this.parentSelector, { timeout });
   }
 
   /**

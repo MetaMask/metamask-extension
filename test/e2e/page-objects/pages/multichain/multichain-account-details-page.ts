@@ -70,6 +70,9 @@ class MultichainAccountDetailsPage {
 
   private readonly networksRow = { text: 'Networks' };
 
+  private readonly parentSelector =
+    '[data-testid="parent-selector-multichain-account-details-page"]';
+
   private readonly privateKeyRow = { text: 'Private key' };
 
   // QR Code and address display
@@ -146,6 +149,7 @@ class MultichainAccountDetailsPage {
    */
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check if multichain account details page is loaded');
+    await this.driver.waitForSelector(this.parentSelector);
     await this.driver.waitForSelector(this.accountNameHeader);
     await this.driver.waitForSelector(this.accountAvatar);
     await this.driver.waitForSelector(this.accountNameRow);

@@ -127,8 +127,6 @@ export const ConnectionListItem = ({ connection, onClick }) => {
                   {accountsToShow === 1
                     ? t('accountSmallCase')
                     : t('accountsSmallCase')}
-                  •&nbsp;
-                  {permittedChains.length} {t('networksSmallCase')}
                 </>
               )}
             </Text>
