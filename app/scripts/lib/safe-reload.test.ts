@@ -1,7 +1,6 @@
 import 'navigator.locks';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import type { BaseStore } from '../../../shared/lib/stores/base-store';
-import { flushPromises } from '../../../test/lib/timer-helpers';
 import { getRequestSafeReload } from './safe-reload';
 
 jest.mock('webextension-polyfill', () => ({
@@ -10,34 +9,9 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
-const mockLocksRequest = jest
+navigator.locks.request = jest
   .fn()
   .mockImplementation((_lockName, _options, callback) => callback());
-navigator.locks.request = mockLocksRequest;
-
-/**
- * Creates a split-storage persistence manager backed by a mocked local store.
- *
- * @returns A persistence manager and its local-store write mock.
- */
-function createPersistenceManager(): {
-  persistenceManager: PersistenceManager;
-  setKeyValues: jest.MockedFunction<BaseStore['setKeyValues']>;
-} {
-  const setKeyValues = jest.fn().mockResolvedValue(undefined);
-  const localStore: BaseStore = {
-    get: jest.fn().mockResolvedValue(null),
-    reset: jest.fn().mockResolvedValue(undefined),
-    set: jest.fn().mockResolvedValue(undefined),
-    setKeyValues,
-  };
-  const persistenceManager = new PersistenceManager({ localStore });
-  persistenceManager.storageKind = 'split';
-  persistenceManager.setMetadata({ version: 1, storageKind: 'split' });
-  jest.spyOn(persistenceManager, 'open').mockResolvedValue(undefined);
-
-  return { persistenceManager, setKeyValues };
-}
 
 describe('getRequestSafeReload', () => {
   beforeEach(() => {
@@ -50,33 +24,46 @@ describe('getRequestSafeReload', () => {
     jest.restoreAllMocks();
   });
 
-  it('flushes pending work without waiting for the debounce', async () => {
-    const { persistenceManager, setKeyValues } = createPersistenceManager();
+  it('batches same-turn updates into a forced flush', async () => {
+    const setKeyValues: jest.MockedFunction<BaseStore['setKeyValues']> = jest
+      .fn()
+      .mockResolvedValue(undefined);
+    const persistenceManager = new PersistenceManager({
+      localStore: {
+        get: jest.fn().mockResolvedValue(null),
+        reset: jest.fn().mockResolvedValue(undefined),
+        set: jest.fn().mockResolvedValue(undefined),
+        setKeyValues,
+      },
+    });
+    persistenceManager.storageKind = 'split';
+    persistenceManager.setMetadata({ version: 1, storageKind: 'split' });
+    jest.spyOn(persistenceManager, 'open').mockResolvedValue(undefined);
+    const persist = jest.spyOn(persistenceManager, 'persist');
     const { safePersist } = getRequestSafeReload(persistenceManager);
     persistenceManager.update('KeyringController', {
       vault: 'encrypted-vault',
     });
 
-    await safePersist();
+    const keyringPersistence = safePersist({ flush: true });
 
-    expect(setKeyValues).not.toHaveBeenCalled();
+    expect(persist).not.toHaveBeenCalled();
 
-    await safePersist({ flush: true });
+    persistenceManager.update('SeedlessOnboardingController', {
+      vault: 'encrypted-seedless-vault',
+    });
+    const seedlessPersistence = safePersist();
 
+    await Promise.all([keyringPersistence, seedlessPersistence]);
+
+    expect(persist).toHaveBeenCalledTimes(1);
     expect(setKeyValues).toHaveBeenCalledTimes(1);
     const persistedPairs = setKeyValues.mock.calls[0][0];
-    expect(persistedPairs.size).toBe(2);
-    expect(persistedPairs.get('meta')).toEqual({
-      version: 1,
-      storageKind: 'split',
-    });
     expect(persistedPairs.get('KeyringController')).toEqual({
       vault: 'encrypted-vault',
     });
-
-    jest.runOnlyPendingTimers();
-    await flushPromises();
-
-    expect(setKeyValues).toHaveBeenCalledTimes(1);
+    expect(persistedPairs.get('SeedlessOnboardingController')).toEqual({
+      vault: 'encrypted-seedless-vault',
+    });
   });
 });

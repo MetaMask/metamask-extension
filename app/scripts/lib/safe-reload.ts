@@ -21,8 +21,6 @@ const RELOAD_AFTER_EVACUATE_MS = 150;
  *
  * @param persistenceManager - The PersistenceManager instance to be used for
  * updates.
- * @returns Operations for queueing persistence and safely reloading the
- * extension.
  */
 export function getRequestSafeReload<Type extends PersistenceManager>(
   persistenceManager: Type,
@@ -70,6 +68,8 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
         isSplitStorage &&
         (stateOrOptions as SafePersistOptions | undefined)?.flush
       ) {
+        // Let synchronous state-change cascades join this persistence batch.
+        await Promise.resolve();
         await operationSafener.flush();
       }
 
@@ -82,9 +82,6 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
      * after a short delay. The delay lets popup/notification windows call
      * `window.close()` before reload so Chromium does not show normal tab
      * content inside that window (see GitHub issue #29151).
-     *
-     * @returns A promise that resolves after persistence is evacuated and the
-     * reload is scheduled.
      */
     requestSafeReload: async () => {
       await operationSafener.evacuate();

@@ -85,20 +85,24 @@ async function waitForRestart(driver: Driver): Promise<void> {
 }
 
 /**
- * Reloads the extension runtime and waits for restart.
+ * Reloads the extension, and waits for restart.
  *
  * @param driver - WebDriver instance.
- * @param beforeReload - Optional work to complete immediately before reload.
+ * @param options - Reload options.
+ * @param options.evacuatePersistence - Whether to flush pending persistence
+ * before reloading.
  */
-async function reloadExtensionRuntime(
+export const reloadExtension = async (
   driver: Driver,
-  beforeReload?: () => Promise<unknown>,
-): Promise<void> {
+  { evacuatePersistence = true }: { evacuatePersistence?: boolean } = {},
+): Promise<void> => {
   const extensionWindow = await driver.driver.getWindowHandle();
   const blankWindow = await driver.openNewPage('about:blank');
 
   await driver.switchToWindow(extensionWindow);
-  await beforeReload?.();
+  if (evacuatePersistence) {
+    await pausePersistence(driver);
+  }
   await driver.executeScript(
     `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
   );
@@ -109,27 +113,7 @@ async function reloadExtensionRuntime(
   await driver.openNewPage('about:blank');
 
   await waitForRestart(driver);
-}
-
-/**
- * Reloads the extension, and waits for restart.
- *
- * @param driver - WebDriver instance.
- */
-export const reloadExtension = async (driver: Driver): Promise<void> =>
-  reloadExtensionRuntime(driver, () => pausePersistence(driver));
-
-/**
- * Reloads the extension without evacuating pending persistence first.
- *
- * This deliberately bypasses `STOP_PERSISTENCE`, so debounced work is not
- * flushed merely because the test is restarting the extension.
- *
- * @param driver - WebDriver instance.
- */
-export const reloadExtensionWithoutPersistenceEvacuation = async (
-  driver: Driver,
-): Promise<void> => reloadExtensionRuntime(driver);
+};
 
 /**
  * Seeds the split-state migration flags directly into extension storage.

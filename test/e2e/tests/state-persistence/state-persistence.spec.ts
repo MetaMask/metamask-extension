@@ -2,10 +2,7 @@ import { Mockttp } from 'mockttp';
 import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { assertAccountVisible } from '../../page-objects/flows/account-list.flow';
-import {
-  login,
-  reloadAndUnlock,
-} from '../../page-objects/flows/login.flow';
+import { login, reloadAndUnlock } from '../../page-objects/flows/login.flow';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -16,7 +13,7 @@ import {
   expectDataStateStorage,
   expectSplitStateStorage,
   pausePersistence,
-  reloadExtensionWithoutPersistenceEvacuation,
+  reloadExtension,
   setLocalStorageFlags,
 } from './helpers';
 
@@ -109,7 +106,7 @@ describe('State Persistence', function () {
         await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList(accountName);
 
-        await reloadExtensionWithoutPersistenceEvacuation(driver);
+        await reloadExtension(driver, { evacuatePersistence: false });
         await login(driver, {
           validateBalance: false,
           waitForNonEvmAccounts: false,
