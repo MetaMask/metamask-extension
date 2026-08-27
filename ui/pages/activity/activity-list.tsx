@@ -61,7 +61,7 @@ export function ActivityList({
     networks: deferredNetworks ?? [],
   };
 
-  const { data, isInitialLoading, fetchNextVisiblePage } =
+  const { data, isLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
 
   const localItems = useLocalTransactions(filters);
@@ -85,7 +85,7 @@ export function ActivityList({
 
   useActivityScreenViewed({
     filter,
-    isSettled: networks !== null && !isInitialLoading,
+    isSettled: networks !== null && !isLoading,
     isEmpty: groupedItems.length === 0,
     pendingLength: [...localItems, ...nonEvmItems, ...rampsItems].filter(
       (item) => item.status === 'pending',
@@ -182,7 +182,7 @@ export function ActivityList({
         keyExtractor={getItemKey}
         itemRef={itemRef}
         listEmptyComponent={
-          isInitialLoading ? (
+          isLoading ? (
             <ActivityListSkeleton />
           ) : (
             <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />

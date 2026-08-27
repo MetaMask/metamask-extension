@@ -108,7 +108,7 @@ describe('ActivityList', () => {
   it('shows the activity list skeleton while loading', () => {
     mockUseTransactionsQuery.mockReturnValue({
       data: undefined,
-      isInitialLoading: true,
+      isLoading: true,
       fetchNextVisiblePage: jest.fn(),
     });
 
@@ -119,7 +119,7 @@ describe('ActivityList', () => {
   it('does not show the activity list skeleton when not loading', () => {
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },
-      isInitialLoading: false,
+      isLoading: false,
       fetchNextVisiblePage: jest.fn(),
     });
 
@@ -132,7 +132,7 @@ describe('ActivityList', () => {
   it('passes entry point to useActivityScreenViewed', () => {
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },
-      isInitialLoading: false,
+      isLoading: false,
       fetchNextVisiblePage: jest.fn(),
     });
 
