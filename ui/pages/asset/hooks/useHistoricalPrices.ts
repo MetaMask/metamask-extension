@@ -201,7 +201,7 @@ export const useHistoricalPrices = ({
   const {
     data: prices = [],
     isFetching,
-    isInitialLoading,
+    isLoading,
     isFetchedAfterMount,
     isPlaceholderData,
   } = useQuery({
@@ -237,7 +237,7 @@ export const useHistoricalPrices = ({
   const metadata = useMemo(() => deriveMetadata(prices), [prices]);
 
   return {
-    loading: isInitialLoading,
+    loading: isLoading,
     isFetching,
     isFetchedAfterMount,
     isPlaceholderData,
