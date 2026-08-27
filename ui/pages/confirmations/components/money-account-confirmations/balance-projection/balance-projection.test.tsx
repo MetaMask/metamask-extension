@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useMoneyAccountBalance } from '../../../../../hooks/money/useMoneyAccountBalance';
 import type { UseMoneyAccountBalanceResult } from '../../../../../hooks/money/useMoneyAccountBalance';
 import { BalanceProjection } from './balance-projection';
@@ -52,7 +53,9 @@ describe('BalanceProjection', () => {
     renderProjection('1000');
 
     expect(screen.getByTestId('balance-projection')).toBeInTheDocument();
-    expect(screen.getByText('Projected 1-year balance:')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyAccountProjectedBalance.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('$1,040.00')).toBeInTheDocument();
   });
 
