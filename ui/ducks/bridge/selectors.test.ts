@@ -83,7 +83,8 @@ import {
   getBridgeUnavailableQuoteReason,
   resolveMinimumBalanceToKeep,
   getChainValueOrderOverride,
-  getDestTrustlineAlertContext,
+  getIsDestSameAsActiveAccount,
+  getDestAccountDisplayName,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -3473,7 +3474,7 @@ describe('Bridge selectors', () => {
     });
   });
 
-  describe('getDestTrustlineAlertContext', () => {
+  describe('getIsDestSameAsActiveAccount', () => {
     const STELLAR_USDC_ASSET_ID =
       'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 
@@ -3484,20 +3485,17 @@ describe('Bridge selectors', () => {
       name: 'USDC',
     });
 
-    it('defaults to same-as-active when destWalletAddress is missing', () => {
+    it('defaults to true when destWalletAddress is missing', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: stellarUsdcToken,
         },
       });
 
-      expect(getDestTrustlineAlertContext(state as never)).toStrictEqual({
-        isDestSameAsActiveAccount: true,
-        destAccountDisplayName: null,
-      });
+      expect(getIsDestSameAsActiveAccount(state as never)).toBe(true);
     });
 
-    it('marks dest as different when destWalletAddress is not the active dest-chain account', () => {
+    it('returns false when destWalletAddress is not the active dest-chain account', () => {
       const OTHER_STELLAR_ACCOUNT = {
         ...MOCK_ACCOUNT_STELLAR_PUBNET,
         id: 'other-stellar-account-id',
@@ -3528,9 +3526,8 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getDestTrustlineAlertContext(state as never);
-      expect(result.isDestSameAsActiveAccount).toBe(false);
-      expect(result.destAccountDisplayName).toBe('Other Stellar');
+      expect(getIsDestSameAsActiveAccount(state as never)).toBe(false);
+      expect(getDestAccountDisplayName(state as never)).toBe('Other Stellar');
     });
   });
 

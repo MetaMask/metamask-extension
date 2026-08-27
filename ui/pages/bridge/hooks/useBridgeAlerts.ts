@@ -9,10 +9,11 @@ import {
   type BridgeAppState,
   getActiveQuotePriceData,
   getBridgeUnavailableQuoteReason,
-  getDestTrustlineAlertContext,
+  getDestAccountDisplayName,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
+  getIsDestSameAsActiveAccount,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -65,10 +66,8 @@ export const useBridgeAlerts = () => {
   const toToken = useSelector(getToToken);
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
   const toTokenAssetId = toToken?.assetId;
-  const { isDestSameAsActiveAccount, destAccountDisplayName } = useSelector(
-    getDestTrustlineAlertContext,
-    shallowEqual,
-  );
+  const isDestSameAsActiveAccount = useSelector(getIsDestSameAsActiveAccount);
+  const destAccountDisplayName = useSelector(getDestAccountDisplayName);
 
   const {
     assetIsMalicious,

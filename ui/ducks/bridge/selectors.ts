@@ -1202,22 +1202,17 @@ export const computeQuoteValidationErrors = (
 };
 
 /**
- * Context for the Stellar trustline banner: whether the quote destination
- * matches the active account for the destination chain, plus a display name
- * for the different-account copy.
- * Defaults to "same as active" when dest is unknown so the Activate CTA path
- * remains available before quote params settle.
+ * Whether the quote destination wallet matches the active account for the
+ * destination chain. Defaults to `true` when dest is unknown so Activate-CTA
+ * UI remains available before quote params settle.
  * @param state
  */
-export const getDestTrustlineAlertContext = createDeepEqualSelector(
+export const getIsDestSameAsActiveAccount = createDeepEqualSelector(
   [getQuoteRequest, getToToken, (state: BridgeAppState) => state],
   (quoteRequest, toToken, state) => {
     const destWalletAddress = quoteRequest?.destWalletAddress;
     if (!destWalletAddress || !toToken?.chainId) {
-      return {
-        isDestSameAsActiveAccount: true,
-        destAccountDisplayName: null as string | null,
-      };
+      return true;
     }
 
     const destAccount = getInternalAccountByAddress(state, destWalletAddress);
@@ -1225,16 +1220,30 @@ export const getDestTrustlineAlertContext = createDeepEqualSelector(
       state,
       toToken.chainId,
     );
-    const destAccountDisplayName =
+
+    return Boolean(destAccount?.id) && destAccount.id === activeAccount?.id;
+  },
+);
+
+/**
+ * Display name for the quote destination account (account group name, then
+ * account metadata name). Used when messaging about a non-active dest account.
+ * @param state
+ */
+export const getDestAccountDisplayName = createDeepEqualSelector(
+  [getQuoteRequest, (state: BridgeAppState) => state],
+  (quoteRequest, state) => {
+    const destWalletAddress = quoteRequest?.destWalletAddress;
+    if (!destWalletAddress) {
+      return null as string | null;
+    }
+
+    const destAccount = getInternalAccountByAddress(state, destWalletAddress);
+    return (
       getAccountGroupNameByInternalAccount(state, destAccount ?? null) ??
       destAccount?.metadata?.name ??
-      null;
-
-    return {
-      isDestSameAsActiveAccount:
-        Boolean(destAccount?.id) && destAccount.id === activeAccount?.id,
-      destAccountDisplayName,
-    };
+      null
+    );
   },
 );
 

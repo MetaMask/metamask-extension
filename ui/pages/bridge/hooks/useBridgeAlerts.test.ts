@@ -12,10 +12,11 @@ import {
   getActiveQuotePriceData,
   getBridgeQuotes,
   getBridgeUnavailableQuoteReason,
-  getDestTrustlineAlertContext,
+  getDestAccountDisplayName,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
+  getIsDestSameAsActiveAccount,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -47,7 +48,8 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getActiveQuoteInsufficientNativeReserveError: jest.fn(),
   getBridgeQuotes: jest.fn(),
   getFromChain: jest.fn(),
-  getDestTrustlineAlertContext: jest.fn(),
+  getIsDestSameAsActiveAccount: jest.fn(),
+  getDestAccountDisplayName: jest.fn(),
 }));
 
 const mockNavigate = jest.fn();
@@ -160,10 +162,8 @@ describe('useBridgeAlerts', () => {
     jest.mocked(isQuoteExpiredOrInvalid).mockReturnValue(false);
 
     jest.mocked(getValidationErrors).mockReturnValue(DEFAULT_VALIDATION_ERRORS);
-    jest.mocked(getDestTrustlineAlertContext).mockReturnValue({
-      isDestSameAsActiveAccount: true,
-      destAccountDisplayName: null,
-    });
+    jest.mocked(getIsDestSameAsActiveAccount).mockReturnValue(true);
+    jest.mocked(getDestAccountDisplayName).mockReturnValue(null);
     jest
       .mocked(getBridgeUnavailableQuoteReason)
       .mockReturnValue('noOptionsAvailableMessage');
@@ -807,10 +807,8 @@ describe('useBridgeAlerts', () => {
     });
 
     it('uses different-account copy and omits the Activate CTA when dest differs from the active account', () => {
-      jest.mocked(getDestTrustlineAlertContext).mockReturnValue({
-        isDestSameAsActiveAccount: false,
-        destAccountDisplayName: 'Account 2',
-      });
+      jest.mocked(getIsDestSameAsActiveAccount).mockReturnValue(false);
+      jest.mocked(getDestAccountDisplayName).mockReturnValue('Account 2');
 
       const { result } = renderHook();
 
