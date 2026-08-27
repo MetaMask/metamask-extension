@@ -12,21 +12,12 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { SecurityTrustInlineBadgeConfig } from '#shared/types/tokens';
 
 export type SecurityTrustTranslate = (
   key: string,
   substitutions?: string[],
 ) => string;
-
-export type SecurityTrustInlineBadgeConfig = {
-  icon: IconName;
-  iconColor: IconColor;
-  alertSeverity?: 'success' | 'warning' | 'danger';
-  label: string | null;
-  accessibleLabel?: string;
-  backgroundColor?: 'warning-muted' | 'error-muted';
-  textColor?: TextColor;
-};
 
 export const getSecurityTrustBadgeConfig = (
   resultType: string | undefined,

@@ -1,17 +1,6 @@
 import { IconColor, IconName } from '@metamask/design-system-react';
-import type { SecurityTrustInlineBadgeConfig } from '#ui/components/app/security-trust';
+import type { SecurityTrustInlineBadgeConfig } from '#shared/types/tokens';
 
-/**
- * Local, string-literal reimplementation of getSecurityTrustBadgeConfig
- * (ui/components/app/security-trust/security-trust-inline-badge.tsx). The
- * cashtag widget has no i18n context, so it can't call the shared function's
- * `t()` argument.
- *
- * Unlike the shared version, every result type renders icon-only here: the
- * ticker-list "Name" column is a fixed narrow width, and a labelled pill
- * (e.g. "Risky") doesn't shrink, so it was squeezing the ticker text out
- * entirely instead of sharing the row with it.
- */
 export function getSecurityInlineBadge(
   resultType: string | null | undefined,
 ): SecurityTrustInlineBadgeConfig | null {
@@ -49,11 +38,6 @@ export type SecurityStatusBadge = {
   label: string;
 };
 
-/**
- * Local reimplementation of getResultTypeConfig's 'Verified' case
- * (ui/pages/asset/utils/security-utils.ts), for the token-detail pill. Only
- * 'Verified' has a detail-page treatment today.
- */
 export function getSecurityStatusBadge(
   resultType: string | null | undefined,
 ): SecurityStatusBadge | null {

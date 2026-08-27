@@ -1,7 +1,7 @@
 import { IconColor, IconName, TextColor } from '@metamask/design-system-react';
+import type { SecurityTrustInlineBadgeConfig } from '#shared/types/tokens';
 import {
   getSecurityTrustBadgeConfig,
-  type SecurityTrustInlineBadgeConfig,
   type SecurityTrustTranslate,
 } from '../../../components/app/security-trust';
 import type {

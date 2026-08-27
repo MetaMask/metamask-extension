@@ -7,8 +7,6 @@ import {
   IconName,
   IconSize,
   Label,
-  TextButton,
-  TextButtonSize,
 } from '@metamask/design-system-react';
 import browser from 'webextension-polyfill';
 import {
