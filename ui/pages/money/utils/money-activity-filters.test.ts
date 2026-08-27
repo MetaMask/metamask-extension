@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import {
   type TransactionMeta,
   TransactionType,
@@ -20,7 +21,7 @@ function makeTx(extra: Record<string, unknown>): TransactionMeta {
 }
 
 describe('isMoneyActivityDeposit', () => {
-  it.each([
+  it.each<TransactionType>([
     TransactionType.incoming,
     TransactionType.moneyAccountDeposit,
     TransactionType.tokenMethodTransfer,
@@ -50,12 +51,12 @@ describe('isMoneyActivityDeposit', () => {
 });
 
 describe('isMoneyActivityTransfer', () => {
-  it.each([TransactionType.moneyAccountWithdraw, TransactionType.simpleSend])(
-    'returns true for %s',
-    (type) => {
-      expect(isMoneyActivityTransfer(makeTx({ type }))).toBe(true);
-    },
-  );
+  it.each<TransactionType>([
+    TransactionType.moneyAccountWithdraw,
+    TransactionType.simpleSend,
+  ])('returns true for %s', (type) => {
+    expect(isMoneyActivityTransfer(makeTx({ type }))).toBe(true);
+  });
 
   it('returns true for a batch with a nested moneyAccountWithdraw', () => {
     expect(
