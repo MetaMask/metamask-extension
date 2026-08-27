@@ -279,7 +279,9 @@ describe('PerpsView', () => {
     it('renders the perps tab view', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-tab'),
+      ).toBeInTheDocument();
     });
 
     it('renders the balance dropdown', () => {
@@ -565,7 +567,7 @@ describe('PerpsView', () => {
       expect(ordersSection).toBeInTheDocument();
 
       // Positions should come before orders in the DOM
-      const view = screen.getByTestId('perps-view');
+      const view = screen.getByTestId('parent-selector-perps-tab');
       const children = view.querySelectorAll('[data-testid]');
       const childTestIds = Array.from(children).map((child) =>
         child.getAttribute('data-testid'),
@@ -949,7 +951,9 @@ describe('PerpsView', () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-tab'),
+      ).toBeInTheDocument();
     });
   });
 

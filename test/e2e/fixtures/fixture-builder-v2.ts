@@ -27,6 +27,7 @@ import type { SelectedNetworkControllerState } from '@metamask/selected-network-
 import type {
   PermissionConstraint,
   PermissionControllerState,
+  SubjectMetadataControllerState,
 } from '@metamask/permission-controller';
 import type { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import {
@@ -392,6 +393,16 @@ class FixtureBuilderV2 {
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
     merge(this.fixture.data.PermissionController, data);
+    return this;
+  }
+
+  withSubjectMetadataController(
+    data: Partial<SubjectMetadataControllerState>,
+  ): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>).SubjectMetadataController,
+      data,
+    );
     return this;
   }
 
@@ -971,6 +982,60 @@ class FixtureBuilderV2 {
       },
       networksMetadata: {
         [seiClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    });
+  }
+
+  /**
+   * Injects and selects a custom EVM network that is absent from the default
+   * fixture, pointing its RPC endpoint at the local Anvil node on port 8545.
+   *
+   * Chains that ship in the default fixture should use
+   * {@link withNetworkRpcUrlOnLocalhost} instead; this method throws nothing
+   * when the chain is missing — it injects the config. Prefer
+   * `prepareCustomNetwork` from `test/e2e/helpers/custom-network-harness.ts`
+   * for custom-network E2E specs so enablement, native asset ids, and Token/Price
+   * mocks stay behind one interface.
+   *
+   * @param config - Custom network configuration.
+   * @param config.chainId - Hex chain id (e.g. `0x6f0` for Injective).
+   * @param config.clientId - Network client id used as the rpc endpoint key.
+   * @param config.name - Display name shown in the network picker.
+   * @param config.nativeCurrency - Native currency ticker (e.g. `INJ`).
+   * @param config.blockExplorerUrl - Block explorer URL for the chain.
+   * @returns The builder for further chaining.
+   */
+  withNetworkControllerOnCustomNetwork(config: {
+    chainId: Hex;
+    clientId: string;
+    name: string;
+    nativeCurrency: string;
+    blockExplorerUrl: string;
+  }): this {
+    return this.withNetworkController({
+      selectedNetworkClientId: config.clientId,
+      networkConfigurationsByChainId: {
+        [config.chainId]: {
+          blockExplorerUrls: [config.blockExplorerUrl],
+          chainId: config.chainId,
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: config.name,
+          nativeCurrency: config.nativeCurrency,
+          rpcEndpoints: [
+            {
+              networkClientId: config.clientId,
+              type: RpcEndpointType.Custom,
+              url: 'http://localhost:8545',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [config.clientId]: {
           EIPS: {},
           status: NetworkStatus.Available,
         },

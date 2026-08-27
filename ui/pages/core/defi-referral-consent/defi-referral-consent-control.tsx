@@ -16,18 +16,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBoolean } from '../../../hooks/useBoolean';
 import { DefiReferralConsentProps } from './defi-referral-consent.types';
-
-const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
-  partnerId,
-  partnerName,
-}) => {
-  return (
-    <img
-      src={`./images/${partnerId}-referral.png`}
-      alt={`${partnerName} referral`}
-    />
-  );
-};
+import { PartnerImage } from './partner-image';
 
 export const DefiReferralConsentControl: React.FC<DefiReferralConsentProps> = ({
   onActionComplete,
@@ -53,6 +42,7 @@ export const DefiReferralConsentControl: React.FC<DefiReferralConsentProps> = ({
   t('hyperliquidReferralSubtitle');
   t('gmxReferralSubtitle');
   t('asterdexReferralSubtitle');
+  t('variationalReferralSubtitle');
 
   return (
     <Box

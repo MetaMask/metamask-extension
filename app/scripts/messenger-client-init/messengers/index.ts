@@ -33,10 +33,13 @@ import {
 } from './core-backend';
 import {
   getMultichainBalancesControllerMessenger,
+  getMultichainBalancesControllerInitMessenger,
   getMultichainTransactionsControllerMessenger,
   getMultichainAssetsControllerMessenger,
+  getMultichainAssetsControllerInitMessenger,
   getMultichainNetworkControllerMessenger,
   getMultichainAssetsRatesControllerMessenger,
+  getMultichainAssetsRatesControllerInitMessenger,
 } from './multichain';
 import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
 import {
@@ -84,6 +87,7 @@ import {
   getSmartTransactionsControllerMessenger,
 } from './smart-transactions-controller-messenger';
 import { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
+import { getNetworkConnectionBannerControllerMessenger } from './network-connection-banner';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -190,6 +194,10 @@ import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger
 import { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 import { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 import { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
+import {
+  getMoneyAccountControllerInitMessenger,
+  getMoneyAccountControllerMessenger,
+} from './money-account-controller-messenger';
 
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
 export {
@@ -260,6 +268,10 @@ export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger
 export { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 export { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 export { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
+export {
+  getMoneyAccountControllerInitMessenger,
+  getMoneyAccountControllerMessenger,
+} from './money-account-controller-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
 export type { ComplianceServiceMessenger } from './compliance-service-messenger';
@@ -357,6 +369,10 @@ export const MESSENGER_FACTORIES = {
   },
   BridgeStatusController: {
     getMessenger: getBridgeStatusControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NetworkConnectionBannerController: {
+    getMessenger: getNetworkConnectionBannerControllerMessenger,
     getInitMessenger: noop,
   },
   ClientController: {
@@ -467,17 +483,21 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getMoneyAccountBalanceServiceMessenger,
     getInitMessenger: noop,
   },
+  MoneyAccountController: {
+    getMessenger: getMoneyAccountControllerMessenger,
+    getInitMessenger: getMoneyAccountControllerInitMessenger,
+  },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainAssetsControllerInitMessenger,
   },
   MultichainAssetsRatesController: {
     getMessenger: getMultichainAssetsRatesControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainAssetsRatesControllerInitMessenger,
   },
   MultichainBalancesController: {
     getMessenger: getMultichainBalancesControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainBalancesControllerInitMessenger,
   },
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,

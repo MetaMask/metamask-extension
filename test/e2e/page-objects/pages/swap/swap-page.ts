@@ -11,6 +11,7 @@ export type SwapOptions = {
 };
 
 export type SwapReviewOptions = {
+  exchangeRate?: string;
   swapFrom: string;
   swapTo: string;
   swapToAmount: string;
@@ -63,6 +64,10 @@ class SwapPage {
 
   private readonly bridgeDestinationButton =
     '[data-testid="bridge-destination-button"]';
+
+  private readonly bridgeQuotePage = {
+    testId: 'parent-selector-bridge-quote',
+  };
 
   private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
 
@@ -185,6 +190,7 @@ class SwapPage {
       await this.driver.waitForMultipleSelectors([
         this.reviewFromAmount,
         this.bridgeDestinationButton,
+        this.bridgeQuotePage,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for Swap page to be loaded', e);
@@ -347,7 +353,9 @@ class SwapPage {
     const toAmountText = await toAmount.getAttribute('value');
     assert.equal(toAmountText, options.swapToAmount);
     await this.driver.waitForSelector({
-      text: `1 ${options.swapFrom} = ${options.swapToAmount} ${options.swapTo}`,
+      text: `1 ${options.swapFrom} = ${
+        options.exchangeRate ?? options.swapToAmount
+      } ${options.swapTo}`,
       tag: 'p',
     });
     await this.driver.waitForSelector(this.rateMessage);

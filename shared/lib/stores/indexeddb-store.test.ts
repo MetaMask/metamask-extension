@@ -114,6 +114,28 @@ describe('IndexedDBStore', () => {
     });
   });
 
+  describe('getKeys', () => {
+    it('returns keys matching a prefix', async () => {
+      await db.open(dbName, dbVersion);
+      await db.set({
+        'prefix:key1': 'value1',
+        'prefix:key2': 'value2',
+        other: 'value3',
+      });
+
+      expect(await db.getKeys('prefix:')).toStrictEqual([
+        'prefix:key1',
+        'prefix:key2',
+      ]);
+    });
+
+    it('throws when database is not open', async () => {
+      await expect(db.getKeys('prefix:')).rejects.toThrow(
+        'Database is not open',
+      );
+    });
+  });
+
   describe('remove', () => {
     it('removes multiple keys successfully', async () => {
       await db.open(dbName, dbVersion);

@@ -55,7 +55,6 @@
     "lastVisitedRoute": null,
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
-    "networkConnectionBanner": "object",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDropdownState": {},
@@ -133,13 +132,7 @@
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
-    "currencyRates": {
-      "ETH": {
-        "conversionDate": "object",
-        "conversionRate": 1700,
-        "usdConversionRate": null
-      }
-    },
+    "currencyRates": {},
     "currentCurrency": "usd"
   },
   "DeFiPositionsController": "object",
@@ -182,6 +175,9 @@
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
   },
+  "MoneyAccountController": {
+    "moneyAccounts": "object"
+  },
   "MultichainAssetsController": {
     "accountsAssets": "object",
     "allIgnoredAssets": "object",
@@ -203,6 +199,7 @@
   },
   "MultichainTransactionsController": "object",
   "NameController": { "nameSources": "object", "names": "object" },
+  "NetworkConnectionBannerController": "object",
   "NetworkController": {
     "networkConfigurationsByChainId": "object",
     "networksMetadata": "object",

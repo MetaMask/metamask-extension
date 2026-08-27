@@ -33,7 +33,7 @@ class ContactsSettings {
     '[data-testid="contact-list-item-label"]';
 
   private readonly contactsPage = {
-    testId: 'contacts-page',
+    testId: 'parent-selector-contacts-page',
   };
 
   private readonly createContactAddressInput = '#contact-address';

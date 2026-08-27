@@ -102,13 +102,7 @@
       "version": null
     },
     "CurrencyController": {
-      "currencyRates": {
-        "ETH": {
-          "conversionDate": "object",
-          "conversionRate": 1700,
-          "usdConversionRate": null
-        }
-      },
+      "currencyRates": {},
       "currentCurrency": "usd"
     },
     "DeFiPositionsControllerV2": "object",
@@ -137,6 +131,7 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
+    "MoneyAccountController": { "moneyAccounts": "object" },
     "MultichainAssetsController": {
       "accountsAssets": "object",
       "allIgnoredAssets": "object",
@@ -369,6 +364,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 222
+    "version": 223
   }
 }
