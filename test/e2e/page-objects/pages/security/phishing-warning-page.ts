@@ -1,5 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * Phishing warning interstitial served when a blocked site is detected.
