@@ -1,4 +1,9 @@
-import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
+import {
+  useCallback,
+  useMemo,
+  useState,
+  type ChangeEvent,
+} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { CaipChainId } from '@metamask/utils';
@@ -97,11 +102,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
 
   const intentAssetId = (location.state as BuildQuoteLocationState | null)
     ?.assetId;
-  const tokenStateIsSettled = isTokenStateSettled(
-    intentAssetId,
-    selectedToken?.assetId,
-  );
-
   const { amount, amountAsNumber, debouncedAmount, handleAmountChange } =
     useBuildQuoteAmount(userRegion?.country?.defaultAmount);
 

@@ -405,10 +405,16 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('matches snapshot redirecting when settled token mismatches intent after load', () => {
+  it('renders the current token when it changes after the initial intent settles', () => {
     mockLocationState = {
       assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
     };
+    const { rerender, getByText } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
     useRampsController.mockReturnValue(
       mockControllerState({
         selectedToken: {
@@ -421,13 +427,9 @@ describe('RampsBuildQuoteScreen', () => {
       }),
     );
 
-    const { container } = renderWithProvider(
-      <RampsBuildQuoteScreen />,
-      createStore(),
-      '/ramps/build-quote',
-    );
+    rerender(<RampsBuildQuoteScreen />);
 
-    expect(container).toMatchSnapshot();
+    expect(getByText('Buy ETH')).toBeInTheDocument();
   });
 
   it('does not fire screen-viewed on the redirect path', () => {
