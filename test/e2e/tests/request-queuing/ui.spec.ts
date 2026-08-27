@@ -22,7 +22,7 @@ import { Anvil } from '../../seeder/anvil';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import {
   openDappAndSwitchChain,
   openPopupWithActiveTabOrigin,
