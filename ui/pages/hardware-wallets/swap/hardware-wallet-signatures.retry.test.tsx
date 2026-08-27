@@ -205,7 +205,7 @@ describe('HardwareWalletSignatures', () => {
       ).toBeDefined();
     });
 
-    it('shows "Transaction failed" for other connection errors', () => {
+    it('shows "Reconnect your device and try again" when the connection times out', () => {
       mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: {
@@ -218,13 +218,40 @@ describe('HardwareWalletSignatures', () => {
         },
       });
 
-      const { getAllByText, getByRole } = renderWithLedgerAccount();
+      const { getByText, getByRole } = renderWithLedgerAccount();
 
       expect(
-        getAllByText(messages.transactionFailed.message).length,
-      ).toBeGreaterThan(0);
+        getByText(messages.hardwareDeviceDisconnected.message),
+      ).toBeDefined();
       expect(
-        getByRole('button', { name: messages.errorPageTryAgain.message }),
+        getByRole('button', {
+          name: messages.hardwareWalletErrorReconnectButton.message,
+        }),
+      ).toBeDefined();
+    });
+
+    it('shows "Reconnect your device and try again" when the device is locked', () => {
+      mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: {
+          status: ConnectionStatus.ErrorState,
+          error: createHardwareWalletError(
+            ErrorCode.AuthenticationDeviceLocked,
+            HardwareWalletType.Ledger,
+            'Device locked',
+          ),
+        },
+      });
+
+      const { getByText, getByRole } = renderWithLedgerAccount();
+
+      expect(
+        getByText(messages.hardwareDeviceDisconnected.message),
+      ).toBeDefined();
+      expect(
+        getByRole('button', {
+          name: messages.hardwareWalletErrorReconnectButton.message,
+        }),
       ).toBeDefined();
     });
 

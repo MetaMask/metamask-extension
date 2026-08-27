@@ -2,12 +2,22 @@ import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { TextColor } from '@metamask/design-system-react';
 import { providerErrors } from '@metamask/rpc-errors';
 import { it } from '@jest/globals';
-import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
+import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
+import {
+  HardwareWalletSignatureEvent,
+  HardwareWalletSignatureStatus,
+} from './hardware-wallet-signatures-state-machine';
 import { SignatureStepStatus } from './types';
 import {
   cleanupPendingApproval,
   getAllStepStatuses,
   getHardwareWalletSignatureViewModel,
+  getHardwareWalletSignatureErrorEvent,
   getQrHardwareSigningPageTitle,
   getQrScanButtonLabelKey,
   getStepDescriptions,
@@ -1150,6 +1160,92 @@ describe('hardware-wallet-signatures utils', () => {
           t,
         }),
       );
+    });
+  });
+
+  describe('getHardwareWalletSignatureErrorEvent', () => {
+    it('returns TransactionRejected for a user rejection error code', () => {
+      expect(
+        getHardwareWalletSignatureErrorEvent({
+          code: 4001,
+          message: 'User rejected',
+        }),
+      ).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
+    });
+
+    it('returns TransactionRejected for a user cancelled error code', () => {
+      expect(
+        getHardwareWalletSignatureErrorEvent({
+          code: 2001,
+          message: 'User cancelled',
+        }),
+      ).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
+    });
+
+    it.each([
+      ['AuthenticationDeviceLocked', 1100],
+      ['AuthenticationDeviceBlocked', 1101],
+      ['AuthenticationSecurityCondition', 1200],
+      ['ConnectionTransportMissing', 4000],
+      ['DeviceDisconnected', 3003],
+      ['ConnectionTimeout', 4002],
+    ])('returns DeviceDisconnected for %s', (_label, code) => {
+      expect(
+        getHardwareWalletSignatureErrorEvent({ code, message: 'error' }),
+      ).toStrictEqual({
+        type: HardwareWalletSignatureEvent.DeviceDisconnected,
+      });
+    });
+
+    it('returns DeviceDisconnected for ConnectionClosed via HardwareWalletError', () => {
+      // ConnectionClosed (4001) is numerically equal to EIP-1193
+      // userRejectedRequest, so a plain { code: 4001 } object is ambiguous.
+      // A real HardwareWalletError instance disambiguates: the HW error
+      // check short-circuits the EIP-1193 fallback in isUserRejected.
+      const error = new HardwareWalletError('Connection closed', {
+        code: ErrorCode.ConnectionClosed,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: 'Connection closed',
+      });
+      expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
+        type: HardwareWalletSignatureEvent.DeviceDisconnected,
+      });
+    });
+
+    it('returns TransactionFailed for an unknown error code', () => {
+      expect(
+        getHardwareWalletSignatureErrorEvent({
+          code: 99999,
+          message: 'Unknown',
+        }),
+      ).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
+    });
+
+    it('returns TransactionFailed for a plain Error without a code property', () => {
+      expect(
+        getHardwareWalletSignatureErrorEvent(new Error('something broke')),
+      ).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
+    });
+
+    it('returns TransactionFailed for null', () => {
+      expect(getHardwareWalletSignatureErrorEvent(null)).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
+    });
+
+    it('returns TransactionFailed for undefined', () => {
+      expect(getHardwareWalletSignatureErrorEvent(undefined)).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
     });
   });
 });

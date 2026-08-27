@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import React from 'react';
 import configureStore from '../../../../store/store';
@@ -366,6 +367,69 @@ describe('useHardwareWalletSignatures', () => {
     jest.restoreAllMocks();
   });
 
+  describe('bridge/swap flow', () => {
+    it('marks the flow disconnected when the device is locked during signing', async () => {
+      let submitBridgeTransaction:
+        | Parameters<typeof useHwSwapSubmission>[0]['submitBridgeTransaction']
+        | undefined;
+      const error = {
+        code: ErrorCode.AuthenticationDeviceLocked,
+        message: 'Device locked',
+      };
+
+      mockUseHwSwapSubmission.mockImplementation((options) => {
+        submitBridgeTransaction = options.submitBridgeTransaction;
+        return {
+          retrySubmission: mockRetrySubmission,
+          hasStartedSubmission: { current: false },
+          submitActiveQuote: jest.fn(),
+        } as never;
+      });
+      mockUseSubmitBridgeTransaction.mockReturnValue({
+        submitBridgeTransaction: jest.fn().mockRejectedValue(error),
+        isSubmitting: false,
+      });
+      mockUseHwSwapQuoteData.mockReturnValue({
+        activeQuote: {
+          quote: {
+            requestId: 'quote-1',
+            src: { normalizedAmount: '1' },
+            dest: { normalizedAmount: '2' },
+          },
+          trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
+        },
+        lockedQuote: {
+          quote: {
+            requestId: 'quote-1',
+            src: { normalizedAmount: '1' },
+            dest: { normalizedAmount: '2' },
+          },
+          trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
+        },
+        fromToken: { symbol: 'ETH' },
+        toToken: { symbol: 'USDC' },
+        hardwareWalletType: 'ledger',
+      } as never);
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush();
+
+      const capturedSubmitBridgeTransaction = submitBridgeTransaction;
+      if (!capturedSubmitBridgeTransaction) {
+        throw new Error('Expected useHwSwapSubmission to capture submission');
+      }
+
+      await act(async () => {
+        await expect(capturedSubmitBridgeTransaction({} as never)).rejects.toBe(
+          error,
+        );
+      });
+
+      expect(result.current.signatureStatus).toBe(
+        HardwareWalletSignatureStatus.Disconnected,
+      );
+    });
+  });
+
   describe('sendBundle flow', () => {
     it('auto-submits the sendBundle transaction when the approval is still pending', async () => {
       const { result } = await renderUseHardwareWalletSignaturesAndFlush({
@@ -435,6 +499,24 @@ describe('useHardwareWalletSignatures', () => {
       await waitFor(() => {
         expect(result.current.signatureStatus).toBe(
           HardwareWalletSignatureStatus.Failed,
+        );
+      });
+    });
+
+    it('marks the flow disconnected when the device is locked during sendBundle submit', async () => {
+      mockUpdateAndApproveTx.mockReturnValue((() =>
+        Promise.reject({
+          code: ErrorCode.AuthenticationDeviceLocked,
+          message: 'Device locked',
+        })) as never);
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush({
+        locationState: createSendBundleLocationState(),
+      });
+
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Disconnected,
         );
       });
     });

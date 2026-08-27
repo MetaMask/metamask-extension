@@ -1,11 +1,17 @@
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { TextColor } from '@metamask/design-system-react';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { shortenAddress } from '../../../helpers/utils/util';
 import type { useI18nContext } from '../../../hooks/useI18nContext';
 import { rejectPendingApproval } from '../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import {
+  getHardwareWalletErrorCode,
+  isUserRejectedHardwareWalletError,
+} from '../../../contexts/hardware-wallets/rpcErrorUtils';
+import {
+  HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
   type HardwareWalletSignaturesState,
 } from './hardware-wallet-signatures-state-machine';
@@ -20,6 +26,56 @@ export {
   type BridgeTxHistory,
   type QrHardwareSignRequest,
 };
+
+/**
+ * Error codes that indicate the device is unavailable for signing — either
+ * physically disconnected, locked, blocked, or the transport/bridge to it is
+ * missing or timed out. When a signing attempt fails with any of these, the
+ * signature flow should transition to the `Disconnected` status (showing
+ * "Reconnect your device and try again") rather than `Failed` ("Transaction
+ * failed"), because the user can recover by reconnecting/unlocking the device.
+ *
+ * `DeviceStateEthAppClosed` is intentionally excluded: it is routed to
+ * `AwaitingApp` (not `ErrorState`) by `getConnectionStateFromError`, so it
+ * never reaches the signing-error path.
+ */
+const DEVICE_UNAVAILABLE_ERROR_CODES = new Set<ErrorCode>([
+  ErrorCode.AuthenticationDeviceLocked,
+  ErrorCode.AuthenticationDeviceBlocked,
+  ErrorCode.AuthenticationSecurityCondition,
+  ErrorCode.ConnectionTransportMissing,
+  ErrorCode.ConnectionClosed,
+  ErrorCode.DeviceDisconnected,
+  ErrorCode.ConnectionTimeout,
+]);
+
+/**
+ * Maps a hardware-wallet signing error to its signature state-machine event.
+ * This is the single source of truth used by both the connection monitor and
+ * direct signing catch handlers, so a given error always yields the same
+ * inline recovery UI.
+ *
+ * @param error - The error from a signing attempt (may cross the RPC boundary).
+ * @returns The state-machine event for the error.
+ */
+export function getHardwareWalletSignatureErrorEvent(error: unknown) {
+  if (isUserRejectedHardwareWalletError(error)) {
+    return {
+      type: HardwareWalletSignatureEvent.TransactionRejected,
+    } as const;
+  }
+
+  const errorCode = getHardwareWalletErrorCode(error);
+  if (errorCode !== null && DEVICE_UNAVAILABLE_ERROR_CODES.has(errorCode)) {
+    return {
+      type: HardwareWalletSignatureEvent.DeviceDisconnected,
+    } as const;
+  }
+
+  return {
+    type: HardwareWalletSignatureEvent.TransactionFailed,
+  } as const;
+}
 
 /**
  * Checks whether a signature step display status represents an error
@@ -677,7 +733,10 @@ export const getStepStatus = (
  */
 export function getAllStepStatuses(
   signatureState: HardwareWalletSignaturesState,
-): { first: SignatureStepStatus; final: SignatureStepStatus } {
+): {
+  first: SignatureStepStatus;
+  final: SignatureStepStatus;
+} {
   return {
     first: getStepStatus(
       HardwareWalletSignatureStatus.AwaitingFirstSignature,
