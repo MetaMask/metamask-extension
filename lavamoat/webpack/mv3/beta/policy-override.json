@@ -40,11 +40,6 @@
         "WebSocket": false
       }
     },
-    "@ledgerhq/device-transport-kit-web-hid": {
-      "packages": {
-        "@ledgerhq/device-management-kit>@sentry/minimal": false
-      }
-    },
     "@metamask/keyring-controller>ulid": {
       "globals": {
         "crypto": true
