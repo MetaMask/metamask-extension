@@ -2464,6 +2464,22 @@
   "bridgeSendLoading": {
     "message": "Sending from source chain"
   },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "Activate $1",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "This swap may fail. On Stellar your account can't receive $1 until the token is activated in your wallet with a valid trustline.",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "This swap may fail. On Stellar $1 can't receive $2 until you switch to that account and activate the token with a valid trustline.",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "Activate $1 on Stellar first",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
+  },
   "bridgeSuspicious": {
     "message": "Suspicious"
   },
@@ -5407,6 +5423,21 @@
   "moneyActivityDepositing": {
     "message": "Depositing"
   },
+  "moneyActivityEmpty": {
+    "message": "No activity yet"
+  },
+  "moneyActivityFilterAll": {
+    "message": "All"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "Deposits"
+  },
+  "moneyActivityFilterSends": {
+    "message": "Sends"
+  },
+  "moneyActivityPending": {
+    "message": "Pending"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "Your Money activity will appear here."
   },
@@ -7271,6 +7302,21 @@
   "perpsCloseAmount": {
     "message": "Close amount"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "Close amount capped at your position value."
+  },
+  "perpsCloseAmountInPercent": {
+    "message": "%"
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "Enter close amount as a percentage of your position"
+  },
+  "perpsCloseAmountInUsd": {
+    "message": "$"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "Enter close amount in US dollars"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "Price can't be more than 95% away from the market price"
   },
@@ -7282,6 +7328,9 @@
   },
   "perpsClosePartialMinNotional": {
     "message": "Partial closes must be at least $1 in USD value. Increase the close amount or close the full position."
+  },
+  "perpsClosePercentCappedAtMax": {
+    "message": "Close percentage capped at 100%."
   },
   "perpsClosePosition": {
     "message": "Close position"

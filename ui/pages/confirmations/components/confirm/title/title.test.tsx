@@ -18,6 +18,7 @@ import {
   permitNFTSignatureMsg,
   permitSignatureMsg,
 } from '../../../../../../test/data/confirmations/typed_sign';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { tEn } from '../../../../../../test/lib/i18n-helpers';
 import { upgradeAccountConfirmationOnly } from '../../../../../../test/data/confirmations/batch-transaction';
@@ -180,6 +181,30 @@ describe('ConfirmTitle', () => {
     );
 
     expect(getByText(tEn('confirmTitleTransaction'))).toBeInTheDocument();
+  });
+
+  it('does not render the generic batch title or nested transaction count for a money account deposit', () => {
+    const transaction = {
+      ...genUnapprovedContractInteractionConfirmation(),
+      type: TransactionType.batch,
+      nestedTransactions: [
+        { type: TransactionType.tokenMethodApprove },
+        { type: TransactionType.moneyAccountDeposit },
+      ],
+    } as Confirmation;
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(transaction),
+    );
+
+    const { queryByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(queryByText(tEn('confirmTitleTransaction'))).not.toBeInTheDocument();
+    expect(
+      queryByText(tEn('includesXTransactions', ['2'])),
+    ).not.toBeInTheDocument();
   });
 
   it('keeps the contract interaction title while spending-cap data is pending', () => {
