@@ -379,6 +379,10 @@ env:
   # Build-time gate: when true, the Add Device Sync tab is shown in Settings
   # (device pairing via QR code scan and verification code).
   - QR_SYNC_ENABLED: false
+  # Local/QA only: inject curated Money Home activity rows so the list UI
+  # can be reviewed without live deposits/withdraws. Remote flag
+  # moneyActivityMockDataEnabled takes precedence when it is a boolean.
+  - MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED: false
 
   ###
   # Meta variables

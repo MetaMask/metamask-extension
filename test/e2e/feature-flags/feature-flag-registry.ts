@@ -21,6 +21,7 @@ import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/g
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-domain-metrics';
 import {
+  MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME,
   MONEY_EARNING_SECTION_ENABLED_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
 } from '../../../shared/lib/money/feature-flags';
@@ -2852,6 +2853,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       tellerAddress: '0xB30755C750E0A7E5BeD3dDAf0D9948Cf2b1CDc87',
       underlyingToken: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
     },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  [MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME]: {
+    inProd: false,
+    name: MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME,
+    productionDefault: false,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },

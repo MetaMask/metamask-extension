@@ -212,7 +212,7 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when no quotes 
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-4 items-start pt-3 pr-4 pb-3 pl-4 bg-error-muted rounded-xl"
+    class="flex flex-row gap-4 items-center pt-3 pr-4 pb-3 pl-4 bg-error-muted rounded-xl"
     data-testid="bridge-no-quotes"
   >
     <svg
@@ -254,7 +254,7 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when reason is 
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-4 items-start pt-3 pr-4 pb-3 pl-4 bg-error-muted rounded-xl"
+    class="flex flex-row gap-4 items-center pt-3 pr-4 pb-3 pl-4 bg-error-muted rounded-xl"
     data-testid="bridge-no-quotes"
   >
     <svg
