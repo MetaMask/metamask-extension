@@ -400,7 +400,7 @@ describe('useHardwareWalletSignatures', () => {
       expect(result.current.stepList.firstStepLabel).toContain('1.5');
     });
 
-    it('shows the decoded calldata recipient for token sends instead of the token contract', async () => {
+    it('shows the decoded calldata recipient for token sends ', async () => {
       const tokenSendTxMeta = createSendBundleTxMeta({
         type: TransactionType.tokenMethodTransfer,
         txParams: {
