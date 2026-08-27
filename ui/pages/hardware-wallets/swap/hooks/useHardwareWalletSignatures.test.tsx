@@ -400,7 +400,7 @@ describe('useHardwareWalletSignatures', () => {
       expect(result.current.stepList.firstStepLabel).toContain('1.5');
     });
 
-    it('shows the decoded calldata recipient for token sends ', async () => {
+    it('shows the decoded calldata recipient for token sends', async () => {
       const tokenSendTxMeta = createSendBundleTxMeta({
         type: TransactionType.tokenMethodTransfer,
         txParams: {
@@ -896,9 +896,9 @@ describe('useHardwareWalletSignatures', () => {
         lockedQuote: {
           quote: {
             requestId: 'quote-1',
+            src: { normalizedAmount: '10' },
+            dest: { normalizedAmount: '9.9' },
           },
-          sentAmount: { amount: '10' },
-          toTokenAmount: { amount: '9.9' },
           approval: {
             from: FROM_ADDRESS,
             to: TOKEN_CONTRACT_ADDRESS,
@@ -924,9 +924,9 @@ describe('useHardwareWalletSignatures', () => {
       });
       // The spender is decoded from the calldata args, not from
       // `approval.to` (which is the token contract).
-      expect(
-        result.current.stepList.firstStepDescription?.spender,
-      ).not.toBe('Spender: 0xa0b86...6eb48');
+      expect(result.current.stepList.firstStepDescription?.spender).not.toBe(
+        'Spender: 0xa0b86...6eb48',
+      );
     });
 
     it('labels the final step with the swap destination for same-chain quotes', async () => {
@@ -945,8 +945,9 @@ describe('useHardwareWalletSignatures', () => {
         lockedQuote: {
           quote: {
             requestId: 'quote-1',
+            src: { normalizedAmount: '10' },
+            dest: { normalizedAmount: '9.9' },
           },
-          sentAmount: { amount: '10' },
           approval: {
             from: FROM_ADDRESS,
             to: TOKEN_CONTRACT_ADDRESS,

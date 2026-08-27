@@ -137,7 +137,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       : undefined,
   );
 
-  const { lockedQuote, fromToken } = useHwSwapQuoteData();
+  const { lockedQuote, fromToken, toToken } = useHwSwapQuoteData();
   const needsTwoConfirmations = isSendBundleFlow
     ? Boolean(sendBundleState?.needsTwoConfirmations)
     : Boolean(lockedQuote?.approval);
@@ -298,8 +298,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   // Both chainIds must be defined — missing token metadata must not make a
   // bridge render swap labels.
   const isSwap =
-    fromToken?.chainId !== undefined &&
-    fromToken?.chainId === toToken?.chainId;
+    fromToken?.chainId !== undefined && fromToken?.chainId === toToken?.chainId;
 
   const { retrySubmission, hasStartedSubmission } = useHwSwapSubmission({
     lockedQuote,
@@ -494,7 +493,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     fromTokenSymbol: fromToken?.symbol,
     isSwap,
     toTokenSymbol: toToken?.symbol,
-    toAmount: lockedQuote?.toTokenAmount?.amount,
+    toAmount: lockedQuote?.quote.dest?.normalizedAmount,
     sendAmount: sendBundleState?.sendAmount,
     sendSymbol: sendBundleState?.sendSymbol,
     gasSymbol: sendBundleState?.gasSymbol,
