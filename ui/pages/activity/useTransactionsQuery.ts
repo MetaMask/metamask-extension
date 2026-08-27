@@ -1,4 +1,8 @@
-import { keepPreviousData, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { HttpError } from '@metamask/core-backend';
 import { parseCaipAssetType } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
