@@ -117,6 +117,11 @@ export default class ShieldPlanPage {
     await this.clickContinueButton();
   }
 
+  async selectAnnualPlan(): Promise<void> {
+    console.log('Selecting Annual plan');
+    await this.driver.clickElement(this.annualPlanButton);
+  }
+
   async selectCryptoPaymentToken(tokenSymbol: string): Promise<void> {
     console.log(`Selecting crypto payment token: ${tokenSymbol}`);
     await this.driver.clickElement(this.payWithButton);
@@ -125,11 +130,6 @@ export default class ShieldPlanPage {
     await this.driver.findClickableElement(this.paymentModalCryptoTokenButton);
     await this.driver.clickElement(this.paymentModalCryptoTokenButton);
     await this.driver.clickElement(this.assetListItemBySymbol(tokenSymbol));
-  }
-
-  async selectAnnualPlan(): Promise<void> {
-    console.log('Selecting Annual plan');
-    await this.driver.clickElement(this.annualPlanButton);
   }
 
   async selectMonthlyPlan(
