@@ -1033,6 +1033,17 @@
         "immer": true
       }
     },
+    "@metamask/chomp-api-service>@metamask/base-data-service": {
+      "packages": {
+        "@metamask/messenger": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/chomp-api-service>@tanstack/query-core": true,
+        "cockatiel": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
     "@metamask/react-data-query>@metamask/base-data-service": {
       "packages": {
         "@metamask/controller-utils": true,
@@ -1120,6 +1131,24 @@
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "lodash": true
+      }
+    },
+    "@metamask/chomp-api-service": {
+      "globals": {
+        "URL": true,
+        "fetch": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@metamask/chomp-api-service>@metamask/base-data-service": true,
+        "@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "cockatiel": true
       }
     },
     "@metamask/claims-controller": {
@@ -3762,6 +3791,19 @@
       }
     },
     "@metamask/assets-controllers>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "document.visibilityState": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
+      }
+    },
+    "@metamask/chomp-api-service>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
         "addEventListener": true,

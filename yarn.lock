@@ -6049,6 +6049,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-data-service@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/base-data-service@npm:1.0.0"
+  dependencies:
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/storage-service": "npm:^1.0.2"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^11.11.0"
+    "@tanstack/query-core": "npm:^5.62.16"
+    cockatiel: "npm:^3.1.2"
+    fast-deep-equal: "npm:^3.1.3"
+    lodash: "npm:^4.17.21"
+  checksum: 10/c965dc930a3c172c71624278499f4ec2da829def684c3923b2729d1a31dd2635d5c05230a9dc9ea8546adc029c4e2ed782fdc992be4692d47d9aafdb2d778deb
+  languageName: node
+  linkType: hard
+
 "@metamask/bitcoin-regtest-up@npm:^1.0.0":
   version: 1.0.0
   resolution: "@metamask/bitcoin-regtest-up@npm:1.0.0"
@@ -6164,6 +6180,20 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     lodash: "npm:^4.17.21"
   checksum: 10/ff3c2ab116a612010b4bb7b5406f80fa77392c09d3c07be1fb88787bef599b7c11b5267c8378b9c8ee2de7ae04d08a7050f56f9f54df3a00fbac358d683d21df
+  languageName: node
+  linkType: hard
+
+"@metamask/chomp-api-service@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "@metamask/chomp-api-service@npm:4.0.1"
+  dependencies:
+    "@metamask/base-data-service": "npm:^1.0.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^11.11.0"
+    "@tanstack/query-core": "npm:^5.62.16"
+  checksum: 10/400f21349da229e4129a6d770a1ae792f07d9a591a559c2885b7cefc0381da56eb627917b359794ae0f132621fd374b19d617f629c789e45b90adca20705bf3d
   languageName: node
   linkType: hard
 
@@ -33310,6 +33340,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.8.1"
     "@metamask/chain-agnostic-permission": "npm:^1.6.2"
+    "@metamask/chomp-api-service": "npm:^4.0.0"
     "@metamask/claims-controller": "npm:^0.6.0"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.5.0"
