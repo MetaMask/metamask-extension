@@ -15,7 +15,7 @@ import { buildEvmEip1193FixtureScopes } from '../../fixtures/permission-scopes';
 import { login } from '../../page-objects/flows/login.flow';
 import { approveConnect } from '../../page-objects/flows/connect.flow';
 import { Driver, PAGES } from '../../webdriver/driver';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';

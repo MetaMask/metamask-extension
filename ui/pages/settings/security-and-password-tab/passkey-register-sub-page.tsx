@@ -3,6 +3,8 @@ import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   Text,
   BoxAlignItems,
@@ -13,7 +15,6 @@ import {
   Button,
   TextVariant,
   TextColor,
-  TextAlign,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
@@ -429,14 +430,11 @@ export default function PasskeyRegisterSubPage() {
           ) : (
             <>
               {enrollmentError && (
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.ErrorDefault}
-                  textAlign={TextAlign.Center}
+                <BannerAlert
+                  severity={BannerAlertSeverity.Danger}
+                  description={enrollmentError}
                   data-testid="passkey-enrollment-error"
-                >
-                  {enrollmentError}
-                </Text>
+                />
               )}
 
               <Button
