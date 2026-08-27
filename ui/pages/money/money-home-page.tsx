@@ -130,11 +130,11 @@ export function MoneyHomePage() {
     formatInterestEarned(sinceInceptionQuery.data?.interest_earned_usd) ??
     FORMATTED_ZERO;
   const isMonthlyEarningsLoading =
-    last30DaysQuery.isInitialLoading ||
+    last30DaysQuery.isLoading ||
     (formatInterestEarned(last30DaysQuery.data?.interest_earned_usd) ===
       undefined &&
       (vaultApyQuery.isLoading || isBalanceLoading));
-  const isLifetimeEarningsLoading = sinceInceptionQuery.isInitialLoading;
+  const isLifetimeEarningsLoading = sinceInceptionQuery.isLoading;
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
   const privacyMode = useSelector(getPrivacyMode);
   const activityItems = useMoneyActivityItems();

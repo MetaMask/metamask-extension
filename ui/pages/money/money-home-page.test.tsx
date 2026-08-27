@@ -94,11 +94,11 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('12.34'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('56.78'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
     mockUseMoneyDepositTokens.mockReturnValue({
@@ -273,8 +273,8 @@ describe('MoneyHomePage', () => {
       vaultApyQuery: { isLoading: false },
     });
     mockUseMoneyAccountInterest.mockReturnValue({
-      last30DaysQuery: { data: undefined, isInitialLoading: true },
-      sinceInceptionQuery: { data: undefined, isInitialLoading: true },
+      last30DaysQuery: { data: undefined, isLoading: true },
+      sinceInceptionQuery: { data: undefined, isLoading: true },
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -301,11 +301,11 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('invalid'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('Infinity'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
 
@@ -333,11 +333,11 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('0'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('0.001'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
 
@@ -365,11 +365,11 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('-12.34'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('-0.001'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
 
