@@ -332,6 +332,97 @@ describe('displayCriticalError', () => {
     }
   });
 
+  it('adds fallback build tags when build environment variables are unset', async () => {
+    delete process.env.METAMASK_ENVIRONMENT;
+    delete process.env.METAMASK_BUILD_TYPE;
+
+    const error = new Error(MOCK_ERROR_MESSAGE);
+    const mockPort = createMockPort();
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.Other,
+      ),
+    ).rejects.toThrow(error);
+
+    const restartButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-button',
+    );
+    const checkbox = rootContainer.querySelector<HTMLInputElement>(
+      '#critical-error-checkbox',
+    );
+
+    expect(restartButton).toBeTruthy();
+    expect(checkbox).toBeTruthy();
+    checkbox?.setAttribute('checked', 'true');
+    await act(async () => {
+      restartButton?.click();
+      await new Promise(setImmediate);
+    });
+
+    const requestBody = (fetch as jest.MockedFunction<typeof fetch>).mock
+      .calls[0][1]?.body as string;
+    const eventPayload = JSON.parse(requestBody.split('\n')[2]);
+    expect(eventPayload.tags).toEqual({
+      'metamask.environment': 'unknown',
+      'metamask.build_type': 'unknown',
+    });
+  });
+
+  it('allows error-specific tags to override build tags', async () => {
+    process.env.METAMASK_ENVIRONMENT = 'development';
+    process.env.METAMASK_BUILD_TYPE = 'main';
+
+    const error = Object.assign(new Error(MOCK_ERROR_MESSAGE), {
+      sentryTags: {
+        'metamask.environment': 'error-environment',
+        source: 'critical-error',
+      },
+    });
+    const mockPort = createMockPort();
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.Other,
+      ),
+    ).rejects.toThrow(error);
+
+    const restartButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-button',
+    );
+    const checkbox = rootContainer.querySelector<HTMLInputElement>(
+      '#critical-error-checkbox',
+    );
+
+    expect(restartButton).toBeTruthy();
+    expect(checkbox).toBeTruthy();
+    checkbox?.setAttribute('checked', 'true');
+    await act(async () => {
+      restartButton?.click();
+      await new Promise(setImmediate);
+    });
+
+    const requestBody = (fetch as jest.MockedFunction<typeof fetch>).mock
+      .calls[0][1]?.body as string;
+    const eventPayload = JSON.parse(requestBody.split('\n')[2]);
+    expect(eventPayload.tags).toEqual({
+      'metamask.environment': 'error-environment',
+      'metamask.build_type': 'main',
+      source: 'critical-error',
+    });
+    expect(eventPayload.extra.error_details).not.toHaveProperty('sentryTags');
+  });
+
   it('still displays error and throws original error when notifying background fails', async () => {
     const port = {
       postMessage: jest.fn().mockImplementation(() => {
