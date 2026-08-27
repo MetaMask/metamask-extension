@@ -21,6 +21,7 @@ describe('getMoneyAccountUpgradeServiceMessenger', () => {
       expect.objectContaining({
         actions: [
           'KeyringController:getState',
+          'KeyringController:withKeyringUnsafe',
           'LegacyBackgroundApiService:addNetwork',
           'NetworkController:getState',
           'RemoteFeatureFlagController:getState',

@@ -1,17 +1,26 @@
 import type { MoneyAccountUpgradeController } from '@metamask/money-account-upgrade-controller';
+import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../../shared/lib/money/feature-flags';
 import { MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME } from '../../../../shared/lib/money/vault-config';
 import { captureException } from '../../../../shared/lib/sentry';
+import { deriveMoneyAccountAddress } from './get-money-account-address';
 import {
   MoneyAccountUpgradeService,
   type MoneyAccountUpgradeServiceMessenger,
 } from './money-account-upgrade-service';
+import { upgradeAccountWithRetry } from './upgrade-account-with-retry';
 
 jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
 }));
+jest.mock('./get-money-account-address');
+jest.mock('./upgrade-account-with-retry');
+
+const MONEY_ADDRESS = '0xD5FE9B0579443E7025Cf3309Ba420977710e7183' as Hex;
+const MONEY_ADDRESS_LOWERCASED =
+  MONEY_ADDRESS.toLowerCase() as Lowercase<Hex>;
 
 const VAULT_CONFIG = {
   chainId: CHAIN_IDS.MONAD,
@@ -107,10 +116,13 @@ function createService({
   const messenger = {
     call,
     subscribe,
+    registerMethodActionHandlers: jest.fn(),
   } as unknown as MoneyAccountUpgradeServiceMessenger;
 
+  const upgradeAccount = jest.fn().mockResolvedValue(undefined);
   const upgradeController = {
     init,
+    upgradeAccount,
   } as unknown as MoneyAccountUpgradeController;
 
   const service = new MoneyAccountUpgradeService({
@@ -127,12 +139,27 @@ function createService({
     await flushPromises();
   };
 
-  return { service, config, init, addNetwork, call, trigger };
+  return {
+    service,
+    config,
+    init,
+    addNetwork,
+    call,
+    trigger,
+    upgradeAccount,
+    messenger,
+  };
 }
 
 describe('MoneyAccountUpgradeService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(deriveMoneyAccountAddress).mockResolvedValue(MONEY_ADDRESS);
+    jest
+      .mocked(upgradeAccountWithRetry)
+      .mockImplementation(async (upgradeAccount, address) => {
+        await upgradeAccount(address);
+      });
   });
 
   it('bootstraps at construction when the flag is on and the wallet is unlocked', async () => {
@@ -266,6 +293,7 @@ describe('MoneyAccountUpgradeService', () => {
         throw new Error('handler not registered');
       }),
       subscribe: jest.fn(),
+      registerMethodActionHandlers: jest.fn(),
     } as unknown as MoneyAccountUpgradeServiceMessenger;
 
     expect(
@@ -277,5 +305,122 @@ describe('MoneyAccountUpgradeService', () => {
           } as unknown as MoneyAccountUpgradeController,
         }),
     ).not.toThrow();
+  });
+
+  describe('triggerUpgrade', () => {
+    it('upgrades the derived address, lowercased', async () => {
+      const { service, upgradeAccount } = createService();
+      await flushPromises();
+
+      service.triggerUpgrade();
+      await flushPromises();
+
+      expect(upgradeAccount).toHaveBeenCalledWith(MONEY_ADDRESS_LOWERCASED);
+    });
+
+    it('registers the trigger as a method action', () => {
+      const { service, messenger } = createService();
+
+      expect(messenger.registerMethodActionHandlers).toHaveBeenCalledWith(
+        service,
+        ['triggerUpgrade'],
+      );
+    });
+
+    it('skips when the bootstrap was never scheduled', async () => {
+      const { service, upgradeAccount } = createService({ isEnabled: false });
+      await flushPromises();
+
+      service.triggerUpgrade();
+      await flushPromises();
+
+      expect(upgradeAccount).not.toHaveBeenCalled();
+      expect(jest.mocked(captureException)).not.toHaveBeenCalled();
+    });
+
+    it('re-arms a failed bootstrap off the trigger and then upgrades', async () => {
+      const init = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('CHOMP outage'))
+        .mockResolvedValue(undefined);
+      const { service, upgradeAccount } = createService({ init });
+      await flushPromises();
+      expect(init).toHaveBeenCalledTimes(1);
+
+      service.triggerUpgrade();
+      await flushPromises();
+
+      expect(init).toHaveBeenCalledTimes(2);
+      expect(upgradeAccount).toHaveBeenCalledWith(MONEY_ADDRESS_LOWERCASED);
+    });
+
+    it('dedupes triggers while a run is in flight', async () => {
+      let resolveRun: () => void = () => undefined;
+      jest.mocked(upgradeAccountWithRetry).mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveRun = resolve;
+          }),
+      );
+      const { service } = createService();
+      await flushPromises();
+
+      service.triggerUpgrade();
+      await flushPromises();
+      service.triggerUpgrade();
+      await flushPromises();
+
+      expect(jest.mocked(upgradeAccountWithRetry)).toHaveBeenCalledTimes(1);
+
+      resolveRun();
+      await flushPromises();
+      service.triggerUpgrade();
+      await flushPromises();
+
+      expect(jest.mocked(upgradeAccountWithRetry)).toHaveBeenCalledTimes(2);
+    });
+
+    it('reports a failed run to Sentry and re-arms the next trigger', async () => {
+      const error = new Error('terminal');
+      jest
+        .mocked(upgradeAccountWithRetry)
+        .mockRejectedValueOnce(error)
+        .mockResolvedValueOnce(undefined);
+      const { service } = createService();
+      await flushPromises();
+
+      service.triggerUpgrade();
+      await flushPromises();
+
+      expect(jest.mocked(captureException)).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          tags: expect.objectContaining({ feature: 'money-account-upgrade' }),
+        }),
+      );
+
+      service.triggerUpgrade();
+      await flushPromises();
+
+      expect(jest.mocked(upgradeAccountWithRetry)).toHaveBeenCalledTimes(2);
+    });
+
+    it('caps retried-failure reports at three per run', async () => {
+      const retryError = new Error('transient');
+      jest
+        .mocked(upgradeAccountWithRetry)
+        .mockImplementation(async (_upgradeAccount, _address, options) => {
+          for (let attempt = 1; attempt <= 5; attempt++) {
+            options?.onRetry?.(retryError, attempt);
+          }
+        });
+      const { service } = createService();
+      await flushPromises();
+
+      service.triggerUpgrade();
+      await flushPromises();
+
+      expect(jest.mocked(captureException)).toHaveBeenCalledTimes(3);
+    });
   });
 });

@@ -13,6 +13,8 @@ import type { RootMessenger } from '../../lib/messenger';
  * The service gates the upgrade-controller bootstrap on the remote flags and
  * on an unlocked wallet with its keyrings loaded, and configures the Money
  * chain before the bootstrap — hence the network and legacy-API actions.
+ * `withKeyringUnsafe` serves the upgrade trigger, which derives the money
+ * account address from the primary seed rather than trusting one from the UI.
  *
  * @param messenger - The root messenger.
  * @returns The MoneyAccountUpgradeService messenger.
@@ -32,6 +34,7 @@ export function getMoneyAccountUpgradeServiceMessenger(
     messenger: serviceMessenger,
     actions: [
       'KeyringController:getState',
+      'KeyringController:withKeyringUnsafe',
       'LegacyBackgroundApiService:addNetwork',
       'NetworkController:getState',
       'RemoteFeatureFlagController:getState',

@@ -19,6 +19,7 @@ import {
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
+import { useTriggerMoneyUpgrade } from '../../hooks/money/use-trigger-money-upgrade';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
@@ -89,6 +90,7 @@ export function MoneyHomePage() {
   const t = useI18nContext();
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
+  useTriggerMoneyUpgrade({ enabled: availability.isAvailable });
   const {
     apyDecimal,
     apyPercentFormatted,
