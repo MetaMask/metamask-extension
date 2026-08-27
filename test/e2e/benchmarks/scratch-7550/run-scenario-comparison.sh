@@ -9,52 +9,36 @@ ARTIFACT_DIR="${3:-test-artifacts/scratch-7550}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 cd "$ROOT"
 
+# shellcheck source=before-worktree-lib.sh
+source "$(dirname "${BASH_SOURCE[0]}")/before-worktree-lib.sh"
+
 ITERATIONS="${BENCHMARK_ITERATIONS:-5}"
 RETRIES="${BENCHMARK_RETRIES:-1}"
 AFTER_SHA="$(git rev-parse HEAD)"
 BENCHMARK_FILE="test/e2e/benchmarks/flows/interaction/scratch-7550/${SCENARIO}.ts"
 
+# Overlay HEAD benchmark harness only — keep the worktree's test/e2e page-objects,
+# helpers, and flows so Selenium targets the old UI built from the before SHA.
 HARNESS_PATHS=(
-  test/e2e/benchmarks/scratch-7550
-  test/e2e/benchmarks/flows/interaction/scratch-7550
-  test/e2e/benchmarks/utils/constants.ts
-  test/e2e/benchmarks/run-benchmark.ts
-  test/e2e/benchmarks/utils/thresholds.ts
+  test/e2e/benchmarks
   app/scripts/fixtures/generate-wallet-state.js
 )
 
-APP_SOURCE_PATHS=(
-  app
-  ui
-  shared
-  types
-)
-
-restore_harness_files() {
-  git checkout HEAD -- "${HARNESS_PATHS[@]}"
-}
-
 benchmark_json_path() {
   local label="$1"
-  echo "$ARTIFACT_DIR/benchmark-chrome-webpack-${label}.json"
+  echo "$ROOT/$ARTIFACT_DIR/benchmark-chrome-webpack-${label}.json"
 }
 
 run_single() {
   local label="$1"
   local out_file
   out_file="$(benchmark_json_path "$label")"
-  mkdir -p "$ARTIFACT_DIR"
+  mkdir -p "$(dirname "$out_file")"
   SELENIUM_BROWSER=chrome SELENIUM_HEADLESS=true \
     yarn tsx test/e2e/benchmarks/run-benchmark.ts "$BENCHMARK_FILE" \
     --iterations "$ITERATIONS" \
     --retries "$RETRIES" \
     --out "$out_file"
-}
-
-checkout_app_at_sha() {
-  local sha="$1"
-  git checkout "$sha" -- "${APP_SOURCE_PATHS[@]}"
-  restore_harness_files
 }
 
 build_and_run() {
@@ -78,7 +62,13 @@ else
 fi
 
 echo "=== Scenario: ${SCENARIO} — before @ ${BEFORE_SHA} ==="
-checkout_app_at_sha "$BEFORE_SHA"
-build_and_run "$BEFORE_LABEL"
+run_before_at_sha \
+  "$BEFORE_SHA" \
+  "before-${BEFORE_SHA:0:7}-${SCENARIO}" \
+  "$BENCHMARK_FILE" \
+  "$(benchmark_json_path "$BEFORE_LABEL")" \
+  "$ITERATIONS" \
+  "$RETRIES" \
+  "$ROOT"
 
 echo "Done: ${SCENARIO}"

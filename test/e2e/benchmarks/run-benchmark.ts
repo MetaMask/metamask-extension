@@ -228,6 +228,12 @@ async function runBenchmarkFile(
       `Completed: ${summary.successfulRuns}/${summary.iterations} successful runs`,
     );
 
+    if (summary.successfulRuns === 0) {
+      throw new Error(
+        `All ${options.iterations} iterations failed for ${fileName}`,
+      );
+    }
+
     violations = summary.thresholdViolations;
     result = convertSummaryToResults(
       summary,
@@ -357,6 +363,7 @@ async function main(): Promise<void> {
 
   // Run benchmarks and collect results
   const allResults: Record<string, unknown> = {};
+  let hadErrors = false;
 
   for (const filePath of filesToRun) {
     const fileName = path.basename(filePath, path.extname(filePath));
@@ -376,6 +383,7 @@ async function main(): Promise<void> {
       allResults[resultKey] = result;
     } catch (error) {
       console.error(`❌ Error running ${fileName}:`, error);
+      hadErrors = true;
       allResults[resultKey] = { error: String(error) };
     }
   }
@@ -400,6 +408,10 @@ async function main(): Promise<void> {
 
   console.log('\n📊 Benchmark Results:');
   console.log(outputStr);
+
+  if (hadErrors) {
+    process.exitCode = 1;
+  }
 }
 
 main().catch((error) => {

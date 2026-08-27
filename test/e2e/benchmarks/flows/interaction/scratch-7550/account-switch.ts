@@ -23,8 +23,6 @@ export const persona = BENCHMARK_PERSONA.POWER_USER;
 const SOURCE_ACCOUNT = 'Account 1';
 const TARGET_ACCOUNT = `Account ${WITH_STATE_POWER_USER.withAccounts}`;
 
-const SELECTED_ACCOUNT = '.multichain-account-list-item--selected';
-
 async function scrollAccountListItemIntoView(
   driver: Driver,
   accountLabel: string,
@@ -70,10 +68,8 @@ export async function run(): Promise<BenchmarkRunResult> {
         await driver.resetLongTaskMetrics();
         const startedAt = Date.now();
         await accountListPage.switchToAccount(TARGET_ACCOUNT);
-        await driver.waitForSelector({
-          css: SELECTED_ACCOUNT,
-          text: TARGET_ACCOUNT,
-        });
+        // Menu closes after selection — verify via header label, not list selection.
+        await headerNavbar.checkAccountLabel(TARGET_ACCOUNT);
         const duration = Date.now() - startedAt;
 
         const longTaskData = await driver.collectLongTaskMetrics();

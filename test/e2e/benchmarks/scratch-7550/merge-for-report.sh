@@ -11,7 +11,20 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 cd "$ROOT"
 
 merge_json() {
-  jq -s 'add' "$@"
+  local existing=()
+  local file
+  for file in "$@"; do
+    if [ -f "$file" ]; then
+      existing+=("$file")
+    else
+      echo "Warning: missing benchmark artifact (skipped): $file" >&2
+    fi
+  done
+  if [ "${#existing[@]}" -eq 0 ]; then
+    echo '{}' 
+    return
+  fi
+  jq -s 'add' "${existing[@]}"
 }
 
 AFTER_PREFIX="benchmark-chrome-webpack-after-${AFTER_SHA:0:7}"
@@ -31,6 +44,11 @@ merge_json \
   "$ARTIFACT_DIR/${BEFORE_SWITCH_PREFIX}-network-switch.json" \
   "$ARTIFACT_DIR/${BEFORE_SWITCH_PREFIX}-activity-scroll.json" \
   > "$BEFORE_SWITCH_MERGED"
+
+if [ ! -f "$AFTER_MERGED" ] || [ "$(cat "$AFTER_MERGED")" = '{}' ]; then
+  echo "Error: no after benchmark artifacts found under $ARTIFACT_DIR" >&2
+  exit 1
+fi
 
 yarn tsx test/e2e/benchmarks/scratch-7550/generate-report.mts \
   --after "$AFTER_MERGED" \

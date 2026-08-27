@@ -1,10 +1,12 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import type {
   BenchmarkResults,
   WebVitalsSummary,
 } from '../../../../shared/constants/benchmarks';
 
-type BenchmarkBundle = Record<string, BenchmarkResults>;
+type BenchmarkBundleEntry = BenchmarkResults | { error: string };
+
+type BenchmarkBundle = Record<string, BenchmarkBundleEntry>;
 
 type CliArgs = {
   after: string;
@@ -49,7 +51,30 @@ function parseArgs(): CliArgs {
 }
 
 function loadBundle(path: string): BenchmarkBundle {
+  if (!existsSync(path)) {
+    console.warn(`Benchmark artifact missing (report will show n/a): ${path}`);
+    return {};
+  }
   return JSON.parse(readFileSync(path, 'utf8')) as BenchmarkBundle;
+}
+
+function isBenchmarkError(
+  entry: BenchmarkBundleEntry | undefined,
+): entry is { error: string } {
+  return (
+    entry !== undefined &&
+    typeof entry === 'object' &&
+    'error' in entry &&
+    typeof entry.error === 'string'
+  );
+}
+
+function getBenchmarkError(
+  bundle: BenchmarkBundle,
+  registryKey: string,
+): string | undefined {
+  const entry = bundle[registryKey];
+  return isBenchmarkError(entry) ? entry.error : undefined;
 }
 
 function formatMetric(
@@ -61,6 +86,9 @@ function formatMetric(
   const result = bundle[registryKey];
   if (!result) {
     return 'n/a';
+  }
+  if (isBenchmarkError(result)) {
+    return 'harness error';
   }
   const actionP75 = result.p75[timerId];
   const longTaskMax = result.p75.longTaskMaxDuration;
@@ -83,7 +111,12 @@ function formatMetric(
 }
 
 function formatDelta(before: string, after: string): string {
-  if (before === 'n/a' || after === 'n/a') {
+  if (
+    before === 'n/a' ||
+    after === 'n/a' ||
+    before === 'harness error' ||
+    after === 'harness error'
+  ) {
     return 'n/a';
   }
   const parseInp = (value: string): number | null => {
@@ -100,23 +133,45 @@ function formatDelta(before: string, after: string): string {
   return `${sign}${delta}ms INP`;
 }
 
+function formatNotes(...errors: Array<string | undefined>): string {
+  const messages = errors.filter((message): message is string => Boolean(message));
+  if (messages.length === 0) {
+    return '';
+  }
+  return messages
+    .map((message) => message.replace(/^Error:\s*/u, '').replace(/\|/gu, '\\|'))
+    .join(' · ')
+    .slice(0, 200);
+}
+
 function buildRow(row: ScenarioRow): string {
+  const beforeError = getBenchmarkError(row.beforeBundle, row.beforeKey);
+  const afterError = getBenchmarkError(row.afterBundle, row.afterKey);
   const before = formatMetric(
     row.beforeBundle,
     row.beforeKey,
     row.primaryTimer,
-    row.beforeBundle[row.beforeKey]?.webVitals,
+    isBenchmarkError(row.beforeBundle[row.beforeKey])
+      ? undefined
+      : row.beforeBundle[row.beforeKey]?.webVitals,
   );
   const after = formatMetric(
     row.afterBundle,
     row.afterKey,
     row.primaryTimer,
-    row.afterBundle[row.afterKey]?.webVitals,
+    isBenchmarkError(row.afterBundle[row.afterKey])
+      ? undefined
+      : row.afterBundle[row.afterKey]?.webVitals,
   );
   const beforeCell = `${before} @ \`${row.beforeSha.slice(0, 7)}\``;
   const afterCell = `${after} @ \`${row.afterSha.slice(0, 7)}\``;
   const delta = formatDelta(before, after);
-  return `| ${row.scenario} | ${row.harness} | ${beforeCell} | ${afterCell} | ${delta} | done | |`;
+  const status =
+    beforeError || afterError || before === 'n/a' || after === 'n/a'
+      ? 'failed'
+      : 'done';
+  const notes = formatNotes(beforeError, afterError);
+  return `| ${row.scenario} | ${row.harness} | ${beforeCell} | ${afterCell} | ${delta} | ${status} | ${notes} |`;
 }
 
 function main(): void {

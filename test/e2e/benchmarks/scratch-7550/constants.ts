@@ -12,11 +12,7 @@ export const WITH_STATE_POWER_USER_MANY_TOKENS = {
 };
 
 export const SCRATCH_7550_HARNESS_PATHS = [
-  'test/e2e/benchmarks/scratch-7550',
-  'test/e2e/benchmarks/flows/interaction/scratch-7550',
-  'test/e2e/benchmarks/utils/constants.ts',
-  'test/e2e/benchmarks/run-benchmark.ts',
-  'test/e2e/benchmarks/utils/thresholds.ts',
+  'test/e2e/benchmarks',
   'app/scripts/fixtures/generate-wallet-state.js',
   '.github/workflows/react18-concurrent-perf-7550.yml',
   'package.json',
