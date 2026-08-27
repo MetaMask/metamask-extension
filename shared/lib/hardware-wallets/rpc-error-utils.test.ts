@@ -842,7 +842,8 @@ describe('rpc-error-utils', () => {
           message: 'sign operation failed',
           cause: {
             name: 'HardwareWalletError',
-            message: 'Ledger: Only version 4 of typed data signing is supported',
+            message:
+              'Ledger: Only version 4 of typed data signing is supported',
           },
         },
       );
@@ -868,7 +869,7 @@ describe('rpc-error-utils', () => {
 
       expect(result.code).toBe(ErrorCode.DeviceStateOnlyV4Supported);
     });
-    
+
     it('maps Ledger offscreen/runtime bridge failures to ConnectionTransportMissing', () => {
       const messages = [
         'Could not establish connection. Receiving end does not exist.',
