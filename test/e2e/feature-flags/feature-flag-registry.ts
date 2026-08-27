@@ -213,6 +213,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           featureVersion: '1',
           minimumVersion: '13.38.0',
           tracesEnabled: false,
+          useUnlockCleanup: true,
         },
       },
     },
