@@ -1,10 +1,6 @@
-import { Web3Provider, type ExternalProvider } from '@ethersproject/providers';
 import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
 import type { Messenger } from '@metamask/messenger';
-import type {
-  NetworkControllerFindNetworkClientIdByChainIdAction,
-  NetworkControllerGetNetworkClientByIdAction,
-} from '@metamask/network-controller';
+import type { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   TransactionControllerAddTransactionBatchAction,
@@ -19,7 +15,6 @@ import {
 type MoneyPayActions =
   | RemoteFeatureFlagControllerGetStateAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
-  | NetworkControllerGetNetworkClientByIdAction
   | MoneyAccountControllerGetMoneyAccountAction
   | TransactionControllerAddTransactionBatchAction;
 
@@ -41,7 +36,6 @@ export type MoneyPayContext = {
   moneyAccountAddress: Hex;
   vaultConfig: MoneyAccountVaultConfig;
   networkClientId: string;
-  provider: Web3Provider;
 };
 
 /**
@@ -99,15 +93,9 @@ export function getMoneyPayContext(
     return undefined;
   }
 
-  const { provider } = messenger.call(
-    'NetworkController:getNetworkClientById',
-    networkClientId,
-  );
-
   return {
     moneyAccountAddress,
     vaultConfig,
     networkClientId,
-    provider: new Web3Provider(provider as unknown as ExternalProvider),
   };
 }

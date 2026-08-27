@@ -10,8 +10,9 @@ import {
 import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
-import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
+import { PAY_TRANSACTION_TYPES } from '../constants/pay';
+import { Confirmation, SignatureRequestType } from '../types/confirm';
 
 export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,
@@ -55,22 +56,27 @@ export function getMoneyAccountTransactionType(
 }
 
 /**
- * Resolves the type to route a confirmation by, accounting for money-account
- * batches.
+ * Resolves the type to route a confirmation by, accounting for pay batches.
  *
- * Money-account batches carry their meaningful type on a nested transaction
- * (the top-level `type` is `batch`), so prefer that type when present and
- * fall back to the transaction's own type otherwise.
+ * Pay flows created via `addTransactionBatch` carry their meaningful type on a
+ * nested transaction (the top-level `type` is `batch`), so prefer a matching
+ * pay type when present and fall back to the transaction's own type otherwise.
  *
  * @param transactionMeta - The transaction metadata to inspect.
- * @returns The money-account type when present, otherwise the top-level type.
+ * @returns The matching pay type when present, otherwise the top-level type.
  */
 export function getConfirmationTransactionType(
   transactionMeta: TransactionMeta | undefined,
 ): TransactionType | undefined {
-  return (
-    getMoneyAccountTransactionType(transactionMeta) ?? transactionMeta?.type
+  if (!transactionMeta) {
+    return undefined;
+  }
+
+  const payType = PAY_TRANSACTION_TYPES.find((type) =>
+    hasTransactionType(transactionMeta, [type]),
   );
+
+  return payType ?? transactionMeta.type;
 }
 
 export const parseSanitizeTypedDataMessage = (dataToParse: string) => {

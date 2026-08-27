@@ -7,10 +7,7 @@ import type { TransactionPayControllerMessenger } from '@metamask/transaction-pa
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
 import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
-import type {
-  NetworkControllerFindNetworkClientIdByChainIdAction,
-  NetworkControllerGetNetworkClientByIdAction,
-} from '@metamask/network-controller';
+import type { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   TransactionControllerAddTransactionBatchAction,
@@ -84,7 +81,6 @@ type InitMessengerActions =
   | TransactionControllerIsAtomicBatchSupportedAction
   | MoneyAccountControllerGetMoneyAccountAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
-  | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
   | TransactionControllerAddTransactionBatchAction;
 
@@ -114,7 +110,6 @@ export function getTransactionPayControllerInitMessenger(
       'KeyringController:signEip7702Authorization',
       'MoneyAccountController:getMoneyAccount',
       'NetworkController:findNetworkClientIdByChainId',
-      'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
       'TransactionController:addTransactionBatch',
       'TransactionController:getNonceLock',

@@ -97,7 +97,21 @@ describe('confirm util', () => {
       );
     });
 
-    it('returns the top-level type when no money-account type is present', () => {
+    it('returns the nested pay type for batch transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.perpsDeposit },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(getConfirmationTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsDeposit,
+      );
+    });
+
+    it('returns the top-level type when no pay type is present', () => {
       const transactionMeta = {
         type: TransactionType.simpleSend,
       } as TransactionMeta;

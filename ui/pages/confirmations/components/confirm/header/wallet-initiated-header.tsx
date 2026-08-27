@@ -5,6 +5,7 @@ import {
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
 import {
   Box,
@@ -26,6 +27,7 @@ import {
 import { SHIELD_PLAN_ROUTE } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
+import { PAY_TRANSACTION_TYPES } from '../../../constants/pay';
 import { SEND_TRANSACTION_TYPES } from '../../../constants/send';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { AdvancedDetailsButton } from './advanced-details-button';
@@ -48,13 +50,7 @@ export const WalletInitiatedHeader = () => {
       return;
     }
 
-    if (
-      confirmationType === TransactionType.moneyAccountDeposit ||
-      confirmationType === TransactionType.moneyAccountWithdraw ||
-      confirmationType === TransactionType.musdClaim ||
-      confirmationType === TransactionType.perpsDeposit ||
-      confirmationType === TransactionType.perpsWithdraw
-    ) {
+    if (hasTransactionType(currentConfirmation, PAY_TRANSACTION_TYPES)) {
       onCancel({
         location: MetaMetricsEventLocation.Confirmation,
         navigateBackToPreviousPage: true,
@@ -75,7 +71,7 @@ export const WalletInitiatedHeader = () => {
         navigateBackForSend: true,
       });
     }
-  }, [confirmationType, navigate, onCancel]);
+  }, [confirmationType, currentConfirmation, navigate, onCancel]);
 
   const getHeaderTitle = () => {
     if (isSendTransaction) {

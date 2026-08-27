@@ -17,7 +17,6 @@ describe('getMoneyPayContext', () => {
       moneyAccountAddress: MONEY_ACCOUNT_ADDRESS_MOCK,
       vaultConfig: VAULT_CONFIG_MOCK,
       networkClientId: NETWORK_CLIENT_ID_MOCK,
-      provider: expect.anything(),
     });
   });
 
