@@ -66,10 +66,9 @@ describe('Add account', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'Wallet 1',
           account: SECOND_ACCOUNT_NAME,
-          balance: '$0.00',
         });
         await accountListPage.closeMultichainAccountsPage();
 
@@ -197,10 +196,9 @@ describe('Add account', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           account: SECOND_ACCOUNT_NAME,
           wallet: 'Wallet 1',
-          balance: '$0.00',
         });
         await accountListPage.openMultichainAccountMenu({
           accountLabel: SECOND_ACCOUNT_NAME,
@@ -222,10 +220,9 @@ describe('Add account', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           account: IMPORTED_ACCOUNT_NAME,
           wallet: 'Imported accounts',
-          balance: '$0.00',
         });
 
         // Remove the 3rd account imported with a private key

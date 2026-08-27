@@ -248,6 +248,37 @@ describe('MultichainAccountCell', () => {
     expect(balanceContainer.textContent).toMatch(/^[•]+$/u);
   });
 
+  it('renders no balance element when balance is undefined', () => {
+    renderWithProvider(
+      <MultichainAccountCell {...defaultProps} balance={undefined} />,
+      store,
+    );
+
+    expect(screen.queryByTestId('balance-display')).not.toBeInTheDocument();
+  });
+
+  it('renders no balance element when balance is an empty string', () => {
+    renderWithProvider(
+      <MultichainAccountCell {...defaultProps} balance="" />,
+      store,
+    );
+
+    expect(screen.queryByTestId('balance-display')).not.toBeInTheDocument();
+  });
+
+  it('renders no balance element when balance is missing and privacy mode is enabled', () => {
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        balance={undefined}
+        privacyMode
+      />,
+      store,
+    );
+
+    expect(screen.queryByTestId('balance-display')).not.toBeInTheDocument();
+  });
+
   describe('Connection Status', () => {
     beforeEach(() => {
       mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
