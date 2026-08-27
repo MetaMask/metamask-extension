@@ -1,8 +1,8 @@
 import React from 'react';
 import { act, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import messages from '../../../../../app/_locales/en/messages.json';
 import mockState from '../../../../../test/data/mock-state.json';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import type { UseMoneyAccountBalanceResult } from '../../../../hooks/money/useMoneyAccountBalance';
@@ -109,7 +109,7 @@ describe('MoneyAccountBalance', () => {
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$2,384.34',
     );
-    expect(getByText(messages.moneyBalanceTitle.message)).toBeInTheDocument();
+    expect(getByText(tEn('moneyBalanceTitle'))).toBeInTheDocument();
     expect(getByText('• mUSD')).toBeInTheDocument();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
   });
@@ -151,10 +151,8 @@ describe('MoneyAccountBalance', () => {
     );
     expect(
       getByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID),
-    ).toHaveTextContent(messages.moneyBalanceLastKnown.message);
-    expect(
-      getByText(messages.moneyBalanceLastKnown.message),
-    ).toBeInTheDocument();
+    ).toHaveTextContent(tEn('moneyBalanceLastKnown'));
+    expect(getByText(tEn('moneyBalanceLastKnown'))).toBeInTheDocument();
   });
 
   it('renders nothing when neither a live nor a last-known balance is available', () => {
@@ -191,12 +189,8 @@ describe('MoneyAccountBalance', () => {
       );
     });
 
-    expect(
-      getByText(messages.moneyBalanceInfoBody.message),
-    ).toBeInTheDocument();
-    expect(
-      getByText(messages.moneyBalanceInfoWithdrawals.message),
-    ).toBeInTheDocument();
+    expect(getByText(tEn('moneyBalanceInfoBody'))).toBeInTheDocument();
+    expect(getByText(tEn('moneyBalanceInfoWithdrawals'))).toBeInTheDocument();
   });
 
   it('prefers the last-known balance over the skeleton while loading', () => {
@@ -212,7 +206,7 @@ describe('MoneyAccountBalance', () => {
     );
     expect(
       getByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID),
-    ).toHaveTextContent(messages.moneyBalanceLastKnown.message);
+    ).toHaveTextContent(tEn('moneyBalanceLastKnown'));
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID)).toBeNull();
   });
 });
