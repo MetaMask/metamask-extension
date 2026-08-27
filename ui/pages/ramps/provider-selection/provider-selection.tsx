@@ -35,7 +35,6 @@ import RampsProviderListItem from './components/ramps-provider-list-item';
 import {
   buildProviderListItems,
   findProviderQuote,
-  findProviderTagQuote,
   getProviderTag,
   type ProviderListItem,
   type ProviderTag,
@@ -105,10 +104,9 @@ function buildProviderListRows({
       provider.id,
       selectedPaymentMethodId,
     );
-    const providerMetadataQuote = findProviderTagQuote(quotes, provider.id);
     const tag =
       showQuotes && !quotesLoading
-        ? getProviderTag(provider.id, providerMetadataQuote, ordersProviders, t)
+        ? getProviderTag(provider.id, quotes, ordersProviders, t)
         : null;
 
     return {

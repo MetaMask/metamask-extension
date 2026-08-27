@@ -22,24 +22,28 @@ export type ProviderTag = {
  * `Info` aliases the `primary-muted` / `primary-default` design tokens.
  *
  * @param providerId - Provider id.
- * @param matchedQuote - Quote matched to this provider, when available.
+ * @param quotes - Quotes response containing provider quotes.
  * @param ordersProviders - Provider ids from completed orders.
  * @param t - i18n translate function.
  * @returns Localized tag with its severity, or null.
  */
 export function getProviderTag(
   providerId: string,
-  matchedQuote: Quote | null,
+  quotes: QuotesResponse | null,
   ordersProviders: string[],
   t: TranslateFn,
 ): ProviderTag | null {
   if (ordersProviders.includes(providerId)) {
     return { label: t('rampsPreviouslyUsed'), severity: TagSeverity.Info };
   }
-  if (matchedQuote?.metadata?.tags?.isMostReliable) {
+  const providerQuotes = quotes?.success?.filter(
+    (quote) => quote.provider === providerId,
+  );
+
+  if (providerQuotes?.some((quote) => quote.metadata?.tags?.isMostReliable)) {
     return { label: t('rampsMostReliable'), severity: TagSeverity.Neutral };
   }
-  if (matchedQuote?.metadata?.tags?.isBestRate) {
+  if (providerQuotes?.some((quote) => quote.metadata?.tags?.isBestRate)) {
     return { label: t('rampsBestRate'), severity: TagSeverity.Success };
   }
   return null;
@@ -130,34 +134,5 @@ export function findProviderQuote(
       (quote) => quote.provider === providerId && !isCustomActionQuote(quote),
     ) ??
     null
-  );
-}
-
-/**
- * Finds a quote containing provider tag metadata.
- *
- * Tag metadata can be returned on any quote for a provider, regardless of its
- * payment method.
- *
- * @param quotes - Quotes response.
- * @param providerId - Provider id.
- * @returns Quote containing provider tag metadata, or null.
- */
-export function findProviderTagQuote(
-  quotes: QuotesResponse | null,
-  providerId: string,
-): Quote | null {
-  if (!quotes?.success?.length) {
-    return null;
-  }
-
-  return (
-    quotes.success.find(
-      (quote) =>
-        quote.provider === providerId &&
-        (quote.metadata?.tags?.isMostReliable ||
-          quote.metadata?.tags?.isBestRate) &&
-        !(quote.quote as { isCustomAction?: boolean })?.isCustomAction,
-    ) ?? null
   );
 }

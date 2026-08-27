@@ -2,7 +2,6 @@ import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   buildProviderListItems,
   findProviderQuote,
-  findProviderTagQuote,
   getProviderTag,
 } from './build-provider-list-items';
 
@@ -124,7 +123,7 @@ describe('findProviderQuote', () => {
     ).toBe('0.05');
   });
 
-  it('supports a provider-wide quote lookup for provider metadata', () => {
+  it('gets provider tags from all of the provider quotes', () => {
     const quotes: QuotesResponse = {
       success: [
         {
@@ -154,39 +153,9 @@ describe('findProviderQuote', () => {
       findProviderQuote(quotes, transak.id, 'debit-credit-card')?.quote
         ?.amountOut,
     ).toBe('0.05');
-    expect(
-      findProviderQuote(quotes, transak.id)?.metadata?.tags?.isMostReliable,
-    ).toBe(true);
-  });
-
-  it('finds provider metadata when it is on a later quote', () => {
-    const quotes: QuotesResponse = {
-      success: [
-        {
-          provider: transak.id,
-          quote: {
-            amountIn: 100,
-            amountOut: '0.04',
-            paymentMethod: 'debit-credit-card',
-          },
-        },
-        {
-          provider: transak.id,
-          quote: {
-            amountIn: 100,
-            amountOut: '0.05',
-            paymentMethod: 'bank-transfer',
-          },
-          metadata: { tags: { isMostReliable: true } },
-        },
-      ],
-      sorted: [],
-      error: [],
-      customActions: [],
-    };
-
-    expect(findProviderTagQuote(quotes, transak.id)?.metadata?.tags).toEqual({
-      isMostReliable: true,
+    expect(getProviderTag(transak.id, quotes, [], t)).toStrictEqual({
+      label: 'rampsMostReliable',
+      severity: 'neutral',
     });
   });
 });
@@ -197,9 +166,22 @@ describe('getProviderTag', () => {
       getProviderTag(
         transak.id,
         {
-          provider: transak.id,
-          quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
-          metadata: { tags: { isBestRate: true, isMostReliable: true } },
+          success: [
+            {
+              provider: transak.id,
+              quote: {
+                amountIn: 1,
+                amountOut: '1',
+                paymentMethod: 'card',
+              },
+              metadata: {
+                tags: { isBestRate: true, isMostReliable: true },
+              },
+            },
+          ],
+          sorted: [],
+          error: [],
+          customActions: [],
         },
         [transak.id],
         t,
@@ -212,9 +194,16 @@ describe('getProviderTag', () => {
       getProviderTag(
         transak.id,
         {
-          provider: transak.id,
-          quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
-          metadata: { tags: { isMostReliable: true } },
+          success: [
+            {
+              provider: transak.id,
+              quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
+              metadata: { tags: { isMostReliable: true } },
+            },
+          ],
+          sorted: [],
+          error: [],
+          customActions: [],
         },
         [],
         t,
@@ -225,9 +214,16 @@ describe('getProviderTag', () => {
       getProviderTag(
         transak.id,
         {
-          provider: transak.id,
-          quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
-          metadata: { tags: { isBestRate: true } },
+          success: [
+            {
+              provider: transak.id,
+              quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
+              metadata: { tags: { isBestRate: true } },
+            },
+          ],
+          sorted: [],
+          error: [],
+          customActions: [],
         },
         [],
         t,
