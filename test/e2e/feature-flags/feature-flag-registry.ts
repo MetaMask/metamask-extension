@@ -2857,6 +2857,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  moneyAccountChompConfig: {
+    inProd: true,
+    name: 'moneyAccountChompConfig',
+    productionDefault: {
+      baseUrl: 'https://chomp.api.cx.metamask.io',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   [MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME]: {
     inProd: false,
     name: MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME,
