@@ -66,9 +66,7 @@ export default function KeyringRemovalSnapWarning({
       return;
     }
     prevKeyringAccountsRef.current = keyringAccounts;
-    queueMicrotask(() =>
-      setShowConfirmation(keyringAccounts.length === 0),
-    );
+    queueMicrotask(() => setShowConfirmation(keyringAccounts.length === 0));
   }, [keyringAccounts]);
 
   const validateConfirmationInput = (input: string): boolean => {
