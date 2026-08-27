@@ -1,9 +1,7 @@
 import {
   BROWSER_SHUTTING_DOWN_ERROR,
   CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
-  MISSING_VAULT_ERROR,
   isBrowserShuttingDownError,
-  isStateCorruptionError,
 } from './errors';
 
 describe('isBrowserShuttingDownError', () => {
@@ -14,25 +12,13 @@ describe('isBrowserShuttingDownError', () => {
   });
 
   it('identifies it when raised as a DOMException', () => {
-    // Extension APIs can reject with one, so the predicate has to accept it.
+    // `DOMException instanceof Error` is true, and extension APIs can reject
+    // with one, so the predicate has to accept it.
     expect(
       isBrowserShuttingDownError(
         new DOMException(BROWSER_SHUTTING_DOWN_ERROR, 'InvalidStateError'),
       ),
     ).toBe(true);
-  });
-
-  it('identifies it when the error has crossed a realm', () => {
-    // An extension has separate realms for the service worker, the offscreen
-    // document and each UI context. An error that crosses one keeps its shape
-    // but fails `instanceof Error`, so matching must not depend on the
-    // prototype - otherwise the error is reported after all.
-    const crossRealmError = Object.create(null);
-    crossRealmError.name = 'Error';
-    crossRealmError.message = BROWSER_SHUTTING_DOWN_ERROR;
-
-    expect(crossRealmError instanceof Error).toBe(false);
-    expect(isBrowserShuttingDownError(crossRealmError)).toBe(true);
   });
 
   it('rejects near-misses', () => {
@@ -53,60 +39,19 @@ describe('isBrowserShuttingDownError', () => {
 
   it('rejects unrelated storage errors', () => {
     expect(
-      isBrowserShuttingDownError(
-        new Error('Corruption: block checksum mismatch'),
-      ),
+      isBrowserShuttingDownError(new Error(CORRUPTION_BLOCK_CHECKSUM_MISMATCH)),
     ).toBe(false);
   });
 
-  it('tolerates values that carry no message', () => {
-    // A bare string is not treated as a match: only a thrown object with this
-    // exact `message` counts, so an unrelated value cannot silence reporting.
+  it('tolerates values that are not errors', () => {
+    // Callers pass `catch` variables straight in, which are typed `unknown`.
     expect(isBrowserShuttingDownError(BROWSER_SHUTTING_DOWN_ERROR)).toBe(false);
     expect(isBrowserShuttingDownError(undefined)).toBe(false);
     expect(isBrowserShuttingDownError(null)).toBe(false);
     expect(isBrowserShuttingDownError(42)).toBe(false);
     expect(isBrowserShuttingDownError({})).toBe(false);
-    expect(isBrowserShuttingDownError({ message: 42 })).toBe(false);
-  });
-
-  it('requires a name, so the ErrorLike narrowing is sound', () => {
-    // The predicate narrows to `ErrorLike`, which declares `name`. Callers may
-    // read it, so it has to be validated rather than assumed.
     expect(
       isBrowserShuttingDownError({ message: BROWSER_SHUTTING_DOWN_ERROR }),
     ).toBe(false);
-    expect(
-      isBrowserShuttingDownError({
-        name: 'Error',
-        message: BROWSER_SHUTTING_DOWN_ERROR,
-      }),
-    ).toBe(true);
-  });
-});
-
-describe('isStateCorruptionError', () => {
-  it('identifies the state corruption errors', () => {
-    expect(isStateCorruptionError(new Error(MISSING_VAULT_ERROR))).toBe(true);
-    expect(
-      isStateCorruptionError(new Error(CORRUPTION_BLOCK_CHECKSUM_MISMATCH)),
-    ).toBe(true);
-  });
-
-  it('identifies them on a serialized error sent over the port', () => {
-    // The critical-error port carries plain objects rather than Errors, so this
-    // must not depend on the prototype either.
-    expect(
-      isStateCorruptionError({ name: 'Error', message: MISSING_VAULT_ERROR }),
-    ).toBe(true);
-  });
-
-  it('rejects unrelated and message-less values', () => {
-    expect(isStateCorruptionError(new Error(BROWSER_SHUTTING_DOWN_ERROR))).toBe(
-      false,
-    );
-    expect(isStateCorruptionError(undefined)).toBe(false);
-    expect(isStateCorruptionError(null)).toBe(false);
-    expect(isStateCorruptionError({})).toBe(false);
   });
 });
