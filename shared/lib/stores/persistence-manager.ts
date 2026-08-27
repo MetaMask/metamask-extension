@@ -3,7 +3,10 @@ import log from 'loglevel';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
 import { captureException, captureMessage } from '../sentry';
-import { MISSING_VAULT_ERROR } from '../../constants/errors';
+import {
+  MISSING_VAULT_ERROR,
+  isBrowserShuttingDownError,
+} from '../../constants/errors';
 import { getManifestFlags } from '../manifestFlags';
 import { VaultCorruptionType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
@@ -672,6 +675,21 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           return [true, undefined];
         } catch (err) {
+          // A write that failed only because the browser is closing is not a
+          // storage problem, so none of the failure handling below applies.
+          // Sentry is handled globally by `ignoreErrors`; returning early here
+          // is about the two effects that outlive this call - it must not latch
+          // `#dataPersistenceFailing`, which would suppress the report of a
+          // later real failure, and it must not run `#notifySetFailed`, which
+          // persists a storage-error flag that would warn the user in their
+          // next session. Both are unlikely to be reached with the browser
+          // going away, so this is precautionary.
+          if (isBrowserShuttingDownError(err)) {
+            log.info(
+              'MetaMask - storage write failed because the browser is shutting down',
+            );
+            return [false, this.#normalizePersistError(err)];
+          }
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             // Use different tags to differentiate storage.local vs IndexedDB backup failures.
@@ -815,6 +833,21 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           return [true, undefined];
         } catch (err) {
+          // A write that failed only because the browser is closing is not a
+          // storage problem, so none of the failure handling below applies.
+          // Sentry is handled globally by `ignoreErrors`; returning early here
+          // is about the two effects that outlive this call - it must not latch
+          // `#dataPersistenceFailing`, which would suppress the report of a
+          // later real failure, and it must not run `#notifySetFailed`, which
+          // persists a storage-error flag that would warn the user in their
+          // next session. Both are unlikely to be reached with the browser
+          // going away, so this is precautionary.
+          if (isBrowserShuttingDownError(err)) {
+            log.info(
+              'MetaMask - storage write failed because the browser is shutting down',
+            );
+            return [false, this.#normalizePersistError(err)];
+          }
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             // Use different tags to differentiate storage.local vs IndexedDB backup failures.
@@ -891,7 +924,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           }
         }
 
-        if (validateVault) {
+        // A read that failed only because the browser is closing says nothing
+        // about the state of the data, so it must not trigger vault recovery:
+        // emitting `vaultCorruptionDetected` and throwing `MISSING_VAULT_ERROR`
+        // would both be false positives. The error still propagates below,
+        // unchanged, so callers abort as they would for a real failure.
+        //
+        // Whether it reaches Sentry is decided by `ignoreErrors` in
+        // `setupSentry.js`, not here.
+        if (validateVault && !isBrowserShuttingDownError(localStoreError)) {
           // Check if we need to trigger vault recovery:
           // 1. If localStore.get() failed entirely (e.g., Firefox's "Error: An unexpected error occurred")
           // 2. If we got a result but the vault is missing
