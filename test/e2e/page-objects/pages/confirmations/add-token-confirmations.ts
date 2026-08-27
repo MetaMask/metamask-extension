@@ -25,6 +25,10 @@ class AddTokenConfirmation {
 
   driver: Driver;
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-add-token-confirmation',
+  };
+
   private readonly rejectAddTokenButton =
     '[data-testid="page-container-footer-cancel"]';
 
@@ -34,7 +38,10 @@ class AddTokenConfirmation {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.addTokenConfirmationTitle);
+      await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
+        this.addTokenConfirmationTitle,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Add token confirmation page to be loaded',

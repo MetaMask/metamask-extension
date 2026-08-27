@@ -20,6 +20,36 @@ import { ACCOUNT_TYPE } from '../../../constants';
  * @see ui/components/multichain-accounts/multichain-account-list/multichain-account-list.tsx
  */
 class AccountListPage {
+  /**
+   * Builds an xpath matching the account cell for `account` within `wallet`'s
+   * section of the multichain account list.
+   *
+   * Every row of the virtualized list is a sibling of every other, so the
+   * `preceding-sibling` predicate is what confines the match to this wallet: on
+   * a reverse axis `[1]` is the *nearest* match, so this keeps only rows whose
+   * closest preceding wallet header is this wallet's. A bare
+   * `following-sibling::*` would spill into every later wallet and match a
+   * same-named account there — and account names are matched by substring, so
+   * e.g. 'Account 1' also matches 'Snap Account 1'.
+   *
+   * @param options - The anchor, wallet, and account to match.
+   * @param options.anchor - XPath resolving to the wallet header's row wrapper.
+   * Pass `'..'` to build an xpath relative to an already-found header element.
+   * @param options.wallet - The wallet name whose section to search.
+   * @param options.account - The account name to match.
+   * @returns The xpath for the account cell.
+   */
+  private readonly accountCellInWalletXPath = ({
+    anchor,
+    wallet,
+    account,
+  }: {
+    anchor: string;
+    wallet: string;
+    account: string;
+  }) =>
+    `${anchor}/following-sibling::*[preceding-sibling::*[.//*[@data-testid='multichain-account-tree-wallet-header']][1]//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]]//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]`;
+
   private readonly accountDetailsTab = {
     text: 'Account details',
     tag: 'button',
@@ -618,8 +648,13 @@ class AccountListPage {
         css: this.walletHeader,
         text: wallet,
       });
+      const accountCell = this.accountCellInWalletXPath({
+        anchor: '..',
+        wallet,
+        account,
+      });
       await this.driver.findNestedElement(walletHeader, {
-        xpath: `../following-sibling::*[preceding-sibling::*[.//*[@data-testid='multichain-account-tree-wallet-header']][1]//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]]//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
+        xpath: `${accountCell}//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
       });
     } else {
       // Single wallet (no wallet header rendered): find the account cell directly.
@@ -630,6 +665,54 @@ class AccountListPage {
       await this.driver.findNestedElement(accountCell, {
         xpath: `.//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
       });
+    }
+  }
+
+  /**
+   * Checks that no balance at all is rendered for a specific account on the
+   * multichain account list page.
+   *
+   * Balances are only fetched eagerly for the selected account group. Groups
+   * whose balance has not been fetched yet are indistinguishable from genuinely
+   * empty ones, so the cell renders nothing rather than a misleading "$0.00".
+   *
+   * @param options - The account and optional wallet to check.
+   * @param options.wallet - The wallet name. Only pass when multiple wallets are present.
+   * @param options.account - The account name (default: 'Account 1').
+   */
+  async checkMultichainAccountBalanceNotDisplayed({
+    wallet,
+    account = 'Account 1',
+  }: {
+    wallet?: string;
+    account?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Check that no multichain account balance is displayed for ${account}${wallet ? ` under ${wallet}` : ''}`,
+    );
+
+    if (wallet) {
+      // Same wallet-scoped cell xpath as checkMultichainAccountBalanceDisplayed,
+      // so this can never match a same-named account under a different wallet.
+      const accountCell = this.accountCellInWalletXPath({
+        anchor: `//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]/..`,
+        wallet,
+        account,
+      });
+      // Guard on the cell itself: without it this would pass while the list is
+      // still rendering, before any balance could have appeared.
+      await this.driver.assertElementNotPresent(
+        { xpath: `${accountCell}//*[@data-testid='balance-display']` },
+        { findElementGuard: { xpath: accountCell } },
+      );
+    } else {
+      // Single wallet (no wallet header rendered): only one cell can match the
+      // account name, so scoping by name alone is equivalent to the cell.
+      const accountCell = `//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]`;
+      await this.driver.assertElementNotPresent(
+        { xpath: `${accountCell}//*[@data-testid='balance-display']` },
+        { findElementGuard: { xpath: accountCell } },
+      );
     }
   }
 
