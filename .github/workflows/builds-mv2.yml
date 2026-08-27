@@ -1,0 +1,39 @@
+# Firefox / MV2 builds used by E2E Firefox.
+# Grouped so main.yml shows one expandable job instead of three.
+
+name: Builds MV2
+
+on:
+  workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+
+jobs:
+  build-dist-mv2-webpack:
+    name: build-dist-mv2-webpack
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-mv2-webpack
+      build-command: yarn webpack:lavamoat:build:mv2 --zip
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-mv2-webpack:
+    name: build-test-mv2-webpack
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-mv2-webpack
+      build-command: yarn build:test:mv2 --zip
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-flask-mv2-webpack:
+    name: build-test-flask-mv2-webpack
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-flask-mv2-webpack
+      build-command: yarn build:test:flask:mv2 --zip
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit

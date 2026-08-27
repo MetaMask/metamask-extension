@@ -1,0 +1,74 @@
+name: Prep e2e Firefox
+
+on:
+  workflow_call:
+    outputs:
+      use-matrix:
+        description: The matrix for Firefox e2e jobs
+        value: ${{ jobs.run.outputs.use-matrix }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      use-matrix: ${{ steps.set-use-matrix.outputs.use-matrix }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      # Resolve the run ID holding the latest Firefox E2E report for shard balancing.
+      - name: Resolve latest Firefox e2e report run ID
+        id: e2e-reports
+        continue-on-error: true
+        uses: actions/github-script@v9
+        with:
+          retries: 3
+          script: |
+            const { join } = await import('node:path');
+            const { pathToFileURL } = await import('node:url');
+            const scriptPath = join(process.env.GITHUB_WORKSPACE, '.github/scripts/resolve-e2e-report-run-ids.mts');
+            const { resolveE2EReportRunIds } = await import(pathToFileURL(scriptPath).href);
+
+            await resolveE2EReportRunIds({ github, context, core });
+
+      - name: Download test-e2e-firefox-report
+        if: ${{ steps.e2e-reports.outputs.firefox-run-id != '' }}
+        # `continue-on-error` matters: a missing report only costs shard balance (e2e falls back to a naive split)
+        # failing here would skip Firefox E2E and fail ci-status-gate, blocking every PR.
+        continue-on-error: true
+        uses: actions/download-artifact@v7
+        with:
+          name: test-e2e-firefox-report
+          path: test/test-results/
+          github-token: ${{ env.GITHUB_TOKEN }}
+          run-id: ${{ steps.e2e-reports.outputs.firefox-run-id }}
+
+      - name: Upload test-runs-for-splitting
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-runs-for-splitting
+          path: test/test-results/test-runs-firefox.json
+          if-no-files-found: ignore
+
+      - name: Set use matrix
+        id: set-use-matrix
+        run: |
+          SUITE_SHARD_COUNTS=$(jq -cn '{
+            "test-e2e-firefox-webpack": 20,
+            "test-e2e-firefox-flask-webpack": 5,
+            "test-e2e-firefox-playwright": 2
+          }')
+
+          MATRIX_JSON=$(jq -cn --argjson counts "$SUITE_SHARD_COUNTS" '
+            reduce ($counts | to_entries[]) as $entry
+              ({}; . + { ($entry.key): { index: [range(0; $entry.value)] } })
+          ')
+
+          echo "use-matrix=${MATRIX_JSON}" >> "$GITHUB_OUTPUT"

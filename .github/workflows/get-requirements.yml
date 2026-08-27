@@ -37,7 +37,7 @@ on:
         description: Whether benchmarks job is needed
         value: ${{ jobs.detect-changes.outputs.needs-benchmarks }}
       needs-e2e:
-        description: Whether E2E tests are needed
+        description: Whether e2e tests are needed
         value: ${{ jobs.detect-changes.outputs.needs-e2e }}
 
 env:
@@ -92,7 +92,7 @@ jobs:
         run: git fetch --depth=1 origin "${HEAD_COMMIT_HASH}"
 
       # Do this before we use dorny/paths-filter, which might checkout other commits
-      - name: Check E2E overrides (skip / force)
+      - name: Check e2e overrides (skip / force)
         id: e2e-override
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
         uses: actions/github-script@v8
@@ -286,15 +286,19 @@ jobs:
             }
             core.info('-> no build overrides');
 
-      # Extract the list of expected build artifact names from main.yml.
-      # This avoids a hardcoded list that could drift out of sync.
+      # Extract the list of expected build artifact names from the Main
+      # workflow graph. Build jobs live in reusable workflows called from
+      # main.yml, so grep those plus main.yml in case any inlined jobs remain.
       - name: Extract required build artifact names
         id: extract-build-names
         if: ${{ steps.compute-build-hash.outputs.build-hash }}
         run: |
-          NAMES=$(grep -oP '(?<=build-name: )\S+' .github/workflows/main.yml | jq -Rsc 'split("\n") | map(select(length > 0))')
+          NAMES=$(grep -h -oP '(?<=build-name: )\S+' \
+            .github/workflows/main.yml \
+            .github/workflows/builds-*.yml \
+            | jq -Rsc 'split("\n") | map(select(length > 0)) | unique')
           if [[ "$NAMES" == "[]" || -z "$NAMES" ]]; then
-            echo "::error::No build-name entries found in main.yml — cannot verify artifact completeness"
+            echo "::error::No build-name entries found in main.yml or builds-*.yml — cannot verify artifact completeness"
             exit 1
           fi
           echo "names=$NAMES" >> "$GITHUB_OUTPUT"

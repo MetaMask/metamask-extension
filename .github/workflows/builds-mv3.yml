@@ -1,0 +1,40 @@
+# Chrome / MV3 builds used by E2E Chrome, bundle-size, and regression validation.
+# Grouped so main.yml shows one expandable job instead of three.
+
+name: Builds MV3
+
+on:
+  workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+
+jobs:
+  build-dist-webpack:
+    name: build-dist-webpack
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-webpack
+      build-command: yarn webpack:lavamoat:build --zip --stats
+      bundle-analyzer: true
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-webpack:
+    name: build-test-webpack
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-webpack
+      build-command: yarn build:test --zip
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-flask-webpack:
+    name: build-test-flask-webpack
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-flask-webpack
+      build-command: yarn build:test:flask --zip
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit

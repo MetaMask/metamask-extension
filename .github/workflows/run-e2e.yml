@@ -1,4 +1,4 @@
-name: Run E2E
+name: Run e2e
 
 on:
   workflow_call:
@@ -6,7 +6,7 @@ on:
       test-suite-name:
         required: true
         type: string
-        description: The name of the E2E test suite
+        description: The name of the e2e test suite
       build-artifact:
         type: string
         default: ''
@@ -131,6 +131,7 @@ jobs:
         continue-on-error: true
         with:
           name: test-runs-for-splitting
+          merge-multiple: true
           path: test/test-results/
 
       # On re-run (run_attempt > 1), download previous test results to identify failed tests
@@ -153,7 +154,7 @@ jobs:
         if: ${{ contains(inputs.test-command, 'firefox') }}
         run: .github/scripts/pin-geckodriver.sh
 
-      - name: Run E2E tests
+      - name: Run e2e tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
         env:

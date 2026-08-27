@@ -1,4 +1,4 @@
-name: Update E2E fixtures
+name: Update e2e fixtures
 
 on:
   issue_comment:
@@ -163,7 +163,7 @@ jobs:
           overwrite: true
 
   update-fixtures:
-    name: Update E2E fixtures
+    name: Update e2e fixtures
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
@@ -200,7 +200,7 @@ jobs:
           cp -R build-dist-webpack/dist ./dist
           cp -R build-dist-webpack/builds ./builds
 
-      - name: Update E2E fixtures
+      - name: Update e2e fixtures
         run: |
           yarn test:e2e:single test/e2e/dist/wallet-fixture-export.spec.ts --browser chrome --retries 1
           yarn lint:json:fix
@@ -229,7 +229,7 @@ jobs:
           overwrite: true
 
   commit-updated-fixtures:
-    name: Commit the updated E2E fixtures
+    name: Commit the updated e2e fixtures
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
@@ -284,16 +284,16 @@ jobs:
         run: |
           git config --global user.name 'MetaMask Bot'
           git config --global user.email 'metamaskbot@users.noreply.github.com'
-          git commit -am "Update E2E fixtures"
+          git commit -am "Update e2e fixtures"
           git push
 
       - name: Post comment
         run: |
           if [[ $HAS_CHANGES == 'true' ]]
           then
-            gh pr comment "${PR_NUMBER}" --body 'E2E fixtures updated.'
+            gh pr comment "${PR_NUMBER}" --body 'e2e fixtures updated.'
           else
-            gh pr comment "${PR_NUMBER}" --body 'No E2E fixture changes detected.'
+            gh pr comment "${PR_NUMBER}" --body 'No e2e fixture changes detected.'
           fi
         env:
           HAS_CHANGES: ${{ steps.fixture-changes.outputs.HAS_CHANGES }}
@@ -351,7 +351,7 @@ jobs:
         run: |
           passed="${{ needs.check-status.outputs.PASSED }}"
           if [[ $passed != "true" ]]; then
-            gh pr comment "${PR_NUMBER}" --body "E2E fixtures update failed. You can [review the logs or retry the fixture update here](${ACTION_RUN_URL})"
+            gh pr comment "${PR_NUMBER}" --body "e2e fixtures update failed. You can [review the logs or retry the fixture update here](${ACTION_RUN_URL})"
           fi
         env:
           GITHUB_TOKEN: ${{ steps.token.outputs.token }}

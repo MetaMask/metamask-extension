@@ -83,38 +83,19 @@ jobs:
           cache-node-modules: true
           skip-allow-scripts: true
 
-  lint-workflows:
-    name: Lint workflows
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+  lint:
+    name: Lint
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' || needs.get-requirements.outputs.needs-lint == 'true' }}
     needs:
       - get-requirements
-    uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@v1
-
-  test-lint:
-    name: Test lint
-    if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
-    needs:
       - prep-deps
-      - get-requirements
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
-      - name: Lint
-        run: yarn lint
-
-      - name: Verify locales
-        run: yarn verify-locales --quiet
-
-      - name: Check circular dependencies
-        run: yarn circular-deps:check
+    uses: ./.github/workflows/lint.yml
+    with:
+      run-workflows: ${{ needs.get-requirements.outputs.skip-everything != 'true' && 'true' || 'false' }}
+      run-code: ${{ needs.get-requirements.outputs.needs-lint }}
 
   repository-health-checks:
+    name: Repository health checks
     needs:
       - get-requirements
       - prep-deps
@@ -127,24 +108,229 @@ jobs:
           needs.get-requirements.outputs.just-repository-health-checks == 'true'
         )
       }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       id-token: write # required for S3 upload of audit baseline
       issues: write # create tracking issues for new audit advisories
       actions: write # download baseline artifact + re-run health-checks to refresh baseline
       pull-requests: write # add retry-ci label when ambient CVEs block a yarn.lock PR
-    uses: ./.github/workflows/repository-health-checks.yml
-    secrets: inherit
+    env:
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SLACK_WEBHOOK_METAMASK_EXTENSION: ${{ secrets.SLACK_WEBHOOK_METAMASK_EXTENSION }}
+      # True only when the PR head lives in a different repository (no secrets).
+      IS_CROSS_REPO_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
 
-  test-storybook:
-    name: Test storybook
+      - name: ShellCheck Lint
+        if: ${{ !cancelled() }}
+        run: ./development/shellcheck.sh
+
+      - name: Validate changelog
+        if: ${{ !startsWith(env.BRANCH, 'release/') }}
+        run: yarn lint:changelog
+
+      - name: Validate release candidate changelog
+        if: ${{ startsWith(env.BRANCH, 'release/') }}
+        run: .github/scripts/validate-changelog-in-rc.sh
+
+      - name: Lint lockfile
+        if: ${{ !cancelled() }}
+        run: yarn lint:lockfile
+
+      - name: Lint console baseline
+        if: ${{ !cancelled() }}
+        run: yarn lint:baseline
+
+      - name: Check yarn resolutions
+        if: ${{ !cancelled() }}
+        run: yarn --check-resolutions
+
+      # --- Baseline download (PR, push-to-main, and cron) ---
+      # When the download fails (first rollout, expired artifact, or cross-repo PR
+      # with read-only token), NO_BASELINE=true tells the triage script to
+      # fall back to the same criteria as the package.json `audit` script:
+      #   yarn audit --environment production --severity moderate
+      #
+      # merge_group runs skip the diff entirely: by the time a PR enters the
+      # merge queue it has already passed the diff check. Any new advisory
+      # that appeared on main since then wasn't introduced by this PR and
+      # will be surfaced by the next push-to-main run.
+      #
+      # schedule (cron) runs also diff against the latest baseline. This
+      # catches newly published CVEs overnight — even when no code was pushed —
+      # and sends a Slack alert. The cron schedule is defined in main.yml.
+      - name: Audit -- find baseline run
+        id: find-baseline-run
+        if: >-
+          ${{
+            !cancelled()
+            && (
+              github.event_name == 'pull_request'
+              || github.event_name == 'push'
+              || github.event_name == 'schedule'
+            )
+          }}
+        continue-on-error: true
+        uses: actions/github-script@v8
+        with:
+          script: |
+            // Artifact-first search: find the audit-baseline artifact from
+            // the most recent main-branch run. Using the artifact API avoids
+            // race conditions with re-runs — a re-run of an older run may
+            // upload a newer artifact, but we always prefer the highest
+            // run ID (latest workflow run) to stay on the newest commit.
+            //
+            // Security: filter to head_branch === 'main' so a PR branch
+            // can never supply a poisoned baseline.
+            const { data } = await github.rest.actions.listArtifactsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'audit-baseline',
+              per_page: 20,
+            });
+            const baseline = data.artifacts
+              .filter(a => a.workflow_run?.head_branch === 'main')
+              .sort((a, b) => b.workflow_run.id - a.workflow_run.id)[0];
+            if (!baseline) {
+              core.setFailed('No audit-baseline artifact found from a main-branch run');
+              return;
+            }
+            const runId = baseline.workflow_run.id;
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${runId}`;
+            core.info(`Using baseline from run ${runId} (${runUrl})`);
+            core.setOutput('run-id', String(runId));
+
+      - name: Audit -- download baseline
+        id: download-baseline
+        if: ${{ !cancelled() && steps.find-baseline-run.outcome == 'success' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: audit-baseline
+          path: .tmp
+          run-id: ${{ steps.find-baseline-run.outputs.run-id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Audit -- check for vulnerabilities
+        if: ${{ !cancelled() && github.event_name != 'merge_group' }}
+        env:
+          NO_BASELINE: ${{ steps.download-baseline.outcome != 'success' }}
+        run: |
+          mkdir -p .tmp
+          yarn tsx .github/scripts/yarn-audit-and-triage.mts
+
+      # --- Diff (runs when a real baseline was downloaded) ---
+      # On push-to-main and cron this detects advisories introduced since the
+      # last green build and sends a Slack notification. On PRs it fails the
+      # check when new production moderate+ advisories are found.
+      - name: Audit -- diff against baseline
+        if: ${{ !cancelled() && steps.download-baseline.outcome == 'success' }}
+        env:
+          BASELINE_RUN_ID: ${{ steps.find-baseline-run.outputs.run-id }}
+        run: |
+          yarn tsx .github/scripts/yarn-audit-diff.mts
+
+      # On push-to-main, rename the audit output to audit-baseline.json so the
+      # uploaded artifact name matches what PR runs download to .tmp.
+      - name: Audit -- rename baseline
+        if: >-
+          ${{
+            !cancelled()
+            && (github.event_name == 'push' || github.event_name == 'schedule')
+            && github.ref == 'refs/heads/main'
+          }}
+        run: mv .tmp/audit-current.json .tmp/audit-baseline.json
+
+      - name: Audit -- upload baseline artifact
+        if: >-
+          ${{
+            !cancelled()
+            && (github.event_name == 'push' || github.event_name == 'schedule')
+            && github.ref == 'refs/heads/main'
+          }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: audit-baseline
+          path: .tmp/audit-baseline.json
+
+      - name: Audit -- upload baseline to S3
+        if: >-
+          ${{
+            !cancelled()
+            && (github.event_name == 'push' || github.event_name == 'schedule')
+            && github.ref == 'refs/heads/main'
+            && github.repository == 'MetaMask/metamask-extension'
+            && vars.AWS_REGION
+            && vars.AWS_IAM_ROLE
+            && vars.AWS_S3_BUCKET
+          }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/audit-baseline
+          path: .tmp/audit-baseline.json
+
+      - name: Detect yarn lock deduplications
+        if: ${{ !cancelled() }}
+        run: yarn dedupe --check
+
+      - name: Run depcheck
+        if: ${{ !cancelled() }}
+        run: yarn depcheck
+
+      - name: Validate allow-scripts config
+        if: ${{ !cancelled() }}
+        run: yarn allow-scripts auto
+
+      - name: Check feature flag registry
+        if: ${{ !cancelled() }}
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn tsx .github/scripts/check-feature-flag-registry.mts
+
+      - name: Check working tree
+        if: ${{ !cancelled() }}
+        run: |
+          if ! git diff --exit-code; then
+              echo "::error::Working tree dirty."
+              exit 1
+          fi
+
+      - name: Run fitness functions
+        if: ${{ !cancelled() && github.event_name == 'pull_request'}}
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn fitness-functions ci
+
+  storybook:
+    name: Storybook
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.needs-storybook == 'true' }}
-    uses: ./.github/workflows/test-storybook.yml
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/storybook.yml
+    with:
+      run-test: ${{ needs.get-requirements.outputs.needs-storybook }}
+      run-build: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id && 'true' || 'false' }}
+    secrets: inherit
 
-  validate-lavamoat-policies:
+  lavamoat-validate-policies:
+    name: Validate LavaMoat policies
     needs:
       - get-requirements
       - prep-deps
@@ -155,118 +341,41 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     uses: ./.github/workflows/validate-lavamoat-policies.yml
 
-  build-dist-webpack:
+  # Webpack-only build groups. Artifact names are unchanged
+  # (build-dist-webpack, build-test-webpack, …) so E2E and publish keep working.
+  # MV3/MV2 are split so Chrome E2E does not wait on Firefox builds and vice versa.
+  builds-mv3:
+    name: Builds MV3
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
+    uses: ./.github/workflows/builds-mv3.yml
     with:
-      build-name: build-dist-webpack
-      build-command: yarn webpack:lavamoat:build --zip --stats
-      bundle-analyzer: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
-  build-dist-mv2-webpack:
+  builds-mv2:
+    name: Builds MV2
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
+    uses: ./.github/workflows/builds-mv2.yml
     with:
-      build-name: build-dist-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
-  build-beta-webpack:
+  builds-beta-flask:
+    name: Builds beta/flask
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
+    uses: ./.github/workflows/builds-beta-flask.yml
     with:
-      build-name: build-beta-webpack
-      build-command: yarn webpack:lavamoat:build --type beta --zip
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
-  build-beta-mv2-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-beta-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type beta --zip
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-flask-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-webpack
-      build-command: yarn webpack:lavamoat:build --type flask --zip
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-flask-mv2-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type flask --zip
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-webpack
-      build-command: yarn build:test --zip
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-mv2-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-mv2-webpack
-      build-command: yarn build:test:mv2 --zip
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-flask-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-flask-webpack
-      build-command: yarn build:test:flask --zip
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-flask-mv2-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-flask-mv2-webpack
-      build-command: yarn build:test:flask:mv2 --zip
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  run-benchmarks:
+  performance-benchmarks:
+    name: Performance benchmark
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-benchmarks == 'true' && !contains(needs.*.result, 'failure') }}
     permissions:
       contents: read
@@ -276,29 +385,29 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-      - build-test-webpack
-      - build-test-mv2-webpack
+      - builds-mv3
+      - builds-mv2
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
-  run-tests:
-    name: Run tests
+  unit-and-integration-tests:
+    name: Unit and integration tests
     needs:
       - get-requirements
       - prep-deps
     if: ${{ needs.get-requirements.outputs.needs-unit-and-integration == 'true' }}
     uses: ./.github/workflows/run-tests.yml
 
-  sonarcloud:
-    name: SonarCloud
+  code-coverage:
+    name: Code coverage (SonarCloud)
     needs:
-      - run-tests
+      - unit-and-integration-tests
     # Run SonarCloud on same-repo PRs and pushes to main on the canonical repo.
     if: >-
       ${{
         !cancelled() &&
-        needs.run-tests.result == 'success' &&
+        needs.unit-and-integration-tests.result == 'success' &&
         !github.event.repository.fork &&
         (
           (github.event_name == 'push' && github.ref_name == 'main') ||
@@ -326,9 +435,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   bundle-size:
+    name: Bundle size
     needs:
       - get-requirements
-      - build-dist-webpack
+      - builds-mv3
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -381,58 +491,104 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
-  prep-e2e:
+  e2e-prep-chrome:
+    name: Prep e2e Chrome
     needs:
       - get-requirements
       - prep-deps
     if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
-    uses: ./.github/workflows/prep-e2e.yml
+    uses: ./.github/workflows/prep-e2e-chrome.yml
 
-  e2e-chrome:
+  e2e-prep-firefox:
+    name: Prep e2e Firefox
     needs:
       - get-requirements
-      - prep-e2e
-      - build-test-webpack
-      - build-dist-webpack
-      - build-test-flask-webpack
+      - prep-deps
+    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
+    uses: ./.github/workflows/prep-e2e-firefox.yml
+
+  e2e-chrome:
+    name: e2e Chrome
+    needs:
+      - get-requirements
+      - e2e-prep-chrome
+      - builds-mv3
     uses: ./.github/workflows/e2e-chrome.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
+      use-matrix: ${{ needs.e2e-prep-chrome.outputs.use-matrix }}
     secrets: inherit
 
   e2e-firefox:
+    name: e2e Firefox
     needs:
       - get-requirements
-      - prep-e2e
-      - build-dist-mv2-webpack
-      - build-test-mv2-webpack
-      - build-test-flask-mv2-webpack
+      - e2e-prep-firefox
+      - builds-mv2
     uses: ./.github/workflows/e2e-firefox.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
+      use-matrix: ${{ needs.e2e-prep-firefox.outputs.use-matrix }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-
-  build-storybook:
-    name: Build storybook
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
-    needs:
-      - get-requirements
-    uses: ./.github/workflows/build-storybook.yml
-    secrets: inherit
 
   build-ts-migration-dashboard:
     name: Build ts migration dashboard
     if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
-    uses: ./.github/workflows/build-ts-migration-dashboard.yml
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
+          skip-allow-scripts: true
+
+      - name: Build ts migration dashboard
+        run: yarn ts-migration:dashboard:build
+
+      - name: Upload 'ts-migration-dashboard' to S3
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/ts-migration-dashboard
+          path: development/ts-migration-dashboard/build/final
+
+      - name: Get token
+        id: token
+        if: ${{ env.BRANCH == 'main' }}
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/metamask-extension-ts-migration-dashboard
+          permissions: |
+            contents: write
+
+      - name: Deploy ts migration dashboard
+        if: ${{ env.BRANCH == 'main' }}
+        env:
+          TS_MIGRATION_DASHBOARD_TOKEN: ${{ steps.token.outputs.token }}
+        run: |
+          git remote add ts-migration-dashboard "https://x-access-token:${TS_MIGRATION_DASHBOARD_TOKEN}@github.com/MetaMask/metamask-extension-ts-migration-dashboard.git"
+          git config user.name "MetaMask Bot"
+          git config user.email metamaskbot@users.noreply.github.com
+          yarn ts-migration:dashboard:deploy
 
   publish-prerelease:
     name: Publish prerelease
@@ -447,35 +603,21 @@ jobs:
       ${{
         !cancelled() &&
         needs.get-requirements.outputs.needs-releases == 'true' &&
-        contains(fromJson('["success","skipped"]'), needs.build-dist-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-dist-mv2-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-beta-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-beta-mv2-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-flask-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-flask-mv2-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-mv2-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-flask-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.builds-mv3.result) &&
+        contains(fromJson('["success","skipped"]'), needs.builds-mv2.result) &&
+        contains(fromJson('["success","skipped"]'), needs.builds-beta-flask.result) &&
         contains(fromJson('["success","skipped"]'), needs.bundle-size.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-storybook.result) &&
+        contains(fromJson('["success","skipped"]'), needs.storybook.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result)
       }}
     needs:
       - get-requirements
-      - build-dist-webpack
-      - build-dist-mv2-webpack
-      - build-beta-webpack
-      - build-beta-mv2-webpack
-      - build-flask-webpack
-      - build-flask-mv2-webpack
-      - build-test-webpack
-      - build-test-mv2-webpack
-      - build-test-flask-webpack
-      - build-test-flask-mv2-webpack
-      - run-benchmarks
+      - builds-mv3
+      - builds-mv2
+      - builds-beta-flask
+      - performance-benchmarks
       - bundle-size
-      - build-storybook
+      - storybook
       - build-ts-migration-dashboard
     uses: ./.github/workflows/publish-prerelease.yml
     with:
@@ -496,7 +638,7 @@ jobs:
     #     whose head branch lives in a different repository, so the job would
     #     fail trying to read the dispatch token.
     # Build reuse is banned on release/* branches (in get-requirements.yml),
-    # so build-dist-webpack always runs here — no !cancelled() needed.
+    # so builds-mv3 always runs here — no !cancelled() needed.
     if: >-
       ${{
         startsWith(github.head_ref || github.ref_name, 'release/')
@@ -505,7 +647,7 @@ jobs:
       }}
     needs:
       - get-requirements
-      - build-dist-webpack
+      - builds-mv3
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: release-ci
@@ -560,37 +702,34 @@ jobs:
     # named here. A failing job can cause downstream jobs to be `skipped`, which can hide the true failure unless
     # the upstream job is also included.
     #
-    # For instance, if prep-e2e fails, e2e-chrome and e2e-firefox are skipped, so we need the direct result of prep-e2e.
+    # For instance, if e2e-prep-chrome or e2e-prep-firefox fails, the matching E2E
+    # workflow is skipped, so we need the direct prep result.
     #
     # Jobs intentionally excluded:
     # - Publish jobs (not required for CI pass)
     # - Jobs that depend on ci-status-gate (e.g., log-merge-group-failure) cannot be included here
+    # - code-coverage / SonarCloud (informational; does not gate merge)
+    #
+    # Builds are grouped by consumer: MV3 (Chrome E2E), MV2 (Firefox E2E),
+    # and beta/flask production variants (not on the E2E critical path).
     needs:
       - get-requirements
       - locales-changed-only
       - prep-deps
-      - lint-workflows
-      - test-lint
+      - lint
       - repository-health-checks
-      - test-storybook
-      - validate-lavamoat-policies
-      - build-dist-webpack
-      - build-dist-mv2-webpack
-      - build-beta-webpack
-      - build-beta-mv2-webpack
-      - build-flask-webpack
-      - build-flask-mv2-webpack
-      - build-test-webpack
-      - build-test-mv2-webpack
-      - build-test-flask-webpack
-      - build-test-flask-mv2-webpack
-      - run-benchmarks
-      - run-tests
+      - storybook
+      - lavamoat-validate-policies
+      - builds-mv3
+      - builds-mv2
+      - builds-beta-flask
+      - performance-benchmarks
+      - unit-and-integration-tests
       - bundle-size
-      - prep-e2e
+      - e2e-prep-chrome
+      - e2e-prep-firefox
       - e2e-chrome
       - e2e-firefox
-      - build-storybook
       - build-ts-migration-dashboard
       - trigger-regression-validation
     uses: ./.github/workflows/ci-status-gate.yml
