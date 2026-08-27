@@ -132,3 +132,32 @@ export function findProviderQuote(
     null
   );
 }
+
+/**
+ * Finds a quote containing provider tag metadata.
+ *
+ * Tag metadata can be returned on any quote for a provider, regardless of its
+ * payment method.
+ *
+ * @param quotes - Quotes response.
+ * @param providerId - Provider id.
+ * @returns Quote containing provider tag metadata, or null.
+ */
+export function findProviderTagQuote(
+  quotes: QuotesResponse | null,
+  providerId: string,
+): Quote | null {
+  if (!quotes?.success?.length) {
+    return null;
+  }
+
+  return (
+    quotes.success.find(
+      (quote) =>
+        quote.provider === providerId &&
+        (quote.metadata?.tags?.isMostReliable ||
+          quote.metadata?.tags?.isBestRate) &&
+        !(quote.quote as { isCustomAction?: boolean })?.isCustomAction,
+    ) ?? null
+  );
+}

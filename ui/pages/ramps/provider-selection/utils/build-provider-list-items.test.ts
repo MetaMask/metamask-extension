@@ -2,6 +2,7 @@ import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   buildProviderListItems,
   findProviderQuote,
+  findProviderTagQuote,
   getProviderTag,
 } from './build-provider-list-items';
 
@@ -156,6 +157,37 @@ describe('findProviderQuote', () => {
     expect(
       findProviderQuote(quotes, transak.id)?.metadata?.tags?.isMostReliable,
     ).toBe(true);
+  });
+
+  it('finds provider metadata when it is on a later quote', () => {
+    const quotes: QuotesResponse = {
+      success: [
+        {
+          provider: transak.id,
+          quote: {
+            amountIn: 100,
+            amountOut: '0.04',
+            paymentMethod: 'debit-credit-card',
+          },
+        },
+        {
+          provider: transak.id,
+          quote: {
+            amountIn: 100,
+            amountOut: '0.05',
+            paymentMethod: 'bank-transfer',
+          },
+          metadata: { tags: { isMostReliable: true } },
+        },
+      ],
+      sorted: [],
+      error: [],
+      customActions: [],
+    };
+
+    expect(findProviderTagQuote(quotes, transak.id)?.metadata?.tags).toEqual({
+      isMostReliable: true,
+    });
   });
 });
 
