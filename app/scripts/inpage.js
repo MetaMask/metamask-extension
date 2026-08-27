@@ -1,21 +1,17 @@
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
-let cachedDefine: unknown;
-
-const globalObject = global as typeof globalThis & {
-  define?: unknown;
-};
+let __define;
 
 /**
  * Caches reference to global define object and deletes it to
  * avoid conflicts with other global define objects, such as
  * AMD's define function
  */
-const cleanContextForImports = (): void => {
-  cachedDefine = globalObject.define;
+const cleanContextForImports = () => {
+  __define = global.define;
   try {
-    globalObject.define = undefined;
+    global.define = undefined;
   } catch (_) {
     console.warn('MetaMask - global.define could not be deleted.');
   }
@@ -24,9 +20,9 @@ const cleanContextForImports = (): void => {
 /**
  * Restores global define object from cached reference
  */
-const restoreContextAfterImports = (): void => {
+const restoreContextAfterImports = () => {
   try {
-    globalObject.define = cachedDefine;
+    global.define = __define;
   } catch (_) {
     console.warn('MetaMask - global.define could not be overwritten.');
   }
@@ -40,7 +36,6 @@ import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/initializeInpageProvider';
 import ObjectMultiplex from '@metamask/object-multiplex';
-// @ts-expect-error @types/readable-stream does not export pipeline
 import { pipeline } from 'readable-stream';
 
 import {
@@ -59,17 +54,6 @@ const INPAGE = 'metamask-inpage';
 
 restoreContextAfterImports();
 
-const getRequiredBuildValue = (
-  value: string | undefined,
-  key: string,
-): string => {
-  if (!value) {
-    throw new Error(`Missing required build value: ${key}`);
-  }
-
-  return value;
-};
-
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 
 //
@@ -77,19 +61,6 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 //
 
 if (shouldInjectProvider()) {
-  const providerName = getRequiredBuildValue(
-    process.env.METAMASK_BUILD_NAME,
-    'METAMASK_BUILD_NAME',
-  );
-  const providerIcon = getRequiredBuildValue(
-    process.env.METAMASK_BUILD_ICON,
-    'METAMASK_BUILD_ICON',
-  );
-  const providerRdns = getRequiredBuildValue(
-    process.env.METAMASK_BUILD_APP_ID,
-    'METAMASK_BUILD_APP_ID',
-  );
-
   // setup background connection
   const metamaskStream = new WindowPostMessageStream({
     name: INPAGE,
@@ -105,31 +76,31 @@ if (shouldInjectProvider()) {
    * This is intentional because:
    *
    * 1. CONTEXT DIFFERENCE:
-   * - inpage.js runs in PAGE CONTEXT (web pages)
-   * - Background streams run in EXTENSION CONTEXT (persistent background)
+   *    - inpage.js runs in PAGE CONTEXT (web pages)
+   *    - Background streams run in EXTENSION CONTEXT (persistent background)
    *
    * 2. AUTOMATIC CLEANUP:
-   * - When a page navigates/unloads, the browser automatically destroys the entire
-   * script execution context, including all streams and event listeners
-   * - No explicit cleanup is needed - the browser handles it naturally
+   *    - When a page navigates/unloads, the browser automatically destroys the entire
+   *      script execution context, including all streams and event listeners
+   *    - No explicit cleanup is needed - the browser handles it naturally
    *
    * 3. AVOIDING PREMATURE DISCONNECTION:
-   * - Adding handlers that call mux.end() or connectionStream.end() can actually
-   * CAUSE disconnection errors when pages navigate to external URLs
-   * - Tests showed that explicit handlers in page context trigger "Disconnected from
-   * MetaMask background" errors during rapid navigation scenarios (e.g., deep links)
+   *    - Adding handlers that call mux.end() or connectionStream.end() can actually
+   *      CAUSE disconnection errors when pages navigate to external URLs
+   *    - Tests showed that explicit handlers in page context trigger "Disconnected from
+   *      MetaMask background" errors during rapid navigation scenarios (e.g., deep links)
    *
    * 4. DIFFERENT ERROR SOURCE:
-   * - "Premature close" errors in page context are typically harmless - they occur
-   * during normal page navigation and don't indicate a real problem
-   * - The critical "Premature close" issues (3.8M/month in Sentry) come from the
-   * BACKGROUND streams that persist across page loads
+   *    - "Premature close" errors in page context are typically harmless - they occur
+   *      during normal page navigation and don't indicate a real problem
+   *    - The critical "Premature close" issues (3.8M/month in Sentry) come from the
+   *      BACKGROUND streams that persist across page loads
    *
    * For context on the "Premature close" issue, see:
    * - https://github.com/MetaMask/metamask-extension/issues/26337
    * - https://github.com/MetaMask/metamask-extension/issues/35241
    */
-  pipeline(metamaskStream, mux, metamaskStream, (error: Error | null) => {
+  pipeline(metamaskStream, mux, metamaskStream, (error) => {
     let warningMsg = `Lost connection to "${METAMASK_EIP_1193_PROVIDER}".`;
     if (error?.stack) {
       warningMsg += `\n${error.stack}`;
@@ -144,9 +115,9 @@ if (shouldInjectProvider()) {
     shouldSendMetadata: false,
     providerInfo: {
       uuid: uuid(),
-      name: providerName,
-      icon: providerIcon,
-      rdns: providerRdns,
+      name: process.env.METAMASK_BUILD_NAME,
+      icon: process.env.METAMASK_BUILD_ICON,
+      rdns: process.env.METAMASK_BUILD_APP_ID,
     },
   });
 
@@ -155,9 +126,8 @@ if (shouldInjectProvider()) {
     transport: getDefaultTransport(),
   });
   registerSolanaWalletStandard({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    client: solanaMultichainClient as any,
-    walletName: providerName,
+    client: solanaMultichainClient,
+    walletName: process.env.METAMASK_BUILD_NAME,
   });
 
   // Bitcoin SatsConnect Wallet Standard registration
@@ -165,8 +135,7 @@ if (shouldInjectProvider()) {
     transport: getDefaultTransport(),
   });
   registerBitcoinWalletStandard({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    client: btcMultichainClient as any,
-    walletName: providerName,
+    client: btcMultichainClient,
+    walletName: process.env.METAMASK_BUILD_NAME,
   });
 }

@@ -32,7 +32,7 @@ export type Migration = LegacyMigration | V2Migration;
 export type MigratorOptions = {
   migrations?: Migration[];
   defaultVersion?: number;
-}
+};
 
 export type MigrateDataResult = {
   state: MigrationState;
