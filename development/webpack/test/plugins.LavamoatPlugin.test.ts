@@ -5,7 +5,6 @@ import type { Args } from '../utils/cli';
 import {
   lavamoatPlugin,
   lavamoatUnsafeLayerRule,
-  lavamoatBackgroundLayerRule,
   lavamoatUnsafeLayerPlugin,
 } from '../utils/plugins/LavamoatPlugin';
 
@@ -14,6 +13,7 @@ const mockArgs = {
   snow: false,
   manifestVersion: 3,
   type: 'main',
+  sentry: true,
   lavamoatDebug: false,
   generatePolicy: false,
 } as unknown as Args;
@@ -22,104 +22,23 @@ const mockChunk = (name: string | undefined): Chunk =>
   ({ name }) as unknown as Chunk;
 
 describe('LavamoatPlugin', () => {
-  describe('lavamoatUnsafeLayerRule', () => {
-    it('excludes background.js from the unsafe LavaMoat exclude-loader', () => {
-      const { exclude } = lavamoatUnsafeLayerRule;
-      assert.ok(exclude instanceof RegExp, 'exclude should be a RegExp');
-
-      // The paths that must be excluded from the unsafe loader so LavaMoat wraps them.
-      assert.ok(
-        exclude.test('/project/app/scripts/background.js'),
-        'should exclude Unix-style background.js path',
-      );
-      assert.ok(
-        exclude.test('C:\\project\\app\\scripts\\background.js'),
-        'should exclude Windows-style background.js path',
-      );
-    });
-
-    it('does not exclude other scripts', () => {
-      const { exclude } = lavamoatUnsafeLayerRule;
-      assert.ok(exclude instanceof RegExp, 'exclude should be a RegExp');
-
-      assert.ok(
-        !exclude.test('/project/app/scripts/ui.js'),
-        'should not exclude ui.js',
-      );
-      assert.ok(
-        !exclude.test('/project/app/scripts/contentscript.js'),
-        'should not exclude contentscript.js',
-      );
-      assert.ok(
-        !exclude.test('/project/app/scripts/background-worker.js'),
-        'should not exclude files with background in a different position',
-      );
-    });
-  });
-
-  describe('lavamoatBackgroundLayerRule', () => {
-    it('re-layers background.js out of the unsafe layer', () => {
-      assert.strictEqual(
-        lavamoatBackgroundLayerRule.issuerLayer,
-        'unsafe',
-        'should only apply when issued from the unsafe layer',
-      );
-      assert.strictEqual(
-        lavamoatBackgroundLayerRule.layer,
-        'background',
-        'should assign background.js to the background layer',
-      );
-    });
-
-    it('matches only background.js', () => {
-      const { test } = lavamoatBackgroundLayerRule;
-      assert.ok(test instanceof RegExp, 'test should be a RegExp');
-
-      assert.ok(
-        test.test('/project/app/scripts/background.js'),
-        'should match Unix-style background.js path',
-      );
-      assert.ok(
-        test.test('C:\\project\\app\\scripts\\background.js'),
-        'should match Windows-style background.js path',
-      );
-      assert.ok(
-        !test.test('/project/app/scripts/ui.js'),
-        'should not match ui.js',
-      );
-    });
-  });
-
   describe('lavamoatPlugin – runtimeConfigurationPerChunk_experimental', () => {
     // Access the internal options via the public `this.options` property that
     // LavaMoatPlugin stores on every instance.
     const plugin = lavamoatPlugin(mockArgs) as unknown as {
       options: {
         runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => unknown;
+        inlineLockdown: RegExp;
       };
     };
     const runtimeConfig =
       plugin.options.runtimeConfigurationPerChunk_experimental;
+    const { inlineLockdown } = plugin.options;
 
-    it('gives service-worker.ts chunk safe mode (regression guard)', () => {
-      // Before the fix, service-worker.ts was in nullUnsafeEntries and got
-      // null_unsafe mode, so background.js had no LavaMoat runtime to run against.
+    it('configures the service worker as a protected execution root', () => {
       const result = runtimeConfig(mockChunk('service-worker.ts')) as {
         mode: string;
-        embeddedOptions?: {
-          scuttleGlobalThis?: { enabled: boolean; exceptions: string[] };
-        };
-      };
-
-      assert.strictEqual(
-        result.mode,
-        'safe',
-        'service-worker.ts must use safe mode so its LavaMoat runtime is available to background.js',
-      );
-    });
-
-    it('includes importScripts in service-worker.ts scuttleGlobalThis exceptions', () => {
-      const result = runtimeConfig(mockChunk('service-worker.ts')) as {
+        staticShims: string[];
         embeddedOptions?: {
           scuttleGlobalThis?: {
             enabled: boolean;
@@ -128,6 +47,16 @@ describe('LavamoatPlugin', () => {
         };
       };
 
+      assert.strictEqual(result.mode, 'safe');
+      assert.strictEqual(result.staticShims.length, 2);
+      assert.ok(
+        result.staticShims[0].endsWith(
+          '/app/scripts/load/set-sentry-stack-trace-limit.ts',
+        ),
+      );
+      assert.ok(
+        result.staticShims[1].endsWith('/app/scripts/load/init-state-hooks.ts'),
+      );
       const exceptions =
         result.embeddedOptions?.scuttleGlobalThis?.exceptions ?? [];
       assert.ok(
@@ -136,12 +65,114 @@ describe('LavamoatPlugin', () => {
       );
       assert.ok(
         exceptions.includes('importScripts'),
-        'importScripts must be in the SW exceptions list so the SW can load background.js',
+        'importScripts must remain available to the Webpack chunk loader',
+      );
+      assert.ok(
+        exceptions.includes('addEventListener'),
+        'Sentry must be able to register service worker event listeners',
+      );
+      assert.ok(
+        exceptions.includes('_sentryWrappedDepth'),
+        'Sentry must be able to track wrapped function depth',
+      );
+      assert.ok(inlineLockdown.test('service-worker.js'));
+    });
+
+    it('inlines SES into content script and shared runtime output files', () => {
+      assert.ok(inlineLockdown.test('scripts/contentscript.js'));
+      assert.ok(inlineLockdown.test('runtime.0123456789abcdefghab.js'));
+      assert.ok(!inlineLockdown.test('unrelated.js'));
+    });
+
+    it('scuttles the content script with its required globals available', () => {
+      const result = runtimeConfig(mockChunk('scripts/contentscript.js')) as {
+        mode: string;
+        embeddedOptions: {
+          scuttleGlobalThis: {
+            enabled: boolean;
+            exceptions: string[];
+          };
+        };
+      };
+
+      assert.strictEqual(result.mode, 'safe');
+      assert.deepStrictEqual(result.embeddedOptions.scuttleGlobalThis, {
+        enabled: true,
+        exceptions: ['browser', 'chrome', 'btoa'],
+      });
+    });
+
+    it('configures the shared runtime with Snow shims only when enabled', () => {
+      const result = runtimeConfig(mockChunk('runtime')) as {
+        mode: string;
+        staticShims: string[];
+      };
+      assert.strictEqual(result.mode, 'safe');
+      assert.strictEqual(result.staticShims.length, 1);
+      assert.ok(
+        result.staticShims[0].endsWith(
+          '/app/scripts/load/set-sentry-stack-trace-limit.ts',
+        ),
+      );
+
+      const snowPlugin = lavamoatPlugin({
+        ...mockArgs,
+        snow: true,
+      }) as unknown as {
+        options: {
+          runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => unknown;
+          scuttleGlobalThis: { scuttlerName?: string };
+        };
+      };
+      const snowResult =
+        snowPlugin.options.runtimeConfigurationPerChunk_experimental(
+          mockChunk('runtime'),
+        ) as { staticShims: string[] };
+
+      assert.strictEqual(
+        snowPlugin.options.scuttleGlobalThis.scuttlerName,
+        'SCUTTLER',
+      );
+      assert.strictEqual(snowResult.staticShims.length, 3);
+      assert.ok(
+        snowResult.staticShims[0].endsWith(
+          '/app/scripts/load/set-sentry-stack-trace-limit.ts',
+        ),
+      );
+      assert.ok(snowResult.staticShims[1].endsWith('/snow.prod.js'));
+      assert.ok(snowResult.staticShims[2].endsWith('/app/scripts/use-snow.js'));
+    });
+
+    it('omits the Sentry shim when Sentry is disabled', () => {
+      const disabledPlugin = lavamoatPlugin({
+        ...mockArgs,
+        sentry: false,
+      }) as unknown as {
+        options: {
+          runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => unknown;
+        };
+      };
+      const disabledRuntimeConfig =
+        disabledPlugin.options.runtimeConfigurationPerChunk_experimental;
+
+      const runtimeResult = disabledRuntimeConfig(mockChunk('runtime')) as {
+        staticShims: string[];
+      };
+      assert.deepStrictEqual(runtimeResult.staticShims, []);
+
+      const serviceWorkerResult = disabledRuntimeConfig(
+        mockChunk('service-worker.ts'),
+      ) as { staticShims: string[] };
+      assert.strictEqual(serviceWorkerResult.staticShims.length, 1);
+      assert.ok(
+        serviceWorkerResult.staticShims[0].endsWith(
+          '/app/scripts/load/init-state-hooks.ts',
+        ),
       );
     });
 
-    it('keeps null_unsafe mode for inpage.js and bootstrap (no LavaMoat runtime needed)', () => {
-      for (const name of ['scripts/inpage.js', 'bootstrap']) {
+    it('keeps null_unsafe mode for the host-realm entries', () => {
+      for (const name of ['scripts/inpage.js', 'init-state-hooks']) {
         const result = runtimeConfig(mockChunk(name)) as { mode: string };
         assert.strictEqual(
           result.mode,
@@ -149,6 +180,10 @@ describe('LavamoatPlugin', () => {
           `${name} should remain null_unsafe`,
         );
       }
+
+      assert.deepStrictEqual(runtimeConfig(mockChunk('bootstrap')), {
+        mode: 'safe',
+      });
     });
 
     it('uses safe mode for unrecognised chunks', () => {
@@ -160,13 +195,21 @@ describe('LavamoatPlugin', () => {
   });
 
   describe('lavamoatUnsafeLayerPlugin', () => {
-    it('pushes both the unsafe-layer rule and the background re-layer rule', () => {
+    it('pushes the unsafe-layer rule and assigns unsafe entries to it', () => {
       const rules: unknown[] = [];
+      let thisCompilationCallback:
+        | ((compilation: Record<string, unknown>) => void)
+        | undefined;
       const mockCompiler = {
         options: { module: { rules } },
         hooks: {
           thisCompilation: {
-            tap: (_name: string, _cb: unknown) => undefined,
+            tap: (
+              _name: string,
+              callback: (compilation: Record<string, unknown>) => void,
+            ) => {
+              thisCompilationCallback = callback;
+            },
           },
         },
       };
@@ -177,10 +220,57 @@ describe('LavamoatPlugin', () => {
         rules.includes(lavamoatUnsafeLayerRule),
         'should register the unsafe-layer exclude rule',
       );
-      assert.ok(
-        rules.includes(lavamoatBackgroundLayerRule),
-        'should register the background re-layer rule',
+
+      let addEntryCallback:
+        | ((entry: { request: string }, options: { name: string }) => void)
+        | undefined;
+      const unsafeEntry = {
+        options: { layer: undefined as string | undefined },
+      };
+      const stateHooksEntry = {
+        options: { layer: undefined as string | undefined },
+      };
+      const safeEntry = { options: { layer: undefined as string | undefined } };
+      const compilation = {
+        hooks: {
+          addEntry: {
+            tap: (
+              _name: string,
+              callback: (
+                entry: { request: string },
+                options: { name: string },
+              ) => void,
+            ) => {
+              addEntryCallback = callback;
+            },
+          },
+        },
+        entries: new Map([
+          ['scripts/inpage.js', unsafeEntry],
+          ['init-state-hooks', stateHooksEntry],
+          ['safe-entry', safeEntry],
+        ]),
+      };
+
+      assert.ok(thisCompilationCallback);
+      thisCompilationCallback(compilation);
+      assert.ok(addEntryCallback);
+      addEntryCallback({ request: './inpage' }, { name: 'scripts/inpage.js' });
+      addEntryCallback(
+        { request: './init-state-hooks' },
+        { name: 'init-state-hooks' },
       );
+      addEntryCallback({ request: './safe' }, { name: 'safe-entry' });
+
+      assert.strictEqual(
+        unsafeEntry.options.layer,
+        lavamoatUnsafeLayerRule.issuerLayer,
+      );
+      assert.strictEqual(
+        stateHooksEntry.options.layer,
+        lavamoatUnsafeLayerRule.issuerLayer,
+      );
+      assert.strictEqual(safeEntry.options.layer, undefined);
     });
   });
 });

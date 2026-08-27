@@ -1,5 +1,26 @@
 import { createModuleLogger } from '@metamask/utils';
-import * as Sentry from '@sentry/browser';
+import {
+  addBreadcrumb,
+  browserTracingIntegration,
+  captureException,
+  captureFeedback,
+  captureMessage,
+  continueTrace,
+  dedupeIntegration,
+  extraErrorDataIntegration,
+  getActiveSpan,
+  getClient,
+  init,
+  lastEventId,
+  registerSpanErrorInstrumentation,
+  setContext,
+  setMeasurement,
+  setTag,
+  startSpan,
+  startSpanManual,
+  withIsolationScope,
+  withScope,
+} from '@sentry/browser';
 import { logger } from '@sentry/core';
 import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
@@ -71,8 +92,24 @@ export default function setupSentry() {
   integrateLogging();
   setSentryClient();
 
+  // Keep the global surface limited to the APIs MetaMask actually calls. The
+  // LavaMoat policy supports our configured integrations, not every optional
+  // integration and helper re-exported by the full @sentry/browser namespace.
   return {
-    ...Sentry,
+    addBreadcrumb,
+    captureException,
+    captureFeedback,
+    captureMessage,
+    continueTrace,
+    getActiveSpan,
+    lastEventId,
+    setContext,
+    setMeasurement,
+    setTag,
+    startSpan,
+    startSpanManual,
+    withIsolationScope,
+    withScope,
   };
 }
 
@@ -114,9 +151,9 @@ function getClientOptions() {
     dsn: sentryTarget,
     environment,
     integrations: [
-      Sentry.dedupeIntegration(),
-      Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration({
+      dedupeIntegration(),
+      extraErrorDataIntegration(),
+      browserTracingIntegration({
         // Creates ui.long-animation-frame spans (falls back to ui.long-task).
         // Pairs with TBT aggregate measurements from performance-observers.ts.
         enableLongAnimationFrame: true,
@@ -148,6 +185,8 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
+    // Sentry only runs in extension-owned realms, not in content scripts.
+    skipBrowserExtensionCheck: true,
     tracesSampleRate,
     // Per-transaction sampler: caps high-volume custom transactions (seeded with
     // the assets-controller spans that breached quota in 13.32.0 — see #43410)
@@ -207,17 +246,17 @@ function setCITags() {
   const { ci } = getManifestFlags();
 
   if (ci?.enabled) {
-    Sentry.setTag('ci.enabled', ci.enabled);
-    Sentry.setTag('ci.branch', ci.branch);
-    Sentry.setTag('ci.commitHash', ci.commitHash);
-    Sentry.setTag('ci.job', ci.job);
-    Sentry.setTag('ci.matrixIndex', ci.matrixIndex);
-    Sentry.setTag('ci.prNumber', ci.prNumber);
+    setTag('ci.enabled', ci.enabled);
+    setTag('ci.branch', ci.branch);
+    setTag('ci.commitHash', ci.commitHash);
+    setTag('ci.job', ci.job);
+    setTag('ci.matrixIndex', ci.matrixIndex);
+    setTag('ci.prNumber', ci.prNumber);
     if (ci.persona) {
-      Sentry.setTag('ci.persona', ci.persona);
+      setTag('ci.persona', ci.persona);
     }
     if (ci.testTitle) {
-      Sentry.setTag('ci.testTitle', ci.testTitle);
+      setTag('ci.testTitle', ci.testTitle);
     }
   }
 }
@@ -261,12 +300,6 @@ function setSentryClient() {
   const clientOptions = getClientOptions();
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
-  /**
-   * Sentry checks session tracking support by looking for global history object and functions inside it.
-   * Scuttling sets this property to undefined which breaks Sentry logic and crashes background.
-   */
-  globalThis.history ??= {};
-
   log('Updating client', {
     environment,
     dsn,
@@ -274,12 +307,12 @@ function setSentryClient() {
     tracesSampleRate,
   });
 
-  Sentry.registerSpanErrorInstrumentation();
-  Sentry.init(clientOptions);
+  registerSpanErrorInstrumentation();
+  init(clientOptions);
 
   // Apply remote-flag sample-rate overrides once, post-init; compile-time
   // rates remain the fallback when the flag is absent or malformed.
-  applySentryRemoteRates(Sentry.getClient()).catch((error) =>
+  applySentryRemoteRates(getClient()).catch((error) =>
     log('Failed to apply remote Sentry sample rates', error),
   );
 
@@ -742,7 +775,7 @@ function addDebugListeners() {
     return;
   }
 
-  const client = Sentry.getClient();
+  const client = getClient();
 
   client?.on('beforeEnvelope', (event) => {
     if (isCompletedSessionEnvelope(event)) {
