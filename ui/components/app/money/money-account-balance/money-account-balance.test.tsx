@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import messages from '../../../../../app/_locales/en/messages.json';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
@@ -108,7 +109,7 @@ describe('MoneyAccountBalance', () => {
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$2,384.34',
     );
-    expect(getByText('Money balance')).toBeInTheDocument();
+    expect(getByText(messages.moneyBalanceTitle.message)).toBeInTheDocument();
     expect(getByText('• mUSD')).toBeInTheDocument();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
   });
@@ -150,8 +151,10 @@ describe('MoneyAccountBalance', () => {
     );
     expect(
       getByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID),
-    ).toHaveTextContent('Last known balance');
-    expect(getByText('Last known balance')).toBeInTheDocument();
+    ).toHaveTextContent(messages.moneyBalanceLastKnown.message);
+    expect(
+      getByText(messages.moneyBalanceLastKnown.message),
+    ).toBeInTheDocument();
   });
 
   it('renders nothing when neither a live nor a last-known balance is available', () => {
@@ -189,14 +192,10 @@ describe('MoneyAccountBalance', () => {
     });
 
     expect(
-      getByText(
-        "Your dollar-backed mUSD balance that's always available to spend, send, or trade anytime. We don't calculate this into your total account balance.",
-      ),
+      getByText(messages.moneyBalanceInfoBody.message),
     ).toBeInTheDocument();
     expect(
-      getByText(
-        'Withdrawals process immediately, subject to standard network confirmation times on the relevant blockchain. If liquidity is tight, there may be temporary delays.',
-      ),
+      getByText(messages.moneyBalanceInfoWithdrawals.message),
     ).toBeInTheDocument();
   });
 
@@ -213,7 +212,7 @@ describe('MoneyAccountBalance', () => {
     );
     expect(
       getByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID),
-    ).toHaveTextContent('Last known balance');
+    ).toHaveTextContent(messages.moneyBalanceLastKnown.message);
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID)).toBeNull();
   });
 });
