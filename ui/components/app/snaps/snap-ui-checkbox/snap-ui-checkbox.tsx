@@ -39,13 +39,9 @@ export const SnapUICheckbox = ({
   const initialValue = getValue(name, form) as boolean;
 
   const [value, setValue] = useState(initialValue ?? false);
-  const prevInitialValueRef = useRef<typeof initialValue | undefined>(undefined);
+  const prevInitialValueRef = useRef(initialValue);
 
   useEffect(() => {
-    if (prevInitialValueRef.current === undefined) {
-      prevInitialValueRef.current = initialValue;
-      return;
-    }
     if (initialValue === prevInitialValueRef.current) {
       return;
     }

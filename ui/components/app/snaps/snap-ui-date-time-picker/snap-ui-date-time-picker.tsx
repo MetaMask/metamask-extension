@@ -99,17 +99,10 @@ export const SnapUIDateTimePicker: FunctionComponent<
   const [value, setValue] = React.useState<DateTime | null>(() =>
     parseInitialIsoValue(initialValue, type),
   );
-  const prevInitialValueRef = React.useRef<typeof initialValue | undefined>(
-    undefined,
-  );
+  const prevInitialValueRef = React.useRef(initialValue);
   const prevTypeRef = React.useRef(type);
 
   useEffect(() => {
-    if (prevInitialValueRef.current === undefined) {
-      prevInitialValueRef.current = initialValue;
-      prevTypeRef.current = type;
-      return;
-    }
     if (
       initialValue === prevInitialValueRef.current &&
       type === prevTypeRef.current

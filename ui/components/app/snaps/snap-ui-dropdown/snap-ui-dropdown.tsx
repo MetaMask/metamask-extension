@@ -35,13 +35,9 @@ export const SnapUIDropdown = ({
   const initialValue = getValue(name, form) as string;
 
   const [value, setValue] = useState(initialValue ?? '');
-  const prevInitialValueRef = useRef<typeof initialValue | undefined>(undefined);
+  const prevInitialValueRef = useRef(initialValue);
 
   useEffect(() => {
-    if (prevInitialValueRef.current === undefined) {
-      prevInitialValueRef.current = initialValue;
-      return;
-    }
     if (initialValue === prevInitialValueRef.current) {
       return;
     }
