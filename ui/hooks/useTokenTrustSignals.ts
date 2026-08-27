@@ -1,23 +1,15 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useQueries } from '@tanstack/react-query';
+import {
+  resolveChainName,
+  type TokenScanResultResponse,
+} from '@metamask/phishing-controller';
 import { ResultType } from '../../shared/lib/trust-signals';
-import { getTokenScanResultsForAddresses } from '../selectors/selectors';
-import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
 
-type TokenScanCacheResult = {
-  data: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    result_type?: string;
-  };
-  timestamp?: number;
-};
-
 function getTrustState(
-  cachedResult: TokenScanCacheResult | undefined,
+  resultType: string | undefined,
 ): TrustSignalDisplayState {
-  const resultType = cachedResult?.data?.result_type;
-
   if (!resultType) {
     return TrustSignalDisplayState.Unknown;
   }
@@ -33,34 +25,51 @@ function getTrustState(
   }
 }
 
+/**
+ * Hook to get trust signals for tokens on a chain. The scan results are read
+ * from (and kept fresh by) the PhishingDataService query cache.
+ *
+ * @param chainId - The chain the tokens live on.
+ * @param tokenAddresses - The token addresses to check.
+ * @returns One trust signal result per requested address, in the same order.
+ */
 export function useTokenTrustSignalsForAddresses(
   chainId: string | undefined,
   tokenAddresses: string[] | undefined,
 ): TrustSignalResult[] {
-  const tokenScanResults = useSelector((state) =>
-    getTokenScanResultsForAddresses(state, chainId, tokenAddresses),
-  ) as Record<string, TokenScanCacheResult>;
-
-  return useMemo(() => {
-    if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
+  const queries = useMemo(() => {
+    if (!chainId || !tokenAddresses?.length) {
       return [];
     }
 
-    return tokenAddresses.map((tokenAddress) => {
-      if (!tokenAddress) {
-        return {
-          state: TrustSignalDisplayState.Unknown,
-          label: null,
-        };
-      }
+    const normalizedChainId = chainId.toLowerCase();
+    const chain = resolveChainName(normalizedChainId);
+    // EVM addresses are case-insensitive and are cached lowercased; non-EVM
+    // addresses (e.g. Solana base58) are case-sensitive and must not be.
+    const caseSensitive = !normalizedChainId.startsWith('0x');
 
-      const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
-      const cachedResult = tokenScanResults[cacheKey];
+    return tokenAddresses.map((tokenAddress) => ({
+      queryKey: [
+        'PhishingDataService:scanToken',
+        chain ?? '',
+        (caseSensitive ? tokenAddress : tokenAddress?.toLowerCase()) ?? '',
+      ],
+      enabled: Boolean(tokenAddress && chain),
+      staleTime: 0,
+      retry: false,
+    }));
+  }, [chainId, tokenAddresses]);
 
-      return {
-        state: getTrustState(cachedResult),
+  const tokenScanResults = useQueries({ queries });
+
+  return useMemo(
+    () =>
+      tokenScanResults.map(({ data }) => ({
+        state: getTrustState(
+          (data as TokenScanResultResponse | null | undefined)?.result_type,
+        ),
         label: null,
-      };
-    });
-  }, [chainId, tokenAddresses, tokenScanResults]);
+      })),
+    [tokenScanResults],
+  );
 }

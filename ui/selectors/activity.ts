@@ -17,13 +17,7 @@ import {
   mapKeyringTransaction,
   mapLocalTransaction,
 } from '@metamask/client-utils';
-import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
-import {
-  collectTransactionTokenScanKeys,
-  filterMaliciousTransactions,
-  type MultichainTokenScanKey,
-} from '../helpers/utils/token-scan';
 import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
@@ -53,12 +47,7 @@ import {
   selectRequiredTransactionHashes,
   selectRequiredTransactionIds,
 } from './transactionController';
-import type { TokenScanCacheResults } from './token-scan';
-import {
-  getMarketData,
-  getCurrencyRates,
-  getTokenScanCache,
-} from './selectors';
+import { getMarketData, getCurrencyRates } from './selectors';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 const selectTransactionPayData = (state: MetaMaskReduxState) =>
@@ -193,37 +182,6 @@ export const selectLocalTransactionsByHash = createSelector(
   },
 );
 
-export const selectNonEvmTransactionsForActivity = createSelector(
-  [
-    selectCurrentAccountNonEvmTransactions,
-    (state: MetaMaskReduxState) =>
-      (getTokenScanCache(state) as TokenScanCacheResults | undefined) ??
-      (EMPTY_OBJECT as TokenScanCacheResults),
-  ],
-  (nonEvmTransactions, tokenScanCache) => {
-    const tokenScanKeys: MultichainTokenScanKey[] = [
-      ...new Set(
-        nonEvmTransactions.flatMap((transaction) =>
-          collectTransactionTokenScanKeys(transaction),
-        ),
-      ),
-    ];
-
-    const maliciousTokenKeys = new Set<MultichainTokenScanKey>(
-      tokenScanKeys.filter(
-        (key) =>
-          tokenScanCache[key]?.data?.result_type === ResultType.Malicious,
-      ),
-    );
-
-    if (maliciousTokenKeys.size === 0) {
-      return nonEvmTransactions;
-    }
-
-    return filterMaliciousTransactions(nonEvmTransactions, maliciousTokenKeys);
-  },
-);
-
 export const selectBridgeHistoryItemForTx = (
   state: MetaMaskReduxState,
   tx: { hash?: string; id?: string } | undefined,
@@ -259,7 +217,7 @@ const selectBridgeHistory = createSelector(
 
 export const selectNonEvmActivityItems = createSelector(
   [
-    selectNonEvmTransactionsForActivity,
+    selectCurrentAccountNonEvmTransactions,
     getAssetsMetadata,
     getInternalAccountsObject,
     selectBridgeHistory,
