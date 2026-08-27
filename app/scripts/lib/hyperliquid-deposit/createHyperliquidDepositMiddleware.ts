@@ -1,0 +1,245 @@
+import {
+  createAsyncMiddleware,
+  type AsyncJsonRpcEngineNextCallback,
+} from '@metamask/json-rpc-engine';
+import {
+  isPlainObject,
+  type Json,
+  type JsonRpcRequest,
+  type PendingJsonRpcResponse,
+} from '@metamask/utils';
+import log from 'loglevel';
+import { HYPERLIQUID_ORIGIN } from '../../../../shared/constants/defi-referrals';
+import type { ExtendedJSONRPCRequest } from '../defi-referrals/createDefiReferralMiddleware';
+import {
+  HYPERLIQUID_APPROVE_AGENT_PRIMARY_TYPE,
+  HYPERLIQUID_SIGN_TRANSACTION_DOMAIN_NAME,
+  ZERO_ADDRESS,
+} from './constants';
+
+const TYPED_DATA_PARAM_INDEX = 1;
+
+export type HyperliquidDepositContext = {
+  origin: string;
+  signerAddress?: string;
+  tabId: number;
+  typedData: Record<string, unknown>;
+};
+
+export type HyperliquidDepositPromptFlow = {
+  id: string;
+};
+
+type CreateHyperliquidDepositMiddlewareOptions = {
+  endDepositPromptFlow?: (
+    flow: HyperliquidDepositPromptFlow,
+  ) => Promise<void> | void;
+  isEligible?: (
+    context: HyperliquidDepositContext,
+  ) => boolean | Promise<boolean>;
+  openDepositFlow: (
+    context: HyperliquidDepositContext,
+  ) => void | Promise<void>;
+  startDepositPromptFlow?: (
+    context: HyperliquidDepositContext,
+  ) => HyperliquidDepositPromptFlow | undefined;
+};
+
+/**
+ * Middleware that triggers the Hyperliquid deposit prompt after a successful
+ * "Enable trading" (`ApproveAgent`) signature from app.hyperliquid.xyz.
+ *
+ * Eligibility runs in parallel with the signature confirmation. Only eligible
+ * users see an approval flow; ineligible users see nothing extra.
+ *
+ * @param options - The middleware options.
+ * @param options.endDepositPromptFlow - Ends the approval flow started by `startDepositPromptFlow`.
+ * @param options.isEligible - Determines whether the deposit prompt should be shown.
+ * @param options.openDepositFlow - Opens the deposit prompt.
+ * @param options.startDepositPromptFlow - Starts an approval flow to keep the popup open.
+ * @returns Async JSON-RPC middleware.
+ */
+export function createHyperliquidDepositMiddleware({
+  endDepositPromptFlow,
+  isEligible = () => true,
+  openDepositFlow,
+  startDepositPromptFlow,
+}: CreateHyperliquidDepositMiddlewareOptions) {
+  return createAsyncMiddleware(
+    async (
+      req: JsonRpcRequest,
+      res: PendingJsonRpcResponse<Json>,
+      next: AsyncJsonRpcEngineNextCallback,
+    ) => {
+      const context = getHyperliquidApproveAgentContext(req);
+
+      let eligibilityPromise: Promise<boolean> | undefined;
+      let promptFlowPromise:
+        | Promise<HyperliquidDepositPromptFlow | undefined>
+        | undefined;
+
+      if (context) {
+        try {
+          eligibilityPromise = Promise.resolve(isEligible(context)).catch(
+            (error) => {
+              log.error('Hyperliquid deposit eligibility check failed', error);
+              return false;
+            },
+          );
+        } catch (error) {
+          log.error('Hyperliquid deposit eligibility check failed', error);
+          eligibilityPromise = Promise.resolve(false);
+        }
+
+        // Start approval flow only for eligible users (before signature resolves)
+        promptFlowPromise = eligibilityPromise.then((eligible) =>
+          eligible
+            ? startHyperliquidDepositPromptFlow({
+                context,
+                startDepositPromptFlow,
+              })
+            : undefined,
+        );
+      }
+
+      try {
+        await next();
+
+        if (!context || typeof res.result !== 'string') {
+          return;
+        }
+
+        if (!(await eligibilityPromise)) {
+          return;
+        }
+
+        try {
+          await Promise.resolve(openDepositFlow(context));
+        } catch (error) {
+          log.error('Failed to open Hyperliquid deposit prompt', error);
+        }
+      } finally {
+        const promptFlow = await promptFlowPromise;
+        if (promptFlow && endDepositPromptFlow) {
+          try {
+            await Promise.resolve(endDepositPromptFlow(promptFlow));
+          } catch (error) {
+            log.error('Failed to end Hyperliquid deposit approval flow', error);
+          }
+        }
+      }
+    },
+  );
+}
+
+function startHyperliquidDepositPromptFlow({
+  context,
+  startDepositPromptFlow,
+}: {
+  context: HyperliquidDepositContext;
+  startDepositPromptFlow?: CreateHyperliquidDepositMiddlewareOptions['startDepositPromptFlow'];
+}): HyperliquidDepositPromptFlow | undefined {
+  try {
+    return startDepositPromptFlow?.(context);
+  } catch (error) {
+    log.error(
+      'Failed to start Hyperliquid deposit prompt approval flow',
+      error,
+    );
+    return undefined;
+  }
+}
+
+function getHyperliquidApproveAgentContext(
+  req: JsonRpcRequest,
+): HyperliquidDepositContext | undefined {
+  if (
+    !isExtendedJSONRPCRequest(req) ||
+    req.origin !== HYPERLIQUID_ORIGIN ||
+    req.method !== 'eth_signTypedData_v4'
+  ) {
+    return undefined;
+  }
+
+  const typedData = getTypedDataFromRequest(req);
+
+  if (!isHyperliquidApproveAgentTypedData(typedData)) {
+    return undefined;
+  }
+
+  return {
+    origin: req.origin,
+    signerAddress: getSignerAddressFromRequest(req),
+    tabId: req.tabId,
+    typedData,
+  };
+}
+
+function isExtendedJSONRPCRequest(
+  req: JsonRpcRequest,
+): req is ExtendedJSONRPCRequest {
+  return (
+    typeof (req as Partial<ExtendedJSONRPCRequest>).origin === 'string' &&
+    typeof (req as Partial<ExtendedJSONRPCRequest>).tabId === 'number'
+  );
+}
+
+function getSignerAddressFromRequest(req: JsonRpcRequest): string | undefined {
+  const params = Array.isArray(req.params) ? req.params : [];
+  const signerAddress = params[0];
+
+  return typeof signerAddress === 'string' ? signerAddress : undefined;
+}
+
+function getTypedDataFromRequest(
+  req: JsonRpcRequest,
+): Record<string, unknown> | undefined {
+  const params = Array.isArray(req.params) ? req.params : [];
+  const typedDataParam = params[TYPED_DATA_PARAM_INDEX];
+
+  if (isPlainObject(typedDataParam)) {
+    return typedDataParam;
+  }
+
+  if (typeof typedDataParam !== 'string') {
+    return undefined;
+  }
+
+  try {
+    const parsedTypedData = JSON.parse(typedDataParam) as unknown;
+    return isPlainObject(parsedTypedData) ? parsedTypedData : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function isHyperliquidApproveAgentTypedData(
+  typedData: Record<string, unknown> | undefined,
+): typedData is Record<string, unknown> {
+  if (!typedData) {
+    return false;
+  }
+
+  const { domain, message } = typedData;
+
+  return (
+    typedData.primaryType === HYPERLIQUID_APPROVE_AGENT_PRIMARY_TYPE &&
+    isPlainObject(domain) &&
+    domain.name === HYPERLIQUID_SIGN_TRANSACTION_DOMAIN_NAME &&
+    isPlainObject(message) &&
+    typeof message.hyperliquidChain === 'string' &&
+    isNonZeroAgentAddress(message.agentAddress) &&
+    message.nonce !== undefined
+  );
+}
+
+/**
+ * Zero address = API key revocation; non-zero = "Enable trading" request.
+ * @param agentAddress
+ */
+function isNonZeroAgentAddress(agentAddress: unknown): boolean {
+  return (
+    typeof agentAddress === 'string' &&
+    agentAddress.toLowerCase() !== ZERO_ADDRESS
+  );
+}

@@ -15,6 +15,8 @@ export enum DefiReferralPartner {
  */
 export type ConnectionFlow = 'permissions' | 'permissions_then_signature';
 
+export const HYPERLIQUID_ORIGIN = 'https://app.hyperliquid.xyz';
+
 /**
  * Configuration for a Defi referral partner
  */
@@ -51,7 +53,7 @@ export const DEFI_REFERRAL_PARTNERS: Record<
   [DefiReferralPartner.Hyperliquid]: {
     id: DefiReferralPartner.Hyperliquid,
     name: 'Hyperliquid',
-    origin: 'https://app.hyperliquid.xyz',
+    origin: HYPERLIQUID_ORIGIN,
     referralUrl: 'https://app.hyperliquid.xyz/join/MMREFCSI',
     learnMoreUrl: 'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals',
     approvalType: 'hyperliquid_referral_consent',

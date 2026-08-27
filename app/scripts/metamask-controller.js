@@ -233,6 +233,9 @@ import {
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiReferralMiddleware';
+import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit/eligibility';
+import { showHyperliquidDepositPromptApproval } from './lib/hyperliquid-deposit/prompt';
+import { createHyperliquidDepositMiddleware } from './lib/hyperliquid-deposit/createHyperliquidDepositMiddleware';
 
 import {
   diffMap,
@@ -5488,6 +5491,32 @@ export default class MetamaskController extends EventEmitter {
             triggerType,
           ),
         ),
+      );
+
+      // Prompt the user to fund Hyperliquid through MetaMask after a
+      // successful ApproveAgent ("Enable trading") signature.
+      engine.push(
+        createHyperliquidDepositMiddleware({
+          endDepositPromptFlow: (flow) => this.approvalController.endFlow(flow),
+          isEligible: ({ signerAddress }) =>
+            isHyperliquidDepositPromptEligible({
+              accountTrackerController: this.accountTrackerController,
+              perpsController: this.messengerClientsByName.PerpsController,
+              remoteFeatureFlagController: this.remoteFeatureFlagController,
+              signerAddress,
+              tokenBalancesController: this.tokenBalancesController,
+              tokensController: this.tokensController,
+            }),
+          openDepositFlow: ({ origin: promptOrigin, signerAddress }) =>
+            showHyperliquidDepositPromptApproval({
+              approvalController: this.approvalController,
+              origin: promptOrigin,
+              selectedAddress: signerAddress,
+            }),
+          // Only called once the eligibility gate has passed
+          startDepositPromptFlow: () =>
+            this.approvalController.startFlow({ show: false }),
+        }),
       );
     }
 
