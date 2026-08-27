@@ -16,13 +16,6 @@ import {
 } from '../../../../../helpers/constants/routes';
 import AssetListControlBar from './asset-list-control-bar';
 
-let mockIsNetworkManagementEnabled = true;
-
-jest.mock('../../../../../selectors/multichain/feature-flags', () => ({
-  ...jest.requireActual('../../../../../selectors/multichain/feature-flags'),
-  getIsNetworkManagementEnabled: () => mockIsNetworkManagementEnabled,
-}));
-
 type TooltipProps = {
   children: React.ReactNode;
   disabled?: boolean;
@@ -131,7 +124,6 @@ const addSolanaAccountToSelectedGroup = (
 
 describe('NFTs options', () => {
   afterEach(() => {
-    mockIsNetworkManagementEnabled = true;
     jest.clearAllMocks();
   });
 
@@ -495,22 +487,6 @@ describe('NFTs options', () => {
     fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
 
     expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
-  });
-
-  it('opens the legacy Network Manager modal when network management feature flag is disabled', async () => {
-    mockIsNetworkManagementEnabled = false;
-    const state = createMockState();
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
-
-    fireEvent.click(await findByTestId('sort-by-networks'));
-
-    expect(store.getActions()).toContainEqual(
-      expect.objectContaining({
-        payload: { name: 'NETWORK_MANAGER' },
-      }),
-    );
   });
 
   it('shows a refresh-only menu when onRefresh is provided and import token button is hidden', async () => {

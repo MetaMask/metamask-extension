@@ -6,6 +6,10 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { Text } from '../../component-library/text';
 import {
@@ -15,24 +19,28 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarTokenSize,
-  AvatarToken,
-} from '../../component-library/avatar-token';
 import { Box } from '../../component-library/box';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-} from '../../component-library/avatar-network';
 import { AvatarGroupProps, AvatarType } from './avatar-group.types';
 
+/**
+ * @param options0
+ * @param options0.className
+ * @param options0.limit
+ * @param options0.members
+ * @param options0.size
+ * @param options0.avatarType
+ * @param options0.isTagOverlay
+ * @param options0.variant
+ * @deprecated Please update your code to use `AvatarGroup` from `@metamask/design-system-react`.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#avatargroup-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-avatargroup--docs | Storybook Documentation}
+ */
 export const AvatarGroup = ({
   className = '',
   limit = 4,
   members = [],
   size = AvatarTokenSize.Xs,
   avatarType = AvatarType.TOKEN,
-  borderColor,
   isTagOverlay = false,
   variant = AvatarAccountVariant.Maskicon,
 }: AvatarGroupProps): JSX.Element => {
@@ -70,7 +78,6 @@ export const AvatarGroup = ({
                   src={member.avatarValue}
                   name={member.symbol}
                   size={size}
-                  borderColor={borderColor}
                 />
               )}
               {avatarType === AvatarType.ACCOUNT && (
@@ -85,6 +92,11 @@ export const AvatarGroup = ({
                   src={member.avatarValue}
                   name={member.symbol ?? ''}
                   size={AvatarNetworkSize.Xs}
+                  hasBorder
+                  className="rounded-md"
+                  imageProps={{
+                    'data-testid': 'avatar-group-network-image',
+                  }}
                 />
               )}
             </Box>

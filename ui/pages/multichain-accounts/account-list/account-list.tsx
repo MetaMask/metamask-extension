@@ -134,7 +134,10 @@ export const AccountList = () => {
   }, [isFreshTab, navigate]);
 
   return (
-    <Page className="account-list-page">
+    <Page
+      className="account-list-page"
+      data-testid="parent-selector-account-list-page"
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,

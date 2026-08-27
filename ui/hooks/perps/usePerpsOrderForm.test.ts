@@ -91,6 +91,45 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.amount).toBe('10');
     });
 
+    // Regression: TAT-3763. The initial balancePercent used to be rounded to 2
+    // decimals, so it rendered as a long decimal in the narrow percentage pill
+    // next to the size slider and was visibly clipped ("22..."). It must be a
+    // whole percent, matching every other writer of balancePercent.
+    it('rounds the initial balancePercent to a whole number for new orders', () => {
+      // 756.36 reproduces the reported defect: (10 / 3) / 756.36 * 100 is
+      // 0.4407…, which the old 2-decimal rounding surfaced as 0.44.
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 756.36,
+            szDecimals: 6,
+          }),
+        mockStateWithLocale,
+      );
+
+      const { balancePercent } = result.current.formState;
+      expect(balancePercent).toBe(0);
+      expect(Number.isInteger(balancePercent)).toBe(true);
+    });
+
+    it('rounds a non-zero initial balancePercent to a whole number', () => {
+      // (10 / 3) / 15 * 100 is 22.22…, the ticket's reported "22..." case.
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 15,
+            szDecimals: 6,
+          }),
+        mockStateWithLocale,
+      );
+
+      const { balancePercent } = result.current.formState;
+      expect(balancePercent).toBe(22);
+      expect(Number.isInteger(balancePercent)).toBe(true);
+    });
+
     it('recaps default order amount when price resolves after mount', () => {
       const props = {
         ...defaultOptions,
@@ -133,21 +172,23 @@ describe('usePerpsOrderForm', () => {
         result.current.handleLeverageChange(10);
       });
 
-      props.availableBalance = 1000;
+      // 100 rather than a larger balance so the 10x and 3x percentages stay
+      // distinguishable once rounded to whole percents (1% vs 3%).
+      props.availableBalance = 100;
       act(() => {
         rerender();
       });
 
       expect(result.current.formState.amount).toBe('10');
       const marginAtTenX = 10 / 10;
-      const expectedBalancePercent =
-        Math.round((marginAtTenX / 1000) * 100 * 100) / 100;
+      const expectedBalancePercent = Math.round((marginAtTenX / 100) * 100);
       expect(result.current.formState.balancePercent).toBe(
         expectedBalancePercent,
       );
       const marginAtDefaultLeverage = 10 / 3;
-      const balancePercentAtDefaultLeverage =
-        Math.round((marginAtDefaultLeverage / 1000) * 100 * 100) / 100;
+      const balancePercentAtDefaultLeverage = Math.round(
+        (marginAtDefaultLeverage / 100) * 100,
+      );
       expect(result.current.formState.balancePercent).not.toBe(
         balancePercentAtDefaultLeverage,
       );
