@@ -322,7 +322,7 @@ describe('setupSidePanelToolbarBehavior', () => {
     const setupPromise = setupSidePanelToolbarBehavior(
       {
         getController,
-        waitUntilInitialized,
+        waitUntilInitialized: () => waitUntilInitialized,
       },
       sidePanelApi,
     );
@@ -343,6 +343,30 @@ describe('setupSidePanelToolbarBehavior', () => {
     );
   });
 
+  it('does not capture a stale initialization promise', async () => {
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
+    let isInitialized = new Promise<void>(() => undefined);
+    const waitUntilInitialized = async () => await isInitialized;
+
+    let resolveCurrent: () => void = () => undefined;
+    isInitialized = new Promise<void>((resolve) => {
+      resolveCurrent = resolve;
+    });
+
+    const setupPromise = setupSidePanelToolbarBehavior(
+      {
+        getController: () => createToolbarController(),
+        waitUntilInitialized,
+      },
+      sidePanelApi,
+    );
+
+    resolveCurrent();
+    await setupPromise;
+
+    expect(setPanelBehavior).toHaveBeenCalledTimes(2);
+  });
+
   it('updates panel behavior when preference subscription fires', async () => {
     const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
     let preferenceChangeHandler:
@@ -360,7 +384,7 @@ describe('setupSidePanelToolbarBehavior', () => {
           ...createToolbarController(true),
           controllerMessenger: { subscribe },
         }),
-        waitUntilInitialized: Promise.resolve(),
+        waitUntilInitialized: () => Promise.resolve(),
       },
       sidePanelApi,
     );
@@ -394,7 +418,7 @@ describe('setupSidePanelToolbarBehavior', () => {
             subscribe: subscribe as unknown as RootMessenger['subscribe'],
           },
         }),
-        waitUntilInitialized: Promise.resolve(),
+        waitUntilInitialized: () => Promise.resolve(),
       },
       sidePanelApi,
     );
@@ -419,7 +443,7 @@ describe('setupSidePanelToolbarBehavior', () => {
     await setupSidePanelToolbarBehavior(
       {
         getController: () => createToolbarController(),
-        waitUntilInitialized: Promise.reject(new Error('init failed')),
+        waitUntilInitialized: () => Promise.reject(new Error('init failed')),
       },
       sidePanelApi,
     );
@@ -446,7 +470,7 @@ describe('setupSidePanelToolbarBehavior', () => {
         getController: () => ({
           controllerMessenger: { subscribe },
         }),
-        waitUntilInitialized: Promise.resolve(),
+        waitUntilInitialized: () => Promise.resolve(),
       },
       sidePanelApi,
     );
@@ -469,7 +493,7 @@ describe('setupSidePanelToolbarBehavior', () => {
       setupSidePanelToolbarBehavior(
         {
           getController,
-          waitUntilInitialized: Promise.resolve(),
+          waitUntilInitialized: () => Promise.resolve(),
         },
         sidePanel,
       ),

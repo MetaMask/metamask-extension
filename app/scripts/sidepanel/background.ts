@@ -28,7 +28,7 @@ export type SidePanelToolbarBehaviorController = {
 
 export type SidePanelToolbarBehaviorDeps = {
   getController: () => SidePanelToolbarBehaviorController | null | undefined;
-  waitUntilInitialized: Promise<void>;
+  waitUntilInitialized: () => Promise<void>;
 };
 
 export type SidePanelBehaviorApi = {
@@ -218,7 +218,7 @@ export async function setupSidePanelToolbarBehavior(
   applyEarlySidePanelToolbarBehavior(sidePanelApi);
 
   try {
-    await deps.waitUntilInitialized;
+    await deps.waitUntilInitialized();
     await applyToolbarSidePanelBehavior(deps.getController, sidePanelApi);
 
     const controller = deps.getController();

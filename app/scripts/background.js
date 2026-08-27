@@ -2295,7 +2295,7 @@ function onNavigateToTab() {
 
 setupSidePanelToolbarBehavior({
   getController: () => controller,
-  waitUntilInitialized: isInitialized,
+  waitUntilInitialized: async () => await isInitialized,
 });
 
 // Initialize appActiveTab by querying the current active tab on startup
