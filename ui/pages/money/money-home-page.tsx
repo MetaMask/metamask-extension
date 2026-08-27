@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useCallback, useMemo } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import {
@@ -16,16 +16,20 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  MONEY_ACTIVITY_ROUTE,
+} from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
+import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { moneyFormatUsd } from '../../helpers/money/format';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
-import { MoneyActivityPlaceholder } from './components/money-activity-placeholder';
+import { MoneyActivityList } from './components/money-activity-list';
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyPositionPlaceholder } from './components/money-position-placeholder';
@@ -86,6 +90,7 @@ const MoneySectionDivider = () => {
 
 export function MoneyHomePage() {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
   const {
@@ -129,13 +134,17 @@ export function MoneyHomePage() {
     formatInterestEarned(sinceInceptionQuery.data?.interest_earned_usd) ??
     FORMATTED_ZERO;
   const isMonthlyEarningsLoading =
-    last30DaysQuery.isInitialLoading ||
+    last30DaysQuery.isLoading ||
     (formatInterestEarned(last30DaysQuery.data?.interest_earned_usd) ===
       undefined &&
       (vaultApyQuery.isLoading || isBalanceLoading));
-  const isLifetimeEarningsLoading = sinceInceptionQuery.isInitialLoading;
+  const isLifetimeEarningsLoading = sinceInceptionQuery.isLoading;
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
   const privacyMode = useSelector(getPrivacyMode);
+  const { items: activityItems } = useMoneyActivityItems();
+  const handleViewAllActivity = useCallback(() => {
+    navigate(MONEY_ACTIVITY_ROUTE);
+  }, [navigate]);
 
   if (isAvailabilityLoading || (availability.isAvailable && isBalanceLoading)) {
     return (
@@ -278,7 +287,11 @@ export function MoneyHomePage() {
                 <MoneySectionDivider />
               </>
             ) : null}
-            <MoneyActivityPlaceholder />
+            <MoneyActivityList
+              items={activityItems}
+              privacyMode={privacyMode}
+              onViewAll={handleViewAllActivity}
+            />
             <MoneySectionDivider />
             {earnOnYourCryptoSection}
             <MoneySectionDivider />
@@ -317,7 +330,11 @@ export function MoneyHomePage() {
             </section>
 
             <MoneySectionDivider />
-            <MoneyActivityPlaceholder />
+            <MoneyActivityList
+              items={activityItems}
+              privacyMode={privacyMode}
+              onViewAll={handleViewAllActivity}
+            />
 
             <MoneySectionDivider />
             {earnOnYourCryptoSection}

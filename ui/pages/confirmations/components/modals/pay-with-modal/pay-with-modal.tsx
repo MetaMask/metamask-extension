@@ -34,6 +34,7 @@ import {
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
 import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { useDispatch } from '../../../../../store/hooks';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
@@ -53,8 +54,10 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const blockedTokens = useTransactionPayBlockedTokens();
   const [showOtherAssets, setShowOtherAssets] = useState(false);
 
+  const confirmationType = getConfirmationTransactionType(currentConfirmation);
+
   const isMoneyAccountPayEnabled = useSelector((state) =>
-    selectIsMoneyAccountTransactionEnabled(state, currentConfirmation?.type),
+    selectIsMoneyAccountTransactionEnabled(state, confirmationType),
   );
 
   const { filterTokens: musdTokenFilter } = useMusdConversionTokens({
@@ -72,7 +75,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
   const isMoneyAccountDeposit =
-    currentConfirmation?.type === TransactionType.moneyAccountDeposit;
+    confirmationType === TransactionType.moneyAccountDeposit;
   const { renderNoFeeTag } = usePayWithNoFeeToken();
   const tagRenderers = useMemo(
     () => (isMoneyAccountDeposit ? [renderNoFeeTag] : undefined),

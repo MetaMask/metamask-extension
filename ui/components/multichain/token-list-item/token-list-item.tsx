@@ -12,6 +12,12 @@ import {
   Button,
   ButtonVariant,
   Tag,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  ModalContent,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -35,12 +41,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   SensitiveText,
   SensitiveTextLength,
   Text,
@@ -503,10 +503,13 @@ export const TokenListItemComponent = ({
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+            <ModalHeader
+              onClose={() => setShowScamWarningModal(false)}
+              closeButtonProps={{ ariaLabel: t('close') }}
+            >
               {t('nativeTokenScamWarningTitle')}
             </ModalHeader>
-            <ModalBody marginTop={4} marginBottom={4}>
+            <ModalBody className="my-4">
               {t('nativeTokenScamWarningDescription', [
                 tokenSymbol,
                 nativeCurrencySymbol ||
