@@ -1773,6 +1773,49 @@ async function setupMocking(
     .always()
     .thenCallback(() => ({ statusCode: 200, json: [] }));
 
+  // Veda performance API: vault APY, fetched by MoneyAccountBalanceService
+  // whenever a Money Account surface renders. A minimal valid response stops
+  // TanStack Query from retrying against the catch-all.
+  await server
+    .forGet(/^https:\/\/api\.sevenseas\.capital\/performance\/[^/]+\/[^/]+$/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        Response: {
+          apy: 0.045,
+          timestamp: '2026-01-01T00:00:00Z',
+        },
+      },
+    }));
+
+  // Money API: positions for a Money account, fetched as the API leg of
+  // MoneyAccountBalanceService:fetchBalanceWithFallback. A zero balance
+  // satisfies the service's balance invariant (musd + vmusd === total).
+  await server
+    .forGet(/^https:\/\/money\.api\.cx\.metamask\.io\/v1\/positions\/[^/]+$/u)
+    .always()
+    .thenCallback((req) => {
+      const url = new URL(req.url);
+      const address = url.pathname.split('/').pop();
+      return {
+        statusCode: 200,
+        json: {
+          address,
+          as_of_block: 1,
+          as_of_timestamp: '2026-01-01T00:00:00Z',
+          data_freshness: 'live',
+          indexer_lag_seconds: 0,
+          balance: {
+            musd_balance: '0',
+            vmusd_value_in_musd: '0',
+            total_balance: '0',
+          },
+          positions: [],
+        },
+      };
+    });
+
   // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
   // Default: 25 ETH native per requested chain for the default fixture account. Override via
   // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a custom fiat total.
