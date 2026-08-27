@@ -4,8 +4,12 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { fireEvent, screen } from '@testing-library/react';
-import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
+import { fireEvent, render, screen } from '@testing-library/react';
+import {
+  en,
+  I18nProvider,
+  renderWithLocalization,
+} from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { getPrivacyMode } from '../../selectors/selectors';
@@ -143,6 +147,26 @@ describe('MoneyActivityPage', () => {
     expect(screen.getAllByTestId(/money-activity-row-money-tx-/u).length).toBe(
       MOCK_MONEY_TRANSACTIONS.length,
     );
+  });
+
+  it('resets the overflow ancestor scroll so View all starts at the top', () => {
+    const scroller = document.createElement('div');
+    scroller.style.overflowY = 'auto';
+    scroller.style.height = '200px';
+    document.body.appendChild(scroller);
+    scroller.scrollTop = 180;
+
+    render(<MoneyActivityPage />, {
+      container: scroller,
+      wrapper: ({ children }) => (
+        <I18nProvider currentLocale="en" current={en} en={en}>
+          {children}
+        </I18nProvider>
+      ),
+    });
+
+    expect(scroller.scrollTop).toBe(0);
+    scroller.remove();
   });
 
   it('navigates back when the back button is clicked', () => {
