@@ -6073,6 +6073,7 @@ describe('LegacyBackgroundApiService', () => {
         const createWallet = jest.fn().mockResolvedValue(undefined);
         const setIsWalletResetInProgress = jest.fn();
         const updateAccounts = jest.fn().mockResolvedValue(undefined);
+        const reinit = jest.fn();
         const primaryKeyring = {
           type: 'HD Key Tree',
           accounts: ['0xabc'],
@@ -6122,6 +6123,10 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'AccountsController:updateAccounts',
           updateAccounts,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:reinit',
+          reinit,
         );
 
         const result = await service.createNewVaultAndKeychain('password');
@@ -7524,6 +7529,7 @@ function getMessenger(
       'AccountOrderController:updateHiddenAccountsList',
       'AccountTreeController:clearState',
       'AccountTreeController:init',
+      'AccountTreeController:reinit',
       'AccountTreeController:getSelectedAccountGroup',
       'AccountTreeController:syncWithUserStorage',
       'AccountTreeController:syncWithUserStorageAtLeastOnce',
