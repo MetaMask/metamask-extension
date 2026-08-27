@@ -61,6 +61,10 @@ export type CustomAmountInfoProps = {
    */
   amountDetails?: (amountFiat: string) => ReactNode;
   /**
+   * When true, focuses the input on mount and selects the value so typing replaces it
+   */
+  autoFocusAmount?: boolean;
+  /**
    * Optional caller-provided balance (USD) used as the source for the
    * percentage buttons. Takes precedence over the default `payToken.balanceUsd`.
    * Used by flows (e.g. Perps Withdraw) whose balance comes from a different
@@ -68,10 +72,6 @@ export type CustomAmountInfoProps = {
    */
   balanceUsdOverride?: number;
   children?: ReactNode;
-  /**
-   * When true, focuses the input on mount and selects the value so typing replaces it
-   */
-  autoFocusAmount?: boolean;
   currency?: string;
   /**
    * When true, it prevents automatic selection of payment token based on balance and feature flags
@@ -81,6 +81,12 @@ export type CustomAmountInfoProps = {
    * When true, it disables MetaMask Pay for transactions that just need custom amount input
    */
   disablePay?: boolean;
+  /**
+   * When true, disables the percentage shortcut buttons. Used when the
+   * balance source for those buttons is not yet known (e.g. Money Account
+   * vault withdrawable balance still loading).
+   */
+  disablePercentageButtons?: boolean;
   /**
    * When true, renders a "From account" selector row above the "Pay with" row,
    * letting the user choose which account funds the transaction.
@@ -93,24 +99,25 @@ export type CustomAmountInfoProps = {
    */
   displayPercentageButtons?: boolean;
   hidePayTokenAmount?: boolean;
+  overrideBottomContent?: (hasAmount: boolean) => ReactNode;
+  overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
   /**
    * When true, pre-fills the amount field with the max balance on load.
    */
   prefillMaxOnLoad?: boolean;
   preferredToken?: SetPayTokenRequest;
-  overrideBottomContent?: (hasAmount: boolean) => ReactNode;
-  overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
 };
 
 export const CustomAmountInfo = React.memo(
   ({
     amountDetails,
+    autoFocusAmount = false,
     balanceUsdOverride,
     children,
-    autoFocusAmount = false,
     currency,
     disableAutomaticToken,
     disablePay,
+    disablePercentageButtons,
     displayAccountRow,
     displayPercentageButtons,
     hidePayTokenAmount,
@@ -217,7 +224,7 @@ export const CustomAmountInfo = React.memo(
         <AlertMessage />
         {displayPercentageButtons && (
           <PercentageButtons
-            disabled={!hasTokens}
+            disabled={!hasTokens || Boolean(disablePercentageButtons)}
             hasMax={showMax}
             onPercentageClick={updatePendingAmountPercentage}
           />

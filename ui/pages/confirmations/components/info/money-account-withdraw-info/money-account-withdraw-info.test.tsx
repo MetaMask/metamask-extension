@@ -38,9 +38,13 @@ jest.mock(
 );
 
 jest.mock('../custom-amount-info', () => ({
-  CustomAmountInfo: jest.fn(({ children }: { children?: React.ReactNode }) => (
-    <div data-testid="custom-amount-info">{children}</div>
-  )),
+  CustomAmountInfo: jest.fn(
+    ({
+      amountDetails,
+    }: {
+      amountDetails?: (amountFiat: string) => React.ReactNode;
+    }) => <div data-testid="custom-amount-info">{amountDetails?.('0')}</div>,
+  ),
 }));
 
 const useAddTokenMock = jest.mocked(useAddToken);
@@ -77,10 +81,12 @@ describe('MoneyAccountWithdrawInfo', () => {
     expect(screen.getByTestId('custom-amount-info')).toBeInTheDocument();
     expect(customAmountInfoMock).toHaveBeenCalledWith(
       expect.objectContaining({
+        amountDetails: expect.any(Function),
         autoFocusAmount: true,
         balanceUsdOverride: 7.06,
         currency: 'usd',
         disablePay: false,
+        disablePercentageButtons: false,
         displayAccountRow: true,
         displayPercentageButtons: true,
         hidePayTokenAmount: true,
@@ -117,7 +123,7 @@ describe('MoneyAccountWithdrawInfo', () => {
     );
   });
 
-  it('uses 0 as the max source when the withdrawable balance is unknown', () => {
+  it('omits the max source and disables percentage buttons when the withdrawable balance is unknown', () => {
     useMoneyAccountBalanceMock.mockReturnValue({
       withdrawableFiatRaw: undefined,
     } as ReturnType<typeof useMoneyAccountBalance>);
@@ -126,7 +132,24 @@ describe('MoneyAccountWithdrawInfo', () => {
 
     expect(customAmountInfoMock).toHaveBeenCalledWith(
       expect.objectContaining({
+        balanceUsdOverride: undefined,
+        disablePercentageButtons: true,
+      }),
+      expect.anything(),
+    );
+  });
+
+  it('keeps percentage buttons enabled for a genuine zero vault balance', () => {
+    useMoneyAccountBalanceMock.mockReturnValue({
+      withdrawableFiatRaw: '0',
+    } as ReturnType<typeof useMoneyAccountBalance>);
+
+    render(<MoneyAccountWithdrawInfo />);
+
+    expect(customAmountInfoMock).toHaveBeenCalledWith(
+      expect.objectContaining({
         balanceUsdOverride: 0,
+        disablePercentageButtons: false,
       }),
       expect.anything(),
     );

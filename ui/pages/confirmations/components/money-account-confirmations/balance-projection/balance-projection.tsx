@@ -19,9 +19,10 @@ import { RouteMessengerProvider } from '../../../../../contexts/route-messenger'
 import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../messenger';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 
+const PROJECTED_YEARS = 1;
+
 export type BalanceProjectionProps = {
   amountFiat: string;
-  projectedYears: number;
 };
 
 /**
@@ -41,18 +42,18 @@ function isPositiveNumberOrZero(value: number | undefined): value is number {
  *
  * Ported from mobile `BalanceProjection`. Info icons open a popover rather
  * than a full-screen sheet — the extension has no Money modal stack yet.
+ * The projection is always a one-year compound so the copy, tooltip, and
+ * accessible label stay consistent.
  *
  * @param props - Component props.
  * @param props.amountFiat - Fiat amount currently in the custom-amount input.
- * @param props.projectedYears - Compounding horizon, typically 1.
  * @returns The subtitle, a loading skeleton, or nothing.
  */
-const BalanceProjectionContent = ({
-  amountFiat,
-  projectedYears,
-}: BalanceProjectionProps) => {
+const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
   const t = useI18nContext();
-  const { vaultApyQuery, apyDecimal, apyPercent } = useMoneyAccountBalance();
+  const { apyDecimal, apyPercent, vaultApyQuery } = useMoneyAccountBalance();
+  const hasUsableApy =
+    isPositiveNumberOrZero(apyDecimal) && isPositiveNumberOrZero(apyPercent);
 
   const amount = useMemo(() => {
     try {
@@ -73,11 +74,11 @@ const BalanceProjectionContent = ({
     // `bignumber.js@4` both reject a number with more than 15 significant
     // digits, which a live APY routinely has.
     return amount.times(
-      new BigNumber(1).plus(String(apyDecimal)).pow(projectedYears),
+      new BigNumber(1).plus(String(apyDecimal)).pow(PROJECTED_YEARS),
     );
-  }, [amount, apyDecimal, projectedYears]);
+  }, [amount, apyDecimal]);
 
-  if (vaultApyQuery.isLoading) {
+  if (vaultApyQuery.isLoading && !hasUsableApy) {
     return (
       <Box data-testid="balance-projection-skeleton">
         <Skeleton height={20} width={160} />
@@ -85,11 +86,7 @@ const BalanceProjectionContent = ({
     );
   }
 
-  if (
-    amount === null ||
-    !isPositiveNumberOrZero(apyDecimal) ||
-    !isPositiveNumberOrZero(apyPercent)
-  ) {
+  if (amount === null || !hasUsableApy) {
     return null;
   }
 
@@ -103,7 +100,7 @@ const BalanceProjectionContent = ({
         data-testid="balance-projection"
       >
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {t('moneyAccountProjectedBalance', [String(projectedYears)])}
+          {t('moneyAccountProjectedBalance')}
         </Text>
         <Text variant={TextVariant.BodyMd} color={TextColor.SuccessDefault}>
           {moneyFormatUsd(projected)}

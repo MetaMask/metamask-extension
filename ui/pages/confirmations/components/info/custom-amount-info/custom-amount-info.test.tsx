@@ -131,6 +131,7 @@ function render(
     amountDetails?: (amountFiat: string) => React.ReactNode;
     disableAutomaticToken?: boolean;
     disablePay?: boolean;
+    disablePercentageButtons?: boolean;
     displayPercentageButtons?: boolean;
     hidePayTokenAmount?: boolean;
     availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
@@ -154,6 +155,7 @@ function render(
     amountDetails,
     disableAutomaticToken,
     disablePay = false,
+    disablePercentageButtons,
     displayPercentageButtons = false,
     hidePayTokenAmount = false,
     availableTokens = [MOCK_AVAILABLE_TOKEN],
@@ -270,6 +272,7 @@ function render(
       amountDetails={amountDetails}
       disableAutomaticToken={disableAutomaticToken}
       disablePay={disablePay}
+      disablePercentageButtons={disablePercentageButtons}
       displayPercentageButtons={displayPercentageButtons}
       hidePayTokenAmount={hidePayTokenAmount}
     />,
@@ -589,6 +592,21 @@ describe('CustomAmountInfo', () => {
       const updatePendingAmountPercentage = jest.fn();
       const { getByTestId } = renderMoneyAccount({
         availableTokens: [],
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          updatePendingAmountPercentage,
+        },
+      });
+
+      expect(getByTestId('percentage-button-50')).toBeDisabled();
+      getByTestId('percentage-button-50').click();
+      expect(updatePendingAmountPercentage).not.toHaveBeenCalled();
+    });
+
+    it('disables percentage buttons when disablePercentageButtons is true', () => {
+      const updatePendingAmountPercentage = jest.fn();
+      const { getByTestId } = renderMoneyAccount({
+        disablePercentageButtons: true,
         customAmountHookReturn: {
           ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
           updatePendingAmountPercentage,

@@ -10,8 +10,6 @@ import {
 
 const MONEY_ACCOUNT_DEPOSIT_CURRENCY = 'usd';
 
-const PROJECTED_YEARS = 1;
-
 /**
  * Amount-screen subtitle for the deposit flow.
  *
@@ -24,7 +22,7 @@ const PROJECTED_YEARS = 1;
  * @returns The APY pitch / projected balance subtitle.
  */
 const renderAmountDetails = (amountFiat: string) => (
-  <BalanceProjection amountFiat={amountFiat} projectedYears={PROJECTED_YEARS} />
+  <BalanceProjection amountFiat={amountFiat} />
 );
 
 export const MoneyAccountDepositInfo = () => {

@@ -34,12 +34,9 @@ function mockBalance({
   } as UseMoneyAccountBalanceResult);
 }
 
-function renderProjection(amountFiat: string, projectedYears = 1) {
+function renderProjection(amountFiat: string) {
   return renderWithProvider(
-    <BalanceProjection
-      amountFiat={amountFiat}
-      projectedYears={projectedYears}
-    />,
+    <BalanceProjection amountFiat={amountFiat} />,
     configureStore(mockState),
   );
 }
@@ -57,14 +54,6 @@ describe('BalanceProjection', () => {
     expect(screen.getByTestId('balance-projection')).toBeInTheDocument();
     expect(screen.getByText('Projected 1-year balance:')).toBeInTheDocument();
     expect(screen.getByText('$1,040.00')).toBeInTheDocument();
-  });
-
-  it('compounds the projection over multiple years', () => {
-    mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
-
-    renderProjection('1000', 5);
-
-    expect(screen.getByText('$1,216.65')).toBeInTheDocument();
   });
 
   it('renders the APY pitch when the amount is "0"', () => {
@@ -125,6 +114,39 @@ describe('BalanceProjection', () => {
     expect(
       screen.getByTestId('balance-projection-skeleton'),
     ).toBeInTheDocument();
+  });
+
+  it('keeps the APY pitch visible while the live query loads if fallback APY is already available', () => {
+    mockBalance({
+      apyDecimal: 0.04,
+      apyPercent: 4,
+      isLoading: true,
+    });
+
+    renderProjection('0');
+
+    expect(
+      screen.getByTestId('balance-projection-apy-pitch'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('balance-projection-skeleton'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('keeps the projected balance visible while the live query loads if fallback APY is already available', () => {
+    mockBalance({
+      apyDecimal: 0.04,
+      apyPercent: 4,
+      isLoading: true,
+    });
+
+    renderProjection('1000');
+
+    expect(screen.getByTestId('balance-projection')).toBeInTheDocument();
+    expect(screen.getByText('$1,040.00')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('balance-projection-skeleton'),
+    ).not.toBeInTheDocument();
   });
 
   it('returns nothing when APY is unavailable', () => {

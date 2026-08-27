@@ -41,7 +41,7 @@ export const MoneyAccountWithdrawBalance = () => {
         fontWeight={FontWeight.Medium}
         color={TextColor.TextAlternative}
       >
-        {`${t('moneyAccountAvailableBalance')}${withdrawableFiatFormatted}`}
+        {t('moneyAccountAvailableBalance', [withdrawableFiatFormatted])}
       </Text>
     </Box>
   );

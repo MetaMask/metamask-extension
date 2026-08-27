@@ -17,6 +17,18 @@ const MONEY_ACCOUNT_WITHDRAW_PREFERRED_TOKEN = {
 };
 
 /**
+ * Amount-screen subtitle for the withdraw flow.
+ *
+ * Defined at module scope rather than inline in
+ * {@link MoneyAccountWithdrawInfoContent} so the reference stays stable across
+ * renders: an inline element or arrow would be a new identity on every render,
+ * defeating the `React.memo` on `CustomAmountInfo`.
+ *
+ * @returns The available-balance subtitle.
+ */
+const renderWithdrawBalance = () => <MoneyAccountWithdrawBalance />;
+
+/**
  * Money-account withdraw confirmation info content.
  *
  * Mirrors mobile `MoneyAccountWithdrawInfo`: USD custom amount, optional
@@ -39,21 +51,24 @@ const MoneyAccountWithdrawInfoContent = () => {
 
   const { canSelectWithdrawToken } = useTransactionPayWithdraw();
   const { withdrawableFiatRaw } = useMoneyAccountBalance();
-  const availableBalance = Number(withdrawableFiatRaw) || 0;
+  const hasWithdrawableBalance = withdrawableFiatRaw !== undefined;
+  const availableBalance = hasWithdrawableBalance
+    ? Number(withdrawableFiatRaw)
+    : undefined;
 
   return (
     <CustomAmountInfo
+      amountDetails={renderWithdrawBalance}
       autoFocusAmount
       balanceUsdOverride={availableBalance}
       currency={MONEY_ACCOUNT_WITHDRAW_CURRENCY}
       disablePay={!canSelectWithdrawToken}
+      disablePercentageButtons={!hasWithdrawableBalance}
       displayAccountRow
       displayPercentageButtons
       hidePayTokenAmount
       preferredToken={MONEY_ACCOUNT_WITHDRAW_PREFERRED_TOKEN}
-    >
-      <MoneyAccountWithdrawBalance />
-    </CustomAmountInfo>
+    />
   );
 };
 
