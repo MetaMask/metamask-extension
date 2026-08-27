@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -175,16 +175,18 @@ describe('MoneyAccountBalance', () => {
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
   });
 
-  it('shows the info copy when the info icon is clicked', () => {
+  it('shows the info copy when the info icon is clicked', async () => {
     arrange({ totalFiatFormatted: '$2,384.34' });
 
     const { getByTestId, getByText, queryByText } = render();
 
     expect(queryByText(/Your dollar-backed mUSD balance/u)).toBeNull();
 
-    fireEvent.click(
-      getByTestId(`${MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}-button`),
-    );
+    await act(async () => {
+      fireEvent.click(
+        getByTestId(`${MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}-button`),
+      );
+    });
 
     expect(
       getByText(
