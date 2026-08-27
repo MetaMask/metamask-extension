@@ -53,10 +53,6 @@ export async function setIsMaxAmount(
  * caller generates and supplies the batch id so the deposit intent can be
  * recorded against it before this call.
  *
- * NOTE: The background handler is not registered yet — the
- * transaction-pay-controller wiring is being delivered separately by the Pay
- * team, so this call rejects until that lands.
- *
  * @param batchId - Caller-generated batch id.
  * @returns The created transaction id and the batch id.
  */
@@ -72,10 +68,6 @@ export async function createMoneyAccountDepositTransaction(
 /**
  * Creates the placeholder Money Account withdrawal batch in the background
  * and returns the created transaction's id for confirmation navigation.
- *
- * NOTE: The background handler is not registered yet — the
- * transaction-pay-controller wiring is being delivered separately by the Pay
- * team, so this call rejects until that lands.
  *
  * @returns The created transaction id and the batch id.
  */
