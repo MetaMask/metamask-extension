@@ -1,12 +1,28 @@
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import { JsonRpcRequest } from '@metamask/utils';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { PreferencesController } from '../../controllers/preferences-controller';
 
-// isSecurityAlertsEnabledByUser is a function that checks if the security alerts are enabled in the preferences controller.
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+
+type PreferencesStateMessenger = {
+  call: (action: 'PreferencesController:getState') => {
+    securityAlertsEnabled: boolean;
+  };
+};
+
+export type TrustSignalsPermissionMessenger = {
+  call: (
+    action: 'PermissionController:hasPermission',
+    origin: string,
+    permissionName: string,
+  ) => boolean;
+};
+
 export function isSecurityAlertsEnabledByUser(
-  preferencesController: PreferencesController,
+  messenger: PreferencesStateMessenger,
 ) {
-  const { securityAlertsEnabled } = preferencesController.state;
+  const { securityAlertsEnabled } = messenger.call(
+    'PreferencesController:getState',
+  );
   return securityAlertsEnabled;
 }
 
@@ -70,13 +86,16 @@ export function isEthSignTypedData(req: JsonRpcRequest): boolean {
 
 export function isConnected(
   req: JsonRpcRequest & { origin?: string },
-  getPermittedAccounts: (origin: string) => string[],
+  messenger: TrustSignalsPermissionMessenger,
 ): boolean {
   if (!req.origin || req.method !== MESSAGE_TYPE.ETH_ACCOUNTS) {
     return false;
   }
-  const permittedAccounts = getPermittedAccounts(req.origin);
-  return Array.isArray(permittedAccounts) && permittedAccounts.length > 0;
+  return messenger.call(
+    'PermissionController:hasPermission',
+    req.origin,
+    Caip25EndowmentPermissionName,
+  );
 }
 
 export function connectScreenHasBeenPrompted(req: JsonRpcRequest): boolean {
@@ -112,16 +131,20 @@ export function isWalletCreateSession(req: JsonRpcRequest): boolean {
  * permitted accounts, so an origin that already holds one is a connected read.
  *
  * @param req - The request being inspected
- * @param hasCaip25Permission - Whether the origin holds a CAIP-25 permission
+ * @param messenger - Used to check for a CAIP-25 permission
  */
 export function isCaipConnected(
   req: JsonRpcRequest & { origin?: string },
-  hasCaip25Permission: (origin: string) => boolean,
+  messenger: TrustSignalsPermissionMessenger,
 ): boolean {
   if (!req.origin || req.method !== MESSAGE_TYPE.WALLET_GET_SESSION) {
     return false;
   }
-  return hasCaip25Permission(req.origin);
+  return messenger.call(
+    'PermissionController:hasPermission',
+    req.origin,
+    Caip25EndowmentPermissionName,
+  );
 }
 
 /**
@@ -146,15 +169,15 @@ export function getWrappedRequestMethod(
 /**
  * Build the EIP-1193 gate for origin scanning.
  *
- * @param getPermittedAccounts - Returns the accounts an origin may use
+ * @param messenger - Used to check whether the origin already holds a session
  */
 export function createEip1193OriginScanGate(
-  getPermittedAccounts: (origin: string) => string[],
+  messenger: TrustSignalsPermissionMessenger,
 ) {
   return (req: JsonRpcRequest & { origin?: string }): boolean =>
     isEthSendTransaction(req) ||
     isEthSignTypedData(req) ||
-    isConnected(req, getPermittedAccounts) ||
+    isConnected(req, messenger) ||
     connectScreenHasBeenPrompted(req) ||
     isEip7715AdvancedPermissionsRequest(req);
 }
@@ -169,16 +192,13 @@ export function createEip1193OriginScanGate(
  * nearly the entire RPC surface, so gating on the outer method alone would scan
  * the origin on routine polling reads.
  *
- * @param hasCaip25Permission - Whether the origin holds a CAIP-25 permission
+ * @param messenger - Used to check whether the origin already holds a session
  */
 export function createCaipOriginScanGate(
-  hasCaip25Permission: (origin: string) => boolean,
+  messenger: TrustSignalsPermissionMessenger,
 ) {
   return (req: JsonRpcRequest & { origin?: string }): boolean => {
-    if (
-      isWalletCreateSession(req) ||
-      isCaipConnected(req, hasCaip25Permission)
-    ) {
+    if (isWalletCreateSession(req) || isCaipConnected(req, messenger)) {
       return true;
     }
 

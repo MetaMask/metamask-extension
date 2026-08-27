@@ -5296,6 +5296,32 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Restricted messenger for trust-signal origin and address scanning.
+   *
+   * @returns {Messenger} Child messenger with the scan, cache, preference, and
+   * permission actions both engines need.
+   */
+  #getTrustSignalsMessenger() {
+    const messenger = new Messenger({
+      namespace: 'TrustSignals',
+      parent: this.controllerMessenger,
+    });
+    this.controllerMessenger.delegate({
+      messenger,
+      actions: [
+        'AppStateController:addAddressSecurityAlertResponse',
+        'AppStateController:getAddressSecurityAlertResponse',
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        'PermissionController:hasPermission',
+        'PhishingController:scanAddress',
+        'PhishingController:scanUrl',
+        'PreferencesController:getState',
+      ],
+    });
+    return messenger;
+  }
+
+  /**
    * A method for creating an ethereum provider that is safely restricted for the requesting subject.
    *
    * @param {object} options - Provider engine options
@@ -5406,23 +5432,17 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
+    const trustSignalsMessenger = this.#getTrustSignalsMessenger();
+
     engine.push(
       createOriginScanMiddleware(
-        this.phishingController,
-        this.preferencesController,
-        createEip1193OriginScanGate(this.getPermittedAccounts.bind(this)),
+        trustSignalsMessenger,
+        createEip1193OriginScanGate(trustSignalsMessenger),
         sender?.url,
       ),
     );
 
-    engine.push(
-      createAddressScanMiddleware(
-        this.networkController,
-        this.appStateController,
-        this.phishingController,
-        this.preferencesController,
-      ),
-    );
+    engine.push(createAddressScanMiddleware(trustSignalsMessenger));
 
     const snapAndHardwareMessenger = new Messenger({
       namespace: 'SnapAndHardwareMessenger',
@@ -5808,16 +5828,12 @@ export default class MetamaskController extends EventEmitter {
     // stack, so this is the only position from which the connect-time scan can
     // see them. It also leaves room to cover non-EVM scopes, which terminate
     // during the `wallet_invokeMethod` unwrap.
+    const trustSignalsMessenger = this.#getTrustSignalsMessenger();
+
     engine.push(
       createOriginScanMiddleware(
-        this.phishingController,
-        this.preferencesController,
-        createCaipOriginScanGate((requestOrigin) =>
-          this.permissionController.hasPermission(
-            requestOrigin,
-            Caip25EndowmentPermissionName,
-          ),
-        ),
+        trustSignalsMessenger,
+        createCaipOriginScanGate(trustSignalsMessenger),
         sender?.url,
       ),
     );
@@ -5936,14 +5952,7 @@ export default class MetamaskController extends EventEmitter {
     // under its EIP-1193 name, with `networkClientId` already resolved from the
     // request's own CAIP scope. Only EVM requests get this far; the origin scan
     // that has to cover the rest runs above the Multichain API handlers.
-    engine.push(
-      createAddressScanMiddleware(
-        this.networkController,
-        this.appStateController,
-        this.phishingController,
-        this.preferencesController,
-      ),
-    );
+    engine.push(createAddressScanMiddleware(trustSignalsMessenger));
 
     engine.push(this.metamaskMiddleware);
 
