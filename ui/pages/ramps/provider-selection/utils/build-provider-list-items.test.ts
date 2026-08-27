@@ -122,6 +122,41 @@ describe('findProviderQuote', () => {
         ?.amountOut,
     ).toBe('0.05');
   });
+
+  it('supports a provider-wide quote lookup for provider metadata', () => {
+    const quotes: QuotesResponse = {
+      success: [
+        {
+          provider: transak.id,
+          quote: {
+            amountIn: 100,
+            amountOut: '0.04',
+            paymentMethod: 'bank-transfer',
+          },
+          metadata: { tags: { isMostReliable: true } },
+        },
+        {
+          provider: transak.id,
+          quote: {
+            amountIn: 100,
+            amountOut: '0.05',
+            paymentMethod: 'debit-credit-card',
+          },
+        },
+      ],
+      sorted: [],
+      error: [],
+      customActions: [],
+    };
+
+    expect(
+      findProviderQuote(quotes, transak.id, 'debit-credit-card')?.quote
+        ?.amountOut,
+    ).toBe('0.05');
+    expect(
+      findProviderQuote(quotes, transak.id)?.metadata?.tags?.isMostReliable,
+    ).toBe(true);
+  });
 });
 
 describe('getProviderTag', () => {

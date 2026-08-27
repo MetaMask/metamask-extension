@@ -104,9 +104,10 @@ function buildProviderListRows({
       provider.id,
       selectedPaymentMethodId,
     );
+    const providerMetadataQuote = findProviderQuote(quotes, provider.id);
     const tag =
       showQuotes && !quotesLoading
-        ? getProviderTag(provider.id, matchedQuote, ordersProviders, t)
+        ? getProviderTag(provider.id, providerMetadataQuote, ordersProviders, t)
         : null;
 
     return {
