@@ -9,7 +9,14 @@ import {
   connectScreenHasBeenPrompted,
   getWrappedRequestMethod,
   isCaipConnected,
+  type TrustSignalsPermissionMessenger,
 } from './trust-signals-util';
+
+const createPermissionMessenger = (
+  hasPermission: boolean,
+): TrustSignalsPermissionMessenger => ({
+  call: jest.fn().mockReturnValue(hasPermission),
+});
 
 describe('trust-signals-util', () => {
   describe('isEthSendTransaction', () => {
@@ -247,8 +254,7 @@ describe('trust-signals-util', () => {
         method: MESSAGE_TYPE.ETH_ACCOUNTS,
         origin: 'https://example.com',
       } as JsonRpcRequest & { origin?: string };
-      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
-      expect(isConnected(req, getPermittedAccounts)).toBe(true);
+      expect(isConnected(req, createPermissionMessenger(true))).toBe(true);
     });
 
     it('returns false when the user is not connected', () => {
@@ -256,8 +262,7 @@ describe('trust-signals-util', () => {
         method: MESSAGE_TYPE.ETH_ACCOUNTS,
         origin: 'https://example.com',
       } as JsonRpcRequest & { origin?: string };
-      const getPermittedAccounts = jest.fn().mockReturnValue([]);
-      expect(isConnected(req, getPermittedAccounts)).toBe(false);
+      expect(isConnected(req, createPermissionMessenger(false))).toBe(false);
     });
 
     it('returns false when the method is not eth_accounts', () => {
@@ -265,24 +270,21 @@ describe('trust-signals-util', () => {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
         origin: 'https://example.com',
       } as JsonRpcRequest & { origin?: string };
-      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
-      expect(isConnected(req, getPermittedAccounts)).toBe(false);
+      expect(isConnected(req, createPermissionMessenger(true))).toBe(false);
     });
 
     it('returns false when the origin is not present', () => {
       const req: JsonRpcRequest & { origin?: string } = {
         method: MESSAGE_TYPE.ETH_ACCOUNTS,
       } as JsonRpcRequest & { origin?: string };
-      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
-      expect(isConnected(req, getPermittedAccounts)).toBe(false);
+      expect(isConnected(req, createPermissionMessenger(true))).toBe(false);
     });
     it('returns false even if connected but different method', () => {
       const req: JsonRpcRequest & { origin?: string } = {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
         origin: 'https://example.com',
       } as JsonRpcRequest & { origin?: string };
-      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
-      expect(isConnected(req, getPermittedAccounts)).toBe(false);
+      expect(isConnected(req, createPermissionMessenger(true))).toBe(false);
     });
   });
 
@@ -372,7 +374,7 @@ describe('trust-signals-util', () => {
         MESSAGE_TYPE.WALLET_GET_SESSION,
         'https://example.com',
       );
-      expect(isCaipConnected(req, () => true)).toBe(true);
+      expect(isCaipConnected(req, createPermissionMessenger(true))).toBe(true);
     });
 
     it('returns false for wallet_getSession when the origin holds no CAIP-25 permission', () => {
@@ -380,12 +382,12 @@ describe('trust-signals-util', () => {
         MESSAGE_TYPE.WALLET_GET_SESSION,
         'https://example.com',
       );
-      expect(isCaipConnected(req, () => false)).toBe(false);
+      expect(isCaipConnected(req, createPermissionMessenger(false))).toBe(false);
     });
 
     it('returns false when the request has no origin', () => {
       const req = createRequest(MESSAGE_TYPE.WALLET_GET_SESSION);
-      expect(isCaipConnected(req, () => true)).toBe(false);
+      expect(isCaipConnected(req, createPermissionMessenger(true))).toBe(false);
     });
 
     it('returns false for any other method', () => {
@@ -393,7 +395,7 @@ describe('trust-signals-util', () => {
         MESSAGE_TYPE.WALLET_CREATE_SESSION,
         'https://example.com',
       );
-      expect(isCaipConnected(req, () => true)).toBe(false);
+      expect(isCaipConnected(req, createPermissionMessenger(true))).toBe(false);
     });
   });
 });

@@ -1,19 +1,28 @@
-import { JsonRpcRequest, JsonRpcResponse, type Hex } from '@metamask/utils';
-import {
-  NetworkController,
+import type { Messenger } from '@metamask/messenger';
+import type {
   NetworkClientId,
+  NetworkControllerGetNetworkConfigurationByNetworkClientIdAction,
 } from '@metamask/network-controller';
-import { PhishingController } from '@metamask/phishing-controller';
-import type { AppStateController } from '../../controllers/app-state-controller';
-import { PreferencesController } from '../../controllers/preferences-controller';
-import {
-  parseTypedDataMessage,
-  parseApprovalTransactionData,
-} from '../../../../shared/lib/transaction.utils';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
+import type {
+  PhishingControllerScanAddressAction,
+  PhishingControllerScanUrlAction,
+} from '@metamask/phishing-controller';
+import { JsonRpcRequest, JsonRpcResponse, type Hex } from '@metamask/utils';
+
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
-import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
+import {
+  parseApprovalTransactionData,
+  parseTypedDataMessage,
+} from '../../../../shared/lib/transaction.utils';
+import {
+  AppStateControllerAddAddressSecurityAlertResponseAction,
+  AppStateControllerGetAddressSecurityAlertResponseAction,
+} from '../../controllers/app-state-controller-method-action-types';
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
+import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
   hasValidTypedDataParams,
@@ -29,20 +38,32 @@ export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
   networkClientId: NetworkClientId;
 };
 
+export type TrustSignalsMessengerActions =
+  | PreferencesControllerGetStateAction
+  | NetworkControllerGetNetworkConfigurationByNetworkClientIdAction
+  | AppStateControllerGetAddressSecurityAlertResponseAction
+  | AppStateControllerAddAddressSecurityAlertResponseAction
+  | PhishingControllerScanAddressAction
+  | PhishingControllerScanUrlAction
+  | PermissionControllerHasPermissionAction;
+
+export type TrustSignalsMessenger = Messenger<
+  'TrustSignals',
+  TrustSignalsMessengerActions
+>;
+
 /**
  * Scan the requesting origin. Kept separate from address scanning because the
  * two need different positions in the Multichain API stack: the origin scan has
  * to run above the session handlers, which answer `wallet_createSession` and
  * `wallet_getSession` without passing them down.
  *
- * @param phishingController - Owns the URL scan and its cache
- * @param preferencesController - Source of the user's security alerts setting
+ * @param messenger - Restricted messenger for preferences and URL scanning
  * @param shouldScanOrigin - Per-transport gate, since no method name is shared
  * @param requestUrl - Full sender URL, preferred over the bare origin
  */
 export function createOriginScanMiddleware(
-  phishingController: PhishingController,
-  preferencesController: PreferencesController,
+  messenger: TrustSignalsMessenger,
   shouldScanOrigin: (req: TrustSignalsMiddlewareRequest) => boolean,
   requestUrl?: string,
 ) {
@@ -55,14 +76,14 @@ export function createOriginScanMiddleware(
       req.requestUrl = requestUrl;
 
       if (
-        !isSecurityAlertsEnabledByUser(preferencesController) ||
+        !isSecurityAlertsEnabledByUser(messenger) ||
         !isSecurityAlertsAPIEnabled()
       ) {
         return;
       }
 
       if (shouldScanOrigin(req)) {
-        scanUrl(req, phishingController);
+        scanUrl(req, messenger);
       }
     } catch (error) {
       console.error('[createOriginScanMiddleware] error: ', error);
@@ -77,17 +98,9 @@ export function createOriginScanMiddleware(
  * both transports, since Multichain API requests reach this point already
  * unwrapped.
  *
- * @param networkController - Resolves the request's chain
- * @param appStateController - Holds the verdict cache the confirmation UI reads
- * @param phishingController - Performs the address scan
- * @param preferencesController - Source of the user's security alerts setting
+ * @param messenger - Restricted messenger for chain lookup, cache, and scans
  */
-export function createAddressScanMiddleware(
-  networkController: NetworkController,
-  appStateController: AppStateController,
-  phishingController: PhishingController,
-  preferencesController: PreferencesController,
-) {
+export function createAddressScanMiddleware(messenger: TrustSignalsMessenger) {
   return async (
     req: TrustSignalsMiddlewareRequest,
     _res: JsonRpcResponse,
@@ -95,26 +108,16 @@ export function createAddressScanMiddleware(
   ) => {
     try {
       if (
-        !isSecurityAlertsEnabledByUser(preferencesController) ||
+        !isSecurityAlertsEnabledByUser(messenger) ||
         !isSecurityAlertsAPIEnabled()
       ) {
         return;
       }
 
       if (isEthSendTransaction(req)) {
-        handleEthSendTransaction(
-          req,
-          appStateController,
-          networkController,
-          phishingController,
-        );
+        handleEthSendTransaction(req, messenger);
       } else if (isEthSignTypedData(req)) {
-        handleEthSignTypedData(
-          req,
-          appStateController,
-          networkController,
-          phishingController,
-        );
+        handleEthSignTypedData(req, messenger);
       }
     } catch (error) {
       console.error('[createAddressScanMiddleware] error: ', error);
@@ -126,12 +129,12 @@ export function createAddressScanMiddleware(
 
 function scanUrl(
   req: TrustSignalsMiddlewareRequest,
-  phishingController: PhishingController,
+  messenger: TrustSignalsMessenger,
 ) {
   const urlToScan = req.requestUrl ?? req.origin;
 
   if (urlToScan) {
-    phishingController.scanUrl(urlToScan).catch((error) => {
+    messenger.call('PhishingController:scanUrl', urlToScan).catch((error) => {
       console.error('[createOriginScanMiddleware] error:', error);
     });
   }
@@ -144,22 +147,36 @@ function scanUrl(
  * @param address - The address to scan
  * @param logLabel - Describes the address's role in the error log message
  * @param chainId - The hex chainId of the chain the address exists on
- * @param appStateController - Provides the security alert response cache
- * @param phishingController - Controller providing scanAddress
+ * @param messenger - Provides the security alert cache and address scan
  */
 function scanAddressInBackground(
   address: string,
   logLabel: string,
   chainId: Hex,
-  appStateController: AppStateController,
-  phishingController: PhishingController,
+  messenger: TrustSignalsMessenger,
 ) {
   scanAddressAndAddToCache(
     address,
-    appStateController.getAddressSecurityAlertResponse,
-    appStateController.addAddressSecurityAlertResponse,
+    (cacheKey) =>
+      messenger.call(
+        'AppStateController:getAddressSecurityAlertResponse',
+        cacheKey,
+      ),
+    (cacheKey, response) =>
+      messenger.call(
+        'AppStateController:addAddressSecurityAlertResponse',
+        cacheKey,
+        response,
+      ),
     chainId,
-    phishingController,
+    {
+      scanAddress: (scanChainId, scanAddress) =>
+        messenger.call(
+          'PhishingController:scanAddress',
+          scanChainId,
+          scanAddress,
+        ),
+    },
   ).catch((error) => {
     console.error(
       `[createAddressScanMiddleware] error scanning ${logLabel}:`,
@@ -168,25 +185,36 @@ function scanAddressInBackground(
   });
 }
 
+function getChainIdForRequest(
+  req: TrustSignalsMiddlewareRequest,
+  messenger: TrustSignalsMessenger,
+): Hex | undefined {
+  const { chainId: rawChainId } =
+    messenger.call(
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
+      req.networkClientId,
+    ) ?? {};
+
+  if (!rawChainId) {
+    console.error('ChainID not found for networkClientId');
+    return undefined;
+  }
+
+  return rawChainId;
+}
+
 function handleEthSendTransaction(
   req: TrustSignalsMiddlewareRequest,
-  appStateController: AppStateController,
-  networkController: NetworkController,
-  phishingController: PhishingController,
+  messenger: TrustSignalsMessenger,
 ) {
   if (!hasValidTransactionParams(req)) {
     return;
   }
 
   const { to, data } = req.params[0];
-
-  const { chainId: rawChainId } =
-    networkController.getNetworkConfigurationByNetworkClientId(
-      req.networkClientId,
-    ) ?? {};
+  const rawChainId = getChainIdForRequest(req, messenger);
 
   if (!rawChainId) {
-    console.error('ChainID not found for networkClientId');
     return;
   }
 
@@ -195,8 +223,7 @@ function handleEthSendTransaction(
     to,
     'address for transaction',
     rawChainId,
-    appStateController,
-    phishingController,
+    messenger,
   );
 
   // If this is an approval transaction, also scan the spender address
@@ -208,8 +235,7 @@ function handleEthSendTransaction(
         spenderAddress,
         'spender address for approval',
         rawChainId,
-        appStateController,
-        phishingController,
+        messenger,
       );
     }
   }
@@ -217,9 +243,7 @@ function handleEthSendTransaction(
 
 function handleEthSignTypedData(
   req: TrustSignalsMiddlewareRequest,
-  appStateController: AppStateController,
-  networkController: NetworkController,
-  phishingController: PhishingController,
+  messenger: TrustSignalsMessenger,
 ) {
   if (
     req.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
@@ -242,13 +266,9 @@ function handleEthSignTypedData(
     return;
   }
 
-  const { chainId: rawChainId } =
-    networkController.getNetworkConfigurationByNetworkClientId(
-      req.networkClientId,
-    ) ?? {};
+  const rawChainId = getChainIdForRequest(req, messenger);
 
   if (!rawChainId) {
-    console.error('ChainID not found for networkClientId');
     return;
   }
 
@@ -257,8 +277,7 @@ function handleEthSignTypedData(
     verifyingContract,
     'address for signature',
     rawChainId,
-    appStateController,
-    phishingController,
+    messenger,
   );
 
   const { primaryType }: { primaryType: string } = typedDataMessage;
@@ -275,8 +294,7 @@ function handleEthSignTypedData(
         spenderAddress,
         'spender address for permit',
         rawChainId,
-        appStateController,
-        phishingController,
+        messenger,
       );
     }
   }
@@ -289,8 +307,7 @@ function handleEthSignTypedData(
         delegateAddress,
         'delegate address for delegation',
         rawChainId,
-        appStateController,
-        phishingController,
+        messenger,
       );
     }
   }
