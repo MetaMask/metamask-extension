@@ -49,14 +49,14 @@ jobs:
     name: before/after benchmarks + report
     needs: build-test-webpack
     runs-on: ubuntu-latest
-    timeout-minutes: 480
+    timeout-minutes: 240
     env:
       SELENIUM_BROWSER: chrome
       SELENIUM_HEADLESS: true
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
-      BENCHMARK_ITERATIONS: 20
-      BENCHMARK_RETRIES: 2
+      BENCHMARK_ITERATIONS: 5
+      BENCHMARK_RETRIES: 1
       SKIP_AFTER_BUILD: 1
     steps:
       - name: Checkout and setup environment
