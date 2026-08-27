@@ -566,7 +566,7 @@ export default function ConfirmationPage({
           data-testid={
             isSnapCustomUIDialog
               ? 'parent-selector-snap-confirmation-page'
-              : undefined
+              : 'parent-selector-template-confirmation-page'
           }
         >
           <Header
