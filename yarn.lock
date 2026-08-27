@@ -5801,9 +5801,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^13.1.0, @metamask/assets-controller@npm:^13.1.3":
-  version: 13.1.3
-  resolution: "@metamask/assets-controller@npm:13.1.3"
+"@metamask/assets-controller@npm:^13.1.0, @metamask/assets-controller@npm:^13.1.4":
+  version: 13.1.4
+  resolution: "@metamask/assets-controller@npm:13.1.4"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5836,7 +5836,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/ab10ee0078552cc01812a2fccfdcad811c1d7c8d420aa4def5ea41ee8db2b9baaf083691b2535618658ea793cf97958eaf1dbc3fc395cf3132a5f4e3504677bb
+  checksum: 10/ec0345891e854aa44aa09f95956b3087c5b1a552443618a7946061aa4b643c935c4de977186d6a46c293f2011c34b8764ddce052bd51490f55a4aca307707e9e
   languageName: node
   linkType: hard
 
@@ -33312,7 +33312,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^13.1.3"
+    "@metamask/assets-controller": "npm:^13.1.4"
     "@metamask/assets-controllers": "npm:^111.1.2"
     "@metamask/authenticated-user-storage": "npm:^3.0.2"
     "@metamask/auto-changelog": "npm:^6.2.0"
