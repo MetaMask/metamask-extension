@@ -135,6 +135,7 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
+    "MoneyAccountController": { "moneyAccounts": "object" },
     "MultichainAssetsController": {
       "accountsAssets": "object",
       "allIgnoredAssets": "object",
@@ -367,6 +368,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 222
+    "version": 223
   }
 }

@@ -44,6 +44,7 @@ describe('MoneyAccountDepositInfo', () => {
         autoFocusAmount: true,
         currency: 'usd',
         displayAccountRow: true,
+        displayPercentageButtons: true,
         hidePayTokenAmount: true,
       }),
       expect.anything(),

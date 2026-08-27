@@ -21,7 +21,8 @@ import { Driver } from '../../webdriver/driver';
 class HeaderNavbar {
   private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
 
-  private readonly accountListPage = '.account-list-page';
+  private readonly accountListPage =
+    '[data-testid="parent-selector-account-list-page"]';
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
