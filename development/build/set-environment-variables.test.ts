@@ -31,6 +31,7 @@ const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'QR_SYNC_ENABLED',
   'ASSETS_UNIFIED_STATE_ENABLED',
   'COMPLIANCE_API_URL',
+  'REWARDS_USE_UAT_APIS',
 ];
 
 function getVariablesForSetEnvironmentVariables() {
@@ -57,6 +58,7 @@ function getVariablesForSetEnvironmentVariables() {
     QR_SYNC_ENABLED: 'false',
     ASSETS_UNIFIED_STATE_ENABLED: 'false',
     COMPLIANCE_API_URL: 'https://compliance.example.test',
+    REWARDS_USE_UAT_APIS: null,
   });
 
   return variables;
@@ -120,5 +122,95 @@ describe('setEnvironmentVariables', () => {
     });
 
     expect(variables.get('QR_SYNC_ENABLED')).toBe('true');
+  });
+
+  it('forces the production Rewards API in test builds, even when configured for UAT', () => {
+    const variables = getVariablesForSetEnvironmentVariables();
+
+    variables.set('REWARDS_USE_UAT_APIS', true);
+
+    setEnvironmentVariables({
+      buildName: 'MetaMask',
+      isDevBuild: false,
+      isTestBuild: true,
+      buildType: 'main',
+      environment: ENVIRONMENT.TESTING,
+      variables,
+      version: '1.0.0',
+    });
+
+    expect(variables.get('REWARDS_USE_UAT_APIS')).toBe(false);
+  });
+
+  it('defaults local development builds to the UAT Rewards API', () => {
+    const variables = getVariablesForSetEnvironmentVariables();
+
+    variables.set('REWARDS_USE_UAT_APIS', null);
+
+    setEnvironmentVariables({
+      buildName: 'MetaMask',
+      isDevBuild: true,
+      isTestBuild: false,
+      buildType: 'main',
+      environment: ENVIRONMENT.DEVELOPMENT,
+      variables,
+      version: '1.0.0',
+    });
+
+    expect(variables.get('REWARDS_USE_UAT_APIS')).toBe(true);
+  });
+
+  it('defaults shipped builds to the production Rewards API', () => {
+    const variables = getVariablesForSetEnvironmentVariables();
+
+    variables.set('REWARDS_USE_UAT_APIS', null);
+
+    setEnvironmentVariables({
+      buildName: 'MetaMask',
+      isDevBuild: false,
+      isTestBuild: false,
+      buildType: 'main',
+      environment: ENVIRONMENT.PRODUCTION,
+      variables,
+      version: '1.0.0',
+    });
+
+    expect(variables.get('REWARDS_USE_UAT_APIS')).toBe(false);
+  });
+
+  it('lets config force the production Rewards API on a development build', () => {
+    const variables = getVariablesForSetEnvironmentVariables();
+
+    variables.set('REWARDS_USE_UAT_APIS', false);
+
+    setEnvironmentVariables({
+      buildName: 'MetaMask',
+      isDevBuild: true,
+      isTestBuild: false,
+      buildType: 'main',
+      environment: ENVIRONMENT.DEVELOPMENT,
+      variables,
+      version: '1.0.0',
+    });
+
+    expect(variables.get('REWARDS_USE_UAT_APIS')).toBe(false);
+  });
+
+  it('lets config force the UAT Rewards API on a shipped build', () => {
+    const variables = getVariablesForSetEnvironmentVariables();
+
+    variables.set('REWARDS_USE_UAT_APIS', true);
+
+    setEnvironmentVariables({
+      buildName: 'MetaMask',
+      isDevBuild: false,
+      isTestBuild: false,
+      buildType: 'main',
+      environment: ENVIRONMENT.PRODUCTION,
+      variables,
+      version: '1.0.0',
+    });
+
+    expect(variables.get('REWARDS_USE_UAT_APIS')).toBe(true);
   });
 });

@@ -578,14 +578,13 @@ async function setupMocking(
       };
     });
 
-  // Rewards API
-  for (const rewardsApiUrl of [REWARDS_API_URL.UAT, REWARDS_API_URL.PRD]) {
-    await server
-      .forPost(`${rewardsApiUrl}/public/rewards/ois`)
-      .thenCallback(() => {
-        return { statusCode: 200, json: { ois: [], sids: [] } };
-      });
-  }
+  // Rewards API. Test builds always resolve to the production host, so only
+  // that host needs a mock.
+  await server
+    .forPost(`${REWARDS_API_URL.PRD}/public/rewards/ois`)
+    .thenCallback(() => {
+      return { statusCode: 200, json: { ois: [], sids: [] } };
+    });
 
   // User Profile Lineage
   await server
