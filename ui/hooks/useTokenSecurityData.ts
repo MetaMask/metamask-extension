@@ -56,17 +56,15 @@ export const useTokenSecurityData = ({
     ? rawPrefetchedData
     : undefined;
 
+  const [fetchedAssetId, setFetchedAssetId] = useState<CaipAssetType | null>(
+    prefetchedData ? assetId : null,
+  );
   const [securityData, setSecurityData] = useState<TokenSecurityData | null>(
     prefetchedData ?? null,
   );
-  const [isLoading, setIsLoading] = useState(
-    !prefetchedData && Boolean(assetId),
-  );
   const [error, setError] = useState<Error | null>(null);
   const [assetMetadata, setAssetMetadata] =
-    useState<TokenSecurityAssetMetadata>(() =>
-      assetId ? getAssetMetadataFromAssetId(assetId) : {},
-    );
+    useState<TokenSecurityAssetMetadata>({});
   const activeAssetIdRef = useRef<CaipAssetType | null>(null);
 
   const fetchData = useCallback(async (requestAssetId: CaipAssetType) => {
@@ -88,52 +86,23 @@ export const useTokenSecurityData = ({
           : getAssetMetadataFromAssetId(requestAssetId),
       );
       setError(null);
+      setFetchedAssetId(requestAssetId);
     } catch (err) {
       if (requestAssetId !== activeAssetIdRef.current) {
         return;
       }
       setError(err as Error);
-    } finally {
-      if (requestAssetId === activeAssetIdRef.current) {
-        setIsLoading(false);
-      }
+      setFetchedAssetId(requestAssetId);
     }
   }, []);
 
-  const securityRequestKey = `${assetId ?? ''}|${prefetchedData ? 'prefetched' : 'fetch'}`;
-  const [prevSecurityRequestKey, setPrevSecurityRequestKey] =
-    useState(securityRequestKey);
-
-  if (securityRequestKey !== prevSecurityRequestKey) {
-    setPrevSecurityRequestKey(securityRequestKey);
-    activeAssetIdRef.current = assetId;
-
-    if (prefetchedData) {
-      setSecurityData(prefetchedData);
-      setError(null);
-      setIsLoading(false);
-    } else if (assetId) {
-      setSecurityData(null);
-      setError(null);
-      setAssetMetadata(getAssetMetadataFromAssetId(assetId));
-      setIsLoading(true);
-    } else {
-      activeAssetIdRef.current = null;
-      setSecurityData(null);
-      setError(null);
-      setAssetMetadata({});
-      setIsLoading(false);
-    }
-  }
-
   useEffect(() => {
     if (prefetchedData || !assetId) {
+      activeAssetIdRef.current = assetId;
       return undefined;
     }
 
     activeAssetIdRef.current = assetId;
-    // Defer so async helper setState paths are not treated as synchronous
-    // effect updates (react-hooks/set-state-in-effect).
     queueMicrotask(() => {
       fetchData(assetId);
     });
@@ -143,5 +112,13 @@ export const useTokenSecurityData = ({
     };
   }, [assetId, prefetchedData, fetchData]);
 
-  return { securityData, isLoading, error, ...assetMetadata };
+  const hasCurrentResult = Boolean(assetId) && fetchedAssetId === assetId;
+  const pendingMetadata = assetId ? getAssetMetadataFromAssetId(assetId) : {};
+
+  return {
+    securityData: prefetchedData ?? (hasCurrentResult ? securityData : null),
+    isLoading: !prefetchedData && Boolean(assetId) && !hasCurrentResult,
+    error: hasCurrentResult ? error : null,
+    ...(hasCurrentResult ? assetMetadata : pendingMetadata),
+  };
 };

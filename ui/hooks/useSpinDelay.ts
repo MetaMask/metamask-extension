@@ -32,18 +32,27 @@ export function useSpinDelay(loading: boolean, options?: SpinDelayOptions) {
   const delayTimeout = useRef<ReturnType<typeof setTimeout>>();
   const minDurationTimeout = useRef<ReturnType<typeof setTimeout>>();
   const loadingRef = useRef(loading);
-  loadingRef.current = loading;
 
   if (loading !== prevLoading) {
     setPrevLoading(loading);
     if (loading && state === 'idle') {
       setState('delay');
     } else if (!loading && state !== 'display') {
-      clearTimeout(delayTimeout.current);
-      clearTimeout(minDurationTimeout.current);
       setState('idle');
     }
   }
+
+  useEffect(() => {
+    loadingRef.current = loading;
+  }, [loading]);
+
+  useEffect(() => {
+    if (state !== 'idle') {
+      return;
+    }
+    clearTimeout(delayTimeout.current);
+    clearTimeout(minDurationTimeout.current);
+  }, [state]);
 
   useEffect(() => {
     if (state !== 'delay') {

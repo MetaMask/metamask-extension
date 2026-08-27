@@ -845,8 +845,7 @@ export function setLastUsedSubscriptionPaymentDetails(
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('cacheLastSelectedPaymentMethod', [
-        product,
-        payload,
+        { product, paymentMethod: payload },
       ]);
     } catch (error) {
       log.error('[setLastUsedSubscriptionPaymentDetails] error', error);

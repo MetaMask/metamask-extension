@@ -32,6 +32,7 @@
       "warn: Migration 139: typeof state.SelectedNetworkController is": 1,
       "warn: Migration 183.1: currencyRates not found": 1,
       "warn: Migration 186: Missing or invalid": 1,
+      "warn: Migration 223: No storage service": 1,
       "warn: newState.NftController must be present": 1
     },
     "app/scripts/lib/snap-keyring/snap-keyring.test.ts": {
@@ -382,10 +383,6 @@
       "React: Act warnings (component updates not wrapped)": 1,
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/components/multichain/edit-networks-modal/edit-networks-modal.test.js": {
-      "React: Missing key props in lists": 1,
-      "React: PropTypes validation failures": 2
-    },
     "ui/components/multichain/global-menu-drawer/global-menu-drawer.test.tsx": {
       "Reselect: Input stability warnings": 3
     },
@@ -549,7 +546,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1,
+      "React: Act warnings (component updates not wrapped)": 6,
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
@@ -562,9 +559,6 @@
     },
     "ui/pages/bridge/prepare/components/destination-account-picker-modal.test.tsx": {
       "Reselect: Input stability warnings": 1
-    },
-    "ui/pages/bridge/prepare/prepare-bridge-page-ensure-network.test.tsx": {
-      "Reselect: Identity function warnings": 1
     },
     "ui/pages/bridge/prepare/prepare-bridge-page.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -597,7 +591,7 @@
       "MetaMask: Background connection not initialized": 14
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
-      "MetaMask: Background connection not initialized": 32
+      "MetaMask: Background connection not initialized": 40
     },
     "ui/pages/confirmations/components/confirm/info/info.test.tsx": {
       "MetaMask: Background connection not initialized": 61,
@@ -716,9 +710,6 @@
     "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 28
     },
-    "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1
-    },
     "ui/pages/confirmations/components/send/amount-recipient/amount-recipient.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
       "React: Act warnings (component updates not wrapped)": 1
@@ -782,7 +773,7 @@
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/hooks/useHasInsufficientBalance.test.ts": {
-      "MetaMask: Background connection not initialized": 36
+      "MetaMask: Background connection not initialized": 40
     },
     "ui/pages/confirmations/hooks/useSmartTransactionFeatureFlags.test.ts": {
       "Reselect: Identity function warnings": 1
@@ -837,7 +828,7 @@
       "error: Warning: Encountered two children with": 1
     },
     "ui/pages/notifications/notifications.test.tsx": {
-      "Reselect: Input stability warnings": 2
+      "Reselect: Input stability warnings": 3
     },
     "ui/pages/onboarding-flow/import-srp/import-srp.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 127

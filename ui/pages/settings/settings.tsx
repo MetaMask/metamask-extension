@@ -27,7 +27,6 @@ import {
   Text,
   TextColor,
   TextVariant,
-  usePureBlack,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { useSelector } from 'react-redux';
@@ -55,7 +54,7 @@ import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import { toRelativeRoutePath } from '../routes/utils';
-import { RouteWithMessenger } from '../../layouts/route-with-messenger';
+import { RouteMessengerProvider } from '../../contexts/route-messenger';
 import {
   transitionBack,
   transitionForward,
@@ -131,9 +130,6 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const normalizedPathname = normalizeSettingsPath(location.pathname);
   const meta = getSettingsRouteMeta(normalizedPathname);
   const environmentType = getEnvironmentType();
-
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-  const isPureBlack = usePureBlack();
 
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isCompactSidepanel = useIsSidepanelCompactSettingsLayout(isSidepanel);
@@ -334,15 +330,10 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         })}
       >
         <Box
-          className={classnames(
-            'w-full h-full max-w-[262px]',
-            // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-            isPureBlack ? 'bg-background-alternative' : 'bg-background-muted',
-            {
-              flex: isOnSettingsRoot || !usesCompactSettingsLayout,
-              hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
-            },
-          )}
+          className={classnames('w-full h-full max-w-[262px] bg-muted', {
+            flex: isOnSettingsRoot || !usesCompactSettingsLayout,
+            hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
+          })}
         >
           <TabBar
             tabs={usesCompactSettingsLayout ? itemTabs : []}
@@ -461,6 +452,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       ref={setSettingsRootRef}
+      data-testid="parent-selector-settings-page"
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
       className="h-full w-full shadow-xs"
@@ -506,7 +498,7 @@ const Settings = () => {
               element={
                 <SettingsLayout>
                   {messengerCapabilities ? (
-                    <RouteWithMessenger
+                    <RouteMessengerProvider
                       // Remount when the settings sub-route changes. Sibling
                       // routes share this component type, so without a key
                       // React reuses the instance and keeps the previous
@@ -516,7 +508,7 @@ const Settings = () => {
                       capabilities={messengerCapabilities}
                     >
                       {component}
-                    </RouteWithMessenger>
+                    </RouteMessengerProvider>
                   ) : (
                     component
                   )}

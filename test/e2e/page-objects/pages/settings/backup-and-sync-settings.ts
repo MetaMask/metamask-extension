@@ -25,6 +25,10 @@ class BackupAndSyncSettings {
 
   private readonly driver: Driver;
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -35,6 +39,7 @@ class BackupAndSyncSettings {
         this.accountSyncToggle,
         this.backupAndSyncToggle,
         this.contactSyncToggle,
+        this.settingsPage,
       ]);
     } catch (e) {
       console.log(

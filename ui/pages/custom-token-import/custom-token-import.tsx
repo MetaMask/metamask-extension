@@ -417,21 +417,16 @@ export const CustomTokenImportPage = () => {
     [t],
   );
 
-  const [prevCurrentChainId, setPrevCurrentChainId] = useState(currentChainId);
-  if (currentChainId !== prevCurrentChainId) {
-    setPrevCurrentChainId(currentChainId);
-    setSelectedNetwork(currentChainId);
-  }
+  useEffect(() => {
+    queueMicrotask(() => setSelectedNetwork(currentChainId));
+  }, [currentChainId]);
 
-  const [prevSelectedNetwork, setPrevSelectedNetwork] =
-    useState(selectedNetwork);
-  if (selectedNetwork !== prevSelectedNetwork) {
-    setPrevSelectedNetwork(selectedNetwork);
+  useEffect(() => {
     // Bump the lookup token so any address lookup started on the previous
     // network can't apply its result here.
     addressLookupRef.current += 1;
     clearFormData();
-  }
+  }, [selectedNetwork, clearFormData]);
 
   const handleSelectNetwork = useCallback(
     (network: CustomTokenImportNetworkOption) => {

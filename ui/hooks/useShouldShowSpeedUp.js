@@ -26,38 +26,45 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
       timeDelta > 5000 && isEarliestNonce && !hasRetried && matchCurrentChainId;
     return shouldEnable;
   });
-  const canSpeedUp = !hasRetried && isEarliestNonce && matchCurrentChainId;
-
-  if (!canSpeedUp && speedUpEnabled) {
-    setSpeedUpEnabled(false);
-  } else if (canSpeedUp && !speedUpEnabled) {
-    if (Date.now() - submittedTime > SECOND * 5) {
-      setSpeedUpEnabled(true);
-    }
-  }
 
   useEffect(() => {
-    // Schedule enabling speed-up once the transaction has been queued for 5s.
-    // Immediate enable/disable based on current conditions is handled during render.
-    if (!canSpeedUp || speedUpEnabled) {
-      return undefined;
-    }
+    let timeoutId;
 
-    if (Date.now() - submittedTime > SECOND * 5) {
-      return undefined;
+    if (
+      (hasRetried || !isEarliestNonce || !matchCurrentChainId) &&
+      speedUpEnabled
+    ) {
+      queueMicrotask(() => setSpeedUpEnabled(false));
+    } else if (
+      !hasRetried &&
+      isEarliestNonce &&
+      matchCurrentChainId &&
+      !speedUpEnabled
+    ) {
+      if (Date.now() - submittedTime > SECOND * 5) {
+        queueMicrotask(() => setSpeedUpEnabled(true));
+      } else {
+        timeoutId = setTimeout(
+          () => {
+            setSpeedUpEnabled(true);
+          },
+          5001 - (Date.now() - submittedTime),
+        );
+      }
     }
-
-    const timeoutId = setTimeout(
-      () => {
-        setSpeedUpEnabled(true);
-      },
-      5001 - (Date.now() - submittedTime),
-    );
 
     return () => {
-      clearTimeout(timeoutId);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
-  }, [submittedTime, speedUpEnabled, canSpeedUp]);
+  }, [
+    submittedTime,
+    speedUpEnabled,
+    hasRetried,
+    isEarliestNonce,
+    matchCurrentChainId,
+  ]);
 
   return speedUpEnabled;
 }

@@ -36,7 +36,7 @@ import {
   getChainIdsToPoll,
   getDataCollectionForMarketing,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
@@ -211,13 +211,11 @@ export const CoinOverview = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = useMemo(
-    () => completedMetaMetricsOnboarding && isOptedIn,
-    [completedMetaMetricsOnboarding, isOptedIn],
+    () => consentDecisionMade && isOptedIn,
+    [consentDecisionMade, isOptedIn],
   );
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 

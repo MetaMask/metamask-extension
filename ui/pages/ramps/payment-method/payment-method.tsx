@@ -1,9 +1,15 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import type { PaymentMethod } from '@metamask/ramps-controller';
+import type { CaipChainId } from '@metamask/utils';
+import {
+  RampsOrderStatus,
+  type PaymentMethod,
+} from '@metamask/ramps-controller';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import {
   PREVIOUS_ROUTE,
   RAMPS_PROVIDER_SELECTION_ROUTE,
@@ -15,12 +21,14 @@ import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
+import { useFormatters } from '../../../hooks/useFormatters';
 import { ScrollContainer } from '../../../contexts/scroll-container';
+import RampsListSkeleton from '../components/ramps-list-skeleton';
 import {
   RampsSelectionCenteredMessage,
-  RampsSelectionCenteredSpinner,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
+import { getProviderLimitMessage } from '../utils/getProviderLimitMessage';
 import RampsChangeProviderFooter from './components/ramps-change-provider-footer';
 import RampsPaymentMethodListItem from './components/ramps-payment-method-list-item';
 import {
@@ -43,6 +51,7 @@ export function RampsPaymentMethodScreen() {
   const navigate = useNavigate();
   const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const controllerOrders = useSelector(selectRampsOrdersForSelectedAccount);
   const {
     paymentMethods,
     paymentMethodsLoading,
@@ -57,13 +66,23 @@ export function RampsPaymentMethodScreen() {
   const fiatCurrency = userRegion?.country?.currency ?? 'USD';
   const regionCode = userRegion?.regionCode ?? '';
   const formatFiat = useFiatFormatter({ overrideCurrency: fiatCurrency });
+  const { formatCurrency } = useFormatters();
   useRampsScreenViewed('Payment Method');
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
 
+  const chainAccount = useSelector((state) =>
+    selectedToken?.chainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          selectedToken.chainId as CaipChainId,
+        )
+      : null,
+  );
+
   const amount =
     (location.state as PaymentMethodLocationState | null)?.amount ?? 0;
-  const walletAddress = selectedAccount?.address ?? '';
+  const walletAddress = (chainAccount ?? selectedAccount)?.address ?? '';
   const assetId = selectedToken?.assetId
     ? normalizeAssetIdForApi(selectedToken.assetId)
     : '';
@@ -72,6 +91,17 @@ export function RampsPaymentMethodScreen() {
   const paymentMethodIds = useMemo(
     () => paymentMethods.map((paymentMethod) => paymentMethod.id),
     [paymentMethods],
+  );
+
+  // Mirrors the provider list's "Previously used" pill, sourced the same way:
+  // payment methods the user has already completed an order with.
+  const previouslyUsedPaymentMethodIds = useMemo(
+    () =>
+      controllerOrders
+        .filter((order) => order.status === RampsOrderStatus.Completed)
+        .map((order) => order.paymentMethod?.id)
+        .filter((id): id is string => Boolean(id)),
+    [controllerOrders],
   );
 
   const quoteFetchParams = useMemo(
@@ -140,7 +170,7 @@ export function RampsPaymentMethodScreen() {
     [navigate, setSelectedPaymentMethod],
   );
 
-  const title = t('rampsSelectPaymentMethod');
+  const title = t('rampsPayWith');
   const backButtonTestId = 'ramps-payment-method-back';
 
   let testId = 'ramps-payment-method-screen';
@@ -156,7 +186,9 @@ export function RampsPaymentMethodScreen() {
     );
   } else if (paymentMethodsLoading) {
     testId = 'ramps-payment-method-loading';
-    body = <RampsSelectionCenteredSpinner />;
+    body = (
+      <RampsListSkeleton showAvatar testId="ramps-payment-method-skeleton" />
+    );
   } else if (showError) {
     testId = 'ramps-payment-method-error';
     body = (
@@ -173,8 +205,8 @@ export function RampsPaymentMethodScreen() {
     );
   } else {
     body = (
-      <ScrollContainer className="flex-1 overflow-y-auto px-2 pb-4">
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+      <ScrollContainer className="flex-1 overflow-y-auto pb-4">
+        <Box flexDirection={BoxFlexDirection.Column}>
           {paymentMethods.map((paymentMethod) => {
             const matchedQuote =
               quotes?.success?.find(
@@ -183,7 +215,15 @@ export function RampsPaymentMethodScreen() {
             const hasQuoteError =
               !quotesLoading && quotes !== null && matchedQuote === null;
             const quoteErrorMessage = hasQuoteError
-              ? t('rampsQuoteUnavailable')
+              ? (getProviderLimitMessage({
+                  provider: selectedProvider,
+                  fiatCurrency,
+                  paymentMethodId: paymentMethod.id,
+                  amount,
+                  currency: fiatCurrency,
+                  formatCurrency,
+                  t,
+                }) ?? t('rampsQuoteUnavailable'))
               : undefined;
 
             return (
@@ -192,6 +232,9 @@ export function RampsPaymentMethodScreen() {
                 paymentMethod={paymentMethod}
                 isSelected={selectedPaymentMethod?.id === paymentMethod.id}
                 isDisabled={isSelecting}
+                isPreviouslyUsed={previouslyUsedPaymentMethodIds.includes(
+                  paymentMethod.id,
+                )}
                 limitText={formatPaymentMethodLimits(
                   getProviderBuyLimit(
                     selectedProvider,

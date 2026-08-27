@@ -388,6 +388,7 @@ import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-ser
 import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
 import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
 import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
+import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
@@ -534,6 +535,7 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:findNetworkClientIdByChainId',
       ),
     });
+    this.multichainSubscriptionManager.setMaxListeners(25);
     this.multichainMiddlewareManager = new MultichainMiddlewareManager();
     this.deprecatedNetworkVersions = {};
 
@@ -670,6 +672,7 @@ export default class MetamaskController extends EventEmitter {
       MoneyAccountApiDataService: MoneyAccountApiDataServiceInit,
       MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
+      MoneyAccountController: MoneyAccountControllerInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
@@ -5126,7 +5129,7 @@ export default class MetamaskController extends EventEmitter {
       mainFrameOrigin = new URL(sender.tab.url).origin;
     }
 
-    const engine = this.setupProviderEngineCaip({
+    const { engine, destroy } = this.setupProviderEngineCaip({
       origin,
       sender,
       subjectType,
@@ -5163,7 +5166,7 @@ export default class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // handle any middleware cleanup
-        engine.destroy();
+        destroy();
         connectionId && this.removeConnection(origin, connectionId);
         // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
         if (err && !err.message?.match('Premature close')) {
@@ -5930,13 +5933,15 @@ export default class MetamaskController extends EventEmitter {
       // noop
     }
 
+    const onMultichainNotification = (targetOrigin, targetTabId, message) => {
+      if (origin === targetOrigin && tabId === targetTabId) {
+        engine.emit('notification', message);
+      }
+    };
+
     this.multichainSubscriptionManager.on(
       'notification',
-      (targetOrigin, targetTabId, message) => {
-        if (origin === targetOrigin && tabId === targetTabId) {
-          engine.emit('notification', message);
-        }
-      },
+      onMultichainNotification,
     );
 
     engine.push(
@@ -5954,7 +5959,15 @@ export default class MetamaskController extends EventEmitter {
       return end();
     });
 
-    return engine;
+    const destroy = () => {
+      engine.destroy();
+      this.multichainSubscriptionManager.removeListener(
+        'notification',
+        onMultichainNotification,
+      );
+    };
+
+    return { engine, destroy };
   }
 
   /**
