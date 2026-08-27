@@ -12,22 +12,13 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import type { SecurityTrustInlineBadgeConfig } from '#shared/types/tokens';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export type SecurityTrustTranslate = (
   key: string,
   substitutions?: string[],
 ) => string;
-
-export type SecurityTrustInlineBadgeConfig = {
-  icon: IconName;
-  iconColor: IconColor;
-  alertSeverity?: 'success' | 'warning' | 'danger';
-  label: string | null;
-  accessibleLabel?: string;
-  backgroundColor?: 'warning-muted' | 'error-muted';
-  textColor?: TextColor;
-};
 
 export const getSecurityTrustBadgeConfig = (
   resultType: string | undefined,
