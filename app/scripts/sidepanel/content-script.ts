@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill';
+import { isObject } from '@metamask/utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 
 /**
@@ -8,17 +9,18 @@ import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
  * @param message.type - The message type.
  * @param message.nonce - The nonce correlating the open request.
  */
-export function onRequestOpenSidepanel(message: {
-  type?: string;
-  nonce?: string;
-}) {
-  if (message?.type !== EXTENSION_MESSAGES.REQUEST_OPEN_SIDEPANEL) {
-    return undefined;
+export function onRequestOpenSidepanel(message: unknown): void {
+  if (
+    !isObject(message) ||
+    message.type !== EXTENSION_MESSAGES.REQUEST_OPEN_SIDEPANEL ||
+    typeof message.nonce !== 'string'
+  ) {
+    return;
   }
 
   // Background browser.tabs.sendMessage hits every frame, but only the one that made the request holds the gesture
   if (!navigator.userActivation?.isActive) {
-    return undefined;
+    return;
   }
 
   browser.runtime
@@ -28,6 +30,4 @@ export function onRequestOpenSidepanel(message: {
     })
     // triggerUi falls back to the notification window on failure
     .catch(() => undefined);
-
-  return undefined;
 }

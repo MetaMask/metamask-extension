@@ -1,9 +1,16 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the Perps Order Entry page.
- * Accessible after clicking Long/Short on a market detail page.
- * Handles new orders, add-exposure, and reduce-exposure flows.
+ * The Perps Order Entry page for placing or adjusting a position (new order,
+ * add exposure, or reduce exposure).
+ *
+ * Screen: `#/perps/trade/:symbol`, reached from Long/Short on
+ * `PerpsMarketDetailPage`.
+ * Owns: direction tabs, market/limit type, amount and leverage inputs, TP/SL
+ * and auto-close controls, validation errors, submit, and back.
+ * Boundaries: market detail chrome and close-position / margin modals stay on
+ * `PerpsMarketDetailPage`. This object only covers the trade route form.
+ * Related: `PerpsMarketDetailPage` (how tests get here and where back returns).
  *
  * @see ui/pages/perps/perps-order-entry-page.tsx
  * @see ui/components/app/perps/order-entry/order-entry.tsx
@@ -31,23 +38,25 @@ export class PerpsOrderEntryPage {
 
   private readonly limitPriceInput = '[data-testid="limit-price-input"] input';
 
-  private readonly orderEntryPage = { testId: 'perps-order-entry-page' };
-
   private readonly orderSubmitError = { testId: 'perps-order-submit-error' };
 
   private readonly orderTypeLimitButton = { testId: 'order-type-limit' };
 
   private readonly orderTypeMarketButton = { testId: 'order-type-market' };
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-perps-order-entry',
+  };
+
   private readonly slPriceInput =
-    '[data-testid="perps-order-entry-page"] [data-testid="sl-price-input"]';
+    '[data-testid="parent-selector-perps-order-entry"] [data-testid="sl-price-input"]';
 
   private readonly slValidationError = { testId: 'sl-validation-error' };
 
   private readonly submitOrderButton = { testId: 'submit-order-button' };
 
   private readonly tpPriceInput =
-    '[data-testid="perps-order-entry-page"] [data-testid="tp-price-input"]';
+    '[data-testid="parent-selector-perps-order-entry"] [data-testid="tp-price-input"]';
 
   private readonly tpValidationError = { testId: 'tp-validation-error' };
 
@@ -63,7 +72,7 @@ export class PerpsOrderEntryPage {
    */
   async checkPageIsLoaded(options?: { timeout?: number }): Promise<void> {
     await this.driver.waitForMultipleSelectors(
-      [this.orderEntryPage, this.submitOrderButton],
+      [this.parentSelector, this.submitOrderButton],
       {
         timeout: options?.timeout ?? 20000,
       },
@@ -197,7 +206,7 @@ export class PerpsOrderEntryPage {
    * @param timeout - Max wait in ms (default 15_000).
    */
   async waitForPageClosed(timeout = 15000): Promise<void> {
-    await this.driver.assertElementNotPresent(this.orderEntryPage, { timeout });
+    await this.driver.assertElementNotPresent(this.parentSelector, { timeout });
   }
 
   /**

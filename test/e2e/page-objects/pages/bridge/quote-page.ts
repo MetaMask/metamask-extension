@@ -18,6 +18,26 @@ export type BridgeQuote = {
   unapproved?: boolean;
 };
 
+/**
+ * Unified SwapBridge prepare/quote UI: source/destination assets, amount, and
+ * submit.
+ *
+ * Screen: `#/cross-chain/swaps/prepare-bridge-page` (and the nested assets
+ * picker at `#/cross-chain/swaps/prepare-bridge-page/assets`).
+ * Owns: source/destination asset pickers and search, network selection in the
+ * picker, amount entry (including Max), quote fetch/ready checks, fee and
+ * price-impact messaging, insufficient-funds / geo-block states, slippage
+ * controls, and the bridge CTA / snap confirm footer used after submit.
+ * Boundaries: the prepare and quote surface. Post-submit redesigned
+ * confirmations and activity belong elsewhere; same-chain swap helpers that
+ * wrap this page live on `SwapPage`.
+ * Related: `SwapPage` (swap-oriented wrapper that delegates picker steps
+ * here); `flows/bridge.flow.ts` for end-to-end bridge journeys.
+ *
+ * @see ui/pages/bridge/index.tsx
+ * @see ui/pages/bridge/prepare/prepare-bridge-page.tsx
+ * @see test/e2e/page-objects/flows/bridge.flow.ts
+ */
 class BridgeQuotePage {
   public assetInfoIcon = (assetId: string) => ({
     tag: 'button' as const,
@@ -28,6 +48,10 @@ class BridgeQuotePage {
     '[data-testid="bridge-asset-picker-search-input"]';
 
   private backButton = '[aria-label="Back"]';
+
+  private readonly bridgeQuotePage = {
+    testId: 'parent-selector-bridge-quote',
+  };
 
   private closeButton = '[aria-label="Close"]';
 
@@ -242,7 +266,7 @@ class BridgeQuotePage {
    */
   async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.sourceAssetPickerButton, {
+      await this.driver.waitForSelector(this.bridgeQuotePage, {
         timeout,
       });
     } catch (e) {
@@ -450,6 +474,15 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.warningModalCancelButton);
   };
 
+  /**
+   * Opens an asset picker if needed, searches for a token, and clicks its info
+   * icon. Matches the icon for either lowercase or checksummed `assetId` casing.
+   *
+   * @param params - Search and click parameters.
+   * @param params.token - Token symbol to type into the picker search field.
+   * @param params.assetId - CAIP-19 asset id.
+   * @param params.assetPicker - Picker button to open when the picker is closed.
+   */
   async searchAndClickAssetInfo({
     token,
     assetId,
@@ -460,12 +493,33 @@ class BridgeQuotePage {
     assetPicker?: string;
   }) {
     console.log(`Opening asset info icon for asset ${token}`);
-    await this.driver.clickElement(assetPicker);
+    const pickerAlreadyOpen = await this.driver.isElementPresentAndVisible(
+      this.assetPrickerSearchInput,
+      1000,
+    );
+    if (!pickerAlreadyOpen) {
+      await this.driver.clickElement(assetPicker);
+    }
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-    await this.driver.waitForSelector({
-      testId: `bridge-asset-info-icon-${assetId}`,
-    });
-    await this.driver.clickElement(this.assetInfoIcon(assetId));
+
+    const lowercaseIcon = this.assetInfoIcon(assetId.toLowerCase());
+    const checksummedIcon = this.assetInfoIcon(assetId);
+    await this.driver.waitUntil(
+      async () => {
+        return (
+          (await this.driver.isElementPresentAndVisible(lowercaseIcon, 1000)) ||
+          (await this.driver.isElementPresentAndVisible(checksummedIcon, 1000))
+        );
+      },
+      { timeout: this.driver.timeout, interval: 200 },
+    );
+    const useLowercase = await this.driver.isElementPresentAndVisible(
+      lowercaseIcon,
+      1000,
+    );
+    await this.driver.clickElement(
+      useLowercase ? lowercaseIcon : checksummedIcon,
+    );
   }
 
   async searchAssetAndVerifyCount(

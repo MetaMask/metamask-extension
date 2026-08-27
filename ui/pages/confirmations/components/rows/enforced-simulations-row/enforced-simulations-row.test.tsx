@@ -380,7 +380,7 @@ describe('EnforcedSimulationsRow', () => {
     await waitFor(() => {
       expect(
         getByText(
-          "You're interacting with an unknown address. This helps prevent malicious transactions.",
+          "Because you're interacting with an unknown address, protection can prevent some malicious transactions.",
         ),
       ).toBeInTheDocument();
     });

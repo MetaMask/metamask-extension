@@ -293,7 +293,9 @@ export const STABLE_DISPLAY_NAME = 'Stable';
 export const MANTLE_DISPLAY_NAME = 'Mantle';
 export const KONET_DISPLAY_NAME = 'KONET Mainnet';
 export const ARC_DISPLAY_NAME = 'Arc';
+export const GRAVITY_DISPLAY_NAME = 'Gravity';
 export const ROBINHOOD_CHAIN_DISPLAY_NAME = 'Robinhood Chain';
+export const ZERO_G_DISPLAY_NAME = '0G';
 export const SOMNIA_DISPLAY_NAME = 'Somnia';
 
 /**
@@ -403,6 +405,8 @@ export const CURRENCY_SYMBOLS = {
   MANTLE: 'MNT',
   KONET: 'KONET',
   ARC: 'USDC',
+  ZERO_G: '0G',
+  GRAVITY: 'G',
   SOMNIA: 'SOMI',
 } as const;
 
@@ -608,7 +612,8 @@ export const SOPHON_TESTNET_IMAGE_URL = './images/sophon-testnet.svg';
 export const BERACHAIN_IMAGE_URL = './images/berachain.svg';
 export const BERACHAIN_NATIVE_TOKEN_IMAGE_URL = './images/berachain-native.svg';
 export const EDUCHAIN_IMAGE_URL = './images/educhain.svg';
-export const APECHAIN_IMAGE_URL = './images/ape.svg';
+export const APECHAIN_IMAGE_URL = './images/apechain.svg';
+export const APECHAIN_NATIVE_TOKEN_IMAGE_URL = './images/apechain-native.svg';
 export const ABSTRACT_IMAGE_URL = './images/abstract.png';
 export const NOMINA_IMAGE_URL = './images/nomina.svg';
 export const NOMINA_NATIVE_TOKEN_IMAGE_URL = './images/nomina.svg';
@@ -639,6 +644,8 @@ export const BOB_IMAGE_URL = './images/bob.svg';
 export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
 export const ROBINHOOD_CHAIN_IMAGE_URL = './images/robinhood.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
+export const ZERO_G_IMAGE_URL = './images/0g.svg';
+export const ZERO_G_NATIVE_TOKEN_IMAGE_URL = './images/0g-native.svg';
 export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
 export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
@@ -648,6 +655,7 @@ export const KONET_IMAGE_URL = './images/konet.svg';
 export const TEMPO_NATIVE_TOKEN_IMAGE_URL = './images/tempo-native.svg';
 export const ARC_NATIVE_TOKEN_IMAGE_URL = './images/arc-native-token-logo.svg';
 export const ARC_NETWORK_IMAGE_URL = './images/arc-network-logo.svg';
+export const GRAVITY_IMAGE_URL = './images/gravity.svg';
 export const SOMNIA_IMAGE_URL = './images/somnia.svg';
 export const SOMNIA_NATIVE_TOKEN_IMAGE_URL = './images/somnia.svg';
 
@@ -838,7 +846,9 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.MANTLE]: MANTLE_DISPLAY_NAME,
   [CHAIN_IDS.KONET]: KONET_DISPLAY_NAME,
   [CHAIN_IDS.ARC]: ARC_DISPLAY_NAME,
+  [CHAIN_IDS.GRAVITY]: GRAVITY_DISPLAY_NAME,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_DISPLAY_NAME,
+  [CHAIN_IDS.ZERO_G]: ZERO_G_DISPLAY_NAME,
   [CHAIN_IDS.SOMNIA]: SOMNIA_DISPLAY_NAME,
 } as const;
 
@@ -1012,7 +1022,9 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.STABLE_MAINNET]: CURRENCY_SYMBOLS.STABLE,
   [CHAIN_IDS.KONET]: CURRENCY_SYMBOLS.KONET,
   [CHAIN_IDS.ARC]: CURRENCY_SYMBOLS.ARC,
+  [CHAIN_IDS.GRAVITY]: CURRENCY_SYMBOLS.GRAVITY,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: CURRENCY_SYMBOLS.ETH,
+  [CHAIN_IDS.ZERO_G]: CURRENCY_SYMBOLS.ZERO_G,
   [CHAIN_IDS.SOMNIA]: CURRENCY_SYMBOLS.SOMNIA,
 } as const;
 
@@ -1207,8 +1219,10 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.STABLE_MAINNET]: STABLE_IMAGE_URL,
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ARC]: ARC_NETWORK_IMAGE_URL,
+  [CHAIN_IDS.GRAVITY]: GRAVITY_IMAGE_URL,
   [CHAIN_IDS.SOMNIA]: SOMNIA_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_IMAGE_URL,
+  [CHAIN_IDS.ZERO_G]: ZERO_G_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1277,8 +1291,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
   [CHAIN_IDS.BERACHAIN]: BERACHAIN_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.EDUCHAIN]: EDUCHAIN_IMAGE_URL,
-  [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_IMAGE_URL,
-  [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_IMAGE_URL,
+  [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ABSTRACT]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.NOMINA]: NOMINA_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.XDC]: XDC_NATIVE_TOKEN_IMAGE_URL,
@@ -1307,9 +1321,11 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ARC]: ARC_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.GRAVITY]: GRAVITY_IMAGE_URL,
   [CHAIN_IDS.SOMNIA]: SOMNIA_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ZERO_G]: ZERO_G_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,

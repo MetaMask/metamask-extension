@@ -73,6 +73,10 @@ BLOCKAID_PUBLIC_KEY=
 ;   existing trace() callers) is unaffected.
 ;   Hotfix release required to flip this in production.
 ;SENTRY_DISTRIBUTED_TRACING_DISABLED=true
+; Sample rates: tracesSampleRate and WRAPPER_SAMPLE_RATE are compile-time
+;   constants, but the remote feature flag `sentry: { tracesSampleRate,
+;   wrapperSampleRate }` overrides them at Sentry init (no build required).
+;   See shared/lib/sentry-remote-rates.ts.
 
 ; Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
 ; This should NEVER be enabled in production since it slows down react
@@ -111,6 +115,9 @@ NEW_HARDWARE_WALLET_ONBOARDING='false'
 ; Intended for local development and QA only.
 ;FORCE_ENFORCED_SIMULATIONS='true'
 
-; Set to `true` to enable pure-black (OLED) dark mode locally and rebuild (`yarn start`).
-; To enable for all users, change the corresponding entry in builds.yml to `true`.
-MM_PURE_BLACK_PREVIEW=true
+; Set to `true` to inject curated Money Home activity rows (deposits,
+; converts, receives, sends — including pending and failed) so the Activity
+; list UI can be reviewed without live deposit/withdraw. Remote flag
+; `moneyActivityMockDataEnabled` takes precedence when it is a boolean.
+; Rebuild after changing this value.
+;MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED='true'

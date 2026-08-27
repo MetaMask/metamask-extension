@@ -34,6 +34,7 @@ import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
+import { isInE2eTest } from './is-in-e2e-test';
 import { isHardwareWalletRoute } from './utils';
 
 /**
@@ -307,6 +308,12 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
     }
 
     if (isErrorModalSuppressed) {
+      return;
+    }
+
+    // E2E has no physical device; auto-shown connection modals block flows that
+    // already skip ensureDeviceReady (same policy as useHardwareFooter).
+    if (isInE2eTest()) {
       return;
     }
 
