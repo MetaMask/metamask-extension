@@ -184,6 +184,10 @@ export function createCaipOriginScanGate(
 
     const wrappedMethod = getWrappedRequestMethod(req);
 
+    // No EIP-7715 case here, unlike the EIP-1193 gate: those methods are absent
+    // from every CAIP-25 scope's method list, so `wallet_invokeMethod` rejects
+    // them as unauthorized before this gate ever sees them. Add them here if a
+    // scope ever grants them.
     return Boolean(
       wrappedMethod &&
       (isEthSendTransactionMethod(wrappedMethod) ||
