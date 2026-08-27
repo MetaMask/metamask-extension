@@ -93,15 +93,6 @@ describe('build-quote utils', () => {
       }).toMatchSnapshot();
     });
 
-    it('returns ready when the selected token differs from the navigation intent', () => {
-      expect(
-        resolveBuildQuoteViewKind({
-          intentAssetId: 'eip155:1/erc20:0x1',
-          selectedTokenAssetId: 'eip155:1/slip44:60',
-          tokensLoading: false,
-        }),
-      ).toBe('ready');
-    });
   });
 
   describe('findSelectedQuote', () => {

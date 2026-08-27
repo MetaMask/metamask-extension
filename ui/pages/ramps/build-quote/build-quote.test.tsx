@@ -415,6 +415,8 @@ describe('RampsBuildQuoteScreen', () => {
       '/ramps/build-quote',
     );
 
+    mockLocationState = null;
+
     useRampsController.mockReturnValue(
       mockControllerState({
         selectedToken: {

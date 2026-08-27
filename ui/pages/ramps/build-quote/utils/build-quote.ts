@@ -42,9 +42,8 @@ export function isTokenStateSettled(
  * store mirrors that selection. `setRampsSelectedToken` finishes in the
  * background before the UI Redux mirror updates, so treating a brief mismatch
  * as a failed pre-select caused an immediate redirect back to token selection
- * (appearing as a double-click). A selected token is always renderable; later
- * controller selection changes are valid cross-surface updates and must not
- * block the screen.
+ * (appearing as a double-click). Later controller selection changes are valid
+ * cross-surface updates and must not block the screen.
  * @param options0
  * @param options0.intentAssetId
  * @param options0.selectedTokenAssetId
@@ -64,8 +63,12 @@ export function resolveBuildQuoteViewKind({
     selectedTokenAssetId,
   );
 
-  // Intent navigation: wait for the UI store to catch up with background
-  // pre-select. Do not redirect on mismatch — that races the state bridge.
+  // Intent navigation may briefly render without the requested token while the
+  // UI store catches up with the background pre-select.
+  if (intentAssetId && !tokenStateIsSettled) {
+    return 'loading';
+  }
+
   if (tokensLoading && !selectedTokenAssetId) {
     return 'loading';
   }
