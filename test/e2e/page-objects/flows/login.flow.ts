@@ -1,6 +1,6 @@
 import LoginPage from '../pages/onboarding/login-page';
 import HomePage from '../pages/home/homepage';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import { WALLET_PASSWORD } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
