@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useMemo, useRef } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef } from 'react';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
@@ -99,17 +99,30 @@ export const SnapUIDateTimePicker: FunctionComponent<
   const [value, setValue] = React.useState<DateTime | null>(() =>
     parseInitialIsoValue(initialValue, type),
   );
-  const [prevInitialValue, setPrevInitialValue] = React.useState(initialValue);
-  const [prevType, setPrevType] = React.useState(type);
+  const prevInitialValueRef = React.useRef<typeof initialValue | undefined>(
+    undefined,
+  );
+  const prevTypeRef = React.useRef(type);
 
-  if (initialValue !== prevInitialValue || type !== prevType) {
-    setPrevInitialValue(initialValue);
-    setPrevType(type);
+  useEffect(() => {
+    if (prevInitialValueRef.current === undefined) {
+      prevInitialValueRef.current = initialValue;
+      prevTypeRef.current = type;
+      return;
+    }
+    if (
+      initialValue === prevInitialValueRef.current &&
+      type === prevTypeRef.current
+    ) {
+      return;
+    }
+    prevInitialValueRef.current = initialValue;
+    prevTypeRef.current = type;
     const parsed = parseInitialIsoValue(initialValue, type);
     if (parsed !== null) {
-      setValue(parsed);
+      queueMicrotask(() => setValue(parsed));
     }
-  }
+  }, [initialValue, type]);
 
   const draftRef = useRef<DateTime | null>(null);
 

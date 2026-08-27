@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
 import { Checkbox } from '@metamask/design-system-react';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
@@ -39,14 +39,21 @@ export const SnapUICheckbox = ({
   const initialValue = getValue(name, form) as boolean;
 
   const [value, setValue] = useState(initialValue ?? false);
-  const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
+  const prevInitialValueRef = useRef<typeof initialValue | undefined>(undefined);
 
-  if (initialValue !== prevInitialValue) {
-    setPrevInitialValue(initialValue);
-    if (initialValue !== undefined && initialValue !== null) {
-      setValue(initialValue);
+  useEffect(() => {
+    if (prevInitialValueRef.current === undefined) {
+      prevInitialValueRef.current = initialValue;
+      return;
     }
-  }
+    if (initialValue === prevInitialValueRef.current) {
+      return;
+    }
+    prevInitialValueRef.current = initialValue;
+    if (initialValue !== undefined && initialValue !== null) {
+      queueMicrotask(() => setValue(initialValue));
+    }
+  }, [initialValue]);
 
   const handleChange = () => {
     // ToggleButton passes the current value; design-system Checkbox passes the

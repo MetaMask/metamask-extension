@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
@@ -111,13 +111,13 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     return t('connectedSites');
   };
 
-  const [prevInitRemove, setPrevInitRemove] = useState(false);
-  if (initRemove !== prevInitRemove) {
-    setPrevInitRemove(initRemove);
-    if (initRemove) {
-      setIsShowingRemoveWarning(true);
+  const prevInitRemoveRef = useRef(undefined);
+  useEffect(() => {
+    if (initRemove && !prevInitRemoveRef.current) {
+      queueMicrotask(() => setIsShowingRemoveWarning(true));
     }
-  }
+    prevInitRemoveRef.current = initRemove;
+  }, [initRemove]);
   useEffect(() => {
     if (initRemove) {
       resetInitRemove();

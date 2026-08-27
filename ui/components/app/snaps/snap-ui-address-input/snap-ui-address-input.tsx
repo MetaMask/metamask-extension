@@ -188,13 +188,20 @@ export const SnapUIAddressInput = ({
     chainId,
   });
 
-  const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
-  if (initialValue !== prevInitialValue) {
-    setPrevInitialValue(initialValue);
-    if (initialValue !== undefined && initialValue !== null) {
-      setValue(getParsedValue(initialValue));
+  const prevInitialValueRef = useRef<typeof initialValue | undefined>(undefined);
+  useEffect(() => {
+    if (prevInitialValueRef.current === undefined) {
+      prevInitialValueRef.current = initialValue;
+      return;
     }
-  }
+    if (initialValue === prevInitialValueRef.current) {
+      return;
+    }
+    prevInitialValueRef.current = initialValue;
+    if (initialValue !== undefined && initialValue !== null) {
+      queueMicrotask(() => setValue(getParsedValue(initialValue)));
+    }
+  }, [initialValue]);
 
   /*
    * Focus input if the last focused input was this input

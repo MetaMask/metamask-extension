@@ -469,8 +469,9 @@ export const MultichainAccountsConnectPage = ({
     [defaultConnectChainIds, supportedAccountGroups],
   );
 
-  const defaultAccountGroupIds = suggestedAccountGroups.map(
-    (group) => group.id,
+  const defaultAccountGroupIds = useMemo(
+    () => suggestedAccountGroups.map((group) => group.id),
+    [suggestedAccountGroups],
   );
 
   const effectiveSelectedAccountGroupIds = userHasModifiedAccountSelection

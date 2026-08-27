@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
@@ -35,14 +35,21 @@ export const SnapUIDropdown = ({
   const initialValue = getValue(name, form) as string;
 
   const [value, setValue] = useState(initialValue ?? '');
-  const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
+  const prevInitialValueRef = useRef<typeof initialValue | undefined>(undefined);
 
-  if (initialValue !== prevInitialValue) {
-    setPrevInitialValue(initialValue);
-    if (initialValue !== undefined && initialValue !== null) {
-      setValue(initialValue);
+  useEffect(() => {
+    if (prevInitialValueRef.current === undefined) {
+      prevInitialValueRef.current = initialValue;
+      return;
     }
-  }
+    if (initialValue === prevInitialValueRef.current) {
+      return;
+    }
+    prevInitialValueRef.current = initialValue;
+    if (initialValue !== undefined && initialValue !== null) {
+      queueMicrotask(() => setValue(initialValue));
+    }
+  }, [initialValue]);
 
   const handleChange = (newValue: string) => {
     setValue(newValue);
