@@ -397,7 +397,6 @@
     "@metamask/design-system-tailwind-preset": "^0.12.0",
     "@metamask/design-tokens": "^10.0.0",
     "@metamask/dummy-package": "workspace:*",
-    "@metamask/dummy-sentry": "workspace:*",
     "@metamask/eip-5792-middleware": "3.0.3",
     "@metamask/eip-7702-internal-rpc-middleware": "^0.1.0",
     "@metamask/ens-resolver-snap": "^1.2.0",

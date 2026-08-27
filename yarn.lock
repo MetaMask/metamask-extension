@@ -6483,7 +6483,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/dummy-sentry@workspace:*, @metamask/dummy-sentry@workspace:test/fakes/dummy-sentry":
+"@metamask/dummy-sentry@workspace:test/fakes/dummy-sentry":
   version: 0.0.0-use.local
   resolution: "@metamask/dummy-sentry@workspace:test/fakes/dummy-sentry"
   languageName: unknown
@@ -33301,7 +33301,6 @@ __metadata:
     "@metamask/design-system-tailwind-preset": "npm:^0.12.0"
     "@metamask/design-tokens": "npm:^10.0.0"
     "@metamask/dummy-package": "workspace:*"
-    "@metamask/dummy-sentry": "workspace:*"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-resolver-snap": "npm:^1.2.0"
