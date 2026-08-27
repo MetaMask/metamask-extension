@@ -57,6 +57,10 @@ export default class GasFeeModal {
 
   private readonly maxBaseFeeInput: RawLocator = '[id="max-base-fee-input"]';
 
+  private readonly parentSelector: RawLocator = {
+    testId: 'parent-selector-gas-fee-modal',
+  };
+
   private readonly priorityFeeInput: RawLocator = '[id="priority-fee-input"]';
 
   private readonly saveButton: RawLocator =
@@ -126,6 +130,7 @@ export default class GasFeeModal {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.editGasFeeModalTitle,
         this.gasOptionLow,
         this.gasOptionMedium,

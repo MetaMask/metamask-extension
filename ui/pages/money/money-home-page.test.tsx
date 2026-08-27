@@ -6,11 +6,14 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { MoneyHomePage } from './money-home-page';
+import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
+import { onchainItem } from './types/money-activity';
 
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyAccountBalance = jest.fn();
 const mockUseMoneyAccountInterest = jest.fn();
 const mockUseMoneyDepositTokens = jest.fn();
+const mockUseMoneyActivityItems = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
 );
@@ -62,6 +65,9 @@ jest.mock('../../hooks/money/useMoneyAccountInterest', () => ({
 jest.mock('../../hooks/money/use-money-deposit-tokens', () => ({
   useMoneyDepositTokens: () => mockUseMoneyDepositTokens(),
 }));
+jest.mock('../../hooks/money/use-money-activity-items', () => ({
+  useMoneyActivityItems: () => mockUseMoneyActivityItems(),
+}));
 
 describe('MoneyHomePage', () => {
   beforeEach(() => {
@@ -99,6 +105,7 @@ describe('MoneyHomePage', () => {
       tokens: [],
       isNoFeeToken: () => false,
     });
+    mockUseMoneyActivityItems.mockReturnValue([]);
   });
 
   it('renders the full empty-state composition with a live zero balance', () => {
@@ -146,12 +153,13 @@ describe('MoneyHomePage', () => {
         .closest('li')
         ?.querySelector('svg'),
     ).toHaveClass('shrink-0');
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
     expect(
-      screen.getByTestId('money-activity-placeholder'),
+      screen.getByText(messages.moneyActivityPlaceholderDescription.message),
     ).toBeInTheDocument();
     expect(
-      screen.getAllByTestId('money-activity-placeholder-row'),
-    ).toHaveLength(3);
+      screen.queryByTestId(/money-activity-row-/u),
+    ).not.toBeInTheDocument();
   });
 
   it('keeps all groundwork actions inert', () => {
@@ -189,9 +197,7 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-position-lifetime-value'),
     ).toHaveTextContent('+$56.78');
-    expect(
-      screen.getByTestId('money-activity-placeholder'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
     expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
     expect(
       screen.getByText(messages.moneyEarnOnCrypto.message),
@@ -223,6 +229,36 @@ describe('MoneyHomePage', () => {
     screen.getAllByRole('button').forEach((button) => {
       expect(button).toBeDisabled();
     });
+  });
+
+  it('renders mock activity rows instead of the empty copy', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      totalFiatRaw: '3475.45',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyActivityItems.mockReturnValue(
+      MOCK_MONEY_TRANSACTIONS.map(onchainItem),
+    );
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
+    ).not.toBeInTheDocument();
+    expect(screen.getAllByTestId(/money-activity-row-money-tx-/u)).toHaveLength(
+      5,
+    );
+    expect(screen.getByTestId('money-activity-view-all')).toBeDisabled();
+    expect(
+      screen.getByText(messages.moneyActivityDeposited.message),
+    ).toBeInTheDocument();
   });
 
   it('shows earnings skeletons during the initial interest load', () => {
@@ -368,9 +404,7 @@ describe('MoneyHomePage', () => {
     expect(mockUseMoneyAccountInterest).toHaveBeenCalledWith({
       enabled: false,
     });
-    expect(
-      screen.getByTestId('money-activity-placeholder'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
     expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
   });
 
