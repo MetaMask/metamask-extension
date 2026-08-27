@@ -1221,7 +1221,7 @@ export const getIsDestSameAsActiveAccount = createDeepEqualSelector(
       toToken.chainId,
     );
 
-    return Boolean(destAccount?.id) && destAccount.id === activeAccount?.id;
+    return Boolean(destAccount?.id) && destAccount?.id === activeAccount?.id;
   },
 );
 
