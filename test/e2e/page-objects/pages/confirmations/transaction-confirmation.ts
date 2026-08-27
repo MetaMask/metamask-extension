@@ -220,6 +220,22 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.waitForSelector(this.enforcedSimulationsToggle);
   }
 
+  /**
+   * Scrolls the balance changes section into view, which brings the enforced
+   * simulations row (rendered directly below it) into the viewport.
+   */
+  async scrollToSimulationDetails(): Promise<void> {
+    const element = await this.driver.findElement(
+      '[data-testid="simulation-details-layout"]',
+    );
+    await this.driver.scrollToElement(element);
+  }
+
+  async checkEnforcedSimulationsRowIsNotDisplayed(): Promise<void> {
+    console.log(`Checking enforced simulations row is not displayed.`);
+    await this.driver.assertElementNotPresent(this.enforcedSimulationsRow);
+  }
+
   async checkEnforcedSimulationsToggleUnchecked(): Promise<void> {
     console.log(`Checking enforced simulations toggle is unchecked.`);
     await this.driver.waitForSelector(this.enforcedSimulationsToggleUnchecked);
