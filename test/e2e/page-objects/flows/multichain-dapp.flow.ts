@@ -20,11 +20,7 @@ import TestDappMultichain from '../pages/test-dapp-multichain';
 export const invokeCaipTransaction = async (
   driver: Driver,
   extensionId: string,
-  {
-    scope,
-    method,
-    params,
-  }: { scope: string; method: string; params?: Json },
+  { scope, method, params }: { scope: string; method: string; params?: Json },
 ): Promise<TransactionConfirmation> => {
   const testDapp = new TestDappMultichain(driver);
   await testDapp.openTestDappPage();
