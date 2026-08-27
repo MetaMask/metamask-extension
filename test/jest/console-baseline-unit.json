@@ -32,6 +32,7 @@
       "warn: Migration 139: typeof state.SelectedNetworkController is": 1,
       "warn: Migration 183.1: currencyRates not found": 1,
       "warn: Migration 186: Missing or invalid": 1,
+      "warn: Migration 223: No storage service": 1,
       "warn: newState.NftController must be present": 1
     },
     "app/scripts/lib/snap-keyring/snap-keyring.test.ts": {
@@ -608,7 +609,7 @@
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
-      "MetaMask: Background connection not initialized": 36
+      "MetaMask: Background connection not initialized": 40
     },
     "ui/pages/confirmations/components/confirm/info/info.test.tsx": {
       "MetaMask: Background connection not initialized": 61,
@@ -801,7 +802,7 @@
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/hooks/useHasInsufficientBalance.test.ts": {
-      "MetaMask: Background connection not initialized": 36
+      "MetaMask: Background connection not initialized": 40
     },
     "ui/pages/confirmations/hooks/useSmartTransactionFeatureFlags.test.ts": {
       "Reselect: Identity function warnings": 1

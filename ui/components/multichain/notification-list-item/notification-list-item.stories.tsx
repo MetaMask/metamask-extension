@@ -1,6 +1,7 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
-import { BadgeWrapperPosition, IconName } from '../../component-library';
+import { IconName } from '@metamask/design-system-react';
+import { BadgeWrapperPosition } from '../../component-library';
 import { NotificationListItemIconType } from '../notification-list-item-icon/notification-list-item-icon';
 import {
   TextColor,

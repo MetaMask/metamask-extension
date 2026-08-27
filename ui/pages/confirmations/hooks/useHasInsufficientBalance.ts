@@ -49,6 +49,7 @@ export function useHasInsufficientBalance(): {
     currentConfirmation?.txParams
       ? currentConfirmation
       : ({ txParams: {} } as TransactionMeta),
+    { useBalanceCheckGasLimit: true },
   );
 
   const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);
