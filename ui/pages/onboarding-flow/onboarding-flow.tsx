@@ -79,11 +79,13 @@ import LoadingScreen from '../../components/ui/loading-screen';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
+import { RouteMessengerProvider } from '../../contexts/route-messenger';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import { useDispatch } from '../../store/hooks';
+import { ONBOARDING_UNLOCK_ROUTE_CAPABILITIES } from './unlock-messenger';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -101,6 +103,8 @@ import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
 import SetupPasskey from './setup-passkey/setup-passkey';
+import { PASSKEY_SETUP_ROUTE_CAPABILITIES } from './setup-passkey/messenger';
+import { REVEAL_RECOVERY_PHRASE_ROUTE_CAPABILITIES } from './recovery-phrase/messenger';
 
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
@@ -401,7 +405,8 @@ export default function OnboardingFlow() {
     }
     if (
       pathname?.startsWith(ONBOARDING_REVEAL_SRP_ROUTE) ||
-      pathname?.startsWith(ONBOARDING_REVIEW_SRP_ROUTE)
+      pathname?.startsWith(ONBOARDING_REVIEW_SRP_ROUTE) ||
+      pathname?.startsWith(ONBOARDING_CONFIRM_SRP_ROUTE)
     ) {
       return 'var(--color-background-default)';
     }
@@ -471,14 +476,26 @@ export default function OnboardingFlow() {
               />
               <Route
                 path={toRelativePath(ONBOARDING_SETUP_PASSKEY_ROUTE)}
-                element={<SetupPasskey />}
+                element={
+                  <RouteMessengerProvider
+                    path={ONBOARDING_SETUP_PASSKEY_ROUTE}
+                    capabilities={PASSKEY_SETUP_ROUTE_CAPABILITIES}
+                  >
+                    <SetupPasskey />
+                  </RouteMessengerProvider>
+                }
               />
               <Route
                 path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}
                 element={
-                  <RevealRecoveryPhrase
-                    setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-                  />
+                  <RouteMessengerProvider
+                    path={ONBOARDING_REVEAL_SRP_ROUTE}
+                    capabilities={REVEAL_RECOVERY_PHRASE_ROUTE_CAPABILITIES}
+                  >
+                    <RevealRecoveryPhrase
+                      setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+                    />
+                  </RouteMessengerProvider>
                 }
               />
               <Route
@@ -508,10 +525,15 @@ export default function OnboardingFlow() {
               <Route
                 path={toRelativePath(ONBOARDING_UNLOCK_ROUTE)}
                 element={
-                  <Unlock
-                    onSubmit={handleUnlock}
-                    navigateAfterUnlock={handleNavigationAfterUnlock}
-                  />
+                  <RouteMessengerProvider
+                    path={ONBOARDING_UNLOCK_ROUTE}
+                    capabilities={ONBOARDING_UNLOCK_ROUTE_CAPABILITIES}
+                  >
+                    <Unlock
+                      onSubmit={handleUnlock}
+                      navigateAfterUnlock={handleNavigationAfterUnlock}
+                    />
+                  </RouteMessengerProvider>
                 }
               />
               <Route

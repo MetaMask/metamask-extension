@@ -102,6 +102,18 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
   const [rawMetamaskFees, setRawMetamaskFees] = useState(0);
   const [isLoadingFees, setIsLoadingFees] = useState(positions.length > 0);
   const feeRequestId = useRef(0);
+  const feeFetchKey = isOpen ? symbolNotionalKey : '';
+  const [prevFeeFetchKey, setPrevFeeFetchKey] = useState(feeFetchKey);
+
+  if (feeFetchKey !== prevFeeFetchKey) {
+    setPrevFeeFetchKey(feeFetchKey);
+    if (isOpen) {
+      const entries: [string, number][] = JSON.parse(symbolNotionalKey);
+      setRawProtocolFees(0);
+      setRawMetamaskFees(0);
+      setIsLoadingFees(entries.length > 0);
+    }
+  }
 
   const metamaskFeeDiscountBips = usePerpsMetamaskFeeDiscountBips(
     ORIGINAL_METAMASK_FEE_BIPS,
@@ -114,20 +126,14 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
 
     let cancelled = false;
 
-    setRawProtocolFees(0);
-    setRawMetamaskFees(0);
-
     const entries: [string, number][] = JSON.parse(symbolNotionalKey);
 
     feeRequestId.current += 1;
     const currentId = feeRequestId.current;
 
     if (entries.length === 0) {
-      setIsLoadingFees(false);
       return undefined;
     }
-
-    setIsLoadingFees(true);
 
     Promise.all(
       entries.map(([symbol, notional]) =>

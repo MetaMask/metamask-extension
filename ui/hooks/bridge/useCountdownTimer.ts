@@ -17,20 +17,20 @@ export const useCountdownTimer = () => {
   const { quotesLastFetchedMs } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
-  const [timeRemaining, setTimeRemaining] = useState(refreshRate + STEP);
-
-  useEffect(() => {
-    if (quotesLastFetchedMs) {
-      setTimeRemaining(refreshRate - (Date.now() - quotesLastFetchedMs) + STEP);
-    }
-  }, [quotesLastFetchedMs, refreshRate]);
+  // Tick clock so remaining time can be derived during render without Date.now().
+  // Lazy init is the supported way to seed an impure baseline once.
+  const [now, setNow] = useState(Date.now);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeRemaining((prev) => Math.max(0, prev - STEP));
+      setNow(Date.now());
     }, STEP);
     return () => clearInterval(interval);
   }, []);
+
+  const timeRemaining = quotesLastFetchedMs
+    ? Math.max(0, refreshRate - (now - quotesLastFetchedMs) + STEP)
+    : refreshRate + STEP;
 
   return Math.floor(timeRemaining / 1000);
 };

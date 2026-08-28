@@ -3,6 +3,19 @@ import { RawLocator } from '../../common';
 import { tEn } from '../../../../lib/i18n-helpers';
 import Confirmation from './confirmation';
 
+/**
+ * Account details modal opened from a confirmation header.
+ *
+ * Screen: overlay modal on a redesigned confirmation (not a hash route).
+ * Owns: account balance display, address copy / copied feedback, and close.
+ * Boundaries: extends `Confirmation` for shared helpers, but this object is
+ * scoped to the account-details modal only. Opening it via the header button
+ * belongs to `Confirmation`; after close, control returns to the parent
+ * confirmation.
+ * Related: `Confirmation` (how tests get here).
+ *
+ * @see ui/pages/confirmations/components/confirm/header/header-info.tsx
+ */
 class AccountDetailsModal extends Confirmation {
   private accountBalanceInfo: RawLocator;
 
@@ -11,6 +24,10 @@ class AccountDetailsModal extends Confirmation {
   private addressCopiedButton: RawLocator;
 
   private addressCopyButton: RawLocator;
+
+  private modalParentSelector: RawLocator = {
+    testId: 'parent-selector-account-details-modal',
+  };
 
   constructor(driver: Driver) {
     super(driver);
@@ -41,6 +58,7 @@ class AccountDetailsModal extends Confirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.modalParentSelector,
         this.accountBalanceInfo,
         this.addressCopyButton,
         this.accountDetailsModalCloseButton,

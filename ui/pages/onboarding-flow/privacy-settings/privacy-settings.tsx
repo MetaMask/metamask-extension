@@ -238,7 +238,10 @@ export default function PrivacySettings() {
 
   return (
     <>
-      <Box className="privacy-settings" data-testid="privacy-settings">
+      <Box
+        className="privacy-settings"
+        data-testid="parent-selector-onboarding-privacy-settings"
+      >
         <Box
           className={classnames('container', {
             'show-detail': showDetail,

@@ -12,7 +12,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
-import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
+import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockEmptyPrices } from '../tokens/utils/mocks';
 

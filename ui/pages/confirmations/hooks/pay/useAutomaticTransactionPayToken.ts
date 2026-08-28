@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -7,6 +7,7 @@ import {
   getTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
+import { getMoneyAccountTransactionType } from '../../utils/confirm';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
 import {
@@ -15,6 +16,7 @@ import {
   type PreferredPayToken,
 } from '../../selectors/feature-flags';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
+import { useImportPayToken } from './useImportPayToken';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -43,8 +45,12 @@ export function useAutomaticTransactionPayToken({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
-  // Batch txs use top-level type `batch`; resolve nested type for flag lookups.
-  const transactionType = getTransactionType(currentConfirmation);
+  // Batch txs use top-level type `batch`. Prefer the money-account nested type
+  // when present — deposits are `[approve, deposit]`, so plain
+  // `getTransactionType` would resolve them to `tokenMethodApprove`.
+  const transactionType =
+    getMoneyAccountTransactionType(currentConfirmation) ??
+    getTransactionType(currentConfirmation);
   const from = currentConfirmation?.txParams?.from;
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
@@ -75,6 +81,9 @@ export function useAutomaticTransactionPayToken({
     [tokens],
   );
 
+  const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] =
+    useState(false);
+
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const isHardwareWallet = useMemo(
     () => Boolean(hardwareWalletType),
@@ -85,6 +94,28 @@ export function useAutomaticTransactionPayToken({
     () => requiredTokens.find((token) => !token.allowUnderMinimum),
     [requiredTokens],
   );
+
+  const isPreferredTokenAvailable = useMemo(
+    () =>
+      preferredToken !== undefined &&
+      tokens.some(
+        (token) =>
+          token.address?.toLowerCase() ===
+            preferredToken.address.toLowerCase() &&
+          String(token.chainId)?.toLowerCase() ===
+            preferredToken.chainId.toLowerCase(),
+      ),
+    [preferredToken, tokens],
+  );
+
+  // Post-quote destinations typically have $0 in-wallet, so they never enter
+  // the user's funding tokens. Import the preferred destination so its
+  // metadata (symbol / decimals) is available to the confirmation.
+  useImportPayToken({
+    address: preferredToken?.address,
+    chainId: preferredToken?.chainId,
+    enabled: !disable && isPostQuoteWithdraw && !isPreferredTokenAvailable,
+  });
 
   const automaticToken = useMemo(
     () =>
@@ -112,7 +143,7 @@ export function useAutomaticTransactionPayToken({
     ],
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (
       disable ||
       payToken ||
@@ -126,18 +157,46 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
+    const matchingToken = tokens.find(
+      (token) =>
+        token.address?.toLowerCase() === automaticToken.address.toLowerCase() &&
+        String(token.chainId)?.toLowerCase() ===
+          automaticToken.chainId.toLowerCase(),
+    );
+
+    const isPreferredAutomatic =
+      preferredToken !== undefined &&
+      preferredToken.address.toLowerCase() ===
+        automaticToken.address.toLowerCase() &&
+      preferredToken.chainId.toLowerCase() ===
+        automaticToken.chainId.toLowerCase();
+
+    // Post-quote destinations typically have $0 in-wallet, so they never
+    // enter `availableTokens`. Wait for allowlist enrichment unless this is
+    // the caller-provided preferred token, which we can select immediately —
+    // `useImportPayToken` imports it with its resolved metadata.
+    if (isPostQuoteWithdraw && !matchingToken && !isPreferredAutomatic) {
+      return;
+    }
+
+    isUpdated.current = transactionId;
     setPayToken({
       address: automaticToken.address,
       chainId: automaticToken.chainId,
+    }).catch((error) => {
+      console.error('Failed to set automatic pay token', error);
+      if (isUpdated.current === transactionId) {
+        isUpdated.current = undefined;
+      }
     });
-
-    isUpdated.current = transactionId;
   }, [
     automaticToken,
     disable,
+    isPostQuoteWithdraw,
     payToken,
-    requiredTokens,
+    preferredToken,
     setPayToken,
+    tokens,
     transactionId,
   ]);
 
@@ -147,8 +206,6 @@ export function useAutomaticTransactionPayToken({
   // account without touching `txParams.from`.
   const prevAccountKeyRef = useRef(`${from ?? ''}:${accountOverride ?? ''}`);
   const pendingAccountReselectRef = useRef(false);
-  const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] =
-    useState(false);
 
   useEffect(() => {
     const accountKey = `${from ?? ''}:${accountOverride ?? ''}`;
@@ -166,16 +223,18 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
-    // Wait for the new account's funding tokens before selecting. Otherwise
-    // getBestToken falls back to the required destination token (mUSD on
-    // Monad) and the Pay-with row briefly shows that instead of a loader.
-    // If tokens never arrive (truly empty account), settle after timeout.
+    // Wait for the new account's funding tokens before selecting. Tokens can
+    // arrive after the account override, and selecting too early leaves the
+    // Pay-with row empty or briefly wrong. If tokens never arrive (truly empty
+    // account), settle after timeout without a destination-token fallback.
     if (tokensWithBalance.length === 0 && !emptyAccountReselectTimedOut) {
       return;
     }
 
     if (!automaticToken) {
-      pendingAccountReselectRef.current = false;
+      // Keep pending after the empty-account timeout. Funding tokens can still
+      // arrive later; clearing pending here would leave payToken unset forever
+      // (initial selection is already gated by isUpdated for this tx).
       return;
     }
 
@@ -326,7 +385,18 @@ function getBestToken({
     };
   }
 
-  return targetTokenFallback;
+  // Non-post-quote-withdraw flows (money-account deposit, perps deposit,
+  // etc.): do not fall back to the required destination token when the
+  // account has no funding balance. Leaving payToken unset empties the
+  // selector. The blocking account-no-funds alert is money-account-deposit
+  // only; other deposit types rely on the empty/skeleton pay-with UI.
+  // Post-quote withdraws still use the destination token as a known-safe
+  // default.
+  if (isPostQuoteWithdraw) {
+    return targetTokenFallback;
+  }
+
+  return undefined;
 }
 
 function getPreferredToken({

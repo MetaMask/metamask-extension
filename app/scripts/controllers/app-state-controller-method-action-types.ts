@@ -318,16 +318,6 @@ export type AppStateControllerSetProductTourAction = {
 };
 
 /**
- * Updates the network connection banner state
- *
- * @param networkConnectionBanner - The new banner state
- */
-export type AppStateControllerUpdateNetworkConnectionBannerAction = {
-  type: `AppStateController:updateNetworkConnectionBanner`;
-  handler: AppStateController['updateNetworkConnectionBanner'];
-};
-
-/**
  * Sets a unique ID for the current extension popup
  *
  * @param currentExtensionPopupId
@@ -368,7 +358,8 @@ export type AppStateControllerAddSignatureSecurityAlertResponseAction = {
 };
 
 /**
- * A setter for the currentPopupId which indicates the id of popup window that's currently active
+ * A setter for the currentPopupId which indicates the id of popup window that's currently active.
+ * Pass `undefined` to clear when the popup is closed.
  *
  * @param currentPopupId
  */
@@ -614,7 +605,6 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
   | AppStateControllerSetProductTourAction
-  | AppStateControllerUpdateNetworkConnectionBannerAction
   | AppStateControllerSetCurrentExtensionPopupIdAction
   | AppStateControllerSetTrezorModelAction
   | AppStateControllerUpdateNftDropDownStateAction

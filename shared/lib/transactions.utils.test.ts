@@ -250,6 +250,16 @@ describe('Transactions utils', () => {
       );
     });
 
+    it('returns moneyAccountWithdraw when type is moneyAccountWithdraw', () => {
+      const transactionMeta = {
+        type: TransactionType.moneyAccountWithdraw,
+      } as TransactionMeta;
+
+      expect(getPostQuoteWithdrawTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountWithdraw,
+      );
+    });
+
     it('returns perpsWithdraw when a nested transaction is perpsWithdraw', () => {
       const transactionMeta = {
         type: TransactionType.batch,
@@ -276,6 +286,14 @@ describe('Transactions utils', () => {
     it('returns true when the transaction has a post-quote withdraw type', () => {
       const transactionMeta = {
         type: TransactionType.perpsWithdraw,
+      } as TransactionMeta;
+
+      expect(isPostQuoteWithdrawTransaction(transactionMeta)).toBe(true);
+    });
+
+    it('returns true for moneyAccountWithdraw', () => {
+      const transactionMeta = {
+        type: TransactionType.moneyAccountWithdraw,
       } as TransactionMeta;
 
       expect(isPostQuoteWithdrawTransaction(transactionMeta)).toBe(true);
