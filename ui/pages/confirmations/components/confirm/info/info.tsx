@@ -19,10 +19,10 @@ import {
   useConfirmationNavigationOptions,
 } from '../../../hooks/useConfirmationNavigation';
 import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
+import { MoneyAccountDepositInfo } from '../../info/money-account-deposit-info';
+import { MoneyAccountWithdrawInfo } from '../../info/money-account-withdraw-info';
 import { MusdClaimInfo } from '../../info/musd-claim-info';
 import { MusdConversionInfo } from '../../info/musd-conversion-info';
-import { MoneyAccountWithdrawInfo } from '../../info/money-account-withdraw-info';
-import { MoneyAccountDepositInfo } from './money-account-deposit-info';
 import { PerpsDepositInfo } from './perps-deposit-info';
 import { PerpsWithdrawInfo } from './perps-withdraw-info';
 import ApproveInfo from './approve/approve';

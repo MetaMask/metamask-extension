@@ -33,6 +33,7 @@ import {
   DelegationMessenger,
   getDelegationTransaction,
   normalizeCallData,
+  SUBSIDIZED_ORDER_ID_PLACEHOLDER,
 } from './delegation';
 
 jest.mock('../../../../shared/lib/delegation', () => ({
@@ -61,6 +62,10 @@ const EXACT_EXECUTION_ENFORCER_MOCK =
   '0xExactExecutionEnforcer00000000000000000000' as Hex;
 const EXACT_EXECUTION_BATCH_ENFORCER_MOCK =
   '0xExactExecutionBatchEnforcer00000000000000' as Hex;
+const ALLOWED_TARGETS_ENFORCER_MOCK =
+  '0xAllowedTargetsEnforcer0000000000000000000' as Hex;
+const ALLOWED_CALLDATA_ENFORCER_MOCK =
+  '0xAllowedCalldataEnforcer000000000000000000' as Hex;
 
 const TERMS_LIMITED_MOCK = '0xterms-limited' as Hex;
 const TERMS_EXACT_MOCK = '0xterms-exact' as Hex;
@@ -199,6 +204,8 @@ describe('delegation', () => {
         LimitedCallsEnforcer: LIMITED_CALLS_ENFORCER_MOCK,
         ExactExecutionEnforcer: EXACT_EXECUTION_ENFORCER_MOCK,
         ExactExecutionBatchEnforcer: EXACT_EXECUTION_BATCH_ENFORCER_MOCK,
+        AllowedTargetsEnforcer: ALLOWED_TARGETS_ENFORCER_MOCK,
+        AllowedCalldataEnforcer: ALLOWED_CALLDATA_ENFORCER_MOCK,
       },
     } as never);
 
@@ -823,6 +830,291 @@ describe('delegation', () => {
 
       expect(result.authorizationList).toBeDefined();
       expect(signEip7702AuthorizationMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('subsidized Relay execute', () => {
+    const PLACEHOLDER_BODY = SUBSIDIZED_ORDER_ID_PLACEHOLDER.slice(2);
+    const SELF_TARGET = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex;
+    const APPROVE_SELECTOR = '095ea7b3';
+    const DEPOSIT_SELECTOR = 'f9e4bab4';
+    const EXECUTE_SELECTOR = '1a2b3c4d';
+    const APPROVE_DATA = `${APPROVE_SELECTOR}${'22'.repeat(28)}`;
+    const DEPOSIT_DATA = `${DEPOSIT_SELECTOR}${APPROVE_SELECTOR}${'33'.repeat(
+      12,
+    )}${PLACEHOLDER_BODY}${APPROVE_SELECTOR}${'33'.repeat(12)}`;
+
+    const buildBatchData = (occurrences = 1): Hex => {
+      const fill = (byte: string) => byte.repeat(16);
+      const header = `${EXECUTE_SELECTOR}${fill('11')}${APPROVE_DATA}${DEPOSIT_DATA}`;
+      const windows = Array.from(
+        { length: occurrences },
+        (_, index) => `${PLACEHOLDER_BODY}${fill(index === 0 ? '44' : '55')}`,
+      ).join('');
+      return `0x${header}${windows}${fill('cd')}` as Hex;
+    };
+
+    const buildSubsidizedTransaction = (data: Hex): TransactionMeta =>
+      ({
+        ...TRANSACTION_META_MOCK,
+        txParams: {
+          ...TRANSACTION_META_MOCK.txParams,
+          to: SELF_TARGET,
+          data,
+          value: '0x0',
+        },
+        nestedTransactions: [
+          {
+            data: `0x${APPROVE_DATA}` as Hex,
+            to: '0x1111111111111111111111111111111111111111' as Hex,
+            value: '0x0' as Hex,
+          },
+          {
+            data: `0x${DEPOSIT_DATA}` as Hex,
+            to: '0x2222222222222222222222222222222222222222' as Hex,
+            value: '0x0' as Hex,
+          },
+        ],
+      }) as TransactionMeta;
+
+    const parseAllowedCalldata = (terms: string) => ({
+      startIndex: parseInt(terms.slice(2, 2 + 64), 16),
+      value: terms.slice(2 + 64).toLowerCase(),
+    });
+
+    const getAllowedCalldataTerms = () => {
+      const { caveats } = signDelegationMock.mock.calls[0][0].delegation;
+      return caveats
+        .map((caveat) => caveat.terms)
+        .filter((terms) => terms.length > 2 + 64)
+        .map(parseAllowedCalldata);
+    };
+
+    it('redeems the batch as a single execution in single mode', async () => {
+      const data = buildBatchData(1);
+
+      await convertTransactionToRedeemDelegations({
+        transaction: buildSubsidizedTransaction(data),
+        messenger,
+        isSubsidized: true,
+      });
+
+      expect(createExactExecutionTermsMock).not.toHaveBeenCalled();
+      expect(createExactExecutionBatchTermsMock).not.toHaveBeenCalled();
+      expect(encodeRedeemDelegationsMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          modes: [SINGLE_DEFAULT_MODE],
+          executions: [
+            [
+              {
+                target: SELF_TARGET,
+                value: 0n,
+                callData: data,
+              },
+            ],
+          ],
+        }),
+      );
+    });
+
+    it('does not append additionalExecutions on the subsidized path', async () => {
+      const data = buildBatchData(1);
+
+      await convertTransactionToRedeemDelegations({
+        transaction: buildSubsidizedTransaction(data),
+        messenger,
+        isSubsidized: true,
+        additionalExecutions: [ADDITIONAL_EXECUTION_MOCK],
+      });
+
+      expect(encodeRedeemDelegationsMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          executions: [
+            [
+              {
+                target: SELF_TARGET,
+                value: 0n,
+                callData: data,
+              },
+            ],
+          ],
+        }),
+      );
+    });
+
+    it('signs allowedTargets and limitedCalls caveats', async () => {
+      const data = buildBatchData(1);
+
+      await convertTransactionToRedeemDelegations({
+        transaction: buildSubsidizedTransaction(data),
+        messenger,
+        isSubsidized: true,
+      });
+
+      const { caveats } = signDelegationMock.mock.calls[0][0].delegation;
+
+      expect(caveats[0]).toStrictEqual({
+        enforcer: ALLOWED_TARGETS_ENFORCER_MOCK,
+        terms: SELF_TARGET,
+        args: '0x',
+      });
+      expect(caveats[1]).toStrictEqual({
+        enforcer: LIMITED_CALLS_ENFORCER_MOCK,
+        terms: TERMS_LIMITED_MOCK,
+        args: '0x',
+      });
+      expect(
+        caveats
+          .slice(2)
+          .every(
+            (caveat) => caveat.enforcer === ALLOWED_CALLDATA_ENFORCER_MOCK,
+          ),
+      ).toBe(true);
+    });
+
+    it('splits only after order-ID-bearing call selectors', async () => {
+      const data = buildBatchData(1);
+      const body = data.slice(2).toLowerCase();
+
+      await convertTransactionToRedeemDelegations({
+        transaction: buildSubsidizedTransaction(data),
+        messenger,
+        isSubsidized: true,
+      });
+
+      const enforced = getAllowedCalldataTerms();
+      const approveSplit = body.indexOf(APPROVE_DATA) / 2 + 4;
+      const depositSplit = body.indexOf(DEPOSIT_DATA) / 2 + 4;
+      const segmentEnds = enforced.map(
+        ({ startIndex, value }) => startIndex + value.length / 2,
+      );
+
+      expect(segmentEnds).toContain(depositSplit);
+      expect(segmentEnds).not.toContain(approveSplit);
+
+      const depositStart = body.indexOf(DEPOSIT_DATA) / 2;
+      const innerApprove1 = depositStart + 4 + 4;
+      expect(segmentEnds).not.toContain(innerApprove1);
+    });
+
+    it('produces far fewer caveats than the per-selector split', async () => {
+      const data = buildBatchData(2);
+
+      await convertTransactionToRedeemDelegations({
+        transaction: buildSubsidizedTransaction(data),
+        messenger,
+        isSubsidized: true,
+      });
+
+      const { caveats } = signDelegationMock.mock.calls[0][0].delegation;
+      expect(caveats.length).toBeLessThanOrEqual(7);
+    });
+
+    it('leaves the order-ID placeholder window free and enforces the remainder', async () => {
+      const data = buildBatchData(1);
+
+      await convertTransactionToRedeemDelegations({
+        transaction: buildSubsidizedTransaction(data),
+        messenger,
+        isSubsidized: true,
+      });
+
+      const body = data.slice(2).toLowerCase();
+      const enforced = getAllowedCalldataTerms();
+
+      for (const { value } of enforced) {
+        expect(value).not.toContain(PLACEHOLDER_BODY);
+      }
+
+      const rebuilt = Array.from(body);
+      for (const { startIndex, value } of enforced) {
+        for (let i = 0; i < value.length; i++) {
+          rebuilt[startIndex * 2 + i] = value[i];
+        }
+      }
+      expect(rebuilt.join('')).toBe(body);
+
+      const placeholderStart = body.indexOf(PLACEHOLDER_BODY) / 2;
+      const covered = enforced.some(
+        ({ startIndex, value }) =>
+          startIndex <= placeholderStart &&
+          placeholderStart < startIndex + value.length / 2,
+      );
+      expect(covered).toBe(false);
+    });
+
+    it('frees every occurrence when the placeholder appears multiple times', async () => {
+      const data = buildBatchData(2);
+
+      await convertTransactionToRedeemDelegations({
+        transaction: buildSubsidizedTransaction(data),
+        messenger,
+        isSubsidized: true,
+      });
+
+      const enforced = getAllowedCalldataTerms();
+      for (const { value } of enforced) {
+        expect(value).not.toContain(PLACEHOLDER_BODY);
+      }
+
+      const body = data.slice(2).toLowerCase();
+      let searchIndex = body.indexOf(PLACEHOLDER_BODY);
+      const placeholderStarts: number[] = [];
+      while (searchIndex !== -1) {
+        placeholderStarts.push(searchIndex / 2);
+        searchIndex = body.indexOf(PLACEHOLDER_BODY, searchIndex + 1);
+      }
+      expect(placeholderStarts).toHaveLength(3);
+
+      for (const start of placeholderStarts) {
+        const covered = enforced.some(
+          ({ startIndex, value }) =>
+            startIndex <= start && start < startIndex + value.length / 2,
+        );
+        expect(covered).toBe(false);
+      }
+    });
+
+    it('throws with the subsidized prefix when batch calldata is missing', async () => {
+      const transaction = {
+        ...TRANSACTION_META_MOCK,
+        txParams: {
+          ...TRANSACTION_META_MOCK.txParams,
+          to: SELF_TARGET,
+          data: undefined,
+        },
+      } as unknown as TransactionMeta;
+
+      await expect(
+        convertTransactionToRedeemDelegations({
+          transaction,
+          messenger,
+          isSubsidized: true,
+        }),
+      ).rejects.toThrow('Subsidized Caveats: Missing batch target or calldata');
+    });
+
+    it('forwards isSubsidized from getDelegationTransaction', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        {
+          chainId: '0x1',
+          isSupported: true,
+        },
+      ]);
+
+      const data = buildBatchData(1);
+
+      await getDelegationTransaction(
+        { messenger, isSubsidized: true },
+        buildSubsidizedTransaction(data),
+      );
+
+      expect(createExactExecutionTermsMock).not.toHaveBeenCalled();
+      expect(encodeRedeemDelegationsMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          modes: [SINGLE_DEFAULT_MODE],
+        }),
+      );
     });
   });
 

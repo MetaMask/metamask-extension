@@ -1,5 +1,5 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { bytesToHex } from '@metamask/utils';
+import { bytesToHex, type Hex } from '@metamask/utils';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
@@ -37,10 +37,9 @@ export type InitiateDepositOptions = {
  * because the surface is supposed to be hidden entirely.
  *
  * Fails fast (as `useMoneyAccountWithdrawal` does) when no EVM account is
- * selected: the funding account is only seeded later by
- * `handleUnapprovedTransactionAddedForMoneyAccount`, which silently skips
- * non-EVM selections, so without this guard the user would reach the
- * confirmation with Pay having no funding account to quote against.
+ * selected: that address is passed through as Pay's `accountOverride` so
+ * the confirmation defaults the From row — and quotes — to the currently
+ * selected account instead of the money account that executes the batch.
  *
  * Two deliberate differences from mobile's hook, both consequences of the
  * extension navigating **after** creation rather than early with a skeleton:
@@ -73,8 +72,10 @@ export function useMoneyAccountDeposit() {
           throw new Error('[Money Account] Missing funding EVM account');
         }
 
-        const { transactionId } =
-          await createMoneyAccountDepositTransaction(batchId);
+        const { transactionId } = await createMoneyAccountDepositTransaction(
+          batchId,
+          selectedAccount.address as Hex,
+        );
 
         navigateToTransaction(transactionId, {
           loader: ConfirmationLoader.CustomAmount,

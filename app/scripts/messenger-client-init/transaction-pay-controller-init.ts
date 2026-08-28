@@ -12,6 +12,11 @@ import {
 } from '../lib/transaction/delegation';
 import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
 import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
+import {
+  getMoneyAccountAmountData,
+  updateMoneyAccountDepositAmount,
+} from '../lib/money/pay/update-deposit-amount';
+import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
 import type { MoneyPayMessenger } from '../lib/money/pay/pay-context';
 import type {
   MessengerClientInitFunction,
@@ -28,15 +33,25 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
 
   const getDelegationTransactionCallback: (request: {
     transaction: TransactionMeta;
-  }) => ReturnType<typeof getDelegationTransaction> = ({ transaction }) =>
+    isSubsidized?: boolean;
+  }) => ReturnType<typeof getDelegationTransaction> = ({
+    transaction,
+    isSubsidized,
+  }) =>
     getDelegationTransaction(
       {
         messenger: initMessenger as DelegationMessenger,
+        isSubsidized,
       },
       transaction,
     );
 
   const messengerClient = new TransactionPayController({
+    getAmountData: (amountDataRequest) =>
+      getMoneyAccountAmountData(
+        initMessenger as MoneyPayMessenger,
+        amountDataRequest,
+      ),
     getDelegationTransaction: getDelegationTransactionCallback,
     getStrategy,
     messenger: controllerMessenger,
@@ -53,16 +68,44 @@ function getApi(
   moneyPayMessenger: MoneyPayMessenger,
 ): MessengerClientInitResult<TransactionPayController>['api'] {
   return {
-    createMoneyAccountDepositTransaction: (batchId: Hex) =>
-      createMoneyAccountDepositTransaction(moneyPayMessenger, batchId),
-    createMoneyAccountWithdrawTransaction: () =>
-      createMoneyAccountWithdrawTransaction(moneyPayMessenger),
+    createMoneyAccountDepositTransaction: async (
+      batchId: Hex,
+      accountOverride: Hex,
+    ) => {
+      const result = await createMoneyAccountDepositTransaction(
+        moneyPayMessenger,
+        batchId,
+      );
+      seedDepositPayConfig(
+        messengerClient,
+        result.transactionId,
+        accountOverride,
+      );
+      return result;
+    },
+    createMoneyAccountWithdrawTransaction: async (accountOverride: Hex) => {
+      const result =
+        await createMoneyAccountWithdrawTransaction(moneyPayMessenger);
+      seedAccountOverride(
+        messengerClient,
+        result.transactionId,
+        accountOverride,
+      );
+      return result;
+    },
     setTransactionPayIsMaxAmount: (
       transactionId: string,
       isMaxAmount: boolean,
+      options: { isMoneyAccountDeposit?: boolean } = {},
     ) => {
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.isMaxAmount = isMaxAmount;
+        // Max money-account deposits run the vault deposit after Relay
+        // settles (EXACT_INPUT). Regular deposits stay atomic so the vault
+        // call is embedded in the Relay bundle (EXPECTED_OUTPUT).
+        if (options.isMoneyAccountDeposit) {
+          config.atomic = isMaxAmount ? false : undefined;
+        }
       });
     },
     setTransactionPayPostQuote: (
@@ -83,6 +126,29 @@ function getApi(
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.accountOverride = accountOverride;
       });
+    },
+    updateMoneyAccountDepositAmount: (
+      transactionId: string,
+      amountHuman: string,
+    ) =>
+      updateMoneyAccountDepositAmount(
+        moneyPayMessenger,
+        transactionId,
+        amountHuman,
+      ),
+    updateMoneyAccountWithdrawAmount: (
+      transactionId: string,
+      amountHuman: string,
+    ) => {
+      const accountOverride =
+        messengerClient.state?.transactionData?.[transactionId]
+          ?.accountOverride;
+      return updateMoneyAccountWithdrawAmount(
+        moneyPayMessenger,
+        transactionId,
+        amountHuman,
+        accountOverride,
+      );
     },
     setTransactionPayPaymentOverride: (
       transactionId: string,
@@ -108,6 +174,49 @@ function getApi(
     updateTransactionPaymentToken:
       messengerClient.updatePaymentToken.bind(messengerClient),
   };
+}
+
+/**
+ * Seeds Pay's funding/destination account. Money Account batches execute
+ * `from` the money account, so without this override the confirmation From
+ * row and Pay quotes fall back to that address instead of the user's
+ * currently selected EVM account.
+ *
+ * @param messengerClient - TransactionPayController to write config on.
+ * @param transactionId - Created transaction id.
+ * @param accountOverride - Currently selected EVM account address.
+ */
+function seedAccountOverride(
+  messengerClient: TransactionPayController,
+  transactionId: string,
+  accountOverride: Hex,
+): void {
+  messengerClient.setTransactionConfig(transactionId, (config) => {
+    config.accountOverride = accountOverride;
+  });
+}
+
+/**
+ * Seeds deposit Pay config: funding account plus `isQuoteRequired`.
+ *
+ * Paying with same-chain mUSD is otherwise a Pay no-op (Strategy.None). The
+ * publish hook then skips, so Add funds never moves mUSD from the selected
+ * EOA onto the money account or embeds the vault calls. Forcing a quote
+ * makes Relay own submit.
+ *
+ * @param messengerClient - TransactionPayController to write config on.
+ * @param transactionId - Created transaction id.
+ * @param accountOverride - Currently selected EVM account address.
+ */
+function seedDepositPayConfig(
+  messengerClient: TransactionPayController,
+  transactionId: string,
+  accountOverride: Hex,
+): void {
+  messengerClient.setTransactionConfig(transactionId, (config) => {
+    config.accountOverride = accountOverride;
+    config.isQuoteRequired = true;
+  });
 }
 
 function getStrategy(_transaction: TransactionMeta): TransactionPayStrategy {

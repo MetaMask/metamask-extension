@@ -13,8 +13,13 @@ import { useConfirmContext } from '../../context/confirm';
 import {
   selectMinimumRequiredTokenBalance,
   selectPreferredPayTokens,
+  selectRelayFixedSpread,
   type PreferredPayToken,
 } from '../../selectors/feature-flags';
+import {
+  isSubsidizedSource,
+  type RelayFixedSpreadConfig,
+} from '../../utils/relay-fixed-spread';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useImportPayToken } from './useImportPayToken';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -42,6 +47,7 @@ export function useAutomaticTransactionPayToken({
   const minimumRequiredTokenBalance = useSelector(
     selectMinimumRequiredTokenBalance,
   );
+  const relayFixedSpread = useSelector(selectRelayFixedSpread);
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
@@ -127,6 +133,7 @@ export function useAutomaticTransactionPayToken({
         minimumRequiredTokenBalance,
         preferredToken,
         preferredTokensFromFlags,
+        relayFixedSpread,
         targetToken,
         tokens: tokensWithBalance,
       }),
@@ -138,6 +145,7 @@ export function useAutomaticTransactionPayToken({
       minimumRequiredTokenBalance,
       preferredToken,
       preferredTokensFromFlags,
+      relayFixedSpread,
       targetToken,
       tokensWithBalance,
     ],
@@ -293,6 +301,7 @@ function getBestToken({
   minimumRequiredTokenBalance,
   preferredToken,
   preferredTokensFromFlags,
+  relayFixedSpread,
   targetToken,
   tokens,
 }: {
@@ -306,6 +315,7 @@ function getBestToken({
   minimumRequiredTokenBalance: number;
   preferredToken?: SetPayTokenRequest;
   preferredTokensFromFlags: PreferredPayToken[];
+  relayFixedSpread: RelayFixedSpreadConfig;
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
 }): { address: Hex; chainId: Hex } | undefined {
@@ -362,23 +372,33 @@ function getBestToken({
     return undefined;
   }
 
-  if (tokens?.length) {
-    const eligibleTokens = tokens.filter(
-      (token) => (token.fiat?.balance ?? 0) >= minimumRequiredTokenBalance,
-    );
+  // Same as mobile: prefer a no-fee (subsidized) source that meets the
+  // fiat minimum before falling through to the first funding token.
+  if (tokens?.length && !isPostQuoteWithdraw) {
+    const noFeeCandidates = tokens
+      .filter((token) => {
+        if (!token.chainId || !token.address) {
+          return false;
+        }
+        if ((token.fiat?.balance ?? 0) < minimumRequiredTokenBalance) {
+          return false;
+        }
+        return isSubsidizedSource(relayFixedSpread, {
+          chainId: String(token.chainId),
+          address: token.address,
+        });
+      })
+      .sort((a, b) => (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0));
 
-    if (eligibleTokens.length) {
+    if (noFeeCandidates.length) {
       return {
-        address: eligibleTokens[0].address as Hex,
-        chainId: eligibleTokens[0].chainId as Hex,
+        address: noFeeCandidates[0].address as Hex,
+        chainId: noFeeCandidates[0].chainId as Hex,
       };
     }
+  }
 
-    // Tokens exist but none meet the fiat minimum — use destination fallback.
-    if (minimumRequiredTokenBalance > 0) {
-      return targetTokenFallback;
-    }
-
+  if (tokens?.length) {
     return {
       address: tokens[0].address as Hex,
       chainId: tokens[0].chainId as Hex,

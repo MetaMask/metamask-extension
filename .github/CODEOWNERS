@@ -267,6 +267,7 @@ app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/
 # mUSD
 **/musd/**                           @MetaMask/earn
 shared/lib/deep-links/routes/musd.ts @MetaMask/earn
+ui/components/app/money/             @MetaMask/earn
 ui/selectors/money/                  @MetaMask/earn
 
 

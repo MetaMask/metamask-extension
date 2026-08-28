@@ -1,12 +1,12 @@
 import React from 'react';
-import { useAddToken } from '../../../../hooks/tokens/useAddToken';
-import { CustomAmountInfo } from '../../../info/custom-amount-info';
-import { BalanceProjection } from '../../../money-account-confirmations/balance-projection';
+import { BalanceProjection } from '../../../../../components/app/money/balance-projection';
 import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN,
   MUSD_TOKEN_ADDRESS,
-} from '../../../../constants/musd';
+} from '../../../constants/musd';
+import { useAddToken } from '../../../hooks/tokens/useAddToken';
+import { CustomAmountInfo } from '../custom-amount-info';
 
 const MONEY_ACCOUNT_DEPOSIT_CURRENCY = 'usd';
 
