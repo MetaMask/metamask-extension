@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Improved extension storage efficiency when enumerating StorageService keys (#45510)
+- Improved storage resilience and stability by using IndexedDB for StorageService data (#45685)
 - Updated the withdrawal token picker to say "Receive" and "Search tokens" instead of "Pay with" and "Search for an asset to send" (#45613)
 - Updated security alert titles and messages to describe the flagged risk per attack type and to show the simulated value at risk where available (#45509)
 - Changed address security screening to use the shared PhishingController chain support instead of a hardcoded network list (#45107)
@@ -54,11 +55,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a bug that caused all quotes to be unavailable when buying non-EVM assets (#45293)
 - Fixed a bug where the back button on the token detail page navigated to a stale mUSD conversion confirmation screen instead of the home page (#45649)
 - Fixed the Perps available-to-trade percentage showing a truncated decimal on initial load (#45561)
+- Fixed a crash when reopening the extension on a Perps page (#45756)
 - Fixed a bug where the Perps withdrawal confirmation could allow or block a withdrawal based on an out-of-date balance (#45191)
 - Fixed backend-driven extension push notifications failing to register an FCM token on LavaMoat production builds (#45610)
 - Fixed an issue where networks wouldn't properly display fallback URLs (#45601)
 - Fixed the hamburger menu back icon color to match other menu icons (#45429)
-- Fixed enforced simulations not running for wallet-initiated transactions (#45278)
+- Stopped enforced simulations from running for wallet-initiated transactions (#45801)
+- Fixed confusing passkey biometrics setup errors by adding informative messages when PRF is not supported (#45802)
 - Fixed deep links to exclude unsigned parameters from the QR code destinations generated for `batch-sell`, `predict`, and `trending` (#45103)
 - Fixed redundant token selection logic when re-selecting the already active payment token in the Pay With modal (#45402)
 - Swap dest asset selection sets src asset (dev) (#45388)
