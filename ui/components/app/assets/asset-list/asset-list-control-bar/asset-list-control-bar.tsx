@@ -104,6 +104,7 @@ type AssetListControlBarProps = {
    * menu containing only a "Refresh list" action that invokes this callback.
    */
   onRefresh?: () => void;
+  'data-testid'?: string;
 };
 
 const AssetListControlBar = ({
@@ -112,6 +113,7 @@ const AssetListControlBar = ({
   showSortControl = true,
   onNetworkSelect,
   onRefresh,
+  'data-testid': dataTestId,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -387,7 +389,12 @@ const AssetListControlBar = ({
   }
 
   return (
-    <Box className="asset-list-control-bar" marginLeft={4} marginRight={4}>
+    <Box
+      className="asset-list-control-bar"
+      marginLeft={4}
+      marginRight={4}
+      data-testid={dataTestId}
+    >
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <ButtonBase
           data-testid="sort-by-networks"
