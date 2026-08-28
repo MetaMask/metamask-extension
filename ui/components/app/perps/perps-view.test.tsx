@@ -284,10 +284,16 @@ describe('PerpsView', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders the balance dropdown', () => {
+    it('renders the balance actions header', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-balance-dropdown')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-balance-actions')).toBeInTheDocument();
+    });
+
+    it('renders the Perps title above the balance actions', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-view-title')).toBeInTheDocument();
     });
 
     it('shows positions section when mock positions exist', () => {
@@ -323,7 +329,16 @@ describe('PerpsView', () => {
       expect(screen.getByTestId('position-card-ETH')).toBeInTheDocument();
     });
 
-    it('renders single-position summary RoE from the same position value as the card', () => {
+    it('renders the aggregate Unrealized P&L subtitle under the Your positions header', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-positions-pnl')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-positions-pnl').textContent,
+      ).toContain('Unrealized P&L');
+    });
+
+    it('renders single-position summary RoE from the same position value as the card, under the Your positions header', () => {
       jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
         positions: [
           {
@@ -346,14 +361,14 @@ describe('PerpsView', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
       expect(
-        screen.getByTestId('perps-balance-dropdown-pnl'),
+        screen.getByTestId('perps-positions-roe-value'),
       ).toHaveTextContent('42.00%');
       expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
         '42.00%',
       );
     });
 
-    it('keeps multi-position summary RoE on the account aggregate', () => {
+    it('keeps multi-position summary RoE on the account aggregate, under the Your positions header', () => {
       jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
         positions: [
           {
@@ -378,7 +393,7 @@ describe('PerpsView', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
       expect(
-        screen.getByTestId('perps-balance-dropdown-pnl'),
+        screen.getByTestId('perps-positions-roe-value'),
       ).toHaveTextContent('1.00%');
     });
 

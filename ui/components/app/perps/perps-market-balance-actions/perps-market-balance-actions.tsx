@@ -26,11 +26,26 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
-import {
-  invokePerpsBalanceAction,
-  type PerpsBalanceActionHandler,
-} from '../perps-balance-dropdown';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsBalanceActionsSkeleton } from '../perps-skeletons';
+
+/** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */
+export type PerpsBalanceActionHandler = () => void | Promise<unknown>;
+
+/**
+ * Runs an optional UI callback that may be sync or async. If it returns a
+ * rejected promise, the failure is logged so it does not surface as an
+ * unhandled rejection (e.g. event handlers cannot be `async` in all call sites).
+ *
+ * @param callback - Optional handler; may return a Promise.
+ */
+export function invokePerpsBalanceAction(
+  callback?: PerpsBalanceActionHandler,
+): void {
+  Promise.resolve(callback?.()).catch((error: unknown) => {
+    console.error(error);
+  });
+}
 
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
@@ -55,7 +70,7 @@ const PerpsMarketBalanceActions = ({
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const { formatCurrency } = useFormatters();
-  const { account } = usePerpsLiveAccount();
+  const { account, isInitialLoading } = usePerpsLiveAccount();
   const { isEligible } = usePerpsEligibility();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -70,21 +85,27 @@ const PerpsMarketBalanceActions = ({
   const accountValue = parseFloat(totalBalance);
   const isBalanceEmpty = accountValue === 0;
 
+  // Report where the button was clicked from so PERPS_UI_INTERACTION can be
+  // filtered by surface. The persistent header maps to PERPS_HOME; the
+  // empty-state CTA maps to PERPS_HOME_EMPTY_STATE (mobile parity).
+  const buttonLocation = isBalanceEmpty
+    ? PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME_EMPTY_STATE
+    : PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME;
+
   const handleAddFunds = useCallback(() => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
       [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
     });
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
     invokePerpsBalanceAction(onAddFunds);
-  }, [isEligible, onAddFunds, track]);
+  }, [buttonLocation, isEligible, onAddFunds, track]);
 
   const handleWithdraw = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -92,11 +113,10 @@ const PerpsMarketBalanceActions = ({
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
       [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.WITHDRAW,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-        PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
     });
     invokePerpsBalanceAction(onWithdraw);
-  }, [onWithdraw, track]);
+  }, [buttonLocation, onWithdraw, track]);
 
   const handleLearnMore = useCallback(() => {
     onLearnMore?.();
@@ -109,7 +129,16 @@ const PerpsMarketBalanceActions = ({
     />
   );
 
-  // Empty state - no balance
+  // Show a skeleton while the initial account snapshot is being fetched so we
+  // don't flash the zero-balance empty state before real data arrives.
+  if (isInitialLoading) {
+    return <PerpsBalanceActionsSkeleton />;
+  }
+
+  // Empty state - no balance. Reuses the `perps-balance-actions` testid so
+  // callers that only need to know the header rendered (empty OR loaded) can
+  // wait on a single selector. The empty-only add-funds CTA keeps a distinct
+  // `-add-funds-empty` testid.
   if (isBalanceEmpty) {
     return (
       <Box
@@ -117,7 +146,7 @@ const PerpsMarketBalanceActions = ({
         alignItems={BoxAlignItems.Center}
         paddingTop={4}
         paddingBottom={4}
-        data-testid="perps-balance-actions-empty"
+        data-testid="perps-balance-actions"
       >
         {/* Empty state icon placeholder */}
         <Box
