@@ -5,7 +5,7 @@ import {
   CriticalErrorType,
   isStateCorruptionErrorType,
   METHOD_REPAIR_DATABASE,
-} from '../../../../shared/constants/state-corruption';
+} from '../../../../shared/constants/critical-error';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
 import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';

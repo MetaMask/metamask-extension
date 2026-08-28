@@ -11,7 +11,7 @@ import {
 import {
   CriticalErrorType,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-} from '../../../shared/constants/state-corruption';
+} from '../../../shared/constants/critical-error';
 import { INACCESSIBLE_DATABASE_ERROR } from '../../../shared/constants/errors';
 import { CriticalStartupErrorHandler } from './critical-startup-error-handler';
 
@@ -377,6 +377,7 @@ describe('CriticalStartupErrorHandler', () => {
           params: {
             error,
             backup,
+            criticalErrorType: CriticalErrorType.InaccessibleDatabase,
             currentLocale: 'en',
           },
         },
@@ -469,6 +470,29 @@ describe('CriticalStartupErrorHandler', () => {
 
       port.simulateMessage({
         data: { method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR },
+      });
+      await flushMicrotasks();
+
+      expect(mockDisplayCriticalErrorMessage).not.toHaveBeenCalled();
+      handler.uninstall();
+    });
+
+    it('ignores a corruption error message that carries no valid criticalErrorType', async () => {
+      const handler = new CriticalStartupErrorHandler(port, container);
+      handler.install();
+
+      port.simulateMessage({
+        data: {
+          method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+          params: {
+            error: {
+              message: INACCESSIBLE_DATABASE_ERROR,
+              name: 'PersistenceError',
+              stack: '',
+            },
+            currentLocale: 'en',
+          },
+        },
       });
       await flushMicrotasks();
 

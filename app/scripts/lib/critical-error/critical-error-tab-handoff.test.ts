@@ -3,7 +3,7 @@ import {
   CRITICAL_ERROR_REPAIR_KEY,
   METAMASK_RESTORING_PAGE_URL,
 } from '../../../../shared/constants/critical-error-repair-session';
-import { CriticalErrorRepairAction } from '../../../../shared/constants/state-corruption';
+import { CriticalErrorRepairAction } from '../../../../shared/constants/critical-error';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   readCriticalErrorRepairSession,

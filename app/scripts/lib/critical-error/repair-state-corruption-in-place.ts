@@ -1,5 +1,5 @@
 import { RELOAD_WINDOW } from '../../../../shared/constants/start-up-errors';
-import { CriticalErrorRepairAction } from '../../../../shared/constants/state-corruption';
+import { CriticalErrorRepairAction } from '../../../../shared/constants/critical-error';
 import type {
   Backup,
   PersistenceManager,

@@ -13,7 +13,7 @@ import {
   CriticalErrorType,
   isStateCorruptionErrorType,
   METHOD_REPAIR_DATABASE,
-} from '../../../shared/constants/state-corruption';
+} from '../../../shared/constants/critical-error';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 import {
   hasVault,

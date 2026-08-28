@@ -9,6 +9,7 @@ import {
   INACCESSIBLE_DATABASE_ERROR,
   MISSING_VAULT_ERROR,
 } from '../../constants/errors';
+import { StateCorruptionErrorType } from '../../constants/critical-error';
 import {
   PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
@@ -556,9 +557,10 @@ describe('PersistenceManager', () => {
         },
       });
 
-      await expect(manager.get({ validateVault: true })).rejects.toThrow(
-        MISSING_VAULT_ERROR,
-      );
+      await expect(manager.get({ validateVault: true })).rejects.toMatchObject({
+        message: MISSING_VAULT_ERROR,
+        corruptionType: StateCorruptionErrorType.MissingVaultInDatabase,
+      });
     });
 
     it('does throw when validating state fails but has a backup', async () => {
@@ -569,9 +571,10 @@ describe('PersistenceManager', () => {
         },
       });
 
-      await expect(manager.get({ validateVault: true })).rejects.toThrow(
-        INACCESSIBLE_DATABASE_ERROR,
-      );
+      await expect(manager.get({ validateVault: true })).rejects.toMatchObject({
+        message: INACCESSIBLE_DATABASE_ERROR,
+        corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+      });
     });
   });
 

@@ -1,5 +1,5 @@
 import { segment } from '../segment';
-import { CriticalErrorType } from '../../../../shared/constants/state-corruption';
+import { CriticalErrorType } from '../../../../shared/constants/critical-error';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

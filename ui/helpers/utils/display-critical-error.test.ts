@@ -4,7 +4,7 @@ import {
   CriticalErrorRepairAction,
   CriticalErrorType,
   METHOD_REPAIR_DATABASE,
-} from '../../../shared/constants/state-corruption';
+} from '../../../shared/constants/critical-error';
 import { MISSING_VAULT_ERROR } from '../../../shared/constants/errors';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 import * as errorUtils from '../../../shared/lib/error-utils';

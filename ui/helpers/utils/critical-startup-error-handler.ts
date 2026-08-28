@@ -4,9 +4,9 @@ import log from 'loglevel';
 import { type ErrorLike } from '../../../shared/constants/errors';
 import {
   CriticalErrorType,
-  getStateCorruptionErrorType,
+  isStateCorruptionErrorType,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-} from '../../../shared/constants/state-corruption';
+} from '../../../shared/constants/critical-error';
 import {
   APP_INIT_LIVENESS_METHOD,
   BACKGROUND_LIVENESS_METHOD,
@@ -332,11 +332,20 @@ export class CriticalStartupErrorHandler {
         return;
       }
 
-      const { error, backup, currentLocale } = data.params as {
-        error: ErrorLike;
-        backup?: Backup;
-        currentLocale?: string;
-      };
+      const { error, backup, criticalErrorType, currentLocale } =
+        data.params as {
+          error: ErrorLike;
+          backup?: Backup;
+          criticalErrorType?: CriticalErrorType;
+          currentLocale?: string;
+        };
+      if (!isStateCorruptionErrorType(criticalErrorType)) {
+        log.error(
+          'Received state corruption error message without a valid error type:',
+          message,
+        );
+        return;
+      }
       if (!this.#criticalErrorAlreadyDisplayed) {
         this.#criticalErrorAlreadyDisplayed = true;
         await displayCriticalErrorMessage(
@@ -345,7 +354,7 @@ export class CriticalStartupErrorHandler {
           error,
           currentLocale,
           this.#port,
-          getStateCorruptionErrorType(error),
+          criticalErrorType,
           backup,
           true,
         );

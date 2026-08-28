@@ -2,7 +2,7 @@ import { segment } from '../segment';
 import {
   CriticalErrorRepairAction,
   CriticalErrorType,
-} from '../../../../shared/constants/state-corruption';
+} from '../../../../shared/constants/critical-error';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

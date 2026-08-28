@@ -7,8 +7,8 @@ import {
   INACCESSIBLE_DATABASE_ERROR,
   MISSING_VAULT_ERROR,
 } from '../../constants/errors';
+import { StateCorruptionErrorType } from '../../constants/critical-error';
 import { getManifestFlags } from '../manifestFlags';
-import { CriticalErrorType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
@@ -43,7 +43,7 @@ export type Backup = {
 
 export type VaultCorruptionDetectedEvent = {
   backup: Backup;
-  corruptionType: CriticalErrorType;
+  corruptionType: StateCorruptionErrorType;
 };
 
 export type SplitStateMigrationSucceededEvent = {
@@ -134,15 +134,28 @@ export class PersistenceError extends Error {
   getBackup: () => object | null;
 
   /**
+   * The type of vault corruption that occurred.
+   * - InaccessibleDatabase: The storage system threw an error (e.g., Firefox's "An unexpected error occurred")
+   * - MissingVaultInDatabase: The database was accessible but the vault was missing
+   */
+  corruptionType: StateCorruptionErrorType;
+
+  /**
    * The original error that caused the persistence failure, if any.
    * This is useful for debugging as it preserves the original error message
    * (e.g., Firefox's "Error: An unexpected error occurred").
    */
   override cause?: Error;
 
-  constructor(message: string, backup: object | null, cause?: Error) {
+  constructor(
+    message: string,
+    corruptionType: StateCorruptionErrorType,
+    backup: object | null,
+    cause?: Error,
+  ) {
     super(message);
     this.name = 'PersistenceError';
+    this.corruptionType = corruptionType;
     // closure around `backup` to prevent it from being serialized with the
     // error in debug logs, error reporting, etc.
     this.getBackup = () => backup;
@@ -912,8 +925,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               // We do this here (before throwing) because MetaMetricsController
               // is not initialized yet, so we use the backup state for consent/ID.
               const corruptionType = localStoreError
-                ? CriticalErrorType.InaccessibleDatabase
-                : CriticalErrorType.MissingVaultInDatabase;
+                ? StateCorruptionErrorType.InaccessibleDatabase
+                : StateCorruptionErrorType.MissingVaultInDatabase;
               this.emit('vaultCorruptionDetected', {
                 backup,
                 corruptionType,
@@ -926,6 +939,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                 localStoreError
                   ? INACCESSIBLE_DATABASE_ERROR
                   : MISSING_VAULT_ERROR,
+                corruptionType,
                 backup,
                 localStoreError,
               );

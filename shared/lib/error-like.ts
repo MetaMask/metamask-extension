@@ -1,5 +1,6 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import type { ErrorLike } from '../constants/errors';
+import { isStateCorruptionErrorType } from '../constants/critical-error';
 
 function getStringProperty(
   object: Record<PropertyKey, unknown>,
@@ -95,11 +96,13 @@ export function getErrorLike(error: unknown): ErrorLike {
 
   const cause = serializeErrorCause(error);
   const sentryTags = serializeSentryTags(error);
+  const corruptionType = getStringProperty(error, 'corruptionType');
 
   return {
     message: getStringProperty(error, 'message') ?? 'Unknown error',
     name: getStringProperty(error, 'name') ?? 'UnknownError',
     stack: getStringProperty(error, 'stack'),
+    ...(isStateCorruptionErrorType(corruptionType) ? { corruptionType } : {}),
     ...(cause ? { cause } : {}),
     ...(sentryTags && Object.keys(sentryTags).length > 0 ? { sentryTags } : {}),
   };

@@ -1,3 +1,4 @@
+import { StateCorruptionErrorType } from '../constants/critical-error';
 import { getErrorBackup, getErrorLike } from './error-like';
 
 describe('getErrorLike', () => {
@@ -54,6 +55,28 @@ describe('getErrorLike', () => {
         'corruption.backupShouldExist': 'true',
       },
     });
+  });
+
+  it('preserves state corruption error types', () => {
+    const error = Object.assign(new Error('display message'), {
+      name: 'PersistenceError',
+      corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+    });
+
+    expect(getErrorLike(error)).toStrictEqual({
+      message: 'display message',
+      name: 'PersistenceError',
+      stack: expect.any(String),
+      corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+    });
+  });
+
+  it('omits unrecognized state corruption error types', () => {
+    const error = Object.assign(new Error('display message'), {
+      corruptionType: 'unknown_corruption_type',
+    });
+
+    expect(getErrorLike(error)).not.toHaveProperty('corruptionType');
   });
 
   it('does not materialize PersistenceError getBackup on the error', () => {

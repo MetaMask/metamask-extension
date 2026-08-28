@@ -1,7 +1,7 @@
 import {
   CriticalErrorRepairAction,
   CriticalErrorType,
-} from '../constants/state-corruption';
+} from '../constants/critical-error';
 import {
   INACCESSIBLE_DATABASE_ERROR,
   MISSING_VAULT_ERROR,

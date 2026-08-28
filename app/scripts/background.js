@@ -57,16 +57,16 @@ import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { createCaipStream } from '../../shared/lib/caip-stream';
 import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
-import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getErrorBackup, getErrorLike } from '../../shared/lib/error-like';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import {
   CriticalErrorRepairAction,
+  getStateCorruptionErrorType,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   isStateCorruptionErrorType,
-} from '../../shared/constants/state-corruption';
+} from '../../shared/constants/critical-error';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
@@ -520,7 +520,8 @@ const handleOnConnect = async (port) => {
       // Contentscripts can't display error screens and would create hanging promises.
       if (isMetaMaskUIPort) {
         const errorLike = getErrorLike(error);
-        const isStateCorruption = isStateCorruptionError(errorLike);
+        const stateCorruptionErrorType = getStateCorruptionErrorType(errorLike);
+        const isStateCorruption = stateCorruptionErrorType !== undefined;
         const backup = isStateCorruption ? getErrorBackup(error) : undefined;
         criticalErrorMessageSent = tryPostMessage(
           port,
@@ -529,6 +530,9 @@ const handleOnConnect = async (port) => {
             : DISPLAY_GENERAL_STARTUP_ERROR,
           {
             error: errorLike,
+            ...(isStateCorruption
+              ? { criticalErrorType: stateCorruptionErrorType }
+              : {}),
             ...(backup === undefined ? {} : { backup }),
             currentLocale:
               controller?.preferencesController?.state?.currentLocale,

@@ -4,7 +4,7 @@ import {
   CriticalErrorRepairAction,
   CriticalErrorType,
   METHOD_REPAIR_DATABASE,
-} from '../../../../shared/constants/state-corruption';
+} from '../../../../shared/constants/critical-error';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
 import { captureException } from '../../../../shared/lib/sentry';

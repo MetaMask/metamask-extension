@@ -4,7 +4,7 @@ import {
   CriticalErrorRepairAction,
   isStateCorruptionErrorType,
   type CriticalErrorType,
-} from '../constants/state-corruption';
+} from '../constants/critical-error';
 import type { I18NMessageDict } from './i18n';
 import {
   fetchLocale,
