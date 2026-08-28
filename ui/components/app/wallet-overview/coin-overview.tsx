@@ -1,4 +1,10 @@
-import React, { useContext, useCallback, useMemo } from 'react';
+import React, {
+  useContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
@@ -30,7 +36,7 @@ import {
   getChainIdsToPoll,
   getDataCollectionForMarketing,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
@@ -75,6 +81,8 @@ export type CoinOverviewProps = {
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
 };
+
+const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
 
 const BalanceOverviewSkeleton = () => (
   <Box
@@ -203,13 +211,11 @@ export const CoinOverview = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = useMemo(
-    () => completedMetaMetricsOnboarding && isOptedIn,
-    [completedMetaMetricsOnboarding, isOptedIn],
+    () => consentDecisionMade && isOptedIn,
+    [consentDecisionMade, isOptedIn],
   );
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
@@ -256,16 +262,55 @@ export const CoinOverview = ({
     hasBalance &&
     aggregateFiatBalanceIsZero;
 
+  const enabledNetworksDelayKey = useMemo(
+    () =>
+      Object.entries(enabledNetworks)
+        .map(([namespace, networks]) => {
+          const enabledChainIds = Object.entries(networks)
+            .filter(([, isEnabled]) => isEnabled)
+            .map(([enabledChainId]) => enabledChainId)
+            .sort((firstChainId, secondChainId) =>
+              firstChainId.localeCompare(secondChainId),
+            )
+            .join(',');
+
+          return `${namespace}:${enabledChainIds}`;
+        })
+        .sort((firstNetwork, secondNetwork) =>
+          firstNetwork.localeCompare(secondNetwork),
+        )
+        .join('|'),
+    [enabledNetworks],
+  );
+
+  const [hasZeroFiatBalanceDelayElapsed, setHasZeroFiatBalanceDelayElapsed] =
+    useState(false);
+
+  useEffect(() => {
+    if (!shouldDelayZeroFiatBalance) {
+      setHasZeroFiatBalanceDelayElapsed(false);
+      return undefined;
+    }
+
+    setHasZeroFiatBalanceDelayElapsed(false);
+    const timeoutId = setTimeout(() => {
+      setHasZeroFiatBalanceDelayElapsed(true);
+    }, ZERO_FIAT_BALANCE_DELAY_MS);
+
+    return () => clearTimeout(timeoutId);
+  }, [enabledNetworksDelayKey, shouldDelayZeroFiatBalance]);
+
   const shouldShowBalanceLoadingState = useMemo(
     () =>
       isEvm &&
-      (shouldDelayZeroFiatBalance ||
+      ((shouldDelayZeroFiatBalance && !hasZeroFiatBalanceDelayElapsed) ||
         (shouldCheckBalanceState &&
           !hasBalance &&
           (balanceIsLoading || !balanceIsLoaded))),
     [
       isEvm,
       shouldDelayZeroFiatBalance,
+      hasZeroFiatBalanceDelayElapsed,
       shouldCheckBalanceState,
       hasBalance,
       balanceIsLoading,

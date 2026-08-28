@@ -45,6 +45,15 @@ import {
 import { CandleStreamChannel } from './CandleStreamChannel';
 import { PerpsDataChannel } from './PerpsDataChannel';
 
+/**
+ * Health of the dedicated order-book aggregated socket, pushed from the
+ * background bridge on the `orderBookAggregatedStatus` channel.
+ * - `connecting`: opening or transiently reconnecting.
+ * - `connected`: subscription is live.
+ * - `error`: dropped and auto-reconnection exhausted; needs a manual reconnect.
+ */
+export type OrderBookConnectionStatus = 'connecting' | 'connected' | 'error';
+
 // Empty array constants for stable references
 const EMPTY_POSITIONS: Position[] = [];
 const EMPTY_ORDERS: Order[] = [];
@@ -100,6 +109,21 @@ class PerpsStreamManager {
 
   orderBook: PerpsDataChannel<OrderBookData | null>;
 
+  /**
+   * Server-aggregated order book, fed by a second, independent subscription
+   * that uses `nSigFigs`/`mantissa`. Kept separate from `orderBook` so the raw,
+   * full-precision channel (top-of-book mid, slippage) is never coarsened by
+   * the order-book panel's grouping.
+   */
+  orderBookAggregated: PerpsDataChannel<OrderBookData | null>;
+
+  /**
+   * Health of the dedicated aggregated order-book socket. Lets the order-book
+   * panel surface a reconnect affordance when its connection drops without
+   * disturbing the raw channel or the rest of the perps UI.
+   */
+  orderBookAggregatedStatus: PerpsDataChannel<OrderBookConnectionStatus>;
+
   // Candle stream channel (multiplexed by symbol+interval)
   candles: CandleStreamChannel;
 
@@ -111,6 +135,14 @@ class PerpsStreamManager {
 
   // Timestamp of the most recent background stream update (any channel).
   private _lastStreamUpdateAt = 0;
+
+  /**
+   * UI-owned identity for the active aggregated order-book subscription.
+   * Background emissions whose `subscriptionId` does not match are discarded so
+   * a stale packet from a prior grouping cannot repopulate the cleared channel
+   * during the async deactivate/activate IPC gap.
+   */
+  private activeOrderBookAggregatedSubscriptionId: string | null = null;
 
   // Deduplicates concurrent initForAddress calls
   private pendingInit: { address: string; promise: Promise<void> } | null =
@@ -275,6 +307,19 @@ class PerpsStreamManager {
       name: 'orderBook',
     });
 
+    this.orderBookAggregated = new PerpsDataChannel<OrderBookData | null>({
+      connectFn: placeholderConnectFn,
+      initialValue: null,
+      name: 'orderBookAggregated',
+    });
+
+    this.orderBookAggregatedStatus =
+      new PerpsDataChannel<OrderBookConnectionStatus>({
+        connectFn: placeholderConnectFn,
+        initialValue: 'connecting',
+        name: 'orderBookAggregatedStatus',
+      });
+
     this.fills = new PerpsDataChannel<OrderFill[]>({
       connectFn: placeholderConnectFn,
       initialValue: EMPTY_FILLS,
@@ -290,6 +335,20 @@ class PerpsStreamManager {
    */
   getLastStreamUpdateAt(): number {
     return this._lastStreamUpdateAt;
+  }
+
+  /**
+   * Register the UI identity for the active aggregated order-book stream.
+   * Call synchronously when a subscription instance starts, and pass `null` on
+   * unmount / teardown so late packets are rejected until the next activation.
+   *
+   * @param subscriptionId - Active instance identity, or `null` when no
+   * aggregated subscription is live.
+   */
+  setActiveOrderBookAggregatedSubscriptionId(
+    subscriptionId: string | null,
+  ): void {
+    this.activeOrderBookAggregatedSubscriptionId = subscriptionId;
   }
 
   /**
@@ -463,6 +522,8 @@ class PerpsStreamManager {
       this.markets.reset();
       this.prices.reset();
       this.orderBook.reset();
+      this.orderBookAggregated.reset();
+      this.orderBookAggregatedStatus.reset();
       this.candles.clearAll();
       this.optimisticTPSLOverrides.clear();
       this._lastStreamUpdateAt = 0;
@@ -542,12 +603,14 @@ class PerpsStreamManager {
    * @param payload.data - The raw data payload
    * @param payload.symbol - For candles: the asset symbol
    * @param payload.interval - For candles: the candle period
+   * @param payload.subscriptionId - For aggregated order book: UI identity
    */
   handleBackgroundUpdate(payload: {
     channel: string;
     data: unknown;
     symbol?: string;
     interval?: CandlePeriod;
+    subscriptionId?: string;
   }): void {
     this._lastStreamUpdateAt = Date.now();
     const { channel, data } = payload;
@@ -581,6 +644,24 @@ class PerpsStreamManager {
       case 'orderBook':
         this.orderBook.pushData(data as OrderBookData);
         break;
+      case 'orderBookAggregated':
+        if (
+          !this.isActiveOrderBookAggregatedSubscription(payload.subscriptionId)
+        ) {
+          return;
+        }
+        this.orderBookAggregated.pushData(data as OrderBookData);
+        break;
+      case 'orderBookAggregatedStatus':
+        if (
+          !this.isActiveOrderBookAggregatedSubscription(payload.subscriptionId)
+        ) {
+          return;
+        }
+        this.orderBookAggregatedStatus.pushData(
+          data as OrderBookConnectionStatus,
+        );
+        break;
       case 'candles': {
         const { symbol, interval } = payload;
         if (symbol && interval) {
@@ -600,6 +681,26 @@ class PerpsStreamManager {
       default:
         console.warn('[PerpsStreamManager] Unknown channel:', channel);
     }
+  }
+
+  /**
+   * Whether an aggregated order-book emission matches the UI's active identity.
+   * When no active identity is registered (panel closed / between activations),
+   * every aggregated packet is rejected so a late emission cannot refill the
+   * cache. While a subscription is active, only matching `subscriptionId`s
+   * are accepted.
+   *
+   * @param subscriptionId - Identity tagged on the background emission.
+   * @returns True when the packet may update the aggregated channels.
+   */
+  private isActiveOrderBookAggregatedSubscription(
+    subscriptionId: string | undefined,
+  ): boolean {
+    const activeId = this.activeOrderBookAggregatedSubscriptionId;
+    if (activeId === null) {
+      return false;
+    }
+    return subscriptionId === activeId;
   }
 
   /**
@@ -674,6 +775,9 @@ class PerpsStreamManager {
     this.markets.clearCache();
     this.prices.clearCache();
     this.orderBook.clearCache();
+    this.orderBookAggregated.clearCache();
+    this.orderBookAggregatedStatus.clearCache();
+    this.activeOrderBookAggregatedSubscriptionId = null;
     this.candles.clearAll();
     this._lastStreamUpdateAt = 0;
     clearPerpsMarketInfoModuleCache();
@@ -695,6 +799,8 @@ class PerpsStreamManager {
     this.markets.reset();
     this.prices.reset();
     this.orderBook.reset();
+    this.orderBookAggregated.reset();
+    this.orderBookAggregatedStatus.reset();
     this.candles.clearAll();
     this.optimisticTPSLOverrides.clear();
     this.initializedAddress = null;

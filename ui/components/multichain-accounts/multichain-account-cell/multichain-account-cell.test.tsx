@@ -47,6 +47,9 @@ describe('MultichainAccountCell', () => {
     expect(cellElement).toBeInTheDocument();
 
     expect(screen.getByText('Test Account')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('multichain-account-cell-name-Test Account'),
+    ).toBeInTheDocument();
     expect(screen.getByText('$2,400.00')).toBeInTheDocument();
     expect(screen.getByTestId('end-accessory')).toBeInTheDocument();
   });
@@ -61,6 +64,28 @@ describe('MultichainAccountCell', () => {
       `multichain-account-cell-${defaultProps.accountId}`,
     );
     expect(cellElement).toHaveClass('is-selected');
+  });
+
+  it('ignores clicks and shows pending styling when pending is true', () => {
+    const handleClick = jest.fn();
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        onClick={handleClick}
+        pending={true}
+      />,
+      store,
+    );
+
+    const cellElement = screen.getByTestId(
+      `multichain-account-cell-${defaultProps.accountId}`,
+    );
+
+    expect(cellElement).toHaveClass('is-pending');
+    expect(cellElement).toHaveAttribute('aria-busy', 'true');
+    expect(cellElement.style.cursor).toBe('wait');
+    fireEvent.click(cellElement);
+    expect(handleClick).not.toHaveBeenCalled();
   });
 
   it('handles click events and applies pointer cursor when onClick is provided', () => {
@@ -203,6 +228,55 @@ describe('MultichainAccountCell', () => {
     expect(balanceContainer).toBeInTheDocument();
     expect(balanceContainer.textContent).not.toContain('$2,400.00');
     expect(balanceContainer.textContent).toMatch(/^[•]+$/u);
+  });
+
+  it('hides balance value when privacy mode is enabled with balancePosition subtitle', () => {
+    const props = {
+      ...defaultProps,
+      privacyMode: true,
+      balancePosition: 'subtitle' as const,
+    };
+
+    renderWithProvider(<MultichainAccountCell {...props} />, store);
+
+    expect(screen.queryByText('$2,400.00')).not.toBeInTheDocument();
+
+    const balanceContainer = screen.getByTestId('balance-display-subtitle');
+
+    expect(balanceContainer).toBeInTheDocument();
+    expect(balanceContainer.textContent).not.toContain('$2,400.00');
+    expect(balanceContainer.textContent).toMatch(/^[•]+$/u);
+  });
+
+  it('renders no balance element when balance is undefined', () => {
+    renderWithProvider(
+      <MultichainAccountCell {...defaultProps} balance={undefined} />,
+      store,
+    );
+
+    expect(screen.queryByTestId('balance-display')).not.toBeInTheDocument();
+  });
+
+  it('renders no balance element when balance is an empty string', () => {
+    renderWithProvider(
+      <MultichainAccountCell {...defaultProps} balance="" />,
+      store,
+    );
+
+    expect(screen.queryByTestId('balance-display')).not.toBeInTheDocument();
+  });
+
+  it('renders no balance element when balance is missing and privacy mode is enabled', () => {
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        balance={undefined}
+        privacyMode
+      />,
+      store,
+    );
+
+    expect(screen.queryByTestId('balance-display')).not.toBeInTheDocument();
   });
 
   describe('Connection Status', () => {

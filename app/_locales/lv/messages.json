@@ -81,9 +81,6 @@
   "back": {
     "message": "Atpakaļ"
   },
-  "backupApprovalInfo": {
-    "message": "Šis slepenais kods ir nepieciešams, lai atjaunotu jūsu maku, ja pazaudējat ierīci, aizmirstat paroli, jāpārinstalē MetaMask vai vēlaties piekļūt makam no citas ierīces."
-  },
   "backupApprovalNotice": {
     "message": "Dublējiet savu slepeno atgūšanas kodu, lai maks un līdzekļi atrastos drošībā."
   },

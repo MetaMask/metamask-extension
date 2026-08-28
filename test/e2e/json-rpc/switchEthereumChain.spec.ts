@@ -3,13 +3,13 @@ import {
   DAPP_ONE_URL,
   DAPP_URL,
   DEFAULT_FIXTURE_ACCOUNT,
+  SECOND_NODE_NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } from '../constants';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
-import NetworkPermissionSelectModal from '../page-objects/pages/dialog/network-permission-select-modal';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
@@ -96,6 +96,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withSmartTransactionsOptedOut()
+          // Seed Dapp One's connection to chain 1338 only
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1338] })
+          .withSelectedNetworkController({
+            domains: { [DAPP_URL]: SECOND_NODE_NETWORK_CLIENT_ID },
+          })
           .build(),
         dappOptions: { numberOfTestDapps: 2 },
         localNodeOptions: [
@@ -140,30 +145,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await dappTwo.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
         await dappTwo.checkNetworkIsConnected('0x539');
 
-        // Switch to Dapp One and connect it
+        // Switch to Dapp One, which is seeded with a connection to
+        // Localhost 8546 (chain 1338) only
         await driver.switchToWindowWithUrl(DAPP_URL);
         await dappOne.checkPageIsLoaded();
-        await dappOne.clickConnectAccountButton();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        const connectAccountConfirmationDappOne =
-          new ConnectAccountConfirmation(driver);
-        await connectAccountConfirmationDappOne.checkPageIsLoaded();
-        await connectAccountConfirmationDappOne.goToPermissionsTab();
-        await connectAccountConfirmationDappOne.openEditNetworksModal();
-
-        // Disconnect Localhost 8545 and connect to Dapp One
-        const networkPermissionSelectModal = new NetworkPermissionSelectModal(
-          driver,
-        );
-        await networkPermissionSelectModal.checkPageIsLoaded();
-        await networkPermissionSelectModal.selectNetwork({
-          networkName: 'Localhost 8545',
-          shouldBeSelected: false,
-        });
-        await networkPermissionSelectModal.clickConfirmEditButton();
-        await connectAccountConfirmationDappOne.checkPageIsLoaded();
-        await connectAccountConfirmationDappOne.confirmConnect();
+        await dappOne.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
+        await dappOne.checkNetworkIsConnected('0x53a');
 
         // Switch to Dapp Two
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -213,6 +200,20 @@ describe('Switch Ethereum Chain for two dapps', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
+          // Both dapps are seeded: Dapp Two (at DAPP_ONE_URL) with chain
+          // 1338 only — so its later switch request to 1337 prompts for
+          // review — and Dapp One additionally with chain 1337 through the
+          // second, deep-merged call.
+          .withPermissionControllerConnectedToTestDapp({
+            chainIds: [1338],
+            numberOfDapps: 2,
+          })
+          .withPermissionControllerConnectedToTestDapp({
+            chainIds: [1337],
+          })
+          .withSelectedNetworkController({
+            domains: { [DAPP_ONE_URL]: SECOND_NODE_NETWORK_CLIENT_ID },
+          })
           .build(),
         dappOptions: { numberOfTestDapps: 2 },
         localNodeOptions: [
@@ -244,46 +245,17 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await dappOne.openTestDappPage({ url: DAPP_URL });
         await dappOne.checkPageIsLoaded();
 
-        // Connect Dapp One
-        await dappOne.clickConnectAccountButton();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const connectAccountConfirmation2 = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation2.checkPageIsLoaded();
-        await connectAccountConfirmation2.confirmConnect();
+        // Dapp One is seeded with a connection to Localhost 8545 (chain 1337)
+        await dappOne.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
 
-        // Switch and connect Dapp Two
+        // Switch to Dapp Two, which is seeded with a connection to
+        // Localhost 8546 (chain 1338) only
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
 
         await dappTwo.checkPageIsLoaded();
-        await dappTwo.clickConnectAccountButton();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-
-        // Click the edit button for networks and disconnect Localhost 8545
-        await connectAccountConfirmation.goToPermissionsTab();
-        await connectAccountConfirmation.openEditNetworksModal();
-
-        const networkPermissionSelectModal = new NetworkPermissionSelectModal(
-          driver,
-        );
-        await networkPermissionSelectModal.checkPageIsLoaded();
-        await networkPermissionSelectModal.selectNetwork({
-          networkName: 'Localhost 8545',
-          shouldBeSelected: false,
-        });
-        await networkPermissionSelectModal.clickConfirmEditButton();
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
-
-        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-        assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
-        await dappTwo.checkPageIsLoaded();
+        await dappTwo.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
+        await dappTwo.checkNetworkIsConnected('0x53a');
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({

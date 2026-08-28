@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars -- ESLint is confused here */
 /* global jest */
 import React, { useMemo, useState } from 'react';
-import { render } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { render, renderHook } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -107,7 +106,17 @@ export function createProviderWrapper(
     createMockMetaMetricsContext(getMockTrackEvent);
 
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
+    defaultOptions: {
+      queries: {
+        retry: false,
+        // The real UI query client (`createUIQueryClient`) always has a
+        // default queryFn routing data-service query keys to the background
+        // messenger. Without one here, react-query v5 logs a console error for
+        // every mounted data-service query — even a disabled one. The stub
+        // never resolves, keeping any enabled query in its loading state.
+        queryFn: () => new Promise(() => undefined),
+      },
+    },
   });
 
   const MemoryRouter = createMemoryRouterWrapper({
@@ -145,6 +154,17 @@ export function createProviderWrapper(
   return Wrapper;
 }
 
+/**
+ * Renders a component with the standard provider tree.
+ *
+ * @param component - The component to render.
+ * @param [store] - The redux store.
+ * @param [pathname] - The initial pathname for the history.
+ * @param [renderer] - The testing-library render function to use.
+ * @param {() => () => Promise<void>} [getMockTrackEvent] - A placeholder function for tracking a MetaMetrics event.
+ * @param {UIMessenger} [uiMessenger] - An optional mock UI messenger instance.
+ * @param {RouteMessenger | null} [routeMessenger] - An optional mock route messenger instance. If not provided, the RouteMessengerContext will not be included in the provider tree.
+ */
 export function renderWithProvider(
   component,
   store,
@@ -206,7 +226,7 @@ export function renderHookWithProvider(
  * @template {(...args: any) => any} Hook
  * @template {Parameters<Hook>} HookParams
  * @template {ReturnType<Hook>} HookReturn
- * @template {import('@testing-library/react-hooks').RenderHookResult<HookParams, HookReturn>} RenderHookResult
+ * @template {import('@testing-library/react').RenderHookResult<HookReturn, HookParams>} RenderHookResult
  * @param {Hook} hook - The hook to be rendered.
  * @param [state] - The initial state for the store.
  * @param [pathname] - The initial pathname for the history.

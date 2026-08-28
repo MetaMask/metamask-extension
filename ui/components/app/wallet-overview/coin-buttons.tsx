@@ -29,7 +29,6 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-  usePureBlack,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useAppSelector, useDispatch } from '../../../store/hooks';
@@ -79,14 +78,13 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
-import { useOnClickOutside } from '../perps/hooks/useClickOutside';
+import { useOnClickOutside } from '../../../hooks/useClickOutside';
 import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
 import {
   ARC_ERC20_USDC_BRIDGE_ASSET,
   ARC_HEX_CHAIN_ID,
 } from '../assets/enablement/arc';
-import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 
 /**
  * Allows to manually set the default Swap token when clicking on the Swap CTA from
@@ -97,7 +95,9 @@ const NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN: { [key: string]: BridgeAsset } = {
   [ARC_HEX_CHAIN_ID]: ARC_ERC20_USDC_BRIDGE_ASSET,
 };
 
-function getSwapNativeTokenWithOverridesForChain(chainId: string): BridgeAsset {
+export function getSwapNativeTokenWithOverridesForChain(
+  chainId: string,
+): BridgeAsset {
   const override = NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN[chainId];
   return override ?? getNativeAssetForChainId(chainId);
 }
@@ -124,8 +124,6 @@ const MoreButtonsGroup = ({
   modalIsOpen,
 }: MoreButtonsGroupProps) => {
   const t = useContext(I18nContext);
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-  const isPureBlack = usePureBlack();
   const hasOnlyOneEnabledAction =
     actions.filter(({ enabled }) => enabled).length === 1;
   const onlyEnabledAction = actions.filter(({ enabled }) => enabled)[0];
@@ -167,9 +165,7 @@ const MoreButtonsGroup = ({
         onClick={onClick}
       />
       {modalIsOpen && (
-        <Box
-          className={`flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg${isPureBlack ? ' bg-background-alternative' : ' bg-background-default'}`}
-        >
+        <Box className="flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg bg-elevated2">
           {actions.map((action) => (
             <ButtonBase
               key={action.label}
@@ -254,8 +250,6 @@ const CoinButtons = ({
   if (isSwapsChain && defaultSwapsToken === undefined) {
     throw new Error('defaultSwapsToken is required');
   }
-
-  const handleSendNonEvm = useHandleSendNonEvm();
 
   const location = useLocation();
 
@@ -401,7 +395,7 @@ const CoinButtons = ({
     const params =
       trackingLocation === 'home' ? undefined : { chainId: chainId.toString() };
     transitionForward(() => navigateToSendRoute(navigate, params));
-  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
+  }, [chainId, account, setCorrectChain, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
     const opened = await goToBuy({

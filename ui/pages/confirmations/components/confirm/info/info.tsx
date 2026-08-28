@@ -1,7 +1,11 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
 import { Skeleton } from '@metamask/design-system-react';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
@@ -17,6 +21,8 @@ import {
 import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
 import { MusdClaimInfo } from '../../info/musd-claim-info';
 import { MusdConversionInfo } from '../../info/musd-conversion-info';
+import { MoneyAccountWithdrawInfo } from '../../info/money-account-withdraw-info';
+import { MoneyAccountDepositInfo } from './money-account-deposit-info';
 import { PerpsDepositInfo } from './perps-deposit-info';
 import { PerpsWithdrawInfo } from './perps-withdraw-info';
 import ApproveInfo from './approve/approve';
@@ -156,6 +162,8 @@ const Info = () => {
 
       [ApprovalType.AddEthereumChain]: () => AddEthereumChain,
 
+      [TransactionType.moneyAccountDeposit]: () => MoneyAccountDepositInfo,
+      [TransactionType.moneyAccountWithdraw]: () => MoneyAccountWithdrawInfo,
       [TransactionType.musdClaim]: () => MusdClaimInfo,
       [TransactionType.musdConversion]: () => MusdConversionInfo,
       [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
@@ -180,9 +188,14 @@ const Info = () => {
     );
   }
 
+  // Mirrors mobile's info-root routing.
+  const confirmationType = getConfirmationTransactionType(
+    currentConfirmation as TransactionMeta,
+  );
+
   const InfoComponent =
     ConfirmationInfoComponentMap[
-      currentConfirmation?.type as keyof typeof ConfirmationInfoComponentMap
+      confirmationType as keyof typeof ConfirmationInfoComponentMap
     ]();
 
   return <InfoComponent />;

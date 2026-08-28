@@ -47,18 +47,16 @@ import {
 } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
-
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-
 import {
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
   getUseExternalServices,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getDataCollectionForMarketing,
 } from '../../../selectors';
@@ -74,6 +72,7 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
 import { isBeta, isFlask } from '../../../../shared/lib/build-types';
 import { useDispatch } from '../../../store/hooks';
+import { preserveDrawerOpen } from './global-menu-drawer';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -129,11 +128,9 @@ export function useGlobalMenuSections(
   );
 
   const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const supportText =
@@ -154,6 +151,7 @@ export function useGlobalMenuSections(
         })
         .build(),
     );
+    preserveDrawerOpen();
     navigate(
       `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
       { state: { globalMenuTransition: 'forward' } },
@@ -335,7 +333,7 @@ export function useGlobalMenuSections(
         {
           id: 'global-menu-connected-sites',
           iconName: IconName.SecurityTick,
-          label: t('allPermissions'),
+          label: t('permissions'),
           to: isGatorPermissionsRevocationFeatureEnabled()
             ? `${GATOR_PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
             : `${PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`,

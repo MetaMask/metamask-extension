@@ -128,11 +128,13 @@ export async function getRampsOrderFromCallback(
 }
 
 export async function watchRampsCheckoutTab(params: {
-  tabId: number;
+  url: string;
   providerCode: string;
   walletAddress: string;
-  orderAlreadyPrecreated: boolean;
   orderCode?: string;
+  checkoutSessionId: string;
+  region?: string;
+  providerName?: string;
 }): Promise<void> {
   return submitRequestToBackground('watchRampsCheckoutTab', [params]);
 }

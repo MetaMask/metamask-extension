@@ -152,8 +152,9 @@
   "accountsConnected": {
     "message": "Συνδεδεμένοι λογαριασμοί"
   },
-  "accountsPermissionsTitle": {
-    "message": "Δείτε τους λογαριασμούς σας και προτείνετε συναλλαγές"
+  "accountsCount": {
+    "message": "$1 λογαριασμοί",
+    "description": "Label showing number of accounts selected, $1 is the count"
   },
   "accountsSmallCase": {
     "message": "λογαριασμοί"
@@ -851,24 +852,56 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Ανάληψη από προβλέψεις"
   },
-  "activity_receive_failed_description": {
-    "message": "Από: $1",
-    "description": "$1 is the shortened sender address"
+  "activity_rampBuy_failed_description": {
+    "message": "Η αγορά απέτυχε"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Η αγορά απέτυχε"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Αγορά $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Αγορά $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Αγοράσατε $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Αγοράσατε $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Η πώληση απέτυχε"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Η πώληση απέτυχε"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Πώληση $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Πώληση $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "Πωλήθηκαν $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "Πωλήθηκαν $1",
+    "description": "$1 is the token symbol"
   },
   "activity_receive_failed_title": {
     "message": "Η λήψη απέτυχε"
   },
-  "activity_receive_pending_description": {
-    "message": "Από: $1",
-    "description": "$1 is the shortened sender address"
-  },
   "activity_receive_pending_title": {
     "message": "Λήψη $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_receive_success_description": {
-    "message": "Από: $1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "Ελήφθη $1",
@@ -917,24 +950,12 @@
     "message": "Πωλήθηκαν $1",
     "description": "$1 is the token symbol"
   },
-  "activity_send_failed_description": {
-    "message": "Προς: $1",
-    "description": "$1 is the shortened recipient address"
-  },
   "activity_send_failed_title": {
     "message": "Η αποστολή απέτυχε"
-  },
-  "activity_send_pending_description": {
-    "message": "Προς: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "Αποστολή $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_send_success_description": {
-    "message": "Προς: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "Εστάλη $1",
@@ -1246,7 +1267,7 @@
     "message": "Προστέθηκε"
   },
   "addedProtectionDescription": {
-    "message": "Αλληλεπιδράτε με άγνωστη διεύθυνση. Αυτό βοηθά στην αποτροπή κακόβουλων συναλλαγών."
+    "message": "Επειδή αλληλεπιδράτε με μια άγνωστη διεύθυνση, η προστασία λογαριασμού μπορεί να αποτρέψει ορισμένες κακόβουλες συναλλαγές."
   },
   "addedProtectionIncludesNetworkFee": {
     "message": "Περιλαμβάνει $1 για επιπλέον προστασία",
@@ -1353,6 +1374,12 @@
   "alert": {
     "message": "Ειδοποίηση"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "Δεν υπάρχουν διαθέσιμα χρήματα. Δοκιμάστε με άλλον λογαριασμό."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "Ανεπαρκές ποσό"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "Αναβαθμίζετε τον λογαριασμό σας σε έξυπνο λογαριασμό. Θα διατηρήσετε την ίδια διεύθυνση λογαριασμού, ενώ θα έχετε ταχύτερες συναλλαγές και χαμηλότερα τέλη δικτύου. $1"
   },
@@ -1380,6 +1407,10 @@
   "alertContentMultipleApprovals": {
     "message": "Πρόκειται να δώσετε σε κάποιον άλλον την άδεια να κάνει αναληψη στα token σας, παρόλο που αυτό δεν είναι απαραίτητο για αυτή τη συναλλαγή."
   },
+  "alertDepositLimit": {
+    "message": "Μέγιστη κατάθεση: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
+  },
   "alertDisableTooltip": {
     "message": "Αυτό μπορεί να αλλάξει στις \"Ρυθμίσεις > Ειδοποιήσεις\""
   },
@@ -1404,9 +1435,6 @@
   },
   "alertMessageBurnAddress": {
     "message": "Στέλνετε τα περιουσιακά σας στοιχεία σε διεύθυνση καύσης. Αν συνεχίσετε, θα τα χάσετε."
-  },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Οι εκτιμώμενες αλλαγές για αυτή τη συναλλαγή έχουν ενημερωθεί. Ελέγξτε τις προσεκτικά πριν προχωρήσετε."
   },
   "alertMessageFirstTimeInteraction": {
     "message": "Αλληλεπιδράτε με αυτή τη διεύθυνση για πρώτη φορά. Βεβαιωθείτε ότι είναι σωστή πριν συνεχίσετε."
@@ -1471,8 +1499,8 @@
   "alertPayHardwareAccountTitle": {
     "message": "Το πορτοφόλι δεν υποστηρίζεται"
   },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Τα αποτελέσματα έχουν αλλάξει"
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "Δεν ήταν δυνατός ο έλεγχος του υπολοίπου των Perps. Προσπαθήστε ξανά."
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1η αλληλεπίδραση"
@@ -1507,6 +1535,9 @@
   "alertReasonPendingTransactions": {
     "message": "Εκκρεμής συναλλαγή"
   },
+  "alertReasonPerpsWithdrawBalanceUnavailable": {
+    "message": "Το υπόλοιπο δεν είναι διαθέσιμο"
+  },
   "alertReasonSignIn": {
     "message": "Ύποπτο αίτημα σύνδεσης"
   },
@@ -1536,9 +1567,6 @@
   },
   "allNetworks": {
     "message": "Όλα τα δίκτυα"
-  },
-  "allPermissions": {
-    "message": "Συνδέσεις με Dapp"
   },
   "allPopularNetworks": {
     "message": "Όλα τα δημοφιλή δίκτυα"
@@ -1644,8 +1672,24 @@
     "message": "Ενεργοποίηση του $1 στο $2 για να ξεκινήσετε.",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "Παρουσιάστηκε πρόβλημα κατά την προσθήκη αυτής της γραμμής εμπιστοσύνης. Προσπαθήστε ξανά.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "Δεν μπορέσαμε να ανακτήσουμε ιστορικά δεδομένα"
+  },
+  "assetDeactivate": {
+    "message": "Διαγραφή",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "Παρουσιάστηκε πρόβλημα κατά την αφαίρεση αυτής της γραμμής εμπιστοσύνης. Προσπαθήστε ξανά.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "Έχετε ακόμη $1 $2 σε αυτό το πορτοφόλι. Πρέπει να τα στείλετε ή να τα ανταλλάξετε όλα πριν απενεργοποιήσετε αυτό το περιουσιακό στοιχείο στο Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "Ανενεργό",
@@ -1715,6 +1759,9 @@
   "back": {
     "message": "Πίσω"
   },
+  "backToSafety": {
+    "message": "Πίσω στην ασφάλεια"
+  },
   "backUpIncomplete": {
     "message": "Η δημιουργία αντιγράφου ασφαλείας δεν ολοκληρώθηκε"
   },
@@ -1759,9 +1806,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας"
-  },
-  "backupApprovalInfo": {
-    "message": "Αυτός ο μυστικός κωδικός απαιτείται για ανάκτηση του πορτοφολιού σας σε περίπτωση που χάσετε τη συσκευή σας, ξεχάσετε τον κωδικό πρόσβασης, πρέπει να κάνετε επανεγκατάσταση του MetaMask, ή θέλετε να έχετε πρόσβαση στο πορτοφόλι σας από μια άλλη συσκευή."
   },
   "backupApprovalNotice": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας της Μυστικής σας Φράσης Ανάκτησης για να διατηρήσετε το πορτοφόλι και τα χρήματά σας ασφαλή."
@@ -1940,53 +1984,77 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Εάν συνεχίσετε, όλα τα περιουσιακά στοιχεία που έχετε καταχωρίσει στο Blur ενδέχεται να τεθούν σε κίνδυνο."
+  "blockaidAlertModalMessage": {
+    "message": "Οι τεχνικοί σύμβουλοι ασφαλείας εντόπισαν ενδείξεις υψηλού κινδύνου σε αυτό το $1. Αν συνεχίσετε, δεν θα είναι δυνατή η ανάκτηση των κεφαλαίων σας.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request"
   },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Αλληλεπιδράτε με έναν κακόβουλο ιστότοπο. Εάν συνεχίσετε, θα χάσετε τα περιουσιακά σας στοιχεία."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Εάν συνεχίσετε, όλα τα περιουσιακά στοιχεία που έχετε καταχωρίσει στο OpenSea ενδέχεται να τεθούν σε κίνδυνο."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Εάν επιβεβαιώσετε αυτό το αίτημα, ενδέχεται να χάσετε τα περιουσιακά σας στοιχεία. Σας συνιστούμε να ακυρώσετε αυτό το αίτημα."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Στέλνετε τα περιουσιακά σας στοιχεία σε έναν απατεώνα. Εάν συνεχίσετε, θα χάσετε αυτά τα περιουσιακά στοιχεία."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Εάν επιβεβαιώσετε αυτό το αίτημα, επιτρέπετε σε έναν απατεώνα να κάνει ανάληψη και να ξοδέψει τα περιουσιακά σας στοιχεία. Δεν θα τα πάρετε πίσω."
+  "blockaidAlertModalMessageWithAmount": {
+    "message": "Οι τεχνικοί σύμβουλοι ασφαλείας εντόπισαν ενδείξεις υψηλού κινδύνου σε αυτό το $1. Αν συνεχίσετε, δεν θα είναι δυνατή η ανάκτηση των $2.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request; $2 is the formatted fiat value at risk"
   },
   "blockaidDescriptionApproveFarming": {
-    "message": "Εάν εγκρίνετε αυτό το αίτημα, ένας τρίτος που είναι γνωστός για απάτες μπορεί να αποκτήσει όλα τα περιουσιακά σας στοιχεία."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Εάν εγκρίνετε αυτό το αίτημα, κάποιος μπορεί να κλέψει τα περιουσιακά σας στοιχεία που είναι καταχωρημένα στο Blur."
+    "message": "Παρέχετε σε μια διεύθυνση που έχει επισημανθεί από τους τεχνικούς συμβούλους ασφαλείας την άδεια να μεταφέρει τα περιουσιακά στοιχεία σας."
   },
   "blockaidDescriptionErrored": {
-    "message": "Λόγω κάποιου σφάλματος, δεν μπορέσαμε να ελέγξουμε τις ειδοποιήσεις ασφαλείας. Συνεχίστε μόνο αν εμπιστεύεστε κάθε διεύθυνση που εμπλέκεται."
+    "message": "Δεν ήταν δυνατή η ολοκλήρωση αυτού του ελέγχου ασφαλείας. Συνεχίστε μόνο αν εμπιστεύεστε τον ιστότοπο και τις διευθύνσεις που εμπλέκονται."
+  },
+  "blockaidDescriptionHighRiskSignature": {
+    "message": "Οι τεχνικοί σύμβουλοι ασφαλείας έχουν επισημάνει αυτήν την υπογραφή ως υψηλού κινδύνου. Αν υπογράψετε ενδέχεται να εξουσιοδοτήσετε ενέργειες σχετικά με τα περιουσιακά στοιχεία σας χωρίς την άδειά σας."
   },
   "blockaidDescriptionMaliciousDomain": {
-    "message": "Αλληλεπιδράτε με έναν κακόβουλο τομέα. Εάν εγκρίνετε αυτό το αίτημα, ενδέχεται να χάσετε τα περιουσιακά σας στοιχεία."
+    "message": "Οι τεχνικοί σύμβουλοι ασφαλείας έχουν επισημάνει αυτόν τον ιστότοπο ως κακόβουλο. Αν πρόκειται για απάτη, δεν θα είναι δυνατή η ανάκτηση των κεφαλαίων σας."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Εάν εγκρίνετε αυτό το αίτημα, ενδέχεται να χάσετε τα περιουσιακά σας στοιχεία."
+  "blockaidDescriptionMaliciousDomainWithAmount": {
+    "message": "Οι τεχνικοί σύμβουλοι ασφαλείας έχουν επισημάνει αυτόν τον ιστότοπο ως κακόβουλο. Αν πρόκειται για απάτη, δεν θα είναι δυνατή η ανάκτηση των $1.",
+    "description": "$1 is the formatted fiat value at risk"
   },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Εάν εγκρίνετε αυτό το αίτημα, κάποιος μπορεί να κλέψει τα περιουσιακά σας στοιχεία που είναι καταχωρημένα στο OpenSea."
+  "blockaidDescriptionMarketplaceFarming": {
+    "message": "Παρέχετε σε μια διεύθυνση που έχει επισημανθεί από τους τεχνικούς συμβούλους ασφαλείας την άδεια να μεταφέρει τα περιουσιακά στοιχεία σας που είναι καταχωρισμένα στο $1.",
+    "description": "$1 is a marketplace name such as OpenSea or Blur"
+  },
+  "blockaidDescriptionRiskSignals": {
+    "message": "Οι τεχνικοί σύμβουλοι ασφαλείας εντόπισαν ενδείξεις κινδύνου σε αυτό το αίτημα. Ελέγξτε προσεκτικά τα στοιχεία πριν προχωρήσετε."
   },
   "blockaidDescriptionTransferFarming": {
-    "message": "Εάν εγκρίνετε αυτό το αίτημα, ένας τρίτος που είναι γνωστός για απάτες θα πάρει όλα τα περιουσιακά σας στοιχεία."
+    "message": "Θα στείλετε περιουσιακά στοιχεία σε μια διεύθυνση που έχει επισημανθεί από τους τεχνικούς συμβούλους ασφαλείας. Αν πρόκειται για απάτη, δεν θα είναι δυνατή η ανάκτηση των κεφαλαίων σας."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Αυτό είναι ένα παραπλανητικό αίτημα"
+  "blockaidDescriptionTransferFarmingWithAmount": {
+    "message": "Θα στείλετε περιουσιακά στοιχεία σε μια διεύθυνση που έχει επισημανθεί από τους τεχνικούς συμβούλους ασφαλείας. Αν πρόκειται για απάτη, δεν θα είναι δυνατή η ανάκτηση των $1.",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidRequestTypeApproval": {
+    "message": "έγκριση",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeRequest": {
+    "message": "αίτημα",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeSignature": {
+    "message": "υπογραφή",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeTransfer": {
+    "message": "μεταφορά",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidTitleHighRiskApproval": {
+    "message": "Έγκριση υψηλού κινδύνου"
+  },
+  "blockaidTitleHighRiskSignature": {
+    "message": "Υπογραφή υψηλού κινδύνου"
+  },
+  "blockaidTitleHighRiskTransfer": {
+    "message": "Μεταφορά υψηλού κινδύνου"
   },
   "blockaidTitleMayNotBeSafe": {
-    "message": "Να είστε προσεκτικοί"
+    "message": "Ο έλεγχος ασφαλείας δεν είναι διαθέσιμος"
   },
-  "blockaidTitleSuspicious": {
-    "message": "Πρόκειται για ύποπτο αίτημα"
+  "blockaidTitleRiskSignalsDetected": {
+    "message": "Εντοπίστηκαν ενδείξεις κινδύνου"
+  },
+  "blockaidTitleSiteFlaggedUnsafe": {
+    "message": "Ο ιστότοπος επισημάνθηκε ως μη ασφαλής"
   },
   "blockies": {
     "message": "Blockies"
@@ -2721,7 +2789,7 @@
     "message": "Για να προστατεύσετε τα περιουσιακά σας στοιχεία, σας προτείνουμε να απορρίψετε το αίτημα."
   },
   "confirmationAlertModalTitleDescription": {
-    "message": "Τα περιουσιακά σας στοιχεία μπορεί να κινδυνεύουν"
+    "message": "Αίτημα υψηλού κινδύνου"
   },
   "confirmed": {
     "message": "Επιβεβαιωμένο"
@@ -2747,8 +2815,8 @@
   "connectAHardwareWalletDescription": {
     "message": "Χρήση USB ή κωδικού QR"
   },
-  "connectAccounts": {
-    "message": "Σύνδεση λογαριασμών"
+  "connectAnyway": {
+    "message": "Σύνδεση ούτως ή άλλως"
   },
   "connectHardwareDevice": {
     "message": "Σύνδεση $1",
@@ -2794,18 +2862,6 @@
   "connectedSnaps": {
     "message": "Συνδεδεμένα Snaps"
   },
-  "connectedWithAccount": {
-    "message": "$1 λογαριασμοί συνδεδεμένοι",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Συνδέθηκε με το $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 δίκτυα συνδεδεμένα",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Σύνδεση"
   },
@@ -2843,6 +2899,9 @@
   "connectionRequest": {
     "message": "Αίτημα σύνδεσης"
   },
+  "connections": {
+    "message": "Συνδέσεις"
+  },
   "connectionsRemovedModalDescription": {
     "message": "Ορισμένες συνδέσεις (όπως τα πορτοφόλια υλικού και τα snap) αφαιρέθηκαν λόγω αδράνειας σε αυτήν τη συσκευή. Μπορείτε να τα προσθέσετε ξανά οποιαδήποτε στιγμή από τις Ρυθμίσεις."
   },
@@ -2870,6 +2929,9 @@
   },
   "continue": {
     "message": "Συνεχίστε"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "Συνεχίστε με δική σας ευθύνη"
   },
   "contract": {
     "message": "Συμβόλαιο"
@@ -3046,9 +3108,6 @@
   "customerSupport": {
     "message": "υποστήριξη πελατών"
   },
-  "dappConnections": {
-    "message": "Συνδέσεις με Dapp"
-  },
   "dappSuggested": {
     "message": "Υπόδειξη ιστότοπου"
   },
@@ -3073,6 +3132,9 @@
   },
   "dappSwapRewardText": {
     "message": "Κερδίστε $1 πόντους"
+  },
+  "dapps": {
+    "message": "Dapps"
   },
   "darkTheme": {
     "message": "Σκούρο"
@@ -3392,32 +3454,56 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Είστε βέβαιοι ότι θέλετε να αποσυνδεθείτε; Μπορεί να χάσετε τη λειτουργικότητα της ιστοσελίδας."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Εάν αποσυνδεθείτε από αυτόν τον ιστότοπο, θα πρέπει να επανασυνδέσετε τους λογαριασμούς και τα δίκτυά σας για να χρησιμοποιήσετε ξανά αυτόν τον ιστότοπο."
-  },
   "disconnectAllSites": {
     "message": "Αποσύνδεση όλων"
   },
   "disconnectAllSitesDescriptionText": {
-    "message": "Αν αποσυνδεθείτε από όλους τους ιστότοπους, θα πρέπει να συνδέσετε ξανά τους λογαριασμούς και τα δίκτυά σας για να τους χρησιμοποιήσετε ξανά."
+    "message": "Αυτό θα αποσυνδέσει όλους τους λογαριασμούς σας από όλες τις αποκεντρωμένες εφαρμογές. Θα πρέπει να συνδεθείτε ξανά για να τις χρησιμοποιήσετε."
   },
   "disconnectAllSitesError": {
     "message": "Ορισμένες αποκεντρωμένες εφαρμογές (dapps) δεν ήταν δυνατό να αποσυνδεθούν. Παρακαλώ δοκιμάστε ξανά."
   },
+  "disconnectAllSitesQuestion": {
+    "message": "Αποσύνδεση όλων των?"
+  },
   "disconnectAllSitesSuccess": {
     "message": "Όλες οι αποκεντρωμένες εφαρμογές (dapps) αποσυνδέθηκαν με επιτυχία."
   },
-  "disconnectMessage": {
-    "message": "Αυτό θα σας αποσυνδέσει από αυτόν το ιστότοπο"
-  },
   "disconnectPrompt": {
     "message": "Αποσύνδεση $1"
+  },
+  "disconnectQuestion": {
+    "message": "Αποσύνδεση?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "Αυτό θα αποσυνδέσει όλους τους λογαριασμούς σας από το $1. Θα πρέπει να συνδεθείτε ξανά για να χρησιμοποιήσετε αυτήν την αποκεντρωμένη εφαρμογή.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "Αποσύνδεση αυτού του λογαριασμού"
   },
   "discover": {
     "message": "Ανακαλύψτε"
+  },
+  "discoverSearchCap": {
+    "message": "κεφαλαιοποίηση",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
+  "discoverSearchNoResults": {
+    "message": "Δεν βρέθηκαν αποτελέσματα",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "Δεν βρέθηκαν αποτελέσματα για \"$1\"",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Δείτε άλλα δημοφιλή περιουσιακά στοιχεία",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "όγκος",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Ανακαλύψτε τα Snaps",
@@ -3563,17 +3649,11 @@
   "editNetworkLink": {
     "message": "επεξεργαστείτε το αρχικό δίκτυο"
   },
-  "editNetworksTitle": {
-    "message": "Επεξεργασία δικτύων"
-  },
   "editNonceField": {
     "message": "Επεξεργασία Nonce"
   },
   "editNonceMessage": {
     "message": "Αυτή είναι μια προηγμένη λειτουργία, χρησιμοποιήστε την με προσοχή."
-  },
-  "editPermissions": {
-    "message": "Επεξεργασία αδειών"
   },
   "editSpendingCap": {
     "message": "Επεξεργασία ανώτατου ορίου δαπανών"
@@ -5021,6 +5101,9 @@
   "manage": {
     "message": "Διαχείριση"
   },
+  "manageConnectedAccounts": {
+    "message": "Διαχείριση συνδεδεμένων λογαριασμών"
+  },
   "manageDefaultSettings": {
     "message": "Διαχείριση προεπιλεγμένων ρυθμίσεων"
   },
@@ -5186,6 +5269,112 @@
   "mmFee": {
     "message": "$1% τέλη στο MetaMask"
   },
+  "money": {
+    "message": "Οικονομικά"
+  },
+  "moneyActivity": {
+    "message": "Δραστηριότητα"
+  },
+  "moneyActivityPlaceholderDescription": {
+    "message": "Η δραστηριότητα του Money account σας θα εμφανίζεται εδώ."
+  },
+  "moneyAdd": {
+    "message": "Προσθήκη"
+  },
+  "moneyApy": {
+    "message": "$1 APY"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Το υπόλοιπο δεν είναι διαθέσιμο"
+  },
+  "moneyBenefitAutoEarn": {
+    "message": "Κερδίστε αυτόματα απόδοση στο υπόλοιπό σας στον Money account"
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Κερδίστε αυτόματα έως και ~$1 APY"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Πλήρης ρευστότητα χωρίς δεσμεύσεις, ώστε να μπορείτε να κάνετε συναλλαγές ή ανάληψη οποιαδήποτε στιγμή"
+  },
+  "moneyBenefitSend": {
+    "message": "Στείλτε σε οποιοδήποτε από τα πορτοφόλια σας στο MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Κρατήστε τα χρήματά σας ασφαλή σε mUSD, ένα stablecoin με αναλογία 1:1 σε δολάρια"
+  },
+  "moneyBenefits": {
+    "message": "Ανταμοιβές"
+  },
+  "moneyEarnApyTitle": {
+    "message": "Κερδίστε έως και $1 APY"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Κερδίστε από τα κρυπτονομίσματά σας"
+  },
+  "moneyEarnOnCryptoDescription": {
+    "message": "Δείτε πώς τα χρήματά σας μπορούν να αυξηθούν με τον χρόνο, μετατρέποντας τα κρυπτονομίσματά σας σε mUSD."
+  },
+  "moneyEarnOnCryptoDescriptionMiddle": {
+    "message": "σε περιουσιακά στοιχεία και θα μπορούσατε να κερδίσετε έως και"
+  },
+  "moneyEarnOnCryptoDescriptionPrefix": {
+    "message": "Προσθέστε το"
+  },
+  "moneyEarnOnCryptoDescriptionSuffix": {
+    "message": "σε ένα έτος."
+  },
+  "moneyEarnOnCryptoNoFee": {
+    "message": "Χωρίς τέλος συναλλαγής"
+  },
+  "moneyEarnTitle": {
+    "message": "Κερδίστε από το υπόλοιπό σας"
+  },
+  "moneyEarnings": {
+    "message": "Κέρδη"
+  },
+  "moneyExploreBenefits": {
+    "message": "Εξερευνήστε τα οφέλη σας"
+  },
+  "moneyFundDescription": {
+    "message": "Χρηματοδοτήστε τον Money Account σας και δείτε το υπόλοιπό σας να αυξάνεται."
+  },
+  "moneyFundDescriptionWithApy": {
+    "message": "Προσθέστε χρήματα στον Money account σας και δείτε το υπόλοιπό σας να αυξάνεται με απόδοση έως και $1 APY."
+  },
+  "moneyHowItWorks": {
+    "message": "Πώς λειτουργεί"
+  },
+  "moneyHowItWorksDescription": {
+    "message": "Προσθέστε mUSD και το υπόλοιπό σας σε δολάρια είναι έτοιμο για αγορές, συναλλαγές ή μεταφορές ανά πάσα στιγμή."
+  },
+  "moneyHowItWorksDescriptionWithApy": {
+    "message": "Προσθέστε mUSD και κερδίστε έως και $1. Το υπόλοιπό σας σε δολάρια είναι έτοιμο για αγορές, συναλλαγές ή μεταφορές ανά πάσα στιγμή.",
+    "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowYourMoneyGrows": {
+    "message": "Πώς αυξάνονται τα χρήματά σας"
+  },
+  "moneyLearnMore": {
+    "message": "Μάθετε περισσότερα"
+  },
+  "moneyLifetime": {
+    "message": "Συνολικά"
+  },
+  "moneyMeetMusd": {
+    "message": "Μάθετε για τα mUSD"
+  },
+  "moneyMoreInformation": {
+    "message": "Περισσότερες πληροφορίες"
+  },
+  "moneyMoreOptions": {
+    "message": "Περισσότερες επιλογές"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Αποστολή"
+  },
   "month": {
     "message": "μήνας"
   },
@@ -5194,10 +5383,6 @@
   },
   "more": {
     "message": "περισσότερα"
-  },
-  "moreAccounts": {
-    "message": "+ $1 περισσότεροι λογαριασμοί",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Περισσότερα"
@@ -5369,10 +5554,6 @@
     "message": "Μετατρέψτε τα stablecoins σας σε mUSD και κερδίστε \nέως και $1% μπόνους ετησίως, το οποίο μπορείτε \nνα εξαργυρώσετε καθημερινά. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Υποστηρίζεται από το Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Μετατρέψτε τα stablecoins σας σε mUSD και λάβετε $1% μπόνους ετησίως.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5395,22 +5576,6 @@
   "musdClaimTitle": {
     "message": "Εξαργύρωση μπόνους",
     "description": "Title for the mUSD bonus claim confirmation screen"
-  },
-  "musdClaimableBonus": {
-    "message": "Μπόνους προς εξαργύρωση",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "Το ετήσιο μπόνους που έχετε κερδίσει διατηρώντας τα mUSD. Μπορείτε να εξαργυρώσετε το μπόνους σας καθημερινά στο δίκτυο Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Πληροφορίες για το μπόνους προς εξαργύρωση",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
-  },
-  "musdConversionBonusTooltipAria": {
-    "message": "Πληροφορίες για το μπόνους",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
   },
   "musdConversionFeeTooltipDescription": {
     "message": "Τα τέλη μετατροπής σε mUSD περιλαμβάνουν τα έξοδα δικτύου και ενδέχεται να περιλαμβάνουν τα τέλη παρόχου. Δεν υπάρχει χρέωση στο MetaMask όταν μετατρέπετε σε mUSD.",
@@ -5436,14 +5601,6 @@
   "musdConvert": {
     "message": "Μετατροπή"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Μετατρέψτε και κερδίστε $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
-  "musdEarnBonusPercentage": {
-    "message": "Κερδίστε $1% σε μπόνους",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Ξεκινήστε"
   },
@@ -5454,16 +5611,8 @@
   "musdEducationNotNow": {
     "message": "Όχι τώρα"
   },
-  "musdGetBonusPercentage": {
-    "message": "Κερδίστε $1% μπόνους σε mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdGetMusd": {
     "message": "Αποκτήστε mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5671,9 +5820,6 @@
   "networkOptions": {
     "message": "Επιλογές δικτύου"
   },
-  "networkPermissionToast": {
-    "message": "Ενημερωμένες άδειες χρήσης δικτύων"
-  },
   "networkStatus": {
     "message": "Κατάσταση δικτύου"
   },
@@ -5709,9 +5855,6 @@
   },
   "networks": {
     "message": "Δίκτυα"
-  },
-  "networksSmallCase": {
-    "message": "δίκτυα"
   },
   "new": {
     "message": "Νέα!"
@@ -5825,15 +5968,16 @@
   "noAccountsFound": {
     "message": "Δεν βρέθηκαν λογαριασμοί για το συγκεκριμένο αίτημα αναζήτησης"
   },
-  "noConnectionDescription": {
-    "message": "Το MetaMask δεν είναι συνδεδεμένο με αυτόν τον ιστότοπο. Για να ξεκινήσετε, επιλέξτε το κουμπί Σύνδεση του ιστότοπου."
-  },
   "noDefaultAddress": {
     "message": "Δεν υπάρχει διεύθυνση $1",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Δεν παρέχεται ανάλυση για τον τομέα."
+  },
+  "noFee": {
+    "message": "Χωρίς τέλος συναλλαγής",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Τα Snaps και τα περισσότερα πορτοφόλια υλικού δεν θα λειτουργούν με την τρέχουσα έκδοση του προγράμματος περιήγησής σας."
@@ -6061,10 +6205,10 @@
     "message": "Δεν έχετε λάβει καμία ειδοποίηση ακόμα."
   },
   "notificationsSettingsAgenticCliDescription": {
-    "message": "Αιτήματα σύνδεσης CLI, εγκρίσεις και ενημερώσεις συνεδρίας για Agentic"
+    "message": "Αιτήματα σύνδεσης CLI, εγκρίσεις και ενημερώσεις συνεδριών για το Agent wallet"
   },
   "notificationsSettingsAgenticCliTitle": {
-    "message": "Agentic CLI"
+    "message": "Agent wallet"
   },
   "notificationsSettingsBoxError": {
     "message": "Κάτι πήγε στραβά. Προσπαθήστε ξανά."
@@ -6387,6 +6531,10 @@
     "message": "Το $1 δεν έχει ρυθμιστεί για αυτό το πορτοφόλι. Ενεργοποιήστε το $1 στις Ρυθμίσεις.",
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
+  "passkeyErrorNotSupported": {
+    "message": "Το κλειδί πρόσβασης δεν υποστηρίζεται",
+    "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
+  },
   "passkeyErrorRegistrationFailed": {
     "message": "Η ρύθμιση του $1 απέτυχε. Προσπαθήστε ξανά",
     "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -6505,9 +6653,29 @@
     "message": "Πληρωμή με",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "Κρύπτο",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "Επιλέξτε μέθοδο πληρωμής",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "Πληρωμή με",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "Άλλα περιουσιακά στοιχεία",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "Επιλέξτε από τα tokens σας",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "Δικαιούχος πληρωμής"
@@ -6540,6 +6708,10 @@
   "percentChange": {
     "message": "Ποσοστιαία μεταβολή"
   },
+  "permissionCannotMoveFunds": {
+    "message": "Δεν είναι δυνατή η μεταφορά κεφαλαίων χωρίς την άδειά σας",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "Άδεια για"
   },
@@ -6559,6 +6731,14 @@
   "permissionRevokedForAccounts": {
     "message": "Ανακλήθηκε σε αυτή την ενημέρωση για $1",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "Δείτε διευθύνσεις, υπόλοιπα λογαριασμών και δραστηριότητα",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "Αποστολή αιτημάτων για συναλλαγές",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "Σύνδεση με $1.",
@@ -6800,7 +6980,10 @@
     "message": "Άδειες"
   },
   "permissionsPageEmptyDescription": {
-    "message": "Δεν εντοπίστηκαν άδειες. Μόλις παραχωρήσετε άδειες σε έναν ιστότοπο ή εγκαταστήσετε ένα Snap, οι λεπτομέρειες θα εμφανιστούν εδώ."
+    "message": "Οι λεπτομέρειες θα εμφανίζονται εδώ, μόλις παραχωρήσετε τις απαιτούμενες άδειες."
+  },
+  "permissionsPageEmptyTitle": {
+    "message": "Τίποτα το ιδιαίτερο εδώ"
   },
   "permitSimulationChange_approve": {
     "message": "Ανώτατο όριο δαπανών"
@@ -6825,9 +7008,6 @@
   },
   "permitSimulationDetailInfo": {
     "message": "Δίνετε στον χρήστη την άδεια να ξοδέψει αυτά τα token από τον λογαριασμό σας."
-  },
-  "permittedChainToastUpdate": {
-    "message": "Το $1 έχει πρόσβαση στο $2."
   },
   "perps": {
     "message": "Συμβ.αορ."
@@ -6907,6 +7087,10 @@
   "perpsCancelOrder": {
     "message": "Ακύρωση εντολής"
   },
+  "perpsCancelOrderFailed": {
+    "message": "Δεν ήταν δυνατή η ακύρωση της εντολής. Προσπαθήστε ξανά.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Ορισμός διαστήματος κεριών"
   },
@@ -6946,6 +7130,9 @@
   "perpsClosePosition": {
     "message": "Κλείσιμο θέσης"
   },
+  "perpsClosePrice": {
+    "message": "Τιμή κλεισίματος"
+  },
   "perpsClosePriceUnavailable": {
     "message": "Η τρέχουσα τιμή δεν είναι διαθέσιμη. Προσπαθήστε ξανά σε λίγο."
   },
@@ -6979,6 +7166,10 @@
   "perpsDateYesterday": {
     "message": "Χθες"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "Κατάθεση",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Η μεταφορά απέτυχε"
   },
@@ -7009,6 +7200,10 @@
   "perpsDepositToastSuccessTitle": {
     "message": "Ο λογαριασμός σας με συμβόλαια αορίστου διάρκειας (perps) χρηματοδοτήθηκε"
   },
+  "perpsDepositedVerb": {
+    "message": "Κατατέθηκε",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
+  },
   "perpsDeposits": {
     "message": "Καταθέσεις"
   },
@@ -7037,6 +7232,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "Εκτ. Κ&Ζ εφόσον ενεργοποιηθεί η λήψη κερδών",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "Προσθέστε χρήματα για να ξεκινήσετε τις συναλλαγές.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Εξερευνήστε αγορές"
@@ -7228,11 +7427,99 @@
   "perpsOraclePriceTooltip": {
     "message": "Η διάμεσος των εξωτερικών τιμών που αναφέρονται από τους επικυρωτές, η οποία χρησιμοποιείται για τον υπολογισμό του ποσοστού χρηματοδότησης"
   },
+  "perpsOrderBook": {
+    "message": "Βιβλίο εντολών"
+  },
+  "perpsOrderBookApply": {
+    "message": "Εφαρμογή"
+  },
+  "perpsOrderBookBuy": {
+    "message": "Αγορά: $1",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Ταξινόμηση κατά & Ομαδοποίηση κατά"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Η σύνδεση με το βιβλίο εντολών χάθηκε"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Αγορά $1%, πώληση $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Ομαδοποίηση κατά"
+  },
+  "perpsOrderBookLayout": {
+    "message": "Διάταξη βιβλίου εντολών"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "Αριστερά"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "Δεξιά"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Καταχωρήθηκε από"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Φόρτωση βιβλίου εντολών"
+  },
+  "perpsOrderBookNoData": {
+    "message": "Δεν υπάρχουν δεδομένα βιβλίου εντολών"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Τιμή"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Επανασύνδεση"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Επανασύνδεση στο βιβλίο εντολών"
+  },
+  "perpsOrderBookResize": {
+    "message": "Προσαρμογή μεγέθους βιβλίου εντολών"
+  },
+  "perpsOrderBookSell": {
+    "message": "Πώληση: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
+  },
+  "perpsOrderBookSize": {
+    "message": "Μέγεθος"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Σπρεντ"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Σύνολο"
+  },
+  "perpsOrderBookUsePrice": {
+    "message": "Χρησιμοποιήστε το $1 ως τιμή ορίου",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
+  "perpsOrderBookValueType": {
+    "message": "Τύπος τιμής"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Το βιβλίο εντολών εμφανίζει αγορές και πωλήσεις",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Το βιβλίο εντολών εμφανίζει μόνο αγορές",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Το βιβλίο εντολών εμφανίζει μόνο πωλήσεις",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
+  },
   "perpsOrderDate": {
     "message": "Ημερομηνία"
   },
   "perpsOrderFailed": {
     "message": "Δεν ήταν δυνατή η υποβολή της εντολής. Προσπαθήστε ξανά."
+  },
+  "perpsOrderFilled": {
+    "message": "Εκτελέστηκε"
   },
   "perpsOrderOriginalSize": {
     "message": "Αρχικό μέγεθος"
@@ -7242,6 +7529,12 @@
   },
   "perpsOrderStatus": {
     "message": "Κατάσταση"
+  },
+  "perpsOrderTotalFee": {
+    "message": "Συνολικά τέλη"
+  },
+  "perpsOrderType": {
+    "message": "Τύπος εντολής"
   },
   "perpsOrderValue": {
     "message": "Αξία εντολής"
@@ -7403,11 +7696,17 @@
   "perpsStatusCompleted": {
     "message": "Ολοκληρώθηκε"
   },
+  "perpsStatusFailed": {
+    "message": "Απέτυχε"
+  },
   "perpsStatusFilled": {
     "message": "Εκτελέστηκε"
   },
   "perpsStatusOpen": {
     "message": "Άνοιγμα"
+  },
+  "perpsStatusPending": {
+    "message": "Εκκρεμεί"
   },
   "perpsStatusQueued": {
     "message": "Σε Αναμονή"
@@ -7441,6 +7740,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Η Λήψη Κερδών πρέπει να είναι μεταξύ $1 και $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Αυτή η εντολή δεν είναι πλέον διαθέσιμη",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Αποτυχία ακύρωσης εντολής",
@@ -7639,6 +7942,9 @@
   "perpsUnrealizedPnl": {
     "message": "Μη οριστικοποιημένα κέρδη & ζημίες"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "Η συγκεκριμένη αγορά δεν είναι διαθέσιμη για συναλλαγές λόγω μη υποστηριζόμενης εγγύησης."
+  },
   "perpsWatchlist": {
     "message": "Λίστα παρακολούθησης"
   },
@@ -7718,6 +8024,14 @@
   "perpsWithdrawTooltip": {
     "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε. Δεν υπάρχει χρέωση στο MetaMask όταν κάνετε ανταλλαγή σε mUSD.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "Ανάληψη",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "Έγινε ανάληψη",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "Θα λάβετε"
@@ -7848,149 +8162,6 @@
   "publicAddress": {
     "message": "Δημόσια διεύθυνση"
   },
-  "pushNotificationLimitOrderFilledDescriptionLong": {
-    "message": "Η θέση αγοράς σας σε $1 είναι τώρα ανοιχτή.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledDescriptionShort": {
-    "message": "Η θέση πώλησής σας σε $1 είναι τώρα ανοιχτή.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledTitle": {
-    "message": "Η εντολή ορίου εκτελέστηκε"
-  },
-  "pushNotificationPositionLiquidatedDescriptionLong": {
-    "message": "Η θέση αγοράς σας σε $1 έκλεισε.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedDescriptionShort": {
-    "message": "Η θέση πώλησής σας σε $1 έκλεισε.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedTitle": {
-    "message": "Η θέση ρευστοποιήθηκε"
-  },
-  "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "Η αξίωσή σας δημιουργήθηκε"
-  },
-  "pushNotificationShieldClaimCreatedTitle": {
-    "message": "Η αξίωση δημιουργήθηκε"
-  },
-  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "Η αξίωσή σας ενημερώθηκε"
-  },
-  "pushNotificationShieldClaimStatusUpdatedTitle": {
-    "message": "Η αξίωση ενημερώθηκε"
-  },
-  "pushNotificationShieldLearnMoreCta": {
-    "message": "Μάθε περισσότερα"
-  },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "Η συνδρομή σας είναι πλέον ενεργή."
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Η συνδρομή σας έχει τεθεί σε παύση λόγω αποτυχίας πληρωμής."
-  },
-  "pushNotificationShieldSubscriptionTitle": {
-    "message": "MetaMask Transaction Shield"
-  },
-  "pushNotificationShieldUpdatePaymentCta": {
-    "message": "Ενημέρωση πληρωμής"
-  },
-  "pushNotificationStopLossTriggeredDescriptionLong": {
-    "message": "Η θέση αγοράς σας σε $1 έκλεισε με περιορισμό ζημίας.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredDescriptionShort": {
-    "message": "Η θέση πώλησής σας σε $1 έκλεισε με περιορισμό ζημίας.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredTitle": {
-    "message": "Ενεργοποιήθηκε ο περιορισμός ζημιάς"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionLong": {
-    "message": "Η θέση αγοράς σας σε $1 έκλεισε με το σημείο κέρδους σας.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionShort": {
-    "message": "Η θέση πώλησής σας σε $1 έκλεισε με το σημείο κέρδους σας.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "Ενεργοποιήθηκε η λήψη κέρδους"
-  },
-  "pushPlatformNotificationsFundsReceivedDescription": {
-    "message": "Λάβατε $1 $2"
-  },
-  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
-    "message": "Λάβατε μερικά tokens"
-  },
-  "pushPlatformNotificationsFundsReceivedTitle": {
-    "message": "Ελήφθη κεφάλαια"
-  },
-  "pushPlatformNotificationsFundsSentDescription": {
-    "message": "Στείλατε με επιτυχία $1 $2"
-  },
-  "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "Στείλατε επιτυχώς μερικά tokens"
-  },
-  "pushPlatformNotificationsFundsSentTitle": {
-    "message": "Στάλθηκαν κεφάλαια"
-  },
-  "pushPlatformNotificationsNftReceivedDescription": {
-    "message": "Λάβατε νέα NFT"
-  },
-  "pushPlatformNotificationsNftReceivedTitle": {
-    "message": "Ελήφθησαν NFT"
-  },
-  "pushPlatformNotificationsNftSentDescription": {
-    "message": "Στείλατε επιτυχώς ένα NFT"
-  },
-  "pushPlatformNotificationsNftSentTitle": {
-    "message": "Στάλθηκαν NFT"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "Το ποντάρισμά σας στο Lido ήταν επιτυχές"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
-    "message": "Ολοκλήρωση πονταρίσματος"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "Το ποντάρισμά σας στο Lido είναι τώρα έτοιμο για ανάληψη"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "Έτοιμο το ποντάρισμα για ανάληψη"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "Η ανάληψή σας από το Lido ήταν επιτυχής"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
-    "message": "Η ανάληψη ολοκληρώθηκε"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "Υποβλήθηκε το αίτημα ανάληψης από το Lido"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
-    "message": "Αίτημα ανάληψης"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "Το ποντάρισμά σας στο RocketPool ήταν επιτυχές"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
-    "message": "Ολοκλήρωση πονταρίσματος"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "Η ακύρωση του πονταρίσματός σας από το RocketPool ήταν επιτυχής"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
-    "message": "Ολοκλήρωση ακύρωσης πονταρίσματος"
-  },
-  "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "Η ανταλλαγή σας στο MetaMask ήταν επιτυχής"
-  },
-  "pushPlatformNotificationsSwapCompletedTitle": {
-    "message": "Η ανταλλαγή ολοκληρώθηκε"
-  },
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
@@ -8106,6 +8277,9 @@
     "message": "Αγορά $1",
     "description": "$1 is the token symbol being purchased"
   },
+  "rampsBuyWidgetError": {
+    "message": "Δεν ήταν δυνατή η έναρξη της διαδικασίας αγοράς. Προσπαθήστε ξανά."
+  },
   "rampsBuyingViaProvider": {
     "message": "Αγορά μέσω $1.",
     "description": "$1 is the ramp provider name"
@@ -8149,8 +8323,82 @@
     "message": "στο $1",
     "description": "$1 is the network name"
   },
-  "rampsOtherOptions": {
-    "message": "Άλλες επιλογές"
+  "rampsOrderDetailsBankDetails": {
+    "message": "Στοιχεία τραπεζικής μεταφοράς"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Αγοράστε ξανά"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Τέλη"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Αριθμός Εντολής"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Πληρώθηκε με",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "Τέλη $1",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Σύνολο"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Προβολή σε $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Κάτι πήγε στραβά με την εντολή σας.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Η αγορά απέτυχε",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Η εντολή σας βρίσκεται υπό επεξεργασία.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Η αγορά βρίσκεται σε εξέλιξη",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Κάτι πήγε στραβά με την εντολή σας.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Η πώληση απέτυχε",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Η εντολή σας βρίσκεται υπό επεξεργασία.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Η πώληση βρίσκεται σε εξέλιξη",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Τα χρήματά σας είναι καθ’ οδόν.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Η πώληση ολοκληρώθηκε με επιτυχία",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Τα κρυπτονομίσματά σας είναι καθ’ οδόν.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Η αγορά ολοκληρώθηκε με επιτυχία",
+    "description": "Title for the successful ramp buy order toast"
+  },
+  "rampsPayWith": {
+    "message": "Πληρωμή με"
   },
   "rampsPaymentDelayBusinessDay": {
     "message": "εργάσιμη μέρα"
@@ -8369,9 +8617,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Αυτός είναι ο ιστότοπος που ζητά την επιβεβαίωσή σας."
-  },
-  "requestingFor": {
-    "message": "Ζητάει για το"
   },
   "required": {
     "message": "Απαιτείται"
@@ -8854,6 +9099,303 @@
   "securitySrpLabel": {
     "message": "ΜΥΣΤΙΚΕΣ ΦΡΑΣΕΙΣ ΑΝΑΚΤΗΣΗΣ"
   },
+  "securityTrustBuySellTax": {
+    "message": "Φόρος αγοράς/πώλησης"
+  },
+  "securityTrustBuyTax": {
+    "message": "Φόρος αγοράς"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "Συνεχίστε ούτως ή άλλως"
+  },
+  "securityTrustCreated": {
+    "message": "Δημιουργήθηκε"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "Τα δεδομένα ασφαλείας δεν είναι διαθέσιμα"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "Αυτή η αξιολόγηση ασφαλείας παρέχεται αποκλειστικά για ενημερωτικούς σκοπούς και δεν αποτελεί έγκριση ή σύσταση για συναλλαγές."
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "Ύποπτο airdrop"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "Μπορεί να προστεθεί σε λίστα αποκλεισμού"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "Μπορεί να προστεθεί σε λίστα επιτρεπόμενων"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "Συγκεντρωμένη προσφορά"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "Εμπιστευτικές μεταφορές"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "Ύποπτη συμπεριφορά"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "Εξωτερικές κλήσεις"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "Τεχνητά αυξημένος αριθμός traders"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "Ψεύτικος όγκος συναλλαγών"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "Χρόνος αναμονής για συναλλαγές"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "Έντονη δραστηριότητα του bot"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "Κρυφός κάτοχος"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "Απροσδιόριστη προσφορά"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "Υψηλή χρέωση αγοράς"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "Καθιερωμένη φήμη"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "Υψηλή χρέωση πώλησης"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "Υψηλός όγκος συναλλαγών"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "Υψηλή χρέωση μεταφοράς"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "Κίνδυνος κακόβουλης παγίδευσης (honeypot)"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "Πλαστοπροσωπία"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "Πιθανή πλαστοπροσωπία"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "Μη επιβεβαιωμένο άτομο που παριστάνει κάποιον άλλον"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "Ενδεχόμενη πλαστοπροσωπία"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "Προσποιείται ευαίσθητο περιουσιακό στοιχείο"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "Ακατάλληλο περιεχόμενο"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "Τεχνητός όγκος συναλλαγών"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "Χαμηλή δεσμευμένη ρευστότητα"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "Με δυνατότητα δημιουργίας"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "Γνωστό κακόβουλο"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "Εισηγμένο σε ανταλλακτήριο"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "Ο δημιουργός έχει κακή φήμη"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "Ύποπτα μεταδεδομένα"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "Μεταβλητοί φόροι"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "Μη μεταβιβάσιμο"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "Ο κάτοχος μπορεί να αλλάξει το υπόλοιπο"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "Πιθανή χειραγώγηση τιμής"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "Συμβόλαιο μεσολάβησης"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "Κίνδυνος εξαπάτησης τύπου rugpull"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "Δημιουργός που υπόκειται σε κυρώσεις"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "Μοιάζει με κακόβουλο συμβόλαιο"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "Δραστηριότητα bot κατά την εκκίνηση"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "Κείμενο ανεπιθύμητης αλληλογραφίας (spam)"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "Ύποπτος κωδικός"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "Κρυφή πρόσβαση στο token"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "Οι αντιστροφές μεταφορών είναι ενεργοποιημένες"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "Ο μηχανισμός παρεμβολής συναλλαγών είναι ενεργοποιημένος"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "Μεταφορές με δυνατότητα παύσης"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "Μη ρευστοποιήσιμο token"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "Ασταθής τιμή"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "Δημοσιευμένο συμβόλαιο"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "Εικονικές συναλλαγές"
+  },
+  "securityTrustMalicious": {
+    "message": "Κακόβουλο"
+  },
+  "securityTrustMaliciousDappConnection": {
+    "message": "Κακόβουλη — έχει επισημανθεί ως μη ασφαλές"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "Κακόβουλο"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "Το $1 έχει επισημανθεί ως κακόβουλο. Είναι πιθανό να υποκλέψει κεφάλαια από όποιον αλληλεπιδρά μαζί του."
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "Αυτό το token έχει επισημανθεί ως κακόβουλο. Είναι πιθανό να αποσπάσει χρήματα από όποιον αλληλεπιδρά μαζί του."
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "Εντοπίστηκαν σοβαρές ενδείξεις κινδύνου για το $1. Συνιστούμε να μην κάνετε συναλλαγές με αυτό το token."
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "Εντοπίστηκαν σοβαρές ενδείξεις κινδύνου σε αυτό το token. Συνιστούμε να μην προχωρήσετε σε συναλλαγές."
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "Κακόβουλο token"
+  },
+  "securityTrustMore": {
+    "message": "περισσότερα"
+  },
+  "securityTrustNa": {
+    "message": "Μη διαθέσιμη"
+  },
+  "securityTrustNetwork": {
+    "message": "Δίκτυο"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "Δεν εντοπίστηκαν κρυφές χρεώσεις"
+  },
+  "securityTrustNoIssues": {
+    "message": "Δεν υπάρχουν ζητήματα"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "Επίσημοι σύνδεσμοι"
+  },
+  "securityTrustOther": {
+    "message": "Άλλο"
+  },
+  "securityTrustRisky": {
+    "message": "Επικίνδυνο"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "Το $1 έχει επισημανθεί ως ύποπτο. Εξετάστε τους κινδύνους πριν συνεχίσετε."
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "Αυτό το token έχει επισημανθεί ως ύποπτο. Αξιολογήστε τους κινδύνους πριν συνεχίσετε."
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "Ύποπτο token"
+  },
+  "securityTrustSellTax": {
+    "message": "Φόρος πώλησης"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "Δεν εντοπίστηκαν ενδείξεις κινδύνου. Να ερευνάτε πάντα κάθε ψηφιακό περιουσιακό στοιχείο πριν κάνετε συναλλαγές."
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "Εντοπίστηκαν σοβαρές ενδείξεις κινδύνου. Συνιστούμε να αποφύγετε αυτό το ψηφιακό περιουσιακό στοιχείο."
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "Δεν εντοπίστηκαν ενδείξεις κινδύνου. Να ερευνάτε πάντα κάθε ψηφιακό περιουσιακό στοιχείο πριν κάνετε συναλλαγές."
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "Εντοπίστηκαν προειδοποιητικές ενδείξεις. Ελέγξτε προσεκτικά τα ζητήματα που έχουν επισημανθεί πριν κάνετε συναλλαγές με αυτό το ψηφιακό περιουσιακό στοιχείο."
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "Δεν ήταν δυνατή η φόρτωση της ανάλυσης ασφαλείας για αυτό το token."
+  },
+  "securityTrustSuspicious": {
+    "message": "Ύποπτο"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "Το $1 είναι ύποπτο token."
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "Αυτό είναι ένα ύποπτο token."
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "Ασφάλεια και εμπιστοσύνη"
+  },
+  "securityTrustTokenAge": {
+    "message": "Ηλικία του token"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "Κατανομή του token"
+  },
+  "securityTrustTokenInfo": {
+    "message": "Πληροφορίες για το token"
+  },
+  "securityTrustTop10Holders": {
+    "message": "Κορυφαίοι 10 χρήστες"
+  },
+  "securityTrustTotalSupply": {
+    "message": "Συνολική προσφορά"
+  },
+  "securityTrustTransfer": {
+    "message": "Μεταφορά"
+  },
+  "securityTrustType": {
+    "message": "Τύπος"
+  },
+  "securityTrustVerified": {
+    "message": "Επαληθευμένο"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "Το $1 είναι ευρέως αναγνωρισμένο με υψηλή δραστηριότητα συναλλαγών. Η επαλήθευση δεν αποτελεί έγκριση από τo MetaMask."
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "Επαληθευμένο token"
+  },
+  "securityTrustWebsite": {
+    "message": "Ιστότοπος"
+  },
   "seeAllPermissions": {
     "message": "Δείτε όλες τις άδειες",
     "description": "Used for revealing more content (e.g. permission list, etc.)"
@@ -8877,8 +9419,8 @@
   "select": {
     "message": "Επιλογή"
   },
-  "selectAccountToConnect": {
-    "message": "Επιλέξτε έναν λογαριασμό για σύνδεση"
+  "selectAccounts": {
+    "message": "Επιλέξτε λογαριασμούς"
   },
   "selectAll": {
     "message": "Επιλογή όλων"
@@ -8897,9 +9439,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Ενεργοποιήστε την ανίχνευση των NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Επιλέξτε δίκτυο για φιλτράρισμα"
   },
   "selectPathHelp": {
     "message": "Αν δεν βλέπετε τους λογαριασμούς που επιθυμείτε, δοκιμάστε να αλλάξετε τη διαδρομή HD ή το τρέχον επιλεγμένο δίκτυο."
@@ -9662,6 +10201,12 @@
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
   },
+  "showTickerWidget": {
+    "message": "Εμφάνιση widget ιστού στο X"
+  },
+  "showTickerWidgetDescription": {
+    "message": "Εμφανίζει ένα widget του MetaMask με λεπτομέρειες για το token κατά την περιήγησή σας στο X.com."
+  },
   "sidePanelMigrationToast": {
     "message": "Το MetaMask ανοίγει πλέον στο πλευρικό πάνελ από προεπιλογή. Το $1 είναι διαθέσιμο οποιαδήποτε στιγμή από το μενού.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -9763,8 +10308,9 @@
   "singleNetwork": {
     "message": "1 δίκτυο"
   },
-  "sites": {
-    "message": "Ιστότοποι"
+  "sitePermissionsBanner": {
+    "message": "Το $1 έχει πρόσβαση στους συνδεδεμένους λογαριασμούς σας και μπορεί να προτείνει συναλλαγές.",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "Εκδόθηκε"
@@ -10311,18 +10857,6 @@
   },
   "statusNotConnected": {
     "message": "Δεν έχει συνδεθεί"
-  },
-  "stellarClassicTrustlineAddError": {
-    "message": "Παρουσιάστηκε πρόβλημα κατά την προσθήκη αυτής της γραμμής εμπιστοσύνης. Προσπαθήστε ξανά.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Παρουσιάστηκε πρόβλημα κατά την αφαίρεση αυτής της γραμμής εμπιστοσύνης. Προσπαθήστε ξανά.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "Έχετε ακόμη $1 $2 σε αυτό το πορτοφόλι. Πρέπει να τα στείλετε ή να τα ανταλλάξετε όλα πριν απενεργοποιήσετε αυτό το περιουσιακό στοιχείο στο Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "stillConnectingTo": {
     "message": "Ακόμα συνδέεται με το $1...",
@@ -11048,14 +11582,8 @@
   "troubleStartingTitle": {
     "message": "Το MetaMask αντιμετώπισε πρόβλημα κατά την εκκίνηση."
   },
-  "trustSignalBlockDescription": {
-    "message": "Εάν συνδεθείτε σε αυτόν τον ιστότοπο, ενδέχεται να χάσετε όλα τα περιουσιακά σας στοιχεία."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Εντοπίστηκε κακόβουλος ιστότοπος"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Σύνδεση ούτως ή άλλως"
+  "trustSignalPhishingWarning": {
+    "message": "Αυτός ο ιστότοπος παρουσιάζει ενδείξεις ηλεκτρονικού ψαρέματος (phishing) ή δραστηριότητες που μπορεί να οδηγήσουν σε απώλεια κεφαλαίων από το πορτοφόλι σας. Ενδέχεται να ζητήσει συναλλαγές που έχουν σχεδιαστεί για να κλέψουν τα κεφάλαιά σας."
   },
   "tryAgain": {
     "message": "Προσπαθήστε ξανά"
@@ -11082,9 +11610,6 @@
   },
   "turnOnTokenDetection": {
     "message": "Ενεργοποίηση της ενισχυμένης ανίχνευσης των token"
-  },
-  "tutorial": {
-    "message": "Εκμάθηση"
   },
   "txAlertTitle": {
     "message": "Αυτή η συναλλαγή θα ακυρωθεί"
@@ -11284,6 +11809,10 @@
   "value": {
     "message": "Αξία"
   },
+  "variationalReferralSubtitle": {
+    "message": "Κερδίστε +15% πόντους Omni και το επίπεδο Silver για 90 ημέρες με κωδικό παραπομπής στο MetaMask.",
+    "description": "The subtitle of the Variational referral confirmation screen"
+  },
   "version": {
     "message": "Έκδοση"
   },
@@ -11293,6 +11822,10 @@
   "viewAddressOnExplorer": {
     "message": "Προβολή σε $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Προβολή όλων",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Προβολή στο block explorer"
@@ -11313,6 +11846,10 @@
   },
   "viewTokenDetails": {
     "message": "Προβολή λεπτομερειών token"
+  },
+  "viewXMore": {
+    "message": "Δείτε $1 ακόμη",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Προβολή $1 στον explorer",

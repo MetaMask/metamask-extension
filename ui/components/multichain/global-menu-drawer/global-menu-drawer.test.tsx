@@ -8,7 +8,6 @@ import {
   NETWORKS_ROUTE,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
@@ -16,11 +15,6 @@ import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
 const getEnvironmentType = jest.requireMock(
   '../../../../shared/lib/environment-type',
 ).getEnvironmentType as jest.Mock;
-
-jest.mock('@metamask/design-system-react', () => ({
-  ...jest.requireActual('@metamask/design-system-react'),
-  usePureBlack: jest.fn(() => false),
-}));
 
 jest.mock('../../../../shared/lib/environment-type', () => ({
   ...jest.requireActual('../../../../shared/lib/environment-type'),
@@ -61,6 +55,20 @@ jest.mock('../../../pages/notifications/NewFeatureTag', () => ({
 }));
 
 describe('GlobalMenuDrawer', () => {
+  beforeAll(() => {
+    if (!HTMLDialogElement.prototype.showModal) {
+      HTMLDialogElement.prototype.showModal = function showModal() {
+        this.setAttribute('open', '');
+      };
+    }
+    if (!HTMLDialogElement.prototype.close) {
+      HTMLDialogElement.prototype.close = function close() {
+        this.removeAttribute('open');
+        this.dispatchEvent(new Event('close'));
+      };
+    }
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     getEnvironmentType.mockReturnValue('popup');
@@ -87,29 +95,6 @@ describe('GlobalMenuDrawer', () => {
     expect(getByTestId('global-menu-drawer')).toBeInTheDocument();
   });
 
-  // Fullscreen drawer uses a portal that requires layout measurement — tested via manual QA.
-  // The border-l is applied only when isPureBlack && isLargeDrawer (fullscreen or wide sidepanel).
-
-  it('does not apply border-l in pure black mode on popup', async () => {
-    const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
-    usePureBlack.mockReturnValue(true);
-    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-
-    const { container } = renderWithProvider(
-      <GlobalMenuDrawer isOpen onClose={() => undefined}>
-        <span>Content</span>
-      </GlobalMenuDrawer>,
-      configureStore(mockState),
-      '/',
-    );
-
-    await waitFor(() => {
-      expect(
-        container.querySelector('.border-l.border-muted'),
-      ).not.toBeInTheDocument();
-    });
-  });
-
   it('calls onClose when close button is clicked', async () => {
     const onClose = jest.fn();
     const { getByTestId } = renderWithProvider(
@@ -132,9 +117,9 @@ describe('GlobalMenuDrawer', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onClose when Escape key is pressed', async () => {
+  it('calls onClose when the dialog is dismissed', async () => {
     const onClose = jest.fn();
-    renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <GlobalMenuDrawer
         isOpen
         onClose={onClose}
@@ -147,18 +132,17 @@ describe('GlobalMenuDrawer', () => {
     );
 
     await waitFor(() => {
-      expect(
-        document.querySelector('[data-testid="global-menu-drawer"]'),
-      ).toBeInTheDocument();
+      expect(getByTestId('global-menu-drawer')).toHaveAttribute('open');
     });
 
-    fireEvent.keyDown(document, { key: 'Escape' });
+    // Native <dialog> closes on Escape and fires the close event
+    (getByTestId('global-menu-drawer') as HTMLDialogElement).close();
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('does not render when isOpen is false', () => {
+  it('keeps the dialog closed when isOpen is false', () => {
     const onClose = jest.fn();
-    const { queryByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <GlobalMenuDrawer
         isOpen={false}
         onClose={onClose}
@@ -170,7 +154,7 @@ describe('GlobalMenuDrawer', () => {
       '/',
     );
 
-    expect(queryByTestId('global-menu-drawer')).not.toBeInTheDocument();
+    expect(getByTestId('global-menu-drawer')).not.toHaveAttribute('open');
   });
 
   it('networks item navigates to the dedicated networks page', async () => {

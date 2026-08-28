@@ -1,13 +1,18 @@
 import {
+  PaymentOverride,
   TransactionPayController,
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
 } from '../lib/transaction/delegation';
+import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
+import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
+import type { MoneyPayMessenger } from '../lib/money/pay/pay-context';
 import type {
   MessengerClientInitFunction,
   MessengerClientInitResult,
@@ -38,15 +43,20 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
     state: persistedState.TransactionPayController,
   });
 
-  const api = getApi(messengerClient);
+  const api = getApi(messengerClient, initMessenger as MoneyPayMessenger);
 
   return { messengerClient, api };
 };
 
 function getApi(
   messengerClient: TransactionPayController,
+  moneyPayMessenger: MoneyPayMessenger,
 ): MessengerClientInitResult<TransactionPayController>['api'] {
   return {
+    createMoneyAccountDepositTransaction: (batchId: Hex) =>
+      createMoneyAccountDepositTransaction(moneyPayMessenger, batchId),
+    createMoneyAccountWithdrawTransaction: () =>
+      createMoneyAccountWithdrawTransaction(moneyPayMessenger),
     setTransactionPayIsMaxAmount: (
       transactionId: string,
       isMaxAmount: boolean,
@@ -63,6 +73,35 @@ function getApi(
         config.isPostQuote = true;
         if (options.isHyperliquidSource) {
           config.isHyperliquidSource = true;
+        }
+      });
+    },
+    setTransactionPayAccountOverride: (
+      transactionId: string,
+      accountOverride: Hex,
+    ) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        config.accountOverride = accountOverride;
+      });
+    },
+    setTransactionPayPaymentOverride: (
+      transactionId: string,
+      {
+        paymentOverride,
+        refundTo,
+      }: {
+        paymentOverride?: PaymentOverride;
+        refundTo?: Hex;
+      } = {},
+    ) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        config.paymentOverride = paymentOverride;
+        if (paymentOverride === undefined) {
+          config.refundTo = undefined;
+          return;
+        }
+        if (refundTo !== undefined) {
+          config.refundTo = refundTo;
         }
       });
     },

@@ -49,6 +49,40 @@ class Page {
 }`,
     },
     {
+      name: 'async arrow-function actions belong with other action methods',
+      code: `
+class Page {
+  private readonly aButton = '[data-testid="a"]';
+
+  private readonly rowValue = (i: number) => ({ css: \`row:\${i}\` });
+
+  constructor(driver: Driver) {
+    this.driver = driver;
+  }
+
+  approveModal = async () => {
+    await this.driver.clickElement(this.aButton);
+  };
+
+  async clickThing(): Promise<void> {}
+}`,
+    },
+    {
+      name: 'sync arrow-function that references this.driver is an action',
+      code: `
+class Page {
+  private readonly aButton = '[data-testid="a"]';
+
+  constructor(driver: Driver) {
+    this.driver = driver;
+  }
+
+  clickThing = () => {
+    this.driver.clickElement(this.aButton);
+  };
+}`,
+    },
+    {
       name: 'class with only selectors',
       code: `
 class Page {
@@ -95,6 +129,18 @@ class Page {
   async clickThing(): Promise<void> {}
 
   private readonly rowValue = (i: number) => ({ css: \`row:\${i}\` });
+}`,
+      errors: [{ messageId: 'groupOrder' }],
+    },
+    {
+      name: 'async arrow-function action declared before selectors',
+      code: `
+class Page {
+  approveModal = async () => {
+    await this.driver.clickElement(this.aButton);
+  };
+
+  private readonly aButton = '[data-testid="a"]';
 }`,
       errors: [{ messageId: 'groupOrder' }],
     },

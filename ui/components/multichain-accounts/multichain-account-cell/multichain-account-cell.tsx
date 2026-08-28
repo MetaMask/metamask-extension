@@ -9,13 +9,12 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   FontWeight,
+  SensitiveText,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import { SensitiveText } from '../../component-library';
-import { TextVariant as TextVariantDeprecated } from '../../../helpers/constants/design-system';
 import { ConnectedStatus } from '../../multichain/connected-status/connected-status';
 import {
   STATUS_CONNECTED,
@@ -56,12 +55,50 @@ const AccountCellAvatar = ({
   );
 };
 
+type BalanceDisplayProps = {
+  balance?: string;
+  isSubtitle?: boolean;
+  isHidden?: boolean;
+};
+
+const BalanceDisplay = ({
+  balance,
+  isSubtitle = false,
+  isHidden = false,
+}: BalanceDisplayProps) => {
+  // Account group balances are fetched lazily, so a cell may have no balance to
+  // show yet. Render nothing rather than a placeholder that reads as "no funds".
+  if (!balance) {
+    return null;
+  }
+
+  return (
+    <SensitiveText
+      className="multichain-account-cell__account-balance"
+      data-testid={isSubtitle ? 'balance-display-subtitle' : 'balance-display'}
+      variant={isSubtitle ? TextVariant.BodySm : TextVariant.BodyMd}
+      color={isSubtitle ? TextColor.TextAlternative : undefined}
+      fontWeight={isSubtitle ? undefined : FontWeight.Medium}
+      style={isSubtitle ? undefined : { marginRight: 8 }}
+      ellipsis
+      isHidden={isHidden}
+    >
+      {balance}
+    </SensitiveText>
+  );
+};
+
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
   accountName: string | React.ReactNode;
   accountNameString?: string; // Optional string version for accessibility labels
   onClick?: (accountGroupId: AccountGroupId) => void;
-  balance: string;
+  /**
+   * Formatted balance to display. Omit (or pass an empty string) when no
+   * balance is known yet so that nothing is rendered in its place.
+   */
+  balance?: string;
+  balancePosition?: 'end' | 'subtitle';
   startAccessory?: React.ReactNode;
   endAccessory?: React.ReactNode;
   selected?: boolean;
@@ -72,6 +109,11 @@ export type MultichainAccountCellProps = {
     | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   privacyMode?: boolean;
   showDefaultAddress?: boolean;
+  /**
+   * When true, the cell ignores clicks and shows reduced opacity so the user
+   * sees that an account switch is in progress (React useTransition pending).
+   */
+  pending?: boolean;
 };
 
 export const MultichainAccountCell = ({
@@ -80,6 +122,7 @@ export const MultichainAccountCell = ({
   accountNameString,
   onClick,
   balance,
+  balancePosition = 'end',
   startAccessory,
   endAccessory,
   selected = false,
@@ -88,8 +131,21 @@ export const MultichainAccountCell = ({
   connectionStatus,
   privacyMode = false,
   showDefaultAddress = false,
+  pending = false,
 }: MultichainAccountCellProps) => {
-  const handleClick = () => onClick?.(accountId);
+  const handleClick = () => {
+    if (pending) {
+      return;
+    }
+    onClick?.(accountId);
+  };
+
+  let cursor: React.CSSProperties['cursor'] = 'default';
+  if (pending) {
+    cursor = 'wait';
+  } else if (onClick) {
+    cursor = 'pointer';
+  }
 
   // Use accountNameString for aria-label, or fallback to accountName if it's a string
   const ariaLabelName =
@@ -105,15 +161,17 @@ export const MultichainAccountCell = ({
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
       style={{
-        cursor: onClick ? 'pointer' : 'default',
+        cursor,
         position: 'relative',
+        opacity: pending ? 0.6 : undefined,
       }}
       padding={4}
       gap={4}
       onClick={handleClick}
-      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}${selected && !startAccessory ? ' is-selected' : ''}`}
+      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}${selected && !startAccessory ? ' is-selected' : ''}${pending ? ' is-pending' : ''}`}
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
+      aria-busy={pending || undefined}
       backgroundColor={
         selected && !startAccessory
           ? BoxBackgroundColor.BackgroundMuted
@@ -138,9 +196,17 @@ export const MultichainAccountCell = ({
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
             ellipsis
+            data-testid={`multichain-account-cell-name-${ariaLabelName}`}
           >
             {accountName}
           </Text>
+          {balancePosition === 'subtitle' && (
+            <BalanceDisplay
+              balance={balance}
+              isHidden={privacyMode}
+              isSubtitle
+            />
+          )}
           {walletName && (
             <Text
               className="multichain-account-cell__account-name"
@@ -169,16 +235,9 @@ export const MultichainAccountCell = ({
         justifyContent={BoxJustifyContent.Center}
         style={{ flexShrink: 0 }}
       >
-        <SensitiveText
-          className="multichain-account-cell__account-balance"
-          data-testid="balance-display"
-          variant={TextVariantDeprecated.bodyMdMedium}
-          marginRight={2}
-          isHidden={privacyMode}
-          ellipsis
-        >
-          {balance}
-        </SensitiveText>
+        {balancePosition === 'end' && (
+          <BalanceDisplay balance={balance} isHidden={privacyMode} />
+        )}
         <Box
           className="multichain-account-cell__end_accessory"
           flexDirection={BoxFlexDirection.Row}

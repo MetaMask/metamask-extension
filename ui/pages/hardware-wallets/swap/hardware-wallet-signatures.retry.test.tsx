@@ -1,6 +1,5 @@
 import React from 'react';
 import { act, fireEvent } from '@testing-library/react';
-import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
 import configureStore from '../../../store/store';
@@ -13,7 +12,6 @@ import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
-import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import {
   ConnectionStatus,
   HardwareWalletType,
@@ -25,9 +23,6 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import HardwareWalletSignatures from '.';
 
 jest.mock('../../../hooks/bridge/useSubmitBridgeTransaction');
-jest.mock('../../../components/app/toast-listener/shared', () => ({
-  showSuccessToast: jest.fn(),
-}));
 jest.mock('./generic-hardware-wallet-animation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
@@ -69,12 +64,12 @@ function renderWithQuote(
     createBridgeMockStore({
       bridgeSliceOverrides: {
         fromToken: {
-          address: quote.quote.srcAsset.address,
-          symbol: quote.quote.srcAsset.symbol,
+          address: quote.quote.src.asset.assetId,
+          symbol: quote.quote.src.asset.symbol,
         },
         toToken: {
-          address: quote.quote.destAsset.address,
-          symbol: quote.quote.destAsset.symbol,
+          address: quote.quote.dest.asset.assetId,
+          symbol: quote.quote.dest.asset.symbol,
         },
       },
       bridgeStateOverrides: {

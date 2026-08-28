@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  QuoteResponseV1,
   RequestStatus,
   getNativeAssetForChainId,
   formatChainIdToCaip,
@@ -476,6 +475,7 @@ describe('BridgeCTAButton', () => {
         <HardwareWalletProvider>
           <BridgeCTAButton
             onFetchNewQuotes={jest.fn()}
+            inputPrimaryDenomination="fiat_value"
             onOpenAlertModals={
               isAlertModalProvided
                 ? mockOnOpenPriceImpactWarningModal
@@ -505,6 +505,7 @@ describe('BridgeCTAButton', () => {
       expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(
         expectedSubmitBridgeTransactionCalls,
       );
+      expect(useSubmitSpy).toHaveBeenCalledWith('fiat_value');
 
       useSubmitSpy.mockRestore();
     },
@@ -638,9 +639,11 @@ describe('BridgeCTAButton', () => {
         isEstimatedReturnLow: false,
         isTxAlertLoading: false,
         isStockMarketClosed: false,
+        isInOffHoursTrading: false,
         isPriceImpactWarning: false,
         isPriceImpactError: false,
         isQuoteExpired: false,
+        isDestAssetRequireActivate: false,
         ...validationErrors,
       });
       const { findByRole, getByText } = renderWithProvider(
@@ -709,7 +712,9 @@ describe('BridgeCTAButton', () => {
         isPriceImpactWarning: false,
         isPriceImpactError: false,
         isStockMarketClosed: true,
+        isInOffHoursTrading: false,
         isQuoteExpired: false,
+        isDestAssetRequireActivate: false,
       });
       const { container } = renderWithProvider(
         <HardwareWalletProvider>
@@ -835,7 +840,9 @@ describe('BridgeCTAButton', () => {
       isPriceImpactWarning: false,
       isPriceImpactError: false,
       isStockMarketClosed: true,
+      isInOffHoursTrading: false,
       isQuoteExpired: true,
+      isDestAssetRequireActivate: false,
     });
     const { getByText } = renderWithProvider(
       <HardwareWalletProvider>
@@ -942,9 +949,15 @@ describe('BridgeCTAButton', () => {
             ...quote,
             quote: {
               ...quote.quote,
-              priceData: { ...quote.quote.priceData, priceImpact },
+              priceData: {
+                ...quote.quote.priceData,
+                priceImpact: {
+                  ...quote.quote.priceData?.priceImpact,
+                  amount: priceImpact,
+                },
+              },
             },
-          })) as unknown as QuoteResponseV1[],
+          })),
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.LOADING,
         },

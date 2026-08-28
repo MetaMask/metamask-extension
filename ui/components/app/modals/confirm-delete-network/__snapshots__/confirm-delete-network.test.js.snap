@@ -27,7 +27,7 @@ exports[`Confirm Delete Network should match snapshot 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start bg-default flex max-h-full w-full rounded-lg motion-safe:animate-slide-up max-w-[360px] overflow-hidden p-4 shadow-lg"
+          class="flex-col items-stretch justify-start border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg motion-safe:animate-slide-up max-w-[360px] overflow-hidden p-4 shadow-lg"
           role="dialog"
         >
           <header

@@ -6,10 +6,10 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { Anvil } from '../../seeder/anvil';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -105,11 +105,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         const settingsPage = new SettingsPage(driver);
         const accountListPage = new AccountListPage(driver);
 
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          NETWORK_NAME_MAINNET,
-        );
+        await switchToNetworkFromNetworkSelect(driver, NETWORK_NAME_MAINNET);
 
         await headerNavbar.openSettingsPage();
         await settingsPage.toggleBalanceSetting();
@@ -125,11 +121,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         });
         await accountListPage.closeMultichainAccountsPage();
 
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          NETWORK_NAME_SEPOLIA,
-        );
+        await switchToNetworkFromNetworkSelect(driver, NETWORK_NAME_SEPOLIA);
 
         await headerNavbar.openSettingsPage();
         await settingsPage.goToDeveloperOptions();

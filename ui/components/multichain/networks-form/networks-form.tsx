@@ -2,11 +2,12 @@ import log from 'loglevel';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Button as DSButton,
-  ButtonSize as DSButtonSize,
-  ButtonVariant as DSButtonVariant,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   IconName,
-  Tag,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -26,6 +27,7 @@ import {
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
 import {
   decimalToHex,
   hexToDecimal,
@@ -49,9 +51,6 @@ import {
 } from '../../../store/actions';
 import {
   Box,
-  ButtonLink,
-  ButtonPrimary,
-  ButtonPrimarySize,
   FormTextField,
   FormTextFieldSize,
   HelpText,
@@ -133,6 +132,24 @@ export const NetworksForm = ({
     rpcUrls.defaultRpcEndpointIndex === undefined
       ? undefined
       : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
+
+  const networkChainIdHex = chainId === '' ? undefined : toHex(chainId);
+  const chainFailoverUrls = networkChainIdHex
+    ? getFailoverUrlsForChainId(networkChainIdHex)
+    : [];
+
+  // Failover only applies to Infura RPC endpoints. NetworkController wires
+  // failover URLs solely for Infura endpoints; applying them to custom RPCs
+  // would leak requests to the failover, so it does not. Only surface failover
+  // in the form for Infura endpoints so the UI matches the actual behaviour.
+  const failoverUrlsForEndpoint = (endpoint?: { url: string }) => {
+    return endpoint?.url &&
+      new URL(endpoint.url).hostname.endsWith('.infura.io')
+      ? chainFailoverUrls
+      : [];
+  };
+
+  const defaultFailoverUrls = failoverUrlsForEndpoint(defaultRpcEndpoint);
 
   const { safeChains } = useSafeChains();
 
@@ -469,9 +486,9 @@ export const NetworksForm = ({
         paddingBottom={2}
       >
         {onAddFromChainlist && !existingNetwork ? (
-          <DSButton
-            variant={DSButtonVariant.Secondary}
-            size={DSButtonSize.Lg}
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
             startIconName={IconName.FlashFilled}
             isFullWidth
             onClick={onAddFromChainlist}
@@ -479,7 +496,7 @@ export const NetworksForm = ({
             data-testid="network-form-add-from-chainlist"
           >
             {t('addFromChainlist')}
-          </DSButton>
+          </Button>
         ) : null}
 
         <FormTextField
@@ -508,19 +525,15 @@ export const NetworksForm = ({
                     data-testid="network-form-name-suggestion"
                   >
                     {t('suggestedTokenName')}
-                    <ButtonLink
-                      as="button"
-                      variant={TextVariant.bodySm}
-                      color={TextColor.primaryDefault}
+                    <TextButton
+                      size={TextButtonSize.BodySm}
                       onClick={() => {
                         setName(suggestedName);
                       }}
-                      paddingLeft={1}
-                      paddingRight={1}
-                      style={{ verticalAlign: 'baseline' }}
+                      className="px-1 align-baseline"
                     >
                       {suggestedName}
-                    </ButtonLink>
+                    </TextButton>
                   </Text>
                 )}
               </>
@@ -553,11 +566,23 @@ export const NetworksForm = ({
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
-          renderItem={(item, isList) =>
-            isList || item?.name || item?.type === RpcEndpointType.Infura ? (
-              <RpcListItem rpcEndpoint={item} />
+          renderItem={(item, isList) => {
+            const failoverUrls = failoverUrlsForEndpoint(item);
+            return isList ||
+              item?.name ||
+              item?.type === RpcEndpointType.Infura ||
+              failoverUrls.length > 0 ? (
+              <RpcListItem
+                rpcEndpoint={{
+                  ...item,
+                  failoverUrls,
+                }}
+              />
             ) : (
+              // A custom (non Infura) endpoint never has a failover, so it just
+              // renders the URL with no failover tag.
               <Text
+                as="span"
                 ellipsis
                 variant={TextVariant.bodyMd}
                 paddingTop={3}
@@ -567,14 +592,9 @@ export const NetworksForm = ({
                 gap={1}
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-                {isRpcFailoverEnabled &&
-                item.failoverUrls &&
-                item.failoverUrls.length > 0 ? (
-                  <Tag className="inline-flex">{t('failover')}</Tag>
-                ) : null}
               </Text>
-            )
-          }
+            );
+          }}
           renderTooltip={(item, isList) => {
             const url = stripKeyFromInfuraUrl(item.url);
             return url.length > (isList ? 37 : 35) ? url : undefined;
@@ -612,10 +632,7 @@ export const NetworksForm = ({
           </Box>
         )}
 
-        {isRpcFailoverEnabled &&
-        defaultRpcEndpoint &&
-        defaultRpcEndpoint.failoverUrls &&
-        defaultRpcEndpoint.failoverUrls.length > 0 ? (
+        {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}
@@ -628,7 +645,7 @@ export const NetworksForm = ({
             textFieldProps={{
               borderRadius: BorderRadius.LG,
             }}
-            value={onlyKeepHost(defaultRpcEndpoint.failoverUrls[0])}
+            value={onlyKeepHost(defaultFailoverUrls[0])}
             disabled={true}
           />
         ) : null}
@@ -675,10 +692,8 @@ export const NetworksForm = ({
               data-testid="network-form-chain-id-error"
             >
               {t('updateOrEditNetworkInformations')}{' '}
-              <ButtonLink
-                as="button"
-                variant={TextVariant.bodySm}
-                color={TextColor.primaryDefault}
+              <TextButton
+                size={TextButtonSize.BodySm}
                 onClick={() => {
                   const chainIdHex = toHex(chainId);
                   if (chainIdHex) {
@@ -692,7 +707,7 @@ export const NetworksForm = ({
                 }}
               >
                 {t('editNetworkLink')}
-              </ButtonLink>
+              </TextButton>
             </HelpText>
           </Box>
         ) : null}
@@ -711,19 +726,15 @@ export const NetworksForm = ({
                 data-testid="network-form-ticker-suggestion"
               >
                 {t('suggestedCurrencySymbol')}
-                <ButtonLink
-                  as="button"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.primaryDefault}
+                <TextButton
+                  size={TextButtonSize.BodySm}
                   onClick={() => {
                     setTicker(suggestedTicker);
                   }}
-                  paddingLeft={1}
-                  paddingRight={1}
-                  style={{ verticalAlign: 'baseline' }}
+                  className="px-1 align-baseline"
                 >
                   {suggestedTicker}
-                </ButtonLink>
+                </TextButton>
               </Text>
             ) : null
           }
@@ -815,26 +826,27 @@ export const NetworksForm = ({
         width={BlockSize.Full}
       >
         {usePageFooterStyle ? (
-          <DSButton
-            variant={DSButtonVariant.Primary}
-            size={DSButtonSize.Lg}
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
             isDisabled={isSaveDisabled}
             onClick={onSubmit}
             className="w-full rounded-xl"
             data-testid="page-container-footer-next"
           >
             {t('save')}
-          </DSButton>
+          </Button>
         ) : (
-          <ButtonPrimary
-            disabled={isSaveDisabled}
+          <Button
+            variant={ButtonVariant.Primary}
+            isDisabled={isSaveDisabled}
             onClick={onSubmit}
-            size={ButtonPrimarySize.Lg}
-            width={BlockSize.Full}
+            size={ButtonSize.Lg}
+            isFullWidth
             data-testid="page-container-footer-next"
           >
             {t('save')}
-          </ButtonPrimary>
+          </Button>
         )}
       </Box>
     </Box>

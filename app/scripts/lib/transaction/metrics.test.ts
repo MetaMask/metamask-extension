@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
 import {
+  TransactionContainerType,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -137,6 +138,36 @@ describe('transaction metrics handlers', () => {
     );
   });
 
+  it('tracks original contract details for enforced simulations', async () => {
+    const request = createRequest();
+    await handleTransactionApproved(request, {
+      transactionMeta: createTxMeta({
+        status: TransactionStatus.approved,
+        type: TransactionType.contractInteraction,
+        containerTypes: [TransactionContainerType.EnforcedSimulations],
+        txParams: {
+          ...createTxMeta().txParams,
+          to: '0xdb9b1e94b5b69df7e401ddbede43491141047db3',
+          data: '0x1cff79cd',
+        },
+        txParamsOriginal: {
+          ...createTxMeta().txParams,
+          to: '0x3333333333333333333333333333333333333333',
+          data: '0xa9059cbb',
+        },
+      }),
+    });
+
+    const payload = trackEventMock.mock.calls[0][0];
+    expect(payload.properties).toMatchObject({
+      enforced_simulation_submitted_enabled: true,
+      transaction_contract_address: [
+        '0x3333333333333333333333333333333333333333',
+      ],
+      transaction_contract_method_4byte: '0xa9059cbb',
+    });
+  });
+
   it('tracks rejected event', async () => {
     const request = createRequest();
     const transactionMeta = createTxMeta({
@@ -206,7 +237,11 @@ describe('transaction metrics handlers', () => {
   it('merges confirmation metrics into event payload', async () => {
     const request = createRequest();
     (request.getTransactionUIMetricsFragment as jest.Mock).mockReturnValue({
-      properties: { gas_edit_attempted: 'basic' },
+      properties: {
+        gas_edit_attempted: 'basic',
+        enforced_simulations_default_enabled: true,
+        enforced_simulation_toggle_count: 2,
+      },
       sensitiveProperties: { custom_sensitive: 'x' },
     });
 
@@ -214,6 +249,8 @@ describe('transaction metrics handlers', () => {
 
     const payload = trackEventMock.mock.calls[0][0];
     expect(payload.properties.gas_edit_attempted).toBe('basic');
+    expect(payload.properties.enforced_simulations_default_enabled).toBe(true);
+    expect(payload.properties.enforced_simulation_toggle_count).toBe(2);
     expect(payload.sensitiveProperties.custom_sensitive).toBe('x');
   });
 
@@ -288,15 +325,23 @@ describe('transaction metrics handlers', () => {
     expect(payload.name).toBe(MetaMetricsEventName.SwapCompleted);
   });
 
-  it('preserves batch arrays without index-based merge corruption', async () => {
+  it('preserves enforced simulation batch contract details', async () => {
     const request = createRequest();
     (request.getMethodData as jest.Mock)
+      .mockResolvedValueOnce({ name: 'redeemDelegations' })
       .mockResolvedValueOnce({ name: 'approve' })
       .mockResolvedValueOnce({ name: 'transfer' });
 
-    await handleTransactionAdded(request, {
+    await handleTransactionApproved(request, {
       transactionMeta: createTxMeta({
+        status: TransactionStatus.approved,
+        containerTypes: [TransactionContainerType.EnforcedSimulations],
         txParams: {
+          ...createTxMeta().txParams,
+          to: '0xdb9b1e94b5b69df7e401ddbede43491141047db3',
+          data: '0x1cff79cd',
+        },
+        txParamsOriginal: {
           ...createTxMeta().txParams,
           to: '0x9999999999999999999999999999999999999999',
           data: undefined,

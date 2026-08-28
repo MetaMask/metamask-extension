@@ -1,10 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const { escapeRegExp } = require('lodash');
+const { RulePriority } = require('mockttp');
 
 const {
   ACCOUNTS_PROD_API_BASE_URL,
 } = require('../../shared/constants/accounts');
+const { REWARDS_API_URL } = require('../../shared/constants/rewards');
 const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
@@ -155,12 +157,103 @@ const BITCOIN_DISCOVERY_FEE_ESTIMATES = {
   144: 1,
 };
 
+// The canonical Solana mainnet genesis hash. `getGenesisHash` is the network
+// identity check the Solana snap runs during discovery — like Bitcoin's
+// `/block-height/0`, returning any other value makes the snap reject the network.
+const SOLANA_MAINNET_GENESIS_HASH =
+  '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
+
+const SOLANA_RPC_CONTEXT = { apiVersion: '2.0.18', slot: 308460925 };
+
+// Well-formed empty/identity results for every JSON-RPC method the Solana snap
+// calls during account discovery. Mirrors the shapes in
+// `test/e2e/tests/solana/common-solana.ts`. Returning these (instead of letting
+// the requests fall through to the empty-200 catch-all) lets discovery resolve
+// to "no extra accounts" in a single pass instead of a retry storm.
+const SOLANA_DISCOVERY_RPC_RESULTS = {
+  getGenesisHash: SOLANA_MAINNET_GENESIS_HASH,
+  getHealth: 'ok',
+  getVersion: { 'solana-core': '2.0.18', 'feature-set': 3271415109 },
+  getSlot: SOLANA_RPC_CONTEXT.slot,
+  getBalance: { context: SOLANA_RPC_CONTEXT, value: 0 },
+  getAccountInfo: { context: SOLANA_RPC_CONTEXT, value: null },
+  getMultipleAccounts: { context: SOLANA_RPC_CONTEXT, value: [] },
+  getProgramAccounts: [],
+  getTokenAccountsByOwner: { context: SOLANA_RPC_CONTEXT, value: [] },
+  getTokenAccountBalance: {
+    context: SOLANA_RPC_CONTEXT,
+    value: { amount: '0', decimals: 9, uiAmount: null, uiAmountString: '0' },
+  },
+  getLatestBlockhash: {
+    context: SOLANA_RPC_CONTEXT,
+    value: {
+      blockhash: '6E9FiVcuvavWyKTfYC7N9ezJWkNgJVQsroDTHvqApncg',
+      lastValidBlockHeight: 341034515,
+    },
+  },
+  getMinimumBalanceForRentExemption: 890880,
+  getFeeForMessage: { context: SOLANA_RPC_CONTEXT, value: 5000 },
+  getEpochInfo: {
+    absoluteSlot: 308460925,
+    blockHeight: 286665030,
+    epoch: 762,
+    slotIndex: 156925,
+    slotsInEpoch: 432000,
+    transactionCount: 386021115957,
+  },
+};
+
+// Every host the Tron snap sends provider requests to: mainnet via Infura or
+// TronGrid, plus the Shasta/Nile testnets (current `*.api.trongrid.io` and
+// legacy `*.trongrid.io` hostnames).
+const TRON_PROVIDER_HOSTS =
+  'https:\\/\\/(?:tron-mainnet\\.infura\\.io\\/v3\\/[^/]+|(?:api|shasta\\.api|nile\\.api|shasta|nile)\\.trongrid\\.io)';
+
+// TronGrid account endpoints polled during discovery and the snap's account
+// sync cronjob. Group 1 is the base58 address, group 2 the list-endpoint
+// suffix (`/transactions`, `/transactions/trc20`, or `/trc20/balance`).
+const TRON_ACCOUNT_URL_RE = new RegExp(
+  `^${TRON_PROVIDER_HOSTS}\\/v1\\/accounts\\/([A-Za-z0-9]{20,})(\\/transactions(?:\\/trc20)?|\\/trc20\\/balance)?(\\?.*)?$`,
+  'u',
+);
+
+// The JSON-RPC endpoint TronWeb hits when initialising a network provider.
+const TRON_JSONRPC_URL_RE = new RegExp(
+  `^${TRON_PROVIDER_HOSTS}\\/jsonrpc$`,
+  'u',
+);
+
+// Zero-balance TronGrid account, mirroring the shape produced by
+// `createTronGridAccountResponse` in `test/e2e/seeder/tron/assets.ts`, which
+// the snap's response validation is known to accept.
+const tronEmptyAccountResponse = (address) => ({
+  data: [
+    {
+      address,
+      assetV2: [],
+      balance: 0,
+      free_asset_net_usageV2: [],
+      frozenV2: [],
+      trc20: [],
+    },
+  ],
+  success: true,
+  meta: { at: Date.now(), page_size: 1 },
+});
+
+const tronEmptyListResponse = () => ({
+  data: [],
+  success: true,
+  meta: { at: Date.now(), page_size: 0 },
+});
+
 /**
  * Registers default non-EVM discovery mocks for the shared E2E environment.
  *
- * These handlers keep Bitcoin esplora discovery and Solana signature lookups
- * from falling through to the generic empty-200 catch-all, which otherwise
- * causes provider retries and slow non-EVM icon rendering in multichain flows.
+ * These handlers keep Bitcoin esplora discovery, Solana signature lookups, and
+ * Tron account polling from falling through to the generic empty-200
+ * catch-all, which otherwise causes provider retries and slow non-EVM icon
+ * rendering in multichain flows.
  *
  * @param {Mockttp} server - The mock server used for E2E network mocks.
  * @returns {Promise<void>}
@@ -262,6 +355,66 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
         result: [],
       },
     }));
+
+  // The Solana snap calls many more JSON-RPC methods than `getSignaturesForAddress`
+  // during discovery (balance, account info, blockhash, the `getGenesisHash`
+  // network check, …). Mock each with a well-formed empty/identity result so the
+  // request doesn't fall through to the empty-200 catch-all and trigger a retry
+  // storm. Registered at FALLBACK priority: mockttp always prefers a matching
+  // DEFAULT-priority rule (`.always()` rules included), so test-specific mocks
+  // that need richer Solana responses (e.g. the solana-wallet-standard specs)
+  // take precedence, and these defaults only answer methods no spec mocked.
+  // They still beat the empty-200 catch-all, which is also FALLBACK priority
+  // but loses to these rules within the set (`.always()` wins the first pass).
+  for (const [method, result] of Object.entries(SOLANA_DISCOVERY_RPC_RESULTS)) {
+    await server
+      .forPost(/^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u)
+      .withJsonBodyIncluding({ method })
+      .asPriority(RulePriority.FALLBACK)
+      .always()
+      .thenCallback(async (request) => {
+        const body = await request.body.getJson();
+        return {
+          statusCode: 200,
+          json: { id: body?.id ?? '1337', jsonrpc: '2.0', result },
+        };
+      });
+  }
+
+  // The Tron snap (preinstalled, v3+) polls TronGrid account state during
+  // BIP44 discovery and its 60-second sync cronjob, and TronWeb POSTs to
+  // `/jsonrpc` when initialising the Shasta/Nile testnet providers. None of
+  // these had shared mocks, so in flows without Tron-specific mocks (e.g. the
+  // benchmarks) every call fell to the empty-200 catch-all and retry-stormed
+  // the snap's service policy. Registered at FALLBACK priority like the
+  // Solana defaults above so Tron-specific spec mocks take precedence.
+  await server
+    .forGet(TRON_ACCOUNT_URL_RE)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback((request) => {
+      const match = request.url.match(TRON_ACCOUNT_URL_RE);
+      const address = match?.[1] ?? '';
+      const isListEndpoint = Boolean(match?.[2]);
+      return {
+        statusCode: 200,
+        json: isListEndpoint
+          ? tronEmptyListResponse()
+          : tronEmptyAccountResponse(address),
+      };
+    });
+
+  await server
+    .forPost(TRON_JSONRPC_URL_RE)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback(async (request) => {
+      const body = await request.body.getJson();
+      return {
+        statusCode: 200,
+        json: { jsonrpc: '2.0', id: body?.id ?? 1, result: null },
+      };
+    });
 }
 
 /**
@@ -324,31 +477,38 @@ async function setupMocking(
 ) {
   let numNetworkReqs = 0;
   const privacyReport = new Set();
-  await server.forAnyRequest().thenPassThrough({
-    beforeRequest: ({ headers: { host }, url }) => {
-      if (!host || !url) {
+  // FALLBACK priority so that this catch-all only handles requests no other
+  // DEFAULT-priority mock matches. This also lets other FALLBACK-priority
+  // defaults (e.g. the Solana discovery mocks below) take precedence over the
+  // catch-all while still yielding to test-specific and shared DEFAULT mocks.
+  await server
+    .forAnyRequest()
+    .asPriority(RulePriority.FALLBACK)
+    .thenPassThrough({
+      beforeRequest: ({ headers: { host }, url }) => {
+        if (!host || !url) {
+          return {
+            response: {
+              statusCode: 200,
+            },
+          };
+        }
+        if (blocklistedHosts.includes(host)) {
+          return {
+            url: 'http://localhost:8545',
+          };
+        } else if (ALLOWLISTED_URLS.includes(url)) {
+          // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
+          return {};
+        }
         return {
+          // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
           response: {
             statusCode: 200,
           },
         };
-      }
-      if (blocklistedHosts.includes(host)) {
-        return {
-          url: 'http://localhost:8545',
-        };
-      } else if (ALLOWLISTED_URLS.includes(url)) {
-        // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
-        return {};
-      }
-      return {
-        // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
-        response: {
-          statusCode: 200,
-        },
-      };
-    },
-  });
+      },
+    });
 
   function getNetworkReport() {
     return { numNetworkReqs };
@@ -419,11 +579,13 @@ async function setupMocking(
     });
 
   // Rewards API
-  await server
-    .forPost('https://rewards.uat-api.cx.metamask.io/public/rewards/ois')
-    .thenCallback(() => {
-      return { statusCode: 200, json: { ois: [], sids: [] } };
-    });
+  for (const rewardsApiUrl of [REWARDS_API_URL.UAT, REWARDS_API_URL.PRD]) {
+    await server
+      .forPost(`${rewardsApiUrl}/public/rewards/ois`)
+      .thenCallback(() => {
+        return { statusCode: 200, json: { ois: [], sids: [] } };
+      });
+  }
 
   // User Profile Lineage
   await server
@@ -1611,6 +1773,49 @@ async function setupMocking(
     .always()
     .thenCallback(() => ({ statusCode: 200, json: [] }));
 
+  // Veda performance API: vault APY, fetched by MoneyAccountBalanceService
+  // whenever a Money Account surface renders. A minimal valid response stops
+  // TanStack Query from retrying against the catch-all.
+  await server
+    .forGet(/^https:\/\/api\.sevenseas\.capital\/performance\/[^/]+\/[^/]+$/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        Response: {
+          apy: 0.045,
+          timestamp: '2026-01-01T00:00:00Z',
+        },
+      },
+    }));
+
+  // Money API: positions for a Money account, fetched as the API leg of
+  // MoneyAccountBalanceService:fetchBalanceWithFallback. A zero balance
+  // satisfies the service's balance invariant (musd + vmusd === total).
+  await server
+    .forGet(/^https:\/\/money\.api\.cx\.metamask\.io\/v1\/positions\/[^/]+$/u)
+    .always()
+    .thenCallback((req) => {
+      const url = new URL(req.url);
+      const address = url.pathname.split('/').pop();
+      return {
+        statusCode: 200,
+        json: {
+          address,
+          as_of_block: 1,
+          as_of_timestamp: '2026-01-01T00:00:00Z',
+          data_freshness: 'live',
+          indexer_lag_seconds: 0,
+          balance: {
+            musd_balance: '0',
+            vmusd_value_in_musd: '0',
+            total_balance: '0',
+          },
+          positions: [],
+        },
+      };
+    });
+
   // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
   // Default: 25 ETH native per requested chain for the default fixture account. Override via
   // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a custom fiat total.
@@ -1781,6 +1986,20 @@ async function setupMocking(
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
         },
+      };
+    });
+  }
+
+  // Geolocation API v2 (GeolocationController -> GeolocationApiService).
+  // Mirrors the legacy on-ramp mock above (US-TX) but in the v2 JSON shape.
+  for (const host of [
+    'geolocation.api.cx.metamask.io',
+    'geolocation.dev-api.cx.metamask.io',
+  ]) {
+    await server.forGet(`https://${host}/v2/geolocation`).thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { country: 'US', region: 'TX', timezone: 'America/Chicago' },
       };
     });
   }
@@ -2004,13 +2223,27 @@ async function setupMocking(
         const coin = (parsed && parsed.req && parsed.req.coin) || 'BTC';
         const prices = { BTC: '50000', ETH: '3000', AVAX: '25' };
         const price = prices[coin] || '100';
-        const now = Date.now();
+        // Respect endTime so load-more fetches don't overlap with existing candles.
+        // Use 40 candles (> DEFAULT_CANDLES=30 + EDGE_DETECTION_THRESHOLD=5) so the
+        // chart's initial visible range starts above the edge-detection threshold and
+        // onNeedMoreHistory does not fire immediately on first render.
+        //
+        // Place the LAST candle one full interval before endTime: endTime is
+        // oldestExistingCandle.time - 1 ms, which truncates to the same second as
+        // the oldest existing candle. Placing the last returned candle at
+        // endTime - interval guarantees at least one full period gap between the
+        // "older" batch and the existing candles so setData never receives
+        // duplicate second-level timestamps.
+        const endTime =
+          (parsed && parsed.req && parsed.req.endTime) || Date.now();
         const interval = 300000; // 5m in ms
+        const count = 40;
+        const lastCandleTime = endTime - interval;
         const candles = [];
-        for (let i = 4; i >= 0; i--) {
+        for (let i = count - 1; i >= 0; i--) {
           candles.push({
-            t: now - i * interval,
-            T: now - i * interval + interval - 1,
+            t: lastCandleTime - i * interval,
+            T: lastCandleTime - i * interval + interval - 1,
             s: coin,
             i: (parsed && parsed.req && parsed.req.interval) || '5m',
             o: price,

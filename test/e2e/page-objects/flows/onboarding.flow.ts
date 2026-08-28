@@ -10,9 +10,9 @@ import SetupPasskeyPage from '../pages/onboarding/setup-passkey-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
-import LoginPage from '../pages/login-page';
+import LoginPage from '../pages/onboarding/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 
@@ -41,8 +41,14 @@ export const handleSidepanelPostOnboarding = async (
     return;
   }
 
-  // Give the onboarding completion time to process (needed for sidepanel)
-  await driver.delay(2000);
+  // waitUntil completedOnboarding is true, then navigate once
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return Boolean(uiState?.metamask?.completedOnboarding);
+    },
+    { timeout: 30000, interval: 500 },
+  );
 
   // Navigate directly to home page in current window
   // With sidepanel enabled, this ensures we load home page in the test window

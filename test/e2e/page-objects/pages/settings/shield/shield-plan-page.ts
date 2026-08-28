@@ -1,9 +1,20 @@
-// Enhanced ShieldPlanPage class
 import { Driver } from '../../../../webdriver/driver';
 
+/**
+ * Shield plan picker: annual/monthly and continue into checkout.
+ *
+ * Screen: `#/shield-plan`, reached from the Shield entry modal or from
+ * manage-plan flows off `ShieldDetailPage`.
+ * Owns: plan page load, annual/monthly selection (card vs crypto monthly),
+ * continue, back, and the combined subscribe helper.
+ * Boundaries: plan choice only. After continue, Stripe/checkout or
+ * `ShieldSubscriptionApprovePage` takes over; membership detail is
+ * `ShieldDetailPage`.
+ * Related: `ShieldDetailPage`, `ShieldSubscriptionApprovePage`.
+ *
+ * @see ui/pages/shield/plan/shield-plan.tsx
+ */
 export default class ShieldPlanPage {
-  private readonly driver: Driver;
-
   private readonly annualPlanButton =
     '[data-testid="shield-plan-annual-button"]';
 
@@ -12,10 +23,16 @@ export default class ShieldPlanPage {
   private readonly continueButton =
     '[data-testid="shield-plan-continue-button"]';
 
+  private readonly driver: Driver;
+
   private readonly monthlyPlanButton = (paymentMethod: 'card' | 'crypto') =>
     paymentMethod === 'crypto'
       ? '[data-testid="shield-plan-monthly*-button"]'
       : '[data-testid="shield-plan-monthly-button"]';
+
+  private readonly page = {
+    testId: 'parent-selector-shield-plan-page',
+  };
 
   private readonly shieldPlanPageAnnualPlan = {
     text: 'Annual',
@@ -43,6 +60,7 @@ export default class ShieldPlanPage {
       this.shieldPlanPageMonthlyPlan,
     ]);
     await this.driver.waitForMultipleSelectors([
+      this.page,
       this.shieldPlanPageTitle,
       this.shieldPlanPageAnnualPlan,
       this.shieldPlanPageMonthlyPlan,
@@ -53,18 +71,6 @@ export default class ShieldPlanPage {
   async clickBackButton(): Promise<void> {
     console.log('Clicking back button on Shield plan page');
     await this.driver.clickElement(this.backButton);
-  }
-
-  async selectAnnualPlan(): Promise<void> {
-    console.log('Selecting Annual plan');
-    await this.driver.clickElement(this.annualPlanButton);
-  }
-
-  async selectMonthlyPlan(
-    paymentMethod: 'card' | 'crypto' = 'card',
-  ): Promise<void> {
-    console.log(`Selecting Monthly plan (${paymentMethod})`);
-    await this.driver.clickElement(this.monthlyPlanButton(paymentMethod));
   }
 
   async clickContinueButton(): Promise<void> {
@@ -88,5 +94,17 @@ export default class ShieldPlanPage {
     }
 
     await this.clickContinueButton();
+  }
+
+  async selectAnnualPlan(): Promise<void> {
+    console.log('Selecting Annual plan');
+    await this.driver.clickElement(this.annualPlanButton);
+  }
+
+  async selectMonthlyPlan(
+    paymentMethod: 'card' | 'crypto' = 'card',
+  ): Promise<void> {
+    console.log(`Selecting Monthly plan (${paymentMethod})`);
+    await this.driver.clickElement(this.monthlyPlanButton(paymentMethod));
   }
 }

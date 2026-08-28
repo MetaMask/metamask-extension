@@ -16,13 +16,6 @@ import {
 } from '../../../../../helpers/constants/routes';
 import AssetListControlBar from './asset-list-control-bar';
 
-let mockIsNetworkManagementEnabled = true;
-
-jest.mock('../../../../../selectors/multichain/feature-flags', () => ({
-  ...jest.requireActual('../../../../../selectors/multichain/feature-flags'),
-  getIsNetworkManagementEnabled: () => mockIsNetworkManagementEnabled,
-}));
-
 type TooltipProps = {
   children: React.ReactNode;
   disabled?: boolean;
@@ -131,7 +124,6 @@ const addSolanaAccountToSelectedGroup = (
 
 describe('NFTs options', () => {
   afterEach(() => {
-    mockIsNetworkManagementEnabled = true;
     jest.clearAllMocks();
   });
 
@@ -497,19 +489,43 @@ describe('NFTs options', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
   });
 
-  it('opens the legacy Network Manager modal when network management feature flag is disabled', async () => {
-    mockIsNetworkManagementEnabled = false;
+  it('shows a refresh-only menu when onRefresh is provided and import token button is hidden', async () => {
+    const onRefresh = jest.fn();
     const state = createMockState();
     const store = configureMockStore([thunk])(state);
 
-    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
-
-    fireEvent.click(await findByTestId('sort-by-networks'));
-
-    expect(store.getActions()).toContainEqual(
-      expect.objectContaining({
-        payload: { name: 'NETWORK_MANAGER' },
-      }),
+    const { findByTestId, queryByTestId } = renderWithProvider(
+      <AssetListControlBar
+        showImportTokenButton={false}
+        onRefresh={onRefresh}
+      />,
+      store,
     );
+
+    const actionButton = await findByTestId(
+      'asset-list-control-bar-action-button',
+    );
+    fireEvent.click(actionButton);
+
+    const refreshListButton = await findByTestId('refreshList__button');
+    expect(refreshListButton).toHaveTextContent(messages.refreshList.message);
+    expect(queryByTestId('manageTokens__button')).not.toBeInTheDocument();
+
+    fireEvent.click(refreshListButton);
+    expect(onRefresh).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not show the more-options menu when import token button is hidden and onRefresh is omitted', async () => {
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
+
+    const { queryByTestId } = renderWithProvider(
+      <AssetListControlBar showImportTokenButton={false} />,
+      store,
+    );
+
+    expect(
+      queryByTestId('asset-list-control-bar-action-button'),
+    ).not.toBeInTheDocument();
   });
 });

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
 import {
   act,
@@ -176,6 +177,32 @@ jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
     mockUsePerpsOrderFees(options),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => input,
+  }),
+}));
+
+// Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
+// button_clicked / button_location props the modal forwards.
+const mockCloseScreenViewedOptions: {
+  eventName?: unknown;
+  properties?: Record<string, unknown>;
+}[] = [];
+const mockCloseImperativeTrack = jest.fn();
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
+  usePerpsEventTracking: (options?: {
+    eventName?: unknown;
+    properties?: Record<string, unknown>;
+  }) => {
+    if (options) {
+      mockCloseScreenViewedOptions.push(options);
+      return undefined;
+    }
+    return { track: mockCloseImperativeTrack };
+  },
+}));
+
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     CLOSE_FAILED: 'perpsToastCloseFailed',
@@ -193,6 +220,24 @@ jest.mock('../perps-toast', () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),
 }));
+
+/**
+ * Runs realistic user interactions with their React updates contained.
+ *
+ * `userEvent` resolves between keystrokes, so the re-renders it triggers land
+ * outside React's test scope and are reported as act warnings. Wrapping the
+ * whole interaction keeps the realistic input behaviour without adding noise.
+ *
+ * @param interact - Callback issuing the userEvent calls.
+ */
+const interactAs = async (
+  interact: (user: ReturnType<typeof userEvent.setup>) => Promise<void>,
+) => {
+  const user = userEvent.setup();
+  await act(async () => {
+    await interact(user);
+  });
+};
 
 const mockStore = configureStore({
   metamask: {
@@ -216,6 +261,7 @@ const basePosition = mockPositions[0];
 describe('ClosePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockCloseScreenViewedOptions.length = 0;
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.00145,
@@ -266,6 +312,85 @@ describe('ClosePositionModal', () => {
       fireEvent.click(screen.getByTestId('perps-close-position-back-button'));
 
       expect(onClose).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('abandon tracking', () => {
+    it('reports leverage_used when the modal is dismissed without submitting', async () => {
+      const { unmount } = renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      // Dismissing without submitting is the real abandonment path: the host
+      // unmounts the modal and the hook's cleanup emits (deferred one macrotask
+      // so a StrictMode probe can cancel it).
+      unmount();
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      const abandonCall = mockCloseImperativeTrack.mock.calls.find(
+        ([event, properties]) =>
+          event === 'Perp UI Interaction' &&
+          properties?.action === 'abandon_order',
+      );
+      expect(abandonCall?.[1]).toEqual(
+        expect.objectContaining({
+          asset: basePosition.symbol,
+          leverage_used: basePosition.leverage.value,
+        }),
+      );
+    });
+  });
+
+  describe('position_close screen view', () => {
+    it('surfaces button_clicked and button_location from props', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          buttonClicked="reduce_exposure"
+          buttonLocation="asset_details"
+        />,
+        mockStore,
+      );
+
+      const screenView = mockCloseScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'position_close',
+      );
+
+      expect(screenView?.properties).toEqual(
+        expect.objectContaining({
+          button_clicked: 'reduce_exposure',
+          button_location: 'asset_details',
+        }),
+      );
+    });
+
+    it('defaults button_clicked to close when no trigger prop is passed', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      const screenView = mockCloseScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'position_close',
+      );
+
+      expect(screenView?.properties?.button_clicked).toBe('close');
     });
   });
 
@@ -364,6 +489,421 @@ describe('ClosePositionModal', () => {
     });
   });
 
+  describe('close amount input modes', () => {
+    it('submits the token quantity equivalent to a typed dollar amount', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      // Half of the 2.5 ETH position at 2,900 is 3,625 USD.
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('3625');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [expect.objectContaining({ size: '1.2500' })],
+        );
+      });
+    });
+
+    it('submits the token quantity equivalent to a typed percentage', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      await interactAs((user) =>
+        user.click(screen.getByTestId('close-amount-mode-percent')),
+      );
+      const percentInput = within(
+        screen.getByTestId('close-amount-percent'),
+      ).getByRole('textbox');
+      await interactAs(async (user) => {
+        await user.clear(percentInput);
+        await user.paste('50');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [expect.objectContaining({ size: '1.2500' })],
+        );
+      });
+    });
+
+    it('never sends the whole position size on a partial close', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={45000}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      // A hair under the 112,500 position. Rounding the size to 4 decimals
+      // formats 99.99999% of 2.5 as "2.5000", so without a floor this partial
+      // close would carry the trader's entire position.
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('112499.995');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalled();
+      });
+      const [, [request]] = mockSubmitRequestToBackground.mock.calls[0];
+      expect(request.size).toBe('2.4999');
+      expect(Number.parseFloat(request.size)).toBeLessThan(
+        Math.abs(Number.parseFloat(basePosition.size)),
+      );
+    });
+
+    it('sends a full close when the size floor would reach zero', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={{ ...basePosition, size: '1' }}
+          currentPrice={50000}
+          sizeDecimals={0}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      // A 1-unit position on an integer-size market: the smallest step is the
+      // whole position, so stepping back off a rounded-up size lands on zero.
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('49999.99');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalled();
+      });
+      const [, [request]] = mockSubmitRequestToBackground.mock.calls[0];
+      // Omitting size is the full-close shape. A "0" size is a no-op the venue
+      // rejects, which is worse than the rounded-up size it replaced.
+      expect(request.size).toBeUndefined();
+    });
+
+    it('still floors a partial size on a market with room to step back', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={{ ...basePosition, size: '5' }}
+          currentPrice={50000}
+          sizeDecimals={0}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('249999.99');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [expect.objectContaining({ size: '4' })],
+        );
+      });
+    });
+
+    it('leaves an ordinary partial size untouched', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={45000}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('56250');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [expect.objectContaining({ size: '1.2500' })],
+        );
+      });
+    });
+
+    it('caps a dollar amount above the position at a full close', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('999999');
+      });
+
+      expect(
+        screen.getByTestId('close-amount-over-close-error'),
+      ).toBeInTheDocument();
+
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalled();
+      });
+      // A full close omits size entirely, so no over-sized order can be sent.
+      const [, [request]] = mockSubmitRequestToBackground.mock.calls[0];
+      expect(request.size).toBeUndefined();
+    });
+
+    it('caps a percentage above 100 at a full close', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      await interactAs((user) =>
+        user.click(screen.getByTestId('close-amount-mode-percent')),
+      );
+      const percentInput = within(
+        screen.getByTestId('close-amount-percent'),
+      ).getByRole('textbox');
+      await interactAs(async (user) => {
+        await user.clear(percentInput);
+        await user.paste('150');
+      });
+
+      expect(
+        screen.getByTestId('close-amount-over-close-error'),
+      ).toBeInTheDocument();
+
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalled();
+      });
+      const [, [request]] = mockSubmitRequestToBackground.mock.calls[0];
+      expect(request.size).toBeUndefined();
+    });
+
+    it('reports the percentage input method on the close request', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      await interactAs((user) =>
+        user.click(screen.getByTestId('close-amount-mode-percent')),
+      );
+      const percentInput = within(
+        screen.getByTestId('close-amount-percent'),
+      ).getByRole('textbox');
+      await interactAs(async (user) => {
+        await user.clear(percentInput);
+        await user.paste('50');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                inputMethod: 'percentage',
+              }),
+            }),
+          ],
+        );
+      });
+    });
+
+    it('reports the keypad input method for a typed dollar amount', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const usdInput = within(
+        screen.getByTestId('close-amount-value'),
+      ).getByRole('textbox');
+      await interactAs(async (user) => {
+        await user.clear(usdInput);
+        await user.paste('3625');
+      });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                inputMethod: 'keypad',
+              }),
+            }),
+          ],
+        );
+      });
+    });
+
+    it('reports the slider input method when the slider sets the amount', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+      fireEvent.change(slider, { target: { value: '50' } });
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                inputMethod: 'slider',
+              }),
+            }),
+          ],
+        );
+      });
+    });
+
+    it('reports the default input method when the amount is untouched', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+      await interactAs((user) =>
+        user.click(screen.getByTestId('perps-close-position-modal-submit')),
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                inputMethod: 'default',
+              }),
+            }),
+          ],
+        );
+      });
+    });
+  });
+
   describe('auto-focus', () => {
     it('auto-focuses the Close Position submit button on mount', async () => {
       renderWithProvider(
@@ -434,6 +974,17 @@ describe('ClosePositionModal', () => {
           screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
         ).toBeInTheDocument();
       });
+
+      // The error is DISPLAYED on the success:false path, so the error screen
+      // view must fire there too — not only in the throw/catch path.
+      expect(mockCloseImperativeTrack).toHaveBeenCalledWith(
+        'Perp Screen Viewed',
+        expect.objectContaining({
+          screen_type: 'error',
+          error_type: 'backend',
+          screen_name: 'perps_market_details',
+        }),
+      );
     });
   });
 

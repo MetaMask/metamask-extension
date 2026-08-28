@@ -7,8 +7,8 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
@@ -77,7 +77,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         await tokensTab.checkTokenListIsDisplayed();
 
         // Switch to Ethereum Mainnet network
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
 
         // Wait for token list to refresh after network switch
         await tokensTab.checkTokenListIsDisplayed();

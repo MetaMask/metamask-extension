@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import type { Store } from 'redux';
 import { Hex, Json } from '@metamask/utils';

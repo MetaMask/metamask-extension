@@ -21,10 +21,16 @@ import {
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import {
+  AvatarNetworkSize,
   Button,
   ButtonSize,
   ButtonVariant,
+  BoxFlexDirection,
   IconName,
+  Modal,
+  ModalOverlay,
+  ModalHeader,
+  ModalContent,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -39,7 +45,6 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
   setEditedNetwork,
-  showPermittedNetworkToast,
   updateCustomNonce,
   setNextNonce,
   addPermittedChain,
@@ -84,15 +89,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  Modal,
-  ModalOverlay,
-  Text,
-  ModalContent,
-  ModalHeader,
-  AvatarNetworkSize,
-} from '../../component-library';
+import { Box, Text } from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -430,7 +427,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
           if (!isNetworkPermitted) {
             await dispatch(addPermittedChain(selectedTabOrigin, chainId));
-            dispatch(showPermittedNetworkToast());
           }
 
           await setNetworkClientIdForDomain(
@@ -963,22 +959,22 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent
-        padding={0}
-        className="multichain-network-list-menu-content-wrapper"
+        className="multichain-network-list-menu-content-wrapper p-0"
         modalDialogProps={{
           className: 'multichain-network-list-menu-content-wrapper__dialog',
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
+          flexDirection: BoxFlexDirection.Column,
           paddingTop: 0,
           paddingBottom: 0,
         }}
       >
         <ModalHeader
-          paddingTop={4}
-          paddingRight={4}
-          paddingBottom={actionMode === ACTION_MODE.SELECT_RPC ? 0 : 4}
+          className={`pt-4 pr-4 ${
+            actionMode === ACTION_MODE.SELECT_RPC ? 'pb-0' : 'pb-4'
+          }`}
           onClose={onClose}
-          onBack={onBack}
+          closeButtonProps={{ ariaLabel: t('close') }}
+          onBack={onBack as () => void}
+          backButtonProps={{ ariaLabel: t('back') }}
         >
           <Text
             ellipsis
