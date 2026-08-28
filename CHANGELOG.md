@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Patch spam asset cleanup on unlock (#45871)
 - Fixed spam tokens persisting in the wallet by cleaning up low-occurrence ERC-20 tokens on unlock (#45844)
 
 ## [13.46.0]
