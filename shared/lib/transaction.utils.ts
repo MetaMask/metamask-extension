@@ -133,11 +133,11 @@ export function txParamsAreDappSuggested(
   return Boolean(
     (gasPrice &&
       gasPrice === transactionMeta?.dappSuggestedGasFees?.gasPrice) ||
-    (maxPriorityFeePerGas &&
-      maxFeePerGas &&
-      transactionMeta?.dappSuggestedGasFees?.maxPriorityFeePerGas ===
-        maxPriorityFeePerGas &&
-      transactionMeta?.dappSuggestedGasFees?.maxFeePerGas === maxFeePerGas),
+      (maxPriorityFeePerGas &&
+        maxFeePerGas &&
+        transactionMeta?.dappSuggestedGasFees?.maxPriorityFeePerGas ===
+          maxPriorityFeePerGas &&
+        transactionMeta?.dappSuggestedGasFees?.maxFeePerGas === maxFeePerGas),
   );
 }
 
@@ -561,8 +561,7 @@ export function parseTransferTransactionData(data: Hex):
   }
 
   const recipient =
-    args?._to ?? // ERC-20 - transfer / transferFrom
-    args?.to; // ERC-721 / ERC-1155 / Fiat Token V2
+    args?._to ?? args?.to; // ERC-20 - transfer / transferFrom // ERC-721 / ERC-1155 / Fiat Token V2
 
   return {
     name,
@@ -610,17 +609,12 @@ export function resolveApprovalTokenContractAddress(
 
 /**
  * Extracts the recipient address from a transaction's data field.
- * This function parses standard token transaction data and attempts to retrieve
- * the recipient address from the transaction arguments. It checks for both `_to`
- * and `to` argument patterns commonly found in token transfer transactions.
+ * Delegates to {@link parseTransferTransactionData} so UI, PPOM, and
+ * trust-signal scanning share the same method gate and `_to` / `to` fallback.
  *
  * @param data - The hexadecimal string representation of the transaction data to parse
  * @returns The recipient address as a string if found in the transaction data, or undefined if not present
  */
 export function getTransactionDataRecipient(data: string): string | undefined {
-  const transactionData = parseStandardTokenTransactionData(data);
-
-  const transferTo = transactionData?.args?._to || transactionData?.args?.to;
-
-  return transferTo;
+  return parseTransferTransactionData(data as Hex)?.recipient;
 }
