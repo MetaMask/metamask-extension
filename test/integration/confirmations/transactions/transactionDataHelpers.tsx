@@ -230,6 +230,48 @@ export const getMaliciousUnapprovedTransaction = (
 };
 
 /**
+ * Returns an unapproved wallet-initiated native send for confirmation tests.
+ * Uses origin `metamask` and `TransactionType.simpleSend` so swap-comparison
+ * UI must stay hidden even when dapp-swap feature flags are enabled.
+ *
+ * @param accountAddress
+ * @param pendingTransactionId
+ * @param pendingTransactionTime
+ */
+export const getUnapprovedSimpleSendTransaction = (
+  accountAddress: string,
+  pendingTransactionId: string,
+  pendingTransactionTime: number,
+) => {
+  const base = getUnapprovedContractInteractionTransaction(
+    accountAddress,
+    pendingTransactionId,
+    pendingTransactionTime,
+  );
+
+  return {
+    ...base,
+    origin: 'metamask',
+    type: TransactionType.simpleSend,
+    txParams: {
+      ...base.txParams,
+      data: '0x',
+      to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+      value: '0xde0b6b3a7640000',
+    },
+    simulationData: {
+      nativeBalanceChange: {
+        previousBalance: '0x1bc16d674ec80000',
+        newBalance: '0xde0b6b3a7640000',
+        difference: '0xde0b6b3a7640000',
+        isDecrease: true,
+      },
+      tokenBalanceChanges: [],
+    },
+  };
+};
+
+/**
  * Returns an unapproved dapp swap transaction for testing DappSwapComparisonBanner.
  * Uses the test dapp origin (https://metamask.github.io) which is allowlisted
  * for swap comparison functionality.
