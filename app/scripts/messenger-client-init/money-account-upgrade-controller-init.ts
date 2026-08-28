@@ -7,9 +7,9 @@ import type { MessengerClientInitFunction } from './types';
 /**
  * Initialize the MoneyAccountUpgradeController.
  *
- * Construction only restores the persisted upgrade records; the controller is
- * inert until `MoneyAccountUpgradeService` runs its `init()` bootstrap once
- * the feature flags and an unlocked wallet allow it.
+ * Construction only restores the persisted upgrade records
+ * The controller also needs `MoneyAccountUpgradeService` to its `init()`
+ * bootstrap once the feature flags and an unlocked wallet allow it.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.

@@ -17,6 +17,14 @@ import {
   type MoneyAccountVaultConfig,
 } from '../../../../shared/lib/money/vault-config';
 import { captureException } from '../../../../shared/lib/sentry';
+import type {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../../controllers/onboarding';
+import type {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../controllers/preferences-controller';
 import type { LegacyBackgroundApiServiceAddNetworkAction } from '../../services/legacy-background-api-service-method-action-types';
 import {
   createMoneyChainConfigurator,
@@ -31,10 +39,14 @@ type MoneyAccountUpgradeAllowedActions =
   | KeyringControllerGetStateAction
   | LegacyBackgroundApiServiceAddNetworkAction
   | NetworkControllerGetStateAction
+  | OnboardingControllerGetStateAction
+  | PreferencesControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction;
 
 type MoneyAccountUpgradeAllowedEvents =
   | KeyringControllerStateChangeEvent
+  | OnboardingControllerStateChangeEvent
+  | PreferencesControllerStateChangeEvent
   | RemoteFeatureFlagControllerStateChangeEvent;
 
 export type MoneyAccountUpgradeServiceMessenger = Messenger<
@@ -44,12 +56,8 @@ export type MoneyAccountUpgradeServiceMessenger = Messenger<
 >;
 
 /**
- * Whether two vault configs would produce the same upgrade setup.
- *
- * Every field is compared, not just the two the upgrade controller consumes
- * (`chainId` and `boringVault`): the others feed the upgrade config
- * fingerprint indirectly through CHOMP, so a fresher flag payload that changes
- * any of them is treated as a new config and re-runs the bootstrap.
+ * Compares vault configs, if anything doesn’t match this tells
+ * us that we’ll need to re-run the upgrade bootstrap
  *
  * @param a - One vault config.
  * @param b - The other vault config.
@@ -69,22 +77,13 @@ const configsEqual = (
 /**
  * Owns the `MoneyAccountUpgradeController` bootstrap.
  *
- * The controller's `init()` resolves the upgrade config — Delegation Framework
- * contracts plus CHOMP service details, a network call — and must run before
- * any account can be upgraded. This service runs it as soon as the
- * `moneyEnableMoneyAccount` flag is on, the wallet is unlocked with an HD
- * keyring in state, and the `moneyAccountVaultConfig` flag is served, and
- * re-runs it when that vault config genuinely changes.
+ * This service runs the init when
+ * 1. Onboarding is complete with basic functionality enabled
+ * 2. the moneyEnableMoneyAccount flag is on
+ * 3. The wallet is unlocked
+ * 4. The moneyAccountVaultConfig flag is served
  *
- * The keyring-side trigger is `KeyringController:stateChange`, not `:unlock`,
- * for the same vault-restore ordering reason documented on
- * `MoneyAccountControllerInit`: during a restore, `:unlock` fires while the
- * keyring list is still empty.
- *
- * Bootstraps are serialized: a config change chains onto whatever run is in
- * flight, and a failed run (e.g. a transient CHOMP outage) is forgotten so the
- * next flag or keyring trigger retries rather than staying broken until the
- * next background restart. `init()` is idempotent, so re-running is safe.
+ * We then re-run the init if the vault config ever changes.
  */
 export class MoneyAccountUpgradeService {
   readonly name: typeof serviceName = serviceName;
@@ -118,11 +117,17 @@ export class MoneyAccountUpgradeService {
       onTrigger,
     );
     this.#messenger.subscribe('KeyringController:stateChange', onTrigger);
+    this.#messenger.subscribe('OnboardingController:stateChange', onTrigger);
+    this.#messenger.subscribe('PreferencesController:stateChange', onTrigger);
     onTrigger();
   }
 
   #sync(): void {
     try {
+      if (!this.#areExternalServicesAllowed()) {
+        return;
+      }
+
       const { remoteFeatureFlags } = this.#messenger.call(
         'RemoteFeatureFlagController:getState',
       );
@@ -159,6 +164,17 @@ export class MoneyAccountUpgradeService {
       // keyring state change or remote-flag refresh retries.
       log('Failed to sync the money account upgrade bootstrap', error);
     }
+  }
+
+  #areExternalServicesAllowed(): boolean {
+    const { completedOnboarding } = this.#messenger.call(
+      'OnboardingController:getState',
+    );
+    const { useExternalServices } = this.#messenger.call(
+      'PreferencesController:getState',
+    );
+
+    return completedOnboarding && Boolean(useExternalServices);
   }
 
   #scheduleBootstrap(vaultConfig: MoneyAccountVaultConfig): void {

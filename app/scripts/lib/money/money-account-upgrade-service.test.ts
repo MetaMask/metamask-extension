@@ -44,6 +44,8 @@ function createService({
   isEnabled = true,
   isUnlocked = true,
   hasHdKeyring = true,
+  completedOnboarding = true,
+  useExternalServices = true,
   vaultConfig = VAULT_CONFIG as unknown,
   networkConfigured = true,
   init = jest.fn().mockResolvedValue(undefined),
@@ -52,6 +54,8 @@ function createService({
   isEnabled?: boolean;
   isUnlocked?: boolean;
   hasHdKeyring?: boolean;
+  completedOnboarding?: boolean;
+  useExternalServices?: boolean;
   vaultConfig?: unknown;
   networkConfigured?: boolean;
   init?: jest.Mock;
@@ -61,11 +65,19 @@ function createService({
     isEnabled,
     isUnlocked,
     hasHdKeyring,
+    completedOnboarding,
+    useExternalServices,
     vaultConfig,
     networkConfigured,
   };
 
   const call = jest.fn((action: string, ...args: unknown[]) => {
+    if (action === 'OnboardingController:getState') {
+      return { completedOnboarding: config.completedOnboarding };
+    }
+    if (action === 'PreferencesController:getState') {
+      return { useExternalServices: config.useExternalServices };
+    }
     if (action === 'RemoteFeatureFlagController:getState') {
       return {
         remoteFeatureFlags: {
@@ -121,7 +133,9 @@ function createService({
   const trigger = async (
     event:
       | 'RemoteFeatureFlagController:stateChange'
-      | 'KeyringController:stateChange',
+      | 'KeyringController:stateChange'
+      | 'OnboardingController:stateChange'
+      | 'PreferencesController:stateChange',
   ) => {
     subscribers[event]?.forEach((handler) => handler());
     await flushPromises();
@@ -179,6 +193,46 @@ describe('MoneyAccountUpgradeService', () => {
     await flushPromises();
 
     expect(init).not.toHaveBeenCalled();
+  });
+
+  it('does not bootstrap before onboarding is complete', async () => {
+    const { init } = createService({ completedOnboarding: false });
+    await flushPromises();
+
+    expect(init).not.toHaveBeenCalled();
+  });
+
+  it('does not bootstrap while basic functionality is disabled, even with cached flags', async () => {
+    const { init } = createService({ useExternalServices: false });
+    await flushPromises();
+
+    expect(init).not.toHaveBeenCalled();
+  });
+
+  it('bootstraps when basic functionality is re-enabled', async () => {
+    const { config, init, trigger } = createService({
+      useExternalServices: false,
+    });
+    await flushPromises();
+    expect(init).not.toHaveBeenCalled();
+
+    config.useExternalServices = true;
+    await trigger('PreferencesController:stateChange');
+
+    expect(init).toHaveBeenCalledTimes(1);
+  });
+
+  it('bootstraps once onboarding completes', async () => {
+    const { config, init, trigger } = createService({
+      completedOnboarding: false,
+    });
+    await flushPromises();
+    expect(init).not.toHaveBeenCalled();
+
+    config.completedOnboarding = true;
+    await trigger('OnboardingController:stateChange');
+
+    expect(init).toHaveBeenCalledTimes(1);
   });
 
   it('bootstraps on unlock via the keyring state change', async () => {

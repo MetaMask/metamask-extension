@@ -7,9 +7,9 @@ import type { MessengerClientInitFunction } from './types';
 /**
  * Initialize the MoneyAccountUpgradeService.
  *
- * The service drives the `MoneyAccountUpgradeController` bootstrap, so it
- * receives the controller instance directly — `init()` is not exposed as a
- * messenger action — and must be initialized after it.
+ * The service calls init for `MoneyAccountUpgradeController`
+ * `init()` is not exposed as a messenger action so we pass
+ * the controller directly.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the service.
