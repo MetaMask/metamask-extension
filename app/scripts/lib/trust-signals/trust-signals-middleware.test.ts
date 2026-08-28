@@ -570,7 +570,7 @@ describe('trust signals middleware', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[createAddressScanMiddleware] error scanning spender address for approval:',
+          '[createAddressScanMiddleware] error scanning spender address for transaction approval:',
           expect.any(Error),
         );
       });
@@ -701,6 +701,251 @@ describe('trust signals middleware', () => {
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('wallet_sendCalls', () => {
+    const createSendCallsParams = (
+      calls: { to?: unknown; data?: unknown; value?: string }[] = [],
+      chainId?: string,
+    ) => [{ version: '2.0.0', from: TEST_ADDRESSES.FROM, chainId, calls }];
+
+    it('scans every to address in the batch', async () => {
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware, appStateController, phishingController } =
+        createMiddleware();
+
+      const req = createMockRequest(
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        createSendCallsParams([
+          { to: TEST_ADDRESSES.TO, data: '0x', value: '0x0' },
+          { to: TEST_ADDRESSES.DELEGATE, data: '0x', value: '0x0' },
+        ]) as Json[],
+      );
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TO,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        CHAIN_IDS.MAINNET,
+        phishingController,
+      );
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.DELEGATE,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        CHAIN_IDS.MAINNET,
+        phishingController,
+      );
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('scans the spender address of a nested approval call', async () => {
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      parseApprovalTransactionDataMock.mockReturnValue({
+        spender: TEST_ADDRESSES.SPENDER,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+      const { middleware, appStateController, phishingController } =
+        createMiddleware();
+
+      const approvalData = '0x095ea7b3';
+      const req = createMockRequest(
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        createSendCallsParams([
+          { to: TEST_ADDRESSES.TO, data: approvalData, value: '0x0' },
+        ]) as Json[],
+      );
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(parseApprovalTransactionDataMock).toHaveBeenCalledWith(
+        approvalData,
+      );
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.SPENDER,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        CHAIN_IDS.MAINNET,
+        phishingController,
+      );
+    });
+
+    it('skips calls without a string to address', async () => {
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware } = createMiddleware();
+
+      const req = createMockRequest(
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        createSendCallsParams([
+          { to: TEST_ADDRESSES.TO, data: '0x', value: '0x0' },
+          { data: '0x', value: '0x0' },
+          { to: null, data: '0x', value: '0x0' },
+        ]) as Json[],
+      );
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
+    });
+
+    it('scans well-formed calls even when other entries are malformed', async () => {
+      // One bad entry must not suppress scanning of the rest; the request
+      // itself is rejected downstream by SendCallsStruct validation.
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware } = createMiddleware();
+
+      const req = createMockRequest(
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        createSendCallsParams([
+          { to: TEST_ADDRESSES.TO, data: '0x', value: '0x0' },
+          null as unknown as { to?: unknown },
+          'not-an-object' as unknown as { to?: unknown },
+        ]) as Json[],
+      );
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TO,
+        expect.any(Function),
+        expect.any(Function),
+        CHAIN_IDS.MAINNET,
+        expect.anything(),
+      );
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('does not scan when params are invalid', async () => {
+      const { middleware } = createMiddleware();
+
+      const req = createMockRequest(MESSAGE_TYPE.WALLET_SEND_CALLS, []);
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('scans on chains outside any hardcoded allowlist', async () => {
+      // Scan path: no client-side chain gate. PhishingController still
+      // writes ErrorResult for unsupported chains. Display is fail-open in
+      // isEnforcedSimulationsEligible via isAddressScanSupportedChainId
+      // (#45732), so that ErrorResult must not turn Added protection on.
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware, appStateController, phishingController } =
+        createMiddleware({ chainId: '0xdeadbeef' as Hex });
+
+      const req = createMockRequest(
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        createSendCallsParams([
+          { to: TEST_ADDRESSES.TO, data: '0x', value: '0x0' },
+        ]) as Json[],
+      );
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TO,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        '0xdeadbeef',
+        phishingController,
+      );
+    });
+
+    it('scans under the dapp-selected chain even when the declared chainId mismatches', async () => {
+      // The declared params[0].chainId is ignored: the 5792 handler rejects
+      // mismatches downstream, and duplicating its comparison here could
+      // drift stricter and silently skip scans. There must be no
+      // client-side chainId gate.
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware, appStateController, phishingController } =
+        createMiddleware();
+
+      const req = createMockRequest(
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        createSendCallsParams(
+          [{ to: TEST_ADDRESSES.TO, data: '0x', value: '0x0' }],
+          '0x89',
+        ) as Json[],
+      );
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TO,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        CHAIN_IDS.MAINNET,
+        phishingController,
+      );
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('scans the origin URL', async () => {
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware, phishingController } = createMiddleware();
+
+      const req = createMockRequest(
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        createSendCallsParams([
+          { to: TEST_ADDRESSES.TO, data: '0x', value: '0x0' },
+        ]) as Json[],
+      );
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
+    });
+
+    it('logs an error and continues when a scan fails', async () => {
+      scanAddressMockAndAddToCache.mockRejectedValue(new Error('API error'));
+      const { middleware } = createMiddleware();
+
+      const req = createMockRequest(
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        createSendCallsParams([
+          { to: TEST_ADDRESSES.TO, data: '0x', value: '0x0' },
+        ]) as Json[],
+      );
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+      await new Promise(process.nextTick);
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[createAddressScanMiddleware] error scanning address for sendCalls:',
+        expect.any(Error),
+      );
+      expect(next).toHaveBeenCalled();
     });
   });
 
@@ -1596,6 +1841,7 @@ describe('trust signals middleware', () => {
       MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
       MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
       MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+      MESSAGE_TYPE.WALLET_SEND_CALLS,
     ].forEach((innerMethod) => {
       it(`scans the origin for wallet_invokeMethod wrapping ${innerMethod}`, async () => {
         const { middleware, phishingController } =
