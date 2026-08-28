@@ -106,6 +106,7 @@ import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
 import { AggregatedOrderBookConnection } from '@metamask/perps-controller';
 import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
+import { KEYRING_TYPES_SUPPORTING_7702 } from '../../shared/constants/keyring';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
@@ -7095,6 +7096,21 @@ export default class MetamaskController extends EventEmitter {
   async isEip7702Supported(request) {
     const { address, chainId } = request;
     const normalizedAccount = address;
+
+    // Accounts whose keyring cannot sign EIP-7702 authorizations (e.g.
+    // hardware and snap keyrings) can never be upgraded. Fail closed on
+    // lookup errors so callers do not attempt an upgrade that must fail.
+    let keyringSupports7702 = false;
+    try {
+      const keyringType =
+        await this.keyringController.getAccountKeyringType(normalizedAccount);
+      keyringSupports7702 = KEYRING_TYPES_SUPPORTING_7702.includes(keyringType);
+    } catch {
+      keyringSupports7702 = false;
+    }
+    if (!keyringSupports7702) {
+      return { isSupported: false, upgradeContractAddress: null };
+    }
 
     const atomicBatchSupport = await this.txController.isAtomicBatchSupported({
       address: normalizedAccount,

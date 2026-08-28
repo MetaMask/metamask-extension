@@ -8,7 +8,7 @@ import { isFlask } from '../build-types';
  * are normally reserved for preinstalled Snaps.
  */
 const FORCE_PREINSTALLED_SNAPS =
-  isFlask() && process.env.FORCE_PREINSTALLED_SNAPS === 'true';
+  isFlask() && String(process.env.FORCE_PREINSTALLED_SNAPS) === 'true';
 
 export const PREINSTALLED_SNAPS = [
   'npm:@metamask/message-signing-snap',
