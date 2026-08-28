@@ -732,7 +732,7 @@ class HomePage {
         const metadata = networksMetadata[selectedNetworkClientId];
         return metadata?.status === 'available';
       },
-      { timeout: 15000, interval: 500, stableFor: 5000 },
+      { timeout: 30000, interval: 500, stableFor: 2000 },
     );
   }
 

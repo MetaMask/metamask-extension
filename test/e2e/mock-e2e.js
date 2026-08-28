@@ -26,6 +26,40 @@ const {
 const { PERPS_WS_PORT } = require('./websocket/perps-mocks');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
+
+/** Host:port pairs for local Anvil nodes used by E2E (`anvil.ts` defaults + extra nodes). */
+const LOCAL_ANVIL_RPC_HOSTS = new Set([
+  'localhost:8545',
+  'localhost:8546',
+  'localhost:7777',
+  '127.0.0.1:8545',
+  '127.0.0.1:8546',
+  '127.0.0.1:7777',
+]);
+
+/**
+ * Whether this request is JSON-RPC to a local Anvil node.
+ *
+ * @param {string|undefined} host - Request Host header (`localhost:8545`).
+ * @param {string|undefined} url - Absolute request URL.
+ * @returns {boolean}
+ */
+function isLocalAnvilRpc(host, url) {
+  if (host && LOCAL_ANVIL_RPC_HOSTS.has(host)) {
+    return true;
+  }
+  if (!url) {
+    return false;
+  }
+  try {
+    const parsed = new URL(url);
+    const port = parsed.port || (parsed.protocol === 'https:' ? '443' : '80');
+    return LOCAL_ANVIL_RPC_HOSTS.has(`${parsed.hostname}:${port}`);
+  } catch {
+    return false;
+  }
+}
+
 const {
   getProductionRemoteFlagApiResponse,
 } = require('./feature-flags/feature-flag-registry');
@@ -486,6 +520,9 @@ async function setupMocking(
     .asPriority(RulePriority.FALLBACK)
     .thenPassThrough({
       beforeRequest: ({ headers: { host }, url }) => {
+        if (isLocalAnvilRpc(host, url)) {
+          return {};
+        }
         if (!host || !url) {
           return {
             response: {
@@ -2448,4 +2485,4 @@ async function mockTokenNameProvider(server) {
   }
 }
 
-module.exports = { setupMocking, emptyHtmlPage };
+module.exports = { setupMocking, emptyHtmlPage, isLocalAnvilRpc };
