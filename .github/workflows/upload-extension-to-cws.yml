@@ -7,8 +7,7 @@ name: Upload extension to Chrome Web Store
 # CWS API v2 upload (v1.1 sunsets 2026-10-15): chromewebstore.googleapis.com/upload/v2/...
 # INFRA-3649 — Runway sender verification (defense-in-depth; primary gate is WIF CEL on actor_id).
 # Idempotent re-run: after WIF auth, :fetchStatus skips upload when a draft for
-# CWS_EXPECTED_VERSION already exists (VERSION for production/dev; VERSION-flask.0 for flask).
-# CWS_EXPECTED_VERSION_ALT is VERSION.0 when input is 3-part (CWS crxVersion is often 4-part).
+# CWS_EXPECTED_VERSION already exists (VERSION for production/dev; VERSION-flask.0 for flask)
 # or a prior async upload is still IN_PROGRESS (poll to terminal first).
 
 on:
@@ -112,10 +111,6 @@ jobs:
             fi
           done
           CWS_EXPECTED_VERSION="${VERSION}"
-          CWS_EXPECTED_VERSION_ALT=""
-          if [[ "${TARGET}" != "flask" && "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            CWS_EXPECTED_VERSION_ALT="${VERSION}.0"
-          fi
           if [[ "${TARGET}" == "dev" ]]; then
             WIF_PROVIDER="${WIF_PROVIDER_DEV}"
             WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_DEV}"
@@ -194,7 +189,6 @@ jobs:
             echo "PUBLISHER_EMAIL=${PUBLISHER_EMAIL}"
             echo "ZIP_NAME=${ZIP_NAME}"
             echo "CWS_EXPECTED_VERSION=${CWS_EXPECTED_VERSION}"
-            echo "CWS_EXPECTED_VERSION_ALT=${CWS_EXPECTED_VERSION_ALT}"
           } >> "${GITHUB_ENV}"
           {
             echo "## CWS upload"
@@ -265,14 +259,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          crx_matches_expected() {
-            local crx="$1"
-            [[ -z "${crx}" ]] && return 1
-            [[ "${crx}" == "${CWS_EXPECTED_VERSION}" ]] && return 0
-            [[ -n "${CWS_EXPECTED_VERSION_ALT:-}" && "${crx}" == "${CWS_EXPECTED_VERSION_ALT}" ]] && return 0
-            return 1
-          }
-
           FETCH_STATUS_URL="https://chromewebstore.googleapis.com/v2/publishers/${PUBLISHER_ID}/items/${EXTENSION_ID}:fetchStatus"
           max_polls=6
           poll_interval_seconds=10
@@ -324,7 +310,7 @@ jobs:
           async_state=$(poll_async_upload)
           draft_version=$(draft_crx_version)
 
-          if [[ -n "${draft_version}" ]] && crx_matches_expected "${draft_version}"; then
+          if [[ -n "${draft_version}" && "${draft_version}" == "${CWS_EXPECTED_VERSION}" ]]; then
             echo "Draft for version ${CWS_EXPECTED_VERSION} already exists in CWS (crxVersion=${draft_version}). Skipping download and upload."
             {
               echo "skip_upload=true"

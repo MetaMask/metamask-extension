@@ -4,7 +4,6 @@ set -euo pipefail
 
 FETCH_STATUS_JSON="${FETCH_STATUS_JSON:?}"
 CRX_VERSION="${CRX_VERSION:?}"
-CRX_VERSION_ALT="${CRX_VERSION_ALT:-}"
 PUBLISH_TYPE="${PUBLISH_TYPE:-}"
 PERCENTAGE="${PERCENTAGE:-}"
 
@@ -19,9 +18,7 @@ channel_has_crx() {
 }
 
 matches_expected_crx() {
-  channel_has_crx "$1" "${CRX_VERSION}" || {
-    [[ -n "${CRX_VERSION_ALT}" ]] && channel_has_crx "$1" "${CRX_VERSION_ALT}"
-  }
+  channel_has_crx "$1" "${CRX_VERSION}"
 }
 
 submitted_state="$(jq -r '.submittedItemRevisionStatus.state // empty' "${FETCH_STATUS_JSON}")"

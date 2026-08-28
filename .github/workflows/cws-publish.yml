@@ -6,6 +6,10 @@ name: CWS publish (submit or promote)
 #   - Submit: draft → Google review (+ initial deploy %; default path immediate publish on approval)
 #   - Promote: STAGED → live at submit-time percentage
 #
+# CWS API note: after upload-only, :fetchStatus often omits submittedItemRevisionStatus (no crxVersion
+# until :publish). crxVersion is always the 4-part manifest "version" (see development/webpack/utils/version.ts);
+# pass release semver (e.g. 13.43.0) and this workflow derives prod/dev → X.Y.Z.0, flask → X.Y.Z.150.
+#
 # Authorization (NOT Runway):
 #   GitHub Environment reviewers on cws-rollout-{dev,production,flask} (same envs as adjust-cws-rollout.yml)
 #   WIF human OIDC — see va-mmc-extension-submission-infra/gcloud/shared/wif-cel-reference.md
@@ -14,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'crxVersion — production/dev: 4-part numeric (e.g. 13.43.0.0). Flask: release semver without -flask.0 (e.g. 13.43.0); workflow maps to {version}-flask.0'
+        description: 'Release semver (e.g. 13.43.0) or full crxVersion — prod/dev → X.Y.Z.0, flask → X.Y.Z.150 (manifest version; version_name is semver or semver-flask.N)'
         required: true
         type: string
       target:
@@ -159,6 +163,41 @@ jobs:
             exit 1
           fi
           echo "CWS :publish succeeded (action=${ACTION})."
+
+      - name: Verify CWS status after submit
+        if: steps.publish.outcome == 'success' && steps.plan.outputs.action == 'submit'
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        run: |
+          set -euo pipefail
+          FETCH_STATUS_URL="https://chromewebstore.googleapis.com/v2/publishers/${PUBLISHER_ID}/items/${EXTENSION_ID}:fetchStatus"
+          http_code=$(curl -sS \
+            -o /tmp/cws-fetch-status-after.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            "${FETCH_STATUS_URL}")
+          if [[ "${http_code}" != "200" ]]; then
+            echo "::error::post-publish fetchStatus failed with HTTP ${http_code}"
+            cat /tmp/cws-fetch-status-after.json
+            exit 1
+          fi
+          export FETCH_STATUS_JSON=/tmp/cws-fetch-status-after.json
+          submitted_crx="$(jq -r '
+            [
+              .submittedItemRevisionStatus.distributionChannels[]?.crxVersion // empty
+            ] | map(select(length > 0)) | first // empty
+          ' "${FETCH_STATUS_JSON}")"
+          submitted_state="$(jq -r '.submittedItemRevisionStatus.state // empty' "${FETCH_STATUS_JSON}")"
+          if [[ "${submitted_crx}" != "${CRX_VERSION}" ]]; then
+            echo "::error::post-publish submitted crxVersion=${submitted_crx:-<none>} does not match expected ${CRX_VERSION}; state=${submitted_state:-<none>}"
+            cat "${FETCH_STATUS_JSON}"
+            exit 1
+          fi
+          if [[ "${submitted_state}" != "PENDING_REVIEW" && "${submitted_state}" != "STAGED" ]]; then
+            echo "::error::post-publish unexpected submitted state=${submitted_state:-<none>} (crxVersion=${submitted_crx:-<none>})"
+            cat "${FETCH_STATUS_JSON}"
+            exit 1
+          fi
+          echo "Verified submitted revision crxVersion=${submitted_crx} state=${submitted_state}"
 
       - name: Audit summary
         if: always()
