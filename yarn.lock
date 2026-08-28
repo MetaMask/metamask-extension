@@ -8352,20 +8352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:6.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/utils": "npm:^11.11.0"
-    uuid: "npm:^8.3.2"
-  checksum: 10/4ae9fa72f2ba8b7d71b1c0cf7be60bbf0c143e5372a1ef9f58f0ee761cf782087de8e801b71b6b319581044bb41197ffdfee069def2983d12adb0b296e5fff7a
-  languageName: node
-  linkType: hard
-
-"@metamask/remote-feature-flag-controller@npm:^6.1.0":
+"@metamask/remote-feature-flag-controller@npm:^6.0.0, @metamask/remote-feature-flag-controller@npm:^6.1.0":
   version: 6.1.0
   resolution: "@metamask/remote-feature-flag-controller@npm:6.1.0"
   dependencies:
