@@ -1225,17 +1225,11 @@ describe('hardware-wallet-signatures utils', () => {
     ])(
       'returns DeviceDisconnected for KeyringControllerError wrapping %s on cause',
       (_label, code) => {
-        const error = Object.assign(
-          Object.create(KeyringControllerError.prototype),
-          {
-            name: 'KeyringControllerError',
-            message: 'sign operation failed',
-            cause: {
-              code,
-              message: 'device unavailable',
-            },
-          },
-        );
+        const error = new KeyringControllerError('sign operation failed', {
+          cause: Object.assign(new Error('device unavailable'), {
+            code,
+          }),
+        });
 
         expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
           type: HardwareWalletSignatureEvent.DeviceDisconnected,
@@ -1248,17 +1242,11 @@ describe('hardware-wallet-signatures utils', () => {
       // level, isUserRejected treats it as EIP-1193 userRejectedRequest. The
       // same payload on a KeyringControllerError cause must not flip to
       // DeviceDisconnected just because we now read nested codes.
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          message: 'sign operation failed',
-          cause: {
-            code: 4001,
-            message: 'error',
-          },
-        },
-      );
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: Object.assign(new Error('error'), {
+          code: 4001,
+        }),
+      });
 
       expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
         type: HardwareWalletSignatureEvent.TransactionRejected,
@@ -1266,19 +1254,14 @@ describe('hardware-wallet-signatures utils', () => {
     });
 
     it('returns DeviceDisconnected for KeyringControllerError wrapping ConnectionClosed HardwareWalletError on cause', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          message: 'sign operation failed',
-          cause: new HardwareWalletError('Connection closed', {
-            code: ErrorCode.ConnectionClosed,
-            severity: Severity.Err,
-            category: Category.Connection,
-            userMessage: 'Connection closed',
-          }),
-        },
-      );
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: new HardwareWalletError('Connection closed', {
+          code: ErrorCode.ConnectionClosed,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: 'Connection closed',
+        }),
+      });
 
       expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
         type: HardwareWalletSignatureEvent.DeviceDisconnected,

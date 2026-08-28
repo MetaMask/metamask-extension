@@ -212,17 +212,11 @@ describe('rpc-error-utils', () => {
     });
 
     it('extracts code from KeyringControllerError cause', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          message: 'sign operation failed',
-          cause: {
-            code: ErrorCode.DeviceDisconnected,
-            message: 'device unavailable',
-          },
-        },
-      );
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: Object.assign(new Error('device unavailable'), {
+          code: ErrorCode.DeviceDisconnected,
+        }),
+      });
 
       expect(getHardwareWalletErrorCode(error)).toBe(
         ErrorCode.DeviceDisconnected,
@@ -494,18 +488,17 @@ describe('rpc-error-utils', () => {
     });
 
     it('returns Unknown for KeyringControllerError serialized cause without explicit code', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
+      const error = new KeyringControllerError(
+        'Keyring Controller signTypedMessage: HardwareWalletError: Ledger: User rejected action on device',
         {
-          name: 'KeyringControllerError',
-          message:
-            'Keyring Controller signTypedMessage: HardwareWalletError: Ledger: User rejected action on device',
-          cause: {
-            name: 'HardwareWalletError',
-            message: 'Ledger: User rejected action on device',
-            stack:
-              'HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device',
-          },
+          cause: Object.assign(
+            new Error('Ledger: User rejected action on device'),
+            {
+              name: 'HardwareWalletError',
+              stack:
+                'HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device',
+            },
+          ),
         },
       );
 
@@ -522,19 +515,13 @@ describe('rpc-error-utils', () => {
     });
 
     it('returns Unknown for serialized cause stack enum when code is missing', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          message: 'sign operation failed',
-          cause: {
-            name: 'HardwareWalletError',
-            message: 'opaque serialized cause',
-            stack:
-              'HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device',
-          },
-        },
-      );
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: Object.assign(new Error('opaque serialized cause'), {
+          name: 'HardwareWalletError',
+          stack:
+            'HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device',
+        }),
+      });
 
       const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
@@ -544,19 +531,16 @@ describe('rpc-error-utils', () => {
     });
 
     it('returns Unknown for conflicting serialized stack and cause message without explicit code', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          message: 'sign operation failed',
-          cause: {
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: Object.assign(
+          new Error('Wrapped failure: Method_Interrupted while signing'),
+          {
             name: 'HardwareWalletError',
-            message: 'Wrapped failure: Method_Interrupted while signing',
             stack:
               'HardwareWalletError [ConnectionClosed:4001]: Trezor connection closed',
           },
-        },
-      );
+        ),
+      });
 
       const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
 
@@ -566,18 +550,15 @@ describe('rpc-error-utils', () => {
     });
 
     it('returns Unknown for opaque serialized stack and message without explicit code format', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          message: 'Trezor sign operation failed',
-          cause: {
+      const error = new KeyringControllerError('Trezor sign operation failed', {
+        cause: Object.assign(
+          new Error('Wrapped failure: Method_Interrupted while signing'),
+          {
             name: 'HardwareWalletError',
-            message: 'Wrapped failure: Method_Interrupted while signing',
             stack: 'opaque serialized stack',
           },
-        },
-      );
+        ),
+      });
 
       const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
 
@@ -587,18 +568,14 @@ describe('rpc-error-utils', () => {
     });
 
     it('maps Trezor wrapped unknown cancellation from KeyringControllerError', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
+      const error = new KeyringControllerError(
+        'Keyring Controller signTypedMessage: HardwareWalletError: Cancelled',
         {
-          name: 'KeyringControllerError',
-          message:
-            'Keyring Controller signTypedMessage: HardwareWalletError: Cancelled',
-          cause: {
+          cause: Object.assign(new Error('Cancelled'), {
             name: 'HardwareWalletError',
             code: ErrorCode.Unknown,
-            message: 'Cancelled',
             stack: 'HardwareWalletError [Unknown:99999]: Cancelled',
-          },
+          }),
         },
       );
 
@@ -610,17 +587,13 @@ describe('rpc-error-utils', () => {
     });
 
     it('maps Trezor wrapped cancellation without cause code from KeyringControllerError', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
+      const error = new KeyringControllerError(
+        'Keyring Controller signTypedMessage: HardwareWalletError: Cancelled',
         {
-          name: 'KeyringControllerError',
-          message:
-            'Keyring Controller signTypedMessage: HardwareWalletError: Cancelled',
-          cause: {
+          cause: Object.assign(new Error('Cancelled'), {
             name: 'HardwareWalletError',
-            message: 'Cancelled',
             stack: 'HardwareWalletError: Cancelled',
-          },
+          }),
         },
       );
 
@@ -661,17 +634,11 @@ describe('rpc-error-utils', () => {
     });
 
     it('uses explicit code from KeyringControllerError cause when available', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          message: 'sign operation failed',
-          cause: {
-            code: ErrorCode.UserCancelled,
-            message: 'User cancelled on device',
-          },
-        },
-      );
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: Object.assign(new Error('User cancelled on device'), {
+          code: ErrorCode.UserCancelled,
+        }),
+      });
 
       const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
@@ -681,17 +648,11 @@ describe('rpc-error-utils', () => {
     });
 
     it('maps Trezor SDK cause.code from KeyringControllerError', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          message: 'Trezor sign operation failed',
-          cause: {
-            code: 'Method_Cancel',
-            message: 'Canceled',
-          },
-        },
-      );
+      const error = new KeyringControllerError('Trezor sign operation failed', {
+        cause: Object.assign(new Error('Canceled'), {
+          code: 'Method_Cancel',
+        }),
+      });
 
       const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
 
@@ -728,17 +689,11 @@ describe('rpc-error-utils', () => {
         message: string;
         causeMessage: string;
       }) => {
-        const error = Object.assign(
-          Object.create(KeyringControllerError.prototype),
-          {
-            name: 'KeyringControllerError',
-            message,
-            cause: {
-              name: 'HardwareWalletError',
-              message: causeMessage,
-            },
-          },
-        );
+        const error = new KeyringControllerError(message, {
+          cause: Object.assign(new Error(causeMessage), {
+            name: 'HardwareWalletError',
+          }),
+        });
 
         const result = toHardwareWalletError(error, walletType);
 
@@ -749,18 +704,12 @@ describe('rpc-error-utils', () => {
     );
 
     it('uses keyring error code when cause cannot be interpreted', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          code: 'UserRejected',
-          message: 'User rejected in keyring',
-          cause: {
-            name: 'SomeOtherError',
-            message: 'Unknown inner error',
-          },
-        },
-      );
+      const error = new KeyringControllerError('User rejected in keyring', {
+        code: 'UserRejected',
+        cause: Object.assign(new Error('Unknown inner error'), {
+          name: 'SomeOtherError',
+        }),
+      });
 
       const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
@@ -770,17 +719,11 @@ describe('rpc-error-utils', () => {
     });
 
     it('does not infer hardware-wallet code from non-hardware cause text', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          message: 'sign operation failed',
-          cause: {
-            name: 'SomeOtherError',
-            message: 'User rejected the request',
-          },
-        },
-      );
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: Object.assign(new Error('User rejected the request'), {
+          name: 'SomeOtherError',
+        }),
+      });
 
       const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
@@ -790,16 +733,16 @@ describe('rpc-error-utils', () => {
     });
 
     it('falls back to Unknown when keyring text inference does not match', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
+      const error = new KeyringControllerError(
+        'sign operation failed for unknown reason',
         {
-          name: 'KeyringControllerError',
-          message: 'sign operation failed for unknown reason',
-          cause: {
-            name: 'HardwareWalletError',
-            message: 'inner error without user-action marker',
-            stack: 'opaque stack trace',
-          },
+          cause: Object.assign(
+            new Error('inner error without user-action marker'),
+            {
+              name: 'HardwareWalletError',
+              stack: 'opaque stack trace',
+            },
+          ),
         },
       );
 
@@ -1023,18 +966,14 @@ describe('rpc-error-utils', () => {
     });
 
     it('returns true for KeyringControllerError wrapping unknown hardware wallet cancellation', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
+      const error = new KeyringControllerError(
+        'Keyring Controller signTypedMessage: HardwareWalletError: Cancelled',
         {
-          name: 'KeyringControllerError',
-          message:
-            'Keyring Controller signTypedMessage: HardwareWalletError: Cancelled',
-          cause: {
+          cause: Object.assign(new Error('Cancelled'), {
             name: 'HardwareWalletError',
             code: ErrorCode.Unknown,
-            message: 'Cancelled',
             stack: 'HardwareWalletError [Unknown:99999]: Cancelled',
-          },
+          }),
         },
       );
 
@@ -1053,34 +992,24 @@ describe('rpc-error-utils', () => {
     });
 
     it('returns true for KeyringControllerError wrapping EIP-1193 userRejectedRequest on cause', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          message: 'sign operation failed',
-          cause: {
-            code: 4001,
-            message: 'error',
-          },
-        },
-      );
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: Object.assign(new Error('error'), {
+          code: 4001,
+        }),
+      });
 
       expect(isUserRejectedHardwareWalletError(error)).toBe(true);
     });
 
     it('returns false for KeyringControllerError wrapping ConnectionClosed HardwareWalletError', () => {
-      const error = Object.assign(
-        Object.create(KeyringControllerError.prototype),
-        {
-          name: 'KeyringControllerError',
-          message: 'sign operation failed',
-          cause: {
-            name: 'HardwareWalletError',
-            code: ErrorCode.ConnectionClosed,
-            message: 'Connection closed',
-          },
-        },
-      );
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: new HardwareWalletError('Connection closed', {
+          code: ErrorCode.ConnectionClosed,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: 'Connection closed',
+        }),
+      });
 
       expect(isUserRejectedHardwareWalletError(error)).toBe(false);
     });
