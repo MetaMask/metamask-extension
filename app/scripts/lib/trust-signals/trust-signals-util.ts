@@ -51,6 +51,42 @@ export function hasValidTransactionParams(
   );
 }
 
+export function isWalletSendCalls(req: JsonRpcRequest): boolean {
+  return req.method === MESSAGE_TYPE.WALLET_SEND_CALLS;
+}
+
+export function hasValidSendCallsParams(
+  req: JsonRpcRequest,
+): req is JsonRpcRequest & {
+  params: [
+    {
+      calls: unknown[];
+      [key: string]: unknown;
+    },
+    ...unknown[],
+  ];
+} {
+  if (!('params' in req) || !req.params) {
+    return false;
+  }
+
+  if (!Array.isArray(req.params) || req.params.length === 0) {
+    return false;
+  }
+
+  const firstParam = req.params[0];
+
+  // Individual call entries are deliberately not validated here: the caller
+  // skips malformed entries per call, so one bad entry cannot suppress
+  // scanning of the well-formed ones.
+  return (
+    typeof firstParam === 'object' &&
+    firstParam !== null &&
+    'calls' in firstParam &&
+    Array.isArray(firstParam.calls)
+  );
+}
+
 export function isEthSignTypedData(req: JsonRpcRequest): boolean {
   return (
     req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA ||
