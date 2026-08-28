@@ -105,8 +105,7 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
 import { AggregatedOrderBookConnection } from '@metamask/perps-controller';
-import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
-import { KEYRING_TYPES_SUPPORTING_7702 } from '../../shared/constants/keyring';
+import { KeyringType as KeyringTypes, KEYRING_TYPES_SUPPORTING_7702 } from '../../shared/constants/keyring';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
