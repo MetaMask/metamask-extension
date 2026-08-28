@@ -5402,6 +5402,30 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitch": {
+    "message": "Earn $1% APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "APY info"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "Available balance: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "Projected 1-year balance:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "Projected 1-year balance"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "Activity"
   },
