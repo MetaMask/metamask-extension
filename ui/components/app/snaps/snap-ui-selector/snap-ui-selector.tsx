@@ -154,6 +154,7 @@ export const SnapUISelector = ({
 
   useEffect(() => {
     if (initialValue === undefined || initialValue === null) {
+      prevInitialValueRef.current = initialValue;
       return;
     }
     const valueChanged = initialValue !== prevInitialValueRef.current;
