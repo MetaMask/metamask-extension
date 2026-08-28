@@ -216,6 +216,28 @@ describe('Wallet Ready Page', () => {
     }
   });
 
+  it('shows "Back to wallet" and navigates home from settings SRP backup reminder', async () => {
+    const previousSearch = mockUseLocationSearch;
+    mockUseLocationSearch =
+      '?isFromReminder=true&isFromSettingsSecurity=true';
+
+    try {
+      const mockStore = configureMockStore([thunk])(mockState);
+      const { getByTestId, getByText } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      expect(getByText(messages.backToWallet.message)).toBeInTheDocument();
+      fireEvent.click(getByTestId('onboarding-complete-done'));
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+    } finally {
+      mockUseLocationSearch = previousSearch;
+    }
+  });
+
   it('opens learn more link in new tab when "Learn how" is clicked (from SRP backup reminder)', () => {
     const openTabMock = jest.fn();
     const previousSearch = mockUseLocationSearch;

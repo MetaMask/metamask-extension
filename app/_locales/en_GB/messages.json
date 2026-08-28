@@ -1849,6 +1849,9 @@
   "backToSafety": {
     "message": "Back to safety"
   },
+  "backToWallet": {
+    "message": "Back to wallet"
+  },
   "backUpIncomplete": {
     "message": "Back up incomplete"
   },

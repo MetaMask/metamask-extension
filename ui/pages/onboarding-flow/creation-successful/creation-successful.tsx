@@ -18,7 +18,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   DEFAULT_ROUTE,
-  SECURITY_AND_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getIsInitialized,
@@ -48,8 +47,7 @@ export default function CreationSuccessful() {
 
   const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
-  const { isFromReminder, isFromSettingsSecurity } =
-    useOnboardingSearchParams();
+  const { isFromReminder } = useOnboardingSearchParams();
   const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
 
   // Guard: redirect if wallet is not properly set up.
@@ -125,9 +123,7 @@ export default function CreationSuccessful() {
 
   const onDone = useCallback(async () => {
     if (isFromReminder) {
-      navigate(
-        isFromSettingsSecurity ? SECURITY_AND_PASSWORD_ROUTE : DEFAULT_ROUTE,
-      );
+      navigate(DEFAULT_ROUTE);
       return;
     }
 
@@ -141,10 +137,16 @@ export default function CreationSuccessful() {
   }, [
     completeOnboardingFromCompletionPage,
     isFromReminder,
-    isFromSettingsSecurity,
     isResetWalletInProgress,
     navigate,
   ]);
+
+  let doneButtonLabel = t('done');
+  if (isFromSettingsSRPBackup) {
+    doneButtonLabel = t('backToWallet');
+  } else if (isSidePanelEnabled) {
+    doneButtonLabel = t('openWallet');
+  }
 
   const renderDoneButton = () => {
     return (
@@ -159,9 +161,11 @@ export default function CreationSuccessful() {
           size={ButtonSize.Lg}
           className="w-full"
           onClick={onDone}
-          disabled={isSidePanelEnabled && isSidePanelOpen}
+          disabled={
+            !isFromSettingsSRPBackup && isSidePanelEnabled && isSidePanelOpen
+          }
         >
-          {isSidePanelEnabled ? t('openWallet') : t('done')}
+          {doneButtonLabel}
         </Button>
       </Box>
     );
