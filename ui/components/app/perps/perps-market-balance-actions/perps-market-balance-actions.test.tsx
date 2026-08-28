@@ -73,7 +73,7 @@ describe('PerpsMarketBalanceActions', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows the Withdraw button once the account has a balance', () => {
+  it('shows the Withdraw button and the "available" line once the account has a balance', () => {
     renderWithProvider(
       <PerpsMarketBalanceActions showActionButtons />,
       mockStore,
@@ -82,9 +82,12 @@ describe('PerpsMarketBalanceActions', () => {
     expect(
       screen.getByTestId('perps-balance-actions-withdraw'),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-balance-actions-available'),
+    ).toBeInTheDocument();
   });
 
-  it('renders the persistent balance header with $0.00 and only Add funds (no Withdraw) when the account has no balance', () => {
+  it('renders the persistent balance header with $0.00 and only Add funds (no Withdraw, no available line) when the account has no balance', () => {
     mockUsePerpsLiveAccount.mockReturnValue({
       account: {
         ...mockAccountState,
@@ -103,6 +106,9 @@ describe('PerpsMarketBalanceActions', () => {
     expect(screen.getByTestId('perps-balance-actions-total')).toHaveTextContent(
       '$0.00',
     );
+    expect(
+      screen.queryByTestId('perps-balance-actions-available'),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByTestId('perps-balance-actions-withdraw'),
     ).not.toBeInTheDocument();

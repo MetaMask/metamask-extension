@@ -155,17 +155,23 @@ const PerpsMarketBalanceActions = ({
         {formatCurrency(accountValue, 'USD')}
       </Text>
 
-      {/* Available Balance */}
-      <Box marginTop={1}>
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          data-testid="perps-balance-actions-available"
-        >
-          {formatCurrency(parseFloat(availableBalance), 'USD')}{' '}
-          {t('perpsAvailable').toLowerCase()}
-        </Text>
-      </Box>
+      {/*
+        Available balance is only meaningful once the account is funded — at
+        $0 total it would just repeat "$0.00" under the big zero, so we drop
+        it to keep the empty-state header quiet.
+      */}
+      {accountValue > 0 && (
+        <Box marginTop={1}>
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            data-testid="perps-balance-actions-available"
+          >
+            {formatCurrency(parseFloat(availableBalance), 'USD')}{' '}
+            {t('perpsAvailable').toLowerCase()}
+          </Text>
+        </Box>
+      )}
 
       {/* Action Buttons */}
       {showActionButtons && (
