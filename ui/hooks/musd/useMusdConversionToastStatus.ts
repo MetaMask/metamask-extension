@@ -42,7 +42,7 @@ export type MusdConversionToastState =
  * Shows "in-progress" while a conversion is pending, "success" when confirmed,
  * and "failed" when the transaction fails or is dropped.
  *
- * Mirrors the `useMerklClaimStatus` hook behavior:
+ * Status → toast mapping:
  * - approved/signed/submitted → in-progress toast
  * - confirmed → success toast
  * - failed/dropped → failed toast
