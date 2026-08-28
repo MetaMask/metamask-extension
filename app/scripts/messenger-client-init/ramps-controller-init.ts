@@ -6,6 +6,7 @@ import {
 import type { OnboardingControllerState } from '../controllers/onboarding';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import { removeStalePrecreatedOrders } from '../lib/ramps-stale-order-cleanup';
+import { TERMINAL_ORDER_STATUSES } from '../lib/ramps/handleRampsOrderStatusChanged';
 import type { MessengerClientInitFunction } from './types';
 import { getRampsControllerApi } from './ramps-controller-api';
 import type { RampsControllerInitMessenger } from './messengers/ramps-controller-messenger';
@@ -22,6 +23,12 @@ function isRampsNetworkAllowed(
   );
 
   return completedOnboarding && Boolean(useExternalServices);
+}
+
+function hasUnsettledOrders(messengerClient: RampsController): boolean {
+  return (messengerClient.state?.orders ?? []).some(
+    (order) => !TERMINAL_ORDER_STATUSES.has(order.status),
+  );
 }
 
 function createRampsLifecycleManager(
@@ -62,7 +69,30 @@ function createRampsLifecycleManager(
     lifecycleStarted = false;
   };
 
-  return { startRampsLifecycle, stopRampsLifecycle };
+  /**
+   * Stop requested because the last UI window closed.
+   *
+   * Ramps checkout deliberately runs with no UI open — that is the whole reason
+   * the callback watcher lives in the background (see
+   * `app/scripts/lib/ramps/checkout-watch.ts`). Providers then take minutes to
+   * settle, so the PENDING -> COMPLETED transition lands squarely in the window
+   * where nothing would be polling, leaving the order showing its callback-time
+   * snapshot until the user next opens the wallet. Keep polling until every
+   * order is terminal, the same way pending transactions keep polling while the
+   * UI is closed. A revoked network gate still stops immediately.
+   */
+  const stopRampsLifecycleWhenSettled = (): void => {
+    if (isPollingAllowed() && hasUnsettledOrders(messengerClient)) {
+      return;
+    }
+    stopRampsLifecycle();
+  };
+
+  return {
+    startRampsLifecycle,
+    stopRampsLifecycle,
+    stopRampsLifecycleWhenSettled,
+  };
 }
 
 function registerRampsLifecycleSubscriptions(
@@ -120,8 +150,11 @@ export const RampsControllerInit: MessengerClientInitFunction<
   const isNetworkAllowed = () => isRampsNetworkAllowed(initMessenger);
   applyRampsNetworkGate(messengerClient, isNetworkAllowed);
 
-  const { startRampsLifecycle, stopRampsLifecycle } =
-    createRampsLifecycleManager(messengerClient, isNetworkAllowed);
+  const {
+    startRampsLifecycle,
+    stopRampsLifecycle,
+    stopRampsLifecycleWhenSettled,
+  } = createRampsLifecycleManager(messengerClient, isNetworkAllowed);
 
   const tryStartRampsLifecycle = (): void => {
     if (isNetworkAllowed()) {
@@ -147,7 +180,8 @@ export const RampsControllerInit: MessengerClientInitFunction<
     api: {
       ...getRampsControllerApi(messengerClient, platform),
       startRampsLifecycle: tryStartRampsLifecycle,
-      stopRampsLifecycle,
+      // Called by `stopNetworkRequests` when the last UI window closes.
+      stopRampsLifecycle: stopRampsLifecycleWhenSettled,
     },
   };
 };

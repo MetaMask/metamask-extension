@@ -16,6 +16,7 @@ import { RampsControllerInit } from './ramps-controller-init';
 import { RAMPS_NETWORK_ACCESS_DENIED_MESSAGE } from './ramps-network-gate';
 
 const mockRampsController = {
+  state: { orders: [] as { status: string }[] },
   init: jest.fn().mockResolvedValue(undefined),
   getCountries: jest.fn(),
   startOrderPolling: jest.fn(),
@@ -117,6 +118,7 @@ function getInitRequestMock(
 }
 
 function resetMockRampsController(): void {
+  mockRampsController.state = { orders: [] };
   mockInit = jest.fn().mockResolvedValue(undefined);
   mockStartOrderPolling = jest.fn();
   mockStopOrderPolling = jest.fn();
@@ -260,6 +262,50 @@ describe('RampsControllerInit', () => {
     await Promise.resolve();
     expect(mockStartOrderPolling).toHaveBeenCalled();
 
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+  });
+
+  it('keeps polling on UI close while an order is still pending', async () => {
+    mockRampsController.state = { orders: [{ status: 'PENDING' }] };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(mockStartOrderPolling).toHaveBeenCalled();
+
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).not.toHaveBeenCalled();
+  });
+
+  it('stops polling on UI close once every order is terminal', async () => {
+    mockRampsController.state = {
+      orders: [{ status: 'COMPLETED' }, { status: 'CANCELLED' }],
+    };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+  });
+
+  it('stops polling on UI close with a pending order when network access is revoked', async () => {
+    mockRampsController.state = { orders: [{ status: 'PENDING' }] };
+    const { initMessenger, setUseExternalServices } = createInitMessenger();
+    const baseMessenger = getRootMessenger<never, never>();
+    const { api } = RampsControllerInit({
+      ...buildControllerInitRequestMock(),
+      controllerMessenger: getRampsControllerMessenger(baseMessenger),
+      initMessenger,
+      persistedState: {},
+    });
+    await Promise.resolve();
+    await Promise.resolve();
+
+    setUseExternalServices(false);
     api?.stopRampsLifecycle?.();
 
     expect(mockStopOrderPolling).toHaveBeenCalled();

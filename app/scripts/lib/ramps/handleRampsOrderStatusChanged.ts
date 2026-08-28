@@ -52,7 +52,7 @@ function getOrderKey(order?: RampsOrder): string | undefined {
  * `TERMINAL_ORDER_STATUSES` set (kept in lockstep with mobile's
  * `ramps-controller/event-handlers/analytics.ts`).
  */
-const TERMINAL_ORDER_STATUSES = new Set<string>([
+export const TERMINAL_ORDER_STATUSES = new Set<string>([
   'COMPLETED',
   'FAILED',
   'CANCELLED',
