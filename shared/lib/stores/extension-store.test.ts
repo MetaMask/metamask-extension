@@ -149,9 +149,9 @@ describe('ExtensionStore', () => {
       ]);
     });
 
-    it('uses persisted manifest keys instead of in-memory manifest keys when available', async () => {
+    it('removes the union of persisted and in-memory manifest keys', async () => {
       const getMock = jest.fn().mockResolvedValue({
-        manifest: ['KeyringController'],
+        manifest: ['KeyringController', 'PreferencesController'],
       });
       const setMock = jest.fn().mockResolvedValue(undefined);
       const removeMock = jest.fn().mockResolvedValue(undefined);
@@ -165,7 +165,10 @@ describe('ExtensionStore', () => {
       expect(getMock).toHaveBeenCalledWith(['manifest']);
       expect(removeMock).toHaveBeenCalledWith([
         'manifest',
+        'data',
+        'meta',
         'KeyringController',
+        'PreferencesController',
       ]);
     });
 
