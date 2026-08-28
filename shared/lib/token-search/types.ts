@@ -1,6 +1,6 @@
 import { IconColor, IconName, TextColor } from '@metamask/design-system-react';
 
-export type SecurityTrustInlineBadgeConfig = {
+export type TokenTrustConfig = {
   icon: IconName;
   iconColor: IconColor;
   alertSeverity?: 'success' | 'warning' | 'danger';

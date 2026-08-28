@@ -1,9 +1,9 @@
 import { IconColor, IconName } from '@metamask/design-system-react';
-import type { SecurityTrustInlineBadgeConfig } from '#shared/types/tokens';
+import type { TokenTrustConfig } from '#shared/lib/token-search/types';
 
 export function getSecurityInlineBadge(
   resultType: string | null | undefined,
-): SecurityTrustInlineBadgeConfig | null {
+): TokenTrustConfig | null {
   switch (resultType) {
     case 'Verified':
       return {
