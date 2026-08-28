@@ -31,9 +31,7 @@ describe('MoneyAccountUpgradeServiceInit', () => {
 
   it('initializes the service with the upgrade controller instance', () => {
     const request = getInitRequestMock();
-    const upgradeController = new MoneyAccountUpgradeController(
-      {} as never,
-    );
+    const upgradeController = new MoneyAccountUpgradeController({} as never);
     request.getMessengerClient.mockReturnValue(upgradeController);
 
     const { messengerClient } = MoneyAccountUpgradeServiceInit(request);

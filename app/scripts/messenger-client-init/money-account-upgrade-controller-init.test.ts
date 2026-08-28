@@ -29,9 +29,8 @@ describe('MoneyAccountUpgradeControllerInit', () => {
   });
 
   it('initializes the controller', () => {
-    const { messengerClient } = MoneyAccountUpgradeControllerInit(
-      getInitRequestMock(),
-    );
+    const { messengerClient } =
+      MoneyAccountUpgradeControllerInit(getInitRequestMock());
 
     expect(messengerClient).toBeInstanceOf(MoneyAccountUpgradeController);
   });
