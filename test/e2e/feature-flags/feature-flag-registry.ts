@@ -2457,6 +2457,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  // Merkl claiming was removed from the extension (MUSD-1223); the client no
+  // longer reads this flag. Kept here until it is retired server-side.
   earnMerklCampaignClaiming: {
     inProd: true,
     name: 'earnMerklCampaignClaiming',
@@ -2464,7 +2466,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       enabled: true,
       minimumVersion: '13.24.0',
     },
-    status: FeatureFlagStatus.Active,
+    status: FeatureFlagStatus.Deprecated,
     type: FeatureFlagType.Remote,
   },
 

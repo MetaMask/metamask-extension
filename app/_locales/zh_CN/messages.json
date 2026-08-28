@@ -5168,10 +5168,6 @@
   "memo": {
     "message": "备忘录"
   },
-  "merklRewardsClaimBonus": {
-    "message": "领取奖励",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "您的 mUSD 奖励领取失败",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5183,10 +5179,6 @@
   "merklRewardsToastSuccess": {
     "message": "您的 mUSD 奖励已到账！",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "发生意外错误。请重试。",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "消息"
@@ -5454,54 +5446,6 @@
     "message": "$1 想连接 $2 个 snap。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "下一笔奖励累积中",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "领取 $1 奖励",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "预估年度奖励",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "您的奖励信息",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "根据您当前余额及利率估算的一年预期收益。利率为浮动值，可能发生变动。",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "了解更多。",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "自您参与以来已领取的奖励总额。",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "仅需持有 mUSD 即可获得 $1% 年化奖励。您可每日在 Linea 上领取该奖励。$2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "累计已领奖励",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "无累积中的奖励",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "$1% 奖励",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "您的奖励",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "每日奖励",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5564,14 +5508,6 @@
   },
   "musdBuyMusd": {
     "message": "购买 mUSD"
-  },
-  "musdClaimSendingTo": {
-    "message": "正在发送至",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "正在发送至 $1",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
   },
   "musdClaimTitle": {
     "message": "领取奖励",
