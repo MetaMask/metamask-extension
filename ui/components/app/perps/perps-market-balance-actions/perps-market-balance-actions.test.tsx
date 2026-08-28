@@ -100,9 +100,9 @@ describe('PerpsMarketBalanceActions', () => {
     );
 
     expect(screen.getByTestId('perps-balance-actions')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('perps-balance-actions-total'),
-    ).toHaveTextContent('$0.00');
+    expect(screen.getByTestId('perps-balance-actions-total')).toHaveTextContent(
+      '$0.00',
+    );
     expect(
       screen.queryByTestId('perps-balance-actions-withdraw'),
     ).not.toBeInTheDocument();
@@ -123,10 +123,7 @@ describe('PerpsMarketBalanceActions', () => {
       });
 
       renderWithProvider(
-        <PerpsMarketBalanceActions
-          showActionButtons
-          onLearnMore={jest.fn()}
-        />,
+        <PerpsMarketBalanceActions showActionButtons onLearnMore={jest.fn()} />,
         mockStore,
       );
 
@@ -137,10 +134,7 @@ describe('PerpsMarketBalanceActions', () => {
 
     it('hides the Learn more button once the account is funded even if onLearnMore is provided', () => {
       renderWithProvider(
-        <PerpsMarketBalanceActions
-          showActionButtons
-          onLearnMore={jest.fn()}
-        />,
+        <PerpsMarketBalanceActions showActionButtons onLearnMore={jest.fn()} />,
         mockStore,
       );
 
