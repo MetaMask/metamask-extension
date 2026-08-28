@@ -1,5 +1,5 @@
 import { IconColor, IconName, TextColor } from '@metamask/design-system-react';
-import type { SecurityTrustInlineBadgeConfig } from '#shared/types/tokens';
+import type { TokenTrustConfig } from '#shared/lib/token-search/types';
 import {
   getSecurityTrustBadgeConfig,
   type SecurityTrustTranslate,
@@ -21,7 +21,7 @@ export type ResultTypeConfig = {
   icon?: IconName;
   iconColor?: IconColor;
   alertSeverity?: SecurityAlertSeverity;
-  badge?: SecurityTrustInlineBadgeConfig | null;
+  badge?: TokenTrustConfig | null;
   sheetTitle?: string;
   getSheetDescription?: (tokenSymbol: string | undefined) => string;
 };
