@@ -1,5 +1,4 @@
 import { Driver } from '../../../webdriver/driver';
-import { assertSwapAndBridgeErrorUiIsAbsent } from '../../components/swap-and-bridge-error-ui';
 
 /**
  * Multichain send flow: asset, recipient, amount, and continue.
@@ -285,15 +284,6 @@ class SendPage {
   async checkSolanaNetworkIsPresent(): Promise<void> {
     console.log('Checking if Solana network is present');
     await this.driver.findElement(this.solanaNetwork);
-  }
-
-  /**
-   * Asserts that Swap/Bridge quote-error UI is not shown on the send form.
-   * Same-chain native sends must not surface cross-chain quote banners.
-   */
-  async checkSwapAndBridgeErrorUiIsAbsent(): Promise<void> {
-    console.log('Checking swap/bridge error UI is absent on send page');
-    await assertSwapAndBridgeErrorUiIsAbsent(this.driver);
   }
 
   /**

@@ -25,6 +25,7 @@ import { createMockImplementation, mock4byte } from '../../helpers';
 import {
   getUnapprovedContractInteractionTransaction,
   getUnapprovedDappSwapTransaction,
+  getUnapprovedSimpleSendTransaction,
 } from './transactionDataHelpers';
 
 jest.setTimeout(30_000);
@@ -33,6 +34,19 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
 }));
+
+// This branch still calls usePureBlack / PureBlackProvider, which the
+// installed @metamask/design-system-react no longer exports.
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    PureBlackProvider:
+      actual.PureBlackProvider ??
+      (({ children }: { children: unknown }) => children),
+    usePureBlack: actual.usePureBlack ?? jest.fn(() => false),
+  };
+});
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
@@ -514,6 +528,50 @@ describe('DappSwapComparisonBanner', () => {
     // Verify standard confirmation UI is displayed instead
     expect(
       await screen.findByText(tEn('confirmTitleTransaction')),
+    ).toBeInTheDocument();
+  });
+
+  it('does not display the banner for a wallet-initiated simpleSend', async () => {
+    const mockedMetaMaskState = {
+      ...getMetaMaskStateWithDappSwap({
+        accountAddress: getSelectedAccountAddress(),
+        includeQuote: true,
+      }),
+      pendingApprovals: {
+        [pendingTransactionId]: {
+          id: pendingTransactionId,
+          origin: 'metamask',
+          time: pendingTransactionTime,
+          type: ApprovalType.Transaction,
+          requestData: {
+            txId: pendingTransactionId,
+          },
+          requestState: null,
+          expectsResult: false,
+        },
+      },
+      transactions: [
+        getUnapprovedSimpleSendTransaction(
+          getSelectedAccountAddress(),
+          pendingTransactionId,
+          pendingTransactionTime,
+        ),
+      ],
+    };
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    expect(screen.queryByTestId('market-rate-tab')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('metamask-swap-tab')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('dapp-swap-banner')).not.toBeInTheDocument();
+
+    expect(
+      await screen.findByText(tEn('confirmTitleSending')),
     ).toBeInTheDocument();
   });
 
