@@ -50,7 +50,6 @@ export function DisableConfirmDialog({ open, onCancel, onConfirm }: Props) {
       aria-describedby={descriptionId}
       className="mm-cashtag-disable-dialog w-[360px] max-w-[calc(100vw-32px)] rounded-xl border border-muted bg-default p-4 font-sans text-default shadow-lg"
       // @ts-expect-error closedby missing in React types
-      // eslint-disable-next-line react/no-unknown-property -- valid on <dialog>
       closedby="any"
       onClose={() => {
         if (confirmedRef.current) {
