@@ -5168,10 +5168,6 @@
   "memo": {
     "message": "ज्ञापन"
   },
-  "merklRewardsClaimBonus": {
-    "message": "बोनस क्लेम करें",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "आपका mUSD बोनस क्लेम फेल हो गया",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5183,10 +5179,6 @@
   "merklRewardsToastSuccess": {
     "message": "आपका mUSD बोनस यहाँ है!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "एक अनचाही गड़बड़ी हुई। कृपया फिर से कोशिश करें।",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "मैसेज"
@@ -5454,54 +5446,6 @@
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "अगला बोनस अर्जित किया जा रहा है",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "$1 बोनस क्लेम करें",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "अनुमानित वार्षिक बोनस",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "आपकी बोनस जानकारी",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "आपके वर्तमान बैलेंस और ब्याज दर के आधार पर एक वर्ष में आपकी संभावित कमाई का अनुमान। रेट बदलता रहता है और बदल सकता है।",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "अधिक जानें।",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "आपने शुरुआत से लेकर अब तक कुल जितना बोनस क्लेम किया है।",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "mUSD होल्ड करने पर आपको मिलता है $1% सालाना बोनस। आपका बोनस Linea पर रोज़ाना क्लेम किया जा सकता है। $2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "लाइफटाइम बोनस क्लेम किया गया",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "अगला कोई बोनस अर्जित नहीं किया जा रहा है",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "$1% बोनस",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "आपका बोनस",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "दैनिक बोनस",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5564,14 +5508,6 @@
   },
   "musdBuyMusd": {
     "message": "mUSD खरीदें"
-  },
-  "musdClaimSendingTo": {
-    "message": "को भेजा जा रहा है",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "$1 को भेजा जा रहा है",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
   },
   "musdClaimTitle": {
     "message": "बोनस क्लेम करें",

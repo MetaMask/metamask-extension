@@ -1,5 +1,5 @@
 import { until } from 'selenium-webdriver';
-import { WINDOW_TITLES } from '../../constants';
+import { WINDOW_TITLES } from '../../../constants';
 import CriticalErrorPage from './critical-error-page';
 
 /**

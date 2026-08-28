@@ -1049,11 +1049,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/musd/useMerklClaimAmount.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/hooks/pay/useTransactionPayMetrics.ts": {
     "react-hooks/refs": {
       "count": 13

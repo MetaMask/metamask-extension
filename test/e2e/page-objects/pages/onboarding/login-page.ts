@@ -1,5 +1,5 @@
-import { Driver } from '../../webdriver/driver';
-import { WALLET_PASSWORD } from '../../constants';
+import { Driver } from '../../../webdriver/driver';
+import { WALLET_PASSWORD } from '../../../constants';
 
 /**
  * Unlock / login screen for an existing vault (password or passkey).
@@ -33,6 +33,10 @@ class LoginPage {
     text: 'Password is incorrect. Please try again.',
   };
 
+  private readonly parentSelector: object = {
+    testId: 'parent-selector-login-page',
+  };
+
   private readonly passkeyUnlockButton: object = {
     testId: 'unlock-passkey-button',
   };
@@ -45,10 +49,6 @@ class LoginPage {
 
   private readonly resetPasswordModalButtonLink: object = {
     testId: 'reset-password-modal-button-link',
-  };
-
-  private readonly resetWalletButton: object = {
-    testId: 'login-error-modal-button',
   };
 
   private readonly unlockButton: object = { testId: 'unlock-submit' };
@@ -84,6 +84,7 @@ class LoginPage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.forgotPasswordButton,
+        this.parentSelector,
         this.passwordInput,
         this.unlockButton,
       ]);
@@ -134,13 +135,6 @@ class LoginPage {
     console.log(`On login page, Login to homepage `);
     await this.driver.fill(this.passwordInput, password);
     await this.driver.clickElement(this.unlockButton);
-  }
-
-  async resetWallet(): Promise<void> {
-    console.log(
-      'Resetting wallet due to unrecoverable error in social login unlock',
-    );
-    await this.driver.clickElementAndWaitToDisappear(this.resetWalletButton);
   }
 
   async resetWalletFromConnectionsRemovedModal(): Promise<void> {
