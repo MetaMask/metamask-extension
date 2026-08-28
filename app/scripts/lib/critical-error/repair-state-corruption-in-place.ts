@@ -11,6 +11,13 @@ export type RepairStateCorruptionInPlaceOptions = {
   backup: Backup | null;
   connectedPorts: Set<chrome.runtime.Port>;
   initBackground: (backup: Backup | null) => Promise<void>;
+  /**
+   * Resolves when background initialization has completed, or rejects when it
+   * has failed. Pass the current `isInitialized` promise created by
+   * `setGlobalInitializers`. The real `initBackground` catches initialize
+   * errors and rejects that promise instead of throwing.
+   */
+  backgroundIsInitialized: () => Promise<void>;
   persistenceManager: Pick<PersistenceManager, 'reset'>;
   setGlobalInitializers: () => void;
   setRestoreFlowType: () => void;
@@ -32,6 +39,7 @@ export type RepairStateCorruptionInPlaceOptions = {
  * @param options.backup
  * @param options.connectedPorts
  * @param options.initBackground
+ * @param options.backgroundIsInitialized
  * @param options.persistenceManager
  * @param options.setGlobalInitializers
  * @param options.setRestoreFlowType
@@ -42,6 +50,7 @@ export async function repairStateCorruptionInPlace({
   backup,
   connectedPorts,
   initBackground,
+  backgroundIsInitialized,
   persistenceManager,
   setGlobalInitializers,
   setRestoreFlowType,
@@ -55,10 +64,12 @@ export async function repairStateCorruptionInPlace({
       hasVault(backup)
     ) {
       await initBackground(backup);
+      await backgroundIsInitialized();
       setRestoreFlowType();
     } else if (repairAction === CriticalErrorRepairAction.Reset) {
       await persistenceManager.reset();
       await initBackground(null);
+      await backgroundIsInitialized();
     } else {
       throw new Error(
         `Unexpected state corruption repair action: ${repairAction}`,

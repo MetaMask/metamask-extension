@@ -11,6 +11,7 @@ function createMockPort(): chrome.runtime.Port {
 
 describe('repairStateCorruptionInPlace', () => {
   const initBackground = jest.fn().mockResolvedValue(undefined);
+  const backgroundIsInitialized = jest.fn().mockResolvedValue(undefined);
   const persistenceManager = {
     reset: jest.fn().mockResolvedValue(undefined),
   };
@@ -35,6 +36,7 @@ describe('repairStateCorruptionInPlace', () => {
       backup,
       connectedPorts,
       initBackground,
+      backgroundIsInitialized,
       persistenceManager,
       setGlobalInitializers,
       setRestoreFlowType,
@@ -43,6 +45,7 @@ describe('repairStateCorruptionInPlace', () => {
 
     expect(setGlobalInitializers).toHaveBeenCalledTimes(1);
     expect(initBackground).toHaveBeenCalledWith(backup);
+    expect(backgroundIsInitialized).toHaveBeenCalledTimes(1);
     expect(setRestoreFlowType).toHaveBeenCalledTimes(1);
     expect(persistenceManager.reset).not.toHaveBeenCalled();
     expect(tryPostMessage).toHaveBeenCalledWith(port1, RELOAD_WINDOW);
@@ -58,6 +61,7 @@ describe('repairStateCorruptionInPlace', () => {
       backup: null,
       connectedPorts,
       initBackground,
+      backgroundIsInitialized,
       persistenceManager,
       setGlobalInitializers,
       setRestoreFlowType,
@@ -67,6 +71,7 @@ describe('repairStateCorruptionInPlace', () => {
     expect(setGlobalInitializers).toHaveBeenCalledTimes(1);
     expect(persistenceManager.reset).toHaveBeenCalledTimes(1);
     expect(initBackground).toHaveBeenCalledWith(null);
+    expect(backgroundIsInitialized).toHaveBeenCalledTimes(1);
     expect(setRestoreFlowType).not.toHaveBeenCalled();
     expect(tryPostMessage).toHaveBeenCalledWith(port, RELOAD_WINDOW);
   });
@@ -81,6 +86,7 @@ describe('repairStateCorruptionInPlace', () => {
         backup,
         connectedPorts,
         initBackground,
+        backgroundIsInitialized,
         persistenceManager,
         setGlobalInitializers,
         setRestoreFlowType,
@@ -92,7 +98,7 @@ describe('repairStateCorruptionInPlace', () => {
     expect(tryPostMessage).not.toHaveBeenCalled();
   });
 
-  it('reloads connected UI windows when recover fails', async () => {
+  it('reloads connected UI windows when recover initialization fails', async () => {
     const backup: Backup = {
       KeyringController: { vault: 'vault-data' },
     };
@@ -100,7 +106,9 @@ describe('repairStateCorruptionInPlace', () => {
     const port2 = createMockPort();
     const connectedPorts = new Set([port1, port2]);
     const initError = new Error('init failed');
-    initBackground.mockRejectedValueOnce(initError);
+    // Real initBackground catches initialize errors and rejects isInitialized
+    // instead of throwing, so this mock models backgroundIsInitialized rejecting.
+    backgroundIsInitialized.mockRejectedValueOnce(initError);
 
     await expect(
       repairStateCorruptionInPlace({
@@ -108,6 +116,7 @@ describe('repairStateCorruptionInPlace', () => {
         backup,
         connectedPorts,
         initBackground,
+        backgroundIsInitialized,
         persistenceManager,
         setGlobalInitializers,
         setRestoreFlowType,
@@ -115,6 +124,7 @@ describe('repairStateCorruptionInPlace', () => {
       }),
     ).rejects.toThrow(initError);
 
+    expect(initBackground).toHaveBeenCalledWith(backup);
     expect(setRestoreFlowType).not.toHaveBeenCalled();
     expect(tryPostMessage).toHaveBeenCalledWith(port1, RELOAD_WINDOW);
     expect(tryPostMessage).toHaveBeenCalledWith(port2, RELOAD_WINDOW);
@@ -132,6 +142,7 @@ describe('repairStateCorruptionInPlace', () => {
         backup: null,
         connectedPorts,
         initBackground,
+        backgroundIsInitialized,
         persistenceManager,
         setGlobalInitializers,
         setRestoreFlowType,

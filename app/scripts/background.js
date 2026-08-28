@@ -462,6 +462,7 @@ const handleOnConnect = async (port) => {
               backup,
               connectedPorts,
               initBackground,
+              backgroundIsInitialized: () => isInitialized,
               persistenceManager,
               setGlobalInitializers,
               setRestoreFlowType: () => {
