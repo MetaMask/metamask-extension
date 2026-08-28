@@ -222,6 +222,16 @@ describe('MultichainAccountList', () => {
     expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
   });
 
+  it('renders no balance for account groups with no fetched balance', () => {
+    renderComponent();
+
+    // Balances are only fetched eagerly for the selected account group, and an
+    // unfetched group aggregates to 0 just like an empty one. Rendering "$0.00"
+    // would read as "your funds are gone", so nothing is rendered instead.
+    expect(screen.queryAllByTestId('balance-display')).toHaveLength(0);
+    expect(screen.queryByText('$0.00')).not.toBeInTheDocument();
+  });
+
   it('does not render wallet headers based on prop', () => {
     renderComponent({ displayWalletHeader: false });
 
@@ -238,7 +248,7 @@ describe('MultichainAccountList', () => {
     expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
   });
 
-  it('marks only the selected account with a check icon and dispatches action on click', () => {
+  it('marks only the selected account with a check icon and dispatches action on click', async () => {
     renderComponent();
 
     // With default props, checkboxes should not be shown (showAccountCheckbox defaults to false)
@@ -256,13 +266,34 @@ describe('MultichainAccountList', () => {
     const accountCell = screen.getByTestId(
       `multichain-account-cell-${walletTwoGroupId}`,
     );
-    accountCell.click();
+    // useTransition schedules pending-state updates that must flush inside act
+    await act(async () => {
+      fireEvent.click(accountCell);
+    });
 
     // Verify that the action was dispatched with the correct account group ID
     expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
       walletTwoGroupId,
     );
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('does not wrap custom handleAccountClick in the default switch transition gate', async () => {
+    const customHandleAccountClick = jest.fn();
+    renderComponent({
+      handleAccountClick: customHandleAccountClick,
+    });
+
+    const accountCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    await act(async () => {
+      fireEvent.click(accountCell);
+    });
+
+    expect(customHandleAccountClick).toHaveBeenCalledWith(walletTwoGroupId);
+    expect(mockSetSelectedMultichainAccount).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('updates selected account when selectedAccountGroup changes', () => {

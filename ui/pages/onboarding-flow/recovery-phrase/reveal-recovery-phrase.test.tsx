@@ -38,9 +38,6 @@ jest.mock('../../../hooks/useAnalytics', () => {
 });
 
 const mockPasskeyAuthResponse = { id: 'assertion-id', type: 'public-key' };
-const mockGeneratePasskeyAuthenticationOptions = jest
-  .fn()
-  .mockResolvedValue({ challenge: 'challenge' });
 const mockGetSeedPhraseWithPasskey = jest
   .fn()
   .mockReturnValue(() => Promise.resolve('test srp'));
@@ -59,15 +56,28 @@ const mockCancelPasskeyCeremony = jest.fn();
 const mockIsPasskeyCeremonySilentError = jest.fn().mockReturnValue(false);
 const mockGetEnvironmentType = jest.fn().mockReturnValue('fullscreen');
 
+const mockAuthenticateWithPasskey = jest.fn(() =>
+  mockStartPasskeyAuthentication(),
+);
+
+jest.mock('../../../hooks/passkey/usePasskeyAuthentication', () => ({
+  usePasskeyAuthentication: () => mockAuthenticateWithPasskey,
+}));
+
+jest.mock('../../../hooks/passkey/usePasskeySeedPhraseExport', () => ({
+  usePasskeySeedPhraseExport:
+    () => (authenticationResponse: unknown, keyringId?: string) => {
+      const result = mockGetSeedPhraseWithPasskey(
+        authenticationResponse,
+        keyringId,
+      );
+      return typeof result === 'function' ? result() : result;
+    },
+}));
+
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   getSeedPhrase: jest.fn(),
-  getSeedPhraseWithPasskey: (
-    authenticationResponse: unknown,
-    keyringId?: string,
-  ) => mockGetSeedPhraseWithPasskey(authenticationResponse, keyringId),
-  generatePasskeyAuthenticationOptions: (...args: unknown[]) =>
-    mockGeneratePasskeyAuthenticationOptions(...args),
 }));
 
 jest.mock('../../../selectors', () => ({
@@ -525,7 +535,7 @@ describe('RevealRecoveryPhrase', () => {
       expect(
         queryByTestId('reveal-recovery-phrase-passkey-verifying'),
       ).not.toBeInTheDocument();
-      expect(mockGeneratePasskeyAuthenticationOptions).not.toHaveBeenCalled();
+      expect(mockAuthenticateWithPasskey).not.toHaveBeenCalled();
       expect(mockStartPasskeyAuthentication).not.toHaveBeenCalled();
       expect(mockGetSeedPhraseWithPasskey).not.toHaveBeenCalled();
     });

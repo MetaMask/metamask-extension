@@ -172,14 +172,14 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "optedIn": false,
-      "consentDecisionMade": true
+      "consentDecisionMade": true,
+      "optedIn": false
     },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 221,
+      "currentMigrationVersion": 223,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -385,53 +385,6 @@
     "DeFiPositionsControllerV2": {
       "allDeFiPositionsV2": {}
     },
-    "EnsController": {
-      "ensEntries": {
-        "0x1": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x1",
-            "ensName": "."
-          }
-        },
-        "0x3": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x3",
-            "ensName": "."
-          }
-        },
-        "0x4": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x4",
-            "ensName": "."
-          }
-        },
-        "0x4268": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x4268",
-            "ensName": "."
-          }
-        },
-        "0x5": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x5",
-            "ensName": "."
-          }
-        },
-        "0xaa36a7": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0xaa36a7",
-            "ensName": "."
-          }
-        }
-      },
-      "ensResolutionsByAddress": {}
-    },
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
       "gasEstimateType": "none",
@@ -459,6 +412,9 @@
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
+    },
+    "MoneyAccountController": {
+      "moneyAccounts": {}
     },
     "MultichainAssetsController": {
       "accountsAssets": {
@@ -1104,7 +1060,8 @@
       "referrals": {
         "asterdex": {},
         "gmx": {},
-        "hyperliquid": {}
+        "hyperliquid": {},
+        "variational": {}
       },
       "securityAlertsEnabled": true,
       "showSidePanelMigrationToast": false,
@@ -1146,7 +1103,6 @@
       }
     },
     "RampsController": {
-      "userRegion": null,
       "countries": {
         "data": [],
         "error": null,
@@ -1155,10 +1111,26 @@
         "selected": null
       },
       "orders": [],
-      "providerAutoSelected": false
+      "providerAutoSelected": false,
+      "userRegion": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
+      "featureFlagThresholdGroups": {
+        "assetsAccountsApiV6": "feature is OFF",
+        "assetsEnableNotificationsByDefaultV2": "feature is ON",
+        "backendWebSocketConnection": "feature is ON",
+        "coreExtensionUxCeux1096AbtestReferralUi": "treatment",
+        "coreExtensionUxCeux1141AbtestBottomNav": "control",
+        "extensionSignedDeepLinkWarningEnabled": "Warning enabled",
+        "perpsTAT3382AbtestTabBadge": "control",
+        "platformSplitStateGradualRollout": "feature is ON",
+        "stxMigrationBatchStatus": "sentinel on",
+        "stxMigrationCancel": "sentinel on",
+        "stxMigrationGetFees": "sentinel on",
+        "stxMigrationSubmitTransactions": "sentinel on",
+        "swapsSWAPS4827AbtestChainValueOrder": "control"
+      },
       "localOverrides": {},
       "remoteFeatureFlags": {
         "feature1": true,
@@ -1245,6 +1217,7 @@
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/permissions-kernel-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
+        "npm:@metamask/stellar-wallet-snap": "mainnet",
         "npm:@metamask/tron-wallet-snap": "mainnet"
       }
     },
@@ -1297,6 +1270,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 221
+    "version": 223
   }
 }

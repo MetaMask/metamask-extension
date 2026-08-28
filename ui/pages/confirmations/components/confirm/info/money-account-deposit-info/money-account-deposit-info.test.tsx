@@ -41,9 +41,11 @@ describe('MoneyAccountDepositInfo', () => {
     expect(screen.getByTestId('custom-amount-info')).toBeInTheDocument();
     expect(customAmountInfoMock).toHaveBeenCalledWith(
       expect.objectContaining({
+        amountDetails: expect.any(Function),
         autoFocusAmount: true,
         currency: 'usd',
         displayAccountRow: true,
+        displayPercentageButtons: true,
         hidePayTokenAmount: true,
       }),
       expect.anything(),

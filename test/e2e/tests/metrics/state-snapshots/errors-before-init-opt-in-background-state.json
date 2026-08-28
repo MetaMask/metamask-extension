@@ -95,10 +95,6 @@
       "currentCurrency": "usd"
     },
     "DeFiPositionsControllerV2": "object",
-    "EnsController": {
-      "ensEntries": "object",
-      "ensResolutionsByAddress": "object"
-    },
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
       "gasEstimateType": "none",
@@ -120,6 +116,7 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
+    "MoneyAccountController": { "moneyAccounts": "object" },
     "MultichainAssetsController": {
       "accountsAssets": "object",
       "allIgnoredAssets": "object",
@@ -254,6 +251,7 @@
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
+      "featureFlagThresholdGroups": "object",
       "localOverrides": "object",
       "remoteFeatureFlags": {
         "feature1": true,

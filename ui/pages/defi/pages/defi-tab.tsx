@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
-import { RouteWithMessenger } from '../../../layouts/route-with-messenger';
+import { RouteMessengerProvider } from '../../../contexts/route-messenger';
 import { AssetListProps } from '../../../components/app/assets/asset-list/asset-list';
 import AssetListControlBar from '../../../components/app/assets/asset-list/asset-list-control-bar';
 import { useScreenViewedEvent } from '../../../hooks/useScreenViewedEvent';
@@ -15,7 +15,7 @@ import DefiListV2 from './defi-list-v2';
  * V2 DeFi tab content. Mounts only when the V2 controller flag is enabled so
  * `useDeFiPositionsV2` always runs (no legacy `enabled` gate in the hook).
  *
- * Must run under {@link RouteWithMessenger} so it can call
+ * Must run under {@link RouteMessengerProvider} so it can call
  * `DeFiPositionsControllerV2:fetchDeFiPositions` via the route messenger.
  *
  * @param props - Component props.
@@ -36,6 +36,7 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
       <AssetListControlBar
         showImportTokenButton={false}
         onRefresh={handleRefresh}
+        data-testid="parent-selector-defi-tab"
       />
       <DefiListV2
         onClick={onClickAsset}
@@ -58,7 +59,10 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
 function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
   return (
     <>
-      <AssetListControlBar showImportTokenButton={false} />
+      <AssetListControlBar
+        showImportTokenButton={false}
+        data-testid="parent-selector-defi-tab"
+      />
       <DefiList onClick={onClickAsset} />
     </>
   );
@@ -76,12 +80,12 @@ export default function DeFiTab({
   // UI messenger) keep working when the V2 flag is off.
   if (isDefiControllerV2Enabled) {
     return (
-      <RouteWithMessenger
+      <RouteMessengerProvider
         path="defi-tab"
         capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
       >
         <DeFiTabContentV2 onClickAsset={onClickAsset} />
-      </RouteWithMessenger>
+      </RouteMessengerProvider>
     );
   }
 

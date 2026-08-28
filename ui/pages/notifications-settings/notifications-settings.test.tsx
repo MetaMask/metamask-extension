@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../helpers/constants/routes';
 import { createMockNotificationPreferences } from '../../hooks/metamask-notifications/mocks';
 import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
@@ -71,6 +72,9 @@ describe('NotificationsSettingsContent', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('notifications-settings-per-types'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.notificationsSettingsAgenticCliTitle.message),
     ).toBeInTheDocument();
   });
 });
