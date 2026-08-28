@@ -1,5 +1,5 @@
-import { Driver } from '../../webdriver/driver';
-import { WALLET_PASSWORD } from '../../constants';
+import { Driver } from '../../../webdriver/driver';
+import { WALLET_PASSWORD } from '../../../constants';
 
 /**
  * External vault-decryptor webapp for recovering seed from vault JSON/logs.
