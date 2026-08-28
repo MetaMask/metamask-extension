@@ -3421,9 +3421,7 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger: RootMessenger;
       wallet: ReturnType<typeof createMockMnemonicWallet>['wallet'];
     }) {
-      const createMultichainAccountWallet = jest
-        .fn()
-        .mockResolvedValue(wallet);
+      const createMultichainAccountWallet = jest.fn().mockResolvedValue(wallet);
 
       rootMessenger.registerActionHandler(
         'MultichainAccountService:createMultichainAccountWallet',
@@ -3448,12 +3446,8 @@ describe('LegacyBackgroundApiService', () => {
     it('selects the imported EVM account from the created multichain wallet', async () => {
       await withService(
         async ({ rootMessenger, service, serviceMessenger }) => {
-          const {
-            getAccount,
-            getMultichainAccountGroup,
-            newAccount,
-            wallet,
-          } = createMockMnemonicWallet();
+          const { getAccount, getMultichainAccountGroup, newAccount, wallet } =
+            createMockMnemonicWallet();
           const createMultichainAccountWallet =
             registerNonSocialLoginMnemonicImport({
               rootMessenger,
