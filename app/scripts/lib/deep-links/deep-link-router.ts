@@ -85,10 +85,7 @@ export class DeepLinkRouter extends EventEmitter<{
     if (id) {
       search.set('id', id);
     }
-    return this.getExtensionURL(
-      TRIMMED_DEEP_LINK_ROUTE,
-      search.toString(),
-    );
+    return this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, search.toString());
   }
 
   /**

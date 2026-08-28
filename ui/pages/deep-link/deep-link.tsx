@@ -248,8 +248,7 @@ export const DeepLink = () => {
   );
   const isPendingDeepLinkRequest = useSelector((state: MetaMaskReduxState) =>
     Boolean(
-      requestId &&
-        state.metamask.pendingDeepLinkRequestIds.includes(requestId),
+      requestId && state.metamask.pendingDeepLinkRequestIds.includes(requestId),
     ),
   );
   const [viewState, setViewState] = useState<DeepLinkViewState | null>(null);

@@ -2,7 +2,7 @@ import { test as pwTest } from '@playwright/test';
 import { E2E_DRIVER } from '../../constants';
 import DeepLink from '../../page-objects/pages/security/deep-link-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { withFixtures } from '../../helpers';
 import { getConfig } from './helpers';
 

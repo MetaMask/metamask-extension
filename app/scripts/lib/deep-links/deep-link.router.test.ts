@@ -524,9 +524,7 @@ describe('DeepLinkRouter', () => {
             },
             route: { pathname: '/asset' },
           } as ParsedDeepLink,
-          expectedUrl: getInterstitialUrl(
-            `/asset?assetId=${encodedAssetId}`,
-          ),
+          expectedUrl: getInterstitialUrl(`/asset?assetId=${encodedAssetId}`),
         };
       };
 

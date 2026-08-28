@@ -60,10 +60,7 @@ function createLocation(search: string): ReturnType<typeof useLocation> {
   };
 }
 
-function createParsedDeepLink(
-  path: string,
-  query = '',
-): ParsedDeepLink {
+function createParsedDeepLink(path: string, query = ''): ParsedDeepLink {
   return {
     destination: {
       path,
@@ -94,9 +91,7 @@ describe('DeepLink', () => {
 
   it('stays in loading-only mode while pre-parsing for fast interstitial flip', async () => {
     pendingDeepLinkRequestIds = ['request-1'];
-    mockUseLocation.mockReturnValue(
-      createLocation('?u=%2Fbuy&id=request-1'),
-    );
+    mockUseLocation.mockReturnValue(createLocation('?u=%2Fbuy&id=request-1'));
     mockParse.mockResolvedValue(createParsedDeepLink('/buy'));
 
     render(<DeepLink />);
@@ -144,9 +139,7 @@ describe('DeepLink', () => {
   });
 
   it('parses and renders interstitial content when mode is not loading', async () => {
-    mockUseLocation.mockReturnValue(
-      createLocation('?u=%2Fbuy%3Famount%3D1'),
-    );
+    mockUseLocation.mockReturnValue(createLocation('?u=%2Fbuy%3Famount%3D1'));
     mockParse.mockResolvedValue(createParsedDeepLink('/buy', 'amount=1'));
 
     render(<DeepLink />);
