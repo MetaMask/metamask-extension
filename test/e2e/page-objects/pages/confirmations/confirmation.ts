@@ -2,6 +2,25 @@ import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
 
+/**
+ * Shared base for redesigned confirmation screens: footer actions, multi-page
+ * nav, header account details entry, inline alerts, and common info-row checks.
+ *
+ * Screen: `#/confirmation` / `#/confirmation/:id` (not a feature hash route of
+ * its own; confirmation type is driven by pending approval state).
+ * Owns: confirm/cancel footer, previous/next/reject-all nav, scroll-to-bottom,
+ * section collapse, security-provider banner, opening account-details from the
+ * header, and generic address/name display assertions.
+ * Boundaries: type-specific info panels belong to subclasses
+ * (`TransactionConfirmation`, `PersonalSignConfirmation`, etc.). Overlay
+ * modals opened from here belong to `AlertModal`, `AccountDetailsModal`,
+ * `GasFeeModal`, or `GasFeeTokenModal`.
+ * Related: subclasses for typed confirmations; modal page objects for overlays.
+ *
+ * @see ui/pages/confirmations/confirm/confirm.tsx
+ * @see ui/pages/confirmations/components/confirm/footer/footer.tsx
+ * @see ui/pages/confirmations/components/confirm/nav/nav.tsx
+ */
 class Confirmation {
   private accountAddressDetails: RawLocator = {
     tag: 'p',
@@ -41,6 +60,10 @@ class Confirmation {
   private navigationTitle = '[data-testid="confirm-page-nav-position"]';
 
   private nextPageButton = '[data-testid="confirm-nav__next-confirmation"]';
+
+  private parentSelector = {
+    testId: 'parent-selector-confirmation-page',
+  };
 
   private previousPageButton =
     '[data-testid="confirm-nav__previous-confirmation"]';
@@ -89,6 +112,7 @@ class Confirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.footerCancelButton,
         this.footerConfirmButton,
       ]);

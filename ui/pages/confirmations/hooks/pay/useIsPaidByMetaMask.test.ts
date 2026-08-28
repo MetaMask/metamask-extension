@@ -5,7 +5,10 @@ import {
 } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
-import { useTransactionPayTotals } from './useTransactionPayData';
+import {
+  useTransactionPayHasPositiveRequiredAmount,
+  useTransactionPayTotals,
+} from './useTransactionPayData';
 import { useIsPaidByMetaMask } from './useIsPaidByMetaMask';
 
 jest.mock('../transactions/useTransactionMetadataRequest');
@@ -15,6 +18,9 @@ const useTransactionMetadataRequestOptionalMock = jest.mocked(
   useTransactionMetadataRequestOptional,
 );
 const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
+const useTransactionPayHasPositiveRequiredAmountMock = jest.mocked(
+  useTransactionPayHasPositiveRequiredAmount,
+);
 
 function mockConfirmation(type: TransactionType) {
   useTransactionMetadataRequestOptionalMock.mockReturnValue({
@@ -39,6 +45,7 @@ describe('useIsPaidByMetaMask', () => {
     jest.resetAllMocks();
     mockConfirmation(TransactionType.musdConversion);
     mockTotals();
+    useTransactionPayHasPositiveRequiredAmountMock.mockReturnValue(true);
   });
 
   it('returns true when all fees are zero for musdConversion', () => {
@@ -126,5 +133,12 @@ describe('useIsPaidByMetaMask', () => {
 
     const { result } = renderHook(() => useIsPaidByMetaMask());
     expect(result.current).toBe(true);
+  });
+
+  it('returns false when there is no positive required amount, despite all fees being zero', () => {
+    useTransactionPayHasPositiveRequiredAmountMock.mockReturnValue(false);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
   });
 });

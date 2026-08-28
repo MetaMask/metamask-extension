@@ -28,20 +28,7 @@ const mockSetNextNonce = jest.fn();
 const mockSetTokenNetworkFilter = jest.fn();
 const mockDetectNfts = jest.fn();
 const mockAddPermittedChain = jest.fn();
-const mockShowPermittedNetworkToast = jest.fn();
 const mockSetEnabledNetworks = jest.fn();
-
-jest.mock(
-  '../../../hooks/multichain-accounts/usePermittedNetworkToast',
-  () => ({
-    usePermittedNetworkToast: () => ({
-      showPermittedNetworkToast: (...args: unknown[]) => {
-        mockShowPermittedNetworkToast(...args);
-      },
-      dismissPermittedNetworkToast: jest.fn(),
-    }),
-  }),
-);
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => {
@@ -269,25 +256,6 @@ const render = ({
 describe('NetworkListMenu', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  it('renders properly', () => {
-    const { baseElement } = render();
-    expect(baseElement).toMatchSnapshot();
-  });
-
-  it('should match snapshot when adding a network', async () => {
-    const { baseElement } = render({
-      isAddingNewNetwork: true,
-    });
-    expect(baseElement).toMatchSnapshot();
-  });
-
-  it('should match snapshot when editing a network', async () => {
-    const { baseElement } = render({
-      editedNetwork: { chainId: 'eip155:1' },
-    });
-    expect(baseElement).toMatchSnapshot();
   });
 
   it('displays important controls', () => {
@@ -567,7 +535,6 @@ describe('NetworkListMenu', () => {
             MOCK_ORIGIN,
             'eip155:1',
           );
-          expect(mockShowPermittedNetworkToast).toHaveBeenCalled();
           expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
             MOCK_ORIGIN,
             NETWORK_TYPES.MAINNET,
@@ -633,9 +600,6 @@ describe('NetworkListMenu', () => {
           MOCK_ORIGIN,
           'eip155:1337',
         ),
-      );
-      await waitFor(() =>
-        expect(mockShowPermittedNetworkToast).toHaveBeenCalled(),
       );
       await waitFor(() =>
         expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(

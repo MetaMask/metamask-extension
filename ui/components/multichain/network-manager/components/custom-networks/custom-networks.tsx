@@ -2,6 +2,7 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import { AvatarNetworkSize } from '@metamask/design-system-react';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
   convertCaipToHexChainId,
@@ -17,7 +18,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
-  AvatarNetworkSize,
   Box,
   Button,
   ButtonSize,
@@ -55,7 +55,7 @@ export const CustomNetworks = React.memo(() => {
 
   const { getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled } =
     useNetworkItemCallbacks();
-  const { handleNetworkChange } = useNetworkChangeHandlers();
+  const { handleNetworkChange, isPending } = useNetworkChangeHandlers();
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
@@ -74,10 +74,13 @@ export const CustomNetworks = React.memo(() => {
   // Memoize the network click handler
   const handleNetworkClick = useCallback(
     async (chainId: MultichainNetworkConfiguration['chainId']) => {
+      if (isPending) {
+        return;
+      }
       await handleNetworkChange(chainId);
       await dispatch(hideModal());
     },
-    [dispatch, handleNetworkChange],
+    [dispatch, handleNetworkChange, isPending],
   );
 
   // Renders a network in the network list
@@ -119,7 +122,7 @@ export const CustomNetworks = React.memo(() => {
           onDiscoverClick={onDiscoverClick}
           selected={isEnabled}
           onRpcEndpointClick={onRpcSelect}
-          disabled={!isNetworkEnabled(network)}
+          disabled={isPending || !isNetworkEnabled(network)}
         />
       );
     },
@@ -130,6 +133,7 @@ export const CustomNetworks = React.memo(() => {
       evmNetworks,
       isNetworkEnabled,
       handleNetworkClick,
+      isPending,
     ],
   );
 

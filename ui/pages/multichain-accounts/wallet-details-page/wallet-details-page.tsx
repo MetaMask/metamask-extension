@@ -99,7 +99,7 @@ export const WalletDetailsPage = ({
           key={`multichain-account-cell-${group.id}`}
           accountId={group.id as AccountGroupId}
           accountName={group.metadata.name}
-          balance={walletAccountBalance(group.id) ?? ''}
+          balance={walletAccountBalance(group.id)}
           disableHoverEffect={true}
           privacyMode={privacyMode}
         />
@@ -112,7 +112,10 @@ export const WalletDetailsPage = ({
   }, [wallet?.metadata.name, t]);
 
   return (
-    <Page className="multichain-wallet-details-page">
+    <Page
+      className="multichain-wallet-details-page"
+      data-testid="parent-selector-multichain-wallet-details-page"
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,

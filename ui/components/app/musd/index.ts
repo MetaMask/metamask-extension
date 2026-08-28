@@ -12,6 +12,5 @@ export {
   type TokenListCellMusdOptions,
 } from './musd-events';
 export { ClaimBonusBadge } from './claim-bonus-badge';
-export { MusdBuyGetCta } from './musd-buy-get-cta';
 export { MusdAssetCta } from './musd-asset-cta';
 export { MusdConvertLink } from './musd-convert-link';

@@ -1,9 +1,29 @@
 import { strict as assert } from 'assert';
 import HomePage from './homepage';
 
+/**
+ * Home activity list and per-transaction details opened from it.
+ *
+ * Screen: `#/` Activity tab (`account-overview__activity-tab`), or `#/activity`
+ * when bottom nav is enabled; reached via `HomePage.goToActivityList()`.
+ * Owns: activity rows (status counts, amounts, swap/bridge labels), cancel /
+ * speed-up actions, and opening a row to assert details, fees, and explorer
+ * links.
+ * Boundaries: homepage chrome, balance, and tab switching stay on `HomePage`.
+ * Post-submit toast UI belongs to `TxToastNotification`.
+ * Related: `HomePage` (`goToActivityList`), `TxToastNotification`,
+ * `flows/send-transaction.flow.ts` / `flows/bridge.flow.ts` for journeys that
+ * land here after a tx.
+ *
+ * @see ui/pages/activity/activity-list.tsx
+ */
 class ActivityTab extends HomePage {
   private readonly activityListAction =
     '[data-testid="activity-list-item-action"]';
+
+  private readonly activityPage = {
+    testId: 'parent-selector-activity-tab',
+  };
 
   private readonly backButton =
     '[data-testid="transaction-details-back-button"]';
@@ -145,20 +165,6 @@ class ActivityTab extends HomePage {
     console.log(
       `${expectedNumber} Bridge transactions found in activity list on homepage`,
     );
-  }
-
-  async checkCompletedTransactionItems(
-    expectedNumber: number = 1,
-  ): Promise<void> {
-    console.log(
-      `Check ${expectedNumber} completed transaction items are displayed in activity list`,
-    );
-    await this.driver.wait(async () => {
-      const confirmedTxes = await this.driver.findElements(
-        this.completedTransactions,
-      );
-      return confirmedTxes.length === expectedNumber;
-    }, 10000);
   }
 
   /**
@@ -311,6 +317,11 @@ class ActivityTab extends HomePage {
 
   async checkNoTxInActivity(): Promise<void> {
     await this.driver.assertElementNotPresent(this.completedTransactions);
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.activityPage);
+    console.log('Activity tab is loaded');
   }
 
   /**
@@ -549,23 +560,6 @@ class ActivityTab extends HomePage {
     });
   }
 
-  /**
-   * Verifies that a specific warning message is displayed on the activity list.
-   *
-   * @param warningText - The expected warning text to validate against.
-   * @returns A promise that resolves if the warning message matches the expected text.
-   * @throws Assertion error if the warning message does not match the expected text.
-   */
-  async checkWarningMessage(warningText: string): Promise<void> {
-    console.log(
-      `Check warning message "${warningText}" is displayed on activity list`,
-    );
-    await this.driver.waitForSelector({
-      tag: 'div',
-      text: warningText,
-    });
-  }
-
   async clickCancelTransaction() {
     // Ensure the Speed Up button is present before canceling
     // to avoid component re-render, resulting in auto-closing the modal
@@ -600,10 +594,6 @@ class ActivityTab extends HomePage {
 
   async clickSpeedUpTransaction() {
     await this.driver.clickElement(this.speedupInlineButton);
-  }
-
-  async clickTransactionListItem() {
-    await this.driver.clickElement(this.completedTransactions);
   }
 
   async getAllTransactionAmounts(): Promise<string[]> {

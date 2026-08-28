@@ -48,6 +48,9 @@ export function getDeviceEventForError(
       return DeviceEvent.DeviceLocked;
     case ErrorCode.DeviceStateEthAppClosed:
       return DeviceEvent.AppNotOpen;
+    case ErrorCode.DeviceStateBlindSignNotSupported:
+      // Device is still connected; blind signing is a device-settings issue.
+      return DeviceEvent.ConnectionFailed;
     case ErrorCode.DeviceDisconnected:
     case ErrorCode.ConnectionClosed:
       return DeviceEvent.Disconnected;

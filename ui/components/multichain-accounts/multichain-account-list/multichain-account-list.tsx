@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+  useTransition,
 } from 'react';
 
 import {
@@ -62,6 +63,7 @@ import {
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { EMPTY_ARRAY } from '../../../selectors/shared';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useDispatch } from '../../../store/hooks';
 
@@ -113,6 +115,7 @@ export const MultichainAccountList = ({
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
@@ -258,8 +261,11 @@ export const MultichainAccountList = ({
         ],
       });
 
-      dispatch(setSelectedMultichainAccount(accountGroupId));
-      navigate(DEFAULT_ROUTE);
+      // Defer expensive Home/Routes re-renders so the account list shell stays responsive.
+      startTransition(() => {
+        dispatch(setSelectedMultichainAccount(accountGroupId));
+        navigate(DEFAULT_ROUTE);
+      });
     },
     [
       trackEvent,
@@ -268,16 +274,23 @@ export const MultichainAccountList = ({
       defaultHomeActiveTabName,
       dispatch,
       navigate,
+      startTransition,
     ],
   );
 
   const handleAccountClickToUse = useCallback(
     (accountGroupId: AccountGroupId) => {
+      // Only gate the default switch path; custom handlers own their own pending UX.
+      if (isPending && !handleAccountClick) {
+        return;
+      }
       const handlerToUse = handleAccountClick ?? defaultHandleAccountClick;
       handlerToUse?.(accountGroupId);
     },
-    [handleAccountClick, defaultHandleAccountClick],
+    [handleAccountClick, defaultHandleAccountClick, isPending],
   );
+
+  const isSwitchPending = isPending && !handleAccountClick;
 
   const renderAccountCell = useCallback(
     (
@@ -286,10 +299,17 @@ export const MultichainAccountList = ({
       walletId: string,
       showWalletName: boolean,
     ) => {
-      // If prop is provided, attempt render balance. Otherwise do not render balance.
-      const account = allBalances?.wallets?.[walletId]?.groups?.[groupId];
-      const balance = account?.totalBalanceInUserCurrency ?? 0;
-      const currency = account?.userCurrency ?? '';
+      // Undefined when this group has no known balance yet, so the cell renders
+      // nothing instead of a misleading "$0.00".
+      const groupBalance = getAccountGroupDisplayBalance(
+        allBalances?.wallets?.[walletId]?.groups?.[groupId],
+      );
+      const balance =
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        );
 
       // TODO: Implement logic for removable accounts
       const isRemovable = false;
@@ -318,9 +338,10 @@ export const MultichainAccountList = ({
             accountId={groupId as AccountGroupId}
             accountName={groupData.metadata.name}
             accountNameString={groupData.metadata.name}
-            balance={formatCurrencyWithMinThreshold(balance, currency)}
+            balance={balance}
             selected={selectedAccountGroupsSet.has(groupId as AccountGroupId)}
             onClick={handleAccountClickToUse}
+            pending={isSwitchPending}
             connectionStatus={
               connectedStatus as
                 | typeof STATUS_CONNECTED
@@ -342,6 +363,7 @@ export const MultichainAccountList = ({
                     isSelected={selectedAccountGroupsSet.has(
                       groupId as AccountGroupId,
                     )}
+                    isDisabled={isSwitchPending}
                     onChange={() => {
                       handleAccountClickToUse(groupId as AccountGroupId);
                     }}
@@ -371,6 +393,7 @@ export const MultichainAccountList = ({
       showConnectionStatus,
       selectedAccountGroupsSet,
       handleAccountClickToUse,
+      isSwitchPending,
       privacyMode,
       showAccountCheckbox,
       wallets,

@@ -33,15 +33,15 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "optedIn": false,
       "consentDecisionMade": false,
+      "optedIn": false,
       "preConsentEventQueue": {
         "00000000-0000-4000-8000-000000000000": {
-          "type": "track",
           "eventName": "App Installed",
           "messageId": "00000000-0000-4000-8000-000000000000",
+          "properties": {},
           "timestamp": "2026-01-01T00:00:00.000Z",
-          "properties": {}
+          "type": "track"
         }
       }
     },
@@ -49,7 +49,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 221,
+      "currentMigrationVersion": 223,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -144,53 +144,6 @@
     "DeFiPositionsControllerV2": {
       "allDeFiPositionsV2": {}
     },
-    "EnsController": {
-      "ensEntries": {
-        "0x1": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x1",
-            "ensName": "."
-          }
-        },
-        "0x3": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x3",
-            "ensName": "."
-          }
-        },
-        "0x4": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x4",
-            "ensName": "."
-          }
-        },
-        "0x4268": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x4268",
-            "ensName": "."
-          }
-        },
-        "0x5": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x5",
-            "ensName": "."
-          }
-        },
-        "0xaa36a7": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0xaa36a7",
-            "ensName": "."
-          }
-        }
-      },
-      "ensResolutionsByAddress": {}
-    },
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
       "gasEstimateType": "none",
@@ -228,6 +181,9 @@
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
+    },
+    "MoneyAccountController": {
+      "moneyAccounts": {}
     },
     "MultichainAssetsController": {
       "accountsAssets": {},
@@ -592,7 +548,7 @@
           "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": false
         },
         "stellar": {
-          "stellar:pubnet": false,
+          "stellar:pubnet": true,
           "stellar:testnet": false
         },
         "tron": {
@@ -2093,7 +2049,8 @@
       "referrals": {
         "asterdex": {},
         "gmx": {},
-        "hyperliquid": {}
+        "hyperliquid": {},
+        "variational": {}
       },
       "securityAlertsEnabled": true,
       "showSidePanelMigrationToast": false,
@@ -2119,7 +2076,6 @@
       "syncQueue": {}
     },
     "RampsController": {
-      "userRegion": null,
       "countries": {
         "data": [],
         "error": null,
@@ -2127,7 +2083,8 @@
         "selected": null
       },
       "orders": [],
-      "providerAutoSelected": false
+      "providerAutoSelected": false,
+      "userRegion": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
@@ -2154,39 +2111,20 @@
       "domains": {
         "http://localhost:3000": "mainnet",
         "http://localhost:8000": "mainnet",
-        "https://alpha.mycactus.io": "mainnet",
         "https://app-beta.signer.cubist.dev": "mainnet",
         "https://app-gamma.signer.cubist.dev": "mainnet",
-        "https://app.bitgo-test.com": "mainnet",
-        "https://app.bitgo.com": "mainnet",
         "https://app.metamask.io": "mainnet",
         "https://app.signer.cubist.dev": "mainnet",
-        "https://apps-portal.safe.global": "mainnet",
-        "https://console.dev.mpcvault.com": "mainnet",
-        "https://console.fireblocks.io": "mainnet",
-        "https://console.mpcvault.com": "mainnet",
-        "https://debug.mycactus.dev:1443": "mainnet",
-        "https://dev10-console.waterballoons.xyz": "mainnet",
-        "https://dev4-console.waterballoons.xyz": "mainnet",
         "https://developer.metamask.io": "mainnet",
         "https://docs.metamask.io": "mainnet",
-        "https://eu-console.fireblocks.io": "mainnet",
-        "https://eu2-console.fireblocks.io": "mainnet",
-        "https://local.waterballoons.xyz:4200": "mainnet",
         "https://localhost:3000": "mainnet",
-        "https://neptune-custody-ui.metamask-institutional.io": "mainnet",
         "https://portfolio-builds.metafi-dev.codefi.network": "mainnet",
         "https://portfolio.metamask.io": "mainnet",
-        "https://pre.mycactus.com": "mainnet",
-        "https://sandbox.fireblocks.io": "mainnet",
-        "https://saturn-custody-ui.metamask-institutional.io": "mainnet",
         "https://ui-preprod-v2.qa.zodia.io": "mainnet",
         "https://ui-preprod-v2.uat.zodia.io": "mainnet",
         "https://ui-v2.qa.zodia.io": "mainnet",
         "https://ui-v2.sit.zodia.io": "mainnet",
         "https://v2.custody.zodia.io": "mainnet",
-        "https://www.mycactus.com": "mainnet",
-        "https://www.mycactus.dev": "mainnet",
         "localhost:8000": "mainnet",
         "npm:@metamask/bitcoin-wallet-snap": "mainnet",
         "npm:@metamask/ens-resolver-snap": "mainnet",
@@ -2195,6 +2133,7 @@
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/permissions-kernel-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
+        "npm:@metamask/stellar-wallet-snap": "mainnet",
         "npm:@metamask/tron-wallet-snap": "mainnet"
       }
     },
@@ -2322,6 +2261,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 221
+    "version": 223
   }
 }
