@@ -793,6 +793,40 @@ describe('trust signals middleware', () => {
         );
         expect(next).toHaveBeenCalled();
       });
+
+      it('still scans a transfer recipient when approval parsing throws', async () => {
+        parseApprovalTransactionDataMock.mockImplementation(() => {
+          throw new Error('approval parse failed');
+        });
+        parseTransferTransactionDataMock.mockReturnValue({
+          name: 'transfer',
+          recipient: TEST_ADDRESSES.TRANSFER_RECIPIENT as `0x${string}`,
+        });
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const { middleware } = createMiddleware();
+
+        const req = createMockRequest('eth_sendTransaction', [
+          createTransactionParams({ data: '0xa9059cbb' }),
+        ]);
+        const next = jest.fn();
+
+        await middleware(req, createMockResponse(), next);
+
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.TRANSFER_RECIPIENT,
+          expect.any(Function),
+          expect.any(Function),
+          CHAIN_IDS.MAINNET,
+          expect.anything(),
+        );
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[createTrustSignalsMiddleware] error parsing approval data for transaction:',
+          expect.any(Error),
+        );
+        expect(next).toHaveBeenCalled();
+      });
     });
   });
 
