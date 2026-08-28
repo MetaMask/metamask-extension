@@ -854,11 +854,11 @@
   "previewBuilds": {
     "@metamask/bridge-controller": {
       "type": "non-breaking",
-      "previewVersion": "79.3.1-preview-264a60683"
+      "previewVersion": "80.1.0-preview-b13d916"
     },
     "@metamask/bridge-status-controller": {
       "type": "non-breaking",
-      "previewVersion": "75.2.1-preview-264a60683"
+      "previewVersion": "75.4.0-preview-b13d916"
     }
   },
   "lavamoat": {
