@@ -285,14 +285,19 @@ export const APPROVAL_METHOD_NAMES = [
 
 /**
  * Token transfer methods whose economic recipient is encoded in calldata
- * rather than `txParams.to` (which is the token contract). Mirrors the
- * types `getEffectiveRecipient` in `@metamask/transaction-controller`
- * decodes for.
+ * rather than `txParams.to` (which is the token contract). Includes the
+ * methods `getEffectiveRecipient` in `@metamask/transaction-controller`
+ * decodes (`transfer`, `transferFrom`, `safeTransferFrom`) plus
+ * `safeBatchTransferFrom` (single `to`; core omits it only because
+ * `TransactionType` never classifies it) and Fiat Token V2
+ * `transferWithAuthorization`.
  */
 export const TRANSFER_METHOD_NAMES = [
   'transfer',
   'transferFrom',
   'safeTransferFrom',
+  'safeBatchTransferFrom',
+  'transferWithAuthorization',
 ];
 
 // 4-byte selector for setApprovalForAll(address,bool) (ERC-721 + ERC-1155)

@@ -866,6 +866,20 @@ describe('Transaction.utils', function () {
       });
     });
 
+    it('parses ERC-721 4-arg safeTransferFrom', () => {
+      // safeTransferFrom(address from, address to, uint256 tokenId, bytes data)
+      const bytesOffsetWord =
+        '0000000000000000000000000000000000000000000000000000000000000080';
+      const bytesLengthWord =
+        '0000000000000000000000000000000000000000000000000000000000000000';
+      const data = `0xb88d4fde${SENDER_WORD}${RECIPIENT_WORD}${ONE_WORD}${bytesOffsetWord}${bytesLengthWord}`;
+
+      expect(parseTransferTransactionData(data)).toStrictEqual({
+        name: 'safeTransferFrom',
+        recipient: RECIPIENT_ADDRESS,
+      });
+    });
+
     it('parses ERC-1155 safeTransferFrom', () => {
       // safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes data)
       const bytesOffsetWord =
@@ -876,6 +890,32 @@ describe('Transaction.utils', function () {
 
       expect(parseTransferTransactionData(data)).toStrictEqual({
         name: 'safeTransferFrom',
+        recipient: RECIPIENT_ADDRESS,
+      });
+    });
+
+    it('parses ERC-1155 safeBatchTransferFrom', () => {
+      const data = `0x2eb2c2d6${SENDER_WORD}${RECIPIENT_WORD}00000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
+
+      expect(parseTransferTransactionData(data)).toStrictEqual({
+        name: 'safeBatchTransferFrom',
+        recipient: RECIPIENT_ADDRESS,
+      });
+    });
+
+    it('parses Fiat Token V2 transferWithAuthorization', () => {
+      const data =
+        '0xe3ee160e' +
+        `${SENDER_WORD}${RECIPIENT_WORD}${ONE_WORD}` +
+        '0000000000000000000000000000000000000000000000000000000000000000' +
+        `${ONE_WORD}` +
+        '0000000000000000000000000000000000000000000000000000000000000000' +
+        '000000000000000000000000000000000000000000000000000000000000001b' +
+        '1111111111111111111111111111111111111111111111111111111111111111' +
+        '2222222222222222222222222222222222222222222222222222222222222222';
+
+      expect(parseTransferTransactionData(data)).toStrictEqual({
+        name: 'transferWithAuthorization',
         recipient: RECIPIENT_ADDRESS,
       });
     });
