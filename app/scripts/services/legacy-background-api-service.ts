@@ -39,6 +39,7 @@ import { Mutex } from 'async-mutex';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   BtcAccountType,
+  EthAccountType,
   isEvmAccountType,
   SolAccountType,
   TrxAccountType,
@@ -4141,7 +4142,7 @@ export class LegacyBackgroundApiService {
       options;
     const releaseLock = await this.#createVaultMutex.acquire();
     try {
-      const { entropySource: id } = await this.#messenger.call(
+      const wallet = await this.#messenger.call(
         'MultichainAccountService:createMultichainAccountWallet',
         {
           type: 'import',
@@ -4150,12 +4151,15 @@ export class LegacyBackgroundApiService {
           ),
         },
       );
+      const id = wallet.entropySource;
 
-      const [newAccount] = (await this.#messenger.call(
-        'KeyringController:withKeyringV2',
-        { id },
-        async ({ keyring }) => keyring.getAccounts(),
-      )) as { address: string }[];
+      const newAccount = wallet
+        .getMultichainAccountGroup(0)
+        ?.get({ type: EthAccountType.Eoa });
+
+      if (!newAccount) {
+        throw new Error('No new account found');
+      }
 
       const isSocialLoginFlow = this.#messenger.call(
         'OnboardingController:getIsSocialLoginFlow',
