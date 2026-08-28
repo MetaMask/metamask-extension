@@ -7030,9 +7030,6 @@
   "perpsAddFunds": {
     "message": "Внести средства"
   },
-  "perpsAddFundsDescription": {
-    "message": "Пополните счет, чтобы начать торговать бессрочными контрактами с использованием кредитного плеча"
-  },
   "perpsAddMargin": {
     "message": "Добавить маржу"
   },
@@ -7872,12 +7869,6 @@
   "perpsToastUpdateSuccess": {
     "message": "ТП/СЛ успешно обновлены",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Общий баланс"
-  },
-  "perpsTradePerps": {
-    "message": "Торгуйте перпами"
   },
   "perpsTrades": {
     "message": "Сделки"

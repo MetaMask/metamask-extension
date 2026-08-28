@@ -7030,9 +7030,6 @@
   "perpsAddFunds": {
     "message": "Gelder hinzufügen"
   },
-  "perpsAddFundsDescription": {
-    "message": "Geld einzahlen, um mit dem Handel von Perpetual Contracts mit Hebelwirkung zu beginnen"
-  },
   "perpsAddMargin": {
     "message": "Margin hinzufügen"
   },
@@ -7872,12 +7869,6 @@
   "perpsToastUpdateSuccess": {
     "message": "TP/SL erfolgreich aktualisiert",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Gesamtsaldo"
-  },
-  "perpsTradePerps": {
-    "message": "Perps handeln"
   },
   "perpsTrades": {
     "message": "Trades"

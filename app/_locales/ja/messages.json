@@ -7034,9 +7034,6 @@
   "perpsAddFunds": {
     "message": "資金を追加"
   },
-  "perpsAddFundsDescription": {
-    "message": "レバレッジを利用したパーペチュアル契約の取引を開始するには、資金を追加してください"
-  },
   "perpsAddMargin": {
     "message": "証拠金を追加"
   },
@@ -7876,12 +7873,6 @@
   "perpsToastUpdateSuccess": {
     "message": "TP/SLが更新されました",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "合計残高"
-  },
-  "perpsTradePerps": {
-    "message": "パーペチュアルを取引"
   },
   "perpsTrades": {
     "message": "取引"

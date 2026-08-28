@@ -7030,9 +7030,6 @@
   "perpsAddFunds": {
     "message": "फंड जोड़ें"
   },
-  "perpsAddFundsDescription": {
-    "message": "लेवरेज के साथ परपेचुअल कॉन्ट्रैक्ट्स में ट्रेडिंग शुरू करने के लिए फंड जोड़ें"
-  },
   "perpsAddMargin": {
     "message": "Add margin"
   },
@@ -7872,12 +7869,6 @@
   "perpsToastUpdateSuccess": {
     "message": "TP/SL सफलतापूर्वक अपडेट किया गया",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "कुल बैलेंस"
-  },
-  "perpsTradePerps": {
-    "message": "पर्प्स ट्रेड करें"
   },
   "perpsTrades": {
     "message": "ट्रेड्स"
