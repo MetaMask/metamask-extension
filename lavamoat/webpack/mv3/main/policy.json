@@ -1069,7 +1069,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/assets-controllers>@tanstack/query-core": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -1129,11 +1129,13 @@
     },
     "@metamask/base-data-service": {
       "packages": {
-        "@metamask/controller-utils": true,
         "@metamask/messenger": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
-        "eslint>fast-deep-equal": true
+        "cockatiel": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
       }
     },
     "@metamask/bridge-controller": {
@@ -1351,7 +1353,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "@metamask/core-backend>@tanstack/query-core": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
         "cockatiel": true,
         "uuid": true
       }
@@ -2599,7 +2601,7 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller": true,
-        "@metamask/signature-controller>@metamask/logging-controller": true,
+        "@metamask/logging-controller": true,
         "@metamask/utils": true,
         "buffer": true,
         "webpack>events": true,
@@ -3794,36 +3796,6 @@
         "process": true
       }
     },
-    "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub": {
-      "globals": {
-        "__SENTRY_DEBUG__": true
-      },
-      "packages": {
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/utils": true,
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>tslib": true
-      }
-    },
-    "@ledgerhq/device-management-kit>@sentry/minimal": {
-      "packages": {
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub": true,
-        "@ledgerhq/device-management-kit>@sentry/minimal>tslib": true
-      }
-    },
-    "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/utils": {
-      "globals": {
-        "CustomEvent": true,
-        "Element": true,
-        "Event": true,
-        "__SENTRY_BROWSER_BUNDLE__": true,
-        "__SENTRY_DEBUG__": true,
-        "module": true,
-        "process": true
-      },
-      "packages": {
-        "process": true,
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/utils>tslib": true
-      }
-    },
     "@simplewebauthn/browser": {
       "globals": {
         "AbortController": true,
@@ -3909,41 +3881,14 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
       }
     },
-    "@metamask/assets-controllers>@tanstack/query-core": {
-      "globals": {
-        "AbortController": true,
-        "addEventListener": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "document.visibilityState": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
-      }
-    },
-    "@metamask/core-backend>@tanstack/query-core": {
-      "globals": {
-        "AbortController": true,
-        "addEventListener": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "document.visibilityState": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
-      }
-    },
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
         "addEventListener": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "navigator": true,
+        "console.error": true,
+        "document.visibilityState": true,
         "removeEventListener": true,
         "setInterval": true,
         "setTimeout": true
@@ -3951,12 +3896,11 @@
     },
     "@tanstack/react-query": {
       "globals": {
-        "ReactQueryClientContext": "write"
+        "console.error": true
       },
       "packages": {
         "@tanstack/react-query>@tanstack/query-core": true,
-        "react": true,
-        "react-redux>use-sync-external-store": true
+        "react": true
       }
     },
     "@tanstack/react-virtual": {
