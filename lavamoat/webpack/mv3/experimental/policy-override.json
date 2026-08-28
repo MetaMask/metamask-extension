@@ -27,6 +27,11 @@
     },
     "@ledgerhq/device-management-kit": {
       "globals": {
+        "Blob": false,
+        "FormData": false,
+        "ReadableStream": false,
+        "URL.createObjectURL": false,
+        "URLSearchParams": false,
         "document": false,
         "document.createElement": false,
         "fetch": false,
@@ -38,6 +43,17 @@
       "globals": {
         "MozWebSocket": false,
         "WebSocket": false
+      }
+    },
+    "@ledgerhq/device-management-kit>reflect-metadata": {
+      "globals": {
+        "crypto": false,
+        "msCrypto": false
+      }
+    },
+    "@ledgerhq/device-transport-kit-web-hid": {
+      "globals": {
+        "event": false
       }
     },
     "@metamask/keyring-controller>ulid": {
