@@ -367,12 +367,16 @@ describe('CriticalStartupErrorHandler', () => {
           name: 'Error',
         },
       };
+      const backup = {
+        KeyringController: { vault: 'encrypted-vault-data' },
+      };
 
       port.simulateMessage({
         data: {
           method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
           params: {
             error,
+            backup,
             currentLocale: 'en',
           },
         },
@@ -386,6 +390,7 @@ describe('CriticalStartupErrorHandler', () => {
         'en',
         port,
         CriticalErrorType.InaccessibleDatabase,
+        backup,
       );
 
       handler.uninstall();

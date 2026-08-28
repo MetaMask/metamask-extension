@@ -299,75 +299,6 @@ describe('displayCriticalError', () => {
     }
   });
 
-  it('omits vault backup from Sentry error_details when reporting', async () => {
-    jest
-      .spyOn(errorUtils, 'getErrorHtml')
-      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
-
-    // Use a plain ErrorLike (as getErrorLike produces) so enumerable fields
-    // match the production serialization path.
-    const error = {
-      message: MOCK_ERROR_MESSAGE,
-      name: 'Error',
-      stack: 'Error: test error',
-      backup: MOCK_BACKUP_WITH_VAULT,
-      sentryTags: {
-        'corruption.backupShouldExist': 'true',
-      },
-    };
-    const mockPort = createMockPort();
-
-    await expect(
-      displayCriticalErrorMessage(
-        container,
-        CriticalErrorTranslationKey.TroubleStarting,
-        error,
-        'en',
-        mockPort,
-        CriticalErrorType.MissingVaultInDatabase,
-      ),
-    ).rejects.toMatchObject({ message: MOCK_ERROR_MESSAGE });
-
-    const restartButton = rootContainer.querySelector<HTMLButtonElement>(
-      '#critical-error-button',
-    );
-    const checkbox = rootContainer.querySelector<HTMLInputElement>(
-      '#critical-error-checkbox',
-    );
-
-    expect(restartButton).toBeTruthy();
-    expect(checkbox).toBeTruthy();
-
-    if (restartButton && checkbox) {
-      checkbox.checked = true;
-
-      const flushPromises = () => new Promise(setImmediate);
-      await act(async () => {
-        restartButton.click();
-        await flushPromises();
-      });
-
-      const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
-      expect(mockFetch).toHaveBeenCalled();
-      const requestBody = mockFetch.mock.calls[0]?.[1]?.body as string;
-      const [, , eventPayload] = requestBody.split('\n');
-      const parsedEventPayload = JSON.parse(eventPayload) as {
-        tags: Record<string, string>;
-        extra: Record<string, unknown>;
-      };
-      const errorDetails = parsedEventPayload.extra.error_details as Record<
-        string,
-        unknown
-      >;
-
-      expect(parsedEventPayload.tags).toStrictEqual({
-        'corruption.backupShouldExist': 'true',
-      });
-      expect(errorDetails.backup).toBeUndefined();
-      expect(errorDetails.message).toBe(MOCK_ERROR_MESSAGE);
-    }
-  });
-
   it('does not send to Sentry if checkbox is unchecked', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
     const mockPort = createMockPort();
@@ -608,7 +539,7 @@ describe('repair button', () => {
     );
   });
 
-  it('uses backup from the error without re-reading IndexedDB when it has a vault', async () => {
+  it('uses backup from the background without re-reading IndexedDB', async () => {
     jest
       .spyOn(errorUtils, 'getErrorHtml')
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
@@ -627,9 +558,7 @@ describe('repair button', () => {
       }
     };
 
-    const error = Object.assign(new Error(MISSING_VAULT_ERROR), {
-      backup: MOCK_BACKUP_WITH_VAULT,
-    });
+    const error = new Error(MISSING_VAULT_ERROR);
 
     await expect(
       displayCriticalErrorMessage(
@@ -639,6 +568,7 @@ describe('repair button', () => {
         'en',
         mockPort,
         CriticalErrorType.MissingVaultInDatabase,
+        MOCK_BACKUP_WITH_VAULT,
       ),
     ).rejects.toThrow(error);
 
@@ -662,6 +592,42 @@ describe('repair button', () => {
         }),
       }),
     );
+  });
+
+  it('excludes the separately supplied vault backup from the thrown error', async () => {
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+
+    const error = {
+      message: MISSING_VAULT_ERROR,
+      name: 'PersistenceError',
+      stack: 'PersistenceError: missing vault',
+      sentryTags: {
+        'corruption.backupShouldExist': 'true',
+      },
+    };
+
+    let thrownError: unknown;
+    try {
+      await displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.MissingVaultInDatabase,
+        MOCK_BACKUP_WITH_VAULT,
+      );
+    } catch (caughtError) {
+      thrownError = caughtError;
+    }
+
+    // The thrown value is what an unhandled rejection hands to Sentry's global
+    // handler, so it must not carry vault data even though recovery used it.
+    expect(thrownError).toBe(error);
+    expect(thrownError).not.toHaveProperty('backup');
+    expect(JSON.stringify(thrownError)).not.toContain('encrypted-vault-data');
   });
 
   it('sends METHOD_REPAIR_DATABASE with reset action when repair button is clicked and user confirms', async () => {

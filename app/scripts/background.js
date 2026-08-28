@@ -59,7 +59,7 @@ import { createCaipStream } from '../../shared/lib/caip-stream';
 import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
-import { getErrorLike } from '../../shared/lib/error-like';
+import { getErrorBackup, getErrorLike } from '../../shared/lib/error-like';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import {
@@ -519,13 +519,16 @@ const handleOnConnect = async (port) => {
       // Contentscripts can't display error screens and would create hanging promises.
       if (isMetaMaskUIPort) {
         const errorLike = getErrorLike(error);
+        const isStateCorruption = isStateCorruptionError(errorLike);
+        const backup = isStateCorruption ? getErrorBackup(error) : undefined;
         criticalErrorMessageSent = tryPostMessage(
           port,
-          isStateCorruptionError(errorLike)
+          isStateCorruption
             ? METHOD_DISPLAY_STATE_CORRUPTION_ERROR
             : DISPLAY_GENERAL_STARTUP_ERROR,
           {
             error: errorLike,
+            ...(backup === undefined ? {} : { backup }),
             currentLocale:
               controller?.preferencesController?.state?.currentLocale,
           },

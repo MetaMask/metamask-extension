@@ -16,6 +16,7 @@ import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
 } from '../../../shared/constants/start-up-errors';
+import type { Backup } from '../../../shared/lib/stores/persistence-manager';
 import {
   displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
@@ -331,8 +332,9 @@ export class CriticalStartupErrorHandler {
         return;
       }
 
-      const { error, currentLocale } = data.params as {
+      const { error, backup, currentLocale } = data.params as {
         error: ErrorLike;
+        backup?: Backup;
         currentLocale?: string;
       };
       if (!this.#criticalErrorAlreadyDisplayed) {
@@ -344,6 +346,7 @@ export class CriticalStartupErrorHandler {
           currentLocale,
           this.#port,
           getStateCorruptionErrorType(error),
+          backup,
         );
       }
     } else if (method === DISPLAY_GENERAL_STARTUP_ERROR) {

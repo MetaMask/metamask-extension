@@ -1,4 +1,4 @@
-import { getErrorLike } from './error-like';
+import { getErrorBackup, getErrorLike } from './error-like';
 
 describe('getErrorLike', () => {
   it('serializes Error instances', () => {
@@ -56,7 +56,7 @@ describe('getErrorLike', () => {
     });
   });
 
-  it('materializes PersistenceError getBackup into a backup property', () => {
+  it('does not materialize PersistenceError getBackup on the error', () => {
     const backup = {
       KeyringController: { vault: 'encrypted-vault-data' },
     };
@@ -69,21 +69,34 @@ describe('getErrorLike', () => {
       message: 'missing vault',
       name: 'PersistenceError',
       stack: expect.any(String),
-      backup,
     });
   });
+});
 
-  it('omits backup when getBackup throws or returns null', () => {
+describe('getErrorBackup', () => {
+  it('returns a PersistenceError backup separately from the error', () => {
+    const backup = {
+      KeyringController: { vault: 'encrypted-vault-data' },
+    };
+    const error = Object.assign(new Error('missing vault'), {
+      getBackup: () => backup,
+    });
+
+    expect(getErrorBackup(error)).toBe(backup);
+    expect(getErrorLike(error)).not.toHaveProperty('backup');
+  });
+
+  it('returns undefined when getBackup throws or returns null', () => {
     const throwingError = Object.assign(new Error('missing vault'), {
       getBackup: () => {
         throw new Error('no backup');
       },
     });
-    expect(getErrorLike(throwingError).backup).toBeUndefined();
+    expect(getErrorBackup(throwingError)).toBeUndefined();
 
     const nullBackupError = Object.assign(new Error('missing vault'), {
       getBackup: () => null,
     });
-    expect(getErrorLike(nullBackupError).backup).toBeUndefined();
+    expect(getErrorBackup(nullBackupError)).toBeUndefined();
   });
 });

@@ -1,7 +1,6 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { v4 as uuidv4 } from 'uuid';
-import { isObject } from '@metamask/utils';
 import { type ErrorLike } from '../../../shared/constants/errors';
 import {
   getErrorHtml,
@@ -110,16 +109,11 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
         ? (errorObj.sentryTags as Record<string, string>)
         : {};
 
-    // Create error_details without sentryTags (those are top-level tags) or
-    // backup. PersistenceError keeps vault data behind getBackup() so it is
-    // not serialized into reports; strip it here for the same reason.
+    // Create error_details without sentryTags to avoid duplication
+    // (sentryTags are sent as top-level tags)
     let errorDetails: Record<string, unknown>;
     if (error && typeof error === 'object') {
-      const {
-        sentryTags: _omittedSentryTags,
-        backup: _omittedBackup,
-        ...rest
-      } = errorObj;
+      const { sentryTags: _omitted, ...rest } = errorObj;
       errorDetails = rest;
     } else {
       errorDetails = { message: String(error) };
@@ -206,6 +200,7 @@ async function handleRestartAction(
  * @param currentLocale - Optional locale context for translations.
  * @param port - Optional port for background communication (needed for vault recovery functionality).
  * @param criticalErrorType - Optional type of critical error (for analytics). Defaults to Other.
+ * @param backupFromBackground - Optional vault backup sent separately from the error.
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
  */
@@ -216,16 +211,13 @@ export async function displayCriticalErrorMessage(
   currentLocale?: string,
   port?: browser.Runtime.Port,
   criticalErrorType?: CriticalErrorType,
+  backupFromBackground?: Backup | null,
 ): Promise<never> {
-  // Prefer a vault-bearing backup already serialized onto the error by
-  // getErrorLike (from PersistenceError.getBackup). Only fall back to IndexedDB
-  // when we do not already have one, so a timed-out UI re-read cannot flip
-  // Recover into Reset.
-  const backupFromError = isObject(error.backup)
-    ? (error.backup as Backup)
-    : null;
-  let backup: Backup | null = hasVault(backupFromError)
-    ? backupFromError
+  // Prefer the backup sent separately from the error by the background. Only
+  // fall back to IndexedDB when it does not contain a vault, so a timed-out UI
+  // re-read cannot flip Recover into Reset.
+  let backup: Backup | null = hasVault(backupFromBackground)
+    ? backupFromBackground
     : null;
   if (port && !hasVault(backup)) {
     backup = await safeGetVaultBackup();
