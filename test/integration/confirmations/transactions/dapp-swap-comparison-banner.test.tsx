@@ -574,7 +574,9 @@ describe('DappSwapComparisonBanner', () => {
     // on a simpleSend confirmation. Asserting absence here guards against the
     // WPN-1799 mis-routing where a native send could surface cross-chain
     // quote-failure banners.
-    expect(screen.queryByTestId('bridge-banner-alerts')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('bridge-banner-alerts'),
+    ).not.toBeInTheDocument();
     expect(screen.queryByTestId('swaps-banner-title')).not.toBeInTheDocument();
     expect(screen.queryByTestId('bridge-no-quotes')).not.toBeInTheDocument();
     expect(screen.queryByTestId('bridge-cta-button')).not.toBeInTheDocument();
