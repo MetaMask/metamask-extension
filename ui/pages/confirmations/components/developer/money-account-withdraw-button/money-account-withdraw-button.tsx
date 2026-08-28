@@ -1,25 +1,49 @@
 import React from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 
+import { useMoneyAccountInfo } from '../../../../../hooks/money/useMoneyAccountInfo';
+import { useMoneyAccountWithdrawal } from '../../../../../hooks/money/useMoneyAccountWithdrawal';
+import { RouteMessengerProvider } from '../../../../../contexts/route-messenger';
 import { DeveloperButton } from '../developer-button';
-import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../../../constants/musd';
-import { useDeveloperTransferTransaction } from '../utils';
+import { MONEY_ACCOUNT_WITHDRAW_BUTTON_ALLOWED_CAPABILITIES } from './messenger';
 
-export const MoneyAccountWithdrawButton = () => {
-  const { isLoading, handleTrigger } = useDeveloperTransferTransaction({
-    chainId: CHAIN_IDS.MONAD,
-    tokenAddress: MUSD_TOKEN_ADDRESS,
-    decimals: MUSD_TOKEN.decimals,
-    type: TransactionType.moneyAccountWithdraw,
-    errorMessage: 'Failed to create money account withdraw transaction',
-  });
+/**
+ * Developer trigger for the real Money Account withdraw flow: the placeholder
+ * withdraw + transfer batch from the money account, re-encoded once an amount
+ * is chosen. Hidden entirely — not disabled — when the money account is
+ * unavailable, the same rule every production entry point follows.
+ */
+const MoneyAccountWithdrawButtonContent = () => {
+  const { hasMoneyAccount } = useMoneyAccountInfo();
+  const { initiateWithdrawal, isLoading } = useMoneyAccountWithdrawal();
+
+  if (!hasMoneyAccount) {
+    return null;
+  }
 
   return (
     <DeveloperButton
       title="Money Account Withdraw"
-      onPress={handleTrigger}
+      onPress={() =>
+        initiateWithdrawal().catch((error) =>
+          console.error('Failed to initiate money account withdrawal', error),
+        )
+      }
       disabled={isLoading}
     />
   );
 };
+
+/**
+ * {@link MoneyAccountWithdrawButtonContent}, wrapped in the route messenger it
+ * needs to call `MoneyAccountAvailabilityService:getAvailability` via
+ * `useMoneyAccountInfo`. This settings panel isn't behind a router route with
+ * its own messenger, so it carries its own.
+ */
+export const MoneyAccountWithdrawButton = () => (
+  <RouteMessengerProvider
+    path="money-account-withdraw-button"
+    capabilities={MONEY_ACCOUNT_WITHDRAW_BUTTON_ALLOWED_CAPABILITIES}
+  >
+    <MoneyAccountWithdrawButtonContent />
+  </RouteMessengerProvider>
+);

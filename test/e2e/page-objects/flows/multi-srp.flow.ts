@@ -2,7 +2,7 @@ import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../constants';
 import AccountListPage from '../pages/accounts/list-page';
 import TokensTab from '../pages/home/tokens-tab';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
 import PrivacySettings from '../pages/settings/privacy-settings';
 import SettingsPage from '../pages/settings/settings-page';
