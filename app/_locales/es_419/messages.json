@@ -5575,10 +5575,6 @@
     "message": "Guarda solo direcciones en las que confíes.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Esta se identificó como maliciosa. Recomendamos no interactuar con esta dirección.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Si conoce esta dirección, asígnele un apodo para reconocerla en el futuro.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5590,10 +5586,6 @@
   "nameInstructionsSaved": {
     "message": "Ya agregó un apodo para esta dirección anteriormente. Puede editar o ver otros apodos sugeridos.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "No podemos verificar esta dirección. Puede ser nueva o no estar verificada. Establece un nombre de usuario personal para identificarla en el futuro.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Apodo",
@@ -5622,10 +5614,6 @@
   "nameModalTitleVerified": {
     "message": "Dirección verificada",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "La dirección necesita revisión",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Propuesto por $1",

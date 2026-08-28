@@ -1509,10 +1509,10 @@
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
   "alertMessageAddressTrustSignal": {
-    "message": "We can't verify this address. It may be new or unverified. Only continue if you trust the source."
+    "message": "Security partners don't have enough reliable history to verify this address."
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "If you confirm this request, you will probably lose your assets to a scammer."
+    "message": "Security partners have flagged this address for malicious activity."
   },
   "alertMessageBurnAddress": {
     "message": "You're sending your assets to a burn address. If you continue, you'll lose your assets."
@@ -1582,6 +1582,12 @@
   },
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Couldn't check your Perps balance. Try again."
+  },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "Address flagged as high risk"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "Limited address signals"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1st interaction"
@@ -5807,10 +5813,6 @@
     "message": "Only save addresses you trust.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "This has been identified as malicious. We recommend not interacting with this address.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5822,10 +5824,6 @@
   "nameInstructionsSaved": {
     "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "We can't verify this address. It may be new or unverified. Set a personal display name to identify it going forward.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Nickname",
@@ -5854,10 +5852,6 @@
   "nameModalTitleVerified": {
     "message": "Verified address",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Address needs review",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Proposed by $1",
@@ -9480,16 +9474,16 @@
     "message": "Malicious"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "$1 is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+    "message": "Security partners flag $1 as high risk."
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "This token is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+    "message": "Security partners flag this token as high risk."
   },
   "securityTrustMaliciousTokenSheetDescription": {
-    "message": "Serious risk signals detected on $1. We recommend not trading this token."
+    "message": "Security partners flag $1 as high risk."
   },
   "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
-    "message": "Serious risk signals detected on this token. We recommend not trading this token."
+    "message": "Security partners flag this token as high risk."
   },
   "securityTrustMaliciousTokenTitle": {
     "message": "Malicious token"
@@ -9519,10 +9513,10 @@
     "message": "Risky"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 is flagged as suspicious. Take a look at the risks before you continue."
+    "message": "Security partners found risk signals in $1's contract or trading activity."
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "This token is flagged as suspicious. Take a look at the risks before you continue."
+    "message": "Security partners found risk signals in this token's contract or trading activity."
   },
   "securityTrustRiskyTokenTitle": {
     "message": "Suspicious token"
@@ -9534,13 +9528,13 @@
     "message": "No risk signals detected. Always research any asset before trading."
   },
   "securityTrustSubtitleMalicious": {
-    "message": "Serious risk signals detected. We recommend avoiding this asset."
+    "message": "Security partners flag this token as high risk."
   },
   "securityTrustSubtitleNoIssues": {
     "message": "No risk signals detected. Always research any asset before trading."
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "Cautionary signals detected. Review the flagged issues carefully before trading this asset."
+    "message": "Security partners found risk signals in this token's contract or trading activity."
   },
   "securityTrustSubtitleUnavailable": {
     "message": "Security analysis could not be loaded for this token."
@@ -9549,10 +9543,10 @@
     "message": "Suspicious"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "$1 is a suspicious token."
+    "message": "Security partners found risk signals in $1's contract or trading activity."
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "This is a suspicious token."
+    "message": "Security partners found risk signals in this token's contract or trading activity."
   },
   "securityTrustTelegram": {
     "message": "Telegram"

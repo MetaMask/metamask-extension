@@ -5571,10 +5571,6 @@
     "message": "Speichern Sie nur Adressen, denen Sie vertrauen.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Dies wurde als bösartig identifiziert. Wir empfehlen, nicht mit dieser Adresse zu interagieren.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Falls Sie diese Adresse kennen, können Sie ihr einen Spitznamen zuweisen, um sie künftig wiederzuerkennen.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5586,10 +5582,6 @@
   "nameInstructionsSaved": {
     "message": "Sie haben bereits einen Spitznamen für diese Adresse hinzugefügt. Sie können weitere vorgeschlagene Spitznamen bearbeiten oder einsehen.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Diese Adresse kann nicht verifiziert werden. Sie ist möglicherweise neu oder nicht verifiziert. Legen Sie einen persönlichen Anzeigenamen für die künftige Identifizierung fest.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Spitzname",
@@ -5618,10 +5610,6 @@
   "nameModalTitleVerified": {
     "message": "Verifizierte Adresse",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Adresse benötigt Überprüfung",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Vorgeschlagen von $1",

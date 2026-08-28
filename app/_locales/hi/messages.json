@@ -5571,10 +5571,6 @@
     "message": "केवल उन एड्रेस को सेव करें जिन पर आपको भरोसा हो।",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "इसे बुरी नीयत वाला के रूप में पहचाना गया है। हम इस एड्रेस के साथ इंटरैक्ट न करने की सलाह देते हैं।",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "यदि आप इस एड्रेस को जानते हैं, तो भविष्य में इसे पहचानने के लिए इसे एक उपनाम दें।",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5586,10 +5582,6 @@
   "nameInstructionsSaved": {
     "message": "आपने पहले इस एड्रेस के लिए एक उपनाम जोड़ा है। आप अन्य सुझाए गए उपनामों को एडिट कर या देख सकते हैं।",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "हम इस एड्रेस की पुष्टि नहीं कर सकते। यह नया या अप्रमाणित हो सकता है। आगे इसे पहचानने के लिए एक व्यक्तिगत डिस्प्ले नाम सेट करें।",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "उपनाम",
@@ -5618,10 +5610,6 @@
   "nameModalTitleVerified": {
     "message": "सत्यापित एड्रेस",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "एड्रेस की समीक्षा की आवश्यकता है",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "$1 द्वारा प्रस्तावित",

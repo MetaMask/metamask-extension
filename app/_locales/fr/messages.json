@@ -5571,10 +5571,6 @@
     "message": "Ne sauvegardez que les adresses auxquelles vous faites confiance.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Nous vous déconseillons d’interagir avec cette adresse qui a été identifiée comme malveillante.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Si vous connaissez cette adresse, donnez-lui un pseudonyme pour l’identifier plus facilement à l’avenir.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5586,10 +5582,6 @@
   "nameInstructionsSaved": {
     "message": "Vous avez déjà choisi un pseudonyme pour cette adresse. Vous pouvez le modifier ou consulter la liste des pseudonymes proposés.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Nous ne pouvons pas vérifier cette adresse. Elle est peut-être nouvelle ou non vérifiée. Définissez un nom d’affichage personnel pour l’identifier à l’avenir.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Nom du contrat",
@@ -5618,10 +5610,6 @@
   "nameModalTitleVerified": {
     "message": "Adresse vérifiée",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "L’adresse doit être vérifiée",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Proposé par $1",

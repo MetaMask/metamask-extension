@@ -5571,10 +5571,6 @@
     "message": "Αποθηκεύστε μόνο διευθύνσεις που εμπιστεύεστε.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Αυτή η διεύθυνση έχει χαρακτηριστεί ως κακόβουλη. Συνιστούμε να μην αλληλεπιδράτε με αυτή τη διεύθυνση.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Εάν γνωρίζετε αυτή τη διεύθυνση, δώστε της ένα ψευδώνυμο για να την αναγνωρίζετε και στο μέλλον.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5586,10 +5582,6 @@
   "nameInstructionsSaved": {
     "message": "Έχετε ήδη προσθέσει ένα ψευδώνυμο για αυτή τη διεύθυνση. Μπορείτε να το επεξεργαστείτε ή να δείτε άλλα προτεινόμενα ψευδώνυμα.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Δεν μπορούμε να επαληθεύσουμε αυτήν τη διεύθυνση. Μπορεί να είναι καινούρια ή μη επαληθευμένη. Ορίστε ένα προσωπικό όνομα εμφάνισης για να την αναγνωρίζετε στο μέλλον.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Ψευδώνυμο",
@@ -5618,10 +5610,6 @@
   "nameModalTitleVerified": {
     "message": "Επαληθευμένη διεύθυνση",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Η διεύθυνση χρειάζεται έλεγχο",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Προτείνεται από $1",

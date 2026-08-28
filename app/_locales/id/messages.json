@@ -5575,10 +5575,6 @@
     "message": "Hanya simpan alamat yang Anda percaya.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Ini telah diidentifikasi sebagai berbahaya. Kami sarankan untuk tidak berinteraksi dengan alamat ini.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Jika Anda mengetahui alamat ini, berikan nama panggilan agar dapat dikenali di kemudian hari.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5590,10 +5586,6 @@
   "nameInstructionsSaved": {
     "message": "Anda telah menambahkan nama panggilan untuk alamat ini sebelumnya. Anda dapat mengedit atau melihat nama panggilan lain yang disarankan.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Kami tidak dapat memverifikasi alamat ini. Alamat ini mungkin baru atau belum diverifikasi. Atur nama tampilan pribadi untuk mengidentifikasinya di masa mendatang.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Nama panggilan",
@@ -5622,10 +5614,6 @@
   "nameModalTitleVerified": {
     "message": "Alamat terverifikasi",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Alamat perlu ditinjau ulang",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Diusulkan oleh $1",

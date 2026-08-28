@@ -5575,10 +5575,6 @@
     "message": "信頼できるアドレスのみを保存してください。",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "このアドレスは悪質であると判断されました。このアドレスとはやり取りしないことをお勧めします。",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "このアドレスを知っている場合は、今後認識できるようニックネームを付けてください。",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5590,10 +5586,6 @@
   "nameInstructionsSaved": {
     "message": "以前このアドレスのニックネームを追加しています。編集するか、他のニックネームの提案を参照できます。",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "このアドレスは検証できません。新規または未確認の可能性があります。今後の識別のため、個人用の表示名を設定してください。",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "ニックネーム",
@@ -5622,10 +5614,6 @@
   "nameModalTitleVerified": {
     "message": "検証済みのアドレス",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "アドレスの確認が必要です",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "提案元: $1",
