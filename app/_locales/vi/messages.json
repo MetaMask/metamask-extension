@@ -10812,6 +10812,12 @@
   "stateCorruptionAreYouSure": {
     "message": "Bạn có chắc chắn muốn tiếp tục không?"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "Đang đặt lại cơ sở dữ liệu…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Đang khôi phục cơ sở dữ liệu…"
+  },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái, vui lòng thử lại sau."
   },

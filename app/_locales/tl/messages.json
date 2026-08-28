@@ -10804,6 +10804,12 @@
   "stateCorruptionAreYouSure": {
     "message": "Sigurado ka bang gusto mong magpatuloy?"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "Nire-reset ang database…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Ibinabalik ang database…"
+  },
   "stateLogError": {
     "message": "Error sa pagbabalik ng mga state log, pakisubukan muli mamaya."
   },

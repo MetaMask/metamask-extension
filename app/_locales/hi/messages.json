@@ -10804,6 +10804,12 @@
   "stateCorruptionAreYouSure": {
     "message": "क्या आप वाकई आगे बढ़ना चाहते हैं?"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "डेटाबेस रीसेट किया जा रहा है…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "डेटाबेस रिस्टोर किया जा रहा है…"
+  },
   "stateLogError": {
     "message": "स्टेट लॉग्स पाने में गड़बड़ी हुई, कृपया बाद में फिर से कोशिश करें।"
   },

@@ -10812,6 +10812,12 @@
   "stateCorruptionAreYouSure": {
     "message": "Yakin ingin melanjutkan?"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "Mereset basis data…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Memulihkan basis data…"
+  },
   "stateLogError": {
     "message": "Terjadi kesalahan saat memulihkan log state, coba lagi nanti."
   },

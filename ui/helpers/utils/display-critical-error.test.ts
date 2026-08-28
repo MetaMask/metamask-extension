@@ -494,6 +494,10 @@ describe('repair button', () => {
     });
 
     expect(window.confirm).toHaveBeenCalled();
+    expect(repairButton?.disabled).toBe(true);
+    expect(repairButton?.textContent).toBe('stateCorruptionRestoringDatabase');
+    repairButton?.click();
+    expect(window.confirm).toHaveBeenCalledTimes(1);
     expect(mockPort.postMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
@@ -909,6 +913,8 @@ describe('repair button', () => {
       await Promise.resolve();
     });
 
+    expect(repairButton?.disabled).toBe(true);
+    expect(repairButton?.textContent).toBe('stateCorruptionResettingDatabase');
     expect(fetch).toHaveBeenCalled();
     expect(mockPort.postMessage).toHaveBeenCalledWith(
       expect.objectContaining({

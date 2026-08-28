@@ -10804,6 +10804,12 @@
   "stateCorruptionAreYouSure": {
     "message": "Είστε σίγουροι ότι θέλετε να συνεχίσετε;"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "Γίνεται επαναφορά της βάσης δεδομένων…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Γίνεται ανάκτηση της βάσης δεδομένων…"
+  },
   "stateLogError": {
     "message": "Σφάλμα κατά την ανάκτηση των αρχείων καταγραφών κατάστασης, προσπαθήστε ξανά αργότερα."
   },

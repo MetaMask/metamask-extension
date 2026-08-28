@@ -10804,6 +10804,12 @@
   "stateCorruptionAreYouSure": {
     "message": "Voulez-vous vraiment continuer ?"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "Réinitialisation de la base de données…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Restauration de la base de données…"
+  },
   "stateLogError": {
     "message": "Une erreur est survenue lors de la récupération des journaux d’état, veuillez réessayer plus tard."
   },

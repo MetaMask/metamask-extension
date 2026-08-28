@@ -5077,6 +5077,12 @@
   "stateCorruptionAreYouSure": {
     "message": "An bhfuil tú cinnte gur mian leat dul ar aghaidh?"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "Ag athshocrú an bhunachair shonraí…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Ag athchóiriú bunachar sonraí…"
+  },
   "stateLogError": {
     "message": "Earráid agus logaí stádais á n-aisghabháil."
   },

@@ -10804,6 +10804,12 @@
   "stateCorruptionAreYouSure": {
     "message": "您确定要继续吗？"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "正在重设数据库…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "正在恢复数据库…"
+  },
   "stateLogError": {
     "message": "获取状态记录时出错，请稍后重试。"
   },

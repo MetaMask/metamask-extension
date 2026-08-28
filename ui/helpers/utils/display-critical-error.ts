@@ -306,9 +306,9 @@ export async function displayCriticalErrorMessage(
         }, REPAIR_BUTTON_ENABLE_DELAY_MS);
       }
 
-      repairButton?.addEventListener('click', async (event: Event) => {
+      const handleRepairClick = async (event: Event) => {
         event.preventDefault();
-        if (repairButton.disabled) {
+        if (!repairButton || repairButton.disabled) {
           return;
         }
 
@@ -317,6 +317,15 @@ export async function displayCriticalErrorMessage(
           localeContext.t('stateCorruptionAreYouSure') ?? '',
         );
         if (confirmed) {
+          repairButton.removeEventListener('click', handleRepairClick);
+          repairButton.disabled = true;
+          repairButton.textContent =
+            localeContext.t(
+              repairAction === CriticalErrorRepairAction.Recover
+                ? 'stateCorruptionRestoringDatabase'
+                : 'stateCorruptionResettingDatabase',
+            ) ?? '';
+
           if (shouldReportError()) {
             await sendErrorToSentry(error);
           }
@@ -331,7 +340,9 @@ export async function displayCriticalErrorMessage(
             },
           });
         }
-      });
+      };
+
+      repairButton?.addEventListener('click', handleRepairClick);
     }
   }
 

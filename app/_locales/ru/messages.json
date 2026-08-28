@@ -10804,6 +10804,12 @@
   "stateCorruptionAreYouSure": {
     "message": "Уверены, что хотите продолжить?"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "Сброс базы данных…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Восстановление базы данных…"
+  },
   "stateLogError": {
     "message": "Ошибка при получении журналов состояния, повторите попытку позже."
   },

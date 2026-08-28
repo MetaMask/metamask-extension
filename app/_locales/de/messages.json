@@ -10804,6 +10804,12 @@
   "stateCorruptionAreYouSure": {
     "message": "Möchten Sie wirklich fortfahren?"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "Datenbank wird zurückgesetzt …"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Datenbank wird wiederhergestellt …"
+  },
   "stateLogError": {
     "message": "Fehler beim Abrufen der Statusprotokolle. Bitte versuchen Sie es später erneut."
   },

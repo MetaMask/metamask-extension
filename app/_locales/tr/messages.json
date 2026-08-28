@@ -10812,6 +10812,12 @@
   "stateCorruptionAreYouSure": {
     "message": "İlerlemek istediğinizden emin misiniz?"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "Veri tabanı sıfırlanıyor…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Veri tabanı geri yükleniyor…"
+  },
   "stateLogError": {
     "message": "Durum günlükleri alınırken hata oluştu, lütfen daha sonra tekrar deneyin."
   },

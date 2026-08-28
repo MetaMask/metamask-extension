@@ -10804,6 +10804,12 @@
   "stateCorruptionAreYouSure": {
     "message": "Tem certeza de que deseja prosseguir?"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "Redefinindo banco de dados…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Restaurando banco de dados…"
+  },
   "stateLogError": {
     "message": "Erro ao recuperar registros de estado. Tente novamente mais tarde."
   },

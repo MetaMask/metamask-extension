@@ -10808,6 +10808,12 @@
   "stateCorruptionAreYouSure": {
     "message": "続行してよろしいですか？"
   },
+  "stateCorruptionResettingDatabase": {
+    "message": "データベースをリセットしています…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "データベースを復元しています…"
+  },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。後程もう一度お試しください。"
   },
