@@ -268,6 +268,7 @@ app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/
 **/musd/**                           @MetaMask/earn
 shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 ui/selectors/money/                  @MetaMask/earn
+ui/components/app/money/             @MetaMask/earn
 
 
 # Extension Platform owns build, development tooling,
