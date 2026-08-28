@@ -279,19 +279,26 @@ describe('RampsControllerInit', () => {
     expect(mockStopOrderPolling).not.toHaveBeenCalled();
   });
 
-  it.each(['PRECREATED', 'UNKNOWN'])(
-    'stops polling on UI close for a %s stub that may never resolve',
-    async (status) => {
-      mockRampsController.state = { orders: [{ status }] };
-      const { api } = RampsControllerInit(getInitRequestMock());
-      await Promise.resolve();
-      await Promise.resolve();
+  // A stub in one of these statuses may never resolve, so it must not hold the
+  // lifecycle open — see IN_FLIGHT_ORDER_STATUSES.
+  async function expectUiCloseStopsPollingFor(status: string): Promise<void> {
+    mockRampsController.state = { orders: [{ status }] };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
 
-      api?.stopRampsLifecycle?.();
+    api?.stopRampsLifecycle?.();
 
-      expect(mockStopOrderPolling).toHaveBeenCalled();
-    },
-  );
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+  }
+
+  it('stops polling on UI close for a PRECREATED stub', async () => {
+    await expectUiCloseStopsPollingFor('PRECREATED');
+  });
+
+  it('stops polling on UI close for an UNKNOWN stub', async () => {
+    await expectUiCloseStopsPollingFor('UNKNOWN');
+  });
 
   it('runs stale-stub cleanup again after a UI close/open cycle', async () => {
     mockRampsController.state = { orders: [{ status: 'PRECREATED' }] };
