@@ -100,7 +100,10 @@ describe('BridgeControllerInit', () => {
         chain_id_source: 'tron:728126428',
       };
 
-      trackMetaMetricsFn(UnifiedSwapBridgeEventName.Failed, properties as never);
+      trackMetaMetricsFn(
+        UnifiedSwapBridgeEventName.Failed,
+        properties as never,
+      );
 
       expect(trackEvent).toHaveBeenCalledWith(
         expect.objectContaining({
