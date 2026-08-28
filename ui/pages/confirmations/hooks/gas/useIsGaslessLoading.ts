@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { getMoneyAccountFlow } from '../../../../../shared/lib/money/money-account-flow';
 import { useConfirmContext } from '../../context/confirm';
 import { getUseTransactionSimulations } from '../../../../selectors';
 import { useHasInsufficientBalance } from '../useHasInsufficientBalance';
@@ -49,10 +50,12 @@ export function useIsGaslessLoading() {
   const hasNoNativeTokenAvailable =
     excludeNativeTokenForFee || hasInsufficientBalance;
 
-  // Money Account batches skip the initial gas estimate and set
-  // `isGasFeeSponsored` at creation on Monad, so `gasFeeTokens` never arrives.
-  // Waiting on them leaves the confirm button spinning after quotes are ready.
-  const skipsGaslessTokenWait = Boolean(transactionMeta?.isGasFeeSponsored);
+  // Money Account batches skip the initial gas estimate and are often
+  // sponsored, so `gasFeeTokens` never arrives. Waiting on them leaves the
+  // confirm button spinning after quotes (and "Paid by MetaMask") are ready.
+  const skipsGaslessTokenWait =
+    Boolean(transactionMeta?.isGasFeeSponsored) ||
+    Boolean(getMoneyAccountFlow(transactionMeta));
 
   const isGaslessLoading = Boolean(
     !skipsGaslessTokenWait &&

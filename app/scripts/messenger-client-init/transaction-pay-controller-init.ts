@@ -139,8 +139,10 @@ function getApi(
     updateMoneyAccountWithdrawAmount: (
       transactionId: string,
       amountHuman: string,
+      recipientOverride?: Hex,
     ) => {
       const accountOverride =
+        recipientOverride ??
         messengerClient.state?.transactionData?.[transactionId]
           ?.accountOverride;
       return updateMoneyAccountWithdrawAmount(

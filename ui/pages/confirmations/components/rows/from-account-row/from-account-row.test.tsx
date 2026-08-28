@@ -6,6 +6,7 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import { useConfirmContext } from '../../../context/confirm';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { setAccountOverride } from '../../../../../store/controller-actions/transaction-pay-controller';
+import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
 import { FromAccountRow } from './from-account-row';
 
 jest.mock('../../../context/confirm');
@@ -16,6 +17,9 @@ jest.mock(
     setAccountOverride: jest.fn(),
   }),
 );
+jest.mock('../../../utils/transaction-pay', () => ({
+  replaceAccountInNestedTransactions: jest.fn(),
+}));
 
 jest.mock('../../account-select-modal', () => ({
   AccountSelectModal: ({
@@ -105,6 +109,9 @@ describe('FromAccountRow', () => {
   const useConfirmContextMock = jest.mocked(useConfirmContext);
   const useDisplayNameMock = jest.mocked(useDisplayName);
   const setAccountOverrideMock = jest.mocked(setAccountOverride);
+  const replaceAccountInNestedTransactionsMock = jest.mocked(
+    replaceAccountInNestedTransactions,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -196,9 +203,44 @@ describe('FromAccountRow', () => {
     fireEvent.click(screen.getByTestId('from-account-pill'));
     fireEvent.click(screen.getByTestId('select-other'));
 
+    expect(replaceAccountInNestedTransactionsMock).toHaveBeenCalledWith({
+      transactionId: TX_ID_MOCK,
+      nestedTransactions: undefined,
+      oldAddress: FROM_ADDRESS_MOCK,
+      newAddress: OTHER_ADDRESS_MOCK,
+    });
     expect(setAccountOverrideMock).toHaveBeenCalledWith(
       TX_ID_MOCK,
       OTHER_ADDRESS_MOCK,
+    );
+  });
+
+  it('rewrites nested calldata using the previous override as the old address', () => {
+    const nestedTransactions = [{ data: '0xabc', to: '0x1' }];
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: TX_ID_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        txParams: { from: FROM_ADDRESS_MOCK },
+        nestedTransactions,
+      },
+    } as never);
+
+    const store = createStore({ accountOverride: OTHER_ADDRESS_MOCK });
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+    fireEvent.click(screen.getByTestId('select-same'));
+
+    expect(replaceAccountInNestedTransactionsMock).toHaveBeenCalledWith({
+      transactionId: TX_ID_MOCK,
+      nestedTransactions,
+      oldAddress: OTHER_ADDRESS_MOCK,
+      newAddress: FROM_ADDRESS_MOCK,
+    });
+    expect(setAccountOverrideMock).toHaveBeenCalledWith(
+      TX_ID_MOCK,
+      FROM_ADDRESS_MOCK,
     );
   });
 
@@ -209,6 +251,7 @@ describe('FromAccountRow', () => {
     fireEvent.click(screen.getByTestId('from-account-pill'));
     fireEvent.click(screen.getByTestId('select-same'));
 
+    expect(replaceAccountInNestedTransactionsMock).not.toHaveBeenCalled();
     expect(setAccountOverrideMock).not.toHaveBeenCalled();
   });
 
@@ -219,6 +262,7 @@ describe('FromAccountRow', () => {
     fireEvent.click(screen.getByTestId('from-account-pill'));
     fireEvent.click(screen.getByTestId('select-override'));
 
+    expect(replaceAccountInNestedTransactionsMock).not.toHaveBeenCalled();
     expect(setAccountOverrideMock).not.toHaveBeenCalled();
   });
 

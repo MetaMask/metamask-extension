@@ -1,10 +1,18 @@
+import {
+  MUSD_DECIMALS,
+  MUSD_TOKEN,
+  MUSD_TOKEN_ASSET_ID_BY_CHAIN,
+} from '@metamask/money-account-utils';
 import { TransactionType } from '@metamask/transaction-controller';
+import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import {
   parseApprovalTransactionData,
   parseStandardTokenTransactionData,
 } from '../../../shared/lib/transaction.utils';
+import { hasTransactionType } from '../../../shared/lib/transactions.utils';
 import { enrichLocalMusdClaimActivity } from './enrich-local-musd-claim';
 
 const TOKEN_TRANSFER_TYPES = new Set<TransactionType>([
@@ -113,11 +121,70 @@ function enrichApprovalActivity(
   };
 }
 
+function enrichMoneyAccountWithdrawActivity(
+  activity: ActivityListItem,
+  transactionGroup: LocalActivitySource,
+): ActivityListItem {
+  const transaction = transactionGroup.initialTransaction;
+  if (
+    !hasTransactionType(transaction, [TransactionType.moneyAccountWithdraw])
+  ) {
+    return activity;
+  }
+
+  const transfer = transaction.nestedTransactions?.find(
+    (nested) => nested.type === TransactionType.tokenMethodTransfer,
+  );
+  const parsed = transfer?.data
+    ? parseStandardTokenTransactionData(transfer.data)
+    : undefined;
+  const recipient = parsed?.args?._to ?? parsed?.args?.to;
+  if (typeof recipient !== 'string') {
+    return activity;
+  }
+
+  const parsedAmount = parsed?.args?._value ?? parsed?.args?.value;
+  const amount =
+    parsedAmount === undefined || parsedAmount === null
+      ? undefined
+      : parsedAmount.toString();
+  const tokenAddress = transfer?.to;
+  const { chainId } = transaction;
+  const assetId =
+    (chainId ? MUSD_TOKEN_ASSET_ID_BY_CHAIN[chainId] : undefined) ??
+    (tokenAddress && chainId
+      ? toAssetId(
+          tokenAddress,
+          toCaipChainId(
+            KnownCaipNamespace.Eip155,
+            Number.parseInt(chainId, 16).toString(),
+          ),
+        )
+      : undefined);
+
+  return {
+    ...activity,
+    type: 'send',
+    data: {
+      from: transaction.txParams?.from ?? '',
+      to: recipient,
+      token: {
+        direction: 'out',
+        symbol: MUSD_TOKEN.symbol,
+        decimals: MUSD_DECIMALS,
+        ...(amount ? { amount } : {}),
+        ...(assetId ? { assetId } : {}),
+      },
+    },
+  };
+}
+
 export function enrichLocalActivity(
   activity: ActivityListItem,
   transactionGroup: LocalActivitySource,
 ): ActivityListItem {
   let next = activity;
+  next = enrichMoneyAccountWithdrawActivity(next, transactionGroup);
   next = enrichTokenTransferActivity(next, transactionGroup);
   next = enrichApprovalActivity(next, transactionGroup);
   next = enrichLocalMusdClaimActivity(next, transactionGroup);

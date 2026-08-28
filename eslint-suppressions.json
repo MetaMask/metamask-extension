@@ -1031,11 +1031,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/transactions/useTransactionConfirm.ts": {
-    "react-hooks/immutability": {
-      "count": 4
-    }
-  },
   "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmount.ts": {
     "react-hooks/set-state-in-effect": {
       "count": 1

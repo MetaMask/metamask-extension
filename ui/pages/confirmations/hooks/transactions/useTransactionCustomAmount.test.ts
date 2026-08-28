@@ -194,6 +194,20 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('123.46');
     });
 
+    it('does not use target amount USD for money account withdraw Max', () => {
+      const { result } = runHook({
+        transactionMeta: {
+          ...MOCK_TRANSACTION_META,
+          type: TransactionType.moneyAccountWithdraw,
+        } as TransactionMeta,
+        isMaxAmount: true,
+        totals: { targetAmount: { usd: '123.456' } },
+        requiredTokens: [{ amountUsd: '10', skipIfBalance: false }],
+      });
+
+      expect(result.current.amountFiat).toBe('10');
+    });
+
     it('pre-populates from transaction data when user has not typed yet', () => {
       const { result } = runHook({
         isMaxAmount: false,
@@ -409,6 +423,43 @@ describe('useTransactionCustomAmount', () => {
 
       // 33% of 100 = 33, rounded down to 2 decimals
       expect(result.current.amountFiat).toBe('33');
+    });
+
+    it('does not set isMaxAmount for money account withdraw Max', () => {
+      const { result } = runHook({
+        transactionMeta: {
+          ...MOCK_TRANSACTION_META,
+          type: TransactionType.moneyAccountWithdraw,
+        } as TransactionMeta,
+        payTokenBalanceUsd: 100,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      expect(setIsMaxAmountMock).not.toHaveBeenCalled();
+    });
+
+    it('clears isMaxAmount for money account withdraw when Max was previously set', () => {
+      const { result } = runHook({
+        transactionMeta: {
+          ...MOCK_TRANSACTION_META,
+          type: TransactionType.moneyAccountWithdraw,
+        } as TransactionMeta,
+        payTokenBalanceUsd: 100,
+        isMaxAmount: true,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        false,
+        { isMoneyAccountDeposit: false },
+      );
     });
 
     it('does not inflate max amount with token fiat rate when balanceUsdOverride is provided', () => {
