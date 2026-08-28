@@ -21,7 +21,11 @@ import {
   formatVolume,
   PRICE_THRESHOLD,
 } from '../../../../../shared/lib/perps-formatters';
-import { CandlePeriod, ZOOM_CONFIG } from '../constants/chartConfig';
+import {
+  CandlePeriod,
+  ZOOM_CONFIG,
+  clampVisibleCandleCount,
+} from '../constants/chartConfig';
 import { useTheme } from '../../../../hooks/useTheme';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import {
@@ -80,6 +84,9 @@ export function getPriceFormatForPrice(price: number): {
 /** Cooldown in ms between load-more requests to avoid spamming */
 const LOAD_MORE_COOLDOWN_MS = 2000;
 
+/** Debounce zoom-persist so pinch/scroll does not write on every tick. */
+const VISIBLE_CANDLE_COUNT_PERSIST_MS = 250;
+
 /** Logical range threshold: request more history when user scrolls this close to left edge */
 const EDGE_DETECTION_THRESHOLD = 5;
 
@@ -129,6 +136,13 @@ type PerpsCandlestickChartProps = {
   onNeedMoreHistory?: () => void;
   /** Callback when crosshair moves over a candle (for OHLCV bar). null = crosshair left chart. */
   onCrosshairMove?: (candle: CandleStick | null) => void;
+  /**
+   * How many candles to show. Used on first load and full data replacement.
+   * Persist the value the user pinches to across markets via the parent.
+   */
+  visibleCandleCount?: number;
+  /** Fired after the user changes zoom, already clamped to the supported range. */
+  onVisibleCandleCountChange?: (count: number) => void;
 };
 
 export type PerpsCandlestickChartRef = {
@@ -167,6 +181,8 @@ const PerpsCandlestickChart = forwardRef<
       onPeriodDataRequest,
       onNeedMoreHistory,
       onCrosshairMove,
+      visibleCandleCount = ZOOM_CONFIG.DEFAULT_CANDLES,
+      onVisibleCandleCountChange,
     },
     ref,
   ) => {
@@ -216,6 +232,13 @@ const PerpsCandlestickChart = forwardRef<
     // Suppress crosshair callback during our own data updates to avoid update loop:
     // update()/setData() can cause the library to emit crosshair move → parent setState → re-render → effect runs again.
     const isApplyingDataUpdateRef = useRef<boolean>(false);
+    const isApplyingZoomRef = useRef(false);
+    const lastReportedVisibleCandleCountRef = useRef(
+      clampVisibleCandleCount(visibleCandleCount),
+    );
+    const visibleCandleCountPersistTimeoutRef = useRef<
+      ReturnType<typeof setTimeout> | undefined
+    >(undefined);
 
     // Track created price line objects for cleanup
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -226,6 +249,8 @@ const PerpsCandlestickChart = forwardRef<
     onNeedMoreHistoryRef.current = onNeedMoreHistory;
     const onCrosshairMoveRef = useRef(onCrosshairMove);
     onCrosshairMoveRef.current = onCrosshairMove;
+    const onVisibleCandleCountChangeRef = useRef(onVisibleCandleCountChange);
+    onVisibleCandleCountChangeRef.current = onVisibleCandleCountChange;
 
     // Handle window resize
     const handleResize = useCallback(() => {
@@ -242,20 +267,21 @@ const PerpsCandlestickChart = forwardRef<
         return;
       }
 
-      const actualCount = Math.max(
-        ZOOM_CONFIG.MIN_CANDLES,
-        Math.min(ZOOM_CONFIG.MAX_CANDLES, candleCount),
-      );
+      const actualCount = clampVisibleCandleCount(candleCount);
 
       const dataLength = dataLengthRef.current;
       const from = Math.max(0, dataLength - actualCount);
       const to = dataLength - 1 + 2; // +2 for right padding
 
+      isApplyingZoomRef.current = true;
       chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
 
       if (forceReset) {
         chartRef.current.timeScale().scrollToRealTime();
       }
+      setTimeout(() => {
+        isApplyingZoomRef.current = false;
+      }, 0);
     }, []);
 
     // Scroll to most recent candles
@@ -402,19 +428,51 @@ const PerpsCandlestickChart = forwardRef<
         }
       }, PANE_HEIGHT_APPLY_DELAY_MS);
 
-      // Edge detection: request more history when user scrolls near left edge
+      // Edge detection: request more history when user scrolls near left edge.
+      // Also persist the visible candle count after the user pinches/scrolls.
       chart.timeScale().subscribeVisibleLogicalRangeChange((logicalRange) => {
-        if (!logicalRange || !onNeedMoreHistoryRef.current) {
+        if (!logicalRange) {
           return;
         }
 
-        if (logicalRange.from <= EDGE_DETECTION_THRESHOLD) {
+        if (
+          onNeedMoreHistoryRef.current &&
+          logicalRange.from <= EDGE_DETECTION_THRESHOLD
+        ) {
           const now = Date.now();
           if (now - lastLoadMoreTimeRef.current >= LOAD_MORE_COOLDOWN_MS) {
             lastLoadMoreTimeRef.current = now;
             onNeedMoreHistoryRef.current();
           }
         }
+
+        if (
+          isApplyingZoomRef.current ||
+          isApplyingDataUpdateRef.current ||
+          !onVisibleCandleCountChangeRef.current
+        ) {
+          return;
+        }
+
+        // applyZoom sets `to = dataLength - 1 + 2`, so `to - from - 1` recovers
+        // the candle count that was requested.
+        const nextCount = clampVisibleCandleCount(
+          logicalRange.to - logicalRange.from - 1,
+        );
+        if (nextCount === lastReportedVisibleCandleCountRef.current) {
+          return;
+        }
+        if (visibleCandleCountPersistTimeoutRef.current) {
+          clearTimeout(visibleCandleCountPersistTimeoutRef.current);
+        }
+        visibleCandleCountPersistTimeoutRef.current = setTimeout(() => {
+          visibleCandleCountPersistTimeoutRef.current = undefined;
+          if (isApplyingZoomRef.current || isApplyingDataUpdateRef.current) {
+            return;
+          }
+          lastReportedVisibleCandleCountRef.current = nextCount;
+          onVisibleCandleCountChangeRef.current?.(nextCount);
+        }, VISIBLE_CANDLE_COUNT_PERSIST_MS);
       });
 
       // Crosshair move:
@@ -489,6 +547,10 @@ const PerpsCandlestickChart = forwardRef<
       // Cleanup on unmount / before effect re-runs (e.g. theme change)
       return () => {
         clearTimeout(paneHeightTimeoutId);
+        if (visibleCandleCountPersistTimeoutRef.current) {
+          clearTimeout(visibleCandleCountPersistTimeoutRef.current);
+          visibleCandleCountPersistTimeoutRef.current = undefined;
+        }
         window.removeEventListener('resize', handleResize);
         if (chartRef.current) {
           chartRef.current.remove();
@@ -603,9 +665,9 @@ const PerpsCandlestickChart = forwardRef<
             volumeSeriesRef.current.setData(volumeData as any);
           }
 
-          // Apply default zoom
+          // Apply persisted zoom (or the default candle count)
           const visibleCandles = Math.min(
-            ZOOM_CONFIG.DEFAULT_CANDLES,
+            clampVisibleCandleCount(visibleCandleCount),
             formattedData.length,
           );
           const dataLength = formattedData.length;
@@ -644,6 +706,7 @@ const PerpsCandlestickChart = forwardRef<
       onPeriodDataRequest,
       volumeUpColor,
       volumeDownColor,
+      visibleCandleCount,
     ]);
 
     // Update y-axis price format when the asset's price range changes.

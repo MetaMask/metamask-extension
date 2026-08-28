@@ -1,4 +1,5 @@
 export { usePerpsOrderForm } from './usePerpsOrderForm';
+export { usePerpsSavePendingConfig } from './usePerpsSavePendingConfig';
 export { usePerpsEligibility } from './usePerpsEligibility';
 export { usePerpsMeasurement } from './usePerpsMeasurement';
 export { usePerpsLifecycleBreadcrumbs } from './usePerpsLifecycleBreadcrumbs';

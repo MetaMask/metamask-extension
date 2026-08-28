@@ -69,6 +69,22 @@ export const ZOOM_CONFIG = {
   MAX_CANDLES: CANDLE_COUNT.MAX,
 } as const;
 
+/**
+ * Clamp a user or persisted candle count into the supported zoom range.
+ *
+ * @param count - Candidate visible-candle count.
+ * @returns A finite count between MIN and MAX, or the default when invalid.
+ */
+export function clampVisibleCandleCount(count: number): number {
+  if (!Number.isFinite(count)) {
+    return CANDLE_COUNT.DEFAULT;
+  }
+  return Math.max(
+    CANDLE_COUNT.MIN,
+    Math.min(CANDLE_COUNT.MAX, Math.round(count)),
+  );
+}
+
 // Period to minutes mapping for candle count calculations
 export const PERIOD_TO_MINUTES: Record<CandlePeriod, number> = {
   [CandlePeriod.OneMinute]: 1,

@@ -9,6 +9,10 @@ import {
   DEFAULT_PRO_LAYOUT_PREFERENCES,
   type ProLayoutPreferences,
 } from '@metamask/perps-controller';
+import {
+  isPendingTradeConfigFresh,
+  type PerpsPendingTradeConfigRecord,
+} from '../hooks/perps/perps-pending-trade-config';
 
 /**
  * The PerpsController state is flattened into state.metamask by
@@ -253,3 +257,47 @@ export const selectOrderBookExpanded = (state: PerpsState) =>
 
 export const selectPerpsTradeConfigurations = (state: PerpsState) =>
   state.metamask.tradeConfigurations ?? EMPTY_TRADE_CONFIGURATIONS;
+
+/**
+ * Pending trade draft for `symbol` on the current network, if it is still
+ * inside the restore window. Returns the controller record (including
+ * `timestamp`) so callers share the Redux object identity.
+ *
+ * @param state - Flattened Perps controller state.
+ * @param symbol - Market symbol, e.g. `BTC`.
+ * @returns The draft, or undefined when missing/expired.
+ */
+export const selectPendingTradeConfiguration = (
+  state: PerpsState,
+  symbol: string,
+): PerpsPendingTradeConfigRecord | undefined => {
+  if (!symbol) {
+    return undefined;
+  }
+  const env = selectPerpsIsTestnet(state) ? 'testnet' : 'mainnet';
+  const pending =
+    selectPerpsTradeConfigurations(state)[env]?.[symbol]?.pendingConfig;
+  if (!pending || !isPendingTradeConfigFresh(pending.timestamp)) {
+    return undefined;
+  }
+  return pending as PerpsPendingTradeConfigRecord;
+};
+
+/**
+ * Persisted order-book price grouping for `symbol` on the current network.
+ *
+ * @param state - Flattened Perps controller state.
+ * @param symbol - Market symbol, e.g. `BTC`.
+ * @returns The grouping step, or undefined when none is saved.
+ */
+export const selectPerpsOrderBookGrouping = (
+  state: PerpsState,
+  symbol: string,
+): number | undefined => {
+  if (!symbol) {
+    return undefined;
+  }
+  const env = selectPerpsIsTestnet(state) ? 'testnet' : 'mainnet';
+  return selectPerpsTradeConfigurations(state)[env]?.[symbol]
+    ?.orderBookGrouping;
+};

@@ -1,8 +1,13 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import {
+  CANDLE_COUNT,
+  CandlePeriod,
+  clampVisibleCandleCount,
+} from '../constants/chartConfig';
 import PerpsCandlestickChart from './perps-candlestick-chart';
 
 const mockUseTheme = jest.fn();
@@ -18,8 +23,15 @@ type CrosshairParam = {
 };
 
 let mockCrosshairCallback: ((param: CrosshairParam) => void) | undefined;
+let mockRangeChangeCallback:
+  | ((range: { from: number; to: number } | null) => void)
+  | undefined;
 let mockCreatedSeries: { ref: object }[] = [];
-let mockCreatedCharts: { panes: jest.Mock; remove: jest.Mock }[] = [];
+let mockCreatedCharts: {
+  panes: jest.Mock;
+  remove: jest.Mock;
+  timeScale: jest.Mock;
+}[] = [];
 
 jest.mock('lightweight-charts', () => ({
   createChart: () => {
@@ -45,7 +57,9 @@ jest.mock('lightweight-charts', () => ({
         scrollToRealTime: jest.fn(),
         getVisibleLogicalRange: jest.fn(),
         setVisibleLogicalRange: jest.fn(),
-        subscribeVisibleLogicalRangeChange: jest.fn(),
+        subscribeVisibleLogicalRangeChange: jest.fn((cb) => {
+          mockRangeChangeCallback = cb;
+        }),
         unsubscribeVisibleLogicalRangeChange: jest.fn(),
         applyOptions: jest.fn(),
       }),
@@ -354,5 +368,82 @@ describe('PerpsCandlestickChart — chart disposal (TAT-3462)', () => {
     const panes = getPanesOf(secondChart);
     expect(panes[0].setHeight).toHaveBeenCalledWith(DEFAULT_MAIN_PANE_HEIGHT);
     expect(panes[1].setHeight).toHaveBeenCalledWith(DEFAULT_VOLUME_PANE_HEIGHT);
+  });
+});
+
+describe('clampVisibleCandleCount', () => {
+  it('clamps to the supported zoom range', () => {
+    expect(clampVisibleCandleCount(60)).toBe(60);
+    expect(clampVisibleCandleCount(1)).toBe(CANDLE_COUNT.MIN);
+    expect(clampVisibleCandleCount(10_000)).toBe(CANDLE_COUNT.MAX);
+    expect(clampVisibleCandleCount(Number.NaN)).toBe(CANDLE_COUNT.DEFAULT);
+  });
+});
+
+describe('PerpsCandlestickChart — visible candle count', () => {
+  const buildCandleData = (count: number) => ({
+    symbol: 'ETH',
+    interval: CandlePeriod.FiveMinutes,
+    candles: Array.from({ length: count }, (_, index) => ({
+      time: 1_700_000_000_000 + index * 60_000,
+      open: '100',
+      high: '110',
+      low: '90',
+      close: '105',
+      volume: '10',
+    })),
+  });
+
+  beforeEach(() => {
+    mockCrosshairCallback = undefined;
+    mockRangeChangeCallback = undefined;
+    mockCreatedSeries = [];
+    mockCreatedCharts = [];
+    mockUseTheme.mockReturnValue('light');
+    jest.useFakeTimers();
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('applies the persisted visible candle count on first data load', () => {
+    renderWithProvider(
+      <PerpsCandlestickChart
+        visibleCandleCount={60}
+        candleData={buildCandleData(80)}
+      />,
+      mockStore,
+    );
+
+    const timeScale = mockCreatedCharts.at(-1)?.timeScale();
+    expect(timeScale.setVisibleLogicalRange).toHaveBeenCalledWith({
+      from: 20,
+      to: 81,
+    });
+  });
+
+  it('reports a user zoom after debounce', () => {
+    const onVisibleCandleCountChange = jest.fn();
+    renderWithProvider(
+      <PerpsCandlestickChart
+        candleData={buildCandleData(80)}
+        onVisibleCandleCountChange={onVisibleCandleCountChange}
+      />,
+      mockStore,
+    );
+
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
+
+    mockRangeChangeCallback?.({ from: 20, to: 81 });
+
+    act(() => {
+      jest.advanceTimersByTime(250);
+    });
+
+    expect(onVisibleCandleCountChange).toHaveBeenCalledWith(60);
   });
 });

@@ -22,6 +22,8 @@ import type {
   ExistingPositionData,
 } from '../../components/app/perps/order-entry/order-entry.types';
 import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
+import { submitRequestToBackground } from '../../store/background-connection';
+import type { PerpsPendingTradeDraft } from './perps-pending-trade-config';
 import { usePerpsLiquidationPrice } from './usePerpsLiquidationPrice';
 
 function calculateFallbackLiquidationPrice(
@@ -79,6 +81,33 @@ function buildDefaultNewOrderAmountFields(
     // writer of balancePercent (slider, size input, percent field, leverage)
     // already yields a whole number, which is why only initial load was wrong.
     balancePercent: Math.round(initialBalancePercent),
+  };
+}
+
+function applyPendingDraft(
+  base: OrderFormState,
+  pending: PerpsPendingTradeDraft,
+  availableBalance: number,
+): OrderFormState {
+  const leverage = pending.leverage ?? base.leverage;
+  const rawAmount = pending.amount?.replace(/,/gu, '');
+  const amountFields = rawAmount
+    ? buildDefaultNewOrderAmountFields(rawAmount, leverage, availableBalance)
+    : {};
+  const takeProfitPrice = pending.takeProfitPrice ?? base.takeProfitPrice;
+  const stopLossPrice = pending.stopLossPrice ?? base.stopLossPrice;
+
+  return {
+    ...base,
+    leverage,
+    ...amountFields,
+    takeProfitPrice: takeProfitPrice ?? '',
+    stopLossPrice: stopLossPrice ?? '',
+    limitPrice: pending.limitPrice ?? base.limitPrice,
+    autoCloseEnabled: Boolean(
+      (takeProfitPrice && takeProfitPrice !== '') ||
+      (stopLossPrice && stopLossPrice !== ''),
+    ),
   };
 }
 
@@ -147,6 +176,13 @@ export type UsePerpsOrderFormOptions = {
    * fresh object per selection; a stable reference is ignored on re-render.
    */
   limitPricePrefill?: { price: string };
+  /**
+   * Fresh per-market draft restored when returning to this symbol inside the
+   * product TTL. Size/TP/SL/limit/leverage overlay the default new-order
+   * seed. Direction and order type are applied by the caller via
+   * `initialDirection` / `orderType` so a URL direction change can skip this.
+   */
+  pendingDraft?: PerpsPendingTradeDraft;
 };
 
 export type UsePerpsOrderFormReturn = {
@@ -208,6 +244,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.markPrice - Oracle mark price for margin calculation (falls back to currentPrice)
  * @param options.feeRate - Dynamic fee rate from usePerpsOrderFees (falls back to static constant)
  * @param options.limitPricePrefill - One-shot limit-price prefill (fresh object per selection)
+ * @param options.pendingDraft - Fresh per-market draft to restore on this symbol
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -227,11 +264,14 @@ export function usePerpsOrderForm({
   markPrice,
   feeRate,
   limitPricePrefill,
+  pendingDraft,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const displayAssetSymbol = getDisplaySymbol(asset);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const defaultLeverage = initialLeverage ?? TRADING_DEFAULTS.leverage;
-  const hasUserEditedAmount = useRef(false);
+  const hasUserEditedAmount = useRef(
+    mode === 'new' && Boolean(pendingDraft?.amount),
+  );
 
   const computeInitialAmountValue = useCallback(
     (leverage: number): string => {
@@ -297,7 +337,7 @@ export function usePerpsOrderForm({
         ...deriveModifyFields(existingPosition),
       };
     }
-    return {
+    const initial = {
       ...mockOrderFormDefaults,
       asset,
       direction: initialDirection,
@@ -309,6 +349,9 @@ export function usePerpsOrderForm({
         availableBalance,
       ),
     };
+    return mode === 'new' && pendingDraft
+      ? applyPendingDraft(initial, pendingDraft, availableBalance)
+      : initial;
   });
 
   // Update order type when prop changes (from dropdown)
@@ -357,6 +400,14 @@ export function usePerpsOrderForm({
       initialLeverage,
     });
 
+    const directionChanged =
+      prevResetDeps !== null &&
+      prevResetDeps.initialDirection !== initialDirection &&
+      prevResetDeps.asset === asset &&
+      prevResetDeps.mode === mode;
+    const shouldRestorePending =
+      mode === 'new' && Boolean(pendingDraft) && !directionChanged;
+
     const resetLeverage = initialLeverage ?? TRADING_DEFAULTS.leverage;
     const defaultAmountFields =
       mode === 'new'
@@ -367,7 +418,9 @@ export function usePerpsOrderForm({
           )
         : {};
 
-    hasUserEditedAmount.current = false;
+    hasUserEditedAmount.current = Boolean(
+      shouldRestorePending && pendingDraft?.amount,
+    );
     if (mode === 'modify' && existingPosition) {
       setFormState({
         ...mockOrderFormDefaults,
@@ -377,14 +430,19 @@ export function usePerpsOrderForm({
         ...deriveModifyFields(existingPosition),
       });
     } else {
-      setFormState({
+      const resetState: OrderFormState = {
         ...mockOrderFormDefaults,
         asset,
         direction: initialDirection,
         type: orderType,
         ...(initialLeverage !== undefined && { leverage: initialLeverage }),
         ...defaultAmountFields,
-      });
+      };
+      setFormState(
+        shouldRestorePending && pendingDraft
+          ? applyPendingDraft(resetState, pendingDraft, availableBalance)
+          : resetState,
+      );
     }
   }
 
@@ -613,8 +671,16 @@ export function usePerpsOrderForm({
           maxSize > 0 ? Math.min(Math.round((amount / maxSize) * 100), 100) : 0;
         return { ...prev, leverage, balancePercent };
       });
+      if (mode === 'new' && asset) {
+        submitRequestToBackground('perpsSaveTradeConfiguration', [
+          asset,
+          leverage,
+        ]).catch((error) => {
+          console.warn('[Perps] Save trade configuration failed:', error);
+        });
+      }
     },
-    [availableBalance],
+    [availableBalance, asset, mode],
   );
 
   const handleAutoCloseEnabledChange = useCallback((enabled: boolean) => {

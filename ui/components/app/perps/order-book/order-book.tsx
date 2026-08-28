@@ -20,7 +20,13 @@ import {
 } from '@metamask/design-system-react';
 import type { OrderBookLevel } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { selectOrderBookPosition } from '../../../../selectors/perps-controller';
+import {
+  type PerpsState,
+  selectOrderBookPosition,
+  selectPerpsOrderBookGrouping,
+} from '../../../../selectors/perps-controller';
+import type { MetaMaskReduxState } from '../../../../store/store';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
@@ -271,11 +277,36 @@ export const PerpsOrderBook = ({
 }: PerpsOrderBookProps) => {
   const t = useI18nContext();
   const configModalId = `${dataTestId}-config-modal`;
-  const [currency, setCurrency] = useState<OrderBookListCurrency>('usd');
-  const [metric, setMetric] = useState<OrderBookListMetric>('total');
-  const [selectedGrouping, setSelectedGrouping] = useState<number | null>(null);
+  const {
+    perpsOrderBookCurrency: persistedCurrency,
+    perpsOrderBookMetric: persistedMetric,
+  } = useSelector(getPreferences);
+  const savedGrouping = useSelector((state: MetaMaskReduxState) =>
+    selectPerpsOrderBookGrouping(state as PerpsState, symbol),
+  );
+  const [currency, setCurrency] = useState<OrderBookListCurrency>(
+    persistedCurrency === 'base' || persistedCurrency === 'usd'
+      ? persistedCurrency
+      : 'usd',
+  );
+  const [metric, setMetric] = useState<OrderBookListMetric>(
+    persistedMetric === 'size' || persistedMetric === 'total'
+      ? persistedMetric
+      : 'total',
+  );
+  const [selectedGrouping, setSelectedGrouping] = useState<number | null>(
+    savedGrouping ?? null,
+  );
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [viewMode, setViewMode] = useState<OrderBookViewMode>('default');
+  const [groupingSeed, setGroupingSeed] = useState(
+    `${symbol}:${savedGrouping ?? ''}`,
+  );
+  const nextGroupingSeed = `${symbol}:${savedGrouping ?? ''}`;
+  if (nextGroupingSeed !== groupingSeed) {
+    setGroupingSeed(nextGroupingSeed);
+    setSelectedGrouping(savedGrouping ?? null);
+  }
 
   const orderBookLayout: OrderBookLayoutPosition = useSelector(
     selectOrderBookPosition,
@@ -457,8 +488,26 @@ export const PerpsOrderBook = ({
       ]).catch((error) =>
         console.error('Failed to persist order book layout', error),
       );
+      submitRequestToBackground('perpsSaveOrderBookGrouping', [
+        symbol,
+        next.grouping,
+      ]).catch((error) =>
+        console.error('Failed to persist order book grouping', error),
+      );
+      submitRequestToBackground('setPreference', [
+        'perpsOrderBookCurrency',
+        next.currency,
+      ]).catch((error) =>
+        console.error('Failed to persist order book currency', error),
+      );
+      submitRequestToBackground('setPreference', [
+        'perpsOrderBookMetric',
+        next.metric,
+      ]).catch((error) =>
+        console.error('Failed to persist order book metric', error),
+      );
     },
-    [],
+    [symbol],
   );
 
   const hasLadder = Boolean(
