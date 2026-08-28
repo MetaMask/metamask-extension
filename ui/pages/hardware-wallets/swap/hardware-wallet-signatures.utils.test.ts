@@ -1226,8 +1226,11 @@ describe('hardware-wallet-signatures utils', () => {
       'returns DeviceDisconnected for KeyringControllerError wrapping %s on cause',
       (_label, code) => {
         const error = new KeyringControllerError('sign operation failed', {
-          cause: Object.assign(new Error('device unavailable'), {
+          cause: new HardwareWalletError('device unavailable', {
             code,
+            severity: Severity.Err,
+            category: Category.Connection,
+            userMessage: 'device unavailable',
           }),
         });
 
@@ -1243,9 +1246,7 @@ describe('hardware-wallet-signatures utils', () => {
       // same payload on a KeyringControllerError cause must not flip to
       // DeviceDisconnected just because we now read nested codes.
       const error = new KeyringControllerError('sign operation failed', {
-        cause: Object.assign(new Error('error'), {
-          code: 4001,
-        }),
+        cause: providerErrors.userRejectedRequest('error'),
       });
 
       expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
