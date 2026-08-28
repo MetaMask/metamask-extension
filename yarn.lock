@@ -8223,19 +8223,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ramps-controller@npm:@metamask-previews/ramps-controller@20.0.0-preview-619d07f55":
-  version: 20.0.0-preview-619d07f55
-  resolution: "@metamask-previews/ramps-controller@npm:20.0.0-preview-619d07f55"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/profile-sync-controller": "npm:^29.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^6.0.0"
-  checksum: 10/0107cbc4db0a1ae5cf59100ebdc726d89867c5239fc16464ee06dea14ba3f0bfeca72790c5764d9aa46695e5a667ba62f8f52030e57d75756dba59a0a1d16f34
-  languageName: node
-  linkType: hard
-
 "@metamask/ramps-controller@npm:^18.0.1":
   version: 18.0.1
   resolution: "@metamask/ramps-controller@npm:18.0.1"
@@ -8246,6 +8233,19 @@ __metadata:
     "@metamask/profile-sync-controller": "npm:^28.3.0"
     "@metamask/remote-feature-flag-controller": "npm:^5.0.0"
   checksum: 10/49e4cbb05994d4ad5994bb88a20817722bf2c7361edeed1b46d45e7bf7e7db94c81338a7590e3845721272f26bab7af4e6a2df16c39248daf06140fa5ccc9a7f
+  languageName: node
+  linkType: hard
+
+"@metamask/ramps-controller@npm:^20.2.0":
+  version: 20.2.0
+  resolution: "@metamask/ramps-controller@npm:20.2.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/profile-sync-controller": "npm:^29.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^6.1.0"
+  checksum: 10/2ad551a54458cb01221d1b13794f222fd8e5672fa11bfa7cd348838c59b16623bb243ecff9015459f8c7b07e453b3daffb9242d431744e80d89dc3b29eb33989
   languageName: node
   linkType: hard
 
@@ -8318,6 +8318,19 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     uuid: "npm:^8.3.2"
   checksum: 10/4ae9fa72f2ba8b7d71b1c0cf7be60bbf0c143e5372a1ef9f58f0ee761cf782087de8e801b71b6b319581044bb41197ffdfee069def2983d12adb0b296e5fff7a
+  languageName: node
+  linkType: hard
+
+"@metamask/remote-feature-flag-controller@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@metamask/remote-feature-flag-controller@npm:6.1.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/utils": "npm:^11.11.0"
+    uuid: "npm:^8.3.2"
+  checksum: 10/d32c187c638416bd1535b464187b1184ecbfd80b8100597b86cf17704cb04887f283df900fdc538b483f2d5684f34b2442bae84f468fb150e0e053230222ca45
   languageName: node
   linkType: hard
 
@@ -33408,7 +33421,7 @@ __metadata:
     "@metamask/profile-metrics-controller": "npm:^4.0.3"
     "@metamask/profile-sync-controller": "npm:^29.0.0"
     "@metamask/providers": "npm:^22.1.1"
-    "@metamask/ramps-controller": "npm:@metamask-previews/ramps-controller@20.0.0-preview-619d07f55"
+    "@metamask/ramps-controller": "npm:^20.2.0"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/react-data-query": "npm:^0.2.2"
     "@metamask/remote-feature-flag-controller": "npm:^5.0.0"
