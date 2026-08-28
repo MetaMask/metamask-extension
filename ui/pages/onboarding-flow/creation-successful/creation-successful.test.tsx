@@ -191,6 +191,31 @@ describe('Wallet Ready Page', () => {
     );
   });
 
+  it('does not render "Manage default settings" when opened from settings SRP backup reminder', () => {
+    const previousSearch = mockUseLocationSearch;
+    mockUseLocationSearch = '?isFromReminder=true';
+
+    try {
+      const mockStore = configureMockStore([thunk])(mockState);
+      const { queryByText, queryByTestId, getByText } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      expect(
+        getByText(messages.yourWalletIsReadyFromReminder.message),
+      ).toBeInTheDocument();
+      expect(
+        queryByText(messages.manageDefaultSettings.message),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId('manage-default-settings'),
+      ).not.toBeInTheDocument();
+    } finally {
+      mockUseLocationSearch = previousSearch;
+    }
+  });
+
   it('opens learn more link in new tab when "Learn how" is clicked (from SRP backup reminder)', () => {
     const openTabMock = jest.fn();
     const previousSearch = mockUseLocationSearch;

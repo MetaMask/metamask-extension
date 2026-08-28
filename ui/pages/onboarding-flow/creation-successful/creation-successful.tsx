@@ -8,16 +8,11 @@ import {
   Text,
   TextVariant,
   TextColor,
-  IconColor,
   Box,
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
-  FontWeight,
   TextButton,
-  Icon,
-  IconName,
-  IconSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -128,43 +123,6 @@ export default function CreationSuccessful() {
     );
   }, []);
 
-  const renderSettingsActions = useMemo(() => {
-    return (
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Start}
-        justifyContent={BoxJustifyContent.Start}
-        className="creation-successful__settings-actions"
-        gap={4}
-      >
-        <Button
-          variant={ButtonVariant.Secondary}
-          data-testid="manage-default-settings"
-          className="rounded-lg w-full flex justify-between items-center"
-          onClick={() =>
-            navigate(`${ONBOARDING_PRIVACY_SETTINGS_ROUTE}?isFromReminder=true`)
-          }
-        >
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Center}
-            alignItems={BoxAlignItems.Center}
-          >
-            <Icon name={IconName.Setting} size={IconSize.Md} className="mr-3" />
-            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-              {t('manageDefaultSettings')}
-            </Text>
-          </Box>
-          <Icon
-            name={IconName.ArrowRight}
-            color={IconColor.IconAlternative}
-            size={IconSize.Sm}
-          />
-        </Button>
-      </Box>
-    );
-  }, [navigate, t]);
-
   const onDone = useCallback(async () => {
     if (isFromReminder) {
       navigate(
@@ -262,7 +220,6 @@ export default function CreationSuccessful() {
               ])}
             </Text>
           </Box>
-          {renderSettingsActions}
         </Box>
       )}
       {!isFromSettingsSRPBackup && <WalletReadyAnimation />}
