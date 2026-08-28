@@ -3387,36 +3387,81 @@ describe('LegacyBackgroundApiService', () => {
   describe('importMnemonicToVault', () => {
     const mnemonic =
       'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+    const duplicateMnemonicError =
+      'This Secret Recovery Phrase has already been imported.';
+    const keyringId = 'keyring-id';
+
+    function createMockMnemonicWallet() {
+      const newAccount = createMockInternalAccount({
+        address: '0x123',
+        type: EthAccountType.Eoa,
+      });
+      const getAccount = jest.fn().mockReturnValue(newAccount);
+      const getMultichainAccountGroup = jest.fn().mockReturnValue({
+        get: getAccount,
+      });
+
+      return {
+        getAccount,
+        getMultichainAccountGroup,
+        newAccount,
+        wallet: {
+          entropySource: keyringId,
+          getMultichainAccountGroup,
+        },
+      };
+    }
+
+    function registerNonSocialLoginMnemonicImport({
+      completedOnboarding = false,
+      rootMessenger,
+      wallet,
+    }: {
+      completedOnboarding?: boolean;
+      rootMessenger: RootMessenger;
+      wallet: ReturnType<typeof createMockMnemonicWallet>['wallet'];
+    }) {
+      const createMultichainAccountWallet = jest
+        .fn()
+        .mockResolvedValue(wallet);
+
+      rootMessenger.registerActionHandler(
+        'MultichainAccountService:createMultichainAccountWallet',
+        createMultichainAccountWallet,
+      );
+      rootMessenger.registerActionHandler(
+        'OnboardingController:getIsSocialLoginFlow',
+        jest.fn().mockReturnValue(false),
+      );
+      rootMessenger.registerActionHandler(
+        'OnboardingController:getState',
+        jest.fn().mockReturnValue({ completedOnboarding }),
+      );
+
+      return createMultichainAccountWallet;
+    }
+
+    async function waitForImportMnemonicFireAndForgetTasks() {
+      await new Promise((resolve) => setImmediate(resolve));
+    }
 
     it('selects the imported EVM account from the created multichain wallet', async () => {
       await withService(
         async ({ rootMessenger, service, serviceMessenger }) => {
-          const newAccount = createMockInternalAccount({
-            address: '0x123',
-            type: EthAccountType.Eoa,
-          });
-          const getAccount = jest.fn().mockReturnValue(newAccount);
-          const getMultichainAccountGroup = jest.fn().mockReturnValue({
-            get: getAccount,
-          });
-          const wallet = {
-            entropySource: 'keyring-id',
+          const {
+            getAccount,
             getMultichainAccountGroup,
-          };
-          const createMultichainAccountWallet = jest
-            .fn()
-            .mockResolvedValue(wallet);
+            newAccount,
+            wallet,
+          } = createMockMnemonicWallet();
+          const createMultichainAccountWallet =
+            registerNonSocialLoginMnemonicImport({
+              rootMessenger,
+              wallet,
+            });
           const getAccountByAddress = jest.fn().mockReturnValue({ id: 'foo' });
           const setSelectedAccount = jest.fn();
 
-          rootMessenger.registerActionHandler(
-            'MultichainAccountService:createMultichainAccountWallet',
-            createMultichainAccountWallet,
-          );
-          rootMessenger.registerActionHandler(
-            'OnboardingController:getIsSocialLoginFlow',
-            jest.fn().mockReturnValue(false),
-          );
           rootMessenger.registerActionHandler(
             'AccountsController:getAccountByAddress',
             getAccountByAddress,
@@ -3424,10 +3469,6 @@ describe('LegacyBackgroundApiService', () => {
           rootMessenger.registerActionHandler(
             'AccountsController:setSelectedAccount',
             setSelectedAccount,
-          );
-          rootMessenger.registerActionHandler(
-            'OnboardingController:getState',
-            jest.fn().mockReturnValue({ completedOnboarding: false }),
           );
 
           const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -3444,13 +3485,100 @@ describe('LegacyBackgroundApiService', () => {
           expect(getAccount).toHaveBeenCalledWith({ type: EthAccountType.Eoa });
           expect(callSpy).not.toHaveBeenCalledWith(
             'KeyringController:withKeyringV2',
-            { id: 'keyring-id' },
+            { id: keyringId },
             expect.any(Function),
           );
           expect(getAccountByAddress).toHaveBeenCalledWith(newAccount.address);
           expect(setSelectedAccount).toHaveBeenCalledWith('foo');
         },
       );
+    });
+
+    it('rethrows when the multichain wallet import rejects a duplicate mnemonic', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:createMultichainAccountWallet',
+          jest.fn().mockRejectedValue(new Error(duplicateMnemonicError)),
+        );
+
+        await expect(service.importMnemonicToVault(mnemonic)).rejects.toThrow(
+          duplicateMnemonicError,
+        );
+      });
+    });
+
+    it('syncs and discovers accounts after onboarding completes', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const { newAccount, wallet } = createMockMnemonicWallet();
+        const syncWithUserStorage = jest.fn().mockResolvedValue(undefined);
+        const discoverAndCreateAccounts = jest
+          .spyOn(service, 'discoverAndCreateAccounts')
+          .mockResolvedValue({ Bitcoin: 0, Solana: 0, Tron: 0 });
+
+        registerNonSocialLoginMnemonicImport({
+          completedOnboarding: true,
+          rootMessenger,
+          wallet,
+        });
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:syncWithUserStorage',
+          syncWithUserStorage,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue(newAccount),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: [newAccount.address],
+              },
+            ],
+          }),
+        );
+
+        await service.importMnemonicToVault(mnemonic, {
+          shouldCreateSocialBackup: false,
+          shouldSelectAccount: false,
+        });
+
+        await waitForImportMnemonicFireAndForgetTasks();
+
+        expect(syncWithUserStorage).toHaveBeenCalledTimes(1);
+        expect(discoverAndCreateAccounts).toHaveBeenCalledWith(keyringId);
+      });
+    });
+
+    it('does not sync and discover accounts before onboarding completes', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const { wallet } = createMockMnemonicWallet();
+        const syncWithUserStorage = jest.fn();
+        const discoverAndCreateAccounts = jest
+          .spyOn(service, 'discoverAndCreateAccounts')
+          .mockResolvedValue({ Bitcoin: 0, Solana: 0, Tron: 0 });
+
+        registerNonSocialLoginMnemonicImport({
+          rootMessenger,
+          wallet,
+        });
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:syncWithUserStorage',
+          syncWithUserStorage,
+        );
+
+        await service.importMnemonicToVault(mnemonic, {
+          shouldCreateSocialBackup: false,
+          shouldSelectAccount: false,
+        });
+
+        await waitForImportMnemonicFireAndForgetTasks();
+
+        expect(syncWithUserStorage).not.toHaveBeenCalled();
+        expect(discoverAndCreateAccounts).not.toHaveBeenCalled();
+      });
     });
 
     it('throws if the created multichain wallet does not contain an EVM account', async () => {
@@ -3460,14 +3588,15 @@ describe('LegacyBackgroundApiService', () => {
           get: getAccount,
         });
         const getAccountByAddress = jest.fn();
+        const wallet = {
+          entropySource: keyringId,
+          getMultichainAccountGroup,
+        };
 
-        rootMessenger.registerActionHandler(
-          'MultichainAccountService:createMultichainAccountWallet',
-          jest.fn().mockResolvedValue({
-            entropySource: 'keyring-id',
-            getMultichainAccountGroup,
-          }),
-        );
+        registerNonSocialLoginMnemonicImport({
+          rootMessenger,
+          wallet,
+        });
         rootMessenger.registerActionHandler(
           'AccountsController:getAccountByAddress',
           getAccountByAddress,
