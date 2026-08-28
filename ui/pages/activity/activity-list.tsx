@@ -168,6 +168,7 @@ export function ActivityList({
           showSortControl={false}
           showImportTokenButton={false}
           onNetworkSelect={setNetworks}
+          data-testid="parent-selector-activity-tab"
         />
       )}
 

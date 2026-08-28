@@ -8,7 +8,7 @@ import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';

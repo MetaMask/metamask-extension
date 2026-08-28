@@ -564,7 +564,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 656,
+      "React: Act warnings (component updates not wrapped)": 663,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
     },
@@ -724,9 +724,6 @@
     },
     "ui/pages/confirmations/components/info-popover-tooltip/info-popover-tooltip.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
-    },
-    "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
-      "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 28

@@ -3,9 +3,9 @@ import { Suite } from 'mocha';
 import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
+import CriticalErrorPage from '../../page-objects/pages/vault/critical-error-page';
 import { PAGES } from '../../webdriver/driver';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { getManifestVersion } from '../../set-manifest-flags';
 import { completeVaultRecoveryOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import {
