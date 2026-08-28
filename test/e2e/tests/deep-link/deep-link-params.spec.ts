@@ -252,7 +252,7 @@ describe('Deep Link - Parameter Handling & Security', function () {
         const initialUrlStr = await driver.getCurrentUrl();
         const initialUrl = new URL(initialUrlStr);
         assert.equal(initialUrl.pathname, `/home.html`);
-        assert.equal(initialUrl.hash, '#link?u=%2Fhome');
+        assert.equal(initialUrl.hash, '#/link?u=%2Fhome');
         assert.equal(initialUrl.search, '');
 
         await driver.switchToWindow(dappWindowHandle);

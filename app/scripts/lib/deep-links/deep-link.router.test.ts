@@ -82,7 +82,7 @@ function getInterstitialUrl(
   if (requestId) {
     params.set('id', requestId);
   }
-  return `chrome-extension://extension-id/home.html#link?${params}`;
+  return `chrome-extension://extension-id/home.html#/link?${params}`;
 }
 
 const protectedRouteTestCases = routesProtectedByInterstitial.flatMap((route) =>
@@ -607,7 +607,7 @@ describe('DeepLinkRouter', () => {
       expect(parseMock).not.toHaveBeenCalled();
       expect(response).toEqual({});
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?errorCode=404',
+        url: 'chrome-extension://extension-id/home.html#/link?errorCode=404',
       });
       expect(mockError).toHaveBeenCalledTimes(1);
       expect(mockError.mock.calls[0][0].message).toBe('Invalid URL');
@@ -723,7 +723,7 @@ describe('DeepLinkRouter', () => {
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?errorCode=404&u=%2Fnonexistent-route',
+        url: 'chrome-extension://extension-id/home.html#/link?errorCode=404&u=%2Fnonexistent-route',
       });
     });
   });

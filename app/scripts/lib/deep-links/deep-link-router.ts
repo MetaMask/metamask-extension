@@ -16,10 +16,6 @@ import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 
-// `routes.ts` requires routes to have a leading slash, but the UI redirects
-// them to the non-slashed version. Use that version here to skip the redirect.
-const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(/^\//u, '');
-
 export type Options = {
   getExtensionURL: ExtensionPlatform['getExtensionURL'];
   getState: MetamaskController['getState'];
@@ -85,7 +81,7 @@ export class DeepLinkRouter extends EventEmitter<{
     if (id) {
       search.set('id', id);
     }
-    return this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, search.toString());
+    return this.getExtensionURL(DEEP_LINK_ROUTE, search.toString());
   }
 
   /**
@@ -99,7 +95,7 @@ export class DeepLinkRouter extends EventEmitter<{
     if (originalUrl) {
       params.set('u', this.formatUrlForInterstitialPage(originalUrl));
     }
-    return this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, params.toString());
+    return this.getExtensionURL(DEEP_LINK_ROUTE, params.toString());
   }
 
   /**

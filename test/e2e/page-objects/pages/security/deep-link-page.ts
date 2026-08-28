@@ -6,7 +6,7 @@ import { regularDelayMs } from '../../../helpers';
 /**
  * Deep-link security interstitial before continuing into an in-app route.
  *
- * Screen: `#link` (and related deep-link interstitial UI).
+ * Screen: `#/link` (and related deep-link interstitial UI).
  * Owns: description text, continue, skip-interstitial checkbox, and
  * loading-indicator absence checks on the interstitial.
  * Boundaries: the interstitial only. Destination routes after Continue belong
@@ -63,7 +63,7 @@ export default class DeepLink {
         return (
           currentUrl.host !== source.host &&
           currentUrl.pathname === '/home.html' &&
-          hashPath === '#link' &&
+          hashPath === '#/link' &&
           hashParams.get('u') === `${source.pathname}${source.search}` &&
           hashParams.has('id')
         );
@@ -77,7 +77,7 @@ export default class DeepLink {
 
     assert.notEqual(currentUrl.host, source.host);
     assert.equal(currentUrl.pathname, '/home.html');
-    assert.equal(hashPath, '#link');
+    assert.equal(hashPath, '#/link');
     assert.equal(hashParams.get('u'), `${source.pathname}${source.search}`);
     assert(hashParams.has('id'));
     await this.driver.waitForSelector(this.loadingIndicator);
