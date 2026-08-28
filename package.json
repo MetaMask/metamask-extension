@@ -377,8 +377,8 @@
     "@metamask/base-data-service": "^1.0.0",
     "@metamask/bitcoin-wallet-snap": "^2.0.1",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
-    "@metamask/bridge-controller": "^79.2.0",
-    "@metamask/bridge-status-controller": "^75.1.0",
+    "@metamask/bridge-controller": "^80.1.0",
+    "@metamask/bridge-status-controller": "^75.4.0",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.6.2",
     "@metamask/chomp-api-service": "^4.0.0",
@@ -850,6 +850,16 @@
   "engines": {
     "node": ">=24.13.0",
     "yarn": "^4.14.1"
+  },
+  "previewBuilds": {
+    "@metamask/bridge-controller": {
+      "type": "non-breaking",
+      "previewVersion": "80.1.0-preview-b13d916"
+    },
+    "@metamask/bridge-status-controller": {
+      "type": "non-breaking",
+      "previewVersion": "75.4.0-preview-b13d916"
+    }
   },
   "lavamoat": {
     "allowScripts": {
