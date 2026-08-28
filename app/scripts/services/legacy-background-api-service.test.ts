@@ -3389,66 +3389,68 @@ describe('LegacyBackgroundApiService', () => {
       'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
 
     it('selects the imported EVM account from the created multichain wallet', async () => {
-      await withService(async ({ rootMessenger, service, serviceMessenger }) => {
-        const newAccount = createMockInternalAccount({
-          address: '0x123',
-          type: EthAccountType.Eoa,
-        });
-        const getAccount = jest.fn().mockReturnValue(newAccount);
-        const getMultichainAccountGroup = jest.fn().mockReturnValue({
-          get: getAccount,
-        });
-        const wallet = {
-          entropySource: 'keyring-id',
-          getMultichainAccountGroup,
-        };
-        const createMultichainAccountWallet = jest
-          .fn()
-          .mockResolvedValue(wallet);
-        const getAccountByAddress = jest.fn().mockReturnValue({ id: 'foo' });
-        const setSelectedAccount = jest.fn();
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const newAccount = createMockInternalAccount({
+            address: '0x123',
+            type: EthAccountType.Eoa,
+          });
+          const getAccount = jest.fn().mockReturnValue(newAccount);
+          const getMultichainAccountGroup = jest.fn().mockReturnValue({
+            get: getAccount,
+          });
+          const wallet = {
+            entropySource: 'keyring-id',
+            getMultichainAccountGroup,
+          };
+          const createMultichainAccountWallet = jest
+            .fn()
+            .mockResolvedValue(wallet);
+          const getAccountByAddress = jest.fn().mockReturnValue({ id: 'foo' });
+          const setSelectedAccount = jest.fn();
 
-        rootMessenger.registerActionHandler(
-          'MultichainAccountService:createMultichainAccountWallet',
-          createMultichainAccountWallet,
-        );
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getIsSocialLoginFlow',
-          jest.fn().mockReturnValue(false),
-        );
-        rootMessenger.registerActionHandler(
-          'AccountsController:getAccountByAddress',
-          getAccountByAddress,
-        );
-        rootMessenger.registerActionHandler(
-          'AccountsController:setSelectedAccount',
-          setSelectedAccount,
-        );
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getState',
-          jest.fn().mockReturnValue({ completedOnboarding: false }),
-        );
+          rootMessenger.registerActionHandler(
+            'MultichainAccountService:createMultichainAccountWallet',
+            createMultichainAccountWallet,
+          );
+          rootMessenger.registerActionHandler(
+            'OnboardingController:getIsSocialLoginFlow',
+            jest.fn().mockReturnValue(false),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:getAccountByAddress',
+            getAccountByAddress,
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:setSelectedAccount',
+            setSelectedAccount,
+          );
+          rootMessenger.registerActionHandler(
+            'OnboardingController:getState',
+            jest.fn().mockReturnValue({ completedOnboarding: false }),
+          );
 
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
 
-        await expect(
-          service.importMnemonicToVault(mnemonic),
-        ).resolves.toBeUndefined();
+          await expect(
+            service.importMnemonicToVault(mnemonic),
+          ).resolves.toBeUndefined();
 
-        expect(createMultichainAccountWallet).toHaveBeenCalledWith({
-          type: 'import',
-          mnemonic: expect.any(Uint8Array),
-        });
-        expect(getMultichainAccountGroup).toHaveBeenCalledWith(0);
-        expect(getAccount).toHaveBeenCalledWith({ type: EthAccountType.Eoa });
-        expect(callSpy).not.toHaveBeenCalledWith(
-          'KeyringController:withKeyringV2',
-          { id: 'keyring-id' },
-          expect.any(Function),
-        );
-        expect(getAccountByAddress).toHaveBeenCalledWith(newAccount.address);
-        expect(setSelectedAccount).toHaveBeenCalledWith('foo');
-      });
+          expect(createMultichainAccountWallet).toHaveBeenCalledWith({
+            type: 'import',
+            mnemonic: expect.any(Uint8Array),
+          });
+          expect(getMultichainAccountGroup).toHaveBeenCalledWith(0);
+          expect(getAccount).toHaveBeenCalledWith({ type: EthAccountType.Eoa });
+          expect(callSpy).not.toHaveBeenCalledWith(
+            'KeyringController:withKeyringV2',
+            { id: 'keyring-id' },
+            expect.any(Function),
+          );
+          expect(getAccountByAddress).toHaveBeenCalledWith(newAccount.address);
+          expect(setSelectedAccount).toHaveBeenCalledWith('foo');
+        },
+      );
     });
 
     it('throws if the created multichain wallet does not contain an EVM account', async () => {
