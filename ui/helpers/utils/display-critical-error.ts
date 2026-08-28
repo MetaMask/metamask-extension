@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { v4 as uuidv4 } from 'uuid';
+import { isObject } from '@metamask/utils';
 import { type ErrorLike } from '../../../shared/constants/errors';
 import {
   getErrorHtml,
@@ -40,6 +41,17 @@ async function safeGetVaultBackup(
   });
   const backupPromise = getBackupState().catch(() => null);
   return Promise.race([backupPromise, timeoutPromise]);
+}
+
+/**
+ * Checks whether analytics consent is enabled in a persistence backup.
+ *
+ * @param backup - The persistence backup.
+ * @returns Whether the user opted in to analytics.
+ */
+function isAnalyticsOptedIn(backup: Backup | null): boolean {
+  const analyticsController = backup?.AnalyticsController;
+  return isObject(analyticsController) && analyticsController.optedIn === true;
 }
 
 /**
@@ -201,6 +213,7 @@ async function handleRestartAction(
  * @param port - Optional port for background communication (needed for vault recovery functionality).
  * @param criticalErrorType - Optional type of critical error (for analytics). Defaults to Other.
  * @param backupFromBackground - Optional vault backup sent separately from the error.
+ * @param backgroundCaptureAttempted - Whether background already passed the error to Sentry.
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
  */
@@ -212,15 +225,14 @@ export async function displayCriticalErrorMessage(
   port?: browser.Runtime.Port,
   criticalErrorType?: CriticalErrorType,
   backupFromBackground?: Backup | null,
+  backgroundCaptureAttempted: boolean = false,
 ): Promise<never> {
   // Prefer the backup sent separately from the error by the background. Only
   // fall back to IndexedDB when it does not contain a vault, so a timed-out UI
   // re-read cannot flip Recover into Reset.
-  let backup: Backup | null = hasVault(backupFromBackground)
-    ? backupFromBackground
-    : null;
+  let backup = backupFromBackground ?? null;
   if (port && !hasVault(backup)) {
-    backup = await safeGetVaultBackup();
+    backup = (await safeGetVaultBackup()) ?? backup;
   }
   let repairAction: CriticalErrorRepairAction = CriticalErrorRepairAction.None;
   if (port) {
@@ -230,6 +242,7 @@ export async function displayCriticalErrorMessage(
       repairAction = CriticalErrorRepairAction.Reset;
     }
   }
+  const analyticsOptedIn = isAnalyticsOptedIn(backup);
 
   try {
     port?.postMessage({
@@ -254,6 +267,7 @@ export async function displayCriticalErrorMessage(
     SUPPORT_LINK,
     repairAction,
     criticalErrorType,
+    !analyticsOptedIn,
   );
 
   const criticalErrorContainer = displayCriticalErrorPage(container, html);
@@ -266,11 +280,14 @@ export async function displayCriticalErrorMessage(
       criticalErrorContainer.querySelector<HTMLInputElement>(
         '#critical-error-checkbox',
       );
+    const shouldReportError = () =>
+      analyticsOptedIn
+        ? !backgroundCaptureAttempted
+        : (reportCheckbox?.checked ?? false);
 
     // Restart button: report error and restart MetaMask
     restartButton?.addEventListener('click', async () => {
-      const shouldReport = reportCheckbox?.checked ?? false;
-      await handleRestartAction(error, shouldReport);
+      await handleRestartAction(error, shouldReportError());
     });
 
     // Recovery/reset button: trigger the critical error repair flow.
@@ -289,7 +306,7 @@ export async function displayCriticalErrorMessage(
         }, REPAIR_BUTTON_ENABLE_DELAY_MS);
       }
 
-      repairButton?.addEventListener('click', (event: Event) => {
+      repairButton?.addEventListener('click', async (event: Event) => {
         event.preventDefault();
         if (repairButton.disabled) {
           return;
@@ -300,6 +317,9 @@ export async function displayCriticalErrorMessage(
           localeContext.t('stateCorruptionAreYouSure') ?? '',
         );
         if (confirmed) {
+          if (shouldReportError()) {
+            await sendErrorToSentry(error);
+          }
           port.postMessage({
             data: {
               method: METHOD_REPAIR_DATABASE,

@@ -55,9 +55,15 @@ function mockGetErrorHtmlWithOptionalRestoreLink() {
     _localeContext: unknown,
     _supportLink: unknown,
     repairAction?: CriticalErrorRepairAction,
+    _criticalErrorType?: CriticalErrorType,
+    showReportCheckbox: boolean = true,
   ) => `
     <div>
-      <input type="checkbox" id="critical-error-checkbox" checked />
+      ${
+        showReportCheckbox
+          ? '<input type="checkbox" id="critical-error-checkbox" checked />'
+          : ''
+      }
       <button id="critical-error-button">Restart</button>
       ${
         repairAction === CriticalErrorRepairAction.Recover ||
@@ -186,6 +192,7 @@ describe('displayCriticalError', () => {
       expect.any(String),
       CriticalErrorRepairAction.None,
       CriticalErrorType.Other,
+      true,
     );
     expect(
       rootContainer.querySelector('#critical-error-content')?.innerHTML,
@@ -411,6 +418,15 @@ describe('repair button', () => {
       localeMessages: {},
       enLocaleMessages: {},
     });
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+    } as Response);
+    process.env = {
+      ...originalEnv,
+      SENTRY_DSN: MOCK_SENTRY_DSN,
+      SENTRY_DSN_DEV: MOCK_SENTRY_DSN_DEV,
+      METAMASK_ENVIRONMENT: 'development',
+    };
   });
 
   afterEach(() => {
@@ -420,6 +436,7 @@ describe('repair button', () => {
     }
     jest.clearAllMocks();
     jest.useRealTimers();
+    process.env = originalEnv;
   });
 
   it('sends METHOD_REPAIR_DATABASE with recover action when repair button is clicked and user confirms', async () => {
@@ -452,6 +469,7 @@ describe('repair button', () => {
       expect.any(String),
       CriticalErrorRepairAction.Recover,
       CriticalErrorType.BackgroundInitTimeout,
+      true,
     );
 
     // Repair button should be in the DOM
@@ -470,7 +488,10 @@ describe('repair button', () => {
     });
 
     expect(repairButton?.disabled).toBe(false);
-    repairButton?.click();
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
 
     expect(window.confirm).toHaveBeenCalled();
     expect(mockPort.postMessage).toHaveBeenCalledWith(
@@ -520,7 +541,10 @@ describe('repair button', () => {
     });
 
     expect(repairButton?.disabled).toBe(false);
-    repairButton?.click();
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
 
     expect(window.confirm).toHaveBeenCalled();
     // postMessage is called once when the error is displayed (CRITICAL_ERROR_SCREEN_VIEWED), but not for repair when user cancels
@@ -580,6 +604,7 @@ describe('repair button', () => {
       expect.any(String),
       CriticalErrorRepairAction.Recover,
       CriticalErrorType.MissingVaultInDatabase,
+      true,
     );
     expect(mockPort.postMessage).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -589,6 +614,206 @@ describe('repair button', () => {
             backup: MOCK_BACKUP_WITH_VAULT,
             repairAction: CriticalErrorRepairAction.Recover,
           }),
+        }),
+      }),
+    );
+  });
+
+  it('does not report again when analytics is enabled and background capture was attempted', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const error = new Error(MISSING_VAULT_ERROR);
+    const backup = {
+      ...MOCK_BACKUP_WITH_VAULT,
+      AnalyticsController: { optedIn: true },
+    };
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.MissingVaultInDatabase,
+        backup,
+        true,
+      ),
+    ).rejects.toThrow(error);
+
+    expect(rootContainer.querySelector('#critical-error-checkbox')).toBeNull();
+    expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+      expect.any(Object),
+      expect.any(String),
+      CriticalErrorRepairAction.Recover,
+      CriticalErrorType.MissingVaultInDatabase,
+      false,
+    );
+
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(fetch).not.toHaveBeenCalled();
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+  });
+
+  it('reports when analytics is enabled and background capture was not attempted', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const error = new Error('Background initialization timeout');
+    const backup = {
+      ...MOCK_BACKUP_WITH_VAULT,
+      AnalyticsController: { optedIn: true },
+    };
+    const previous = globalThis.stateHooks?.getBackupState;
+    globalThis.stateHooks = {
+      ...(globalThis.stateHooks ?? {}),
+      getBackupState: async () => backup,
+    };
+    restoreGetBackupState = () => {
+      if (previous) {
+        globalThis.stateHooks.getBackupState = previous;
+      } else {
+        delete globalThis.stateHooks.getBackupState;
+      }
+    };
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.BackgroundInitTimeout,
+      ),
+    ).rejects.toThrow(error);
+
+    expect(rootContainer.querySelector('#critical-error-checkbox')).toBeNull();
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(fetch).toHaveBeenCalled();
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+  });
+
+  it('shows a checked report checkbox when analytics is disabled or unset', async () => {
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+
+    for (const optedIn of [false, undefined]) {
+      container = document.createElement('div');
+      rootContainer = document.createElement('div');
+      rootContainer.appendChild(container);
+      const error = new Error(MISSING_VAULT_ERROR);
+      const backup = {
+        ...MOCK_BACKUP_WITH_VAULT,
+        AnalyticsController: { optedIn },
+      };
+
+      await expect(
+        displayCriticalErrorMessage(
+          container,
+          CriticalErrorTranslationKey.TroubleStarting,
+          error,
+          'en',
+          mockPort,
+          CriticalErrorType.MissingVaultInDatabase,
+          backup,
+        ),
+      ).rejects.toThrow(error);
+
+      const reportCheckbox = rootContainer.querySelector<HTMLInputElement>(
+        '#critical-error-checkbox',
+      );
+      expect(reportCheckbox?.checked).toBe(true);
+    }
+  });
+
+  it('does not report during repair when analytics is disabled and the checkbox is unchecked', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const error = new Error(MISSING_VAULT_ERROR);
+    const backup = {
+      ...MOCK_BACKUP_WITH_VAULT,
+      AnalyticsController: { optedIn: false },
+    };
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.MissingVaultInDatabase,
+        backup,
+        true,
+      ),
+    ).rejects.toThrow(error);
+
+    const reportCheckbox = rootContainer.querySelector<HTMLInputElement>(
+      '#critical-error-checkbox',
+    );
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    if (reportCheckbox) {
+      reportCheckbox.checked = false;
+    }
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(fetch).not.toHaveBeenCalled();
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
         }),
       }),
     );
@@ -649,6 +874,8 @@ describe('repair button', () => {
         'en',
         mockPort,
         CriticalErrorType.MissingVaultInDatabase,
+        undefined,
+        true,
       ),
     ).rejects.toThrow(error);
 
@@ -659,6 +886,7 @@ describe('repair button', () => {
       expect.any(String),
       CriticalErrorRepairAction.Reset,
       CriticalErrorType.MissingVaultInDatabase,
+      true,
     );
 
     const repairButton = rootContainer.querySelector<HTMLButtonElement>(
@@ -676,8 +904,12 @@ describe('repair button', () => {
     });
 
     expect(repairButton?.disabled).toBe(false);
-    repairButton?.click();
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
 
+    expect(fetch).toHaveBeenCalled();
     expect(mockPort.postMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
@@ -719,6 +951,7 @@ describe('repair button', () => {
       expect.any(String),
       CriticalErrorRepairAction.None,
       undefined,
+      true,
     );
 
     // No repair button

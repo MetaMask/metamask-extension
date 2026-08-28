@@ -465,12 +465,40 @@ describe('Error utils Tests', function () {
       expect(container.querySelector('#critical-error-button')).toBeNull();
       expect(container.querySelector('.critical-error__divider')).toBeNull();
       expect(
+        container.querySelector('#critical-error-checkbox'),
+      ).not.toBeNull();
+      expect(
         container.querySelector('#critical-error-repair-button')?.classList,
       ).toContain('btn-primary');
       expect(html).not.toContain(enMessages.restartMetamask.message);
       expect(html).not.toContain(
         enMessages.criticalErrorStillHavingIssues.message,
       );
+    });
+
+    it('omits the report checkbox and legal text when reporting consent is known', async () => {
+      jest.mocked(fetchLocale).mockResolvedValue(enMessages);
+      jest
+        .mocked(loadRelativeTimeFormatLocaleData)
+        .mockResolvedValue(undefined);
+
+      const localeContext = await maybeGetLocaleContext('en');
+      const html = getErrorHtml(
+        'troubleStarting',
+        undefined,
+        localeContext,
+        SUPPORT_LINK,
+        CriticalErrorRepairAction.Recover,
+        CriticalErrorType.MissingVaultInDatabase,
+        false,
+      );
+
+      const container = document.createElement('div');
+      container.innerHTML = html;
+
+      expect(container.querySelector('#critical-error-checkbox')).toBeNull();
+      expect(container.querySelector('#critical-error-tip-anchor')).toBeNull();
+      expect(container.querySelector('#critical-error-legal-text')).toBeNull();
     });
 
     it('omits the repair button when repairAction is none', async () => {

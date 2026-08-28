@@ -347,6 +347,7 @@ export class CriticalStartupErrorHandler {
           this.#port,
           getStateCorruptionErrorType(error),
           backup,
+          true,
         );
       }
     } else if (method === DISPLAY_GENERAL_STARTUP_ERROR) {
@@ -371,6 +372,8 @@ export class CriticalStartupErrorHandler {
           currentLocale,
           this.#port,
           CriticalErrorType.GeneralStartupError,
+          undefined,
+          true,
         );
       }
     }

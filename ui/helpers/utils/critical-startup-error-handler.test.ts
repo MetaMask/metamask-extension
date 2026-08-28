@@ -391,6 +391,7 @@ describe('CriticalStartupErrorHandler', () => {
         port,
         CriticalErrorType.InaccessibleDatabase,
         backup,
+        true,
       );
 
       handler.uninstall();
@@ -418,6 +419,8 @@ describe('CriticalStartupErrorHandler', () => {
         'en',
         port,
         CriticalErrorType.GeneralStartupError,
+        undefined,
+        true,
       );
 
       handler.uninstall();

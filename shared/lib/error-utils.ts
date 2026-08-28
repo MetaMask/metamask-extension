@@ -148,6 +148,7 @@ export async function maybeGetLocaleContext(
  * @param supportLink - The support link to include in the footer.
  * @param repairAction - The repair action to render.
  * @param criticalErrorType - The type of critical error to render.
+ * @param showReportCheckbox - Whether to render the error reporting opt-in.
  * @returns The HTML string for the critical error message.
  */
 export function getErrorHtml(
@@ -157,6 +158,7 @@ export function getErrorHtml(
   supportLink?: string,
   repairAction: CriticalErrorRepairAction = CriticalErrorRepairAction.None,
   criticalErrorType?: CriticalErrorType,
+  showReportCheckbox: boolean = true,
 ): string {
   switchDirectionForPreferredLocale(localeContext.preferredLocale);
   const { t, preferredLocale, localeMessages, enLocaleMessages } =
@@ -302,7 +304,9 @@ export function getErrorHtml(
         </p>
         <div class="critical-error__error-section">
           ${detailsContent}
-          <label class="critical-error__report">
+          ${
+            showReportCheckbox
+              ? `<label class="critical-error__report">
             <input
               id="critical-error-checkbox"
               type="checkbox"
@@ -322,17 +326,23 @@ export function getErrorHtml(
                 <path d="m11 17h2v-6h-2zm1-8c.2833 0 .5208-.09583.7125-.2875s.2875-.42917.2875-.7125-.0958-.52083-.2875-.7125-.4292-.2875-.7125-.2875-.5208.09583-.7125.2875-.2875.42917-.2875.7125.0958.52083.2875.7125.4292.2875.7125.2875zm0 13c-1.3833 0-2.68333-.2625-3.9-.7875s-2.275-1.2375-3.175-2.1375-1.6125-1.9583-2.1375-3.175-.7875-2.5167-.7875-3.9.2625-2.68333.7875-3.9 1.2375-2.275 2.1375-3.175 1.95833-1.6125 3.175-2.1375 2.5167-.7875 3.9-.7875 2.6833.2625 3.9.7875 2.275 1.2375 3.175 2.1375 1.6125 1.95833 2.1375 3.175.7875 2.5167.7875 3.9-.2625 2.6833-.7875 3.9-1.2375 2.275-2.1375 3.175-1.9583 1.6125-3.175 2.1375-2.5167.7875-3.9.7875zm0-2c2.2333 0 4.125-.775 5.675-2.325s2.325-3.4417 2.325-5.675c0-2.23333-.775-4.125-2.325-5.675s-3.4417-2.325-5.675-2.325c-2.23333 0-4.125.775-5.675 2.325s-2.325 3.44167-2.325 5.675c0 2.2333.775 4.125 2.325 5.675s3.44167 2.325 5.675 2.325z"/>
               </svg>
             </button>
-          </label>
+          </label>`
+              : ''
+          }
         </div>
       </div>
-      <div
+      ${
+        showReportCheckbox
+          ? `<div
         popover
         anchor="critical-error-tip-anchor"
         id="critical-error-legal-text"
         class="critical-error__legal-text"
       >
         ${legalText}
-      </div>
+      </div>`
+          : ''
+      }
       <div class="critical-error__footer-actions">
         ${isStateCorruptionError ? '' : `${retryButton}${dividerSection}`}
         ${repairAction === CriticalErrorRepairAction.None ? '' : repairButton}
