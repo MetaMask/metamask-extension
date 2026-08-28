@@ -325,6 +325,7 @@ describe('Spam token cleanup', function (this: Suite) {
           ...NATIVE_TOKEN_NAMES,
           LEGITIMATE_ASSET.name,
           CUSTOM_ASSET.name,
+          MUSD_ASSET.name,
         ]);
 
         const { assetsInfo, assetsBalance } = await getTrackedAssetIds(driver);
