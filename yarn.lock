@@ -6122,7 +6122,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:79.2.0":
+"@metamask/bridge-controller@npm:^79.2.0":
   version: 79.2.0
   resolution: "@metamask/bridge-controller@npm:79.2.0"
   dependencies:
