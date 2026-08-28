@@ -1,7 +1,7 @@
 import { WALLET_PASSWORD } from '../../constants';
 import { type Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import AccountListPage from '../pages/accounts/list-page';
 import AccountAddressModal from '../pages/accounts/address-modal';
 import AccountAddressListPage from '../pages/accounts/address-list-page';
