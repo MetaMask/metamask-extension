@@ -181,7 +181,8 @@ const plugins: WebpackPluginInstance[] = [
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
     // In watch mode, inject the dev-only background client into the relevant HTML page.
-    beforeEmit: (content, entry, compilation) => {
+    beforeEmit: (_content, entry, compilation) => {
+      let content = _content;
       // When the source HTML directly imported the entry script, the HtmlBundler automatically pulled
       // it into the shared UI chunk. That shared runtime contained Snow which caused the cashtag widget to break.
       if (entry.name === 'cashtag-widget') {
