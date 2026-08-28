@@ -7,7 +7,15 @@ import {
   parseTypedDataMessage,
 } from '../../../../shared/lib/transaction.utils';
 import { ResultType } from '../../../../shared/lib/trust-signals';
-import { createTrustSignalsMiddleware } from './trust-signals-middleware';
+import {
+  createAddressScanMiddleware,
+  createOriginScanMiddleware,
+  type TrustSignalsMiddlewareRequest,
+} from './trust-signals-middleware';
+import {
+  createCaipOriginScanGate,
+  createEip1193OriginScanGate,
+} from './trust-signals-util';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 
 jest.mock('./security-alerts-api');
@@ -115,15 +123,37 @@ const createMiddleware = (
     },
   };
 
+  const originScan = createOriginScanMiddleware(
+    phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    createEip1193OriginScanGate(getPermittedAccounts),
+    requestUrl,
+  );
+
+  const addressScan = createAddressScanMiddleware(
+    networkController,
+    appStateController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  );
+
+  // The two middlewares are installed separately on the EIP-1193 engine, in
+  // this order. Running them as a pair keeps these tests covering the behaviour
+  // a dapp on that transport actually sees.
+  const middleware = async (
+    req: TrustSignalsMiddlewareRequest,
+    res: JsonRpcResponse,
+    next: () => void,
+  ) => {
+    await originScan(req, res, () => undefined);
+    await addressScan(req, res, next);
+  };
+
   return {
-    middleware: createTrustSignalsMiddleware(
-      networkController,
-      appStateController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-      phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-      preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-      getPermittedAccounts,
-      requestUrl,
-    ),
+    middleware,
+    // Exposed on its own because the CAIP engine installs only this half at the
+    // post-unwrap position.
+    addressScan,
     appStateController,
     networkController,
     phishingController,
@@ -131,7 +161,47 @@ const createMiddleware = (
   };
 };
 
-describe('createTrustSignalsMiddleware', () => {
+const createCaipOriginScanMiddleware = (
+  options: { hasCaip25Permission?: boolean; requestUrl?: string } = {},
+) => {
+  const { hasCaip25Permission = false, requestUrl } = options;
+
+  const phishingController = {
+    scanUrl: jest.fn(),
+  };
+
+  const preferencesController = {
+    state: {
+      securityAlertsEnabled: true,
+    },
+  };
+
+  return {
+    middleware: createOriginScanMiddleware(
+      phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      createCaipOriginScanGate(() => hasCaip25Permission),
+      requestUrl,
+    ),
+    phishingController,
+    preferencesController,
+  };
+};
+
+const createInvokeMethodRequest = (
+  innerMethod: string,
+  scope = 'eip155:1',
+  origin = 'https://example.com',
+) =>
+  ({
+    ...createMockRequest(MESSAGE_TYPE.WALLET_INVOKE_METHOD, [], origin),
+    params: {
+      scope,
+      request: { method: innerMethod, params: [] },
+    },
+  }) as unknown as TrustSignalsMiddlewareRequest;
+
+describe('trust signals middleware', () => {
   const scanAddressMockAndAddToCache = jest.mocked(scanAddressAndAddToCache);
   const parseApprovalTransactionDataMock = jest.mocked(
     parseApprovalTransactionData,
@@ -270,7 +340,7 @@ describe('createTrustSignalsMiddleware', () => {
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        '[createTrustSignalsMiddleware] error scanning address for transaction:',
+        '[createAddressScanMiddleware] error scanning address for transaction:',
         error,
       );
     });
@@ -500,7 +570,7 @@ describe('createTrustSignalsMiddleware', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[createTrustSignalsMiddleware] error scanning spender address for transaction approval:',
+          '[createAddressScanMiddleware] error scanning spender address for transaction approval:',
           expect.any(Error),
         );
       });
@@ -872,7 +942,7 @@ describe('createTrustSignalsMiddleware', () => {
       await new Promise(process.nextTick);
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        '[createTrustSignalsMiddleware] error scanning address for sendCalls:',
+        '[createAddressScanMiddleware] error scanning address for sendCalls:',
         expect.any(Error),
       );
       expect(next).toHaveBeenCalled();
@@ -1185,7 +1255,7 @@ describe('createTrustSignalsMiddleware', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[createTrustSignalsMiddleware] error scanning spender address for permit:',
+          '[createAddressScanMiddleware] error scanning spender address for permit:',
           expect.any(Error),
         );
       });
@@ -1425,7 +1495,7 @@ describe('createTrustSignalsMiddleware', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[createTrustSignalsMiddleware] error scanning delegate address for delegation:',
+          '[createAddressScanMiddleware] error scanning delegate address for delegation:',
           expect.any(Error),
         );
       });
@@ -1607,7 +1677,7 @@ describe('createTrustSignalsMiddleware', () => {
         expect(next).toHaveBeenCalled();
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[createTrustSignalsMiddleware] error:',
+          '[createOriginScanMiddleware] error:',
           error,
         );
       });
@@ -1666,9 +1736,11 @@ describe('createTrustSignalsMiddleware', () => {
   });
 
   describe('Multichain API (CAIP) requests', () => {
-    // `wallet_invokeMethod` unwraps the inner request in place before this
-    // middleware runs, so the request arrives under its EIP-1193 method name
-    // with `networkClientId` already resolved from the request's own scope.
+    // `wallet_invokeMethod` unwraps the inner request in place before the
+    // address scanner runs, so the request arrives under its EIP-1193 method
+    // name with `networkClientId` already resolved from the request's own
+    // scope. Only the address scanner is installed at this position, so these
+    // exercise it on its own.
     const createUnwrappedRequest = (
       method: string,
       params: Json[] = [],
@@ -1682,7 +1754,7 @@ describe('createTrustSignalsMiddleware', () => {
       scanAddressMockAndAddToCache.mockResolvedValue(
         MOCK_SCAN_RESPONSES.BENIGN,
       );
-      const { middleware, appStateController, phishingController } =
+      const { addressScan, appStateController, phishingController } =
         createMiddleware();
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         undefined,
@@ -1693,7 +1765,7 @@ describe('createTrustSignalsMiddleware', () => {
       const res = createMockResponse();
       const next = jest.fn();
 
-      await middleware(req, res, next);
+      await addressScan(req, res, next);
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
@@ -1702,28 +1774,133 @@ describe('createTrustSignalsMiddleware', () => {
         CHAIN_IDS.MAINNET,
         phishingController,
       );
+      expect(next).toHaveBeenCalled();
+    });
+
+    // The origin scan runs above the Multichain API handlers, so by the time a
+    // request has been unwrapped its origin has already been scanned. Scanning
+    // again here would double every request.
+    it('does not scan the origin for a request unwrapped from wallet_invokeMethod', async () => {
+      const { addressScan, phishingController } = createMiddleware();
+      const req = createUnwrappedRequest('eth_sendTransaction', [
+        createTransactionParams(),
+      ]);
+
+      await addressScan(req, createMockResponse(), jest.fn());
+
+      expect(phishingController.scanUrl).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Multichain API (CAIP) origin scanning', () => {
+    it('scans the origin for wallet_createSession', async () => {
+      const { middleware, phishingController } =
+        createCaipOriginScanMiddleware();
+      const req = createMockRequest(MESSAGE_TYPE.WALLET_CREATE_SESSION);
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
       expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
       expect(next).toHaveBeenCalled();
     });
 
-    // Connect-time coverage is PSAFE-589 part B. These methods are answered by
-    // `createMultichainApiMethodMiddleware`, which sits above this middleware
-    // in the CAIP engine, so they do not reach it at all today.
+    it('scans the origin for wallet_getSession when the origin holds a CAIP-25 permission', async () => {
+      const { middleware, phishingController } = createCaipOriginScanMiddleware(
+        {
+          hasCaip25Permission: true,
+        },
+      );
+      const req = createMockRequest(MESSAGE_TYPE.WALLET_GET_SESSION);
+
+      await middleware(req, createMockResponse(), jest.fn());
+
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
+    });
+
+    // Mirrors the EIP-1193 `eth_accounts` gate, which only scans once the
+    // origin is connected. An unconnected origin polling for a session is not a
+    // signal that the user is about to be shown anything.
+    it('does not scan the origin for wallet_getSession without a CAIP-25 permission', async () => {
+      const { middleware, phishingController } = createCaipOriginScanMiddleware(
+        {
+          hasCaip25Permission: false,
+        },
+      );
+      const req = createMockRequest(MESSAGE_TYPE.WALLET_GET_SESSION);
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(phishingController.scanUrl).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
+    });
+
     [
-      MESSAGE_TYPE.WALLET_CREATE_SESSION,
-      MESSAGE_TYPE.WALLET_GET_SESSION,
-    ].forEach((method) => {
-      it(`does not scan the origin for ${method}`, async () => {
-        const { middleware, phishingController } = createMiddleware();
-        const req = createMockRequest(method);
-        const res = createMockResponse();
-        const next = jest.fn();
+      MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+      MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+      MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
+      MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+      MESSAGE_TYPE.WALLET_SEND_CALLS,
+    ].forEach((innerMethod) => {
+      it(`scans the origin for wallet_invokeMethod wrapping ${innerMethod}`, async () => {
+        const { middleware, phishingController } =
+          createCaipOriginScanMiddleware();
+        const req = createInvokeMethodRequest(innerMethod);
 
-        await middleware(req, res, next);
+        await middleware(req, createMockResponse(), jest.fn());
 
-        expect(phishingController.scanUrl).not.toHaveBeenCalled();
-        expect(next).toHaveBeenCalled();
+        expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
       });
+    });
+
+    // A granted `eip155` scope permits nearly the whole RPC surface, so gating
+    // on `wallet_invokeMethod` itself would scan on routine polling reads.
+    it('does not scan the origin for wallet_invokeMethod wrapping a read method', async () => {
+      const { middleware, phishingController } =
+        createCaipOriginScanMiddleware();
+      const req = createInvokeMethodRequest('eth_getBalance');
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(phishingController.scanUrl).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
+    });
+
+    // Non-EVM action requests are not gated yet. The inner method names are
+    // resolved at runtime by the routing service and are not enumerated
+    // anywhere we can reference, so there is no list to gate on. Non-EVM
+    // origins are still covered at connect time by the session methods above.
+    it('does not scan the origin for a non-EVM wallet_invokeMethod', async () => {
+      const { middleware, phishingController } =
+        createCaipOriginScanMiddleware();
+      const req = createInvokeMethodRequest(
+        'signAndSendTransaction',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(phishingController.scanUrl).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('does not scan the origin when security alerts are disabled', async () => {
+      const { middleware, phishingController, preferencesController } =
+        createCaipOriginScanMiddleware();
+      preferencesController.state.securityAlertsEnabled = false;
+      const next = jest.fn();
+
+      await middleware(
+        createMockRequest(MESSAGE_TYPE.WALLET_CREATE_SESSION),
+        createMockResponse(),
+        next,
+      );
+
+      expect(phishingController.scanUrl).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
     });
   });
 
