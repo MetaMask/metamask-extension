@@ -51,6 +51,16 @@ const mockStore = configureStore({
   },
 });
 
+const privacyModeStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    preferences: {
+      ...(mockState.metamask.preferences ?? {}),
+      privacyMode: true,
+    },
+  },
+});
+
 describe('PerpsMarketBalanceActions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -115,6 +125,60 @@ describe('PerpsMarketBalanceActions', () => {
     expect(
       screen.getByTestId('perps-balance-actions-add-funds'),
     ).toBeInTheDocument();
+  });
+
+  describe('privacy mode', () => {
+    it('masks the total and available amounts when privacyMode is enabled (funded account)', () => {
+      renderWithProvider(
+        <PerpsMarketBalanceActions showActionButtons />,
+        privacyModeStore,
+      );
+
+      // Currency values should not leak in either the total or the available
+      // line; both should render MMDS bullet redactions ("•") instead.
+      const total = screen.getByTestId('perps-balance-actions-total');
+      const availableValue = screen.getByTestId(
+        'perps-balance-actions-available-value',
+      );
+      expect(total).toHaveTextContent(/^•+$/u);
+      expect(total).not.toHaveTextContent('$');
+      expect(availableValue).toHaveTextContent(/^•+$/u);
+      expect(availableValue).not.toHaveTextContent('$');
+    });
+
+    it('masks the $0.00 total when privacyMode is enabled and the account has no balance', () => {
+      mockUsePerpsLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          totalBalance: '0',
+          unrealizedPnl: '0',
+        },
+        isInitialLoading: false,
+      });
+
+      renderWithProvider(
+        <PerpsMarketBalanceActions showActionButtons />,
+        privacyModeStore,
+      );
+
+      const total = screen.getByTestId('perps-balance-actions-total');
+      expect(total).toHaveTextContent(/^•+$/u);
+      expect(total).not.toHaveTextContent('$0.00');
+    });
+
+    it('renders the raw currency amounts when privacyMode is disabled', () => {
+      renderWithProvider(
+        <PerpsMarketBalanceActions showActionButtons />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-balance-actions-total'),
+      ).toHaveTextContent('$');
+      expect(
+        screen.getByTestId('perps-balance-actions-available-value'),
+      ).toHaveTextContent('$');
+    });
   });
 
   describe('Learn more', () => {

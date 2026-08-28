@@ -1,9 +1,12 @@
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Button,
   ButtonVariant,
   ButtonSize,
+  SensitiveText,
+  SensitiveTextLength,
   Text,
   TextVariant,
   TextColor,
@@ -15,6 +18,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
@@ -72,6 +76,10 @@ const PerpsMarketBalanceActions = ({
   const { formatCurrency } = useFormatters();
   const { account, isInitialLoading } = usePerpsLiveAccount();
   const { isEligible } = usePerpsEligibility();
+  // Privacy mode masks fiat amounts across the wallet; the total + available
+  // figures in this header are the biggest numbers on the Perps tab and must
+  // be redacted the same way the old `PerpsBalanceDropdown` masked them.
+  const { privacyMode } = useSelector(getPreferences);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   // Use account data or defaults
@@ -147,13 +155,15 @@ const PerpsMarketBalanceActions = ({
       data-testid="perps-balance-actions"
     >
       {/* Account Value (includes unrealized PnL) */}
-      <Text
+      <SensitiveText
         variant={TextVariant.DisplayMd}
         fontWeight={FontWeight.Medium}
+        isHidden={privacyMode}
+        length={SensitiveTextLength.Medium}
         data-testid="perps-balance-actions-total"
       >
         {formatCurrency(accountValue, 'USD')}
-      </Text>
+      </SensitiveText>
 
       {/*
         Available balance is only meaningful once the account is funded — at
@@ -161,13 +171,22 @@ const PerpsMarketBalanceActions = ({
         it to keep the empty-state header quiet.
       */}
       {accountValue > 0 && (
-        <Box marginTop={1}>
-          <Text
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          gap={1}
+          marginTop={1}
+          data-testid="perps-balance-actions-available"
+        >
+          <SensitiveText
             variant={TextVariant.BodyMd}
             color={TextColor.TextAlternative}
-            data-testid="perps-balance-actions-available"
+            isHidden={privacyMode}
+            length={SensitiveTextLength.Short}
+            data-testid="perps-balance-actions-available-value"
           >
-            {formatCurrency(parseFloat(availableBalance), 'USD')}{' '}
+            {formatCurrency(parseFloat(availableBalance), 'USD')}
+          </SensitiveText>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {t('perpsAvailable').toLowerCase()}
           </Text>
         </Box>
