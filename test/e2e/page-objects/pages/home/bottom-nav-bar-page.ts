@@ -1,5 +1,5 @@
-import { Driver } from '../../webdriver/driver';
-import { SWAP_PATH } from '../../../../ui/helpers/constants/routes';
+import { Driver } from '../../../webdriver/driver';
+import { SWAP_PATH } from '../../../../../ui/helpers/constants/routes';
 
 /**
  * Bottom navigation bar chrome for the bottom-nav AB test treatment.
@@ -19,7 +19,9 @@ class BottomNavBar {
 
   private readonly homeTab = '[data-testid="bottom-nav-home"]';
 
-  private readonly navBar = '[data-testid="bottom-nav-bar"]';
+  private readonly page = {
+    testId: 'parent-selector-bottom-nav-bar',
+  };
 
   private readonly swapsTab = '[data-testid="bottom-nav-swaps"]';
 
@@ -36,7 +38,7 @@ class BottomNavBar {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Wait for bottom nav bar to load');
-    await this.driver.waitForSelector(this.navBar);
+    await this.driver.waitForSelector(this.page);
   }
 
   async clickHome(): Promise<void> {

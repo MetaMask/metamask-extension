@@ -1,13 +1,13 @@
 import assert from 'assert';
 import { By } from 'selenium-webdriver';
-import { Driver } from '../../webdriver/driver';
-import { regularDelayMs } from '../../helpers';
+import { Driver } from '../../../webdriver/driver';
+import { regularDelayMs } from '../../../helpers';
 
 /**
  * Deep-link security interstitial before continuing into an in-app route.
  *
  * Screen: `#/link` (and related deep-link interstitial UI).
- * Owns: description text, continue/cancel, skip-interstitial checkbox, and
+ * Owns: description text, continue, skip-interstitial checkbox, and
  * loading-indicator absence checks on the interstitial.
  * Boundaries: the interstitial only. Destination routes after Continue belong
  * to their own page objects.
@@ -16,17 +16,19 @@ import { regularDelayMs } from '../../helpers';
  * @see ui/pages/deep-link/deep-link.tsx
  */
 export default class DeepLink {
-  private readonly cancelButton = '[data-testid="deep-link-cancel-button"]';
-
   private readonly checkbox: string = '[data-testid="deep-link-checkbox"]';
 
   private readonly continueButton = '[data-testid="deep-link-continue-button"]';
 
   private readonly descriptionBox = '[data-testid="deep-link-description"]';
 
-  protected readonly driver: Driver;
+  private readonly driver: Driver;
 
   private readonly loadingIndicator = '[data-testid="loading-indicator"]';
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-deep-link-page',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -46,7 +48,10 @@ export default class DeepLink {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.descriptionBox);
+      await this.driver.waitForMultipleSelectors([
+        this.descriptionBox,
+        this.parentSelector,
+      ]);
       // loading indicator should not be present when the page is loaded
       await this.driver.assertElementNotPresent(this.loadingIndicator, {
         waitAtLeastGuard: regularDelayMs,
@@ -56,15 +61,6 @@ export default class DeepLink {
       throw e;
     }
     console.log('Deep Link page is loaded');
-  }
-
-  async clickCancelButton() {
-    try {
-      await this.driver.clickElementAndWaitToDisappear(this.cancelButton);
-    } catch (e) {
-      console.log('Error clicking cancel button on Deep Link page', e);
-      throw e;
-    }
   }
 
   async clickContinueButton() {

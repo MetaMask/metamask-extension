@@ -2464,6 +2464,22 @@
   "bridgeSendLoading": {
     "message": "Sending from source chain"
   },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "Activate $1",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "This swap may fail. On Stellar your account can't receive $1 until the token is activated in your wallet with a valid trustline.",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "This swap may fail. On Stellar $1 can't receive $2 until you switch to that account and activate the token with a valid trustline.",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "Activate $1 on Stellar first",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
+  },
   "bridgeSuspicious": {
     "message": "Suspicious"
   },
@@ -5386,11 +5402,89 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitch": {
+    "message": "Earn $1% APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "APY info"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "Available balance: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "Projected 1-year balance:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "Projected 1-year balance"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "Activity"
   },
+  "moneyActivityConversionFailed": {
+    "message": "Conversion failed"
+  },
+  "moneyActivityConverted": {
+    "message": "Converted"
+  },
+  "moneyActivityConverting": {
+    "message": "Converting"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "Deposit failed"
+  },
+  "moneyActivityDeposited": {
+    "message": "Deposited"
+  },
+  "moneyActivityDepositing": {
+    "message": "Depositing"
+  },
+  "moneyActivityEmpty": {
+    "message": "No activity yet"
+  },
+  "moneyActivityFilterAll": {
+    "message": "All"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "Deposits"
+  },
+  "moneyActivityFilterSends": {
+    "message": "Sends"
+  },
+  "moneyActivityPending": {
+    "message": "Pending"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "Your Money activity will appear here."
+  },
+  "moneyActivityReceived": {
+    "message": "Received"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "From: $1"
+  },
+  "moneyActivityReceiving": {
+    "message": "Receiving"
+  },
+  "moneyActivitySendFailed": {
+    "message": "Send failed"
+  },
+  "moneyActivitySending": {
+    "message": "Sending"
+  },
+  "moneyActivitySent": {
+    "message": "Sent"
+  },
+  "moneyActivityViewAll": {
+    "message": "View all"
   },
   "moneyAdd": {
     "message": "Add"
@@ -6649,7 +6743,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "Passkey not supported",
+    "message": "MetaMask can't use passkeys saved here. Try again and save it to a password manager.",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
@@ -7232,6 +7326,21 @@
   "perpsCloseAmount": {
     "message": "Close amount"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "Close amount capped at your position value."
+  },
+  "perpsCloseAmountInPercent": {
+    "message": "%"
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "Enter close amount as a percentage of your position"
+  },
+  "perpsCloseAmountInUsd": {
+    "message": "$"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "Enter close amount in US dollars"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "Price can't be more than 95% away from the market price"
   },
@@ -7243,6 +7352,9 @@
   },
   "perpsClosePartialMinNotional": {
     "message": "Partial closes must be at least $1 in USD value. Increase the close amount or close the full position."
+  },
+  "perpsClosePercentCappedAtMax": {
+    "message": "Close percentage capped at 100%."
   },
   "perpsClosePosition": {
     "message": "Close position"
