@@ -13,7 +13,10 @@ import {
 } from './i18n';
 import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 import { switchDirectionForPreferredLocale } from './switch-direction';
-import { REINSTALL_METAMASK_RECOVERY_LINK } from './ui-utils';
+import {
+  REINSTALL_METAMASK_RECOVERY_LINK,
+  VAULT_RECOVERY_LINK,
+} from './ui-utils';
 
 const defaultLocale = 'en';
 
@@ -276,9 +279,37 @@ export function getErrorHtml(
     : '';
 
   let troubleStartingMessage = t('troubleStartingMessage');
+  let salvageGuidance = '';
   if (isStateCorruptionError) {
     if (repairAction === CriticalErrorRepairAction.Reset) {
       troubleStartingMessage = t('criticalErrorStateCorruptionResetMessage');
+      const instructionsLink = `<a
+        href="${lodashEscape(VAULT_RECOVERY_LINK)}"
+        title="${lodashEscape(t('stateCorruptionTheseInstructionsLinkTitle') ?? '')}"
+        class="critical-error__link"
+        target="_blank"
+        rel="noopener noreferrer">${lodashEscape(t('stateCorruptionTheseInstructions') ?? '')}</a>`;
+      try {
+        salvageGuidance =
+          (getMessage(
+            preferredLocale,
+            localeMessages,
+            'stateCorruptionCopyAndRestoreBeforeReset',
+            [instructionsLink],
+          ) as string | null) ||
+          (getMessage(
+            'en',
+            enLocaleMessages,
+            'stateCorruptionCopyAndRestoreBeforeReset',
+            [instructionsLink],
+          ) as string | null) ||
+          '';
+      } catch {
+        salvageGuidance = '';
+      }
+      if (salvageGuidance) {
+        salvageGuidance = `<p>${salvageGuidance}</p>`;
+      }
     } else if (repairAction === CriticalErrorRepairAction.Recover) {
       troubleStartingMessage = t('criticalErrorStateCorruptionRecoverMessage');
     } else {
@@ -302,6 +333,7 @@ export function getErrorHtml(
           ${errorKey === 'troubleStarting' ? troubleStartingMessage : ''}
           ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
         </p>
+        ${salvageGuidance}
         <div class="critical-error__error-section">
           ${detailsContent}
           ${

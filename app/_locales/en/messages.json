@@ -10991,11 +10991,22 @@
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "Resetting database…"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Restoring database…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "these instructions",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "How to recover your Secret Recovery Phrase"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs, please try again later."

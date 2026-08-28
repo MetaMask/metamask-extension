@@ -10808,11 +10808,22 @@
   "stateCorruptionAreYouSure": {
     "message": "続行してよろしいですか？"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "$1に従ってMetaMaskをリセットすることを決断する前に、ステートファイルの手動でのコピーおよび復元を試すことができます。",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "データベースをリセットしています…"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "データベースを復元しています…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "これらの手順",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "シークレットリカバリーフレーズの復元方法"
   },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。後程もう一度お試しください。"

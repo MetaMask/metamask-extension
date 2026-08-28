@@ -10804,11 +10804,22 @@
   "stateCorruptionAreYouSure": {
     "message": "Möchten Sie wirklich fortfahren?"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "Sie können versuchen, Ihre Statusdatei manuell zu kopieren und wiederherzustellen, bevor Sie sich entscheiden, MetaMask zurückzusetzen, indem Sie $1 befolgen.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "Datenbank wird zurückgesetzt …"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Datenbank wird wiederhergestellt …"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "diese Anweisungen",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "So stellen Sie Ihre geheime Wiederherstellungsphrase wieder her"
   },
   "stateLogError": {
     "message": "Fehler beim Abrufen der Statusprotokolle. Bitte versuchen Sie es später erneut."

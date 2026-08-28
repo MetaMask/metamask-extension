@@ -10812,11 +10812,22 @@
   "stateCorruptionAreYouSure": {
     "message": "계속 진행하시겠습니까?"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "$1에 따라 MetaMask를 초기화하기 전에 상태 파일을 수동으로 복사하여 복원해 볼 수 있습니다.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "데이터베이스 초기화 중…"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "데이터베이스 복원 중…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "이 지침",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "비밀복구구문 복구 방법"
   },
   "stateLogError": {
     "message": "상태 기록을 가져오는 중 오류가 발생했습니다. 나중에 다시 시도하세요."

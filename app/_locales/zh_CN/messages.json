@@ -10804,11 +10804,22 @@
   "stateCorruptionAreYouSure": {
     "message": "您确定要继续吗？"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "在决定重设 MetaMask 之前，您可根据以下 $1 先尝试手动复制并恢复状态文件。",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "正在重设数据库…"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "正在恢复数据库…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "这些说明",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "如何恢复私钥助记词"
   },
   "stateLogError": {
     "message": "获取状态记录时出错，请稍后重试。"

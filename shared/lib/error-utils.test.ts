@@ -11,7 +11,11 @@ import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from './i18n';
-import { REINSTALL_METAMASK_RECOVERY_LINK, SUPPORT_LINK } from './ui-utils';
+import {
+  REINSTALL_METAMASK_RECOVERY_LINK,
+  SUPPORT_LINK,
+  VAULT_RECOVERY_LINK,
+} from './ui-utils';
 import {
   maybeGetLocaleContext,
   getErrorHtml,
@@ -21,10 +25,14 @@ import {
 } from './error-utils';
 import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 
-jest.mock('./i18n', () => ({
-  fetchLocale: jest.fn(),
-  loadRelativeTimeFormatLocaleData: jest.fn(),
-}));
+jest.mock('./i18n', () => {
+  const actual = jest.requireActual('./i18n');
+  return {
+    ...actual,
+    fetchLocale: jest.fn(),
+    loadRelativeTimeFormatLocaleData: jest.fn(),
+  };
+});
 jest.mock('./get-first-preferred-lang-code', () => jest.fn());
 jest.mock('./switch-direction', () => ({
   switchDirectionForPreferredLocale: jest.fn(),
@@ -68,7 +76,21 @@ const enMessages: I18NMessageDict = {
   criticalErrorFooterContactSupport: {
     message: 'If none of the above works, $1',
   },
+  stateCorruptionCopyAndRestoreBeforeReset: {
+    message:
+      'You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.',
+  },
+  stateCorruptionTheseInstructions: { message: 'these instructions' },
+  stateCorruptionTheseInstructionsLinkTitle: {
+    message: 'How to recover your Secret Recovery Phrase',
+  },
 };
+
+function getStateCorruptionResetSalvagePrefix(): string {
+  const [prefix] =
+    enMessages.stateCorruptionCopyAndRestoreBeforeReset.message.split('$1');
+  return prefix ?? '';
+}
 
 describe('Error utils Tests', function () {
   beforeEach(() => {
@@ -403,6 +425,8 @@ describe('Error utils Tests', function () {
         enMessages.criticalErrorStateCorruptionResetMessage.message,
       );
       expect(html).not.toContain(enMessages.troubleStartingMessage.message);
+      expect(html).not.toContain(getStateCorruptionResetSalvagePrefix());
+      expect(html).not.toContain(VAULT_RECOVERY_LINK);
     });
 
     it('includes reset state button when repairAction is reset', async () => {
@@ -434,6 +458,14 @@ describe('Error utils Tests', function () {
       expect(html).not.toContain(
         enMessages.criticalErrorAttemptRecovery.message,
       );
+      expect(html).toContain(VAULT_RECOVERY_LINK);
+      expect(html).toContain(
+        enMessages.stateCorruptionTheseInstructions.message,
+      );
+      expect(html).toContain(
+        enMessages.stateCorruptionTheseInstructionsLinkTitle.message,
+      );
+      expect(html).toContain(getStateCorruptionResetSalvagePrefix());
 
       const container = document.createElement('div');
       container.innerHTML = html;
@@ -441,6 +473,15 @@ describe('Error utils Tests', function () {
         '#critical-error-repair-button',
       );
       expect(repairButton?.disabled).toBe(true);
+      const salvageLink = container.querySelector<HTMLAnchorElement>(
+        `a[href="${VAULT_RECOVERY_LINK}"]`,
+      );
+      expect(salvageLink?.textContent).toBe(
+        enMessages.stateCorruptionTheseInstructions.message,
+      );
+      expect(salvageLink?.title).toBe(
+        enMessages.stateCorruptionTheseInstructionsLinkTitle.message,
+      );
     });
 
     it('omits the restart button and divider for state corruption errors', async () => {
@@ -544,6 +585,7 @@ describe('Error utils Tests', function () {
       expect(html).not.toContain(
         enMessages.criticalErrorStateCorruptionResetMessage.message,
       );
+      expect(html).not.toContain(getStateCorruptionResetSalvagePrefix());
       expect(html).not.toContain(enMessages.troubleStartingMessage.message);
     });
 

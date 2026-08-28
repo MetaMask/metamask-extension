@@ -10812,11 +10812,22 @@
   "stateCorruptionAreYouSure": {
     "message": "Yakin ingin melanjutkan?"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "Anda dapat mencoba untuk menyalin dan memulihkan fail state secara manual sebelum memutuskan untuk mereset MetaMask dengan mengikuti $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "Mereset basis data…"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Memulihkan basis data…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "petunjuk berikut",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "Cara memulihkan Frasa Pemulihan Rahasia"
   },
   "stateLogError": {
     "message": "Terjadi kesalahan saat memulihkan log state, coba lagi nanti."

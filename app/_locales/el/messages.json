@@ -10804,11 +10804,22 @@
   "stateCorruptionAreYouSure": {
     "message": "Είστε σίγουροι ότι θέλετε να συνεχίσετε;"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "Μπορείτε να δοκιμάσετε να αντιγράψετε και να επαναφέρετε το αρχείο κατάστασής σας χειροκίνητα, πριν αποφασίσετε να επαναφέρετε το MetaMask, ακολουθώντας $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "Γίνεται επαναφορά της βάσης δεδομένων…"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Γίνεται ανάκτηση της βάσης δεδομένων…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "αυτές τις οδηγίες",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "Πώς να ανακτήσετε τη Μυστική Φράση Ανάκτησής σας"
   },
   "stateLogError": {
     "message": "Σφάλμα κατά την ανάκτηση των αρχείων καταγραφών κατάστασης, προσπαθήστε ξανά αργότερα."

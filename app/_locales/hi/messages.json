@@ -10804,11 +10804,22 @@
   "stateCorruptionAreYouSure": {
     "message": "क्या आप वाकई आगे बढ़ना चाहते हैं?"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "आप $1 को फॉलो करके अपने MetaMask को रीसेट करने से पहले, मैन्युअली अपना स्टेट फ़ाइल कॉपी और रिस्टोर कर सकते हैं।",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "डेटाबेस रीसेट किया जा रहा है…"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "डेटाबेस रिस्टोर किया जा रहा है…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "इन निर्देशों",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "अपना सीक्रेट रिकवरी फ्रेज़ कैसे रिकवर करें"
   },
   "stateLogError": {
     "message": "स्टेट लॉग्स पाने में गड़बड़ी हुई, कृपया बाद में फिर से कोशिश करें।"

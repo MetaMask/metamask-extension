@@ -5077,11 +5077,22 @@
   "stateCorruptionAreYouSure": {
     "message": "An bhfuil tú cinnte gur mian leat dul ar aghaidh?"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "Is féidir leat iarracht a dhéanamh do chomhad stáit a chóipeáil agus a athchóiriú de láimh sula ndéanann tú cinneadh MetaMask a athshocrú trí $1 a leanúint.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "Ag athshocrú an bhunachair shonraí…"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Ag athchóiriú bunachar sonraí…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "na treoracha seo",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "Conas do Rún Aisghabhála Frása a aisghabháil"
   },
   "stateLogError": {
     "message": "Earráid agus logaí stádais á n-aisghabháil."

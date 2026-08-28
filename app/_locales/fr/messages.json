@@ -10804,11 +10804,22 @@
   "stateCorruptionAreYouSure": {
     "message": "Voulez-vous vraiment continuer ?"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "Vous pouvez essayer de copier et de restaurer votre fichier d’état manuellement avant de réinitialiser MetaMask en suivant $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "Réinitialisation de la base de données…"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Restauration de la base de données…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "ces instructions ",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "Comment récupérer votre phrase secrète de récupération ?"
   },
   "stateLogError": {
     "message": "Une erreur est survenue lors de la récupération des journaux d’état, veuillez réessayer plus tard."

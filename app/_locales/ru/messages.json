@@ -10804,11 +10804,22 @@
   "stateCorruptionAreYouSure": {
     "message": "Уверены, что хотите продолжить?"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "Прежде чем вы решите сбросить MetaMask, вы можете попробовать скопировать и восстановить файл состояния вручную, следуя $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "Сброс базы данных…"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Восстановление базы данных…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "этим инструкциям",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "Как восстановить вашу секретную фразу для восстановления"
   },
   "stateLogError": {
     "message": "Ошибка при получении журналов состояния, повторите попытку позже."

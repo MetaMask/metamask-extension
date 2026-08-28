@@ -10804,11 +10804,22 @@
   "stateCorruptionAreYouSure": {
     "message": "Sigurado ka bang gusto mong magpatuloy?"
   },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "Puwede mong subukang kopyahin at ibalik ang iyong file ng estado nang manu-mano bago ka magpasyang i-reset ang MetaMask sa pamamagitan ng pagsunod sa $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
   "stateCorruptionResettingDatabase": {
     "message": "Nire-reset ang database…"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Ibinabalik ang database…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "ang mga tagubiling ito",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "Paano makuha ulit ang iyong Lihim na Parirala sa Pagbawi"
   },
   "stateLogError": {
     "message": "Error sa pagbabalik ng mga state log, pakisubukan muli mamaya."
