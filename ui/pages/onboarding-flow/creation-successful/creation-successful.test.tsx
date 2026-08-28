@@ -208,9 +208,7 @@ describe('Wallet Ready Page', () => {
       expect(
         queryByText(messages.manageDefaultSettings.message),
       ).not.toBeInTheDocument();
-      expect(
-        queryByTestId('manage-default-settings'),
-      ).not.toBeInTheDocument();
+      expect(queryByTestId('manage-default-settings')).not.toBeInTheDocument();
     } finally {
       mockUseLocationSearch = previousSearch;
     }
@@ -218,8 +216,7 @@ describe('Wallet Ready Page', () => {
 
   it('shows "Back to wallet" and navigates home from settings SRP backup reminder', async () => {
     const previousSearch = mockUseLocationSearch;
-    mockUseLocationSearch =
-      '?isFromReminder=true&isFromSettingsSecurity=true';
+    mockUseLocationSearch = '?isFromReminder=true&isFromSettingsSecurity=true';
 
     try {
       const mockStore = configureMockStore([thunk])(mockState);
