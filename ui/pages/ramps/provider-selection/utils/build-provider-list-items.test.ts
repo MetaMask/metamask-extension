@@ -26,24 +26,22 @@ const unsupported = {
 const t = (key: string) => key;
 
 describe('buildProviderListItems', () => {
-  it('separates unsupported assets when quotes are not displayed', () => {
+  it('keeps provider order while quotes are unavailable', () => {
     const items = buildProviderListItems({
       providers: [transak, unsupported, moonpay],
       quotes: null,
       quotesLoading: false,
       displayQuotes: false,
-      selectedTokenAssetId: 'eip155:1/slip44:60',
     });
 
     expect(items).toEqual([
       { type: 'provider', provider: transak },
-      { type: 'provider', provider: moonpay },
-      { type: 'separator' },
       { type: 'provider', provider: unsupported },
+      { type: 'provider', provider: moonpay },
     ]);
   });
 
-  it('sorts providers with quotes first using reliability order', () => {
+  it('sorts providers with quotes and hides providers without quotes', () => {
     const quotes: QuotesResponse = {
       success: [
         {
@@ -65,15 +63,31 @@ describe('buildProviderListItems', () => {
       quotes,
       quotesLoading: false,
       displayQuotes: true,
-      selectedTokenAssetId: 'eip155:1/slip44:60',
     });
 
     expect(items).toEqual([
       { type: 'provider', provider: transak },
       { type: 'provider', provider: moonpay },
-      { type: 'separator' },
-      { type: 'provider', provider: unsupported },
     ]);
+  });
+
+  it('returns no providers when no quotes succeed', () => {
+    const items = buildProviderListItems({
+      providers: [transak, moonpay],
+      quotes: {
+        success: [],
+        sorted: [],
+        error: [
+          { provider: transak.id, error: 'Quote unavailable' },
+          { provider: moonpay.id, error: 'Quote unavailable' },
+        ],
+        customActions: [],
+      },
+      quotesLoading: false,
+      displayQuotes: true,
+    });
+
+    expect(items).toEqual([]);
   });
 });
 
@@ -123,10 +137,10 @@ describe('getProviderTag', () => {
         [transak.id],
         t,
       ),
-    ).toBe('rampsPreviouslyUsed');
+    ).toStrictEqual({ label: 'rampsPreviouslyUsed', severity: 'info' });
   });
 
-  it('returns most reliable then best rate', () => {
+  it('returns most reliable then best rate, each with its own severity', () => {
     expect(
       getProviderTag(
         transak.id,
@@ -138,7 +152,7 @@ describe('getProviderTag', () => {
         [],
         t,
       ),
-    ).toBe('rampsMostReliable');
+    ).toStrictEqual({ label: 'rampsMostReliable', severity: 'neutral' });
 
     expect(
       getProviderTag(
@@ -151,6 +165,6 @@ describe('getProviderTag', () => {
         [],
         t,
       ),
-    ).toBe('rampsBestRate');
+    ).toStrictEqual({ label: 'rampsBestRate', severity: 'success' });
   });
 });

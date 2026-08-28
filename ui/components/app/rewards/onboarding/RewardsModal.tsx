@@ -82,7 +82,7 @@ export default function RewardsModal({
 
   return (
     <Modal
-      data-testid="rewards-modal"
+      data-testid="parent-selector-rewards-page"
       isOpen={isOpen}
       onClose={handleClose}
       // qr code hadware wallet uses a popover signing modal, so we don't want to close the rewards modal when clicking to sign a message

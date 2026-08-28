@@ -8,7 +8,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { TRON_CHAIN_ID, mockTronFeatureFlags } from './mocks/common-tron';
 

@@ -3,7 +3,7 @@ import { Browser } from 'selenium-webdriver';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import DeepLink from '../../page-objects/pages/deep-link-page';
+import DeepLink from '../../page-objects/pages/security/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
