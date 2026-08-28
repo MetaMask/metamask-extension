@@ -69,21 +69,21 @@ export const isQrHardwareSignRequest = (
 ): request is QrHardwareSignRequest =>
   Boolean(
     request &&
-    typeof request === 'object' &&
-    'type' in request &&
-    request.type === QrScanRequestType.SIGN &&
-    'request' in request &&
-    request.request &&
-    typeof request.request === 'object' &&
-    'requestId' in request.request &&
-    typeof request.request.requestId === 'string' &&
-    'payload' in request.request &&
-    request.request.payload &&
-    typeof request.request.payload === 'object' &&
-    'type' in request.request.payload &&
-    typeof request.request.payload.type === 'string' &&
-    'cbor' in request.request.payload &&
-    typeof request.request.payload.cbor === 'string',
+      typeof request === 'object' &&
+      'type' in request &&
+      request.type === QrScanRequestType.SIGN &&
+      'request' in request &&
+      request.request &&
+      typeof request.request === 'object' &&
+      'requestId' in request.request &&
+      typeof request.request.requestId === 'string' &&
+      'payload' in request.request &&
+      request.request.payload &&
+      typeof request.request.payload === 'object' &&
+      'type' in request.request.payload &&
+      typeof request.request.payload.type === 'string' &&
+      'cbor' in request.request.payload &&
+      typeof request.request.payload.cbor === 'string',
   );
 
 /**
@@ -410,9 +410,7 @@ export const getFirstStepDescription = ({
     return {
       ...(approvalTokenAddress
         ? {
-            token: t('hardwareToken', [
-              shortenAddress(approvalTokenAddress),
-            ]),
+            token: t('hardwareToken', [shortenAddress(approvalTokenAddress)]),
           }
         : {}),
       spender: t('hardwareSpender', [shortenAddress(spenderAddress)]),

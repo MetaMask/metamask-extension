@@ -429,9 +429,9 @@ describe('useHardwareWalletSignatures', () => {
       expect(result.current.stepList.firstStepDescription).toStrictEqual({
         to: 'To: 0x22222...22222',
       });
-      expect(
-        result.current.stepList.firstStepDescription?.to,
-      ).not.toContain('0xa0b86');
+      expect(result.current.stepList.firstStepDescription?.to).not.toContain(
+        '0xa0b86',
+      );
     });
 
     it('marks the flow failed when the pending approval is gone', async () => {

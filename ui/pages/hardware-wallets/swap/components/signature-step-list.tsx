@@ -134,17 +134,17 @@ const SignatureStepList = ({
           >
             {finalStepLabel}
           </Text>
-            {getSignatureStepDescriptionLines(finalStepDescription).map(
-              (line) => (
-                <Text
-                  key={line}
-                  color={TextColor.TextAlternative}
-                  variant={TextVariant.BodyMd}
-                >
-                  {line}
-                </Text>
-              ),
-            )}
+          {getSignatureStepDescriptionLines(finalStepDescription).map(
+            (line) => (
+              <Text
+                key={line}
+                color={TextColor.TextAlternative}
+                variant={TextVariant.BodyMd}
+              >
+                {line}
+              </Text>
+            ),
+          )}
           {showInlineQrCode &&
             activeQrStep ===
               HardwareWalletSignatureStatus.AwaitingFinalSignature &&
