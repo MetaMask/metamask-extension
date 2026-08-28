@@ -9,9 +9,6 @@ import {
   TextColor,
   FontWeight,
   BoxFlexDirection,
-  BoxAlignItems,
-  BoxJustifyContent,
-  TextAlign,
 } from '@metamask/design-system-react';
 import {
   PERPS_EVENT_PROPERTY,
@@ -56,7 +53,10 @@ type PerpsMarketBalanceActionsProps = {
   onAddFunds?: PerpsBalanceActionHandler;
   /** Callback when Withdraw button is pressed */
   onWithdraw?: PerpsBalanceActionHandler;
-  /** Callback when Learn more button is pressed */
+  /**
+   * Callback when the (empty-balance-only) Learn more button is pressed. When
+   * omitted the Learn more button is hidden even at $0 balance.
+   */
   onLearnMore?: () => void;
 };
 
@@ -83,14 +83,6 @@ const PerpsMarketBalanceActions = ({
 
   // totalBalance is HL accountValue (perps equity, already includes unrealizedPnl) + spot
   const accountValue = parseFloat(totalBalance);
-  const isBalanceEmpty = accountValue === 0;
-
-  // Report where the button was clicked from so PERPS_UI_INTERACTION can be
-  // filtered by surface. The persistent header maps to PERPS_HOME; the
-  // empty-state CTA maps to PERPS_HOME_EMPTY_STATE (mobile parity).
-  const buttonLocation = isBalanceEmpty
-    ? PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME_EMPTY_STATE
-    : PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME;
 
   const handleAddFunds = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -98,14 +90,15 @@ const PerpsMarketBalanceActions = ({
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
       [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
     });
     if (!isEligible) {
       setIsGeoBlockModalOpen(true);
       return;
     }
     invokePerpsBalanceAction(onAddFunds);
-  }, [buttonLocation, isEligible, onAddFunds, track]);
+  }, [isEligible, onAddFunds, track]);
 
   const handleWithdraw = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -113,14 +106,23 @@ const PerpsMarketBalanceActions = ({
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
       [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.WITHDRAW,
-      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
     });
     invokePerpsBalanceAction(onWithdraw);
-  }, [buttonLocation, onWithdraw, track]);
+  }, [onWithdraw, track]);
 
   const handleLearnMore = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
+    });
     onLearnMore?.();
-  }, [onLearnMore]);
+  }, [onLearnMore, track]);
 
   const geoBlockModal = (
     <PerpsGeoBlockModal
@@ -130,92 +132,15 @@ const PerpsMarketBalanceActions = ({
   );
 
   // Show a skeleton while the initial account snapshot is being fetched so we
-  // don't flash the zero-balance empty state before real data arrives.
+  // don't flash the zero-balance state before real data arrives.
   if (isInitialLoading) {
     return <PerpsBalanceActionsSkeleton />;
   }
 
-  // Empty state - no balance. Reuses the `perps-balance-actions` testid so
-  // callers that only need to know the header rendered (empty OR loaded) can
-  // wait on a single selector. The empty-only add-funds CTA keeps a distinct
-  // `-add-funds-empty` testid.
-  if (isBalanceEmpty) {
-    return (
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Center}
-        paddingTop={4}
-        paddingBottom={4}
-        data-testid="perps-balance-actions"
-      >
-        {/* Empty state icon placeholder */}
-        <Box
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-          marginBottom={4}
-          style={{
-            width: '96px',
-            height: '96px',
-            borderRadius: '50%',
-            backgroundColor: 'var(--color-background-alternative)',
-          }}
-        >
-          <Text variant={TextVariant.HeadingLg}>📈</Text>
-        </Box>
-
-        <Box marginBottom={2}>
-          <Text
-            variant={TextVariant.HeadingMd}
-            fontWeight={FontWeight.Medium}
-            textAlign={TextAlign.Center}
-          >
-            {t('perpsTradePerps')}
-          </Text>
-        </Box>
-
-        <Box marginBottom={6}>
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextAlternative}
-            textAlign={TextAlign.Center}
-          >
-            {t('perpsAddFundsDescription')}
-          </Text>
-        </Box>
-
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          gap={3}
-          style={{ width: '100%' }}
-        >
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            isLoading={isAddFundsLoading}
-            onClick={handleAddFunds}
-            disabled={isAddFundsLoading}
-            style={{ width: '100%' }}
-            data-testid="perps-balance-actions-add-funds-empty"
-          >
-            {t('perpsAddFunds')}
-          </Button>
-
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            onClick={handleLearnMore}
-            style={{ width: '100%' }}
-            data-testid="perps-balance-actions-learn-more"
-          >
-            {t('perpsLearnMore')}
-          </Button>
-        </Box>
-        {geoBlockModal}
-      </Box>
-    );
-  }
-
-  // Balance state - has balance
+  // Renders the same balance header regardless of whether the account is
+  // funded — zero-balance accounts still see the large "$0.00" / "$0.00
+  // available" line and the persistent Withdraw + Add funds buttons (mobile
+  // parity). No separate empty-state illustration.
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -244,28 +169,59 @@ const PerpsMarketBalanceActions = ({
 
       {/* Action Buttons */}
       {showActionButtons && (
-        <Box flexDirection={BoxFlexDirection.Row} gap={3} marginTop={4}>
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            onClick={handleWithdraw}
-            style={{ flex: 1 }}
-            data-testid="perps-balance-actions-withdraw"
-          >
-            {t('perpsWithdraw')}
-          </Button>
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={3}
+          marginTop={4}
+          style={{ width: '100%' }}
+        >
+          {/*
+            Withdraw is hidden when there's nothing to withdraw: at $0 balance
+            it's a dead-end action, so Add funds becomes the single full-width
+            primary CTA. Once funded, both buttons share the row 50/50.
+          */}
+          <Box flexDirection={BoxFlexDirection.Row} gap={3}>
+            {accountValue > 0 && (
+              <Button
+                variant={ButtonVariant.Secondary}
+                size={ButtonSize.Lg}
+                onClick={handleWithdraw}
+                style={{ flex: 1 }}
+                data-testid="perps-balance-actions-withdraw"
+              >
+                {t('perpsWithdraw')}
+              </Button>
+            )}
 
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            isLoading={isAddFundsLoading}
-            onClick={handleAddFunds}
-            disabled={isAddFundsLoading}
-            style={{ flex: 1 }}
-            data-testid="perps-balance-actions-add-funds"
-          >
-            {t('perpsAddFunds')}
-          </Button>
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              isLoading={isAddFundsLoading}
+              onClick={handleAddFunds}
+              disabled={isAddFundsLoading}
+              style={{ flex: 1 }}
+              data-testid="perps-balance-actions-add-funds"
+            >
+              {t('perpsAddFunds')}
+            </Button>
+          </Box>
+
+          {/*
+            Learn more is only shown to accounts that haven't been funded yet;
+            it's an educational entry point into the tutorial modal and would
+            be redundant clutter once the user has a balance.
+          */}
+          {accountValue === 0 && onLearnMore && (
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
+              onClick={handleLearnMore}
+              style={{ width: '100%' }}
+              data-testid="perps-balance-actions-learn-more"
+            >
+              {t('perpsLearnMore')}
+            </Button>
+          )}
         </Box>
       )}
       {geoBlockModal}

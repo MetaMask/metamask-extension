@@ -468,6 +468,7 @@ export const PerpsView = () => {
         <PerpsMarketBalanceActions
           onAddFunds={triggerDeposit}
           onWithdraw={triggerWithdraw}
+          onLearnMore={() => dispatch(setTutorialModalOpen(true))}
         />
       </Box>
 

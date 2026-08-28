@@ -129,8 +129,9 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
-   * Clicks the Withdraw button. On Perps Home the button is now persistent in
-   * the balance header (no dropdown to open first).
+   * Clicks the Withdraw button. On Perps Home the button lives in the balance
+   * header (no dropdown to open first) and is only rendered when the account
+   * has a non-zero balance — callers must fund the account first.
    */
   async clickWithdraw(): Promise<void> {
     await this.driver.clickElement(this.balanceActionsWithdraw);
