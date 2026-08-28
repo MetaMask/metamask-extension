@@ -6958,9 +6958,6 @@
   "perpsAddFunds": {
     "message": "Agregar fondos"
   },
-  "perpsAddFundsDescription": {
-    "message": "Agrega fondos para comenzar a operar con contratos perpetuos con apalancamiento"
-  },
   "perpsAddMargin": {
     "message": "Agregar margen"
   },
@@ -7804,12 +7801,6 @@
   "perpsToastUpdateSuccess": {
     "message": "TG/LP actualizados correctamente",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Saldo total"
-  },
-  "perpsTradePerps": {
-    "message": "Opera con perps"
   },
   "perpsTrades": {
     "message": "Operaciones"

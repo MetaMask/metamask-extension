@@ -6958,9 +6958,6 @@
   "perpsAddFunds": {
     "message": "Fon ekle"
   },
-  "perpsAddFundsDescription": {
-    "message": "Sürekli vadeli işlem sözleşmeleri ile kaldıraçlı işlem yapmaya başlamak için fon ekle"
-  },
   "perpsAddMargin": {
     "message": "Marj ekle"
   },
@@ -7804,12 +7801,6 @@
   "perpsToastUpdateSuccess": {
     "message": "KA/ZD başarılı bir şekilde güncellendi",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Toplam bakiye"
-  },
-  "perpsTradePerps": {
-    "message": "Sürekli vadeli işlem sözleşmeleriyle işlem yap"
   },
   "perpsTrades": {
     "message": "İşlemler"

@@ -7199,9 +7199,6 @@
   "perpsAddFunds": {
     "message": "Add funds"
   },
-  "perpsAddFundsDescription": {
-    "message": "Add funds to start trading perpetual contracts with leverage"
-  },
   "perpsAddMargin": {
     "message": "Add margin"
   },
@@ -8063,12 +8060,6 @@
   "perpsToastUpdateSuccess": {
     "message": "TP/SL updated successfully",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Total balance"
-  },
-  "perpsTradePerps": {
-    "message": "Trade perps"
   },
   "perpsTrades": {
     "message": "Trades"

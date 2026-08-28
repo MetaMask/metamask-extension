@@ -6958,9 +6958,6 @@
   "perpsAddFunds": {
     "message": "Nạp tiền"
   },
-  "perpsAddFundsDescription": {
-    "message": "Nạp tiền để bắt đầu giao dịch hợp đồng vĩnh cửu có đòn bẩy"
-  },
   "perpsAddMargin": {
     "message": "Nạp tiền ký quỹ"
   },
@@ -7804,12 +7801,6 @@
   "perpsToastUpdateSuccess": {
     "message": "Đã cập nhật Chốt lời/Cắt lỗ thành công",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Tổng số dư"
-  },
-  "perpsTradePerps": {
-    "message": "Giao dịch hợp đồng vĩnh cửu"
   },
   "perpsTrades": {
     "message": "Giao dịch"

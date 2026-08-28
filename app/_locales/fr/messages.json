@@ -6954,9 +6954,6 @@
   "perpsAddFunds": {
     "message": "Ajouter des fonds"
   },
-  "perpsAddFundsDescription": {
-    "message": "Ajoutez des fonds pour commencer à trader des contrats perpétuels avec effet de levier"
-  },
   "perpsAddMargin": {
     "message": "Ajouter une marge"
   },
@@ -7796,12 +7793,6 @@
   "perpsToastUpdateSuccess": {
     "message": "TP/SL mis à jour avec succès",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Solde total"
-  },
-  "perpsTradePerps": {
-    "message": "Tradez des contrats à terme perpétuels"
   },
   "perpsTrades": {
     "message": "Trades"

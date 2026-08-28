@@ -6954,9 +6954,6 @@
   "perpsAddFunds": {
     "message": "Magdagdag ng pondo"
   },
-  "perpsAddFundsDescription": {
-    "message": "Magdagdag ng mga pondo para simulan ang pagti-trade ng perpetual na mga kontrata na may leverage"
-  },
   "perpsAddMargin": {
     "message": "Magdagdag ng margin"
   },
@@ -7796,12 +7793,6 @@
   "perpsToastUpdateSuccess": {
     "message": "Matagumpay na na-update ang TP/SL",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Kabuuang balanse"
-  },
-  "perpsTradePerps": {
-    "message": "Mag-trade ng perps"
   },
   "perpsTrades": {
     "message": "Mga Trade"

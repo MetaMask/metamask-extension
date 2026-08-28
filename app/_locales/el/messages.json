@@ -6954,9 +6954,6 @@
   "perpsAddFunds": {
     "message": "Προσθήκη κεφαλαίων"
   },
-  "perpsAddFundsDescription": {
-    "message": "Προσθέστε κεφάλαια για να ξεκινήσετε συναλλαγές σε perpetual συμβόλαια με μόχλευση"
-  },
   "perpsAddMargin": {
     "message": "Προσθήκη περιθωρίου"
   },
@@ -7796,12 +7793,6 @@
   "perpsToastUpdateSuccess": {
     "message": "Οι ρυθμίσεις για Λήψη Κέρδους/Περιορισμός Ζημιάς ενημερώθηκαν με επιτυχία",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Συνολικό υπόλοιπο"
-  },
-  "perpsTradePerps": {
-    "message": "Κάντε συναλλαγές με συμβόλαια αορίστου διάρκειας (perps)"
   },
   "perpsTrades": {
     "message": "Συναλλαγές"

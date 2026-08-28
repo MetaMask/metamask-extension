@@ -6958,9 +6958,6 @@
   "perpsAddFunds": {
     "message": "Tambahkan dana"
   },
-  "perpsAddFundsDescription": {
-    "message": "Tambahkan dana untuk mulai memperdagangkan kontrak perpetual dengan leverage"
-  },
   "perpsAddMargin": {
     "message": "Tambahkan margin"
   },
@@ -7804,12 +7801,6 @@
   "perpsToastUpdateSuccess": {
     "message": "TP/SL berhasil diperbarui",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Total saldo"
-  },
-  "perpsTradePerps": {
-    "message": "Perdagangkan perp"
   },
   "perpsTrades": {
     "message": "Perdagangan"

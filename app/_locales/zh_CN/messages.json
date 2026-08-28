@@ -6954,9 +6954,6 @@
   "perpsAddFunds": {
     "message": "充值"
   },
-  "perpsAddFundsDescription": {
-    "message": "添加资金以开始使用杠杆交易永续合约"
-  },
   "perpsAddMargin": {
     "message": "追加保证金"
   },
@@ -7796,12 +7793,6 @@
   "perpsToastUpdateSuccess": {
     "message": "止盈/止损更新成功",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "总余额"
-  },
-  "perpsTradePerps": {
-    "message": "交易永续合约"
   },
   "perpsTrades": {
     "message": "交易"

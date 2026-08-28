@@ -6958,9 +6958,6 @@
   "perpsAddFunds": {
     "message": "자금 추가"
   },
-  "perpsAddFundsDescription": {
-    "message": "레버리지를 이용해 무기한 선물 거래를 시작하려면 자금을 추가하세요"
-  },
   "perpsAddMargin": {
     "message": "마진 추가"
   },
@@ -7804,12 +7801,6 @@
   "perpsToastUpdateSuccess": {
     "message": "익절/손절이 업데이트되었습니다",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "총 잔액"
-  },
-  "perpsTradePerps": {
-    "message": "무기한 선물 거래하기"
   },
   "perpsTrades": {
     "message": "거래하기"
