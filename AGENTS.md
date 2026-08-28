@@ -57,9 +57,9 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 Read these files for detailed coding standards:
 
 - Controller patterns: `.cursor/rules/mms-controller-guidelines/RULE.md`
-- Unit testing standards: `.cursor/rules/mms-unit-testing/RULE.md`
-- E2E testing standards: `./test/e2e/AGENTS.md`
-- E2E test creation workflow (Agent Skill): `.agents/skills/mms-e2e-testing/SKILL.md`
+- Testing (unit + E2E create/maintain): `.cursor/rules/mms-extension-testing/RULE.md` — primary entrypoint; see `knowledge/extension-testing-layers.md`
+- E2E testing standards (repo index): `./test/e2e/AGENTS.md`
+- E2E create/maintain (nested refs): `.agents/skills/mms-extension-testing/SKILL.md` → `references/e2e.md`
 - CI workflows: `.github/AGENTS.md`
 - Front-end performance:
   - `.cursor/rules/mms-perf-rendering/RULE.md` (rendering performance - start here)
@@ -187,7 +187,7 @@ yarn test:e2e:benchmark    # Performance benchmarks
 - Unit tests should be colocated with source files (`.test.ts`/`.test.tsx`)
 - Always create a test build before running E2E tests
 - Use `--leave-running` to debug failed E2E tests
-- See `.cursor/rules/mms-unit-testing/RULE.md` for testing standards
+- See `.cursor/rules/mms-extension-testing/RULE.md` for testing standards
 
 ### Linting & Formatting
 
@@ -305,7 +305,7 @@ yarn test:e2e:single test/e2e/tests/new-test.spec.js --browser=chrome
 # 1. Identify file type and read relevant guidelines
 # - Controller? Read .cursor/rules/mms-controller-guidelines/RULE.md
 # - React component? Read .cursor/rules/mms-coding-guidelines/RULE.md
-# - Test? Read .cursor/rules/mms-unit-testing/RULE.md
+# - Test? Read .cursor/rules/mms-extension-testing/RULE.md
 
 # 2. Make changes following guidelines
 
@@ -716,7 +716,7 @@ metamask-extension/
 - Unit tests colocated with source files (`.test.ts`)
 - Jest for unit tests, Playwright for E2E
 - Test files organized with `describe` blocks by method/function
-- See `.cursor/rules/mms-unit-testing/RULE.md` for testing patterns
+- See `.cursor/rules/mms-extension-testing/RULE.md` for testing patterns
 
 ### File Modification Patterns
 
@@ -984,7 +984,7 @@ describe('TokensController', () => {
 });
 ```
 
-**Detailed Guidelines:** See `.cursor/rules/mms-unit-testing/RULE.md`
+**Detailed Guidelines:** See `.cursor/rules/mms-extension-testing/RULE.md`
 
 ### E2E Tests
 
@@ -1693,8 +1693,8 @@ Performance Checks (React Components):
 ### Coding Guidelines
 
 - **Controller Patterns:** [.cursor/rules/mms-controller-guidelines/RULE.md](./.cursor/rules/mms-controller-guidelines/RULE.md)
-- **Unit Testing:** [.cursor/rules/mms-unit-testing/RULE.md](./.cursor/rules/mms-unit-testing/RULE.md)
-- **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
+- **Unit Testing:** [.cursor/rules/mms-extension-testing/RULE.md](./.cursor/rules/mms-extension-testing/RULE.md) → `references/unit.md`
+- **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md) and [.cursor/rules/mms-extension-testing/RULE.md](./.cursor/rules/mms-extension-testing/RULE.md) → `references/e2e.md`
 - **E2E CI Decision Tree:** [.github/guidelines/E2E_DECISION_TREE.md](./.github/guidelines/E2E_DECISION_TREE.md)
 - **E2E Deprecated Patterns:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
 - **CI Workflows:** [.github/AGENTS.md](./.github/AGENTS.md)
@@ -1753,22 +1753,3 @@ This section captures non-obvious, durable caveats for running this repo inside 
 ### E2E tests
 
 - Selenium-based E2E (`yarn test:e2e:*`) require a **test build** first (`yarn build:test` or the faster `yarn start:test`) plus a browser + driver; unit tests (`yarn test:unit`) and lint do not.
-
----
-
-## Learned User Preferences
-
-- Prefer extending `prepareCustomNetwork` and `token-price-mock-catalog.ts` over adding new per-chain E2E helpers. Specs should call the harness only.
-
-## Learned Workspace Facts
-
-- E2E mockttp mock server port **8000 is hardcoded** in `test/e2e/helpers.js` with no env override. If port 8000 is occupied, E2E fails immediately with "Failed to set up mock server" — free the port before running E2E.
-- `yarn build:test` **exits 0 even when webpack compilation fails** (e.g. "compiled with 5 errors"). Do not rely on exit code; grep the build output for `compiled with` to detect failures.
-- The default `tokens.api.cx.metamask.io/v3/assets` mock in `mock-e2e.js` only knows mainnet and localhost native ETH — leave it that way. Custom-network E2E specs should use `prepareCustomNetwork` in `test/e2e/helpers/custom-network-harness.ts` rather than adding a per-chain helper. Specs should not import the catalog; the harness registers Token/Price mocks. `mockPriceApi` stays for mainnet ETH.
-- Native asset CAIP IDs in fixture `nativeAssetIdentifiers` can differ from the ID the Tokens tab requests. Catalog mocks must prefix-match `eip155:<chainId>/` (see `uiNativeAssetId` and `test/e2e/CONTEXT.md`). For unsupported-cryptocurrency coverage, use the `unsupportedPrice` scenario — quoted price mocks hide that path.
-- `unifiedEvmAccountsApiBalances.mainnetAdditionalBalances` only seeds ERC-20 balances for chain 1 (mainnet). For non-mainnet ERC-20 balances, use fixture-seeded `AssetsController` state instead.
-- The `nativeAssetIdentifiers` type requires **literal template strings**, not interpolated values — interpolated strings widen to `string` and fail `tsc`. Spell out CAIP IDs as literals.
-- `withEnabledNetworks` **replaces** the enabled-networks map entirely (not a merge), while `withNetworkEnablementController` merges. When enabling a custom network via `withEnabledNetworks`, include every network you want enabled, not just the new one.
-- `withNetworkRpcUrlOnLocalhost` **throws** if the target chain is not already in the default fixture. For chains absent from the default fixture, `prepareCustomNetwork` injects via `withNetworkControllerOnCustomNetwork`.
-- Two `always()` handlers on the same URL in mockttp cause the first to match every time and silently drop the second. `mockTokenAndPriceApis` in `token-price-mock-catalog.ts` registers one handler per URL; do not add a second `always()` on the same Token/Price endpoint.
-- E2E network UI page objects live under `test/e2e/page-objects/pages/networks/` (e.g. `network-filter.ts`, `select-network-modal.ts`) — there is **no** `page-objects/pages/network-manager` module. To open the network picker use `NetworkFilter`; to interact with the dropdown use `SelectNetworkModal` / `NetworkId`.
