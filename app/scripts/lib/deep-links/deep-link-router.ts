@@ -286,7 +286,9 @@ export class DeepLinkRouter extends EventEmitter<{
         });
 
         if (shouldShowInterstitial) {
-          redirectUrl = loadingPageUrl;
+          // Settle on the same interstitial URL without the temporary request
+          // ID. This hash-only navigation preserves the UI's pre-parse task.
+          redirectUrl = this.getInterstitialURL(url);
         } else if ('redirectTo' in parsed.destination) {
           redirectUrl = parsed.destination.redirectTo.toString();
         } else {

@@ -72,11 +72,16 @@ const TEST_REQUEST_ID = '00000000-0000-4000-8000-000000000000';
 const setId = jest.fn();
 const removeId = jest.fn();
 
-function getInterstitialUrl(urlPathAndQuery: string): string {
+function getInterstitialUrl(
+  urlPathAndQuery: string,
+  requestId: string | null = TEST_REQUEST_ID,
+): string {
   const params = new URLSearchParams({
     u: urlPathAndQuery,
-    id: TEST_REQUEST_ID,
   });
+  if (requestId) {
+    params.set('id', requestId);
+  }
   return `chrome-extension://extension-id/home.html#link?${params}`;
 }
 
@@ -187,7 +192,10 @@ describe('DeepLinkRouter', () => {
       await flushPromises();
 
       expect(parseMock).toHaveBeenCalledTimes(1);
-      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenCalledTimes(2);
+      expect(browser.tabs.update).toHaveBeenLastCalledWith(1, {
+        url: getInterstitialUrl('/buy', null),
+      });
       expect(setId).toHaveBeenCalledWith(TEST_REQUEST_ID);
       expect(removeId).toHaveBeenCalledWith(TEST_REQUEST_ID);
     });
@@ -297,7 +305,10 @@ describe('DeepLinkRouter', () => {
 
       await flushPromises();
 
-      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenCalledTimes(2);
+      expect(browser.tabs.update).toHaveBeenLastCalledWith(1, {
+        url: getInterstitialUrl('/buy', null),
+      });
       expect(removeId).toHaveBeenCalledWith(TEST_REQUEST_ID);
     });
 
@@ -315,7 +326,7 @@ describe('DeepLinkRouter', () => {
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
-        expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+        expect(browser.tabs.update).toHaveBeenCalledTimes(2);
         // Manifest v2 should return a blocking response (cancel the request),
         expect(response).toEqual(mockIsManifestV3() ? {} : { cancel: true });
       },

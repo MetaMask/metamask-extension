@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import { Checkbox } from '@metamask/design-system-react';
@@ -219,21 +219,8 @@ function ensurePreParseTask(
   return task;
 }
 
-async function verifyDeepLinkSignature(
-  urlPathAndQuery: string,
-): Promise<boolean> {
-  try {
-    const url = new URL(`https://${DEEP_LINK_HOST}${urlPathAndQuery}`);
-    return (await verify(url)) === VALID;
-  } catch {
-    // A malformed URL should still render the background-provided 404 state.
-    return false;
-  }
-}
-
 export const DeepLink = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
   const requestId = new URLSearchParams(location.search).get('id');
@@ -255,23 +242,6 @@ export const DeepLink = () => {
   const [skipDeepLinkInterstitialChecked, setSkipDeepLinkInterstitialChecked] =
     useState(skipDeepLinkInterstitial);
   const preParseTaskRef = useRef<PreParseTask | null>(null);
-
-  useEffect(() => {
-    if (!requestId || isPendingDeepLinkRequest) {
-      return;
-    }
-
-    const params = new URLSearchParams(location.search);
-    params.delete('id');
-    navigate(
-      {
-        pathname: location.pathname,
-        search: params.size > 0 ? `?${params.toString()}` : '',
-        hash: location.hash,
-      },
-      { replace: true },
-    );
-  }, [isPendingDeepLinkRequest, location, navigate, requestId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -308,48 +278,22 @@ export const DeepLink = () => {
         return;
       }
 
-      if (errorCode) {
-        if (errorCode !== '404') {
-          setViewState(withViewKey(buildMissingUrlState(t), viewKey));
-          return;
-        }
-
-        // Match the existing behavior by showing the 404 immediately, then
-        // adding the update link after signature verification completes.
-        setViewState(withViewKey(build404State(t, false), viewKey));
-
-        const existingTask = preParseTaskRef.current;
-
-        let signed: boolean | undefined;
-
-        if (existingTask?.urlPathAndQuery === urlPathAndQuery) {
-          const result = await existingTask.promise;
-
-          if (cancelled || preParseTaskRef.current !== existingTask) {
-            return;
-          }
-
-          signed = result.kind === 'error' ? undefined : result.signed;
-        }
-
-        // A direct 404 does not need to run the full parser. This is also a
-        // fallback for the uncommon case where the preparse itself failed.
-        signed ??= await verifyDeepLinkSignature(urlPathAndQuery);
-
-        if (cancelled) {
-          return;
-        }
-
-        if (signed) {
-          setViewState(withViewKey(build404State(t, true), viewKey));
-        }
-        return;
-      }
-
       const task = ensurePreParseTask(preParseTaskRef, urlPathAndQuery);
       const result = await task.promise;
 
       if (cancelled || preParseTaskRef.current !== task) {
+        return;
+      }
+
+      if (errorCode) {
+        setViewState(
+          withViewKey(
+            errorCode === '404'
+              ? build404State(t, result.kind !== 'error' && result.signed)
+              : buildMissingUrlState(t),
+            viewKey,
+          ),
+        );
         return;
       }
 
