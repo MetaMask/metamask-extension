@@ -1,6 +1,6 @@
 import { until } from 'selenium-webdriver';
-import { Driver, PAGES } from '../../webdriver/driver';
-import { WINDOW_TITLES } from '../../constants';
+import { Driver, PAGES } from '../../../webdriver/driver';
+import { WINDOW_TITLES } from '../../../constants';
 
 /**
  * Fatal startup failure UI when MetaMask cannot boot normally.
