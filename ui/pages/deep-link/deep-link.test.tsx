@@ -3,7 +3,10 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { createDeferredPromise } from '@metamask/utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { parse } from '../../../shared/lib/deep-links/parse';
+import {
+  type ParsedDeepLink,
+  parse,
+} from '../../../shared/lib/deep-links/parse';
 import { verify } from '../../../shared/lib/deep-links/verify';
 import { DeepLink } from './deep-link';
 
@@ -47,15 +50,39 @@ const mockVerify = jest.mocked(verify);
 const mockNavigate = jest.fn();
 let pendingDeepLinkRequestIds: string[] = [];
 
+function createLocation(search: string): ReturnType<typeof useLocation> {
+  return {
+    pathname: '/link',
+    search,
+    hash: '',
+    key: '',
+    state: undefined,
+  };
+}
+
+function createParsedDeepLink(
+  path: string,
+  query = '',
+): ParsedDeepLink {
+  return {
+    destination: {
+      path,
+      query: new URLSearchParams(query),
+    },
+    signature: 'valid',
+    route: {
+      getTitle: () => 'deepLink_destination',
+    },
+  } as unknown as ParsedDeepLink;
+}
+
 describe('DeepLink', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     pendingDeepLinkRequestIds = [];
     mockUseNavigate.mockReturnValue(mockNavigate);
     mockUseSelector.mockImplementation((selector) =>
-      selector({
-        metamask: { pendingDeepLinkRequestIds },
-      } as never),
+      selector({ metamask: { pendingDeepLinkRequestIds } } as never),
     );
     globalThis.platform = {
       getExtensionURL: (path: string, query?: string | null) =>
@@ -67,24 +94,10 @@ describe('DeepLink', () => {
 
   it('stays in loading-only mode while pre-parsing for fast interstitial flip', async () => {
     pendingDeepLinkRequestIds = ['request-1'];
-    mockUseLocation.mockReturnValue({
-      pathname: '/link',
-      search: '?u=%2Fbuy&id=request-1',
-      hash: '',
-      key: '',
-      state: undefined,
-    } as ReturnType<typeof useLocation>);
-
-    mockParse.mockResolvedValue({
-      destination: {
-        path: '/buy',
-        query: new URLSearchParams(),
-      },
-      signature: 'valid',
-      route: {
-        getTitle: () => 'deepLink_theBuyPage',
-      },
-    } as never);
+    mockUseLocation.mockReturnValue(
+      createLocation('?u=%2Fbuy&id=request-1'),
+    );
+    mockParse.mockResolvedValue(createParsedDeepLink('/buy'));
 
     render(<DeepLink />);
 
@@ -101,27 +114,8 @@ describe('DeepLink', () => {
   it('reuses pre-parsed result when mode flips from loading to interstitial for the same u', async () => {
     pendingDeepLinkRequestIds = ['request-1'];
     const currentSearch = '?u=%2Fbuy%3Famount%3D1&id=request-1';
-    mockUseLocation.mockImplementation(
-      () =>
-        ({
-          pathname: '/link',
-          search: currentSearch,
-          hash: '',
-          key: '',
-          state: undefined,
-        }) as ReturnType<typeof useLocation>,
-    );
-
-    mockParse.mockResolvedValue({
-      destination: {
-        path: '/buy',
-        query: new URLSearchParams('amount=1'),
-      },
-      signature: 'valid',
-      route: {
-        getTitle: () => 'deepLink_theBuyPage',
-      },
-    } as never);
+    mockUseLocation.mockImplementation(() => createLocation(currentSearch));
+    mockParse.mockResolvedValue(createParsedDeepLink('/buy', 'amount=1'));
 
     const { rerender } = render(<DeepLink />);
 
@@ -150,24 +144,10 @@ describe('DeepLink', () => {
   });
 
   it('parses and renders interstitial content when mode is not loading', async () => {
-    mockUseLocation.mockReturnValue({
-      pathname: '/link',
-      search: '?u=%2Fbuy%3Famount%3D1',
-      hash: '',
-      key: '',
-      state: undefined,
-    } as ReturnType<typeof useLocation>);
-
-    mockParse.mockResolvedValue({
-      destination: {
-        path: '/buy',
-        query: new URLSearchParams('amount=1'),
-      },
-      signature: 'valid',
-      route: {
-        getTitle: () => 'deepLink_theBuyPage',
-      },
-    } as never);
+    mockUseLocation.mockReturnValue(
+      createLocation('?u=%2Fbuy%3Famount%3D1'),
+    );
+    mockParse.mockResolvedValue(createParsedDeepLink('/buy', 'amount=1'));
 
     render(<DeepLink />);
 
@@ -182,27 +162,8 @@ describe('DeepLink', () => {
 
   it('hides stale interstitial content while a different URL is parsed', async () => {
     let currentSearch = '?u=%2Fbuy';
-    mockUseLocation.mockImplementation(
-      () =>
-        ({
-          pathname: '/link',
-          search: currentSearch,
-          hash: '',
-          key: '',
-          state: undefined,
-        }) as ReturnType<typeof useLocation>,
-    );
-
-    mockParse.mockResolvedValueOnce({
-      destination: {
-        path: '/buy',
-        query: new URLSearchParams(),
-      },
-      signature: 'valid',
-      route: {
-        getTitle: () => 'deepLink_theBuyPage',
-      },
-    } as never);
+    mockUseLocation.mockImplementation(() => createLocation(currentSearch));
+    mockParse.mockResolvedValueOnce(createParsedDeepLink('/buy'));
 
     const { rerender } = render(<DeepLink />);
 
@@ -224,16 +185,7 @@ describe('DeepLink', () => {
       screen.queryByTestId('deep-link-continue-button'),
     ).not.toBeInTheDocument();
 
-    nextParse.resolve({
-      destination: {
-        path: '/home',
-        query: new URLSearchParams(),
-      },
-      signature: 'valid',
-      route: {
-        getTitle: () => 'deepLink_theHomePage',
-      },
-    } as never);
+    nextParse.resolve(createParsedDeepLink('/home'));
 
     await waitFor(() => {
       expect(

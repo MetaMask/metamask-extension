@@ -4,12 +4,7 @@ import DeepLink from '../../page-objects/pages/security/deep-link-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import { withFixtures } from '../../helpers';
-import {
-  bytesToB64,
-  generateECDSAKeyPair,
-  getConfig,
-  signDeepLink,
-} from './helpers';
+import { getConfig } from './helpers';
 
 const SIMULATED_VERIFICATION_DELAY = 30_000;
 
@@ -21,13 +16,8 @@ pwTest.describe('Deep Link - Loading Redirect', () => {
       {},
       testInfo,
     ) => {
-      const keyPair = await generateECDSAKeyPair();
-      const deepLinkPublicKey = bytesToB64(
-        await crypto.subtle.exportKey('raw', keyPair.publicKey),
-      );
       const config = await getConfig({
         title: testInfo.titlePath.join(' '),
-        deepLinkPublicKey,
         manifestFlags: {
           testing: {
             simulatedDeepLinkVerificationDelay: SIMULATED_VERIFICATION_DELAY,
@@ -47,19 +37,16 @@ pwTest.describe('Deep Link - Loading Redirect', () => {
           await loginPage.loginToHomepage();
           await new HomePage(driver).checkPageIsLoaded();
 
-          const signedUrl = await signDeepLink(
-            keyPair.privateKey,
-            'https://link.metamask.io/home',
-          );
+          const deepLinkUrl = 'https://link.metamask.io/home';
 
           // Firefox cancels the intercepted public navigation after the
           // synchronous tabs.update starts loading the extension page. The
           // resulting NS_ERROR_ABORT is expected; the loading page below is
           // the authoritative outcome.
           const navigationPromise = driver
-            .openNewURL(signedUrl)
+            .openNewURL(deepLinkUrl)
             .catch(() => undefined);
-          await new DeepLink(driver).checkLoadingPageWasOpened(signedUrl);
+          await new DeepLink(driver).checkLoadingPageWasOpened(deepLinkUrl);
           await navigationPromise;
         },
       );

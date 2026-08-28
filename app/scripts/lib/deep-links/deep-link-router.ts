@@ -16,6 +16,10 @@ import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 
+// `routes.ts` requires routes to have a leading slash, but the UI redirects
+// them to the non-slashed version. Use that version here to skip the redirect.
+const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(/^\//u, '');
+
 export type Options = {
   getExtensionURL: ExtensionPlatform['getExtensionURL'];
   getState: MetamaskController['getState'];
@@ -81,7 +85,10 @@ export class DeepLinkRouter extends EventEmitter<{
     if (id) {
       search.set('id', id);
     }
-    return this.getExtensionURL(DEEP_LINK_ROUTE, search.toString());
+    return this.getExtensionURL(
+      TRIMMED_DEEP_LINK_ROUTE,
+      search.toString(),
+    );
   }
 
   /**
@@ -95,7 +102,7 @@ export class DeepLinkRouter extends EventEmitter<{
     if (originalUrl) {
       params.set('u', this.formatUrlForInterstitialPage(originalUrl));
     }
-    return this.getExtensionURL(DEEP_LINK_ROUTE, params.toString());
+    return this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, params.toString());
   }
 
   /**
@@ -233,28 +240,26 @@ export class DeepLinkRouter extends EventEmitter<{
     requestOrigin?: string,
   ): Promise<void> {
     let redirectUrl: string | undefined;
-    let url: URL | undefined;
-    let parsed: ParsedDeepLink | false = false;
-    let id: string | undefined;
-    let interstitialPageRedirect:
+    let requestId: string | undefined;
+    let loadingPageRedirect:
       | { promise: Promise<void>; url: string }
       | undefined;
     try {
-      url = new URL(urlStr);
+      const url = new URL(urlStr);
 
-      id = crypto.randomUUID();
-      this.setId(id);
+      requestId = crypto.randomUUID();
+      this.setId(requestId);
 
-      const interstitialPageUrl = this.getInterstitialURL(url, id);
+      const loadingPageUrl = this.getInterstitialURL(url, requestId);
 
       // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
       // In both MV2 and MV3, synchronously initiate the extension-owned redirect
       // before parsing or signature verification. Do not add awaited work before
       // this call or move it below `parse`. `redirectTab` must call
       // `browser.tabs.update` before it awaits.
-      interstitialPageRedirect = {
-        promise: this.redirectTab(tabId, interstitialPageUrl),
-        url: interstitialPageUrl,
+      loadingPageRedirect = {
+        promise: this.redirectTab(tabId, loadingPageUrl),
+        url: loadingPageUrl,
       };
 
       if (process.env.IN_TEST) {
@@ -267,7 +272,7 @@ export class DeepLinkRouter extends EventEmitter<{
         }
       }
 
-      parsed = await parse(url);
+      const parsed = await parse(url);
       if (parsed) {
         this.emit('navigate', { url, parsed });
 
@@ -284,7 +289,7 @@ export class DeepLinkRouter extends EventEmitter<{
         });
 
         if (shouldShowInterstitial) {
-          redirectUrl = this.getInterstitialURL(url, id);
+          redirectUrl = loadingPageUrl;
         } else if ('redirectTo' in parsed.destination) {
           redirectUrl = parsed.destination.redirectTo.toString();
         } else {
@@ -302,20 +307,23 @@ export class DeepLinkRouter extends EventEmitter<{
       this.emit('error', error);
       // we got a route we can't handle for some reason, and we can't just
       // swallow it, so we just show the 404 error page.
-      parsed = false;
       redirectUrl = this.get404ErrorURL();
     } finally {
-      if (id) {
-        this.removeId(id);
+      if (requestId) {
+        this.removeId(requestId);
       }
     }
 
-    if (redirectUrl && interstitialPageRedirect?.url !== redirectUrl) {
-      // await to ensure a fast verification result cannot make the final
-      // navigation finish before the loading-page navigation, resulting in a race.
-      await interstitialPageRedirect?.promise;
-      this.redirectTab(tabId, redirectUrl);
+    if (!redirectUrl || loadingPageRedirect?.url === redirectUrl) {
+      return;
     }
+
+    // Ensure a fast verification result cannot make the final navigation
+    // finish before the loading-page navigation, resulting in a race.
+    if (loadingPageRedirect) {
+      await loadingPageRedirect.promise;
+    }
+    this.redirectTab(tabId, redirectUrl);
   }
 
   /**

@@ -69,6 +69,16 @@ const routesProtectedByInterstitial = [
 ] as const;
 
 const TEST_REQUEST_ID = '00000000-0000-4000-8000-000000000000';
+const setId = jest.fn();
+const removeId = jest.fn();
+
+function getInterstitialUrl(urlPathAndQuery: string): string {
+  const params = new URLSearchParams({
+    u: urlPathAndQuery,
+    id: TEST_REQUEST_ID,
+  });
+  return `chrome-extension://extension-id/home.html#link?${params}`;
+}
 
 const protectedRouteTestCases = routesProtectedByInterstitial.flatMap((route) =>
   (['missing', 'invalid'] as const).map((signature) => ({
@@ -77,15 +87,18 @@ const protectedRouteTestCases = routesProtectedByInterstitial.flatMap((route) =>
   })),
 );
 
-const setId = jest.fn();
-const removeId = jest.fn();
+function handleRequest(
+  details: browser.WebRequest.OnBeforeRequestDetailsType,
+): browser.WebRequest.BlockingResponse | undefined {
+  return onBeforeRequest?.(details) as
+    | browser.WebRequest.BlockingResponse
+    | undefined;
+}
 
 async function handleRequestAndWaitForNavigation(
   details: browser.WebRequest.OnBeforeRequestDetailsType,
 ): Promise<browser.WebRequest.BlockingResponse | undefined> {
-  const response = onBeforeRequest?.(details) as
-    | browser.WebRequest.BlockingResponse
-    | undefined;
+  const response = handleRequest(details);
 
   await flushPromises();
 
@@ -115,7 +128,7 @@ describe('DeepLinkRouter', () => {
     router.uninstall();
     onBeforeRequest = null;
     jest.clearAllMocks();
-    randomUuidSpy?.mockRestore();
+    randomUuidSpy.mockRestore();
     (
       browser.tabs.update as jest.MockedFunction<typeof browser.tabs.update>
     ).mockReset();
@@ -153,34 +166,30 @@ describe('DeepLinkRouter', () => {
     });
 
     it('redirects MV3 requests to an extension page before verification finishes', async () => {
-      jest.useFakeTimers();
       const verification = createDeferredPromise<ParsedDeepLink | false>();
       parseMock.mockReturnValue(verification.promise);
 
-      try {
-        const response = onBeforeRequest?.({
-          tabId: 1,
-          url: 'https://link.metamask.io/buy',
-        } as browser.WebRequest.OnBeforeRequestDetailsType);
+      const response = handleRequest({
+        tabId: 1,
+        url: 'https://link.metamask.io/buy',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
 
-        expect(response).toEqual({});
-        expect(browser.tabs.update).toHaveBeenCalledTimes(1);
-        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: `chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=${TEST_REQUEST_ID}`,
-        });
+      expect(response).toEqual({});
+      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+        url: getInterstitialUrl('/buy'),
+      });
 
-        verification.resolve({
-          destination: {},
-          signature: 'invalid',
-        } as ParsedDeepLink);
+      verification.resolve({
+        destination: {},
+        signature: 'invalid',
+      } as ParsedDeepLink);
+      await flushPromises();
 
-        await jest.advanceTimersByTimeAsync(3000);
-
-        expect(parseMock).toHaveBeenCalledTimes(1);
-        expect(browser.tabs.update).toHaveBeenCalledTimes(1);
-      } finally {
-        jest.useRealTimers();
-      }
+      expect(parseMock).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+      expect(setId).toHaveBeenCalledWith(TEST_REQUEST_ID);
+      expect(removeId).toHaveBeenCalledWith(TEST_REQUEST_ID);
     });
 
     it('emits navigation details after parsing succeeds', async () => {
@@ -222,7 +231,7 @@ describe('DeepLinkRouter', () => {
         signature: 'valid',
       } as ParsedDeepLink);
 
-      const response = onBeforeRequest?.({
+      const response = handleRequest({
         tabId: 1,
         url: 'https://link.metamask.io/buy',
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -230,7 +239,7 @@ describe('DeepLinkRouter', () => {
       await Promise.resolve();
       expect(browser.tabs.update).toHaveBeenCalledTimes(1);
       expect(browser.tabs.update).toHaveBeenNthCalledWith(1, 1, {
-        url: `chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=${TEST_REQUEST_ID}`,
+        url: getInterstitialUrl('/buy'),
       });
 
       loadingPageRedirect.resolve({} as browser.Tabs.Tab);
@@ -249,7 +258,7 @@ describe('DeepLinkRouter', () => {
       const verification = createDeferredPromise<ParsedDeepLink | false>();
       parseMock.mockReturnValue(verification.promise);
 
-      const response = onBeforeRequest?.({
+      const response = handleRequest({
         tabId: 1,
         url: 'https://link.metamask.io/buy',
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -269,14 +278,14 @@ describe('DeepLinkRouter', () => {
       const verification = createDeferredPromise<ParsedDeepLink | false>();
       parseMock.mockReturnValue(verification.promise);
 
-      onBeforeRequest?.({
+      handleRequest({
         tabId: 1,
         url: 'https://link.metamask.io/buy',
       } as browser.WebRequest.OnBeforeRequestDetailsType);
 
       expect(browser.tabs.update).toHaveBeenCalledTimes(1);
       expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-        url: `chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=${TEST_REQUEST_ID}`,
+        url: getInterstitialUrl('/buy'),
       });
       expect(setId).toHaveBeenCalledWith(TEST_REQUEST_ID);
       expect(removeId).not.toHaveBeenCalled();
@@ -327,7 +336,7 @@ describe('DeepLinkRouter', () => {
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: `chrome-extension://extension-id/home.html#/link?u=%2Fexternal-route%3Fquery%3Dparam&id=${TEST_REQUEST_ID}`,
+          url: getInterstitialUrl('/external-route?query=param'),
         });
       },
     );
@@ -354,9 +363,7 @@ describe('DeepLinkRouter', () => {
         } as browser.WebRequest.OnBeforeRequestDetailsType);
 
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: `chrome-extension://extension-id/home.html#/link?${new URLSearchParams(
-            { u: route, id: TEST_REQUEST_ID },
-          ).toString()}`,
+          url: getInterstitialUrl(route),
         });
       },
     );
@@ -435,7 +442,7 @@ describe('DeepLinkRouter', () => {
           requestDetails: arrangeRequestDetails({
             initiator: 'https://evil.com',
           }),
-          expectedUrl: `${EXTENSION_HOME}#/link?u=%2Ftest-route&id=${TEST_REQUEST_ID}`,
+          expectedUrl: getInterstitialUrl('/test-route'),
         },
       ];
 
@@ -492,13 +499,12 @@ describe('DeepLinkRouter', () => {
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         // it should NOT go directly to the internal route, but still be shown the interstitial
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: `chrome-extension://extension-id/home.html#/link?u=%2Fexternal-route%3Fquery%3Dparam&id=${TEST_REQUEST_ID}`,
+          url: getInterstitialUrl('/external-route?query=param'),
         });
       });
     });
 
     describe('unsigned asset routes', () => {
-      const EXTENSION_HOME = 'chrome-extension://extension-id/home.html';
       const WARB_ASSET_ID =
         'eip155:1/erc20:0xb047c8032b99841713b8e3872f06cf32beb27b82';
       const DAI_ASSET_ID =
@@ -518,7 +524,9 @@ describe('DeepLinkRouter', () => {
             },
             route: { pathname: '/asset' },
           } as ParsedDeepLink,
-          expectedUrl: `${EXTENSION_HOME}#/link?u=%2Fasset%3FassetId%3D${encodeURIComponent(encodedAssetId)}`,
+          expectedUrl: getInterstitialUrl(
+            `/asset?assetId=${encodedAssetId}`,
+          ),
         };
       };
 
@@ -550,16 +558,16 @@ describe('DeepLinkRouter', () => {
             url: testCase.url,
           } as browser.WebRequest.OnBeforeRequestDetailsType);
           expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-            url: `${testCase.expectedUrl}&id=${TEST_REQUEST_ID}`,
+            url: testCase.expectedUrl,
           });
         },
       );
     });
 
-    it('should handle TAB_ID_NONE and not attempt to parse or navigate', async () => {
+    it('should handle TAB_ID_NONE and not attempt to parse or navigate', () => {
       const url = `about:blank`;
       const tabId = browser.tabs.TAB_ID_NONE;
-      const response = await handleRequestAndWaitForNavigation({
+      const response = handleRequest({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -578,20 +586,19 @@ describe('DeepLinkRouter', () => {
       expect(browser.tabs.update).not.toHaveBeenCalled();
     });
 
-    it('should handle unparsable URLs and redirect to error page without u param', async () => {
+    it('should handle unparsable URLs and redirect to error page without u param', () => {
       const url = `something unparseable`;
       const tabId = 1;
-      parseMock.mockResolvedValue(false);
       const mockError = jest.fn();
       router.on('error', mockError);
-      const response = await handleRequestAndWaitForNavigation({
+      const response = handleRequest({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(parseMock).not.toHaveBeenCalled();
       expect(response).toEqual({});
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#/link?errorCode=404',
+        url: 'chrome-extension://extension-id/home.html#link?errorCode=404',
       });
       expect(mockError).toHaveBeenCalledTimes(1);
       expect(mockError.mock.calls[0][0].message).toBe('Invalid URL');
@@ -611,7 +618,7 @@ describe('DeepLinkRouter', () => {
       router.on('error', mockErrorCallback);
 
       const error = new Error('Test error');
-      (browser.tabs.update as jest.Mock).mockRejectedValue(error);
+      (browser.tabs.update as jest.Mock).mockRejectedValueOnce(error);
       await handleRequestAndWaitForNavigation({
         tabId,
         url,
@@ -662,7 +669,7 @@ describe('DeepLinkRouter', () => {
       } as browser.WebRequest.OnBeforeRequestDetailsType);
 
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: `chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=${TEST_REQUEST_ID}`,
+        url: getInterstitialUrl('/buy'),
       });
     });
 
@@ -707,7 +714,7 @@ describe('DeepLinkRouter', () => {
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#/link?errorCode=404&u=%2Fnonexistent-route',
+        url: 'chrome-extension://extension-id/home.html#link?errorCode=404&u=%2Fnonexistent-route',
       });
     });
   });
