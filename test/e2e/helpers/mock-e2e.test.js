@@ -131,7 +131,8 @@ describe('setupMocking', () => {
     await setupMocking(server, async () => [], { chainId: '0x1' });
 
     const catchAll = server.rules.find(
-      (rule) => rule.kind === 'forAnyRequest' && rule.passThrough?.beforeRequest,
+      (rule) =>
+        rule.kind === 'forAnyRequest' && rule.passThrough?.beforeRequest,
     );
     expect(catchAll).toBeDefined();
 
