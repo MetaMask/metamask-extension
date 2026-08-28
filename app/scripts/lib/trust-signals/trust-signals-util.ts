@@ -231,9 +231,9 @@ export function createCaipOriginScanGate(
     // scope ever grants them.
     return Boolean(
       wrappedMethod &&
-        (isEthSendTransactionMethod(wrappedMethod) ||
-          isEthSignTypedDataMethod(wrappedMethod) ||
-          isWalletSendCallsMethod(wrappedMethod)),
+      (isEthSendTransactionMethod(wrappedMethod) ||
+        isEthSignTypedDataMethod(wrappedMethod) ||
+        isWalletSendCallsMethod(wrappedMethod)),
     );
   };
 }
