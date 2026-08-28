@@ -6483,12 +6483,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/dummy-sentry@workspace:test/fakes/dummy-sentry":
-  version: 0.0.0-use.local
-  resolution: "@metamask/dummy-sentry@workspace:test/fakes/dummy-sentry"
-  languageName: unknown
-  linkType: soft
-
 "@metamask/eip-5792-middleware@npm:3.0.3":
   version: 3.0.3
   resolution: "@metamask/eip-5792-middleware@npm:3.0.3"
@@ -12636,10 +12630,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/minimal@portal:./test/fakes/dummy-sentry::locator=metamask-crx%40workspace%3A.":
+"@sentry/minimal@workspace:*, @sentry/minimal@workspace:test/fakes/dummy-sentry":
   version: 0.0.0-use.local
-  resolution: "@sentry/minimal@portal:./test/fakes/dummy-sentry::locator=metamask-crx%40workspace%3A."
-  languageName: node
+  resolution: "@sentry/minimal@workspace:test/fakes/dummy-sentry"
+  languageName: unknown
   linkType: soft
 
 "@sentry/node-core@npm:10.38.0":

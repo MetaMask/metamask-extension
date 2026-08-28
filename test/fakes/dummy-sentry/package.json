@@ -1,7 +1,8 @@
 {
-  "name": "@metamask/dummy-sentry",
-  "version": "0.0.0",
+  "name": "@sentry/minimal",
+  "version": "6.19.7",
   "private": true,
   "type": "module",
-  "main": "./index.js"
+  "main": "./index.js",
+  "description": "No-op stand-in for Ledger DMK packages; resolved via yarn workspaces instead of the real Sentry package."
 }
