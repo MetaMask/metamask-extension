@@ -169,13 +169,25 @@ export class PageLoadBenchmark {
         });
 
         this.dappServerProcess?.on('error', (error) => {
+          console.error('Failed to start dapp server:', error);
           clearTimeout(timer);
           reject(error);
         });
 
+        // Logging is unconditional: once the promise has settled a `reject` here
+        // is a no-op, so without this a server that dies mid-benchmark would
+        // exit silently — which is the class of failure this change exists to
+        // stop. The rejection only reaches a caller before readiness.
         this.dappServerProcess?.on('exit', (code) => {
+          if (code !== 0) {
+            console.error(`Dapp server exited with code ${code}`);
+          }
           clearTimeout(timer);
-          reject(new Error(`Dapp server exited with code ${code}`));
+          reject(
+            new Error(
+              `Dapp server exited with code ${code} before reporting readiness`,
+            ),
+          );
         });
       });
     } catch (e) {
