@@ -6,12 +6,12 @@ import { PerpsPositionsBase } from '../perps/perps-positions-base';
  *
  * Screen: `#/perps` / `#/perps-home`, reached from the account overview via
  * `navigateToPerpsHome()` or the bottom-nav Perps tab.
- * Owns: the balance dropdown (add funds / withdraw), position cards (via
- * `PerpsPositionsBase`), watchlist, explore-markets and recent-activity
- * links, geo-block dismiss, and the tutorial modal.
+ * Owns: the balance header with persistent Add funds / Withdraw buttons,
+ * position cards (via `PerpsPositionsBase`), watchlist, explore-markets and
+ * recent-activity links, geo-block dismiss, and the tutorial modal.
  * Boundaries: the home surface only. Market list, market detail, activity,
  * withdraw, and confirmations belong to their own page objects; methods here
- * only navigate or open dropdowns.
+ * only navigate or click header buttons.
  * Related: `PerpsMarketListPage` (`clickExploreMarketsRow`),
  * `PerpsActivityPage` (`clickRecentActivitySeeAll`), `PerpsWithdrawPage`
  * (`clickWithdraw`), `PerpsMarketDetailPage` (via `clickPositionCard`),
@@ -21,15 +21,11 @@ import { PerpsPositionsBase } from '../perps/perps-positions-base';
  */
 export class PerpsTab extends PerpsPositionsBase {
   private readonly addFundsButton = {
-    testId: 'perps-balance-dropdown-add-funds',
+    testId: 'perps-balance-actions-add-funds',
   };
 
-  private readonly balanceDropdownBalanceRow = {
-    testId: 'perps-balance-dropdown-balance',
-  };
-
-  private readonly balanceDropdownWithdraw = {
-    testId: 'perps-balance-dropdown-withdraw',
+  private readonly balanceActionsWithdraw = {
+    testId: 'perps-balance-actions-withdraw',
   };
 
   private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
@@ -38,8 +34,8 @@ export class PerpsTab extends PerpsPositionsBase {
     testId: 'perps-geo-block-modal-dismiss',
   };
 
-  private readonly perpsBalanceDropdown = {
-    testId: 'perps-balance-dropdown',
+  private readonly perpsBalanceActions = {
+    testId: 'perps-balance-actions',
   };
 
   private readonly perpsExploreMarketsRow = {
@@ -84,11 +80,11 @@ export class PerpsTab extends PerpsPositionsBase {
 
   /**
    * Waits for the Perps Home view to be loaded and visible.
-   * The main Perps tab shows PerpsView (balance dropdown, positions, explore).
+   * The main Perps tab shows PerpsView (balance actions header, positions, explore).
    */
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors(
-      [this.perpsPage, this.perpsBalanceDropdown],
+      [this.perpsPage, this.perpsBalanceActions],
       { timeout: 20000 },
     );
   }
@@ -104,11 +100,10 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
-   * Clicks the Add funds button. On Perps Home the balance is in a dropdown:
-   * opens the dropdown first, then clicks Add funds.
+   * Clicks the Add funds button. On Perps Home the button is now persistent in
+   * the balance header (no dropdown to open first).
    */
   async clickAddFunds(): Promise<void> {
-    await this.driver.clickElement(this.balanceDropdownBalanceRow);
     await this.driver.clickElement(this.addFundsButton);
   }
 
@@ -134,12 +129,12 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
-   * Clicks the Withdraw button. On Perps Home the balance is in a dropdown:
-   * opens the dropdown first, then clicks Withdraw.
+   * Clicks the Withdraw button. On Perps Home the button lives in the balance
+   * header (no dropdown to open first) and is only rendered when the account
+   * has a non-zero balance — callers must fund the account first.
    */
   async clickWithdraw(): Promise<void> {
-    await this.driver.clickElement(this.balanceDropdownBalanceRow);
-    await this.driver.clickElement(this.balanceDropdownWithdraw);
+    await this.driver.clickElement(this.balanceActionsWithdraw);
   }
 
   /**
@@ -202,7 +197,7 @@ export class PerpsTab extends PerpsPositionsBase {
    * Waits for the balance section to be visible (empty or with balance).
    */
   async waitForBalanceSection(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsBalanceDropdown);
+    await this.driver.waitForSelector(this.perpsBalanceActions);
   }
 
   /**
