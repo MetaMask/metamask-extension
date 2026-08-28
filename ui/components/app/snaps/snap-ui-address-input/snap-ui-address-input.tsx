@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef } from 'react';
 import classnames from 'clsx';
 import {
   CaipAccountId,
@@ -21,6 +21,7 @@ import {
   Text,
 } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { useSnapUiFieldState } from '../../../../hooks/snaps/useSnapUiFieldState';
 import {
   AlignItems,
   BackgroundColor,
@@ -177,7 +178,12 @@ export const SnapUIAddressInput = ({
     return value;
   };
 
-  const [value, setValue] = useState(getParsedValue(initialValue));
+  const [value, setValue] = useSnapUiFieldState(
+    initialValue === undefined || initialValue === null
+      ? initialValue
+      : getParsedValue(initialValue),
+    '',
+  );
 
   const displayName = useDisplayName({
     address: value,
@@ -187,17 +193,6 @@ export const SnapUIAddressInput = ({
     },
     chainId,
   });
-
-  const prevInitialValueRef = useRef(initialValue);
-  useEffect(() => {
-    if (initialValue === prevInitialValueRef.current) {
-      return;
-    }
-    prevInitialValueRef.current = initialValue;
-    if (initialValue !== undefined && initialValue !== null) {
-      queueMicrotask(() => setValue(getParsedValue(initialValue)));
-    }
-  }, [initialValue]);
 
   /*
    * Focus input if the last focused input was this input

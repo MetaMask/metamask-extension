@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import classnames from 'clsx';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { useSnapUiFieldState } from '../../../../hooks/snaps/useSnapUiFieldState';
 import {
   Display,
   FlexDirection,
@@ -32,20 +33,8 @@ export const SnapUIDropdown = ({
 }: SnapUIDropdownProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const initialValue = getValue(name, form) as string;
-
-  const [value, setValue] = useState(initialValue ?? '');
-  const prevInitialValueRef = useRef(initialValue);
-
-  useEffect(() => {
-    if (initialValue === prevInitialValueRef.current) {
-      return;
-    }
-    prevInitialValueRef.current = initialValue;
-    if (initialValue !== undefined && initialValue !== null) {
-      queueMicrotask(() => setValue(initialValue));
-    }
-  }, [initialValue]);
+  const initialValue = getValue(name, form) as string | undefined;
+  const [value, setValue] = useSnapUiFieldState(initialValue, '');
 
   const handleChange = (newValue: string) => {
     setValue(newValue);

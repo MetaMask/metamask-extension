@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import classnames from 'clsx';
 import {
   Box,
@@ -6,6 +6,7 @@ import {
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { useSnapUiFieldState } from '../../../../hooks/snaps/useSnapUiFieldState';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import {
   HelpText,
@@ -39,20 +40,8 @@ export const SnapUIRadioGroup = ({
 }: SnapUIRadioGroupProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const initialValue = getValue(name, form) as string;
-
-  const [value, setValue] = useState(initialValue ?? '');
-  const prevInitialValueRef = useRef(initialValue);
-
-  useEffect(() => {
-    if (initialValue === prevInitialValueRef.current) {
-      return;
-    }
-    prevInitialValueRef.current = initialValue;
-    if (initialValue) {
-      queueMicrotask(() => setValue(initialValue));
-    }
-  }, [initialValue]);
+  const initialValue = getValue(name, form) as string | undefined;
+  const [value, setValue] = useSnapUiFieldState(initialValue, '');
 
   const handleChange = (newValue: string) => {
     setValue(newValue);

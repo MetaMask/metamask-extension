@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { Snap } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
@@ -46,28 +46,18 @@ export default function KeyringRemovalSnapWarning({
   isOpen: boolean;
 }) {
   const t = useI18nContext();
-  const [showConfirmation, setShowConfirmation] = useState(
-    keyringAccounts.length === 0,
-  );
+  const hasNoAccounts = keyringAccounts.length === 0;
+  const [showConfirmation, setShowConfirmation] = useState(hasNoAccounts);
+  const [prevHasNoAccounts, setPrevHasNoAccounts] = useState(hasNoAccounts);
   const [confirmedRemoval, setConfirmedRemoval] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState('');
   const [error, setError] = useState(false);
   const chainId = useSelector(getCurrentChainId);
-  const prevKeyringAccountsRef = useRef<typeof keyringAccounts | undefined>(
-    undefined,
-  );
 
-  useEffect(() => {
-    if (prevKeyringAccountsRef.current === undefined) {
-      prevKeyringAccountsRef.current = keyringAccounts;
-      return;
-    }
-    if (keyringAccounts === prevKeyringAccountsRef.current) {
-      return;
-    }
-    prevKeyringAccountsRef.current = keyringAccounts;
-    queueMicrotask(() => setShowConfirmation(keyringAccounts.length === 0));
-  }, [keyringAccounts]);
+  if (hasNoAccounts !== prevHasNoAccounts) {
+    setPrevHasNoAccounts(hasNoAccounts);
+    setShowConfirmation(hasNoAccounts);
+  }
 
   const validateConfirmationInput = (input: string): boolean => {
     setError(false);
