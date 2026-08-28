@@ -19,7 +19,9 @@ import {
   hasValidTypedDataParams,
   isEthSignTypedData,
   isEthSendTransaction,
+  isWalletSendCalls,
   hasValidTransactionParams,
+  hasValidSendCallsParams,
   isSecurityAlertsEnabledByUser,
 } from './trust-signals-util';
 
@@ -108,6 +110,13 @@ export function createAddressScanMiddleware(
           networkController,
           phishingController,
         );
+      } else if (isWalletSendCalls(req)) {
+        handleWalletSendCalls(
+          req,
+          appStateController,
+          networkController,
+          phishingController,
+        );
       } else if (isEthSignTypedData(req)) {
         handleEthSignTypedData(
           req,
@@ -168,6 +177,58 @@ function scanAddressInBackground(
   });
 }
 
+/**
+ * Scans the addresses a single transaction or batched call exposes: its
+ * target `to` plus any addresses encoded in calldata (currently the spender
+ * of a token approval). Shared by the `eth_sendTransaction` and
+ * `wallet_sendCalls` handlers so decoding logic stays in one place; new
+ * calldata decoders should be added here to cover both paths at once.
+ *
+ * @param to - The call's target address
+ * @param data - The call's calldata, if any
+ * @param context - Label describing the request type in scan error logs
+ * @param chainId - The hex chainId of the chain the call targets
+ * @param appStateController - Provides the security alert response cache
+ * @param phishingController - Controller providing scanAddress
+ */
+function scanCallTargets(
+  to: unknown,
+  data: unknown,
+  context: 'transaction' | 'sendCalls',
+  chainId: Hex,
+  appStateController: AppStateController,
+  phishingController: PhishingController,
+) {
+  // `to` may be unvalidated dapp input (batched calls are only validated
+  // downstream, by SendCallsStruct in the 5792 handler); a non-string would
+  // throw in createCacheKey. Deliberately no stricter than the struct's
+  // address check, so nothing the wallet would execute can skip scanning.
+  if (typeof to === 'string') {
+    scanAddressInBackground(
+      to,
+      `address for ${context}`,
+      chainId,
+      appStateController,
+      phishingController,
+    );
+  }
+
+  // If the call is a token approval, also scan the spender address.
+  if (typeof data === 'string') {
+    const approvalData = parseApprovalTransactionData(data as `0x${string}`);
+    const spenderAddress = approvalData?.spender;
+    if (spenderAddress) {
+      scanAddressInBackground(
+        spenderAddress,
+        `spender address for ${context} approval`,
+        chainId,
+        appStateController,
+        phishingController,
+      );
+    }
+  }
+}
+
 function handleEthSendTransaction(
   req: TrustSignalsMiddlewareRequest,
   appStateController: AppStateController,
@@ -190,28 +251,62 @@ function handleEthSendTransaction(
     return;
   }
 
-  // Scan the 'to' address (contract address)
-  scanAddressInBackground(
+  scanCallTargets(
     to,
-    'address for transaction',
+    data,
+    'transaction',
     rawChainId,
     appStateController,
     phishingController,
   );
+}
 
-  // If this is an approval transaction, also scan the spender address
-  if (data && typeof data === 'string') {
-    const approvalData = parseApprovalTransactionData(data as `0x${string}`);
-    const spenderAddress = approvalData?.spender;
-    if (spenderAddress) {
-      scanAddressInBackground(
-        spenderAddress,
-        'spender address for approval',
-        rawChainId,
-        appStateController,
-        phishingController,
-      );
+function handleWalletSendCalls(
+  req: TrustSignalsMiddlewareRequest,
+  appStateController: AppStateController,
+  networkController: NetworkController,
+  phishingController: PhishingController,
+) {
+  if (!hasValidSendCallsParams(req)) {
+    return;
+  }
+
+  const { calls } = req.params[0];
+
+  const { chainId: rawChainId } =
+    networkController.getNetworkConfigurationByNetworkClientId(
+      req.networkClientId,
+    ) ?? {};
+
+  if (!rawChainId) {
+    console.error('ChainID not found for networkClientId');
+    return;
+  }
+
+  // The declared `params[0].chainId` is deliberately ignored: the 5792 handler
+  // rejects mismatches with the dapp-selected network downstream
+  // (`validateDappChainId` in @metamask/eip-5792-middleware), and duplicating
+  // its comparison here would risk drifting stricter than it and silently
+  // skipping scans for requests the wallet executes. Scanning a to-be-rejected
+  // request only writes harmless cache entries. See PSAFE-613.
+  for (const call of calls) {
+    // Malformed entries are skipped rather than failing the whole batch, so
+    // scan coverage of well-formed calls does not depend on downstream
+    // validation rejecting the request first.
+    if (typeof call !== 'object' || call === null) {
+      continue;
     }
+
+    const { to, data } = call as { to?: unknown; data?: unknown };
+
+    scanCallTargets(
+      to,
+      data,
+      'sendCalls',
+      rawChainId,
+      appStateController,
+      phishingController,
+    );
   }
 }
 

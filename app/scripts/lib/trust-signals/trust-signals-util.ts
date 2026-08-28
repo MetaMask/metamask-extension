@@ -55,6 +55,46 @@ export function hasValidTransactionParams(
   );
 }
 
+export function isWalletSendCallsMethod(method: string): boolean {
+  return method === MESSAGE_TYPE.WALLET_SEND_CALLS;
+}
+
+export function isWalletSendCalls(req: JsonRpcRequest): boolean {
+  return isWalletSendCallsMethod(req.method);
+}
+
+export function hasValidSendCallsParams(
+  req: JsonRpcRequest,
+): req is JsonRpcRequest & {
+  params: [
+    {
+      calls: unknown[];
+      [key: string]: unknown;
+    },
+    ...unknown[],
+  ];
+} {
+  if (!('params' in req) || !req.params) {
+    return false;
+  }
+
+  if (!Array.isArray(req.params) || req.params.length === 0) {
+    return false;
+  }
+
+  const firstParam = req.params[0];
+
+  // Individual call entries are deliberately not validated here: the caller
+  // skips malformed entries per call, so one bad entry cannot suppress
+  // scanning of the well-formed ones.
+  return (
+    typeof firstParam === 'object' &&
+    firstParam !== null &&
+    'calls' in firstParam &&
+    Array.isArray(firstParam.calls)
+  );
+}
+
 export function isEthSignTypedDataMethod(method: string): boolean {
   return (
     method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA ||
@@ -153,6 +193,7 @@ export function createEip1193OriginScanGate(
 ) {
   return (req: JsonRpcRequest & { origin?: string }): boolean =>
     isEthSendTransaction(req) ||
+    isWalletSendCalls(req) ||
     isEthSignTypedData(req) ||
     isConnected(req, getPermittedAccounts) ||
     connectScreenHasBeenPrompted(req) ||
@@ -190,8 +231,9 @@ export function createCaipOriginScanGate(
     // scope ever grants them.
     return Boolean(
       wrappedMethod &&
-      (isEthSendTransactionMethod(wrappedMethod) ||
-        isEthSignTypedDataMethod(wrappedMethod)),
+        (isEthSendTransactionMethod(wrappedMethod) ||
+          isEthSignTypedDataMethod(wrappedMethod) ||
+          isWalletSendCallsMethod(wrappedMethod)),
     );
   };
 }
