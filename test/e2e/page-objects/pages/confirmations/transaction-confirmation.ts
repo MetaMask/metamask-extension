@@ -3,7 +3,6 @@ import { By, Key } from 'selenium-webdriver';
 import { tEn } from '../../../../lib/i18n-helpers';
 import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
-import { assertSwapAndBridgeErrorUiIsAbsent } from '../../components/swap-and-bridge-error-ui';
 import Confirmation from './confirmation';
 
 /**
@@ -418,17 +417,6 @@ class TransactionConfirmation extends Confirmation {
       `Check Site suggested time ${time} on transaction confirmation page.`,
     );
     await this.driver.waitForSelector(this.siteSuggestedGasFee(time));
-  }
-
-  /**
-   * Asserts that Swap/Bridge quote-error UI is not shown on confirmation.
-   * Same-chain native sends must remain a normal send, not a swap/bridge flow.
-   */
-  async checkSwapAndBridgeErrorUiIsAbsent(): Promise<void> {
-    console.log(
-      'Checking swap/bridge error UI is absent on transaction confirmation',
-    );
-    await assertSwapAndBridgeErrorUiIsAbsent(this.driver);
   }
 
   async checkWalletInitiatedHeadingTitle() {
