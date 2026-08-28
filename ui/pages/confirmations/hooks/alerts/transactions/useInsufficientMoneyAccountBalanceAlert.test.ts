@@ -175,7 +175,11 @@ describe('useInsufficientMoneyAccountBalanceAlert', () => {
         String(queryKey[0]).startsWith(`${service}:`),
       ),
     ).toBe(false);
-    expect(typeof useQueryMock.mock.calls[0][0].queryFn).toBe('function');
+    expect(useQueryMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        queryFn: expect.any(Function),
+      }),
+    );
   });
 
   it('returns no alert when no pendingAmount is provided and defaults to zero', () => {
