@@ -902,5 +902,19 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/base-controller": {
+      "type": "breaking",
+      "previewVersion": "9.1.0-preview-4f4c98e"
+    },
+    "@metamask/base-data-service": {
+      "type": "breaking",
+      "previewVersion": "1.0.0-preview-4f4c98e"
+    },
+    "@metamask/messenger": {
+      "type": "breaking",
+      "previewVersion": "2.0.0-preview-4f4c98e"
+    }
   }
 }

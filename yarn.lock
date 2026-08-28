@@ -6103,6 +6103,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:@metamask-previews/base-controller@9.1.0-preview-4f4c98e":
+  version: 9.1.0-preview-4f4c98e
+  resolution: "@metamask-previews/base-controller@npm:9.1.0-preview-4f4c98e"
+  dependencies:
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/utils": "npm:^11.11.0"
+    immer: "npm:^9.0.6"
+  checksum: 10/7f366de444ee3bda326f935904763718a62db62e5e89fc0be7417cd9524acfbe325b1e5a807b3fcfd33f44e7a4fdcecfee2e42b1bd3fbbfddf4cef6299cbd6fc
+  languageName: node
+  linkType: hard
+
 "@metamask/base-controller@npm:^9.0.0, @metamask/base-controller@npm:^9.0.1, @metamask/base-controller@npm:^9.1.0":
   version: 9.1.0
   resolution: "@metamask/base-controller@npm:9.1.0"
@@ -6111,6 +6122,22 @@ __metadata:
     "@metamask/utils": "npm:^11.9.0"
     immer: "npm:^9.0.6"
   checksum: 10/752b70b35026fdf31ea8feef638f06286dbbde8d17e1ba804085fdbedbb076d900d2d7b6db3d2af284b3aa8fa84c95a0ceea6a3a46ee7b7e29433f037e9afc69
+  languageName: node
+  linkType: hard
+
+"@metamask/base-data-service@npm:@metamask-previews/base-data-service@1.0.0-preview-4f4c98e":
+  version: 1.0.0-preview-4f4c98e
+  resolution: "@metamask-previews/base-data-service@npm:1.0.0-preview-4f4c98e"
+  dependencies:
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/storage-service": "npm:^1.0.2"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^11.11.0"
+    "@tanstack/query-core": "npm:^5.62.16"
+    cockatiel: "npm:^3.1.2"
+    fast-deep-equal: "npm:^3.1.3"
+    lodash-es: "npm:^4.17.21"
+  checksum: 10/4c00ce11f7a842f131cb3aafb320eefc19f57984148032fd060671a7e33c2c62df85bdf7ac8345cef82ad962e2b04d42e04339f307b4f8468ded01972c7a0234
   languageName: node
   linkType: hard
 
@@ -7644,6 +7671,17 @@ __metadata:
   bin:
     messenger-action-types: ./dist/cli.mjs
   checksum: 10/db8e10215f45d42d165cb85cdbb666956d2cd208fedf65c041f278b5b278aaeec18ad62d0146e0dacac069c145cd1892d84fa9d90e764d544c828bd50b5349fe
+  languageName: node
+  linkType: hard
+
+"@metamask/messenger@npm:@metamask-previews/messenger@2.0.0-preview-4f4c98e":
+  version: 2.0.0-preview-4f4c98e
+  resolution: "@metamask-previews/messenger@npm:2.0.0-preview-4f4c98e"
+  dependencies:
+    "@metamask/utils": "npm:^11.11.0"
+  peerDependencies:
+    typescript: ">=5.0.0"
+  checksum: 10/991f7c0aebfe1b8142e2edc3639ef8946a5f13260ff5b85b441d06e34e0285989db2930a0e4cf85d0334d1b8683d8ac837b5f748382ddf36fec1785ccb667733
   languageName: node
   linkType: hard
 
