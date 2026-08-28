@@ -305,6 +305,25 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
+  it('selects Monad mUSD for a perpsWithdraw paid into the Money Account', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      paymentOverride: PaymentOverride.MoneyAccount,
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: MUSD_TOKEN_ADDRESS,
+      chainId: CHAIN_IDS.MONAD,
+    });
+  });
+
   it('re-selects Monad mUSD when the user switches to Money Account', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([
       {
