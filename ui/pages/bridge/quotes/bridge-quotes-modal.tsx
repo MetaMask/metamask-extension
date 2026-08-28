@@ -218,9 +218,9 @@ export const BridgeQuotesModal = ({
                         style={{ whiteSpace: 'nowrap' }}
                       >
                         {t('quotedTotalCost', [
-                          priceImpact?.valueInCurrency
+                          quote.cost?.valueInCurrency
                             ? formatCurrencyAmount(
-                                priceImpact.valueInCurrency,
+                                quote.cost.valueInCurrency,
                                 currency,
                                 2,
                               )
