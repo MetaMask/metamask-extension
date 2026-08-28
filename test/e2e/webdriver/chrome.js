@@ -35,6 +35,7 @@ class ChromeDriver {
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
+      '--proxy-bypass-list=localhost,127.0.0.1,<-loopback>',
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,Crashpad', // disable Crashpad to prevent orphaned crash-reporter processes
       '--disable-crash-reporter', // Prevent chrome_crashpad_handler zombie accumulation in CI
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
