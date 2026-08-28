@@ -1,0 +1,488 @@
+diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
+index 7a30963da6ec7f75eb420e860acec4b6f8aed4ac..0144c80db0cae89d8caf825981dda7f75d74e05d 100644
+--- a/dist/AssetsController.cjs
++++ b/dist/AssetsController.cjs
+@@ -13,7 +13,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_accountRefreshMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_accountActivityDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_onTransactionConfirmed, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_runAccountTreeRefresh, _AssetsController_runStartupRefresh, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_assertNonEmptyAccountId, _AssetsController_normalizeAssetIdOrThrow, _AssetsController_fetchMissingPricesWithoutCache, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_getAssetType, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_getSlowPipelineChainIds, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_getAssetFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshActiveChainsOnNetworkSwitch, _AssetsController_getSelectedEvmChainIdFromNetworkState, _AssetsController_handleNetworkDidChange, _AssetsController_refreshAssetsAfterNetworkChange, _AssetsController_refreshAssetsAfterNetworkAdded;
++var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_accountRefreshMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_accountActivityDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_onTransactionConfirmed, _AssetsController_runSpamCleanup, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_runAccountTreeRefresh, _AssetsController_runStartupRefresh, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_assertNonEmptyAccountId, _AssetsController_normalizeAssetIdOrThrow, _AssetsController_fetchMissingPricesWithoutCache, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_getAssetType, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_getSlowPipelineChainIds, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_getAssetFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshActiveChainsOnNetworkSwitch, _AssetsController_getSelectedEvmChainIdFromNetworkState, _AssetsController_handleNetworkDidChange, _AssetsController_refreshAssetsAfterNetworkChange, _AssetsController_refreshAssetsAfterNetworkAdded;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.AssetsController = exports.getDefaultAssetsControllerState = void 0;
+ const base_controller_1 = require("@metamask/base-controller");
+@@ -1335,8 +1335,12 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+         __classPrivateFieldSet(this, _AssetsController_uiOpen, isUiOpen, "f");
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_updateActive).call(this);
+     }, client_controller_1.clientControllerSelectors.selectIsUiOpen);
+-    this.messenger.subscribe('KeyringController:unlock', () => {
++    // eslint-disable-next-line @typescript-eslint/no-misused-promises
++    this.messenger.subscribe('KeyringController:unlock', async () => {
+         __classPrivateFieldSet(this, _AssetsController_keyringUnlocked, true, "f");
++        await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_runSpamCleanup).call(this).catch(() => {
++            /* Do nothing */
++        });
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_updateActive).call(this);
+     });
+     this.messenger.subscribe('KeyringController:lock', () => {
+@@ -1396,6 +1400,39 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+     }).catch((error) => {
+         log('Failed to refresh assets after transaction confirmed', { error });
+     });
++}, _AssetsController_runSpamCleanup = async function _AssetsController_runSpamCleanup() {
++    try {
++        const shouldRun = __classPrivateFieldGet(this, _AssetsController_keyringUnlocked, "f") &&
++            __classPrivateFieldGet(this, _AssetsController_isBasicFunctionality, "f").call(this) &&
++            (0, healAssetsInfoMetadata_js_1.isUnlockCleanupEnabled)(this.messenger.call('RemoteFeatureFlagController:getState')
++                ?.remoteFeatureFlags);
++        if (!shouldRun) {
++            return;
++        }
++    }
++    catch (error) {
++        log('Failed to start spam cleanup', { error });
++        return;
++    }
++    try {
++        const originalState = this.state;
++        const result = await (0, healAssetsInfoMetadata_js_1.cleanSpamAssets)({
++            state: originalState,
++            apiClient: __classPrivateFieldGet(this, _AssetsController_queryApiClient, "f"),
++            captureException: __classPrivateFieldGet(this, _AssetsController_captureException, "f"),
++        });
++        if (!result) {
++            return;
++        }
++        this.update((state) => {
++            result.applyPatch(state, {
++                spamAssetIds: result.spamAssetIds,
++            });
++        });
++    }
++    catch (error) {
++        log('Failed to run spam cleanup', { error });
++    }
+ }, _AssetsController_updateActive = function _AssetsController_updateActive() {
+     const shouldRun = __classPrivateFieldGet(this, _AssetsController_uiOpen, "f") && __classPrivateFieldGet(this, _AssetsController_keyringUnlocked, "f");
+     if (shouldRun) {
+diff --git a/dist/AssetsController.mjs b/dist/AssetsController.mjs
+index dba9acdcb3925832dbeb5949f670ca62264e2198..0507a821ddb8c2829f88bcdbb8d0658d799bcad3 100644
+--- a/dist/AssetsController.mjs
++++ b/dist/AssetsController.mjs
+@@ -9,7 +9,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+ };
+-var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_accountRefreshMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_accountActivityDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_onTransactionConfirmed, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_runAccountTreeRefresh, _AssetsController_runStartupRefresh, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_assertNonEmptyAccountId, _AssetsController_normalizeAssetIdOrThrow, _AssetsController_fetchMissingPricesWithoutCache, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_getAssetType, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_getSlowPipelineChainIds, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_getAssetFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshActiveChainsOnNetworkSwitch, _AssetsController_getSelectedEvmChainIdFromNetworkState, _AssetsController_handleNetworkDidChange, _AssetsController_refreshAssetsAfterNetworkChange, _AssetsController_refreshAssetsAfterNetworkAdded;
++var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_accountRefreshMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_accountActivityDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_onTransactionConfirmed, _AssetsController_runSpamCleanup, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_runAccountTreeRefresh, _AssetsController_runStartupRefresh, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_assertNonEmptyAccountId, _AssetsController_normalizeAssetIdOrThrow, _AssetsController_fetchMissingPricesWithoutCache, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_getAssetType, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_getSlowPipelineChainIds, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_getAssetFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshActiveChainsOnNetworkSwitch, _AssetsController_getSelectedEvmChainIdFromNetworkState, _AssetsController_handleNetworkDidChange, _AssetsController_refreshAssetsAfterNetworkChange, _AssetsController_refreshAssetsAfterNetworkAdded;
+ import { BaseController } from "@metamask/base-controller";
+ import { clientControllerSelectors } from "@metamask/client-controller";
+ import { isCaipChainId, isStrictHexString, KnownCaipNamespace, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
+@@ -33,7 +33,7 @@ import { CustomAssetGraduationMiddleware } from "./middlewares/CustomAssetGradua
+ import { DetectionMiddleware } from "./middlewares/DetectionMiddleware.mjs";
+ import { createParallelBalanceMiddleware, createParallelMiddleware } from "./middlewares/ParallelMiddleware.mjs";
+ import { RpcFallbackMiddleware } from "./middlewares/RpcFallbackMiddleware.mjs";
+-import { tempHealAssetsInfoMetadata } from "./migrations/healAssetsInfoMetadata.mjs";
++import { cleanSpamAssets, isUnlockCleanupEnabled, tempHealAssetsInfoMetadata } from "./migrations/healAssetsInfoMetadata.mjs";
+ import { ZERO_ADDRESS } from "./utils/constants.mjs";
+ import { pickRpcCustomAssetsSupplement } from "./utils/customAssetsRpcSupplement.mjs";
+ import { normalizeAmountString, normalizeAssetId, formatExchangeRatesForBridge, formatStateForTransactionPay, buildNativeAssetsFromConstant, buildNativeAssetsFromApi } from "./utils/index.mjs";
+@@ -1328,8 +1328,12 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+         __classPrivateFieldSet(this, _AssetsController_uiOpen, isUiOpen, "f");
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_updateActive).call(this);
+     }, clientControllerSelectors.selectIsUiOpen);
+-    this.messenger.subscribe('KeyringController:unlock', () => {
++    // eslint-disable-next-line @typescript-eslint/no-misused-promises
++    this.messenger.subscribe('KeyringController:unlock', async () => {
+         __classPrivateFieldSet(this, _AssetsController_keyringUnlocked, true, "f");
++        await __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_runSpamCleanup).call(this).catch(() => {
++            /* Do nothing */
++        });
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_updateActive).call(this);
+     });
+     this.messenger.subscribe('KeyringController:lock', () => {
+@@ -1389,6 +1393,39 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+     }).catch((error) => {
+         log('Failed to refresh assets after transaction confirmed', { error });
+     });
++}, _AssetsController_runSpamCleanup = async function _AssetsController_runSpamCleanup() {
++    try {
++        const shouldRun = __classPrivateFieldGet(this, _AssetsController_keyringUnlocked, "f") &&
++            __classPrivateFieldGet(this, _AssetsController_isBasicFunctionality, "f").call(this) &&
++            isUnlockCleanupEnabled(this.messenger.call('RemoteFeatureFlagController:getState')
++                ?.remoteFeatureFlags);
++        if (!shouldRun) {
++            return;
++        }
++    }
++    catch (error) {
++        log('Failed to start spam cleanup', { error });
++        return;
++    }
++    try {
++        const originalState = this.state;
++        const result = await cleanSpamAssets({
++            state: originalState,
++            apiClient: __classPrivateFieldGet(this, _AssetsController_queryApiClient, "f"),
++            captureException: __classPrivateFieldGet(this, _AssetsController_captureException, "f"),
++        });
++        if (!result) {
++            return;
++        }
++        this.update((state) => {
++            result.applyPatch(state, {
++                spamAssetIds: result.spamAssetIds,
++            });
++        });
++    }
++    catch (error) {
++        log('Failed to run spam cleanup', { error });
++    }
+ }, _AssetsController_updateActive = function _AssetsController_updateActive() {
+     const shouldRun = __classPrivateFieldGet(this, _AssetsController_uiOpen, "f") && __classPrivateFieldGet(this, _AssetsController_keyringUnlocked, "f");
+     if (shouldRun) {
+diff --git a/dist/migrations/healAssetsInfoMetadata.cjs b/dist/migrations/healAssetsInfoMetadata.cjs
+index 18fa2b06087e7e6843e07b2d00e5d0bf3dd752e4..33b39aeeb43f79289b5d3ff007d3e7c8f39498e7 100644
+--- a/dist/migrations/healAssetsInfoMetadata.cjs
++++ b/dist/migrations/healAssetsInfoMetadata.cjs
+@@ -1,9 +1,12 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.healAssetsInfoMetadata = exports.tempHealAssetsInfoMetadata = void 0;
++exports.cleanSpamAssets = exports.isUnlockCleanupEnabled = exports.healAssetsInfoMetadata = exports.tempHealAssetsInfoMetadata = void 0;
+ const utils_1 = require("@metamask/utils");
+ const lodash_1 = require("lodash");
++const batch_js_1 = require("../data-sources/evm-rpc-services/utils/batch.cjs");
++const defaults_js_1 = require("../defaults.cjs");
+ const logger_js_1 = require("../logger.cjs");
++const fetchWithTimeout_js_1 = require("../utils/fetchWithTimeout.cjs");
+ const log = (0, logger_js_1.createModuleLogger)(logger_js_1.projectLogger, 'tempHealAssetsInfoMetadata');
+ /**
+  * TEMPORARY — will be removed in a future release.
+@@ -382,4 +385,155 @@ function addCustomAssetAddition(currentState, additions, accountId, assetId) {
+     }
+     additions[accountId] = queued;
+ }
++const cleanupLog = (0, logger_js_1.createModuleLogger)(logger_js_1.projectLogger, 'cleanSpamAssets');
++/**
++ * TEMPORARY — feature flag for unlock spam cleanup
++ *
++ * @param remoteFeatureFlags - RemoteFeatureFlag state.
++ * @returns `true` only when the flag explicitly enables the cleanup.
++ */
++function isUnlockCleanupEnabled(remoteFeatureFlags) {
++    if (!(0, utils_1.isObject)(remoteFeatureFlags)) {
++        return false;
++    }
++    const flag = remoteFeatureFlags.assetsUnifyState;
++    return ((0, utils_1.isObject)(flag) &&
++        (0, utils_1.hasProperty)(flag, 'useUnlockCleanup') &&
++        flag.useUnlockCleanup === true);
++}
++exports.isUnlockCleanupEnabled = isUnlockCleanupEnabled;
++const FETCH_TIMEOUT_MS = 15000;
++const DEFAULT_OCCURRENCE_FLOOR = 3;
++/**
++ * Cleanup of Spam Assets.
++ * The state can be persisted with spam tokens through boundary faults (API loosened, WS passing in spam)
++ *
++ * @param options - Input params.
++ * @param options.state - Current controller state (read-only).
++ * @param options.apiClient - Token API client.
++ * @param options.captureException - Optional reporter for failures.
++ * @returns Updated or original controller state
++ */
++async function cleanSpamAssets({ state, apiClient, captureException, }) {
++    const candidates = collectSpamCleanupCandidates(state);
++    if (candidates.length === 0) {
++        return null;
++    }
++    try {
++        const floors = await fetchSuggestedOccurrenceFloors(apiClient);
++        const spamAssetIds = [];
++        for (const batch of (0, batch_js_1.divideIntoBatches)(candidates, {
++            batchSize: 50,
++        })) {
++            const belowFloorAssetIds = await findBelowFloorAssetIds(batch, floors, apiClient).catch(() => []);
++            if (belowFloorAssetIds.length > 0) {
++                cleanupLog('Classified a batch of assets as spam', {
++                    batchSize: batch.length,
++                    spamCount: belowFloorAssetIds.length,
++                });
++                spamAssetIds.push(...belowFloorAssetIds);
++            }
++        }
++        if (spamAssetIds.length === 0) {
++            return null;
++        }
++        return { spamAssetIds, applyPatch: applyCleanupPatch };
++    }
++    catch (error) {
++        // API calls failed, cleanup not performed. Will be retried when next invoked.
++        cleanupLog('Spam cleanup failed; leaving remaining assets untouched', error);
++        captureException?.(new Error(`AssetsController: assetsInfo spam cleanup failed: ${(0, utils_1.getErrorMessage)(error)}`));
++        return null;
++    }
++}
++exports.cleanSpamAssets = cleanSpamAssets;
++/**
++ * Collect the assets eligible for cleanup:
++ * - ERC-20 token
++ * - Not in excluded list
++ * - Not a custom asset
++ * - On Account API covered chains
++ *
++ * @param state - Current controller state.
++ * @param state.assetsInfo - Tracked asset metadata, keyed by CAIP-19 ID.
++ * @param state.customAssets - Per-account custom asset IDs.
++ * @returns Candidate asset IDs.
++ */
++function collectSpamCleanupCandidates({ assetsInfo, customAssets, }) {
++    const customAssetIds = new Set(Object.values(customAssets)
++        .flat()
++        .map((assetId) => assetId.toLowerCase()));
++    const excludedAssets = [...defaults_js_1.DEFAULT_TRACKED_ASSETS_BY_CHAIN.values()]
++        .flat()
++        .map((a) => a.toLowerCase());
++    return Object.keys(assetsInfo).filter((assetId) => {
++        const lowerId = assetId.toLowerCase();
++        const [chainId, asset] = lowerId.split('/');
++        const isERC20 = Boolean(asset?.startsWith('erc20:'));
++        const isNotExcluded = !excludedAssets.includes(lowerId);
++        const isNotCustomAsset = !customAssetIds.has(lowerId);
++        const isOnAccountAPICoveredChain = ACCOUNT_API_SUPPORTED_CHAIN_IDS.has(chainId);
++        return (isERC20 && isNotExcluded && isNotCustomAsset && isOnAccountAPICoveredChain);
++    });
++}
++/**
++ * Fetch and filter assets by occurrence floor.
++ * If fetch fails, error is propagated (fail-close, cleanup not performed)
++ *
++ * @param assetIds - A single batch of candidate asset IDs.
++ * @param floors - Suggested occurrence floors keyed by decimal chain ID.
++ * @param apiClient - Token API client.
++ * @returns The subset of `assetIds` that falls below its chain's floor.
++ */
++async function findBelowFloorAssetIds(assetIds, floors, apiClient) {
++    try {
++        const assets = await (0, fetchWithTimeout_js_1.fetchWithTimeout)(() => apiClient.tokens.fetchV3Assets(assetIds, { includeOccurrences: true }, { staleTime: 0, gcTime: 0 }), FETCH_TIMEOUT_MS);
++        const occurrencesByLowerId = new Map(assets.map((asset) => [asset.assetId.toLowerCase(), asset.occurrences]));
++        return assetIds.filter((assetId) => {
++            const chainReference = assetId.split(':')[1]?.split('/')[0] ?? '';
++            const floor = floors[chainReference] ?? DEFAULT_OCCURRENCE_FLOOR;
++            return (occurrencesByLowerId.get(assetId.toLowerCase()) ?? 0) < floor;
++        });
++    }
++    catch (error) {
++        cleanupLog('Failed to fetch assets', error);
++        throw error;
++    }
++}
++/**
++ * Fetch per-chain suggested occurrence floors.
++ * If fetch fails, error is propagated (fail-close, cleanup not performed)
++ *
++ * @param apiClient - Token API client.
++ * @returns Map of decimal chain ID to suggested floor.
++ */
++async function fetchSuggestedOccurrenceFloors(apiClient) {
++    try {
++        return await (0, fetchWithTimeout_js_1.fetchWithTimeout)(() => apiClient.token.fetchV1SuggestedOccurrenceFloors({
++            staleTime: 0,
++            gcTime: 0,
++        }), FETCH_TIMEOUT_MS);
++    }
++    catch (error) {
++        cleanupLog('Failed to fetch suggested occurrence floors', error);
++        throw error;
++    }
++}
++function applyCleanupPatch(state, patch) {
++    const { spamAssetIds } = patch;
++    const spam = new Set(spamAssetIds.map((assetId) => assetId.toLowerCase()));
++    if (spam.size === 0) {
++        return;
++    }
++    const isSpam = (assetId) => spam.has(assetId.toLowerCase());
++    for (const assetId of Object.keys(state.assetsInfo).filter(isSpam)) {
++        delete state.assetsInfo[assetId];
++    }
++    for (const balances of Object.values(state.assetsBalance)) {
++        for (const assetId of Object.keys(balances).filter(isSpam)) {
++            delete balances[assetId];
++        }
++    }
++    cleanupLog('Removed spam assets', { count: spam.size });
++}
+ //# sourceMappingURL=healAssetsInfoMetadata.cjs.map
+\ No newline at end of file
+diff --git a/dist/migrations/healAssetsInfoMetadata.mjs b/dist/migrations/healAssetsInfoMetadata.mjs
+index 18a7077e3c157dfe061bb10caf428e0565a67afb..b7ca4e5d817aad09beaefe42e0f856bea25e2b8e 100644
+--- a/dist/migrations/healAssetsInfoMetadata.mjs
++++ b/dist/migrations/healAssetsInfoMetadata.mjs
+@@ -1,7 +1,10 @@
+ import { getChecksumAddress, getErrorMessage, hasProperty, isObject } from "@metamask/utils";
+ import $lodash from "lodash";
+ const { cloneDeep } = $lodash;
++import { divideIntoBatches } from "../data-sources/evm-rpc-services/utils/batch.mjs";
++import { DEFAULT_TRACKED_ASSETS_BY_CHAIN } from "../defaults.mjs";
+ import { createModuleLogger, projectLogger } from "../logger.mjs";
++import { fetchWithTimeout } from "../utils/fetchWithTimeout.mjs";
+ const log = createModuleLogger(projectLogger, 'tempHealAssetsInfoMetadata');
+ /**
+  * TEMPORARY — will be removed in a future release.
+@@ -378,4 +381,153 @@ function addCustomAssetAddition(currentState, additions, accountId, assetId) {
+     }
+     additions[accountId] = queued;
+ }
++const cleanupLog = createModuleLogger(projectLogger, 'cleanSpamAssets');
++/**
++ * TEMPORARY — feature flag for unlock spam cleanup
++ *
++ * @param remoteFeatureFlags - RemoteFeatureFlag state.
++ * @returns `true` only when the flag explicitly enables the cleanup.
++ */
++export function isUnlockCleanupEnabled(remoteFeatureFlags) {
++    if (!isObject(remoteFeatureFlags)) {
++        return false;
++    }
++    const flag = remoteFeatureFlags.assetsUnifyState;
++    return (isObject(flag) &&
++        hasProperty(flag, 'useUnlockCleanup') &&
++        flag.useUnlockCleanup === true);
++}
++const FETCH_TIMEOUT_MS = 15000;
++const DEFAULT_OCCURRENCE_FLOOR = 3;
++/**
++ * Cleanup of Spam Assets.
++ * The state can be persisted with spam tokens through boundary faults (API loosened, WS passing in spam)
++ *
++ * @param options - Input params.
++ * @param options.state - Current controller state (read-only).
++ * @param options.apiClient - Token API client.
++ * @param options.captureException - Optional reporter for failures.
++ * @returns Updated or original controller state
++ */
++export async function cleanSpamAssets({ state, apiClient, captureException, }) {
++    const candidates = collectSpamCleanupCandidates(state);
++    if (candidates.length === 0) {
++        return null;
++    }
++    try {
++        const floors = await fetchSuggestedOccurrenceFloors(apiClient);
++        const spamAssetIds = [];
++        for (const batch of divideIntoBatches(candidates, {
++            batchSize: 50,
++        })) {
++            const belowFloorAssetIds = await findBelowFloorAssetIds(batch, floors, apiClient).catch(() => []);
++            if (belowFloorAssetIds.length > 0) {
++                cleanupLog('Classified a batch of assets as spam', {
++                    batchSize: batch.length,
++                    spamCount: belowFloorAssetIds.length,
++                });
++                spamAssetIds.push(...belowFloorAssetIds);
++            }
++        }
++        if (spamAssetIds.length === 0) {
++            return null;
++        }
++        return { spamAssetIds, applyPatch: applyCleanupPatch };
++    }
++    catch (error) {
++        // API calls failed, cleanup not performed. Will be retried when next invoked.
++        cleanupLog('Spam cleanup failed; leaving remaining assets untouched', error);
++        captureException?.(new Error(`AssetsController: assetsInfo spam cleanup failed: ${getErrorMessage(error)}`));
++        return null;
++    }
++}
++/**
++ * Collect the assets eligible for cleanup:
++ * - ERC-20 token
++ * - Not in excluded list
++ * - Not a custom asset
++ * - On Account API covered chains
++ *
++ * @param state - Current controller state.
++ * @param state.assetsInfo - Tracked asset metadata, keyed by CAIP-19 ID.
++ * @param state.customAssets - Per-account custom asset IDs.
++ * @returns Candidate asset IDs.
++ */
++function collectSpamCleanupCandidates({ assetsInfo, customAssets, }) {
++    const customAssetIds = new Set(Object.values(customAssets)
++        .flat()
++        .map((assetId) => assetId.toLowerCase()));
++    const excludedAssets = [...DEFAULT_TRACKED_ASSETS_BY_CHAIN.values()]
++        .flat()
++        .map((a) => a.toLowerCase());
++    return Object.keys(assetsInfo).filter((assetId) => {
++        const lowerId = assetId.toLowerCase();
++        const [chainId, asset] = lowerId.split('/');
++        const isERC20 = Boolean(asset?.startsWith('erc20:'));
++        const isNotExcluded = !excludedAssets.includes(lowerId);
++        const isNotCustomAsset = !customAssetIds.has(lowerId);
++        const isOnAccountAPICoveredChain = ACCOUNT_API_SUPPORTED_CHAIN_IDS.has(chainId);
++        return (isERC20 && isNotExcluded && isNotCustomAsset && isOnAccountAPICoveredChain);
++    });
++}
++/**
++ * Fetch and filter assets by occurrence floor.
++ * If fetch fails, error is propagated (fail-close, cleanup not performed)
++ *
++ * @param assetIds - A single batch of candidate asset IDs.
++ * @param floors - Suggested occurrence floors keyed by decimal chain ID.
++ * @param apiClient - Token API client.
++ * @returns The subset of `assetIds` that falls below its chain's floor.
++ */
++async function findBelowFloorAssetIds(assetIds, floors, apiClient) {
++    try {
++        const assets = await fetchWithTimeout(() => apiClient.tokens.fetchV3Assets(assetIds, { includeOccurrences: true }, { staleTime: 0, gcTime: 0 }), FETCH_TIMEOUT_MS);
++        const occurrencesByLowerId = new Map(assets.map((asset) => [asset.assetId.toLowerCase(), asset.occurrences]));
++        return assetIds.filter((assetId) => {
++            const chainReference = assetId.split(':')[1]?.split('/')[0] ?? '';
++            const floor = floors[chainReference] ?? DEFAULT_OCCURRENCE_FLOOR;
++            return (occurrencesByLowerId.get(assetId.toLowerCase()) ?? 0) < floor;
++        });
++    }
++    catch (error) {
++        cleanupLog('Failed to fetch assets', error);
++        throw error;
++    }
++}
++/**
++ * Fetch per-chain suggested occurrence floors.
++ * If fetch fails, error is propagated (fail-close, cleanup not performed)
++ *
++ * @param apiClient - Token API client.
++ * @returns Map of decimal chain ID to suggested floor.
++ */
++async function fetchSuggestedOccurrenceFloors(apiClient) {
++    try {
++        return await fetchWithTimeout(() => apiClient.token.fetchV1SuggestedOccurrenceFloors({
++            staleTime: 0,
++            gcTime: 0,
++        }), FETCH_TIMEOUT_MS);
++    }
++    catch (error) {
++        cleanupLog('Failed to fetch suggested occurrence floors', error);
++        throw error;
++    }
++}
++function applyCleanupPatch(state, patch) {
++    const { spamAssetIds } = patch;
++    const spam = new Set(spamAssetIds.map((assetId) => assetId.toLowerCase()));
++    if (spam.size === 0) {
++        return;
++    }
++    const isSpam = (assetId) => spam.has(assetId.toLowerCase());
++    for (const assetId of Object.keys(state.assetsInfo).filter(isSpam)) {
++        delete state.assetsInfo[assetId];
++    }
++    for (const balances of Object.values(state.assetsBalance)) {
++        for (const assetId of Object.keys(balances).filter(isSpam)) {
++            delete balances[assetId];
++        }
++    }
++    cleanupLog('Removed spam assets', { count: spam.size });
++}
+ //# sourceMappingURL=healAssetsInfoMetadata.mjs.map
+\ No newline at end of file
