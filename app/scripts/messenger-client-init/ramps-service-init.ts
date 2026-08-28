@@ -21,8 +21,8 @@ export const RampsServiceInit: MessengerClientInitFunction<
     environment: getRampsEnvironment(),
     context: 'browser',
     fetch: globalThis.fetch.bind(globalThis),
-    // Sent as x-metamask-client* headers and clientProduct/clientVersion
-    // query params so the on-ramp API can version-gate features per client.
+    // Sent as clientProduct/clientVersion query params so the on-ramp API
+    // can version-gate features per client. Headers are not used for gating.
     clientProduct: 'metamask-extension',
     clientVersion: process.env.METAMASK_VERSION,
   });
