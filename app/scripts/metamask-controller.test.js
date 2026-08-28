@@ -3868,10 +3868,12 @@ describe('MetaMaskController', () => {
           metamaskController.seedlessOnboardingController,
           'SeedlessOnboardingController:updateBackupMetadataState',
         );
-        jest.spyOn(
-          metamaskController.legacyBackgroundApiService,
-          'importMnemonicToVault',
-        ).mockResolvedValue();
+        jest
+          .spyOn(
+            metamaskController.legacyBackgroundApiService,
+            'importMnemonicToVault',
+          )
+          .mockResolvedValue();
         jest.spyOn(utils, 'convertEnglishWordlistIndicesToCodepoints');
       });
 
