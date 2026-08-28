@@ -8,11 +8,10 @@ import { WINDOW_TITLES } from '../../constants';
  *
  * Screen: critical-error HTML rendered in place of the normal UI (not a hash
  * route), shown when background/UI init fails.
- * Owns: trouble-starting title/details, reinstall link, attempt-recovery link
- * (when a vault backup exists), and post-reload window reattachment helpers.
- * Boundaries: the critical-error shell only. Confirmed recovery button flows
- * that specialize this UI belong to `VaultRecoveryPage`.
- * Related: `VaultRecoveryPage` (extends this when recovery UI is available).
+ * Owns: trouble-starting title/details, reinstall link, recovery/reset actions,
+ * and post-reload window reattachment helpers.
+ * Boundaries: the critical-error shell, including its recovery and reset
+ * variants.
  *
  * @see ui/helpers/utils/display-critical-error.ts
  * @see shared/lib/error-utils.ts

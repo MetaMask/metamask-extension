@@ -11,7 +11,7 @@ import { WALLET_PASSWORD } from '../../constants';
  * decrypted seed-phrase assertion.
  * Boundaries: the external decryptor page only. Extension log export and
  * critical-error recovery UI belong to extension page objects.
- * Related: `CriticalErrorPage` / `VaultRecoveryPage` for in-extension recovery;
+ * Related: `CriticalErrorPage` for in-extension recovery;
  * `test/e2e/dist/vault-decryption-chrome.spec.ts` for usage.
  */
 class VaultDecryptorPage {
