@@ -93,23 +93,10 @@ describe('useTronResources', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetAccountBalances.mockReset();
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-      },
-      logger: {
-        log: () => undefined,
-        warn: () => undefined,
-        // Silence expected error output from rejected snap queries.
-        error: () => undefined,
-      },
-    });
   });
 
   afterEach(() => {
     cleanup();
-    queryClient.clear();
   });
 
   describe('when account and chainId are provided', () => {
