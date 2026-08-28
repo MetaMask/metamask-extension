@@ -1,12 +1,12 @@
 import {
   RampsController,
+  RampsOrderStatus,
   getDefaultRampsControllerState,
   type RampsControllerMessenger,
 } from '@metamask/ramps-controller';
 import type { OnboardingControllerState } from '../controllers/onboarding';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import { removeStalePrecreatedOrders } from '../lib/ramps-stale-order-cleanup';
-import { TERMINAL_ORDER_STATUSES } from '../lib/ramps/handleRampsOrderStatusChanged';
 import type { MessengerClientInitFunction } from './types';
 import { getRampsControllerApi } from './ramps-controller-api';
 import type { RampsControllerInitMessenger } from './messengers/ramps-controller-messenger';
@@ -25,9 +25,26 @@ function isRampsNetworkAllowed(
   return completedOnboarding && Boolean(useExternalServices);
 }
 
-function hasUnsettledOrders(messengerClient: RampsController): boolean {
-  return (messengerClient.state?.orders ?? []).some(
-    (order) => !TERMINAL_ORDER_STATUSES.has(order.status),
+/**
+ * Statuses where the user has committed to a purchase and is waiting on the
+ * provider to settle.
+ *
+ * Deliberately narrower than "not terminal". `PRECREATED` and `UNKNOWN` stubs
+ * may never resolve — see `removeStalePrecreatedOrders`, where the API "can
+ * neither complete nor expire" them — so counting those as in-flight would keep
+ * the poll alive forever. Worse, it would be self-sustaining: `lifecycleStarted`
+ * would never clear, so `startRampsLifecycle` would short-circuit on every
+ * later call and the cleanup that prunes those very stubs would never run
+ * again. Leaving them out lets polling stop, which lets the cleanup run.
+ */
+const IN_FLIGHT_ORDER_STATUSES = new Set<string>([
+  RampsOrderStatus.Created,
+  RampsOrderStatus.Pending,
+]);
+
+function hasInFlightOrders(messengerClient: RampsController): boolean {
+  return (messengerClient.state?.orders ?? []).some((order) =>
+    IN_FLIGHT_ORDER_STATUSES.has(order.status),
   );
 }
 
@@ -77,12 +94,12 @@ function createRampsLifecycleManager(
    * `app/scripts/lib/ramps/checkout-watch.ts`). Providers then take minutes to
    * settle, so the PENDING -> COMPLETED transition lands squarely in the window
    * where nothing would be polling, leaving the order showing its callback-time
-   * snapshot until the user next opens the wallet. Keep polling until every
-   * order is terminal, the same way pending transactions keep polling while the
-   * UI is closed. A revoked network gate still stops immediately.
+   * snapshot until the user next opens the wallet. Keep polling while an order
+   * is still in flight, the same way pending transactions keep polling while
+   * the UI is closed. A revoked network gate still stops immediately.
    */
   const stopRampsLifecycleWhenSettled = (): void => {
-    if (isPollingAllowed() && hasUnsettledOrders(messengerClient)) {
+    if (isPollingAllowed() && hasInFlightOrders(messengerClient)) {
       return;
     }
     stopRampsLifecycle();

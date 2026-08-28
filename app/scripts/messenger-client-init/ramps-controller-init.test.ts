@@ -279,6 +279,41 @@ describe('RampsControllerInit', () => {
     expect(mockStopOrderPolling).not.toHaveBeenCalled();
   });
 
+  it.each(['PRECREATED', 'UNKNOWN'])(
+    'stops polling on UI close for a %s stub that may never resolve',
+    async (status) => {
+      mockRampsController.state = { orders: [{ status }] };
+      const { api } = RampsControllerInit(getInitRequestMock());
+      await Promise.resolve();
+      await Promise.resolve();
+
+      api?.stopRampsLifecycle?.();
+
+      expect(mockStopOrderPolling).toHaveBeenCalled();
+    },
+  );
+
+  it('runs stale-stub cleanup again after a UI close/open cycle', async () => {
+    mockRampsController.state = { orders: [{ status: 'PRECREATED' }] };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+    const startCallsAfterBoot = mockStartOrderPolling.mock.calls.length;
+
+    // Close: the stub must not hold the lifecycle open, otherwise
+    // `lifecycleStarted` never clears and cleanup can never run again.
+    api?.stopRampsLifecycle?.();
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+
+    // Reopen: lifecycle restarts, so cleanup gets another chance.
+    api?.startRampsLifecycle?.();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(mockStartOrderPolling.mock.calls.length).toBeGreaterThan(
+      startCallsAfterBoot,
+    );
+  });
+
   it('stops polling on UI close once every order is terminal', async () => {
     mockRampsController.state = {
       orders: [{ status: 'COMPLETED' }, { status: 'CANCELLED' }],
