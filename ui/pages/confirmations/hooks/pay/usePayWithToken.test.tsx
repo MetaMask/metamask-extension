@@ -14,6 +14,7 @@ import { selectPaymentOverrideByTransactionId } from '../../../../selectors/tran
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { MONEY_ACCOUNT_DUMMY_BALANCE_FIAT } from './sections/usePayWithMoneyAccountSection';
+import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { usePayWithToken } from './usePayWithToken';
 
 jest.mock('react-redux', () => ({
@@ -31,6 +32,9 @@ jest.mock('./useTransactionPayData', () => ({
 }));
 jest.mock('../../../../selectors/transactionPayController', () => ({
   selectPaymentOverrideByTransactionId: jest.fn(),
+}));
+jest.mock('./useIsMoneyAccountFlagDefault', () => ({
+  useIsMoneyAccountFlagDefault: jest.fn(),
 }));
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
@@ -78,6 +82,9 @@ describe('usePayWithToken', () => {
   const selectPaymentOverrideByTransactionIdMock = jest.mocked(
     selectPaymentOverrideByTransactionId,
   );
+  const useIsMoneyAccountFlagDefaultMock = jest.mocked(
+    useIsMoneyAccountFlagDefault,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -97,6 +104,7 @@ describe('usePayWithToken', () => {
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
+    useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
 
     useSelectorMock.mockImplementation(
       (selector: (state: unknown) => unknown) => selector({}),
@@ -132,6 +140,35 @@ describe('usePayWithToken', () => {
     expect(result.current.balanceUsdFormatted).toBe(
       MONEY_ACCOUNT_DUMMY_BALANCE_FIAT,
     );
+  });
+
+  it('returns Money account display values when the flag default is set and no crypto token is selected', () => {
+    useIsMoneyAccountFlagDefaultMock.mockReturnValue(true);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+      isNative: false,
+    });
+    useTransactionPayRequiredTokensMock.mockReturnValue([PAY_TOKEN as never]);
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.isMoneyAccountSelected).toBe(true);
+    expect(result.current.displayToken).toMatchObject({
+      address: '',
+      symbol: 'Money account',
+    });
+  });
+
+  it('keeps a user-selected crypto token when the flag default is set', () => {
+    useIsMoneyAccountFlagDefaultMock.mockReturnValue(true);
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.isMoneyAccountSelected).toBe(false);
+    expect(result.current.displayToken).toMatchObject({
+      symbol: 'USDC',
+    });
   });
 
   it('uses the withdraw label for perps withdraw', () => {

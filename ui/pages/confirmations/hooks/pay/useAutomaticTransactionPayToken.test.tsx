@@ -21,12 +21,14 @@ import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import type { SetPayTokenRequest } from './types';
 import { usePostQuoteWithdrawTokenFilter } from './useWithdrawTokenFilter';
+import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 
 jest.mock('./useImportPayToken');
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
 jest.mock('./useTransactionPayAvailableTokens');
 jest.mock('./useWithdrawTokenFilter');
+jest.mock('./useIsMoneyAccountFlagDefault');
 jest.mock('../transactions/useTransactionAccountOverride');
 jest.mock('../../../../selectors', () => ({}));
 jest.mock('../../selectors/feature-flags', () => ({
@@ -147,6 +149,9 @@ describe('useAutomaticTransactionPayToken', () => {
     selectMinimumRequiredTokenBalance,
   );
   const useImportPayTokenMock = jest.mocked(useImportPayToken);
+  const useIsMoneyAccountFlagDefaultMock = jest.mocked(
+    useIsMoneyAccountFlagDefault,
+  );
 
   const setPayTokenMock = jest.fn(async () => undefined);
 
@@ -175,6 +180,7 @@ describe('useAutomaticTransactionPayToken', () => {
       isFilterApplied: false,
       isTokenAllowed: () => false,
     });
+    useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
   });
 
   afterEach(() => {
@@ -253,6 +259,20 @@ describe('useAutomaticTransactionPayToken', () => {
     ] as Asset[]);
 
     renderHookWithProvider({ disable: true });
+
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+  });
+
+  it('does not auto-select a crypto token when Money Account is the flag default', () => {
+    useIsMoneyAccountFlagDefaultMock.mockReturnValue(true);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({ transactionType: TransactionType.perpsDeposit });
 
     expect(setPayTokenMock).not.toHaveBeenCalled();
   });

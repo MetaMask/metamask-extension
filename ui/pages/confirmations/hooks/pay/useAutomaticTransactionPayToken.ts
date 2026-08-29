@@ -17,6 +17,7 @@ import {
 } from '../../selectors/feature-flags';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useImportPayToken } from './useImportPayToken';
+import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -45,6 +46,7 @@ export function useAutomaticTransactionPayToken({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
+  const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
   // Batch txs use top-level type `batch`. Prefer the money-account nested type
   // when present — deposits are `[approve, deposit]`, so plain
   // `getTransactionType` would resolve them to `tokenMethodApprove`.
@@ -144,11 +146,15 @@ export function useAutomaticTransactionPayToken({
   );
 
   useEffect(() => {
+    // Deposits auto-select a funding token immediately. Withdraws wait on
+    // post-quote destination enrichment, so they do not race the money-account
+    // override. Skip crypto auto-select when the flag defaults to Money Account.
     if (
       disable ||
       payToken ||
       !transactionId ||
-      isUpdated.current === transactionId
+      isUpdated.current === transactionId ||
+      isDefaultMoneyAccount
     ) {
       return;
     }
@@ -192,6 +198,7 @@ export function useAutomaticTransactionPayToken({
   }, [
     automaticToken,
     disable,
+    isDefaultMoneyAccount,
     isPostQuoteWithdraw,
     payToken,
     preferredToken,
@@ -209,7 +216,7 @@ export function useAutomaticTransactionPayToken({
 
   useEffect(() => {
     const accountKey = `${from ?? ''}:${accountOverride ?? ''}`;
-    if (disable || !from || isPostQuoteWithdraw) {
+    if (disable || !from || isPostQuoteWithdraw || isDefaultMoneyAccount) {
       return;
     }
 
@@ -249,6 +256,7 @@ export function useAutomaticTransactionPayToken({
     disable,
     emptyAccountReselectTimedOut,
     from,
+    isDefaultMoneyAccount,
     isPostQuoteWithdraw,
     setPayToken,
     tokensWithBalance.length,
