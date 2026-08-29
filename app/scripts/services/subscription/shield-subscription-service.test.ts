@@ -16,6 +16,7 @@ import {
   SubscriptionPaymentMethod,
 } from '@metamask/subscription-controller';
 import browser from 'webextension-polyfill';
+import log from 'loglevel';
 import { TransactionType } from '@metamask/transaction-controller';
 import ExtensionPlatform from '../../platforms/extension';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
@@ -1135,6 +1136,36 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard failure paths', 
       PRODUCT_TYPES.SHIELD,
     );
     expect(mockGetSubscriptions).toHaveBeenCalled();
+  });
+
+  it('does not log.error when the user abandons checkout by closing the tab', async () => {
+    const errorSpy = jest.spyOn(log, 'error').mockImplementation(() => {
+      // no-op
+    });
+    const warnSpy = jest.spyOn(log, 'warn').mockImplementation(() => {
+      // no-op
+    });
+
+    mockStartShieldSubscriptionWithCard.mockRejectedValueOnce(
+      new Error(SHIELD_ERROR.tabActionFailed),
+    );
+
+    await expect(
+      subscriptionService.startSubscriptionWithCard({
+        products: [PRODUCT_TYPES.SHIELD],
+        isTrialRequested: false,
+        recurringInterval: RECURRING_INTERVALS.month,
+      }),
+    ).rejects.toThrow(SHIELD_ERROR.tabActionFailed);
+
+    expect(errorSpy).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Shield subscription with card abandoned',
+      SHIELD_ERROR.tabActionFailed,
+    );
+
+    errorSpy.mockRestore();
+    warnSpy.mockRestore();
   });
 });
 
