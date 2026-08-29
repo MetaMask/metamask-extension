@@ -7,7 +7,37 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import type { CaipAssetType } from '@metamask/utils';
-import { getCaipAssetImageUrl } from '../../../../shared/lib/asset-utils';
+import {
+  getCaipAssetImageUrl,
+  getChainIdFromAssetId,
+  isNativeAssetId,
+} from '../../../../shared/lib/asset-utils';
+import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../shared/constants/network';
+
+/**
+ * For a native asset, prefer the icon bundled with the app over a CDN fetch.
+ *
+ * @param assetId - The CAIP-19 asset id to look up a local icon for.
+ */
+const getLocalNativeIconSrc = (assetId: CaipAssetType): string | undefined => {
+  if (!isNativeAssetId(assetId)) {
+    return undefined;
+  }
+  const chainId = getChainIdFromAssetId(assetId);
+  if (!chainId) {
+    return undefined;
+  }
+  try {
+    const hexChainId = convertCaipToHexChainId(chainId);
+    return CHAIN_ID_TOKEN_IMAGE_MAP[
+      hexChainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+    ];
+  } catch {
+    // Non-EVM chain id - fall through to the CDN lookup.
+    return undefined;
+  }
+};
 
 export type ActivityListItemAvatarTokens = readonly (string | undefined)[];
 
@@ -20,11 +50,15 @@ const ActivityTokenAvatar = ({
   assetId,
   className,
 }: Readonly<{ assetId: string; className?: string }>) => {
+  const src =
+    getLocalNativeIconSrc(assetId as CaipAssetType) ??
+    getCaipAssetImageUrl(assetId as CaipAssetType);
+
   return (
     <AvatarToken
       size={AvatarTokenSize.Md}
       name={fallbackText}
-      src={getCaipAssetImageUrl(assetId as CaipAssetType)}
+      src={src}
       className={classnames(className)}
       imageProps={{ className: 'bg-alternative' }}
       data-testid="activity-list-item-avatar-token"

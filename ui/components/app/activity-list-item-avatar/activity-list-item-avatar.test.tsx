@@ -7,6 +7,8 @@ import {
 
 const ethTokenAssetId = 'eip155:1/slip44:60';
 const usdcAssetId = 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const chzFallbackAssetId =
+  'eip155:88888/erc20:0x0000000000000000000000000000000000000000';
 
 function renderAvatar(tokens: ActivityListItemAvatarTokens) {
   return render(<ActivityListItemAvatar tokens={tokens} />);
@@ -49,5 +51,32 @@ describe('ActivityListItemAvatar', () => {
     expect(
       screen.getByTestId('activity-list-item-avatar-fallback'),
     ).toBeInTheDocument();
+  });
+
+  it('uses the bundled local icon for a native asset, not the CDN', () => {
+    renderAvatar([ethTokenAssetId]);
+
+    const img = screen
+      .getByTestId('activity-list-item-avatar-token')
+      .querySelector('img');
+    expect(img?.getAttribute('src')).toBe('./images/eth_logo.svg');
+  });
+
+  it('uses the bundled local icon for a native asset on a custom network', () => {
+    renderAvatar([chzFallbackAssetId]);
+
+    const img = screen
+      .getByTestId('activity-list-item-avatar-token')
+      .querySelector('img');
+    expect(img?.getAttribute('src')).not.toContain('static.cx.metamask.io');
+  });
+
+  it('falls back to the CDN for a non-native asset', () => {
+    renderAvatar([usdcAssetId]);
+
+    const img = screen
+      .getByTestId('activity-list-item-avatar-token')
+      .querySelector('img');
+    expect(img?.getAttribute('src')).toContain('static.cx.metamask.io');
   });
 });

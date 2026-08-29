@@ -22,10 +22,14 @@ import {
 
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
+  SLIP44_ASSET_NAMESPACE,
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
   type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
-import { POLYGON_NATIVE_TOKEN_ADDRESS } from '../constants/transaction';
+import {
+  NATIVE_TOKEN_ADDRESS,
+  POLYGON_NATIVE_TOKEN_ADDRESS,
+} from '../constants/transaction';
 import getFetchWithTimeout from './fetch-with-timeout';
 import { decimalToPrefixedHex } from './conversion.utils';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
@@ -117,6 +121,44 @@ export const getNativeAssetId = (
     return getNativeAssetForChainId(chainId).assetId;
   } catch {
     return undefined;
+  }
+};
+
+/**
+ * Builds a synthetic native asset id (`<chainId>/erc20:<zero address>`) for
+ * chains missing from the swaps map, so callers that already know an asset
+ * is native (e.g. `assetType === 'native'`) have something to key off. EVM
+ * only - returns `undefined` for non-EVM chains.
+ *
+ * @param chainId - The chain id, in CAIP-2 format.
+ * @returns The synthetic native asset id, or `undefined` for non-EVM chains.
+ */
+export const getFallbackNativeAssetId = (
+  chainId: CaipChainId,
+): CaipAssetType | undefined =>
+  isNonEvmChainId(chainId)
+    ? undefined
+    : (`${chainId}/erc20:${NATIVE_TOKEN_ADDRESS}` as CaipAssetType);
+
+/**
+ * Determines whether a CAIP-19 asset id is a chain's native currency, purely
+ * from its shape: the `slip44` namespace, or an EVM zero address.
+ *
+ * @param assetId - The CAIP-19 asset id to check.
+ * @returns Whether the asset id represents a native currency.
+ */
+export const isNativeAssetId = (assetId?: CaipAssetType): boolean => {
+  if (!assetId) {
+    return false;
+  }
+  try {
+    const { assetNamespace, assetReference } = parseCaipAssetType(assetId);
+    return (
+      assetNamespace === SLIP44_ASSET_NAMESPACE ||
+      isNativeAddress(assetReference)
+    );
+  } catch {
+    return false;
   }
 };
 
