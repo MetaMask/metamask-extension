@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed spam tokens persisting in the wallet by cleaning up low-occurrence ERC-20 tokens on unlock (#45844)
+- Fixed bridge quotes to sort by total cost and display cost, so the lowest-cost quote is ranked first (#45875)
 
 ## [13.46.0]
 
