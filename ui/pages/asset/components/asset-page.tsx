@@ -48,7 +48,6 @@ import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { isArcUsdcForBridge } from '../../../components/app/assets/enablement/arc';
-import { ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS } from '../../../components/app/musd/musd-events';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
   TokenFiatDisplayInfo,
@@ -69,7 +68,7 @@ import {
   getIsBridgeChain,
   getIsSwapsChain,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getShowFiatInTestnets,
 } from '../../../selectors';
@@ -86,10 +85,7 @@ import {
   getMultichainIsTron,
 } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import {
-  selectIsMerklClaimingEnabled,
-  selectIsMusdConversionFlowEnabled,
-} from '../../../selectors/musd';
+import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { useSpendableBalance } from '../hooks/useSpendableBalance';
@@ -97,22 +93,19 @@ import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
-import {
-  useMusdCtaVisibility,
-  useMusdMerklPosition,
-} from '../../../hooks/musd';
+import { useMusdCtaVisibility } from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
+import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { AssetActivateCard } from './asset-activation-card';
 import { SpendableBalanceSection } from './spendable-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
-import { MusdBonusSection } from './musd-bonus-section';
 import { MusdPositionSection } from './musd-position-section';
 import {
   AssetPageSecurityTrustBanner,
@@ -200,17 +193,14 @@ const AssetPage = ({
     useMusdCtaVisibility();
 
   const isMusdFlowEnabled = useSelector(selectIsMusdConversionFlowEnabled);
-  const isMerklClaimingEnabled = useSelector(selectIsMerklClaimingEnabled);
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = useMemo(
-    () => completedMetaMetricsOnboarding && isOptedIn,
-    [completedMetaMetricsOnboarding, isOptedIn],
+    () => consentDecisionMade && isOptedIn,
+    [consentDecisionMade, isOptedIn],
   );
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const analyticsId = useSelector(getAnalyticsId);
@@ -404,11 +394,6 @@ const AssetPage = ({
     [type, isEvm, asset, isMusdFlowEnabled],
   );
 
-  const {
-    aggregatedFiat: aggregatedMusdFiat,
-    hasAnyBalance: hasAnyMusdBalance,
-  } = useMusdMerklPosition(isMusdAssetPage);
-
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
   const handleOpenMarketClosedModal = useCallback(() => {
     setIsMarketClosedModalOpen(true);
@@ -419,7 +404,10 @@ const AssetPage = ({
       assetId={caipAssetId as CaipAssetType}
       token={securityTrustToken}
     >
-      <Box className="asset__content">
+      <Box
+        className="asset__content"
+        data-testid="parent-selector-asset-details"
+      >
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
@@ -521,33 +509,11 @@ const AssetPage = ({
                 fiatValue={tokenFiatAmount}
                 showFiat={showFiat}
               />
-              {isMerklClaimingEnabled ? (
-                <>
-                  <Box
-                    marginTop={5}
-                    marginBottom={5}
-                    className="asset-page__divider"
-                  />
-                  <MusdBonusSection
-                    chainId={chainId as Hex}
-                    tokenAddress={(asset as { address: Hex }).address}
-                    positionFiatValue={showFiat ? aggregatedMusdFiat : null}
-                    showFiat={showFiat}
-                    hasPositiveBalance={hasAnyMusdBalance}
-                  />
-                  <Box
-                    marginTop={5}
-                    marginBottom={5}
-                    className="asset-page__divider"
-                  />
-                </>
-              ) : (
-                <Box
-                  marginTop={5}
-                  marginBottom={5}
-                  className="asset-page__divider"
-                />
-              )}
+              <Box
+                marginTop={5}
+                marginBottom={5}
+                className="asset-page__divider"
+              />
             </>
           ) : null}
           {!isMusdAssetPage && spendableBalanceData.hasSpendableBalance ? (
@@ -572,7 +538,6 @@ const AssetPage = ({
                   key={`${symbol}-${address}`}
                   token={tokenWithFiatAmount as TokenWithFiatAmount}
                   safeChains={safeChains}
-                  musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
                 />
               )}
             </>
@@ -729,6 +694,14 @@ const AssetPage = ({
           onClose={() => setIsMarketClosedModalOpen(false)}
         />
       </Box>
+      {/* Sibling of `asset__content` so it is a direct child of the scrolling
+      container, which is what lets it stick to the bottom of the viewport. */}
+      <AssetStickyActions
+        asset={updatedAsset}
+        buyAssetId={caipAssetId as CaipAssetType}
+        isMarketClosed={isMarketClosed}
+        isSigningEnabled={isSigningEnabled}
+      />
     </AssetPageSecurityTrustProvider>
   );
 };
