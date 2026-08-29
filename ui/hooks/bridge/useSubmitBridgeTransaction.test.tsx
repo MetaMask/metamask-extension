@@ -620,6 +620,12 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         tokenSecurityTypeDestination: null,
         activeAbTests: undefined,
         inputPrimaryDenomination: 'fiat_value',
+        quotesReceivedContext: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          custom_slippage: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          slippage_limit: 0,
+        }),
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {

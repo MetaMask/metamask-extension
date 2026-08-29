@@ -191,7 +191,14 @@ import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import { createDappSwapMiddleware } from './lib/dapp-swap/dapp-swap-middleware';
-import { createTrustSignalsMiddleware } from './lib/trust-signals/trust-signals-middleware';
+import {
+  createAddressScanMiddleware,
+  createOriginScanMiddleware,
+} from './lib/trust-signals/trust-signals-middleware';
+import {
+  createCaipOriginScanGate,
+  createEip1193OriginScanGate,
+} from './lib/trust-signals/trust-signals-util';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -385,9 +392,11 @@ import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-s
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
+import { ChompApiServiceInit } from './messenger-client-init/chomp-api-service-init';
 import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
 import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
 import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
+import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
@@ -668,9 +677,11 @@ export default class MetamaskController extends EventEmitter {
       ClientController: ClientControllerInit,
       ConfigRegistryController: ConfigRegistryControllerInit,
       ConfigRegistryApiService: ConfigRegistryApiServiceInit,
+      ChompApiService: ChompApiServiceInit,
       MoneyAccountApiDataService: MoneyAccountApiDataServiceInit,
       MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
+      MoneyAccountController: MoneyAccountControllerInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
@@ -5398,13 +5409,20 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(
-      createTrustSignalsMiddleware(
+      createOriginScanMiddleware(
+        this.phishingController,
+        this.preferencesController,
+        createEip1193OriginScanGate(this.getPermittedAccounts.bind(this)),
+        sender?.url,
+      ),
+    );
+
+    engine.push(
+      createAddressScanMiddleware(
         this.networkController,
         this.appStateController,
         this.phishingController,
         this.preferencesController,
-        this.getPermittedAccounts.bind(this),
-        sender?.url,
       ),
     );
 
@@ -5787,6 +5805,25 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(multichainMethodCallValidatorMiddleware);
 
+    // Above the Multichain API handlers on purpose. `wallet_createSession` and
+    // `wallet_getSession` are answered there and never reach the rest of the
+    // stack, so this is the only position from which the connect-time scan can
+    // see them. It also leaves room to cover non-EVM scopes, which terminate
+    // during the `wallet_invokeMethod` unwrap.
+    engine.push(
+      createOriginScanMiddleware(
+        this.phishingController,
+        this.preferencesController,
+        createCaipOriginScanGate((requestOrigin) =>
+          this.permissionController.hasPermission(
+            requestOrigin,
+            Caip25EndowmentPermissionName,
+          ),
+        ),
+        sender?.url,
+      ),
+    );
+
     // Handles MultiChain API methods (e.g., `wallet_invokeMethod`,
     // `wallet_createSession`). The `wallet_invokeMethod` handler unwraps inner
     // requests and forwards them via `next()`, where they are picked up by
@@ -5894,6 +5931,19 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
         this.getSecurityAlertsConfig.bind(this),
+      ),
+    );
+
+    // Placed after the `wallet_invokeMethod` unwrap so it sees the inner method
+    // under its EIP-1193 name, with `networkClientId` already resolved from the
+    // request's own CAIP scope. Only EVM requests get this far; the origin scan
+    // that has to cover the rest runs above the Multichain API handlers.
+    engine.push(
+      createAddressScanMiddleware(
+        this.networkController,
+        this.appStateController,
+        this.phishingController,
+        this.preferencesController,
       ),
     );
 

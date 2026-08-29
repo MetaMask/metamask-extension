@@ -115,7 +115,7 @@ const expectedWarningAlert = {
   isBlocking: false,
   key: 'spenderTrustSignalWarning',
   message: 'alertMessageAddressTrustSignal',
-  reason: 'nameModalTitleWarning',
+  reason: 'alertReasonAddressTrustSignalWarning',
   severity: Severity.Warning,
 };
 
@@ -125,7 +125,7 @@ const expectedMaliciousAlert = {
   isBlocking: false,
   key: 'spenderTrustSignalMalicious',
   message: 'alertMessageAddressTrustSignalMalicious',
-  reason: 'nameModalTitleMalicious',
+  reason: 'alertReasonAddressTrustSignalMalicious',
   severity: Severity.Danger,
 };
 

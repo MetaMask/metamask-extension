@@ -896,24 +896,12 @@
     "message": "Naibenta ang $1",
     "description": "$1 is the token symbol"
   },
-  "activity_receive_failed_description": {
-    "message": "Mula kay/sa: $1",
-    "description": "$1 is the shortened sender address"
-  },
   "activity_receive_failed_title": {
     "message": "Nabigong matanggap"
-  },
-  "activity_receive_pending_description": {
-    "message": "Mula kay/sa: $1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "Tinatanggap ang $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_receive_success_description": {
-    "message": "Mula kay/sa: $1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "Natanggap ang $1",
@@ -962,24 +950,12 @@
     "message": "Naibenta ang $1",
     "description": "$1 is the token symbol"
   },
-  "activity_send_failed_description": {
-    "message": "Para kay/sa: $1",
-    "description": "$1 is the shortened recipient address"
-  },
   "activity_send_failed_title": {
     "message": "Nabigong ipadala"
-  },
-  "activity_send_pending_description": {
-    "message": "Para kay/sa: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "Ipinapadala ang $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_send_success_description": {
-    "message": "Para kay/sa: $1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "Nagpadala ng $1",
@@ -1291,7 +1267,7 @@
     "message": "Naidagdag"
   },
   "addedProtectionDescription": {
-    "message": "Nakikipag-ugnayan ka sa hindi kilalang address. Nakakatulong ito na maiwasan ang mga mapaminsalang transaksyon."
+    "message": "Dahil nakikipag-ugnayan ka sa hindi kilalang address, mapipigilan ng proteksyon ang ilang mapaminsalang transaksyon."
   },
   "addedProtectionIncludesNetworkFee": {
     "message": "May kasamang $1 para sa karagdagang proteksyon",
@@ -1523,6 +1499,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "Hindi sinusuportahan ang wallet"
   },
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "Hindi masuri ang balanse ng Perps mo. Subukan muli."
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "Unang interaksyon"
   },
@@ -1555,6 +1534,9 @@
   },
   "alertReasonPendingTransactions": {
     "message": "Nakabinbing transaksyon"
+  },
+  "alertReasonPerpsWithdrawBalanceUnavailable": {
+    "message": "Hindi available ang balanse"
   },
   "alertReasonSignIn": {
     "message": "Kahina-hinalang kahilingan sa pag-sign in"
@@ -2001,6 +1983,78 @@
   },
   "blockaid": {
     "message": "Blockaid"
+  },
+  "blockaidAlertModalMessage": {
+    "message": "Nakita ng mga partner sa seguridad ang mga signal ng matinding panganib sa $1 na ito. Kapag nagpatuloy ka, hindi na mababawi ang iyong mga pondo.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request"
+  },
+  "blockaidAlertModalMessageWithAmount": {
+    "message": "Nakita ng mga partner sa seguridad ang mga signal ng matinding panganib sa $1 na ito. Kapag nagpatuloy ka, hindi na mababawi ang iyong $2.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request; $2 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionApproveFarming": {
+    "message": "Binibigyan mo ng pahintulot ang address na-flag ng mga partner sa seguridad na ilipat ang mga asset mo."
+  },
+  "blockaidDescriptionErrored": {
+    "message": "Hindi namin makumpleto ang pagsusuri sa kaligtasan na ito. Magpatuloy lang kung pinagkakatiwalaan mo ang kaugnay na site at mga address."
+  },
+  "blockaidDescriptionHighRiskSignature": {
+    "message": "Na-flag ng mga partner sa seguridad ang lagda na ito bilang matinding panganib. Ang paglagda ay maaaring mag-awtorisa ng mga aksyon sa iyong mga asset nang wala ang iyong pahintulot."
+  },
+  "blockaidDescriptionMaliciousDomain": {
+    "message": "Na-flag ng mga partner sa seguridad ang site na ito bilang mapaminsala. Kung isa itong scam, hindi na mababawi ang mga pondo mo."
+  },
+  "blockaidDescriptionMaliciousDomainWithAmount": {
+    "message": "Na-flag ng mga partner sa seguridad ang site na ito bilang mapaminsala. Kung isa itong scam, hindi na mababawi ang $1 mo.",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionMarketplaceFarming": {
+    "message": "Binibigyan mo ng pahintulot ang address na-flag ng mga partner sa seguridad na ilipat ang mga asset mo na naka-list sa $1.",
+    "description": "$1 is a marketplace name such as OpenSea or Blur"
+  },
+  "blockaidDescriptionRiskSignals": {
+    "message": "May nakitang mga signal ng panganib ang mga partner sa seguridad sa kahilingan na ito. Suriin bago magpatuloy."
+  },
+  "blockaidDescriptionTransferFarming": {
+    "message": "Magpapadala ka ng mga asset sa isang address na na-flag ng mga partner sa seguridad. Kung isa itong scam, hindi na mababawi ang mga pondo mo."
+  },
+  "blockaidDescriptionTransferFarmingWithAmount": {
+    "message": "Magpapadala ka ng mga asset sa isang address na na-flag ng mga partner sa seguridad. Kung isa itong scam, hindi na mababawi ang $1 mo.",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidRequestTypeApproval": {
+    "message": "pag-apruba",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeRequest": {
+    "message": "humiling",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeSignature": {
+    "message": "lagda",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeTransfer": {
+    "message": "maglipat",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidTitleHighRiskApproval": {
+    "message": "Pag-apruba sa matinding panganib"
+  },
+  "blockaidTitleHighRiskSignature": {
+    "message": "Lagda sa matinding panganib"
+  },
+  "blockaidTitleHighRiskTransfer": {
+    "message": "Pag-apruba sa matinding panganib"
+  },
+  "blockaidTitleMayNotBeSafe": {
+    "message": "Hindi available ang pagsusuri sa seguridad"
+  },
+  "blockaidTitleRiskSignalsDetected": {
+    "message": "Natukoy ang mga signal ng panganib"
+  },
+  "blockaidTitleSiteFlaggedUnsafe": {
+    "message": "Na-flag ang site bilang hindi ligtas"
   },
   "blockies": {
     "message": "Mga Blocky"
@@ -2734,6 +2788,9 @@
   "confirmationAlertDetails": {
     "message": "Para protektahan ang iyong mga asset, iminumungkahi namin na tanggihan mo ang kahilingan."
   },
+  "confirmationAlertModalTitleDescription": {
+    "message": "Kahilingan sa matinding panganib"
+  },
   "confirmed": {
     "message": "Nakumpirma"
   },
@@ -3075,6 +3132,9 @@
   },
   "dappSwapRewardText": {
     "message": "Makakuha ng $1 (na) point"
+  },
+  "dapps": {
+    "message": "Mga dapp"
   },
   "darkTheme": {
     "message": "Madilim"
@@ -5108,10 +5168,6 @@
   "memo": {
     "message": "memo"
   },
-  "merklRewardsClaimBonus": {
-    "message": "I-claim ang bonus",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "Nabigo ang pag-claim ng iyong mUSD bonus",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5123,10 +5179,6 @@
   "merklRewardsToastSuccess": {
     "message": "Ang mUSD na bonus mo ay narito na!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "Hindi inaasahang error. Pakisubukan muli.",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "Mensahe"
@@ -5215,11 +5267,23 @@
   "moneyActivity": {
     "message": "Aktibidad"
   },
+  "moneyActivityPlaceholderDescription": {
+    "message": "Lilitaw ang aktibidad mo sa Money dito."
+  },
   "moneyAdd": {
     "message": "Idagdag"
   },
+  "moneyApy": {
+    "message": "$1 APY"
+  },
   "moneyBalanceUnavailable": {
     "message": "Hindi available ang balanse"
+  },
+  "moneyBenefitAutoEarn": {
+    "message": "Awtomatikong kumita ng yield sa balanse mo sa Money"
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Awtomatikong kumita ng hanggang ~$1 APY"
   },
   "moneyBenefitLiquidity": {
     "message": "Makakuha ng ganap na liquidity nang walang lockup, kaya maaari kang mag-trade o mag-withdraw anumang oras"
@@ -5233,17 +5297,69 @@
   "moneyBenefits": {
     "message": "Mga Benepisyo"
   },
+  "moneyEarnApyTitle": {
+    "message": "Kumita ng hanggang $1 APY"
+  },
   "moneyEarnOnCrypto": {
     "message": "Kumita sa crypto mo"
+  },
+  "moneyEarnOnCryptoDescription": {
+    "message": "Tingnan kung paano maaaring lumago ang pera mo sa paglipas ng panahon sa pamamagitan ng pag-convert ng iyong crypto sa mUSD."
+  },
+  "moneyEarnOnCryptoDescriptionMiddle": {
+    "message": "sa mga asset at kikita ka ng hanggang"
+  },
+  "moneyEarnOnCryptoDescriptionPrefix": {
+    "message": "Idagdag ang iyong"
+  },
+  "moneyEarnOnCryptoDescriptionSuffix": {
+    "message": "sa isang taon."
+  },
+  "moneyEarnOnCryptoNoFee": {
+    "message": "Walang bayarin"
+  },
+  "moneyEarnTitle": {
+    "message": "Kumita sa iyong balanse"
+  },
+  "moneyEarnings": {
+    "message": "Mga Kita"
+  },
+  "moneyExploreBenefits": {
+    "message": "Alamin ang mga benepisyo mo"
   },
   "moneyFundDescription": {
     "message": "Pondohan ang iyong Money account at panoorin na lumaki ang balanse mo."
   },
+  "moneyFundDescriptionWithApy": {
+    "message": "Pondohan ang iyong Money account at panoorin na lumaki ang balanse mo ng hanggang $1 APY."
+  },
   "moneyHowItWorks": {
     "message": "Paano ito gumagana"
   },
+  "moneyHowItWorksDescription": {
+    "message": "Magdagdag ng mUSD at ang iyong balanse na sinusuportahan ng dolyar ay handa na para gastusin, i-trade, o ipadala anumang oras."
+  },
+  "moneyHowItWorksDescriptionWithApy": {
+    "message": "Magdagdag ng mUSD at kumita ng hanggang $1. Ang iyong balanse ay sinusuportahan ng dolyar at handa na para gastusin, i-trade, o ipadala anumang oras.",
+    "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowYourMoneyGrows": {
+    "message": "Paano lumalago ang pera mo"
+  },
   "moneyLearnMore": {
     "message": "Matuto pa."
+  },
+  "moneyLifetime": {
+    "message": "Panghabambuhay"
+  },
+  "moneyMeetMusd": {
+    "message": "Kilalanin ang mUSD"
+  },
+  "moneyMoreInformation": {
+    "message": "Higit pang impormasyon"
+  },
+  "moneyMoreOptions": {
+    "message": "Iba pang mga opsyon"
   },
   "moneyMusd": {
     "message": "mUSD"
@@ -5330,54 +5446,6 @@
     "message": "Gustong gumamit ng $1 ng $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "Naipon na susunod na bonus",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "I-claim ang $1 na bonus",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "Tinatayang taunang bonus",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "Ang impormasyon ng iyong bonus",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "Ang pagtataya sa kikitain mo sa isang taon batay sa kasalukuyan mong balanse at rate. Nag-iiba-iba ang rate at posibleng magbago.",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "Matuto pa.",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "Ang kabuuang bonus na na-claim mo mula ng magsimula ka.",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "$1% taunang bonus na kinita mo sa pagho-hold ng mUSD. Pwedeng mo itong i-claim sa Linea araw-araw. $2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "Na-claim ang taunang bonus",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "Walang naipon na bonus",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "$1% bonus",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "Iyong bonus",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "Araw-araw na bonus",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5441,14 +5509,6 @@
   "musdBuyMusd": {
     "message": "Bumili ng mUSD"
   },
-  "musdClaimSendingTo": {
-    "message": "Ipinapadala sa",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "Ipinapadala sa $1",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "I-claim ang bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5511,10 +5571,6 @@
     "message": "I-save lamang ang mga address na pinagkakatiwalaan mo.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Natukoy ito bilang mapaminsala. Inirerekomenda namin na huwag makipag-ugnayan sa address na ito.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Kung alam mo ang address na ito, bigyan ito ng palayaw para makilala ito sa hinaharap.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5526,10 +5582,6 @@
   "nameInstructionsSaved": {
     "message": "Nagdagdag ka ng palayaw para sa address na ito noon. Maaari mong i-edit o tingnan ang iba pang mungkahing palayaw.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Hindi namin maberipika ang address na ito. Maaring ito ay bago o hindi pa nabeberipika. Magtakda ng personal na display name para makilala ito sa susunod.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Palayaw",
@@ -5558,10 +5610,6 @@
   "nameModalTitleVerified": {
     "message": "Na-verify na address",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Kailangang suriin ang address",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Minungkahi ng $1",
@@ -6080,6 +6128,12 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Hindi ka pa nakatanggap ng anumang notipikasyon."
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "Mga kahilingan, pag-apruba, at mga update sa sesyon ng koneksyon ng CLI para sa Agent wallet"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "Agent wallet"
+  },
   "notificationsSettingsBoxError": {
     "message": "Nagkaproblema. Subukang muli."
   },
@@ -6400,6 +6454,10 @@
   "passkeyErrorNotEnrolled": {
     "message": "Hindi naka-set up para sa wallet na ito ang $1. I-on ang $1 sa Mga Setting.",
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotSupported": {
+    "message": "Hindi sinusuportahan ang passkey",
+    "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "Pumalya ang pag-set up ng $1. Subukan ulit.",
@@ -6845,6 +6903,9 @@
   "permissions": {
     "message": "Mga Pahintulot"
   },
+  "permissionsPageEmptyDescription": {
+    "message": "Kapag ibinigay mo ang mga pahintulot, lilitaw dito ang mga detalye."
+  },
   "permissionsPageEmptyTitle": {
     "message": "Walang makikita rito"
   },
@@ -6892,9 +6953,6 @@
   },
   "perpsAddFunds": {
     "message": "Magdagdag ng pondo"
-  },
-  "perpsAddFundsDescription": {
-    "message": "Magdagdag ng mga pondo para simulan ang pagti-trade ng perpetual na mga kontrata na may leverage"
   },
   "perpsAddMargin": {
     "message": "Magdagdag ng margin"
@@ -7736,12 +7794,6 @@
     "message": "Matagumpay na na-update ang TP/SL",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
-  "perpsTotalBalance": {
-    "message": "Kabuuang balanse"
-  },
-  "perpsTradePerps": {
-    "message": "Mag-trade ng perps"
-  },
   "perpsTrades": {
     "message": "Mga Trade"
   },
@@ -8259,6 +8311,9 @@
   "rampsOrderToastSuccessTitle": {
     "message": "Matagumpay na nabili",
     "description": "Title for the successful ramp buy order toast"
+  },
+  "rampsPayWith": {
+    "message": "Magbayad gamit ang"
   },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"
@@ -11668,6 +11723,10 @@
   },
   "value": {
     "message": "Halaga"
+  },
+  "variationalReferralSubtitle": {
+    "message": "Makakuha ng +15% Omni point at Silver tier sa loob ng 90 araw na may kasamang MetaMask referral code.",
+    "description": "The subtitle of the Variational referral confirmation screen"
   },
   "version": {
     "message": "Bersyon"

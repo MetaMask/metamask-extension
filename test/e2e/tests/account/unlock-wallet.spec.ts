@@ -5,7 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import {
   lockAndWaitForLoginPage,
   lockAndWaitForPasskeyUnlockPage,
@@ -21,7 +21,7 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 

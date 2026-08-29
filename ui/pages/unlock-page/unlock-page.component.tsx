@@ -671,6 +671,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
         backgroundColor={BoxBackgroundColor.BackgroundDefault}
         className="w-full"
         paddingBottom={12} // offset header to center content
+        data-testid="parent-selector-login-page"
       >
         {showResetPasswordModal && (
           <ResetPasswordModal

@@ -10,7 +10,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { login } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 
 describe('Update Network:', function (this: Suite) {
   it('update network details and validate the ui elements', async function () {

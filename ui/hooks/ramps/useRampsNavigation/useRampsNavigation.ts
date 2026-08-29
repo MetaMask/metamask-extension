@@ -26,6 +26,7 @@ import {
 } from '../../../selectors/rampsController';
 import useRamps from '../useRamps/useRamps';
 import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
+import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -58,7 +59,10 @@ function isCatalogSettled(
     !providers.isLoading &&
     !tokens.isLoading &&
     !providers.error &&
-    !tokens.error
+    !tokens.error &&
+    tokens.data !== null &&
+    Array.isArray(tokens.data.topTokens) &&
+    Array.isArray(tokens.data.allTokens)
   );
 }
 
@@ -84,7 +88,8 @@ function isAssetSupported(
     ...(tokensData.allTokens ?? []),
   ];
   const match = catalog.find(
-    (token) => token.assetId.toLowerCase() === assetId.toLowerCase(),
+    (token) =>
+      normalizeAssetIdForApi(token.assetId) === normalizeAssetIdForApi(assetId),
   );
   return Boolean(match) && match?.tokenSupported !== false;
 }
