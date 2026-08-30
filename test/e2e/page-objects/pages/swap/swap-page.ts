@@ -11,6 +11,7 @@ export type SwapOptions = {
 };
 
 export type SwapReviewOptions = {
+  exchangeRate?: string;
   swapFrom: string;
   swapTo: string;
   swapToAmount: string;
@@ -352,7 +353,9 @@ class SwapPage {
     const toAmountText = await toAmount.getAttribute('value');
     assert.equal(toAmountText, options.swapToAmount);
     await this.driver.waitForSelector({
-      text: `1 ${options.swapFrom} = ${options.swapToAmount} ${options.swapTo}`,
+      text: `1 ${options.swapFrom} = ${
+        options.exchangeRate ?? options.swapToAmount
+      } ${options.swapTo}`,
       tag: 'p',
     });
     await this.driver.waitForSelector(this.rateMessage);

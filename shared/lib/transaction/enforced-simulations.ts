@@ -2,9 +2,11 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { isAddressScanSupportedChainId } from '@metamask/phishing-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import {
   CachedScanAddressResponse,
@@ -132,10 +134,13 @@ export function getEnforcedSimulationsSlippageBasisPoints(
 /**
  * Determines whether a transaction is eligible for enforced simulations.
  *
- * Also requires that at least one recipient address is loaded and not
- * trusted, based on cached trust signal scan results keyed by chain and
- * address. A recipient with no cache entry, or one still loading, does not
- * disqualify the transaction; only a cached non-Trusted verdict does.
+ * Also requires that Blockaid address screening supports the chain. On
+ * unsupported chains, `scanAddress` returns Error without hitting the API;
+ * that must not turn enforcement on. Then requires that at least one
+ * recipient address is loaded and not trusted, based on cached trust signal
+ * scan results keyed by chain and address. A recipient with no cache entry,
+ * or one still loading, does not disqualify the transaction; only a cached
+ * non-Trusted verdict does.
  *
  * @param transactionMeta - The transaction metadata.
  * @param state - Trust signal state and EIP-7702 supported chains.
@@ -145,7 +150,11 @@ export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, simulationData, type } = transactionMeta;
+  const { chainId, origin, simulationData, type } = transactionMeta;
+
+  if (!origin || origin === ORIGIN_METAMASK) {
+    return false;
+  }
 
   if (
     !state.eip7702SupportedChains?.some(
@@ -167,6 +176,14 @@ export function isEnforcedSimulationsEligible(
   if (isEnforcedSimulationsForceEnabled()) {
     log('Eligible - force enabled', { type });
     return true;
+  }
+
+  if (!chainId || !isAddressScanSupportedChainId(chainId)) {
+    log('Not eligible - address screening does not support chain', {
+      chainId,
+      type,
+    });
+    return false;
   }
 
   if (isTrusted(transactionMeta, state)) {
@@ -193,15 +210,18 @@ function isTrusted(
   const { chainId, type, txParams, txParamsOriginal, nestedTransactions } =
     transactionMeta;
 
-  // Trust verdicts are cache-driven on every chain: only a cached non-Trusted
-  // verdict disqualifies a recipient, and chains the Security Alerts API
-  // cannot screen resolve to ErrorResult once scanned, which is non-Trusted
-  // and therefore enforces.
+  // Trust verdicts are cache-driven. Only a cached non-Trusted verdict
+  // disqualifies a recipient. Unsupported chains are excluded earlier in
+  // isEnforcedSimulationsEligible, so an ErrorResult here is a scan failure
+  // on a supported chain (timeout / API error), not "this chain isn't
+  // supported".
   //
   // Recipients that no scan path covers stay cache misses and are treated as
-  // trusted here. The trust-signals middleware only scans a transaction's own
-  // `to`, so nested `wallet_sendCalls` recipients are never scanned, and
-  // nothing is scanned at all when the user has security alerts disabled.
+  // trusted here. The trust-signals middleware scans dapp `eth_sendTransaction`
+  // and `wallet_sendCalls` requests (including each nested call's `to`), but
+  // nothing is scanned when the user has security alerts disabled, and the
+  // outer batch target (`txParamsOriginal.to`, the upgraded EOA for a 7702
+  // batch) is never scanned, so its cache miss never disqualifies.
   if (!chainId) {
     return false;
   }

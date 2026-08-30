@@ -8,9 +8,12 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  ButtonIcon as DsButtonIcon,
-  ButtonIconSize as DsButtonIconSize,
-  IconName as DsIconName,
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import {
@@ -32,9 +35,6 @@ import {
   Box,
   ButtonBase,
   ButtonBaseSize,
-  Icon,
-  IconName,
-  IconSize,
   Popover,
   PopoverPosition,
   Text,
@@ -104,6 +104,7 @@ type AssetListControlBarProps = {
    * menu containing only a "Refresh list" action that invokes this callback.
    */
   onRefresh?: () => void;
+  'data-testid'?: string;
 };
 
 const AssetListControlBar = ({
@@ -112,6 +113,7 @@ const AssetListControlBar = ({
   showSortControl = true,
   onNetworkSelect,
   onRefresh,
+  'data-testid': dataTestId,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -379,8 +381,20 @@ const AssetListControlBar = ({
     closePopover();
   };
 
+  let networkFilterTextColor = TextColor.textDefault;
+  if (isNetworkSwitchPending) {
+    networkFilterTextColor = TextColor.transparent;
+  } else if (isSingleNetworkFilterSelected) {
+    networkFilterTextColor = TextColor.primaryDefault;
+  }
+
   return (
-    <Box className="asset-list-control-bar" marginLeft={4} marginRight={4}>
+    <Box
+      className="asset-list-control-bar"
+      marginLeft={4}
+      marginRight={4}
+      data-testid={dataTestId}
+    >
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <ButtonBase
           data-testid="sort-by-networks"
@@ -388,8 +402,6 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
-          startIconName={IconName.Filter}
-          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
           loading={isNetworkSwitchPending}
           disabled={isNetworkSwitchPending}
           backgroundColor={
@@ -407,13 +419,20 @@ const AssetListControlBar = ({
           ellipsis
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+            {!isNetworkSwitchPending && (
+              <Icon
+                name={IconName.Filter}
+                size={IconSize.Md}
+                color={
+                  isSingleNetworkFilterSelected
+                    ? IconColor.PrimaryDefault
+                    : IconColor.IconDefault
+                }
+              />
+            )}
             <Text
               variant={TextVariant.bodySmMedium}
-              color={
-                isSingleNetworkFilterSelected
-                  ? TextColor.primaryDefault
-                  : TextColor.textDefault
-              }
+              color={networkFilterTextColor}
               ellipsis
             >
               {networkButtonText}
@@ -434,15 +453,15 @@ const AssetListControlBar = ({
               distance={20}
               disabled={isTokenSortPopoverOpen}
             >
-              <DsButtonIcon
+              <ButtonIcon
                 ref={sortButtonRef}
                 data-testid="sort-by-popover-toggle"
                 className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
                   isTokenSortPopoverOpen ? 'bg-pressed' : 'bg-transparent'
                 } hover:bg-hover active:bg-pressed`}
                 onClick={toggleTokenSortPopover}
-                size={DsButtonIconSize.Sm}
-                iconName={DsIconName.ListArrow}
+                size={ButtonIconSize.Sm}
+                iconName={IconName.ListArrow}
                 ariaLabel={t('sortBy')}
               />
             </Tooltip>
@@ -465,13 +484,13 @@ const AssetListControlBar = ({
                 position="bottom"
                 distance={20}
               >
-                <DsButtonIcon
+                <ButtonIcon
                   ref={importButtonRef}
                   data-testid="importTokens-button"
                   className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
                   onClick={handleOpenTokenManagement}
-                  size={DsButtonIconSize.Sm}
-                  iconName={DsIconName.MoreVertical}
+                  size={ButtonIconSize.Sm}
+                  iconName={IconName.MoreVertical}
                   ariaLabel={t('manageTokens')}
                 />
               </Tooltip>
@@ -530,19 +549,11 @@ const AssetListControlBar = ({
           testId="manageTokens"
           className="min-h-12"
         >
-          <Icon
-            name={IconName.Setting}
-            size={IconSize.Sm}
-            marginInlineEnd={2}
-          />
+          <Icon name={IconName.Setting} size={IconSize.Sm} className="mr-2" />
           {t('manageTokens')}
         </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
-          <Icon
-            name={IconName.Refresh}
-            size={IconSize.Sm}
-            marginInlineEnd={2}
-          />
+          <Icon name={IconName.Refresh} size={IconSize.Sm} className="mr-2" />
           {t('refreshList')}
         </SelectableListItem>
       </Popover>
@@ -563,7 +574,7 @@ const AssetListControlBar = ({
         }}
       >
         <SelectableListItem onClick={handleNftImportModal} testId="import-nfts">
-          <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
+          <Icon name={IconName.Add} size={IconSize.Sm} className="mr-2" />
 
           {t('importNFT')}
         </SelectableListItem>
@@ -577,7 +588,7 @@ const AssetListControlBar = ({
               <Icon
                 name={IconName.Refresh}
                 size={IconSize.Sm}
-                marginInlineEnd={2}
+                className="mr-2"
               />
 
               {t('refreshList')}
@@ -591,7 +602,7 @@ const AssetListControlBar = ({
               <Icon
                 name={IconName.Setting}
                 size={IconSize.Sm}
-                marginInlineEnd={2}
+                className="mr-2"
               />
 
               {t('enableAutoDetect')}
@@ -619,11 +630,7 @@ const AssetListControlBar = ({
           onClick={handleRefreshListOnly}
           testId="refreshList"
         >
-          <Icon
-            name={IconName.Refresh}
-            size={IconSize.Sm}
-            marginInlineEnd={2}
-          />
+          <Icon name={IconName.Refresh} size={IconSize.Sm} className="mr-2" />
           {t('refreshList')}
         </SelectableListItem>
       </Popover>
