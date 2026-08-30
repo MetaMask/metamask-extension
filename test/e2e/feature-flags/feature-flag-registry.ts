@@ -214,6 +214,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           featureVersion: '1',
           minimumVersion: '13.38.0',
           tracesEnabled: false,
+          useUnlockCleanup: true,
         },
       },
     },
@@ -2456,6 +2457,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  // Merkl claiming was removed from the extension (MUSD-1223); the client no
+  // longer reads this flag. Kept here until it is retired server-side.
   earnMerklCampaignClaiming: {
     inProd: true,
     name: 'earnMerklCampaignClaiming',
@@ -2463,7 +2466,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       enabled: true,
       minimumVersion: '13.24.0',
     },
-    status: FeatureFlagStatus.Active,
+    status: FeatureFlagStatus.Deprecated,
     type: FeatureFlagType.Remote,
   },
 
@@ -2852,6 +2855,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       lensAddress: '0xa3b5f71AB29BA99B9750327575Dcc456CadC550b',
       tellerAddress: '0xB30755C750E0A7E5BeD3dDAf0D9948Cf2b1CDc87',
       underlyingToken: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  moneyAccountChompConfig: {
+    inProd: true,
+    name: 'moneyAccountChompConfig',
+    productionDefault: {
+      baseUrl: 'https://chomp.api.cx.metamask.io',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,

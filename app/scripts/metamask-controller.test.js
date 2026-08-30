@@ -2862,6 +2862,60 @@ describe('MetaMaskController', () => {
         });
         streamTest.end();
       });
+
+      it('scans the origin for wallet_createSession', async () => {
+        const previousSecurityAlertsApiEnabled =
+          process.env.SECURITY_ALERTS_API_ENABLED;
+        process.env.SECURITY_ALERTS_API_ENABLED = 'true';
+
+        try {
+          localMetamaskController.preferencesController.setSecurityAlertsEnabled(
+            true,
+          );
+
+          const scanUrlSpy = jest
+            .spyOn(localMetamaskController.phishingController, 'scanUrl')
+            .mockResolvedValue({});
+
+          const messageSender = { url: 'http://mycrypto.com' };
+          const streamTest = createThroughStream((chunk, _, cb) => {
+            if (chunk && chunk.method) {
+              cb(null, chunk);
+              return;
+            }
+            cb();
+          });
+
+          localMetamaskController.setupUntrustedCommunicationCaip({
+            connectionStream: streamTest,
+            sender: messageSender,
+          });
+
+          streamTest.write(
+            {
+              id: 1,
+              jsonrpc: '2.0',
+              method: 'wallet_createSession',
+              params: {
+                requiredScopes: {
+                  'eip155:1': { methods: [], notifications: [] },
+                },
+              },
+            },
+            null,
+            () => undefined,
+          );
+
+          await waitForAllPromises();
+          await new Promise((resolve) => setTimeout(resolve, 0));
+
+          expect(scanUrlSpy).toHaveBeenCalledWith('http://mycrypto.com');
+          streamTest.end();
+        } finally {
+          process.env.SECURITY_ALERTS_API_ENABLED =
+            previousSecurityAlertsApiEnabled;
+        }
+      });
     });
 
     describe('#setupTrustedCommunication', () => {
