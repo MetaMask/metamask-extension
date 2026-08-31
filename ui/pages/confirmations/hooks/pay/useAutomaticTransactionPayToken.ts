@@ -1,32 +1,30 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
-import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import type { TransactionMeta } from "@metamask/transaction-controller";
+import type { Hex } from "@metamask/utils";
+import { getHardwareWalletType } from "../../../../../shared/lib/selectors/keyring";
 import {
   getTransactionType,
   isPostQuoteWithdrawTransaction,
-} from '../../../../../shared/lib/transactions.utils';
-import { getMoneyAccountTransactionType } from '../../utils/confirm';
-import { Asset } from '../../types/send';
-import { useConfirmContext } from '../../context/confirm';
+} from "../../../../../shared/lib/transactions.utils";
+import { getMoneyAccountTransactionType } from "../../utils/confirm";
+import { Asset } from "../../types/send";
+import { useConfirmContext } from "../../context/confirm";
 import {
   selectMinimumRequiredTokenBalance,
   selectPreferredPayTokens,
   selectRelayFixedSpread,
   type PreferredPayToken,
-} from '../../selectors/feature-flags';
-import {
-  type RelayFixedSpreadConfig,
-} from '../../utils/relay-fixed-spread';
-import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
-import { useImportPayToken } from './useImportPayToken';
-import { useTransactionPayToken } from './useTransactionPayToken';
-import { useTransactionPayRequiredTokens } from './useTransactionPayData';
-import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
-import type { SetPayTokenRequest } from './types';
-import { usePostQuoteWithdrawTokenFilter } from './useWithdrawTokenFilter';
-import { isNoFeePayToken } from './usePayWithNoFeeToken';
+} from "../../selectors/feature-flags";
+import { type RelayFixedSpreadConfig } from "../../utils/relay-fixed-spread";
+import { useTransactionAccountOverride } from "../transactions/useTransactionAccountOverride";
+import { useImportPayToken } from "./useImportPayToken";
+import { useTransactionPayToken } from "./useTransactionPayToken";
+import { useTransactionPayRequiredTokens } from "./useTransactionPayData";
+import { useTransactionPayAvailableTokens } from "./useTransactionPayAvailableTokens";
+import type { SetPayTokenRequest } from "./types";
+import { usePostQuoteWithdrawTokenFilter } from "./useWithdrawTokenFilter";
+import { isNoFeePayToken } from "./usePayWithNoFeeToken";
 
 /** How long to wait for funding tokens after an account switch before settling. */
 export const ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS = 2000;
@@ -44,9 +42,7 @@ export function useAutomaticTransactionPayToken({
   const requiredTokens = useTransactionPayRequiredTokens();
   const availableTokens = useTransactionPayAvailableTokens();
   const accountOverride = useTransactionAccountOverride();
-  const minimumRequiredTokenBalance = useSelector(
-    selectMinimumRequiredTokenBalance,
-  );
+  const minimumRequiredTokenBalance = useSelector(selectMinimumRequiredTokenBalance);
   const relayFixedSpread = useSelector(selectRelayFixedSpread);
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -55,11 +51,9 @@ export function useAutomaticTransactionPayToken({
   // when present — deposits are `[approve, deposit]`, so plain
   // `getTransactionType` would resolve them to `tokenMethodApprove`.
   const transactionType =
-    getMoneyAccountTransactionType(currentConfirmation) ??
-    getTransactionType(currentConfirmation);
+    getMoneyAccountTransactionType(currentConfirmation) ?? getTransactionType(currentConfirmation);
   const from = currentConfirmation?.txParams?.from;
-  const isPostQuoteWithdraw =
-    isPostQuoteWithdrawTransaction(currentConfirmation);
+  const isPostQuoteWithdraw = isPostQuoteWithdrawTransaction(currentConfirmation);
   const {
     filterTokens: postQuoteWithdrawTokenFilter,
     isFilterApplied: isPostQuoteWithdrawTokenFilterApplied,
@@ -75,26 +69,15 @@ export function useAutomaticTransactionPayToken({
       isPostQuoteWithdrawTokenFilterApplied
         ? postQuoteWithdrawTokenFilter(availableTokens)
         : availableTokens,
-    [
-      availableTokens,
-      isPostQuoteWithdrawTokenFilterApplied,
-      postQuoteWithdrawTokenFilter,
-    ],
+    [availableTokens, isPostQuoteWithdrawTokenFilterApplied, postQuoteWithdrawTokenFilter],
   );
 
-  const tokensWithBalance = useMemo(
-    () => tokens.filter((t) => !t.disabled),
-    [tokens],
-  );
+  const tokensWithBalance = useMemo(() => tokens.filter((t) => !t.disabled), [tokens]);
 
-  const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] =
-    useState(false);
+  const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] = useState(false);
 
   const hardwareWalletType = useSelector(getHardwareWalletType);
-  const isHardwareWallet = useMemo(
-    () => Boolean(hardwareWalletType),
-    [hardwareWalletType],
-  );
+  const isHardwareWallet = useMemo(() => Boolean(hardwareWalletType), [hardwareWalletType]);
 
   const targetToken = useMemo(
     () => requiredTokens.find((token) => !token.allowUnderMinimum),
@@ -106,10 +89,8 @@ export function useAutomaticTransactionPayToken({
       preferredToken !== undefined &&
       tokens.some(
         (token) =>
-          token.address?.toLowerCase() ===
-            preferredToken.address.toLowerCase() &&
-          String(token.chainId)?.toLowerCase() ===
-            preferredToken.chainId.toLowerCase(),
+          token.address?.toLowerCase() === preferredToken.address.toLowerCase() &&
+          String(token.chainId)?.toLowerCase() === preferredToken.chainId.toLowerCase(),
       ),
     [preferredToken, tokens],
   );
@@ -152,12 +133,7 @@ export function useAutomaticTransactionPayToken({
   );
 
   useEffect(() => {
-    if (
-      disable ||
-      payToken ||
-      !transactionId ||
-      isUpdated.current === transactionId
-    ) {
+    if (disable || payToken || !transactionId || isUpdated.current === transactionId) {
       return;
     }
 
@@ -168,16 +144,13 @@ export function useAutomaticTransactionPayToken({
     const matchingToken = tokens.find(
       (token) =>
         token.address?.toLowerCase() === automaticToken.address.toLowerCase() &&
-        String(token.chainId)?.toLowerCase() ===
-          automaticToken.chainId.toLowerCase(),
+        String(token.chainId)?.toLowerCase() === automaticToken.chainId.toLowerCase(),
     );
 
     const isPreferredAutomatic =
       preferredToken !== undefined &&
-      preferredToken.address.toLowerCase() ===
-        automaticToken.address.toLowerCase() &&
-      preferredToken.chainId.toLowerCase() ===
-        automaticToken.chainId.toLowerCase();
+      preferredToken.address.toLowerCase() === automaticToken.address.toLowerCase() &&
+      preferredToken.chainId.toLowerCase() === automaticToken.chainId.toLowerCase();
 
     // Post-quote destinations typically have $0 in-wallet, so they never
     // enter `availableTokens`. Wait for allowlist enrichment unless this is
@@ -192,7 +165,7 @@ export function useAutomaticTransactionPayToken({
       address: automaticToken.address,
       chainId: automaticToken.chainId,
     }).catch((error) => {
-      console.error('Failed to set automatic pay token', error);
+      console.error("Failed to set automatic pay token", error);
       if (isUpdated.current === transactionId) {
         isUpdated.current = undefined;
       }
@@ -212,11 +185,11 @@ export function useAutomaticTransactionPayToken({
   // account selected in the From account row (`accountOverride`) changes.
   // `accountOverride` switches money-account deposit to a different funding
   // account without touching `txParams.from`.
-  const prevAccountKeyRef = useRef(`${from ?? ''}:${accountOverride ?? ''}`);
+  const prevAccountKeyRef = useRef(`${from ?? ""}:${accountOverride ?? ""}`);
   const pendingAccountReselectRef = useRef(false);
 
   useEffect(() => {
-    const accountKey = `${from ?? ''}:${accountOverride ?? ''}`;
+    const accountKey = `${from ?? ""}:${accountOverride ?? ""}`;
     if (disable || !from || isPostQuoteWithdraw) {
       return;
     }
@@ -308,10 +281,7 @@ function getBestToken({
   isHardwareWallet: boolean;
   isPostQuoteWithdraw: boolean;
   isPostQuoteWithdrawTokenFilterApplied: boolean;
-  isPostQuoteWithdrawTokenAllowed: (
-    chainId: string,
-    address: string,
-  ) => boolean;
+  isPostQuoteWithdrawTokenAllowed: (chainId: string, address: string) => boolean;
   minimumRequiredTokenBalance: number;
   preferredToken?: SetPayTokenRequest;
   preferredTokensFromFlags: PreferredPayToken[];
@@ -337,20 +307,14 @@ function getBestToken({
       return preferredToken;
     }
 
-    if (
-      isPostQuoteWithdrawTokenAllowed(
-        preferredToken.chainId,
-        preferredToken.address,
-      )
-    ) {
+    if (isPostQuoteWithdrawTokenAllowed(preferredToken.chainId, preferredToken.address)) {
       return preferredToken;
     }
   } else if (preferredToken) {
     const preferredTokenAvailable = tokens.some(
       (token) =>
         token.address?.toLowerCase() === preferredToken.address.toLowerCase() &&
-        String(token.chainId)?.toLowerCase() ===
-          preferredToken.chainId.toLowerCase(),
+        String(token.chainId)?.toLowerCase() === preferredToken.chainId.toLowerCase(),
     );
 
     if (preferredTokenAvailable) {
@@ -384,11 +348,7 @@ function getBestToken({
         if ((token.fiat?.balance ?? 0) < minimumRequiredTokenBalance) {
           return false;
         }
-        return isNoFeePayToken(
-          relayFixedSpread,
-          token.address,
-          String(token.chainId),
-        );
+        return isNoFeePayToken(relayFixedSpread, token.address, String(token.chainId));
       })
       .sort((a, b) => (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0));
 
@@ -436,23 +396,19 @@ function getPreferredToken({
     return undefined;
   }
 
-  const candidates = preferredTokensFromFlags.reduce<Asset[]>(
-    (result, preferred) => {
-      const matchingToken = tokens.find(
-        (token) =>
-          token.address?.toLowerCase() === preferred.address.toLowerCase() &&
-          String(token.chainId)?.toLowerCase() ===
-            preferred.chainId.toLowerCase(),
-      );
+  const candidates = preferredTokensFromFlags.reduce<Asset[]>((result, preferred) => {
+    const matchingToken = tokens.find(
+      (token) =>
+        token.address?.toLowerCase() === preferred.address.toLowerCase() &&
+        String(token.chainId)?.toLowerCase() === preferred.chainId.toLowerCase(),
+    );
 
-      if (matchingToken) {
-        result.push(matchingToken);
-      }
+    if (matchingToken) {
+      result.push(matchingToken);
+    }
 
-      return result;
-    },
-    [],
-  );
+    return result;
+  }, []);
 
   // Post-quote withdraws: first held preferred token (no fiat floor).
   if (isPostQuoteWithdraw && candidates.length) {
@@ -463,9 +419,7 @@ function getPreferredToken({
   }
 
   const eligible = candidates
-    .filter(
-      (token) => (token.fiat?.balance ?? 0) >= minimumRequiredTokenBalance,
-    )
+    .filter((token) => (token.fiat?.balance ?? 0) >= minimumRequiredTokenBalance)
     .sort((a, b) => (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0));
 
   if (!eligible.length) {
