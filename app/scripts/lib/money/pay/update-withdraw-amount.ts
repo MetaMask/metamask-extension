@@ -1,6 +1,6 @@
 import { buildMoneyAccountWithdrawBatch } from '@metamask/money-account-utils';
 import { isStrictHexString, type Hex } from '@metamask/utils';
-import type { MoneyAccountWithdrawAmountUpdate } from '../../../../shared/lib/money/withdraw-amount-commit';
+import type { MoneyAccountWithdrawAmountUpdate } from '../../../../../shared/lib/money/withdraw-amount-commit';
 import {
   beginAmountCommit,
   clearAmountCommitIfCurrent,
