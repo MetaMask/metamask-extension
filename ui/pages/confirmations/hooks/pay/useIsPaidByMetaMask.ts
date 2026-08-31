@@ -4,6 +4,7 @@ import { hasTransactionType } from '../../../../../shared/lib/transactions.utils
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import {
   useTransactionPayHasPositiveRequiredAmount,
+  useTransactionPayQuotes,
   useTransactionPaySourceAmounts,
   useTransactionPayTotals,
 } from './useTransactionPayData';
@@ -11,6 +12,7 @@ import {
 const SUPPORTED_TYPES: TransactionType[] = [
   TransactionType.musdConversion,
   TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
 ];
 
 /**
@@ -29,11 +31,14 @@ const SUPPORTED_TYPES: TransactionType[] = [
  *
  * Money-account deposits on Monad are gas-sponsored, and fixed-spread /
  * same-token (Monad mUSD) routes have $0 provider fee, so they show as paid
- * by MetaMask the same way mUSD conversion does.
+ * by MetaMask the same way mUSD conversion does. Same-token Money Account
+ * withdraws store a Pay no-op quote whose totals still include estimated
+ * network gas; that gas is also sponsored on Monad.
  */
 export function useIsPaidByMetaMask(): boolean {
   const transactionMeta = useTransactionMetadataRequestOptional();
   const totals = useTransactionPayTotals();
+  const quotes = useTransactionPayQuotes();
   const sourceAmounts = useTransactionPaySourceAmounts();
   const hasPositiveRequiredAmount =
     useTransactionPayHasPositiveRequiredAmount();
@@ -42,19 +47,26 @@ export function useIsPaidByMetaMask(): boolean {
     return false;
   }
 
+  const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
+    TransactionType.moneyAccountWithdraw,
+  ]);
   const isGasSponsored = Boolean(transactionMeta?.isGasFeeSponsored);
 
-  // Pre-quote gasless deposits: sponsorship is known from the transaction
+  // Pre-quote / same-token no-op: sponsorship is known from the transaction
   // flag before conversion quotes exist.
   if (isGasSponsored && !sourceAmounts?.length) {
     return true;
   }
 
   // Every fee is zero before an amount is entered, which is indistinguishable
-  // from genuine sponsorship. Requiring a positive amount stops the empty state
-  // from claiming the transaction is "Paid by MetaMask" and then contradicting
-  // itself with real fees once the user types.
-  if (!totals?.fees || !hasPositiveRequiredAmount) {
+  // from genuine sponsorship. Requiring a positive amount stops the empty
+  // deposit state from claiming "Paid by MetaMask". Withdrawals have no
+  // `requiredAssets`, so that gate would never pass.
+  if (
+    !quotes?.length ||
+    !totals?.fees ||
+    (!isMoneyAccountWithdraw && !hasPositiveRequiredAmount)
+  ) {
     return false;
   }
 
