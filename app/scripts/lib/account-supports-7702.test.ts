@@ -1,4 +1,7 @@
-import { accountSupports7702, accountSupports7702ForRelay } from './account-supports-7702';
+import {
+  accountSupports7702,
+  accountSupports7702ForRelay,
+} from './account-supports-7702';
 
 const ADDRESS_MOCK = '0x1234567890123456789012345678901234567890';
 

@@ -95,13 +95,19 @@ describe('money-account-withdraw', () => {
   describe('doesWithdrawCalldataMatchAmount', () => {
     it('returns true when the nested transfer encodes the human amount', () => {
       expect(
-        doesWithdrawCalldataMatchAmount(buildTransaction(FUNDED_NESTED), '0.05'),
+        doesWithdrawCalldataMatchAmount(
+          buildTransaction(FUNDED_NESTED),
+          '0.05',
+        ),
       ).toBe(true);
     });
 
     it('returns false when the typed amount differs from the encoded amount', () => {
       expect(
-        doesWithdrawCalldataMatchAmount(buildTransaction(FUNDED_NESTED), '0.10'),
+        doesWithdrawCalldataMatchAmount(
+          buildTransaction(FUNDED_NESTED),
+          '0.10',
+        ),
       ).toBe(false);
     });
 

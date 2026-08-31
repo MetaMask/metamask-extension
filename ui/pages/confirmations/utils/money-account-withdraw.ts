@@ -62,7 +62,8 @@ export function getMoneyAccountWithdrawTransferDetails(
 
   const parsed = parseStandardTokenTransactionData(transfer.data);
   const recipient = parsed?.args?._to ?? parsed?.args?.to;
-  const amount = parsed?.args?._value ?? parsed?.args?.value ?? parsed?.args?.[1];
+  const amount =
+    parsed?.args?._value ?? parsed?.args?.value ?? parsed?.args?.[1];
 
   let amountRaw: string | undefined;
   if (amount !== undefined && amount !== null) {
@@ -151,9 +152,7 @@ function musdHumanToRaw(amountHuman: string): string | undefined {
     return undefined;
   }
 
-  const raw = value
-    .times(10 ** MUSD_DECIMALS)
-    .round(0, BigNumber.ROUND_UP);
+  const raw = value.times(10 ** MUSD_DECIMALS).round(0, BigNumber.ROUND_UP);
   if (raw.lte(0)) {
     return undefined;
   }
