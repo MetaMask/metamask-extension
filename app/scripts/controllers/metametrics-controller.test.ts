@@ -4,7 +4,13 @@ import type {
 } from '@metamask/network-controller';
 import type {
   AnalyticsContext,
+  AnalyticsControllerIdentifyAction,
+  AnalyticsControllerOptInAction,
+  AnalyticsControllerOptOutAction,
+  AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerState,
+  AnalyticsControllerTrackEventAction,
+  AnalyticsControllerTrackViewAction,
   AnalyticsEventProperties,
   AnalyticsUserTraits,
 } from '@metamask/analytics-controller';
@@ -1914,7 +1920,20 @@ describe('MetaMetricsController', function () {
   });
 });
 
-type RootMessenger = Messenger<MockAnyNamespace, AllowedActions, AllowedEvents>;
+// The root messenger also hosts the AnalyticsController handlers that the
+// analytics module calls directly, which are no longer part of the
+// MetaMetricsController allowlist.
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  | AllowedActions
+  | AnalyticsControllerOptInAction
+  | AnalyticsControllerOptOutAction
+  | AnalyticsControllerResetConsentDecisionAction
+  | AnalyticsControllerIdentifyAction
+  | AnalyticsControllerTrackEventAction
+  | AnalyticsControllerTrackViewAction,
+  AllowedEvents
+>;
 
 type MetaMetricsControllerTestState = Partial<MetaMetricsControllerState>;
 
