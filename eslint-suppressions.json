@@ -573,16 +573,6 @@
       "count": 3
     }
   },
-  "ui/hooks/musd/useMusdConversionToastStatus.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/hooks/musd/useMusdGeoBlocking.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/hooks/perps/stream/usePerpsChannel.ts": {
     "react-hooks/refs": {
       "count": 4
@@ -890,11 +880,6 @@
       "count": 3
     }
   },
-  "ui/pages/confirmations/components/confirm/info/approve/edit-spending-cap-modal/edit-spending-cap-modal.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -938,34 +923,9 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/components/gas-price-input/gas-price-input.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/components/gas-timing/gas-timing.component.js": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/components/info-popover-tooltip/info-popover-tooltip.tsx": {
     "react-hooks/refs": {
       "count": 1
-    }
-  },
-  "ui/pages/confirmations/components/max-base-fee-input/max-base-fee-input.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/components/priority-fee-input/priority-fee-input.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/components/rows/enforced-simulations-row/enforced-simulations-row.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 2
     }
   },
   "ui/pages/confirmations/components/rows/from-account-row/from-account-row.tsx": {
@@ -991,16 +951,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/components/send/send-alert-modal/send-alert-modal.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 3
-    }
-  },
-  "ui/pages/confirmations/components/send/send-alerts/send-alerts.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/components/simulation-details/useLoadingTime.ts": {
     "react-hooks/purity": {
       "count": 1
@@ -1009,33 +959,10 @@
   "ui/pages/confirmations/components/simulation-details/useSimulationMetrics.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 2
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/confirmation/confirmation.js": {
-    "react-hooks/set-state-in-effect": {
-      "count": 2
-    }
-  },
-  "ui/pages/confirmations/context/dapp-swap/index.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 2
-    }
-  },
-  "ui/pages/confirmations/context/send/index.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
     }
   },
   "ui/pages/confirmations/hooks/alerts/transactions/useContractCode.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/alerts/useAddEthereumChainAlerts.ts": {
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -1044,29 +971,9 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/musd/useMerklClaimAmount.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/hooks/pay/useTransactionPayMetrics.ts": {
     "react-hooks/refs": {
       "count": 13
-    }
-  },
-  "ui/pages/confirmations/hooks/send/alerts/useSendAlerts.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/send/alerts/useTokenContractSendAlert.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/send/useAddressPoisoningDetection.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
     }
   },
   "ui/pages/confirmations/hooks/send/useAmountValidation.ts": {
@@ -1096,11 +1003,6 @@
   },
   "ui/pages/confirmations/hooks/send/useSendQueryParams.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/send/useSendTokens.ts": {
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -1136,11 +1038,6 @@
   },
   "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmount.ts": {
     "react-hooks/set-state-in-effect": {
-      "count": 2
-    }
-  },
-  "ui/pages/confirmations/hooks/transactions/useUpdateTokenAmount.ts": {
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -1172,11 +1069,6 @@
   "ui/pages/confirmations/hooks/useSetConfirmationAlerts.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 2
-    }
-  },
-  "ui/pages/confirmations/hooks/useTransactionFocusEffect.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
     }
   },
   "ui/pages/confirmations/hooks/useTransactionFunctions.js": {

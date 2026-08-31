@@ -222,7 +222,7 @@ export function useSpenderAlerts(): Alert[] {
         isBlocking: false,
         key: 'spenderTrustSignalMalicious',
         message: t('alertMessageAddressTrustSignalMalicious'),
-        reason: t('nameModalTitleMalicious'),
+        reason: t('alertReasonAddressTrustSignalMalicious'),
         severity: Severity.Danger,
       });
     } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
@@ -232,7 +232,7 @@ export function useSpenderAlerts(): Alert[] {
         isBlocking: false,
         key: 'spenderTrustSignalWarning',
         message: t('alertMessageAddressTrustSignal'),
-        reason: t('nameModalTitleWarning'),
+        reason: t('alertReasonAddressTrustSignalWarning'),
         severity: Severity.Warning,
       });
     }

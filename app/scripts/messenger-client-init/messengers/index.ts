@@ -180,6 +180,10 @@ import {
 } from './user-operation-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
 import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
+import {
+  getChompApiServiceInitMessenger,
+  getChompApiServiceMessenger,
+} from './chomp-api-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
@@ -267,6 +271,11 @@ export { getPermissionLogControllerMessenger } from './permission-log-controller
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
+export type { ChompApiServiceInitMessenger } from './chomp-api-service-messenger';
+export {
+  getChompApiServiceMessenger,
+  getChompApiServiceInitMessenger,
+} from './chomp-api-service-messenger';
 export { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 export { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 export { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
@@ -380,6 +389,10 @@ export const MESSENGER_FACTORIES = {
   NetworkConnectionBannerController: {
     getMessenger: getNetworkConnectionBannerControllerMessenger,
     getInitMessenger: noop,
+  },
+  ChompApiService: {
+    getMessenger: getChompApiServiceMessenger,
+    getInitMessenger: getChompApiServiceInitMessenger,
   },
   ClientController: {
     getMessenger: getClientControllerMessenger,
