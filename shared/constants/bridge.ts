@@ -311,12 +311,12 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
     assetId: `${toEvmCaipChainId(CHAIN_IDS.ARC)}/erc20:${toChecksumHexAddress('0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: {
-    // ETH -> USDe on Robinhood
-    address: '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
-    symbol: 'USDe',
-    decimals: 18,
-    name: 'USDe',
-    assetId: `${toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)}/erc20:${toChecksumHexAddress('0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34')}`,
+    // ETH -> USDG on Robinhood
+    address: '0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168',
+    symbol: 'USDG',
+    decimals: 6,
+    name: 'Global Dollar',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)}/erc20:${toChecksumHexAddress('0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168')}`,
   },
   [MultichainNetworks.SOLANA]: {
     // SOL -> USDC on Solana
