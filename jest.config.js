@@ -4,6 +4,7 @@ const ESM_DEPENDENCIES_TO_TRANSPILE = [
   '@metamask/base-controller',
   '@metamask/base-data-service',
   '@metamask/messenger',
+  'lodash-es',
 ];
 
 module.exports = {
