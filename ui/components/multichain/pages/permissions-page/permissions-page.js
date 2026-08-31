@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   createSearchParams,
   useNavigate,
@@ -15,12 +15,9 @@ import {
   ButtonSize,
   ButtonVariant,
   IconName,
-  Text,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTheme } from '../../../../hooks/useTheme';
-import { TabEmptyState } from '../../../ui/tab-empty-state';
-import { ThemeType } from '../../../../../shared/constants/preferences';
+import { PermissionsEmptyState } from '../gator-permissions/components';
 import {
   AlignItems,
   BackgroundColor,
@@ -29,14 +26,11 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
-  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
-  PREVIOUS_ROUTE,
   REVIEW_PERMISSIONS,
-  GATOR_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
 import {
   getConnectedSitesListWithNetworkInfo,
@@ -54,24 +48,19 @@ import { ConnectionListItem } from './connection-list-item';
 
 const PermissionsPage = () => {
   const t = useI18nContext();
-  const theme = useTheme();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const dispatch = useDispatch();
   const headerRef = useRef();
 
-  const fromPath = searchParams.get('from') ?? undefined;
+  const fromPath = searchParams.get('from') ?? DEFAULT_ROUTE;
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
+      runCloseTransition(() => navigate(-1));
     } else {
-      navigate(
-        isGatorPermissionsRevocationFeatureEnabled()
-          ? GATOR_PERMISSIONS
-          : DEFAULT_ROUTE,
-      );
+      navigate(DEFAULT_ROUTE);
     }
   };
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
@@ -84,14 +73,16 @@ const PermissionsPage = () => {
   });
 
   const subjects = useSelector(getPermissionSubjects);
-  const totalConnections = Object.keys(mergedConnectionsList).length;
+
+  const nonSnapConnections = useMemo(() => {
+    return Object.entries(mergedConnectionsList).filter(
+      ([origin]) => !isSnapId(origin),
+    );
+  }, [mergedConnectionsList]);
 
   const handleDisconnectAll = useCallback(() => {
     const errors = [];
-    // Get all non-snap origins from the merged connections list
-    const origins = Object.keys(mergedConnectionsList).filter(
-      (origin) => !isSnapId(origin),
-    );
+    const origins = nonSnapConnections.map(([origin]) => origin);
 
     origins.forEach((origin) => {
       try {
@@ -123,63 +114,65 @@ const PermissionsPage = () => {
         id: 'disconnect-all-success-toast',
       });
     }
-  }, [dispatch, mergedConnectionsList, subjects, t]);
+  }, [dispatch, nonSnapConnections, subjects, t]);
 
   const handleConnectionClick = (connection) => {
-    transitionForward(() =>
+    const hasOnlyAdvancedPermissions =
+      !connection.addresses?.length &&
+      (connection.advancedPermissionsCount ?? 0) > 0;
+
+    transitionForward(() => {
+      if (hasOnlyAdvancedPermissions) {
+        navigate(
+          `${TOKEN_TRANSFER_ROUTE}/${encodeURIComponent(connection.origin)}`,
+        );
+        return;
+      }
+
       navigate({
         pathname: REVIEW_PERMISSIONS,
         search: createSearchParams({
           origin: connection.origin,
         }).toString(),
-      }),
-    );
+      });
+    });
   };
 
-  const renderConnectionsList = (connectionList) =>
-    Object.entries(connectionList).map(([itemKey, connection]) => {
-      const isSnap = isSnapId(connection.origin);
-      return isSnap ? null : (
-        <ConnectionListItem
-          data-testid="connection-list-item"
-          key={itemKey}
-          connection={connection}
-          onClick={() => handleConnectionClick(connection)}
-        />
-      );
-    });
+  const renderConnectionsList = () =>
+    nonSnapConnections.map(([itemKey, connection]) => (
+      <ConnectionListItem
+        data-testid="connection-list-item"
+        key={itemKey}
+        connection={connection}
+        onClick={() => handleConnectionClick(connection)}
+      />
+    ));
 
   return (
-    <Page className="main-container" data-testid="permissions-page">
+    <Page
+      className="main-container"
+      data-testid="parent-selector-permission-list"
+    >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            className="connections-header__start-accessory"
             color={Color.iconDefault}
             onClick={handleBack}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             data-testid="permissions-page-back"
           />
         }
+        textProps={{ 'data-testid': 'permissions-page-title' }}
       >
-        <Text
-          as="span"
-          variant={TextVariant.headingMd}
-          textAlign={TextAlign.Center}
-          data-testid="permissions-page-title"
-        >
-          {isGatorPermissionsRevocationFeatureEnabled()
-            ? t('sites')
-            : t('dappConnections')}
-        </Text>
+        {t('permissions')}
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
-        {totalConnections > 0 ? (
-          renderConnectionsList(mergedConnectionsList)
+        {nonSnapConnections.length > 0 ? (
+          renderConnectionsList()
         ) : (
           <Box
             data-testid="no-connections"
@@ -189,26 +182,11 @@ const PermissionsPage = () => {
             height={BlockSize.Full}
             padding={4}
           >
-            <TabEmptyState
-              icon={
-                <img
-                  src={
-                    theme === ThemeType.dark
-                      ? '/images/empty-state-permissions-dark.png'
-                      : '/images/empty-state-permissions-light.png'
-                  }
-                  alt={t('permissionsPageEmptyDescription')}
-                  width={72}
-                  height={72}
-                />
-              }
-              description={t('permissionsPageEmptyDescription')}
-              className="mx-auto"
-            />
+            <PermissionsEmptyState />
           </Box>
         )}
       </Content>
-      {totalConnections > 0 && (
+      {nonSnapConnections.length > 0 && (
         <Footer>
           <Box
             display={Display.Flex}
@@ -221,7 +199,6 @@ const PermissionsPage = () => {
               size={ButtonSize.Lg}
               block
               variant={ButtonVariant.Secondary}
-              startIconName={IconName.Logout}
               danger
               onClick={() => setShowDisconnectAllModal(true)}
               data-testid="disconnect-all-button"

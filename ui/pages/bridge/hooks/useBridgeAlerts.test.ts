@@ -1,5 +1,9 @@
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { BannerAlertSeverity } from '@metamask/design-system-react';
+import { KnownCaipNamespace } from '@metamask/utils';
+import { merge } from 'lodash';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { DEFAULT_VALIDATION_ERRORS } from '../../../../test/data/bridge/mock-bridge-store';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
@@ -8,13 +12,15 @@ import {
   getActiveQuotePriceData,
   getBridgeQuotes,
   getBridgeUnavailableQuoteReason,
+  getDestAccountDisplayName,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
+  getIsDestSameAsActiveAccount,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
-import { BannerAlertSeverity } from '../../../components/component-library';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
@@ -42,6 +48,15 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getActiveQuoteInsufficientNativeReserveError: jest.fn(),
   getBridgeQuotes: jest.fn(),
   getFromChain: jest.fn(),
+  getIsDestSameAsActiveAccount: jest.fn(),
+  getDestAccountDisplayName: jest.fn(),
+}));
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => ({ state: {}, pathname: '/', search: '' }),
 }));
 
 const MOCK_FROM_CHAIN_ID = 'eip155:1';
@@ -51,41 +66,68 @@ const mockT = jest.fn((key: string, args?: string[]) =>
 );
 
 const MOCK_BRIDGE_QUOTE = {
-  chainId: 'eip155:1',
+  chainId: 'eip155:1' as const,
   quote: {
+    requestId: '123',
+    feeData: {
+      metabridge: [
+        { amount: '1000000000000000000', asset: getNativeAssetForChainId(1) },
+      ],
+    },
+    aggregator: '123',
+    protocols: ['123'],
     src: { asset: getNativeAssetForChainId(1), amount: '1000000000000000000' },
     dest: {
       asset: getNativeAssetForChainId(10),
       amount: '1000000000000000000',
     },
   },
+  estimatedProcessingTimeInSeconds: 10,
+  namespace: KnownCaipNamespace.Eip155 as const,
+  trade: {
+    chainId: 1,
+    from: '0x123',
+    to: '0x456',
+    value: '0x123',
+    data: '0x123',
+    gasLimit: 1000000,
+  } as const,
 };
 
-const MOCK_SWAP_QUOTE = {
+const MOCK_GET_BRIDGE_QUOTES = {
+  sortedQuotes: [MOCK_BRIDGE_QUOTE],
+  recommendedQuote: MOCK_BRIDGE_QUOTE,
+  quotesLastFetchedMs: Date.now(),
+  quoteFetchError: null,
+  isQuoteGoingToRefresh: false,
+  quotesRefreshCount: 0,
+  quotesInitialLoadTimeMs: Date.now(),
+  activeQuote: MOCK_BRIDGE_QUOTE,
+  isLoading: false,
+};
+
+const MOCK_SWAP_QUOTE = merge({}, MOCK_BRIDGE_QUOTE, {
   chainId: 'eip155:1',
   quote: {
     src: { asset: getNativeAssetForChainId(1), amount: '1000000000000000000' },
     dest: { asset: getNativeAssetForChainId(1), amount: '1000000000000000000' },
   },
-};
+});
 
-const MOCK_TO_TOKEN = {
-  address: '0xabc',
+const MOCK_TO_TOKEN = toBridgeToken({
   symbol: 'USDC',
   decimals: 6,
-  chainId: 'eip155:10',
-  assetId: 'eip155:10/erc20:0xabc',
-};
+  assetId: 'eip155:10/erc20:0xabc' as const,
+  name: 'USD Coin',
+});
 
-const DEFAULT_VALIDATION_ERRORS = {
-  isNoQuotesAvailable: false,
-  isInsufficientGasForQuote: false,
-  isInsufficientBalance: false,
-  isStockMarketClosed: false,
-  isQuoteExpired: false,
-  isPriceImpactWarning: false,
-  isPriceImpactError: false,
-};
+const MOCK_STELLAR_USDC = toBridgeToken({
+  symbol: 'USDC',
+  decimals: 7,
+  assetId:
+    'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as const,
+  name: 'USD Coin',
+});
 
 describe('useBridgeAlerts', () => {
   const mockGoToBuy = jest.fn();
@@ -96,7 +138,7 @@ describe('useBridgeAlerts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    jest.mocked(useI18nContext).mockReturnValue(mockT as never);
+    jest.mocked(useI18nContext).mockReturnValue(mockT);
     jest.mocked(useMultichainSelector).mockReturnValue('ETH');
     jest.mocked(useRampsNavigation).mockReturnValue({
       goToBuy: mockGoToBuy,
@@ -119,16 +161,16 @@ describe('useBridgeAlerts', () => {
     });
     jest.mocked(isQuoteExpiredOrInvalid).mockReturnValue(false);
 
-    jest
-      .mocked(getValidationErrors)
-      .mockReturnValue(DEFAULT_VALIDATION_ERRORS as never);
+    jest.mocked(getValidationErrors).mockReturnValue(DEFAULT_VALIDATION_ERRORS);
+    jest.mocked(getIsDestSameAsActiveAccount).mockReturnValue(true);
+    jest.mocked(getDestAccountDisplayName).mockReturnValue(null);
     jest
       .mocked(getBridgeUnavailableQuoteReason)
-      .mockReturnValue(undefined as never);
+      .mockReturnValue('noOptionsAvailableMessage');
     jest.mocked(getToToken).mockReturnValue(null as never);
-    jest.mocked(getActiveQuotePriceData).mockReturnValue(null as never);
+    jest.mocked(getActiveQuotePriceData).mockReturnValue(undefined);
     jest.mocked(getFormattedPriceImpactPercentage).mockReturnValue('7.0%');
-    jest.mocked(getFormattedPriceImpactFiat).mockReturnValue(null as never);
+    jest.mocked(getFormattedPriceImpactFiat).mockReturnValue(undefined);
     jest
       .mocked(getActiveQuoteInsufficientNativeReserveError)
       .mockReturnValue(undefined);
@@ -151,7 +193,7 @@ describe('useBridgeAlerts', () => {
       jest.mocked(getValidationErrors).mockReturnValue({
         ...DEFAULT_VALIDATION_ERRORS,
         isStockMarketClosed: true,
-      } as never);
+      });
 
       const { result } = renderHook();
 
@@ -171,15 +213,67 @@ describe('useBridgeAlerts', () => {
     });
   });
 
+  describe('off-hours alert', () => {
+    it('adds off-hours warning to bannerAlerts', () => {
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isInOffHoursTrading: true,
+      } as never);
+
+      const { result } = renderHook();
+
+      expect(result.current.bannerAlerts).toHaveLength(1);
+      expect(result.current.bannerAlerts[0]).toStrictEqual(
+        expect.objectContaining({
+          id: 'off-hours',
+          severity: 'warning',
+          isDismissable: false,
+          title: 'bridgeOffHoursTitle',
+          description: 'bridgeOffHoursDescription',
+          isConfirmationAlert: false,
+          bannerAlertProps: { severity: BannerAlertSeverity.Warning },
+        }),
+      );
+      expect(result.current.alertsById['off-hours']).toBeDefined();
+      expect(result.current.confirmationAlerts).toHaveLength(0);
+    });
+
+    it('does not add off-hours alert when isInOffHoursTrading is false', () => {
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isInOffHoursTrading: false,
+      } as never);
+
+      const { result } = renderHook();
+
+      expect(result.current.alertsById['off-hours']).toBeUndefined();
+    });
+
+    it('shows only off-hours warning when market is tradable via off-hours', () => {
+      // Selectors keep these mutually exclusive: off-hours => not market-closed.
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isStockMarketClosed: false,
+        isInOffHoursTrading: true,
+      } as never);
+
+      const { result } = renderHook();
+
+      expect(result.current.alertsById['off-hours']).toBeDefined();
+      expect(result.current.alertsById['market-closed']).toBeUndefined();
+      expect(result.current.bannerAlerts).toHaveLength(1);
+    });
+  });
+
   describe('no-quotes alert', () => {
     it('adds no-quotes to bannerAlerts when isNoQuotesAvailable is true', () => {
       jest.mocked(getValidationErrors).mockReturnValue({
         ...DEFAULT_VALIDATION_ERRORS,
         isNoQuotesAvailable: true,
-      } as never);
+      });
       jest
         .mocked(getBridgeUnavailableQuoteReason)
-        .mockReturnValue('bridgeNoRouteAvailable' as never);
+        .mockReturnValue('bridgeNoRouteAvailable');
 
       const { result } = renderHook();
 
@@ -202,7 +296,7 @@ describe('useBridgeAlerts', () => {
         ...DEFAULT_VALIDATION_ERRORS,
         isNoQuotesAvailable: true,
         isStockMarketClosed: true,
-      } as never);
+      });
 
       const { result } = renderHook();
 
@@ -216,7 +310,7 @@ describe('useBridgeAlerts', () => {
         ...DEFAULT_VALIDATION_ERRORS,
         isNoQuotesAvailable: true,
         isQuoteExpired: true,
-      } as never);
+      });
 
       const { result } = renderHook();
 
@@ -237,10 +331,7 @@ describe('useBridgeAlerts', () => {
       jest
         .mocked(useSecurityAlerts)
         .mockReturnValue({ txAlert: mockTxAlert, securityWarnings: [] });
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
 
       const { result } = renderHook();
 
@@ -264,10 +355,7 @@ describe('useBridgeAlerts', () => {
       jest
         .mocked(useSecurityAlerts)
         .mockReturnValue({ txAlert: mockTxAlert, securityWarnings: [] });
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
       jest.mocked(isQuoteExpiredOrInvalid).mockReturnValue(true);
 
       const { result } = renderHook();
@@ -281,10 +369,7 @@ describe('useBridgeAlerts', () => {
       jest
         .mocked(useSecurityAlerts)
         .mockReturnValue({ txAlert: null, securityWarnings: [] });
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
 
       const { result } = renderHook();
 
@@ -296,7 +381,7 @@ describe('useBridgeAlerts', () => {
 
   describe('token-security alert', () => {
     beforeEach(() => {
-      jest.mocked(getToToken).mockReturnValue(MOCK_TO_TOKEN as never);
+      jest.mocked(getToToken).mockReturnValue(MOCK_TO_TOKEN);
     });
 
     it('adds a danger token-security alert when the asset is malicious', () => {
@@ -416,11 +501,8 @@ describe('useBridgeAlerts', () => {
 
   describe('price-data-unavailable alert', () => {
     it('adds price-data-unavailable to both bannerAlerts and confirmationAlerts', () => {
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
-      jest.mocked(getActiveQuotePriceData).mockReturnValue(null as never);
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue(undefined);
 
       const { result } = renderHook();
 
@@ -443,13 +525,10 @@ describe('useBridgeAlerts', () => {
     });
 
     it('does not add price-data-unavailable when price data is present', () => {
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
       jest.mocked(getActiveQuotePriceData).mockReturnValue({
-        priceImpact: 0.05,
-      } as never);
+        priceImpact: { amount: '0.05' },
+      });
 
       const { result } = renderHook();
 
@@ -460,10 +539,10 @@ describe('useBridgeAlerts', () => {
 
     it('does not add price-data-unavailable when no quote is present', () => {
       jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
+        ...MOCK_GET_BRIDGE_QUOTES,
         activeQuote: null,
-      } as never);
-      jest.mocked(getActiveQuotePriceData).mockReturnValue(null as never);
+      });
+      jest.mocked(getActiveQuotePriceData).mockReturnValue(undefined);
 
       const { result } = renderHook();
 
@@ -475,13 +554,10 @@ describe('useBridgeAlerts', () => {
 
   describe('insufficient-native-reserve alert', () => {
     it('adds insufficient-native-reserve to bannerAlerts when insufficientNativeReserveError is present', () => {
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
       jest.mocked(getActiveQuotePriceData).mockReturnValue({
-        priceImpact: 0.05,
-      } as never);
+        priceImpact: { amount: '0.05' },
+      });
 
       jest
         .mocked(getActiveQuoteInsufficientNativeReserveError)
@@ -515,13 +591,12 @@ describe('useBridgeAlerts', () => {
     });
 
     it('adds insufficient-native-reserve to bannerAlerts when insufficientNativeReserveError is present even when a quote is loading', () => {
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: true,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
+      jest
+        .mocked(getBridgeQuotes)
+        .mockReturnValue({ ...MOCK_GET_BRIDGE_QUOTES, isLoading: true });
       jest.mocked(getActiveQuotePriceData).mockReturnValue({
-        priceImpact: 0.05,
-      } as never);
+        priceImpact: { amount: '0.05' },
+      });
 
       jest
         .mocked(getActiveQuoteInsufficientNativeReserveError)
@@ -555,13 +630,10 @@ describe('useBridgeAlerts', () => {
     });
 
     it('does not add insufficient-native-reserve when insufficientNativeReserveError is undefined', () => {
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
       jest.mocked(getActiveQuotePriceData).mockReturnValue({
-        priceImpact: 0.05,
-      } as never);
+        priceImpact: { amount: '0.05' },
+      });
       jest
         .mocked(getActiveQuoteInsufficientNativeReserveError)
         .mockReturnValue(undefined);
@@ -578,11 +650,8 @@ describe('useBridgeAlerts', () => {
       jest.mocked(getValidationErrors).mockReturnValue({
         ...DEFAULT_VALIDATION_ERRORS,
         isInsufficientGasForQuote: true,
-      } as never);
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
+      });
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
     });
 
     it('adds insufficient-gas to bannerAlerts with a buy action button', () => {
@@ -614,9 +683,9 @@ describe('useBridgeAlerts', () => {
 
     it('uses the swap i18n key for same-chain quotes', () => {
       jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
+        ...MOCK_GET_BRIDGE_QUOTES,
         activeQuote: MOCK_SWAP_QUOTE,
-      } as never);
+      });
 
       const { result } = renderHook();
 
@@ -641,10 +710,9 @@ describe('useBridgeAlerts', () => {
     });
 
     it('does not add insufficient-gas when isLoading is true', () => {
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: true,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
+      jest
+        .mocked(getBridgeQuotes)
+        .mockReturnValue({ ...MOCK_GET_BRIDGE_QUOTES, isLoading: true });
 
       const { result } = renderHook();
 
@@ -668,7 +736,7 @@ describe('useBridgeAlerts', () => {
         ...DEFAULT_VALIDATION_ERRORS,
         isInsufficientGasForQuote: true,
         isInsufficientBalance: true,
-      } as never);
+      });
 
       const { result } = renderHook();
 
@@ -678,12 +746,115 @@ describe('useBridgeAlerts', () => {
     });
   });
 
+  describe('stellar-trustline alert', () => {
+    beforeEach(() => {
+      jest.mocked(getToToken).mockReturnValue(MOCK_STELLAR_USDC as never);
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isDestAssetRequireActivate: true,
+      });
+    });
+
+    it('adds a non-blocking warning banner with activate CTA for cross-chain Stellar destinations that need a trustline', () => {
+      const { result } = renderHook();
+
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('stellar-trustline');
+      const alert = result.current.alertsById['stellar-trustline'];
+      expect(alert).toStrictEqual(
+        expect.objectContaining({
+          id: 'stellar-trustline',
+          severity: 'warning',
+          title: 'bridgeStellarTrustlineWarningTitle:USDC',
+          description: 'bridgeStellarTrustlineWarningMessage:USDC',
+          isConfirmationAlert: false,
+        }),
+      );
+      expect(alert?.bannerAlertProps).toStrictEqual(
+        expect.objectContaining({
+          severity: BannerAlertSeverity.Warning,
+          actionButtonLabel: 'bridgeStellarTrustlineWarningCta:USDC',
+        }),
+      );
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('stellar-trustline');
+    });
+
+    it('navigates to the destination asset page when the activate CTA is clicked', () => {
+      const { result } = renderHook();
+
+      result.current.alertsById[
+        'stellar-trustline'
+      ]?.bannerAlertProps?.actionButtonOnClick?.();
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `/asset/stellar:pubnet/${encodeURIComponent(MOCK_STELLAR_USDC.assetId)}`,
+      );
+    });
+
+    it('does not add stellar-trustline when the destination asset does not require activation', () => {
+      jest
+        .mocked(getValidationErrors)
+        .mockReturnValue(DEFAULT_VALIDATION_ERRORS);
+
+      const { result } = renderHook();
+
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('stellar-trustline');
+    });
+
+    it('uses different-account copy and omits the Activate CTA when dest differs from the active account', () => {
+      jest.mocked(getIsDestSameAsActiveAccount).mockReturnValue(false);
+      jest.mocked(getDestAccountDisplayName).mockReturnValue('Account 2');
+
+      const { result } = renderHook();
+
+      const alert = result.current.alertsById['stellar-trustline'];
+      expect(alert).toStrictEqual(
+        expect.objectContaining({
+          id: 'stellar-trustline',
+          severity: 'warning',
+          title: 'bridgeStellarTrustlineWarningTitle:USDC',
+          description:
+            'bridgeStellarTrustlineWarningMessageDifferentAccount:Account 2,USDC',
+          isConfirmationAlert: false,
+        }),
+      );
+      expect(alert?.bannerAlertProps).toStrictEqual({
+        severity: BannerAlertSeverity.Warning,
+      });
+      expect(alert?.bannerAlertProps).not.toHaveProperty('actionButtonLabel');
+      expect(alert?.bannerAlertProps).not.toHaveProperty('actionButtonOnClick');
+    });
+
+    it('can appear alongside the insufficient-gas banner', () => {
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isDestAssetRequireActivate: true,
+        isInsufficientGasForQuote: true,
+      });
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue({} as never);
+
+      const { result } = renderHook();
+
+      const bannerIds = result.current.bannerAlerts.map(
+        (a: BridgeAlert) => a.id,
+      );
+      expect(bannerIds).toContain('stellar-trustline');
+      expect(bannerIds).toContain('insufficient-gas');
+    });
+  });
+
   describe('price-impact warning alert', () => {
     it('adds price-impact warning to alertsById only (no banner, no confirmation)', () => {
       jest.mocked(getValidationErrors).mockReturnValue({
         ...DEFAULT_VALIDATION_ERRORS,
         isPriceImpactWarning: true,
-      } as never);
+      });
 
       const { result } = renderHook();
 
@@ -710,7 +881,7 @@ describe('useBridgeAlerts', () => {
       jest.mocked(getValidationErrors).mockReturnValue({
         ...DEFAULT_VALIDATION_ERRORS,
         isPriceImpactError: true,
-      } as never);
+      });
       jest.mocked(getFormattedPriceImpactPercentage).mockReturnValue('90.0%');
 
       const { result } = renderHook();
@@ -739,10 +910,8 @@ describe('useBridgeAlerts', () => {
       jest.mocked(getValidationErrors).mockReturnValue({
         ...DEFAULT_VALIDATION_ERRORS,
         isPriceImpactError: true,
-      } as never);
-      jest
-        .mocked(getFormattedPriceImpactFiat)
-        .mockReturnValue('$12.34' as never);
+      });
+      jest.mocked(getFormattedPriceImpactFiat).mockReturnValue('$12.34');
 
       const { result } = renderHook();
 
@@ -757,7 +926,7 @@ describe('useBridgeAlerts', () => {
         ...DEFAULT_VALIDATION_ERRORS,
         isPriceImpactWarning: true,
         isPriceImpactError: true,
-      } as never);
+      });
 
       const { result } = renderHook();
 
@@ -772,12 +941,9 @@ describe('useBridgeAlerts', () => {
       jest.mocked(getValidationErrors).mockReturnValue({
         ...DEFAULT_VALIDATION_ERRORS,
         isStockMarketClosed: true,
-      } as never);
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
-      jest.mocked(getActiveQuotePriceData).mockReturnValue(null as never);
+      });
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue(undefined);
 
       const { result } = renderHook();
 
@@ -791,12 +957,9 @@ describe('useBridgeAlerts', () => {
       jest.mocked(getValidationErrors).mockReturnValue({
         ...DEFAULT_VALIDATION_ERRORS,
         isStockMarketClosed: true,
-      } as never);
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
-      jest.mocked(getActiveQuotePriceData).mockReturnValue(null as never);
+      });
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue(undefined);
 
       const { result } = renderHook();
 
@@ -815,12 +978,9 @@ describe('useBridgeAlerts', () => {
         ...DEFAULT_VALIDATION_ERRORS,
         isStockMarketClosed: true,
         isPriceImpactError: true,
-      } as never);
-      jest.mocked(getBridgeQuotes).mockReturnValue({
-        isLoading: false,
-        activeQuote: MOCK_BRIDGE_QUOTE,
-      } as never);
-      jest.mocked(getActiveQuotePriceData).mockReturnValue(null as never);
+      });
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue(undefined);
 
       const { result } = renderHook();
 

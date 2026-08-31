@@ -1,24 +1,31 @@
 import { PerpsPositionsBase } from '../perps/perps-positions-base';
 
 /**
- * Page object for the Perps tab (wallet home with Perps tab selected).
- * Use this when the user is already on the Perps tab and interacting with
- * balance, positions, explore markets, and tutorial content.
- * To open the Perps tab from the account overview, call `navigateToPerpsHome()`.
+ * The Perps home tab: balance, positions, watchlist, explore markets, and
+ * tutorial entry points.
+ *
+ * Screen: `#/perps` / `#/perps-home`, reached from the account overview via
+ * `navigateToPerpsHome()` or the bottom-nav Perps tab.
+ * Owns: the balance header with persistent Add funds / Withdraw buttons,
+ * position cards (via `PerpsPositionsBase`), watchlist, explore-markets and
+ * recent-activity links, geo-block dismiss, and the tutorial modal.
+ * Boundaries: the home surface only. Market list, market detail, activity,
+ * withdraw, and confirmations belong to their own page objects; methods here
+ * only navigate or click header buttons.
+ * Related: `PerpsMarketListPage` (`clickExploreMarketsRow`),
+ * `PerpsActivityPage` (`clickRecentActivitySeeAll`), `PerpsWithdrawPage`
+ * (`clickWithdraw`), `PerpsMarketDetailPage` (via `clickPositionCard`),
+ * `flows/perps-activity-close-fill.flow.ts` for multi-screen journeys.
  *
  * @see ui/components/app/perps/perps-view.tsx
  */
 export class PerpsTab extends PerpsPositionsBase {
   private readonly addFundsButton = {
-    testId: 'perps-balance-dropdown-add-funds',
+    testId: 'perps-balance-actions-add-funds',
   };
 
-  private readonly balanceDropdownBalanceRow = {
-    testId: 'perps-balance-dropdown-balance',
-  };
-
-  private readonly balanceDropdownWithdraw = {
-    testId: 'perps-balance-dropdown-withdraw',
+  private readonly balanceActionsWithdraw = {
+    testId: 'perps-balance-actions-withdraw',
   };
 
   private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
@@ -27,8 +34,8 @@ export class PerpsTab extends PerpsPositionsBase {
     testId: 'perps-geo-block-modal-dismiss',
   };
 
-  private readonly perpsBalanceDropdown = {
-    testId: 'perps-balance-dropdown',
+  private readonly perpsBalanceActions = {
+    testId: 'perps-balance-actions',
   };
 
   private readonly perpsExploreMarketsRow = {
@@ -36,6 +43,10 @@ export class PerpsTab extends PerpsPositionsBase {
   };
 
   private readonly perpsLearnBasics = { testId: 'perps-learn-basics' };
+
+  private readonly perpsPage = {
+    testId: 'parent-selector-perps-tab',
+  };
 
   private readonly perpsRecentActivity = { testId: 'perps-recent-activity' };
 
@@ -57,10 +68,6 @@ export class PerpsTab extends PerpsPositionsBase {
 
   private readonly perpsTutorialModal = { testId: 'perps-tutorial-modal' };
 
-  private readonly perpsView = {
-    testId: 'perps-view',
-  };
-
   private readonly perpsWatchlist = { testId: 'perps-watchlist' };
 
   private readonly perpsWatchlistMarket = (symbol: string) => {
@@ -72,24 +79,12 @@ export class PerpsTab extends PerpsPositionsBase {
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
 
   /**
-   * Asserts that a market is NOT present in the watchlist section.
-   *
-   * @param symbol - Market symbol, e.g. 'ETH'.
-   */
-  async checkMarketNotInWatchlist(symbol: string): Promise<void> {
-    await this.driver.assertElementNotPresent(
-      this.perpsWatchlistMarket(symbol),
-      { waitAtLeastGuard: 1000 },
-    );
-  }
-
-  /**
    * Waits for the Perps Home view to be loaded and visible.
-   * The main Perps tab shows PerpsView (balance dropdown, positions, explore).
+   * The main Perps tab shows PerpsView (balance actions header, positions, explore).
    */
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors(
-      [this.perpsView, this.perpsBalanceDropdown],
+      [this.perpsPage, this.perpsBalanceActions],
       { timeout: 20000 },
     );
   }
@@ -105,11 +100,10 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
-   * Clicks the Add funds button. On Perps Home the balance is in a dropdown:
-   * opens the dropdown first, then clicks Add funds.
+   * Clicks the Add funds button. On Perps Home the button is now persistent in
+   * the balance header (no dropdown to open first).
    */
   async clickAddFunds(): Promise<void> {
-    await this.driver.clickElement(this.balanceDropdownBalanceRow);
     await this.driver.clickElement(this.addFundsButton);
   }
 
@@ -129,19 +123,18 @@ export class PerpsTab extends PerpsPositionsBase {
 
   /**
    * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
-   * Shown for both the populated list header and the empty-state header.
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
   }
 
   /**
-   * Clicks the Withdraw button. On Perps Home the balance is in a dropdown:
-   * opens the dropdown first, then clicks Withdraw.
+   * Clicks the Withdraw button. On Perps Home the button lives in the balance
+   * header (no dropdown to open first) and is only rendered when the account
+   * has a non-zero balance — callers must fund the account first.
    */
   async clickWithdraw(): Promise<void> {
-    await this.driver.clickElement(this.balanceDropdownBalanceRow);
-    await this.driver.clickElement(this.balanceDropdownWithdraw);
+    await this.driver.clickElement(this.balanceActionsWithdraw);
   }
 
   /**
@@ -166,13 +159,37 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
-   * Navigates to Perps Home by clicking the Perps tab on the account overview.
-   * Requires the account overview to be visible (e.g. after login or driver.navigate()).
-   * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.
+   * Navigates to Perps Home by clicking the Perps tab on the account overview
+   * or the bottom-nav Perps button when present.
    */
   async navigateToPerpsHome(): Promise<void> {
-    await this.driver.waitForSelector(this.accountOverviewPerpsTab);
-    await this.driver.clickElement(this.accountOverviewPerpsTab);
+    console.log('Navigate to Perps home');
+    await this.driver.waitUntil(
+      async () => {
+        const isBottomNav = await this.driver.isElementPresentAndVisible(
+          this.bottomNavPerpsButton,
+          500,
+        );
+        if (isBottomNav) {
+          return true;
+        }
+        return await this.driver.isElementPresentAndVisible(
+          this.accountOverviewPerpsTab,
+          500,
+        );
+      },
+      { timeout: 20000, interval: 500 },
+    );
+
+    const isBottomNav = await this.driver.isElementPresentAndVisible(
+      this.bottomNavPerpsButton,
+      1000,
+    );
+    if (isBottomNav) {
+      await this.driver.clickElement(this.bottomNavPerpsButton);
+    } else {
+      await this.driver.clickElement(this.accountOverviewPerpsTab);
+    }
     await this.checkPageIsLoaded();
   }
 
@@ -180,7 +197,7 @@ export class PerpsTab extends PerpsPositionsBase {
    * Waits for the balance section to be visible (empty or with balance).
    */
   async waitForBalanceSection(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsBalanceDropdown);
+    await this.driver.waitForSelector(this.perpsBalanceActions);
   }
 
   /**
@@ -214,6 +231,23 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
+   * Waits until the Perps home view is visible and remains visible.
+   *
+   * @param timeout - Max wait time in ms (default 20 000).
+   */
+  async waitForPerpsViewStable(timeout = 20000): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.isElementPresentAndVisible(
+          this.perpsPage,
+          1000,
+        );
+      },
+      { timeout, interval: 500, stableFor: 1000 },
+    );
+  }
+
+  /**
    * Waits until the number of position cards equals `expectedCount` (uses waitUntil to avoid race conditions).
    *
    * @param expectedCount - Expected number of position cards.
@@ -237,9 +271,11 @@ export class PerpsTab extends PerpsPositionsBase {
   /**
    * Waits for the Recent Activity list (non-empty) to be visible.
    * When there is no history, the section uses `perps-recent-activity-empty` instead.
+   *
+   * @param timeout - Max wait time in ms (default 20 000).
    */
-  async waitForRecentActivitySection(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsRecentActivity);
+  async waitForRecentActivitySection(timeout = 20000): Promise<void> {
+    await this.driver.waitForSelector(this.perpsRecentActivity, { timeout });
   }
 
   /**

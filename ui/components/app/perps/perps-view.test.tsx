@@ -13,9 +13,22 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
+import {
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_TRANSACTION_DETAILS_ROUTE,
+  TX_DETAILS_ROUTE,
+} from '../../../helpers/constants/routes';
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
+import type { PerpsTransaction } from './types';
+
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 let mockExposeCancelAllOrders = false;
 jest.mock('./perps-positions-orders', () => {
@@ -266,13 +279,21 @@ describe('PerpsView', () => {
     it('renders the perps tab view', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-tab'),
+      ).toBeInTheDocument();
     });
 
-    it('renders the balance dropdown', () => {
+    it('renders the balance actions header', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-balance-dropdown')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-balance-actions')).toBeInTheDocument();
+    });
+
+    it('renders the Perps title above the balance actions', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-view-title')).toBeInTheDocument();
     });
 
     it('shows positions section when mock positions exist', () => {
@@ -308,7 +329,16 @@ describe('PerpsView', () => {
       expect(screen.getByTestId('position-card-ETH')).toBeInTheDocument();
     });
 
-    it('renders single-position summary RoE from the same position value as the card', () => {
+    it('renders the aggregate Unrealized P&L subtitle under the Your positions header', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-positions-pnl')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-positions-pnl').textContent).toContain(
+        'Unrealized P&L',
+      );
+    });
+
+    it('renders single-position summary RoE from the same position value as the card, under the Your positions header', () => {
       jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
         positions: [
           {
@@ -330,15 +360,15 @@ describe('PerpsView', () => {
 
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(
-        screen.getByTestId('perps-balance-dropdown-pnl'),
-      ).toHaveTextContent('42.00%');
+      expect(screen.getByTestId('perps-positions-roe-value')).toHaveTextContent(
+        '42.00%',
+      );
       expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
         '42.00%',
       );
     });
 
-    it('keeps multi-position summary RoE on the account aggregate', () => {
+    it('keeps multi-position summary RoE on the account aggregate, under the Your positions header', () => {
       jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
         positions: [
           {
@@ -362,9 +392,9 @@ describe('PerpsView', () => {
 
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(
-        screen.getByTestId('perps-balance-dropdown-pnl'),
-      ).toHaveTextContent('1.00%');
+      expect(screen.getByTestId('perps-positions-roe-value')).toHaveTextContent(
+        '1.00%',
+      );
     });
 
     it('renders order cards for each order', () => {
@@ -458,6 +488,73 @@ describe('PerpsView', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('navigates to the Perps transaction details page when a Recent Activity trade row is clicked', () => {
+      jest.mocked(usePerpsTransactionHistory).mockReturnValueOnce({
+        transactions: mocks.mockTransactions,
+        isLoading: false,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('transaction-card-tx-001'));
+
+      const tradeTransaction = mocks.mockTransactions.find(
+        (transaction) => transaction.id === 'tx-001',
+      );
+      expect(mockNavigate).toHaveBeenCalledWith(
+        PERPS_TRANSACTION_DETAILS_ROUTE,
+        { state: { transaction: tradeTransaction } },
+      );
+    });
+
+    it('navigates to the generic tx details route when a Recent Activity deposit row is clicked', () => {
+      jest.mocked(usePerpsTransactionHistory).mockReturnValueOnce({
+        transactions: mocks.mockTransactions,
+        isLoading: false,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('transaction-card-tx-005'));
+
+      const depositTransaction = mocks.mockTransactions.find(
+        (transaction) => transaction.id === 'tx-005',
+      );
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${TX_DETAILS_ROUTE}/eip155:42161/${depositTransaction?.depositWithdrawal?.txHash}`,
+        { state: undefined },
+      );
+    });
+
+    it('falls back to the activity list when a Recent Activity row has no destination', () => {
+      const baseDeposit = mocks.mockTransactions.find(
+        (transaction) => transaction.id === 'tx-005',
+      );
+      if (!baseDeposit) {
+        throw new Error('tx-005 fixture not found in mockTransactions');
+      }
+      const depositWithoutTxHash: PerpsTransaction = {
+        ...baseDeposit,
+        depositWithdrawal: undefined,
+      };
+      jest.mocked(usePerpsTransactionHistory).mockReturnValueOnce({
+        transactions: [depositWithoutTxHash],
+        isLoading: false,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('transaction-card-tx-005'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+    });
+
     it('shows watchlist when mock watchlist symbols match market data', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
@@ -485,7 +582,7 @@ describe('PerpsView', () => {
       expect(ordersSection).toBeInTheDocument();
 
       // Positions should come before orders in the DOM
-      const view = screen.getByTestId('perps-view');
+      const view = screen.getByTestId('parent-selector-perps-tab');
       const children = view.querySelectorAll('[data-testid]');
       const childTestIds = Array.from(children).map((child) =>
         child.getAttribute('data-testid'),
@@ -869,7 +966,9 @@ describe('PerpsView', () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-tab'),
+      ).toBeInTheDocument();
     });
   });
 

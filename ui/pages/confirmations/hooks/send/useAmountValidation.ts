@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { debounce } from 'lodash';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -18,18 +19,44 @@ type SnapOnAmountInputResult = {
   errors: { code: string }[];
 };
 
+const AMOUNT_VALIDATION_DEBOUNCE_MS = 300;
+
 export const useAmountValidation = () => {
   const t = useI18nContext();
   const { isNonEvmSendType } = useSendType();
   const { asset, value } = useSendContext();
   const { validateAmountWithSnap } = useSnapAmountOnInput();
   const { rawBalanceNumeric } = useBalance();
-  const [amountError, setAmountError] = useState<string | undefined>(undefined);
+  const [asyncAmountErrorState, setAsyncAmountErrorState] = useState<{
+    key: string;
+    error: string | undefined;
+  }>({ key: '', error: undefined });
 
-  const setAndReturnError = useCallback((errorMessage: string | undefined) => {
-    setAmountError(errorMessage);
-    return errorMessage;
-  }, []);
+  const syncAmountError = useMemo(() => {
+    if (!value) {
+      return undefined;
+    }
+
+    const normalizedValue = normalizeAmount(value);
+
+    return (
+      validatePositiveNumericString(normalizedValue, t) ||
+      validateERC1155Balance(asset as Asset, normalizedValue, t) ||
+      validateTokenBalance(
+        normalizedValue,
+        rawBalanceNumeric,
+        asset?.decimals,
+        t,
+      )
+    );
+  }, [asset, rawBalanceNumeric, t, value]);
+
+  const validationKey = `${value ?? ''}|${isNonEvmSendType}|${syncAmountError ?? ''}|${rawBalanceNumeric.toString()}`;
+
+  const asyncAmountError =
+    asyncAmountErrorState.key === validationKey
+      ? asyncAmountErrorState.error
+      : undefined;
 
   const validateNonEvmAmount = useCallback(
     async (amount: string): Promise<string | undefined> => {
@@ -57,52 +84,78 @@ export const useAmountValidation = () => {
     [t, validateAmountWithSnap, isNonEvmSendType, rawBalanceNumeric],
   );
 
-  const validateAmountAsync = useCallback(async () => {
-    if (!value) {
-      return setAndReturnError(undefined);
-    }
+  const validationRequestIdRef = useRef(0);
 
-    const normalizedValue = normalizeAmount(value);
-
-    const validations = [
-      () => validatePositiveNumericString(normalizedValue, t),
-      () => validateERC1155Balance(asset as Asset, normalizedValue, t),
-      () =>
-        validateTokenBalance(
-          normalizedValue,
-          rawBalanceNumeric,
-          asset?.decimals,
-          t,
-        ),
-      () => validateNonEvmAmount(normalizedValue),
-    ];
-
-    for (const validation of validations) {
-      const error = await Promise.resolve(validation());
-      if (error) {
-        return setAndReturnError(error);
+  const commitAsyncAmountErrorIfCurrent = useCallback(
+    (requestId: number, requestKey: string, error: string | undefined) => {
+      if (validationRequestIdRef.current !== requestId) {
+        return;
       }
-    }
-
-    return setAndReturnError(undefined);
-  }, [
-    asset,
-    rawBalanceNumeric,
-    t,
-    value,
-    validateNonEvmAmount,
-    setAndReturnError,
-  ]);
+      setAsyncAmountErrorState({ key: requestKey, error });
+    },
+    [],
+  );
 
   // This callback is needed for non-EVM validation when nothing is typed into amount
   const validateNonEvmAmountAsync = useCallback(async () => {
+    const requestKey = validationKey;
+    validationRequestIdRef.current += 1;
+    const requestId = validationRequestIdRef.current;
     const error = await validateNonEvmAmount(normalizeAmount(value));
-    return setAndReturnError(error);
-  }, [value, validateNonEvmAmount, setAndReturnError]);
+    commitAsyncAmountErrorIfCurrent(requestId, requestKey, error);
+    return error;
+  }, [
+    value,
+    validationKey,
+    validateNonEvmAmount,
+    commitAsyncAmountErrorIfCurrent,
+  ]);
+
+  const runNonEvmValidationRef = useRef<() => Promise<void>>(async () => {
+    /* noop */
+  });
+
+  runNonEvmValidationRef.current = async () => {
+    const requestKey = validationKey;
+    validationRequestIdRef.current += 1;
+    const requestId = validationRequestIdRef.current;
+
+    if (syncAmountError || !value || !isNonEvmSendType) {
+      commitAsyncAmountErrorIfCurrent(requestId, requestKey, undefined);
+      return;
+    }
+
+    const error = await validateNonEvmAmount(normalizeAmount(value));
+    commitAsyncAmountErrorIfCurrent(requestId, requestKey, error);
+  };
+
+  const debouncedSnapValidation = useMemo(
+    () =>
+      debounce(() => {
+        runNonEvmValidationRef.current().catch(() => undefined);
+      }, AMOUNT_VALIDATION_DEBOUNCE_MS),
+    [],
+  );
 
   useEffect(() => {
-    validateAmountAsync();
-  }, [validateAmountAsync]);
+    if (!isNonEvmSendType) {
+      return;
+    }
+
+    debouncedSnapValidation();
+
+    return () => {
+      debouncedSnapValidation.cancel();
+    };
+  }, [
+    isNonEvmSendType,
+    debouncedSnapValidation,
+    syncAmountError,
+    value,
+    validationKey,
+  ]);
+
+  const amountError = syncAmountError ?? asyncAmountError;
 
   return { amountError, validateNonEvmAmountAsync };
 };

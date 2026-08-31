@@ -8,7 +8,7 @@ import type { Hex, Json } from '@metamask/utils';
 import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
@@ -33,8 +33,8 @@ describe('BridgeTimeRow', () => {
   const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
   const useTransactionPayQuotesMock = jest.mocked(useTransactionPayQuotes);
-  const useIsTransactionPayLoadingMock = jest.mocked(
-    useIsTransactionPayLoading,
+  const useIsTransactionPayQuotePendingMock = jest.mocked(
+    useIsTransactionPayQuotePending,
   );
   const useConfirmContextMock = jest.mocked(useConfirmContext);
 
@@ -50,7 +50,7 @@ describe('BridgeTimeRow', () => {
       goBackTo: undefined,
     } as ReturnType<typeof useConfirmContext>);
 
-    useIsTransactionPayLoadingMock.mockReturnValue(false);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(false);
 
     useTransactionPayQuotesMock.mockReturnValue([
       {} as TransactionPayQuote<Json>,
@@ -115,7 +115,7 @@ describe('BridgeTimeRow', () => {
   });
 
   it('renders skeleton with label when loading (Default variant)', () => {
-    useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(true);
 
     const { getByTestId, getByText } = render();
 
@@ -124,7 +124,7 @@ describe('BridgeTimeRow', () => {
   });
 
   it('renders full skeleton without label when loading (Small variant)', () => {
-    useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(true);
 
     const { getByTestId, queryByText } = render({
       rowVariant: ConfirmInfoRowSize.Small,

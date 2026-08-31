@@ -1,84 +1,76 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { CaipChainId } from '@metamask/utils';
 import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   Box,
-  BoxAlignItems,
   BoxFlexDirection,
-  BoxJustifyContent,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useFormatters } from '../../../hooks/useFormatters';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
+import { useRampsAnalytics } from '../../../hooks/ramps/useRampsAnalytics';
+import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { completedOrdersFromRampsOrders } from '../../../hooks/ramps/utils/determinePreferredProvider';
 import { parseUserFacingError } from '../../../hooks/ramps/utils/parseUserFacingError';
-import Spinner from '../../../components/ui/spinner';
 import { ScrollContainer } from '../../../contexts/scroll-container';
+import RampsListSkeleton from '../components/ramps-list-skeleton';
 import {
   RampsSelectionCenteredMessage,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
 import { providerSupportsAsset } from '../utils/providerSupportsAsset';
-import { getProviderLimitMessage } from '../utils/getProviderLimitMessage';
-import {
-  RampsProviderSeparator,
-  RampsQuotesForPaymentMethodBanner,
-} from './components/ramps-provider-list-helpers';
+import { RampsQuotesForPaymentMethodBanner } from './components/ramps-provider-list-helpers';
 import RampsProviderListItem from './components/ramps-provider-list-item';
 import {
   buildProviderListItems,
   findProviderQuote,
   getProviderTag,
   type ProviderListItem,
+  type ProviderTag,
 } from './utils/build-provider-list-items';
 
 type ProviderSelectionLocationState = {
   amount?: number;
 };
 
-type ProviderListRow =
-  | { type: 'separator'; key: string }
-  | {
-      type: 'provider';
-      key: string;
-      provider: Provider;
-      isSelected: boolean;
-      isDisabled: boolean;
-      subtitle: string | null;
-      showQuote: boolean;
-      quote: ReturnType<typeof findProviderQuote>;
-      quoteLoading: boolean;
-      currency: string;
-      tokenSymbol: string;
-    };
+type ProviderListRow = {
+  key: string;
+  provider: Provider;
+  isSelected: boolean;
+  isDisabled: boolean;
+  tag: ProviderTag | null;
+  showQuote: boolean;
+  quote: ReturnType<typeof findProviderQuote>;
+  quoteLoading: boolean;
+  currency: string;
+  tokenSymbol: string;
+};
 
 /**
- * Builds render-ready rows from sorted list items (tags, quotes, unavailable).
- *
- * @param args
- * @param args.sortedListItems
- * @param args.quotes
- * @param args.quotesLoading
- * @param args.showQuotes
- * @param args.selectedProviderId
- * @param args.selectedPaymentMethodId
- * @param args.ordersProviders
- * @param args.isSelecting
- * @param args.amount
- * @param args.fiatCurrency
- * @param args.tokenSymbol
- * @param args.formatCurrency
- * @param args.t
+ * Builds render-ready rows from providers with available quotes.
+ * @param options0
+ * @param options0.sortedListItems
+ * @param options0.quotes
+ * @param options0.quotesLoading
+ * @param options0.showQuotes
+ * @param options0.selectedProviderId
+ * @param options0.selectedPaymentMethodId
+ * @param options0.ordersProviders
+ * @param options0.isSelecting
+ * @param options0.fiatCurrency
+ * @param options0.tokenSymbol
+ * @param options0.t
  */
 function buildProviderListRows({
   sortedListItems,
@@ -89,10 +81,8 @@ function buildProviderListRows({
   selectedPaymentMethodId,
   ordersProviders,
   isSelecting,
-  amount,
   fiatCurrency,
   tokenSymbol,
-  formatCurrency,
   t,
 }: {
   sortedListItems: ProviderListItem[];
@@ -103,51 +93,28 @@ function buildProviderListRows({
   selectedPaymentMethodId: string | undefined;
   ordersProviders: string[];
   isSelecting: boolean;
-  amount: number;
   fiatCurrency: string;
   tokenSymbol: string;
-  formatCurrency: ReturnType<typeof useFormatters>['formatCurrency'];
   t: ReturnType<typeof useI18nContext>;
 }): ProviderListRow[] {
-  return sortedListItems.map((item, index) => {
-    if (item.type === 'separator') {
-      return { type: 'separator', key: `separator-${index}` };
-    }
-
+  return sortedListItems.map((item) => {
     const { provider } = item;
     const matchedQuote = findProviderQuote(
       quotes,
       provider.id,
       selectedPaymentMethodId,
     );
-    const providerError =
-      showQuotes && !quotesLoading
-        ? quotes?.error?.find((entry) => entry.provider === provider.id)?.error
-        : undefined;
-    const isUnavailable = Boolean(providerError && !matchedQuote);
     const tag =
-      !isUnavailable && showQuotes && !quotesLoading
+      showQuotes && !quotesLoading
         ? getProviderTag(provider.id, matchedQuote, ordersProviders, t)
         : null;
-    const subtitle = isUnavailable
-      ? (getProviderLimitMessage({
-          provider,
-          fiatCurrency,
-          paymentMethodId: selectedPaymentMethodId,
-          amount,
-          currency: fiatCurrency,
-          formatCurrency,
-          t,
-        }) ?? t('rampsQuoteUnavailable'))
-      : tag;
 
     return {
-      type: 'provider',
       key: provider.id,
       provider,
       isSelected: selectedProviderId === provider.id,
       isDisabled: isSelecting,
-      subtitle,
+      tag,
       showQuote: showQuotes,
       quote: matchedQuote,
       quoteLoading: quotesLoading,
@@ -167,7 +134,6 @@ export function RampsProviderSelectionScreen() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const { formatCurrency } = useFormatters();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const controllerOrders = useSelector(selectRampsOrdersForSelectedAccount);
   const {
@@ -180,12 +146,24 @@ export function RampsProviderSelectionScreen() {
     selectedToken,
     userRegion,
   } = useRampsController();
+  const { trackProviderSelected } = useRampsAnalytics();
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
 
+  const chainAccount = useSelector((state) =>
+    selectedToken?.chainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          selectedToken.chainId as CaipChainId,
+        )
+      : null,
+  );
+
+  useRampsScreenViewed('Provider Selection');
+
   const amount =
     (location.state as ProviderSelectionLocationState | null)?.amount ?? 0;
-  const walletAddress = selectedAccount?.address ?? '';
+  const walletAddress = (chainAccount ?? selectedAccount)?.address ?? '';
   const assetId = selectedToken?.assetId
     ? normalizeAssetIdForApi(selectedToken.assetId)
     : '';
@@ -255,25 +233,15 @@ export function RampsProviderSelectionScreen() {
     ? parseUserFacingError(quotesError, t('rampsNoProvidersAvailable'))
     : null;
 
-  const hasSuccessfulQuotes = (quotes?.success?.length ?? 0) > 0;
-
   const sortedListItems = useMemo(
     () =>
       buildProviderListItems({
         providers: displayProviders,
         quotes,
         quotesLoading,
-        displayQuotes: showQuotes && hasSuccessfulQuotes,
-        selectedTokenAssetId: assetId || undefined,
+        displayQuotes: showQuotes,
       }),
-    [
-      displayProviders,
-      quotes,
-      quotesLoading,
-      showQuotes,
-      hasSuccessfulQuotes,
-      assetId,
-    ],
+    [displayProviders, quotes, quotesLoading, showQuotes],
   );
 
   const listRows = useMemo(
@@ -287,10 +255,8 @@ export function RampsProviderSelectionScreen() {
         selectedPaymentMethodId: selectedPaymentMethod?.id,
         ordersProviders,
         isSelecting,
-        amount,
         fiatCurrency,
         tokenSymbol,
-        formatCurrency,
         t,
       }),
     [
@@ -302,10 +268,8 @@ export function RampsProviderSelectionScreen() {
       selectedPaymentMethod?.id,
       ordersProviders,
       isSelecting,
-      amount,
       fiatCurrency,
       tokenSymbol,
-      formatCurrency,
       t,
     ],
   );
@@ -325,97 +289,69 @@ export function RampsProviderSelectionScreen() {
 
       try {
         await setSelectedProvider(provider);
+        trackProviderSelected({
+          provider: provider.name,
+          previousProvider: selectedProvider?.name,
+          location: 'Provider Selection',
+        });
         navigate(PREVIOUS_ROUTE);
       } catch {
         isSelectingRef.current = false;
         setIsSelecting(false);
       }
     },
-    [navigate, setSelectedProvider],
+    [
+      navigate,
+      selectedProvider?.name,
+      setSelectedProvider,
+      trackProviderSelected,
+    ],
   );
 
   const title = t('rampsProviders');
   const backButtonTestId = 'ramps-provider-selection-back';
 
+  let testId = 'ramps-provider-selection-screen';
+  let body: React.ReactNode;
+
   if (providersLoading) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-provider-selection-loading"
-        backButtonTestId={backButtonTestId}
-      >
-        <Box
-          className="flex-1"
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-        >
-          <Spinner className="h-8 w-8" />
-        </Box>
-      </RampsSelectionPage>
+    testId = 'ramps-provider-selection-loading';
+    body = <RampsListSkeleton testId="ramps-provider-selection-skeleton" />;
+  } else if (providersError && displayProviders.length === 0) {
+    testId = 'ramps-provider-selection-error';
+    body = <RampsSelectionCenteredMessage message={providersError} />;
+  } else if (
+    displayProviders.length === 0 ||
+    (quotes && !quotesLoading && listRows.length === 0)
+  ) {
+    testId = 'ramps-provider-selection-empty';
+    body = (
+      <RampsSelectionCenteredMessage message={t('rampsNoProvidersAvailable')} />
     );
-  }
-
-  if (providersError && displayProviders.length === 0) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-provider-selection-error"
-        backButtonTestId={backButtonTestId}
-      >
-        <RampsSelectionCenteredMessage message={providersError} />
-      </RampsSelectionPage>
-    );
-  }
-
-  if (displayProviders.length === 0) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-provider-selection-empty"
-        backButtonTestId={backButtonTestId}
-      >
-        <RampsSelectionCenteredMessage
-          message={t('rampsNoProvidersAvailable')}
-        />
-      </RampsSelectionPage>
-    );
-  }
-
-  return (
-    <RampsSelectionPage
-      title={title}
-      onBack={handleBack}
-      testId="ramps-provider-selection-screen"
-      backButtonTestId={backButtonTestId}
-    >
-      {showQuotes && selectedPaymentMethod ? (
-        <RampsQuotesForPaymentMethodBanner
-          paymentMethodName={selectedPaymentMethod.name}
-        />
-      ) : null}
-      {quotesErrorMessage ? (
-        <Box className="px-4 pb-2">
-          <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-            {quotesErrorMessage}
-          </Text>
-        </Box>
-      ) : null}
-      <ScrollContainer className="flex-1 overflow-y-auto px-2 pb-4">
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-          {listRows.map((row) =>
-            row.type === 'separator' ? (
-              <RampsProviderSeparator key={row.key} />
-            ) : (
+  } else {
+    body = (
+      <>
+        {showQuotes && selectedPaymentMethod ? (
+          <RampsQuotesForPaymentMethodBanner
+            paymentMethodName={selectedPaymentMethod.name}
+          />
+        ) : null}
+        {quotesErrorMessage ? (
+          <Box className="px-4 pb-2">
+            <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+              {quotesErrorMessage}
+            </Text>
+          </Box>
+        ) : null}
+        <ScrollContainer className="flex-1 overflow-y-auto pb-4">
+          <Box flexDirection={BoxFlexDirection.Column}>
+            {listRows.map((row) => (
               <RampsProviderListItem
                 key={row.key}
                 provider={row.provider}
                 isSelected={row.isSelected}
                 isDisabled={row.isDisabled}
-                subtitle={row.subtitle}
+                tag={row.tag}
                 showQuote={row.showQuote}
                 quote={row.quote}
                 quoteLoading={row.quoteLoading}
@@ -425,10 +361,21 @@ export function RampsProviderSelectionScreen() {
                   handleProviderSelect(row.provider).catch(() => undefined);
                 }}
               />
-            ),
-          )}
-        </Box>
-      </ScrollContainer>
+            ))}
+          </Box>
+        </ScrollContainer>
+      </>
+    );
+  }
+
+  return (
+    <RampsSelectionPage
+      title={title}
+      onBack={handleBack}
+      testId={testId}
+      backButtonTestId={backButtonTestId}
+    >
+      {body}
     </RampsSelectionPage>
   );
 }

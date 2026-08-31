@@ -5,7 +5,20 @@ import classnames from 'clsx';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
 import { type KeyringAccountType } from '@metamask/keyring-api';
-import { Tag, Button, ButtonVariant } from '@metamask/design-system-react';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  Button,
+  ButtonVariant,
+  Tag,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  ModalContent,
+} from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
@@ -23,20 +36,11 @@ import {
 import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
 import { useRWAToken } from '../../../pages/bridge/hooks/useRWAToken';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
   BadgeWrapper,
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   SensitiveText,
   SensitiveTextLength,
   Text,
@@ -64,6 +68,7 @@ import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
 import { ACCOUNT_TYPE_LABELS } from '../../app/assets/constants';
 import { TokenWithFiatAmount } from '../../app/assets/types';
 import { useDispatch } from '../../../store/hooks';
+import { getAvatarNetworkStyle } from '../../../helpers/utils/accounts';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 
@@ -328,9 +333,8 @@ export const TokenListItemComponent = ({
               size={AvatarNetworkSize.Xs}
               name={allNetworks?.[chainId as Hex]?.name}
               src={tokenChainImage || undefined}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              borderWidth={2}
-              className="multichain-token-list-item__badge__avatar-network"
+              className="multichain-token-list-item__badge__avatar-network rounded-md bg-background-default border-2 border-background-default"
+              style={getAvatarNetworkStyle(allNetworks?.[chainId as Hex]?.name)}
             />
           }
           marginRight={4}
@@ -499,10 +503,13 @@ export const TokenListItemComponent = ({
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+            <ModalHeader
+              onClose={() => setShowScamWarningModal(false)}
+              closeButtonProps={{ ariaLabel: t('close') }}
+            >
               {t('nativeTokenScamWarningTitle')}
             </ModalHeader>
-            <ModalBody marginTop={4} marginBottom={4}>
+            <ModalBody className="my-4">
               {t('nativeTokenScamWarningDescription', [
                 tokenSymbol,
                 nativeCurrencySymbol ||

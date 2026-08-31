@@ -1,8 +1,11 @@
 import React, { useRef, useState } from 'react';
 import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import {
   Box,
-  ButtonPrimary,
-  ButtonPrimarySize,
   FormTextField,
   FormTextFieldSize,
   HelpText,
@@ -95,11 +98,12 @@ const AddRpcUrlModal = ({
         padding={4}
         width={BlockSize.Full}
       >
-        <ButtonPrimary
-          width={BlockSize.Full}
-          disabled={Boolean(error)}
-          size={ButtonPrimarySize.Lg}
-          data-testid="page-container-footer-next"
+        <Button
+          isFullWidth
+          isDisabled={Boolean(error)}
+          size={ButtonSize.Lg}
+          variant={ButtonVariant.Primary}
+          data-testid="add-rpc-url-button"
           onClick={async () => {
             if (url && !error && nameRef.current) {
               onAdded(url, nameRef.current.value || undefined);
@@ -107,7 +111,7 @@ const AddRpcUrlModal = ({
           }}
         >
           {t('addUrl')}
-        </ButtonPrimary>
+        </Button>
       </Box>
     </Box>
   );

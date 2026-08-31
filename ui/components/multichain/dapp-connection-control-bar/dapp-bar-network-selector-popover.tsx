@@ -8,6 +8,7 @@ import {
   BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  AvatarNetworkSize,
   FontWeight,
   Icon,
   IconColor,
@@ -18,13 +19,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { usePermittedNetworkToast } from '../../../hooks/multichain-accounts/usePermittedNetworkToast';
-import {
-  AvatarNetworkSize,
-  Popover,
-  PopoverPosition,
-  PopoverRole,
-} from '../../component-library';
+import { Popover, PopoverPosition, PopoverRole } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
@@ -89,7 +84,6 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
   const dispatch = useDispatch();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { showPermittedNetworkToast } = usePermittedNetworkToast();
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const domains = useSelector(getAllDomains);
@@ -178,10 +172,6 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
             await dispatch(
               addPermittedChain(selectedTabOrigin, network.chainId),
             );
-            showPermittedNetworkToast({
-              origin: selectedTabOrigin,
-              network,
-            });
           }
 
           await setNetworkClientIdForDomain(
@@ -236,7 +226,6 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
       tokenNetworkFilter,
       trackEvent,
       createEventBuilder,
-      showPermittedNetworkToast,
       onClose,
     ],
   );

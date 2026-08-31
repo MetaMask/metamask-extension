@@ -1,5 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * MetaMetrics / marketing consent during onboarding.
+ *
+ * Screen: `#/onboarding/metametrics` (Firefox may show this before welcome;
+ * Chrome typically shows it after SRP backup or import password/passkey).
+ * Owns: participate-in-MetaMetrics and marketing data-collection checkboxes,
+ * their checked/unchecked assertions, and continue.
+ * Boundaries: consent toggles and continue only. Does not finish onboarding
+ * or open privacy settings.
+ * Related: after `SecureWalletPage` (create) or `SetupPasskeyPage` /
+ * password (import); next is `OnboardingCompletePage`;
+ * `flows/onboarding.flow.ts` (`onboardingMetricsFlow`).
+ *
+ * @see ui/pages/onboarding-flow/metametrics/metametrics.tsx
+ */
 class OnboardingMetricsPage {
   private readonly continueButton = '[data-testid="metametrics-i-agree"]';
 
@@ -19,6 +34,8 @@ class OnboardingMetricsPage {
     tag: 'h2',
   };
 
+  private readonly page = '[data-testid="parent-selector-onboarding-metrics"]';
+
   private readonly participateChecked =
     '[data-testid="metametrics-checkbox"][data-checked="true"]';
 
@@ -32,6 +49,7 @@ class OnboardingMetricsPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.metametricsMessage,
         this.continueButton,
       ]);
@@ -83,10 +101,6 @@ class OnboardingMetricsPage {
 
   async validateParticipateInMetaMetricsIsChecked(): Promise<void> {
     await this.driver.waitForSelector(this.participateChecked);
-  }
-
-  async validateParticipateInMetaMetricsIsUnchecked(): Promise<void> {
-    await this.driver.waitForSelector(this.participateUnchecked);
   }
 }
 

@@ -29,14 +29,19 @@ import PermissionsConnectFooter from '../../../components/app/permissions-connec
 
 export default function PermissionsRedirect({ subjectMetadata }) {
   const t = useContext(I18nContext);
-  const [cachedSubjectMetadata, setCachedSubjectMetadata] =
-    useState(subjectMetadata);
+  const [lastValidSubjectMetadata, setLastValidSubjectMetadata] = useState(
+    () => (subjectMetadata?.origin ? subjectMetadata : null),
+  );
 
   // While this redirecting screen is showing, the subject metadata will become invalidated
   // for that reason we cache the last seen valid subject metadata and show that.
-  if (subjectMetadata?.origin && subjectMetadata !== cachedSubjectMetadata) {
-    setCachedSubjectMetadata(subjectMetadata);
+  if (subjectMetadata?.origin && subjectMetadata !== lastValidSubjectMetadata) {
+    setLastValidSubjectMetadata(subjectMetadata);
   }
+
+  const displaySubjectMetadata = subjectMetadata?.origin
+    ? subjectMetadata
+    : (lastValidSubjectMetadata ?? subjectMetadata);
 
   return (
     <Box
@@ -63,8 +68,8 @@ export default function PermissionsRedirect({ subjectMetadata }) {
           padding={2}
         >
           <AvatarToken
-            src={cachedSubjectMetadata.iconUrl}
-            name={cachedSubjectMetadata.name}
+            src={displaySubjectMetadata.iconUrl}
+            name={displaySubjectMetadata.name}
             size={AvatarTokenSize.Lg}
           />
           <Box

@@ -15,6 +15,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
@@ -27,6 +28,7 @@ import useBridging from '../../../hooks/bridge/useBridging';
 import { resetBridgeController } from '../../../ducks/bridge/actions';
 import { useDispatch } from '../../../store/hooks';
 import { transitionForward } from '../../ui/transition';
+import { useMoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
@@ -76,10 +78,12 @@ export function BottomNavBar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const { availability: moneyAccountAvailability } =
+    useMoneyAccountAvailability();
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
   const { openBridgeExperience } = useBridging();
 
-  const { isHome, isPerps, isSwaps, isActivity } =
+  const { isHome, isPerps, isMoney, isSwaps, isActivity } =
     getActiveBottomNavTabs(pathname);
 
   // Mirrors the back-button behaviour in bridge/index.tsx: reset the bridge
@@ -113,6 +117,13 @@ export function BottomNavBar() {
     );
   }, [navigate, resetBridgeIfNeeded]);
 
+  const handleMoneyClick = useCallback(() => {
+    resetBridgeIfNeeded();
+    transitionForward(() =>
+      navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
+    );
+  }, [navigate, resetBridgeIfNeeded]);
+
   const handleSwapsClick = useCallback(() => {
     if (isSwaps) {
       return;
@@ -136,7 +147,7 @@ export function BottomNavBar() {
 
   return (
     <nav
-      data-testid="bottom-nav-bar"
+      data-testid="parent-selector-bottom-nav-bar"
       className="bottom-nav-bar w-full bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100]"
       style={{ viewTransitionName: 'bottom-nav-bar' }}
     >
@@ -154,6 +165,15 @@ export function BottomNavBar() {
           label={t('perps')}
           onClick={handlePerpsClick}
           data-testid="bottom-nav-perps"
+        />
+      )}
+      {moneyAccountAvailability.isAvailable && (
+        <NavTab
+          isActive={isMoney}
+          icon={IconName.Coin}
+          label={t('money')}
+          onClick={handleMoneyClick}
+          data-testid="bottom-nav-money"
         />
       )}
       <NavTab

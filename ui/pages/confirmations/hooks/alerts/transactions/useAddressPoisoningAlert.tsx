@@ -1,5 +1,3 @@
-'use no memo';
-
 import React, { useMemo } from 'react';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import {

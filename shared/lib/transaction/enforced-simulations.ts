@@ -1,14 +1,16 @@
 import {
-  SimulationData,
   TransactionMeta,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { Hex } from '@metamask/utils';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { isAddressScanSupportedChainId } from '@metamask/phishing-controller';
+import { Hex, createProjectLogger } from '@metamask/utils';
 import {
   CachedScanAddressResponse,
   createCacheKey,
-  mapChainIdToSupportedEVMChain,
   ResultType,
 } from '../trust-signals';
 
@@ -22,6 +24,8 @@ export const DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE = 10;
 const BASIS_POINTS_PER_PERCENT = 100;
 
 const ENFORCED_SIMULATIONS_FEATURE_FLAG = 'confirmations_enforced_simulations';
+
+const log = createProjectLogger('enforced-simulations-eligibility');
 
 /**
  * Shape of the `confirmations_enforced_simulations` remote feature flag
@@ -39,6 +43,8 @@ export type EnforcedSimulationsFeatureFlag = {
 export type EnforcedSimulationsState = {
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
   eip7702SupportedChains: Hex[];
+  /** Addresses of the user's own internal EVM accounts; excluded from trust evaluation. */
+  internalAddresses: string[];
 };
 
 type RemoteFlagsWithEnforcedSimulations = {
@@ -50,6 +56,24 @@ type FeatureFlagSource = Pick<
   RemoteFeatureFlagControllerState,
   'remoteFeatureFlags'
 >;
+
+function isInternalAddress(
+  address: string,
+  internalAddresses: string[],
+): boolean {
+  const normalized = address.toLowerCase();
+  return internalAddresses.some((a) => a.toLowerCase() === normalized);
+}
+
+/**
+ * Returns the EVM addresses of the given internal accounts.
+ *
+ * @param accounts - Array of internal accounts.
+ * @returns Array of EVM account addresses.
+ */
+export function getInternalEvmAddresses(accounts: InternalAccount[]): string[] {
+  return accounts.filter((a) => isEvmAccountType(a.type)).map((a) => a.address);
+}
 
 /**
  * Reads the `enabled` field from the `confirmations_enforced_simulations`
@@ -110,10 +134,13 @@ export function getEnforcedSimulationsSlippageBasisPoints(
 /**
  * Determines whether a transaction is eligible for enforced simulations.
  *
- * When the chain supports trust signals, also requires that at least one
- * recipient address is loaded and not trusted. If the chain is
- * unsupported by trust signals, the transaction remains eligible since
- * we cannot verify trust.
+ * Also requires that Blockaid address screening supports the chain. On
+ * unsupported chains, `scanAddress` returns Error without hitting the API;
+ * that must not turn enforcement on. Then requires that at least one
+ * recipient address is loaded and not trusted, based on cached trust signal
+ * scan results keyed by chain and address. A recipient with no cache entry,
+ * or one still loading, does not disqualify the transaction; only a cached
+ * non-Trusted verdict does.
  *
  * @param transactionMeta - The transaction metadata.
  * @param state - Trust signal state and EIP-7702 supported chains.
@@ -123,7 +150,7 @@ export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, origin, simulationData } = transactionMeta;
+  const { chainId, origin, simulationData, type } = transactionMeta;
 
   if (!origin || origin === ORIGIN_METAMASK) {
     return false;
@@ -134,21 +161,37 @@ export function isEnforcedSimulationsEligible(
       (supported) => supported.toLowerCase() === chainId?.toLowerCase(),
     )
   ) {
+    log('Not eligible - chain does not support EIP-7702', {
+      chainId,
+      type,
+    });
     return false;
   }
 
-  if (!hasBalanceChanges(simulationData)) {
+  if (!simulationData) {
+    log('Not eligible - simulation not complete', { type });
     return false;
   }
 
   if (isEnforcedSimulationsForceEnabled()) {
+    log('Eligible - force enabled', { type });
     return true;
   }
 
-  if (isTrusted(transactionMeta, state)) {
+  if (!chainId || !isAddressScanSupportedChainId(chainId)) {
+    log('Not eligible - address screening does not support chain', {
+      chainId,
+      type,
+    });
     return false;
   }
 
+  if (isTrusted(transactionMeta, state)) {
+    log('Not eligible - transaction trusted', { type });
+    return false;
+  }
+
+  log('Eligible', { chainId, type });
   return true;
 }
 
@@ -164,64 +207,76 @@ function isTrusted(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, txParams, txParamsOriginal, nestedTransactions } =
+  const { chainId, type, txParams, txParamsOriginal, nestedTransactions } =
     transactionMeta;
 
-  const supportedChain = chainId
-    ? mapChainIdToSupportedEVMChain(chainId)
-    : undefined;
-
-  // If trust signals don't support this chain, we can't verify trust —
-  // treat as not trusted so the user still gets protection.
-  if (!supportedChain) {
+  // Trust verdicts are cache-driven. Only a cached non-Trusted verdict
+  // disqualifies a recipient. Unsupported chains are excluded earlier in
+  // isEnforcedSimulationsEligible, so an ErrorResult here is a scan failure
+  // on a supported chain (timeout / API error), not "this chain isn't
+  // supported".
+  //
+  // Recipients that no scan path covers stay cache misses and are treated as
+  // trusted here. The trust-signals middleware scans dapp `eth_sendTransaction`
+  // and `wallet_sendCalls` requests (including each nested call's `to`), but
+  // nothing is scanned when the user has security alerts disabled, and the
+  // outer batch target (`txParamsOriginal.to`, the upgraded EOA for a 7702
+  // batch) is never scanned, so its cache miss never disqualifies.
+  if (!chainId) {
     return false;
   }
 
   // Use the original `to` address before any container wrapping,
   // since containers may redirect to a trusted delegation manager.
   const originalTo = txParamsOriginal?.to ?? txParams?.to;
-  const toAddresses = getToAddresses(originalTo, nestedTransactions);
+  const data = txParamsOriginal?.data ?? txParams?.data;
 
-  if (toAddresses.length === 0) {
-    return true;
-  }
+  // All calls the transaction performs: the outer call plus any nested (batch)
+  // calls, treated uniformly.
+  const calls = [{ to: originalTo, data, type }, ...(nestedTransactions ?? [])];
 
-  return !toAddresses.some((address) => {
-    const cacheKey = createCacheKey(supportedChain, address);
-    const cached = state.addressSecurityAlertResponses[cacheKey];
+  let trusted = true;
 
+  for (let index = 0; index < calls.length; index++) {
+    const { to, data: callData, type: callType } = calls[index];
+    const label = `Address ${index + 1}`;
+    const props = { address: to, type: callType, data: callData };
+
+    if (!to) {
+      log(`${label} - Trusted - No Recipient`, props);
+      continue;
+    }
+
+    if (isInternalAddress(to, state.internalAddresses)) {
+      log(`${label} - Trusted - Internal Address`, props);
+      continue;
+    }
+
+    if (callType === TransactionType.simpleSend) {
+      log(`${label} - Trusted - Simple Send`, props);
+      continue;
+    }
+
+    const cached =
+      state.addressSecurityAlertResponses[createCacheKey(chainId, to)];
+
+    // Unknown or still-loading signals don't make a call untrusted.
     if (!cached || cached.result_type === ResultType.Loading) {
-      return false;
+      log(`${label} - Trusted - Unknown Signal`, {
+        ...props,
+        resultType: cached?.result_type,
+      });
+      continue;
     }
 
-    return cached.result_type !== ResultType.Trusted;
-  });
-}
-
-function getToAddresses(
-  primaryTo: string | undefined,
-  nestedTransactions: TransactionMeta['nestedTransactions'],
-): string[] {
-  const addresses: string[] = [];
-
-  if (primaryTo) {
-    addresses.push(primaryTo);
-  }
-
-  if (nestedTransactions) {
-    for (const nested of nestedTransactions) {
-      if (nested.to) {
-        addresses.push(nested.to);
-      }
+    if (cached.result_type === ResultType.Trusted) {
+      log(`${label} - Trusted - Trusted Signal`, props);
+      continue;
     }
+
+    log(`${label} - Not Trusted - ${cached.result_type}`, props);
+    trusted = false;
   }
 
-  return addresses;
-}
-
-function hasBalanceChanges(simulationData?: SimulationData | null): boolean {
-  return (
-    Boolean(simulationData?.nativeBalanceChange) ||
-    Boolean(simulationData?.tokenBalanceChanges?.length)
-  );
+  return trusted;
 }
