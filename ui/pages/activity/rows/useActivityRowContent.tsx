@@ -23,6 +23,9 @@ import type { ActivityRowProps } from '../types';
 import { useFormatAsFiat } from '../../../hooks/useFormatAsFiat';
 import { useFormatTokenAmount } from './useFormatTokenAmount';
 
+// mUSD is pegged 1:1 to USD, so money-account rows show USD like perps rows.
+const MONEY_ACCOUNT_FIAT_CURRENCY = 'usd';
+
 type ActivityContent = {
   title: string;
   subtitle?: string;
@@ -248,6 +251,31 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
               : undefined,
           primaryDirection:
             activity.type === 'perpsAddFunds' ? 'in' : undefined,
+        };
+      }
+      // Fiat amount against the Money account, like the other MM Pay rows
+      case 'moneyAccountDeposit':
+      case 'moneyAccountWithdraw': {
+        const { fiat, token } = activity.data;
+        const fiatAmount = fiat ? Number(fiat.amount) : undefined;
+        const signedFiatAmount =
+          activity.type === 'moneyAccountWithdraw' && fiatAmount !== undefined
+            ? -fiatAmount
+            : fiatAmount;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key),
+          subtitle: t(labelKeys.description.key),
+          primaryAmount:
+            signedFiatAmount !== undefined && Number.isFinite(signedFiatAmount)
+              ? formatCurrencyWithMinThreshold(
+                  signedFiatAmount,
+                  MONEY_ACCOUNT_FIAT_CURRENCY,
+                )
+              : undefined,
+          primaryDirection:
+            activity.type === 'moneyAccountDeposit' ? 'in' : undefined,
         };
       }
       case 'nftBuy':
