@@ -621,11 +621,13 @@ describe('repair button', () => {
     jest.spyOn(window, 'confirm').mockReturnValue(true);
 
     const postMessage = mockPort.postMessage as jest.Mock;
-    postMessage.mockImplementation((message: { data?: { method?: string } }) => {
-      if (message?.data?.method === METHOD_REPAIR_DATABASE) {
-        throw new Error('Attempting to use a disconnected port object');
-      }
-    });
+    postMessage.mockImplementation(
+      (message: { data?: { method?: string } }) => {
+        if (message?.data?.method === METHOD_REPAIR_DATABASE) {
+          throw new Error('Attempting to use a disconnected port object');
+        }
+      },
+    );
 
     const error = new Error(MOCK_ERROR_MESSAGE);
 
