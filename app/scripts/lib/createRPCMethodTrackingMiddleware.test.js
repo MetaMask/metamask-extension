@@ -233,9 +233,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
   beforeEach(() => {
     trackEventSpy.mockClear();
   });
-  afterEach(() => {
+  afterEach(async () => {
     jest.resetAllMocks();
-    setParticipateInMetaMetrics(null);
+    await setParticipateInMetaMetrics(null);
   });
 
   describe('before participateInMetaMetrics is set', () => {
@@ -258,8 +258,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to false', () => {
-    beforeEach(() => {
-      setParticipateInMetaMetrics(false);
+    beforeEach(async () => {
+      await setParticipateInMetaMetrics(false);
     });
 
     it('should not track an event for a signature request', async () => {
@@ -1387,8 +1387,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
     });
 
     describe('Multichain API requests', () => {
-      beforeEach(() => {
-        setParticipateInMetaMetrics(true);
+      beforeEach(async () => {
+        await setParticipateInMetaMetrics(true);
       });
 
       it('should track `wallet_createSession` events with multichain category and properties', async () => {
