@@ -2456,6 +2456,29 @@ export function createNextMultichainAccountGroup(
 }
 
 /**
+ * Remove a multichain account wallet.
+ *
+ * @param walletId - ID of a wallet (e.g. `entropy:01JKAF...`).
+ */
+export function removeMultichainAccountWallet(
+  walletId: AccountWalletId,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.removeMultichainAccountWallet`);
+    try {
+      const entropySourceId = stripWalletTypePrefixFromWalletId(walletId);
+      await submitRequestToBackground('removeMultichainAccountWallet', [
+        entropySourceId,
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
  * Set the pinned state of an account group.
  *
  * @param accountGroupId - ID of an account group.
@@ -6075,6 +6098,18 @@ export async function attemptCloseNotificationPopup() {
     // See issue: https://github.com/MetaMask/metamask-extension/issues/29821
     console.error('attemptCloseNotificationPopup: Failed to close tab', error);
   }
+}
+
+/**
+ * @param payload - details of the event to track
+ * @param options - options for routing/handling of event
+ * @returns
+ */
+export function trackMetaMetricsEvent(
+  payload: MetaMetricsEventPayload,
+  options?: MetaMetricsEventOptions,
+) {
+  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
 }
 
 export function trackAnalyticsEvent(
