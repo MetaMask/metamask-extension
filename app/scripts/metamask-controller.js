@@ -3012,11 +3012,6 @@ export default class MetamaskController extends EventEmitter {
         'MultichainAccountService:alignWallets',
       ),
 
-      removeMultichainAccountWallet: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MultichainAccountService:removeMultichainAccountWallet',
-      ),
-
       // AssetsContractController
       getTokenStandardAndDetails: this.controllerMessenger.call.bind(
         this.controllerMessenger,

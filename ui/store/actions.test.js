@@ -1857,13 +1857,13 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls removeMultichainAccountWallet in background with stripped entropySourceId', async () => {
+    it('calls MultichainAccountService:removeMultichainAccountWallet through the background messenger', async () => {
       const store = mockStore();
       const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
-      const removeMultichainAccountWallet = sinon.stub().resolves();
+      const messengerCall = sinon.stub().resolves();
 
       background.getApi = sinon.stub().returns({
-        removeMultichainAccountWallet,
+        messengerCall,
         getStatePatches: sinon.stub().resolves([]),
       });
 
@@ -1871,20 +1871,23 @@ describe('Actions', () => {
 
       await store.dispatch(actions.removeMultichainAccountWallet(walletId));
 
-      expect(removeMultichainAccountWallet.callCount).toStrictEqual(1);
+      expect(messengerCall.callCount).toStrictEqual(1);
       expect(
-        removeMultichainAccountWallet.calledWith('01JKAF3DSGM3AB87EM9N0K41AJ'),
+        messengerCall.calledWith(
+          'MultichainAccountService:removeMultichainAccountWallet',
+          ['01JKAF3DSGM3AB87EM9N0K41AJ'],
+        ),
       ).toStrictEqual(true);
     });
 
-    it('throws and logs error when background call fails', async () => {
+    it('throws and logs error when messenger call fails', async () => {
       const store = mockStore();
       const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
       const error = new Error('Failed to remove wallet');
-      const removeMultichainAccountWallet = sinon.stub().rejects(error);
+      const messengerCall = sinon.stub().rejects(error);
 
       background.getApi = sinon.stub().returns({
-        removeMultichainAccountWallet,
+        messengerCall,
       });
 
       setBackgroundConnection(background.getApi());

@@ -2456,7 +2456,10 @@ export function createNextMultichainAccountGroup(
 }
 
 /**
- * Remove a multichain account wallet.
+ * Remove a multichain account wallet via MultichainAccountService.
+ *
+ * Calls the service through the background messenger rather than growing the
+ * legacy MetaMaskController.getApi() surface.
  *
  * @param walletId - ID of a wallet (e.g. `entropy:01JKAF...`).
  */
@@ -2464,11 +2467,12 @@ export function removeMultichainAccountWallet(
   walletId: AccountWalletId,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.removeMultichainAccountWallet`);
+    log.debug(`MultichainAccountService:removeMultichainAccountWallet`);
     try {
       const entropySourceId = stripWalletTypePrefixFromWalletId(walletId);
-      await submitRequestToBackground('removeMultichainAccountWallet', [
-        entropySourceId,
+      await submitRequestToBackground('messengerCall', [
+        'MultichainAccountService:removeMultichainAccountWallet',
+        [entropySourceId],
       ]);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {

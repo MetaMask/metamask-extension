@@ -5536,49 +5536,4 @@ describe('MetaMaskController', () => {
       expect(result).toStrictEqual({ id: 'account-group-1', hidden: false });
     });
   });
-
-  describe('removeMultichainAccountWallet', () => {
-    let metamaskController;
-
-    beforeEach(async () => {
-      metamaskController = new MetaMaskController({
-        showUserConfirmation: noop,
-        encryptor: mockEncryptor,
-        initState: cloneDeep(firstTimeState),
-        initLangCode: 'en_US',
-        platform: {
-          showTransactionNotification: () => undefined,
-          getVersion: () => 'foo',
-          switchToAnotherURL: jest.fn(),
-        },
-        browser: browserPolyfillMock,
-        getRequestAccountTabIds: () => ({}),
-        getOpenMetamaskTabsIds: () => ({}),
-        notificationManager: {
-          markAsAutomaticallyClosed: jest.fn(),
-        },
-        infuraProjectId: 'foo',
-        isFirstMetaMaskControllerSetup: true,
-        cronjobControllerStorageManager:
-          createMockCronjobControllerStorageManager(),
-        controllerMessenger: new Messenger({
-          namespace: MOCK_ANY_NAMESPACE,
-        }),
-      });
-    });
-
-    it('delegates to MultichainAccountService:removeMultichainAccountWallet on controllerMessenger', async () => {
-      const callSpy = jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockResolvedValue(undefined);
-
-      const api = metamaskController.getApi();
-      await api.removeMultichainAccountWallet('01JKAF3DSGM3AB87EM9N0K41AJ');
-
-      expect(callSpy).toHaveBeenCalledWith(
-        'MultichainAccountService:removeMultichainAccountWallet',
-        '01JKAF3DSGM3AB87EM9N0K41AJ',
-      );
-    });
-  });
 });
