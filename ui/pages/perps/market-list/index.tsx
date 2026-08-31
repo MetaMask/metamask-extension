@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useMemo,
   useEffect,
+  useLayoutEffect,
   useRef,
 } from 'react';
 import { useSelector } from 'react-redux';
@@ -265,10 +266,8 @@ export const MarketListView = () => {
   // --- Market search funnel (query -> result tapped | abandoned) ------------
   // Refs, not state: these only feed analytics and must never trigger a render.
   const trackRef = useRef(track);
-  trackRef.current = track;
   // Latest settled result set, read by the tap handler for rank/count.
   const displayedMarketsRef = useRef(displayedMarkets);
-  displayedMarketsRef.current = displayedMarkets;
   // Last query actually emitted, so abandonment reports what was measured.
   const emittedQueryRef = useRef('');
   const emittedResultsCountRef = useRef<number | undefined>(undefined);
@@ -281,11 +280,9 @@ export const MarketListView = () => {
   // Result count as of the render that last had this pending query on screen.
   const pendingResultCountRef = useRef<number | undefined>(undefined);
   const isLoadingRef = useRef(isLoading);
-  isLoadingRef.current = isLoading;
   // What is in the box right now, so a tap can be attributed to a search that
   // is still inside the debounce window.
   const trimmedQueryRef = useRef('');
-  trimmedQueryRef.current = searchQuery.trim();
 
   // Chips narrowing the browse context. The Extension exposes only the category
   // filter; mobile also counts its watchlist chip.
@@ -294,7 +291,14 @@ export const MarketListView = () => {
     [selectedFilter],
   );
   const activeChipsRef = useRef(activeChips);
-  activeChipsRef.current = activeChips;
+
+  useLayoutEffect(() => {
+    trackRef.current = track;
+    displayedMarketsRef.current = displayedMarkets;
+    isLoadingRef.current = isLoading;
+    trimmedQueryRef.current = searchQuery.trim();
+    activeChipsRef.current = activeChips;
+  }, [track, displayedMarkets, isLoading, searchQuery, activeChips]);
 
   /**
    * Emit PERPS_SEARCH_QUERY (and the matching screen view once counts are

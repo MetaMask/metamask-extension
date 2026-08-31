@@ -104,29 +104,42 @@ export const useCarouselManagement = ({
   const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
   const prevSlidesRef = useRef<CarouselSlide[]>();
   const slidesRef = useRef(slides);
-  slidesRef.current = slides;
+
+  useEffect(() => {
+    slidesRef.current = slides;
+  }, [slides]);
+
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
   );
   const currentLocale = useSelector(getCurrentLocale);
   const contentfulEnabled =
     remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
+  const eligibilityNeeded =
+    contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
 
   const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
-  const [downloadEligibilityReady, setDownloadEligibilityReady] =
-    useState<boolean>(false);
+  const [downloadEligibilityReady, setDownloadEligibilityReady] = useState(
+    () => !eligibilityNeeded,
+  );
+  const [trackedEligibilityNeeded, setTrackedEligibilityNeeded] = useState(
+    eligibilityNeeded,
+  );
 
-  useEffect(() => {
-    const eligibilityNeeded =
-      contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
-
-    if (!eligibilityNeeded) {
+  if (eligibilityNeeded !== trackedEligibilityNeeded) {
+    setTrackedEligibilityNeeded(eligibilityNeeded);
+    if (eligibilityNeeded) {
+      setDownloadEligibilityReady(false);
+    } else {
       setDownloadEligible(false);
       setDownloadEligibilityReady(true);
+    }
+  }
+
+  useEffect(() => {
+    if (!eligibilityNeeded) {
       return () => undefined;
     }
-
-    setDownloadEligibilityReady(false);
 
     let cancelled = false;
 
@@ -157,6 +170,7 @@ export const useCarouselManagement = ({
     useExternalServices,
     showDownloadMobileAppSlide,
     contentfulEnabled,
+    eligibilityNeeded,
   ]);
 
   useEffect(() => {
@@ -268,6 +282,7 @@ export const useCarouselManagement = ({
     testDate,
     inTest,
     downloadEligibilityReady,
+    downloadEligible,
   ]);
 
   return { slides };

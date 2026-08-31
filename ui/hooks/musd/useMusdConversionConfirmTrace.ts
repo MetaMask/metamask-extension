@@ -9,7 +9,7 @@
  * app/components/UI/Earn/hooks/useMusdConversionStatus.ts
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   TransactionStatus,
@@ -57,8 +57,8 @@ function isTerminalStatus(status: string): status is TerminalStatus {
  * @param transactionId - The ID of the transaction to trace
  */
 export function useMusdConversionConfirmTrace(transactionId: string): void {
-  const activeTraceRef = useRef<boolean>(false);
-  const tracedTxIdRef = useRef<string | null>(null);
+  const [isTracing, setIsTracing] = useState(false);
+  const [tracedTxId, setTracedTxId] = useState<string | null>(null);
   // Cache payment token, quote, and chain data at trace start so it survives
   // the TransactionPayController clearing the data on completion.
   const traceContextRef = useRef<{
@@ -67,11 +67,10 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
     transactionChainId: string;
     strategy: string;
   } | null>(null);
+  const traceStateRef = useRef({ isTracing, tracedTxId });
   // Once a trace starts, keep tracking the original transaction ID even if
   // the prop becomes empty (the tx leaves the pending pool on confirmation).
-  const effectiveTxId = activeTraceRef.current
-    ? (tracedTxIdRef.current ?? transactionId)
-    : transactionId;
+  const effectiveTxId = isTracing ? (tracedTxId ?? transactionId) : transactionId;
 
   const transactions = useSelector(getTransactions) as TransactionMeta[];
 
@@ -91,16 +90,29 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
     (t) => t.id === effectiveTxId && t.type === TransactionType.musdConversion,
   );
 
+  if (tx) {
+    if (IN_FLIGHT_STATUSES.includes(tx.status) && !isTracing) {
+      setIsTracing(true);
+      setTracedTxId(tx.id);
+    } else if (isTracing && isTerminalStatus(tx.status)) {
+      setIsTracing(false);
+      setTracedTxId(null);
+    }
+  } else if (!isTracing && tracedTxId !== null) {
+    setTracedTxId(null);
+  }
+
+  useEffect(() => {
+    traceStateRef.current = { isTracing, tracedTxId };
+  }, [isTracing, tracedTxId]);
+
   useEffect(() => {
     if (!tx) {
       return;
     }
 
     // Start trace when the transaction first appears in any in-flight state
-    if (IN_FLIGHT_STATUSES.includes(tx.status) && !activeTraceRef.current) {
-      activeTraceRef.current = true;
-      tracedTxIdRef.current = tx.id;
-
+    if (IN_FLIGHT_STATUSES.includes(tx.status) && traceContextRef.current === null) {
       const selectedQuote = quotes?.[0] as
         | {
             strategy?: string;
@@ -127,7 +139,7 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
 
     // Keep the cached context up-to-date while data is still available,
     // in case selectors populated after the initial trace start.
-    if (activeTraceRef.current && traceContextRef.current) {
+    if (traceContextRef.current) {
       const selectedQuote = quotes?.[0] as { strategy?: string } | undefined;
       if (paymentToken?.address) {
         traceContextRef.current.paymentTokenAddress = paymentToken.address;
@@ -144,9 +156,7 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
     }
 
     // End trace when transaction reaches terminal status
-    if (activeTraceRef.current && isTerminalStatus(tx.status)) {
-      activeTraceRef.current = false;
-
+    if (traceContextRef.current && isTerminalStatus(tx.status)) {
       const ctx = traceContextRef.current;
 
       const endData = {
@@ -166,22 +176,20 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
         data: endData,
       });
 
-      tracedTxIdRef.current = null;
       traceContextRef.current = null;
     }
-  }, [tx, transactionId, paymentToken, quotes]);
+  }, [tx, paymentToken, quotes]);
 
   // End any active trace on unmount to prevent orphaned entries in tracesByKey
   useEffect(() => {
     return () => {
-      if (activeTraceRef.current && tracedTxIdRef.current) {
+      const { isTracing: active, tracedTxId: txId } = traceStateRef.current;
+      if (active && txId) {
         endTrace({
           name: TraceName.MusdConversionConfirm,
-          id: tracedTxIdRef.current,
+          id: txId,
           data: { success: false, status: 'unmounted' },
         });
-        activeTraceRef.current = false;
-        tracedTxIdRef.current = null;
         traceContextRef.current = null;
       }
     };

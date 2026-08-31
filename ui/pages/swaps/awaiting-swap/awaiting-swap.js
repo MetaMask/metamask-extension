@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useContext, useRef, useState, useEffect } from 'react';
+import React, { useContext, useRef, useState, useEffect, useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
@@ -84,7 +84,7 @@ export default function AwaitingSwap({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const animationEventEmitter = useRef(new EventEmitter());
+  const [animationEventEmitter] = useState(() => new EventEmitter());
   const { swapMetaData } =
     useSelector((state) => getFullTxData(state, txId)) || {};
   const fetchParams = useSelector(getFetchParams, isEqual);
@@ -97,8 +97,7 @@ export default function AwaitingSwap({
   const usdConversionRate = useSelector(getUSDConversionRate);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
-  const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] =
-    useState(false);
+  const trackedQuotesExpiredRef = useRef(false);
 
   const destinationTokenSymbol =
     usedQuote?.destinationTokenInfo?.symbol || swapMetaData?.token_to;
@@ -130,20 +129,36 @@ export default function AwaitingSwap({
     getCurrentSmartTransactionsEnabled,
   );
   const swapSlippage = swapMetaData?.slippage || usedQuote?.slippage;
-  const sensitiveProperties = {
-    token_from: swapMetaData?.token_from || usedQuote?.sourceTokenInfo?.symbol,
-    token_from_amount: swapMetaData?.token_from_amount,
-    token_to: destinationTokenSymbol,
-    request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
-    slippage: swapSlippage,
-    custom_slippage: swapSlippage === 2,
-    gas_fees: feeinUnformattedFiat,
-    is_hardware_wallet: hardwareWalletUsed,
-    hardware_wallet_type: hardwareWalletType,
-    stx_enabled: smartTransactionsEnabled,
-    current_stx_enabled: currentSmartTransactionsEnabled,
-    stx_user_opt_in: smartTransactionsOptInStatus,
-  };
+  const sensitiveProperties = useMemo(
+    () => ({
+      token_from: swapMetaData?.token_from || usedQuote?.sourceTokenInfo?.symbol,
+      token_from_amount: swapMetaData?.token_from_amount,
+      token_to: destinationTokenSymbol,
+      request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
+      slippage: swapSlippage,
+      custom_slippage: swapSlippage === 2,
+      gas_fees: feeinUnformattedFiat,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
+    }),
+    [
+      currentSmartTransactionsEnabled,
+      destinationTokenSymbol,
+      feeinUnformattedFiat,
+      fetchParams?.balanceError,
+      hardwareWalletType,
+      hardwareWalletUsed,
+      smartTransactionsEnabled,
+      smartTransactionsOptInStatus,
+      swapMetaData?.token_from,
+      swapMetaData?.token_from_amount,
+      swapSlippage,
+      usedQuote?.sourceTokenInfo?.symbol,
+    ],
+  );
   const baseNetworkUrl =
     rpcPrefs.blockExplorerUrl ??
     CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
@@ -152,6 +167,29 @@ export default function AwaitingSwap({
     { hash: txHash, chainId },
     { blockExplorerUrl: baseNetworkUrl },
   );
+
+  useEffect(() => {
+    if (errorKey !== QUOTES_EXPIRED_ERROR || trackedQuotesExpiredRef.current) {
+      return;
+    }
+
+    trackedQuotesExpiredRef.current = true;
+    trackEvent(
+      createEventBuilder('Quotes Timed Out')
+        .addCategory(MetaMetricsEventCategory.Swaps)
+        .addSensitiveProperties(sensitiveProperties)
+        .addProperties({
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
+  }, [
+    createEventBuilder,
+    errorKey,
+    hdEntropyIndex,
+    sensitiveProperties,
+    trackEvent,
+  ]);
 
   let headerText;
   let statusImage;
@@ -201,19 +239,6 @@ export default function AwaitingSwap({
     descriptionText = t('swapQuotesExpiredErrorDescription');
     submitText = t('tryAgain');
     statusImage = <QuotesTimeoutIcon />;
-
-    if (!trackedQuotesExpiredEvent) {
-      setTrackedQuotesExpiredEvent(true);
-      trackEvent(
-        createEventBuilder('Quotes Timed Out')
-          .addCategory(MetaMetricsEventCategory.Swaps)
-          .addSensitiveProperties(sensitiveProperties)
-          .addProperties({
-            hd_entropy_index: hdEntropyIndex,
-          })
-          .build(),
-      );
-    }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
     headerText = t('swapFetchingQuotesErrorTitle');
     descriptionText = t('swapFetchingQuotesErrorDescription');
@@ -292,7 +317,7 @@ export default function AwaitingSwap({
     }
     return (
       <Mascot
-        animationEventEmitter={animationEventEmitter.current}
+        animationEventEmitter={animationEventEmitter}
         width="90"
         height="90"
       />

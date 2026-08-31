@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { debounce } from 'lodash';
-import { usePrevious } from './usePrevious';
 
 /**
  * Utility hook for requiring users to scroll through content.
@@ -17,29 +16,32 @@ export const useScrollRequired = (
   dependencies = [],
   { offsetPxFromBottom = 16 } = {},
 ) => {
-  const ref = useRef(null);
-  const prevOffsetHeight = usePrevious(ref.current?.offsetHeight);
+  const [scrollElement, setScrollElement] = useState(null);
+  const setRef = useCallback((node) => {
+    setScrollElement(node);
+  }, []);
+
+  const offsetHeight = scrollElement?.offsetHeight;
 
   const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);
   const [isScrollableState, setIsScrollable] = useState(false);
   const [isScrolledToBottomState, setIsScrolledToBottom] = useState(false);
 
   const update = useCallback(() => {
-    if (!ref.current) {
+    if (!scrollElement) {
       return;
     }
 
-    const isScrollable =
-      ref.current && ref.current.scrollHeight > ref.current.clientHeight;
+    const isScrollable = scrollElement.scrollHeight > scrollElement.clientHeight;
 
     const isScrolledToBottom =
       isScrollable &&
       // Add 16px to the actual scroll position to trigger setIsScrolledToBottom sooner.
       // This avoids the problem where a user has scrolled down to the bottom and it's not detected.
-      Math.round(ref.current.scrollTop) +
-        ref.current.offsetHeight +
+      Math.round(scrollElement.scrollTop) +
+        scrollElement.offsetHeight +
         offsetPxFromBottom >=
-        ref.current.scrollHeight;
+        scrollElement.scrollHeight;
 
     if (isScrollable !== isScrollableState) {
       setHasScrolledToBottom(false);
@@ -51,27 +53,25 @@ export const useScrollRequired = (
     if (!isScrollable || isScrolledToBottom) {
       setHasScrolledToBottom(true);
     }
-  }, [isScrollableState, offsetPxFromBottom]);
-
-  useEffect(update, [ref, ...dependencies]);
+  }, [isScrollableState, offsetPxFromBottom, scrollElement]);
 
   useEffect(() => {
-    if (prevOffsetHeight !== ref.current?.offsetHeight) {
-      update();
-    }
-  }, [update, ref.current?.offsetHeight, prevOffsetHeight]);
+    queueMicrotask(() => update());
+  }, [update, scrollElement, offsetHeight, ...dependencies]);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     setIsScrolledToBottom(true);
     setHasScrolledToBottom(true);
 
-    if (ref.current) {
-      ref.current.scrollTo({
-        top: ref.current.scrollHeight,
+    if (scrollElement) {
+      scrollElement.scrollTo({
+        top: scrollElement.scrollHeight,
         behavior: 'smooth',
       });
     }
-  };
+  }, [scrollElement]);
+
+  const onScroll = useMemo(() => debounce(update, 25), [update]);
 
   return {
     isScrollable: isScrollableState,
@@ -79,7 +79,7 @@ export const useScrollRequired = (
     hasScrolledToBottom: hasScrolledToBottomState,
     scrollToBottom,
     setHasScrolledToBottom,
-    ref,
-    onScroll: debounce(update, 25),
+    ref: setRef,
+    onScroll,
   };
 };

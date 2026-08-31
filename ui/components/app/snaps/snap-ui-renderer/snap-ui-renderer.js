@@ -31,12 +31,16 @@ import { COMPONENT_MAPPING } from './components';
 
 // Component for tracking the number of re-renders
 // DO NOT USE IN PRODUCTION
+/* eslint-disable react-hooks/refs -- PERF_DEBUG render counter */
 const PerformanceTracker = () => {
   const rendersRef = useRef(0);
   rendersRef.current += 1;
 
-  return <span data-testid="performance" data-renders={rendersRef.current} />;
+  return (
+    <span data-testid="performance" data-renders={rendersRef.current} />
+  );
 };
+/* eslint-enable react-hooks/refs */
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 const SnapUIRendererComponent = ({
@@ -105,23 +109,20 @@ const SnapUIRendererComponent = ({
     mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
     BackgroundColor.backgroundAlternative;
 
-  const sections = useMemo(
-    () =>
-      content &&
-      mapToTemplate({
-        map: {},
-        element: content,
-        onCancel,
-        useFooter,
-        promptLegacyProps,
-        t,
-        contentBackgroundColor: backgroundColor,
-        componentMap: COMPONENT_MAPPING,
-        setScroll,
-        scrollableContainerRef,
-      }),
-    [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
-  );
+  const sections =
+    content &&
+    mapToTemplate({
+      map: {},
+      element: content,
+      onCancel,
+      useFooter,
+      promptLegacyProps,
+      t,
+      contentBackgroundColor: backgroundColor,
+      componentMap: COMPONENT_MAPPING,
+      setScroll,
+      scrollableContainerRef,
+    });
 
   const pickerLocaleText = useMemo(
     () => ({
