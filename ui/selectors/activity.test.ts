@@ -425,8 +425,6 @@ describe('selectLocalTransactions', () => {
     expect(
       groups.map((group) => group.initialTransaction.id).sort(),
     ).toStrictEqual(['money-account-tx', 'selected-account-tx']);
-    expect(
-      groups.every((group) => group.transactions.length === 1),
-    ).toBe(true);
+    expect(groups.every((group) => group.transactions.length === 1)).toBe(true);
   });
 });
