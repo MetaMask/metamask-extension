@@ -7,7 +7,7 @@ import {
   reviewQuote,
   waitForTransactionToComplete,
   checkActivityTransaction,
-} from '../tests/swaps/shared';
+} from '../page-objects/flows/swap.flow';
 import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
 import { login } from '../page-objects/flows/login.flow';

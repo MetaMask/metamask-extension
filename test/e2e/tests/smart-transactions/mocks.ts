@@ -1,7 +1,7 @@
 import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { Readable } from 'stream';
 import { MockttpServer } from 'mockttp';
-import { mockEthDaiTrade, mockEthUsdcGasIncludedTrade } from '../swaps/shared';
+import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../../data/mock-data';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { SSE_RESPONSE_HEADER } from '../bridge/constants';
@@ -515,6 +515,33 @@ const GET_BLOCK_BY_HASH_RESPONSE = {
     timestamp: '123456789',
   },
 };
+
+async function mockEthDaiTrade(mockServer: MockttpServer) {
+  return [
+    await mockServer
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: SWAP_TEST_ETH_DAI_TRADES_MOCK,
+        };
+      }),
+  ];
+}
+
+async function mockEthUsdcGasIncludedTrade(mockServer: MockttpServer) {
+  return [
+    await mockServer
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
+      .withQuery({ enableGasIncludedQuotes: 'true' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: SWAP_TEST_GAS_INCLUDED_TRADES_MOCK,
+        };
+      }),
+  ];
+}
 
 export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
   await mockSmartTransactionRequestsBase(mockServer);

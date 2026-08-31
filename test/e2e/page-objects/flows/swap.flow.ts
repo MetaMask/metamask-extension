@@ -1,38 +1,8 @@
 import { strict as assert } from 'assert';
-import { MockttpServer } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../data/mock-data';
-import { SWAP_TEST_GAS_INCLUDED_TRADES_MOCK } from '../smart-transactions/mocks';
-import SwapPage from '../../page-objects/pages/swap/swap-page';
-import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityTab from '../../page-objects/pages/home/activity-tab';
-
-export async function mockEthDaiTrade(mockServer: MockttpServer) {
-  return [
-    await mockServer
-      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: SWAP_TEST_ETH_DAI_TRADES_MOCK,
-        };
-      }),
-  ];
-}
-
-export async function mockEthUsdcGasIncludedTrade(mockServer: MockttpServer) {
-  return [
-    await mockServer
-      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
-      .withQuery({ enableGasIncludedQuotes: 'true' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: SWAP_TEST_GAS_INCLUDED_TRADES_MOCK,
-        };
-      }),
-  ];
-}
+import SwapPage from '../pages/swap/swap-page';
+import HomePage from '../pages/home/homepage';
+import ActivityTab from '../pages/home/activity-tab';
 
 type SwapOptions = {
   amount: number;
@@ -120,9 +90,4 @@ export const checkNotification = async (
 ) => {
   const swapPage = new SwapPage(driver);
   await swapPage.checkNotificationBanner(options.title, options.text);
-};
-
-export const changeExchangeRate = async (driver: Driver) => {
-  const swapPage = new SwapPage(driver);
-  await swapPage.selectAlternativeQuote();
 };

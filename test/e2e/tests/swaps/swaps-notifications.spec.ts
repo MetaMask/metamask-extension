@@ -13,7 +13,7 @@ import {
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from '../bridge/constants';
-import { checkNotification } from './shared';
+import { checkNotification } from '../../page-objects/flows/swap.flow';
 
 const MUSD_MALICIOUS_SECURITY_DATA = {
   type: 'Malicious',
