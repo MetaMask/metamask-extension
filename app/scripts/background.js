@@ -286,13 +286,25 @@ function setGlobalInitializers() {
 }
 setGlobalInitializers();
 
-lazyListener.once('runtime', 'onInstalled').then((details) => {
-  handleOnInstalled(details, {
-    controller,
+/**
+ * Install/update lifecycle dependencies. `controller` is accessed via a getter
+ * because `onInstalled` can fire (and be buffered) before `controller` is assigned.
+ *
+ * @returns {import('./lib/lifecycle/install-lifecycle').InstallLifecycleDependencies}
+ */
+function getInstallLifecycleDeps() {
+  return {
+    get controller() {
+      return controller;
+    },
     platform,
     isInitialized,
     requestSafeReload,
-  });
+  };
+}
+
+lazyListener.once('runtime', 'onInstalled').then((details) => {
+  handleOnInstalled(details, getInstallLifecycleDeps());
 });
 
 /**
@@ -1927,12 +1939,7 @@ async function triggerUi() {
 }
 
 browser.runtime.onUpdateAvailable.addListener((details) => {
-  onUpdateAvailable(details, {
-    controller,
-    platform,
-    isInitialized,
-    requestSafeReload,
-  });
+  onUpdateAvailable(details, getInstallLifecycleDeps());
 });
 
 function onNavigateToTab() {

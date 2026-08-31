@@ -7,6 +7,7 @@ import type { TransactionPayTotals } from '@metamask/transaction-pay-controller'
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import {
   useTransactionPayHasPositiveRequiredAmount,
+  useTransactionPayQuotes,
   useTransactionPaySourceAmounts,
   useTransactionPayTotals,
 } from './useTransactionPayData';
@@ -22,6 +23,7 @@ const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
 const useTransactionPayHasPositiveRequiredAmountMock = jest.mocked(
   useTransactionPayHasPositiveRequiredAmount,
 );
+const useTransactionPayQuotesMock = jest.mocked(useTransactionPayQuotes);
 const useTransactionPaySourceAmountsMock = jest.mocked(
   useTransactionPaySourceAmounts,
 );
@@ -54,6 +56,7 @@ describe('useIsPaidByMetaMask', () => {
     mockConfirmation(TransactionType.musdConversion);
     mockTotals();
     useTransactionPayHasPositiveRequiredAmountMock.mockReturnValue(true);
+    useTransactionPayQuotesMock.mockReturnValue([{}] as never);
     useTransactionPaySourceAmountsMock.mockReturnValue(undefined);
   });
 
@@ -107,6 +110,64 @@ describe('useIsPaidByMetaMask', () => {
 
   it('returns true when all fees are zero for moneyAccountDeposit', () => {
     mockConfirmation(TransactionType.moneyAccountDeposit);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(true);
+  });
+
+  it('returns true when all fees are zero for moneyAccountWithdraw', () => {
+    mockConfirmation(TransactionType.moneyAccountWithdraw);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(true);
+  });
+
+  it('returns true for a sponsored withdraw with no quotes', () => {
+    mockConfirmation(TransactionType.moneyAccountWithdraw, {
+      isGasFeeSponsored: true,
+    });
+    useTransactionPayQuotesMock.mockReturnValue([]);
+    useTransactionPayTotalsMock.mockReturnValue(undefined);
+    useTransactionPaySourceAmountsMock.mockReturnValue([]);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(true);
+  });
+
+  it('returns true for a sponsored withdraw whose quote only has network gas', () => {
+    mockConfirmation(TransactionType.moneyAccountWithdraw, {
+      isGasFeeSponsored: true,
+    });
+    useTransactionPaySourceAmountsMock.mockReturnValue([
+      {},
+    ] as unknown as ReturnType<typeof useTransactionPaySourceAmounts>);
+    mockTotals({
+      sourceNetwork: { estimate: { usd: '0.15' } },
+    } as TransactionPayTotals['fees']);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(true);
+  });
+
+  it('returns false for a sponsored withdraw with a provider fee', () => {
+    mockConfirmation(TransactionType.moneyAccountWithdraw, {
+      isGasFeeSponsored: true,
+    });
+    useTransactionPaySourceAmountsMock.mockReturnValue([
+      {},
+    ] as unknown as ReturnType<typeof useTransactionPaySourceAmounts>);
+    mockTotals({
+      sourceNetwork: { estimate: { usd: '0.15' } },
+      provider: { usd: '1.00' },
+    } as TransactionPayTotals['fees']);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns true for a money-account withdraw with no required amount', () => {
+    mockConfirmation(TransactionType.moneyAccountWithdraw);
+    useTransactionPayHasPositiveRequiredAmountMock.mockReturnValue(false);
 
     const { result } = renderHook(() => useIsPaidByMetaMask());
     expect(result.current).toBe(true);

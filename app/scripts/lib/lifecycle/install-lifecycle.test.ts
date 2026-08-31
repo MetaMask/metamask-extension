@@ -183,6 +183,33 @@ describe('install-lifecycle', () => {
   });
 
   describe('onInstall', () => {
+    it('reads controller after deps object creation when accessed via getter', async () => {
+      const assignedController = createController();
+      let controllerReady = false;
+      getInstallAttributionMock.mockResolvedValue({
+        deferredDeepLink: null,
+        traits: {},
+      });
+
+      const deps: InstallLifecycleDependencies = {
+        get controller() {
+          if (!controllerReady) {
+            throw new Error('controller not yet assigned');
+          }
+          return assignedController;
+        },
+        platform: createPlatform(),
+        isInitialized: Promise.resolve(),
+        requestSafeReload: jest.fn(),
+      };
+
+      const installPromise = onInstall(deps);
+      controllerReady = true;
+      await installPromise;
+
+      expect(trackEventMock).toHaveBeenCalledTimes(1);
+    });
+
     it('opens onboarding and records install attribution after initialization', async () => {
       const deps = createDeps();
       getInstallAttributionMock.mockResolvedValue({

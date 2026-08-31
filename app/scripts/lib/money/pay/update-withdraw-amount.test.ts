@@ -22,8 +22,10 @@ const buildWithdrawBatchMock = jest.mocked(buildMoneyAccountWithdrawBatch);
 const TRANSACTION_ID = 'withdraw-amount-tx';
 const ACCOUNT_OVERRIDE = '0xabcdef1234567890abcdef1234567890abcdef12' as Hex;
 const SELECTED_ACCOUNT = '0x1111111111111111111111111111111111111111' as Hex;
-const WITHDRAW_DATA = '0xwithdraw' as Hex;
-const TRANSFER_DATA = '0xtransfer' as Hex;
+const WITHDRAW_DATA = '0xaaa1' as Hex;
+const TRANSFER_DATA = '0xbbb2' as Hex;
+const WITHDRAW_DATA_2 = '0xccc3' as Hex;
+const TRANSFER_DATA_2 = '0xddd4' as Hex;
 
 function createWithdrawTransaction(): TransactionMeta {
   return {
@@ -98,8 +100,8 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
 
     expect(result).toStrictEqual({
-      didCommit: true,
-      recipient: ACCOUNT_OVERRIDE,
+      withdrawData: WITHDRAW_DATA,
+      transferData: TRANSFER_DATA,
     });
     expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -127,15 +129,15 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
 
     expect(result).toStrictEqual({
-      didCommit: true,
-      recipient: SELECTED_ACCOUNT,
+      withdrawData: WITHDRAW_DATA,
+      transferData: TRANSFER_DATA,
     });
     expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
       expect.objectContaining({ recipient: SELECTED_ACCOUNT }),
     );
   });
 
-  it('returns didCommit false for a zero amount without encoding', async () => {
+  it('returns false for a zero amount without encoding', async () => {
     const { messenger, updateTransaction } = setup();
 
     const result = await updateMoneyAccountWithdrawAmount(
@@ -144,7 +146,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       '0',
     );
 
-    expect(result).toStrictEqual({ didCommit: false });
+    expect(result).toBe(false);
     expect(buildWithdrawBatchMock).not.toHaveBeenCalled();
     expect(updateTransaction).not.toHaveBeenCalled();
   });
@@ -172,7 +174,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
         withdrawTx: {
           params: {
             to: VAULT_CONFIG_MOCK.tellerAddress,
-            data: '0xwithdraw2' as Hex,
+            data: WITHDRAW_DATA_2,
             value: '0x0',
           },
           type: TransactionType.moneyAccountWithdraw,
@@ -180,7 +182,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
         transferTx: {
           params: {
             to: VAULT_CONFIG_MOCK.underlyingToken,
-            data: '0xtransfer2' as Hex,
+            data: TRANSFER_DATA_2,
             value: '0x0',
           },
           type: TransactionType.tokenMethodTransfer,
@@ -201,8 +203,8 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
 
     await expect(second).resolves.toStrictEqual({
-      didCommit: true,
-      recipient: ACCOUNT_OVERRIDE,
+      withdrawData: WITHDRAW_DATA_2,
+      transferData: TRANSFER_DATA_2,
     });
     resolveFirst({
       withdrawTx: {
@@ -222,7 +224,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
         type: TransactionType.tokenMethodTransfer,
       },
     });
-    await expect(first).resolves.toStrictEqual({ didCommit: false });
+    await expect(first).resolves.toBe(false);
     expect(updateTransaction).toHaveBeenCalledTimes(1);
   });
 });

@@ -2,15 +2,25 @@ import React from 'react';
 import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { type Asset } from '../../types/send';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
+import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { usePayWithNoFeeToken } from './usePayWithNoFeeToken';
+
+jest.mock('../transactions/useTransactionMetadataRequest');
 
 const ETH_USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const ETH_MUSD = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
 
 const mockStore = configureMockStore();
+const useTransactionMetadataRequestOptionalMock = jest.mocked(
+  useTransactionMetadataRequestOptional,
+);
 
 function renderUsePayWithNoFeeToken(
   remoteFeatureFlags: Record<string, unknown>,
@@ -29,6 +39,10 @@ function renderUsePayWithNoFeeToken(
 }
 
 describe('usePayWithNoFeeToken', () => {
+  beforeEach(() => {
+    useTransactionMetadataRequestOptionalMock.mockReturnValue(undefined);
+  });
+
   it('returns false when the relay fixed-spread flag is empty', () => {
     const { result } = renderUsePayWithNoFeeToken({});
 
@@ -95,5 +109,51 @@ describe('usePayWithNoFeeToken', () => {
     } as Asset);
 
     expect(tagged).not.toBeNull();
+  });
+
+  describe('Money Account withdrawal — directional no-fee', () => {
+    const ethDest = '0xdddddddddddddddddddddddddddddddddddddddd';
+
+    beforeEach(() => {
+      useTransactionMetadataRequestOptionalMock.mockReturnValue({
+        type: TransactionType.moneyAccountWithdraw,
+      } as TransactionMeta);
+    });
+
+    it('tags a token that is the destination of a Monad mUSD route', () => {
+      const { result } = renderUsePayWithNoFeeToken({
+        /* eslint-disable @typescript-eslint/naming-convention */
+        confirmations_relay_fixed_spread: {
+          chains: { eth: '0x1', monad: CHAIN_IDS.MONAD },
+          tokens: { eth_dest: ethDest, musd: MUSD_TOKEN_ADDRESS },
+          routes: [['monad', 'musd', 'eth', 'eth_dest']],
+        },
+        /* eslint-enable @typescript-eslint/naming-convention */
+      });
+
+      expect(result.current.isNoFeeToken(ethDest, '0x1')).toBe(true);
+    });
+
+    it('does not tag a deposit-only subsidised source', () => {
+      const { result } = renderUsePayWithNoFeeToken({
+        /* eslint-disable @typescript-eslint/naming-convention */
+        confirmations_relay_fixed_spread: {
+          chains: { eth: '0x1', monad: CHAIN_IDS.MONAD },
+          tokens: { eth_usdc: ETH_USDC, musd: MUSD_TOKEN_ADDRESS },
+          routes: [['eth', 'eth_usdc', 'monad', 'musd']],
+        },
+        /* eslint-enable @typescript-eslint/naming-convention */
+      });
+
+      expect(result.current.isNoFeeToken(ETH_USDC, '0x1')).toBe(false);
+    });
+
+    it('tags Monad mUSD itself even though the flag omits the same-token route', () => {
+      const { result } = renderUsePayWithNoFeeToken({});
+
+      expect(
+        result.current.isNoFeeToken(MUSD_TOKEN_ADDRESS, CHAIN_IDS.MONAD),
+      ).toBe(true);
+    });
   });
 });
