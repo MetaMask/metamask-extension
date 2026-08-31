@@ -29,6 +29,7 @@ import { Asset } from '../types/asset';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { useAssetActivation } from '../hooks/useAssetActivation';
+import { useBalanceAwareSwapDefaults } from '../hooks/useBalanceAwareSwapDefaults';
 import {
   useAssetPageSecurityTrustCtaGate,
   useAssetPageSecurityTrustCtaGateReady,
@@ -62,6 +63,10 @@ const TokenButtons = ({
 
   const { goToBuy } = useRampsNavigation();
   const { openBridgeExperience } = useBridging();
+  const { sourceToken, destTokenAssetId } = useBalanceAwareSwapDefaults({
+    currentToken: token,
+    currentTokenBalance: token.balance?.value ?? token.balance?.display,
+  });
 
   useEffect(() => {
     if (token.isERC721) {
@@ -153,7 +158,11 @@ const TokenButtons = ({
 
   const handleSwapOnClick = useCallback(() => {
     const runSwap = () => {
-      openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.TokenView,
+        sourceToken,
+        destTokenAssetId,
+      );
     };
 
     if (gateCtaAction) {
@@ -162,7 +171,7 @@ const TokenButtons = ({
     }
 
     runSwap();
-  }, [gateCtaAction, openBridgeExperience, token]);
+  }, [destTokenAssetId, gateCtaAction, openBridgeExperience, sourceToken]);
 
   const {
     deactivateAsset,
