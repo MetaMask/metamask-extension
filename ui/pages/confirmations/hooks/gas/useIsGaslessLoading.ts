@@ -49,7 +49,13 @@ export function useIsGaslessLoading() {
   const hasNoNativeTokenAvailable =
     excludeNativeTokenForFee || hasInsufficientBalance;
 
+  // Money Account batches skip the initial gas estimate and set
+  // `isGasFeeSponsored` at creation on Monad, so `gasFeeTokens` never arrives.
+  // Waiting on them leaves the confirm button spinning after quotes are ready.
+  const skipsGaslessTokenWait = Boolean(transactionMeta?.isGasFeeSponsored);
+
   const isGaslessLoading = Boolean(
+    !skipsGaslessTokenWait &&
     isSimulationEnabled &&
     hasNoNativeTokenAvailable &&
     (isGaslessSupportedPending || isGaslessSupportedFinished) &&

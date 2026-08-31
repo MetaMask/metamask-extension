@@ -63,18 +63,8 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const mockUseMerklRewards = jest.fn().mockReturnValue({
-  isEligible: false,
-  hasClaimableReward: false,
-  hasClaimedBefore: false,
-  claimableRewardDisplay: null,
-  refetch: jest.fn(),
-});
 jest.mock('../../musd', () => ({
-  ClaimBonusBadge: () => <div data-testid="claim-bonus-badge-mock" />,
   MusdConvertLink: () => <div data-testid="musd-convert-link-mock" />,
-  isEligibleForMerklRewards: jest.fn().mockReturnValue(false),
-  useMerklRewards: (...args: unknown[]) => mockUseMerklRewards(...args),
 }));
 
 describe('Token Cell', () => {
@@ -155,9 +145,6 @@ describe('Token Cell', () => {
     token: {
       ...propToken,
     },
-    musd: {
-      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
-    },
     onClick: jest.fn(),
   };
   const propAnotherToken: Partial<TokenWithFiatAmount> & {
@@ -178,9 +165,6 @@ describe('Token Cell', () => {
   const propsLargeAmount = {
     token: {
       ...propAnotherToken,
-    },
-    musd: {
-      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
     },
     onClick: jest.fn(),
   };
@@ -367,69 +351,6 @@ describe('Token Cell', () => {
       );
 
       expect(queryByTestId('musd-convert-link-mock')).not.toBeInTheDocument();
-    });
-  });
-
-  describe('ClaimBonusBadge visibility', () => {
-    afterEach(() => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: false,
-        hasClaimableReward: false,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: null,
-        refetch: jest.fn(),
-      });
-    });
-
-    it('shows ClaimBonusBadge when isEligible and hasClaimableReward are both true', () => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: true,
-        hasClaimableReward: true,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: '10.50',
-        refetch: jest.fn(),
-      });
-
-      const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} />,
-        mockStore,
-      );
-
-      expect(queryByTestId('claim-bonus-badge-mock')).toBeInTheDocument();
-    });
-
-    it('does not show ClaimBonusBadge when isEligible is false', () => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: false,
-        hasClaimableReward: true,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: null,
-        refetch: jest.fn(),
-      });
-
-      const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} />,
-        mockStore,
-      );
-
-      expect(queryByTestId('claim-bonus-badge-mock')).not.toBeInTheDocument();
-    });
-
-    it('does not show ClaimBonusBadge when hasClaimableReward is false', () => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: true,
-        hasClaimableReward: false,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: null,
-        refetch: jest.fn(),
-      });
-
-      const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} />,
-        mockStore,
-      );
-
-      expect(queryByTestId('claim-bonus-badge-mock')).not.toBeInTheDocument();
     });
   });
 
