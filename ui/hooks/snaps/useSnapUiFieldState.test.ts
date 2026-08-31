@@ -9,9 +9,7 @@ describe('useSnapUiFieldState', () => {
   });
 
   it('uses the fallback when the external value is unset', () => {
-    const { result } = renderHook(() =>
-      useSnapUiFieldState(undefined, false),
-    );
+    const { result } = renderHook(() => useSnapUiFieldState(undefined, false));
 
     expect(result.current[0]).toBe(false);
   });
