@@ -30,10 +30,11 @@ type SendRecipientSource = {
  * - Nested batch calls that themselves are sends or token transfers
  * - Untyped transactions with no calldata, treated as legacy native sends
  *
- * This duplicates `getSendRecipients` from `@metamask/transaction-controller`,
- * which is not in the version this repo pins yet. Delete this file and import
- * from the package once the dependency is bumped past core#9943. Until then,
- * changes here need the same change there.
+ * This duplicates `getSendRecipients` from `@metamask/transaction-controller`.
+ * That helper is not published yet; it lands with
+ * https://github.com/MetaMask/core/pull/9943. Delete this file and import from
+ * the package once a release containing it is pinned here. Until then, changes
+ * here need the same change there.
  *
  * @param transactionMeta - Transaction meta with txParams and type.
  * @returns Deduplicated send recipient addresses, possibly empty.
