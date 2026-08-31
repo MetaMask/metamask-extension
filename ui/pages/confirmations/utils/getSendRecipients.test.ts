@@ -14,6 +14,7 @@ const TRANSFER_DATA = `0xa9059cbb000000000000000000000000${TOKEN_RECIPIENT.slice
 
 function buildTransactionMeta({
   data,
+  originalType,
   swapAndSendRecipient,
   to = TOKEN_CONTRACT,
   type,
@@ -26,6 +27,7 @@ function buildTransactionMeta({
     to?: string;
     type?: TransactionType;
   }[];
+  originalType?: TransactionType;
   swapAndSendRecipient?: string;
   to?: string;
   txParamsOriginal?: { from: string; to: string };
@@ -45,6 +47,7 @@ function buildTransactionMeta({
     ...(txParamsOriginal ? { txParamsOriginal } : {}),
     ...(swapAndSendRecipient ? { swapAndSendRecipient } : {}),
     ...(nestedTransactions ? { nestedTransactions } : {}),
+    ...(originalType ? { originalType } : {}),
     type,
   } as TransactionMeta;
 }
@@ -142,5 +145,81 @@ describe('getSendRecipients', () => {
         }),
       ),
     ).toEqual([nestedSendRecipient]);
+  });
+
+  it('classifies a sped-up simple send using originalType', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          originalType: TransactionType.simpleSend,
+          to: TOKEN_RECIPIENT,
+          type: TransactionType.retry,
+        }),
+      ),
+    ).toEqual([TOKEN_RECIPIENT]);
+  });
+
+  it('decodes the payee for a sped-up token transfer using originalType', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          data: TRANSFER_DATA,
+          originalType: TransactionType.tokenMethodTransfer,
+          type: TransactionType.retry,
+        }),
+      ).map((address) => address.toLowerCase()),
+    ).toEqual([TOKEN_RECIPIENT]);
+  });
+
+  it('returns no recipients for a cancellation even with a simpleSend originalType', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          originalType: TransactionType.simpleSend,
+          to: FROM_ADDRESS,
+          type: TransactionType.cancel,
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it('treats a native transfer to a contract address as a native send', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          to: TOKEN_RECIPIENT,
+          type: TransactionType.contractInteraction,
+        }),
+      ),
+    ).toEqual([TOKEN_RECIPIENT]);
+  });
+
+  it('returns no recipients for a contract interaction that has calldata', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          data: '0xdeadbeef',
+          to: TOKEN_RECIPIENT,
+          type: TransactionType.contractInteraction,
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it('treats a nested native transfer to a contract address as a native send', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          data: '0xdeadbeef',
+          nestedTransactions: [
+            {
+              to: TOKEN_RECIPIENT,
+              type: TransactionType.contractInteraction,
+            },
+          ],
+          type: TransactionType.batch,
+        }),
+      ),
+    ).toEqual([TOKEN_RECIPIENT]);
   });
 });
