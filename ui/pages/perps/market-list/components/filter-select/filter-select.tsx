@@ -33,6 +33,8 @@ export type FilterSelectProps = {
   onChange: (filter: MarketFilter) => void;
   /** Whether to show the "New" filter option (only shown if there are uncategorized assets) */
   showNewFilter?: boolean;
+  /** Whether to show the "Watchlist" option (only shown if the watchlist has markets) */
+  showWatchlistFilter?: boolean;
 };
 
 /**
@@ -42,25 +44,31 @@ export type FilterSelectProps = {
  * @param props.value - Currently selected filter
  * @param props.onChange - Callback when filter changes
  * @param props.showNewFilter - Whether to show the "New" filter option
+ * @param props.showWatchlistFilter - Whether to show the "Watchlist" option
  */
 export const FilterSelect = ({
   value,
   onChange,
   showNewFilter = false,
+  showWatchlistFilter = false,
 }: FilterSelectProps) => {
   const t = useI18nContext();
 
   const options: DropdownOption<MarketFilter>[] = useMemo(() => {
-    const baseOptions: DropdownOption<MarketFilter>[] = (
-      ['all', WATCHLIST_MARKET_FILTER, ...MARKET_CATEGORIES] as const
-    ).map((id) => ({ id, label: t(FILTER_LABEL_KEYS[id]) }));
+    const categoryIds = showWatchlistFilter
+      ? (['all', WATCHLIST_MARKET_FILTER, ...MARKET_CATEGORIES] as const)
+      : (['all', ...MARKET_CATEGORIES] as const);
+
+    const baseOptions: DropdownOption<MarketFilter>[] = categoryIds.map(
+      (id) => ({ id, label: t(FILTER_LABEL_KEYS[id]) }),
+    );
 
     if (showNewFilter) {
       baseOptions.push({ id: 'new', label: t(FILTER_LABEL_KEYS.new) });
     }
 
     return baseOptions;
-  }, [t, showNewFilter]);
+  }, [t, showNewFilter, showWatchlistFilter]);
 
   return (
     <Dropdown

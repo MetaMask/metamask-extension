@@ -354,6 +354,34 @@ describe('MarketListView', () => {
         });
       });
 
+      it('hides the watchlist option while the watchlist is empty', async () => {
+        renderWithProvider(<MarketListView />, mockStore);
+
+        fireEvent.click(screen.getByTestId('filter-select-button'));
+        await waitFor(() => screen.getByTestId('filter-select-menu'));
+
+        expect(
+          screen.queryByTestId('filter-select-option-watchlist'),
+        ).not.toBeInTheDocument();
+      });
+
+      it('falls back to all markets for a stale watchlist link', async () => {
+        renderWithProvider(
+          <MarketListView />,
+          mockStore,
+          '/perps/market-list?filter=watchlist',
+        );
+
+        // Without the fallback the trigger renders a blank label, because the
+        // selected id is no longer among the options.
+        await waitFor(() => {
+          expect(screen.getByTestId('filter-select-button')).toHaveTextContent(
+            messages.perpsFilterAll.message,
+          );
+        });
+        expect(screen.getByTestId('market-row-ETH')).toBeInTheDocument();
+      });
+
       it('clears a category when the watchlist option is chosen', async () => {
         renderWithProvider(
           <MarketListView />,

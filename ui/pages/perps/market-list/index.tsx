@@ -200,6 +200,20 @@ export const MarketListView = () => {
     usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
+  // Upper-cased so lookups match `PerpsMarketData.symbol` casing.
+  const watchlistSymbols = useMemo(
+    () =>
+      new Set(
+        (isTestnet
+          ? watchlistMarketsState.testnet
+          : watchlistMarketsState.mainnet
+        ).map((symbol) => symbol.toUpperCase()),
+      ),
+    [isTestnet, watchlistMarketsState],
+  );
+
+  const hasWatchlistMarkets = watchlistSymbols.size > 0;
+
   // Read initial filter from URL params (set by deeplink)
   const initialFilter = useMemo<MarketFilter>(() => {
     const filterParam = searchParams.get('filter');
@@ -207,12 +221,20 @@ export const MarketListView = () => {
       // normalizeMarketFilter resolves legacy aliases (e.g. `stocks`) and returns
       // null for unknown values, so no extra validation is needed here.
       const normalizedFilter = normalizeMarketFilter(filterParam);
+      // The watchlist option is hidden while the watchlist is empty, so a stale
+      // link to it would otherwise select an option that is not in the list.
+      if (
+        normalizedFilter === WATCHLIST_MARKET_FILTER &&
+        !hasWatchlistMarkets
+      ) {
+        return 'all';
+      }
       if (normalizedFilter) {
         return normalizedFilter;
       }
     }
     return 'all';
-  }, [searchParams]);
+  }, [searchParams, hasWatchlistMarkets]);
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
@@ -239,17 +261,6 @@ export const MarketListView = () => {
       [PERPS_EVENT_PROPERTY.MARKET_CATEGORY_FILTER]: selectedFilter,
     },
   });
-
-  const watchlistSymbols = useMemo(
-    () =>
-      new Set(
-        (isTestnet
-          ? watchlistMarketsState.testnet
-          : watchlistMarketsState.mainnet
-        ).map((symbol) => symbol.toUpperCase()),
-      ),
-    [isTestnet, watchlistMarketsState],
-  );
 
   // Check if there are any uncategorized HIP-3 markets (for showing "New" filter)
   const hasUncategorizedMarkets = useMemo(() => {
@@ -685,6 +696,7 @@ export const MarketListView = () => {
             value={selectedFilter}
             onChange={handleFilterChange}
             showNewFilter={hasUncategorizedMarkets}
+            showWatchlistFilter={hasWatchlistMarkets}
           />
           <SortDropdown
             selectedField={sortField}
