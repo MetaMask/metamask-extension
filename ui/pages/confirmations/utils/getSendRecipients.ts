@@ -64,7 +64,10 @@ export function getSendRecipients(transactionMeta: TransactionMeta): string[] {
     getSendRecipientFromSource({
       data: params?.data,
       to: params?.to,
-      type: getEffectiveType(transactionMeta.type, transactionMeta.originalType),
+      type: getEffectiveType(
+        transactionMeta.type,
+        transactionMeta.originalType,
+      ),
     }),
   );
   addRecipient(transactionMeta.swapAndSendRecipient);
