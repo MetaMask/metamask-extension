@@ -32,11 +32,49 @@ remove_worktree() {
   git worktree prune 2>/dev/null || true
 }
 
+patch_worktree_allow_scripts() {
+  node <<'NODE'
+const fs = require('fs');
+const pkgPath = 'package.json';
+const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+pkg.lavamoat ??= {};
+pkg.lavamoat.allowScripts ??= {};
+const required = {
+  'sass-loader>sass>@parcel/watcher#2.5.6': false,
+};
+let changed = false;
+for (const [key, value] of Object.entries(required)) {
+  if (!Object.hasOwn(pkg.lavamoat.allowScripts, key)) {
+    pkg.lavamoat.allowScripts[key] = value;
+    changed = true;
+  }
+}
+if (changed) {
+  fs.writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
+}
+NODE
+}
+
 install_worktree_dependencies() {
+  # Old SHAs may predate allowScripts entries that newer lock resolutions need.
+  patch_worktree_allow_scripts
   if grep -q 'plugin-allow-scripts' .yarnrc.yml 2>/dev/null; then
     yarn plugin remove @yarnpkg/plugin-allow-scripts
   fi
   yarn install --immutable
+}
+
+# CI runs mm-foundryup on the parent checkout only; postinstall skips foundryup in CI.
+# Worktrees need anvil on PATH for network/activity benchmarks.
+ensure_anvil_on_path() {
+  local parent_root="$1"
+  if [ -x "${parent_root}/node_modules/.bin/anvil" ]; then
+    export PATH="${parent_root}/node_modules/.bin:${PATH}"
+    echo "=== Using anvil from parent checkout (${parent_root}/node_modules/.bin) ==="
+  else
+    echo "=== Installing Foundry (anvil) in worktree ==="
+    yarn mm-foundryup
+  fi
 }
 
 run_before_at_sha() {
@@ -61,6 +99,7 @@ run_before_at_sha() {
     cd "$worktree_path"
     echo "=== Installing dependencies in worktree @ ${sha} ==="
     install_worktree_dependencies
+    ensure_anvil_on_path "$root"
     echo "=== Building test extension in worktree @ ${sha} ==="
     yarn webpack:tsc
     yarn build:test
@@ -96,6 +135,7 @@ run_before_preset_at_sha() {
     cd "$worktree_path"
     echo "=== Installing dependencies in worktree @ ${sha} ==="
     install_worktree_dependencies
+    ensure_anvil_on_path "$root"
     echo "=== Building test extension in worktree @ ${sha} ==="
     yarn webpack:tsc
     yarn build:test

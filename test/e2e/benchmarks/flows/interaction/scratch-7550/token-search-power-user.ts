@@ -22,13 +22,42 @@ const TOKEN_SEARCH_QUERY = 'TK';
 const TOKEN_OPTIONS_BUTTON =
   '[data-testid="asset-list-control-bar-action-button"]';
 const MANAGE_TOKENS_BUTTON = '[data-testid="manageTokens__button"]';
-const TOKEN_MANAGEMENT_PAGE = '[data-testid="token-management-page"]';
 const TOKEN_MANAGEMENT_SEARCH_INPUT =
   '[data-testid="token-management-search-input"]';
 const TOKEN_MANAGEMENT_SEARCH_LOADING =
   '[data-testid="token-management-search-loading"]';
 const TOKEN_MANAGEMENT_PAGE_LIST =
   '[data-testid="token-management-page-list"]';
+const TOKEN_MANAGEMENT_READY_TIMEOUT_MS = 120_000;
+const TOKEN_SEARCH_READY_TIMEOUT_MS = 120_000;
+
+async function openTokenManagement(driver: Driver): Promise<void> {
+  // Power-user login can take a while; a short probe then clicking a missing
+  // legacy import button waits for the full extended driver timeout (~6 min).
+  await driver.waitForSelector(TOKEN_OPTIONS_BUTTON);
+  await driver.clickElement(TOKEN_OPTIONS_BUTTON);
+  await driver.clickElement(MANAGE_TOKENS_BUTTON);
+}
+
+async function waitForTokenManagementPage(driver: Driver): Promise<void> {
+  await driver.waitUntil(
+    async () => {
+      const ready = await driver.executeScript(`
+        const selectors = [
+          '[data-testid="parent-selector-token-management-page"]',
+          '[data-testid="token-management-page"]',
+          '[data-testid="token-management-search-input"]',
+        ];
+        return selectors.some((selector) => {
+          const element = document.querySelector(selector);
+          return element instanceof HTMLElement && element.offsetParent !== null;
+        });
+      `);
+      return Boolean(ready);
+    },
+    { timeout: TOKEN_MANAGEMENT_READY_TIMEOUT_MS },
+  );
+}
 
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
@@ -43,11 +72,13 @@ export async function run(): Promise<BenchmarkRunResult> {
         ...powerUserManifestFlags,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, {
+          validateBalance: false,
+          waitForNonEvmAccounts: false,
+        });
 
-        await driver.clickElement(TOKEN_OPTIONS_BUTTON);
-        await driver.clickElement(MANAGE_TOKENS_BUTTON);
-        await driver.waitForSelector(TOKEN_MANAGEMENT_PAGE);
+        await openTokenManagement(driver);
+        await waitForTokenManagementPage(driver);
 
         await driver.resetLongTaskMetrics();
         const startedAt = Date.now();
@@ -69,7 +100,7 @@ export async function run(): Promise<BenchmarkRunResult> {
             );
             return !loading;
           },
-          { timeout: 120_000 },
+          { timeout: TOKEN_SEARCH_READY_TIMEOUT_MS },
         );
         await driver.waitForSelector(TOKEN_MANAGEMENT_PAGE_LIST);
         const duration = Date.now() - startedAt;

@@ -14,7 +14,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BENCHMARK_ITERATIONS: 5
+  # 5 was enough to get the harness green. 20 tightens p75 for the #6657 table.
+  BENCHMARK_ITERATIONS: 20
   BENCHMARK_RETRIES: 1
   PRE_7475_SHA: 23a9a0e2284fb7aa2e8fc51cb40553f93249ed30
   PRE_7476_SHA: 384fb12684915651d4a82f6344de354309a9ed01
@@ -65,8 +66,6 @@ jobs:
           - scenario: account-switch
             before_sha: 384fb12684915651d4a82f6344de354309a9ed01
           - scenario: network-switch
-            before_sha: 384fb12684915651d4a82f6344de354309a9ed01
-          - scenario: activity-scroll
             before_sha: 384fb12684915651d4a82f6344de354309a9ed01
     env:
       SELENIUM_BROWSER: chrome

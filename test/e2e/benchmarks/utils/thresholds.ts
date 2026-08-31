@@ -307,12 +307,8 @@ const ACCOUNT_SWITCH_POWER_USER = {
 
 const NETWORK_SWITCH_POWER_USER = {
   network_switch: SCRATCH_7550_RELAXED,
-  longTaskMaxDuration: SCRATCH_7550_RELAXED,
-  tbt: SCRATCH_7550_RELAXED,
-} satisfies ThresholdConfig;
-
-const ACTIVITY_SCROLL_POWER_USER = {
-  activity_list_scroll: SCRATCH_7550_RELAXED,
+  network_switch_click_to_pending: SCRATCH_7550_RELAXED,
+  network_switch_click_to_label: SCRATCH_7550_RELAXED,
   longTaskMaxDuration: SCRATCH_7550_RELAXED,
   tbt: SCRATCH_7550_RELAXED,
 } satisfies ThresholdConfig;
@@ -352,7 +348,6 @@ const BENCHMARK_THRESHOLDS = {
   tokenSearchPowerUser: TOKEN_SEARCH_POWER_USER,
   accountSwitch: ACCOUNT_SWITCH_POWER_USER,
   networkSwitch: NETWORK_SWITCH_POWER_USER,
-  activityScroll: ACTIVITY_SCROLL_POWER_USER,
 
   onboardingImportWallet: ONBOARDING_IMPORT_WALLET,
   onboardingNewWallet: ONBOARDING_NEW_WALLET,

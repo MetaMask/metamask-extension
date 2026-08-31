@@ -214,17 +214,6 @@ function main(): void {
       afterBundle,
       primaryTimer: 'network_switch',
     },
-    {
-      scenario: 'Transaction list scroll',
-      harness: 'activity-scroll USER_ACTION',
-      beforeSha: cli.beforeSwitchSha,
-      afterSha: cli.afterSha,
-      beforeKey: 'activityScroll',
-      afterKey: 'activityScroll',
-      beforeBundle: beforeSwitchBundle,
-      afterBundle,
-      primaryTimer: 'activity_list_scroll',
-    },
   ];
 
   const header = `## Scenario measurement (#6657)
@@ -240,7 +229,7 @@ function main(): void {
 
 - After (current): \`${cli.afterSha}\`
 - Before token search (pre-#7475 / extension#44443): \`${cli.beforeTokenSha}\`
-- Before account/network/activity (pre-#7476 / extension#45265): \`${cli.beforeSwitchSha}\`
+- Before account/network (pre-#7476 / extension#45265): \`${cli.beforeSwitchSha}\`
 `;
 
   writeFileSync(cli.out, `${header}${body}${footer}`);

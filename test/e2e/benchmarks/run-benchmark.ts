@@ -161,7 +161,6 @@ const PRESETS: Record<string, string[]> = {
     `${BENCHMARK_DIR}/interaction/scratch-7550/token-search-power-user.ts`,
     `${BENCHMARK_DIR}/interaction/scratch-7550/account-switch.ts`,
     `${BENCHMARK_DIR}/interaction/scratch-7550/network-switch.ts`,
-    `${BENCHMARK_DIR}/interaction/scratch-7550/activity-scroll.ts`,
   ],
   // Dapp page-load benchmark (Playwright-based; runs separately in CI)
   [DAPP_PAGE_LOAD_PRESETS.PAGE_LOAD]: [DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH],

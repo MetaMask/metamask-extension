@@ -13,6 +13,7 @@ import {
   useTransactionPayHasExecutableQuote,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
 
 type ButtonState = {
@@ -33,14 +34,22 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
-  const transactionType = currentConfirmation?.type;
+  const transactionType = getConfirmationTransactionType(currentConfirmation);
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayQuotePending();
   const hasExecutableQuote = useTransactionPayHasExecutableQuote();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-  const isPayReady =
-    !isPerpsWithdrawTransaction(currentConfirmation) || hasExecutableQuote;
+  const isMoneyAccountDeposit =
+    transactionType === TransactionType.moneyAccountDeposit;
+  const isMoneyAccountWithdraw =
+    transactionType === TransactionType.moneyAccountWithdraw;
+  // Same-token mUSD deposits produce a Pay no-op unless `isQuoteRequired` is
+  // set. Without an executable quote, Add funds skips Pay and never moves
+  // funds onto the money account.
+  const requiresExecutableQuote =
+    isPerpsWithdrawTransaction(currentConfirmation) || isMoneyAccountDeposit;
+  const isPayReady = !requiresExecutableQuote || hasExecutableQuote;
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
@@ -52,16 +61,29 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
       (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
     const defaultButtonText = t(i18nKey);
 
-    const isAwaitingRequiredToken = !primaryRequiredToken;
+    // Money-account withdraw batches have no `requiredAssets`, so Pay never
+    // resolves a primary required token. Waiting on it leaves Send spinning.
+    const isAwaitingRequiredToken =
+      !primaryRequiredToken && !isMoneyAccountWithdraw;
 
     const hasBlockingAlerts = blockingAlerts.length > 0;
     const firstAlert = blockingAlerts[0];
     const alertText =
       firstAlert?.reason ?? (firstAlert?.message as string | undefined);
 
-    const hasAmount = primaryRequiredToken
+    const hasAmountFromPay = primaryRequiredToken
       ? new BigNumber(primaryRequiredToken.amountUsd ?? 0).gt(0)
       : false;
+    const hasAmountFromWithdrawCalldata = Boolean(
+      isMoneyAccountWithdraw &&
+      currentConfirmation.nestedTransactions?.some(
+        (nestedTransaction) =>
+          nestedTransaction.type === TransactionType.moneyAccountWithdraw &&
+          nestedTransaction.data &&
+          nestedTransaction.data !== '0x',
+      ),
+    );
+    const hasAmount = hasAmountFromPay || hasAmountFromWithdrawCalldata;
 
     const buttonText =
       !isAwaitingRequiredToken && hasBlockingAlerts && alertText
@@ -77,7 +99,9 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     return { buttonText, isDisabled, isLoading };
   }, [
     blockingAlerts,
+    currentConfirmation,
     isGaslessLoading,
+    isMoneyAccountWithdraw,
     isPayReady,
     isPayLoading,
     primaryRequiredToken,

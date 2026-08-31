@@ -22,24 +22,58 @@ export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 const SOURCE_ACCOUNT = 'Account 1';
 const TARGET_ACCOUNT = `Account ${WITH_STATE_POWER_USER.withAccounts}`;
+const TARGET_ACCOUNT_CELL_TEST_ID = `multichain-account-cell-name-${TARGET_ACCOUNT}`;
+const ACCOUNT_MENU_ICON = '[data-testid="account-menu-icon"]';
+const ACCOUNT_LIST_PAGE = '[data-testid="parent-selector-account-list-page"]';
+const POWER_USER_SYNC_TIMEOUT_MS = 120_000;
+const HEADER_LABEL_TIMEOUT_MS = 120_000;
 
-async function scrollAccountListItemIntoView(
+async function scrollToAccountCell(
+  driver: Driver,
+  accountCellTestId: string,
+): Promise<void> {
+  await driver.waitUntil(
+    async () => {
+      const found = await driver.executeScript(`
+        const testId = ${JSON.stringify(accountCellTestId)};
+        const cell = document.querySelector('[data-testid="' + testId + '"]');
+        if (cell) {
+          cell.scrollIntoView({ block: 'center' });
+          return true;
+        }
+        const scroller =
+          document.querySelector(${JSON.stringify(ACCOUNT_LIST_PAGE)}) ||
+          document.querySelector('.multichain-account-menu-popover');
+        if (scroller) {
+          scroller.scrollTop += 400;
+        }
+        return false;
+      `);
+      return Boolean(found);
+    },
+    { timeout: POWER_USER_SYNC_TIMEOUT_MS },
+  );
+  await driver.delay(150);
+}
+
+async function waitForHeaderAccountLabel(
   driver: Driver,
   accountLabel: string,
 ): Promise<void> {
-  await driver.executeScript(`
-    const label = ${JSON.stringify(accountLabel)};
-    const items = document.querySelectorAll(
-      '.multichain-account-menu-popover__list--menu-item',
-    );
-    for (const item of items) {
-      if (item.textContent && item.textContent.includes(label)) {
-        item.scrollIntoView({ block: 'center' });
-        break;
+  await driver.waitUntil(
+    async () => {
+      const text = await driver.executeScript(
+        `return document.querySelector(${JSON.stringify(ACCOUNT_MENU_ICON)})?.textContent ?? ''`,
+      );
+      if (typeof text !== 'string') {
+        return false;
       }
-    }
-  `);
-  await driver.delay(150);
+      const normalized = text.replace(/\s+/gu, '');
+      const expected = accountLabel.replace(/\s+/gu, '');
+      return text.includes(accountLabel) || normalized.includes(expected);
+    },
+    { timeout: HEADER_LABEL_TIMEOUT_MS },
+  );
 }
 
 export async function run(): Promise<BenchmarkRunResult> {
@@ -58,18 +92,28 @@ export async function run(): Promise<BenchmarkRunResult> {
         await login(driver, { validateBalance: false });
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
+        await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.waitUntilSyncingIsCompleted();
-        await accountListPage.checkAccountDisplayedInAccountList(TARGET_ACCOUNT);
-        await scrollAccountListItemIntoView(driver, TARGET_ACCOUNT);
+        await accountListPage.waitUntilSyncingIsCompleted(
+          POWER_USER_SYNC_TIMEOUT_MS,
+        );
+        await scrollToAccountCell(driver, TARGET_ACCOUNT_CELL_TEST_ID);
 
         await driver.resetLongTaskMetrics();
         const startedAt = Date.now();
-        await accountListPage.switchToAccount(TARGET_ACCOUNT);
-        // Menu closes after selection — verify via header label, not list selection.
-        await headerNavbar.checkAccountLabel(TARGET_ACCOUNT);
+        await driver.clickElement(
+          `[data-testid="${TARGET_ACCOUNT_CELL_TEST_ID}"]`,
+        );
+        await driver
+          .waitForSelector(ACCOUNT_LIST_PAGE, {
+            state: 'detached',
+            timeout: POWER_USER_SYNC_TIMEOUT_MS,
+          })
+          .catch(() => {
+            // Popover may unmount without removing the page root; header label is authoritative.
+          });
+        await waitForHeaderAccountLabel(driver, TARGET_ACCOUNT);
         const duration = Date.now() - startedAt;
 
         const longTaskData = await driver.collectLongTaskMetrics();

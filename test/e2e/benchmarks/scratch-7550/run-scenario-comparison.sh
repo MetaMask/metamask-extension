@@ -12,7 +12,7 @@ cd "$ROOT"
 # shellcheck source=before-worktree-lib.sh
 source "$(dirname "${BASH_SOURCE[0]}")/before-worktree-lib.sh"
 
-ITERATIONS="${BENCHMARK_ITERATIONS:-5}"
+ITERATIONS="${BENCHMARK_ITERATIONS:-20}"
 RETRIES="${BENCHMARK_RETRIES:-1}"
 AFTER_SHA="$(git rev-parse HEAD)"
 BENCHMARK_FILE="test/e2e/benchmarks/flows/interaction/scratch-7550/${SCENARIO}.ts"

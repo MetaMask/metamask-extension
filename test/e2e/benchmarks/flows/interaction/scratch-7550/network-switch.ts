@@ -1,6 +1,9 @@
 import { withFixtures } from '../../../../helpers';
 import { login } from '../../../../page-objects/flows/login.flow';
-import { switchToNetworkFromNetworkSelect } from '../../../../page-objects/flows/network.flow';
+import {
+  switchToNetworkFromNetworkSelect,
+  waitForNetworkModalBackdropToClear,
+} from '../../../../page-objects/flows/network.flow';
 import NetworkFilter from '../../../../page-objects/pages/networks/network-filter';
 import { Driver } from '../../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../../utils/long-task-helper';
@@ -20,6 +23,22 @@ export const testTitle = 'benchmark-scratch-7550-network-switch';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 const TARGET_NETWORK = 'Polygon';
+const TARGET_NETWORK_CHAIN_ID = 'eip155:137';
+
+async function waitForNetworkFilterLabel(
+  driver: Driver,
+  networkName: string,
+): Promise<void> {
+  const networkFilter = new NetworkFilter(driver);
+  await networkFilter.checkIsLoaded();
+  await driver.waitUntil(
+    async () => {
+      const label = await networkFilter.getLabel();
+      return label.includes(networkName);
+    },
+    { timeout: 120_000 },
+  );
+}
 
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
@@ -38,9 +57,9 @@ export async function run(): Promise<BenchmarkRunResult> {
 
         await driver.resetLongTaskMetrics();
         const startedAt = Date.now();
-        await switchToNetworkFromNetworkSelect(driver, TARGET_NETWORK);
-        const networkFilter = new NetworkFilter(driver);
-        await networkFilter.checkLabelIs(TARGET_NETWORK);
+        await switchToNetworkFromNetworkSelect(driver, TARGET_NETWORK_CHAIN_ID);
+        await waitForNetworkModalBackdropToClear(driver);
+        await waitForNetworkFilterLabel(driver, TARGET_NETWORK);
         const duration = Date.now() - startedAt;
 
         const longTaskData = await driver.collectLongTaskMetrics();

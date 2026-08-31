@@ -1,13 +1,21 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { Interface } from '@ethersproject/abi';
 import { useConfirmContext } from '../../context/confirm';
 import { parseStandardTokenTransactionData } from '../../../../../shared/lib/transaction.utils';
+import {
+  getMoneyAccountFlow,
+  MoneyAccountFlow,
+} from '../../../../../shared/lib/money/money-account-flow';
 import { getTokenTransferData } from '../../utils/transaction-pay';
 import { updateEditableParams } from '../../../../store/actions';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';
+import {
+  updateMoneyAccountDepositAmount,
+  updateMoneyAccountWithdrawAmount,
+} from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTransactionPayPrimaryRequiredToken } from '../pay/useTransactionPayData';
 import { useDispatch } from '../../../../store/hooks';
 
@@ -26,13 +34,19 @@ function calcTokenValue(value: string, decimals: number): BigNumber {
   return new BigNumber(String(value)).times(multiplier);
 }
 
+type PendingAmountUpdate = {
+  transactionId: string;
+  fromAmountRaw: string;
+};
+
 export function useUpdateTokenAmount() {
   const dispatch = useDispatch();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
   const transactionId = transactionMeta?.id ?? '';
-  const [previousAmountRaw, setPreviousAmountRaw] = useState<string>();
+  const [pendingUpdate, setPendingUpdate] =
+    useState<PendingAmountUpdate | null>(null);
 
   const {
     data,
@@ -65,16 +79,47 @@ export function useUpdateTokenAmount() {
   }, [data]);
 
   const isUpdating =
-    Boolean(previousAmountRaw) && amountRaw === previousAmountRaw;
+    pendingUpdate !== null &&
+    pendingUpdate.transactionId === transactionId &&
+    amountRaw === pendingUpdate.fromAmountRaw;
 
-  useEffect(() => {
-    if (!isUpdating) {
-      setPreviousAmountRaw(undefined);
-    }
-  }, [isUpdating, transactionId]);
+  const moneyAccountFlow = useMemo(
+    () => getMoneyAccountFlow(transactionMeta),
+    [transactionMeta],
+  );
 
   const updateTokenAmount = useCallback(
     (amountHuman: string) => {
+      // Money deposits are a placeholder approve + deposit batch with no
+      // transfer calldata to parse. The background commit re-encodes both
+      // calls and writes requiredAssets so TransactionPayController can
+      // fetch quotes. Without this, typed amounts stay in local UI state.
+      if (moneyAccountFlow === MoneyAccountFlow.Deposit) {
+        updateMoneyAccountDepositAmount(transactionId, amountHuman).catch(
+          (error) => {
+            console.error(
+              'Failed to update money account deposit amount',
+              error,
+            );
+          },
+        );
+        return;
+      }
+
+      // Same shape as deposits: the placeholder withdraw + transfer batch
+      // has no transfer calldata to parse on the parent.
+      if (moneyAccountFlow === MoneyAccountFlow.Withdraw) {
+        updateMoneyAccountWithdrawAmount(transactionId, amountHuman).catch(
+          (error) => {
+            console.error(
+              'Failed to update money account withdrawal amount',
+              error,
+            );
+          },
+        );
+        return;
+      }
+
       if (!data || !to || decimals === undefined) {
         return;
       }
@@ -96,7 +141,7 @@ export function useUpdateTokenAmount() {
         `0x${newAmountRaw.toString(16)}`,
       ]) as Hex;
 
-      setPreviousAmountRaw(amountRaw);
+      setPendingUpdate({ transactionId, fromAmountRaw: amountRaw });
 
       if (nestedCallIndex !== undefined) {
         updateAtomicBatchData({
@@ -120,7 +165,16 @@ export function useUpdateTokenAmount() {
         }),
       );
     },
-    [amountRaw, data, decimals, dispatch, nestedCallIndex, to, transactionId],
+    [
+      amountRaw,
+      data,
+      decimals,
+      dispatch,
+      moneyAccountFlow,
+      nestedCallIndex,
+      to,
+      transactionId,
+    ],
   );
 
   return {

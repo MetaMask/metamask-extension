@@ -63,6 +63,7 @@ import {
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { EMPTY_ARRAY } from '../../../selectors/shared';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useDispatch } from '../../../store/hooks';
 
@@ -298,10 +299,17 @@ export const MultichainAccountList = ({
       walletId: string,
       showWalletName: boolean,
     ) => {
-      // If prop is provided, attempt render balance. Otherwise do not render balance.
-      const account = allBalances?.wallets?.[walletId]?.groups?.[groupId];
-      const balance = account?.totalBalanceInUserCurrency ?? 0;
-      const currency = account?.userCurrency ?? '';
+      // Undefined when this group has no known balance yet, so the cell renders
+      // nothing instead of a misleading "$0.00".
+      const groupBalance = getAccountGroupDisplayBalance(
+        allBalances?.wallets?.[walletId]?.groups?.[groupId],
+      );
+      const balance =
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        );
 
       // TODO: Implement logic for removable accounts
       const isRemovable = false;
@@ -330,7 +338,7 @@ export const MultichainAccountList = ({
             accountId={groupId as AccountGroupId}
             accountName={groupData.metadata.name}
             accountNameString={groupData.metadata.name}
-            balance={formatCurrencyWithMinThreshold(balance, currency)}
+            balance={balance}
             selected={selectedAccountGroupsSet.has(groupId as AccountGroupId)}
             onClick={handleAccountClickToUse}
             pending={isSwitchPending}

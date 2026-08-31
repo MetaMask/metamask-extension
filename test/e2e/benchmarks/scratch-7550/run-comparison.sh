@@ -7,7 +7,7 @@ cd "$ROOT"
 # shellcheck source=before-worktree-lib.sh
 source "$(dirname "${BASH_SOURCE[0]}")/before-worktree-lib.sh"
 
-ITERATIONS="${BENCHMARK_ITERATIONS:-5}"
+ITERATIONS="${BENCHMARK_ITERATIONS:-20}"
 RETRIES="${BENCHMARK_RETRIES:-2}"
 ARTIFACT_DIR="${1:-test-artifacts/scratch-7550}"
 PRE_7475_SHA="${PRE_7475_SHA:-23a9a0e2284fb7aa2e8fc51cb40553f93249ed30}"

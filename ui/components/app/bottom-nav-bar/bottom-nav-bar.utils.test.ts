@@ -2,6 +2,7 @@ import { it } from '@jest/globals';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
+  MONEY_ACTIVITY_ROUTE,
   MONEY_HOME_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
   SWAP_PATH,
@@ -62,6 +63,16 @@ describe('getActiveBottomNavTabs', () => {
     });
   });
 
+  it('marks isMoney active on the Money activity route', () => {
+    expect(getActiveBottomNavTabs(MONEY_ACTIVITY_ROUTE)).toStrictEqual({
+      isHome: false,
+      isPerps: false,
+      isMoney: true,
+      isSwaps: false,
+      isActivity: false,
+    });
+  });
+
   it('returns all false for an unrelated route', () => {
     expect(getActiveBottomNavTabs('/settings')).toStrictEqual({
       isHome: false,
@@ -78,6 +89,7 @@ describe('isBottomNavRoute', () => {
     ['default route', DEFAULT_ROUTE],
     ['perps home route', PERPS_HOME_PAGE_ROUTE],
     ['Money home route', MONEY_HOME_ROUTE],
+    ['Money activity route', MONEY_ACTIVITY_ROUTE],
     ['swap path', SWAP_PATH],
     ['activity route', ACTIVITY_ROUTE],
   ])('returns true for the %s', (_label, route) => {

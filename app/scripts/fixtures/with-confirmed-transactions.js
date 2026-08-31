@@ -17,6 +17,7 @@ export const withConfirmedTransactions = (from, numEntries) => {
       const id = uuidv4();
       const transaction = {
         chainId: network,
+        hash: `0x${id.replace(/-/gu, '').padEnd(64, '0').slice(0, 64)}`,
         dappSuggestedGasFees: {
           gas: '0x5208',
           maxFeePerGas: '0x59682f0c',

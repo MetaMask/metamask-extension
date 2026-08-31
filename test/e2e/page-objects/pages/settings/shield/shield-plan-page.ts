@@ -18,6 +18,11 @@ export default class ShieldPlanPage {
   private readonly annualPlanButton =
     '[data-testid="shield-plan-annual-button"]';
 
+  private readonly assetListItemBySymbol = (symbol: string) => ({
+    css: '[data-testid="asset-list-item"]',
+    text: symbol,
+  });
+
   private readonly backButton = '[data-testid="shield-plan-back-button"]';
 
   private readonly continueButton =
@@ -29,6 +34,20 @@ export default class ShieldPlanPage {
     paymentMethod === 'crypto'
       ? '[data-testid="shield-plan-monthly*-button"]'
       : '[data-testid="shield-plan-monthly-button"]';
+
+  private readonly page = {
+    testId: 'parent-selector-shield-plan-page',
+  };
+
+  private readonly paymentModalCryptoTokenButton =
+    '[data-testid="shield-payment-method-token-button"]';
+
+  // "Pay with" row has no data-testid; using label selector.
+  private readonly payWithButton = {
+    xpath: '//button[.//*[contains(text(),"Pay with")]]',
+  };
+
+  private readonly shieldPaymentModal = '[data-testid="shield-payment-modal"]';
 
   private readonly shieldPlanPageAnnualPlan = {
     text: 'Annual',
@@ -56,6 +75,7 @@ export default class ShieldPlanPage {
       this.shieldPlanPageMonthlyPlan,
     ]);
     await this.driver.waitForMultipleSelectors([
+      this.page,
       this.shieldPlanPageTitle,
       this.shieldPlanPageAnnualPlan,
       this.shieldPlanPageMonthlyPlan,
@@ -88,12 +108,28 @@ export default class ShieldPlanPage {
       await this.selectMonthlyPlan(paymentMethod);
     }
 
+    // The assets-controller pre-seeds mUSD (Money/Earn implementation), which is also the default Shield payment token.
+    // This ensures we select USDC to keep test consistent.
+    if (paymentMethod === 'crypto') {
+      await this.selectCryptoPaymentToken('USDC');
+    }
+
     await this.clickContinueButton();
   }
 
   async selectAnnualPlan(): Promise<void> {
     console.log('Selecting Annual plan');
     await this.driver.clickElement(this.annualPlanButton);
+  }
+
+  async selectCryptoPaymentToken(tokenSymbol: string): Promise<void> {
+    console.log(`Selecting crypto payment token: ${tokenSymbol}`);
+    await this.driver.clickElement(this.payWithButton);
+    await this.driver.waitForSelector(this.shieldPaymentModal);
+    // The crypto row is disabled until a stablecoin balance loads; wait for it.
+    await this.driver.findClickableElement(this.paymentModalCryptoTokenButton);
+    await this.driver.clickElement(this.paymentModalCryptoTokenButton);
+    await this.driver.clickElement(this.assetListItemBySymbol(tokenSymbol));
   }
 
   async selectMonthlyPlan(

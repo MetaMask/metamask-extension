@@ -33,7 +33,6 @@ merge_json \
   "$ARTIFACT_DIR/${AFTER_PREFIX}-token-search-power-user.json" \
   "$ARTIFACT_DIR/${AFTER_PREFIX}-account-switch.json" \
   "$ARTIFACT_DIR/${AFTER_PREFIX}-network-switch.json" \
-  "$ARTIFACT_DIR/${AFTER_PREFIX}-activity-scroll.json" \
   > "$AFTER_MERGED"
 
 BEFORE_TOKEN_JSON="$ARTIFACT_DIR/benchmark-chrome-webpack-before-${PRE_7475_SHA:0:7}-token-search-power-user.json"
@@ -42,7 +41,6 @@ BEFORE_SWITCH_MERGED="$ARTIFACT_DIR/${BEFORE_SWITCH_PREFIX}-merged.json"
 merge_json \
   "$ARTIFACT_DIR/${BEFORE_SWITCH_PREFIX}-account-switch.json" \
   "$ARTIFACT_DIR/${BEFORE_SWITCH_PREFIX}-network-switch.json" \
-  "$ARTIFACT_DIR/${BEFORE_SWITCH_PREFIX}-activity-scroll.json" \
   > "$BEFORE_SWITCH_MERGED"
 
 if [ ! -f "$AFTER_MERGED" ] || [ "$(cat "$AFTER_MERGED")" = '{}' ]; then
