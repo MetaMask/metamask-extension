@@ -6,8 +6,14 @@ import {
 import type { Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
+import { parseStandardTokenTransactionData } from '../../../../shared/lib/transaction.utils';
 import type { MoneyAccountWithdrawAmountUpdate } from '../../../store/controller-actions/transaction-pay-controller';
 
+/**
+ * ERC-20 `transfer(address,uint256)` 4-byte selector (`keccak256("transfer(address,uint256)").slice(0, 4)`).
+ * Used as a cheap early-out before calling the shared ABI parser; amount
+ * decoding itself goes through {@link parseStandardTokenTransactionData}.
+ */
 const TRANSFER_SELECTOR = '0xa9059cbb';
 
 /**
@@ -23,7 +29,7 @@ export function isEncodedCalldata(data: string | undefined): boolean {
 
 /**
  * Reads the raw (base units) amount argument out of `transfer(to, amount)`
- * calldata.
+ * calldata via the shared ERC-20 ABI parser.
  *
  * @param data - Calldata expected to be an ERC-20 transfer.
  * @returns The raw amount as a decimal string, or `undefined` when the
@@ -32,15 +38,22 @@ export function isEncodedCalldata(data: string | undefined): boolean {
 export function getTransferAmountRawFromData(
   data: string | undefined,
 ): string | undefined {
-  if (!data) {
+  if (!data || !data.toLowerCase().startsWith(TRANSFER_SELECTOR)) {
     return undefined;
   }
-  const lower = data.toLowerCase();
-  if (!lower.startsWith(TRANSFER_SELECTOR) || lower.length < 138) {
+
+  const parsed = parseStandardTokenTransactionData(data);
+  if (parsed?.name !== 'transfer') {
     return undefined;
   }
+
+  const amount = parsed.args?._value ?? parsed.args?.value ?? parsed.args?.[1];
+  if (amount === undefined || amount === null) {
+    return undefined;
+  }
+
   try {
-    return BigInt(`0x${lower.slice(-64)}`).toString();
+    return BigInt(amount.toString()).toString();
   } catch {
     return undefined;
   }

@@ -99,14 +99,14 @@ export class Delegation7702PublishHook {
     const { isSupported, delegationAddress, upgradeContractAddress } =
       checkEip7702Support(atomicBatchChainSupport);
 
-    const isGaslessSwap = transactionMeta.isGasFeeIncluded;
+    const {isGasFeeIncluded} = transactionMeta;
 
     const isSponsored = Boolean(transactionMeta.isGasFeeSponsored);
 
     if (!isSupported) {
       log('Skipping as EIP-7702 is not supported', { from, chainId });
 
-      if (isGaslessSwap || isSponsored) {
+      if (isGasFeeIncluded || isSponsored) {
         // Same as mobile: sponsored and gas-included transactions skip local
         // signing, so falling through to the default publish would raw-send
         // an unsigned payload ("Transaction decoding error"). Fail loudly.
@@ -124,7 +124,7 @@ export class Delegation7702PublishHook {
 
     if (
       (!selectedGasFeeToken || !gasFeeTokens?.length) &&
-      !isGaslessSwap &&
+      !isGasFeeIncluded &&
       !isSponsored
     ) {
       log('Skipping as no selected gas fee token');
@@ -132,7 +132,7 @@ export class Delegation7702PublishHook {
     }
 
     const gasFeeToken =
-      isGaslessSwap || isSponsored
+      isGasFeeIncluded || isSponsored
         ? undefined
         : gasFeeTokens?.find(
             (token) =>
@@ -140,12 +140,12 @@ export class Delegation7702PublishHook {
               selectedGasFeeToken?.toLowerCase(),
           );
 
-    if (!gasFeeToken && !isGaslessSwap && !isSponsored) {
+    if (!gasFeeToken && !isGasFeeIncluded && !isSponsored) {
       throw new Error('Selected gas fee token not found');
     }
 
     const includeTransfer =
-      !isGaslessSwap && !transactionMeta.isGasFeeSponsored;
+      !isGasFeeIncluded && !transactionMeta.isGasFeeSponsored;
 
     const { nonce, ...txParamsWithoutNonce } = transactionMeta.txParams;
     const finalTransactionMeta: TransactionMeta = {
