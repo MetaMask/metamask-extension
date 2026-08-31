@@ -47,6 +47,7 @@ CONVERSION_RATE_NETWORKS.forEach((id) => {
           await tokensTab.checkTokenListIsDisplayed();
           // EVM natives render the ticker in the title cell, not the network name.
           await tokensTab.checkTokenExistsInList(network.nativeSymbol);
+          await tokensTab.checkTokenFiatAmountIsDisplayed('$');
 
           // The fiat secondary value must be present (not an em dash). This is
           // the regression assertion: without the spot-prices mock the cell
