@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
@@ -26,13 +26,19 @@ function calcTokenValue(value: string, decimals: number): BigNumber {
   return new BigNumber(String(value)).times(multiplier);
 }
 
+type PendingAmountUpdate = {
+  transactionId: string;
+  fromAmountRaw: string;
+};
+
 export function useUpdateTokenAmount() {
   const dispatch = useDispatch();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
   const transactionId = transactionMeta?.id ?? '';
-  const [previousAmountRaw, setPreviousAmountRaw] = useState<string>();
+  const [pendingUpdate, setPendingUpdate] =
+    useState<PendingAmountUpdate | null>(null);
 
   const {
     data,
@@ -65,13 +71,9 @@ export function useUpdateTokenAmount() {
   }, [data]);
 
   const isUpdating =
-    Boolean(previousAmountRaw) && amountRaw === previousAmountRaw;
-
-  useEffect(() => {
-    if (!isUpdating) {
-      setPreviousAmountRaw(undefined);
-    }
-  }, [isUpdating, transactionId]);
+    pendingUpdate !== null &&
+    pendingUpdate.transactionId === transactionId &&
+    amountRaw === pendingUpdate.fromAmountRaw;
 
   const updateTokenAmount = useCallback(
     (amountHuman: string) => {
@@ -96,7 +98,7 @@ export function useUpdateTokenAmount() {
         `0x${newAmountRaw.toString(16)}`,
       ]) as Hex;
 
-      setPreviousAmountRaw(amountRaw);
+      setPendingUpdate({ transactionId, fromAmountRaw: amountRaw });
 
       if (nestedCallIndex !== undefined) {
         updateAtomicBatchData({

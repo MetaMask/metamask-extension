@@ -7,7 +7,7 @@ import { Driver } from '../webdriver/driver';
 import AccountDetailsPage from '../page-objects/pages/accounts/details-page';
 import AccountListPage from '../page-objects/pages/accounts/list-page';
 import ExperimentalSettings from '../page-objects/pages/settings/experimental-settings';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
 import { login } from '../page-objects/flows/login.flow';
