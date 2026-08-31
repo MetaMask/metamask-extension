@@ -1,28 +1,31 @@
-name: CWS publish (submit or promote)
+name: CWS publish (submit or publish staged)
 
-# INFRA-3881 — workflow_dispatch submit-for-review or promote staged revision via CWS API v2 :publish.
+# Human-initiated Chrome Web Store :publish via CWS API v2 (INFRA-3881).
 #
-# Upload stays on upload-extension-to-cws.yml (Runway, draft only). This workflow is human-gated:
-#   - Submit: draft → Google review (+ initial deploy %; default path immediate publish on approval)
-#   - Promote: STAGED → live at submit-time percentage
+# Two operations (workflow_dispatch input `operation`):
+#   submit-for-review — after upload-extension-to-cws.yml left a draft, send it to Google review
+#     with an initial rollout percentage (immediate or deferred publish on approval).
+#   publish-staged — after Google approved a deferred (STAGED) revision, publish it to users.
 #
-# CWS API note: after upload-only, :fetchStatus often omits submittedItemRevisionStatus (no crxVersion
-# until :publish). crxVersion is always the 4-part manifest "version" (see development/webpack/utils/version.ts);
-# pass release semver (e.g. 13.43.0) and this workflow derives prod/dev → X.Y.Z.0, flask → X.Y.Z.150.
-#
-# Authorization (NOT Runway):
-#   GitHub Environment reviewers on cws-rollout-{dev,production,flask} (same envs as adjust-cws-rollout.yml)
-#   WIF human OIDC — see va-mmc-extension-submission-infra/gcloud/shared/wif-cel-reference.md
+# Requires GitHub Environment approval on cws-rollout-{dev,production,flask} and WIF human OIDC
+# (see va-mmc-extension-submission-infra/gcloud/shared/wif-cel-reference.md). Run from main only.
 
 on:
   workflow_dispatch:
     inputs:
+      operation:
+        description: 'submit-for-review — send uploaded draft to Google; publish-staged — publish an approved STAGED revision'
+        required: true
+        type: choice
+        options:
+          - submit-for-review
+          - publish-staged
       version:
-        description: 'Release semver (e.g. 13.43.0) or full crxVersion — prod/dev → X.Y.Z.0, flask → X.Y.Z.150 (manifest version; version_name is semver or semver-flask.N)'
+        description: 'Release semver X.Y.Z (must match the uploaded build; crxVersion is derived per target)'
         required: true
         type: string
       target:
-        description: 'CWS target — dev (UAT), production (PRD main), flask (PRD Flask build)'
+        description: 'CWS listing — dev (UAT), production (PRD main), flask (PRD Flask build)'
         required: true
         type: choice
         default: production
@@ -31,15 +34,16 @@ on:
           - production
           - flask
       publish_type:
-        description: 'Submit only: immediate or deferred. Leave empty for promote.'
+        description: 'submit-for-review only — immediate (publish on approval) or deferred (stay staged)'
         required: false
-        type: string
-        default: ''
+        type: choice
+        options:
+          - immediate
+          - deferred
       percentage:
-        description: 'Submit only: initial rollout 1–100 (typical immediate path uses 1). Leave empty for promote.'
+        description: 'submit-for-review only — initial rollout percentage (1–100)'
         required: false
-        type: string
-        default: ''
+        type: number
 
 permissions:
   contents: read
@@ -55,6 +59,7 @@ jobs:
       cancel-in-progress: false
     environment: ${{ inputs.target == 'production' && 'cws-rollout-production' || inputs.target == 'flask' && 'cws-rollout-flask' || inputs.target == 'dev' && 'cws-rollout-dev' || null }}
     env:
+      OPERATION: ${{ inputs.operation }}
       VERSION: ${{ inputs.version }}
       TARGET: ${{ inputs.target }}
       PUBLISH_TYPE: ${{ inputs.publish_type }}
@@ -75,7 +80,7 @@ jobs:
           echo "Human dispatch confirmed."
 
       - name: Checkout scripts
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        uses: actions/checkout@v6
         with:
           sparse-checkout: |
             .github/scripts/cws-target-config.sh
@@ -102,6 +107,7 @@ jobs:
             echo "::error::CWS publish must run from refs/heads/main (current: ${GITHUB_REF})"
             exit 1
           fi
+          # Sets GITHUB_ENV: WIF_*, EXTENSION_ID, PUBLISHER_ID, CRX_VERSION (see script header).
           bash .github/scripts/cws-target-config.sh
 
       - name: Authenticate to Google Cloud
@@ -130,6 +136,7 @@ jobs:
             exit 1
           fi
           export FETCH_STATUS_JSON=/tmp/cws-fetch-status.json
+          # Sets GITHUB_OUTPUT: action, branch, api_publish_type (submit only); see script header.
           bash .github/scripts/cws-publish-plan.sh
 
       - name: Publish to CWS
@@ -141,7 +148,7 @@ jobs:
         run: |
           set -euo pipefail
           PUBLISH_URL="https://chromewebstore.googleapis.com/v2/publishers/${PUBLISHER_ID}/items/${EXTENSION_ID}:publish"
-          if [[ "${ACTION}" == "promote" ]]; then
+          if [[ "${ACTION}" == "publish-staged" ]]; then
             body='{}'
           else
             body=$(jq -n \
@@ -164,10 +171,11 @@ jobs:
           fi
           echo "CWS :publish succeeded (action=${ACTION})."
 
-      - name: Verify CWS status after submit
-        if: steps.publish.outcome == 'success' && steps.plan.outputs.action == 'submit'
+      - name: Verify CWS status after publish
+        if: steps.publish.outcome == 'success'
         env:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          ACTION: ${{ steps.plan.outputs.action }}
         run: |
           set -euo pipefail
           FETCH_STATUS_URL="https://chromewebstore.googleapis.com/v2/publishers/${PUBLISHER_ID}/items/${EXTENSION_ID}:fetchStatus"
@@ -181,23 +189,33 @@ jobs:
             exit 1
           fi
           export FETCH_STATUS_JSON=/tmp/cws-fetch-status-after.json
-          submitted_crx="$(jq -r '
-            [
-              .submittedItemRevisionStatus.distributionChannels[]?.crxVersion // empty
-            ] | map(select(length > 0)) | first // empty
-          ' "${FETCH_STATUS_JSON}")"
-          submitted_state="$(jq -r '.submittedItemRevisionStatus.state // empty' "${FETCH_STATUS_JSON}")"
-          if [[ "${submitted_crx}" != "${CRX_VERSION}" ]]; then
-            echo "::error::post-publish submitted crxVersion=${submitted_crx:-<none>} does not match expected ${CRX_VERSION}; state=${submitted_state:-<none>}"
-            cat "${FETCH_STATUS_JSON}"
-            exit 1
+          if [[ "${ACTION}" == "submit-for-review" ]]; then
+            submitted_crx="$(jq -r '
+              (.submittedItemRevisionStatus.distributionChannels // [])[0].crxVersion // empty
+            ' "${FETCH_STATUS_JSON}")"
+            submitted_state="$(jq -r '.submittedItemRevisionStatus.state // empty' "${FETCH_STATUS_JSON}")"
+            if [[ "${submitted_crx}" != "${CRX_VERSION}" ]]; then
+              echo "::error::post-submit submitted crxVersion=${submitted_crx:-<none>} does not match expected ${CRX_VERSION}; state=${submitted_state:-<none>}"
+              cat "${FETCH_STATUS_JSON}"
+              exit 1
+            fi
+            if [[ "${submitted_state}" != "PENDING_REVIEW" && "${submitted_state}" != "STAGED" ]]; then
+              echo "::error::post-submit unexpected submitted state=${submitted_state:-<none>} (crxVersion=${submitted_crx:-<none>})"
+              cat "${FETCH_STATUS_JSON}"
+              exit 1
+            fi
+            echo "Verified submitted revision crxVersion=${submitted_crx} state=${submitted_state}"
+          else
+            published_crx="$(jq -r '
+              (.publishedItemRevisionStatus.distributionChannels // [])[0].crxVersion // empty
+            ' "${FETCH_STATUS_JSON}")"
+            if [[ "${published_crx}" != "${CRX_VERSION}" ]]; then
+              echo "::error::post-publish live crxVersion=${published_crx:-<none>} does not match expected ${CRX_VERSION}"
+              cat "${FETCH_STATUS_JSON}"
+              exit 1
+            fi
+            echo "Verified live published revision crxVersion=${published_crx}"
           fi
-          if [[ "${submitted_state}" != "PENDING_REVIEW" && "${submitted_state}" != "STAGED" ]]; then
-            echo "::error::post-publish unexpected submitted state=${submitted_state:-<none>} (crxVersion=${submitted_crx:-<none>})"
-            cat "${FETCH_STATUS_JSON}"
-            exit 1
-          fi
-          echo "Verified submitted revision crxVersion=${submitted_crx} state=${submitted_state}"
 
       - name: Audit summary
         if: always()
@@ -217,6 +235,7 @@ jobs:
             echo "| --- | --- |"
             echo "| GitHub Environment | \`${{ env.ROLLOUT_ENV }}\` |"
             echo "| Triggered by | \`${{ github.actor }}\` |"
+            echo "| Operation | \`${{ inputs.operation }}\` |"
             echo "| Target | \`${{ inputs.target }}\` |"
             echo "| Version input | \`${{ inputs.version }}\` |"
             echo "| crxVersion | \`${{ env.CRX_VERSION }}\` |"

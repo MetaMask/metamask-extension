@@ -317,7 +317,6 @@ development/metamaskbot-build-announce/               @MetaMask/extension-platfo
 /.github/scripts/release-create-gh-release.sh              @MetaMask/extension-security-team @MetaMask/release-team
 /.github/scripts/cws-publish-plan.sh                       @MetaMask/extension-security-team @MetaMask/release-team
 /.github/scripts/cws-target-config.sh                      @MetaMask/extension-security-team @MetaMask/release-team
-/.github/scripts/cws-match-published-crx.sh                @MetaMask/extension-security-team @MetaMask/release-team
 
 # Build
 development/build/                                    @MetaMask/extension-platform @itsyoboieltr
