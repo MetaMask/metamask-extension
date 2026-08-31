@@ -512,8 +512,6 @@ export class OAuthService {
         throw this.#getAuthFlowError();
       }
 
-      // Narrowed for nested callbacks — TS does not carry the undefined check
-      // into the Promise executor closures below.
       const confirmedTabId: number = openedTabId;
 
       const redirectUrl = await new Promise<string>((resolve, reject) => {

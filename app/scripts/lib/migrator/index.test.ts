@@ -6,8 +6,7 @@ import Migrator, { type Migration, type MigrationState } from '.';
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention -- Chrome manifest field name
-    getManifest: () => ({ manifest_version: 2 }),
+    getManifest: jest.fn(() => ({})),
     sendMessage: jest.fn(() => Promise.resolve()),
     onMessage: {
       addListener: jest.fn(),

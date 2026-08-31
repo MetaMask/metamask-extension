@@ -1,6 +1,5 @@
 import React from 'react';
 import { act, fireEvent } from '@testing-library/react';
-import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
 import configureStore from '../../../store/store';
@@ -13,7 +12,6 @@ import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
-import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import {
   ConnectionStatus,
   HardwareWalletType,

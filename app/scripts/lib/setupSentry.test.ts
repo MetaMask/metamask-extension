@@ -755,8 +755,13 @@ describe('Setup Sentry', () => {
       const integration = eventFiltersIntegration({
         ignoreErrors: IGNORED_ERROR_MESSAGES,
       });
-      const client = { getOptions: () => ({}) };
-      return integration.processEvent(event, {}, client);
+      const { processEvent } = integration;
+      if (!processEvent) {
+        throw new Error('eventFiltersIntegration.processEvent is unavailable');
+      }
+      return processEvent.call(integration, event, {}, {
+        getOptions: () => ({}),
+      } as never) as SentryErrorEvent | null;
     }
 
     /**

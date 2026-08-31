@@ -7,11 +7,11 @@ import { importWalletWithSocialLoginOnboardingFlow } from '../../page-objects/fl
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { AuthServer } from '../../helpers/seedless-onboarding/constants';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { MOCK_GOOGLE_ACCOUNT } from '../../constants';

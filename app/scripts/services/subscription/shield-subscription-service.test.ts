@@ -141,7 +141,7 @@ rootMessenger.registerActionHandler(
   mockGetSmartTransactionsState,
 );
 rootMessenger.registerActionHandler(
-  'SubscriptionController:startShieldSubscriptionWithCard',
+  'SubscriptionController:startSubscriptionWithCard',
   mockStartShieldSubscriptionWithCard,
 );
 rootMessenger.registerActionHandler(
@@ -181,7 +181,7 @@ rootMessenger.registerActionHandler(
   mockLinkRewards,
 );
 rootMessenger.registerActionHandler(
-  'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+  'SubscriptionController:submitSubscriptionCryptoApproval',
   mockSubmitShieldSubscriptionCryptoApproval,
 );
 rootMessenger.registerActionHandler(
@@ -212,11 +212,11 @@ const messenger: ShieldSubscriptionServiceMessenger = new Messenger({
 rootMessenger.delegate({
   messenger,
   actions: [
-    'SubscriptionController:startShieldSubscriptionWithCard',
+    'SubscriptionController:startSubscriptionWithCard',
     'SubscriptionController:getSubscriptions',
     'SubscriptionController:submitSponsorshipIntents',
     'SubscriptionController:linkRewards',
-    'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+    'SubscriptionController:submitSubscriptionCryptoApproval',
     'SubscriptionController:clearLastSelectedPaymentMethod',
     'TransactionController:getTransactions',
     'PreferencesController:getState',
@@ -604,11 +604,12 @@ describe('ShieldSubscriptionService - handlePostTransaction', () => {
     // @ts-expect-error mock tx meta
     await subscriptionService.handlePostTransaction(txMeta);
 
-    expect(mockSubmitShieldSubscriptionCryptoApproval).toHaveBeenCalledWith(
+    expect(mockSubmitShieldSubscriptionCryptoApproval).toHaveBeenCalledWith({
+      productType: PRODUCT_TYPES.SHIELD,
       txMeta,
-      true,
-      undefined, // no reward subscription id
-    );
+      isSponsored: true,
+      rewardAccountId: undefined, // no reward subscription id
+    });
   });
 
   it('should handle the crypto approval transaction with reward account id if a primary account is opted in to rewards', async () => {
@@ -641,11 +642,12 @@ describe('ShieldSubscriptionService - handlePostTransaction', () => {
 
     // @ts-expect-error mock tx meta
     await subscriptionService.handlePostTransaction(txMeta);
-    expect(mockSubmitShieldSubscriptionCryptoApproval).toHaveBeenCalledWith(
+    expect(mockSubmitShieldSubscriptionCryptoApproval).toHaveBeenCalledWith({
+      productType: PRODUCT_TYPES.SHIELD,
       txMeta,
-      false,
-      MOCK_REWARD_ACCOUNT_ID,
-    );
+      isSponsored: false,
+      rewardAccountId: MOCK_REWARD_ACCOUNT_ID,
+    });
   });
 
   it('should set shield API error when payerAddressAlreadyUsed error occurs', async () => {
@@ -957,7 +959,7 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
-        await fn(1);
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
 
     const result =
@@ -972,7 +974,8 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
 
     let tabUpdatedListener: (
       tabId: number,
-      changeInfo: { url: string },
+      changeInfo: browser.Tabs.OnUpdatedChangeInfoType,
+      tab: browser.Tabs.Tab,
     ) => void = () => undefined;
 
     jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({
@@ -986,10 +989,14 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
-        tabUpdatedListener(1, {
-          url: `${MOCK_REDIRECT_URI}?cancel=true`,
-        });
-        await fn(1);
+        tabUpdatedListener(
+          1,
+          {
+            url: `${MOCK_REDIRECT_URI}?cancel=true`,
+          },
+          { url: `${MOCK_REDIRECT_URI}?cancel=true` } as browser.Tabs.Tab,
+        );
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
 
     await expect(
@@ -1004,7 +1011,8 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
 
     let tabUpdatedListener: (
       tabId: number,
-      changeInfo: { url: string },
+      changeInfo: browser.Tabs.OnUpdatedChangeInfoType,
+      tab: browser.Tabs.Tab,
     ) => void = () => undefined;
 
     jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({
@@ -1018,10 +1026,14 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
-        tabUpdatedListener(1, {
-          url: MOCK_REDIRECT_URI,
-        });
-        await fn(1);
+        tabUpdatedListener(
+          1,
+          {
+            url: MOCK_REDIRECT_URI,
+          },
+          { url: MOCK_REDIRECT_URI } as browser.Tabs.Tab,
+        );
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
     const openExtensionSpy = jest
       .spyOn(mockPlatform, 'openExtensionInBrowser')
