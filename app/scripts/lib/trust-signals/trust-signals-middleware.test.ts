@@ -788,7 +788,7 @@ describe('trust signals middleware', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[createTrustSignalsMiddleware] error scanning transfer recipient address for transaction:',
+          '[createAddressScanMiddleware] error scanning transfer recipient address for transaction:',
           expect.any(Error),
         );
         expect(next).toHaveBeenCalled();
