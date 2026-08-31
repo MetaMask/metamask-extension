@@ -1,18 +1,18 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { useAddToken } from '../../../../hooks/tokens/useAddToken';
-import { CustomAmountInfo } from '../../../info/custom-amount-info';
+import { useAddToken } from '../../../hooks/tokens/useAddToken';
+import { CustomAmountInfo } from '../custom-amount-info';
 import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,
-} from '../../../../constants/musd';
+} from '../../../constants/musd';
 import { MoneyAccountDepositInfo } from './money-account-deposit-info';
 
-jest.mock('../../../../hooks/tokens/useAddToken', () => ({
+jest.mock('../../../hooks/tokens/useAddToken', () => ({
   useAddToken: jest.fn(),
 }));
 
-jest.mock('../../../info/custom-amount-info', () => ({
+jest.mock('../custom-amount-info', () => ({
   CustomAmountInfo: jest.fn(() => <div data-testid="custom-amount-info" />),
 }));
 

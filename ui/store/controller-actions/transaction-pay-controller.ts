@@ -40,10 +40,12 @@ export async function setPaymentOverride(
 export async function setIsMaxAmount(
   transactionId: string,
   isMaxAmount: boolean,
+  options: { isMoneyAccountDeposit?: boolean } = {},
 ): Promise<void> {
   return await submitRequestToBackground('setTransactionPayIsMaxAmount', [
     transactionId,
     isMaxAmount,
+    options,
   ]);
 }
 
@@ -54,14 +56,18 @@ export async function setIsMaxAmount(
  * recorded against it before this call.
  *
  * @param batchId - Caller-generated batch id.
+ * @param accountOverride - Currently selected EVM account, used as the
+ * default funding account on the confirmation (`txParams.from` is the
+ * money account, which executes the batch).
  * @returns The created transaction id and the batch id.
  */
 export async function createMoneyAccountDepositTransaction(
   batchId: Hex,
+  accountOverride: Hex,
 ): Promise<{ transactionId: string; batchId: Hex }> {
   return await submitRequestToBackground(
     'createMoneyAccountDepositTransaction',
-    [batchId],
+    [batchId, accountOverride],
   );
 }
 
@@ -69,15 +75,20 @@ export async function createMoneyAccountDepositTransaction(
  * Creates the placeholder Money Account withdrawal batch in the background
  * and returns the created transaction's id for confirmation navigation.
  *
+ * @param accountOverride - Currently selected EVM account, used as the
+ * default destination on the confirmation (`txParams.from` is the money
+ * account, which executes the batch).
  * @returns The created transaction id and the batch id.
  */
-export async function createMoneyAccountWithdrawTransaction(): Promise<{
+export async function createMoneyAccountWithdrawTransaction(
+  accountOverride: Hex,
+): Promise<{
   transactionId: string;
   batchId: Hex;
 }> {
   return await submitRequestToBackground(
     'createMoneyAccountWithdrawTransaction',
-    [],
+    [accountOverride],
   );
 }
 
@@ -87,10 +98,6 @@ export async function createMoneyAccountWithdrawTransaction(): Promise<{
  * redeemed mUSD forwarded to the Pay account override (the account shown on
  * the confirmation) or, when unset, the currently selected account.
  * Superseded intents resolve `{ didCommit: false }`.
- *
- * NOTE: The background handler is not registered yet — the
- * transaction-pay-controller wiring is being delivered separately by the Pay
- * team, so this call rejects until that lands.
  *
  * @param transactionId - Id of the Money Account withdrawal transaction.
  * @param amountHuman - Exact human-readable amount.
@@ -110,11 +117,8 @@ export async function updateMoneyAccountWithdrawAmount(
 /**
  * Prepares and commits a Money Account deposit amount in the background:
  * re-encodes the nested approve + deposit calldata for the new amount and
- * writes it into the transaction. Superseded intents resolve `false`.
- *
- * NOTE: The background handler is not registered yet — the
- * transaction-pay-controller wiring is being delivered separately by the Pay
- * team, so this call rejects until that lands.
+ * writes `requiredAssets` so TransactionPayController can fetch quotes.
+ * Superseded intents resolve `false`.
  *
  * @param transactionId - Id of the Money Account deposit transaction.
  * @param amountHuman - Exact human-readable amount.
