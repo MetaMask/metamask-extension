@@ -336,7 +336,11 @@
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/assets-controller@npm:^13.1.0": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
     "@metamask/assets-controller@npm:^13.1.2": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
-    "@metamask/bridge-controller@npm:^80.1.0": "patch:@metamask/bridge-controller@npm%3A80.1.0#~/.yarn/patches/@metamask-bridge-controller-npm-80.1.0-ea41d41dd2.patch"
+    "@metamask/bridge-controller@npm:^80.1.0": "patch:@metamask/bridge-controller@npm%3A80.1.0#~/.yarn/patches/@metamask-bridge-controller-npm-80.1.0-ea41d41dd2.patch",
+    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@0.1.0-preview-dc0688bf",
+    "@metamask/solana-wallet-snap": "npm:@metamask-previews/solana-wallet-snap@6.0.0-preview-dc0688bf",
+    "@metamask/tron-wallet-snap": "npm:@metamask-previews/tron-wallet-snap@3.1.0-preview-dc0688bf",
+    "@metamask/bitcoin-wallet-snap": "npm:@metamask-previews/bitcoin-wallet-snap@2.0.1-preview-dc0688bf"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
