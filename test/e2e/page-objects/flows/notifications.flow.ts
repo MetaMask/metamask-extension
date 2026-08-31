@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import NotificationsListPage from '../pages/notifications/notifications-list-page';
 import NotificationsSettingsPage from '../pages/settings/notifications-settings-page';
 import SettingsPage from '../pages/settings/settings-page';

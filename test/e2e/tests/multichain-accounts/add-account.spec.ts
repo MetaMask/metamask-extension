@@ -9,12 +9,12 @@ import {
   lockAndWaitForLoginPage,
 } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
-import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import ResetPasswordPage from '../../page-objects/pages/onboarding/reset-password-page';
 import { Driver } from '../../webdriver/driver';
 import {
   getMainnet25EthAssetsControllerPatch,

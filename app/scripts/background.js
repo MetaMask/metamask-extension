@@ -127,6 +127,7 @@ import {
 import { requestRepair } from './lib/repair';
 import {
   createSidepanelOpener,
+  setupSidePanelToolbarBehavior,
   shouldUseSidepanel,
 } from './sidepanel/background';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
@@ -293,23 +294,6 @@ lazyListener.once('runtime', 'onInstalled').then((details) => {
     requestSafeReload,
   });
 });
-
-/**
- * Prefer opening the side panel on toolbar click as soon as the service worker starts.
- * Without this, the first click after a cold start can use manifest `default_popup` until
- * {@link setupSidePanelToolbarBehavior} runs after {@link isInitialized}.
- */
-function applyEarlySidePanelToolbarBehavior() {
-  if (!browser?.sidePanel?.setPanelBehavior) {
-    return;
-  }
-  browser.sidePanel
-    .setPanelBehavior({ openPanelOnActionClick: true })
-    .catch(() => {
-      // Non-fatal: `applyToolbarSidePanelBehavior` applies persisted preference once ready.
-    });
-}
-applyEarlySidePanelToolbarBehavior();
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -993,13 +977,25 @@ export async function loadStateFromPersistence(backup) {
     }
   } else if (persistenceManager.storageKind === 'split') {
     if (writeAllKeysToState) {
-      for (const [key, value] of Object.entries(versionedData.data)) {
-        persistenceManager.update(key, value);
+      // New state needs every controller persisted.
+      for (const key of Object.keys(versionedData.data)) {
+        persistenceManager.update(key, versionedData.data[key]);
       }
     } else {
-      // write changes only
+      // Existing state starts with explicitly changed controllers.
       for (const key of changedKeys) {
         persistenceManager.update(key, versionedData.data[key]);
+      }
+      if (backup) {
+        // Recovery also needs every backed-up controller.
+        for (const key of backedUpStateKeys) {
+          const value = versionedData.data[key];
+          // Avoid queuing the same key twice.
+          // Missing backup values would delete existing state.
+          if (!changedKeys.has(key) && value !== undefined) {
+            persistenceManager.update(key, value);
+          }
+        }
       }
     }
     // write to disk
@@ -1988,54 +1984,10 @@ function onNavigateToTab() {
   });
 }
 
-// Sidepanel-specific functionality
-async function applyToolbarSidePanelBehavior() {
-  if (!browser?.sidePanel?.setPanelBehavior) {
-    return;
-  }
-  const useSidePanelAsDefault =
-    controller?.preferencesController?.state?.preferences
-      ?.useSidePanelAsDefault ?? true;
-  await browser.sidePanel.setPanelBehavior({
-    openPanelOnActionClick: useSidePanelAsDefault,
-  });
-}
-
-/**
- * Sets initial side panel toolbar behavior after startup, then subscribes only to
- * `useSidePanelAsDefault` changes (not every PreferencesController update).
- */
-const setupSidePanelToolbarBehavior = async () => {
-  if (!browser?.sidePanel) {
-    return;
-  }
-
-  try {
-    await isInitialized;
-    await applyToolbarSidePanelBehavior();
-
-    controller?.controllerMessenger?.subscribe(
-      'PreferencesController:stateChange',
-      (useSidePanelAsDefault) => {
-        if (browser?.sidePanel?.setPanelBehavior) {
-          browser.sidePanel
-            .setPanelBehavior({
-              openPanelOnActionClick: useSidePanelAsDefault,
-            })
-            .catch((error) =>
-              console.error('Error updating panel behavior:', error),
-            );
-        }
-      },
-      (preferencesControllerState) =>
-        preferencesControllerState?.preferences?.useSidePanelAsDefault ?? true,
-    );
-  } catch (error) {
-    console.error('Error setting side panel toolbar behavior:', error);
-  }
-};
-
-setupSidePanelToolbarBehavior();
+setupSidePanelToolbarBehavior({
+  getController: () => controller,
+  waitUntilInitialized: async () => await isInitialized,
+});
 
 // Initialize appActiveTab by querying the current active tab on startup
 const initializeAppActiveTab = async () => {
