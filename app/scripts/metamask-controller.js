@@ -7143,7 +7143,8 @@ export default class MetamaskController extends EventEmitter {
       return { isSupported: false, upgradeContractAddress: null };
     }
 
-    // This also checks the launchdarkly flag that enables EIP-7702 support.
+    // Although this method is named for atomic batch support, it also checks
+    // the LaunchDarkly flag used to enable the EIP-7702/7715 flow.
     const atomicBatchSupport = await this.txController.isAtomicBatchSupported({
       address: normalizedAccount,
       chainIds: [chainId],
