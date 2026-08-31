@@ -191,15 +191,24 @@ export const MultichainAccountCell = ({
         />
         <Box marginLeft={3} style={{ overflow: 'hidden' }}>
           {/* Prevent overflow of account name by long account names */}
-          <Text
-            className="multichain-account-cell__account-name"
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            ellipsis
-            data-testid={`multichain-account-cell-name-${ariaLabelName}`}
-          >
-            {accountName}
-          </Text>
+          {typeof accountName === 'string' ? (
+            <Text
+              className="multichain-account-cell__account-name"
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              ellipsis
+              data-testid={`multichain-account-cell-name-${ariaLabelName}`}
+            >
+              {accountName}
+            </Text>
+          ) : (
+            <Box
+              className="multichain-account-cell__account-name"
+              data-testid={`multichain-account-cell-name-${ariaLabelName}`}
+            >
+              {accountName}
+            </Box>
+          )}
           {balancePosition === 'subtitle' && (
             <BalanceDisplay
               balance={balance}
