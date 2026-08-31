@@ -6,7 +6,13 @@ import {
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
-import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react';
 import {
   handleSnapRequest as handleSnapRequestFunction,
   updateInterfaceState,

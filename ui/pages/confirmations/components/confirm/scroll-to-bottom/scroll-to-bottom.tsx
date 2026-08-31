@@ -46,6 +46,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     scrollToBottom,
     setHasScrolledToBottom,
     ref,
+    scrollElement,
   } = useScrollRequired([currentConfirmation?.id, showAdvancedDetails], {
     offsetPxFromBottom: 0,
   });
@@ -66,17 +67,21 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       return;
     }
 
-    const currentRef = ref?.current as null | HTMLDivElement;
-    if (!currentRef) {
+    if (!scrollElement) {
       return;
     }
 
-    if (typeof currentRef.scrollTo === 'function') {
-      currentRef.scrollTo(0, 0);
+    if (typeof scrollElement.scrollTo === 'function') {
+      scrollElement.scrollTo(0, 0);
     }
 
     setHasScrolledToBottom(false);
-  }, [currentConfirmation?.id, previousId, ref?.current]);
+  }, [
+    currentConfirmation?.id,
+    previousId,
+    scrollElement,
+    setHasScrolledToBottom,
+  ]);
 
   useEffect(() => {
     if (isTransactionRedesign) {

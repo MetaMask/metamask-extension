@@ -3,6 +3,8 @@ import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { type Asset } from '../../types/send';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
 import { usePayWithNoFeeToken } from './usePayWithNoFeeToken';
 
 const ETH_USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
@@ -72,5 +74,26 @@ describe('usePayWithNoFeeToken', () => {
 
     expect(tagged).not.toBeNull();
     expect(untagged).toBeNull();
+  });
+
+  it('tags Monad mUSD itself even when the flag omits the same-token route', () => {
+    const { result } = renderUsePayWithNoFeeToken({});
+
+    expect(
+      result.current.isNoFeeToken(MUSD_TOKEN_ADDRESS, CHAIN_IDS.MONAD),
+    ).toBe(true);
+    expect(result.current.isNoFeeToken(ETH_USDC, CHAIN_IDS.MONAD)).toBe(false);
+  });
+
+  it('renders a No fee tag for Monad mUSD', () => {
+    const { result } = renderUsePayWithNoFeeToken({});
+
+    const tagged = result.current.renderNoFeeTag({
+      address: MUSD_TOKEN_ADDRESS,
+      chainId: CHAIN_IDS.MONAD,
+      symbol: 'mUSD',
+    } as Asset);
+
+    expect(tagged).not.toBeNull();
   });
 });

@@ -122,9 +122,8 @@ export const useCarouselManagement = ({
   const [downloadEligibilityReady, setDownloadEligibilityReady] = useState(
     () => !eligibilityNeeded,
   );
-  const [trackedEligibilityNeeded, setTrackedEligibilityNeeded] = useState(
-    eligibilityNeeded,
-  );
+  const [trackedEligibilityNeeded, setTrackedEligibilityNeeded] =
+    useState(eligibilityNeeded);
 
   if (eligibilityNeeded !== trackedEligibilityNeeded) {
     setTrackedEligibilityNeeded(eligibilityNeeded);

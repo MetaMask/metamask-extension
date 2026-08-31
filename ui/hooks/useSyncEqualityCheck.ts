@@ -24,10 +24,12 @@ import type { Json } from '@metamask/utils';
  */
 export function useSyncEqualityCheck<Value extends Json>(value: Value): Value {
   const currentSnapshot = stringify(value);
-  const [cache, setCache] = useState<{ snapshot: string; value: Value }>(() => ({
-    snapshot: currentSnapshot,
-    value,
-  }));
+  const [cache, setCache] = useState<{ snapshot: string; value: Value }>(
+    () => ({
+      snapshot: currentSnapshot,
+      value,
+    }),
+  );
 
   if (currentSnapshot !== cache.snapshot) {
     setCache({

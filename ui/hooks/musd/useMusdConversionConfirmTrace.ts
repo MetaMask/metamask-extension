@@ -70,7 +70,9 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
   const traceStateRef = useRef({ isTracing, tracedTxId });
   // Once a trace starts, keep tracking the original transaction ID even if
   // the prop becomes empty (the tx leaves the pending pool on confirmation).
-  const effectiveTxId = isTracing ? (tracedTxId ?? transactionId) : transactionId;
+  const effectiveTxId = isTracing
+    ? (tracedTxId ?? transactionId)
+    : transactionId;
 
   const transactions = useSelector(getTransactions) as TransactionMeta[];
 
@@ -112,7 +114,10 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
     }
 
     // Start trace when the transaction first appears in any in-flight state
-    if (IN_FLIGHT_STATUSES.includes(tx.status) && traceContextRef.current === null) {
+    if (
+      IN_FLIGHT_STATUSES.includes(tx.status) &&
+      traceContextRef.current === null
+    ) {
       const selectedQuote = quotes?.[0] as
         | {
             strategy?: string;

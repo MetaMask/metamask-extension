@@ -16,6 +16,7 @@ export const useScrollRequired = (
   dependencies = [],
   { offsetPxFromBottom = 16 } = {},
 ) => {
+  /** @type {HTMLElement | null} */
   const [scrollElement, setScrollElement] = useState(null);
   const setRef = useCallback((node) => {
     setScrollElement(node);
@@ -32,7 +33,8 @@ export const useScrollRequired = (
       return;
     }
 
-    const isScrollable = scrollElement.scrollHeight > scrollElement.clientHeight;
+    const isScrollable =
+      scrollElement.scrollHeight > scrollElement.clientHeight;
 
     const isScrolledToBottom =
       isScrollable &&
@@ -80,6 +82,7 @@ export const useScrollRequired = (
     scrollToBottom,
     setHasScrolledToBottom,
     ref: setRef,
+    scrollElement,
     onScroll,
   };
 };

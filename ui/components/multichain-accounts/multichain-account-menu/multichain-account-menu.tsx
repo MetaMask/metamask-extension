@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -42,7 +48,7 @@ export const MultichainAccountMenu = ({
 }: MultichainAccountMenuProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const popoverRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement | null>(null);
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null,
   );

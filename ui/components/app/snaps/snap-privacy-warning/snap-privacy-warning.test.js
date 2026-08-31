@@ -1,11 +1,11 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import SnapPrivacyWarning from './snap-privacy-warning';
 
 describe('Snap Privacy Warning Popover', () => {
-  it('renders snaps privacy warning popover and works with accept flow', () => {
+  it('renders snaps privacy warning popover and works with accept flow', async () => {
     const mockOnAcceptCallback = jest.fn();
     renderWithProvider(
       <SnapPrivacyWarning
@@ -23,16 +23,14 @@ describe('Snap Privacy Warning Popover', () => {
     expect(
       screen.getByText(messages.snapsPrivacyWarningThirdMessage.message),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: /Accept/iu,
-      }),
-    ).toBeInTheDocument();
-    screen
-      .getByRole('button', {
-        name: /Accept/iu,
-      })
-      .click();
+    const acceptButton = screen.getByRole('button', {
+      name: /Accept/iu,
+    });
+    expect(acceptButton).toBeInTheDocument();
+    await waitFor(() => {
+      expect(acceptButton).not.toBeDisabled();
+    });
+    acceptButton.click();
     expect(mockOnAcceptCallback).toHaveBeenCalled();
   });
 

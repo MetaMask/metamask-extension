@@ -16,6 +16,11 @@ const mockState = getMockPersonalSignConfirmState();
 
 const mockSetHasScrolledToBottom = jest.fn();
 
+const mockScrollElement = {
+  scrollTo: jest.fn(),
+  scrollTop: 0,
+};
+
 const mockUseScrollRequiredResult = {
   hasScrolledToBottom: false,
   isScrollable: false,
@@ -23,9 +28,8 @@ const mockUseScrollRequiredResult = {
   onScroll: jest.fn(),
   scrollToBottom: jest.fn(),
   setHasScrolledToBottom: mockSetHasScrolledToBottom,
-  ref: {
-    current: {},
-  },
+  ref: jest.fn(),
+  scrollElement: mockScrollElement,
 };
 
 const mockedUseScrollRequiredResult = jest.mocked(mockUseScrollRequiredResult);
@@ -37,6 +41,10 @@ jest.mock('../../../../../hooks/useScrollRequired', () => ({
 describe('ScrollToBottom', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockScrollElement.scrollTo.mockClear();
+    mockedUseScrollRequiredResult.isScrollable = false;
+    mockedUseScrollRequiredResult.isScrolledToBottom = false;
+    mockedUseScrollRequiredResult.hasScrolledToBottom = false;
   });
 
   describe('when content is not scrollable', () => {
@@ -77,10 +85,6 @@ describe('ScrollToBottom', () => {
     });
 
     it('does not scroll to the top while the confirmation id does not change', () => {
-      const mockScrollTo = jest.fn();
-      const originalScrollTo = window.HTMLDivElement.prototype.scrollTo;
-      window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
-
       jest
         .spyOn(usePreviousHooks, 'usePrevious')
         .mockImplementation(() => unapprovedTypedSignMsgV4.id);
@@ -90,24 +94,16 @@ describe('ScrollToBottom', () => {
         configureMockStore([])(mockState),
       );
 
-      expect(mockScrollTo).not.toHaveBeenCalled();
-
-      window.HTMLDivElement.prototype.scrollTo = originalScrollTo;
+      expect(mockScrollElement.scrollTo).not.toHaveBeenCalled();
     });
 
     it('scrolls to the top when the confirmation changes', () => {
-      const mockScrollTo = jest.fn();
-      const originalScrollTo = window.HTMLDivElement.prototype.scrollTo;
-      window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
-
       renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
         configureMockStore([])(mockState),
       );
 
-      expect(mockScrollTo).toHaveBeenCalledWith(0, 0);
-
-      window.HTMLDivElement.prototype.scrollTo = originalScrollTo;
+      expect(mockScrollElement.scrollTo).toHaveBeenCalledWith(0, 0);
     });
 
     it('resets setHasScrolledToBottom to false when the confirmation changes', () => {

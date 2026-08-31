@@ -9,8 +9,8 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useMoneyAccountBalance } from '../../../../../hooks/money/useMoneyAccountBalance';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 
 /**
  * "Available balance: $X.XX" under the Money Account withdraw amount input.

@@ -22,6 +22,7 @@ async function runHook({
   gasFeeTokens,
   selectedGasFeeToken,
   excludeNativeTokenForFee,
+  isGasFeeSponsored,
 }: {
   simulationEnabled: boolean;
   gaslessSupported: boolean;
@@ -30,6 +31,7 @@ async function runHook({
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
   excludeNativeTokenForFee?: boolean;
+  isGasFeeSponsored?: boolean;
 }) {
   mockedUseIsGaslessSupported.mockReturnValue({
     isSupported: gaslessSupported,
@@ -49,6 +51,7 @@ async function runHook({
         gasFeeTokens,
         selectedGasFeeToken,
         excludeNativeTokenForFee,
+        isGasFeeSponsored,
       }),
       { metamask: { useTransactionSimulations: simulationEnabled } },
     ),
@@ -112,6 +115,18 @@ describe('useIsGaslessLoading', () => {
     });
 
     expect(result.isGaslessLoading).toBe(true);
+  });
+
+  it('returns false when gas is sponsored even if gas fee tokens are missing', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: undefined,
+      isGasFeeSponsored: true,
+    });
+
+    expect(result.isGaslessLoading).toBe(false);
   });
 
   it('returns false if gas fee tokens are present', async () => {

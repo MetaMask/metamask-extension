@@ -145,8 +145,12 @@ export const SnapUIAddressInput = ({
   disabled,
   ...props
 }: SnapUIAddressInputProps & FormTextFieldProps<'div'>) => {
-  const { handleInputChange, getValue, getFocusedInput, setCurrentFocusedInput } =
-    useSnapInterfaceContext();
+  const {
+    handleInputChange,
+    getValue,
+    getFocusedInput,
+    setCurrentFocusedInput,
+  } = useSnapInterfaceContext();
 
   const inputRef = useRef<HTMLDivElement>(null);
   const initialValue = getValue(name, form) as string;

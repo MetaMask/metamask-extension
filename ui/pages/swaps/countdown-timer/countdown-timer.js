@@ -72,8 +72,7 @@ export default function CountdownTimer({
     };
   }, []);
 
-  const shouldResetTimer =
-    timer === 0 && timeStarted !== initialTimeStarted;
+  const shouldResetTimer = timer === 0 && timeStarted !== initialTimeStarted;
 
   useEffect(() => {
     if (!shouldResetTimer) {

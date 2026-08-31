@@ -120,11 +120,6 @@
       "count": 1
     }
   },
-  "ui/components/app/snaps/snap-ui-renderer/snap-ui-renderer.js": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/components/app/snaps/snap-ui-selector/snap-ui-selector.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1

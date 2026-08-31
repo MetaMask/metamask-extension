@@ -131,7 +131,8 @@ export default function AwaitingSwap({
   const swapSlippage = swapMetaData?.slippage || usedQuote?.slippage;
   const sensitiveProperties = useMemo(
     () => ({
-      token_from: swapMetaData?.token_from || usedQuote?.sourceTokenInfo?.symbol,
+      token_from:
+        swapMetaData?.token_from || usedQuote?.sourceTokenInfo?.symbol,
       token_from_amount: swapMetaData?.token_from_amount,
       token_to: destinationTokenSymbol,
       request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
