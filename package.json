@@ -856,24 +856,6 @@
     "node": ">=24.13.0",
     "yarn": "^4.14.1"
   },
-  "previewBuilds": {
-    "@metamask/eth-json-rpc-middleware": {
-      "type": "non-breaking",
-      "previewVersion": "24.0.1-preview-3e34650c2"
-    },
-    "@metamask/keyring-controller": {
-      "type": "non-breaking",
-      "previewVersion": "27.1.1-preview-3e34650c2"
-    },
-    "@metamask/signature-controller": {
-      "type": "non-breaking",
-      "previewVersion": "39.2.10-preview-3e34650c2"
-    },
-    "@metamask/message-manager": {
-      "type": "non-breaking",
-      "previewVersion": "14.1.2-preview-3e34650c2"
-    }
-  },
   "lavamoat": {
     "allowScripts": {
       "$root$": true,
