@@ -99,7 +99,7 @@ export class Delegation7702PublishHook {
     const { isSupported, delegationAddress, upgradeContractAddress } =
       checkEip7702Support(atomicBatchChainSupport);
 
-    const {isGasFeeIncluded} = transactionMeta;
+    const { isGasFeeIncluded } = transactionMeta;
 
     const isSponsored = Boolean(transactionMeta.isGasFeeSponsored);
 
