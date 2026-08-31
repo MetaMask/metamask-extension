@@ -928,11 +928,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/components/rows/from-account-row/from-account-row.tsx": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/components/send/amount/amount.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
