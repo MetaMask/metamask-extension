@@ -1,0 +1,32 @@
+diff --git a/dist/selectors.cjs b/dist/selectors.cjs
+index 602d01f1015ea2ee0825427f6b1e2d97fcdc7d54..1de3132e6ee233db8f83760e7a8618efd735b4d4 100644
+--- a/dist/selectors.cjs
++++ b/dist/selectors.cjs
+@@ -267,7 +267,10 @@ const selectSortedBridgeQuotes = createBridgeSelector([
+         case types_js_1.SortOrder.ETA_ASC:
+             return (0, lodash_1.orderBy)(quotesWithMetadata, (quote) => quote.estimatedProcessingTimeInSeconds, 'asc');
+         default:
+-            if (quotesWithMetadata.every((quote) => quote.quote.priceData?.priceImpact?.amount)) {
++            if (quotesWithMetadata.every((quote) => quote.cost?.valueInCurrency)) {
++                return (0, lodash_1.orderBy)(quotesWithMetadata, ({ cost: {valueInCurrency} }) => Number(valueInCurrency), 'asc');
++            }
++            else if (quotesWithMetadata.every((quote) => quote.quote.priceData?.priceImpact?.amount)) {
+                 return (0, lodash_1.orderBy)(quotesWithMetadata, ({ quote: { priceData } }) => Number(priceData?.priceImpact?.amount), 'asc');
+             }
+             else if (quotesWithMetadata.every((quote) => quote.quote.priceData?.priceImpact?.valueInCurrency)) {
+diff --git a/dist/selectors.mjs b/dist/selectors.mjs
+index f5eae8981a946abb3dd67fdc97a2165904ce39d0..946bd83269b6c7b3850b731546f734e73359cc21 100644
+--- a/dist/selectors.mjs
++++ b/dist/selectors.mjs
+@@ -263,7 +263,10 @@ const selectSortedBridgeQuotes = createBridgeSelector([
+         case SortOrder.ETA_ASC:
+             return orderBy(quotesWithMetadata, (quote) => quote.estimatedProcessingTimeInSeconds, 'asc');
+         default:
+-            if (quotesWithMetadata.every((quote) => quote.quote.priceData?.priceImpact?.amount)) {
++            if (quotesWithMetadata.every((quote) => quote.cost?.valueInCurrency)) {
++                return orderBy(quotesWithMetadata, ({ cost: { valueInCurrency } }) => Number(valueInCurrency), 'asc');
++            }
++            else if (quotesWithMetadata.every((quote) => quote.quote.priceData?.priceImpact?.amount)) {
+                 return orderBy(quotesWithMetadata, ({ quote: { priceData } }) => Number(priceData?.priceImpact?.amount), 'asc');
+             }
+             else if (quotesWithMetadata.every((quote) => quote.quote.priceData?.priceImpact?.valueInCurrency)) {
