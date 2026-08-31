@@ -280,6 +280,100 @@ describe('MarketListView', () => {
       });
     });
 
+    describe('watchlist filter', () => {
+      // Needs watchlist state, which the shared store does not carry.
+      const watchlistStore = configureStore({
+        metamask: {
+          ...mockState.metamask,
+          remoteFeatureFlags: {
+            perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
+          },
+          isTestnet: false,
+          watchlistMarkets: { testnet: [], mainnet: ['BTC', 'SOL'] },
+        },
+      });
+
+      it('shows only watchlisted markets for the watchlist query param', async () => {
+        renderWithProvider(
+          <MarketListView />,
+          watchlistStore,
+          '/perps/market-list?filter=watchlist',
+        );
+
+        await waitFor(() => {
+          expect(screen.getByTestId('filter-select-button')).toHaveTextContent(
+            messages.perpsWatchlist.message,
+          );
+        });
+        expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-SOL')).toBeInTheDocument();
+        // ETH is a market the user has not watchlisted.
+        expect(screen.queryByTestId('market-row-ETH')).not.toBeInTheDocument();
+      });
+
+      it('reads the watchlist for the active network', async () => {
+        const testnetStore = configureStore({
+          metamask: {
+            ...mockState.metamask,
+            remoteFeatureFlags: {
+              perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
+            },
+            isTestnet: true,
+            watchlistMarkets: { testnet: ['ETH'], mainnet: ['BTC', 'SOL'] },
+          },
+        });
+
+        renderWithProvider(
+          <MarketListView />,
+          testnetStore,
+          '/perps/market-list?filter=watchlist',
+        );
+
+        await waitFor(() => {
+          expect(screen.getByTestId('market-row-ETH')).toBeInTheDocument();
+        });
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+
+      it('clears the watchlist filter when a category is chosen', async () => {
+        renderWithProvider(
+          <MarketListView />,
+          watchlistStore,
+          '/perps/market-list?filter=watchlist',
+        );
+
+        await waitFor(() => screen.getByTestId('market-row-BTC'));
+
+        fireEvent.click(screen.getByTestId('filter-select-button'));
+        await waitFor(() => screen.getByTestId('filter-select-menu'));
+        fireEvent.click(screen.getByTestId('filter-select-option-crypto'));
+
+        await waitFor(() => {
+          // ETH is crypto but not watchlisted: proves replace, not combine.
+          expect(screen.getByTestId('market-row-ETH')).toBeInTheDocument();
+        });
+      });
+
+      it('clears a category when the watchlist option is chosen', async () => {
+        renderWithProvider(
+          <MarketListView />,
+          watchlistStore,
+          '/perps/market-list?filter=crypto',
+        );
+
+        await waitFor(() => screen.getByTestId('market-row-ETH'));
+
+        fireEvent.click(screen.getByTestId('filter-select-button'));
+        await waitFor(() => screen.getByTestId('filter-select-menu'));
+        fireEvent.click(screen.getByTestId('filter-select-option-watchlist'));
+
+        await waitFor(() => {
+          expect(screen.queryByTestId('market-row-ETH')).not.toBeInTheDocument();
+        });
+        expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
+      });
+    });
+
     it('shows stock markets on Stocks tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
       // mockStore has no perpsHip3AllowlistMarkets flag → allowedHip3Sources defaults to Set()
       renderWithProvider(<MarketListView />, mockStore);

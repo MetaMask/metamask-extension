@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react';
 import { MARKET_CATEGORIES } from '@metamask/perps-controller';
-import type { MarketFilter } from '../../../../../../shared/constants/perps';
+import {
+  WATCHLIST_MARKET_FILTER,
+  type MarketFilter,
+} from '../../../../../../shared/constants/perps';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Dropdown, type DropdownOption } from '../dropdown';
 
@@ -11,6 +14,8 @@ import { Dropdown, type DropdownOption } from '../dropdown';
  */
 const FILTER_LABEL_KEYS: Record<MarketFilter, string> = {
   all: 'perpsFilterAll',
+  // Reuses the Perps tab section heading rather than adding a duplicate string.
+  watchlist: 'perpsWatchlist',
   crypto: 'perpsFilterCrypto',
   stock: 'perpsFilterStocks',
   'pre-ipo': 'perpsFilterPreIpo',
@@ -47,7 +52,7 @@ export const FilterSelect = ({
 
   const options: DropdownOption<MarketFilter>[] = useMemo(() => {
     const baseOptions: DropdownOption<MarketFilter>[] = (
-      ['all', ...MARKET_CATEGORIES] as const
+      ['all', WATCHLIST_MARKET_FILTER, ...MARKET_CATEGORIES] as const
     ).map((id) => ({ id, label: t(FILTER_LABEL_KEYS[id]) }));
 
     if (showNewFilter) {

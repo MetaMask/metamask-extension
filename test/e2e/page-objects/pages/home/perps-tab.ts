@@ -70,6 +70,10 @@ export class PerpsTab extends PerpsPositionsBase {
 
   private readonly perpsWatchlist = { testId: 'perps-watchlist' };
 
+  private readonly perpsWatchlistHeader = {
+    testId: 'perps-watchlist-header',
+  };
+
   private readonly perpsWatchlistMarket = (symbol: string) => {
     return {
       testId: `perps-watchlist-${symbol}`,
@@ -126,6 +130,14 @@ export class PerpsTab extends PerpsPositionsBase {
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
+  }
+
+  /**
+   * Clicks the Watchlist section header, which opens the market list with the
+   * watchlist filter pre-selected.
+   */
+  async clickWatchlistHeader(): Promise<void> {
+    await this.driver.clickElement(this.perpsWatchlistHeader);
   }
 
   /**
