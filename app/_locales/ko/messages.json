@@ -5175,10 +5175,6 @@
   "memo": {
     "message": "메모"
   },
-  "merklRewardsClaimBonus": {
-    "message": "보너스 수령",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "mUSD 보너스 수령에 실패했습니다",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5190,10 +5186,6 @@
   "merklRewardsToastSuccess": {
     "message": "mUSD 보너스가 지급되었습니다!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "예기치 못한 오류가 발생했습니다. 다시 시도하세요.",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "메시지"
@@ -5461,54 +5453,6 @@
     "message": "$1에서 $2 Snap 사용을 원합니다.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "다음 보너스 적립 중",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "$1 보너스 청구",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "연간 예상 보너스",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "보너스 정보",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "현재 잔액과 금리를 기준으로 1년 동안 벌 수 있는 예상 금액입니다. 금리는 변동되므로 달라질 수 있습니다.",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "자세히 알아보세요.",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "시작한 이후 지금까지 수령한 총 보너스입니다.",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": ": mUSD를 보유하는 것만으로 $1%의 연환산 보너스를 받을 수 있습니다. 이는 Linea에서 매일 수령할 수 있습니다. $2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "누적 수령 보너스",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "적립 중인 보너스 없음",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "$1% 보너스",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "보너스",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "일일 보너스",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5572,14 +5516,6 @@
   "musdBuyMusd": {
     "message": "mUSD 구매"
   },
-  "musdClaimSendingTo": {
-    "message": "다음으로 전송 중:",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "$1(으)로 전송 중",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "보너스 수령",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5642,10 +5578,6 @@
     "message": "신뢰하는 주소만 저장하세요.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "이 주소는 악성으로 식별되었습니다. 이 주소와의 상호작용은 권장하지 않습니다.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "이 주소를 알고 있다면 나중에 알아볼 수 있도록 닉네임을 지정하세요.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5657,10 +5589,6 @@
   "nameInstructionsSaved": {
     "message": "이 전에 이 주소에 닉네임을 추가한 적이 있습니다. 편집하거나 다른 추천 닉네임을 볼 수 있습니다.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "이 주소를 검증할 수 없습니다. 새 주소이거나 검증되지 않은 주소일 수 있습니다. 앞으로 식별할 수 있도록 개인 표시 이름을 설정하세요.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "닉네임",
@@ -5689,10 +5617,6 @@
   "nameModalTitleVerified": {
     "message": "검증된 주소",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "검토가 필요한 주소입니다",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "추천인: $1",
@@ -7037,9 +6961,6 @@
   "perpsAddFunds": {
     "message": "자금 추가"
   },
-  "perpsAddFundsDescription": {
-    "message": "레버리지를 이용해 무기한 선물 거래를 시작하려면 자금을 추가하세요"
-  },
   "perpsAddMargin": {
     "message": "마진 추가"
   },
@@ -7883,12 +7804,6 @@
   "perpsToastUpdateSuccess": {
     "message": "익절/손절이 업데이트되었습니다",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "총 잔액"
-  },
-  "perpsTradePerps": {
-    "message": "무기한 선물 거래하기"
   },
   "perpsTrades": {
     "message": "거래하기"

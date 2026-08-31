@@ -5171,10 +5171,6 @@
   "memo": {
     "message": "notiz"
   },
-  "merklRewardsClaimBonus": {
-    "message": "Bonus einfordern",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "Ihre mUSD-Bonus-Einforderung schlug fehl.",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5186,10 +5182,6 @@
   "merklRewardsToastSuccess": {
     "message": "Ihr mUSD-Bonus ist hier!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "Unerwarteter Fehler. Bitte erneut versuchen.",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "Nachricht"
@@ -5457,54 +5449,6 @@
     "message": "$1 möchte $2 Snaps verwenden",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "Anfallender nächster Bonus",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "$1 Bonus einfordern",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "Geschätzter jährlicher Bonus",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "Ihre Bonusinformationen",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "Eine Hochrechnung dessen, was Sie im Laufe eines Jahres basierend auf Ihrem aktuellen Guthaben und Zinssatz verdienen würden. Der Zinssatz ist variabel und kann sich ändern.",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "Erfahren Sie mehr.",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "Der Gesamtbonus, den Sie seit Beginn eingefordert haben.",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "$1 % Bonus auf jährlicher Basis, den Sie nur für das Halten von mUSD erhalten. Sie können ihn täglich auf Linea einfordern. $2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "Lebenslänglicher Bonus eingefordert",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "Kein anfallender Bonus",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "Bonus von $1 %",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "Ihr Bonus",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "Täglich Bonus",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5568,14 +5512,6 @@
   "musdBuyMusd": {
     "message": "mUSD kaufen"
   },
-  "musdClaimSendingTo": {
-    "message": "Senden an",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "Senden an $1",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "Bonus einfordern",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5638,10 +5574,6 @@
     "message": "Speichern Sie nur Adressen, denen Sie vertrauen.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Dies wurde als bösartig identifiziert. Wir empfehlen, nicht mit dieser Adresse zu interagieren.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Falls Sie diese Adresse kennen, können Sie ihr einen Spitznamen zuweisen, um sie künftig wiederzuerkennen.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5653,10 +5585,6 @@
   "nameInstructionsSaved": {
     "message": "Sie haben bereits einen Spitznamen für diese Adresse hinzugefügt. Sie können weitere vorgeschlagene Spitznamen bearbeiten oder einsehen.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Diese Adresse kann nicht verifiziert werden. Sie ist möglicherweise neu oder nicht verifiziert. Legen Sie einen persönlichen Anzeigenamen für die künftige Identifizierung fest.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Spitzname",
@@ -5685,10 +5613,6 @@
   "nameModalTitleVerified": {
     "message": "Verifizierte Adresse",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Adresse benötigt Überprüfung",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Vorgeschlagen von $1",
@@ -7033,9 +6957,6 @@
   "perpsAddFunds": {
     "message": "Gelder hinzufügen"
   },
-  "perpsAddFundsDescription": {
-    "message": "Geld einzahlen, um mit dem Handel von Perpetual Contracts mit Hebelwirkung zu beginnen"
-  },
   "perpsAddMargin": {
     "message": "Margin hinzufügen"
   },
@@ -7875,12 +7796,6 @@
   "perpsToastUpdateSuccess": {
     "message": "TP/SL erfolgreich aktualisiert",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Gesamtsaldo"
-  },
-  "perpsTradePerps": {
-    "message": "Perps handeln"
   },
   "perpsTrades": {
     "message": "Trades"

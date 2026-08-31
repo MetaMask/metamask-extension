@@ -18,11 +18,13 @@ export const MAX_PREVIEW_ITEMS = 5;
 export type MoneyActivityListProps = {
   items: MoneyActivityItem[];
   privacyMode?: boolean;
+  onViewAll?: () => void;
 };
 
 export function MoneyActivityList({
   items,
   privacyMode = false,
+  onViewAll,
 }: MoneyActivityListProps) {
   const t = useI18nContext();
   const previewItems = items.slice(0, MAX_PREVIEW_ITEMS);
@@ -57,7 +59,7 @@ export function MoneyActivityList({
           <Button
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}
-            disabled
+            onClick={onViewAll}
             className="w-full"
             data-testid="money-activity-view-all"
           >

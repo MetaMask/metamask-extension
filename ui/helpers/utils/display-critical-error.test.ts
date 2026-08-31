@@ -38,6 +38,7 @@ process.env = {
   ...originalEnv,
   SENTRY_DSN: MOCK_SENTRY_DSN,
   SENTRY_DSN_DEV: MOCK_SENTRY_DSN_DEV,
+  METAMASK_BUILD_TYPE: 'main',
   METAMASK_ENVIRONMENT: 'development',
 };
 
@@ -197,6 +198,9 @@ describe('displayCriticalError', () => {
     expect(
       rootContainer.querySelector('#critical-error-content')?.innerHTML,
     ).toContain('critical-error-button');
+    expect(
+      rootContainer.querySelector('[data-testid="critical-error-content"]'),
+    ).not.toBeNull();
   });
 
   it('clicking restart button calls fetch and reload if checkbox checked', async () => {
@@ -281,6 +285,10 @@ describe('displayCriticalError', () => {
         level: 'error',
         message: MOCK_ERROR_MESSAGE,
         release: MOCK_RELEASE_VERSION,
+        tags: {
+          'metamask.build_type': 'main',
+          'metamask.environment': 'development',
+        },
         extra: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_details: expect.any(Object), // Error object serialization varies by environment
@@ -343,6 +351,97 @@ describe('displayCriticalError', () => {
       expect(fetch).not.toHaveBeenCalled();
       expect(browser.runtime.reload).toHaveBeenCalled();
     }
+  });
+
+  it('adds fallback build tags when build environment variables are unset', async () => {
+    delete process.env.METAMASK_ENVIRONMENT;
+    delete process.env.METAMASK_BUILD_TYPE;
+
+    const error = new Error(MOCK_ERROR_MESSAGE);
+    const mockPort = createMockPort();
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.Other,
+      ),
+    ).rejects.toThrow(error);
+
+    const restartButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-button',
+    );
+    const checkbox = rootContainer.querySelector<HTMLInputElement>(
+      '#critical-error-checkbox',
+    );
+
+    expect(restartButton).toBeTruthy();
+    expect(checkbox).toBeTruthy();
+    checkbox?.setAttribute('checked', 'true');
+    await act(async () => {
+      restartButton?.click();
+      await new Promise(setImmediate);
+    });
+
+    const requestBody = (fetch as jest.MockedFunction<typeof fetch>).mock
+      .calls[0][1]?.body as string;
+    const eventPayload = JSON.parse(requestBody.split('\n')[2]);
+    expect(eventPayload.tags).toEqual({
+      'metamask.environment': 'unknown',
+      'metamask.build_type': 'unknown',
+    });
+  });
+
+  it('allows error-specific tags to override build tags', async () => {
+    process.env.METAMASK_ENVIRONMENT = 'development';
+    process.env.METAMASK_BUILD_TYPE = 'main';
+
+    const error = Object.assign(new Error(MOCK_ERROR_MESSAGE), {
+      sentryTags: {
+        'metamask.environment': 'error-environment',
+        source: 'critical-error',
+      },
+    });
+    const mockPort = createMockPort();
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.Other,
+      ),
+    ).rejects.toThrow(error);
+
+    const restartButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-button',
+    );
+    const checkbox = rootContainer.querySelector<HTMLInputElement>(
+      '#critical-error-checkbox',
+    );
+
+    expect(restartButton).toBeTruthy();
+    expect(checkbox).toBeTruthy();
+    checkbox?.setAttribute('checked', 'true');
+    await act(async () => {
+      restartButton?.click();
+      await new Promise(setImmediate);
+    });
+
+    const requestBody = (fetch as jest.MockedFunction<typeof fetch>).mock
+      .calls[0][1]?.body as string;
+    const eventPayload = JSON.parse(requestBody.split('\n')[2]);
+    expect(eventPayload.tags).toEqual({
+      'metamask.environment': 'error-environment',
+      'metamask.build_type': 'main',
+      source: 'critical-error',
+    });
+    expect(eventPayload.extra.error_details).not.toHaveProperty('sentryTags');
   });
 
   it('still displays error and throws original error when notifying background fails', async () => {
