@@ -133,11 +133,11 @@ export function txParamsAreDappSuggested(
   return Boolean(
     (gasPrice &&
       gasPrice === transactionMeta?.dappSuggestedGasFees?.gasPrice) ||
-      (maxPriorityFeePerGas &&
-        maxFeePerGas &&
-        transactionMeta?.dappSuggestedGasFees?.maxPriorityFeePerGas ===
-          maxPriorityFeePerGas &&
-        transactionMeta?.dappSuggestedGasFees?.maxFeePerGas === maxFeePerGas),
+    (maxPriorityFeePerGas &&
+      maxFeePerGas &&
+      transactionMeta?.dappSuggestedGasFees?.maxPriorityFeePerGas ===
+        maxPriorityFeePerGas &&
+      transactionMeta?.dappSuggestedGasFees?.maxFeePerGas === maxFeePerGas),
   );
 }
 
@@ -560,8 +560,7 @@ export function parseTransferTransactionData(data: Hex):
     return undefined;
   }
 
-  const recipient =
-    args?._to ?? args?.to; // ERC-20 - transfer / transferFrom // ERC-721 / ERC-1155 / Fiat Token V2
+  const recipient = args?._to ?? args?.to; // ERC-20 - transfer / transferFrom // ERC-721 / ERC-1155 / Fiat Token V2
 
   return {
     name,
