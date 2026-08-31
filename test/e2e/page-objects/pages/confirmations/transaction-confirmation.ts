@@ -38,6 +38,9 @@ class TransactionConfirmation extends Confirmation {
   private readonly advancedDetailsHexData: RawLocator =
     '[data-testid="advanced-details-transaction-hex"]';
 
+  private readonly advancedDetailsNonceSection: RawLocator =
+    '[data-testid="advanced-details-nonce-section"]';
+
   private readonly advancedDetailsSection: RawLocator =
     '[data-testid="advanced-details-data-section"]';
 
@@ -314,6 +317,10 @@ class TransactionConfirmation extends Confirmation {
    * Native `simpleSend` confirmations show the native ticker in the heading
    * and do not expose a token `transfer` function in advanced details.
    *
+   * Absence checks wait for the nonce section so they cannot pass during the
+   * render gap after toggling advanced details: wallet-initiated ERC-20
+   * transfers hide “Interacting with” until `showAdvancedDetails` is true.
+   *
    * @param symbol - Native currency ticker expected in the send heading.
    */
   async checkNativeTransferPath(symbol: string): Promise<void> {
@@ -322,11 +329,18 @@ class TransactionConfirmation extends Confirmation {
     );
     await this.checkSendAmount(`1 ${symbol}`);
     await this.clickAdvancedDetailsButton();
-    await this.driver.assertElementNotPresent(this.interactingWithLabel);
-    await this.driver.assertElementNotPresent({
-      css: this.advancedDetailsDataFunction,
-      text: 'transfer',
+    await this.driver.assertElementNotPresent(this.interactingWithLabel, {
+      findElementGuard: this.advancedDetailsNonceSection,
     });
+    await this.driver.assertElementNotPresent(
+      {
+        css: this.advancedDetailsDataFunction,
+        text: 'transfer',
+      },
+      {
+        findElementGuard: this.advancedDetailsNonceSection,
+      },
+    );
   }
 
   async checkNetworkIsDisplayed(network: string): Promise<void> {
