@@ -4,42 +4,72 @@ import { hasTransactionType } from '../../../../../shared/lib/transactions.utils
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import {
   useTransactionPayHasPositiveRequiredAmount,
+  useTransactionPaySourceAmounts,
   useTransactionPayTotals,
 } from './useTransactionPayData';
 
-const SUPPORTED_TYPES: TransactionType[] = [TransactionType.musdConversion];
+const SUPPORTED_TYPES: TransactionType[] = [
+  TransactionType.musdConversion,
+  TransactionType.moneyAccountDeposit,
+];
 
 /**
- * Determines whether the current transaction is fully sponsored by MetaMask
- * (zero gas, zero provider fee, zero MetaMask fee).
+ * Whether the confirmation should present fees as paid by MetaMask.
  *
- * Scoped to musdConversion for now; broadening to other types is a product
- * decision left for follow-up.
+ * For gas-sponsored transactions (`isGasFeeSponsored`), source/target network
+ * gas estimates may still be non-zero after quoting even though the user does
+ * not pay them. Those fees are ignored; only provider and MetaMask fee
+ * components must be zero.
+ *
+ * Pre-quote (no `sourceAmounts` yet): returns `true` from gas sponsorship
+ * alone, before provider/MetaMask fees are known. Callers such as `TotalRow`
+ * that strip all fee components when this is true should treat that as
+ * "sponsorship claimed for display" rather than proof that every fee line
+ * has been quoted as zero.
+ *
+ * Money-account deposits on Monad are gas-sponsored, and fixed-spread /
+ * same-token (Monad mUSD) routes have $0 provider fee, so they show as paid
+ * by MetaMask the same way mUSD conversion does.
  */
 export function useIsPaidByMetaMask(): boolean {
   const transactionMeta = useTransactionMetadataRequestOptional();
   const totals = useTransactionPayTotals();
+  const sourceAmounts = useTransactionPaySourceAmounts();
   const hasPositiveRequiredAmount =
     useTransactionPayHasPositiveRequiredAmount();
+
+  if (!hasTransactionType(transactionMeta, SUPPORTED_TYPES)) {
+    return false;
+  }
+
+  const isGasSponsored = Boolean(transactionMeta?.isGasFeeSponsored);
+
+  // Pre-quote gasless deposits: sponsorship is known from the transaction
+  // flag before conversion quotes exist.
+  if (isGasSponsored && !sourceAmounts?.length) {
+    return true;
+  }
 
   // Every fee is zero before an amount is entered, which is indistinguishable
   // from genuine sponsorship. Requiring a positive amount stops the empty state
   // from claiming the transaction is "Paid by MetaMask" and then contradicting
   // itself with real fees once the user types.
-  if (
-    !hasTransactionType(transactionMeta, SUPPORTED_TYPES) ||
-    !totals?.fees ||
-    !hasPositiveRequiredAmount
-  ) {
+  if (!totals?.fees || !hasPositiveRequiredAmount) {
     return false;
+  }
+
+  const provider = new BigNumber(totals.fees.provider?.usd ?? 0);
+  const metaMask = new BigNumber(totals.fees.metaMask?.usd ?? 0);
+
+  if (isGasSponsored) {
+    // Sponsored gas estimates can be non-zero; exclude them from the check.
+    return provider.isZero() && metaMask.isZero();
   }
 
   const sourceNetwork = new BigNumber(
     totals.fees.sourceNetwork?.estimate?.usd ?? 0,
   );
   const targetNetwork = new BigNumber(totals.fees.targetNetwork?.usd ?? 0);
-  const provider = new BigNumber(totals.fees.provider?.usd ?? 0);
-  const metaMask = new BigNumber(totals.fees.metaMask?.usd ?? 0);
 
   return (
     sourceNetwork.isZero() &&

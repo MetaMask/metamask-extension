@@ -1,5 +1,5 @@
-import { defineAllowedRouteCapabilities } from '../../../../helpers/route-messenger-helpers';
-import type { RouteMessengerFromCapabilities } from '../../../../messengers/route-messenger';
+import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
+import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 
 export const MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES =
   defineAllowedRouteCapabilities({

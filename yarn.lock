@@ -6815,24 +6815,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:@metamask-previews/eth-json-rpc-middleware@24.0.1-preview-3e34650c2":
-  version: 24.0.1-preview-3e34650c2
-  resolution: "@metamask-previews/eth-json-rpc-middleware@npm:24.0.1-preview-3e34650c2"
-  dependencies:
-    "@metamask/eth-block-tracker": "npm:^15.0.1"
-    "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
-    "@metamask/eth-sig-util": "npm:^9.0.0"
-    "@metamask/json-rpc-engine": "npm:^10.5.0"
-    "@metamask/message-manager": "npm:^14.1.2"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^11.11.0"
-    klona: "npm:^2.0.6"
-    safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/4501da0aecf0dba3ef1607025a6b32bad3faa77b52c6107f9f88e576c1a6623f4f3ec8c45a0c0dc10cd79d6ce40f3bacfa3ca12bea53fc4a1319b6cd22ae493c
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-json-rpc-middleware@npm:^23.1.3":
   version: 23.1.3
   resolution: "@metamask/eth-json-rpc-middleware@npm:23.1.3"
@@ -6849,6 +6831,24 @@ __metadata:
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
   checksum: 10/aee4866afa78cb21aed9daa1211ee9a3515cb9549d9b325d5904b8769fb54790296224b58ec3555eb34a7125d2fd5180d6cba915bb1ca8dc3f04bf75e502c6b0
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-json-rpc-middleware@npm:^24.0.1":
+  version: 24.0.1
+  resolution: "@metamask/eth-json-rpc-middleware@npm:24.0.1"
+  dependencies:
+    "@metamask/eth-block-tracker": "npm:^15.0.1"
+    "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/json-rpc-engine": "npm:^10.5.0"
+    "@metamask/message-manager": "npm:^14.1.2"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^11.11.0"
+    klona: "npm:^2.0.6"
+    safe-stable-stringify: "npm:^2.4.3"
+  checksum: 10/54ebe641625c1dec7c8d2e9b46551ca9b0006b2b0f0cbdb6aa79644334222711b15cc660250710c4d5bfd0767e5a5e27a35f62dc93e63d90e35e1cf83727be28
   languageName: node
   linkType: hard
 
@@ -7376,16 +7376,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@27.1.1-preview-3e34650c2":
-  version: 27.1.1-preview-3e34650c2
-  resolution: "@metamask-previews/keyring-controller@npm:27.1.1-preview-3e34650c2"
+"@metamask/keyring-controller@npm:^27.0.0, @metamask/keyring-controller@npm:^27.1.0, @metamask/keyring-controller@npm:^27.1.1":
+  version: 27.1.1
+  resolution: "@metamask/keyring-controller@npm:27.1.1"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/eth-hd-keyring": "npm:^15.0.0"
-    "@metamask/eth-sig-util": "npm:^9.0.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-simple-keyring": "npm:^13.0.0"
     "@metamask/keyring-api": "npm:^24.0.0"
     "@metamask/keyring-internal-api": "npm:^12.0.0"
@@ -7396,7 +7396,7 @@ __metadata:
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
-  checksum: 10/41c6c3caec5a53e34d70054a62394718d2e768c2756c8e2fcaf038e80247a8c3284c09ff73392e8d4c1b524ae06c9d4e10faca6c3de0580945e3ec262efaf4ef
+  checksum: 10/c4a1a3b40f98d179dfadba128c9135e795a7440a6d2cc5cd107644716e931cd71d6e7407211cb5eacd2ffb37e38d22f48d4123da0ed6b462e10a59a902fe0ece
   languageName: node
   linkType: hard
 
@@ -7603,19 +7603,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:@metamask-previews/message-manager@14.1.2-preview-3e34650c2":
-  version: 14.1.2-preview-3e34650c2
-  resolution: "@metamask-previews/message-manager@npm:14.1.2-preview-3e34650c2"
+"@metamask/message-manager@npm:^14.0.0, @metamask/message-manager@npm:^14.1.1, @metamask/message-manager@npm:^14.1.2":
+  version: 14.1.2
+  resolution: "@metamask/message-manager@npm:14.1.2"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/eth-sig-util": "npm:^9.0.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/controller-utils": "npm:^12.0.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/utils": "npm:^11.9.0"
     "@types/uuid": "npm:^8.3.0"
     jsonschema: "npm:^1.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/5377865ba0f1cc2de943587e5af45ebe72861aded6b311a6e61ab73b9ba81709aed8dc03791ec33286b22a31aa3dcb3756f5816bbc8d7a2ca9b1f08f3143cfa3
+  checksum: 10/82e3965069f0eb34e2141ca4dff452c118f54502d0b5d6b832af1906c6413ba1d923b13f1ed6af7f8a7b3087ef7f3b1a700bcffa56b10b06df53972ff2cf9a4f
   languageName: node
   linkType: hard
 
@@ -8540,15 +8540,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:@metamask-previews/signature-controller@39.2.10-preview-3e34650c2":
-  version: 39.2.10-preview-3e34650c2
-  resolution: "@metamask-previews/signature-controller@npm:39.2.10-preview-3e34650c2"
+"@metamask/signature-controller@npm:^39.2.10, @metamask/signature-controller@npm:^39.2.6":
+  version: 39.2.10
+  resolution: "@metamask/signature-controller@npm:39.2.10"
   dependencies:
     "@metamask/accounts-controller": "npm:^39.1.1"
     "@metamask/approval-controller": "npm:^9.0.2"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/eth-sig-util": "npm:^9.0.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/gator-permissions-controller": "npm:^5.0.2"
     "@metamask/keyring-controller": "npm:^27.1.1"
     "@metamask/logging-controller": "npm:^9.0.0"
@@ -8558,7 +8558,7 @@ __metadata:
     jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/f4e832aa71e4558c411b5c30dfce34d285aa57997c02a8c0ca866a529904c680e370b1e4d6239d104d6b7576135ef8a47705f4972ea713b19829799766c1b7a3
+  checksum: 10/404e514eb5a4959742f144785624ad41e42dd3ec88e132ee685dc2f6def8bc7643013a13d8514a971e4bcbd03ef7c08c05f57b69cfc422cb254e8ee3905bacce
   languageName: node
   linkType: hard
 
