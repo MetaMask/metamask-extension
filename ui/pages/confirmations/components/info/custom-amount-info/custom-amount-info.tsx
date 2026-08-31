@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback } from 'react';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import { type TransactionMeta } from '@metamask/transaction-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   Display,
@@ -371,7 +371,7 @@ function BottomContainer({
   hasAmount: boolean;
 }) {
   const t = useI18nContext();
-  const isResultReady = useIsResultReady(hasAmount);
+  const isResultReady = useIsResultReady(hasAmount, disablePay);
   const { hideResults } = useTransactionCustomAmountAlerts();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
@@ -395,14 +395,18 @@ function BottomContainer({
       {disablePay !== true && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>
-          <BridgeFeeRow
-            variant={ConfirmInfoRowSize.Small}
-            tooltipDescription={
-              isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
-            }
-          />
-          <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
-          {canSelectWithdrawToken ? (
+          {disablePay !== true && (
+            <>
+              <BridgeFeeRow
+                variant={ConfirmInfoRowSize.Small}
+                tooltipDescription={
+                  isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
+                }
+              />
+              <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
+            </>
+          )}
+          {canSelectWithdrawToken && disablePay !== true ? (
             <ReceiveRow
               inputAmountUsd={amountFiat}
               variant={ConfirmInfoRowSize.Small}
@@ -427,8 +431,10 @@ function BottomContainer({
  * numbers on screen until a new quote resolves.
  *
  * @param hasAmount - Whether the amount field holds a value greater than zero.
+ * @param disablePay - Whether the confirmation skips the pay/quote pipeline
+ * (direct withdraws), in which case no quote will ever arrive.
  */
-function useIsResultReady(hasAmount: boolean) {
+function useIsResultReady(hasAmount: boolean, disablePay?: boolean) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const quotes = useTransactionPayQuotes();
   const isQuotePending = useIsTransactionPayQuotePending();
@@ -436,6 +442,8 @@ function useIsResultReady(hasAmount: boolean) {
   const hasPositiveRequiredAmount =
     useTransactionPayHasPositiveRequiredAmount();
 
+  // Selecting a destination token still stores a no-op quote and gas totals.
+  // A $0 withdraw must not show those as a real quote.
   if (!hasAmount) {
     return false;
   }
@@ -444,7 +452,9 @@ function useIsResultReady(hasAmount: boolean) {
     return hasPositiveRequiredAmount && (isQuotePending || hasExecutableQuote);
   }
 
-  return isQuotePending || Boolean(quotes?.length);
+  // Direct withdraws never fetch quotes. Show the total once an amount is
+  // typed; do not wait on a quote that will never arrive.
+  return Boolean(disablePay) || isQuotePending || Boolean(quotes?.length);
 }
 
 function AlertMessage() {

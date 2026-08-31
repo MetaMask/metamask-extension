@@ -1,18 +1,18 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
-import configureStore from '../../../../../store/store';
-import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import { useMoneyAccountBalance } from '../../../../../hooks/money/useMoneyAccountBalance';
-import type { UseMoneyAccountBalanceResult } from '../../../../../hooks/money/useMoneyAccountBalance';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
+import type { UseMoneyAccountBalanceResult } from '../../../../hooks/money/useMoneyAccountBalance';
 import { BalanceProjection } from './balance-projection';
 
-jest.mock('../../../../../hooks/money/useMoneyAccountBalance', () => ({
+jest.mock('../../../../hooks/money/useMoneyAccountBalance', () => ({
   useMoneyAccountBalance: jest.fn(),
 }));
 
-jest.mock('../../../../../contexts/route-messenger', () => ({
+jest.mock('../../../../contexts/route-messenger', () => ({
   RouteMessengerProvider: ({ children }: { children: React.ReactNode }) =>
     children,
 }));

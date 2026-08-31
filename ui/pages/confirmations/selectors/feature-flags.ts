@@ -234,8 +234,9 @@ export const selectBlockedPayTokens = createSelector(
 );
 
 /**
- * Minimum fiat balance required when auto-selecting a pay token, from the
- * `confirmations_pay_tokens` remote feature flag.
+ * Minimum `token.fiat.balance` required when auto-selecting preferred or
+ * no-fee pay tokens, from `confirmations_pay_tokens`. Same unit as
+ * `fiat.balance` (user preferred currency), not token units. Matches mobile.
  */
 export const selectMinimumRequiredTokenBalance = createSelector(
   selectPayTokensFlag,

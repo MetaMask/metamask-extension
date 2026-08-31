@@ -73,6 +73,7 @@ describe('useMoneyAccountDeposit', () => {
 
     expect(createDepositTransactionMock).toHaveBeenCalledWith(
       expect.stringMatching(/^0x[0-9a-f]{32}$/u),
+      '0x1234567890123456789012345678901234567890',
     );
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
