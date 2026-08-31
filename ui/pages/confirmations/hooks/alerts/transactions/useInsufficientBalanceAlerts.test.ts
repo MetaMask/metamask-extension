@@ -21,6 +21,10 @@ import {
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
+jest.mock('../../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(),
+}));
 jest.mock('../../gas/useIsGaslessSupported');
 jest.mock('../../pay/useTransactionPayHasSourceAmount');
 jest.mock('../../pay/useTransactionPayData');
@@ -382,6 +386,21 @@ describe('useInsufficientBalanceAlerts', () => {
     });
 
     expect(alerts).toEqual(ALERT);
+  });
+
+  it('returns no alerts for money account deposits even when native balance is insufficient', () => {
+    const moneyAccountDeposit = {
+      ...TRANSACTION_MOCK,
+      nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+    } as TransactionMeta;
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: moneyAccountDeposit,
+      transaction: moneyAccountDeposit,
+    });
+
+    expect(alerts).toEqual([]);
   });
 
   describe('post-quote withdraws', () => {

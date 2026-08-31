@@ -7,6 +7,7 @@ import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
+import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
 import useAlerts from '../../../../../hooks/useAlerts';
@@ -18,6 +19,7 @@ import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../../selectors/feature-flags'),
   selectIsMoneyAccountTransactionEnabled: jest.fn(() => false),
@@ -144,6 +146,9 @@ describe('PayWithRow', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
+  const useTransactionPayAvailableTokensMock = jest.mocked(
+    useTransactionPayAvailableTokens,
+  );
   const useSendTokensMock = jest.mocked(useSendTokens);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
   const useAlertsMock = jest.mocked(useAlerts);
@@ -156,6 +161,7 @@ describe('PayWithRow', () => {
     jest.resetAllMocks();
 
     useSendTokensMock.mockReturnValue([]);
+    useTransactionPayAvailableTokensMock.mockReturnValue([]);
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
     getFieldAlertsMock.mockReturnValue([]);
     useAlertsMock.mockReturnValue({
@@ -225,13 +231,40 @@ describe('PayWithRow', () => {
     expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
   });
 
-  it('renders skeleton when no display token available', () => {
+  it('renders empty selection when no display token and no available tokens', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: undefined,
       setPayToken: jest.fn(),
       isNative: false,
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
+
+    const store = mockStore(getMockState());
+    renderWithProvider(<PayWithRow />, store);
+
+    expect(
+      screen.queryByTestId('pay-with-row-skeleton'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+      'Select payment method',
+    );
+  });
+
+  it('renders skeleton while available tokens exist and pay token is not set', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+      isNative: false,
+    });
+    useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: ADDRESS_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        disabled: false,
+      },
+    ] as never);
 
     const store = mockStore(getMockState());
     renderWithProvider(<PayWithRow />, store);
@@ -301,21 +334,12 @@ describe('PayWithRow', () => {
           const store = mockStore(getMockState());
           renderWithProvider(<PayWithRow />, store);
 
-          if (transactionType === TransactionType.perpsWithdraw) {
-            // Post-quote withdraws show an empty Receive selector instead of an
-            // endless skeleton while the destination token is imported.
-            expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
-            expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
-              'Select payment method',
-            );
-          } else {
-            expect(
-              screen.getByTestId('pay-with-row-skeleton'),
-            ).toBeInTheDocument();
-            expect(
-              screen.queryByTestId('pay-with-symbol'),
-            ).not.toBeInTheDocument();
-          }
+          // No funding tokens yet: show the empty selector instead of an
+          // endless skeleton (same as mobile).
+          expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+          expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+            'Select payment method',
+          );
         });
 
         it('renders the resolved payToken once it is set', () => {

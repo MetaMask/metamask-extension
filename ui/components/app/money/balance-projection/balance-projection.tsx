@@ -5,19 +5,18 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  ButtonIconSize,
   IconColor,
   Skeleton,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useMoneyAccountBalance } from '../../../../../hooks/money/useMoneyAccountBalance';
-import { moneyFormatUsd } from '../../../../../helpers/money/format';
-import { RouteMessengerProvider } from '../../../../../contexts/route-messenger';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
+import { moneyFormatUsd } from '../../../../helpers/money/format';
+import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
+import { InfoPopover } from '../../musd/info-popover';
 import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../messenger';
-import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 
 const PROJECTED_YEARS = 1;
 
@@ -105,14 +104,13 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
         <Text variant={TextVariant.BodyMd} color={TextColor.SuccessDefault}>
           {moneyFormatUsd(projected)}
         </Text>
-        <InfoPopoverTooltip
-          iconSize={ButtonIconSize.Sm}
+        <InfoPopover
           iconColor={IconColor.IconAlternative}
           ariaLabel={t('moneyAccountProjectedBalanceInfo')}
           data-testid="balance-projection-info"
         >
           {t('moneyAccountProjectedBalanceTooltip', [String(apyPercent)])}
-        </InfoPopoverTooltip>
+        </InfoPopover>
       </Box>
     );
   }
@@ -127,14 +125,13 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('moneyAccountApyPitch', [String(apyPercent)])}
       </Text>
-      <InfoPopoverTooltip
-        iconSize={ButtonIconSize.Sm}
+      <InfoPopover
         iconColor={IconColor.IconAlternative}
         ariaLabel={t('moneyAccountApyPitchInfo')}
         data-testid="balance-projection-apy-pitch-info"
       >
         {t('moneyAccountApyTooltip')}
-      </InfoPopoverTooltip>
+      </InfoPopover>
     </Box>
   );
 };
