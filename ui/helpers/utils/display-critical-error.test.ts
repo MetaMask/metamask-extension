@@ -4,6 +4,7 @@ import {
   CriticalErrorRepairAction,
   CriticalErrorType,
   METHOD_REPAIR_DATABASE,
+  isStateCorruptionErrorType,
 } from '../../../shared/constants/critical-error';
 import { MISSING_VAULT_ERROR } from '../../../shared/constants/errors';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
@@ -48,32 +49,54 @@ jest.mock('../../../shared/lib/manifestFlags', () => ({
   })),
 }));
 
-/** Shared getErrorHtml mock that optionally shows the repair button based on repairAction param. */
+/**
+ * Shared getErrorHtml stub for handler tests.
+ */
 function mockGetErrorHtmlWithOptionalRestoreLink() {
   return (
     _errorKey: unknown,
-    _error: unknown,
+    error: unknown,
     _localeContext: unknown,
     _supportLink: unknown,
     repairAction?: CriticalErrorRepairAction,
-    _criticalErrorType?: CriticalErrorType,
+    criticalErrorType?: CriticalErrorType,
     showReportCheckbox: boolean = true,
-  ) => `
+  ) => {
+    const errorMessage =
+      error && typeof error === 'object' && 'message' in error
+        ? String((error as { message: unknown }).message)
+        : undefined;
+    let repairButtonLabel = '';
+    if (repairAction === CriticalErrorRepairAction.Recover) {
+      repairButtonLabel =
+        errorMessage === MISSING_VAULT_ERROR
+          ? 'criticalErrorRecoverAccounts'
+          : 'criticalErrorAttemptRecovery';
+    } else if (repairAction === CriticalErrorRepairAction.Reset) {
+      repairButtonLabel = 'criticalErrorResetMetaMaskState';
+    }
+
+    return `
     <div>
       ${
         showReportCheckbox
           ? '<input type="checkbox" id="critical-error-checkbox" checked />'
           : ''
       }
-      <button id="critical-error-button">Restart</button>
+      ${
+        isStateCorruptionErrorType(criticalErrorType)
+          ? ''
+          : '<button id="critical-error-button">Restart</button>'
+      }
       ${
         repairAction === CriticalErrorRepairAction.Recover ||
         repairAction === CriticalErrorRepairAction.Reset
-          ? '<button type="button" id="critical-error-repair-button">Attempt recovery</button>'
+          ? `<button type="button" id="critical-error-repair-button">${repairButtonLabel}</button>`
           : ''
       }
     </div>
   `;
+  };
 }
 
 const MOCK_BACKUP_WITH_VAULT = {
@@ -540,14 +563,13 @@ describe('repair button', () => {
 
   it('sends METHOD_REPAIR_DATABASE with recover action when repair button is clicked and user confirms', async () => {
     jest.useFakeTimers();
-    jest
-      .spyOn(errorUtils, 'getErrorHtml')
-      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(errorUtils, 'getErrorHtml').mockRestore();
+    jest.spyOn(errorUtils, 'getErrorHtml');
 
     restoreGetBackupState = mockGetBackupStateWithVault();
     jest.spyOn(window, 'confirm').mockReturnValue(true);
 
-    const error = new Error(MOCK_ERROR_MESSAGE);
+    const error = new Error(MISSING_VAULT_ERROR);
 
     await expect(
       displayCriticalErrorMessage(
@@ -556,7 +578,7 @@ describe('repair button', () => {
         error,
         'en',
         mockPort,
-        CriticalErrorType.BackgroundInitTimeout,
+        CriticalErrorType.MissingVaultInDatabase,
       ),
     ).rejects.toThrow(error);
 
@@ -567,16 +589,23 @@ describe('repair button', () => {
       expect.any(Object),
       expect.any(String),
       CriticalErrorRepairAction.Recover,
-      CriticalErrorType.BackgroundInitTimeout,
+      CriticalErrorType.MissingVaultInDatabase,
       true,
     );
 
+    expect(rootContainer.querySelector('#critical-error-button')).toBeNull();
+    expect(
+      rootContainer.querySelector('#critical-error-checkbox'),
+    ).not.toBeNull();
     // Repair button should be in the DOM
     const repairButton = rootContainer.querySelector<HTMLButtonElement>(
       '#critical-error-repair-button',
     );
     expect(repairButton).toBeTruthy();
     expect(repairButton?.disabled).toBe(true);
+    expect(repairButton?.textContent?.trim()).toBe(
+      'criticalErrorRecoverAccounts',
+    );
 
     repairButton?.click();
     expect(window.confirm).not.toHaveBeenCalled();
@@ -603,7 +632,7 @@ describe('repair button', () => {
           method: METHOD_REPAIR_DATABASE,
           params: expect.objectContaining({
             repairAction: CriticalErrorRepairAction.Recover,
-            criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+            criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
             backup: expect.any(Object),
           }),
         }),
@@ -657,7 +686,7 @@ describe('repair button', () => {
     });
 
     expect(repairButton?.disabled).toBe(false);
-    expect(repairButton?.textContent).toBe('Attempt recovery');
+    expect(repairButton?.textContent).toBe('criticalErrorAttemptRecovery');
 
     postMessage.mockImplementation(() => undefined);
 
@@ -1026,9 +1055,8 @@ describe('repair button', () => {
 
   it('sends METHOD_REPAIR_DATABASE with reset action when repair button is clicked and user confirms', async () => {
     jest.useFakeTimers();
-    jest
-      .spyOn(errorUtils, 'getErrorHtml')
-      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(errorUtils, 'getErrorHtml').mockRestore();
+    jest.spyOn(errorUtils, 'getErrorHtml');
 
     restoreGetBackupState = mockGetBackupStateNoVault();
     jest.spyOn(window, 'confirm').mockReturnValue(true);
@@ -1058,11 +1086,18 @@ describe('repair button', () => {
       true,
     );
 
+    expect(rootContainer.querySelector('#critical-error-button')).toBeNull();
+    expect(
+      rootContainer.querySelector('#critical-error-checkbox'),
+    ).not.toBeNull();
     const repairButton = rootContainer.querySelector<HTMLButtonElement>(
       '#critical-error-repair-button',
     );
     expect(repairButton).toBeTruthy();
     expect(repairButton?.disabled).toBe(true);
+    expect(repairButton?.textContent?.trim()).toBe(
+      'criticalErrorResetMetaMaskState',
+    );
 
     repairButton?.click();
     expect(window.confirm).not.toHaveBeenCalled();
