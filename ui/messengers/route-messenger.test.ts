@@ -6,6 +6,15 @@ import {
   getRouteMessengerNamespace,
 } from './route-messenger';
 
+jest.mock('@metamask/messenger', () => {
+  const originalModule = jest.requireActual('@metamask/messenger');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+  };
+});
+
 describe('getRouteMessengerNamespace', () => {
   it.each([
     ['/some/path', 'SomePathRoute'],
