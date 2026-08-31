@@ -19,6 +19,7 @@ import type {
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
@@ -405,6 +406,79 @@ describe('analytics', () => {
 
       expect(setMarketingCampaignCookieIdHandler).toHaveBeenCalledWith(null);
       expect(metaMetricsControllerState.marketingCampaignCookieId).toBeNull();
+    });
+
+    describe('the extension uninstall URL', () => {
+      const originalEnvironment = process.env.METAMASK_ENVIRONMENT;
+      const originalBuildType = process.env.METAMASK_BUILD_TYPE;
+
+      afterEach(() => {
+        process.env.METAMASK_ENVIRONMENT = originalEnvironment;
+        process.env.METAMASK_BUILD_TYPE = originalBuildType;
+      });
+
+      it('updates it when opting in on a main production build', async () => {
+        process.env.METAMASK_BUILD_TYPE = 'main';
+        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
+        const { updateExtensionUninstallUrlHandler } =
+          createConfiguredMessenger();
+
+        await setParticipateInMetaMetrics(true);
+
+        expect(updateExtensionUninstallUrlHandler).toHaveBeenCalledTimes(1);
+        expect(updateExtensionUninstallUrlHandler).toHaveBeenCalledWith(
+          true,
+          TEST_ANALYTICS_ID,
+        );
+      });
+
+      it('updates it when opting out on a main production build', async () => {
+        process.env.METAMASK_BUILD_TYPE = 'main';
+        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
+        const { updateExtensionUninstallUrlHandler } =
+          createConfiguredMessenger();
+
+        await setParticipateInMetaMetrics(false);
+
+        expect(updateExtensionUninstallUrlHandler).toHaveBeenCalledTimes(1);
+        expect(updateExtensionUninstallUrlHandler).toHaveBeenCalledWith(
+          false,
+          TEST_ANALYTICS_ID,
+        );
+      });
+
+      it('does not update it when participation is reset to null', async () => {
+        process.env.METAMASK_BUILD_TYPE = 'main';
+        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
+        const { updateExtensionUninstallUrlHandler } =
+          createConfiguredMessenger();
+
+        await setParticipateInMetaMetrics(null);
+
+        expect(updateExtensionUninstallUrlHandler).not.toHaveBeenCalled();
+      });
+
+      it('does not update it in development', async () => {
+        process.env.METAMASK_BUILD_TYPE = 'main';
+        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
+        const { updateExtensionUninstallUrlHandler } =
+          createConfiguredMessenger();
+
+        await setParticipateInMetaMetrics(true);
+
+        expect(updateExtensionUninstallUrlHandler).not.toHaveBeenCalled();
+      });
+
+      it('does not update it for a non-main build', async () => {
+        process.env.METAMASK_BUILD_TYPE = 'flask';
+        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
+        const { updateExtensionUninstallUrlHandler } =
+          createConfiguredMessenger();
+
+        await setParticipateInMetaMetrics(true);
+
+        expect(updateExtensionUninstallUrlHandler).not.toHaveBeenCalled();
+      });
     });
   });
 });
