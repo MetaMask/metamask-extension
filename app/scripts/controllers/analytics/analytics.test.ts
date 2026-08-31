@@ -397,9 +397,9 @@ describe('analytics', () => {
         marketingCampaignCookieId: TEST_GA_COOKIE_ID,
       });
 
-      expect(metaMetricsControllerState.marketingCampaignCookieId).toStrictEqual(
-        TEST_GA_COOKIE_ID,
-      );
+      expect(
+        metaMetricsControllerState.marketingCampaignCookieId,
+      ).toStrictEqual(TEST_GA_COOKIE_ID);
 
       await setParticipateInMetaMetrics(false);
 

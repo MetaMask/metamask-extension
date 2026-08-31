@@ -24,7 +24,10 @@ import {
   orderSignatureMsg,
 } from '../../../test/data/confirmations/typed_sign';
 import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
-import { configureAnalytics, setParticipateInMetaMetrics } from '../controllers/analytics';
+import {
+  configureAnalytics,
+  setParticipateInMetaMetrics,
+} from '../controllers/analytics';
 import { getAnalyticsControllerInitMessenger } from '../messenger-client-init/messengers/analytics-controller-messenger';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import * as snapKeyringMetrics from './snap-keyring/metrics';
