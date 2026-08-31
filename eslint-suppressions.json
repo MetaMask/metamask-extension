@@ -817,11 +817,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/components/rows/from-account-row/from-account-row.tsx": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/components/send/amount/amount.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -918,11 +913,6 @@
   "ui/pages/confirmations/hooks/transactions/useDepositPrefillAmount.ts": {
     "react-hooks/set-state-in-effect": {
       "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/transactions/useTransactionConfirm.ts": {
-    "react-hooks/immutability": {
-      "count": 4
     }
   },
   "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmount.ts": {

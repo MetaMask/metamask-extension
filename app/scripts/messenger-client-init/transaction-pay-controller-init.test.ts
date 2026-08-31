@@ -463,21 +463,58 @@ describe('TransactionPayControllerInit', () => {
         transactionData: { 'tx-1': { accountOverride } },
       };
       updateWithdrawAmountMock.mockResolvedValue({
-        didCommit: true,
-        recipient: accountOverride,
+        withdrawData: '0xaaa1',
+        transferData: '0xbbb2',
       });
 
       const result = await api.updateMoneyAccountWithdrawAmount('tx-1', '10');
 
       expect(result).toStrictEqual({
-        didCommit: true,
-        recipient: accountOverride,
+        withdrawData: '0xaaa1',
+        transferData: '0xbbb2',
       });
       expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
         expect.anything(),
         'tx-1',
         '10',
         accountOverride,
+      );
+    });
+
+    it('prefers the recipient override over the Pay account override', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      const payOverride = '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+      const recipientOverride =
+        '0x1111111111111111111111111111111111111111' as const;
+      (
+        messengerClient as {
+          state: {
+            transactionData: Record<string, { accountOverride?: string }>;
+          };
+        }
+      ).state = {
+        transactionData: { 'tx-1': { accountOverride: payOverride } },
+      };
+      updateWithdrawAmountMock.mockResolvedValue({
+        withdrawData: '0xaaa1',
+        transferData: '0xbbb2',
+      });
+
+      await api.updateMoneyAccountWithdrawAmount(
+        'tx-1',
+        '10',
+        recipientOverride,
+      );
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
+        expect.anything(),
+        'tx-1',
+        '10',
+        recipientOverride,
       );
     });
   });

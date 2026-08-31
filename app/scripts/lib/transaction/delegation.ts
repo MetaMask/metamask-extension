@@ -124,6 +124,16 @@ type ConvertTransactionToRedeemDelegationsRequest = {
    * of the 7702 batch and caveats that leave the order-id placeholder free.
    */
   isSubsidized?: boolean;
+
+  /**
+   * When true, build a single execution from the parent `txParams` (`to` /
+   * `data`) even when `nestedTransactions` exist. Matches the mobile publish
+   * hook: for 7702 batches the parent `execute()` calldata is the canonical
+   * payload — redeeming the nested calls directly is a shape mobile never
+   * publishes and it does not move funds on-chain (e.g. sponsored Money
+   * Account withdrawals on Monad).
+   */
+  useParentExecution?: boolean;
 };
 
 type ConvertTransactionToRedeemDelegationsResult = {
@@ -173,7 +183,7 @@ export async function convertTransactionToRedeemDelegations(
 
   const defaultExecutions = isSubsidized
     ? buildSubsidizedExecutions(transaction)
-    : getDefaultTransactionExecutions(transaction);
+    : getDefaultTransactionExecutions(transaction, request.useParentExecution);
 
   const additionalExecutions = isSubsidized
     ? []
@@ -278,10 +288,12 @@ function hasExecutableNestedTransactions(
 
 function getDefaultTransactionExecutions(
   transactionMeta: TransactionMeta,
+  useParentExecution = false,
 ): ExecutionStruct[] {
   const { nestedTransactions, txParams } = transactionMeta;
 
   if (
+    !useParentExecution &&
     nestedTransactions?.length &&
     hasExecutableNestedTransactions(transactionMeta)
   ) {
