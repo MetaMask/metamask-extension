@@ -698,12 +698,12 @@ describe('PersistenceManager', () => {
           KeyringController: { vault: 'vault' },
         });
 
-        await expect(manager.get({ validateVault: true })).rejects.toMatchObject(
-          {
-            message: INACCESSIBLE_DATABASE_ERROR,
-            corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
-          },
-        );
+        await expect(
+          manager.get({ validateVault: true }),
+        ).rejects.toMatchObject({
+          message: INACCESSIBLE_DATABASE_ERROR,
+          corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+        });
       });
     });
   });
