@@ -10731,7 +10731,7 @@
   },
   "stateCorruptionTheseInstructions": {
     "message": "इन निर्देशों",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज़ कैसे रिकवर करें"
