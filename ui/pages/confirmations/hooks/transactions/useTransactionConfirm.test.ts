@@ -994,6 +994,27 @@ describe('useTransactionConfirm', () => {
       );
     });
 
+    it('keeps isExternalSign on sponsored money account withdraw when gasless is unsupported', async () => {
+      useIsGaslessSupportedMock.mockReturnValue({
+        isSupported: false,
+        isSmartTransaction: false,
+        pending: false,
+      });
+
+      const { confirmation, onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+        isGasFeeSponsored: true,
+        isExternalSign: true,
+      });
+      mockPrepareWithdrawTransaction.mockResolvedValue(confirmation);
+
+      await onTransactionConfirm();
+
+      const actual = updateAndApproveTxMock.mock.calls[0][0];
+      expect(actual.isExternalSign).toBe(true);
+      expect(actual.isGasFeeSponsored).toBe(true);
+    });
+
     it('clears gas sponsorship on money account withdraw when the user opted out', async () => {
       useGasSponsorshipPreferenceMock.mockReturnValue({
         isSponsorshipOptedOut: true,
@@ -1003,14 +1024,15 @@ describe('useTransactionConfirm', () => {
       const { confirmation, onTransactionConfirm } = runHook({
         type: TransactionType.moneyAccountWithdraw,
         isGasFeeSponsored: true,
+        isExternalSign: true,
       });
       mockPrepareWithdrawTransaction.mockResolvedValue(confirmation);
 
       await onTransactionConfirm();
 
-      expect(updateAndApproveTxMock.mock.calls[0][0].isGasFeeSponsored).toBe(
-        false,
-      );
+      const actual = updateAndApproveTxMock.mock.calls[0][0];
+      expect(actual.isGasFeeSponsored).toBe(false);
+      expect(actual.isExternalSign).toBe(false);
     });
   });
 });

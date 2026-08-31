@@ -125,8 +125,18 @@ export function useTransactionConfirm() {
     // set, the sign step is skipped (no keyring/device call) and, when no relay
     // catches the publish, an unsigned/empty payload reaches
     // `eth_sendRawTransaction` and is rejected by the node.
+    //
+    // Sponsored money-account withdrawals skip local signing and must stay
+    // externally signed so the 7702 relay publishes them, even when
+    // `useIsGaslessSupported` is false (same reason we keep `isGasFeeSponsored`
+    // above).
+    const shouldKeepSponsoredMoneyAccountWithdraw =
+      isMoneyAccountWithdraw &&
+      Boolean(transactionMeta.isGasFeeSponsored) &&
+      !isSponsorshipOptedOut;
     const shouldClearExternalSign =
       transactionMeta.isExternalSign &&
+      !shouldKeepSponsoredMoneyAccountWithdraw &&
       (!isGaslessSupported ||
         isSponsorshipOptedOut ||
         shouldRedirectToHwSigningPage);
