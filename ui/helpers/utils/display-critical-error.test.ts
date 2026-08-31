@@ -611,6 +611,70 @@ describe('repair button', () => {
     );
   });
 
+  it('restores the repair button when posting METHOD_REPAIR_DATABASE fails', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+
+    restoreGetBackupState = mockGetBackupStateWithVault();
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+
+    const postMessage = mockPort.postMessage as jest.Mock;
+    postMessage.mockImplementation((message: { data?: { method?: string } }) => {
+      if (message?.data?.method === METHOD_REPAIR_DATABASE) {
+        throw new Error('Attempting to use a disconnected port object');
+      }
+    });
+
+    const error = new Error(MOCK_ERROR_MESSAGE);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.BackgroundInitTimeout,
+      ),
+    ).rejects.toThrow(error);
+
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    expect(repairButton).toBeTruthy();
+
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(repairButton?.disabled).toBe(false);
+    expect(repairButton?.textContent).toBe('Attempt recovery');
+
+    postMessage.mockImplementation(() => undefined);
+
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(repairButton?.disabled).toBe(true);
+    expect(repairButton?.textContent).toBe('stateCorruptionRestoringDatabase');
+    expect(postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+  });
+
   it('does not send METHOD_REPAIR_DATABASE when repair button is clicked and user cancels', async () => {
     jest.useFakeTimers();
     jest

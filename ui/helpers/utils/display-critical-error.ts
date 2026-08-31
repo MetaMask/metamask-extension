@@ -328,6 +328,7 @@ export async function displayCriticalErrorMessage(
           localeContext.t('stateCorruptionAreYouSure') ?? '',
         );
         if (confirmed) {
+          const originalLabel = repairButton.textContent;
           repairButton.removeEventListener('click', handleRepairClick);
           repairButton.disabled = true;
           repairButton.textContent =
@@ -337,19 +338,26 @@ export async function displayCriticalErrorMessage(
                 : 'stateCorruptionResettingDatabase',
             ) ?? '';
 
-          if (shouldReportError()) {
-            await sendErrorToSentry(error);
-          }
-          port.postMessage({
-            data: {
-              method: METHOD_REPAIR_DATABASE,
-              params: {
-                repairAction,
-                criticalErrorType,
-                backup,
+          try {
+            if (shouldReportError()) {
+              await sendErrorToSentry(error);
+            }
+            port.postMessage({
+              data: {
+                method: METHOD_REPAIR_DATABASE,
+                params: {
+                  repairAction,
+                  criticalErrorType,
+                  backup,
+                },
               },
-            },
-          });
+            });
+          } catch (e) {
+            log.warn('Failed to start critical error repair', e);
+            repairButton.textContent = originalLabel;
+            repairButton.disabled = false;
+            repairButton.addEventListener('click', handleRepairClick);
+          }
         }
       };
 
