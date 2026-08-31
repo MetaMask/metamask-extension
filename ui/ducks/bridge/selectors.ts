@@ -21,6 +21,7 @@ import {
   RequestStatus,
   isNonEvmChainId,
   isStellarChainId,
+  QuoteMetadataMigrationPhase,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -817,6 +818,7 @@ export const getBridgeQuotes = createSelector(
     const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
+      migrationPhase: QuoteMetadataMigrationPhase.V1Data,
     });
 
     return quotes;

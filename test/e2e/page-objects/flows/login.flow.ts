@@ -1,4 +1,4 @@
-import LoginPage from '../pages/login-page';
+import LoginPage from '../pages/onboarding/login-page';
 import HomePage from '../pages/home/homepage';
 import HeaderNavbar from '../pages/home/header-navbar';
 import { WALLET_PASSWORD } from '../../constants';
