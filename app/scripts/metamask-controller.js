@@ -224,6 +224,7 @@ import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import {
   createEventBuilder,
+  setParticipateInMetaMetrics,
   trackEvent,
   trackPage,
 } from './controllers/analytics';
@@ -896,7 +897,6 @@ export default class MetamaskController extends EventEmitter {
 
           // update preferences and metrics optin status after shield subscription is active
           updatePreferencesAndMetricsForShieldSubscription(
-            this.metaMetricsController,
             this.preferencesController,
           );
           this.shieldController.start();
@@ -2599,10 +2599,7 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseAddressBarEnsResolution.bind(
           preferencesController,
         ),
-      setParticipateInMetaMetrics:
-        metaMetricsController.setParticipateInMetaMetrics.bind(
-          metaMetricsController,
-        ),
+      setParticipateInMetaMetrics,
       setDataCollectionForMarketing:
         metaMetricsController.setDataCollectionForMarketing.bind(
           metaMetricsController,

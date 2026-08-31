@@ -623,87 +623,6 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('setParticipateInMetaMetrics', function () {
-    it('opts in/out via AnalyticsController and records the consent decision', async function () {
-      await withController(
-        {
-          analyticsControllerState: {
-            optedIn: false,
-            consentDecisionMade: false,
-          },
-        },
-        async ({ controller, controllerMessenger }) => {
-          expect(
-            controllerMessenger.call('AnalyticsController:getState')
-              .consentDecisionMade,
-          ).toBe(false);
-
-          await controller.setParticipateInMetaMetrics(true);
-          const afterOptIn = controllerMessenger.call(
-            'AnalyticsController:getState',
-          );
-          expect(afterOptIn.optedIn).toBe(true);
-          expect(afterOptIn.consentDecisionMade).toBe(true);
-
-          await controller.setParticipateInMetaMetrics(false);
-          const afterOptOut = controllerMessenger.call(
-            'AnalyticsController:getState',
-          );
-          expect(afterOptOut.optedIn).toBe(false);
-          expect(afterOptOut.consentDecisionMade).toBe(true);
-        },
-      );
-    });
-
-    it('resets the consent decision when set to null', async function () {
-      await withController(
-        {
-          analyticsControllerState: {
-            optedIn: true,
-            consentDecisionMade: true,
-          },
-        },
-        async ({ controller, controllerMessenger }) => {
-          await controller.setParticipateInMetaMetrics(null);
-          const afterReset = controllerMessenger.call(
-            'AnalyticsController:getState',
-          );
-          expect(afterReset.optedIn).toBe(false);
-          expect(afterReset.consentDecisionMade).toBe(false);
-        },
-      );
-    });
-    it('should not nullify the analyticsId when set to false', async function () {
-      await withController(async ({ controller, controllerMessenger }) => {
-        await controller.setParticipateInMetaMetrics(false);
-        expect(
-          controllerMessenger.call('AnalyticsController:getState').analyticsId,
-        ).toStrictEqual(TEST_ANALYTICS_ID);
-      });
-    });
-    it('should nullify the marketingCampaignCookieId when participateInMetaMetrics is toggled off', async function () {
-      await withController(
-        {
-          options: {
-            state: {
-              dataCollectionForMarketing: true,
-              marketingCampaignCookieId: TEST_GA_COOKIE_ID,
-            },
-          },
-        },
-        async ({ controller }) => {
-          expect(controller.state.marketingCampaignCookieId).toStrictEqual(
-            TEST_GA_COOKIE_ID,
-          );
-          await controller.setParticipateInMetaMetrics(false);
-          expect(controller.state.marketingCampaignCookieId).toStrictEqual(
-            null,
-          );
-        },
-      );
-    });
-  });
-
   describe('handleMetaMaskStateUpdate', function () {
     it('updates the profile when install attribution traits arrive after opt-in', async function () {
       await withController(
@@ -720,7 +639,7 @@ describe('MetaMetricsController', function () {
           },
         },
         async ({ controller }) => {
-          await controller.setParticipateInMetaMetrics(true);
+          await analyticsHelpers.setParticipateInMetaMetrics(true);
           const identifySpy = jest
             .spyOn(analyticsHelpers, 'identify')
             .mockImplementation(() => undefined);
@@ -3456,12 +3375,6 @@ async function withController<ReturnValue>(
       messenger: metaMetricsControllerMessenger,
       actions: [
         'AnalyticsController:getState',
-        'AnalyticsController:identify',
-        'AnalyticsController:optIn',
-        'AnalyticsController:optOut',
-        'AnalyticsController:resetConsentDecision',
-        'AnalyticsController:trackEvent',
-        'AnalyticsController:trackView',
         'PreferencesController:getState',
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',

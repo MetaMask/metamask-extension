@@ -24,7 +24,7 @@ import {
   orderSignatureMsg,
 } from '../../../test/data/confirmations/typed_sign';
 import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
-import { configureAnalytics } from '../controllers/analytics';
+import { configureAnalytics, setParticipateInMetaMetrics } from '../controllers/analytics';
 import { getAnalyticsControllerInitMessenger } from '../messenger-client-init/messengers/analytics-controller-messenger';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import * as snapKeyringMetrics from './snap-keyring/metrics';
@@ -117,12 +117,6 @@ messenger.delegate({
   messenger: controllerMessenger,
   actions: [
     'AnalyticsController:getState',
-    'AnalyticsController:optIn',
-    'AnalyticsController:optOut',
-    'AnalyticsController:resetConsentDecision',
-    'AnalyticsController:trackEvent',
-    'AnalyticsController:identify',
-    'AnalyticsController:trackView',
     'PreferencesController:getState',
     'NetworkController:getState',
     'NetworkController:getNetworkClientById',
@@ -238,7 +232,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
   afterEach(() => {
     jest.resetAllMocks();
-    metaMetricsController.setParticipateInMetaMetrics(null);
+    setParticipateInMetaMetrics(null);
   });
 
   describe('before participateInMetaMetrics is set', () => {
@@ -262,7 +256,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
   describe('participateInMetaMetrics is set to false', () => {
     beforeEach(() => {
-      metaMetricsController.setParticipateInMetaMetrics(false);
+      setParticipateInMetaMetrics(false);
     });
 
     it('should not track an event for a signature request', async () => {
@@ -284,8 +278,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to true', () => {
-    beforeEach(() => {
-      metaMetricsController.setParticipateInMetaMetrics(true);
+    beforeEach(async () => {
+      await setParticipateInMetaMetrics(true);
     });
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
@@ -1391,7 +1385,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     describe('Multichain API requests', () => {
       beforeEach(() => {
-        metaMetricsController.setParticipateInMetaMetrics(true);
+        setParticipateInMetaMetrics(true);
       });
 
       it('should track `wallet_createSession` events with multichain category and properties', async () => {
