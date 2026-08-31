@@ -396,7 +396,9 @@ describe('MarketListView', () => {
         fireEvent.click(screen.getByTestId('filter-select-option-watchlist'));
 
         await waitFor(() => {
-          expect(screen.queryByTestId('market-row-ETH')).not.toBeInTheDocument();
+          expect(
+            screen.queryByTestId('market-row-ETH'),
+          ).not.toBeInTheDocument();
         });
         expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
       });
