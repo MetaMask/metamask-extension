@@ -180,6 +180,10 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   );
 
   const retryGenerationRef = useRef(0);
+  const [retryGeneration, setRetryGeneration] = useState(0);
+  const bumpRetryGeneration = useCallback(() => {
+    setRetryGeneration(retryGenerationRef.current);
+  }, []);
   // Guards HW reject/fail dispatches so errors from the OLD submission during
   // cancelCurrentBatch() don't race with the retry and prematurely transition
   // the state machine. Cleared before the new resubmit so that attempt's
@@ -361,10 +365,12 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   );
 
   useEffect(() => {
-    setQrStepTrackingResetKey(
-      `${activeSigningRequestId}:${retryGenerationRef.current}`,
-    );
-  }, [activeSigningRequestId, signatureState.status]);
+    queueMicrotask(() => {
+      setQrStepTrackingResetKey(
+        `${activeSigningRequestId}:${retryGenerationRef.current}`,
+      );
+    });
+  }, [activeSigningRequestId, retryGeneration, retryGenerationRef, signatureState.status]);
 
   const {
     isReadingQrSignature,
@@ -413,6 +419,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       currentApprovalRequestId,
       returnRoute: sendBundleState?.returnRoute,
       isRetryingRef,
+      onRetryGenerationBump: bumpRetryGeneration,
     });
 
   // WORKAROUND: Set the Trezor signing-in-progress flag to suppress

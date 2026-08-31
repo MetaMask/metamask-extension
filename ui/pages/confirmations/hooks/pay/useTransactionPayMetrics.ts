@@ -30,9 +30,14 @@ export function useTransactionPayMetrics() {
   const tokens = useTransactionPayAvailableTokens();
 
   const hasQuotes = Boolean(quotes?.length);
-  if (hasQuotes && !hasLoadedQuote) {
-    setHasLoadedQuote(true);
-  }
+
+  useEffect(() => {
+    if (hasQuotes && !hasLoadedQuote) {
+      queueMicrotask(() => {
+        setHasLoadedQuote(true);
+      });
+    }
+  }, [hasLoadedQuote, hasQuotes]);
 
   const availableTokens = useMemo(
     () => tokens.filter((t) => !t.disabled),
@@ -45,10 +50,15 @@ export function useTransactionPayMetrics() {
 
   const [presentedPayToken, setPresentedPayToken] = useState<
     TransactionPaymentToken | undefined
-  >();
-  if (!presentedPayToken && payToken) {
-    setPresentedPayToken(payToken);
-  }
+  >(payToken);
+
+  useEffect(() => {
+    if (!presentedPayToken && payToken) {
+      queueMicrotask(() => {
+        setPresentedPayToken(payToken);
+      });
+    }
+  }, [payToken, presentedPayToken]);
 
   const nativeTokenAddress = getNativeTokenAddress(chainId as Hex);
 

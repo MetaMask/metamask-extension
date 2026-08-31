@@ -12,11 +12,13 @@ import {
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
+import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow, ReceiveRowProps } from './receive-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useIsPaidByMetaMask');
 
 const mockStore = configureMockStore([]);
 
@@ -36,9 +38,12 @@ describe('ReceiveRow', () => {
   const useIsTransactionPayQuotePendingMock = jest.mocked(
     useIsTransactionPayQuotePending,
   );
+  const useIsPaidByMetaMaskMock = jest.mocked(useIsPaidByMetaMask);
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    useIsPaidByMetaMaskMock.mockReturnValue(false);
 
     useTransactionPayTotalsMock.mockReturnValue({
       fees: {
@@ -98,6 +103,14 @@ describe('ReceiveRow', () => {
     const { getByTestId } = render({ inputAmountUsd: '0.10' });
 
     expect(getByTestId('receive-value')).toHaveTextContent('$0.00');
+  });
+
+  it('does not subtract sponsored network gas from the receive amount', () => {
+    useIsPaidByMetaMaskMock.mockReturnValue(true);
+
+    const { getByTestId } = render({ inputAmountUsd: '0.05' });
+
+    expect(getByTestId('receive-value')).toHaveTextContent('$0.05');
   });
 
   it('renders an empty value when there are no quotes', () => {

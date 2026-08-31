@@ -113,12 +113,16 @@ export function useHwSwapQuoteData() {
     quote: buildLockedQuote(needsTwoConfirmations),
   }));
 
-  if (lockedQuoteState.needsTwoConf !== needsTwoConfirmations) {
-    setLockedQuoteState({
-      needsTwoConf: needsTwoConfirmations,
-      quote: buildLockedQuote(needsTwoConfirmations),
-    });
-  }
+  useEffect(() => {
+    if (lockedQuoteState.needsTwoConf !== needsTwoConfirmations) {
+      queueMicrotask(() => {
+        setLockedQuoteState({
+          needsTwoConf: needsTwoConfirmations,
+          quote: buildLockedQuote(needsTwoConfirmations),
+        });
+      });
+    }
+  }, [lockedQuoteState.needsTwoConf, needsTwoConfirmations]);
 
   const lockedQuote = lockedQuoteState.quote;
   return {

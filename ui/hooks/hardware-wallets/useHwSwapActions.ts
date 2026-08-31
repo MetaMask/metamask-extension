@@ -50,6 +50,7 @@ const RETRYABLE_CONNECTION_STATUSES = new Set<ConnectionStatus>([
  * @param options.currentApprovalRequestId
  * @param options.returnRoute
  * @param options.isRetryingRef
+ * @param options.onRetryGenerationBump
  * @returns Retry/cancel handlers plus retry UI state (`isRetrying`,
  * `hasRetriedRef`).
  */
@@ -69,6 +70,7 @@ export function useHwSwapActions({
   currentApprovalRequestId,
   returnRoute,
   isRetryingRef,
+  onRetryGenerationBump,
 }: UseHwSwapActionsOptions) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -105,6 +107,7 @@ export function useHwSwapActions({
     try {
       // Invalidate the in-flight attempt so abort events during cancel are ignored.
       retryGenerationRef.current += 1;
+      onRetryGenerationBump?.();
 
       await cancelCurrentBatch();
 
@@ -118,6 +121,7 @@ export function useHwSwapActions({
 
       // Fresh generation for the resubmit (skips anything tracked during cancel).
       retryGenerationRef.current += 1;
+      onRetryGenerationBump?.();
       resetConnectionError();
       if (isStxEnabled) {
         dispatchSignatureEvent({
@@ -186,6 +190,7 @@ export function useHwSwapActions({
     needsTwoConfirmations,
     resetConnectionError,
     retryGenerationRef,
+    onRetryGenerationBump,
     retrySendBundleSubmission,
     retrySubmission,
     signatureState,
