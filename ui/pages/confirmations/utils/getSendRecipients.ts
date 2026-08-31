@@ -1,5 +1,4 @@
 import {
-  NestedTransactionMetadata,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -13,7 +12,6 @@ const TOKEN_TRANSFER_TYPES = new Set([
 
 type SendRecipientSource = {
   data?: string;
-  swapAndSendRecipient?: string;
   to?: string;
   type?: TransactionType;
 };
@@ -25,13 +23,27 @@ type SendRecipientSource = {
  * sent to. Protocol addresses (token, Permit2, router, spender) are
  * dapp-supplied and must not be treated as payees.
  *
- * Keep this aligned with `getSendRecipients` in `@metamask/transaction-controller`
- * until clients consume a published version of that helper.
+ * Included:
+ * - `simpleSend` `to`, preferring `txParamsOriginal` when present
+ * - Decoded `to` / `_to` for ERC-20/721/1155 transfer methods
+ * - `swapAndSendRecipient` whenever set (only ever a user-entered payee)
+ * - Nested batch calls that themselves are sends or token transfers
+ * - Untyped transactions with no calldata, treated as legacy native sends
+ *
+ * This duplicates `getSendRecipients` from `@metamask/transaction-controller`,
+ * which is not in the version this repo pins yet. Delete this file and import
+ * from the package once the dependency is bumped past core#9943. Until then,
+ * changes here need the same change there.
  *
  * @param transactionMeta - Transaction meta with txParams and type.
  * @returns Deduplicated send recipient addresses, possibly empty.
  */
 export function getSendRecipients(transactionMeta: TransactionMeta): string[] {
+  // Swap the whole params object rather than falling back field by field the
+  // way `useTransferRecipient` does. `txParamsOriginal` is a full snapshot of
+  // the pre-wrapping params, so its `to` and `data` always describe the same
+  // call. Mixing an original `to` with a wrapped `data` would misread an
+  // untyped transaction as a contract call and drop a real payee.
   const params = transactionMeta.txParamsOriginal ?? transactionMeta.txParams;
   const recipients: string[] = [];
   const seen = new Set<string>();
@@ -48,7 +60,6 @@ export function getSendRecipients(transactionMeta: TransactionMeta): string[] {
   addRecipient(
     getSendRecipientFromSource({
       data: params?.data,
-      swapAndSendRecipient: transactionMeta.swapAndSendRecipient,
       to: params?.to,
       type: transactionMeta.type,
     }),
@@ -56,32 +67,17 @@ export function getSendRecipients(transactionMeta: TransactionMeta): string[] {
   addRecipient(transactionMeta.swapAndSendRecipient);
 
   for (const nestedTransaction of transactionMeta.nestedTransactions ?? []) {
-    addRecipient(getSendRecipientFromNestedTransaction(nestedTransaction));
+    addRecipient(getSendRecipientFromSource(nestedTransaction));
   }
 
   return recipients;
 }
 
-function getSendRecipientFromNestedTransaction(
-  nestedTransaction: NestedTransactionMetadata,
-): string | undefined {
-  return getSendRecipientFromSource({
-    data: nestedTransaction.data,
-    to: nestedTransaction.to,
-    type: nestedTransaction.type,
-  });
-}
-
 function getSendRecipientFromSource({
   data,
-  swapAndSendRecipient,
   to,
   type,
 }: SendRecipientSource): string | undefined {
-  if (type === TransactionType.swapAndSend) {
-    return swapAndSendRecipient;
-  }
-
   if (isNativeSendType(type, data)) {
     return to;
   }

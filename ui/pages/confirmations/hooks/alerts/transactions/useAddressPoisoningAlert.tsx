@@ -1,5 +1,3 @@
-'use no memo';
-
 import React, { useMemo } from 'react';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import {
@@ -18,9 +16,17 @@ import { AlertsName } from '../constants';
 export function useAddressPoisoningAlert(): Alert[] {
   const t = useI18nContext();
   const transactionMeta = useTransactionMetadataRequestOptional();
-  const recipient = transactionMeta
-    ? getSendRecipients(transactionMeta)[0]
-    : undefined;
+
+  // Only the first payee is checked, because the detector takes a single
+  // address and the alert renders a single comparison. Batches with more than
+  // one send are rare and the first nested send is the one shown in the
+  // interacting-with row. `getSendRecipients` decodes calldata, so keep this
+  // memoized on the transaction rather than recomputing every render.
+  const recipient = useMemo(
+    () => (transactionMeta ? getSendRecipients(transactionMeta)[0] : undefined),
+    [transactionMeta],
+  );
+
   const { isPoisoningSuspect, bestMatch } =
     useAddressPoisoningDetection(recipient);
 
