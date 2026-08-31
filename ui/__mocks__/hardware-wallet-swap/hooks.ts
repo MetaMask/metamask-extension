@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type {
   HardwareWalletSignatureEventWithoutPayload,
   HardwareWalletSignaturesAction,
@@ -108,22 +108,19 @@ function driveToStatus(
 export function useHwSwapQuoteData() {
   const { needsTwoConfirmations, hardwareWalletType } =
     hwSwapStoryState.current;
-  const ref = useRef<{
-    needsTwoConf: boolean;
-    quote: ReturnType<typeof buildLockedQuote>;
-  }>({
+  const [lockedQuoteState, setLockedQuoteState] = useState(() => ({
     needsTwoConf: needsTwoConfirmations,
     quote: buildLockedQuote(needsTwoConfirmations),
-  });
+  }));
 
-  if (ref.current.needsTwoConf !== needsTwoConfirmations) {
-    ref.current = {
+  if (lockedQuoteState.needsTwoConf !== needsTwoConfirmations) {
+    setLockedQuoteState({
       needsTwoConf: needsTwoConfirmations,
       quote: buildLockedQuote(needsTwoConfirmations),
-    };
+    });
   }
 
-  const lockedQuote = ref.current.quote;
+  const lockedQuote = lockedQuoteState.quote;
   return {
     activeQuote: lockedQuote,
     lockedQuote,
@@ -214,7 +211,7 @@ export function useHwSwapActions() {
     handleRetry: async () => undefined,
     handleCancel: async () => undefined,
     isRetrying: false,
-    hasRetriedRef: { current: false },
+    hasRetried: false,
   };
 }
 

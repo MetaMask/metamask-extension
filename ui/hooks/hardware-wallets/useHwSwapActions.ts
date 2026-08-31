@@ -78,6 +78,7 @@ export function useHwSwapActions({
   // Tracks whether the user has retried at least once. Once true, the
   // "Resend transaction" button becomes eligible after the stuck timeout.
   const hasRetriedRef = useRef(false);
+  const [hasRetried, setHasRetried] = useState(false);
   // Local re-entrancy guard for handleRetry. Distinct from `isRetryingRef`,
   // which only suppresses OLD-batch reject/fail while cancelCurrentBatch runs.
   const isRetryInFlightRef = useRef(false);
@@ -98,6 +99,7 @@ export function useHwSwapActions({
     // resubmit so the new attempt can update the signature state machine.
     isRetryingRef.current = true;
     hasRetriedRef.current = true;
+    setHasRetried(true);
     setIsRetrying(true);
 
     try {
@@ -228,5 +230,6 @@ export function useHwSwapActions({
     handleCancel,
     isRetrying,
     hasRetriedRef,
+    hasRetried,
   };
 }

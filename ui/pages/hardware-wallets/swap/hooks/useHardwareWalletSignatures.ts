@@ -356,6 +356,16 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     isDeviceDisconnectedRef,
   });
 
+  const [qrStepTrackingResetKey, setQrStepTrackingResetKey] = useState(
+    () => `${activeSigningRequestId}:0`,
+  );
+
+  useEffect(() => {
+    setQrStepTrackingResetKey(
+      `${activeSigningRequestId}:${retryGenerationRef.current}`,
+    );
+  }, [activeSigningRequestId, signatureState.status]);
+
   const {
     isReadingQrSignature,
     setIsReadingQrSignature,
@@ -367,7 +377,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   } = useHwSwapQrState({
     signatureState,
     confirmationTxData,
-    stepTrackingResetKey: `${activeSigningRequestId}:${retryGenerationRef.current}`,
+    stepTrackingResetKey: qrStepTrackingResetKey,
   });
 
   useHwSwapNavigation({ signatureState });
@@ -386,7 +396,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     retryGenerationRef,
   );
 
-  const { handleRetry, handleCancel, isRetrying, hasRetriedRef } =
+  const { handleRetry, handleCancel, isRetrying, hasRetried } =
     useHwSwapActions({
       signatureState,
       dispatchSignatureEvent,
@@ -500,7 +510,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     hasSigningRequest: Boolean(lockedQuote || sendBundleTxMeta),
     hasSignatureTimedOut,
     isRetrying,
-    hasRetried: hasRetriedRef.current,
+    hasRetried,
     showInlineQrSigning,
     isReadingQrSignature,
     activeQrStep,
