@@ -55,6 +55,7 @@ import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
+import { WalletSectionHeader } from '../wallet-section-header';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import {
   STATUS_CONNECTED,
@@ -98,7 +99,6 @@ type ListItem =
       walletId: string;
       showWalletName: boolean;
     }
-  | { type: 'hidden-header'; key: string; count: number }
   | { type: 'add-account'; key: string; walletId: string };
 
 export const MultichainAccountList = ({
@@ -163,8 +163,6 @@ export const MultichainAccountList = ({
   );
 
   const connectedAccountGroups = useSelector(selectConnectedAccountGroups);
-  const [isHiddenAccountsExpanded, setIsHiddenAccountsExpanded] =
-    useState(false);
 
   const [collapsedSectionKeys, setCollapsedSectionKeys] = useState<Set<string>>(
     () => new Set(),
@@ -209,32 +207,25 @@ export const MultichainAccountList = ({
     [selectedAccountGroups],
   );
 
-  const { pinnedGroups, hiddenGroups } = useMemo(() => {
+  const pinnedGroups = useMemo(() => {
     const pinned: {
       groupId: string;
       groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId];
       walletId: string;
     }[] = [];
-    const hidden: {
-      groupId: string;
-      groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId];
-      walletId: string;
-    }[] = [];
 
-    // Collect all groups to categorize them
+    // Collect all pinned groups (excluding hidden ones)
     Object.entries(wallets).forEach(([walletId, walletData]) => {
       Object.entries(walletData.groups || {}).forEach(
         ([groupId, groupData]) => {
-          if (groupData.metadata.pinned) {
+          if (groupData.metadata.pinned && !groupData.metadata.hidden) {
             pinned.push({ groupId, groupData, walletId });
-          } else if (groupData.metadata.hidden) {
-            hidden.push({ groupId, groupData, walletId });
           }
         },
       );
     });
 
-    return { pinnedGroups: pinned, hiddenGroups: hidden };
+    return pinned;
   }, [wallets]);
 
   const defaultHandleAccountClick = useCallback(
@@ -487,36 +478,12 @@ export const MultichainAccountList = ({
       }
     });
 
-    // Render hidden section (if there are any hidden accounts)
-    if (hiddenGroups.length > 0) {
-      result.push({
-        type: 'hidden-header',
-        key: 'hidden-header',
-        count: hiddenGroups.length,
-      });
-      // Only render hidden accounts when expanded
-      if (isHiddenAccountsExpanded) {
-        hiddenGroups.forEach(({ groupId, groupData, walletId }) => {
-          result.push({
-            type: 'account',
-            key: `account-hidden-${groupId}`,
-            groupId,
-            groupData,
-            walletId,
-            showWalletName: !showDefaultAddress,
-          });
-        });
-      }
-    }
-
     return result;
   }, [
     wallets,
     pinnedGroups,
-    hiddenGroups,
     isInSearchMode,
     displayWalletHeader,
-    isHiddenAccountsExpanded,
     collapsedSectionKeys,
     showDefaultAddress,
     t,
@@ -534,86 +501,19 @@ export const MultichainAccountList = ({
         keyExtractor={(item) => item.key}
         renderItem={({ item }) => {
           if (item.type === 'header') {
-            if (item.isCollapsible && item.sectionKey) {
-              const isExpanded = item.isExpanded ?? true;
-              return (
-                <Box
-                  asChild
-                  backgroundColor={BoxBackgroundColor.BackgroundDefault}
-                  className="w-full"
-                >
-                  <button
-                    type="button"
-                    onClick={() =>
-                      toggleSectionExpanded(item.sectionKey as string)
-                    }
-                    className="flex w-full px-4 py-2 justify-between items-center"
-                    data-testid={item.testId}
-                    aria-expanded={isExpanded}
-                  >
-                    <Text
-                      variant={TextVariant.BodyMd}
-                      fontWeight={FontWeight.Medium}
-                      color={TextColor.TextAlternative}
-                    >
-                      {item.text}
-                    </Text>
-                    <Icon
-                      name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
-                      size={IconSize.Md}
-                      color={IconColor.IconAlternative}
-                    />
-                  </button>
-                </Box>
-              );
-            }
+            const onToggle =
+              item.isCollapsible && item.sectionKey
+                ? () => toggleSectionExpanded(item.sectionKey as string)
+                : undefined;
 
             return (
-              <Box data-testid={item.testId} className="flex px-4 py-2">
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextAlternative}
-                >
-                  {item.text}
-                </Text>
-              </Box>
-            );
-          }
-
-          if (item.type === 'hidden-header') {
-            return (
-              <Box
-                asChild
-                backgroundColor={BoxBackgroundColor.BackgroundDefault}
-                className="w-full"
-              >
-                <button
-                  type="button"
-                  onClick={() =>
-                    setIsHiddenAccountsExpanded(!isHiddenAccountsExpanded)
-                  }
-                  className="hidden-accounts-list flex w-full px-4 py-2 justify-between items-center"
-                  data-testid="multichain-account-tree-hidden-header"
-                >
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Medium}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('hidden')} ({item.count})
-                  </Text>
-                  <Icon
-                    name={
-                      isHiddenAccountsExpanded
-                        ? IconName.ArrowUp
-                        : IconName.ArrowDown
-                    }
-                    size={IconSize.Md}
-                    color={IconColor.IconAlternative}
-                  />
-                </button>
-              </Box>
+              <WalletSectionHeader
+                title={item.text}
+                testId={item.testId}
+                isCollapsible={item.isCollapsible}
+                isExpanded={item.isExpanded}
+                onToggleExpand={onToggle}
+              />
             );
           }
 

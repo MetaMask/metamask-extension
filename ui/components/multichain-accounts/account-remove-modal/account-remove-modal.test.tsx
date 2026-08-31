@@ -1,9 +1,6 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
-
-import configureStore from '../../../store/store';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AccountRemoveModal } from './account-remove-modal';
 
 describe('AccountRemoveModal', () => {
@@ -11,51 +8,42 @@ describe('AccountRemoveModal', () => {
     isOpen: true,
     onClose: jest.fn(),
     onSubmit: jest.fn(),
-    accountName: 'Ledger EVM Account',
-    accountAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+    accountName: 'Imported 1',
+    accountAddress: '0x1234567890123456789012345678901234567890',
   };
 
-  const renderComponent = (props = {}) => {
-    const store = configureStore({});
-    return renderWithProvider(
-      <AccountRemoveModal {...defaultProps} {...props} />,
-      store,
-    );
-  };
-
-  it('renders modal content when isOpen is true', () => {
-    renderComponent();
-
-    expect(
-      screen.getByText(messages.removeAccount.message),
-    ).toBeInTheDocument();
-    expect(screen.getByText('Ledger EVM Account')).toBeInTheDocument();
-    expect(screen.getByText('0x5CfE7...6a7e1')).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.removeAccountModalBannerTitle.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.removeAccountModalBannerDescription.message),
-    ).toBeInTheDocument();
-    expect(screen.getByText(messages.cancel.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.remove.message)).toBeInTheDocument();
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('does not render when isOpen is false', () => {
-    renderComponent({ isOpen: false });
-
+  it('renders imported account title and private key restoration copy', () => {
+    renderWithProvider(<AccountRemoveModal {...defaultProps} />);
+    expect(screen.getByText('Remove imported Imported 1')).toBeInTheDocument();
     expect(
-      screen.queryByText(messages.removeAccount.message),
+      screen.getByText(
+        'You can restore this account anytime by importing it with the private key.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Remove')).toBeInTheDocument();
+    expect(screen.getByText('Cancel')).toBeInTheDocument();
+  });
+
+  it('does not render content when isOpen is false', () => {
+    renderWithProvider(<AccountRemoveModal {...defaultProps} isOpen={false} />);
+    expect(
+      screen.queryByText('Remove imported Imported 1'),
     ).not.toBeInTheDocument();
   });
 
-  it('calls appropriate handlers when buttons are clicked', () => {
-    renderComponent();
-
-    screen.getByText(messages.cancel.message).click();
-    expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
-
-    screen.getByText(messages.remove.message).click();
+  it('triggers onSubmit on Remove button click', () => {
+    renderWithProvider(<AccountRemoveModal {...defaultProps} />);
+    fireEvent.click(screen.getByText('Remove'));
     expect(defaultProps.onSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  it('triggers onClose on Cancel button click', () => {
+    renderWithProvider(<AccountRemoveModal {...defaultProps} />);
+    fireEvent.click(screen.getByText('Cancel'));
+    expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 });

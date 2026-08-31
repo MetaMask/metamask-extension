@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
+import { Button } from '@metamask/design-system-react';
 import {
   AccountRemoveModal,
   AccountRemoveModalProps,
 } from './account-remove-modal';
-import { Button } from '@metamask/design-system-react';
 
-export default {
+const meta: Meta<typeof AccountRemoveModal> = {
   title: 'Components/MultichainAccounts/AccountRemoveModal',
   component: AccountRemoveModal,
   parameters: {
@@ -26,7 +26,9 @@ export default {
       description: 'Function called when the removal is confirmed',
     },
   },
-} as Meta<AccountRemoveModalProps>;
+};
+
+export default meta;
 
 const DefaultTemplate: StoryFn<AccountRemoveModalProps> = (args) => (
   <AccountRemoveModal {...args} />
@@ -37,7 +39,7 @@ Default.args = {
   isOpen: true,
   onClose: () => console.log('Modal closed'),
   onSubmit: () => console.log('Account removal confirmed'),
-  accountName: 'Ledger EVM Account',
+  accountName: 'Imported Account 1',
   accountAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
 };
 
@@ -59,7 +61,7 @@ const InteractiveTemplate: StoryFn = () => {
         isOpen={isOpen}
         onClose={handleClose}
         onSubmit={handleSubmit}
-        accountName="Ledger EVM Account"
+        accountName="Imported Account 1"
         accountAddress="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
       />
     </>

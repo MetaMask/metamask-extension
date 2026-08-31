@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -25,21 +27,23 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export type AccountRemoveModalProps = {
+export type WalletRemoveModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: () => void;
-  accountName: string;
-  accountAddress?: string;
+  onBackupNow?: () => void;
+  walletName?: string;
+  isBackedUp?: boolean;
 };
 
-export const AccountRemoveModal = ({
+export const WalletRemoveModal = ({
   isOpen,
   onClose,
   onSubmit,
-  accountName,
-  accountAddress: _accountAddress,
-}: AccountRemoveModalProps) => {
+  onBackupNow,
+  walletName,
+  isBackedUp = true,
+}: WalletRemoveModalProps) => {
   const t = useI18nContext();
 
   return (
@@ -67,16 +71,37 @@ export const AccountRemoveModal = ({
               fontWeight={FontWeight.Bold}
               color={TextColor.TextDefault}
             >
-              {t('removeImportedAccountTitle', [accountName])}
+              {t('removeThisWallet')}
             </Text>
             <Text
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
-              className="mt-1 mb-6"
+              className="mt-1 mb-4"
             >
-              {t('removeImportedAccountDescription')}
+              {t('removeWalletDescription')}
             </Text>
           </Box>
+
+          {!isBackedUp && (
+            <BannerAlert
+              severity={BannerAlertSeverity.Danger}
+              marginBottom={4}
+              data-testid="wallet-remove-modal-banner"
+            >
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                {t('walletNotBackedUpBannerTitle')}{' '}
+                {onBackupNow && (
+                  <button
+                    type="button"
+                    onClick={onBackupNow}
+                    className="underline text-error-default font-medium cursor-pointer"
+                  >
+                    {t('backUpNow')}
+                  </button>
+                )}
+              </Text>
+            </BannerAlert>
+          )}
 
           <Box flexDirection={BoxFlexDirection.Column} gap={3} className="mt-4">
             <Button
@@ -85,7 +110,7 @@ export const AccountRemoveModal = ({
               danger
               onClick={onSubmit}
               className="w-full"
-              data-testid="account-remove-modal-remove-button"
+              data-testid="wallet-remove-modal-remove-button"
             >
               {t('remove')}
             </Button>
@@ -94,7 +119,7 @@ export const AccountRemoveModal = ({
               size={ButtonSize.Lg}
               onClick={onClose}
               className="w-full"
-              data-testid="account-remove-modal-cancel-button"
+              data-testid="wallet-remove-modal-cancel-button"
             >
               {t('cancel')}
             </Button>
