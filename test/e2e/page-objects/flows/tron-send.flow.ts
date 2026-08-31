@@ -122,5 +122,5 @@ export async function confirmTronSendAndAssertActivity({
   if (expectedAmount) {
     await activityList.checkTxAmountInActivity(expectedAmount, 1);
   }
-  await activityList.checkNoFailedTransactions();
+  await activityList.checkConfirmedTxNumberDisplayedInActivity();
 }

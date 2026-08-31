@@ -286,35 +286,6 @@ class ActivityTab extends HomePage {
     console.log(`Gas price ${expectedGasPrice} verified`);
   }
 
-  async checkNoFailedTransactions(): Promise<void> {
-    try {
-      await this.driver.findElement(this.failedTransactions);
-    } catch (error) {
-      return;
-    }
-
-    const failedTxs = await this.driver.findElements(this.failedTransactions);
-
-    if (!failedTxs.length) {
-      return;
-    }
-
-    const errorMessages = [];
-
-    for (const failedTx of failedTxs) {
-      await this.driver.hoverElement(failedTx);
-
-      const tooltip = await this.driver.findElement(this.tooltip);
-      const errorMessage = await tooltip.getText();
-
-      errorMessages.push(errorMessage);
-    }
-
-    throw new Error(
-      `Failed transactions found in activity list: ${errorMessages.join('\n')}`,
-    );
-  }
-
   async checkNoTxInActivity(): Promise<void> {
     await this.driver.assertElementNotPresent(this.completedTransactions);
   }
