@@ -93,11 +93,6 @@ export type MetaMetricsControllerSetMarketingCampaignCookieIdAction = {
   handler: MetaMetricsController['setMarketingCampaignCookieId'];
 };
 
-export type MetaMetricsControllerHandleMetaMaskStateUpdateAction = {
-  type: `MetaMetricsController:handleMetaMaskStateUpdate`;
-  handler: MetaMetricsController['handleMetaMaskStateUpdate'];
-};
-
 export type MetaMetricsControllerTrackTracesAfterMetricsOptInAction = {
   type: `MetaMetricsController:trackTracesAfterMetricsOptIn`;
   handler: MetaMetricsController['trackTracesAfterMetricsOptIn'];
@@ -154,7 +149,6 @@ export type MetaMetricsControllerMethodActions =
   | MetaMetricsControllerUpdateExtensionUninstallUrlAction
   | MetaMetricsControllerSetDataCollectionForMarketingAction
   | MetaMetricsControllerSetMarketingCampaignCookieIdAction
-  | MetaMetricsControllerHandleMetaMaskStateUpdateAction
   | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
   | MetaMetricsControllerClearTracesAfterMetricsOptInAction
   | MetaMetricsControllerAddTraceBeforeMetricsOptInAction

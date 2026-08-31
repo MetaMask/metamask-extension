@@ -390,6 +390,7 @@ import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metri
 import { ProofOfOwnershipServiceInit } from './messenger-client-init/proof-of-ownership-service-init';
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
+import { UserTraitsServiceInit } from './messenger-client-init/user-traits-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
@@ -593,6 +594,7 @@ export default class MetamaskController extends EventEmitter {
       GeolocationController: GeolocationControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
+      UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
       UserOperationController: UserOperationControllerInit,
@@ -735,6 +737,7 @@ export default class MetamaskController extends EventEmitter {
     this.networkController = this.wallet.getInstance('NetworkController');
     this.analyticsController = messengerClientsByName.AnalyticsController;
     this.metaMetricsController = messengerClientsByName.MetaMetricsController;
+    this.userTraitsService = messengerClientsByName.UserTraitsService;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
       messengerClientsByName.MetaMetricsDataDeletionController;
@@ -853,8 +856,12 @@ export default class MetamaskController extends EventEmitter {
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
 
+    // Derives MetaMetrics user traits from the full state and forwards changes
+    // to the analytics pipeline. This lives in a service (not MetaMetricsController)
+    // as part of the MetaMetricsController deprecation; the `update` firehose
+    // subscription stays here because it is the only source of the flattened state.
     this.on('update', (update) => {
-      this.metaMetricsController.handleMetaMaskStateUpdate(update);
+      this.userTraitsService.handleMetaMaskStateUpdate(update);
     });
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>

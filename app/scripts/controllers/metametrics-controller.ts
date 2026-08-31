@@ -1,6 +1,5 @@
-import { isEqual, memoize, merge, omitBy, pickBy, size, sum } from 'lodash';
+import { merge, omitBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { NameType } from '@metamask/name-controller';
 import { getErrorMessage } from '@metamask/utils';
 import type {
   AnalyticsControllerGetStateAction,
@@ -14,12 +13,7 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
-import type {
-  SeedlessOnboardingControllerGetStateAction,
-  SeedlessOnboardingControllerState,
-} from '@metamask/seedless-onboarding-controller';
 import type { Browser } from 'webextension-polyfill';
-import type { Nft } from '@metamask/assets-controllers';
 import {
   BaseController,
   type ControllerGetStateAction,
@@ -28,12 +22,7 @@ import {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { Json, Hex } from '@metamask/utils';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
-import {
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsUserTrait,
-} from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import type {
   MetaMetricsEventFragment,
   MetaMetricsUserTraits,
@@ -44,15 +33,8 @@ import type {
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import {
-  checkAlarmExists,
-  getDeviceType,
-  getInstallType,
-  getOs,
-  getPlatform,
-} from '../lib/util';
+import { checkAlarmExists } from '../lib/util';
 import { TransactionMetaMetricsEvent } from '../../../shared/constants/transaction';
-import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
   trace,
   endTrace,
@@ -60,13 +42,10 @@ import {
   type EndTraceRequest,
   type TraceCallback,
 } from '../../../shared/lib/trace';
-import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
-import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
 import { registerABTestAnalyticsMapping } from '../../../shared/lib/ab-testing/ab-test-analytics';
 import { CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/chain-value-order';
 import { PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/perps-tab-badge';
-import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -138,41 +117,6 @@ type BufferedTrace = {
   type: 'start' | 'end';
   request: Record<string, Json>;
   parentTraceName?: string;
-};
-
-export type MetaMaskState = Pick<
-  FlattenedBackgroundStateProxy,
-  | 'ledgerTransportType'
-  | 'networkConfigurationsByChainId'
-  | 'internalAccounts'
-  | 'allNfts'
-  | 'allTokens'
-  | 'theme'
-  | 'dataCollectionForMarketing'
-  | 'useNftDetection'
-  | 'openSeaEnabled'
-  | 'securityAlertsEnabled'
-  | 'useTokenDetection'
-  | 'names'
-  | 'addressBook'
-  | 'currentCurrency'
-  | 'srpSessionData'
-  | 'keyrings'
-  | 'multichainNetworkConfigurationsByChainId'
-  | 'firstTimeFlowType'
-  | 'analyticsId'
-  | 'optedIn'
-  | 'consentDecisionMade'
-  // TODO: Remove as this is no longer a top-level property of the flattened background state object.
-  // | 'security_providers'
-> & {
-  preferences: Pick<
-    FlattenedBackgroundStateProxy['preferences'],
-    | 'privacyMode'
-    | 'tokenNetworkFilter'
-    | 'showNativeTokenAsMainBalance'
-    | 'tokenSortConfig'
-  >;
 };
 
 /**
@@ -266,7 +210,6 @@ export type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
   | MultichainNetworkControllerGetStateAction
-  | SeedlessOnboardingControllerGetStateAction
   | AnalyticsControllerGetStateAction;
 
 /**
@@ -318,7 +261,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'finalizeAbandonedFragments',
   'finalizeEventFragment',
   'getEventFragmentById',
-  'handleMetaMaskStateUpdate',
   'processAbandonedFragment',
   'setDataCollectionForMarketing',
   'setMarketingCampaignCookieId',
@@ -338,8 +280,6 @@ export class MetaMetricsController extends BaseController<
   chainId: Hex;
 
   locale: string;
-
-  previousUserTraits?: MetaMetricsUserTraits;
 
   version: MetaMetricsControllerOptions['version'];
 
@@ -766,14 +706,6 @@ export class MetaMetricsController extends BaseController<
     });
   }
 
-  handleMetaMaskStateUpdate(newState: MetaMaskState): void {
-    analytics.updateProfileSessionData(newState.srpSessionData);
-    const userTraits = this._buildUserTraitsObject(newState);
-    if (userTraits) {
-      analytics.identify(userTraits);
-    }
-  }
-
   // Track all queued traces after a user opted into metrics.
   trackTracesAfterMetricsOptIn(): void {
     const { tracesBeforeMetricsOptIn } = this.state;
@@ -865,324 +797,5 @@ export class MetaMetricsController extends BaseController<
     this.update((state) => {
       state.traits = { ...state.traits, ...newTraits };
     });
-  }
-
-  /** PRIVATE METHODS */
-
-  /**
-   * This method generates the MetaMetrics user traits object, omitting any
-   * traits that have not changed since the last invocation of this method.
-   *
-   * @param metamaskState - Full metamask state object.
-   * @returns traits that have changed since last update
-   */
-  _buildUserTraitsObject(
-    metamaskState: MetaMaskState,
-  ): Partial<MetaMetricsUserTraits> | null {
-    const { traits } = this.state;
-    const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
-    const cookieIdTrait = traits[MetaMetricsUserTrait.CookieId];
-    const gaClientIdTrait = traits[MetaMetricsUserTrait.GaClientId];
-
-    const currentTraits: MetaMetricsUserTraits = {
-      [MetaMetricsUserTrait.AddressBookEntries]: sum(
-        Object.values(metamaskState.addressBook).map(size),
-      ),
-      [MetaMetricsUserTrait.InstallDateExt]:
-        traits[MetaMetricsUserTrait.InstallDateExt] || '',
-      ...(storageKindTrait
-        ? { [MetaMetricsUserTrait.StorageKind]: storageKindTrait }
-        : {}),
-      [MetaMetricsUserTrait.LedgerConnectionType]:
-        metamaskState.ledgerTransportType,
-      [MetaMetricsUserTrait.NetworksAdded]: Object.values(
-        metamaskState.networkConfigurationsByChainId,
-      ).map((networkConfiguration) => networkConfiguration.chainId),
-      [MetaMetricsUserTrait.NetworksWithoutTicker]: Object.values(
-        metamaskState.networkConfigurationsByChainId,
-      )
-        .filter(({ nativeCurrency }) => !nativeCurrency)
-        .map(({ chainId }) => chainId),
-      // caip-2 formatted
-      [MetaMetricsUserTrait.ChainIdList]: [
-        ...Object.keys(metamaskState.networkConfigurationsByChainId).map(
-          (hexChainId) => `eip155:${parseInt(hexChainId, 16)}`,
-        ),
-        ...Object.keys(
-          metamaskState?.multichainNetworkConfigurationsByChainId || {},
-        ), // the state here is already caip-2 formatted
-      ],
-      [MetaMetricsUserTrait.NftAutodetectionEnabled]:
-        metamaskState.useNftDetection,
-      [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
-        metamaskState.internalAccounts.accounts,
-      ).length,
-      [MetaMetricsUserTrait.NumberOfNftCollections]:
-        this.#getAllUniqueNFTAddressesLength(metamaskState.allNfts),
-      [MetaMetricsUserTrait.NumberOfNfts]: this.#getAllNFTsFlattened(
-        metamaskState.allNfts,
-      ).length,
-      [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
-        getTokensControllerAllTokens({ metamask: metamaskState }),
-      ),
-      [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
-      [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
-      [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
-      [MetaMetricsUserTrait.TokenDetectionEnabled]:
-        metamaskState.useTokenDetection,
-      [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
-        metamaskState.preferences?.showNativeTokenAsMainBalance ?? false,
-      [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
-      [MetaMetricsUserTrait.SecurityProviders]:
-        metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
-      [MetaMetricsUserTrait.PetnameAddressCount]:
-        this.#getPetnameAddressCount(metamaskState),
-      [MetaMetricsUserTrait.IsMetricsOptedIn]:
-        metamaskState.consentDecisionMade === true
-          ? metamaskState.optedIn === true
-          : null,
-      [MetaMetricsUserTrait.HasMarketingConsent]:
-        metamaskState.dataCollectionForMarketing,
-      [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.preferences?.tokenSortConfig?.key || '',
-      [MetaMetricsUserTrait.PrivacyModeEnabled]:
-        metamaskState.preferences?.privacyMode ?? false,
-      [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
-        metamaskState.preferences?.tokenNetworkFilter || {},
-      ),
-      [MetaMetricsUserTrait.CanonicalProfileId]: Object.entries(
-        metamaskState.srpSessionData || {},
-      )?.[0]?.[1]?.profile?.canonicalProfileId,
-      [MetaMetricsUserTrait.AccountType]: this.#getAccountTypeTrait(
-        metamaskState.firstTimeFlowType,
-      ),
-      [MetaMetricsUserTrait.Platform]: getPlatform(),
-      [MetaMetricsUserTrait.InstallType]: getInstallType(),
-      [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
-      [MetaMetricsUserTrait.Os]: getOs(),
-      ...this.#getAccountCompositionTraits(metamaskState),
-    };
-
-    if (cookieIdTrait !== undefined) {
-      currentTraits[MetaMetricsUserTrait.CookieId] = cookieIdTrait;
-    }
-
-    if (gaClientIdTrait !== undefined) {
-      currentTraits[MetaMetricsUserTrait.GaClientId] = gaClientIdTrait;
-    }
-
-    if (
-      !this.previousUserTraits &&
-      metamaskState.consentDecisionMade === true &&
-      metamaskState.optedIn === true
-    ) {
-      this.previousUserTraits = currentTraits;
-      return currentTraits;
-    }
-
-    if (
-      this.previousUserTraits &&
-      !isEqual(this.previousUserTraits, currentTraits)
-    ) {
-      const updates = pickBy(currentTraits, (v, k) => {
-        // @ts-expect-error It's okay that `k` may not be a key of `this.previousUserTraits`, because we assume `isEqual` can handle it
-        const previous = this.previousUserTraits[k];
-        return !isEqual(previous, v);
-      });
-
-      if (
-        metamaskState.consentDecisionMade === true &&
-        metamaskState.optedIn === true
-      ) {
-        this.previousUserTraits = currentTraits;
-      }
-
-      return updates;
-    }
-
-    return null;
-  }
-
-  #getAccountTypeTrait(
-    firstTimeFlowType: MetaMaskState['firstTimeFlowType'],
-  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
-    switch (firstTimeFlowType) {
-      case FirstTimeFlowType.import:
-      case FirstTimeFlowType.restore:
-        return MetaMetricsEventAccountType.Imported;
-      case FirstTimeFlowType.socialImport:
-        return this.#getSocialAccountType(MetaMetricsEventAccountType.Imported);
-      case FirstTimeFlowType.socialCreate:
-        return this.#getSocialAccountType(MetaMetricsEventAccountType.Default);
-      case FirstTimeFlowType.create:
-      default:
-        return MetaMetricsEventAccountType.Default;
-    }
-  }
-
-  #getSocialAccountType(
-    baseType:
-      | MetaMetricsEventAccountType.Default
-      | MetaMetricsEventAccountType.Imported,
-  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
-    const authConnection = this.#getSeedlessOnboardingState()?.authConnection;
-    return authConnection ? `${baseType}_${authConnection}` : baseType;
-  }
-
-  #getSeedlessOnboardingState():
-    | Partial<SeedlessOnboardingControllerState>
-    | undefined {
-    try {
-      return this.messenger.call('SeedlessOnboardingController:getState');
-    } catch {
-      return undefined;
-    }
-  }
-
-  /**
-   * Returns an array of all of the NFTs the user
-   * possesses across all networks and accounts.
-   *
-   * @param allNfts
-   */
-  #getAllNFTsFlattened = memoize((allNfts: MetaMaskState['allNfts'] = {}) => {
-    return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
-      return result.concat(...Object.values(chainNFTs));
-    }, []);
-  });
-
-  /**
-   * Returns the number of unique NFT addresses the user
-   * possesses across all networks and accounts.
-   *
-   * @param allNfts
-   */
-  #getAllUniqueNFTAddressesLength(
-    allNfts: MetaMaskState['allNfts'] = {},
-  ): number {
-    const allNFTAddresses = this.#getAllNFTsFlattened(allNfts).map(
-      (nft) => nft.address,
-    );
-    const uniqueAddresses = new Set(allNFTAddresses);
-    return uniqueAddresses.size;
-  }
-
-  /**
-   * @param allTokens
-   * @returns number of unique token addresses
-   */
-  #getNumberOfTokens(allTokens: MetaMaskState['allTokens']): number {
-    return Object.values(allTokens).reduce((result, accountsByChain) => {
-      return result + sum(Object.values(accountsByChain).map(size));
-    }, 0);
-  }
-
-  /**
-   * Computes wallet composition traits from internalAccounts, which is always
-   * available regardless of lock state (unlike keyrings).
-   *
-   * number_of_account_groups deduplicates BIP44 multichain accounts by their
-   * entropy source and group index so that EVM + BTC + SOL addresses derived
-   * from the same SRP slot count as one account group, matching what users see
-   * in the Account Management UI.
-   *
-   * @param metamaskState
-   */
-  #getAccountCompositionTraits(
-    metamaskState: MetaMaskState,
-  ): Partial<MetaMetricsUserTraits> {
-    const accountGroupKeys = new Set<string>();
-    const hdEntropyIds = new Set<string>();
-    let numberOfImportedAccounts = 0;
-    let numberOfLedgerAccounts = 0;
-    let numberOfTrezorAccounts = 0;
-    let numberOfLatticeAccounts = 0;
-    let numberOfQrHardwareAccounts = 0;
-
-    for (const [accountId, account] of Object.entries(
-      metamaskState.internalAccounts.accounts,
-    )) {
-      const keyringType = account.metadata?.keyring?.type;
-
-      switch (keyringType) {
-        case KeyringType.imported:
-          numberOfImportedAccounts += 1;
-          break;
-        case KeyringType.ledger:
-          numberOfLedgerAccounts += 1;
-          break;
-        case KeyringType.trezor:
-          numberOfTrezorAccounts += 1;
-          break;
-        case KeyringType.lattice:
-          numberOfLatticeAccounts += 1;
-          break;
-        case KeyringType.qr:
-        case KeyringType.oneKey:
-          numberOfQrHardwareAccounts += 1;
-          break;
-        default:
-          break;
-      }
-
-      // BIP44 multichain accounts share an entropy source id and group index
-      // across all chains (EVM, BTC, SOL, …). Deduplicating on that key gives
-      // the count of account groups rather than individual chain addresses.
-      const entropy: InternalAccount['options']['entropy'] =
-        account.options?.entropy;
-
-      if (
-        entropy?.type === 'mnemonic' &&
-        'id' in entropy &&
-        'groupIndex' in entropy
-      ) {
-        accountGroupKeys.add(`${entropy.id}:${entropy.groupIndex}`);
-        hdEntropyIds.add(entropy.id);
-      } else {
-        accountGroupKeys.add(accountId);
-      }
-    }
-
-    return {
-      [MetaMetricsUserTrait.NumberOfHDEntropies]: hdEntropyIds.size,
-      [MetaMetricsUserTrait.NumberOfAccountGroups]: accountGroupKeys.size,
-      [MetaMetricsUserTrait.NumberOfImportedAccounts]: numberOfImportedAccounts,
-      [MetaMetricsUserTrait.NumberOfLedgerAccounts]: numberOfLedgerAccounts,
-      [MetaMetricsUserTrait.NumberOfTrezorAccounts]: numberOfTrezorAccounts,
-      [MetaMetricsUserTrait.NumberOfLatticeAccounts]: numberOfLatticeAccounts,
-      [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]:
-        numberOfQrHardwareAccounts,
-      // MetaMask enforces one paired device per hardware wallet type, so
-      // "types in use" equals "distinct devices".
-      [MetaMetricsUserTrait.NumberOfHardwareWallets]:
-        (numberOfLedgerAccounts > 0 ? 1 : 0) +
-        (numberOfTrezorAccounts > 0 ? 1 : 0) +
-        (numberOfLatticeAccounts > 0 ? 1 : 0) +
-        (numberOfQrHardwareAccounts > 0 ? 1 : 0),
-    };
-  }
-
-  /**
-   * Returns the total number of Ethereum addresses with saved petnames,
-   * including all chain ID variations.
-   *
-   * @param metamaskState
-   */
-  #getPetnameAddressCount(metamaskState: MetaMaskState): number {
-    const addressNames = metamaskState.names?.[NameType.ETHEREUM_ADDRESS] ?? {};
-
-    return Object.keys(addressNames).reduce((totalCount, address) => {
-      const addressEntry = addressNames[address];
-
-      const addressNameCount = Object.keys(addressEntry).reduce(
-        (count, chainId) => {
-          const hasName = Boolean(addressEntry[chainId].name?.length);
-          return count + (hasName ? 1 : 0);
-        },
-        0,
-      );
-
-      return totalCount + addressNameCount;
-    }, 0);
   }
 }
