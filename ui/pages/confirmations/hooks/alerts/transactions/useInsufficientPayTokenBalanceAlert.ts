@@ -10,6 +10,7 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useCachedMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat';
 import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
@@ -50,6 +51,9 @@ export function useInsufficientPayTokenBalanceAlert({
   );
   const isMoneyPaymentOverride =
     paymentOverride === PaymentOverride.MoneyAccount;
+  const { withdrawableFiatRaw } = useCachedMoneyAccountWithdrawableFiat(
+    isMoneyPaymentOverride,
+  );
 
   // Post-quote withdraws: `payToken` is the destination, not the source —
   // skip input/fees checks; gas check runs against the tx chain. Gate on the
@@ -94,8 +98,16 @@ export function useInsufficientPayTokenBalanceAlert({
     );
 
   // Live funding-account balance (USD already reconciles snapshot vs live
-  // rate inside `usePayTokenAccountBalance`).
-  const { balanceUsd, balanceRaw } = usePayTokenAccountBalance();
+  // rate inside `usePayTokenAccountBalance`). Money-account funding uses
+  // withdrawable fiat instead of the selected pay-token wallet balance.
+  const { balanceUsd: payTokenBalanceUsd, balanceRaw } =
+    usePayTokenAccountBalance();
+  const balanceUsd = useMemo(() => {
+    if (isMoneyPaymentOverride) {
+      return withdrawableFiatRaw ?? '0';
+    }
+    return payTokenBalanceUsd;
+  }, [isMoneyPaymentOverride, payTokenBalanceUsd, withdrawableFiatRaw]);
   const nativeBalanceRaw = nativeToken?.balanceRaw ?? '0';
 
   const totalAmountUsd = useMemo(() => {

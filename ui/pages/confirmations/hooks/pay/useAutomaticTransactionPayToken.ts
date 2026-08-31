@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import {
   getTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { getMoneyAccountTransactionType } from '../../utils/confirm';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
@@ -17,6 +19,11 @@ import {
   type PreferredPayToken,
 } from '../../selectors/feature-flags';
 import { type RelayFixedSpreadConfig } from '../../utils/relay-fixed-spread';
+import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
+import {
+  selectPaymentOverrideByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useImportPayToken } from './useImportPayToken';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
@@ -51,6 +58,11 @@ export function useAutomaticTransactionPayToken({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
   const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
+  const paymentOverride = useSelector((state: TransactionPayState) =>
+    selectPaymentOverrideByTransactionId(state, transactionId ?? ''),
+  );
+  const isMoneyPaymentOverride =
+    paymentOverride === PaymentOverride.MoneyAccount;
   // Batch txs use top-level type `batch`. Prefer the money-account nested type
   // when present — deposits are `[approve, deposit]`, so plain
   // `getTransactionType` would resolve them to `tokenMethodApprove`.
@@ -127,6 +139,7 @@ export function useAutomaticTransactionPayToken({
     () =>
       getBestToken({
         isHardwareWallet,
+        isMoneyPaymentOverride,
         isPostQuoteWithdraw,
         isPostQuoteWithdrawTokenFilterApplied,
         isPostQuoteWithdrawTokenAllowed,
@@ -139,6 +152,7 @@ export function useAutomaticTransactionPayToken({
       }),
     [
       isHardwareWallet,
+      isMoneyPaymentOverride,
       isPostQuoteWithdraw,
       isPostQuoteWithdrawTokenFilterApplied,
       isPostQuoteWithdrawTokenAllowed,
@@ -297,10 +311,33 @@ export function useAutomaticTransactionPayToken({
     isPostQuoteWithdraw,
     tokensWithBalance.length,
   ]);
+
+  const prevIsMoneyPaymentOverrideRef = useRef(false);
+  useEffect(() => {
+    const prev = prevIsMoneyPaymentOverrideRef.current;
+    prevIsMoneyPaymentOverrideRef.current = Boolean(isMoneyPaymentOverride);
+
+    if (
+      disable ||
+      !from ||
+      isMoneyPaymentOverride !== true ||
+      isMoneyPaymentOverride === prev
+    ) {
+      return;
+    }
+
+    if (automaticToken) {
+      setPayToken({
+        address: automaticToken.address,
+        chainId: automaticToken.chainId,
+      });
+    }
+  }, [automaticToken, disable, from, isMoneyPaymentOverride, setPayToken]);
 }
 
 function getBestToken({
   isHardwareWallet,
+  isMoneyPaymentOverride,
   isPostQuoteWithdraw,
   isPostQuoteWithdrawTokenFilterApplied,
   isPostQuoteWithdrawTokenAllowed,
@@ -312,6 +349,7 @@ function getBestToken({
   tokens,
 }: {
   isHardwareWallet: boolean;
+  isMoneyPaymentOverride: boolean;
   isPostQuoteWithdraw: boolean;
   isPostQuoteWithdrawTokenFilterApplied: boolean;
   isPostQuoteWithdrawTokenAllowed: (
@@ -334,6 +372,10 @@ function getBestToken({
 
   if (isHardwareWallet) {
     return targetTokenFallback;
+  }
+
+  if (isMoneyPaymentOverride) {
+    return { address: MUSD_TOKEN_ADDRESS, chainId: CHAIN_IDS.MONAD };
   }
 
   // Without a post-quote withdraw allowlist, `preferredToken` is the

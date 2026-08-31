@@ -12,6 +12,7 @@ import {
 } from '../lib/transaction/delegation';
 import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
 import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
+import { getPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
 import {
   getMoneyAccountAmountData,
   updateMoneyAccountDepositAmount,
@@ -53,6 +54,11 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
         amountDataRequest,
       ),
     getDelegationTransaction: getDelegationTransactionCallback,
+    getPaymentOverrideData: (paymentOverrideRequest) =>
+      getPaymentOverrideData(
+        paymentOverrideRequest,
+        initMessenger as MoneyPayMessenger,
+      ),
     getStrategy,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
@@ -157,19 +163,25 @@ function getApi(
       {
         paymentOverride,
         refundTo,
+        atomic,
       }: {
         paymentOverride?: PaymentOverride;
         refundTo?: Hex;
+        atomic?: boolean;
       } = {},
     ) => {
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.paymentOverride = paymentOverride;
         if (paymentOverride === undefined) {
           config.refundTo = undefined;
+          config.atomic = undefined;
           return;
         }
         if (refundTo !== undefined) {
           config.refundTo = refundTo;
+        }
+        if (atomic !== undefined) {
+          config.atomic = atomic;
         }
       });
     },

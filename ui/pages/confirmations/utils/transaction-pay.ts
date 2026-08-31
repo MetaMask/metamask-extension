@@ -1,5 +1,6 @@
 import {
   TransactionMeta,
+  TransactionType,
   type NestedTransactionMetadata,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -10,7 +11,10 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { BigNumber } from 'bignumber.js';
 import { isTestNetwork } from '../../../helpers/utils/network-helper';
-import { isPostQuoteWithdrawTransaction } from '../../../../shared/lib/transactions.utils';
+import {
+  hasTransactionType,
+  isPostQuoteWithdrawTransaction,
+} from '../../../../shared/lib/transactions.utils';
 import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
 import { setPaymentOverride } from '../../../store/controller-actions/transaction-pay-controller';
 import type { BlockedPayTokensListConfig } from '../selectors/feature-flags';
@@ -247,7 +251,8 @@ export function isTokenBlocked(
 /**
  * Selects Money Account as the payment method for a confirmation.
  * Sets `paymentOverride` and, for deposit flows, refunds leftover funds to the
- * money account address.
+ * money account address. Perps/Predict withdraws to Money Account run
+ * non-atomically so the post-Relay transfer is submitted after the quote.
  *
  * @param transactionId - Confirmation transaction id.
  * @param moneyAccountAddress - Derived money account address, when known.
@@ -258,10 +263,15 @@ export function applyMoneyAccountOverride(
   moneyAccountAddress: string | undefined,
   transactionMeta: TransactionMeta | undefined,
 ): void {
+  const isPerpsOrPredictWithdraw = hasTransactionType(transactionMeta, [
+    TransactionType.perpsWithdraw,
+    TransactionType.predictWithdraw,
+  ]);
   const isWithdraw = isPostQuoteWithdrawTransaction(transactionMeta);
 
   setPaymentOverride(transactionId, {
     paymentOverride: PaymentOverride.MoneyAccount,
+    ...(isPerpsOrPredictWithdraw ? { atomic: false } : {}),
     ...(!isWithdraw && moneyAccountAddress
       ? { refundTo: moneyAccountAddress as Hex }
       : {}),
