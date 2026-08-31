@@ -1,8 +1,6 @@
-import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import SwapPage from '../pages/swap/swap-page';
 import HomePage from '../pages/home/homepage';
-import ActivityTab from '../pages/home/activity-tab';
 
 type SwapOptions = {
   amount: number;
@@ -34,33 +32,6 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
   }
 };
 
-export const reviewQuote = async (
-  driver: Driver,
-  options: {
-    swapFrom: string;
-    swapTo: string;
-    amount: number;
-    skipCounter?: boolean;
-  },
-) => {
-  const swapPage = new SwapPage(driver);
-
-  await swapPage.checkQuoteIsDisplayed();
-  await swapPage.checkSourceToken(options.swapFrom);
-  await swapPage.checkDestinationToken(options.swapTo);
-
-  const swapFromAmount = await swapPage.getFromAmountValue();
-  assert.equal(swapFromAmount, options.amount.toString());
-
-  const swapToAmount = await swapPage.getToAmountValue();
-  const normalizedSwapToAmount = Number(swapToAmount.replace(/,/gu, ''));
-  assert.equal(
-    normalizedSwapToAmount > 0,
-    true,
-    `Expected destination amount to be > 0 but got ${swapToAmount}`,
-  );
-};
-
 export const waitForTransactionToComplete = async (
   driver: Driver,
   options: { tokenName: string },
@@ -70,24 +41,4 @@ export const waitForTransactionToComplete = async (
 
   await swapPage.waitForTransactionCompleteWithToken(options.tokenName);
   await homePage.checkPageIsLoaded();
-};
-
-export const checkActivityTransaction = async (
-  driver: Driver,
-  options: { index: number; swapFrom: string; swapTo: string; amount: string },
-) => {
-  const activityTab = new ActivityTab(driver);
-  await activityTab.checkSwapActivityTransaction({
-    swapFrom: options.swapFrom,
-    swapTo: options.swapTo,
-    amount: options.amount,
-  });
-};
-
-export const checkNotification = async (
-  driver: Driver,
-  options: { title: string; text: string },
-) => {
-  const swapPage = new SwapPage(driver);
-  await swapPage.checkNotificationBanner(options.title, options.text);
 };

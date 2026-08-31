@@ -4,10 +4,10 @@ import { Driver } from '../webdriver/driver';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import {
   buildQuote,
-  reviewQuote,
   waitForTransactionToComplete,
-  checkActivityTransaction,
 } from '../page-objects/flows/swap.flow';
+import SwapPage from '../page-objects/pages/swap/swap-page';
+import ActivityTab from '../page-objects/pages/home/activity-tab';
 import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
 import { login } from '../page-objects/flows/login.flow';
@@ -59,15 +59,16 @@ describe('Snap Account - Swap', function () {
           amount: 2,
           swapTo: DAI,
         });
-        await reviewQuote(driver, {
+        const swapPage = new SwapPage(driver);
+        await swapPage.verifyQuote({
           amount: 2,
           swapFrom: TEST_ETH,
           swapTo: DAI,
         });
         await driver.clickElement({ text: 'Swap', tag: 'button' });
         await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
-        await checkActivityTransaction(driver, {
-          index: 0,
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkSwapActivityTransaction({
           amount: '2',
           swapFrom: TEST_ETH,
           swapTo: DAI,
