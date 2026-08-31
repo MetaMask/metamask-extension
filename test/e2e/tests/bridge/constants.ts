@@ -2105,8 +2105,7 @@ export const MOCK_BRIDGE_MON_TO_USDC_BASE = [
       destAsset: {
         address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
         chainId: 8453,
-        assetId:
-          'eip155:8453/erc20:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        assetId: 'eip155:8453/erc20:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
         symbol: 'USDC',
         decimals: 6,
         name: 'USDC',

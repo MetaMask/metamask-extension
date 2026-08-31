@@ -450,10 +450,7 @@ async function mockSearchTokensMonadBase(mockServer: Mockttp) {
       })
       .thenCallback(async (request) => {
         const body = (await request.body.getJson()) as { query?: string };
-        const tokens = filterTokensByQuery(
-          MOCK_TOKENS_MONAD,
-          body.query ?? '',
-        );
+        const tokens = filterTokensByQuery(MOCK_TOKENS_MONAD, body.query ?? '');
         return {
           statusCode: 200,
           json: {

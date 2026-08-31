@@ -133,7 +133,10 @@ class ActivityTab extends HomePage {
         '[data-testid="transaction-breakdown-value-amount"]',
       );
       const totalText = (await totalRow.getText()).trim();
-      assert.ok(totalText.length > 0, 'Bridge total amount should be non-empty');
+      assert.ok(
+        totalText.length > 0,
+        'Bridge total amount should be non-empty',
+      );
     } else {
       console.log('Checking displayed amounts');
       if (expectedSrcAmount) {
