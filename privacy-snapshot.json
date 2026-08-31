@@ -101,6 +101,7 @@
   "oidc.dev-api.cx.metamask.io",
   "on-ramp.api.cx.metamask.io",
   "on-ramp.dev-api.cx.metamask.io",
+  "on-ramp-cache.api.cx.metamask.io",
   "on-ramp-cache.uat-api.cx.metamask.io",
   "on-ramp.uat-api.cx.metamask.io",
   "on-ramp-content.api.cx.metamask.io",

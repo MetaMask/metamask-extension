@@ -3,10 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { CaipChainId } from '@metamask/utils';
 import { v4 as uuidV4 } from 'uuid';
-import {
-  getInternalOrderCode,
-  normalizeProviderCode,
-} from '@metamask/ramps-controller';
+import { getInternalOrderCode } from '@metamask/ramps-controller';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
@@ -249,7 +246,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         return;
       }
 
-      const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
+      // Since ramps-controller v16, provider IDs are canonical as-is (no
+      // /providers/ prefix to strip).
+      const providerCode = selectedProvider?.id ?? '';
       const orderCode = widget.orderId
         ? getInternalOrderCode(widget.orderId)
         : undefined;
