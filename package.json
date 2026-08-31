@@ -906,15 +906,15 @@
   "previewBuilds": {
     "@metamask/base-controller": {
       "type": "breaking",
-      "previewVersion": "9.1.0-preview-4f4c98e"
+      "previewVersion": "9.1.0-preview-3866c0ff1"
     },
     "@metamask/base-data-service": {
       "type": "breaking",
-      "previewVersion": "1.0.0-preview-4f4c98e"
+      "previewVersion": "1.0.0-preview-3866c0ff1"
     },
     "@metamask/messenger": {
       "type": "breaking",
-      "previewVersion": "2.0.0-preview-4f4c98e"
+      "previewVersion": "2.0.0-preview-3866c0ff1"
     }
   }
 }
