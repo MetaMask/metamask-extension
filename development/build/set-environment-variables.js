@@ -77,6 +77,9 @@ function setEnvironmentVariables({
       'ASSETS_UNIFIED_STATE_ENABLED',
     ),
     COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
+    MULTICHAIN_ACCOUNT_MANAGEMENT_ENABLED: isTestBuild
+      ? 'true'
+      : variables.getMaybe('MULTICHAIN_ACCOUNT_MANAGEMENT_ENABLED'),
   });
 }
 

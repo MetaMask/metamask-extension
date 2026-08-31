@@ -9,7 +9,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import { MANAGE_ACCOUNTS_PAGE_ROUTE, MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
@@ -171,7 +171,7 @@ describe('MultichainAccountMenu', () => {
     expect(mockOnToggle).toHaveBeenCalledTimes(1);
   });
 
-  it('shows 5 menu items when menu is open (details, rename, addresses, pin, hide)', () => {
+  it('shows 6 menu items when menu is open (details, rename, addresses, pin, hide, manage accounts)', () => {
     renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: false,
@@ -183,7 +183,7 @@ describe('MultichainAccountMenu', () => {
     expect(popover).toBeInTheDocument();
 
     const menuItems = document.querySelectorAll(menuItemSelector);
-    expect(menuItems.length).toBe(5);
+    expect(menuItems.length).toBe(6);
   });
 
   it('adds the remove option to menu when isRemovable is true', () => {
@@ -195,11 +195,90 @@ describe('MultichainAccountMenu', () => {
     });
 
     const menuItems = document.querySelectorAll(menuItemSelector);
-    expect(menuItems.length).toBe(6);
+    expect(menuItems.length).toBe(7);
 
     expect(
       screen.getByTestId('multichain-account-menu-item-remove'),
     ).toBeInTheDocument();
+  });
+
+  it('renders the manage accounts option as the last menu item when isRemovable is false', () => {
+    renderComponent({
+      accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+      isRemovable: false,
+      isOpen: true,
+      onToggle: jest.fn(),
+    });
+
+    const menuItems = document.querySelectorAll(menuItemSelector);
+    expect(menuItems.length).toBe(6);
+
+    const lastItem = menuItems[menuItems.length - 1];
+    expect(lastItem.getAttribute('data-testid')).toBe(
+      'multichain-account-menu-item-manageAccounts',
+    );
+  });
+
+  it('renders the manage accounts option as the last menu item when isRemovable is true', () => {
+    renderComponent({
+      accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+      isRemovable: true,
+      isOpen: true,
+      onToggle: jest.fn(),
+    });
+
+    const menuItems = document.querySelectorAll(menuItemSelector);
+    expect(menuItems.length).toBe(7);
+
+    const lastItem = menuItems[menuItems.length - 1];
+    expect(lastItem.getAttribute('data-testid')).toBe(
+      'multichain-account-menu-item-manageAccounts',
+    );
+    expect(
+      screen.getByTestId('multichain-account-menu-item-manageAccounts'),
+    ).toBeInTheDocument();
+  });
+
+  it('navigates to the manage accounts page when clicking the manage accounts option', async () => {
+    renderComponent({
+      accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+      isRemovable: false,
+      isOpen: true,
+      onToggle: jest.fn(),
+    });
+
+    const manageAccountsOption = screen.getByTestId(
+      'multichain-account-menu-item-manageAccounts',
+    );
+
+    await act(async () => {
+      fireEvent.click(manageAccountsOption);
+    });
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(MANAGE_ACCOUNTS_PAGE_ROUTE);
+  });
+
+  it('omits manage accounts option when feature flag is disabled and not in test', () => {
+    const originalFlag = process.env.MULTICHAIN_ACCOUNT_MANAGEMENT_ENABLED;
+    const originalInTest = process.env.IN_TEST;
+    process.env.MULTICHAIN_ACCOUNT_MANAGEMENT_ENABLED = 'false';
+    delete process.env.IN_TEST;
+
+    try {
+      renderComponent({
+        accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        isRemovable: false,
+        isOpen: true,
+        onToggle: jest.fn(),
+      });
+
+      expect(
+        screen.queryByTestId('multichain-account-menu-item-manageAccounts'),
+      ).not.toBeInTheDocument();
+    } finally {
+      process.env.MULTICHAIN_ACCOUNT_MANAGEMENT_ENABLED = originalFlag;
+      process.env.IN_TEST = originalInTest;
+    }
   });
 
   it('navigates to account details page when clicking the account details option', async () => {
@@ -240,7 +319,7 @@ describe('MultichainAccountMenu', () => {
 
     // Rename option should be the second menu item
     const menuItems = document.querySelectorAll(menuItemSelector);
-    expect(menuItems.length).toBe(5);
+    expect(menuItems.length).toBe(6);
 
     const renameOption = menuItems[1];
     expect(renameOption).not.toBeNull();
@@ -267,7 +346,7 @@ describe('MultichainAccountMenu', () => {
 
     // Pin option should be the fourth menu item (details, rename, addresses, pin)
     const menuItems = document.querySelectorAll(menuItemSelector);
-    expect(menuItems.length).toBe(5);
+    expect(menuItems.length).toBe(6);
 
     const pinOption = menuItems[3];
     expect(pinOption).not.toBeNull();
@@ -298,7 +377,7 @@ describe('MultichainAccountMenu', () => {
 
     // Hide option should be the fifth menu item
     const menuItems = document.querySelectorAll(menuItemSelector);
-    expect(menuItems.length).toBe(5);
+    expect(menuItems.length).toBe(6);
 
     const hideOption = menuItems[4];
     expect(hideOption).not.toBeNull();
@@ -316,7 +395,7 @@ describe('MultichainAccountMenu', () => {
     expect(mockOnToggle).toHaveBeenCalled();
   });
 
-  it('unpins account before hiding when clicking hide on a pinned account', async () => {
+  it('hides pinned account with a single setAccountGroupHidden call', async () => {
     const mockOnToggle = jest.fn();
     const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
 
@@ -373,11 +452,8 @@ describe('MultichainAccountMenu', () => {
       });
     }
 
-    // Should unpin first, then hide
-    expect(mockSetAccountGroupPinned).toHaveBeenCalledWith(
-      accountGroupId,
-      false,
-    );
+    // Should only call setAccountGroupHidden (transition handled atomically)
+    expect(mockSetAccountGroupPinned).not.toHaveBeenCalled();
     expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
       accountGroupId,
       true,

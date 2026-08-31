@@ -175,6 +175,9 @@ class AccountListPage {
   private readonly importWalletFromMultichainWalletModalButton =
     '[data-testid="choose-wallet-type-import-wallet"]';
 
+  private readonly manageAccountsMenuItem =
+    '[data-testid="multichain-account-menu-item-manageAccounts"]';
+
   private readonly multichainAccountListItem = '.multichain-account-cell';
 
   private readonly multichainAccountListSearch = {
@@ -1013,6 +1016,12 @@ class AccountListPage {
   async openHiddenAccountsList(): Promise<void> {
     console.log(`Open hidden accounts option menu`);
     await this.driver.clickElement(this.hiddenAccountsList);
+  }
+
+  async openManageAccounts(): Promise<void> {
+    console.log(`Open manage accounts page from account list`);
+    await this.openAccountOptionsMenu();
+    await this.driver.clickElement(this.manageAccountsMenuItem);
   }
 
   /**

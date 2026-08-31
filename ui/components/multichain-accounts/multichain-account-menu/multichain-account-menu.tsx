@@ -13,6 +13,7 @@ import {
 import { ModalFocus, Popover, PopoverPosition } from '../../component-library';
 import { BorderRadius } from '../../../helpers/constants/design-system';
 import {
+  MANAGE_ACCOUNTS_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -163,11 +164,6 @@ export const MultichainAccountMenu = ({
 
       const newHiddenState = !isHidden;
 
-      // If account is pinned, unpin it first before hiding
-      if (isPinned) {
-        await dispatch(setAccountGroupPinned(accountGroupId, false));
-      }
-
       await dispatch(setAccountGroupHidden(accountGroupId, newHiddenState));
 
       // Track the Account Hidden event
@@ -191,6 +187,14 @@ export const MultichainAccountMenu = ({
       // TODO: Implement account remove click handling
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+    };
+
+    const handleManageAccountsClick = (
+      mouseEvent: React.MouseEvent<HTMLDivElement>,
+    ) => {
+      mouseEvent.stopPropagation();
+      mouseEvent.preventDefault();
+      navigate(MANAGE_ACCOUNTS_PAGE_ROUTE);
     };
 
     const baseMenuItems: MenuItemConfig[] = [
@@ -227,6 +231,18 @@ export const MultichainAccountMenu = ({
         iconName: IconName.Trash,
         onClick: handleAccountRemoveClick,
         textColor: TextColor.ErrorDefault,
+      });
+    }
+
+    const isAccountManagementEnabled =
+      process.env.MULTICHAIN_ACCOUNT_MANAGEMENT_ENABLED === 'true' ||
+      Boolean(process.env.IN_TEST);
+
+    if (isAccountManagementEnabled) {
+      baseMenuItems.push({
+        textKey: 'manageAccounts',
+        iconName: IconName.Setting,
+        onClick: handleManageAccountsClick,
       });
     }
 

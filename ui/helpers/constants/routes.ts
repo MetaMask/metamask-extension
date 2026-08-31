@@ -96,6 +96,7 @@ export const DISCOVER_SEARCH_ROUTE = '/discover-search';
 export const CUSTOM_TOKEN_IMPORT_ROUTE = '/custom-token-import';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
+export const MANAGE_ACCOUNTS_PAGE_ROUTE = '/manage-accounts';
 export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
   '/multichain-account-address-list';
 export const MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE =
@@ -267,6 +268,11 @@ export const ROUTES = [
   {
     path: ACCOUNT_LIST_PAGE_ROUTE,
     label: 'Account List Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: MANAGE_ACCOUNTS_PAGE_ROUTE,
+    label: 'Manage Accounts Page',
     trackInAnalytics: true,
   },
   {

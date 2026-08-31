@@ -52,6 +52,7 @@ import {
   RAMPS_PROVIDER_SELECTION_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
+  MANAGE_ACCOUNTS_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
@@ -136,6 +137,7 @@ import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnW
 import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { AccountList } from '../multichain-accounts/account-list';
+import { ManageAccounts } from '../multichain-accounts/manage-accounts';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
@@ -509,6 +511,10 @@ export const routeConfig = [
       {
         path: ACCOUNT_LIST_PAGE_ROUTE,
         element: <AccountList />,
+      },
+      {
+        path: MANAGE_ACCOUNTS_PAGE_ROUTE,
+        element: <ManageAccounts />,
       },
       {
         path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,

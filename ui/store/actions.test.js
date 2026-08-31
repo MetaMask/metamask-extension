@@ -1852,6 +1852,32 @@ describe('Actions', () => {
     });
   });
 
+  describe('#removeMultichainAccountWallet', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls removeMultichainAccountWallet in background with stripped entropySourceId', async () => {
+      const store = mockStore();
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+      const removeMultichainAccountWallet = sinon.stub().resolves();
+
+      background.getApi = sinon.stub().returns({
+        removeMultichainAccountWallet,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.removeMultichainAccountWallet(walletId));
+
+      expect(removeMultichainAccountWallet.callCount).toStrictEqual(1);
+      expect(
+        removeMultichainAccountWallet.calledWith('01JKAF3DSGM3AB87EM9N0K41AJ'),
+      ).toStrictEqual(true);
+    });
+  });
+
   describe('#setAccountGroupName', () => {
     afterEach(() => {
       sinon.restore();
