@@ -298,6 +298,16 @@ describe('<SingleActionFooter />', () => {
     );
   });
 
+  it('disables money-account deposit without an executable quote', () => {
+    jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(false);
+
+    const { getByTestId } = render({
+      confirmation: genMoneyAccountDepositBatch(),
+    });
+
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
   it('shows Withdraw label for perpsWithdraw transaction type', () => {
     const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
 

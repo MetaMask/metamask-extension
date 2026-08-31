@@ -40,16 +40,21 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const isPayLoading = useIsTransactionPayQuotePending();
   const hasExecutableQuote = useTransactionPayHasExecutableQuote();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-  const isPayReady =
-    !isPerpsWithdrawTransaction(currentConfirmation) || hasExecutableQuote;
+  const isMoneyAccountDeposit =
+    transactionType === TransactionType.moneyAccountDeposit;
+  const isMoneyAccountWithdraw =
+    transactionType === TransactionType.moneyAccountWithdraw;
+  // Same-token mUSD deposits produce a Pay no-op unless `isQuoteRequired` is
+  // set. Without an executable quote, Add funds skips Pay and never moves
+  // funds onto the money account.
+  const requiresExecutableQuote =
+    isPerpsWithdrawTransaction(currentConfirmation) || isMoneyAccountDeposit;
+  const isPayReady = !requiresExecutableQuote || hasExecutableQuote;
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
     [alerts],
   );
-
-  const isMoneyAccountWithdraw =
-    transactionType === TransactionType.moneyAccountWithdraw;
 
   return useMemo(() => {
     const i18nKey =
