@@ -1509,10 +1509,10 @@
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
   "alertMessageAddressTrustSignal": {
-    "message": "We can't verify this address. It may be new or unverified. Only continue if you trust the source."
+    "message": "Security partners don't have enough reliable history to verify this address."
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "If you confirm this request, you will probably lose your assets to a scammer."
+    "message": "Security partners have flagged this address for malicious activity."
   },
   "alertMessageBurnAddress": {
     "message": "You're sending your assets to a burn address. If you continue, you'll lose your assets."
@@ -1582,6 +1582,12 @@
   },
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Couldn't check your Perps balance. Try again."
+  },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "Address flagged as high risk"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "Limited address signals"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1st interaction"
@@ -2463,6 +2469,22 @@
   },
   "bridgeSendLoading": {
     "message": "Sending from source chain"
+  },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "Activate $1",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "This swap may fail. On Stellar your account can't receive $1 until the token is activated in your wallet with a valid trustline.",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "This swap may fail. On Stellar $1 can't receive $2 until you switch to that account and activate the token with a valid trustline.",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "Activate $1 on Stellar first",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
   "bridgeSuspicious": {
     "message": "Suspicious"
@@ -4422,9 +4444,25 @@
     "message": "Spender: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "Swap $1 $2 for $3 $4",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "Swapped $1 $2 for $3 $4",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "Swapping $1 $2 for $3 $4",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "To: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "Token: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "You rejected this transaction on your device",
@@ -5282,10 +5320,6 @@
   "memo": {
     "message": "memo"
   },
-  "merklRewardsClaimBonus": {
-    "message": "Claim bonus",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "Your mUSD bonus claim failed",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5297,10 +5331,6 @@
   "merklRewardsToastSuccess": {
     "message": "Your mUSD bonus is here!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "Unexpected error. Please try again.",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "Message"
@@ -5386,6 +5416,30 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitch": {
+    "message": "Earn $1% APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "APY info"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "Available balance: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "Projected 1-year balance:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "Projected 1-year balance"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "Activity"
   },
@@ -5406,6 +5460,21 @@
   },
   "moneyActivityDepositing": {
     "message": "Depositing"
+  },
+  "moneyActivityEmpty": {
+    "message": "No activity yet"
+  },
+  "moneyActivityFilterAll": {
+    "message": "All"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "Deposits"
+  },
+  "moneyActivityFilterSends": {
+    "message": "Sends"
+  },
+  "moneyActivityPending": {
+    "message": "Pending"
   },
   "moneyActivityPlaceholderDescription": {
     "message": "Your Money activity will appear here."
@@ -5436,6 +5505,18 @@
   },
   "moneyApy": {
     "message": "$1 APY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "Your dollar-backed mUSD balance that's always available to spend, send, or trade anytime. We don't calculate this into your total account balance."
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "Withdrawals process immediately, subject to standard network confirmation times on the relevant blockchain. If liquidity is tight, there may be temporary delays."
+  },
+  "moneyBalanceLastKnown": {
+    "message": "Last known balance"
+  },
+  "moneyBalanceTitle": {
+    "message": "Money balance"
   },
   "moneyBalanceUnavailable": {
     "message": "Balance unavailable"
@@ -5607,54 +5688,6 @@
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "Accruing next bonus",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "Claim $1 bonus",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "Estimated annual bonus",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "Your bonus info",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "A projection of what you'd earn over a year based on your current balance and rate. Rate is variable and may change.",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "Learn more.",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "The total bonus you've claimed since you started.",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "$1% annualized bonus you earn just for holding mUSD. You can claim it daily on Linea. $2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "Lifetime bonus claimed",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "No accruing bonus",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "$1% bonus",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "Your bonus",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "Daily bonus",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5718,14 +5751,6 @@
   "musdBuyMusd": {
     "message": "Buy mUSD"
   },
-  "musdClaimSendingTo": {
-    "message": "Sending to",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "Sending to $1",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "Claim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5788,10 +5813,6 @@
     "message": "Only save addresses you trust.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "This has been identified as malicious. We recommend not interacting with this address.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5803,10 +5824,6 @@
   "nameInstructionsSaved": {
     "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "We can't verify this address. It may be new or unverified. Set a personal display name to identify it going forward.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Nickname",
@@ -5835,10 +5852,6 @@
   "nameModalTitleVerified": {
     "message": "Verified address",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Address needs review",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Proposed by $1",
@@ -7186,9 +7199,6 @@
   "perpsAddFunds": {
     "message": "Add funds"
   },
-  "perpsAddFundsDescription": {
-    "message": "Add funds to start trading perpetual contracts with leverage"
-  },
   "perpsAddMargin": {
     "message": "Add margin"
   },
@@ -7271,6 +7281,21 @@
   "perpsCloseAmount": {
     "message": "Close amount"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "Close amount capped at your position value."
+  },
+  "perpsCloseAmountInPercent": {
+    "message": "%"
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "Enter close amount as a percentage of your position"
+  },
+  "perpsCloseAmountInUsd": {
+    "message": "$"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "Enter close amount in US dollars"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "Price can't be more than 95% away from the market price"
   },
@@ -7282,6 +7307,9 @@
   },
   "perpsClosePartialMinNotional": {
     "message": "Partial closes must be at least $1 in USD value. Increase the close amount or close the full position."
+  },
+  "perpsClosePercentCappedAtMax": {
+    "message": "Close percentage capped at 100%."
   },
   "perpsClosePosition": {
     "message": "Close position"
@@ -8032,12 +8060,6 @@
   "perpsToastUpdateSuccess": {
     "message": "TP/SL updated successfully",
     "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Total balance"
-  },
-  "perpsTradePerps": {
-    "message": "Trade perps"
   },
   "perpsTrades": {
     "message": "Trades"
@@ -9443,16 +9465,16 @@
     "message": "Malicious"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "$1 is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+    "message": "Security partners flag $1 as high risk."
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "This token is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+    "message": "Security partners flag this token as high risk."
   },
   "securityTrustMaliciousTokenSheetDescription": {
-    "message": "Serious risk signals detected on $1. We recommend not trading this token."
+    "message": "Security partners flag $1 as high risk."
   },
   "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
-    "message": "Serious risk signals detected on this token. We recommend not trading this token."
+    "message": "Security partners flag this token as high risk."
   },
   "securityTrustMaliciousTokenTitle": {
     "message": "Malicious token"
@@ -9482,10 +9504,10 @@
     "message": "Risky"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 is flagged as suspicious. Take a look at the risks before you continue."
+    "message": "Security partners found risk signals in $1's contract or trading activity."
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "This token is flagged as suspicious. Take a look at the risks before you continue."
+    "message": "Security partners found risk signals in this token's contract or trading activity."
   },
   "securityTrustRiskyTokenTitle": {
     "message": "Suspicious token"
@@ -9497,13 +9519,13 @@
     "message": "No risk signals detected. Always research any asset before trading."
   },
   "securityTrustSubtitleMalicious": {
-    "message": "Serious risk signals detected. We recommend avoiding this asset."
+    "message": "Security partners flag this token as high risk."
   },
   "securityTrustSubtitleNoIssues": {
     "message": "No risk signals detected. Always research any asset before trading."
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "Cautionary signals detected. Review the flagged issues carefully before trading this asset."
+    "message": "Security partners found risk signals in this token's contract or trading activity."
   },
   "securityTrustSubtitleUnavailable": {
     "message": "Security analysis could not be loaded for this token."
@@ -9512,10 +9534,10 @@
     "message": "Suspicious"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "$1 is a suspicious token."
+    "message": "Security partners found risk signals in $1's contract or trading activity."
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "This is a suspicious token."
+    "message": "Security partners found risk signals in this token's contract or trading activity."
   },
   "securityTrustTelegram": {
     "message": "Telegram"

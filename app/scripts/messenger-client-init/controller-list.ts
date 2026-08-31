@@ -85,6 +85,7 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { AuthenticatedUserStorageService } from '@metamask/authenticated-user-storage';
+import { ChompApiService } from '@metamask/chomp-api-service';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import { ClientController } from '@metamask/client-controller';
 import {
@@ -157,6 +158,7 @@ export type MessengerClient =
   | AuthenticatedUserStorageService
   | BridgeController
   | BridgeStatusController
+  | ChompApiService
   | ClaimsController
   | CronjobController
   | CurrencyRateController

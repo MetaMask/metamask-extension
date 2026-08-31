@@ -5,7 +5,7 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';

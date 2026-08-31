@@ -12,7 +12,6 @@ import {
 } from '@metamask/hw-wallet-sdk';
 import {
   is,
-  object,
   type as superstructType,
   string,
   number,
@@ -35,17 +34,23 @@ import { createHardwareWalletError } from './errors';
  * Structs for serialized HardwareWalletError cause objects.
  * This supports both legacy and extended shapes across the RPC boundary.
  *
- * We use exact `object()` structs so legacy and extended remain mutually
- * exclusive (extended includes extra fields that legacy does not accept).
+ * Uses loose `superstructType()` structs (not exact `object()`) because a
+ * `HardwareWalletError` thrown from a background method that isn't
+ * explicitly wrapped (e.g. via `rpcErrors.internal({ data: {...} })`) falls
+ * through `@metamask/rpc-errors`' generic `serializeError()` fallback path,
+ * which flattens *every* own enumerable property of the error (including
+ * `metadata`, `id`, `timestamp`) into `data.cause`. An exact struct would
+ * reject that shape outright and the error would be misclassified as
+ * `ErrorCode.Unknown` further down in `toHardwareWalletError()`.
  */
-const LegacySerializedHardwareWalletErrorCauseStruct = object({
+const LegacySerializedHardwareWalletErrorCauseStruct = superstructType({
   name: literal('HardwareWalletError'),
   message: string(),
   stack: optional(string()),
   code: number(),
 });
 
-const ExtendedSerializedHardwareWalletErrorCauseStruct = object({
+const ExtendedSerializedHardwareWalletErrorCauseStruct = superstructType({
   // Extended fields added by HardwareWalletError serialization.
   category: string(),
   severity: string(),
