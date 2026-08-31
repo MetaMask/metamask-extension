@@ -44,6 +44,30 @@ export const BRIDGE_L2_MOCK_CURRENCY_RATES = {
   },
 };
 
+/** Native MON (Monad) + Base ETH balances for Monad→Base bridge E2E. */
+export const BRIDGE_MONAD_NATIVE_BALANCE_PER_CHAIN = 25;
+
+export const BRIDGE_MONAD_TOTAL_NATIVE_BALANCE_HUMAN =
+  BRIDGE_MONAD_NATIVE_BALANCE_PER_CHAIN * 2;
+
+export const BRIDGE_MONAD_USD_SPOT_PRICE =
+  BRIDGE_EXPECTED_FIAT_BALANCE_USD / BRIDGE_MONAD_TOTAL_NATIVE_BALANCE_HUMAN;
+
+export const BRIDGE_MONAD_MOCK_CURRENCY_RATES = {
+  currencyRates: {
+    MON: {
+      conversionDate: 1665507609.0,
+      conversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
+      usdConversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
+    },
+    ETH: {
+      conversionDate: 1665507609.0,
+      conversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
+      usdConversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
+    },
+  },
+};
+
 /** Native ETH balances seeded for mainnet bridge fixtures (mainnet loses gas to HST deploy). */
 export function getBridgeFixtureAssetsBalance() {
   return {
@@ -76,6 +100,21 @@ export function getBridgeL2FixtureAssetsBalance() {
   };
 }
 
+/** Native MON + Base ETH balances for Monad→Base bridge fixtures. */
+export function getBridgeMonadBaseFixtureAssetsBalance() {
+  return {
+    [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+      // Monad native CAIP-19 uses slip44:268435779 (not slip44:60).
+      'eip155:143/slip44:268435779': {
+        amount: String(BRIDGE_MONAD_NATIVE_BALANCE_PER_CHAIN),
+      },
+      'eip155:8453/slip44:60': {
+        amount: String(BRIDGE_MONAD_NATIVE_BALANCE_PER_CHAIN),
+      },
+    },
+  };
+}
+
 export const BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES = {
   mainnetNativeEthHuman: String(BRIDGE_MAINNET_ETH_BALANCE_AFTER_HST),
   nativeBalance: String(BRIDGE_L2_ETH_BALANCE_PER_CHAIN),
@@ -99,6 +138,13 @@ export function getBridgeL2AssetsControllerConfig() {
   };
 }
 
+export function getBridgeMonadBaseAssetsControllerConfig() {
+  return {
+    assetsBalance: getBridgeMonadBaseFixtureAssetsBalance(),
+    assetsPrice: getMockAssetsPrice(BRIDGE_MONAD_USD_SPOT_PRICE),
+  };
+}
+
 export const BRIDGE_WITH_FIXTURES_OPTIONS = {
   ethConversionInUsd: BRIDGE_ETH_USD_SPOT_PRICE,
   unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
@@ -107,4 +153,11 @@ export const BRIDGE_WITH_FIXTURES_OPTIONS = {
 export const BRIDGE_L2_WITH_FIXTURES_OPTIONS = {
   ethConversionInUsd: BRIDGE_L2_ETH_USD_SPOT_PRICE,
   unifiedEvmAccountsApiBalances: BRIDGE_L2_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
+};
+
+export const BRIDGE_MONAD_WITH_FIXTURES_OPTIONS = {
+  ethConversionInUsd: BRIDGE_MONAD_USD_SPOT_PRICE,
+  unifiedEvmAccountsApiBalances: {
+    nativeBalance: String(BRIDGE_MONAD_NATIVE_BALANCE_PER_CHAIN),
+  },
 };

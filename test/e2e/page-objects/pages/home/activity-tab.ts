@@ -121,7 +121,20 @@ class ActivityTab extends HomePage {
       this.transactionStatusLabel(expectedStatus),
     );
 
-    if (!isBridge) {
+    if (isBridge) {
+      console.log('Checking bridge fee and total amount rows are populated');
+      const feeRow = await this.driver.waitForSelector(
+        '[data-testid="transaction-base-fee"]',
+      );
+      const feeText = (await feeRow.getText()).trim();
+      assert.ok(feeText.length > 0, 'Bridge fee row should be non-empty');
+
+      const totalRow = await this.driver.waitForSelector(
+        '[data-testid="transaction-breakdown-value-amount"]',
+      );
+      const totalText = (await totalRow.getText()).trim();
+      assert.ok(totalText.length > 0, 'Bridge total amount should be non-empty');
+    } else {
       console.log('Checking displayed amounts');
       if (expectedSrcAmount) {
         await this.driver.waitForSelector({

@@ -105,6 +105,9 @@ export const verifySubmittedSwapTransaction = async ({
  * @param testParams.expectedStatus - The expected state of the transaction
  * @param testParams.skipStatusPage - Whether to skip the status page after submitting
  * @param testParams.openPickersWithDebounce - Whether to open the asset pickers only after the prepare page has sent its debounced quote parameter update. Set this only when the test asserts on `Input Changed` metrics events.
+ * @param testParams.expectedInitialSourceToken - Expected source token on the prepare page before entering the quote (defaults to ETH).
+ * @param testParams.expectedInitialDestToken - Expected destination token on the prepare page before entering the quote (defaults to mUSD).
+ * @param testParams.skipNetworkFeeCheck - Skip the `$X.XX` network fee assertion (e.g. when fee estimation is unavailable for the chain under test).
  */
 export const bridgeTransaction = async ({
   driver,
@@ -119,6 +122,9 @@ export const bridgeTransaction = async ({
   submitDelay,
   skipStatusPage,
   openPickersWithDebounce,
+  expectedInitialSourceToken = 'ETH',
+  expectedInitialDestToken = 'mUSD',
+  skipNetworkFeeCheck = false,
 }: {
   driver: Driver;
   quote: BridgeQuote;
@@ -132,6 +138,9 @@ export const bridgeTransaction = async ({
   submitDelay?: number;
   skipStatusPage?: boolean;
   openPickersWithDebounce?: boolean;
+  expectedInitialSourceToken?: string;
+  expectedInitialDestToken?: string;
+  skipNetworkFeeCheck?: boolean;
 }) => {
   const homePage = new HomePage(driver);
   await homePage.goToHomePage();
@@ -139,10 +148,15 @@ export const bridgeTransaction = async ({
 
   const bridgePage = new BridgeQuotePage(driver);
 
-  await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
+  await bridgePage.checkAssetsAreSelected(
+    expectedInitialSourceToken,
+    expectedInitialDestToken,
+  );
   await bridgePage.enterBridgeQuote(quote, { openPickersWithDebounce });
   await bridgePage.waitForQuote();
-  await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+  if (!skipNetworkFeeCheck) {
+    await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+  }
   submitDelay && (await driver.delay(submitDelay));
   if (expectedDestAmount) {
     await bridgePage.checkDestAmount(expectedDestAmount);
