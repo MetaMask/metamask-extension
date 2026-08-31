@@ -9285,6 +9285,9 @@
   "searchAnAcccountOrContact": {
     "message": "Search an account or contact"
   },
+  "searchAnAccount": {
+    "message": "Search an account"
+  },
   "searchForAnAssetToSend": {
     "message": "Search for an asset to send"
   },
