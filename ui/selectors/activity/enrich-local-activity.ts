@@ -13,6 +13,7 @@ import {
   parseStandardTokenTransactionData,
 } from '../../../shared/lib/transaction.utils';
 import { hasTransactionType } from '../../../shared/lib/transactions.utils';
+import { getMoneyAccountWithdrawTransferDetails } from '../../pages/confirmations/utils/money-account-withdraw';
 import { enrichLocalMusdClaimActivity } from './enrich-local-musd-claim';
 
 const TOKEN_TRANSFER_TYPES = new Set<TransactionType>([
@@ -135,19 +136,12 @@ function enrichMoneyAccountWithdrawActivity(
   const transfer = transaction.nestedTransactions?.find(
     (nested) => nested.type === TransactionType.tokenMethodTransfer,
   );
-  const parsed = transfer?.data
-    ? parseStandardTokenTransactionData(transfer.data)
-    : undefined;
-  const recipient = parsed?.args?._to ?? parsed?.args?.to;
+  const { recipient, amountRaw: amount } =
+    getMoneyAccountWithdrawTransferDetails(transaction);
   if (typeof recipient !== 'string') {
     return activity;
   }
 
-  const parsedAmount = parsed?.args?._value ?? parsed?.args?.value;
-  const amount =
-    parsedAmount === undefined || parsedAmount === null
-      ? undefined
-      : parsedAmount.toString();
   const tokenAddress = transfer?.to;
   const { chainId } = transaction;
   const assetId =

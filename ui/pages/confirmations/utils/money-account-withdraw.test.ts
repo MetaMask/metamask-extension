@@ -9,6 +9,7 @@ import {
   applyWithdrawCalldata,
   asFundedWithdrawUpdate,
   asWithdrawTransactionToApprove,
+  doesWithdrawCalldataMatchAmount,
   getTransferAmountRawFromData,
   hasFundedWithdrawCalldata,
   isEncodedCalldata,
@@ -88,6 +89,29 @@ describe('money-account-withdraw', () => {
       expect(
         getTransferAmountRawFromData(`0xa9059cbb${'z'.repeat(128)}`),
       ).toBeUndefined();
+    });
+  });
+
+  describe('doesWithdrawCalldataMatchAmount', () => {
+    it('returns true when the nested transfer encodes the human amount', () => {
+      expect(
+        doesWithdrawCalldataMatchAmount(buildTransaction(FUNDED_NESTED), '0.05'),
+      ).toBe(true);
+    });
+
+    it('returns false when the typed amount differs from the encoded amount', () => {
+      expect(
+        doesWithdrawCalldataMatchAmount(buildTransaction(FUNDED_NESTED), '0.10'),
+      ).toBe(false);
+    });
+
+    it('returns false when the amount is missing', () => {
+      expect(
+        doesWithdrawCalldataMatchAmount(
+          buildTransaction(FUNDED_NESTED),
+          undefined,
+        ),
+      ).toBe(false);
     });
   });
 

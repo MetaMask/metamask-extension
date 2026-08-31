@@ -17,6 +17,7 @@ import { hasTransactionType } from '../../../../../../shared/lib/transactions.ut
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../../../../shared/lib/money/query-keys';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
+import { useLastMoneyAccountWithdrawAmount } from '../../transactions/useLastMoneyAccountWithdrawAmount';
 import { AlertsName } from '../constants';
 
 const MUSD_UNIT = 10 ** MUSD_DECIMALS;
@@ -34,11 +35,14 @@ const NON_WITHDRAW_QUERY_KEY = 'money-account-withdraw-alert:disabled';
  * false — and this hook runs for every confirmation via `useConfirmationAlerts`.
  */
 function disabledWithdrawAlertQueryFn(): never {
-  throw new Error('money-account-withdraw-alert is cache-only');
+  throw new Error('money-account-withdraw-alert is disabled for non-withdraws');
 }
 
 /**
- * Blocking alert when a money-account withdraw exceeds withdrawable vmUSD.
+ * Blocking alert when a money-account withdraw exceeds withdrawable vault
+ * balance (`vmusdValueInMusd` only — free mUSD is not withdrawable via this
+ * path). Matches the Max / available-balance source used by
+ * `useTransactionCustomAmount` for money-account withdraws.
  *
  * Reads the same react-query cache `useMoneyAccountBalance` writes (from the
  * withdraw info messenger) so this can run in `useConfirmationAlerts` without
@@ -57,6 +61,9 @@ export function useInsufficientMoneyAccountBalanceAlert({
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+  const lastWithdrawAmount = useLastMoneyAccountWithdrawAmount(
+    currentConfirmation?.id ?? '',
+  );
 
   const isMoneyAccountWithdraw = hasTransactionType(currentConfirmation, [
     TransactionType.moneyAccountWithdraw,
@@ -85,7 +92,13 @@ export function useInsufficientMoneyAccountBalanceAlert({
       : { queryFn: disabledWithdrawAlertQueryFn }),
   });
 
-  const amountHuman = pendingAmount ?? primaryRequiredToken?.amountHuman ?? '0';
+  // Direct withdraws have no primary required token; the typed amount is
+  // recorded synchronously for the footer / confirm path.
+  const amountHuman =
+    pendingAmount ??
+    lastWithdrawAmount ??
+    primaryRequiredToken?.amountHuman ??
+    '0';
 
   const withdrawableMusd = useMemo(() => {
     if (

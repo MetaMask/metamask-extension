@@ -1,5 +1,6 @@
 import { buildMoneyAccountWithdrawBatch } from '@metamask/money-account-utils';
 import { isStrictHexString, type Hex } from '@metamask/utils';
+import type { MoneyAccountWithdrawAmountUpdate } from '../../../../shared/lib/money/withdraw-amount-commit';
 import {
   beginAmountCommit,
   clearAmountCommitIfCurrent,
@@ -10,19 +11,15 @@ import {
 } from './amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 
-const LOG_TAG = '[Money Account]';
+export type { MoneyAccountWithdrawAmountUpdate };
 
-export type MoneyAccountWithdrawAmountUpdate = {
-  transactionData?: Hex;
-  transferData: Hex;
-  withdrawData: Hex;
-};
+const LOG_TAG = '[Money Account]';
 
 /**
  * Re-encodes the nested withdraw + transfer calls for a new human amount and
- * writes them onto the transaction. The recipient is the Pay account override
- * (the account shown on the confirmation) or, when unset, the currently
- * selected EVM account. Superseded intents resolve `false`.
+ * writes them onto the transaction. The recipient is the address that receives
+ * the redeemed mUSD (typically the Pay account override or, when unset, the
+ * currently selected EVM account). Superseded intents resolve `false`.
  *
  * Confirm patches the returned hexes onto the approval clone because the UI
  * bridge can strip nested calldata from the store copy.
@@ -30,14 +27,14 @@ export type MoneyAccountWithdrawAmountUpdate = {
  * @param messenger - Messenger used to encode and commit.
  * @param transactionId - Id of the Money Account withdrawal transaction.
  * @param amountHuman - Exact human-readable mUSD amount.
- * @param accountOverride - Pay funding/destination account, if set.
+ * @param recipientOverride - Address that receives the redeemed mUSD, if set.
  * @returns Encoded nested calldata, or `false` when this intent did not commit.
  */
 export async function updateMoneyAccountWithdrawAmount(
   messenger: MoneyPayMessenger,
   transactionId: string,
   amountHuman: string,
-  accountOverride?: Hex,
+  recipientOverride?: Hex,
 ): Promise<MoneyAccountWithdrawAmountUpdate | false> {
   pruneStaleAmountCommits(messenger);
 
@@ -54,7 +51,7 @@ export async function updateMoneyAccountWithdrawAmount(
   const isCurrent = beginAmountCommit(transactionId);
 
   try {
-    const recipient = resolveWithdrawRecipient(messenger, accountOverride);
+    const recipient = resolveWithdrawRecipient(messenger, recipientOverride);
     const updates = await encodeWithdrawCalldata(
       messenger,
       amountRaw,
@@ -90,19 +87,19 @@ export async function updateMoneyAccountWithdrawAmount(
 }
 
 /**
- * Resolves who receives the redeemed mUSD: Pay's account override, otherwise
- * the currently selected EVM account.
+ * Resolves who receives the redeemed mUSD: the explicit recipient override,
+ * otherwise the currently selected EVM account.
  *
  * @param messenger - Messenger used to read the selected account.
- * @param accountOverride - Pay destination account, if set.
+ * @param recipientOverride - Address that receives the redeemed mUSD, if set.
  * @returns The recipient address.
  */
 function resolveWithdrawRecipient(
   messenger: MoneyPayMessenger,
-  accountOverride?: Hex,
+  recipientOverride?: Hex,
 ): Hex {
-  if (accountOverride && isStrictHexString(accountOverride)) {
-    return accountOverride;
+  if (recipientOverride && isStrictHexString(recipientOverride)) {
+    return recipientOverride;
   }
 
   const selectedAddress = messenger.call(

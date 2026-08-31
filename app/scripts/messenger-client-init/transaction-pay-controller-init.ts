@@ -141,7 +141,7 @@ function getApi(
       amountHuman: string,
       recipientOverride?: Hex,
     ) => {
-      const accountOverride =
+      const resolvedRecipient =
         recipientOverride ??
         messengerClient.state?.transactionData?.[transactionId]
           ?.accountOverride;
@@ -149,7 +149,7 @@ function getApi(
         moneyPayMessenger,
         transactionId,
         amountHuman,
-        accountOverride,
+        resolvedRecipient,
       );
     },
     setTransactionPayPaymentOverride: (

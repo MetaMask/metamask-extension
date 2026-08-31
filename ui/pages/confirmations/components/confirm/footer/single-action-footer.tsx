@@ -79,7 +79,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     // token mUSD). Enable from the last typed amount; $0 stays disabled.
     const hasAmount = isMoneyAccountWithdraw
       ? isPositiveAmount(lastWithdrawAmount)
-      : hasCommittedPayAmount(primaryRequiredToken, totals);
+      : hasPositivePayAmount(primaryRequiredToken, totals);
 
     const buttonText =
       !isAwaitingRequiredToken && hasBlockingAlerts && alertText
@@ -119,7 +119,17 @@ function isPositiveAmount(value: string | undefined): boolean {
   return new BigNumber(value).gt(0);
 }
 
-function hasCommittedPayAmount(
+/**
+ * Whether Pay already has a positive amount to enable Confirm.
+ * Checks human / raw / USD on the primary required token, then quote totals —
+ * deposits and other Pay flows can populate any one of these before the rest.
+ * Does not mean an amount was committed or persisted.
+ *
+ * @param primaryRequiredToken - Primary required token from Pay, if any.
+ * @param totals - Pay quote totals, if any.
+ * @returns Whether any positive amount field is present.
+ */
+function hasPositivePayAmount(
   primaryRequiredToken: ReturnType<
     typeof useTransactionPayPrimaryRequiredToken
   >,

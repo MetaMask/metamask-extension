@@ -11,6 +11,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../../test/data/c
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
+import { useLastMoneyAccountWithdrawAmount } from '../../transactions/useLastMoneyAccountWithdrawAmount';
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -20,10 +21,14 @@ jest.mock('@metamask/react-data-query', () => ({
   useQuery: jest.fn(),
 }));
 jest.mock('../../pay/useTransactionPayData');
+jest.mock('../../transactions/useLastMoneyAccountWithdrawAmount');
 
 const useQueryMock = jest.mocked(useQuery);
 const usePrimaryRequiredTokenMock = jest.mocked(
   useTransactionPayPrimaryRequiredToken,
+);
+const useLastWithdrawAmountMock = jest.mocked(
+  useLastMoneyAccountWithdrawAmount,
 );
 
 const EXPECTED_ALERT = {
@@ -87,6 +92,7 @@ describe('useInsufficientMoneyAccountBalanceAlert', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mockBalance({ vmusdHuman: '100' });
+    useLastWithdrawAmountMock.mockReturnValue(undefined);
     usePrimaryRequiredTokenMock.mockReturnValue(
       undefined as unknown as ReturnType<
         typeof useTransactionPayPrimaryRequiredToken
@@ -188,7 +194,15 @@ describe('useInsufficientMoneyAccountBalanceAlert', () => {
     expect(result.current).toStrictEqual([]);
   });
 
-  it('returns alert using required token amount when no pendingAmount provided', () => {
+  it('returns alert using the last typed withdraw amount when no pendingAmount provided', () => {
+    useLastWithdrawAmountMock.mockReturnValue('150');
+
+    const { result } = runHook();
+
+    expect(result.current).toEqual([EXPECTED_ALERT]);
+  });
+
+  it('returns alert using required token amount when no pendingAmount or typed amount provided', () => {
     usePrimaryRequiredTokenMock.mockReturnValue({
       amountHuman: '150',
     } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);

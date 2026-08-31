@@ -8,6 +8,7 @@ import { renderHook } from '@testing-library/react';
 
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import {
+  clearLastMoneyAccountWithdrawAmount,
   getLastMoneyAccountWithdrawAmount,
   updateMoneyAccountWithdrawAmount,
 } from '../../../../store/controller-actions/transaction-pay-controller';
@@ -21,6 +22,7 @@ jest.mock('../../../../store/background-connection', () => ({
 jest.mock(
   '../../../../store/controller-actions/transaction-pay-controller',
   () => ({
+    clearLastMoneyAccountWithdrawAmount: jest.fn(),
     getLastMoneyAccountWithdrawAmount: jest.fn(),
     updateMoneyAccountWithdrawAmount: jest.fn(),
   }),
@@ -128,7 +130,9 @@ describe('useMoneyAccountWithdrawConfirm', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it('rebuilds the parent execute from funded nested calls without re-encoding', async () => {
+  it('rebuilds the parent execute from funded nested calls without re-encoding when the amount matches', async () => {
+    // FUNDED_TRANSFER_DATA encodes 50000 raw = 0.05 mUSD.
+    mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
     const transaction = buildTransaction(FUNDED_NESTED);
     const { prepareWithdrawTransaction } = runHook();
 
@@ -142,6 +146,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
   });
 
   it('persists the rebuilt transaction before approve', async () => {
+    mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
     const { prepareWithdrawTransaction } = runHook();
 
     await prepareWithdrawTransaction(buildTransaction(FUNDED_NESTED));
@@ -152,7 +157,8 @@ describe('useMoneyAccountWithdrawConfirm', () => {
     );
   });
 
-  it('prefers the funded transaction held in the store', async () => {
+  it('prefers the funded transaction held in the store when the amount matches', async () => {
+    mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
     mockUseDispatch.mockReturnValue(
       buildDispatch([buildTransaction(FUNDED_NESTED)]) as never,
     );
@@ -164,6 +170,38 @@ describe('useMoneyAccountWithdrawConfirm', () => {
 
     expect(result?.nestedTransactions?.[1].data).toBe(FUNDED_TRANSFER_DATA);
     expect(mockUpdateMoneyAccountWithdrawAmount).not.toHaveBeenCalled();
+  });
+
+  it('re-encodes when funded nested calldata does not match the typed amount', async () => {
+    // Store still holds 0.05 while the footer enabled Send for 0.10.
+    mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.10');
+    mockUpdateMoneyAccountWithdrawAmount.mockResolvedValue(FUNDED_UPDATE);
+    const { prepareWithdrawTransaction } = runHook();
+
+    const result = await prepareWithdrawTransaction(
+      buildTransaction(FUNDED_NESTED),
+    );
+
+    expect(mockUpdateMoneyAccountWithdrawAmount).toHaveBeenCalledWith(
+      TRANSACTION_ID,
+      '0.10',
+      undefined,
+    );
+    expect(result?.nestedTransactions?.[1].data).toBe(FUNDED_TRANSFER_DATA);
+  });
+
+  it('does not approve a stale funded store batch after a mismatched encode', async () => {
+    mockUseDispatch.mockReturnValue(
+      buildDispatch([undefined, buildTransaction(FUNDED_NESTED)]) as never,
+    );
+    mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.10');
+    mockUpdateMoneyAccountWithdrawAmount.mockResolvedValue(false);
+    const { prepareWithdrawTransaction } = runHook();
+
+    const result = await prepareWithdrawTransaction(buildTransaction());
+
+    expect(result).toBeNull();
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
   it('encodes the committed amount and patches the nested calldata', async () => {
@@ -200,7 +238,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
     );
   });
 
-  it('falls back to the store when the encoder result cannot be patched', async () => {
+  it('falls back to the store when the encoder result cannot be patched but amounts match', async () => {
     mockUseDispatch.mockReturnValue(
       buildDispatch([undefined, buildTransaction(FUNDED_NESTED)]) as never,
     );

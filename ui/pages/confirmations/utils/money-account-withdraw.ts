@@ -1,13 +1,15 @@
+import { MUSD_DECIMALS } from '@metamask/money-account-utils';
 import {
   generateEIP7702BatchTransaction,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { cloneDeep } from 'lodash';
 
+import type { MoneyAccountWithdrawAmountUpdate } from '../../../../shared/lib/money/withdraw-amount-commit';
 import { parseStandardTokenTransactionData } from '../../../../shared/lib/transaction.utils';
-import type { MoneyAccountWithdrawAmountUpdate } from '../../../store/controller-actions/transaction-pay-controller';
 
 /**
  * ERC-20 `transfer(address,uint256)` 4-byte selector (`keccak256("transfer(address,uint256)").slice(0, 4)`).
@@ -15,6 +17,15 @@ import type { MoneyAccountWithdrawAmountUpdate } from '../../../store/controller
  * decoding itself goes through {@link parseStandardTokenTransactionData}.
  */
 const TRANSFER_SELECTOR = '0xa9059cbb';
+
+/**
+ * Recipient and raw transfer amount decoded from a Money Account withdraw
+ * batch's nested `tokenMethodTransfer` call.
+ */
+export type MoneyAccountWithdrawTransferDetails = {
+  recipient?: string;
+  amountRaw?: string;
+};
 
 /**
  * Whether calldata carries a function selector plus arguments, rather than
@@ -25,6 +36,47 @@ const TRANSFER_SELECTOR = '0xa9059cbb';
  */
 export function isEncodedCalldata(data: string | undefined): boolean {
   return Boolean(data && data !== '0x' && data !== '0x00' && data.length > 10);
+}
+
+/**
+ * Locates the nested ERC-20 transfer in a Money Account withdraw batch and
+ * returns its recipient and raw (base units) amount. Shared by the activity
+ * hero and activity-list enrichment so decoding cannot drift.
+ *
+ * @param transaction - Transaction whose nested calls to inspect.
+ * @returns Recipient and/or raw amount when the nested transfer is present.
+ */
+export function getMoneyAccountWithdrawTransferDetails(
+  transaction:
+    | {
+        nestedTransactions?: { data?: string; type?: string; to?: string }[];
+      }
+    | undefined,
+): MoneyAccountWithdrawTransferDetails {
+  const transfer = transaction?.nestedTransactions?.find(
+    (nested) => nested.type === TransactionType.tokenMethodTransfer,
+  );
+  if (!transfer?.data) {
+    return {};
+  }
+
+  const parsed = parseStandardTokenTransactionData(transfer.data);
+  const recipient = parsed?.args?._to ?? parsed?.args?.to;
+  const amount = parsed?.args?._value ?? parsed?.args?.value ?? parsed?.args?.[1];
+
+  let amountRaw: string | undefined;
+  if (amount !== undefined && amount !== null) {
+    try {
+      amountRaw = BigInt(amount.toString()).toString();
+    } catch {
+      amountRaw = undefined;
+    }
+  }
+
+  return {
+    ...(typeof recipient === 'string' ? { recipient } : {}),
+    ...(amountRaw === undefined ? {} : { amountRaw }),
+  };
 }
 
 /**
@@ -77,6 +129,63 @@ export function hasFundedWithdrawCalldata(
     transaction?.nestedTransactions?.[1]?.data,
   );
   return Boolean(amountRaw && amountRaw !== '0');
+}
+
+/**
+ * Converts a human-readable mUSD amount to base units for calldata comparison.
+ * Uses the same `ROUND_UP` rules as the background amount commit so a matching
+ * typed amount is not treated as stale.
+ *
+ * @param amountHuman - Exact human-readable mUSD amount.
+ * @returns Raw amount as a decimal string, or `undefined` when invalid.
+ */
+function musdHumanToRaw(amountHuman: string): string | undefined {
+  let value: BigNumber;
+  try {
+    value = new BigNumber(amountHuman);
+  } catch {
+    return undefined;
+  }
+
+  if (!value.isFinite() || value.lte(0)) {
+    return undefined;
+  }
+
+  const raw = value
+    .times(10 ** MUSD_DECIMALS)
+    .round(0, BigNumber.ROUND_UP);
+  if (raw.lte(0)) {
+    return undefined;
+  }
+
+  return raw.toString(10);
+}
+
+/**
+ * Whether funded nested withdraw calldata already encodes `amountHuman`.
+ * The footer enables Send from the latest typed amount immediately, while the
+ * store can still hold a previous encode — confirm must not treat a stale
+ * funded batch as ready.
+ *
+ * @param transaction - Transaction whose nested transfer to inspect.
+ * @param amountHuman - Latest typed human-readable mUSD amount.
+ * @returns Whether the nested transfer amount matches `amountHuman`.
+ */
+export function doesWithdrawCalldataMatchAmount(
+  transaction: TransactionMeta | undefined,
+  amountHuman: string | undefined,
+): boolean {
+  if (!amountHuman || !hasFundedWithdrawCalldata(transaction)) {
+    return false;
+  }
+  const expectedRaw = musdHumanToRaw(amountHuman);
+  if (!expectedRaw) {
+    return false;
+  }
+  const encodedRaw = getTransferAmountRawFromData(
+    transaction?.nestedTransactions?.[1]?.data,
+  );
+  return encodedRaw === expectedRaw;
 }
 
 /**

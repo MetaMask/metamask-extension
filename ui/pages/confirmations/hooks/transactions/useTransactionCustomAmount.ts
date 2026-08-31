@@ -329,7 +329,7 @@ export function useTransactionCustomAmount({
       // runs them non-atomic instead of substituting token.balanceRaw.
       // Do not set isMaxAmount for money-account withdraw. TPC would
       // substitute on-chain mUSD `token.balanceRaw` instead of the typed
-      // withdrawable (mUSD + vmUSD) total. Matches mobile.
+      // vault withdrawable (`vmusdValueInMusd`) total. Matches mobile.
       const shouldSetMaxAmountMode =
         percentage === 100 && !hasBalanceUsdOverride && !isMoneyAccountWithdraw;
       // Keep the displayed fiat rounded except for balanceUsdOverride Max

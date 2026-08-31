@@ -1,12 +1,9 @@
 import type { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
+import type { MoneyAccountWithdrawAmountUpdate } from '../../../shared/lib/money/withdraw-amount-commit';
 import { submitRequestToBackground } from '../background-connection';
 
-export type MoneyAccountWithdrawAmountUpdate = {
-  transactionData?: Hex;
-  transferData: Hex;
-  withdrawData: Hex;
-};
+export type { MoneyAccountWithdrawAmountUpdate };
 
 export async function updateTransactionPaymentToken({
   transactionId,
@@ -101,13 +98,13 @@ const lastWithdrawAmountByTransactionId = new Map<string, string>();
 const lastWithdrawAmountListeners = new Set<() => void>();
 
 /**
- * Last human-readable withdraw amount dispatched for this transaction.
+ * Last human-readable withdraw amount recorded for this transaction.
  * Confirm uses this so Send can re-encode even if the confirmation UI still
  * holds the unencoded placeholder. The footer uses it to enable Send when
  * TPC has no required token / quote totals (direct withdraws).
  *
  * @param transactionId - Id of the Money Account withdrawal transaction.
- * @returns The last amount, if any update has been dispatched.
+ * @returns The last amount, if any update has been recorded.
  */
 export function getLastMoneyAccountWithdrawAmount(
   transactionId: string,
@@ -127,6 +124,22 @@ export function setLastMoneyAccountWithdrawAmount(
   amountHuman: string,
 ): void {
   lastWithdrawAmountByTransactionId.set(transactionId, amountHuman);
+  lastWithdrawAmountListeners.forEach((listener) => listener());
+}
+
+/**
+ * Clears the recorded withdraw amount for a transaction. Called when the
+ * confirmation unmounts or after a successful prepare so the module-level map
+ * does not retain stale entries for the UI process lifetime.
+ *
+ * @param transactionId - Id of the Money Account withdrawal transaction.
+ */
+export function clearLastMoneyAccountWithdrawAmount(
+  transactionId: string,
+): void {
+  if (!lastWithdrawAmountByTransactionId.delete(transactionId)) {
+    return;
+  }
   lastWithdrawAmountListeners.forEach((listener) => listener());
 }
 

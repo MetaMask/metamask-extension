@@ -453,8 +453,8 @@ describe('transaction-pay utils', () => {
       updateAtomicBatchDataMock.mockResolvedValue(undefined);
     });
 
-    it('replaces the old address word in nested transaction data', () => {
-      replaceAccountInNestedTransactions({
+    it('replaces the old address word in nested transaction data', async () => {
+      await replaceAccountInNestedTransactions({
         transactionId: TRANSACTION_ID,
         nestedTransactions: [{ data: `${SELECTOR}${OLD_WORD}` as Hex }],
         oldAddress: OLD_ADDRESS,
@@ -469,8 +469,8 @@ describe('transaction-pay utils', () => {
       });
     });
 
-    it('replaces every occurrence within the same nested transaction data', () => {
-      replaceAccountInNestedTransactions({
+    it('replaces every occurrence within the same nested transaction data', async () => {
+      await replaceAccountInNestedTransactions({
         transactionId: TRANSACTION_ID,
         nestedTransactions: [
           { data: `${SELECTOR}${OLD_WORD}${OLD_WORD}` as Hex },
@@ -486,8 +486,8 @@ describe('transaction-pay utils', () => {
       });
     });
 
-    it('matches address case-insensitively and writes lowercase output', () => {
-      replaceAccountInNestedTransactions({
+    it('matches address case-insensitively and writes lowercase output', async () => {
+      await replaceAccountInNestedTransactions({
         transactionId: TRANSACTION_ID,
         nestedTransactions: [
           { data: `${SELECTOR}${OLD_WORD.toUpperCase()}` as Hex },
@@ -503,8 +503,8 @@ describe('transaction-pay utils', () => {
       });
     });
 
-    it('preserves the original index when only some nested transactions match', () => {
-      replaceAccountInNestedTransactions({
+    it('preserves the original index when only some nested transactions match', async () => {
+      await replaceAccountInNestedTransactions({
         transactionId: TRANSACTION_ID,
         nestedTransactions: [
           { data: '0xdeadbeef' as Hex },
@@ -523,8 +523,8 @@ describe('transaction-pay utils', () => {
       });
     });
 
-    it('does nothing when oldAddress is undefined', () => {
-      replaceAccountInNestedTransactions({
+    it('does nothing when oldAddress is undefined', async () => {
+      await replaceAccountInNestedTransactions({
         transactionId: TRANSACTION_ID,
         nestedTransactions: [{ data: `${SELECTOR}${OLD_WORD}` as Hex }],
         oldAddress: undefined,
@@ -534,14 +534,14 @@ describe('transaction-pay utils', () => {
       expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
     });
 
-    it('does nothing when nestedTransactions is undefined or empty', () => {
-      replaceAccountInNestedTransactions({
+    it('does nothing when nestedTransactions is undefined or empty', async () => {
+      await replaceAccountInNestedTransactions({
         transactionId: TRANSACTION_ID,
         nestedTransactions: undefined,
         oldAddress: OLD_ADDRESS,
         newAddress: NEW_ADDRESS,
       });
-      replaceAccountInNestedTransactions({
+      await replaceAccountInNestedTransactions({
         transactionId: TRANSACTION_ID,
         nestedTransactions: [],
         oldAddress: OLD_ADDRESS,
@@ -551,8 +551,8 @@ describe('transaction-pay utils', () => {
       expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
     });
 
-    it('does nothing when old and new addresses are the same', () => {
-      replaceAccountInNestedTransactions({
+    it('does nothing when old and new addresses are the same', async () => {
+      await replaceAccountInNestedTransactions({
         transactionId: TRANSACTION_ID,
         nestedTransactions: [{ data: `${SELECTOR}${OLD_WORD}` as Hex }],
         oldAddress: OLD_ADDRESS,
@@ -562,8 +562,8 @@ describe('transaction-pay utils', () => {
       expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
     });
 
-    it('skips nested transactions whose data does not contain the old word', () => {
-      replaceAccountInNestedTransactions({
+    it('skips nested transactions whose data does not contain the old word', async () => {
+      await replaceAccountInNestedTransactions({
         transactionId: TRANSACTION_ID,
         nestedTransactions: [{ data: '0xdeadbeef' as Hex }],
         oldAddress: OLD_ADDRESS,
@@ -573,22 +573,21 @@ describe('transaction-pay utils', () => {
       expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
     });
 
-    it('logs an error when updateAtomicBatchData rejects', async () => {
+    it('propagates when updateAtomicBatchData rejects', async () => {
       const error = new Error('boom');
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
       updateAtomicBatchDataMock.mockRejectedValueOnce(error);
 
-      replaceAccountInNestedTransactions({
-        transactionId: TRANSACTION_ID,
-        nestedTransactions: [{ data: `${SELECTOR}${OLD_WORD}` as Hex }],
-        oldAddress: OLD_ADDRESS,
-        newAddress: NEW_ADDRESS,
-      });
-
-      await Promise.resolve();
-      await Promise.resolve();
+      await expect(
+        replaceAccountInNestedTransactions({
+          transactionId: TRANSACTION_ID,
+          nestedTransactions: [{ data: `${SELECTOR}${OLD_WORD}` as Hex }],
+          oldAddress: OLD_ADDRESS,
+          newAddress: NEW_ADDRESS,
+        }),
+      ).rejects.toThrow('boom');
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Failed to update account in nested transaction',

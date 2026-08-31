@@ -37,8 +37,9 @@ function toAddressWord(address: string): string {
  * @param params.nestedTransactions - Nested calls to scan.
  * @param params.oldAddress - Address currently encoded in calldata.
  * @param params.newAddress - Address to write in its place.
+ * @returns Resolves when all nested rewrites have persisted.
  */
-export function replaceAccountInNestedTransactions({
+export async function replaceAccountInNestedTransactions({
   transactionId,
   nestedTransactions,
   oldAddress,
@@ -48,7 +49,7 @@ export function replaceAccountInNestedTransactions({
   nestedTransactions: NestedTransactionMetadata[] | undefined;
   oldAddress: string | undefined;
   newAddress: string;
-}): void {
+}): Promise<void> {
   if (!oldAddress || !nestedTransactions?.length) {
     return;
   }
@@ -59,6 +60,8 @@ export function replaceAccountInNestedTransactions({
   if (oldWord === newWord) {
     return;
   }
+
+  const updates: Promise<void>[] = [];
 
   nestedTransactions.forEach((nested, index) => {
     const { data } = nested;
@@ -73,14 +76,19 @@ export function replaceAccountInNestedTransactions({
 
     const newData = lowerData.split(oldWord).join(newWord) as Hex;
 
-    updateAtomicBatchData({
-      transactionId,
-      transactionIndex: index,
-      transactionData: newData,
-    }).catch((error) => {
-      console.error('Failed to update account in nested transaction', error);
-    });
+    updates.push(
+      updateAtomicBatchData({
+        transactionId,
+        transactionIndex: index,
+        transactionData: newData,
+      }).catch((error) => {
+        console.error('Failed to update account in nested transaction', error);
+        throw error;
+      }),
+    );
   });
+
+  await Promise.all(updates);
 }
 
 export function getTokenTransferData(

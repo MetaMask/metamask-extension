@@ -9,25 +9,26 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
-import { parseStandardTokenTransactionData } from '../../../../../../shared/lib/transaction.utils';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { getMoneyAccountWithdrawTransferDetails } from '../../../utils/money-account-withdraw';
 import { useTransactionDetails } from '../transaction-details-context';
 
-function getWithdrawTransferAmountHuman(transactionMeta: {
+/**
+ * Amount-plus-symbol label for the activity hero (e.g. `1.5 mUSD`).
+ *
+ * @param transactionMeta - Withdraw transaction with nested transfer calldata.
+ * @param transactionMeta.nestedTransactions
+ * @returns Display label, or `undefined` when the transfer amount is missing
+ * or zero.
+ */
+function getWithdrawTransferAmountDisplay(transactionMeta: {
   nestedTransactions?: { data?: string; type?: string }[];
 }): string | undefined {
-  const transfer = transactionMeta.nestedTransactions?.find(
-    (nested) => nested.type === TransactionType.tokenMethodTransfer,
-  );
-  if (!transfer?.data) {
+  const { amountRaw } = getMoneyAccountWithdrawTransferDetails(transactionMeta);
+  if (!amountRaw) {
     return undefined;
   }
-  const parsed = parseStandardTokenTransactionData(transfer.data);
-  const value = parsed?.args?._value ?? parsed?.args?.value;
-  if (value === undefined || value === null) {
-    return undefined;
-  }
-  const amount = new BigNumber(value.toString()).dividedBy(
+  const amount = new BigNumber(amountRaw).dividedBy(
     new BigNumber(10).pow(MUSD_DECIMALS),
   );
   if (amount.isZero()) {
@@ -53,7 +54,7 @@ export function TransactionDetailsHero() {
     // Direct withdraws have no quotes, so targetFiat stays 0. Show the
     // nested transfer amount instead of an empty / $0 hero.
     if (isMoneyAccountWithdraw) {
-      return getWithdrawTransferAmountHuman(transactionMeta);
+      return getWithdrawTransferAmountDisplay(transactionMeta);
     }
     return null;
   }, [fiatFormatter, isMoneyAccountWithdraw, targetFiat, transactionMeta]);

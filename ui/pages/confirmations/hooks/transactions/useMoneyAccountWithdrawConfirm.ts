@@ -8,6 +8,7 @@ import {
 } from '../../../../selectors/transactionController';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import {
+  clearLastMoneyAccountWithdrawAmount,
   getLastMoneyAccountWithdrawAmount,
   updateMoneyAccountWithdrawAmount,
 } from '../../../../store/controller-actions/transaction-pay-controller';
@@ -16,6 +17,7 @@ import type { MetaMaskReduxDispatch } from '../../../../store/types';
 import {
   applyWithdrawCalldata,
   asFundedWithdrawUpdate,
+  doesWithdrawCalldataMatchAmount,
   withFundedBatchCalldata,
 } from '../../utils/money-account-withdraw';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
@@ -24,6 +26,14 @@ async function persistWithdrawTransaction(
   transaction: TransactionMeta,
 ): Promise<void> {
   await submitRequestToBackground('updateTransaction', [transaction]);
+}
+
+async function finalizePreparedWithdraw(
+  transaction: TransactionMeta,
+): Promise<TransactionMeta> {
+  await persistWithdrawTransaction(transaction);
+  clearLastMoneyAccountWithdrawAmount(transaction.id);
+  return transaction;
 }
 
 function readTransactionFromStore(
@@ -51,28 +61,44 @@ function readTransactionFromStore(
  * often strips a full TransactionMeta, so confirm patches those hexes onto
  * the confirmation clone instead of requiring the IPC object to be funded.
  *
- * @returns `prepareWithdrawTransaction`, resolving with the encoded
- * transaction to approve, or `null` when it is not encoded.
+ * Funded nested calldata is reused only when it already encodes the latest
+ * typed amount. Otherwise Send would approve a previous encode while the
+ * footer shows a newer amount that has not finished committing.
+ *
+ * @returns An object with `prepareWithdrawTransaction`.
  */
 export function useMoneyAccountWithdrawConfirm() {
   const dispatch = useDispatch();
   const accountOverride = useTransactionAccountOverride();
 
+  /**
+   * Encodes (when needed) and returns the funded withdraw transaction to
+   * approve, or `null` when it is not encoded.
+   *
+   * @param transactionMeta - Confirmation transaction to prepare.
+   * @returns The funded transaction, or `null`.
+   */
   const prepareWithdrawTransaction = useCallback(
     async (
       transactionMeta: TransactionMeta,
     ): Promise<TransactionMeta | null> => {
+      const amountHuman = getLastMoneyAccountWithdrawAmount(transactionMeta.id);
       const fromStore = readTransactionFromStore(dispatch, transactionMeta.id);
+
+      // Skip re-encode only when nested calldata already matches the amount
+      // on screen. A prior encode can still look "funded" after the user edits.
       const ready =
-        withFundedBatchCalldata(fromStore) ??
-        withFundedBatchCalldata(transactionMeta);
+        (doesWithdrawCalldataMatchAmount(fromStore, amountHuman)
+          ? withFundedBatchCalldata(fromStore)
+          : null) ??
+        (doesWithdrawCalldataMatchAmount(transactionMeta, amountHuman)
+          ? withFundedBatchCalldata(transactionMeta)
+          : null);
 
       if (ready) {
-        await persistWithdrawTransaction(ready);
-        return ready;
+        return finalizePreparedWithdraw(ready);
       }
 
-      const amountHuman = getLastMoneyAccountWithdrawAmount(transactionMeta.id);
       const hasAmount = Boolean(
         amountHuman && new BigNumber(amountHuman).gt(0),
       );
@@ -96,17 +122,21 @@ export function useMoneyAccountWithdrawConfirm() {
           applyWithdrawCalldata(fromStore, update) ??
           applyWithdrawCalldata(transactionMeta, update);
         if (applied) {
-          await persistWithdrawTransaction(applied);
-          return applied;
+          return finalizePreparedWithdraw(applied);
         }
       }
 
-      const fromStoreAfterEncode = withFundedBatchCalldata(
-        readTransactionFromStore(dispatch, transactionMeta.id),
+      const fromStoreAfterEncode = readTransactionFromStore(
+        dispatch,
+        transactionMeta.id,
       );
-      if (fromStoreAfterEncode) {
-        await persistWithdrawTransaction(fromStoreAfterEncode);
-        return fromStoreAfterEncode;
+      // After encode, only accept store calldata that matches the typed amount.
+      // A superseded commit can leave an older funded batch in the store.
+      if (doesWithdrawCalldataMatchAmount(fromStoreAfterEncode, amountHuman)) {
+        const matching = withFundedBatchCalldata(fromStoreAfterEncode);
+        if (matching) {
+          return finalizePreparedWithdraw(matching);
+        }
       }
 
       console.error(

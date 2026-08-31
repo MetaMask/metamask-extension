@@ -11,7 +11,7 @@ jest.mock('../../../../store/background-connection', () => ({
 }));
 
 describe('useLastMoneyAccountWithdrawAmount', () => {
-  it('returns undefined before an amount is dispatched', () => {
+  it('returns undefined before an amount is recorded', () => {
     const { result } = renderHook(() =>
       useLastMoneyAccountWithdrawAmount('tx-none'),
     );
@@ -32,7 +32,7 @@ describe('useLastMoneyAccountWithdrawAmount', () => {
     expect(result.current).toBe('0.05');
   });
 
-  it('updates when a withdraw amount is dispatched', async () => {
+  it('updates when a withdraw amount is recorded via update', async () => {
     const { result } = renderHook(() =>
       useLastMoneyAccountWithdrawAmount('tx-withdraw-amount'),
     );

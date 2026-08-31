@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
@@ -130,6 +130,7 @@ describe('FromAccountRow', () => {
     } as never);
 
     setAccountOverrideMock.mockResolvedValue(undefined);
+    replaceAccountInNestedTransactionsMock.mockResolvedValue(undefined);
   });
 
   it('renders the from account row with the wallet label and account name', () => {
@@ -196,7 +197,7 @@ describe('FromAccountRow', () => {
     );
   });
 
-  it('sets the pay account override with the chosen address', () => {
+  it('sets the pay account override with the chosen address', async () => {
     const store = createStore();
     renderWithProvider(<FromAccountRow />, store);
 
@@ -209,13 +210,15 @@ describe('FromAccountRow', () => {
       oldAddress: FROM_ADDRESS_MOCK,
       newAddress: OTHER_ADDRESS_MOCK,
     });
-    expect(setAccountOverrideMock).toHaveBeenCalledWith(
-      TX_ID_MOCK,
-      OTHER_ADDRESS_MOCK,
-    );
+    await waitFor(() => {
+      expect(setAccountOverrideMock).toHaveBeenCalledWith(
+        TX_ID_MOCK,
+        OTHER_ADDRESS_MOCK,
+      );
+    });
   });
 
-  it('rewrites nested calldata using the previous override as the old address', () => {
+  it('rewrites nested calldata using the previous override as the old address', async () => {
     const nestedTransactions = [{ data: '0xabc', to: '0x1' }];
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: {
@@ -238,10 +241,12 @@ describe('FromAccountRow', () => {
       oldAddress: OTHER_ADDRESS_MOCK,
       newAddress: FROM_ADDRESS_MOCK,
     });
-    expect(setAccountOverrideMock).toHaveBeenCalledWith(
-      TX_ID_MOCK,
-      FROM_ADDRESS_MOCK,
-    );
+    await waitFor(() => {
+      expect(setAccountOverrideMock).toHaveBeenCalledWith(
+        TX_ID_MOCK,
+        FROM_ADDRESS_MOCK,
+      );
+    });
   });
 
   it('does not set the account override when the current account is chosen', () => {
