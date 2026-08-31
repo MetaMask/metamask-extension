@@ -127,6 +127,10 @@ class CriticalErrorPage {
       `Click repair button and ${confirm ? 'confirm' : 'dismiss'} the alert`,
     );
 
+    const handlesBeforeRepair = new Set(
+      await this.driver.getAllWindowHandles(),
+    );
+
     await this.driver.waitForSelector(this.repairButton, {
       timeout: this.repairButtonTimeoutMs,
     });
@@ -138,7 +142,7 @@ class CriticalErrorPage {
     if (confirm) {
       await alert.accept();
       if (expectsExtensionReload) {
-        await this.waitForRepairReloadAndHandoff();
+        await this.waitForRepairReloadAndHandoff(handlesBeforeRepair);
       } else {
         await this.waitForInPlaceRepairReload();
       }
@@ -227,41 +231,49 @@ class CriticalErrorPage {
     }
   }
 
-  async waitForRepairReloadAndHandoff(): Promise<void> {
-    // runtime.reload() kills extension tabs, so the driver's current window
-    // handle is stale. Wait for the reload, then reattach to a surviving tab.
-    await this.driver.delay(3000);
-    const handles = await this.driver.driver.getAllWindowHandles();
-    await this.driver.driver.switchTo().window(handles[0]);
+  async waitForRepairReloadAndHandoff(
+    handlesBeforeRepair: ReadonlySet<string>,
+  ): Promise<void> {
+    const extensionHomeUrl = `${this.driver.extensionUrl}/home.html`;
+    let extensionHomeHandle: string | undefined;
 
-    await this.waitForPageAfterExtensionReload({
-      timeoutMs: 30_000,
-      waitForLoadingLogoToDisappear: false,
-    });
-
-    // The service worker handoff runs asynchronously after runtime.reload():
-    // it reads the repair session from storage.local, converts the
-    // metamask.io/restoring tab to home.html, then clears the key. We must
-    // wait for that key to be cleared before closing extra tabs.
     await this.driver.waitUntil(
       async () => {
-        const cleared = await this.driver.executeScript(`
-            return new Promise(resolve => {
-              const b = globalThis.browser ?? globalThis.chrome;
-              b.storage.local.get('criticalErrorRepair', (data) => {
-                resolve(!data.criticalErrorRepair);
-              });
-            });
-          `);
-        return Boolean(cleared);
+        const handles = await this.driver.getAllWindowHandles();
+        const newHandles = handles.filter(
+          (handle) => !handlesBeforeRepair.has(handle),
+        );
+
+        for (const handle of newHandles) {
+          try {
+            await this.driver.switchToWindow(handle);
+            const url = await this.driver.getCurrentUrl();
+            if (
+              url === extensionHomeUrl ||
+              url.startsWith(`${extensionHomeUrl}#`) ||
+              url.startsWith(`${extensionHomeUrl}?`)
+            ) {
+              extensionHomeHandle = handle;
+              return true;
+            }
+          } catch {
+            // The handoff can replace or close a tab while handles are inspected.
+          }
+        }
+
+        return false;
       },
-      { interval: 300, timeout: 30_000 },
+      { interval: 200, timeout: 30_000 },
     );
 
-    // Wait for the UI to receive state and finish launching.
-    await this.driver.delay(5000);
-    await this.driver.waitForControllersLoaded();
-    // Now safe to close extra tabs (service worker has finished handoff / fallback).
+    if (!extensionHomeHandle) {
+      throw new Error(
+        'Expected repair handoff to open the extension home page',
+      );
+    }
+
+    await this.driver.switchToWindow(extensionHomeHandle);
+    await this.driver.waitForControllersLoaded(30_000);
     await this.driver.closeAllOtherTabs();
   }
 }
