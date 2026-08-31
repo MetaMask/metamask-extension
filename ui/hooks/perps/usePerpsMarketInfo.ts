@@ -27,9 +27,16 @@ export { clearPerpsMarketInfoModuleCache };
  * fall back to safe defaults (e.g. szDecimals = 0).
  *
  * @param symbol - Asset symbol to look up (e.g. 'HYPE', 'BTC', 'xyz:TSLA')
+ * @param options - Hook options
+ * @param options.enabled - When false, skips fetching and returns undefined.
+ * Used by callers outside the Perps experience (e.g. the asset page) that must
+ * not trigger market fetches when Perps is unavailable.
  * @returns The matching MarketInfo, or undefined while loading / on error
  */
-export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
+export function usePerpsMarketInfo(
+  symbol: string,
+  { enabled = true }: { enabled?: boolean } = {},
+): MarketInfo | undefined {
   const marketInfoCacheKey = usePerpsCacheKey();
   const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
 
@@ -46,6 +53,10 @@ export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
   }
 
   useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+
     const cached = peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
     if (cached) {
       return undefined;
@@ -62,7 +73,11 @@ export function usePerpsMarketInfo(symbol: string): MarketInfo | undefined {
     return () => {
       cancelled = true;
     };
-  }, [marketInfoCacheKey, useTerminalApi]);
+  }, [marketInfoCacheKey, useTerminalApi, enabled]);
+
+  if (!enabled) {
+    return undefined;
+  }
 
   return marketInfos.find((m) => m.name.toLowerCase() === symbol.toLowerCase());
 }

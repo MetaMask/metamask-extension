@@ -30,6 +30,14 @@ jest.mock('../../../hooks/bridge/useBridging', () => ({
   default: () => ({ openBridgeExperience: jest.fn() }),
 }));
 
+// The Long / Short buttons have their own tests; here we only verify that
+// TokenButtons swaps in the Perps action row when a market symbol is set.
+jest.mock('../../../components/app/perps/perps-trade-buttons', () => ({
+  PerpsTradeButtons: ({ marketSymbol }: { marketSymbol: string }) => (
+    <div data-testid="perps-trade-buttons" data-market={marketSymbol} />
+  ),
+}));
+
 const mockTrackEvent = jest.fn();
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -51,6 +59,9 @@ const token = {
 
 const store = configureMockStore()({
   metamask: {
+    // Full mock state: the component reads the selected account for the
+    // receive flow, which the minimal network-only state does not include.
+    ...initializedMockState.metamask,
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     useExternalServices: true,
   },
@@ -82,6 +93,102 @@ describe('TokenButtons buy wiring', () => {
     fireEvent.click(getByTestId('token-overview-buy'));
     await waitFor(() => expect(mockGoToBuy).toHaveBeenCalled());
     expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+});
+
+describe('TokenButtons perps action row', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  const tokenWithBalance = {
+    ...token,
+    balance: { value: '100', display: '100', fiat: '100' },
+  } as Asset & { type: AssetType.token };
+
+  it('renders the regular Buy / Swap row when no perps market matches', () => {
+    renderWithProvider(<TokenButtons token={token} />, store);
+
+    expect(screen.getByTestId('token-overview-buy')).toBeInTheDocument();
+    expect(screen.getByTestId('token-overview-swap')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('perps-trade-buttons'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('token-overview-more'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders Long / Short / Send / More when a perps market matches', () => {
+    renderWithProvider(
+      <TokenButtons token={tokenWithBalance} perpsMarketSymbol="ETH" />,
+      store,
+    );
+
+    expect(screen.getByTestId('perps-trade-buttons')).toHaveAttribute(
+      'data-market',
+      'ETH',
+    );
+    expect(screen.getByTestId('eth-overview-send')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('token-overview-more'),
+    ).toBeInTheDocument();
+    // Buy and Swap leave the row: they move into the More menu.
+    expect(screen.queryByTestId('token-overview-buy')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('token-overview-swap')).not.toBeInTheDocument();
+  });
+
+  it('shows Receive instead of Send when the token balance is zero', () => {
+    renderWithProvider(
+      <TokenButtons token={token} perpsMarketSymbol="ETH" />,
+      store,
+    );
+
+    expect(screen.getByTestId('token-overview-receive')).toBeInTheDocument();
+    expect(screen.queryByTestId('eth-overview-send')).not.toBeInTheDocument();
+  });
+
+  it('moves Buy and Swap into the More menu', () => {
+    renderWithProvider(
+      <TokenButtons token={tokenWithBalance} perpsMarketSymbol="ETH" />,
+      store,
+    );
+
+    fireEvent.click(screen.getByTestId('token-overview-more'));
+
+    expect(screen.getByTestId('token-overview-more-buy')).toBeInTheDocument();
+    expect(screen.getByTestId('token-overview-more-swap')).toBeInTheDocument();
+    // Receive is only in the menu when Send occupies the row slot.
+    expect(
+      screen.getByTestId('token-overview-more-receive'),
+    ).toBeInTheDocument();
+  });
+
+  it('routes the More menu Buy action through goToBuy', () => {
+    renderWithProvider(
+      <TokenButtons token={tokenWithBalance} perpsMarketSymbol="ETH" />,
+      store,
+    );
+
+    fireEvent.click(screen.getByTestId('token-overview-more'));
+    fireEvent.click(screen.getByTestId('token-overview-more-buy'));
+
+    expect(mockGoToBuy).toHaveBeenCalledWith({
+      assetId: toAssetId(token.address, token.chainId),
+      chainId: token.chainId,
+    });
+  });
+
+  it('does not render the perps row for ERC721 tokens', () => {
+    renderWithProvider(
+      <TokenButtons
+        token={{ ...token, isERC721: true }}
+        perpsMarketSymbol="ETH"
+      />,
+      store,
+    );
+
+    expect(
+      screen.queryByTestId('perps-trade-buttons'),
+    ).not.toBeInTheDocument();
   });
 });
 

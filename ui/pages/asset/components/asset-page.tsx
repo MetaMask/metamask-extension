@@ -89,6 +89,7 @@ import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { useSpendableBalance } from '../hooks/useSpendableBalance';
+import { useAssetPerpsMarket } from '../hooks/useAssetPerpsMarket';
 import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -385,6 +386,9 @@ const AssetPage = ({
 
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
+  // Perps-eligible assets show Long / Short / Send / More instead of the
+  // regular action buttons (mobile Token Details parity).
+  const perpsMarket = useAssetPerpsMarket(symbol);
   const isMusdAssetPage = useMemo(
     () =>
       type === AssetType.token &&
@@ -471,6 +475,7 @@ const AssetPage = ({
                 chainId,
                 disableSendForNonEvm: true,
                 buyAssetId: caipAssetId,
+                perpsMarketSymbol: perpsMarket?.name,
               }}
             />
           ) : null}
@@ -479,6 +484,7 @@ const AssetPage = ({
               token={tokenAsset}
               disableSendForNonEvm
               isMarketClosed={isMarketClosed}
+              perpsMarketSymbol={perpsMarket?.name}
             />
           ) : null}
           {isMarketClosed && tokenAsset ? (
