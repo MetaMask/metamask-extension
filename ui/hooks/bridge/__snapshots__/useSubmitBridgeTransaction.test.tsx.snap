@@ -95,6 +95,10 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
             "usd": "12",
             "valueInCurrency": "12",
           },
+          "cost": {
+            "usd": "12",
+            "valueInCurrency": "12",
+          },
           "priceImpact": {
             "usd": "988",
             "valueInCurrency": "988",
@@ -302,6 +306,10 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
         },
         "priceData": {
           "adjustedReturn": {
+            "usd": "12",
+            "valueInCurrency": "12",
+          },
+          "cost": {
             "usd": "12",
             "valueInCurrency": "12",
           },
