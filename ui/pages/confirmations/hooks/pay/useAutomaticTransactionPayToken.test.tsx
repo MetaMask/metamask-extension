@@ -614,44 +614,75 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('selects the first token that meets the minimum required fiat balance', () => {
-    selectMinimumRequiredTokenBalanceMock.mockReturnValue(5);
+  it('falls back to the first available token when no preferred flag token meets the minimum', () => {
+    selectMinimumRequiredTokenBalanceMock.mockReturnValue(100);
     useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+        fiat: { balance: 5 },
+      },
       {
         address: TOKEN_ADDRESS_2_MOCK,
         chainId: CHAIN_ID_2_MOCK,
-        fiat: { balance: 1 },
+        fiat: { balance: 50 },
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({
+      remoteFeatureFlags: {
+        confirmations_pay_tokens: {
+          preferredTokens: {
+            overrides: {
+              perpsDeposit: [
+                {
+                  address: TOKEN_ADDRESS_1_MOCK,
+                  chainId: CHAIN_ID_1_MOCK,
+                },
+              ],
+            },
+          },
+        },
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_1_MOCK,
+      chainId: CHAIN_ID_1_MOCK,
+    });
+  });
+
+  it('selects a no-fee token that meets the minimum over the first available token', () => {
+    selectMinimumRequiredTokenBalanceMock.mockReturnValue(5);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+        fiat: { balance: 20 },
       },
       {
-        address: TOKEN_ADDRESS_3_MOCK,
+        address: TOKEN_ADDRESS_2_MOCK,
         chainId: CHAIN_ID_2_MOCK,
         fiat: { balance: 10 },
       },
     ] as Asset[]);
 
-    renderHookWithProvider();
-
-    expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_3_MOCK,
-      chainId: CHAIN_ID_2_MOCK,
-    });
-  });
-
-  it('falls back to the required token when no funding token meets the minimum', () => {
-    selectMinimumRequiredTokenBalanceMock.mockReturnValue(5);
-    useTransactionPayAvailableTokensMock.mockReturnValue([
-      {
-        address: TOKEN_ADDRESS_2_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
-        fiat: { balance: 1 },
+    renderHookWithProvider({
+      remoteFeatureFlags: {
+        confirmations_relay_fixed_spread: {
+          chains: { src: CHAIN_ID_2_MOCK, dst: CHAIN_ID_1_MOCK },
+          tokens: {
+            fee: TOKEN_ADDRESS_2_MOCK,
+            other: TOKEN_ADDRESS_1_MOCK,
+          },
+          routes: [['src', 'fee', 'dst', 'other']],
+        },
       },
-    ] as Asset[]);
-
-    renderHookWithProvider();
+    });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
+      address: TOKEN_ADDRESS_2_MOCK,
+      chainId: CHAIN_ID_2_MOCK,
     });
   });
 
