@@ -5381,6 +5381,126 @@ describe('MetaMaskController', () => {
     });
   });
 
+  describe('setAccountGroupHidden', () => {
+    let metamaskController;
+
+    beforeEach(async () => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
+        },
+        browser: browserPolyfillMock,
+        getRequestAccountTabIds: () => ({}),
+        getOpenMetamaskTabsIds: () => ({}),
+        notificationManager: {
+          markAsAutomaticallyClosed: jest.fn(),
+        },
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
+      });
+    });
+
+    it('unpins the account group if it is pinned when hiding', () => {
+      const getAccountGroupSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'getAccountGroupObject')
+        .mockReturnValue({
+          id: 'account-group-1',
+          metadata: { pinned: true },
+        });
+      const setPinnedSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'setAccountGroupPinned')
+        .mockImplementation();
+      const setHiddenSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'setAccountGroupHidden')
+        .mockReturnValue({ id: 'account-group-1', hidden: true });
+
+      const api = metamaskController.getApi();
+      const result = api.setAccountGroupHidden('account-group-1', true);
+
+      expect(getAccountGroupSpy).toHaveBeenCalledWith('account-group-1');
+      expect(setPinnedSpy).toHaveBeenCalledWith('account-group-1', false);
+      expect(setHiddenSpy).toHaveBeenCalledWith('account-group-1', true);
+      expect(result).toStrictEqual({ id: 'account-group-1', hidden: true });
+    });
+
+    it('does not unpin the account group if it is not pinned when hiding', () => {
+      const getAccountGroupSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'getAccountGroupObject')
+        .mockReturnValue({
+          id: 'account-group-1',
+          metadata: { pinned: false },
+        });
+      const setPinnedSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'setAccountGroupPinned')
+        .mockImplementation();
+      const setHiddenSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'setAccountGroupHidden')
+        .mockReturnValue({ id: 'account-group-1', hidden: true });
+
+      const api = metamaskController.getApi();
+      const result = api.setAccountGroupHidden('account-group-1', true);
+
+      expect(getAccountGroupSpy).toHaveBeenCalledWith('account-group-1');
+      expect(setPinnedSpy).not.toHaveBeenCalled();
+      expect(setHiddenSpy).toHaveBeenCalledWith('account-group-1', true);
+      expect(result).toStrictEqual({ id: 'account-group-1', hidden: true });
+    });
+
+    it('does not unpin the account group if group object is not found when hiding', () => {
+      const getAccountGroupSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'getAccountGroupObject')
+        .mockReturnValue(undefined);
+      const setPinnedSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'setAccountGroupPinned')
+        .mockImplementation();
+      const setHiddenSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'setAccountGroupHidden')
+        .mockReturnValue({ id: 'account-group-1', hidden: true });
+
+      const api = metamaskController.getApi();
+      const result = api.setAccountGroupHidden('account-group-1', true);
+
+      expect(getAccountGroupSpy).toHaveBeenCalledWith('account-group-1');
+      expect(setPinnedSpy).not.toHaveBeenCalled();
+      expect(setHiddenSpy).toHaveBeenCalledWith('account-group-1', true);
+      expect(result).toStrictEqual({ id: 'account-group-1', hidden: true });
+    });
+
+    it('only calls setAccountGroupHidden when hidden is false', () => {
+      const getAccountGroupSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'getAccountGroupObject')
+        .mockReturnValue({
+          id: 'account-group-1',
+          metadata: { pinned: true },
+        });
+      const setPinnedSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'setAccountGroupPinned')
+        .mockImplementation();
+      const setHiddenSpy = jest
+        .spyOn(metamaskController.accountTreeController, 'setAccountGroupHidden')
+        .mockReturnValue({ id: 'account-group-1', hidden: false });
+
+      const api = metamaskController.getApi();
+      const result = api.setAccountGroupHidden('account-group-1', false);
+
+      expect(getAccountGroupSpy).not.toHaveBeenCalled();
+      expect(setPinnedSpy).not.toHaveBeenCalled();
+      expect(setHiddenSpy).toHaveBeenCalledWith('account-group-1', false);
+      expect(result).toStrictEqual({ id: 'account-group-1', hidden: false });
+    });
+  });
+
   describe('removeMultichainAccountWallet', () => {
     let metamaskController;
 

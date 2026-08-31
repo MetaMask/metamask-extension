@@ -1876,6 +1876,23 @@ describe('Actions', () => {
         removeMultichainAccountWallet.calledWith('01JKAF3DSGM3AB87EM9N0K41AJ'),
       ).toStrictEqual(true);
     });
+
+    it('throws and logs error when background call fails', async () => {
+      const store = mockStore();
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+      const error = new Error('Failed to remove wallet');
+      const removeMultichainAccountWallet = sinon.stub().rejects(error);
+
+      background.getApi = sinon.stub().returns({
+        removeMultichainAccountWallet,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(actions.removeMultichainAccountWallet(walletId)),
+      ).rejects.toThrow('Failed to remove wallet');
+    });
   });
 
   describe('#setAccountGroupName', () => {
