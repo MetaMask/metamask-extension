@@ -78,10 +78,6 @@ class ActivityTab extends HomePage {
     testId: `transaction-details-status-${status}`,
   });
 
-  private readonly viewTransactionOnExplorerButton = {
-    testId: 'transaction-details-block-explorer',
-  };
-
   /**
    * This function checks a swap or bridge transaction's details
    *
@@ -161,7 +157,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 10000);
+    }, 15000);
     console.log(
       `${expectedNumber} Bridge transactions found in activity list on homepage`,
     );
@@ -189,7 +185,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 10000);
+    }, 15000);
     console.log(
       `${expectedNumber} completed transactions found in activity list on homepage`,
     );
@@ -228,7 +224,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 10000);
+    }, 15000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
     );
@@ -256,34 +252,10 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 15000);
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
     );
-  }
-
-  /**
-   * Checks that fee values are displayed in the tx details.
-   */
-  async checkFeeValuesAreDisplayed(): Promise<void> {
-    console.log('Checking that fee values are displayed');
-    await this.driver.waitForSelector(this.baseFeeLabel);
-    await this.driver.waitForSelector(this.feeValues);
-    console.log('Fee values are displayed');
-  }
-
-  /**
-   * Checks that the gas price displayed in transaction details matches the expected value.
-   *
-   * @param expectedGasPrice - The expected gas price value.
-   */
-  async checkGasPrice(expectedGasPrice: string): Promise<void> {
-    console.log(`Checking gas price is ${expectedGasPrice}`);
-    await this.driver.waitForSelector({
-      css: this.gasPrice,
-      text: expectedGasPrice,
-    });
-    console.log(`Gas price ${expectedGasPrice} verified`);
   }
 
   async checkNoTxInActivity(): Promise<void> {
@@ -317,7 +289,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 10000);
+    }, 15000);
     console.log(
       `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
     );
@@ -345,7 +317,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 10000);
+    }, 15000);
     console.log(
       `${expectedNumber} pending transactions found in activity list on homepage`,
     );
@@ -395,29 +367,11 @@ class ActivityTab extends HomePage {
     });
   }
 
-  async checkTransactionActivityNotPresentByText(
-    txnText: string,
-  ): Promise<void> {
-    console.log(`Check transaction activity with text is absent: ${txnText}`);
-    await this.driver.assertElementNotPresent({
-      text: txnText,
-      css: this.activityListAction,
-    });
-  }
-
   async checkTransactionAmount(transactionAmount: string): Promise<void> {
     console.log('Validate transaction amount');
     await this.driver.waitForSelector({
       css: this.transactionAmountsInActivity,
       text: transactionAmount,
-    });
-  }
-
-  async checkTransactionAmountNotPresent(amount: string): Promise<void> {
-    console.log(`Check transaction amount is absent: ${amount}`);
-    await this.driver.assertElementNotPresent({
-      css: this.transactionAmountsInActivity,
-      text: amount,
     });
   }
 
@@ -480,7 +434,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 10000);
+    }, 15000);
     console.log(`Action for transaction ${txIndex} is displayed as ${action}`);
   }
 
@@ -565,32 +519,6 @@ class ActivityTab extends HomePage {
 
   async clickSpeedUpTransaction() {
     await this.driver.clickElement(this.speedupInlineButton);
-  }
-
-  async getAllTransactionAmounts(): Promise<string[]> {
-    console.log('Getting all transaction amounts');
-    const transactionAmounts = await this.driver.findElements(
-      this.transactionAmountsInActivity,
-    );
-    const amounts = await Promise.all(
-      transactionAmounts.map(async (amount) => await amount.getText()),
-    );
-
-    console.log('Transaction amounts found', amounts);
-    return amounts;
-  }
-
-  /**
-   * This function clicks on the "View on block explorer" button for the specified transaction.
-   *
-   * @param expectedNumber - The 1-based index of the transaction to be clicked.
-   */
-  async viewTransactionOnExplorer(expectedNumber: number): Promise<void> {
-    console.log(
-      `Viewing transaction on explorer for transaction ${expectedNumber}`,
-    );
-    await this.clickOnActivity(expectedNumber);
-    await this.driver.clickElement(this.viewTransactionOnExplorerButton);
   }
 
   /**
