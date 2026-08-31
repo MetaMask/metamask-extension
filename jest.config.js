@@ -1,5 +1,6 @@
 const consoleReporterRules = require('./test/jest/console-reporter-rules-unit');
 
+// TODO: Find a way to share this list with `jest.integration.config.js`.
 const ESM_DEPENDENCIES_TO_TRANSPILE = [
   '@metamask/base-controller',
   '@metamask/base-data-service',
