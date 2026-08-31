@@ -19,20 +19,60 @@ import {
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
   type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
-import { POLYGON_NATIVE_TOKEN_ADDRESS } from '../constants/transaction';
+import { NATIVE_TOKEN_ADDRESS } from '../constants/transaction';
 import getFetchWithTimeout from './fetch-with-timeout';
 import { decimalToPrefixedHex } from './conversion.utils';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
-const polygonCaipChainId = 'eip155:137' as CaipChainId;
+
+/**
+ * Convert a CAIP-2 or hex chain id to hex for `getNativeTokenAddress`.
+ *
+ * @param chainId - Chain id in CAIP or hex form.
+ * @returns Hex chain id, or `undefined` when the input is not an EVM chain.
+ */
+function toHexChainId(chainId: CaipChainId | Hex | string): Hex | undefined {
+  if (isStrictHexString(chainId)) {
+    return chainId;
+  }
+  if (!isCaipChainId(chainId)) {
+    return undefined;
+  }
+  const { namespace, reference } = parseCaipChainId(chainId);
+  if (namespace !== KnownCaipNamespace.Eip155) {
+    return undefined;
+  }
+  return numberToHex(Number.parseInt(reference, 10));
+}
+
+/**
+ * True when `address` is this chain's native token, including non-zero natives
+ * such as Polygon (`0x…1010`) and Mantle/Metis (`0xdead…0000`).
+ *
+ * @param address - Token address or asset reference.
+ * @param chainId - Chain id in CAIP or hex form.
+ * @returns Whether the address is the native token for the chain.
+ */
+function isNativeTokenAddressForChain(
+  address: string,
+  chainId: CaipChainId | Hex | string,
+): boolean {
+  const hexChainId = toHexChainId(chainId);
+  if (!hexChainId) {
+    return false;
+  }
+  return (
+    address.toLowerCase() === getNativeTokenAddress(hexChainId).toLowerCase()
+  );
+}
 
 export const toAssetId = (
   address: Hex | CaipAssetType | string,
@@ -54,12 +94,16 @@ export const toAssetId = (
     return undefined;
   }
 
-  // TODO: Fix or replace `isNativeAddress` to support Polygon
-  const isPolygonNative =
-    chainIdToUse === polygonCaipChainId &&
-    addressToUse === POLYGON_NATIVE_TOKEN_ADDRESS;
+  // Non-zero native addresses (Polygon, Mantle, Metis, …) must share the same
+  // asset id as `0x0`, otherwise Send routes them as ERC-20 transfers.
+  if (
+    typeof addressToUse === 'string' &&
+    isNativeTokenAddressForChain(addressToUse, chainIdToUse)
+  ) {
+    addressToUse = NATIVE_TOKEN_ADDRESS;
+  }
 
-  if (isNativeAddress(addressToUse) || isPolygonNative) {
+  if (isNativeAddress(addressToUse)) {
     try {
       return getNativeAssetForChainId(chainIdToUse)?.assetId;
     } catch {
