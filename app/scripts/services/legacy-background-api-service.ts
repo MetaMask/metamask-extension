@@ -122,11 +122,13 @@ import {
   GetTokenListState,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
+  TokensControllerAddTokenAction,
   TokensControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import {
   AccountId,
   Asset,
+  AssetsControllerAddCustomAssetAction,
   AssetsControllerGetAssetsAction,
   AssetsControllerGetStateAction,
   AssetsControllerSetSelectedCurrencyAction,
@@ -287,6 +289,7 @@ import {
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import {
   fetchTokenBalance,
@@ -483,6 +486,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'addPermittedAccounts',
   'addPermittedChain',
   'addPermittedChains',
+  'addToken',
   'addTransaction',
   'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
@@ -618,6 +622,7 @@ type AllowedActions =
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
   | AppStateControllerSetTrezorModelAction
   | AssetsContractControllerGetTokenStandardAndDetailsAction
+  | AssetsControllerAddCustomAssetAction
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
@@ -737,6 +742,7 @@ type AllowedActions =
   | GetTokenListState
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
+  | TokensControllerAddTokenAction
   | TokensControllerGetStateAction
   | TransactionControllerAddTransactionAction
   | TransactionControllerAddTransactionBatchAction
@@ -943,6 +949,75 @@ export class LegacyBackgroundApiService {
       ...options,
       forceUpdate: true,
     });
+  }
+
+  /**
+   * Adds a token to the wallet.
+   *
+   * When the assets unify state feature is enabled, the token is added as a
+   * custom asset on the AssetsController for the currently selected account
+   * (resolving the chain ID from the given network client and building the
+   * CAIP-19 asset ID from the address). Otherwise, it is added via the
+   * TokensController.
+   *
+   * @param token - The token to add.
+   * @param token.address - The token contract address.
+   * @param token.symbol - The token symbol.
+   * @param token.decimals - The number of decimals the token uses.
+   * @param token.image - An optional icon URL for the token.
+   * @param token.networkClientId - The ID of the network client the token is on.
+   */
+  async addToken({
+    address,
+    symbol,
+    decimals,
+    image,
+    networkClientId,
+  }: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    image?: string;
+    networkClientId: string;
+  }): Promise<void> {
+    if (getIsAssetsUnifiedStateIncludedInBuild()) {
+      const selectedAccount = this.#messenger.call(
+        'AccountsController:getSelectedAccount',
+      );
+      const {
+        configuration: { chainId },
+      } = this.#messenger.call(
+        'NetworkController:getNetworkClientById',
+        networkClientId,
+      );
+      const assetId = toAssetId(address, chainId);
+      if (!assetId) {
+        throw new Error(
+          `MetaMask - Cannot build assetId for token ${address} on ${chainId}`,
+        );
+      }
+      await this.#messenger.call(
+        'AssetsController:addCustomAsset',
+        selectedAccount.id,
+        assetId,
+        {
+          address,
+          symbol,
+          name: symbol,
+          decimals,
+          chainId,
+          ...(image ? { iconUrl: image } : {}),
+        },
+      );
+    } else {
+      await this.#messenger.call('TokensController:addToken', {
+        address,
+        symbol,
+        decimals,
+        image,
+        networkClientId,
+      });
+    }
   }
 
   /**

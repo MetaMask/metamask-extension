@@ -172,6 +172,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/eth-sig-util": "^9.0.0",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "35.0.0",
     "follow-redirects": "^1.16.0",
@@ -411,7 +412,7 @@
     "@metamask/eth-ledger-bridge-keyring": "^13.1.0",
     "@metamask/eth-money-keyring": "3.0.0",
     "@metamask/eth-qr-keyring": "^3.0.0",
-    "@metamask/eth-sig-util": "^8.2.0",
+    "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/eth-snap-keyring": "^24.0.0",
     "@metamask/eth-token-tracker": "^10.0.2",
     "@metamask/eth-trezor-keyring": "^11.0.0",

@@ -6969,9 +6969,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^8.2.0":
-  version: 8.2.0
-  resolution: "@metamask/eth-sig-util@npm:8.2.0"
+"@metamask/eth-sig-util@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/eth-sig-util@npm:9.0.0"
   dependencies:
     "@ethereumjs/rlp": "npm:^4.0.1"
     "@ethereumjs/util": "npm:^8.1.0"
@@ -6980,7 +6980,7 @@ __metadata:
     "@scure/base": "npm:~1.1.3"
     ethereum-cryptography: "npm:^2.1.2"
     tweetnacl: "npm:^1.0.3"
-  checksum: 10/385df1ec541116e1bd725a1df1a519996bad167f99d1b2677126e398cdfda6fc3f03d2ff8f1ca523966bc0aae3ea92a9050953a45d5a7711f4128aacf9242bfc
+  checksum: 10/b4e0bc59fd306ee7d6308e9a21920ade79efbb2d157af06a71cf3fab2621e7373ea5e14159a18e28b21208ef5b949fef68e98ae54874ed07cef728f3a38f7d46
   languageName: node
   linkType: hard
 
@@ -33415,7 +33415,7 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:^13.1.0"
     "@metamask/eth-money-keyring": "npm:3.0.0"
     "@metamask/eth-qr-keyring": "npm:^3.0.0"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/eth-sig-util": "npm:^9.0.0"
     "@metamask/eth-snap-keyring": "npm:^24.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
     "@metamask/eth-trezor-keyring": "npm:^11.0.0"
