@@ -5413,16 +5413,25 @@ describe('MetaMaskController', () => {
 
     it('unpins the account group if it is pinned when hiding', () => {
       const getAccountGroupSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'getAccountGroupObject')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'getAccountGroupObject',
+        )
         .mockReturnValue({
           id: 'account-group-1',
           metadata: { pinned: true },
         });
       const setPinnedSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'setAccountGroupPinned')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'setAccountGroupPinned',
+        )
         .mockImplementation();
       const setHiddenSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'setAccountGroupHidden')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'setAccountGroupHidden',
+        )
         .mockReturnValue({ id: 'account-group-1', hidden: true });
 
       const api = metamaskController.getApi();
@@ -5436,16 +5445,25 @@ describe('MetaMaskController', () => {
 
     it('does not unpin the account group if it is not pinned when hiding', () => {
       const getAccountGroupSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'getAccountGroupObject')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'getAccountGroupObject',
+        )
         .mockReturnValue({
           id: 'account-group-1',
           metadata: { pinned: false },
         });
       const setPinnedSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'setAccountGroupPinned')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'setAccountGroupPinned',
+        )
         .mockImplementation();
       const setHiddenSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'setAccountGroupHidden')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'setAccountGroupHidden',
+        )
         .mockReturnValue({ id: 'account-group-1', hidden: true });
 
       const api = metamaskController.getApi();
@@ -5459,13 +5477,22 @@ describe('MetaMaskController', () => {
 
     it('does not unpin the account group if group object is not found when hiding', () => {
       const getAccountGroupSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'getAccountGroupObject')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'getAccountGroupObject',
+        )
         .mockReturnValue(undefined);
       const setPinnedSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'setAccountGroupPinned')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'setAccountGroupPinned',
+        )
         .mockImplementation();
       const setHiddenSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'setAccountGroupHidden')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'setAccountGroupHidden',
+        )
         .mockReturnValue({ id: 'account-group-1', hidden: true });
 
       const api = metamaskController.getApi();
@@ -5479,16 +5506,25 @@ describe('MetaMaskController', () => {
 
     it('only calls setAccountGroupHidden when hidden is false', () => {
       const getAccountGroupSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'getAccountGroupObject')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'getAccountGroupObject',
+        )
         .mockReturnValue({
           id: 'account-group-1',
           metadata: { pinned: true },
         });
       const setPinnedSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'setAccountGroupPinned')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'setAccountGroupPinned',
+        )
         .mockImplementation();
       const setHiddenSpy = jest
-        .spyOn(metamaskController.accountTreeController, 'setAccountGroupHidden')
+        .spyOn(
+          metamaskController.accountTreeController,
+          'setAccountGroupHidden',
+        )
         .mockReturnValue({ id: 'account-group-1', hidden: false });
 
       const api = metamaskController.getApi();
