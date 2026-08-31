@@ -189,6 +189,7 @@ import { getComplianceControllerMessenger } from './compliance-controller-messen
 import { getComplianceServiceMessenger } from './compliance-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
+import { getUserTraitsServiceMessenger } from './user-traits-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
 import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
@@ -727,6 +728,10 @@ export const MESSENGER_FACTORIES = {
   },
   ProofOfOwnershipService: {
     getMessenger: getProofOfOwnershipServiceMessenger,
+    getInitMessenger: noop,
+  },
+  UserTraitsService: {
+    getMessenger: getUserTraitsServiceMessenger,
     getInitMessenger: noop,
   },
 } as const;
