@@ -161,7 +161,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(
       `${expectedNumber} Bridge transactions found in activity list on homepage`,
     );
@@ -228,7 +228,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
     );
@@ -317,7 +317,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(
       `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
     );
@@ -480,7 +480,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(`Action for transaction ${txIndex} is displayed as ${action}`);
   }
 
