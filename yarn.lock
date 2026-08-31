@@ -6141,10 +6141,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:@metamask-previews/bitcoin-wallet-snap@2.0.1-preview-44c9de6":
-  version: 2.0.1-preview-44c9de6
-  resolution: "@metamask-previews/bitcoin-wallet-snap@npm:2.0.1-preview-44c9de6"
-  checksum: 10/b4f8b00bac441d8b18ddd68ffe687dceafca5a8a9d946fc6f0b134a4e22609240870073874c4a3461b8b3608a71c112e2b4205ef81faf6d20e151759140face5
+"@metamask/bitcoin-wallet-snap@npm:@metamask-previews/bitcoin-wallet-snap@2.0.1-preview-dc0688bf":
+  version: 2.0.1-preview-dc0688bf
+  resolution: "@metamask-previews/bitcoin-wallet-snap@npm:2.0.1-preview-dc0688bf"
+  checksum: 10/335b341260ef03430492b0fd6d333dfdc9b916e20eb24cb852048b9403728d41d40470266cf2633fa80073b6e01bc41bd613bd9445ca36110a97aa2967efe4bf
   languageName: node
   linkType: hard
 
@@ -8851,10 +8851,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:@metamask-previews/solana-wallet-snap@6.0.0-preview-44c9de6":
-  version: 6.0.0-preview-44c9de6
-  resolution: "@metamask-previews/solana-wallet-snap@npm:6.0.0-preview-44c9de6"
-  checksum: 10/205213750a38f5e46837e5cd09b4ce5c8c01a277536f22e0fc5eb5b3aacce31284ba27d51533560868edfa8972136200f5ca83ef6a92aa606c89b626272de570
+"@metamask/solana-wallet-snap@npm:@metamask-previews/solana-wallet-snap@6.0.0-preview-dc0688bf":
+  version: 6.0.0-preview-dc0688bf
+  resolution: "@metamask-previews/solana-wallet-snap@npm:6.0.0-preview-dc0688bf"
+  checksum: 10/c4f699f72ca84585ea7acd65d305cea26cd5ebdbea889d2f4b1eb95c8fb6bb646c4fdbf2940fc005f3c8bab6a086b599d99c0f38191a0fa3db2c7c00c890476f
   languageName: node
   linkType: hard
 
@@ -8872,10 +8872,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@0.1.0-preview-44c9de6":
-  version: 0.1.0-preview-44c9de6
-  resolution: "@metamask-previews/stellar-wallet-snap@npm:0.1.0-preview-44c9de6"
-  checksum: 10/c1701d0d37dc585265441b566d524a957326c8d3bc35a08eff34ee82eb4eabe14bd331da0d6153c2f2772fbcb5ce7f1a7c68a227051139251020fcac629764e2
+"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@0.1.0-preview-dc0688bf":
+  version: 0.1.0-preview-dc0688bf
+  resolution: "@metamask-previews/stellar-wallet-snap@npm:0.1.0-preview-dc0688bf"
+  checksum: 10/bc57c2ba012d3d8b76f5054d68fa5408d92865f5c0dcf93e47e5029e646a026b17859b03b3dae79024ec000c18f0c9644b0dbc58df5fb9776ac286df7b326e1b
   languageName: node
   linkType: hard
 
@@ -9172,10 +9172,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@3.1.0-preview-44c9de6":
-  version: 3.1.0-preview-44c9de6
-  resolution: "@metamask-previews/tron-wallet-snap@npm:3.1.0-preview-44c9de6"
-  checksum: 10/3eeb19a658dcd3d658d9de468272680133d19d1b52405b39e3650ffc9ad473a0ccc63747782577b61f06b115e6891371ecf08e89c9f0fba01710ae5051afdbee
+"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@3.1.0-preview-dc0688bf":
+  version: 3.1.0-preview-dc0688bf
+  resolution: "@metamask-previews/tron-wallet-snap@npm:3.1.0-preview-dc0688bf"
+  checksum: 10/f4e6a477d62cae5128ad5879bad15ce5ed8c684a63919dfa685e43275e9475afe82907d0186250aa97cdab96de4b919e1d39f64676fb938b269650b07112a1c7
   languageName: node
   linkType: hard
 
