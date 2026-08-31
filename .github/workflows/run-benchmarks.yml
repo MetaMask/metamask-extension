@@ -81,8 +81,18 @@ jobs:
         # This must be set below the job timeout so that the job itself does not timeout.
         timeout-minutes: 25
         id: run-benchmark
-        run: >-
+        env:
+          BENCHMARK_OUT: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+        run: |
           ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
+          # The runner can exit 0 having written nothing: run-benchmark.ts catches a
+          # per-file error into `allResults[key] = { error }` and `main()` still
+          # resolves. Assert here so the failure is attributed to the benchmark
+          # rather than to whichever later step is first to read the missing file.
+          if [ ! -s "$BENCHMARK_OUT" ]; then
+            echo "::error::Benchmark ${{ matrix.pageType }} produced no results at $BENCHMARK_OUT. The run exited 0, so the failure is inside the benchmark, not in this step."
+            exit 1
+          fi
         shell: bash
 
       - name: Send benchmark results to Sentry (main/release only)
@@ -173,7 +183,16 @@ jobs:
         # This must be set below the job timeout so that the job itself does not timeout.
         timeout-minutes: 25
         id: run-page-load
-        run: yarn test:e2e:benchmark --preset=pageLoadBenchmark
+        run: |
+          yarn test:e2e:benchmark --preset=pageLoadBenchmark
+          # Same assertion as the matrix job. This leg is the one that has actually
+          # failed this way: a dapp server that is not up yet makes the measurement
+          # throw, the throw is swallowed, and the first visible symptom is an ENOENT
+          # from the Sentry upload two steps later.
+          if [ ! -s "test-artifacts/benchmarks/${DAPP_BENCHMARK_JSON}" ]; then
+            echo "::error::Page-load benchmark produced no results at test-artifacts/benchmarks/${DAPP_BENCHMARK_JSON}. The run exited 0, so the failure is inside the benchmark, not in this step."
+            exit 1
+          fi
 
       - name: Send benchmark results to Sentry (main/release only)
         if: >-
