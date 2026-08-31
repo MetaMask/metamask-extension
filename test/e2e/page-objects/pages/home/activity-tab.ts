@@ -288,7 +288,7 @@ class ActivityTab extends HomePage {
 
   async checkNoFailedTransactions(): Promise<void> {
     try {
-      await this.driver.findElement(this.failedTransactions, 1);
+      await this.driver.findElement(this.failedTransactions);
     } catch (error) {
       return;
     }

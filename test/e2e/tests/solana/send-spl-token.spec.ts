@@ -227,7 +227,6 @@ async function mockSendSPLTokenFailed(
 }
 
 describe('Send flow - SPL Token', function (this: Suite) {
-  this.timeout(120000); //
   it('user with more than 1 token in the token list', async function () {
     await withFixtures(
       {

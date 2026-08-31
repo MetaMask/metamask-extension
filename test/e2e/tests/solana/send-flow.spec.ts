@@ -51,8 +51,8 @@ async function buildLocalSolanaTestSpecificMock(
 }
 
 describe('Send flow', function (this: Suite) {
-  this.timeout(180000);
   it('with some field validation', async function () {
+    this.timeout(120000);
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -85,6 +85,7 @@ describe('Send flow', function (this: Suite) {
   });
 
   it('full flow of SOL with a positive balance account', async function () {
+    this.timeout(120000);
     // Captured in afterLocalNodesStart (which runs before the network mocks
     // are set up) so the mock builder can proxy calls to the local node.
     // testSpecificMock itself keeps its single-argument contract.
