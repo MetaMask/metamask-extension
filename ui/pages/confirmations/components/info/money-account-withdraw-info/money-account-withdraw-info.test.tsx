@@ -29,7 +29,7 @@ jest.mock('../../../../../contexts/route-messenger', () => ({
 }));
 
 jest.mock(
-  '../../money-account-confirmations/money-account-withdraw-balance',
+  '../../../../../components/app/money/money-account-withdraw-balance',
   () => ({
     MoneyAccountWithdrawBalance: () => (
       <div data-testid="money-account-withdraw-balance-mock" />
