@@ -2911,46 +2911,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:toggleExternalServices',
       ),
-      addToken: async ({
-        address,
-        symbol,
-        decimals,
-        image,
-        networkClientId,
-      }) => {
-        if (getIsAssetsUnifiedStateIncludedInBuild()) {
-          const selectedAccount = this.accountsController.getSelectedAccount();
-          const chainId =
-            this.networkController.getNetworkClientById(networkClientId)
-              ?.configuration?.chainId;
-          const assetId = toAssetId(address, chainId);
-          if (!assetId) {
-            throw new Error(
-              `MetaMask - Cannot build assetId for token ${address} on ${chainId}`,
-            );
-          }
-          await this.assetsController.addCustomAsset(
-            selectedAccount.id,
-            assetId,
-            {
-              address,
-              symbol,
-              name: symbol,
-              decimals,
-              chainId,
-              ...(image ? { iconUrl: image } : {}),
-            },
-          );
-        } else {
-          await tokensController.addToken({
-            address,
-            symbol,
-            decimals,
-            image,
-            networkClientId,
-          });
-        }
-      },
+      addToken: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addToken',
+      ),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
@@ -3048,21 +3012,10 @@ export default class MetamaskController extends EventEmitter {
         'MultichainAccountService:alignWallets',
       ),
 
-      removeMultichainAccountWallet: async (entropySourceOrWalletId) => {
-        if (
-          !entropySourceOrWalletId ||
-          typeof entropySourceOrWalletId !== 'string'
-        ) {
-          throw new Error('Entropy source ID or wallet ID is required');
-        }
-        const entropySource = entropySourceOrWalletId.startsWith('entropy:')
-          ? entropySourceOrWalletId.replace(/^entropy:/u, '')
-          : entropySourceOrWalletId;
-        return await this.controllerMessenger.call(
-          'MultichainAccountService:removeMultichainAccountWallet',
-          entropySource,
-        );
-      },
+      removeMultichainAccountWallet: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'MultichainAccountService:removeMultichainAccountWallet',
+      ),
 
       // AssetsContractController
       getTokenStandardAndDetails: this.controllerMessenger.call.bind(
@@ -3567,32 +3520,6 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // MetaMetrics
-      trackMetaMetricsEvent: (payload, options) => {
-        trackEvent(
-          createEventBuilder(payload.event)
-            .addProperties({
-              ...(payload.properties ?? {}),
-              ...(payload.category === undefined
-                ? {}
-                : { category: payload.category }),
-              ...(payload.revenue === undefined
-                ? {}
-                : { revenue: payload.revenue }),
-              ...(payload.value === undefined ? {} : { value: payload.value }),
-              ...(payload.currency === undefined
-                ? {}
-                : { currency: payload.currency }),
-            })
-            .addSensitiveProperties(payload.sensitiveProperties)
-            .build({
-              environmentType: payload.environmentType,
-              page: payload.page,
-              referrer: payload.referrer,
-              excludeMetaMetricsId: options?.excludeMetaMetricsId,
-              matomoEvent: options?.matomoEvent,
-            }),
-        );
-      },
       trackAnalyticsEvent: trackEvent,
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
