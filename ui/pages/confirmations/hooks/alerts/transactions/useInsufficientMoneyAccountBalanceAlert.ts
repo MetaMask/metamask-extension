@@ -48,7 +48,11 @@ function disabledWithdrawAlertQueryFn(): never {
  * withdraw info messenger) so this can run in `useConfirmationAlerts` without
  * requiring a money-account route messenger.
  *
- * Mirrors mobile `useInsufficientMoneyAccountBalanceAlert`.
+ * Mirrors mobile `useInsufficientMoneyAccountBalanceAlert`, including its
+ * live-input responsiveness: mobile evaluates the pending typed amount, so
+ * the extension prefers the synchronously-recorded last withdraw amount over
+ * `primaryRequiredToken.amountHuman`, which lags typing by the debounced
+ * calldata encode.
  *
  * @param options
  * @param options.pendingAmount - Optional in-progress human mUSD amount.

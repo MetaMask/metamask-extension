@@ -221,4 +221,35 @@ describe('useInsufficientMoneyAccountBalanceAlert', () => {
 
     expect(result.current).toStrictEqual([]);
   });
+  it('returns alert when the live typed amount exceeds the balance', () => {
+    // Mirrors mobile: the alert reacts to the current input, not just the
+    // debounced calldata commit.
+    useLastWithdrawAmountMock.mockReturnValue('150');
+
+    const { result } = runHook();
+
+    expect(result.current).toEqual([EXPECTED_ALERT]);
+  });
+
+  it('prefers the live typed amount over the stale required token amount', () => {
+    // The user reduced the amount below the balance; the committed calldata
+    // still carries the previous over-balance amount until the debounce
+    // re-encodes. The alert must clear immediately.
+    useLastWithdrawAmountMock.mockReturnValue('50');
+    usePrimaryRequiredTokenMock.mockReturnValue({
+      amountHuman: '150',
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual([]);
+  });
+
+  it('prefers pendingAmount over the live typed amount', () => {
+    useLastWithdrawAmountMock.mockReturnValue('50');
+
+    const { result } = runHook({ pendingAmount: '150' });
+
+    expect(result.current).toEqual([EXPECTED_ALERT]);
+  });
 });
