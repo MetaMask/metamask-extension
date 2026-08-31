@@ -1,7 +1,7 @@
 import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { Readable } from 'stream';
 import { MockttpServer } from 'mockttp';
-import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../../data/mock-data';
+import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../data/mock-data';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { SSE_RESPONSE_HEADER } from '../bridge/constants';
