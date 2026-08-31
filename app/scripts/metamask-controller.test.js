@@ -2236,8 +2236,8 @@ describe('MetaMaskController', () => {
 
       const mockKeyringType = (type) =>
         jest
-          .spyOn(metamaskController.keyringController, 'getAccountKeyringType')
-          .mockResolvedValue(type);
+          .spyOn(metamaskController.keyringController, 'getKeyringForAccount')
+          .mockResolvedValue({ type });
 
       const mockAtomicBatchSupport = () =>
         jest
@@ -2291,7 +2291,7 @@ describe('MetaMaskController', () => {
 
       it('reports unsupported when the keyring lookup fails', async () => {
         jest
-          .spyOn(metamaskController.keyringController, 'getAccountKeyringType')
+          .spyOn(metamaskController.keyringController, 'getKeyringForAccount')
           .mockRejectedValue(
             new Error('No keyring found for the requested account.'),
           );

@@ -105,10 +105,7 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
 import { AggregatedOrderBookConnection } from '@metamask/perps-controller';
-import {
-  KeyringType as KeyringTypes,
-  KEYRING_TYPES_SUPPORTING_7702,
-} from '../../shared/constants/keyring';
+import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
@@ -188,6 +185,7 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-flags';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
+import { accountSupports7702 } from './lib/account-supports-7702';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -7126,7 +7124,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} request - The request object
    * @param {string} request.address - The account address
    * @param {string} request.chainId - The chain ID to check
-   * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>}
+   * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>} Whether the account can be upgraded and, if so, the contract address it should delegate to.
    */
   async isEip7702Supported(request) {
     const { address, chainId } = request;
@@ -7135,18 +7133,17 @@ export default class MetamaskController extends EventEmitter {
     // Accounts whose keyring cannot sign EIP-7702 authorizations (e.g.
     // hardware and snap keyrings) can never be upgraded. Fail closed on
     // lookup errors so callers do not attempt an upgrade that must fail.
-    let keyringSupports7702 = false;
-    try {
-      const keyringType =
-        await this.keyringController.getAccountKeyringType(normalizedAccount);
-      keyringSupports7702 = KEYRING_TYPES_SUPPORTING_7702.includes(keyringType);
-    } catch {
-      keyringSupports7702 = false;
-    }
-    if (!keyringSupports7702) {
+    if (
+      !(await accountSupports7702(
+        normalizedAccount,
+        this.keyringController,
+        false,
+      ))
+    ) {
       return { isSupported: false, upgradeContractAddress: null };
     }
 
+    // This also checks the launchdarkly flag that enables EIP-7702 support.
     const atomicBatchSupport = await this.txController.isAtomicBatchSupported({
       address: normalizedAccount,
       chainIds: [chainId],

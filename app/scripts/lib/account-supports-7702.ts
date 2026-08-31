@@ -20,7 +20,8 @@ type AccountSupports7702Messenger = RootMessenger<
  * @param address - Account address (e.g. request.from or transactionMeta.txParams?.from).
  * @param keyringSource - A KeyringController instance, a function that returns
  * it, or a messenger that can call `KeyringController:getKeyringForAccount`.
- * @returns True if the account supports 7702 (or address is missing / lookup fails; assume supported).
+ * @param fallbackOnError - Whether to assume support when the keyring lookup fails.
+ * @returns True if the account supports 7702 (or address is missing / lookup fails when fallbackOnError is true).
  */
 export async function accountSupports7702(
   address: string | undefined,
@@ -28,6 +29,7 @@ export async function accountSupports7702(
     | KeyringControllerLike
     | (() => KeyringControllerLike)
     | AccountSupports7702Messenger,
+  fallbackOnError = true,
 ): Promise<boolean> {
   if (!address) {
     return true;
@@ -51,6 +53,6 @@ export async function accountSupports7702(
         : '';
     return KEYRING_TYPES_SUPPORTING_7702.includes(keyringType as never);
   } catch {
-    return true;
+    return fallbackOnError;
   }
 }
