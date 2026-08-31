@@ -25,10 +25,10 @@ export type InitiateWithdrawalOptions = {
  * as `useMoneyAccountDeposit`. There is no deposit-intent equivalent for
  * withdrawals — mobile records none either.
  *
- * Fails fast (as mobile does) when no EVM account is selected: that address
- * is passed through as Pay's `accountOverride` so the confirmation defaults
- * the From row — and the withdraw recipient — to the currently selected
- * account instead of the money account that executes the batch.
+ * Fails fast when no eligible EVM account is selected. The selected account's
+ * address is passed as Pay's `accountOverride` so the confirmation defaults
+ * the From row — and the withdraw recipient — to that account instead of the
+ * money account that executes the batch.
  *
  * @returns The initiator and its loading state.
  */

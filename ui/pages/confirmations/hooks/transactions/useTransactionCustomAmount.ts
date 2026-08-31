@@ -86,7 +86,7 @@ export function useTransactionCustomAmount({
       ? musdFiatRate
       : (payTokenFiatRate ?? 1);
   const hasBalanceUsdOverride = balanceUsdOverride !== undefined;
-  const balanceUsd = useTokenBalance(balanceUsdOverride);
+  const balanceUsd = usePayTokenBalanceUsd(balanceUsdOverride);
 
   const { payToken } = useTransactionPayToken();
   const { isNoFeeToken } = usePayWithNoFeeToken();
@@ -529,7 +529,7 @@ export function useTransactionCustomAmount({
   };
 }
 
-function useTokenBalance(balanceUsdOverride?: number) {
+function usePayTokenBalanceUsd(balanceUsdOverride?: number) {
   const { balanceUsd } = usePayTokenAccountBalance();
 
   if (balanceUsdOverride !== undefined) {

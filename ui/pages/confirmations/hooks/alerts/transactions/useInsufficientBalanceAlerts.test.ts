@@ -21,6 +21,10 @@ import {
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
+jest.mock('../../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(),
+}));
 jest.mock('../../gas/useIsGaslessSupported');
 jest.mock('../../pay/useTransactionPayHasSourceAmount');
 jest.mock('../../pay/useTransactionPayData');

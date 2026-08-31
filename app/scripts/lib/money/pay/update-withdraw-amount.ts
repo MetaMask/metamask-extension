@@ -2,10 +2,12 @@ import { buildMoneyAccountWithdrawBatch } from '@metamask/money-account-utils';
 import { isStrictHexString, type Hex } from '@metamask/utils';
 import type { WithdrawAmountCommitResult } from '../../../../../shared/lib/money/withdraw-amount-commit';
 import {
-  applyNestedCalldataUpdates,
   beginAmountCommit,
+  clearAmountCommitIfCurrent,
+  commitTransactionPayUpdates,
   getTransactionMeta,
   parseMusdHumanAmount,
+  pruneStaleAmountCommits,
 } from './amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 
@@ -29,6 +31,8 @@ export async function updateMoneyAccountWithdrawAmount(
   amountHuman: string,
   accountOverride?: Hex,
 ): Promise<WithdrawAmountCommitResult> {
+  pruneStaleAmountCommits(messenger);
+
   const amountRaw = parseMusdHumanAmount(amountHuman);
   if (amountRaw === undefined) {
     return { didCommit: false };
@@ -53,7 +57,7 @@ export async function updateMoneyAccountWithdrawAmount(
       return { didCommit: false };
     }
 
-    applyNestedCalldataUpdates(
+    commitTransactionPayUpdates(
       messenger,
       transactionId,
       updates,
@@ -65,6 +69,8 @@ export async function updateMoneyAccountWithdrawAmount(
       return { didCommit: false };
     }
     throw error;
+  } finally {
+    clearAmountCommitIfCurrent(transactionId, isCurrent);
   }
 }
 

@@ -67,13 +67,18 @@ function runHook(
   props: Parameters<typeof useInsufficientPayTokenBalanceAlert>[0] = {},
   {
     paymentOverride,
+    confirmationOverrides,
   }: {
     paymentOverride?: PaymentOverride;
+    confirmationOverrides?: Partial<TransactionMeta>;
   } = {},
 ) {
-  const contractInteraction = genUnapprovedContractInteractionConfirmation({
-    chainId: CHAIN_IDS.MAINNET,
-  }) as TransactionMeta;
+  const contractInteraction = {
+    ...genUnapprovedContractInteractionConfirmation({
+      chainId: CHAIN_IDS.MAINNET,
+    }),
+    ...confirmationOverrides,
+  } as TransactionMeta;
 
   const state = getMockConfirmStateForTransaction(contractInteraction, {
     metamask: paymentOverride
@@ -405,7 +410,43 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       expect(result.current).toStrictEqual([]);
     });
 
-    it('returns no alert when source chain is Monad even if native balance is insufficient', () => {
+    it('returns no alert for gas-sponsored money-account deposits even if native balance is insufficient', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          chainId: CHAIN_IDS.MONAD as Hex,
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: CHAIN_IDS.MONAD,
+        symbol: 'MON',
+        decimals: 18,
+        balance: '0',
+        balanceRaw: '0',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
+
+      const { result } = runHook(
+        {},
+        {
+          confirmationOverrides: {
+            isGasFeeSponsored: true,
+            nestedTransactions: [
+              { type: TransactionType.moneyAccountDeposit },
+            ],
+          },
+        },
+      );
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns alert on Monad when the transaction is not a sponsored money-account deposit', () => {
       useTransactionPayTokenMock.mockReturnValue({
         payToken: {
           ...PAY_TOKEN_MOCK,
@@ -428,7 +469,14 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
 
       const { result } = runHook();
 
-      expect(result.current).toStrictEqual([]);
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.InsufficientPayTokenNative,
+          field: RowAlertKey.EstimatedFee,
+          severity: Severity.Danger,
+          isBlocking: true,
+        }),
+      ]);
     });
 
     it('returns no alert when paying with Money Account even if native balance is insufficient', () => {

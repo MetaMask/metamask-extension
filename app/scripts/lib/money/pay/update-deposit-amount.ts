@@ -8,10 +8,12 @@ import {
   MoneyAccountFlow,
 } from '../../../../../shared/lib/money/money-account-flow';
 import {
-  applyNestedCalldataUpdates,
   beginAmountCommit,
+  clearAmountCommitIfCurrent,
+  commitTransactionPayUpdates,
   getTransactionMeta,
   parseMusdHumanAmount,
+  pruneStaleAmountCommits,
   toMusdAmountHex,
 } from './amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
@@ -25,8 +27,8 @@ const LOG_TAG = '[Money Account]';
  *
  * @param messenger - Messenger used to resolve vault context.
  * @param request - Raw amount and the transaction whose nested calls to encode.
- * @param request.amount
- * @param request.transaction
+ * @param request.amount - Deposit amount in mUSD base units (decimal string).
+ * @param request.transaction - Transaction whose nested vault calls are re-encoded.
  * @returns Nested calldata updates, or empty when this is not a deposit.
  */
 export async function getMoneyAccountAmountData(
@@ -66,6 +68,8 @@ export async function updateMoneyAccountDepositAmount(
   transactionId: string,
   amountHuman: string,
 ): Promise<boolean> {
+  pruneStaleAmountCommits(messenger);
+
   const amountRaw = parseMusdHumanAmount(amountHuman);
   if (amountRaw === undefined) {
     return false;
@@ -78,23 +82,24 @@ export async function updateMoneyAccountDepositAmount(
 
   const isCurrent = beginAmountCommit(transactionId);
 
-  // Pay watches `requiredAssets`, not nested calldata. Write the new amount
-  // before the vault encode so a slow or failing `previewDeposit` cannot
-  // leave the quote stuck on the previous value.
-  if (!isCurrent()) {
-    return false;
-  }
-
-  const requiredAssetAmount = toMusdAmountHex(amountRaw);
-  applyNestedCalldataUpdates(
-    messenger,
-    transactionId,
-    [],
-    'Money Account deposit: update amount',
-    requiredAssetAmount,
-  );
-
   try {
+    // Pay watches `requiredAssets`, not nested calldata. Write the new amount
+    // before the vault encode so a slow or failing
+    // `buildMoneyAccountDepositBatch` cannot leave the quote stuck on the
+    // previous value.
+    if (!isCurrent()) {
+      return false;
+    }
+
+    const requiredAssetAmount = toMusdAmountHex(amountRaw);
+    commitTransactionPayUpdates(
+      messenger,
+      transactionId,
+      [],
+      'Money Account deposit: update amount',
+      requiredAssetAmount,
+    );
+
     const { updates } = await getMoneyAccountAmountData(messenger, {
       amount: amountRaw.toString(10),
       transaction,
@@ -108,7 +113,7 @@ export async function updateMoneyAccountDepositAmount(
       return true;
     }
 
-    applyNestedCalldataUpdates(
+    commitTransactionPayUpdates(
       messenger,
       transactionId,
       updates,
@@ -121,6 +126,8 @@ export async function updateMoneyAccountDepositAmount(
       return false;
     }
     throw error;
+  } finally {
+    clearAmountCommitIfCurrent(transactionId, isCurrent);
   }
 }
 

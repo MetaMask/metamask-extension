@@ -123,7 +123,7 @@ describe('useIsPaidByMetaMask', () => {
     expect(result.current).toBe(true);
   });
 
-  it('does not short-circuit when sponsored but source amounts exist', () => {
+  it('does not short-circuit when sponsored but source amounts exist with a provider fee', () => {
     mockConfirmation(TransactionType.moneyAccountDeposit, {
       isGasFeeSponsored: true,
     });
@@ -136,6 +136,22 @@ describe('useIsPaidByMetaMask', () => {
 
     const { result } = renderHook(() => useIsPaidByMetaMask());
     expect(result.current).toBe(false);
+  });
+
+  it('returns true for sponsored deposits after quoting even when target gas estimate is non-zero', () => {
+    mockConfirmation(TransactionType.moneyAccountDeposit, {
+      isGasFeeSponsored: true,
+    });
+    useTransactionPaySourceAmountsMock.mockReturnValue([
+      {},
+    ] as unknown as ReturnType<typeof useTransactionPaySourceAmounts>);
+    mockTotals({
+      targetNetwork: { usd: '0.05' },
+      sourceNetwork: { estimate: { usd: '0.01' } },
+    } as TransactionPayTotals['fees']);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(true);
   });
 
   it('returns false when totals are undefined', () => {

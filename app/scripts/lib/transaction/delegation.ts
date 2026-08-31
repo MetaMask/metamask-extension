@@ -38,7 +38,7 @@ export const PRIMARY_TYPE_DELEGATION = 'Delegation';
 
 /**
  * Must match the placeholder used by the Intents / Relay execute API so
- * subsidized quotes can inject the real request id after signing.
+ * subsidized quotes can inject the real order ID after signing.
  */
 export const SUBSIDIZED_ORDER_ID_PLACEHOLDER =
   '0x07cece46d0aec658b12c9d194b3ac3cc74aadf102176005c76f96422b57328b2' as Hex;
@@ -338,6 +338,16 @@ function buildDefaultCaveats(
   return caveats;
 }
 
+/**
+ * Builds the single batch execution for a subsidized Relay redeem.
+ *
+ * The execution target and value come from `txParams`; calldata is normalized
+ * via {@link normalizeCallData} so odd-length hex cannot shift byte offsets
+ * used by the AllowedCalldata caveats below.
+ *
+ * @param transactionMeta - Transaction whose batch calldata will be redeemed.
+ * @returns A one-element execution list for the Relay redeem path.
+ */
 function buildSubsidizedExecutions(
   transactionMeta: TransactionMeta,
 ): ExecutionStruct[] {
@@ -358,6 +368,16 @@ function buildSubsidizedExecutions(
   ];
 }
 
+/**
+ * Builds caveats for a subsidized Relay redeem: allow the batch target, limit
+ * to one call, and enforce every calldata byte except the Relay order-ID
+ * placeholder window(s). That window must stay mutable so Relay can inject the
+ * real order ID after the user signs.
+ *
+ * @param environment - DeleGator environment with caveat enforcer addresses.
+ * @param transaction - Transaction whose calldata and nested calls are enforced.
+ * @returns Caveats for the subsidized delegation.
+ */
 function buildSubsidizedCaveats(
   environment: ReturnType<typeof getDeleGatorEnvironment>,
   transaction: TransactionMeta,
@@ -370,6 +390,15 @@ function buildSubsidizedCaveats(
   }
 }
 
+/**
+ * Implementation of {@link buildSubsidizedCaveats}. AllowedTargets +
+ * LimitedCalls(1) wrap AllowedCalldata segments from
+ * {@link getEnforcedSegments}.
+ *
+ * @param environment - DeleGator environment with caveat enforcer addresses.
+ * @param transaction - Transaction whose calldata and nested calls are enforced.
+ * @returns Caveats for the subsidized delegation.
+ */
 function buildSubsidizedCaveatsInternal(
   environment: ReturnType<typeof getDeleGatorEnvironment>,
   transaction: TransactionMeta,
@@ -557,10 +586,25 @@ function addSegments(
   pushSegment(cursor, end);
 }
 
+/**
+ * Concatenates 0x-prefixed hex values into one lowercase 0x hex string.
+ * Each input's `0x` prefix is stripped before joining so the result stays
+ * byte-aligned for caveat terms.
+ *
+ * @param values - Hex values to concatenate.
+ * @returns Single lowercase 0x-prefixed hex string.
+ */
 function concatHex(values: Hex[]): Hex {
   return `0x${values.map((value) => value.slice(2).toLowerCase()).join('')}` as Hex;
 }
 
+/**
+ * Encodes a non-negative integer as a 32-byte (uint256) hex value for caveat
+ * terms such as AllowedCalldata start offsets.
+ *
+ * @param value - Byte offset or other non-negative integer.
+ * @returns 0x-prefixed 64-nibble hex encoding of `value`.
+ */
 function toUint256Hex(value: number): Hex {
   return `0x${value.toString(16).padStart(64, '0')}` as Hex;
 }

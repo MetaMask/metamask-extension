@@ -14,12 +14,22 @@ const SUPPORTED_TYPES: TransactionType[] = [
 ];
 
 /**
- * Determines whether the current transaction is fully sponsored by MetaMask
- * (zero gas, zero provider fee, zero MetaMask fee).
+ * Whether the confirmation should present fees as paid by MetaMask.
  *
- * Money-account deposits on Monad are gas-sponsored, and fixed-spread / same-
- * token (Monad mUSD) routes have $0 provider fee, so they show as paid by
- * MetaMask the same way mUSD conversion does.
+ * For gas-sponsored transactions (`isGasFeeSponsored`), source/target network
+ * gas estimates may still be non-zero after quoting even though the user does
+ * not pay them. Those fees are ignored; only provider and MetaMask fee
+ * components must be zero.
+ *
+ * Pre-quote (no `sourceAmounts` yet): returns `true` from gas sponsorship
+ * alone, before provider/MetaMask fees are known. Callers such as `TotalRow`
+ * that strip all fee components when this is true should treat that as
+ * "sponsorship claimed for display" rather than proof that every fee line
+ * has been quoted as zero.
+ *
+ * Money-account deposits on Monad are gas-sponsored, and fixed-spread /
+ * same-token (Monad mUSD) routes have $0 provider fee, so they show as paid
+ * by MetaMask the same way mUSD conversion does.
  */
 export function useIsPaidByMetaMask(): boolean {
   const transactionMeta = useTransactionMetadataRequestOptional();
@@ -32,8 +42,11 @@ export function useIsPaidByMetaMask(): boolean {
     return false;
   }
 
-  // Pre-quote gasless deposits: no conversion yet, gas is sponsored.
-  if (transactionMeta?.isGasFeeSponsored && !sourceAmounts?.length) {
+  const isGasSponsored = Boolean(transactionMeta?.isGasFeeSponsored);
+
+  // Pre-quote gasless deposits: sponsorship is known from the transaction
+  // flag before conversion quotes exist.
+  if (isGasSponsored && !sourceAmounts?.length) {
     return true;
   }
 
@@ -45,12 +58,18 @@ export function useIsPaidByMetaMask(): boolean {
     return false;
   }
 
+  const provider = new BigNumber(totals.fees.provider?.usd ?? 0);
+  const metaMask = new BigNumber(totals.fees.metaMask?.usd ?? 0);
+
+  if (isGasSponsored) {
+    // Sponsored gas estimates can be non-zero; exclude them from the check.
+    return provider.isZero() && metaMask.isZero();
+  }
+
   const sourceNetwork = new BigNumber(
     totals.fees.sourceNetwork?.estimate?.usd ?? 0,
   );
   const targetNetwork = new BigNumber(totals.fees.targetNetwork?.usd ?? 0);
-  const provider = new BigNumber(totals.fees.provider?.usd ?? 0);
-  const metaMask = new BigNumber(totals.fees.metaMask?.usd ?? 0);
 
   return (
     sourceNetwork.isZero() &&

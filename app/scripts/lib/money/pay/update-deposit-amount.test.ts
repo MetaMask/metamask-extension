@@ -1,5 +1,6 @@
 import { buildMoneyAccountDepositBatch } from '@metamask/money-account-utils';
 import {
+  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -26,6 +27,7 @@ const DEPOSIT_DATA_2 = '0xddd4' as Hex;
 function createDepositTransaction(): TransactionMeta {
   return {
     id: TRANSACTION_ID,
+    status: TransactionStatus.unapproved,
     txParams: {
       from: '0x4444444444444444444444444444444444444444',
       data: '0x',

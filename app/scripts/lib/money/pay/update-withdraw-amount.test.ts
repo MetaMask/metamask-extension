@@ -1,5 +1,6 @@
 import { buildMoneyAccountWithdrawBatch } from '@metamask/money-account-utils';
 import {
+  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -27,6 +28,7 @@ const TRANSFER_DATA = '0xtransfer' as Hex;
 function createWithdrawTransaction(): TransactionMeta {
   return {
     id: TRANSACTION_ID,
+    status: TransactionStatus.unapproved,
     nestedTransactions: [
       {
         to: VAULT_CONFIG_MOCK.tellerAddress,

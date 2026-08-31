@@ -17,7 +17,6 @@ import {
   type PreferredPayToken,
 } from '../../selectors/feature-flags';
 import {
-  isSubsidizedSource,
   type RelayFixedSpreadConfig,
 } from '../../utils/relay-fixed-spread';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
@@ -27,6 +26,7 @@ import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import type { SetPayTokenRequest } from './types';
 import { usePostQuoteWithdrawTokenFilter } from './useWithdrawTokenFilter';
+import { isNoFeePayToken } from './usePayWithNoFeeToken';
 
 /** How long to wait for funding tokens after an account switch before settling. */
 export const ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS = 2000;
@@ -372,8 +372,9 @@ function getBestToken({
     return undefined;
   }
 
-  // Same as mobile: prefer a no-fee (subsidized) source that meets the
-  // fiat minimum before falling through to the first funding token.
+  // Same as mobile / Pay-with picker: prefer a no-fee source (subsidized
+  // route or same-token Monad mUSD) that meets the fiat minimum before
+  // falling through to the first funding token.
   if (tokens?.length && !isPostQuoteWithdraw) {
     const noFeeCandidates = tokens
       .filter((token) => {
@@ -383,10 +384,11 @@ function getBestToken({
         if ((token.fiat?.balance ?? 0) < minimumRequiredTokenBalance) {
           return false;
         }
-        return isSubsidizedSource(relayFixedSpread, {
-          chainId: String(token.chainId),
-          address: token.address,
-        });
+        return isNoFeePayToken(
+          relayFixedSpread,
+          token.address,
+          String(token.chainId),
+        );
       })
       .sort((a, b) => (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0));
 

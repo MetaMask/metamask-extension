@@ -15,11 +15,29 @@ import type { Asset } from '../../types/send';
 import { useTransactionPayToken } from './useTransactionPayToken';
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as Hex;
+/** Inert chain ID passed to `useTokenFiatRate` when no pay token is selected. */
+const ABSENT_CHAIN_ID = '0x0' as Hex;
 
+/**
+ * Converts a 0x-prefixed hex quantity to a decimal string.
+ *
+ * @param hex - Hex-encoded integer, with or without a `0x` prefix.
+ * @returns Decimal string representation.
+ */
 function hexToDecimalString(hex: string): string {
   return new BigNumber(hex.replace(/^0x/u, '') || '0', 16).toString(10);
 }
 
+/**
+ * Normalizes a chain ID to a lowercase 0x-prefixed hex string.
+ *
+ * Accepts hex (`0x1`), decimal (`1`), or CAIP-2 (`eip155:1`) forms. Unsupported
+ * or non-eip155 CAIP strings are lowercased and returned as-is so callers can
+ * still attempt a string match.
+ *
+ * @param chainId - Chain ID in hex, decimal, or CAIP-2 form.
+ * @returns Normalized hex chain ID, or `undefined` when input is absent.
+ */
 function toHexChainId(
   chainId: string | number | undefined,
 ): string | undefined {
@@ -46,6 +64,16 @@ function toHexChainId(
   return asString.toLowerCase();
 }
 
+/**
+ * Address used when matching an asset against the selected pay token.
+ *
+ * Native assets resolve via `getNativeTokenAddress` for the given chain; if
+ * that lookup fails, falls back to the asset's own `address`.
+ *
+ * @param token - Account asset to match.
+ * @param chainId - Pay-token chain ID used for native address lookup.
+ * @returns Address to compare, or `undefined` when unavailable.
+ */
 function tokenAddressForMatch(token: Asset, chainId: Hex): string | undefined {
   if (token.isNative) {
     try {
@@ -75,7 +103,7 @@ export function usePayTokenAccountBalance(): {
   const accountTokens = useSendTokens({ includeNoBalance: true });
   const usdRate = useTokenFiatRate(
     (payToken?.address ?? ZERO_ADDRESS) as Hex,
-    (payToken?.chainId ?? ZERO_ADDRESS) as Hex,
+    (payToken?.chainId ?? ABSENT_CHAIN_ID) as Hex,
     'usd',
   );
 

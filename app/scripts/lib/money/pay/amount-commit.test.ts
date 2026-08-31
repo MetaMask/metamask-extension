@@ -1,7 +1,8 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import {
-  applyNestedCalldataUpdates,
+  commitTransactionPayUpdates,
   parseMusdHumanAmount,
   toMusdAmountHex,
 } from './amount-commit';
@@ -14,6 +15,7 @@ const DEPOSIT_DATA = '0xbbb2' as Hex;
 function createTransaction(): TransactionMeta {
   return {
     id: TRANSACTION_ID,
+    status: TransactionStatus.unapproved,
     txParams: {
       from: '0x4444444444444444444444444444444444444444',
       data: '0x',
@@ -54,7 +56,7 @@ describe('toMusdAmountHex', () => {
   });
 });
 
-describe('applyNestedCalldataUpdates', () => {
+describe('commitTransactionPayUpdates', () => {
   it('writes nested calldata and requiredAssets onto the transaction', () => {
     const transaction = createTransaction();
     const updateTransaction = jest.fn();
@@ -67,7 +69,7 @@ describe('applyNestedCalldataUpdates', () => {
       },
     });
 
-    applyNestedCalldataUpdates(
+    commitTransactionPayUpdates(
       messenger,
       TRANSACTION_ID,
       [
@@ -97,7 +99,7 @@ describe('applyNestedCalldataUpdates', () => {
       },
     });
 
-    applyNestedCalldataUpdates(
+    commitTransactionPayUpdates(
       messenger,
       TRANSACTION_ID,
       [{ nestedTransactionIndex: 0, data: APPROVE_DATA }],

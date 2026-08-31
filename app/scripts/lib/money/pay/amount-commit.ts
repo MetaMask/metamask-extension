@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { cloneDeep } from 'lodash';
 import { MUSD_DECIMALS } from '@metamask/money-account-utils';
 import {
+  TransactionStatus,
   updateEIP7702BatchData,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -18,10 +19,14 @@ const latestIntentByTransactionId = new Map<string, number>();
  * for zero, negative, or non-numeric input so callers can skip a commit
  * rather than encoding a no-op vault call.
  *
+ * Sub-base-unit fractions round **up** (`BigNumber.ROUND_UP`) so the vault
+ * call never under-delivers relative to the typed amount.
+ *
  * @param amountHuman - Exact human-readable mUSD amount.
  * @returns The amount in mUSD base units, or `undefined` when unusable.
  */
 export function parseMusdHumanAmount(amountHuman: string): bigint | undefined {
+  // BigNumber is configured to throw on non-numeric input in this repo.
   let value: BigNumber;
   try {
     value = new BigNumber(amountHuman);
@@ -65,6 +70,57 @@ export function beginAmountCommit(transactionId: string): () => boolean {
 }
 
 /**
+ * Removes the intent entry for `transactionId` only when `isCurrent` still
+ * owns it. A superseded commit must not delete a newer intent.
+ *
+ * @param transactionId - Id whose intent entry may be cleared.
+ * @param isCurrent - Predicate from the matching {@link beginAmountCommit}.
+ */
+export function clearAmountCommitIfCurrent(
+  transactionId: string,
+  isCurrent: () => boolean,
+): void {
+  if (isCurrent()) {
+    latestIntentByTransactionId.delete(transactionId);
+  }
+}
+
+/**
+ * Drops a transaction's intent entry when it leaves the unapproved set (or
+ * is otherwise gone). Safe to call for unknown ids.
+ *
+ * @param transactionId - Id whose intent entry should be removed.
+ */
+export function clearAmountCommit(transactionId: string): void {
+  latestIntentByTransactionId.delete(transactionId);
+}
+
+/**
+ * Removes intent entries for transactions that are gone or no longer
+ * unapproved so the map does not grow for the lifetime of the background
+ * process. Leaves entries alone when the transaction is still unapproved.
+ *
+ * @param messenger - Messenger used to read TransactionController state.
+ */
+export function pruneStaleAmountCommits(messenger: MoneyPayMessenger): void {
+  if (latestIntentByTransactionId.size === 0) {
+    return;
+  }
+
+  const { transactions } = messenger.call('TransactionController:getState');
+  const transactionsById = new Map(
+    transactions.map((transaction) => [transaction.id, transaction]),
+  );
+
+  for (const transactionId of latestIntentByTransactionId.keys()) {
+    const transaction = transactionsById.get(transactionId);
+    if (!transaction || transaction.status !== TransactionStatus.unapproved) {
+      latestIntentByTransactionId.delete(transactionId);
+    }
+  }
+}
+
+/**
  * Reads a transaction from TransactionController state by id.
  *
  * @param messenger - Messenger used to read TransactionController state.
@@ -80,8 +136,14 @@ export function getTransactionMeta(
 }
 
 /**
- * Writes nested calldata, regenerates parent EIP-7702 batch `txParams.data`
- * (and optionally `requiredAssets[0].amount`) onto the live transaction.
+ * Commits Money Account pay updates onto the live transaction: nested
+ * calldata (when provided), regenerated parent EIP-7702 batch
+ * `txParams.data`, and optionally `requiredAssets[0].amount`.
+ *
+ * An empty `updates` array is intentional for the deposit path that writes
+ * `requiredAssets` before vault encoding finishes — it still regenerates
+ * nothing nested, but updates the required amount so Pay can requote.
+ *
  * Pay requotes when `txParams.data` changes; nested-only writes would leave
  * Relay skip-embedding vault calls because parent data stayed empty.
  * Re-reads state first so a concurrent commit cannot clobber unrelated
@@ -93,7 +155,7 @@ export function getTransactionMeta(
  * @param note - TransactionController history note.
  * @param requiredAssetAmount - Optional new `requiredAssets[0].amount`.
  */
-export function applyNestedCalldataUpdates(
+export function commitTransactionPayUpdates(
   messenger: MoneyPayMessenger,
   transactionId: string,
   updates: GetAmountDataResponse['updates'],
@@ -102,6 +164,7 @@ export function applyNestedCalldataUpdates(
 ): void {
   const transaction = getTransactionMeta(messenger, transactionId);
   if (!transaction) {
+    clearAmountCommit(transactionId);
     return;
   }
 

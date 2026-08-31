@@ -36,10 +36,10 @@ export type InitiateDepositOptions = {
  * unavailable money account is a thrown error here, not a rendered state,
  * because the surface is supposed to be hidden entirely.
  *
- * Fails fast (as `useMoneyAccountWithdrawal` does) when no EVM account is
- * selected: that address is passed through as Pay's `accountOverride` so
- * the confirmation defaults the From row — and quotes — to the currently
- * selected account instead of the money account that executes the batch.
+ * Fails fast when no eligible EVM account is selected. The selected account's
+ * address is passed as Pay's `accountOverride` so the confirmation defaults
+ * the From row — and quotes — to that account instead of the money account
+ * that executes the batch.
  *
  * Two deliberate differences from mobile's hook, both consequences of the
  * extension navigating **after** creation rather than early with a skeleton:

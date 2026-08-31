@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
@@ -13,7 +14,7 @@ import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { usePayTokenAccountBalance } from '../../pay/usePayTokenAccountBalance';
@@ -92,16 +93,9 @@ export function useInsufficientPayTokenBalanceAlert({
       payToken.chainId === sourceChainId,
     );
 
-  // Live funding-account raw balance. USD still prefers the Pay-with
-  // snapshot when the live rate would understate it (see
-  // `usePayTokenAccountBalance`).
-  const { balanceUsd: liveBalanceUsd, balanceRaw } =
-    usePayTokenAccountBalance();
-  const balanceUsd = useMemo(() => {
-    const snapshot = new BigNumber(payToken?.balanceUsd ?? '0');
-    const live = new BigNumber(liveBalanceUsd ?? '0');
-    return BigNumber.max(snapshot, live).toString(10);
-  }, [liveBalanceUsd, payToken?.balanceUsd]);
+  // Live funding-account balance (USD already reconciles snapshot vs live
+  // rate inside `usePayTokenAccountBalance`).
+  const { balanceUsd, balanceRaw } = usePayTokenAccountBalance();
   const nativeBalanceRaw = nativeToken?.balanceRaw ?? '0';
 
   const totalAmountUsd = useMemo(() => {
@@ -203,11 +197,16 @@ export function useInsufficientPayTokenBalanceAlert({
 
   // Post-quote can run before `payToken` is set (auto-selection skipped);
   // gas check is independent of `payToken`.
-  // Monad source gas is sponsored for money-account deposits, so a missing
-  // MON balance must not block paying with Monad mUSD.
+  // Only sponsored Money Account deposits skip the native-gas alert — not
+  // every Pay flow funded on Monad.
+  const isSponsoredMoneyAccountDeposit =
+    Boolean(currentConfirmation?.isGasFeeSponsored) &&
+    hasTransactionType(currentConfirmation, [
+      TransactionType.moneyAccountDeposit,
+    ]);
   const isInsufficientForSourceNetwork = useMemo(
     () =>
-      sourceChainId !== CHAIN_IDS.MONAD &&
+      !isSponsoredMoneyAccountDeposit &&
       !isMoneyPaymentOverride &&
       (payToken || isPostQuote) &&
       !isPayTokenNative &&
@@ -220,9 +219,9 @@ export function useInsufficientPayTokenBalanceAlert({
       isPendingAlert,
       isPostQuote,
       isSourceGasFeeToken,
+      isSponsoredMoneyAccountDeposit,
       nativeBalanceRaw,
       payToken,
-      sourceChainId,
       totalSourceNetworkFeeRaw,
     ],
   );
