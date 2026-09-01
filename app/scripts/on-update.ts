@@ -1,8 +1,23 @@
 import log from 'loglevel';
-import { PLATFORM_FIREFOX } from '../../shared/constants/app';
+import { PLATFORM_FIREFOX } from '#shared/constants/app';
 import { getPlatform } from './lib/util';
 import type ExtensionPlatform from './platforms/extension';
-import { AppStateController } from './controllers/app-state-controller';
+import type { AppStateController } from './controllers/app-state-controller';
+
+type OnUpdateAppStateController = Pick<
+  AppStateController,
+  | 'setLastUpdatedAt'
+  | 'setLastUpdatedFromVersion'
+  | 'setPendingExtensionVersion'
+> & {
+  state: Pick<AppStateController['state'], 'lastUpdatedFromVersion'>;
+};
+
+type OnUpdateController = {
+  appStateController: OnUpdateAppStateController;
+};
+
+type OnUpdatePlatform = Pick<ExtensionPlatform, 'getVersion'>;
 
 /**
  * Trigger actions that should happen only upon update installation. Calling
@@ -19,12 +34,8 @@ import { AppStateController } from './controllers/app-state-controller';
  * @returns Whether startup is ready or a recovery reload was scheduled.
  */
 export async function onUpdate(
-  // we use a custom type here because the `MetaMaskController` type doesn't
-  // include the actual controllers as properties.
-  controller: {
-    appStateController: AppStateController;
-  },
-  platform: ExtensionPlatform,
+  controller: OnUpdateController,
+  platform: OnUpdatePlatform,
   previousVersion: string,
   requestSafeReload: () => Promise<void>,
   reloadClaimed = true,

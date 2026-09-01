@@ -62,7 +62,6 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
-import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
   createEvent,
   shouldTrackDeepLinkNavigation,
@@ -105,7 +104,10 @@ import {
 import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
-import { onUpdate } from './on-update';
+import {
+  handleOnInstalled,
+  onUpdateAvailable,
+} from './lib/lifecycle/install-lifecycle';
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {
@@ -260,14 +262,6 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
   );
 }
 
-lazyListener
-  .once('runtime', 'onInstalled')
-  .then(handleOnInstalled)
-  .catch((error) => {
-    log.error('MetaMask - Failed to coordinate extension startup', error);
-    extensionStartup.markReady();
-  });
-
 /**
  * This deferred Promise is used to track whether initialization has finished.
  *
@@ -299,6 +293,32 @@ function setGlobalInitializers() {
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
+
+/**
+ * Install/update lifecycle dependencies. `controller` is accessed via a getter
+ * because `onInstalled` can fire (and be buffered) before `controller` is assigned.
+ *
+ * @returns {import('./lib/lifecycle/install-lifecycle').InstallLifecycleDependencies}
+ */
+function getInstallLifecycleDeps() {
+  return {
+    get controller() {
+      return controller;
+    },
+    platform,
+    isInitialized,
+    requestSafeReload,
+    extensionStartup,
+  };
+}
+
+lazyListener
+  .once('runtime', 'onInstalled')
+  .then((details) => handleOnInstalled(details, getInstallLifecycleDeps()))
+  .catch((error) => {
+    log.error('MetaMask - Failed to coordinate extension startup', error);
+    extensionStartup.markReady();
+  });
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -1933,101 +1953,9 @@ async function triggerUi() {
   }
 }
 
-// It queues the "App Installed" event before consent, or tracks it immediately if consent already exists.
-const addAppInstalledEvent = async (installAttributionPromise) => {
-  const { deferredDeepLink, traits: installAttributionTraits } =
-    await installAttributionPromise;
-
-  controller.metaMetricsController.updateTraits({
-    [MetaMetricsUserTrait.InstallDateExt]: new Date()
-      .toISOString()
-      .split('T')[0], // yyyy-mm-dd
-    ...installAttributionTraits,
-  });
-  const eventProperties = {};
-
-  if (deferredDeepLink) {
-    controller.appStateController.setDeferredDeepLink(deferredDeepLink);
-    eventProperties.install_source = 'deeplink';
-    eventProperties.deeplink_path = deferredDeepLink.referringLink;
-  }
-
-  const { consentDecisionMade, optedIn } = controller.getState();
-
-  if (consentDecisionMade === true && optedIn === false) {
-    // We can skip tracking completely if they've already explicitly opted out
-    return;
-  }
-
-  trackEvent(
-    createEventBuilder(MetaMetricsEventName.AppInstalled)
-      .addCategory(MetaMetricsEventCategory.App)
-      .addProperties(eventProperties)
-      .build(),
-  );
-};
-
-/**
- * Handles the onInstalled event.
- *
- * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
- */
-async function handleOnInstalled([details]) {
-  if (details.reason === 'install') {
-    await onInstall();
-  } else if (
-    details.reason === 'update' &&
-    details.previousVersion &&
-    details.previousVersion !== platform.getVersion()
-  ) {
-    await isInitialized;
-    if (
-      (await onUpdate(
-        controller,
-        platform,
-        details.previousVersion,
-        requestSafeReload,
-        extensionStartup.claimReload(),
-      )) === 'reload'
-    ) {
-      return;
-    }
-  }
-
-  extensionStartup.markReady();
-}
-
-/**
- * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
- */
-async function onInstall() {
-  log.debug('First install detected');
-  const installAttributionPromise = getInstallAttribution();
-
-  if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
-    platform.openExtensionInBrowser();
-  }
-
-  // The controller must exist before we can persist install attribution.
-  await isInitialized;
-
-  await addAppInstalledEvent(installAttributionPromise);
-}
-
-/**
- * Trigger actions that should happen only when an update is available
- *
- * @param {object} details - Event details from runtime.onUpdateAvailable (e.g. details.version)
- */
-async function onUpdateAvailable(details) {
-  await isInitialized;
-  log.info('An update is available', details?.version);
-  controller.appStateController.setPendingExtensionVersion(
-    details?.version ?? null,
-  );
-}
-
-browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
+browser.runtime.onUpdateAvailable.addListener((details) => {
+  onUpdateAvailable(details, getInstallLifecycleDeps());
+});
 
 function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {

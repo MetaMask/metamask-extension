@@ -434,6 +434,22 @@ function extractHexStatusCodeFromMessage(message: string): string | null {
 }
 
 /**
+ * Ledger devices can only sign EIP-712 typed data with version V4.
+ * The keyring throws "Ledger: Only version 4 of typed data signing is
+ * supported" for V1/V3 requests.
+ *
+ * @param message - The error message to inspect
+ * @returns True when the message indicates only V4 typed data is supported
+ */
+function isOnlyV4TypedDataErrorMessage(message: string): boolean {
+  const normalizedMessage = message.toLowerCase();
+  return (
+    normalizedMessage.includes('version 4 of typed data') ||
+    normalizedMessage.includes('only version 4')
+  );
+}
+
+/**
  * Map a Ledger status code (hex string) to an ErrorCode
  *
  * @param statusCode - The Ledger status code (e.g., "0x5515")
@@ -803,6 +819,56 @@ function tryInferTrezorKeyringError(
 }
 
 /**
+ * Infer a Ledger ErrorCode from a KeyringControllerError when the cause
+ * code is missing or Unknown.
+ *
+ * Retrying cannot succeed for unsupported typed-data versions, so this maps
+ * the keyring's V3/V1 rejection onto DeviceStateOnlyV4Supported.
+ *
+ * @param error - The KeyringControllerError to inspect
+ * @param walletType - The hardware wallet type
+ * @param causeCode - The already-extracted cause ErrorCode, if any
+ * @returns A HardwareWalletError if a Ledger code was inferred, otherwise null
+ */
+function tryInferLedgerKeyringError(
+  error: KeyringControllerError,
+  walletType: HardwareWalletType,
+  causeCode: ErrorCode | null,
+): HardwareWalletError | null {
+  if (
+    walletType !== HardwareWalletType.Ledger ||
+    (causeCode !== ErrorCode.Unknown && causeCode !== null)
+  ) {
+    return null;
+  }
+
+  const causeMessage = getErrorMessage(error.cause);
+  if (isOnlyV4TypedDataErrorMessage(causeMessage)) {
+    return createHardwareWalletError(
+      ErrorCode.DeviceStateOnlyV4Supported,
+      walletType,
+      causeMessage,
+      {
+        cause: getErrorCause(error.cause),
+      },
+    );
+  }
+
+  if (isOnlyV4TypedDataErrorMessage(error.message)) {
+    return createHardwareWalletError(
+      ErrorCode.DeviceStateOnlyV4Supported,
+      walletType,
+      error.message,
+      {
+        cause: getErrorCause(error.cause),
+      },
+    );
+  }
+
+  return null;
+}
+
+/**
  * Reconstruct a HardwareWalletError from a KeyringControllerError.
  *
  * @param error - The KeyringControllerError to reconstruct from
@@ -822,6 +888,15 @@ function fromKeyringControllerError(
   );
   if (trezorInferred) {
     return trezorInferred;
+  }
+
+  const ledgerInferred = tryInferLedgerKeyringError(
+    error,
+    walletType,
+    causeCode,
+  );
+  if (ledgerInferred) {
+    return ledgerInferred;
   }
 
   if (causeCode !== null) {
@@ -870,12 +945,13 @@ function fromSerializedTopLevelHardwareWalletError(
 }
 
 /**
- * Try to reconstruct a HardwareWalletError from a Ledger status code
- * embedded in the error message.
+ * Try to reconstruct a HardwareWalletError from a Ledger error message.
+ * Handles transport status codes (e.g. 0x5515) and keyring-level V1/V3
+ * typed data rejections that are not tied to a status code.
  *
  * @param error - The error to inspect
  * @param walletType - The hardware wallet type
- * @returns A HardwareWalletError if a Ledger status code was found, otherwise null
+ * @returns A HardwareWalletError if a Ledger error was recognized, otherwise null
  */
 function tryFromLedgerErrorMessage(
   error: unknown,
@@ -906,14 +982,25 @@ function tryFromLedgerErrorMessage(
   }
 
   const hexStatusCode = extractHexStatusCodeFromMessage(errorMessage);
-  if (!hexStatusCode) {
-    return null;
+  if (hexStatusCode) {
+    const errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
+    return createHardwareWalletError(errorCode, walletType, errorMessage, {
+      cause: getErrorCause(error),
+    });
   }
 
-  const errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
-  return createHardwareWalletError(errorCode, walletType, errorMessage, {
-    cause: getErrorCause(error),
-  });
+  if (isOnlyV4TypedDataErrorMessage(errorMessage)) {
+    return createHardwareWalletError(
+      ErrorCode.DeviceStateOnlyV4Supported,
+      walletType,
+      errorMessage,
+      {
+        cause: getErrorCause(error),
+      },
+    );
+  }
+
+  return null;
 }
 
 /**

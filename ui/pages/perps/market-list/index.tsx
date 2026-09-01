@@ -50,12 +50,17 @@ import {
   getHip3AllowedSourcesSet,
 } from '../../../selectors/perps/feature-flags';
 import {
+  selectPerpsIsTestnet,
+  selectPerpsWatchlistMarkets,
+} from '../../../selectors/perps-controller';
+import {
   sortMarkets,
   type SortField,
   type SortDirection,
 } from '../utils/sortMarkets';
 import {
   normalizeMarketFilter,
+  WATCHLIST_MARKET_FILTER,
   type MarketFilter,
 } from '../../../../shared/constants/perps';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
@@ -141,16 +146,23 @@ const isUncategorizedHip3Market = (
  * @param markets - Array of markets to filter
  * @param filter - Market type filter
  * @param allowedHip3Sources - Set of allowed HIP-3 market sources (used for "new" tab only)
+ * @param watchlistSymbols - Upper-cased watchlisted symbols (used for the "watchlist" filter only)
  * @returns Filtered array of markets
  */
 const filterByType = (
   markets: PerpsMarketData[],
   filter: MarketFilter,
   allowedHip3Sources: Set<string>,
+  watchlistSymbols: Set<string>,
 ): PerpsMarketData[] => {
   switch (filter) {
     case 'all': {
       return markets;
+    }
+    case WATCHLIST_MARKET_FILTER: {
+      return markets.filter((m) =>
+        watchlistSymbols.has(m.symbol.toUpperCase()),
+      );
     }
     case 'crypto': {
       return markets.filter(isCryptoMarket);
@@ -178,6 +190,8 @@ export const MarketListView = () => {
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
+  const watchlistMarketsState = useSelector(selectPerpsWatchlistMarkets);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
   const { track } = usePerpsEventTracking();
   const { setFlowAttribution } = usePerpsAttribution();
 
@@ -186,6 +200,20 @@ export const MarketListView = () => {
     usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
+  // Upper-cased so lookups match `PerpsMarketData.symbol` casing.
+  const watchlistSymbols = useMemo(
+    () =>
+      new Set(
+        (isTestnet
+          ? watchlistMarketsState.testnet
+          : watchlistMarketsState.mainnet
+        ).map((symbol) => symbol.toUpperCase()),
+      ),
+    [isTestnet, watchlistMarketsState],
+  );
+
+  const hasWatchlistMarkets = watchlistSymbols.size > 0;
+
   // Read initial filter from URL params (set by deeplink)
   const initialFilter = useMemo<MarketFilter>(() => {
     const filterParam = searchParams.get('filter');
@@ -193,12 +221,20 @@ export const MarketListView = () => {
       // normalizeMarketFilter resolves legacy aliases (e.g. `stocks`) and returns
       // null for unknown values, so no extra validation is needed here.
       const normalizedFilter = normalizeMarketFilter(filterParam);
+      // The watchlist option is hidden while the watchlist is empty, so a stale
+      // link to it would otherwise select an option that is not in the list.
+      if (
+        normalizedFilter === WATCHLIST_MARKET_FILTER &&
+        !hasWatchlistMarkets
+      ) {
+        return 'all';
+      }
       if (normalizedFilter) {
         return normalizedFilter;
       }
     }
     return 'all';
-  }, [searchParams]);
+  }, [searchParams, hasWatchlistMarkets]);
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
@@ -244,7 +280,12 @@ export const MarketListView = () => {
       markets = filterMarketsByQuery(allMarkets, searchQuery);
     } else {
       // Not searching: apply filters
-      markets = filterByType(allMarkets, selectedFilter, allowedHip3Sources);
+      markets = filterByType(
+        allMarkets,
+        selectedFilter,
+        allowedHip3Sources,
+        watchlistSymbols,
+      );
     }
 
     markets = sortMarkets({
@@ -257,6 +298,7 @@ export const MarketListView = () => {
     allMarkets,
     selectedFilter,
     allowedHip3Sources,
+    watchlistSymbols,
     searchQuery,
     sortField,
     sortDirection,
@@ -654,6 +696,7 @@ export const MarketListView = () => {
             value={selectedFilter}
             onChange={handleFilterChange}
             showNewFilter={hasUncategorizedMarkets}
+            showWatchlistFilter={hasWatchlistMarkets}
           />
           <SortDropdown
             selectedField={sortField}
