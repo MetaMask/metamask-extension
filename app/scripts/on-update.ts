@@ -1,11 +1,11 @@
 import log from 'loglevel';
-import { PLATFORM_FIREFOX } from '../../shared/constants/app';
+import { PLATFORM_FIREFOX } from '#shared/constants/app';
 import { getPlatform } from './lib/util';
 import type MetaMaskController from './metamask-controller';
 import type ExtensionPlatform from './platforms/extension';
 import type { AppStateController } from './controllers/app-state-controller';
 
-export type OnUpdateAppStateController = Pick<
+type OnUpdateAppStateController = Pick<
   AppStateController,
   | 'setLastUpdatedAt'
   | 'setLastUpdatedFromVersion'
@@ -14,12 +14,12 @@ export type OnUpdateAppStateController = Pick<
   state: Pick<AppStateController['state'], 'lastUpdatedFromVersion'>;
 };
 
-export type OnUpdateController = {
+type OnUpdateController = {
   store: MetaMaskController['store'];
   appStateController: OnUpdateAppStateController;
 };
 
-export type OnUpdatePlatform = Pick<ExtensionPlatform, 'getVersion'>;
+type OnUpdatePlatform = Pick<ExtensionPlatform, 'getVersion'>;
 
 /**
  * Trigger actions that should happen only upon update installation. Calling

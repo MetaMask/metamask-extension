@@ -3,22 +3,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
-} from '../../../../shared/constants/metametrics';
-import type { InstallAttribution } from '../../../../shared/lib/install-attribution';
-import { getInstallAttribution } from '../../../../shared/lib/install-attribution';
+} from '#shared/constants/metametrics';
+import { getInstallAttribution } from '#shared/lib/install-attribution';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
-import type { MetaMetricsController } from '../../controllers/metametrics-controller';
-import type MetaMaskController from '../../metamask-controller';
 import { onUpdate } from '../../on-update';
 import {
-  addAppInstalledEvent,
   handleOnInstalled,
-  onInstall,
   onUpdateAvailable,
-  type InstallLifecycleAppStateController,
-  type InstallLifecycleController,
   type InstallLifecycleDependencies,
-  type InstallLifecyclePlatform,
 } from './install-lifecycle';
 
 type TestInstallLifecycleDependencies = InstallLifecycleDependencies & {
@@ -29,7 +21,7 @@ jest.mock('../../on-update', () => ({
   onUpdate: jest.fn(),
 }));
 
-jest.mock('../../../../shared/lib/install-attribution', () => ({
+jest.mock('#shared/lib/install-attribution', () => ({
   getInstallAttribution: jest.fn(),
 }));
 
@@ -47,37 +39,33 @@ function createController(
     consentDecisionMade: boolean;
     optedIn: boolean;
   }> = {},
-): InstallLifecycleController {
-  const metaMetricsController = {
-    updateTraits: jest.fn(),
-  } satisfies Pick<MetaMetricsController, 'updateTraits'>;
-
-  const appStateController = {
-    setDeferredDeepLink: jest.fn(),
-    setPendingExtensionVersion: jest.fn(),
-    setLastUpdatedAt: jest.fn(),
-    setLastUpdatedFromVersion: jest.fn(),
-    state: { lastUpdatedFromVersion: null },
-  } satisfies InstallLifecycleAppStateController;
-
+) {
   return {
-    metaMetricsController,
-    appStateController,
+    metaMetricsController: {
+      updateTraits: jest.fn(),
+    },
+    appStateController: {
+      setDeferredDeepLink: jest.fn(),
+      setPendingExtensionVersion: jest.fn(),
+      setLastUpdatedAt: jest.fn(),
+      setLastUpdatedFromVersion: jest.fn(),
+      state: { lastUpdatedFromVersion: null },
+    },
     getState: () => ({
       consentDecisionMade: overrides.consentDecisionMade ?? false,
       optedIn: overrides.optedIn ?? true,
     }),
-    store: {} as MetaMaskController['store'],
-  } satisfies InstallLifecycleController;
+    store: {},
+  };
 }
 
 function createPlatform(
-  overrides: Partial<Pick<InstallLifecyclePlatform, 'getVersion'>> = {},
-): InstallLifecyclePlatform {
+  overrides: Partial<{ getVersion: () => string }> = {},
+) {
   return {
     openExtensionInBrowser: jest.fn(),
     getVersion: overrides.getVersion ?? jest.fn(() => '13.0.0'),
-  } satisfies InstallLifecyclePlatform;
+  };
 }
 
 function createDeps(
@@ -98,6 +86,10 @@ function createDeps(
   };
 }
 
+const installDetails = {
+  reason: 'install',
+} as Runtime.OnInstalledDetailsType;
+
 describe('install-lifecycle', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -111,193 +103,179 @@ describe('install-lifecycle', () => {
     delete process.env.METAMASK_DEBUG;
   });
 
-  describe('addAppInstalledEvent', () => {
-    it('updates install traits and tracks AppInstalled', async () => {
-      const controller = createController();
-      const installAttribution: InstallAttribution = {
-        deferredDeepLink: null,
-        traits: {
+  describe('handleOnInstalled', () => {
+    describe('install', () => {
+      it('updates install traits and tracks AppInstalled', async () => {
+        const deps = createDeps();
+        getInstallAttributionMock.mockResolvedValue({
+          deferredDeepLink: null,
+          traits: {
+            [MetaMetricsUserTrait.CookieId]: 'cookie-id',
+          },
+        });
+
+        const handlePromise = handleOnInstalled([installDetails], deps);
+        deps.resolveInitialization();
+        await handlePromise;
+
+        expect(
+          deps.controller.metaMetricsController.updateTraits,
+        ).toHaveBeenCalledWith({
+          [MetaMetricsUserTrait.InstallDateExt]: '2026-08-20',
           [MetaMetricsUserTrait.CookieId]: 'cookie-id',
-        },
-      };
-
-      await addAppInstalledEvent(
-        Promise.resolve(installAttribution),
-        controller,
-      );
-
-      expect(
-        controller.metaMetricsController.updateTraits,
-      ).toHaveBeenCalledWith({
-        [MetaMetricsUserTrait.InstallDateExt]: '2026-08-20',
-        [MetaMetricsUserTrait.CookieId]: 'cookie-id',
+        });
+        expect(trackEventMock).toHaveBeenCalledWith(
+          createEventBuilder(MetaMetricsEventName.AppInstalled)
+            .addCategory(MetaMetricsEventCategory.App)
+            .addProperties({})
+            .build(),
+        );
       });
-      expect(trackEventMock).toHaveBeenCalledWith(
-        createEventBuilder(MetaMetricsEventName.AppInstalled)
-          .addCategory(MetaMetricsEventCategory.App)
-          .addProperties({})
-          .build(),
-      );
-    });
 
-    it('persists deferred deeplink attribution on AppInstalled', async () => {
-      const controller = createController();
-      const deferredDeepLink = {
-        createdAt: 1,
-        referringLink: 'https://metamask.io/deeplink',
-      };
-
-      await addAppInstalledEvent(
-        Promise.resolve({
+      it('persists deferred deeplink attribution on AppInstalled', async () => {
+        const deps = createDeps();
+        const deferredDeepLink = {
+          createdAt: 1,
+          referringLink: 'https://metamask.io/deeplink',
+        };
+        getInstallAttributionMock.mockResolvedValue({
           deferredDeepLink,
           traits: {},
-        }),
-        controller,
-      );
+        });
 
-      expect(
-        controller.appStateController.setDeferredDeepLink,
-      ).toHaveBeenCalledWith(deferredDeepLink);
-      expect(trackEventMock).toHaveBeenCalledTimes(1);
-      const [trackedEvent] = trackEventMock.mock.calls[0];
-      expect(trackedEvent.name).toBe(MetaMetricsEventName.AppInstalled);
-      expect(trackedEvent.properties?.install_source).toBe('deeplink');
-      expect(trackedEvent.properties?.deeplink_path).toBe(
-        deferredDeepLink.referringLink,
-      );
-    });
+        const handlePromise = handleOnInstalled([installDetails], deps);
+        deps.resolveInitialization();
+        await handlePromise;
 
-    it('skips tracking when the user has explicitly opted out', async () => {
-      const controller = createController({
-        consentDecisionMade: true,
-        optedIn: false,
+        expect(
+          deps.controller.appStateController.setDeferredDeepLink,
+        ).toHaveBeenCalledWith(deferredDeepLink);
+        expect(trackEventMock).toHaveBeenCalledTimes(1);
+        const [trackedEvent] = trackEventMock.mock.calls[0];
+        expect(trackedEvent.name).toBe(MetaMetricsEventName.AppInstalled);
+        expect(trackedEvent.properties?.install_source).toBe('deeplink');
+        expect(trackedEvent.properties?.deeplink_path).toBe(
+          deferredDeepLink.referringLink,
+        );
       });
 
-      await addAppInstalledEvent(
-        Promise.resolve({ deferredDeepLink: null, traits: {} }),
-        controller,
-      );
+      it('skips tracking when the user has explicitly opted out', async () => {
+        const deps = createDeps({
+          controller: createController({
+            consentDecisionMade: true,
+            optedIn: false,
+          }),
+        });
+        getInstallAttributionMock.mockResolvedValue({
+          deferredDeepLink: null,
+          traits: {},
+        });
 
-      expect(trackEventMock).not.toHaveBeenCalled();
-    });
-  });
+        const handlePromise = handleOnInstalled([installDetails], deps);
+        deps.resolveInitialization();
+        await handlePromise;
 
-  describe('onInstall', () => {
-    it('reads controller after deps object creation when accessed via getter', async () => {
-      const assignedController = createController();
-      let controllerReady = false;
-      getInstallAttributionMock.mockResolvedValue({
-        deferredDeepLink: null,
-        traits: {},
+        expect(trackEventMock).not.toHaveBeenCalled();
       });
 
-      const deps: InstallLifecycleDependencies = {
-        get controller() {
-          if (!controllerReady) {
-            throw new Error('controller not yet assigned');
-          }
-          return assignedController;
-        },
-        platform: createPlatform(),
-        isInitialized: Promise.resolve(),
-        requestSafeReload: jest.fn(),
-      };
+      it('reads controller after deps object creation when accessed via getter', async () => {
+        const assignedController = createController();
+        let controllerReady = false;
+        getInstallAttributionMock.mockResolvedValue({
+          deferredDeepLink: null,
+          traits: {},
+        });
 
-      const installPromise = onInstall(deps);
-      controllerReady = true;
-      await installPromise;
+        const deps: InstallLifecycleDependencies = {
+          get controller() {
+            if (!controllerReady) {
+              throw new Error('controller not yet assigned');
+            }
+            return assignedController;
+          },
+          platform: createPlatform(),
+          isInitialized: Promise.resolve(),
+          requestSafeReload: jest.fn(),
+        };
 
-      expect(trackEventMock).toHaveBeenCalledTimes(1);
-    });
+        const handlePromise = handleOnInstalled([installDetails], deps);
+        controllerReady = true;
+        await handlePromise;
 
-    it('opens onboarding and records install attribution after initialization', async () => {
-      const deps = createDeps();
-      getInstallAttributionMock.mockResolvedValue({
-        deferredDeepLink: null,
-        traits: {},
+        expect(trackEventMock).toHaveBeenCalledTimes(1);
       });
 
-      const installPromise = onInstall(deps);
-      deps.resolveInitialization();
-      await installPromise;
+      it('opens onboarding and records install attribution after initialization', async () => {
+        const deps = createDeps();
+        getInstallAttributionMock.mockResolvedValue({
+          deferredDeepLink: null,
+          traits: {},
+        });
 
-      expect(deps.platform.openExtensionInBrowser).toHaveBeenCalledTimes(1);
-      expect(getInstallAttributionMock).toHaveBeenCalledTimes(1);
-      expect(trackEventMock).toHaveBeenCalledTimes(1);
-    });
+        const handlePromise = handleOnInstalled([installDetails], deps);
+        deps.resolveInitialization();
+        await handlePromise;
 
-    it('does not open onboarding in test builds', async () => {
-      process.env.IN_TEST = 'true';
-      const deps = createDeps();
-      getInstallAttributionMock.mockResolvedValue({
-        deferredDeepLink: null,
-        traits: {},
+        expect(deps.platform.openExtensionInBrowser).toHaveBeenCalledTimes(1);
+        expect(getInstallAttributionMock).toHaveBeenCalledTimes(1);
+        expect(trackEventMock).toHaveBeenCalledTimes(1);
       });
 
-      const installPromise = onInstall(deps);
-      deps.resolveInitialization();
-      await installPromise;
+      it('does not open onboarding in test builds', async () => {
+        process.env.IN_TEST = 'true';
+        const deps = createDeps();
+        getInstallAttributionMock.mockResolvedValue({
+          deferredDeepLink: null,
+          traits: {},
+        });
 
-      expect(deps.platform.openExtensionInBrowser).not.toHaveBeenCalled();
-    });
-  });
+        const handlePromise = handleOnInstalled([installDetails], deps);
+        deps.resolveInitialization();
+        await handlePromise;
 
-  describe('handleOnInstalled', () => {
-    it('routes install events to onInstall', async () => {
-      const deps = createDeps();
-      getInstallAttributionMock.mockResolvedValue({
-        deferredDeepLink: null,
-        traits: {},
+        expect(deps.platform.openExtensionInBrowser).not.toHaveBeenCalled();
       });
-      const details = {
-        reason: 'install',
-      } as Runtime.OnInstalledDetailsType;
-
-      const handlePromise = handleOnInstalled([details], deps);
-      deps.resolveInitialization();
-      await handlePromise;
-
-      expect(deps.platform.openExtensionInBrowser).toHaveBeenCalledTimes(1);
-      expect(onUpdateMock).not.toHaveBeenCalled();
     });
 
-    it('routes update events to onUpdate after initialization', async () => {
-      const deps = createDeps({
-        platform: createPlatform({
-          getVersion: jest.fn(() => '13.1.0'),
-        }),
+    describe('update', () => {
+      it('routes update events to onUpdate after initialization', async () => {
+        const deps = createDeps({
+          platform: createPlatform({
+            getVersion: jest.fn(() => '13.1.0'),
+          }),
+        });
+        const details = {
+          reason: 'update',
+          previousVersion: '13.0.0',
+        } as Runtime.OnInstalledDetailsType;
+
+        const handlePromise = handleOnInstalled([details], deps);
+        deps.resolveInitialization();
+        await handlePromise;
+
+        expect(onUpdateMock).toHaveBeenCalledWith(
+          deps.controller,
+          deps.platform,
+          '13.0.0',
+          deps.requestSafeReload,
+        );
       });
-      const details = {
-        reason: 'update',
-        previousVersion: '13.0.0',
-      } as Runtime.OnInstalledDetailsType;
 
-      const handlePromise = handleOnInstalled([details], deps);
-      deps.resolveInitialization();
-      await handlePromise;
+      it('ignores update events when the previous version matches the current version', async () => {
+        const deps = createDeps({
+          platform: createPlatform({
+            getVersion: jest.fn(() => '13.0.0'),
+          }),
+        });
+        const details = {
+          reason: 'update',
+          previousVersion: '13.0.0',
+        } as Runtime.OnInstalledDetailsType;
 
-      expect(onUpdateMock).toHaveBeenCalledWith(
-        deps.controller,
-        deps.platform,
-        '13.0.0',
-        deps.requestSafeReload,
-      );
-    });
+        await handleOnInstalled([details], deps);
 
-    it('ignores update events when the previous version matches the current version', async () => {
-      const deps = createDeps({
-        platform: createPlatform({
-          getVersion: jest.fn(() => '13.0.0'),
-        }),
+        expect(onUpdateMock).not.toHaveBeenCalled();
       });
-      const details = {
-        reason: 'update',
-        previousVersion: '13.0.0',
-      } as Runtime.OnInstalledDetailsType;
-
-      await handleOnInstalled([details], deps);
-
-      expect(onUpdateMock).not.toHaveBeenCalled();
     });
   });
 

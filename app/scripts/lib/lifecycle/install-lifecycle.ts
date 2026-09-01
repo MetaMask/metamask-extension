@@ -4,27 +4,26 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
-} from '../../../../shared/constants/metametrics';
+} from '#shared/constants/metametrics';
 import {
   getInstallAttribution,
   type InstallAttribution,
-} from '../../../../shared/lib/install-attribution';
-import type { FlattenedBackgroundStateProxy } from '../../../../shared/types';
+} from '#shared/lib/install-attribution';
+import type { FlattenedBackgroundStateProxy } from '#shared/types';
 import type { MetaMetricsController } from '../../controllers/metametrics-controller';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import type { AppStateController } from '../../controllers/app-state-controller';
-import {
-  onUpdate,
-  type OnUpdateController,
-  type OnUpdatePlatform,
-} from '../../on-update';
+import { onUpdate } from '../../on-update';
 import type ExtensionPlatform from '../../platforms/extension';
 
-export type InstallLifecycleAppStateController =
+type OnUpdateController = Parameters<typeof onUpdate>[0];
+type OnUpdatePlatform = Parameters<typeof onUpdate>[1];
+
+type InstallLifecycleAppStateController =
   OnUpdateController['appStateController'] &
     Pick<AppStateController, 'setDeferredDeepLink'>;
 
-export type InstallLifecycleController = OnUpdateController & {
+type InstallLifecycleController = OnUpdateController & {
   metaMetricsController: Pick<MetaMetricsController, 'updateTraits'>;
   appStateController: InstallLifecycleAppStateController;
   getState: () => Pick<
@@ -33,7 +32,7 @@ export type InstallLifecycleController = OnUpdateController & {
   >;
 };
 
-export type InstallLifecyclePlatform = OnUpdatePlatform &
+type InstallLifecyclePlatform = OnUpdatePlatform &
   Pick<ExtensionPlatform, 'openExtensionInBrowser'>;
 
 export type InstallLifecycleDependencies = {
@@ -50,7 +49,7 @@ export type InstallLifecycleDependencies = {
  * @param installAttributionPromise - Promise resolving to install attribution data.
  * @param controller - Controller APIs used for traits, deeplink, and consent state.
  */
-export async function addAppInstalledEvent(
+async function addAppInstalledEvent(
   installAttributionPromise: Promise<InstallAttribution>,
   controller: Pick<
     InstallLifecycleController,
@@ -94,7 +93,7 @@ export async function addAppInstalledEvent(
  *
  * @param deps - Install lifecycle dependencies.
  */
-export async function onInstall(
+async function onInstall(
   deps: InstallLifecycleDependencies,
 ): Promise<void> {
   log.debug('First install detected');
