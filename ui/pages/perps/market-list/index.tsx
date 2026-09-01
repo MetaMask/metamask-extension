@@ -69,7 +69,7 @@ import { usePerpsAttribution } from '../../../hooks/perps/usePerpsAttribution';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { MarketRow } from '../../../components/app/perps/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
-import { SortDropdown } from './components/sort-dropdown';
+import { SortDropdown, SORT_FIELD_OPTIONS } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
 import { FilterSelect } from './components/filter-select';
 
@@ -92,6 +92,21 @@ const SEARCH_MODE = {
 
 /** A short ticker-like token ("btc", "hype2") reads as a targeted lookup. */
 const TICKER_LIKE_QUERY = /^[a-z0-9]{1,6}$/u;
+
+/**
+ * Sort values accepted on the `sort` / `direction` search params. The fields
+ * are the ones the sort dropdown itself offers, so a deeplink can never select
+ * a ranking the user could not reach from the UI.
+ */
+const SORT_DIRECTIONS: SortDirection[] = ['asc', 'desc'];
+const DEFAULT_SORT_FIELD: SortField = 'volume';
+const DEFAULT_SORT_DIRECTION: SortDirection = 'desc';
+
+const isSortField = (value: string | null): value is SortField =>
+  SORT_FIELD_OPTIONS.some((option) => option.id === value);
+
+const isSortDirection = (value: string | null): value is SortDirection =>
+  SORT_DIRECTIONS.some((direction) => direction === value);
 
 /**
  * Classify a search for the funnel `mode` property: chips/category narrow the
@@ -236,10 +251,30 @@ export const MarketListView = () => {
     return 'all';
   }, [searchParams, hasWatchlistMarkets]);
 
+  // Read the initial sort from URL params so entry points that already know how
+  // the user wants the list ranked (the Perps tab's Top movers header) land on
+  // that ranking instead of the default volume sort. Unrecognised values fall
+  // back to the default, so an old or hand-edited link never renders unsorted.
+  const initialSort = useMemo<{
+    field: SortField;
+    direction: SortDirection;
+  }>(() => {
+    const sortParam = searchParams.get('sort');
+    const directionParam = searchParams.get('direction');
+    return {
+      field: isSortField(sortParam) ? sortParam : DEFAULT_SORT_FIELD,
+      direction: isSortDirection(directionParam)
+        ? directionParam
+        : DEFAULT_SORT_DIRECTION,
+    };
+  }, [searchParams]);
+
   // State
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortField, setSortField] = useState<SortField>('volume');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [sortField, setSortField] = useState<SortField>(initialSort.field);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(
+    initialSort.direction,
+  );
   const [selectedFilter, setSelectedFilter] =
     useState<MarketFilter>(initialFilter);
 

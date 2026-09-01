@@ -145,6 +145,15 @@ jest.mock('../../../hooks/perps/stream', () => {
     usePerpsAssetNames: jest.fn(() => ({
       resolveAssetName: (symbol: string) => symbol,
     })),
+    // Read directly by the Top movers section, which ranks the live market
+    // list rather than going through usePerpsTabExploreData.
+    usePerpsLiveMarketListData: jest.fn(() => ({
+      markets: [
+        ...streamMocks.mockCryptoMarkets,
+        ...streamMocks.mockHip3Markets,
+      ],
+      isInitialLoading: false,
+    })),
   };
 });
 
@@ -320,6 +329,12 @@ describe('PerpsView', () => {
       expect(
         screen.getByTestId('perps-explore-markets-row'),
       ).toBeInTheDocument();
+    });
+
+    it('shows the top movers section', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-top-movers')).toBeInTheDocument();
     });
 
     it('renders position cards for each position', () => {

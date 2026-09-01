@@ -61,6 +61,7 @@ import {
 } from './perps-skeletons';
 import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
+import { PerpsTopMovers } from './perps-top-movers';
 import { PerpsWatchlist } from './perps-watchlist';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
@@ -491,6 +492,9 @@ export const PerpsView = () => {
 
       {/* Watchlist */}
       <PerpsWatchlist markets={watchlistMarkets} />
+
+      {/* Top movers */}
+      <PerpsTopMovers />
 
       {/* Explore markets */}
       <PerpsExploreMarkets markets={exploreMarkets} />
