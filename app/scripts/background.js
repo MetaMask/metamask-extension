@@ -401,10 +401,7 @@ const criticalErrorHandler = new CriticalErrorHandler();
  */
 const handleOnConnect = async (port) => {
   const { isMetaMaskUIPort } = parsePortInfo(port);
-  if (
-    isMetaMaskUIPort &&
-    !postUpdateReloadAbortController.signal.aborted
-  ) {
+  if (isMetaMaskUIPort && !postUpdateReloadAbortController.signal.aborted) {
     log.info('[post-update-reload] Internal UI connection attempt observed');
     postUpdateReloadAbortController.abort();
   }

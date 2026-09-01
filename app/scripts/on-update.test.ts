@@ -72,8 +72,7 @@ describe('onUpdate', () => {
     postUpdateReloadAbortController = new AbortController();
     update = (controller) =>
       onUpdate(controller, platform, '1.0.0', requestSafeReload, {
-        postUpdateReloadAbortSignal:
-          postUpdateReloadAbortController.signal,
+        postUpdateReloadAbortSignal: postUpdateReloadAbortController.signal,
       });
   });
 

@@ -30,10 +30,7 @@ function waitForAbort(
   signal: AbortSignal,
   timeoutMs: number,
 ): Promise<boolean> {
-  const waitSignal = AbortSignal.any([
-    signal,
-    AbortSignal.timeout(timeoutMs),
-  ]);
+  const waitSignal = AbortSignal.any([signal, AbortSignal.timeout(timeoutMs)]);
 
   if (waitSignal.aborted) {
     return Promise.resolve(signal.aborted);

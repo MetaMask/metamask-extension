@@ -529,7 +529,10 @@ class ActivityTab extends HomePage {
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
-    await this.driver.waitForSelector(this.transactionAmountsInActivity);
+    await this.driver.waitForSelector({
+      css: this.transactionAmountsInActivity,
+      text: expectedAmount,
+    });
     const transactionAmounts = await this.driver.findElements(
       this.transactionAmountsInActivity,
     );
