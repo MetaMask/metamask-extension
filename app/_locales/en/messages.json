@@ -7208,6 +7208,24 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
+  "perpsAgentWalletCapabilityLine": {
+    "message": "Trade and move funds between your Hyperliquid balances — withdrawals always require your wallet"
+  },
+  "perpsAgentWalletConfirmOnDevice": {
+    "message": "Confirm on your device"
+  },
+  "perpsAgentWalletCta": {
+    "message": "Set up one-tap trading"
+  },
+  "perpsAgentWalletReviewTitle": {
+    "message": "One-tap trading"
+  },
+  "perpsAgentWalletRotationLine": {
+    "message": "You can rotate or remove this anytime"
+  },
+  "perpsAgentWalletStatusActive": {
+    "message": "One-tap trading is on for this account"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
   },

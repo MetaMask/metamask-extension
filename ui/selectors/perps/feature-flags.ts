@@ -120,6 +120,21 @@ export const getIsPerpsOrderBookEnabled = createSelector(
 );
 
 /**
+ * Whether the perps agent wallet ("one-tap trading") setup UI is enabled.
+ *
+ * Remote flag `perpsAgentWalletEnabled` — the camel-cased form of
+ * `perps-agent-wallet-enabled`. The flag defaults to disabled so the agent
+ * wallet surface ships dark, and follows the same `{ enabled, minimumVersion }`
+ * rollout shape as `perpsEnabledVersion`. When disabled, the setup CTA and
+ * status row never render; perps signing falls back to the master keyring path.
+ */
+export const getIsPerpsAgentWalletEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    isPerpsRemoteConfigSatisfied(remoteFeatureFlags.perpsAgentWalletEnabled),
+);
+
+/**
  * Whether limit orders are enabled in the single-position close flow.
  *
  * Remote flag `perpsClosePositionLimitOrderEnabled` — the camel-cased form of

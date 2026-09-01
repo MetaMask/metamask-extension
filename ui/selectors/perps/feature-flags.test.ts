@@ -3,6 +3,7 @@ import { PerpsFeatureFlag } from '../../../shared/lib/perps-feature-flags';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import {
+  getIsPerpsAgentWalletEnabled,
   getIsPerpsCloseLimitOrderEnabled,
   getIsPerpsExperienceAvailable,
   getIsPerpsOrderBookEnabled,
@@ -35,14 +36,19 @@ type MockState = {
   metamask: {
     remoteFeatureFlags: {
       perpsEnabledVersion?: PerpsFeatureFlag;
+      perpsAgentWalletEnabled?: PerpsFeatureFlag;
     };
   };
 };
 
-const getMockState = (perpsEnabledVersion?: PerpsFeatureFlag): MockState => ({
+const getMockState = (
+  perpsEnabledVersion?: PerpsFeatureFlag,
+  perpsAgentWalletEnabled?: PerpsFeatureFlag,
+): MockState => ({
   metamask: {
     remoteFeatureFlags: {
       perpsEnabledVersion,
+      perpsAgentWalletEnabled,
     },
   },
 });
@@ -229,6 +235,52 @@ describe('Perps Feature Flags', () => {
         },
       };
       expect(getIsPerpsOrderBookEnabled(state)).toBe(false);
+    });
+  });
+
+  describe('getIsPerpsAgentWalletEnabled', () => {
+    it('returns false when perpsAgentWalletEnabled flag is undefined', () => {
+      const state = getMockState(
+        { enabled: true, minimumVersion: '0.0.0' },
+        undefined,
+      );
+      expect(getIsPerpsAgentWalletEnabled(state)).toBe(false);
+      expect(semverGteMock).not.toHaveBeenCalled();
+    });
+
+    it('returns false when remoteFeatureFlags is empty', () => {
+      const state = { metamask: { remoteFeatureFlags: {} } };
+      expect(getIsPerpsAgentWalletEnabled(state)).toBe(false);
+      expect(semverGteMock).not.toHaveBeenCalled();
+    });
+
+    it('returns false when the flag is disabled', () => {
+      const state = getMockState(
+        { enabled: true, minimumVersion: '0.0.0' },
+        { enabled: false, minimumVersion: '0.0.0' },
+      );
+      expect(getIsPerpsAgentWalletEnabled(state)).toBe(false);
+      expect(semverGteMock).not.toHaveBeenCalled();
+    });
+
+    it('returns true when enabled and the version check passes', () => {
+      semverGteMock.mockReturnValue(true);
+      const state = getMockState(
+        { enabled: true, minimumVersion: '0.0.0' },
+        { enabled: true, minimumVersion: '0.0.0' },
+      );
+      expect(getIsPerpsAgentWalletEnabled(state)).toBe(true);
+      expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '0.0.0');
+    });
+
+    it('returns false when enabled but the version check fails', () => {
+      semverGteMock.mockReturnValue(false);
+      const state = getMockState(
+        { enabled: true, minimumVersion: '0.0.0' },
+        { enabled: true, minimumVersion: '0.0.0' },
+      );
+      expect(getIsPerpsAgentWalletEnabled(state)).toBe(false);
+      expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '0.0.0');
     });
   });
 

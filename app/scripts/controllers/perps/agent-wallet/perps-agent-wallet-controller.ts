@@ -84,6 +84,14 @@ export class PerpsAgentWalletController extends BaseController<
     encryptorFactory(ENCRYPTOR_ITERATIONS),
   );
 
+  /**
+   * True only while the current session was unlocked with the wallet
+   * password (or an agent setup has verified it). Passkey/social-login
+   * (`encryptionKey`) unlocks leave this false for the session, so the
+   * agent setup CTA stays hidden and perps falls back to master signing.
+   */
+  #canSetupAgentWallet = false;
+
   constructor({
     messenger,
     state,
@@ -244,6 +252,19 @@ export class PerpsAgentWalletController extends BaseController<
   }
 
   /**
+   * Whether agent setup is possible in this session: true only when the
+   * session was password-unlocked (see {@link onUnlock}) or a setup flow has
+   * successfully verified the password. Ruling R1: passkey/social-login
+   * unlocks provide no password, so agent key encryption is unavailable and
+   * the UI must not offer agent setup.
+   *
+   * @returns True when agent setup is possible.
+   */
+  canSetupAgentWallet(): boolean {
+    return this.#canSetupAgentWallet;
+  }
+
+  /**
    * Orchestration entry point for the full agent setup flow: verifies the
    * wallet password, generates the agent keypair, has the MASTER account sign
    * the Hyperliquid `approveAgent` typed data via
@@ -267,7 +288,12 @@ export class PerpsAgentWalletController extends BaseController<
     isTestnet: boolean;
     password: string;
   }): Promise<{ agentAddress: `0x${string}` }> {
-    return setupAgentWallet(this, this.messenger, params);
+    const result = await setupAgentWallet(this, this.messenger, params);
+    // A completed setup proves the flow's password verification succeeded,
+    // so agent setup is possible in this session even if the unlock used an
+    // encryption key.
+    this.#canSetupAgentWallet = true;
+    return result;
   }
 
   /**
@@ -284,6 +310,10 @@ export class PerpsAgentWalletController extends BaseController<
    * @param payload.password - The wallet password that unlocked the vault.
    */
   async onUnlock(payload: { password: string }): Promise<void> {
+    // The unlock hook is only invoked for password unlocks (the encryptionKey
+    // passkey/social-login path never reaches it), so reaching this point
+    // proves the session is password-unlocked and agent setup is possible.
+    this.#canSetupAgentWallet = true;
     for (const [master, ciphertext] of Object.entries(
       this.state.agentKeyVaultByAccount,
     )) {
@@ -334,8 +364,9 @@ export class PerpsAgentWalletController extends BaseController<
     }
   }
 
-  /** Clears all in-memory plaintext keys. */
+  /** Clears all in-memory plaintext keys and revokes this session's setup eligibility. */
   onLock(): void {
+    this.#canSetupAgentWallet = false;
     this.#store.clearPlaintext();
   }
 }

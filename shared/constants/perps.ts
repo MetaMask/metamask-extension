@@ -15,6 +15,20 @@ export const PERPS_FALLBACK_FEE_RATES = {
 } as const;
 
 /**
+ * Stable message prefixes for perps agent wallet setup failures that cross the
+ * UI/background boundary. Only an error's `message` survives extension RPC
+ * serialization, so the background API (PerpsAgentWalletControllerInit)
+ * prefixes the controller's typed errors with these codes and the UI
+ * (usePerpsAgentWalletSetup) classifies on them.
+ */
+export const PERPS_AGENT_SETUP_ERROR_CODES = {
+  /** Wrong password, or the master signature was rejected. */
+  REJECTED: 'PerpsAgentSetupError:REJECTED',
+  /** The exchange rejected or failed the `approveAgent` submission. */
+  SUBMISSION_FAILED: 'PerpsAgentSetupError:SUBMISSION_FAILED',
+} as const;
+
+/**
  * i18n keys referenced from Perps tests via `enLocale`. Quoted literals are picked
  * up by `yarn verify-locales` (development/verify-locale-strings.js).
  */

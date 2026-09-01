@@ -5044,6 +5044,44 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setupPerpsAgentWallet', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls perpsSetupAgentWallet in the background exactly once with the selected account, perps testnet state, and password', async () => {
+      const store = mockStore();
+
+      background.perpsSetupAgentWallet = sinon
+        .stub()
+        .resolves({ agentAddress: '0xabc' });
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setupPerpsAgentWallet('my-password'));
+      expect(background.perpsSetupAgentWallet.callCount).toStrictEqual(1);
+      expect(
+        background.perpsSetupAgentWallet.getCall(0).args[0],
+      ).toStrictEqual({
+        masterAccountAddress: '0xFirstAddress',
+        isTestnet: false,
+        password: 'my-password',
+      });
+    });
+
+    it('rejects when the background setup fails so the UI can surface the error', async () => {
+      const store = mockStore();
+
+      background.perpsSetupAgentWallet = sinon
+        .stub()
+        .rejects(new Error('PerpsAgentSetupError:REJECTED: Incorrect password'));
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(actions.setupPerpsAgentWallet('bad-password')),
+      ).rejects.toThrow('PerpsAgentSetupError:REJECTED');
+    });
+  });
+
   describe('#setPendingRedirectRoute', () => {
     afterEach(() => {
       sinon.restore();

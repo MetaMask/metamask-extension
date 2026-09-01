@@ -44,6 +44,7 @@ const buildController = (
     'KeyringController:getKeyringsByType': () => [],
     'KeyringController:signTypedMessage': () => Promise.resolve('0x'),
     'KeyringController:getState': () => ({}),
+    'KeyringController:verifyPassword': () => Promise.resolve(true),
   };
   for (const [actionType, handler] of Object.entries(keyringStubs)) {
     keyringMessenger.registerActionHandler(
@@ -312,6 +313,54 @@ describe('PerpsAgentWalletController', () => {
       controller.failSetup(MASTER, 're-setup rejected');
       expect(controller.state.setupStatusByAccount[MASTER]).toBe('failed');
       expect(controller.getActiveAgent(MASTER)).toEqual(registration);
+    });
+  });
+
+  describe('canSetupAgentWallet', () => {
+    it('starts false', () => {
+      const { controller } = buildController();
+      expect(controller.canSetupAgentWallet()).toBe(false);
+    });
+
+    it('is true after a password unlock and false again after lock', async () => {
+      const { controller } = buildController();
+      await controller.onUnlock({ password: PASSWORD });
+      expect(controller.canSetupAgentWallet()).toBe(true);
+      controller.onLock();
+      expect(controller.canSetupAgentWallet()).toBe(false);
+    });
+
+    it('is true after a successful setupAgentWallet (password verified by the flow)', async () => {
+      const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({
+        ok: true,
+        json: async () => ({ status: 'ok' }),
+      } as never);
+      const { controller } = buildController();
+      expect(controller.canSetupAgentWallet()).toBe(false);
+      await controller.setupAgentWallet({
+        masterAccountAddress: MASTER,
+        isTestnet: false,
+        password: PASSWORD,
+      });
+      expect(controller.canSetupAgentWallet()).toBe(true);
+      fetchMock.mockRestore();
+    });
+
+    it('stays false when setupAgentWallet fails before completing', async () => {
+      const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({
+        ok: false,
+        json: async () => ({ status: 'err', response: 'bad' }),
+      } as never);
+      const { controller } = buildController();
+      await expect(
+        controller.setupAgentWallet({
+          masterAccountAddress: MASTER,
+          isTestnet: false,
+          password: PASSWORD,
+        }),
+      ).rejects.toThrow();
+      expect(controller.canSetupAgentWallet()).toBe(false);
+      fetchMock.mockRestore();
     });
   });
 });
