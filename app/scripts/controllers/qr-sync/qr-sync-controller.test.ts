@@ -187,15 +187,24 @@ function setupController(
   const mockSnapshot = {
     toPayloadId: jest.fn((groupId: AccountGroupId) => groupId),
     filterAllGroups: jest.fn().mockReturnThis(),
-    serialize: jest.fn().mockReturnValue([
-      {
-        type: 'Mnemonic',
-        name: 'Wallet 1',
-        mnemonic: btoa('test mnemonic'),
-        isPrimary: true,
-        groups: [{ groupIndex: 0, name: 'Account 1' }],
-      },
-    ]),
+    serialize: jest.fn().mockReturnValue({
+      version: 1,
+      wallets: [
+        {
+          id: 'wallet:primary-entropy-id',
+          type: 'mnemonic',
+          value: new Uint8Array([1, 2, 3]),
+          metadata: { name: 'Wallet 1' },
+          groups: [
+            {
+              id: 'wallet:primary-entropy-id/0',
+              groupIndex: 0,
+              metadata: { name: 'Account 1', pinned: false, hidden: false },
+            },
+          ],
+        },
+      ],
+    }),
   };
 
   const mockExportState = jest.fn().mockResolvedValue(mockSnapshot);
@@ -801,19 +810,21 @@ describe('QrSyncController', () => {
           type: QrSyncActionTypes.SYNC_READY,
           version: '1.0.0',
           deadline: expect.any(Number),
-          data: [
-            expect.objectContaining({
-              type: 'Mnemonic',
-              name: 'Wallet 1',
-              groups: [
-                expect.objectContaining({
-                  groupIndex: 0,
-                  name: 'Account 1',
-                }),
-              ],
-              isPrimary: true,
-            }),
-          ],
+          data: expect.objectContaining({
+            version: 1,
+            wallets: [
+              expect.objectContaining({
+                type: 'mnemonic',
+                metadata: expect.objectContaining({ name: 'Wallet 1' }),
+                groups: [
+                  expect.objectContaining({
+                    groupIndex: 0,
+                    metadata: expect.objectContaining({ name: 'Account 1' }),
+                  }),
+                ],
+              }),
+            ],
+          }),
         }),
       );
       expect(controller.state.qrSyncPhase).toBe(
@@ -826,26 +837,42 @@ describe('QrSyncController', () => {
       mockEmitSyncCompleted();
     });
 
-    it('marks non-primary wallets when exporting multiple entropy sources', async () => {
+    it('sends multiple mnemonic wallets with primary first when exporting multiple entropy sources', async () => {
       const { controller, mockSnapshot } = setupController({
         entropyFixtures: [primaryEntropyFixture, secondaryEntropyFixture],
       });
 
-      mockSnapshot.serialize.mockReturnValue([
-        {
-          type: 'Mnemonic',
-          name: 'Wallet 1',
-          mnemonic: btoa('test mnemonic primary'),
-          isPrimary: true,
-          groups: [{ groupIndex: 0, name: 'Account 1' }],
-        },
-        {
-          type: 'Mnemonic',
-          name: 'Wallet 2',
-          mnemonic: btoa('test mnemonic secondary'),
-          groups: [{ groupIndex: 0, name: 'Account 1' }],
-        },
-      ]);
+      mockSnapshot.serialize.mockReturnValue({
+        version: 1,
+        wallets: [
+          {
+            id: 'wallet:primary-entropy-id',
+            type: 'mnemonic',
+            value: new Uint8Array([1, 2, 3]),
+            metadata: { name: 'Wallet 1' },
+            groups: [
+              {
+                id: 'wallet:primary-entropy-id/0',
+                groupIndex: 0,
+                metadata: { name: 'Account 1', pinned: false, hidden: false },
+              },
+            ],
+          },
+          {
+            id: 'wallet:secondary-entropy-id',
+            type: 'mnemonic',
+            value: new Uint8Array([4, 5, 6]),
+            metadata: { name: 'Wallet 2' },
+            groups: [
+              {
+                id: 'wallet:secondary-entropy-id/0',
+                groupIndex: 0,
+                metadata: { name: 'Account 1', pinned: false, hidden: false },
+              },
+            ],
+          },
+        ],
+      });
 
       await mockStartSession(controller);
       await mockSetReviewingSyncOffer(controller);
@@ -859,27 +886,16 @@ describe('QrSyncController', () => {
         ([message]) => message.type === QrSyncActionTypes.SYNC_READY,
       )?.[0];
 
-      expect(syncReadyPayload?.data).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            type: 'Mnemonic',
-            isPrimary: true,
-          }),
-          expect.objectContaining({
-            type: 'Mnemonic',
-          }),
-        ]),
+      // Both mnemonic wallets are present
+      expect(syncReadyPayload?.data?.wallets).toHaveLength(2);
+      expect(syncReadyPayload?.data?.wallets[0]).toEqual(
+        expect.objectContaining({ type: 'mnemonic', id: 'wallet:primary-entropy-id' }),
       );
-      expect(
-        syncReadyPayload?.data?.find(
-          (entry: { isPrimary?: boolean }) => entry.isPrimary === true,
-        ),
-      ).toBeDefined();
-      expect(
-        syncReadyPayload?.data?.filter(
-          (entry: { isPrimary?: boolean }) => entry.isPrimary === true,
-        ),
-      ).toHaveLength(1);
+      expect(syncReadyPayload?.data?.wallets[1]).toEqual(
+        expect.objectContaining({ type: 'mnemonic', id: 'wallet:secondary-entropy-id' }),
+      );
+      // Primary wallet is first -- mobile uses position, not a flag
+      expect(syncReadyPayload?.data?.wallets[0].metadata.name).toBe('Wallet 1');
 
       mockEmitSyncCompleted();
     });
