@@ -6,7 +6,7 @@
  */
 
 import { spawnSync } from 'node:child_process';
-import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -15,6 +15,7 @@ type LintChangedOptions = {
 };
 
 const JS_TS_TSX_MTS_SNAP_FILE_REGEX = /\.(js|ts|tsx|mts|snap)$/u;
+const require = createRequire(import.meta.url);
 
 function runGit(args: string[]): string {
   const result = spawnSync('git', args, {
@@ -159,31 +160,15 @@ export function main(argv = process.argv.slice(2)): void {
   process.stdout.write('\n');
 
   const oxfmtBin = path.join(
-    process.cwd(),
-    'node_modules',
-    'oxfmt',
+    path.dirname(require.resolve('oxfmt/package.json')),
     'bin',
     'oxfmt',
   );
   const eslintBin = path.join(
-    process.cwd(),
-    'node_modules',
-    'eslint',
+    path.dirname(require.resolve('eslint/package.json')),
     'bin',
     'eslint.js',
   );
-  if (!fs.existsSync(oxfmtBin)) {
-    process.stderr.write(
-      `Could not find oxfmt at ${oxfmtBin}. Ensure dependencies are installed (yarn install).\n`,
-    );
-    process.exit(1);
-  }
-  if (!fs.existsSync(eslintBin)) {
-    process.stderr.write(
-      `Could not find ESLint at ${eslintBin}. Ensure dependencies are installed (yarn install).\n`,
-    );
-    process.exit(1);
-  }
 
   const oxfmtExitCode = runToolOnFiles(
     oxfmtBin,
