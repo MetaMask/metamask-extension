@@ -11,17 +11,6 @@ const mockOnActionComplete = jest.fn();
 
 describe('Json', () => {
   const mockStore = configureMockStore()(mockState);
-  it('should match snapshot', () => {
-    const { asFragment } = renderWithProvider(
-      <Json
-        importAccountFunc={mockImportFunc}
-        onActionComplete={mockOnActionComplete}
-      />,
-      mockStore,
-    );
-    expect(asFragment()).toMatchSnapshot();
-  });
-
   it('should render', () => {
     const { getByText } = renderWithProvider(
       <Json

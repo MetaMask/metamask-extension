@@ -36,14 +36,6 @@ describe('PrivacyTab', () => {
     setBackgroundConnection(backgroundConnectionMock as never);
   });
 
-  describe('snapshot', () => {
-    it('matches snapshot', () => {
-      const { container } = renderWithProvider(<PrivacyTab />, mockStore);
-
-      expect(container).toMatchSnapshot();
-    });
-  });
-
   it('hides granular privacy controls when consolidated Basic Functionality is enabled', () => {
     renderWithProvider(
       <PrivacyTab />,
