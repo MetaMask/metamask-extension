@@ -312,35 +312,42 @@ export default function PrivacySettings() {
                 <ul>
                   {items.map((item) => (
                     <Box
+                      asChild
                       key={item.id}
-                      className="categories-item"
-                      onClick={() => handleItemSelected(item)}
+                      className="categories-item w-full border-0 bg-transparent p-0 text-left"
                     >
-                      <Box
-                        flexDirection={BoxFlexDirection.Row}
-                        alignItems={BoxAlignItems.Start}
-                        justifyContent={BoxJustifyContent.Between}
+                      <button
+                        type="button"
+                        aria-label={item.title}
                         data-testid={`category-item-${item.title}`}
+                        onClick={() => handleItemSelected(item)}
                       >
-                        <Text
-                          variant={TextVariant.BodyMd}
-                          fontWeight={FontWeight.Medium}
+                        <Box
+                          flexDirection={BoxFlexDirection.Row}
+                          alignItems={BoxAlignItems.Start}
+                          justifyContent={BoxJustifyContent.Between}
                         >
-                          {item.title}
+                          <Text
+                            variant={TextVariant.BodyMd}
+                            fontWeight={FontWeight.Medium}
+                          >
+                            {item.title}
+                          </Text>
+                          <Icon
+                            name={IconName.ArrowRight}
+                            size={IconSize.Md}
+                            color={IconColor.IconDefault}
+                            aria-hidden
+                          />
+                        </Box>
+                        <Text
+                          className="description"
+                          variant={TextVariant.BodyMd}
+                          color={TextColor.TextAlternative}
+                        >
+                          {item.subtitle}
                         </Text>
-                        <Icon
-                          name={IconName.ArrowRight}
-                          size={IconSize.Md}
-                          color={IconColor.IconDefault}
-                        />
-                      </Box>
-                      <Text
-                        className="description"
-                        variant={TextVariant.BodyMd}
-                        color={TextColor.TextAlternative}
-                      >
-                        {item.subtitle}
-                      </Text>
+                      </button>
                     </Box>
                   ))}
                 </ul>
