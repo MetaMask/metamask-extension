@@ -627,7 +627,7 @@
     "@metamask/java-tron-up": "^1.0.0",
     "@metamask/messenger-cli": "^0.2.0",
     "@metamask/phishing-warning": "^5.1.0",
-    "@metamask/platform-api-docs": "npm:@metamask-previews/platform-api-docs@0.0.0-preview-3c77cf4",
+    "@metamask/platform-api-docs": "^0.1.0",
     "@metamask/preferences-controller": "^23.0.0",
     "@metamask/skills": "^0.1.0",
     "@metamask/snap-account-abstraction-keyring-site": "^1.0.0",

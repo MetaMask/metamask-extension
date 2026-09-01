@@ -9758,9 +9758,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/platform-api-docs@npm:@metamask-previews/platform-api-docs@0.0.0-preview-3c77cf4":
-  version: 0.0.0-preview-3c77cf4
-  resolution: "@metamask-previews/platform-api-docs@npm:0.0.0-preview-3c77cf4"
+"@metamask/platform-api-docs@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/platform-api-docs@npm:0.1.0"
   dependencies:
     "@docusaurus/core": "npm:^3.10.1"
     "@docusaurus/plugin-content-docs": "npm:^3.10.1"
@@ -9780,7 +9780,7 @@ __metadata:
     yargs: "npm:^17.7.2"
   bin:
     platform-api-docs: ./dist/cli.mjs
-  checksum: 10/ff18f653d6ae0b7c5f0d00eb4b971ea9f3f35d9869f7b1fda6d9b7d58698ba0ff6c2f9ab40816bb2990b6fb16892dfc423f728c30a1e9a46f68b8df9ec155906
+  checksum: 10/8675d9b08bf944c25ea5d62a486d8e3c320ef7219ef155b03def8ef2afe77583fece850acae8ea16b932617b8dd337c33862f1fe389cbc5a0c335dd9197e6c99
   languageName: node
   linkType: hard
 
@@ -37050,7 +37050,7 @@ __metadata:
     "@metamask/perps-controller": "npm:^12.0.0"
     "@metamask/phishing-controller": "npm:^17.4.0"
     "@metamask/phishing-warning": "npm:^5.1.0"
-    "@metamask/platform-api-docs": "npm:@metamask-previews/platform-api-docs@0.0.0-preview-3c77cf4"
+    "@metamask/platform-api-docs": "npm:^0.1.0"
     "@metamask/polling-controller": "npm:^16.0.7"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.39.1"
