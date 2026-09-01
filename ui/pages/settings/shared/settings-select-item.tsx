@@ -17,8 +17,11 @@ import { transitionForward } from '../../../components/ui/transition';
 
 type SettingsSelectItemProps = {
   label: string;
-  /** Text value to display, or a ReactNode for custom content (e.g., icon + text) */
-  value: string | ReactNode;
+  /**
+   * Text value to display, or a ReactNode for custom content (e.g., icon + text).
+   * Omitted for rows with no status to summarize, such as wallet activity.
+   */
+  value?: string | ReactNode;
   /** Route to navigate to when the item is selected */
   to: string;
   /** Optional test id for the clickable navigation control */
@@ -84,7 +87,7 @@ export const SettingsSelectItem = ({
               {value}
             </Text>
           ) : (
-            value
+            (value ?? null)
           )}
           <Icon
             name={IconName.ArrowRight}

@@ -31,6 +31,7 @@ import {
   type NormalisedAPINotification,
 } from '@metamask/notification-services-controller/notification-services';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 
 type MockResponse = {
   url: string | RegExp;
@@ -137,7 +138,13 @@ export async function mockNotificationServices(
   server: Mockttp,
   triggerServer: MockttpNotificationTriggerServer = new MockttpNotificationTriggerServer(),
 ) {
-  // Trigger Server
+  // Wallet-activity addresses come from the keyring and the per-address
+  // enabled bit from the Trigger API, so the fixture account must be reported
+  // as subscribed for wallet notifications to be fetched. Don't overwrite a
+  // config a persisted server already recorded.
+  if (triggerServer.getNotificationConfig(DEFAULT_FIXTURE_ACCOUNT) === undefined) {
+    triggerServer.setNotificationConfig(DEFAULT_FIXTURE_ACCOUNT, true);
+  }
   triggerServer.setupServer(server);
 
   // Notification Server

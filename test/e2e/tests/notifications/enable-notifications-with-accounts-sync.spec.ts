@@ -55,7 +55,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
      * → General notifications: requires manual re-enable
      * → Product notifications: disabled (persisted in AUS)
      * → First account: enabled
-     * → Second account: disabled (persisted in AUS from Part 1)
+     * → Second account: disabled (persisted via the Trigger API from Part 1)
      */
     // TODO: Re-write this test when multichain account syncing has been merged
     // eslint-disable-next-line mocha/no-skipped-tests

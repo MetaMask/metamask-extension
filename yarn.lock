@@ -6067,7 +6067,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/authenticated-user-storage@npm:^3.0.1, @metamask/authenticated-user-storage@npm:^3.0.2":
+"@metamask/authenticated-user-storage@npm:^3.0.2":
   version: 3.0.2
   resolution: "@metamask/authenticated-user-storage@npm:3.0.2"
   dependencies:
@@ -7946,17 +7946,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^26.0.0":
-  version: 26.0.0
-  resolution: "@metamask/notification-services-controller@npm:26.0.0"
+"@metamask/notification-services-controller@npm:@metamask-previews/notification-services-controller@26.0.1-preview-1a9713847":
+  version: 26.0.1-preview-1a9713847
+  resolution: "@metamask-previews/notification-services-controller@npm:26.0.1-preview-1a9713847"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
-    "@metamask/authenticated-user-storage": "npm:^3.0.1"
+    "@metamask/authenticated-user-storage": "npm:^3.0.2"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/keyring-controller": "npm:^27.1.1"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/profile-sync-controller": "npm:^28.3.0"
+    "@metamask/profile-sync-controller": "npm:^29.0.0"
     "@metamask/utils": "npm:^11.11.0"
     bignumber.js: "npm:^9.1.2"
     firebase: "npm:^11.2.0"
@@ -7964,7 +7964,7 @@ __metadata:
     loglevel: "npm:^1.8.1"
     semver: "npm:^7.6.3"
     uuid: "npm:^8.3.2"
-  checksum: 10/9d5a051323733ddf7daff4fd4e1d5d5d98cf2182e49f3b6cd1a5b852e9d33301ab09fb4ed710f4b4c385658e806e24b6c0e30f6f1e58bdac13217b82f5c2fad7
+  checksum: 10/0e5a5910e5d12ca480c7fc760014ac2b624cbb28d589a40d5950d4aad94ffa90845ad49c63cf76d85a9b985ee6d6cfa85b83e69798a6f2c4534cc104c7f7532f
   languageName: node
   linkType: hard
 
@@ -33460,7 +33460,7 @@ __metadata:
     "@metamask/network-connection-banner-controller": "npm:^0.2.0"
     "@metamask/network-controller": "npm:^35.0.0"
     "@metamask/network-enablement-controller": "npm:^6.0.0"
-    "@metamask/notification-services-controller": "npm:^26.0.0"
+    "@metamask/notification-services-controller": "npm:@metamask-previews/notification-services-controller@26.0.1-preview-1a9713847"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/passkey-controller": "npm:^3.0.0"

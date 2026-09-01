@@ -1,8 +1,12 @@
 import { CompletedRequest, Mockttp } from 'mockttp';
 import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
-import { getMockOnChainNotificationsConfig } from '@metamask/notification-services-controller/notification-services/mocks';
+import {
+  getMockOnChainNotificationsConfig,
+  getMockUpdateOnChainNotifications,
+} from '@metamask/notification-services-controller/notification-services/mocks';
 
 const GET_CONFIG_URL = getMockOnChainNotificationsConfig().url;
+const UPDATE_CONFIG_URL = getMockUpdateOnChainNotifications().url;
 const AUTHENTICATED_USER_STORAGE_NOTIFICATION_PREFERENCES_URL =
   /^https:\/\/user-storage\.(?:dev-api|uat-api|api)\.cx\.metamask\.io\/api\/v1\/preferences\/notifications$/u;
 
@@ -40,11 +44,34 @@ export class MockttpNotificationTriggerServer {
     };
   };
 
+  // Per-address upsert the controller performs when accounts are
+  // enabled/disabled (and on first-time setup). Mirrors the real endpoint,
+  // which upserts rather than replacing the whole subscription list.
+  readonly updateConfig = async (
+    request: Pick<CompletedRequest, 'body'>,
+    statusCode: number = 204,
+  ) => {
+    const requestBody = (await request.body.getJson()) as NotificationConfig[];
+
+    for (const { address, enabled } of requestBody) {
+      this.notificationConfigs.set(address.toLowerCase(), enabled);
+    }
+
+    return {
+      statusCode,
+    };
+  };
+
   setupServer = (server: Mockttp) => {
     server
       .forPost(GET_CONFIG_URL)
       .always()
       .thenCallback((request) => this.getConfig(request));
+
+    server
+      .forPost(UPDATE_CONFIG_URL)
+      .always()
+      .thenCallback((request) => this.updateConfig(request));
 
     server
       .forGet(AUTHENTICATED_USER_STORAGE_NOTIFICATION_PREFERENCES_URL)
