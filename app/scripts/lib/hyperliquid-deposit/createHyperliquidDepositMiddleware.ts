@@ -26,23 +26,13 @@ export type HyperliquidDepositContext = {
   typedData: Record<string, unknown>;
 };
 
-export type HyperliquidDepositPromptFlow = {
-  id: string;
-};
-
 type CreateHyperliquidDepositMiddlewareOptions = {
-  endPlaceholderFlow?: (
-    flow: HyperliquidDepositPromptFlow,
-  ) => Promise<void> | void;
   isEligible?: (
     context: HyperliquidDepositContext,
   ) => boolean | Promise<boolean>;
   showDepositPrompt: (
     context: HyperliquidDepositContext,
   ) => void | Promise<void>;
-  startPlaceholderFlow?: (
-    context: HyperliquidDepositContext,
-  ) => HyperliquidDepositPromptFlow | undefined;
 };
 
 /**
@@ -50,20 +40,16 @@ type CreateHyperliquidDepositMiddlewareOptions = {
  * "Enable trading" (`ApproveAgent`) signature from app.hyperliquid.xyz.
  *
  * Eligibility runs in parallel with the signature confirmation. Only eligible
- * users see an approval flow; ineligible users see nothing extra.
+ * users see the prompt; ineligible users see nothing extra.
  *
  * @param options - The middleware options.
- * @param options.endPlaceholderFlow - Ends the placeholder flow started by `startPlaceholderFlow`.
  * @param options.isEligible - Determines whether the deposit prompt should be shown.
  * @param options.showDepositPrompt - Shows the deposit prompt approval.
- * @param options.startPlaceholderFlow - Starts a placeholder flow to keep confirmation UI active.
  * @returns Async JSON-RPC middleware.
  */
 export function createHyperliquidDepositMiddleware({
-  endPlaceholderFlow,
   isEligible = () => true,
   showDepositPrompt,
-  startPlaceholderFlow,
 }: CreateHyperliquidDepositMiddlewareOptions) {
   return createAsyncMiddleware(
     async (
@@ -74,9 +60,6 @@ export function createHyperliquidDepositMiddleware({
       const context = getHyperliquidApproveAgentContext(req);
 
       let eligibilityPromise: Promise<boolean> | undefined;
-      let promptFlowPromise:
-        | Promise<HyperliquidDepositPromptFlow | undefined>
-        | undefined;
 
       if (context) {
         try {
@@ -90,64 +73,25 @@ export function createHyperliquidDepositMiddleware({
           log.error('Hyperliquid deposit eligibility check failed', error);
           eligibilityPromise = Promise.resolve(false);
         }
+      }
 
-        // Start placeholder flow only for eligible users (before signature resolves)
-        promptFlowPromise = eligibilityPromise.then((eligible) =>
-          eligible
-            ? startHyperliquidPlaceholderFlow({
-                context,
-                startPlaceholderFlow,
-              })
-            : undefined,
-        );
+      await next();
+
+      if (!context || typeof res.result !== 'string') {
+        return;
+      }
+
+      if (!(await eligibilityPromise)) {
+        return;
       }
 
       try {
-        await next();
-
-        if (!context || typeof res.result !== 'string') {
-          return;
-        }
-
-        if (!(await eligibilityPromise)) {
-          return;
-        }
-
-        try {
-          await Promise.resolve(showDepositPrompt(context));
-        } catch (error) {
-          log.error('Failed to show Hyperliquid deposit prompt', error);
-        }
-      } finally {
-        const placeholderFlow = await promptFlowPromise;
-        if (placeholderFlow && endPlaceholderFlow) {
-          try {
-            await Promise.resolve(endPlaceholderFlow(placeholderFlow));
-          } catch (error) {
-            log.error(
-              'Failed to end Hyperliquid deposit placeholder flow',
-              error,
-            );
-          }
-        }
+        await Promise.resolve(showDepositPrompt(context));
+      } catch (error) {
+        log.error('Failed to show Hyperliquid deposit prompt', error);
       }
     },
   );
-}
-
-function startHyperliquidPlaceholderFlow({
-  context,
-  startPlaceholderFlow,
-}: {
-  context: HyperliquidDepositContext;
-  startPlaceholderFlow?: CreateHyperliquidDepositMiddlewareOptions['startPlaceholderFlow'];
-}): HyperliquidDepositPromptFlow | undefined {
-  try {
-    return startPlaceholderFlow?.(context);
-  } catch (error) {
-    log.error('Failed to start Hyperliquid deposit placeholder flow', error);
-    return undefined;
-  }
 }
 
 function getHyperliquidApproveAgentContext(
