@@ -52,6 +52,11 @@ const MESSENGER_EXPOSED_METHODS = [
   'onLock',
 ] as const;
 
+// Error codes thrown by `completeSetup` before any state mutation.
+const SETUP_NOT_STARTED = 'setup not started';
+const AGENT_ADDRESS_MISMATCH = 'AGENT_ADDRESS_MISMATCH';
+const MASTER_ACCOUNT_MISMATCH = 'MASTER_ACCOUNT_MISMATCH';
+
 export function getDefaultPerpsAgentWalletControllerState(): PerpsAgentWalletControllerState {
   return {
     agentsByAccount: {},
@@ -170,9 +175,17 @@ export class PerpsAgentWalletController extends BaseController<
   }
 
   /**
-   * Completes agent setup: encrypts the held plaintext with the wallet
-   * password, persists the ciphertext plus registration metadata, marks the
-   * agent active, and emits `agentActivated`.
+   * Completes agent setup: validates the registration against the held
+   * keypair, encrypts the held plaintext with the wallet password, persists
+   * the ciphertext plus registration metadata, marks the agent active, and
+   * emits `agentActivated`.
+   *
+   * Throws before any state mutation when: setup was not started, the
+   * registration's `agentAddress` does not match the address derived from
+   * the held plaintext (case-insensitive), or the registration's
+   * `masterAccountAddress` does not match the setup account. A mismatched
+   * registration must never be persisted — `getAgentSigner` would otherwise
+   * advertise one address while signing with another.
    *
    * @param masterAccountAddress - The master account the agent belongs to.
    * @param registration - The registration metadata to persist.
@@ -185,7 +198,20 @@ export class PerpsAgentWalletController extends BaseController<
   ): Promise<void> {
     const privateKey = this.#store.getPlaintext(masterAccountAddress);
     if (!privateKey) {
-      throw new Error('setup not started');
+      throw new Error(SETUP_NOT_STARTED);
+    }
+    // Validate everything before the first `this.update` so a rejected
+    // registration can never leave partial state behind.
+    const derivedAddress = new Wallet(privateKey).address;
+    if (registration.agentAddress.toLowerCase() !== derivedAddress.toLowerCase()) {
+      throw new Error(
+        `${AGENT_ADDRESS_MISMATCH}: registration.agentAddress (${registration.agentAddress}) does not match the address derived from the generated agent key (${derivedAddress})`,
+      );
+    }
+    if (registration.masterAccountAddress !== masterAccountAddress) {
+      throw new Error(
+        `${MASTER_ACCOUNT_MISMATCH}: registration.masterAccountAddress (${registration.masterAccountAddress}) does not match the setup account (${masterAccountAddress})`,
+      );
     }
     const ciphertext = await this.#store.encrypt(
       password,

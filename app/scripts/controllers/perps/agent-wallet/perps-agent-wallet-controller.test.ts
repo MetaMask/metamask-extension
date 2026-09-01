@@ -136,6 +136,51 @@ describe('PerpsAgentWalletController', () => {
         ),
       ).rejects.toThrow('setup not started');
     });
+
+    it('throws and leaves state unchanged when registration.agentAddress does not match the generated keypair', async () => {
+      const { controller } = buildController();
+      await controller.beginSetup(MASTER);
+      await expect(
+        controller.completeSetup(
+          MASTER,
+          {
+            agentAddress: '0x2222222222222222222222222222222222222222',
+            agentName: 'metamask-perps',
+            masterAccountAddress: MASTER,
+            createdAt: 1_700_000_000_000,
+          },
+          PASSWORD,
+        ),
+      ).rejects.toThrow(/AGENT_ADDRESS_MISMATCH/u);
+      expect(controller.state.agentsByAccount).toEqual({});
+      expect(controller.state.agentKeyVaultByAccount).toEqual({});
+      // Still mid-flight: the held plaintext stays valid for a corrected retry.
+      expect(controller.state.setupStatusByAccount[MASTER]).toBe(
+        'awaiting-approval',
+      );
+    });
+
+    it('throws and leaves state unchanged when registration.masterAccountAddress does not match the setup account', async () => {
+      const { controller } = buildController();
+      const handle = await controller.beginSetup(MASTER);
+      await expect(
+        controller.completeSetup(
+          MASTER,
+          {
+            agentAddress: handle.address,
+            agentName: 'metamask-perps',
+            masterAccountAddress: '0x9999999999999999999999999999999999999999',
+            createdAt: 1_700_000_000_000,
+          },
+          PASSWORD,
+        ),
+      ).rejects.toThrow(/MASTER_ACCOUNT_MISMATCH/u);
+      expect(controller.state.agentsByAccount).toEqual({});
+      expect(controller.state.agentKeyVaultByAccount).toEqual({});
+      expect(controller.state.setupStatusByAccount[MASTER]).toBe(
+        'awaiting-approval',
+      );
+    });
   });
 
   describe('failSetup', () => {
