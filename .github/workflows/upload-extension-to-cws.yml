@@ -389,7 +389,9 @@ jobs:
 
           crx_from_fetch_status() {
             jq -r '
-              (.submittedItemRevisionStatus.distributionChannels // [])[0].crxVersion // empty
+              [
+                .submittedItemRevisionStatus.distributionChannels[]?.crxVersion // empty
+              ] | map(select(length > 0)) | first // empty
             ' "$1"
           }
 
@@ -428,8 +430,10 @@ jobs:
 
           UPLOAD_STATE=$(jq -r '.uploadState // empty' "${UPLOAD_RESPONSE}")
           UPLOAD_CRX=$(jq -r '.crxVersion // empty' "${UPLOAD_RESPONSE}")
+          async_polled=false
 
           if [[ "${UPLOAD_STATE}" == "IN_PROGRESS" ]]; then
+            async_polled=true
             max_polls=6
             poll_interval_seconds=10
             echo "Upload in progress; polling :fetchStatus for lastAsyncUploadState (up to ${max_polls}×${poll_interval_seconds}s)..."
@@ -460,6 +464,11 @@ jobs:
           if [[ "${UPLOAD_STATE}" != "SUCCEEDED" ]]; then
             echo "::error::CWS upload failed: uploadState=${UPLOAD_STATE:-<missing>}"
             cat "${UPLOAD_RESPONSE}"
+            if [[ "${async_polled}" == "true" ]]; then
+              echo ""
+              echo "Last :fetchStatus response:"
+              cat "${FETCH_STATUS_POLL}"
+            fi
             exit 1
           fi
 
