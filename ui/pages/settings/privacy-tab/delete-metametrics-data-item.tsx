@@ -9,7 +9,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getMetaMetricsDataDeletionStatus,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
@@ -30,12 +30,10 @@ export const DeleteMetametricsDataItem = () => {
   const metaMetricsDataDeletionStatus: DeleteRegulationStatus = useSelector(
     getMetaMetricsDataDeletionStatus,
   );
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled =
-    completedMetaMetricsOnboarding && isOptedIn && Boolean(analyticsId);
+    consentDecisionMade && isOptedIn && Boolean(analyticsId);
 
   const isDataDeletionInProgress =
     Boolean(analyticsId) &&

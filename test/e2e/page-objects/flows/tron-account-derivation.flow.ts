@@ -5,7 +5,7 @@ import {
   BASE_ACCOUNT_SYNC_TIMEOUT,
 } from '../../tests/identity/account-syncing/helpers';
 import HomePage from '../pages/home/homepage';
-import AccountListPage from '../pages/account-list-page';
+import AccountListPage from '../pages/accounts/list-page';
 
 /**
  * Waits until the AccountTreeController's `isAccountTreeSyncingInProgress`

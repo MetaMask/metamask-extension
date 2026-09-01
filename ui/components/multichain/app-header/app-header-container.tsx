@@ -32,6 +32,7 @@ export const AppHeaderContainer = ({
       alignItems={AlignItems.center}
       width={BlockSize.Full}
       backgroundColor={backgroundColor}
+      data-testid="parent-selector-header-navbar"
     >
       {children}
     </Box>

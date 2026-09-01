@@ -69,6 +69,18 @@ describe('security-utils', () => {
 
       expect(tags).toEqual([{ label: 'securityTrustFeatureHoneypot' }]);
     });
+
+    it('excludes Info features such as IMPERSONATOR_LOW_CONFIDENCE from Warning result type tags', () => {
+      const features = [
+        makeFeature('IMPERSONATOR_LOW_CONFIDENCE'),
+        makeFeature('HONEYPOT'),
+      ];
+
+      const { tags, remainingCount } = getFeatureTags(features, 'Warning', t);
+
+      expect(tags).toEqual([{ label: 'securityTrustFeatureHoneypot' }]);
+      expect(remainingCount).toBe(0);
+    });
   });
 
   describe('formatFeePercent', () => {
