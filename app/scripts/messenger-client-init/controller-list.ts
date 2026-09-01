@@ -137,6 +137,7 @@ import { StaticAssetsController } from '../controllers/static-assets-controller'
 import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
 import { QrSyncDataService } from '../controllers/qr-sync/qr-sync-data-service';
 import { DataDeletionService } from '../services/data-deletion-service';
+import { UserTraitsService } from '../services/user-traits-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
 
 /**
@@ -163,6 +164,7 @@ export type MessengerClient =
   | CronjobController
   | CurrencyRateController
   | DataDeletionService
+  | UserTraitsService
   | DecryptMessageController
   | DecryptMessageManager
   | DelegationController

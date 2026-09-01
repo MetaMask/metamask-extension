@@ -1,13 +1,13 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
-import configureStore from '../../../../../store/store';
-import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { useMoneyAccountBalance } from '../../../../../hooks/money/useMoneyAccountBalance';
-import type { UseMoneyAccountBalanceResult } from '../../../../../hooks/money/useMoneyAccountBalance';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
+import type { UseMoneyAccountBalanceResult } from '../../../../hooks/money/useMoneyAccountBalance';
 import { MoneyAccountWithdrawBalance } from './money-account-withdraw-balance';
 
-jest.mock('../../../../../hooks/money/useMoneyAccountBalance', () => ({
+jest.mock('../../../../hooks/money/useMoneyAccountBalance', () => ({
   useMoneyAccountBalance: jest.fn(),
 }));
 

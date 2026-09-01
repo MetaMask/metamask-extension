@@ -495,7 +495,7 @@
     "@metamask/subscription-controller": "^8.0.1",
     "@metamask/transaction-controller": "^69.5.1",
     "@metamask/transaction-pay-controller": "^26.2.0",
-    "@metamask/tron-wallet-snap": "^3.1.0",
+    "@metamask/tron-wallet-snap": "^3.2.0",
     "@metamask/user-operation-controller": "^41.2.5",
     "@metamask/utils": "^11.11.0",
     "@metamask/wallet": "^11.0.0",
@@ -514,7 +514,7 @@
     "@sentry/types": "10.38.0",
     "@simplewebauthn/browser": "^13.3.0",
     "@solana/addresses": "2.0.0-rc.4",
-    "@swc/core": "^1.13.2",
+    "@swc/core": "1.13.3",
     "@tanstack/react-query": "^5.101.0",
     "@tanstack/react-virtual": "^3.10.8",
     "@trezor/connect-web": "~9.6.0",
@@ -856,24 +856,6 @@
     "node": ">=24.13.0",
     "yarn": "^4.14.1"
   },
-  "previewBuilds": {
-    "@metamask/eth-json-rpc-middleware": {
-      "type": "non-breaking",
-      "previewVersion": "24.0.1-preview-3e34650c2"
-    },
-    "@metamask/keyring-controller": {
-      "type": "non-breaking",
-      "previewVersion": "27.1.1-preview-3e34650c2"
-    },
-    "@metamask/signature-controller": {
-      "type": "non-breaking",
-      "previewVersion": "39.2.10-preview-3e34650c2"
-    },
-    "@metamask/message-manager": {
-      "type": "non-breaking",
-      "previewVersion": "14.1.2-preview-3e34650c2"
-    }
-  },
   "lavamoat": {
     "allowScripts": {
       "$root$": true,
@@ -891,7 +873,7 @@
       "ws>utf-8-validate": false,
       "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
       "@sentry/cli#2.56.0": true,
-      "@swc/core#1.13.2": true,
+      "@swc/core#1.13.3": true,
       "core-js-pure#3.41.0": true,
       "core-js-pure#3.49.0": true,
       "react-devtools>electron#23.3.0": true,
