@@ -142,7 +142,9 @@ export async function mockNotificationServices(
   // enabled bit from the Trigger API, so the fixture account must be reported
   // as subscribed for wallet notifications to be fetched. Don't overwrite a
   // config a persisted server already recorded.
-  if (triggerServer.getNotificationConfig(DEFAULT_FIXTURE_ACCOUNT) === undefined) {
+  if (
+    triggerServer.getNotificationConfig(DEFAULT_FIXTURE_ACCOUNT) === undefined
+  ) {
     triggerServer.setNotificationConfig(DEFAULT_FIXTURE_ACCOUNT, true);
   }
   triggerServer.setupServer(server);

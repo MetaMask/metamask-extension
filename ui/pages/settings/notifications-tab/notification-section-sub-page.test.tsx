@@ -973,7 +973,9 @@ describe('NotificationSectionSubPage', () => {
       renderSection('walletActivity', createMockNotificationPreferences());
 
       expect(
-        screen.queryByTestId('walletActivity-in-app-notifications-toggle-input'),
+        screen.queryByTestId(
+          'walletActivity-in-app-notifications-toggle-input',
+        ),
       ).not.toBeInTheDocument();
       expect(
         screen.queryByTestId('walletActivity-push-notifications-toggle-input'),

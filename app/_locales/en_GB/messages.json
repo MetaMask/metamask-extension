@@ -6373,11 +6373,11 @@
   "notificationsPageNoNotificationsContent": {
     "message": "You have not received any notifications yet."
   },
-  "notificationsSettingsAgenticCliDescription": {
-    "message": "CLI connection requests, approvals, and session updates for Agent wallet"
-  },
   "notificationsSettingsAccountsLoadError": {
     "message": "We couldn't load your account notification settings. Try again later."
+  },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "CLI connection requests, approvals, and session updates for Agent wallet"
   },
   "notificationsSettingsAgenticCliTitle": {
     "message": "Agent wallet"
