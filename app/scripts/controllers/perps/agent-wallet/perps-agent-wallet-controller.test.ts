@@ -16,6 +16,7 @@ import type {
   AgentRegistration,
   PerpsAgentWalletControllerMessenger,
   PerpsAgentWalletControllerState,
+  PerpsAgentWalletSetupStatus,
 } from './types';
 
 const MASTER = '0x1111111111111111111111111111111111111111';
@@ -275,13 +276,16 @@ describe('PerpsAgentWalletController', () => {
       expect(signature).toMatch(/^0x[0-9a-fA-F]+$/u);
     });
 
-    it.each([
+    // Plain `it` inside a loop instead of `it.each`: @types/mocha shadows
+    // `it.each` in this repo's type environment (see encryption-public-key
+    // tests for the @ts-expect-error workaround we avoid here).
+    const midFlightStatuses: PerpsAgentWalletSetupStatus[] = [
       'generating',
       'awaiting-approval',
       'submitting',
-    ] as const)(
-      'returns null while setup is mid-flight (%s) even with an existing registration',
-      async (midFlightStatus) => {
+    ];
+    for (const midFlightStatus of midFlightStatuses) {
+      it(`returns null while setup is mid-flight (${midFlightStatus}) even with an existing registration`, async () => {
         const first = buildController();
         const { registration } = await completeAgentSetup(first.controller);
         const { controller } = buildController({
@@ -289,8 +293,8 @@ describe('PerpsAgentWalletController', () => {
           setupStatusByAccount: { [MASTER]: midFlightStatus },
         });
         expect(controller.getActiveAgent(MASTER)).toBeNull();
-      },
-    );
+      });
+    }
 
     it('returns null while re-running setup (awaiting-approval) over an existing registration', async () => {
       const { controller } = buildController();
