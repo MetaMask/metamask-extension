@@ -217,7 +217,7 @@ describe('createHyperliquidDepositMiddleware', () => {
     await runMiddleware(createMockRequest());
 
     expect(mockLogError).toHaveBeenCalledWith(
-      'Failed to show Hyperliquid deposit prompt',
+      'HyperliquidDepositPrompt: Failed to show prompt',
       error,
     );
   });

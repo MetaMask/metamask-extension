@@ -65,12 +65,18 @@ export function createHyperliquidDepositMiddleware({
         try {
           eligibilityPromise = Promise.resolve(isEligible(context)).catch(
             (error) => {
-              log.error('Hyperliquid deposit eligibility check failed', error);
+              log.error(
+                'HyperliquidDepositPrompt: Eligibility check failed',
+                error,
+              );
               return false;
             },
           );
         } catch (error) {
-          log.error('Hyperliquid deposit eligibility check failed', error);
+          log.error(
+            'HyperliquidDepositPrompt: Eligibility check failed',
+            error,
+          );
           eligibilityPromise = Promise.resolve(false);
         }
       }
@@ -88,7 +94,7 @@ export function createHyperliquidDepositMiddleware({
           eligible ? showDepositPrompt(context) : undefined,
         )
         .catch((error) => {
-          log.error('Failed to show Hyperliquid deposit prompt', error);
+          log.error('HyperliquidDepositPrompt: Failed to show prompt', error);
         });
     },
   );

@@ -267,10 +267,9 @@ async function getHyperliquidAccountState({
       userAddress: signerAddress,
     });
   } catch (error) {
-    logger.warn(
-      'Unable to fetch Hyperliquid account state for deposit prompt',
-      { error },
-    );
+    logger.warn('HyperliquidDepositPrompt: Unable to fetch account state', {
+      error,
+    });
     return undefined;
   }
 }

@@ -219,7 +219,7 @@ export const HyperliquidDepositPrompt: React.FC<
         // The confirmation falls back to its automatic pay token selection,
         // so a failed pre-selection should not block the deposit.
         log.error(
-          'Failed to pre-select Hyperliquid deposit payment token',
+          'HyperliquidDepositPrompt: Failed to pre-select payment token',
           error,
         );
       }

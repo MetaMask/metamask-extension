@@ -1,5 +1,4 @@
 import type { ApprovalController } from '@metamask/approval-controller';
-import log from 'loglevel';
 import { HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE } from '../../../../shared/constants/app';
 
 type HyperliquidDepositPromptApprovalController = Pick<
@@ -34,18 +33,15 @@ export function showHyperliquidDepositPromptApproval({
     return;
   }
 
-  Promise.resolve(
-    approvalController.addAndShowApprovalRequest({
+  approvalController
+    .addAndShowApprovalRequest({
       origin,
       requestData: {
         selectedAddress: selectedAddress ?? '',
       },
       type: HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE,
-    }),
-  ).catch((error) => {
-    log.error(
-      'Hyperliquid deposit prompt approval was rejected or failed',
-      error,
-    );
-  });
+    })
+    .catch(() => {
+      // User dismissed or approval failed - both are expected flows
+    });
 }
