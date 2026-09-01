@@ -31,6 +31,24 @@ describe('isAllowedCashtagSender', () => {
     ).toBe(true);
   });
 
+  it('allows enabled-state requests from X subframes', () => {
+    expect(
+      isAllowedCashtagSender(
+        EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
+        sender({ frameId: 2, url: 'https://x.com/embed' }),
+      ),
+    ).toBe(true);
+  });
+
+  it('rejects enabled-state requests from another website', () => {
+    expect(
+      isAllowedCashtagSender(
+        EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
+        sender({ frameId: 0, url: 'https://example.com/' }),
+      ),
+    ).toBe(false);
+  });
+
   it('rejects data requests from another website or an X subframe', () => {
     expect(
       isAllowedCashtagSender(
