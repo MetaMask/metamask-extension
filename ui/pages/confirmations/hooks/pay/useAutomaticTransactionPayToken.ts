@@ -7,13 +7,16 @@ import {
   getTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
+import { getMoneyAccountTransactionType } from '../../utils/confirm';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
 import {
   selectMinimumRequiredTokenBalance,
   selectPreferredPayTokens,
+  selectRelayFixedSpread,
   type PreferredPayToken,
 } from '../../selectors/feature-flags';
+import { type RelayFixedSpreadConfig } from '../../utils/relay-fixed-spread';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useImportPayToken } from './useImportPayToken';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -21,6 +24,7 @@ import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import type { SetPayTokenRequest } from './types';
 import { usePostQuoteWithdrawTokenFilter } from './useWithdrawTokenFilter';
+import { isNoFeePayToken } from './usePayWithNoFeeToken';
 
 /** How long to wait for funding tokens after an account switch before settling. */
 export const ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS = 2000;
@@ -41,11 +45,16 @@ export function useAutomaticTransactionPayToken({
   const minimumRequiredTokenBalance = useSelector(
     selectMinimumRequiredTokenBalance,
   );
+  const relayFixedSpread = useSelector(selectRelayFixedSpread);
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
-  // Batch txs use top-level type `batch`; resolve nested type for flag lookups.
-  const transactionType = getTransactionType(currentConfirmation);
+  // Batch txs use top-level type `batch`. Prefer the money-account nested type
+  // when present — deposits are `[approve, deposit]`, so plain
+  // `getTransactionType` would resolve them to `tokenMethodApprove`.
+  const transactionType =
+    getMoneyAccountTransactionType(currentConfirmation) ??
+    getTransactionType(currentConfirmation);
   const from = currentConfirmation?.txParams?.from;
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
@@ -122,6 +131,7 @@ export function useAutomaticTransactionPayToken({
         minimumRequiredTokenBalance,
         preferredToken,
         preferredTokensFromFlags,
+        relayFixedSpread,
         targetToken,
         tokens: tokensWithBalance,
       }),
@@ -133,6 +143,7 @@ export function useAutomaticTransactionPayToken({
       minimumRequiredTokenBalance,
       preferredToken,
       preferredTokensFromFlags,
+      relayFixedSpread,
       targetToken,
       tokensWithBalance,
     ],
@@ -288,6 +299,7 @@ function getBestToken({
   minimumRequiredTokenBalance,
   preferredToken,
   preferredTokensFromFlags,
+  relayFixedSpread,
   targetToken,
   tokens,
 }: {
@@ -301,6 +313,7 @@ function getBestToken({
   minimumRequiredTokenBalance: number;
   preferredToken?: SetPayTokenRequest;
   preferredTokensFromFlags: PreferredPayToken[];
+  relayFixedSpread: RelayFixedSpreadConfig;
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
 }): { address: Hex; chainId: Hex } | undefined {
@@ -357,23 +370,35 @@ function getBestToken({
     return undefined;
   }
 
-  if (tokens?.length) {
-    const eligibleTokens = tokens.filter(
-      (token) => (token.fiat?.balance ?? 0) >= minimumRequiredTokenBalance,
-    );
+  // Same as mobile / Pay-with picker: prefer a no-fee source (subsidized
+  // route or same-token Monad mUSD) that meets the fiat minimum before
+  // falling through to the first funding token.
+  if (tokens?.length && !isPostQuoteWithdraw) {
+    const noFeeCandidates = tokens
+      .filter((token) => {
+        if (!token.chainId || !token.address) {
+          return false;
+        }
+        if ((token.fiat?.balance ?? 0) < minimumRequiredTokenBalance) {
+          return false;
+        }
+        return isNoFeePayToken(
+          relayFixedSpread,
+          token.address,
+          String(token.chainId),
+        );
+      })
+      .sort((a, b) => (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0));
 
-    if (eligibleTokens.length) {
+    if (noFeeCandidates.length) {
       return {
-        address: eligibleTokens[0].address as Hex,
-        chainId: eligibleTokens[0].chainId as Hex,
+        address: noFeeCandidates[0].address as Hex,
+        chainId: noFeeCandidates[0].chainId as Hex,
       };
     }
+  }
 
-    // Tokens exist but none meet the fiat minimum — use destination fallback.
-    if (minimumRequiredTokenBalance > 0) {
-      return targetTokenFallback;
-    }
-
+  if (tokens?.length) {
     return {
       address: tokens[0].address as Hex,
       chainId: tokens[0].chainId as Hex,

@@ -85,6 +85,7 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { AuthenticatedUserStorageService } from '@metamask/authenticated-user-storage';
+import { ChompApiService } from '@metamask/chomp-api-service';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import { ClientController } from '@metamask/client-controller';
 import {
@@ -135,6 +136,7 @@ import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
 import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
 import { DataDeletionService } from '../services/data-deletion-service';
+import { UserTraitsService } from '../services/user-traits-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
 
 /**
@@ -156,10 +158,12 @@ export type MessengerClient =
   | AuthenticatedUserStorageService
   | BridgeController
   | BridgeStatusController
+  | ChompApiService
   | ClaimsController
   | CronjobController
   | CurrencyRateController
   | DataDeletionService
+  | UserTraitsService
   | DecryptMessageController
   | DecryptMessageManager
   | DelegationController
