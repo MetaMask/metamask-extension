@@ -78,9 +78,7 @@ const refreshMoneyBalanceQueries = async (address: string) => {
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     if (attempt > 0) {
-      await sleep(
-        Math.min(BASE_DELAY_MS * 2 ** (attempt - 1), MAX_DELAY_MS),
-      );
+      await sleep(Math.min(BASE_DELAY_MS * 2 ** (attempt - 1), MAX_DELAY_MS));
     }
 
     await invalidateMoneyAccountBalanceCaches(address);

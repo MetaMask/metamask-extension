@@ -14,9 +14,7 @@ import {
   nestedTxWithType,
 } from './money-transaction-guards';
 
-const makeTx = (
-  overrides: Partial<TransactionMeta> = {},
-): TransactionMeta =>
+const makeTx = (overrides: Partial<TransactionMeta> = {}): TransactionMeta =>
   ({
     id: 'tx-1',
     time: 0,

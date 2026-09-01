@@ -76,9 +76,7 @@ const makeTx = (
     nestedTransactions: nested,
   }) as unknown as TransactionMeta;
 
-type StatusUpdatedHandler = (raw: {
-  transactionMeta: TransactionMeta;
-}) => void;
+type StatusUpdatedHandler = (raw: { transactionMeta: TransactionMeta }) => void;
 
 const getStatusUpdatedHandler = (): StatusUpdatedHandler => {
   const call = mockSubscribe.mock.calls.find(([event]) => event === EVENT);
@@ -293,9 +291,7 @@ describe('useRefreshMoneyBalanceOnTxConfirm', () => {
       raw: [{ transactionMeta: TransactionMeta }],
     ) => void;
 
-    handler([
-      { transactionMeta: makeTx(TransactionType.moneyAccountDeposit) },
-    ]);
+    handler([{ transactionMeta: makeTx(TransactionType.moneyAccountDeposit) }]);
     await waitFor(() => {
       expect(mockInvalidateMoneyAccountBalanceCaches).toHaveBeenCalledTimes(1);
     });

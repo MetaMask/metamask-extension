@@ -228,7 +228,9 @@ describe('MoneyAccountBalance', () => {
 
     const { getByTestId } = render();
 
-    expect(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeDisabled();
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
+    ).toBeDisabled();
   });
 
   it('prefers the last-known balance over the skeleton while loading', () => {
