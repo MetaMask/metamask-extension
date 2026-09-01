@@ -21,7 +21,7 @@ import {
   RequestStatus,
   isNonEvmChainId,
   isStellarChainId,
-  QuoteMetadataMigrationPhase,
+  type QuoteMetadata,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -825,7 +825,13 @@ export const getBridgeQuotes = createSelector(
       migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
     });
 
-    return quotes;
+    return quotes as Omit<
+      ReturnType<typeof selectBridgeQuotes>,
+      'activeQuote' | 'sortedQuotes'
+    > & {
+      activeQuote: (QuoteResponse & QuoteMetadata) | null;
+      sortedQuotes: (QuoteResponse & QuoteMetadata)[];
+    };
   },
 );
 
