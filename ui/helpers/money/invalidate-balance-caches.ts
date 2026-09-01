@@ -26,13 +26,20 @@ export async function invalidateMoneyAccountBalanceCaches(
 ): Promise<void> {
   await invalidateMoneyAccountBalanceSourceCaches(address);
 
-  await queryClient.invalidateQueries({
-    queryKey: [
-      MoneyAccountBalanceServiceQueryKeys.FETCH_BALANCE_WITH_FALLBACK,
-      address,
-    ],
-    refetchType: 'all',
-  });
+  await queryClient.invalidateQueries(
+    {
+      queryKey: [
+        MoneyAccountBalanceServiceQueryKeys.FETCH_BALANCE_WITH_FALLBACK,
+        address,
+      ],
+      refetchType: 'all',
+    },
+    // The UI client forwards this argument to the background service over
+    // JSON-RPC, where an omitted argument arrives as `null` — bypassing
+    // tanstack's `options = {}` default and crashing its
+    // `options.cancelRefetch` read. Must stay an explicit object.
+    {},
+  );
 }
 
 /**
