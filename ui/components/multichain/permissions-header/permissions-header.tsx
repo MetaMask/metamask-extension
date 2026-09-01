@@ -1,31 +1,27 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   AvatarFavicon,
   AvatarFaviconSize,
-} from '@metamask/design-system-react';
-import {
-  AlignItems,
-  BackgroundColor,
-  Display,
-  IconColor,
-  JustifyContent,
-  TextAlign,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
+  IconColor,
   Icon,
   IconName,
   IconSize,
   Text,
-} from '../../component-library';
-import { Header } from '../pages/page';
-import { getURLHost } from '../../../helpers/utils/util';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+  TextAlign,
+  TextVariant,
+  Box,
+} from "@metamask/design-system-react";
+import {
+  BackgroundColor,
+  TextVariant as LegacyTextVariant,
+} from "../../../helpers/constants/design-system";
+import { Header } from "../pages/page";
+import { getURLHost } from "../../../helpers/utils/util";
+import { useI18nContext } from "../../../hooks/useI18nContext";
+import { PREVIOUS_ROUTE } from "../../../helpers/constants/routes";
 
 export const PermissionsHeader = ({
   securedOrigin,
@@ -40,26 +36,21 @@ export const PermissionsHeader = ({
   return (
     <Header
       textProps={{
-        variant: TextVariant.headingSm,
+        variant: LegacyTextVariant.headingSm,
       }}
       backgroundColor={BackgroundColor.backgroundDefault}
       startAccessory={
         <ButtonIcon
           size={ButtonIconSize.Md}
-          ariaLabel={t('back')}
+          ariaLabel={t("back")}
           iconName={IconName.ArrowLeft}
-          color={IconColor.iconDefault}
+          iconProps={{ color: IconColor.IconDefault }}
           onClick={() => navigate(PREVIOUS_ROUTE)}
           data-testid="back-button"
         />
       }
     >
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        gap={2}
-        justifyContent={JustifyContent.center}
-      >
+      <Box className="flex items-center justify-center gap-2">
         {connectedSubjectsMetadata?.iconUrl ? (
           <AvatarFavicon
             name={connectedSubjectsMetadata.name}
@@ -67,18 +58,9 @@ export const PermissionsHeader = ({
             src={connectedSubjectsMetadata.iconUrl}
           />
         ) : (
-          <Icon
-            name={IconName.Global}
-            size={IconSize.Sm}
-            color={IconColor.iconDefault}
-          />
+          <Icon name={IconName.Global} size={IconSize.Sm} color={IconColor.IconDefault} />
         )}
-        <Text
-          as="span"
-          variant={TextVariant.headingSm}
-          textAlign={TextAlign.Center}
-          ellipsis
-        >
+        <Text variant={TextVariant.HeadingSm} textAlign={TextAlign.Center} ellipsis>
           {getURLHost(securedOrigin)}
         </Text>
       </Box>

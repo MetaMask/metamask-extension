@@ -1,12 +1,15 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
 import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
+  IconColor,
   Icon,
   IconName,
   IconSize,
+} from '@metamask/design-system-react';
+import {
+  Box,
   Input,
   Label,
   Popover,
@@ -19,7 +22,6 @@ import {
   BorderColor,
   BorderRadius,
   Display,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -103,12 +105,12 @@ export const DropdownEditor = <Item,>({
             {renderItem(item, true)}
             {itemIsDeletable(item, items) && (
               <ButtonIcon
-                marginLeft={1}
+                className="ml-1"
                 ariaLabel={t('delete')}
                 size={ButtonIconSize.Sm}
                 iconName={IconName.Trash}
                 data-testid={`delete-item-${index}`}
-                color={IconColor.errorDefault}
+                iconProps={{ color: IconColor.ErrorDefault }}
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
 
@@ -149,10 +151,10 @@ export const DropdownEditor = <Item,>({
         className="dropdown-editor__item"
       >
         <Icon
-          color={IconColor.primaryDefault}
+          color={IconColor.PrimaryDefault}
           name={IconName.Add}
           size={IconSize.Sm}
-          marginRight={2}
+          className="mr-2"
         />
         <Text
           as="button"
@@ -212,7 +214,7 @@ export const DropdownEditor = <Item,>({
         />
       )}
       <ButtonIcon
-        marginLeft="auto"
+        className="ml-auto"
         iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
         ariaLabel={title}
         size={ButtonIconSize.Md}
