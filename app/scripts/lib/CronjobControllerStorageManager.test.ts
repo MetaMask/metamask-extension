@@ -2,11 +2,11 @@ import 'fake-indexeddb/auto';
 import browser from 'webextension-polyfill';
 import type { Json } from '@metamask/utils';
 import type { StorageGetResult } from '@metamask/storage-service';
-import { IndexedDBEventDateStore } from './CronjobControllerStorageManager';
 import {
   CronjobControllerStorageManager,
   CronjobControllerStorageKey,
   CronjobControllerEventDateNamespace,
+  IndexedDBEventDateStore,
 } from './CronjobControllerStorageManager';
 
 jest.mock('webextension-polyfill', () => {
