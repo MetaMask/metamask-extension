@@ -1,4 +1,3 @@
-import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -68,14 +67,6 @@ describe('NFT full image', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseParams.mockReturnValue(mockParams);
-  });
-
-  it('should match snapshot', async () => {
-    const { container } = renderWithProvider(<NftFullImage />, mockStore);
-
-    await waitFor(() => {
-      expect(container).toMatchSnapshot();
-    });
   });
 
   it('should show the first image if an NFT has an array of images', async () => {

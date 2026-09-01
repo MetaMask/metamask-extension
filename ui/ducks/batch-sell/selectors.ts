@@ -12,7 +12,6 @@ import {
   selectBatchSellQuotes,
   selectBatchSellTrades,
   selectMinimumBalanceForRentExemptionInSOL,
-  QuoteMetadataMigrationPhase,
 } from '@metamask/bridge-controller';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
@@ -339,7 +338,6 @@ export const getBatchSellQuotes = createSelector(
       sortOrder,
       requestCount,
       selectedQuote,
-      migrationPhase: QuoteMetadataMigrationPhase.V1Data,
     });
   },
 );

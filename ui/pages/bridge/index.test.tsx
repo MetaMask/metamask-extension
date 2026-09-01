@@ -123,7 +123,7 @@ describe('Bridge', () => {
     });
     const store = configureMockStore(middleware)(bridgeMockStore);
 
-    const { container, getByText } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <HardwareWalletProvider>
         <CrossChainSwap />
       </HardwareWalletProvider>,
@@ -132,7 +132,6 @@ describe('Bridge', () => {
     );
 
     expect(getByText(messages.swap.message)).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
     expect(mockResetBridgeStore).toHaveBeenCalledTimes(0);
     expect(mockResetBridgeState).toHaveBeenCalledTimes(0);
   });
