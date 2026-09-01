@@ -1,6 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import type { ActivityListItem, MoneyAccountActivityItem } from '../../../selectors/activity/types';
+import type {
+  ActivityListItem,
+  MoneyAccountActivityItem,
+} from '../../../selectors/activity/types';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { useActivityRowContent } from './useActivityRowContent';

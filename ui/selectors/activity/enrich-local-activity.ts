@@ -5,7 +5,10 @@ import {
   MUSD_TOKEN_ASSET_ID_BY_CHAIN,
 } from '@metamask/money-account-utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import type { FiatAmount, TokenAmount } from '../../../shared/lib/activity/types';
+import type {
+  FiatAmount,
+  TokenAmount,
+} from '../../../shared/lib/activity/types';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import {
   parseApprovalTransactionData,
