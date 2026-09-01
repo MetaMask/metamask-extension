@@ -53,10 +53,13 @@ export function useInsufficientBalanceAlerts({
   const isPayPendingInput =
     Boolean(payToken) && primaryRequiredToken?.amountRaw === '0';
 
-  // Deposit batches execute from the money account, which has no native MON.
-  // Gas is sponsored, so the EOA native-balance check is wrong.
-  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
+  // Money-account batches execute from the money account, which has no native
+  // MON. Gas is sponsored, so the EOA native-balance check is wrong. Direct
+  // withdraws also skip initial gas estimate, so this alert otherwise blocks
+  // Send after the user types an amount.
+  const isMoneyAccountTransaction = hasTransactionType(currentConfirmation, [
     TransactionType.moneyAccountDeposit,
+    TransactionType.moneyAccountWithdraw,
   ]);
 
   const isGasFeeTokensEmpty = gasFeeTokens?.length === 0;
@@ -100,7 +103,7 @@ export function useInsufficientBalanceAlerts({
     shouldCheckGaslessConditions &&
     !isSponsoredTransaction &&
     !isPostQuoteWithdraw &&
-    !isMoneyAccountDeposit;
+    !isMoneyAccountTransaction;
 
   return useMemo(() => {
     if (!showAlert) {

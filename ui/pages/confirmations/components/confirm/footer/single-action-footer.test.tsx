@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
@@ -11,10 +11,13 @@ import {
   useIsTransactionPayQuotePending,
   useTransactionPayHasExecutableQuote,
   useTransactionPayPrimaryRequiredToken,
+  useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
+import { useLastMoneyAccountWithdrawAmount } from '../../../hooks/transactions/useLastMoneyAccountWithdrawAmount';
 import { SingleActionFooter } from './single-action-footer';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/transactions/useLastMoneyAccountWithdrawAmount');
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -120,6 +123,8 @@ describe('<SingleActionFooter />', () => {
     jest.resetAllMocks();
     jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(false);
     jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(true);
+    jest.mocked(useTransactionPayTotals).mockReturnValue(undefined);
+    jest.mocked(useLastMoneyAccountWithdrawAmount).mockReturnValue(undefined);
     jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
       amountUsd: '10.00',
       skipIfBalance: false,
@@ -132,10 +137,12 @@ describe('<SingleActionFooter />', () => {
     expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
   });
 
-  it('calls onSubmit when button is clicked', () => {
+  it('calls onSubmit when button is clicked', async () => {
     const { getByTestId } = render();
 
-    fireEvent.click(getByTestId('confirm-footer-button'));
+    await act(async () => {
+      fireEvent.click(getByTestId('confirm-footer-button'));
+    });
 
     expect(MOCK_ON_SUBMIT).toHaveBeenCalledTimes(1);
   });
@@ -144,6 +151,22 @@ describe('<SingleActionFooter />', () => {
     const { getByTestId } = render({ isGaslessLoading: true });
 
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('does not keep Send loading for a withdraw when gasless tokens never arrive', () => {
+    jest.mocked(useLastMoneyAccountWithdrawAmount).mockReturnValue('0.05');
+    jest
+      .mocked(useTransactionPayPrimaryRequiredToken)
+      .mockReturnValue(undefined);
+
+    const { getByTestId } = render({
+      confirmation: genMoneyAccountWithdraw(),
+      isGaslessLoading: true,
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeEnabled();
+    expect(button).not.toHaveAttribute('aria-busy', 'true');
   });
 
   it('disables the button when pay token data is loading', () => {
@@ -236,6 +259,49 @@ describe('<SingleActionFooter />', () => {
     const { getByTestId } = render();
 
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('enables button when amountUsd is zero but amountHuman is committed', () => {
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '0',
+      amountHuman: '0.05',
+      skipIfBalance: false,
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+
+    const { getByTestId } = render();
+
+    expect(getByTestId('confirm-footer-button')).toBeEnabled();
+  });
+
+  it('disables button when amount is zero even if totals exist at zero', () => {
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '0',
+      amountHuman: '0',
+      amountRaw: '0',
+      skipIfBalance: false,
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+    jest.mocked(useTransactionPayTotals).mockReturnValue({
+      targetAmount: { usd: '0' },
+      sourceAmount: { usd: '0' },
+    } as ReturnType<typeof useTransactionPayTotals>);
+
+    const { getByTestId } = render();
+
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('enables button when amountUsd is zero but quote totals are positive', () => {
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '0',
+      skipIfBalance: false,
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+    jest.mocked(useTransactionPayTotals).mockReturnValue({
+      targetAmount: { usd: '0.05' },
+    } as ReturnType<typeof useTransactionPayTotals>);
+
+    const { getByTestId } = render();
+
+    expect(getByTestId('confirm-footer-button')).toBeEnabled();
   });
 
   it('shows disabled loading when primary required token is not yet resolved', () => {
@@ -368,11 +434,62 @@ describe('<SingleActionFooter />', () => {
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
-  it('submits perps withdrawal when an executable quote is ready', () => {
+  it('submits perps withdrawal when an executable quote is ready', async () => {
     const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
 
-    fireEvent.click(getByTestId('confirm-footer-button'));
+    // `handleSubmit` is async: it flips `isSubmitting` back in a `finally`
+    // that lands a microtask after the click, so the click must be awaited
+    // inside `act` for that update to be covered.
+    await act(async () => {
+      fireEvent.click(getByTestId('confirm-footer-button'));
+    });
 
     expect(MOCK_ON_SUBMIT).toHaveBeenCalledTimes(1);
+  });
+
+  it('enables Send for a withdraw when a positive amount was typed', () => {
+    jest.mocked(useLastMoneyAccountWithdrawAmount).mockReturnValue('0.05');
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '0',
+      skipIfBalance: false,
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+
+    const { getByTestId } = render({
+      confirmation: genMoneyAccountWithdraw(),
+    });
+
+    expect(getByTestId('confirm-footer-button')).toBeEnabled();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.send.message,
+    );
+  });
+
+  it('disables Send for a withdraw when the typed amount is zero', () => {
+    jest.mocked(useLastMoneyAccountWithdrawAmount).mockReturnValue('0');
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '0',
+      skipIfBalance: false,
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+
+    const { getByTestId } = render({
+      confirmation: genMoneyAccountWithdraw(),
+    });
+
+    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('enables Send for a withdraw without a required token once an amount is typed', () => {
+    jest.mocked(useLastMoneyAccountWithdrawAmount).mockReturnValue('0.05');
+    jest
+      .mocked(useTransactionPayPrimaryRequiredToken)
+      .mockReturnValue(undefined);
+
+    const { getByTestId } = render({
+      confirmation: genMoneyAccountWithdraw(),
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeEnabled();
+    expect(button).not.toHaveAttribute('aria-busy', 'true');
   });
 });

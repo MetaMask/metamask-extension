@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
@@ -9,6 +15,11 @@ import {
   isCaipAssetType,
   parseCaipAssetType,
 } from '@metamask/utils';
+import {
+  BridgeAsset,
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Box,
@@ -77,6 +88,7 @@ import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useOnClickOutside } from '../../../hooks/useClickOutside';
 import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
+import { useBalanceAwareSwapDefaults } from '../../../pages/asset/hooks/useBalanceAwareSwapDefaults';
 
 type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
   classPrefix?: string;
@@ -321,6 +333,27 @@ const CoinButtons = ({
 
   const { openBridgeExperience } = useBridging();
 
+  const assetPageSwapToken = useMemo(() => {
+    if (!ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId)) {
+      return null;
+    }
+
+    const nativeSwapToken = getSwapNativeTokenWithOverridesForChain(chainId);
+    return {
+      symbol: nativeSwapToken.symbol,
+      address: nativeSwapToken.address,
+      // `getNativeAssetForChainId` reports the chain as a decimal number, which
+      // the bridge entry point does not recognize as a supported chain.
+      chainId: formatChainIdToCaip(chainId),
+      decimals: nativeSwapToken.decimals,
+      name: nativeSwapToken.name ?? nativeSwapToken.symbol,
+    };
+  }, [chainId]);
+
+  const { sourceToken, destTokenAssetId } = useBalanceAwareSwapDefaults({
+    currentToken: assetPageSwapToken,
+  });
+
   const { openBatchSellExperience } = useBatchSell();
 
   const handleMoreOptionsButtonClick = useCallback(() => {
@@ -420,7 +453,18 @@ const CoinButtons = ({
       ? parseCaipAssetType(hexChainOrAssetId).chainId
       : hexChainOrAssetId;
 
-    // Handle clicking from the wallet or native asset overview page
+    if (trackingLocation === 'asset-page') {
+      transitionForward(() =>
+        openBridgeExperience(
+          MetaMetricsSwapsEventSource.MainView,
+          sourceToken,
+          destTokenAssetId,
+        ),
+      );
+      return;
+    }
+
+    // Handle clicking from the wallet overview
     transitionForward(() =>
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
@@ -429,7 +473,13 @@ const CoinButtons = ({
           : undefined,
       ),
     );
-  }, [location, openBridgeExperience]);
+  }, [
+    destTokenAssetId,
+    location,
+    openBridgeExperience,
+    sourceToken,
+    trackingLocation,
+  ]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
