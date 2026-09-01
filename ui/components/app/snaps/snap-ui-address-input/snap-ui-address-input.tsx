@@ -178,11 +178,12 @@ export const SnapUIAddressInput = ({
     return value;
   };
 
+  const parsedInitialValue = getParsedValue(initialValue);
   const [value, setValue] = useSnapUiFieldState(
     initialValue === undefined || initialValue === null
       ? initialValue
-      : getParsedValue(initialValue),
-    '',
+      : parsedInitialValue,
+    parsedInitialValue,
   );
 
   const displayName = useDisplayName({
