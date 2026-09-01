@@ -734,12 +734,12 @@ describe('Shield Plan Stripe Integration', function () {
             {
               assetId:
                 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-              balance: '1000',
+              balance: '100',
             },
             {
               assetId:
                 'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7',
-              balance: '1000',
+              balance: '100',
             },
           ],
         },

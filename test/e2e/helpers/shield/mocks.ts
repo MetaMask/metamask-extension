@@ -499,7 +499,6 @@ export class ShieldMockttpService {
     // Mock PROD URL
     await server
       .forGet(SUBSCRIPTION_API.PRICING)
-      .always()
       .thenJson(200, SHIELD_PRICING_DATA);
   }
 
