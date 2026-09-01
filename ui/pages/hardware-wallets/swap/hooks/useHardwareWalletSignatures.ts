@@ -370,7 +370,12 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         `${activeSigningRequestId}:${retryGenerationRef.current}`,
       );
     });
-  }, [activeSigningRequestId, retryGeneration, retryGenerationRef, signatureState.status]);
+  }, [
+    activeSigningRequestId,
+    retryGeneration,
+    retryGenerationRef,
+    signatureState.status,
+  ]);
 
   const {
     isReadingQrSignature,
