@@ -9,10 +9,8 @@ import {
   getInstallAttribution,
   type InstallAttribution,
 } from '../../../../shared/lib/install-attribution';
-import type {
-  MetaMaskState,
-  MetaMetricsController,
-} from '../../controllers/metametrics-controller';
+import type { FlattenedBackgroundStateProxy } from '../../../../shared/types';
+import type { MetaMetricsController } from '../../controllers/metametrics-controller';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import {
@@ -29,7 +27,10 @@ export type InstallLifecycleAppStateController =
 export type InstallLifecycleController = OnUpdateController & {
   metaMetricsController: Pick<MetaMetricsController, 'updateTraits'>;
   appStateController: InstallLifecycleAppStateController;
-  getState: () => Pick<MetaMaskState, 'consentDecisionMade' | 'optedIn'>;
+  getState: () => Pick<
+    FlattenedBackgroundStateProxy,
+    'consentDecisionMade' | 'optedIn'
+  >;
 };
 
 export type InstallLifecyclePlatform = OnUpdatePlatform &
