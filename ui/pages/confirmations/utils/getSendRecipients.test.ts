@@ -12,6 +12,13 @@ const TRANSFER_DATA = `0xa9059cbb000000000000000000000000${TOKEN_RECIPIENT.slice
   2,
 )}0000000000000000000000000000000000000000000000000000000000000064`;
 
+// transferFrom(address _from, address _to, uint256 _value)
+const TRANSFER_FROM_DATA = `0x23b872dd000000000000000000000000${FROM_ADDRESS.slice(
+  2,
+)}000000000000000000000000${TOKEN_RECIPIENT.slice(
+  2,
+)}0000000000000000000000000000000000000000000000000000000000000064`;
+
 function buildTransactionMeta({
   data,
   originalType,
@@ -220,6 +227,100 @@ describe('getSendRecipients', () => {
           type: TransactionType.batch,
         }),
       ),
+    ).toEqual([TOKEN_RECIPIENT]);
+  });
+
+  it('ignores stale nested transactions on a cancelled batch', () => {
+    const nestedSendRecipient = '0x1234dddddddddddddddddddddddddddddddd9abc';
+
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          nestedTransactions: [
+            {
+              to: nestedSendRecipient,
+              type: TransactionType.simpleSend,
+            },
+            {
+              data: TRANSFER_DATA,
+              to: TOKEN_CONTRACT,
+              type: TransactionType.tokenMethodTransfer,
+            },
+          ],
+          originalType: TransactionType.batch,
+          to: FROM_ADDRESS,
+          type: TransactionType.cancel,
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it('still processes nested transactions on a sped-up batch', () => {
+    const nestedSendRecipient = '0x1234dddddddddddddddddddddddddddddddd9abc';
+
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          nestedTransactions: [
+            {
+              to: nestedSendRecipient,
+              type: TransactionType.simpleSend,
+            },
+          ],
+          originalType: TransactionType.batch,
+          type: TransactionType.retry,
+        }),
+      ),
+    ).toEqual([nestedSendRecipient]);
+  });
+
+  it('returns the decoded payee for transferFrom transactions', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          data: TRANSFER_FROM_DATA,
+          type: TransactionType.tokenMethodTransferFrom,
+        }),
+      ).map((address) => address.toLowerCase()),
+    ).toEqual([TOKEN_RECIPIENT]);
+  });
+
+  it('returns no recipients when token transfer calldata cannot be decoded', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          data: '0x01',
+          type: TransactionType.tokenMethodTransfer,
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it('treats untyped transactions with no calldata as native sends', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          to: TOKEN_RECIPIENT,
+        }),
+      ),
+    ).toEqual([TOKEN_RECIPIENT]);
+  });
+
+  it('includes a nested token transfer payee from a batch', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          data: '0xdeadbeef',
+          nestedTransactions: [
+            {
+              data: TRANSFER_DATA,
+              to: TOKEN_CONTRACT,
+              type: TransactionType.tokenMethodTransfer,
+            },
+          ],
+          type: TransactionType.batch,
+        }),
+      ).map((address) => address.toLowerCase()),
     ).toEqual([TOKEN_RECIPIENT]);
   });
 });

@@ -29,7 +29,7 @@ type SendRecipientSource = {
  * - `swapAndSendRecipient` whenever set (only ever a user-entered payee)
  * - Nested batch calls that themselves are sends or token transfers
  * - Untyped transactions with no calldata, treated as legacy native sends
- * - Speed-up transactions (`type: retry`) classified using `originalType`, since `txParams` are otherwise unchanged from the transaction being sped up. Cancellations (`type: cancel`) are not resolved this way, since `to`/`data` are overwritten into a self-send with no real payee to track.
+ * - Speed-up transactions (`type: retry`) classified using `originalType`, since `txParams` are otherwise unchanged from the transaction being sped up. Cancellations (`type: cancel`) are not resolved this way, since `to`/`data` are overwritten into a self-send with no real payee to track, and a cancelled batch's nested transactions are skipped entirely for the same reason even though they are still present on the transaction.
  * - A native transfer with no calldata to an address that happens to be a contract. `determineTransactionType` only returns `simpleSend` when `to` is not a contract, so these are typed `contractInteraction` even though the user chose that address as a plain payee.
  *
  * This duplicates `getSendRecipients` from `@metamask/transaction-controller`.
@@ -72,8 +72,13 @@ export function getSendRecipients(transactionMeta: TransactionMeta): string[] {
   );
   addRecipient(transactionMeta.swapAndSendRecipient);
 
-  for (const nestedTransaction of transactionMeta.nestedTransactions ?? []) {
-    addRecipient(getSendRecipientFromSource(nestedTransaction));
+  // A cancellation keeps the batch's original nestedTransactions (only
+  // txParams/type are overwritten into a self-send), but none of those nested
+  // calls actually executed, so they must not be read as real payees.
+  if (transactionMeta.type !== TransactionType.cancel) {
+    for (const nestedTransaction of transactionMeta.nestedTransactions ?? []) {
+      addRecipient(getSendRecipientFromSource(nestedTransaction));
+    }
   }
 
   return recipients;
