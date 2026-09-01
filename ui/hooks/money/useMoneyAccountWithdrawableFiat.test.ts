@@ -73,6 +73,15 @@ describe('useMoneyAccountWithdrawableFiat', () => {
     );
   });
 
+  it('returns zero withdrawable fiat when the vault balance is zero', () => {
+    mockBalance({ vmusdHuman: '0' });
+
+    const { result } = renderHook(() => useMoneyAccountWithdrawableFiat(true));
+
+    expect(result.current.withdrawableFiatRaw).toBe('0');
+    expect(result.current.withdrawableFiatFormatted).toBe('$0.00');
+  });
+
   it('returns undefined while the cached query is loading', () => {
     mockBalance({ isLoading: true });
 

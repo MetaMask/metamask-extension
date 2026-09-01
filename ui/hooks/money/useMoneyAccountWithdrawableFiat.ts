@@ -68,11 +68,13 @@ export function useMoneyAccountWithdrawableFiat(
   });
 
   return useMemo(() => {
+    const vmusdValueInMusd = moneyBalanceQuery.data?.vmusdValueInMusd;
     if (
       !isActive ||
       moneyBalanceQuery.isLoading ||
       moneyBalanceQuery.isError ||
-      !moneyBalanceQuery.data?.vmusdValueInMusd
+      vmusdValueInMusd === undefined ||
+      vmusdValueInMusd === null
     ) {
       return {
         withdrawableFiatFormatted: undefined,
@@ -80,7 +82,7 @@ export function useMoneyAccountWithdrawableFiat(
       };
     }
 
-    return projectWithdrawableFiat(moneyBalanceQuery.data.vmusdValueInMusd);
+    return projectWithdrawableFiat(vmusdValueInMusd);
   }, [
     isActive,
     moneyBalanceQuery.data,

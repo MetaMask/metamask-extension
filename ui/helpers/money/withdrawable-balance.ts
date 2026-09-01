@@ -23,7 +23,7 @@ export function projectWithdrawableFiat(
   vmusdValueInMusd: string | number | undefined | null,
 ): WithdrawableFiatProjection {
   const withdrawableFiat = projectVmusdValueInMusdToHuman(vmusdValueInMusd);
-  if (!withdrawableFiat) {
+  if (withdrawableFiat === undefined) {
     return {
       withdrawableFiatFormatted: undefined,
       withdrawableFiatRaw: undefined,
@@ -45,7 +45,7 @@ export function projectWithdrawableFiat(
 export function formatWithdrawableFiat(
   withdrawableFiat: BigNumber | undefined,
 ): WithdrawableFiatProjection {
-  if (!withdrawableFiat) {
+  if (withdrawableFiat === undefined) {
     return {
       withdrawableFiatFormatted: undefined,
       withdrawableFiatRaw: undefined,
