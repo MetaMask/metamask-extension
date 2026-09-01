@@ -110,7 +110,7 @@ export const DropdownEditor = <Item,>({
                 size={ButtonIconSize.Sm}
                 iconName={IconName.Trash}
                 data-testid={`delete-item-${index}`}
-                iconProps={{ color: IconColor.ErrorDefault }}
+                iconProps={{ className: IconColor.ErrorDefault }}
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
 

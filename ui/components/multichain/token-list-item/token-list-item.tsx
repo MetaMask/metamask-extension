@@ -406,7 +406,7 @@ export const TokenListItemComponent = ({
                   e.stopPropagation();
                   setShowScamWarningModal(true);
                 }}
-                iconProps={{ color: IconColor.ErrorDefault }}
+                iconProps={{ className: IconColor.ErrorDefault }}
                 size={ButtonIconSize.Md}
                 data-testid="scam-warning"
                 ariaLabel=""
@@ -493,7 +493,7 @@ export const TokenListItemComponent = ({
               setShowTokenInsights(true);
             }}
             className="multichain-token-list-item__info-icon"
-            iconProps={{ color: IconColor.IconAlternative }}
+            iconProps={{ className: IconColor.IconAlternative }}
             ariaLabel={t('viewTokenDetails')}
           />
         )}

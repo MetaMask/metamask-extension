@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   AvatarFavicon,
   AvatarFaviconSize,
@@ -13,15 +13,15 @@ import {
   TextAlign,
   TextVariant,
   Box,
-} from "@metamask/design-system-react";
+} from '@metamask/design-system-react';
 import {
   BackgroundColor,
   TextVariant as LegacyTextVariant,
-} from "../../../helpers/constants/design-system";
-import { Header } from "../pages/page";
-import { getURLHost } from "../../../helpers/utils/util";
-import { useI18nContext } from "../../../hooks/useI18nContext";
-import { PREVIOUS_ROUTE } from "../../../helpers/constants/routes";
+} from '../../../helpers/constants/design-system';
+import { Header } from '../pages/page';
+import { getURLHost } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
 export const PermissionsHeader = ({
   securedOrigin,
@@ -42,9 +42,9 @@ export const PermissionsHeader = ({
       startAccessory={
         <ButtonIcon
           size={ButtonIconSize.Md}
-          ariaLabel={t("back")}
+          ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
-          iconProps={{ color: IconColor.IconDefault }}
+          iconProps={{ className: IconColor.IconDefault }}
           onClick={() => navigate(PREVIOUS_ROUTE)}
           data-testid="back-button"
         />
@@ -58,9 +58,17 @@ export const PermissionsHeader = ({
             src={connectedSubjectsMetadata.iconUrl}
           />
         ) : (
-          <Icon name={IconName.Global} size={IconSize.Sm} color={IconColor.IconDefault} />
+          <Icon
+            name={IconName.Global}
+            size={IconSize.Sm}
+            color={IconColor.IconDefault}
+          />
         )}
-        <Text variant={TextVariant.HeadingSm} textAlign={TextAlign.Center} ellipsis>
+        <Text
+          variant={TextVariant.HeadingSm}
+          textAlign={TextAlign.Center}
+          ellipsis
+        >
           {getURLHost(securedOrigin)}
         </Text>
       </Box>

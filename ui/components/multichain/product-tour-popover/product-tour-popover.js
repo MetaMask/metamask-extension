@@ -80,7 +80,7 @@ export const ProductTour = ({
             <ButtonIcon
               iconName={IconName.ArrowLeft}
               size={ButtonIconSize.Sm}
-              iconProps={{ color: IconColor.InfoInverse }}
+              iconProps={{ className: IconColor.InfoInverse }}
               onClick={prevClick}
               className="multichain-product-tour-menu__previous-icon"
               data-testid="multichain-product-tour-menu-popover-prevIcon"

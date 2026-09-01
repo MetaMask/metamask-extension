@@ -152,7 +152,7 @@ const PermissionsPage = () => {
           <ButtonIcon
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            iconProps={{ color: IconColor.IconDefault }}
+            iconProps={{ className: IconColor.IconDefault }}
             onClick={handleBack}
             size={ButtonIconSize.Md}
             data-testid="permissions-page-back"

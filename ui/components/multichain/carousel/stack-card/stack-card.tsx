@@ -96,7 +96,7 @@ export const StackCard = ({
             <ButtonIcon
               iconName={IconName.Close}
               size={ButtonIconSize.Md}
-              iconProps={{ color: IconColor.IconAlternative }}
+              iconProps={{ className: IconColor.IconAlternative }}
               ariaLabel={t('closeSlide', [
                 isContentfulContent ? slide.title : t(slide.title),
               ])}
