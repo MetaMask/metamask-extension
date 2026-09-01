@@ -52,12 +52,7 @@ import {
   toggleNetworkMenu,
   updateNetwork,
 } from '../../../store/actions';
-import {
-  Box,
-  HelpText,
-  HelpTextSeverity,
-  Text,
-} from '../../component-library';
+import { Box, HelpText, HelpTextSeverity, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -550,7 +545,9 @@ export const NetworksForm = ({
           }}
           textFieldProps={{ className: 'rounded-lg' }}
           inputProps={
-            { 'data-testid': 'network-form-network-name' } as React.InputHTMLAttributes<HTMLInputElement>
+            {
+              'data-testid': 'network-form-network-name',
+            } as React.InputHTMLAttributes<HTMLInputElement>
           }
           value={name}
         />
@@ -660,7 +657,9 @@ export const NetworksForm = ({
           }}
           textFieldProps={{ className: 'rounded-lg' }}
           inputProps={
-            { 'data-testid': 'network-form-chain-id' } as React.InputHTMLAttributes<HTMLInputElement>
+            {
+              'data-testid': 'network-form-chain-id',
+            } as React.InputHTMLAttributes<HTMLInputElement>
           }
           value={chainId}
           isDisabled={Boolean(existingNetwork)}
@@ -740,7 +739,9 @@ export const NetworksForm = ({
           }}
           textFieldProps={{ className: 'rounded-lg' }}
           inputProps={
-            { 'data-testid': 'network-form-ticker-input' } as React.InputHTMLAttributes<HTMLInputElement>
+            {
+              'data-testid': 'network-form-ticker-input',
+            } as React.InputHTMLAttributes<HTMLInputElement>
           }
           value={ticker}
         />

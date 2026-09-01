@@ -7,11 +7,7 @@ import {
   TextFieldSize,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
-import {
-  Box,
-  HelpText,
-  HelpTextSeverity,
-} from '../../../component-library';
+import { Box, HelpText, HelpTextSeverity } from '../../../component-library';
 import {
   BackgroundColor,
   BlockSize,
@@ -58,7 +54,9 @@ const AddBlockExplorerModal = ({
           label={t('blockExplorerUrl')}
           value={url ?? ''}
           inputProps={
-            { 'data-testid': 'explorer-url-input' } as React.InputHTMLAttributes<HTMLInputElement>
+            {
+              'data-testid': 'explorer-url-input',
+            } as React.InputHTMLAttributes<HTMLInputElement>
           }
           labelProps={{
             variant: DsTextVariant.BodyMd,

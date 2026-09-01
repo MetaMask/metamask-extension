@@ -7,11 +7,7 @@ import {
   TextFieldSize,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
-import {
-  Box,
-  HelpText,
-  HelpTextSeverity,
-} from '../../../component-library';
+import { Box, HelpText, HelpTextSeverity } from '../../../component-library';
 import {
   BackgroundColor,
   BlockSize,
@@ -64,7 +60,9 @@ const AddRpcUrlModal = ({
             variant: DsTextVariant.BodyMd,
           }}
           inputProps={
-            { 'data-testid': 'rpc-url-input-test' } as React.InputHTMLAttributes<HTMLInputElement>
+            {
+              'data-testid': 'rpc-url-input-test',
+            } as React.InputHTMLAttributes<HTMLInputElement>
           }
           onChange={(e) => setUrl(e.target.value)}
           autoFocus
@@ -76,7 +74,9 @@ const AddRpcUrlModal = ({
           id="rpcName"
           size={TextFieldSize.Lg}
           inputProps={
-            { 'data-testid': 'rpc-name-input-test' } as React.InputHTMLAttributes<HTMLInputElement>
+            {
+              'data-testid': 'rpc-name-input-test',
+            } as React.InputHTMLAttributes<HTMLInputElement>
           }
           placeholder={t('enterANameToIdentifyTheUrl')}
           className="pt-4"

@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box, BoxFlexDirection, FormTextField  } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxFlexDirection,
+  FormTextField,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import {

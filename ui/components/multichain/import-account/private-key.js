@@ -47,16 +47,14 @@ export default function PrivateKeyImportView({
         className="mb-4"
         type={showPrivateKey ? TextFieldType.Text : TextFieldType.Password}
         endAccessory={
-          (
-            <ShowHideToggle
-              shown={showPrivateKey}
-              id="show-hide-private-key"
-              title={t('privateKeyShow')}
-              ariaLabelShown={t('privateKeyShown')}
-              ariaLabelHidden={t('privateKeyHidden')}
-              onChange={() => setShowPrivateKey(!showPrivateKey)}
-            />
-          )
+          <ShowHideToggle
+            shown={showPrivateKey}
+            id="show-hide-private-key"
+            title={t('privateKeyShow')}
+            ariaLabelShown={t('privateKeyShown')}
+            ariaLabelHidden={t('privateKeyHidden')}
+            onChange={() => setShowPrivateKey(!showPrivateKey)}
+          />
         }
       />
 
