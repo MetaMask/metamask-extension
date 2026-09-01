@@ -1641,13 +1641,11 @@ export async function mockAccountsApiV5WithTron(
 /**
  * Minimal Tron mocks for a native TRX send flow.
  *
- * - TRX-only account (no TRC20/TRC10 tokens)
- * - Stateful broadcast: after the tx is broadcast, both
- *   `gettransactioninfobyid` and the `/transactions` history endpoint
- *   return the confirmed tx so the snap's polling loop can flip the
- *   activity row from pending → confirmed.
- * - TRX-only spot prices (no HTX/SEED/USDT/USDD data)
- * - No pre-existing transaction history
+ * TRX-only account (no TRC20/TRC10 tokens), stateful broadcast that flips
+ * `gettransactioninfobyid` and `/transactions` to confirmed after broadcast,
+ * TRX-only spot prices, and no pre-existing transaction history.
+ *
+ * @param mockServer - The Mockttp server instance.
  */
 export async function mockTronSendApis(
   mockServer: Mockttp,
@@ -1815,14 +1813,13 @@ export async function mockTronSendApis(
 
       const trxMarketData = { id: 'tron', price: TRX_TO_USD_RATE };
       const json = Object.fromEntries(
-        ids.map((id) => [
-          id,
-          id.includes('slip44:195')
-            ? withMarket
-              ? trxMarketData
-              : { [vs]: TRX_TO_USD_RATE }
-            : null,
-        ]),
+        ids.map((id) => {
+          if (!id.includes('slip44:195')) {
+            return [id, null];
+          }
+          const price = withMarket ? trxMarketData : { [vs]: TRX_TO_USD_RATE };
+          return [id, price];
+        }),
       );
       return { statusCode: 200, json };
     });
