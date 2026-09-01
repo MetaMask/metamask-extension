@@ -30,8 +30,9 @@ const APPROVE_AGENT_TYPES = {
  * Builds the EIP-712 typed data for the Hyperliquid `approveAgent` action.
  *
  * The returned `data` is passed verbatim as `msgParams.data` to
- * `KeyringController:signTypedMessage`; `expectedAddress` is the address that
- * must sign it (the agent being approved, as passed in by the caller).
+ * `KeyringController:signTypedMessage`. `expectedAddress` is the agent address
+ * being approved (echoes the `agentAddress` param). NOTE: the required SIGNER
+ * of this message is the MASTER account, not this address.
  *
  * The payload is golden-tested against `@nktkas/hyperliquid`'s
  * `signUserSignedAction` + `ApproveAgentTypes`: identical inputs produce
@@ -43,7 +44,9 @@ const APPROVE_AGENT_TYPES = {
  * @param params.agentName - Agent name (1-16 chars) or empty string for unnamed.
  * @param params.nonce - Timestamp in ms used to prevent replay attacks.
  * @param params.isTestnet - Whether the action targets Hyperliquid testnet.
- * @returns The typed data for `signTypedMessage` and the expected signer address.
+ * @returns The typed data for `signTypedMessage` and `expectedAddress`: the
+ * agent address being approved (echoes `agentAddress`) — not the required
+ * signer, which is the master account.
  */
 export function buildApproveAgentTypedData(params: {
   agentAddress: `0x${string}`;
