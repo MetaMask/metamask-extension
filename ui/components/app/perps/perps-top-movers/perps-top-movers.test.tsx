@@ -4,7 +4,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { usePerpsLiveMarketListData } from '../../../../hooks/perps/stream';
 import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
@@ -25,18 +24,12 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../../../../hooks/perps/stream', () => ({
-  usePerpsLiveMarketListData: jest.fn(),
-}));
-
 const mockTrack = jest.fn();
 
 jest.mock('../../../../hooks/perps', () => ({
   ...jest.requireActual('../../../../hooks/perps'),
   usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
-
-const mockUsePerpsLiveMarketListData = jest.mocked(usePerpsLiveMarketListData);
 
 const mockStore = configureStore({ metamask: { ...mockState.metamask } });
 
@@ -60,17 +53,11 @@ const MARKETS = [
   createMarket('SOL', '-4.00%'),
 ];
 
-const setLiveMarkets = (
-  markets: PerpsMarketData[],
-  isInitialLoading = false,
-) => {
-  mockUsePerpsLiveMarketListData.mockReturnValue({
-    markets,
-    isInitialLoading,
-  } as ReturnType<typeof usePerpsLiveMarketListData>);
-};
-
-const renderSection = () => renderWithProvider(<PerpsTopMovers />, mockStore);
+const renderSection = (markets = MARKETS, isLoading = false) =>
+  renderWithProvider(
+    <PerpsTopMovers markets={markets} isLoading={isLoading} />,
+    mockStore,
+  );
 
 const getPillSymbols = () =>
   screen
@@ -80,7 +67,6 @@ const getPillSymbols = () =>
 describe('PerpsTopMovers', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    setLiveMarkets(MARKETS);
   });
 
   describe('rendering', () => {
@@ -145,20 +131,18 @@ describe('PerpsTopMovers', () => {
     });
 
     it('caps the pill grid at the top movers limit', () => {
-      setLiveMarkets(
+      renderSection(
         Array.from(
           { length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT + 4 },
           (_, index) => createMarket(`SYM${index}`, `+${index}.00%`),
         ),
       );
-      renderSection();
 
       expect(getPillSymbols()).toHaveLength(PERPS_CONSTANTS.TOP_MOVERS_LIMIT);
     });
 
     it('renders the loading skeleton while market data is loading', () => {
-      setLiveMarkets([], true);
-      renderSection();
+      renderSection([], true);
 
       expect(
         screen.getByTestId('perps-top-movers-skeleton'),
@@ -169,8 +153,7 @@ describe('PerpsTopMovers', () => {
     });
 
     it('hides the section when loading finished with no markets', () => {
-      setLiveMarkets([]);
-      renderSection();
+      renderSection([]);
 
       expect(screen.queryByTestId('perps-top-movers')).not.toBeInTheDocument();
     });

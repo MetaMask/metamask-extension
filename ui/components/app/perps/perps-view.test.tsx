@@ -145,20 +145,12 @@ jest.mock('../../../hooks/perps/stream', () => {
     usePerpsAssetNames: jest.fn(() => ({
       resolveAssetName: (symbol: string) => symbol,
     })),
-    // Read directly by the Top movers section, which ranks the live market
-    // list rather than going through usePerpsTabExploreData.
-    usePerpsLiveMarketListData: jest.fn(() => ({
-      markets: [
-        ...streamMocks.mockCryptoMarkets,
-        ...streamMocks.mockHip3Markets,
-      ],
-      isInitialLoading: false,
-    })),
   };
 });
 
 jest.mock('./hooks/usePerpsTabExploreData', () => ({
   usePerpsTabExploreData: jest.fn(() => ({
+    allMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
     exploreMarkets: [
       ...mocks.mockCryptoMarkets,
       ...mocks.mockHip3Markets,
@@ -268,6 +260,7 @@ describe('PerpsView', () => {
       isInitialLoading: false,
     });
     jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      allMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
       exploreMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
       watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
         ['BTC', 'ETH'].includes(market.symbol),
@@ -989,6 +982,7 @@ describe('PerpsView', () => {
 
   it('passes tab explore and watchlist markets from the tab hook', () => {
     jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      allMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
       exploreMarkets: [mocks.mockCryptoMarkets[0]],
       watchlistMarkets: [mocks.mockCryptoMarkets[1]],
       isInitialLoading: false,

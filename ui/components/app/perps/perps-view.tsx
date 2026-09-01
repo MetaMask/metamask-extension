@@ -108,6 +108,7 @@ export const PerpsView = () => {
     usePerpsLiveOrders();
   const { account, isInitialLoading: accountLoading } = usePerpsLiveAccount();
   const {
+    allMarkets,
     exploreMarkets,
     watchlistMarkets,
     isInitialLoading: marketsLoading,
@@ -494,7 +495,7 @@ export const PerpsView = () => {
       <PerpsWatchlist markets={watchlistMarkets} />
 
       {/* Top movers */}
-      <PerpsTopMovers />
+      <PerpsTopMovers markets={allMarkets} isLoading={marketsLoading} />
 
       {/* Explore markets */}
       <PerpsExploreMarkets markets={exploreMarkets} />

@@ -1,16 +1,9 @@
 import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-import { usePerpsLiveMarketListData } from '../../../../hooks/perps/stream';
 import type { SortDirection } from '../../../../pages/perps/utils/sortMarkets';
 import { PERPS_CONSTANTS } from '../constants';
 import type { PerpsMarketData } from '../types';
 import { usePerpsTopMovers } from './usePerpsTopMovers';
-
-jest.mock('../../../../hooks/perps/stream', () => ({
-  usePerpsLiveMarketListData: jest.fn(),
-}));
-
-const mockUsePerpsLiveMarketListData = jest.mocked(usePerpsLiveMarketListData);
 
 const createMarket = (
   symbol: string,
@@ -26,53 +19,40 @@ const createMarket = (
     volume: '$1M',
   }) as PerpsMarketData;
 
-const setLiveMarkets = (
-  markets: PerpsMarketData[],
-  isInitialLoading = false,
-) => {
-  mockUsePerpsLiveMarketListData.mockReturnValue({
-    markets,
-    isInitialLoading,
-  } as ReturnType<typeof usePerpsLiveMarketListData>);
-};
+const MARKETS = [
+  createMarket('BTC', '+1.00%'),
+  createMarket('ETH', '+9.00%'),
+  createMarket('SOL', '-4.00%'),
+];
 
-const renderTopMovers = (direction: SortDirection) =>
+const renderTopMovers = (
+  markets: PerpsMarketData[],
+  direction: SortDirection,
+) =>
   renderHookWithProviderTyped(
-    () => usePerpsTopMovers({ direction }),
+    () => usePerpsTopMovers({ markets, direction }),
     mockState,
   );
 
 describe('usePerpsTopMovers', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('ranks the biggest risers first when direction is desc', () => {
-    setLiveMarkets([
-      createMarket('BTC', '+1.00%'),
-      createMarket('ETH', '+9.00%'),
-      createMarket('SOL', '-4.00%'),
+    const { result } = renderTopMovers(MARKETS, 'desc');
+
+    expect(result.current.map((market) => market.symbol)).toStrictEqual([
+      'ETH',
+      'BTC',
+      'SOL',
     ]);
-
-    const { result } = renderTopMovers('desc');
-
-    expect(result.current.markets.map((market) => market.symbol)).toStrictEqual(
-      ['ETH', 'BTC', 'SOL'],
-    );
   });
 
   it('ranks the biggest fallers first when direction is asc', () => {
-    setLiveMarkets([
-      createMarket('BTC', '+1.00%'),
-      createMarket('ETH', '+9.00%'),
-      createMarket('SOL', '-4.00%'),
+    const { result } = renderTopMovers(MARKETS, 'asc');
+
+    expect(result.current.map((market) => market.symbol)).toStrictEqual([
+      'SOL',
+      'BTC',
+      'ETH',
     ]);
-
-    const { result } = renderTopMovers('asc');
-
-    expect(result.current.markets.map((market) => market.symbol)).toStrictEqual(
-      ['SOL', 'BTC', 'ETH'],
-    );
   });
 
   it('caps the ranking at the top movers limit', () => {
@@ -80,13 +60,10 @@ describe('usePerpsTopMovers', () => {
       { length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT + 5 },
       (_, index) => createMarket(`SYM${index}`, `+${index}.00%`),
     );
-    setLiveMarkets(markets);
 
-    const { result } = renderTopMovers('desc');
+    const { result } = renderTopMovers(markets, 'desc');
 
-    expect(result.current.markets).toHaveLength(
-      PERPS_CONSTANTS.TOP_MOVERS_LIMIT,
-    );
+    expect(result.current).toHaveLength(PERPS_CONSTANTS.TOP_MOVERS_LIMIT);
   });
 
   it('leaves the source market list untouched', () => {
@@ -94,9 +71,8 @@ describe('usePerpsTopMovers', () => {
       createMarket('BTC', '+1.00%'),
       createMarket('ETH', '+9.00%'),
     ];
-    setLiveMarkets(markets);
 
-    renderTopMovers('desc');
+    renderTopMovers(markets, 'desc');
 
     expect(markets.map((market) => market.symbol)).toStrictEqual([
       'BTC',
@@ -104,26 +80,25 @@ describe('usePerpsTopMovers', () => {
     ]);
   });
 
-  it('reports the stream initial loading state', () => {
-    setLiveMarkets([], true);
+  it('returns an empty ranking when no markets are supplied', () => {
+    const { result } = renderTopMovers([], 'desc');
 
-    const { result } = renderTopMovers('desc');
-
-    expect(result.current.isInitialLoading).toBe(true);
-    expect(result.current.markets).toStrictEqual([]);
+    expect(result.current).toStrictEqual([]);
   });
 
   it('treats markets with no usable change value as zero change', () => {
-    setLiveMarkets([
+    const markets = [
       createMarket('BTC', '--'),
       createMarket('ETH', '+9.00%'),
       createMarket('SOL', '-4.00%'),
+    ];
+
+    const { result } = renderTopMovers(markets, 'desc');
+
+    expect(result.current.map((market) => market.symbol)).toStrictEqual([
+      'ETH',
+      'BTC',
+      'SOL',
     ]);
-
-    const { result } = renderTopMovers('desc');
-
-    expect(result.current.markets.map((market) => market.symbol)).toStrictEqual(
-      ['ETH', 'BTC', 'SOL'],
-    );
   });
 });

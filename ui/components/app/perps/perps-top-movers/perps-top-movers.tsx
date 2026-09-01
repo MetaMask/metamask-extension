@@ -45,18 +45,35 @@ const LOSERS_DIRECTION: SortDirection = 'asc';
  */
 const PILL_GRID_STYLES = 'grid grid-cols-2 gap-2 px-4';
 
+export type PerpsTopMoversProps = {
+  /** Live markets to rank, owned by the Perps tab's market-list stream. */
+  markets: PerpsMarketData[];
+  /** Whether the tab's market data is still loading its first snapshot. */
+  isLoading: boolean;
+};
+
 /**
  * PerpsTopMovers ranks the live perps markets by 24h price change and shows
  * the strongest movers as a 2-column pill grid. The Gainers/Losers toggle
  * flips the ranking direction in place, and the header opens the full market
  * list already sorted by price change in the selected direction.
+ *
+ * Receives markets from the Perps tab rather than subscribing itself, so the
+ * tab keeps a single owner of the shared market-list price stream.
+ *
+ * @param options0 - Component props.
+ * @param options0.markets - Live markets to rank.
+ * @param options0.isLoading - Whether the first market snapshot is still loading.
  */
-export const PerpsTopMovers = () => {
+export const PerpsTopMovers = ({
+  markets: liveMarkets,
+  isLoading,
+}: PerpsTopMoversProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { track } = usePerpsEventTracking();
   const [direction, setDirection] = useState<SortDirection>(GAINERS_DIRECTION);
-  const { markets, isInitialLoading } = usePerpsTopMovers({ direction });
+  const markets = usePerpsTopMovers({ markets: liveMarkets, direction });
 
   const isGainers = direction === GAINERS_DIRECTION;
 
@@ -115,7 +132,7 @@ export const PerpsTopMovers = () => {
   // Once the markets have loaded, an empty ranking means there is nothing to
   // rank at all (no market data reached the tab), so the section has no content
   // to justify its heading.
-  if (!isInitialLoading && markets.length === 0) {
+  if (!isLoading && markets.length === 0) {
     return null;
   }
 
@@ -162,7 +179,7 @@ export const PerpsTopMovers = () => {
         </ButtonFilter>
       </Box>
 
-      {isInitialLoading ? (
+      {isLoading ? (
         <Box
           className={PILL_GRID_STYLES}
           data-testid="perps-top-movers-skeleton"
