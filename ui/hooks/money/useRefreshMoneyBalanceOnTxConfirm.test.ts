@@ -6,7 +6,10 @@ import {
 } from '@metamask/transaction-controller';
 import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
+import {
+  invalidateMoneyAccountBalanceCaches,
+  invalidateMoneyAccountBalanceSourceCaches,
+} from '../../helpers/money/invalidate-balance-caches';
 import { queryClient } from '../../contexts/query-client';
 import { selectPrimaryMoneyAccount } from '../../selectors/money-account';
 import { useRefreshMoneyBalanceOnTxConfirm } from './useRefreshMoneyBalanceOnTxConfirm';
@@ -37,11 +40,17 @@ jest.mock('../../contexts/query-client', () => ({
 
 jest.mock('../../helpers/money/invalidate-balance-caches', () => ({
   invalidateMoneyAccountBalanceCaches: jest.fn().mockResolvedValue(undefined),
+  invalidateMoneyAccountBalanceSourceCaches: jest
+    .fn()
+    .mockResolvedValue(undefined),
 }));
 
 const mockGetQueryData = jest.mocked(queryClient.getQueryData);
 const mockInvalidateMoneyAccountBalanceCaches = jest.mocked(
   invalidateMoneyAccountBalanceCaches,
+);
+const mockInvalidateMoneyAccountBalanceSourceCaches = jest.mocked(
+  invalidateMoneyAccountBalanceSourceCaches,
 );
 const mockSelectPrimaryMoneyAccount = jest.mocked(selectPrimaryMoneyAccount);
 
@@ -292,22 +301,43 @@ describe('useRefreshMoneyBalanceOnTxConfirm', () => {
     });
   });
 
-  it('retries the invalidation while the balance stays unchanged', async () => {
-    mockGetQueryData.mockReturnValue({
-      totalBalance: '3000000',
-    } as ReturnType<typeof queryClient.getQueryData>);
+  it('retries while the balance stays unchanged, then busts the source caches', async () => {
+    jest.useFakeTimers();
+    try {
+      mockGetQueryData.mockReturnValue({
+        totalBalance: '3000000',
+      } as ReturnType<typeof queryClient.getQueryData>);
 
+      renderHook(() => useRefreshMoneyBalanceOnTxConfirm());
+      const handler = getStatusUpdatedHandler();
+
+      emit(handler, makeTx(TransactionType.moneyAccountDeposit));
+      // Attempts back off at 500ms/1s/2s then 4s capped; ~20s covers all 8.
+      await jest.advanceTimersByTimeAsync(30_000);
+
+      expect(mockInvalidateMoneyAccountBalanceCaches).toHaveBeenCalledTimes(8);
+      expect(
+        mockInvalidateMoneyAccountBalanceSourceCaches,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockInvalidateMoneyAccountBalanceSourceCaches,
+      ).toHaveBeenCalledWith(MOCK_ADDRESS);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('does not bust the source caches when a retry sees the balance change', async () => {
     renderHook(() => useRefreshMoneyBalanceOnTxConfirm());
     const handler = getStatusUpdatedHandler();
 
     emit(handler, makeTx(TransactionType.moneyAccountDeposit));
-    await waitFor(
-      () => {
-        expect(mockInvalidateMoneyAccountBalanceCaches).toHaveBeenCalledTimes(
-          4,
-        );
-      },
-      { timeout: 10000 },
-    );
+    await waitFor(() => {
+      expect(mockInvalidateMoneyAccountBalanceCaches).toHaveBeenCalledTimes(1);
+    });
+
+    expect(
+      mockInvalidateMoneyAccountBalanceSourceCaches,
+    ).not.toHaveBeenCalled();
   });
 });

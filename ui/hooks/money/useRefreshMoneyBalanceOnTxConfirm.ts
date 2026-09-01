@@ -9,7 +9,10 @@ import log from 'loglevel';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
 import { queryClient } from '../../contexts/query-client';
 import { defineAllowedRouteCapabilities } from '../../helpers/route-messenger-helpers';
-import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
+import {
+  invalidateMoneyAccountBalanceCaches,
+  invalidateMoneyAccountBalanceSourceCaches,
+} from '../../helpers/money/invalidate-balance-caches';
 import {
   isMoneyAccountTx,
   isPerpsPredictMoneyActivity,
@@ -21,7 +24,11 @@ import { useMessenger } from '../useMessenger';
 
 const LOG_PREFIX = '[Money Balance Refresh]';
 
-const MAX_RETRIES = 4;
+// Wider than mobile's 4-attempt budget: RPC nodes and the Money API indexer
+// can lag the on-chain state by tens of seconds after a confirmation, and an
+// exhausted budget costs a full staleTime + poll cycle before the next fresh
+// read. 8 attempts with capped backoff cover a ~20s window.
+const MAX_RETRIES = 8;
 const BASE_DELAY_MS = 500;
 const MAX_DELAY_MS = 4000;
 
@@ -57,6 +64,11 @@ const didBalanceChange = (
  * stale reads immediately after a transaction confirms. Fails visibly via
  * log.error if the retry budget exhausts.
  *
+ * On exhaustion the background source caches are busted one final time: the
+ * last (stale) refetch re-cached the stale figure with a fresh staleTime, so
+ * without this the 30s auto-poll would keep serving it for another staleTime
+ * window instead of reading the sources anew.
+ *
  * @param address - Money account address.
  */
 const refreshMoneyBalanceQueries = async (address: string) => {
@@ -81,6 +93,8 @@ const refreshMoneyBalanceQueries = async (address: string) => {
       return;
     }
   }
+
+  await invalidateMoneyAccountBalanceSourceCaches(address);
 
   log.error(
     `${LOG_PREFIX} Balance unchanged after ${MAX_RETRIES} retries; awaiting 30s auto-poll`,
