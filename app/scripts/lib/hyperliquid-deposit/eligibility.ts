@@ -7,6 +7,7 @@ import type {
   AccountState,
   PerpsControllerState,
 } from '@metamask/perps-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import log from 'loglevel';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import { getIsPerpsIncludedInBuild } from '../../../../shared/lib/environment';
@@ -53,9 +54,7 @@ type TokensControllerLike = {
 };
 
 type RemoteFeatureFlagControllerLike = {
-  state?: {
-    remoteFeatureFlags?: Record<string, unknown>;
-  };
+  state?: Partial<Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>>;
 };
 
 type IsHyperliquidDepositPromptEligibleOptions = {
