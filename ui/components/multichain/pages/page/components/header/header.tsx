@@ -1,6 +1,5 @@
 import React from 'react';
-import classnames from 'clsx';
-import { HeaderBase } from '@metamask/design-system-react';
+import { HeaderBase, twMerge } from '@metamask/design-system-react';
 import { Text } from '../../../../../component-library';
 import {
   Display,
@@ -46,7 +45,7 @@ export const Header = ({
 }: HeaderProps) => {
   return (
     <HeaderBase
-      className={classnames('multichain-page-header p-4 w-full', className)}
+      className={twMerge('multichain-page-header p-4 w-full', className)}
       startAccessory={startAccessory}
       endAccessory={endAccessory}
       {...props}

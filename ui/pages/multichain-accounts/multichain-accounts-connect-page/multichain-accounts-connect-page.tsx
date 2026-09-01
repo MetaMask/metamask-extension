@@ -583,7 +583,7 @@ export const MultichainAccountsConnectPage = ({
         className="main-container multichain-connect-page"
         backgroundColor={BackgroundColor.backgroundDefault}
       >
-        <Header paddingTop={12} paddingBottom={6}>
+        <Header className="pt-12 pb-6 mb-0">
           <Box className="flex justify-center mt-4 mb-6">
             {targetSubjectMetadata.iconUrl ? (
               <AvatarFavicon

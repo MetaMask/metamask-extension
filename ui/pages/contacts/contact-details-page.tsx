@@ -160,6 +160,7 @@ export function ContactDetailsPage() {
   return (
     <Page data-testid="contact-details-page">
       <Header
+        className="mb-0"
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}
@@ -178,7 +179,6 @@ export function ContactDetailsPage() {
             data-testid="contact-details-close-button"
           />
         }
-        marginBottom={0}
       >
         {t('contactDetails')}
       </Header>

@@ -33,7 +33,7 @@ export const ReceiveModal = ({ address, onClose }) => {
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader marginBottom={4} onClose={onClose}>
+        <ModalHeader className="mb-4" onClose={onClose}>
           {t('receive')}
         </ModalHeader>
         <Box

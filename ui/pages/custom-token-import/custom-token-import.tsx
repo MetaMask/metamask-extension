@@ -583,6 +583,7 @@ export const CustomTokenImportPage = () => {
   return (
     <Page data-testid="custom-token-import-page">
       <Header
+        className="mb-0"
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}
@@ -601,7 +602,6 @@ export const CustomTokenImportPage = () => {
             data-testid="custom-token-import-close-button"
           />
         }
-        marginBottom={0}
       >
         {t('addCustomToken')}
       </Header>

@@ -12,10 +12,6 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import { Content, Header, Page } from '../../page';
-import {
-  BackgroundColor,
-  TextVariant as TextVariantLocal,
-} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   PREVIOUS_ROUTE,
@@ -78,7 +74,7 @@ export const TokenTransferPage = () => {
       key="token-transfer-page"
     >
       <Header
-        backgroundColor={BackgroundColor.backgroundDefault}
+        className="bg-default"
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}

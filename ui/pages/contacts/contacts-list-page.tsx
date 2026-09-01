@@ -129,6 +129,7 @@ export function ContactsListPage() {
   return (
     <Page data-testid="parent-selector-contacts-page">
       <Header
+        className="mb-0"
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}
@@ -138,7 +139,6 @@ export function ContactsListPage() {
             data-testid="contacts-back-button"
           />
         }
-        marginBottom={0}
       >
         {t('contacts')}
       </Header>

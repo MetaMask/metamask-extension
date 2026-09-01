@@ -65,6 +65,7 @@ export function EditContactPage() {
   return (
     <Page data-testid="edit-contact-page">
       <Header
+        className="mb-0"
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}
@@ -83,7 +84,6 @@ export function EditContactPage() {
             data-testid="edit-contact-close-button"
           />
         }
-        marginBottom={0}
       >
         {t('editContact')}
       </Header>

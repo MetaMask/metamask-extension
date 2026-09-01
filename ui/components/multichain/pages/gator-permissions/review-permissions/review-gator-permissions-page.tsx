@@ -22,7 +22,6 @@ import {
 } from '@metamask/design-system-react';
 import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { Content, Header, Page } from '../../page';
-import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   extractNetworkName,
@@ -174,7 +173,7 @@ export const ReviewGatorPermissionsPage = () => {
       key="review-gator-permissions-page"
     >
       <Header
-        backgroundColor={BackgroundColor.backgroundDefault}
+        className="bg-default"
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}

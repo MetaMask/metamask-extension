@@ -90,6 +90,7 @@ const NetworksPageFormHeader = ({
 
   return (
     <Header
+      className="mb-0"
       startAccessory={
         <ButtonIcon
           ariaLabel={t('back')}
@@ -108,7 +109,6 @@ const NetworksPageFormHeader = ({
           data-testid="networks-page-form-close-button"
         />
       }
-      marginBottom={0}
     >
       {title}
     </Header>

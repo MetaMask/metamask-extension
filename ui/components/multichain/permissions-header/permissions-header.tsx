@@ -6,7 +6,6 @@ import {
 } from '@metamask/design-system-react';
 import {
   AlignItems,
-  BackgroundColor,
   Display,
   IconColor,
   JustifyContent,
@@ -42,7 +41,7 @@ export const PermissionsHeader = ({
       textProps={{
         variant: TextVariant.headingSm,
       }}
-      backgroundColor={BackgroundColor.backgroundDefault}
+      className="bg-default"
       startAccessory={
         <ButtonIcon
           size={ButtonIconSize.Md}

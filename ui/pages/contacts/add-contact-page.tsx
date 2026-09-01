@@ -26,6 +26,7 @@ export function AddContactPage() {
   return (
     <Page data-testid="add-contact-page">
       <Header
+        className="mb-0"
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}
@@ -44,7 +45,6 @@ export function AddContactPage() {
             data-testid="add-contact-close-button"
           />
         }
-        marginBottom={0}
       >
         {t('addContact')}
       </Header>

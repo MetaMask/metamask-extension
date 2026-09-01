@@ -33,6 +33,7 @@ const SyncAccountsTab = () => {
       className="max-w-[600px]"
     >
       <Header
+        className="mb-0"
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}
@@ -42,7 +43,6 @@ const SyncAccountsTab = () => {
             data-testid="sync-accounts-back-button"
           />
         }
-        marginBottom={0}
       />
       <Content className="sync-accounts">
         <SyncAccountsSettings />

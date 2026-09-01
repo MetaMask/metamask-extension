@@ -214,6 +214,7 @@ export default function Notifications() {
     <Page data-testid="notifications-page">
       {/* Back and Settings Buttons */}
       <Header
+        className="mb-0"
         startAccessory={
           <ButtonIcon
             ariaLabel="Back"
@@ -237,7 +238,6 @@ export default function Notifications() {
             data-testid="notifications-settings-button"
           />
         }
-        marginBottom={0}
       >
         {t('notifications')}
       </Header>

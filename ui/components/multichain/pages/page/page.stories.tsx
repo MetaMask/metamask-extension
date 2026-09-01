@@ -5,7 +5,6 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../../component-library';
-import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import { Page, Header, Content, Footer } from '.';
 
 const story = {
@@ -51,11 +50,11 @@ export const HeaderStory = (args) => (
             iconName={IconName.ArrowLeft}
           />
         }
-        backgroundColor={BackgroundColor.primaryAlternative}
+        className="bg-primary-alternative"
       >
         Connect
       </Header>
-      <Content backgroundColor={BackgroundColor.successDefault}>
+      <Content className="bg-success-default">
         Contents!
       </Content>
     </Page>
@@ -72,14 +71,14 @@ export const FullscreenStory = (args) => (
             iconName={IconName.ArrowLeft}
           />
         }
-        backgroundColor={BackgroundColor.primaryAlternative}
+        className="bg-primary-alternative"
       >
         Connect
       </Header>
-      <Content backgroundColor={BackgroundColor.successDefault}>
+      <Content className="bg-success-default">
         {scrollingContent}
       </Content>
-      <Footer backgroundColor={BackgroundColor.warningDefault}>
+      <Footer className="bg-warning-default">
         <Button variant={ButtonVariant.Primary} isFullWidth isDisabled>
           Cancel
         </Button>
@@ -107,14 +106,14 @@ export const HeaderFooterStory = (args) => (
             iconName={IconName.ArrowLeft}
           />
         }
-        backgroundColor={BackgroundColor.primaryAlternative}
+        className="bg-primary-alternative"
       >
         Connect
       </Header>
-      <Content backgroundColor={BackgroundColor.successDefault}>
+      <Content className="bg-success-default">
         Content
       </Content>
-      <Footer backgroundColor={BackgroundColor.warningDefault}>
+      <Footer className="bg-warning-default">
         <Button variant={ButtonVariant.Primary} isFullWidth isDisabled>
           Cancel
         </Button>
@@ -139,14 +138,14 @@ export const ScrollingStory = (args) => (
             iconName={IconName.ArrowLeft}
           />
         }
-        backgroundColor={BackgroundColor.primaryAlternative}
+        className="bg-primary-alternative"
       >
         Connect
       </Header>
-      <Content backgroundColor={BackgroundColor.successDefault}>
+      <Content className="bg-success-default">
         {scrollingContent}
       </Content>
-      <Footer backgroundColor={BackgroundColor.warningDefault}>
+      <Footer className="bg-warning-default">
         <Button variant={ButtonVariant.Primary} isFullWidth isDisabled>
           Cancel
         </Button>

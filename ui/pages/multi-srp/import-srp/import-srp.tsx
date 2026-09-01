@@ -116,8 +116,7 @@ export const ImportSrp = () => {
             }}
           />
         }
-        paddingLeft={0}
-        paddingRight={0}
+        className="px-0"
       >
         {t('importSecretRecoveryPhrase')}
       </Header>
