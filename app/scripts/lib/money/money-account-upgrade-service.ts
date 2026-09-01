@@ -84,6 +84,11 @@ const configsEqual = (
  * 4. The moneyAccountVaultConfig flag is served
  *
  * We then re-run the init if the vault config ever changes.
+ *
+ * The bootstrap awaits chain configuration before calling out to Chomp, so
+ * gates 1–3 are re-checked immediately before `init()`: a lock or a Basic
+ * Functionality opt-out during that window must not still produce an external
+ * call. A skipped bootstrap is forgotten so it re-runs when the gates reopen.
  */
 export class MoneyAccountUpgradeService {
   readonly name: typeof serviceName = serviceName;
@@ -124,27 +129,13 @@ export class MoneyAccountUpgradeService {
 
   #sync(): void {
     try {
-      if (!this.#areExternalServicesAllowed()) {
+      if (!this.#areGatesOpen()) {
         return;
       }
 
       const { remoteFeatureFlags } = this.#messenger.call(
         'RemoteFeatureFlagController:getState',
       );
-      if (!isMoneyAccountEnabled(remoteFeatureFlags)) {
-        return;
-      }
-
-      const { isUnlocked, keyrings } = this.#messenger.call(
-        'KeyringController:getState',
-      );
-      if (
-        !isUnlocked ||
-        !keyrings.some((keyring) => keyring.type === KeyringTypes.hd)
-      ) {
-        return;
-      }
-
       const vaultConfig = getMoneyAccountVaultConfig(remoteFeatureFlags);
       if (!vaultConfig) {
         this.#reportMissingConfig();
@@ -177,11 +168,54 @@ export class MoneyAccountUpgradeService {
     return completedOnboarding && Boolean(useExternalServices);
   }
 
+  /**
+   * Whether the synchronous bootstrap gates are open right now: onboarding
+   * complete with basic functionality enabled, the feature flag on, and the
+   * wallet unlocked with an HD keyring. Re-read from live state on every call
+   * because the bootstrap re-validates them across its `await` points.
+   *
+   * @returns Whether the bootstrap may proceed.
+   */
+  #areGatesOpen(): boolean {
+    if (!this.#areExternalServicesAllowed()) {
+      return false;
+    }
+
+    const { remoteFeatureFlags } = this.#messenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    if (!isMoneyAccountEnabled(remoteFeatureFlags)) {
+      return false;
+    }
+
+    const { isUnlocked, keyrings } = this.#messenger.call(
+      'KeyringController:getState',
+    );
+    return (
+      isUnlocked && keyrings.some((keyring) => keyring.type === KeyringTypes.hd)
+    );
+  }
+
   #scheduleBootstrap(vaultConfig: MoneyAccountVaultConfig): void {
     this.#bootstrappedConfig = vaultConfig;
 
     const run = async () => {
+      // The gates were checked when this run was scheduled, but it may start
+      // much later, chained behind an in-flight bootstrap.
+      if (!this.#areGatesOpen()) {
+        this.#forget(vaultConfig);
+        return;
+      }
+
       await this.#ensureChainConfigured(vaultConfig);
+
+      // Configuring the chain can suspend for a while, so re-check the gates
+      // before the external Chomp call inside `init()`.
+      if (!this.#areGatesOpen()) {
+        this.#forget(vaultConfig);
+        return;
+      }
+
       await this.#upgradeController.init({
         chainId: vaultConfig.chainId,
         boringVaultAddress: vaultConfig.boringVault,
@@ -195,13 +229,21 @@ export class MoneyAccountUpgradeService {
 
     bootstrap.catch((error) => {
       log('Failed to bootstrap the money account upgrade', error);
-
-      // Only forgotten if no newer config has been scheduled meanwhile: a
-      // newer config supersedes this run, success or failure.
-      if (this.#bootstrappedConfig === vaultConfig) {
-        this.#bootstrappedConfig = undefined;
-      }
+      this.#forget(vaultConfig);
     });
+  }
+
+  /**
+   * Forget a scheduled bootstrap that was skipped or failed, so the next
+   * trigger re-runs it — but only if no newer config has been scheduled
+   * meanwhile: a newer config supersedes this run, success or failure.
+   *
+   * @param vaultConfig - The config the abandoned run was scheduled with.
+   */
+  #forget(vaultConfig: MoneyAccountVaultConfig): void {
+    if (this.#bootstrappedConfig === vaultConfig) {
+      this.#bootstrappedConfig = undefined;
+    }
   }
 
   /**

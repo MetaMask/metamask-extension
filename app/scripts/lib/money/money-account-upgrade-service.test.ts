@@ -246,6 +246,66 @@ describe('MoneyAccountUpgradeService', () => {
     expect(init).toHaveBeenCalledTimes(1);
   });
 
+  it('skips the init when the wallet locks while the chain is being configured', async () => {
+    let resolveAddNetwork: (value?: unknown) => void = () => undefined;
+    const addNetwork = jest
+      .fn()
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveAddNetwork = resolve;
+          }),
+      )
+      .mockResolvedValue(MONAD_NETWORK_CONFIGURATION);
+    const { config, init, trigger } = createService({
+      networkConfigured: false,
+      addNetwork,
+    });
+    await flushPromises();
+    expect(addNetwork).toHaveBeenCalledTimes(1);
+
+    config.isUnlocked = false;
+    resolveAddNetwork(MONAD_NETWORK_CONFIGURATION);
+    await flushPromises();
+
+    expect(init).not.toHaveBeenCalled();
+
+    config.isUnlocked = true;
+    await trigger('KeyringController:stateChange');
+
+    expect(init).toHaveBeenCalledTimes(1);
+  });
+
+  it('skips the init when basic functionality is disabled while the chain is being configured', async () => {
+    let resolveAddNetwork: (value?: unknown) => void = () => undefined;
+    const addNetwork = jest
+      .fn()
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveAddNetwork = resolve;
+          }),
+      )
+      .mockResolvedValue(MONAD_NETWORK_CONFIGURATION);
+    const { config, init, trigger } = createService({
+      networkConfigured: false,
+      addNetwork,
+    });
+    await flushPromises();
+    expect(addNetwork).toHaveBeenCalledTimes(1);
+
+    config.useExternalServices = false;
+    resolveAddNetwork(MONAD_NETWORK_CONFIGURATION);
+    await flushPromises();
+
+    expect(init).not.toHaveBeenCalled();
+
+    config.useExternalServices = true;
+    await trigger('PreferencesController:stateChange');
+
+    expect(init).toHaveBeenCalledTimes(1);
+  });
+
   it('reports a missing vault config to Sentry only once', async () => {
     const { init, trigger } = createService({ vaultConfig: null });
     await flushPromises();
