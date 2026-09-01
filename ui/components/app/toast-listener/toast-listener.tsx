@@ -6,7 +6,6 @@ import {
   useMusdConversionConfirmTrace,
   useMusdConversionToastStatus,
 } from '../../../hooks/musd';
-import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import { RampsOrderToastListener } from '../ramps/ramps-order-toast-listener';
 import { TransactionEventToastListener } from './transaction-event-toast-listener';
@@ -15,7 +14,6 @@ import { TransactionEventToastListener } from './transaction-event-toast-listene
 const MusdTelemetry = () => {
   const { activeTransactionId } = useMusdConversionToastStatus();
   useMusdConversionConfirmTrace(activeTransactionId ?? '');
-  useMerklClaimStatus();
   return null;
 };
 

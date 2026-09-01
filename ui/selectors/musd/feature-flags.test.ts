@@ -14,7 +14,6 @@ import {
   selectIsMusdTokenListItemCtaEnabled,
   selectIsMusdAssetOverviewCtaEnabled,
   selectIsMusdRewardsUiEnabled,
-  selectIsMerklClaimingEnabled,
   selectMusdCtaTokens,
   selectMusdConvertibleTokensAllowlist,
   selectMusdConvertibleTokensBlocklist,
@@ -54,7 +53,6 @@ describe('MUSD Feature Flag Selectors', () => {
     selectIsMusdTokenListItemCtaEnabled.resetRecomputations();
     selectIsMusdAssetOverviewCtaEnabled.resetRecomputations();
     selectIsMusdRewardsUiEnabled.resetRecomputations();
-    selectIsMerklClaimingEnabled.resetRecomputations();
     selectMusdCtaTokens.resetRecomputations();
     selectMusdConvertibleTokensAllowlist.resetRecomputations();
     selectMusdConvertibleTokensBlocklist.resetRecomputations();
@@ -155,20 +153,6 @@ describe('MUSD Feature Flag Selectors', () => {
     it('defaults to DEFAULT_MUSD_BOOLEAN_FLAG when flag is absent', () => {
       const state = getMockState();
       expect(selectIsMusdRewardsUiEnabled(state as never)).toBe(
-        DEFAULT_MUSD_BOOLEAN_FLAG,
-      );
-    });
-  });
-
-  describe('selectIsMerklClaimingEnabled', () => {
-    it('returns true when flag is true', () => {
-      const state = getMockState({ earnMerklCampaignClaiming: true });
-      expect(selectIsMerklClaimingEnabled(state as never)).toBe(true);
-    });
-
-    it('defaults to DEFAULT_MUSD_BOOLEAN_FLAG when flag is absent', () => {
-      const state = getMockState();
-      expect(selectIsMerklClaimingEnabled(state as never)).toBe(
         DEFAULT_MUSD_BOOLEAN_FLAG,
       );
     });
@@ -328,7 +312,6 @@ describe('MUSD Feature Flag Selectors', () => {
           blockedRegions: ['US'],
         },
         earnMusdConversionMinAssetBalanceRequired: 10,
-        earnMerklCampaignClaiming: true,
       };
       const state = getMockState(fullFlags);
       expect(selectAllMusdFeatureFlags(state as never)).toStrictEqual(
