@@ -36,7 +36,7 @@ import { createEventBuilder } from '../../shared/lib/analytics/create-event-buil
 import { useSegmentContext } from '../hooks/useSegmentContext';
 import {
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../selectors';
 import { submitRequestToBackground } from '../store/background-connection';
@@ -145,16 +145,14 @@ type MetaMetricsProviderProps = {
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const analyticsId = useSelector(getAnalyticsId);
-  const isMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetricsEnabled = consentDecisionMade && isOptedIn;
   const canTrackImmediately = isMetricsEnabled && Boolean(analyticsId);
   // Buffer events until we know whether or not we can submit them.
   const canMaybeTrackLater =
-    !completedMetaMetricsOnboarding || (isMetricsEnabled && !analyticsId);
+    !consentDecisionMade || (isMetricsEnabled && !analyticsId);
 
   const onboardingParentContext = useRef<TraceParentContext>(null);
 

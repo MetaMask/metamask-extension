@@ -845,8 +845,7 @@ export function setLastUsedSubscriptionPaymentDetails(
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('cacheLastSelectedPaymentMethod', [
-        product,
-        payload,
+        { product, paymentMethod: payload },
       ]);
     } catch (error) {
       log.error('[setLastUsedSubscriptionPaymentDetails] error', error);
@@ -6076,18 +6075,6 @@ export async function attemptCloseNotificationPopup() {
     // See issue: https://github.com/MetaMask/metamask-extension/issues/29821
     console.error('attemptCloseNotificationPopup: Failed to close tab', error);
   }
-}
-
-/**
- * @param payload - details of the event to track
- * @param options - options for routing/handling of event
- * @returns
- */
-export function trackMetaMetricsEvent(
-  payload: MetaMetricsEventPayload,
-  options?: MetaMetricsEventOptions,
-) {
-  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
 }
 
 export function trackAnalyticsEvent(

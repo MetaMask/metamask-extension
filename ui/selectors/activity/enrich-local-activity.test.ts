@@ -131,6 +131,52 @@ describe('enrichLocalActivity', () => {
     expect(enriched.type).toBe('revokeSpendingCap');
   });
 
+  it('maps a money account withdraw batch to a send of mUSD', () => {
+    const group = buildTokenTransferGroup({
+      type: TransactionType.batch,
+      txParams: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: '0x3333333333333333333333333333333333333333',
+        data: '0x',
+        value: '0x0',
+      },
+      nestedTransactions: [
+        { type: TransactionType.moneyAccountWithdraw, data: '0x00' },
+        {
+          type: TransactionType.tokenMethodTransfer,
+          to: DAI_ADDRESS,
+          data: TRANSFER_DATA,
+        },
+      ],
+    });
+    const activity = {
+      type: 'contractInteraction',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: '0x3333333333333333333333333333333333333333',
+      },
+    } as ActivityListItem;
+
+    const enriched = enrichLocalActivity(activity, group);
+
+    expect(enriched).toMatchObject({
+      type: 'send',
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: RECIPIENT,
+        token: {
+          direction: 'out',
+          symbol: 'mUSD',
+          decimals: 6,
+          amount: '10000000000000000000',
+        },
+      },
+    });
+  });
+
   it('does not change unrelated activity items', () => {
     const group = buildTokenTransferGroup({
       type: TransactionType.simpleSend,

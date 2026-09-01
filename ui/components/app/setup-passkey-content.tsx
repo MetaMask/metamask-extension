@@ -44,7 +44,6 @@ import {
   getPasskeyAuthMethodKey,
   translatePasskeyError,
   isPasskeyCeremonySilentError,
-  PasskeyPRFRequiredError,
 } from '../../../shared/lib/passkey';
 import { captureException } from '../../../shared/lib/sentry';
 import { forceUpdateMetamaskState } from '../../store/actions';

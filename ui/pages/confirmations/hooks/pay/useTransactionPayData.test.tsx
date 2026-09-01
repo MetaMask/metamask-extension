@@ -282,6 +282,21 @@ describe('useTransactionPayData', () => {
 
       expect(result.current).toBe(false);
     });
+
+    it('returns false for money-account withdraw before an amount is entered', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          {
+            isLoading: true,
+            isPostQuote: false,
+            tokens: [],
+          },
+          TransactionType.moneyAccountWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(false);
+    });
   });
 
   describe('useTransactionPayPrimaryRequiredToken', () => {
