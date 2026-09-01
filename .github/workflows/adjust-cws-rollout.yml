@@ -102,8 +102,9 @@ jobs:
             echo "::error::CWS rollout must run from refs/heads/main (current: ${GITHUB_REF})"
             exit 1
           fi
-          # Sets GITHUB_ENV: WIF_*, EXTENSION_ID, PUBLISHER_ID, CRX_VERSION (see script header).
-          bash .github/scripts/cws-target-config.sh
+          # Sets GITHUB_ENV and same-step vars: WIF_*, EXTENSION_ID, PUBLISHER_ID, CRX_VERSION.
+          # shellcheck disable=SC1091
+          source .github/scripts/cws-target-config.sh
           {
             echo "target=${TARGET}"
             echo "extension_id=${EXTENSION_ID}"
