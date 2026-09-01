@@ -5,6 +5,7 @@
       "strict_min_version": "128.0"
     }
   },
+  "content_security_policy": "frame-ancestors 'self' https://x.com https://www.x.com; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; font-src 'self';",
   "browser_action": {
     "default_icon": {
       "16": "images/icon-16.png",
