@@ -36,12 +36,11 @@ import {
   getMoneyAccountTransactionType,
   isProtectedByEnforcedSimulations,
 } from '../pages/confirmations/utils/confirm';
-import type { Status } from '../../shared/lib/activity/types';
+import { ActivityListItem, Status } from '../../shared/lib/activity/types';
 import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
 } from '../ducks/bridge-status/selectors';
-import type { ActivityListItem } from './activity/types';
 import { getInternalAccountsObject } from './accounts';
 import {
   getInternalAccountBySelectedAccountGroupAndCaip,

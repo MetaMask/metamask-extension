@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import type { ActivityListItem } from '../../selectors/activity/types';
+import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { ScreenViewedEntryPoint } from '../../../shared/constants/metametrics';
 import { ActivityList } from './activity-list';
 

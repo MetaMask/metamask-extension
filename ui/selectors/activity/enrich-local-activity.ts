@@ -6,7 +6,9 @@ import {
 } from '@metamask/money-account-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import type {
+  ActivityListItem,
   FiatAmount,
+  MoneyAccountActivityKind,
   TokenAmount,
 } from '../../../shared/lib/activity/types';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
@@ -16,7 +18,6 @@ import {
 } from '../../../shared/lib/transaction.utils';
 import { hasTransactionType } from '../../../shared/lib/transactions.utils';
 import { getMoneyAccountWithdrawTransferDetails } from '../../pages/confirmations/utils/money-account-withdraw';
-import type { ActivityListItem, MoneyAccountActivityKind } from './types';
 import { enrichLocalMusdClaimActivity } from './enrich-local-musd-claim';
 
 const TOKEN_TRANSFER_TYPES = new Set<TransactionType>([

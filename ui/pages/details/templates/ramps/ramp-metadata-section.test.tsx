@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import type { ActivityListItem } from '../../../../selectors/activity/types';
+import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { RampMetadataSection } from './ramp-metadata-section';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({

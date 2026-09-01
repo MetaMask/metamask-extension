@@ -1,5 +1,5 @@
 import type { RampsOrder } from '@metamask/ramps-controller';
-import type { ActivityListItem } from '../../../selectors/activity/types';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { mapRampsOrderSafely } from './mapRampsOrderSafely';
 
 type RampOrderItem = Extract<

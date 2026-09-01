@@ -8,7 +8,7 @@ import {
   TextAlign,
   TextVariant,
 } from '@metamask/design-system-react';
-import type { ActivityListItem } from '../../../selectors/activity/types';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type Props = {

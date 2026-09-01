@@ -6,7 +6,7 @@ import {
   ButtonVariant,
 } from '@metamask/design-system-react';
 import { TransactionStatus as TransactionMetaStatus } from '@metamask/transaction-controller';
-import type { ActivityListItem } from '../../../selectors/activity/types';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { usePerpsDepositConfirmation } from '../../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';

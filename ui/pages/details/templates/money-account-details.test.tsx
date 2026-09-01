@@ -6,7 +6,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 
-import type { MoneyAccountActivityItem } from '../../../selectors/activity/types';
+import type { MoneyAccountActivityItem } from '../../../../shared/lib/activity/types';
 import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
 import { useMoneyAccountDeposit } from '../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../hooks/money/useMoneyAccountInfo';

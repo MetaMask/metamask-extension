@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import type { ActivityListItem } from '../../../../selectors/activity/types';
+import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { useBridgeHistoryItem, useHistoryTokens } from './hooks';
 import { BridgeDetails } from './bridge-details';
 

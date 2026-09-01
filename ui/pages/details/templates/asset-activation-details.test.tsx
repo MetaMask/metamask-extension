@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import type { ActivityListItem } from '../../../selectors/activity/types';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { AssetActivationDetails } from './asset-activation-details';
 
 jest.mock('../components/token-header', () => ({

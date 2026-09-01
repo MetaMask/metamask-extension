@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import type {
   ActivityListItem,
   MoneyAccountActivityItem,
-} from '../../../selectors/activity/types';
+} from '../../../../shared/lib/activity/types';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { useActivityRowContent } from './useActivityRowContent';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import type { ActivityListItem } from '../../../../selectors/activity/types';
+import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { RampOrderDetails } from './ramp-order-details';
 
 const mockHandleCopy = jest.fn();

@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { CaipAssetType } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import type { ActivityListItem } from '../../selectors/activity/types';
+import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { selectLocalTransactionsByHash } from '../../selectors/activity';
 import {

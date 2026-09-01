@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, within } from '@testing-library/react';
-import type { ActivityListItem } from '../../../selectors/activity/types';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useIsGasFeeSponsored } from '../../../hooks/activity/useIsGasFeeSponsored';
 import { FeesRows } from './amounts-section';
 

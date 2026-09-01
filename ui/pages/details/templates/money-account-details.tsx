@@ -5,7 +5,7 @@ import {
   ButtonVariant,
 } from '@metamask/design-system-react';
 import { TransactionStatus as TransactionMetaStatus } from '@metamask/transaction-controller';
-import type { MoneyAccountActivityItem } from '../../../selectors/activity/types';
+import type { MoneyAccountActivityItem } from '../../../../shared/lib/activity/types';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../shared/lib/money/constants';
 import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
 import { useMoneyAccountDeposit } from '../../../hooks/money/useMoneyAccountDeposit';

@@ -1,8 +1,8 @@
 import React from 'react';
 import { CaipAssetType } from '@metamask/utils';
-import type { ActivityListItem } from '../../../selectors/activity/types';
 import type {
   ActivityFee,
+  ActivityListItem,
   FiatAmount,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
