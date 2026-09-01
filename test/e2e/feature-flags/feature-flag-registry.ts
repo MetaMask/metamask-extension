@@ -214,6 +214,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           featureVersion: '1',
           minimumVersion: '13.38.0',
           tracesEnabled: false,
+          useUnlockCleanup: true,
         },
       },
     },
@@ -1148,7 +1149,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       {
         scope: {
           type: 'threshold',
-          value: 0.5,
+          value: 1,
         },
         thresholdName: 'control',
         thresholdVersion: 2,
@@ -1179,7 +1180,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       {
         scope: {
           type: 'threshold',
-          value: 1,
+          value: 0,
         },
         thresholdName: 'treatment',
         thresholdVersion: 2,
@@ -2335,14 +2336,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         name: 'control',
         scope: {
           type: 'threshold',
-          value: 0.5,
+          value: 1,
         },
       },
       {
         name: 'treatment',
         scope: {
           type: 'threshold',
-          value: 1,
+          value: 0,
         },
       },
     ],
@@ -2358,14 +2359,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         name: 'control',
         scope: {
           type: 'threshold',
-          value: 0.95,
+          value: 1,
         },
       },
       {
         name: 'treatment',
         scope: {
           type: 'threshold',
-          value: 1,
+          value: 0,
         },
       },
     ],
@@ -2456,6 +2457,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  // Merkl claiming was removed from the extension (MUSD-1223); the client no
+  // longer reads this flag. Kept here until it is retired server-side.
   earnMerklCampaignClaiming: {
     inProd: true,
     name: 'earnMerklCampaignClaiming',
@@ -2463,7 +2466,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       enabled: true,
       minimumVersion: '13.24.0',
     },
-    status: FeatureFlagStatus.Active,
+    status: FeatureFlagStatus.Deprecated,
     type: FeatureFlagType.Remote,
   },
 
@@ -2857,6 +2860,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  moneyAccountChompConfig: {
+    inProd: true,
+    name: 'moneyAccountChompConfig',
+    productionDefault: {
+      baseUrl: 'https://chomp.api.cx.metamask.io',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   [MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME]: {
     inProd: false,
     name: MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME,
@@ -3109,7 +3122,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             name: 'treatment',
             scope: {
               type: 'threshold',
-              value: 1,
+              value: 0,
             },
           },
         ],

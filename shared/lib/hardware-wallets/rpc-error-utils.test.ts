@@ -642,6 +642,41 @@ describe('rpc-error-utils', () => {
       });
     });
 
+    it('reconstructs from a generic @metamask/rpc-errors serializeError() fallback cause', () => {
+      // This is the shape produced when a HardwareWalletError is thrown from a
+      // background method that isn't explicitly wrapped via
+      // rpcErrors.internal({ data: {...} }) (e.g. getAppNameAndVersion).
+      // @metamask/rpc-errors' generic serializeError() fallback flattens every
+      // own enumerable property of the original error into data.cause,
+      // including fields the "legacy"/"extended" cause shapes don't declare
+      // (metadata here; id/timestamp in other cases).
+      const serializedRpcError = {
+        code: -32603,
+        message: 'DMK device locked',
+        data: {
+          cause: {
+            message: 'DMK device locked',
+            name: 'HardwareWalletError',
+            code: ErrorCode.AuthenticationDeviceLocked,
+            severity: Severity.Err,
+            category: Category.Authentication,
+            userMessage: 'Please unlock your Ledger device to continue.',
+            metadata: { walletType: HardwareWalletType.Ledger },
+            stack: 'serialized stack trace',
+          },
+        },
+      };
+
+      const result = toHardwareWalletError(
+        serializedRpcError,
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.AuthenticationDeviceLocked);
+      expect(result.message).toBe('DMK device locked');
+    });
+
     it('uses explicit code from KeyringControllerError cause when available', () => {
       const error = Object.assign(
         Object.create(KeyringControllerError.prototype),
