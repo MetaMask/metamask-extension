@@ -57,18 +57,20 @@ async function keyringTypeForAccount(
  * @param address - Account address (e.g. request.from or transactionMeta.txParams?.from).
  * @param keyringSource - A KeyringController instance, a function that returns
  * it, or a messenger that can call `KeyringController:getKeyringForAccount`.
- * @returns True if the account supports 7702 (or address is missing / lookup fails; assume supported).
+ * @param fallbackOnError - Whether to assume support when the keyring lookup fails.
+ * @returns True if the account supports 7702, or when the address is missing / lookup fails and fallbackOnError is true.
  */
 export async function accountSupports7702(
   address: string | undefined,
   keyringSource: KeyringSource,
+  fallbackOnError = true,
 ): Promise<boolean> {
   if (!address) {
     return true;
   }
   const keyringType = await keyringTypeForAccount(address, keyringSource);
   if (keyringType === undefined) {
-    return true;
+    return fallbackOnError;
   }
   return KEYRING_TYPES_SUPPORTING_7702.includes(keyringType as never);
 }
