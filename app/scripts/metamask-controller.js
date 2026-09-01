@@ -185,6 +185,7 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-flags';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
+import { accountSupports7702 } from './lib/account-supports-7702';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -7090,12 +7091,27 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} request - The request object
    * @param {string} request.address - The account address
    * @param {string} request.chainId - The chain ID to check
-   * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>}
+   * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>} Whether the account can be upgraded and, if so, the contract address it should delegate to.
    */
   async isEip7702Supported(request) {
     const { address, chainId } = request;
     const normalizedAccount = address;
 
+    // Accounts whose keyring cannot sign EIP-7702 authorizations (e.g.
+    // hardware and snap keyrings) can never be upgraded. Fail closed on
+    // lookup errors so callers do not attempt an upgrade that must fail.
+    if (
+      !(await accountSupports7702(
+        normalizedAccount,
+        this.keyringController,
+        false,
+      ))
+    ) {
+      return { isSupported: false, upgradeContractAddress: null };
+    }
+
+    // Although this method is named for atomic batch support, it also checks
+    // the LaunchDarkly flag used to enable the EIP-7702/7715 flow.
     const atomicBatchSupport = await this.txController.isAtomicBatchSupported({
       address: normalizedAccount,
       chainIds: [chainId],
