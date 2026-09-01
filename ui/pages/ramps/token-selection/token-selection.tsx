@@ -6,6 +6,8 @@ import { Box, TextButton, TextButtonSize } from '@metamask/design-system-react';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
+import { useRampsAnalytics } from '../../../hooks/ramps/useRampsAnalytics';
+import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import { ScrollContainer } from '../../../contexts/scroll-container';
@@ -66,8 +68,11 @@ export function RampsTokenSelectionScreen() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { goToBuy } = useRampsNavigation();
+  const { trackTokenSelected } = useRampsAnalytics();
   const { topTokens, allTokens, isLoading, error } =
     useRampsTokenSelectionData();
+
+  useRampsScreenViewed('Token Selection');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedChainId, setSelectedChainId] = useState<string | null>(null);
@@ -110,12 +115,22 @@ export function RampsTokenSelectionScreen() {
         return;
       }
 
+      // currencyDestination is the full CAIP-19 assetId (matching mobile's
+      // `ramps-token-selected` emission — same value as tokenCaip19).
+      trackTokenSelected({
+        tokenCaip19: asset.assetId,
+        tokenSymbol: asset.symbol,
+        currencyDestination: asset.assetId,
+        currencyDestinationSymbol: asset.symbol,
+        currencyDestinationNetwork: asset.networkName,
+      });
+
       goToBuy({
         assetId: asset.assetId as CaipAssetType,
         chainId: asset.chainId as Hex | undefined,
       }).catch(() => undefined);
     },
-    [goToBuy],
+    [goToBuy, trackTokenSelected],
   );
 
   const handleExpandTokens = useCallback(() => {

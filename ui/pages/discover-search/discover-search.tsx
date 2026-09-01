@@ -9,7 +9,11 @@ import { useSelector } from 'react-redux';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import type { TrendingAsset } from '@metamask/assets-controllers';
 import type { PerpsMarketData } from '@metamask/perps-controller';
-import type { Json } from '@metamask/utils';
+import {
+  isCaipAssetType,
+  type CaipAssetType,
+  type Json,
+} from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
@@ -25,10 +29,10 @@ import {
   TextFieldSearch,
   TextVariant,
 } from '@metamask/design-system-react';
-import { isCaipAssetType } from '@metamask/utils';
 
 import { MarketRow } from '../../components/app/perps/market-row';
 import { Tab, Tabs } from '../../components/ui/tabs';
+import { toast, ToastContent } from '../../components/ui/toast/toast';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { ScrollContainer } from '../../contexts/scroll-container';
 import {
@@ -38,6 +42,7 @@ import {
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { DISCOVER_SEARCH_PREVIEW_COUNT } from '../../hooks/discover-search/constants';
 import { getDiscoverViewMoreAction } from '../../hooks/discover-search/get-discover-view-more-action';
+import { useEnableFeaturedEvmNetwork } from '../../hooks/useEnableFeaturedEvmNetwork';
 import { useDiscoverSearch } from '../../hooks/discover-search/useDiscoverSearch';
 import type {
   DiscoverSearchSectionId,
@@ -84,21 +89,16 @@ const DiscoverSearchErrorState = () => {
 type DiscoverSearchEmptyStateProps = {
   noResultsMessage: string;
   query: string;
+  onAssetPress: (assetId: CaipAssetType) => void;
 };
 
 const DiscoverSearchEmptyState = ({
   noResultsMessage,
   query,
+  onAssetPress,
 }: DiscoverSearchEmptyStateProps) => {
-  const navigate = useNavigate();
-
   if (query) {
-    return (
-      <DiscoverNoResultsState
-        query={query}
-        onAssetPress={(assetId) => navigate(buildAssetRoutePath(assetId))}
-      />
-    );
+    return <DiscoverNoResultsState query={query} onAssetPress={onAssetPress} />;
   }
 
   return <EmptyState message={noResultsMessage} />;
@@ -188,6 +188,7 @@ export const DiscoverSearchPage = () => {
   const { createEventBuilder, trackEvent } = useAnalytics();
   const [searchParams, setSearchParams] = useSearchParams();
   const runCloseTransition = useGlobalMenuRouteTransition();
+  const enableFeaturedEvmNetwork = useEnableFeaturedEvmNetwork();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const trackedSearchKey = useRef<string | null>(null);
   const pendingTabSwitch = useRef<PendingTabSwitch | null>(null);
@@ -314,7 +315,7 @@ export const DiscoverSearchPage = () => {
   );
 
   const handleAssetPress = useCallback(
-    (
+    async (
       asset: TrendingAsset,
       section: DiscoverSearchSectionId,
       position: number,
@@ -339,10 +340,43 @@ export const DiscoverSearchPage = () => {
         result_count: getResultCount(activeTab),
       });
       if (isCaipAssetType(asset.assetId)) {
+        const addedNetwork = await enableFeaturedEvmNetwork(asset.assetId);
         navigate(buildAssetRoutePath(asset.assetId));
+        if (addedNetwork) {
+          toast.success(
+            <ToastContent
+              title={t('newNetworkAdded', [addedNetwork.name])}
+              dataTestId="discover-network-added-success-toast"
+            />,
+          );
+        }
       }
     },
-    [activeTab, getResultCount, navigate, searchQuery, trackExploreSearchEvent],
+    [
+      activeTab,
+      enableFeaturedEvmNetwork,
+      getResultCount,
+      navigate,
+      searchQuery,
+      t,
+      trackExploreSearchEvent,
+    ],
+  );
+
+  const handlePopularAssetPress = useCallback(
+    async (assetId: CaipAssetType) => {
+      const addedNetwork = await enableFeaturedEvmNetwork(assetId);
+      navigate(buildAssetRoutePath(assetId));
+      if (addedNetwork) {
+        toast.success(
+          <ToastContent
+            title={t('newNetworkAdded', [addedNetwork.name])}
+            dataTestId="discover-network-added-success-toast"
+          />,
+        );
+      }
+    },
+    [enableFeaturedEvmNetwork, navigate, t],
   );
 
   const handlePerpsPress = useCallback(
@@ -656,6 +690,7 @@ export const DiscoverSearchPage = () => {
         <DiscoverSearchEmptyState
           noResultsMessage={noResultsMessage}
           query={trimmedSearchQuery}
+          onAssetPress={handlePopularAssetPress}
         />
       );
     }
@@ -693,6 +728,7 @@ export const DiscoverSearchPage = () => {
         <DiscoverSearchEmptyState
           noResultsMessage={noResultsMessage}
           query={trimmedSearchQuery}
+          onAssetPress={handlePopularAssetPress}
         />
       );
     }
@@ -735,6 +771,7 @@ export const DiscoverSearchPage = () => {
         <DiscoverSearchEmptyState
           noResultsMessage={noResultsMessage}
           query={trimmedSearchQuery}
+          onAssetPress={handlePopularAssetPress}
         />
       );
     }

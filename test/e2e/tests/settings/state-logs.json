@@ -156,69 +156,12 @@
       "*": "string"
     },
     "accountsAssets": {
-      "<solana-account-1>": ["string"],
-      "<bitcoin-account-1>": ["string"],
-      "<tron-account-1>": ["string"]
+      "*": "array"
     },
     "accountState": "null",
     "accountsByChainId": {
-      "0x1": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0x18c7": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0x2105": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0x279f": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0x38": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0x539": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0x89": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0xa": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0xa4b1": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0xaa36a7": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0xe705": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
-        }
-      },
-      "0xe708": {
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+      "*": {
+        "*": {
           "balance": "string"
         }
       }
@@ -317,150 +260,7 @@
       }
     },
     "assetsMetadata": {
-      "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      },
-      "tron:728126428/slip44:195": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      },
-      "tron:728126428/slip44:195-staked-for-bandwidth": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      },
-      "tron:728126428/slip44:195-staked-for-energy": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      },
-      "tron:728126428/slip44:195-ready-for-withdrawal": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      },
-      "tron:728126428/slip44:195-in-lock-period": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      },
-      "tron:728126428/slip44:195-staking-rewards": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      },
-      "tron:728126428/slip44:energy": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      },
-      "tron:728126428/slip44:maximum-energy": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      },
-      "tron:728126428/slip44:bandwidth": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      },
-      "tron:728126428/slip44:maximum-bandwidth": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      },
-      "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+      "*": {
         "name": "string",
         "symbol": "string",
         "fungible": "boolean",
@@ -488,136 +288,8 @@
       }
     },
     "balances": {
-      "<solana-account-1>": {
-        "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
-          "unit": "string",
-          "amount": "string"
-        }
-      },
-      "<tron-account-1>": {
-        "tron:728126428/slip44:195": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:3448148188/slip44:195": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:2494104990/slip44:195": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:728126428/slip44:195-staked-for-bandwidth": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:3448148188/slip44:195-staked-for-bandwidth": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:2494104990/slip44:195-staked-for-bandwidth": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:728126428/slip44:195-staked-for-energy": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:3448148188/slip44:195-staked-for-energy": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:2494104990/slip44:195-staked-for-energy": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:728126428/slip44:195-ready-for-withdrawal": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:3448148188/slip44:195-ready-for-withdrawal": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:2494104990/slip44:195-ready-for-withdrawal": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:728126428/slip44:195-staking-rewards": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:3448148188/slip44:195-staking-rewards": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:2494104990/slip44:195-staking-rewards": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:728126428/slip44:195-in-lock-period": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:3448148188/slip44:195-in-lock-period": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:2494104990/slip44:195-in-lock-period": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:728126428/slip44:energy": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:3448148188/slip44:energy": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:2494104990/slip44:energy": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:728126428/slip44:maximum-energy": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:3448148188/slip44:maximum-energy": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:2494104990/slip44:maximum-energy": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:728126428/slip44:bandwidth": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:3448148188/slip44:bandwidth": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:2494104990/slip44:bandwidth": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:728126428/slip44:maximum-bandwidth": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:3448148188/slip44:maximum-bandwidth": {
-          "unit": "string",
-          "amount": "string"
-        },
-        "tron:2494104990/slip44:maximum-bandwidth": {
-          "unit": "string",
-          "amount": "string"
-        }
-      },
-      "<bitcoin-account-1>": {
-        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+      "*": {
+        "*": {
           "unit": "string",
           "amount": "string"
         }
@@ -763,51 +435,6 @@
       "eip155:137": "string",
       "eip155:6343": "string"
     },
-    "ensEntries": {
-      "0x1": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      },
-      "0x3": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      },
-      "0x4": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      },
-      "0x4268": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      },
-      "0x5": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      },
-      "0xaa36a7": {
-        ".": {
-          "address": "string",
-          "chainId": "string",
-          "ensName": "string"
-        }
-      }
-    },
-    "ensResolutionsByAddress": {},
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
@@ -1197,9 +824,8 @@
     "needsProfilePairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
-    "networkConnectionBanner": {
-      "status": "string"
-    },
+    "networkConnectionBannerNetwork": "null",
+    "networkConnectionBannerStatus": "string",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": {
@@ -1300,7 +926,13 @@
       "orderBookExpanded": "boolean",
       "chartExpanded": "boolean",
       "orderBookPosition": "string",
-      "orderFormPosition": "string"
+      "orderFormPosition": "string",
+      "positionsSideFilter": "string",
+      "positionsSortField": "string",
+      "positionsSortDirection": "string",
+      "ordersSideFilter": "string",
+      "ordersSortField": "string",
+      "ordersSortDirection": "string"
     },
     "proofBackfillEnqueued": "boolean",
     "providerAutoSelected": "boolean",
@@ -1343,7 +975,8 @@
     "referrals": {
       "asterdex": {},
       "gmx": {},
-      "hyperliquid": {}
+      "hyperliquid": {},
+      "variational": {}
     },
     "region": "string",
     "requests": {
@@ -1625,6 +1258,9 @@
     "withdrawalRequests": [],
     "web3ShimUsageOrigins": {},
     "verifiedSnaps": {}
+  },
+  "moneyBalance": {
+    "lastKnownBalance": "null"
   },
   "perpsTutorial": {
     "tutorialModalOpen": "boolean",
