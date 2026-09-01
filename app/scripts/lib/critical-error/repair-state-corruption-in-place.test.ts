@@ -18,9 +18,23 @@ describe('repairStateCorruptionInPlace', () => {
   const setGlobalInitializers = jest.fn();
   const setRestoreFlowType = jest.fn();
   const tryPostMessage = jest.fn().mockReturnValue(true);
+  let callOrder: string[];
 
   beforeEach(() => {
     jest.clearAllMocks();
+    callOrder = [];
+    setGlobalInitializers.mockImplementation(() => {
+      callOrder.push('setGlobalInitializers');
+    });
+    persistenceManager.reset.mockImplementation(async () => {
+      callOrder.push('reset');
+    });
+    initBackground.mockImplementation(async () => {
+      callOrder.push('initBackground');
+    });
+    backgroundIsInitialized.mockImplementation(async () => {
+      callOrder.push('backgroundIsInitialized');
+    });
   });
 
   it('recovers from backup in place and reloads connected UI windows', async () => {
@@ -43,16 +57,19 @@ describe('repairStateCorruptionInPlace', () => {
       tryPostMessage,
     });
 
-    expect(setGlobalInitializers).toHaveBeenCalledTimes(1);
+    expect(callOrder).toEqual([
+      'setGlobalInitializers',
+      'initBackground',
+      'backgroundIsInitialized',
+    ]);
     expect(initBackground).toHaveBeenCalledWith(backup);
-    expect(backgroundIsInitialized).toHaveBeenCalledTimes(1);
     expect(setRestoreFlowType).toHaveBeenCalledTimes(1);
     expect(persistenceManager.reset).not.toHaveBeenCalled();
     expect(tryPostMessage).toHaveBeenCalledWith(port1, RELOAD_WINDOW);
     expect(tryPostMessage).toHaveBeenCalledWith(port2, RELOAD_WINDOW);
   });
 
-  it('resets persistence in place and reloads connected UI windows', async () => {
+  it('resets persistence before replacing the initializer', async () => {
     const port = createMockPort();
     const connectedPorts = new Set([port]);
 
@@ -68,10 +85,13 @@ describe('repairStateCorruptionInPlace', () => {
       tryPostMessage,
     });
 
-    expect(setGlobalInitializers).toHaveBeenCalledTimes(1);
-    expect(persistenceManager.reset).toHaveBeenCalledTimes(1);
+    expect(callOrder).toEqual([
+      'reset',
+      'setGlobalInitializers',
+      'initBackground',
+      'backgroundIsInitialized',
+    ]);
     expect(initBackground).toHaveBeenCalledWith(null);
-    expect(backgroundIsInitialized).toHaveBeenCalledTimes(1);
     expect(setRestoreFlowType).not.toHaveBeenCalled();
     expect(tryPostMessage).toHaveBeenCalledWith(port, RELOAD_WINDOW);
   });
@@ -94,6 +114,7 @@ describe('repairStateCorruptionInPlace', () => {
       }),
     ).rejects.toThrow('Unexpected state corruption repair action');
 
+    expect(setGlobalInitializers).not.toHaveBeenCalled();
     expect(initBackground).not.toHaveBeenCalled();
     expect(tryPostMessage).not.toHaveBeenCalled();
   });
@@ -108,7 +129,10 @@ describe('repairStateCorruptionInPlace', () => {
     const initError = new Error('init failed');
     // Real initBackground catches initialize errors and rejects isInitialized
     // instead of throwing, so this mock models backgroundIsInitialized rejecting.
-    backgroundIsInitialized.mockRejectedValueOnce(initError);
+    backgroundIsInitialized.mockImplementation(async () => {
+      callOrder.push('backgroundIsInitialized');
+      throw initError;
+    });
 
     await expect(
       repairStateCorruptionInPlace({
@@ -130,11 +154,14 @@ describe('repairStateCorruptionInPlace', () => {
     expect(tryPostMessage).toHaveBeenCalledWith(port2, RELOAD_WINDOW);
   });
 
-  it('reloads connected UI windows when reset fails', async () => {
+  it('does not replace the initializer when reset fails', async () => {
     const port = createMockPort();
     const connectedPorts = new Set([port]);
     const resetError = new Error('reset failed');
-    persistenceManager.reset.mockRejectedValueOnce(resetError);
+    persistenceManager.reset.mockImplementation(async () => {
+      callOrder.push('reset');
+      throw resetError;
+    });
 
     await expect(
       repairStateCorruptionInPlace({
@@ -150,6 +177,8 @@ describe('repairStateCorruptionInPlace', () => {
       }),
     ).rejects.toThrow(resetError);
 
+    expect(callOrder).toEqual(['reset']);
+    expect(setGlobalInitializers).not.toHaveBeenCalled();
     expect(initBackground).not.toHaveBeenCalled();
     expect(tryPostMessage).toHaveBeenCalledWith(port, RELOAD_WINDOW);
   });

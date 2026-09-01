@@ -31,8 +31,12 @@ export type RepairStateCorruptionInPlaceOptions = {
 /**
  * Repairs state corruption in the current service worker without reloading the
  * extension. Re-initializes the background from backup or reset state, then asks
- * connected UI ports to reload their window. The UI reload always runs, even when
- * repair fails, so the user is not left on an error screen with no repair listeners.
+ * connected UI ports to reload their window. The UI reload always runs after a
+ * repair attempt starts, even when initialization fails, so the user is not left
+ * on the error screen with no repair listeners.
+ *
+ * Reset persistence work runs before replacing the initializer so a failed
+ * reset does not replace `isInitialized` with a promise that never settles.
  *
  * @param options - Repair dependencies and context.
  * @param options.repairAction
@@ -56,27 +60,29 @@ export async function repairStateCorruptionInPlace({
   setRestoreFlowType,
   tryPostMessage,
 }: RepairStateCorruptionInPlaceOptions): Promise<void> {
-  setGlobalInitializers();
+  const canRecover =
+    repairAction === CriticalErrorRepairAction.Recover && hasVault(backup);
+  const shouldReset = repairAction === CriticalErrorRepairAction.Reset;
 
   try {
-    if (
-      repairAction === CriticalErrorRepairAction.Recover &&
-      hasVault(backup)
-    ) {
-      await initBackground(backup);
-      await backgroundIsInitialized();
-      setRestoreFlowType();
-    } else if (repairAction === CriticalErrorRepairAction.Reset) {
-      await persistenceManager.reset();
-      await initBackground(null);
-      await backgroundIsInitialized();
-    } else {
+    if (!canRecover && !shouldReset) {
       throw new Error(
         `Unexpected state corruption repair action: ${repairAction}`,
       );
     }
+
+    if (shouldReset) {
+      await persistenceManager.reset();
+    }
+
+    setGlobalInitializers();
+    await initBackground(canRecover ? backup : null);
+    await backgroundIsInitialized();
+    if (canRecover) {
+      setRestoreFlowType();
+    }
   } finally {
-    // Always reload UI windows, including when repair fails. Listeners were
+    // Always reload UI windows after a repair attempt starts. Listeners were
     // already removed before this runs, so without a reload the user would be
     // stuck on the error screen unable to retry.
     for (const connectedPort of connectedPorts) {
