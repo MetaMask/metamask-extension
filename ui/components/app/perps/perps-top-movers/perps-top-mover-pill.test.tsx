@@ -22,72 +22,51 @@ const createMarket = (
     ...overrides,
   }) as PerpsMarketData;
 
-describe('PerpsTopMoverPill', () => {
-  const onPress = jest.fn();
+const onPress = jest.fn();
 
+const renderPill = (overrides: Partial<PerpsMarketData> = {}) =>
+  renderWithProvider(
+    <PerpsTopMoverPill market={createMarket(overrides)} onPress={onPress} />,
+    mockStore,
+  );
+
+describe('PerpsTopMoverPill', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('renders the pill for the market', () => {
-    renderWithProvider(
-      <PerpsTopMoverPill market={createMarket()} onPress={onPress} />,
-      mockStore,
-    );
+    renderPill();
 
     expect(screen.getByTestId('perps-top-movers-pill-BTC')).toBeInTheDocument();
   });
 
   it('displays the ticker', () => {
-    renderWithProvider(
-      <PerpsTopMoverPill market={createMarket()} onPress={onPress} />,
-      mockStore,
-    );
+    renderPill();
 
     expect(screen.getByText('BTC')).toBeInTheDocument();
   });
 
   it('displays the signed 24h change', () => {
-    renderWithProvider(
-      <PerpsTopMoverPill market={createMarket()} onPress={onPress} />,
-      mockStore,
-    );
+    renderPill();
 
     expect(screen.getByText('+2.84%')).toBeInTheDocument();
   });
 
   it('signs a positive change that arrives without a sign', () => {
-    renderWithProvider(
-      <PerpsTopMoverPill
-        market={createMarket({ change24hPercent: '2.84%' })}
-        onPress={onPress}
-      />,
-      mockStore,
-    );
+    renderPill({ change24hPercent: '2.84%' });
 
     expect(screen.getByText('+2.84%')).toBeInTheDocument();
   });
 
   it('displays a negative change unchanged', () => {
-    renderWithProvider(
-      <PerpsTopMoverPill
-        market={createMarket({ change24hPercent: '-4.10%' })}
-        onPress={onPress}
-      />,
-      mockStore,
-    );
+    renderPill({ change24hPercent: '-4.10%' });
 
     expect(screen.getByText('-4.10%')).toBeInTheDocument();
   });
 
   it('strips the provider prefix from a HIP-3 ticker', () => {
-    renderWithProvider(
-      <PerpsTopMoverPill
-        market={createMarket({ symbol: 'xyz:TSLA', name: 'Tesla' })}
-        onPress={onPress}
-      />,
-      mockStore,
-    );
+    renderPill({ symbol: 'xyz:TSLA', name: 'Tesla' });
 
     expect(
       screen.getByTestId('perps-top-movers-pill-xyz-TSLA'),

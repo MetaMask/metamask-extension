@@ -404,67 +404,53 @@ describe('MarketListView', () => {
       });
     });
 
-    it('ranks the list by ascending price change from the query params', async () => {
-      const markets = [
-        { ...mockCryptoMarkets[0], symbol: 'BTC', change24hPercent: '+1.00%' },
-        { ...mockCryptoMarkets[1], symbol: 'ETH', change24hPercent: '+9.00%' },
-        { ...mockCryptoMarkets[2], symbol: 'SOL', change24hPercent: '-4.00%' },
-      ];
-      mockUsePerpsLiveMarketListData.mockReturnValue({
-        markets,
-        isInitialLoading: false,
-        error: null,
-        refresh: jest.fn(),
-      });
+    it.each([
+      ['asc', ['SOL', 'BTC', 'ETH']],
+      ['desc', ['ETH', 'BTC', 'SOL']],
+    ])(
+      'ranks the list by %s price change from the query params',
+      async (queryDirection, expectedOrder) => {
+        mockUsePerpsLiveMarketListData.mockReturnValue({
+          markets: [
+            {
+              ...mockCryptoMarkets[0],
+              symbol: 'BTC',
+              change24hPercent: '+1.00%',
+            },
+            {
+              ...mockCryptoMarkets[1],
+              symbol: 'ETH',
+              change24hPercent: '+9.00%',
+            },
+            {
+              ...mockCryptoMarkets[2],
+              symbol: 'SOL',
+              change24hPercent: '-4.00%',
+            },
+          ],
+          isInitialLoading: false,
+          error: null,
+          refresh: jest.fn(),
+        });
 
-      renderWithProvider(
-        <MarketListView />,
-        mockStore,
-        '/perps/market-list?sort=priceChange&direction=asc',
-      );
-
-      await waitFor(() => {
-        expect(screen.getByTestId('sort-dropdown-button')).toHaveTextContent(
-          messages.perpsSortByPriceChange.message,
+        renderWithProvider(
+          <MarketListView />,
+          mockStore,
+          `/perps/market-list?sort=priceChange&direction=${queryDirection}`,
         );
-      });
-      expect(
-        screen
-          .getAllByTestId(/^market-row-/u)
-          .map((row) => row.dataset.testid?.replace('market-row-', '')),
-      ).toStrictEqual(['SOL', 'BTC', 'ETH']);
-    });
 
-    it('ranks the list by descending price change from the query params', async () => {
-      const markets = [
-        { ...mockCryptoMarkets[0], symbol: 'BTC', change24hPercent: '+1.00%' },
-        { ...mockCryptoMarkets[1], symbol: 'ETH', change24hPercent: '+9.00%' },
-        { ...mockCryptoMarkets[2], symbol: 'SOL', change24hPercent: '-4.00%' },
-      ];
-      mockUsePerpsLiveMarketListData.mockReturnValue({
-        markets,
-        isInitialLoading: false,
-        error: null,
-        refresh: jest.fn(),
-      });
-
-      renderWithProvider(
-        <MarketListView />,
-        mockStore,
-        '/perps/market-list?sort=priceChange&direction=desc',
-      );
-
-      await waitFor(() => {
-        expect(screen.getByTestId('sort-dropdown-button')).toHaveTextContent(
-          messages.perpsSortByPriceChange.message,
-        );
-      });
-      expect(
-        screen
-          .getAllByTestId(/^market-row-/u)
-          .map((row) => row.dataset.testid?.replace('market-row-', '')),
-      ).toStrictEqual(['ETH', 'BTC', 'SOL']);
-    });
+        await waitFor(() => {
+          expect(screen.getByTestId('sort-dropdown-button')).toHaveTextContent(
+            messages.perpsSortByPriceChange.message,
+          );
+        });
+        expect(
+          screen
+            .getAllByTestId(/^market-row-/u)
+            .map((row) => row.dataset.testid?.replace('market-row-', '')),
+        ).toStrictEqual(expectedOrder);
+      },
+    );
 
     it('falls back to the volume sort when the query params are unknown', async () => {
       renderWithProvider(

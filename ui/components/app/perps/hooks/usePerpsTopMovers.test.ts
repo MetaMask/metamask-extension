@@ -35,25 +35,19 @@ const renderTopMovers = (
   );
 
 describe('usePerpsTopMovers', () => {
-  it('ranks the biggest risers first when direction is desc', () => {
-    const { result } = renderTopMovers(MARKETS, 'desc');
+  it.each([
+    ['desc', ['ETH', 'BTC', 'SOL']],
+    ['asc', ['SOL', 'BTC', 'ETH']],
+  ] as [SortDirection, string[]][])(
+    'ranks markets by 24h change when direction is %s',
+    (direction, expectedOrder) => {
+      const { result } = renderTopMovers(MARKETS, direction);
 
-    expect(result.current.map((market) => market.symbol)).toStrictEqual([
-      'ETH',
-      'BTC',
-      'SOL',
-    ]);
-  });
-
-  it('ranks the biggest fallers first when direction is asc', () => {
-    const { result } = renderTopMovers(MARKETS, 'asc');
-
-    expect(result.current.map((market) => market.symbol)).toStrictEqual([
-      'SOL',
-      'BTC',
-      'ETH',
-    ]);
-  });
+      expect(result.current.map((market) => market.symbol)).toStrictEqual(
+        expectedOrder,
+      );
+    },
+  );
 
   it('caps the ranking at the top movers limit', () => {
     const markets = Array.from(

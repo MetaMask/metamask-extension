@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import {
   ButtonBase,
   Text,
@@ -41,18 +41,10 @@ export const PerpsTopMoverPill = ({
   market,
   onPress,
 }: PerpsTopMoverPillProps) => {
-  const displaySymbol = useMemo(
-    () => getDisplaySymbol(market.symbol),
-    [market.symbol],
-  );
-  const changeLabel = useMemo(
-    () => formatSignedChangePercent(market.change24hPercent),
-    [market.change24hPercent],
-  );
-  const changeColor = useMemo(
-    () => getChangeColor(market.change24hPercent),
-    [market.change24hPercent],
-  );
+  // Plain string derivations over primitives — cheaper to recompute than to memoize.
+  const displaySymbol = getDisplaySymbol(market.symbol);
+  const changeLabel = formatSignedChangePercent(market.change24hPercent);
+  const changeColor = getChangeColor(market.change24hPercent);
 
   const handleClick = useCallback(() => {
     onPress(market);
