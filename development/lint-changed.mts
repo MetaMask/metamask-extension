@@ -8,6 +8,7 @@
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 type LintChangedOptions = {
   fix: boolean;
@@ -97,65 +98,25 @@ function chunkByApproxCommandLength(
   return chunks;
 }
 
-function main(): void {
-  const options = parseArgs(process.argv.slice(2));
-
-  const changedFiles = getChangedFileNames().filter((file) =>
-    JS_TS_TSX_MTS_SNAP_FILE_REGEX.test(file),
-  );
-
-  if (changedFiles.length === 0) {
-    process.stdout.write('No changed JS/TS/TSX/MTS/SNAP files to lint.\n');
-    return;
-  }
-
-  process.stdout.write(`Linting ${changedFiles.length} changed files:\n`);
-  for (const file of changedFiles) {
-    process.stdout.write(`${file}\n`);
-  }
-  process.stdout.write('\n');
-
-  const eslintBin = path.join(
-    process.cwd(),
-    'node_modules',
-    'eslint',
-    'bin',
-    'eslint.js',
-  );
-  if (!fs.existsSync(eslintBin)) {
-    process.stderr.write(
-      `Could not find ESLint at ${eslintBin}. Ensure dependencies are installed (yarn install).\n`,
-    );
-    process.exit(1);
-  }
-
-  const eslintArgsBase = [
-    ...(options.fix ? ['--fix'] : []),
-    '--cache',
-    '--cache-location',
-    path.join('node_modules', '.cache', 'eslint', '.eslint-cache'),
-    '-c',
-    './.eslintrc.js',
-  ];
-
-  const eslintArgsWithDelimiter = [...eslintArgsBase, '--'];
-
+function runToolOnFiles(
+  toolBin: string,
+  toolArgs: string[],
+  files: string[],
+): number {
+  const argsWithDelimiter = [...toolArgs, '--'];
   const baseCommandLength =
     process.execPath.length +
-    eslintBin.length +
-    eslintArgsWithDelimiter.join(' ').length +
+    toolBin.length +
+    argsWithDelimiter.join(' ').length +
     3;
-  const fileChunks = chunkByApproxCommandLength(
-    changedFiles,
-    baseCommandLength,
-  );
+  const fileChunks = chunkByApproxCommandLength(files, baseCommandLength);
 
   let worstExitCode = 0;
 
   for (const fileChunk of fileChunks) {
     const result = spawnSync(
       process.execPath,
-      [eslintBin, ...eslintArgsWithDelimiter, ...fileChunk],
+      [toolBin, ...argsWithDelimiter, ...fileChunk],
       {
         stdio: 'inherit',
       },
@@ -167,9 +128,96 @@ function main(): void {
     }
   }
 
-  if (worstExitCode !== 0) {
-    process.exit(worstExitCode);
+  return worstExitCode;
+}
+
+/**
+ * Formats and lints the JavaScript and TypeScript files changed in the current
+ * working tree.
+ *
+ * @param argv - Command-line arguments. Pass `--fix` to write formatting and
+ * apply ESLint fixes.
+ */
+export function main(argv = process.argv.slice(2)): void {
+  const options = parseArgs(argv);
+
+  const changedFiles = getChangedFileNames().filter((file) =>
+    JS_TS_TSX_MTS_SNAP_FILE_REGEX.test(file),
+  );
+
+  if (changedFiles.length === 0) {
+    process.stdout.write('No changed JS/TS/TSX/MTS/SNAP files to lint.\n');
+    return;
+  }
+
+  process.stdout.write(
+    `Formatting and linting ${changedFiles.length} changed files:\n`,
+  );
+  for (const file of changedFiles) {
+    process.stdout.write(`${file}\n`);
+  }
+  process.stdout.write('\n');
+
+  const oxfmtBin = path.join(
+    process.cwd(),
+    'node_modules',
+    'oxfmt',
+    'bin',
+    'oxfmt',
+  );
+  const eslintBin = path.join(
+    process.cwd(),
+    'node_modules',
+    'eslint',
+    'bin',
+    'eslint.js',
+  );
+  if (!fs.existsSync(oxfmtBin)) {
+    process.stderr.write(
+      `Could not find oxfmt at ${oxfmtBin}. Ensure dependencies are installed (yarn install).\n`,
+    );
+    process.exit(1);
+  }
+  if (!fs.existsSync(eslintBin)) {
+    process.stderr.write(
+      `Could not find ESLint at ${eslintBin}. Ensure dependencies are installed (yarn install).\n`,
+    );
+    process.exit(1);
+  }
+
+  const oxfmtExitCode = runToolOnFiles(
+    oxfmtBin,
+    [
+      '-c',
+      'oxfmt.config.mts',
+      ...(options.fix ? [] : ['--check']),
+      '--no-error-on-unmatched-pattern',
+    ],
+    changedFiles,
+  );
+  if (oxfmtExitCode !== 0) {
+    process.exit(oxfmtExitCode);
+  }
+
+  const eslintArgsBase = [
+    ...(options.fix ? ['--fix'] : []),
+    '--cache',
+    '--cache-location',
+    path.join('node_modules', '.cache', 'eslint', '.eslint-cache'),
+    '-c',
+    './.eslintrc.js',
+  ];
+
+  const eslintExitCode = runToolOnFiles(
+    eslintBin,
+    eslintArgsBase,
+    changedFiles,
+  );
+  if (eslintExitCode !== 0) {
+    process.exit(eslintExitCode);
   }
 }
 
-main();
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main();
+}
