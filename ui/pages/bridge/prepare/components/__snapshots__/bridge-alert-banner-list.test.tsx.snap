@@ -47,7 +47,7 @@ exports[`BridgeAlertBannerList price-data-unavailable banner renders the banner 
 
 exports[`BridgeAlertBannerList should render the insufficient-gas alert when insufficient gas 1`] = `
 [
-  "More ETH needed for gasYou don't have enough ETH to pay the gas fee for this bridge. Enter a smaller amount or buy more ETH.Buy more ETH",
+  "More ETH needed for gasYou don't have enough ETH to pay the network fee for this bridge. Enter a smaller amount or buy more ETH.Buy more ETH",
 ]
 `;
 
@@ -84,7 +84,7 @@ exports[`BridgeAlertBannerList should render the insufficient-gas alert when ins
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
         >
-          You don't have enough ETH to pay the gas fee for this bridge. Enter a smaller amount or buy more ETH.
+          You don't have enough ETH to pay the network fee for this bridge. Enter a smaller amount or buy more ETH.
         </p>
       </div>
       <div
