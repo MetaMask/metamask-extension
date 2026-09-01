@@ -41,8 +41,8 @@ describe('money account payment override helpers', () => {
       } as never);
 
       expect(setPaymentOverrideMock).toHaveBeenCalledWith('tx-2', {
-        paymentOverride: PaymentOverride.MoneyAccount,
         atomic: false,
+        paymentOverride: PaymentOverride.MoneyAccount,
       });
     });
   });

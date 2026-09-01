@@ -18,7 +18,7 @@ import {
 } from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
-import { useCachedMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat';
+import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -70,7 +70,7 @@ export function usePayWithToken(): PayWithToken {
   const isMoneyAccountSelected =
     paymentOverride === PaymentOverride.MoneyAccount ||
     (isDefaultMoneyAccount && !payToken);
-  const { withdrawableFiatFormatted } = useCachedMoneyAccountWithdrawableFiat(
+  const { withdrawableFiatFormatted } = useMoneyAccountWithdrawableFiat(
     isMoneyAccountSelected,
   );
 

@@ -1,19 +1,15 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import BigNumber from 'bignumber.js';
 import { useQuery } from '@metamask/react-data-query';
-import { MUSD_DECIMALS } from '@metamask/money-account-utils';
 import type { CanonicalMoneyAccountBalanceResponse } from '@metamask/money-account-balance-service';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
-import { moneyFormatUsd } from '../../helpers/money/format';
+import { projectWithdrawableFiat } from '../../helpers/money/withdrawable-balance';
 import { selectPrimaryMoneyAccount } from '../../selectors/money-account';
-
-const MUSD_UNIT = 10 ** MUSD_DECIMALS;
 
 const DEFAULT_REFETCH_INTERVAL = 30 * 1000;
 
 /**
- * Inert query key used when the caller does not need money-account balance.
+ * Disabled query key used when the caller does not need money-account balance.
  * Deliberately not a `DATA_SERVICES` name so the query client does not open a
  * background messenger subscription for it.
  */
@@ -25,30 +21,34 @@ const DISABLED_QUERY_KEY = 'money-account-withdrawable-fiat:disabled';
  * false — and this hook runs for every confirmation via pay/alert surfaces.
  */
 function disabledWithdrawableFiatQueryFn(): never {
-  throw new Error('money-account-withdrawable-fiat is cache-only');
+  throw new Error(
+    'disabled money-account withdrawable-fiat query executed unexpectedly',
+  );
 }
 
-export type CachedMoneyAccountWithdrawableFiat = {
-  withdrawableFiatRaw: string | undefined;
+export type MoneyAccountWithdrawableFiat = {
   withdrawableFiatFormatted: string | undefined;
+  withdrawableFiatRaw: string | undefined;
 };
 
 /**
- * Withdrawable money-account fiat for confirmation surfaces that cannot use
- * `useMoneyAccountBalance` (that hook needs a money-account route messenger).
+ * Live withdrawable money-account fiat for confirmation surfaces that cannot
+ * use `useMoneyAccountBalance` (that hook needs a money-account route
+ * messenger).
  *
- * When `isActive`, this fetches the same
- * `fetchBalanceWithFallback` query money home writes. Perps deposit never
- * visits money home first, so cache-only reads left the Pay-with row and
- * modal blank. A dummy query key is used when inactive so unrelated
- * confirmations (typed-sign, etc.) do not open a data-service subscription.
+ * When `isActive`, this fetches and periodically refetches the same
+ * `fetchBalanceWithFallback` query money home writes. When inactive, a
+ * disabled query key is used so unrelated confirmations (typed-sign, etc.) do
+ * not open a data-service subscription.
  *
- * @param isActive - When false, uses a dummy query key and returns undefined.
- * @returns Withdrawable fiat, or undefined when inactive / unavailable.
+ * @param isActive - When false, disables the query and returns both fields as
+ * `undefined`.
+ * @returns Always an object. When inactive, loading, errored, or missing data,
+ * both `withdrawableFiatFormatted` and `withdrawableFiatRaw` are `undefined`.
  */
-export function useCachedMoneyAccountWithdrawableFiat(
+export function useMoneyAccountWithdrawableFiat(
   isActive: boolean,
-): CachedMoneyAccountWithdrawableFiat {
+): MoneyAccountWithdrawableFiat {
   const primaryMoneyAccount = useSelector(selectPrimaryMoneyAccount);
   const address = primaryMoneyAccount?.address;
   const shouldFetch = Boolean(isActive && address);
@@ -62,7 +62,7 @@ export function useCachedMoneyAccountWithdrawableFiat(
       : [DISABLED_QUERY_KEY],
     enabled: shouldFetch,
     refetchInterval: shouldFetch ? DEFAULT_REFETCH_INTERVAL : false,
-    // Only the dummy key needs a queryFn. The fetch key is owned by
+    // Only the disabled key needs a queryFn. The fetch key is owned by
     // DATA_SERVICES; attaching a local queryFn would overwrite that handler.
     ...(shouldFetch ? {} : { queryFn: disabledWithdrawableFiatQueryFn }),
   });
@@ -75,19 +75,12 @@ export function useCachedMoneyAccountWithdrawableFiat(
       !moneyBalanceQuery.data?.vmusdValueInMusd
     ) {
       return {
-        withdrawableFiatRaw: undefined,
         withdrawableFiatFormatted: undefined,
+        withdrawableFiatRaw: undefined,
       };
     }
 
-    const withdrawableFiat = new BigNumber(
-      moneyBalanceQuery.data.vmusdValueInMusd,
-    ).dividedBy(MUSD_UNIT);
-
-    return {
-      withdrawableFiatRaw: withdrawableFiat.toString(),
-      withdrawableFiatFormatted: moneyFormatUsd(withdrawableFiat),
-    };
+    return projectWithdrawableFiat(moneyBalanceQuery.data.vmusdValueInMusd);
   }, [
     isActive,
     moneyBalanceQuery.data,

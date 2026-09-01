@@ -18,7 +18,10 @@ import {
   updateMoneyAccountDepositAmount,
 } from '../lib/money/pay/update-deposit-amount';
 import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
-import type { MoneyPayMessenger } from '../lib/money/pay/pay-context';
+import type {
+  MoneyPayMessenger,
+  PaymentOverrideMessenger,
+} from '../lib/money/pay/pay-context';
 import type {
   MessengerClientInitFunction,
   MessengerClientInitResult,
@@ -57,7 +60,7 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
     getPaymentOverrideData: (paymentOverrideRequest) =>
       getPaymentOverrideData(
         paymentOverrideRequest,
-        initMessenger as MoneyPayMessenger,
+        initMessenger as PaymentOverrideMessenger,
       ),
     getStrategy,
     messenger: controllerMessenger,
@@ -161,27 +164,27 @@ function getApi(
     setTransactionPayPaymentOverride: (
       transactionId: string,
       {
+        atomic,
         paymentOverride,
         refundTo,
-        atomic,
       }: {
+        atomic?: boolean;
         paymentOverride?: PaymentOverride;
         refundTo?: Hex;
-        atomic?: boolean;
       } = {},
     ) => {
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.paymentOverride = paymentOverride;
         if (paymentOverride === undefined) {
-          config.refundTo = undefined;
           config.atomic = undefined;
+          config.refundTo = undefined;
           return;
-        }
-        if (refundTo !== undefined) {
-          config.refundTo = refundTo;
         }
         if (atomic !== undefined) {
           config.atomic = atomic;
+        }
+        if (refundTo !== undefined) {
+          config.refundTo = refundTo;
         }
       });
     },

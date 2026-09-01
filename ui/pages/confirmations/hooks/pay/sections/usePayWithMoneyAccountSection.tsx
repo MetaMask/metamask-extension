@@ -9,7 +9,7 @@ import {
 import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useCachedMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat';
+import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { selectPrimaryMoneyAccount } from '../../../../../selectors/money-account';
 import { useConfirmContext } from '../../../context/confirm';
 import { applyMoneyAccountOverride } from '../../../utils/transaction-pay';
@@ -35,7 +35,7 @@ export function usePayWithMoneyAccountSection({
   const isEnabled = useSelector((state) =>
     selectIsMoneyAccountTransactionEnabled(state, transactionType),
   );
-  const { withdrawableFiatFormatted } = useCachedMoneyAccountWithdrawableFiat(
+  const { withdrawableFiatFormatted } = useMoneyAccountWithdrawableFiat(
     Boolean(isEnabled && primaryMoneyAccount),
   );
 

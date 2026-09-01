@@ -10,7 +10,7 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useCachedMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat';
+import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
@@ -51,7 +51,7 @@ export function useInsufficientPayTokenBalanceAlert({
   );
   const isMoneyPaymentOverride =
     paymentOverride === PaymentOverride.MoneyAccount;
-  const { withdrawableFiatRaw } = useCachedMoneyAccountWithdrawableFiat(
+  const { withdrawableFiatRaw } = useMoneyAccountWithdrawableFiat(
     isMoneyPaymentOverride,
   );
 
@@ -99,12 +99,14 @@ export function useInsufficientPayTokenBalanceAlert({
 
   // Live funding-account balance (USD already reconciles snapshot vs live
   // rate inside `usePayTokenAccountBalance`). Money-account funding uses
-  // withdrawable fiat instead of the selected pay-token wallet balance.
+  // withdrawable fiat instead of the selected pay-token wallet balance;
+  // keep `undefined` while that query is loading or failed so we do not
+  // treat unknown balance as zero and block confirm transiently.
   const { balanceUsd: payTokenBalanceUsd, balanceRaw } =
     usePayTokenAccountBalance();
   const balanceUsd = useMemo(() => {
     if (isMoneyPaymentOverride) {
-      return withdrawableFiatRaw ?? '0';
+      return withdrawableFiatRaw;
     }
     return payTokenBalanceUsd;
   }, [isMoneyPaymentOverride, payTokenBalanceUsd, withdrawableFiatRaw]);
@@ -148,7 +150,11 @@ export function useInsufficientPayTokenBalanceAlert({
   }, [isLoading, totals]);
 
   const isInsufficientForInput = useMemo(
-    () => !isPostQuote && payToken && totalAmountUsd.gt(balanceUsd ?? '0'),
+    () =>
+      !isPostQuote &&
+      payToken &&
+      balanceUsd !== undefined &&
+      totalAmountUsd.gt(balanceUsd),
     [balanceUsd, isPostQuote, payToken, totalAmountUsd],
   );
 
@@ -195,8 +201,9 @@ export function useInsufficientPayTokenBalanceAlert({
       !isMax &&
       !isPostQuote &&
       !isPendingAlert &&
+      balanceUsd !== undefined &&
       totals?.total?.usd !== undefined &&
-      new BigNumber(totals.total.usd).gt(balanceUsd ?? '0'),
+      new BigNumber(totals.total.usd).gt(balanceUsd),
     [
       balanceUsd,
       isMax,

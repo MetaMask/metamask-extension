@@ -267,12 +267,12 @@ export function applyMoneyAccountOverride(
     TransactionType.perpsWithdraw,
     TransactionType.predictWithdraw,
   ]);
-  const isWithdraw = isPostQuoteWithdrawTransaction(transactionMeta);
+  const isPostQuoteWithdraw = isPostQuoteWithdrawTransaction(transactionMeta);
 
   setPaymentOverride(transactionId, {
-    paymentOverride: PaymentOverride.MoneyAccount,
     ...(isPerpsOrPredictWithdraw ? { atomic: false } : {}),
-    ...(!isWithdraw && moneyAccountAddress
+    paymentOverride: PaymentOverride.MoneyAccount,
+    ...(!isPostQuoteWithdraw && moneyAccountAddress
       ? { refundTo: moneyAccountAddress as Hex }
       : {}),
   }).catch((error) => {

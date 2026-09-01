@@ -12,7 +12,7 @@ import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { AlertsName } from '../../../hooks/alerts/constants';
-import { useCachedMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat';
+import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
@@ -29,9 +29,9 @@ jest.mock('../../../context/confirm');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
 jest.mock('../../../../../hooks/useAlerts');
 jest.mock(
-  '../../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat',
+  '../../../../../hooks/money/useMoneyAccountWithdrawableFiat',
   () => ({
-    useCachedMoneyAccountWithdrawableFiat: jest.fn(() => ({
+    useMoneyAccountWithdrawableFiat: jest.fn(() => ({
       withdrawableFiatFormatted: '$12.34',
     })),
   }),
@@ -161,8 +161,8 @@ describe('PayWithRow', () => {
   const useConfirmContextMock = jest.mocked(useConfirmContext);
   const useAlertsMock = jest.mocked(useAlerts);
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
-  const useMoneyAccountBalanceMock = jest.mocked(
-    useCachedMoneyAccountWithdrawableFiat,
+  const useMoneyAccountWithdrawableFiatMock = jest.mocked(
+    useMoneyAccountWithdrawableFiat,
   );
   const getFieldAlertsMock = jest.fn(
     (_field?: string | undefined): { key: string }[] => [],
@@ -175,9 +175,9 @@ describe('PayWithRow', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([]);
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
     getFieldAlertsMock.mockReturnValue([]);
-    useMoneyAccountBalanceMock.mockReturnValue({
-      withdrawableFiatRaw: '12.34',
+    useMoneyAccountWithdrawableFiatMock.mockReturnValue({
       withdrawableFiatFormatted: '$12.34',
+      withdrawableFiatRaw: '12.34',
     });
     useAlertsMock.mockReturnValue({
       getFieldAlerts: getFieldAlertsMock,

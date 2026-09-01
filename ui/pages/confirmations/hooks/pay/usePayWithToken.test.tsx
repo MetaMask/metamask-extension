@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../context/confirm';
 import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import { selectPaymentOverrideByTransactionId } from '../../../../selectors/transactionPayController';
-import { useCachedMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat';
+import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -55,9 +55,9 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   },
 }));
 jest.mock(
-  '../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat',
+  '../../../../hooks/money/useMoneyAccountWithdrawableFiat',
   () => ({
-    useCachedMoneyAccountWithdrawableFiat: jest.fn(),
+    useMoneyAccountWithdrawableFiat: jest.fn(),
   }),
 );
 jest.mock('../../../../hooks/useFiatFormatter', () => ({
@@ -105,8 +105,8 @@ describe('usePayWithToken', () => {
   const useIsMoneyAccountFlagDefaultMock = jest.mocked(
     useIsMoneyAccountFlagDefault,
   );
-  const useMoneyAccountBalanceMock = jest.mocked(
-    useCachedMoneyAccountWithdrawableFiat,
+  const useMoneyAccountWithdrawableFiatMock = jest.mocked(
+    useMoneyAccountWithdrawableFiat,
   );
 
   beforeEach(() => {
@@ -130,9 +130,9 @@ describe('usePayWithToken', () => {
     getInternalAccountByAddressMock.mockReturnValue(ACCOUNT as never);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
-    useMoneyAccountBalanceMock.mockReturnValue({
-      withdrawableFiatRaw: '12.34',
+    useMoneyAccountWithdrawableFiatMock.mockReturnValue({
       withdrawableFiatFormatted: '$12.34',
+      withdrawableFiatRaw: '12.34',
     });
 
     useSelectorMock.mockImplementation(

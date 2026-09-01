@@ -19,13 +19,19 @@ const latestIntentByTransactionId = new Map<string, number>();
  * for zero, negative, or non-numeric input so callers can skip a commit
  * rather than encoding a no-op vault call.
  *
- * Sub-base-unit fractions round **up** (`BigNumber.ROUND_UP`) so the vault
- * call never under-delivers relative to the typed amount.
+ * Sub-base-unit fractions round with `roundingMode` (default
+ * `BigNumber.ROUND_UP`) so vault calls never under-deliver relative to the
+ * typed amount. Use `ROUND_DOWN` when the amount must not exceed a known
+ * balance (e.g. Max against withdrawable funds).
  *
  * @param amountHuman - Exact human-readable mUSD amount.
+ * @param roundingMode - BigNumber rounding mode applied after scaling.
  * @returns The amount in mUSD base units, or `undefined` when unusable.
  */
-export function parseMusdHumanAmount(amountHuman: string): bigint | undefined {
+export function parseMusdHumanAmount(
+  amountHuman: string,
+  roundingMode: BigNumber.RoundingMode = BigNumber.ROUND_UP,
+): bigint | undefined {
   // BigNumber is configured to throw on non-numeric input in this repo.
   let value: BigNumber;
   try {
@@ -38,7 +44,7 @@ export function parseMusdHumanAmount(amountHuman: string): bigint | undefined {
     return undefined;
   }
 
-  const raw = value.times(MUSD_UNIT).round(0, BigNumber.ROUND_UP);
+  const raw = value.times(MUSD_UNIT).round(0, roundingMode);
   if (raw.lte(0)) {
     return undefined;
   }

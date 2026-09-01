@@ -8,7 +8,6 @@ import {
   getTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { getMoneyAccountTransactionType } from '../../utils/confirm';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
@@ -19,11 +18,15 @@ import {
   type PreferredPayToken,
 } from '../../selectors/feature-flags';
 import { type RelayFixedSpreadConfig } from '../../utils/relay-fixed-spread';
-import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
 import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
+import { selectMoneyAccountVaultConfig } from '../../../../selectors/money/money-account-feature-flags';
+import {
+  getMoneyAccountPayToken,
+  type MoneyAccountPayToken,
+} from '../../utils/money-account-pay-token';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useImportPayToken } from './useImportPayToken';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
@@ -63,6 +66,11 @@ export function useAutomaticTransactionPayToken({
   );
   const isMoneyPaymentOverride =
     paymentOverride === PaymentOverride.MoneyAccount;
+  const vaultConfig = useSelector(selectMoneyAccountVaultConfig);
+  const moneyAccountPayToken = useMemo(
+    () => getMoneyAccountPayToken(vaultConfig),
+    [vaultConfig],
+  );
   // Batch txs use top-level type `batch`. Prefer the money-account nested type
   // when present — deposits are `[approve, deposit]`, so plain
   // `getTransactionType` would resolve them to `tokenMethodApprove`.
@@ -144,6 +152,7 @@ export function useAutomaticTransactionPayToken({
         isPostQuoteWithdrawTokenFilterApplied,
         isPostQuoteWithdrawTokenAllowed,
         minimumRequiredTokenBalance,
+        moneyAccountPayToken,
         preferredToken,
         preferredTokensFromFlags,
         relayFixedSpread,
@@ -157,6 +166,7 @@ export function useAutomaticTransactionPayToken({
       isPostQuoteWithdrawTokenFilterApplied,
       isPostQuoteWithdrawTokenAllowed,
       minimumRequiredTokenBalance,
+      moneyAccountPayToken,
       preferredToken,
       preferredTokensFromFlags,
       relayFixedSpread,
@@ -314,6 +324,9 @@ export function useAutomaticTransactionPayToken({
 
   const prevIsMoneyPaymentOverrideRef = useRef(false);
   useEffect(() => {
+    // Only handle the transition *into* Money Account funding. Reselect the
+    // vault pay token (typically Monad mUSD) because a manually chosen token
+    // would otherwise remain selected after the override flips on.
     const prev = prevIsMoneyPaymentOverrideRef.current;
     prevIsMoneyPaymentOverrideRef.current = Boolean(isMoneyPaymentOverride);
 
@@ -342,6 +355,7 @@ function getBestToken({
   isPostQuoteWithdrawTokenFilterApplied,
   isPostQuoteWithdrawTokenAllowed,
   minimumRequiredTokenBalance,
+  moneyAccountPayToken,
   preferredToken,
   preferredTokensFromFlags,
   relayFixedSpread,
@@ -357,6 +371,7 @@ function getBestToken({
     address: string,
   ) => boolean;
   minimumRequiredTokenBalance: number;
+  moneyAccountPayToken: MoneyAccountPayToken;
   preferredToken?: SetPayTokenRequest;
   preferredTokensFromFlags: PreferredPayToken[];
   relayFixedSpread: RelayFixedSpreadConfig;
@@ -375,7 +390,7 @@ function getBestToken({
   }
 
   if (isMoneyPaymentOverride) {
-    return { address: MUSD_TOKEN_ADDRESS, chainId: CHAIN_IDS.MONAD };
+    return moneyAccountPayToken;
   }
 
   // Without a post-quote withdraw allowlist, `preferredToken` is the

@@ -5,7 +5,7 @@ import type { CanonicalMoneyAccountBalanceResponse } from '@metamask/money-accou
 import { DATA_SERVICES } from '../../../shared/constants/data-services';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
 import { selectPrimaryMoneyAccount } from '../../selectors/money-account';
-import { useCachedMoneyAccountWithdrawableFiat } from './useCachedMoneyAccountWithdrawableFiat';
+import { useMoneyAccountWithdrawableFiat } from './useMoneyAccountWithdrawableFiat';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -48,7 +48,7 @@ function mockBalance({
   } as ReturnType<typeof useQuery>);
 }
 
-describe('useCachedMoneyAccountWithdrawableFiat', () => {
+describe('useMoneyAccountWithdrawableFiat', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mockBalance({ vmusdHuman: '12.34' });
@@ -59,7 +59,7 @@ describe('useCachedMoneyAccountWithdrawableFiat', () => {
 
   it('returns withdrawable fiat when active', () => {
     const { result } = renderHook(() =>
-      useCachedMoneyAccountWithdrawableFiat(true),
+      useMoneyAccountWithdrawableFiat(true),
     );
 
     expect(result.current.withdrawableFiatRaw).toBe('12.34');
@@ -79,12 +79,12 @@ describe('useCachedMoneyAccountWithdrawableFiat', () => {
     mockBalance({ isLoading: true });
 
     const { result } = renderHook(() =>
-      useCachedMoneyAccountWithdrawableFiat(true),
+      useMoneyAccountWithdrawableFiat(true),
     );
 
     expect(result.current).toStrictEqual({
-      withdrawableFiatRaw: undefined,
       withdrawableFiatFormatted: undefined,
+      withdrawableFiatRaw: undefined,
     });
   });
 
@@ -92,23 +92,23 @@ describe('useCachedMoneyAccountWithdrawableFiat', () => {
     mockBalance({ isError: true });
 
     const { result } = renderHook(() =>
-      useCachedMoneyAccountWithdrawableFiat(true),
+      useMoneyAccountWithdrawableFiat(true),
     );
 
     expect(result.current).toStrictEqual({
-      withdrawableFiatRaw: undefined,
       withdrawableFiatFormatted: undefined,
+      withdrawableFiatRaw: undefined,
     });
   });
 
   it('does not use a data service query key when inactive', () => {
     const { result } = renderHook(() =>
-      useCachedMoneyAccountWithdrawableFiat(false),
+      useMoneyAccountWithdrawableFiat(false),
     );
 
     expect(result.current).toStrictEqual({
-      withdrawableFiatRaw: undefined,
       withdrawableFiatFormatted: undefined,
+      withdrawableFiatRaw: undefined,
     });
 
     expect(useQueryMock).toHaveBeenCalledWith(

@@ -3,7 +3,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../../context/confirm';
-import { useCachedMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat';
+import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { applyMoneyAccountOverride } from '../../../utils/transaction-pay';
 import {
   PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID,
@@ -27,9 +27,9 @@ jest.mock('../../../../../hooks/useI18nContext', () => ({
   },
 }));
 jest.mock(
-  '../../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat',
+  '../../../../../hooks/money/useMoneyAccountWithdrawableFiat',
   () => ({
-    useCachedMoneyAccountWithdrawableFiat: jest.fn(),
+    useMoneyAccountWithdrawableFiat: jest.fn(),
   }),
 );
 jest.mock('../../../utils/transaction-pay', () => ({
@@ -59,7 +59,7 @@ function mockSelectors({
 describe('usePayWithMoneyAccountSection', () => {
   const useConfirmContextMock = jest.mocked(useConfirmContext);
   const useCachedBalanceMock = jest.mocked(
-    useCachedMoneyAccountWithdrawableFiat,
+    useMoneyAccountWithdrawableFiat,
   );
   const applyMoneyAccountOverrideMock = jest.mocked(applyMoneyAccountOverride);
   const onClose = jest.fn();

@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js';
 import {
   buildMoneyAccountDepositBatch,
   buildMoneyAccountWithdrawBatch,
-  MUSD_DECIMALS,
 } from '@metamask/money-account-utils';
 import {
   TransactionStatus,
@@ -10,56 +9,101 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import {
-  PaymentOverride,
   type GetPaymentOverrideDataRequest,
   type GetPaymentOverrideDataResponse,
+  PaymentOverride,
 } from '@metamask/transaction-pay-controller';
 import { isStrictHexString, type Hex } from '@metamask/utils';
+import { getDelegationTransaction } from '../../transaction/delegation';
+import { parseMusdHumanAmount } from './amount-commit';
 import {
-  getDelegationTransaction,
-  type DelegationMessenger,
-} from '../../transaction/delegation';
-import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
+  getMoneyPayContext,
+  type PaymentOverrideMessenger,
+} from './pay-context';
 
-const MUSD_UNIT = 10 ** MUSD_DECIMALS;
+const LOG_TAG = 'PaymentOverride';
 
 /**
- * Parses a human-readable mUSD amount into base units, rounding down so Max
- * never requests more atomic units than the withdrawable money-account
- * balance. Returns `undefined` for zero, negative, or non-numeric input.
+ * Converts prevalidated nested-transaction params into
+ * {@link BatchTransactionParams} for Transaction Pay. Callers must only pass
+ * values already produced by money-account batch builders (`to` is required;
+ * `data` / `value` are optional hex strings). Unchecked `Hex` assertions match
+ * that trusted builder contract.
  *
- * @param amountHuman - Exact human-readable mUSD amount.
- * @returns The amount in mUSD base units, or `undefined` when unusable.
+ * @param params - Prevalidated nested call params from a vault batch builder.
+ * @param params.to - Call destination address.
+ * @param params.data - Optional calldata.
+ * @param params.value - Optional native value.
+ * @returns Batch call params for Transaction Pay.
  */
-function parseMusdHumanAmountDown(amountHuman: string): bigint | undefined {
-  let value: BigNumber;
-  try {
-    value = new BigNumber(amountHuman);
-  } catch {
-    return undefined;
-  }
-
-  if (!value.isFinite() || value.lte(0)) {
-    return undefined;
-  }
-
-  const raw = value.times(MUSD_UNIT).round(0, BigNumber.ROUND_DOWN);
-  if (raw.lte(0)) {
-    return undefined;
-  }
-
-  return BigInt(raw.toString(10));
-}
-
 function toBatchCall(params: {
   to?: string;
   data?: string;
   value?: string;
 }): BatchTransactionParams {
   return {
-    to: params.to as Hex,
     data: params.data as Hex | undefined,
+    to: params.to as Hex,
     value: params.value as Hex | undefined,
+  };
+}
+
+/**
+ * Wraps raw vault calls in a fresh EIP-7702 delegation redeem call so Relay
+ * can embed them. Preserves `authorizationList` from
+ * {@link getDelegationTransaction} for accounts that still need an upgrade.
+ *
+ * @param messenger - Messenger with Money Pay and delegation capabilities.
+ * @param options - Synthetic transaction identity for the delegation request.
+ * @param options.chainId - Vault chain id.
+ * @param options.from - Money account address that executes the batch.
+ * @param options.idPrefix - Prefix for the synthetic transaction id.
+ * @param options.nestedTransactions - Raw vault calls to wrap.
+ * @param options.networkClientId - Network client for the vault chain.
+ * @returns Redeem call plus optional authorization list.
+ */
+async function wrapCallsInDelegation(
+  messenger: PaymentOverrideMessenger,
+  {
+    chainId,
+    from,
+    idPrefix,
+    nestedTransactions,
+    networkClientId,
+  }: {
+    chainId: Hex;
+    from: Hex;
+    idPrefix: string;
+    nestedTransactions: BatchTransactionParams[];
+    networkClientId: string;
+  },
+): Promise<Pick<GetPaymentOverrideDataResponse, 'authorizationList' | 'calls'>> {
+  const transactionMeta = {
+    chainId,
+    id: `${idPrefix}-${Date.now()}`,
+    nestedTransactions,
+    networkClientId,
+    status: TransactionStatus.unapproved,
+    time: Date.now(),
+    txParams: {
+      from,
+    },
+  } as TransactionMeta;
+
+  const delegation = await getDelegationTransaction(
+    { messenger },
+    transactionMeta,
+  );
+
+  return {
+    authorizationList: delegation.authorizationList,
+    calls: [
+      {
+        data: delegation.data,
+        to: delegation.to,
+        value: delegation.value,
+      },
+    ],
   };
 }
 
@@ -75,34 +119,34 @@ function toBatchCall(params: {
  * @param recipient - Address that receives the redeemed mUSD.
  * @param amountHuman - Human-readable mUSD amount.
  * @param atomic - Whether to wrap the calls in an EIP-7702 delegation.
- * @returns Batch calls to prepend, or an empty list when unavailable.
+ * @returns Batch calls (and optional authorization) to prepend.
  */
 async function getMoneyAccountWithdrawPaymentOverrideData(
-  messenger: MoneyPayMessenger,
+  messenger: PaymentOverrideMessenger,
   recipient: Hex,
   amountHuman: string,
   atomic: boolean,
-): Promise<BatchTransactionParams[]> {
+): Promise<GetPaymentOverrideDataResponse> {
   const context = getMoneyPayContext(messenger);
   if (!context) {
-    return [];
+    throw new Error(`${LOG_TAG} Money account payment override is not available`);
   }
 
-  const amount = parseMusdHumanAmountDown(amountHuman);
+  const amount = parseMusdHumanAmount(amountHuman, BigNumber.ROUND_DOWN);
   if (amount === undefined) {
-    return [];
+    return { calls: [] };
   }
 
-  const { moneyAccountAddress, vaultConfig, networkClientId, provider } =
+  const { moneyAccountAddress, networkClientId, provider, vaultConfig } =
     context;
-  const { withdrawTx, transferTx } = await buildMoneyAccountWithdrawBatch({
+  const { transferTx, withdrawTx } = await buildMoneyAccountWithdrawBatch({
+    accountantAddress: vaultConfig.accountantAddress,
     amount,
     chainId: vaultConfig.chainId,
-    tellerAddress: vaultConfig.tellerAddress,
-    accountantAddress: vaultConfig.accountantAddress,
     moneyAccountAddress,
-    recipient,
     provider,
+    recipient,
+    tellerAddress: vaultConfig.tellerAddress,
   });
 
   const rawCalls: BatchTransactionParams[] = [
@@ -111,33 +155,16 @@ async function getMoneyAccountWithdrawPaymentOverrideData(
   ];
 
   if (!atomic) {
-    return rawCalls;
+    return { calls: rawCalls };
   }
 
-  const transactionMeta = {
-    id: `money-account-withdraw-${Date.now()}`,
+  return await wrapCallsInDelegation(messenger, {
     chainId: vaultConfig.chainId,
-    networkClientId,
-    status: TransactionStatus.unapproved,
-    time: Date.now(),
-    txParams: {
-      from: moneyAccountAddress,
-    },
+    from: moneyAccountAddress,
+    idPrefix: 'money-account-withdraw',
     nestedTransactions: rawCalls,
-  } as TransactionMeta;
-
-  const delegation = await getDelegationTransaction(
-    { messenger: messenger as unknown as DelegationMessenger },
-    transactionMeta,
-  );
-
-  return [
-    {
-      to: delegation.to,
-      data: delegation.data,
-      value: delegation.value,
-    },
-  ];
+    networkClientId,
+  });
 }
 
 /**
@@ -150,30 +177,30 @@ async function getMoneyAccountWithdrawPaymentOverrideData(
  * @returns Deposit calls, the money-account recipient, and optional auth list.
  */
 async function getMoneyAccountDepositPaymentOverrideData(
-  messenger: MoneyPayMessenger,
+  messenger: PaymentOverrideMessenger,
   amountHuman: string,
   atomic: boolean,
 ): Promise<GetPaymentOverrideDataResponse> {
   const context = getMoneyPayContext(messenger);
   if (!context) {
-    return { calls: [] };
+    throw new Error(`${LOG_TAG} Money account payment override is not available`);
   }
 
-  const amount = parseMusdHumanAmountDown(amountHuman);
+  const amount = parseMusdHumanAmount(amountHuman, BigNumber.ROUND_DOWN);
   if (amount === undefined) {
     return { calls: [] };
   }
 
-  const { moneyAccountAddress, vaultConfig, networkClientId, provider } =
+  const { moneyAccountAddress, networkClientId, provider, vaultConfig } =
     context;
   const { approveTx, depositTx } = await buildMoneyAccountDepositBatch({
-    amount,
-    chainId: vaultConfig.chainId,
-    boringVault: vaultConfig.boringVault,
-    tellerAddress: vaultConfig.tellerAddress,
     accountantAddress: vaultConfig.accountantAddress,
+    amount,
+    boringVault: vaultConfig.boringVault,
+    chainId: vaultConfig.chainId,
     lensAddress: vaultConfig.lensAddress,
     provider,
+    tellerAddress: vaultConfig.tellerAddress,
   });
 
   const rawCalls: BatchTransactionParams[] = [
@@ -185,33 +212,17 @@ async function getMoneyAccountDepositPaymentOverrideData(
     return { calls: rawCalls, recipient: moneyAccountAddress };
   }
 
-  const transactionMeta = {
-    id: `money-account-deposit-${Date.now()}`,
+  const wrapped = await wrapCallsInDelegation(messenger, {
     chainId: vaultConfig.chainId,
-    networkClientId,
-    status: TransactionStatus.unapproved,
-    time: Date.now(),
-    txParams: {
-      from: moneyAccountAddress,
-    },
+    from: moneyAccountAddress,
+    idPrefix: 'money-account-deposit',
     nestedTransactions: rawCalls,
-  } as TransactionMeta;
-
-  const delegation = await getDelegationTransaction(
-    { messenger: messenger as unknown as DelegationMessenger },
-    transactionMeta,
-  );
+    networkClientId,
+  });
 
   return {
+    ...wrapped,
     recipient: moneyAccountAddress,
-    authorizationList: delegation.authorizationList,
-    calls: [
-      {
-        to: delegation.to,
-        data: delegation.data,
-        value: delegation.value,
-      },
-    ],
   };
 }
 
@@ -229,7 +240,7 @@ async function getMoneyAccountDepositPaymentOverrideData(
  */
 export async function getPaymentOverrideData(
   request: GetPaymentOverrideDataRequest,
-  messenger: MoneyPayMessenger,
+  messenger: PaymentOverrideMessenger,
 ): Promise<GetPaymentOverrideDataResponse> {
   const { amount, transaction, transactionData } = request;
 
@@ -252,11 +263,10 @@ export async function getPaymentOverrideData(
     return { calls: [] };
   }
 
-  const calls = await getMoneyAccountWithdrawPaymentOverrideData(
+  return await getMoneyAccountWithdrawPaymentOverrideData(
     messenger,
     recipient,
     amount,
     atomic,
   );
-  return { calls };
 }

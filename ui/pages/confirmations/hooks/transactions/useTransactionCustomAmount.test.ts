@@ -15,7 +15,7 @@ import * as usePayWithNoFeeTokenModule from '../pay/usePayWithNoFeeToken';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../pay/useTransactionPayToken';
 import * as usePayTokenAccountBalanceModule from '../pay/usePayTokenAccountBalance';
-import { useCachedMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat';
+import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
 import {
   useTransactionCustomAmount,
@@ -31,9 +31,9 @@ jest.mock('../pay/useTransactionPayData');
 jest.mock('../pay/useTransactionPayToken');
 jest.mock('../pay/usePayTokenAccountBalance');
 jest.mock(
-  '../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat',
+  '../../../../hooks/money/useMoneyAccountWithdrawableFiat',
   () => ({
-    useCachedMoneyAccountWithdrawableFiat: jest.fn(() => ({
+    useMoneyAccountWithdrawableFiat: jest.fn(() => ({
       withdrawableFiatRaw: undefined,
     })),
   }),
@@ -164,7 +164,7 @@ function runHook({
     isUpdating: false,
   });
   useDepositPrefillAmountMock.mockReturnValue(depositPrefill);
-  jest.mocked(useCachedMoneyAccountWithdrawableFiat).mockReturnValue({
+  jest.mocked(useMoneyAccountWithdrawableFiat).mockReturnValue({
     withdrawableFiatRaw: moneyAccountWithdrawableFiatRaw,
     withdrawableFiatFormatted: undefined,
   });

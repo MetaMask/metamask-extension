@@ -14,7 +14,7 @@ import {
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
-import { useCachedMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useCachedMoneyAccountWithdrawableFiat';
+import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
@@ -577,7 +577,7 @@ function usePayTokenBalanceUsd(balanceUsdOverride?: number) {
   );
   const isMoneyPaymentOverride =
     paymentOverride === PaymentOverride.MoneyAccount;
-  const { withdrawableFiatRaw } = useCachedMoneyAccountWithdrawableFiat(
+  const { withdrawableFiatRaw } = useMoneyAccountWithdrawableFiat(
     isMoneyPaymentOverride,
   );
   const { balanceUsd } = usePayTokenAccountBalance();

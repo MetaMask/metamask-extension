@@ -132,25 +132,25 @@ describe('getPaymentOverrideData', () => {
     expect(buildWithdrawBatchMock).not.toHaveBeenCalled();
   });
 
-  it('returns empty calls when the money account is unavailable', async () => {
+  it('throws when the money account is unavailable', async () => {
     const { messenger } = createMoneyPayMessengerMock({
       moneyAccountAddress: undefined,
     });
 
-    const result = await getPaymentOverrideData(buildRequest(), messenger);
-
-    expect(result).toStrictEqual({ calls: [] });
+    await expect(
+      getPaymentOverrideData(buildRequest(), messenger),
+    ).rejects.toThrow('Money account payment override is not available');
     expect(buildWithdrawBatchMock).not.toHaveBeenCalled();
   });
 
-  it('returns empty calls when the vault config is missing', async () => {
+  it('throws when the vault config is missing', async () => {
     const { messenger } = createMoneyPayMessengerMock({
       remoteFeatureFlags: {},
     });
 
-    const result = await getPaymentOverrideData(buildRequest(), messenger);
-
-    expect(result).toStrictEqual({ calls: [] });
+    await expect(
+      getPaymentOverrideData(buildRequest(), messenger),
+    ).rejects.toThrow('Money account payment override is not available');
   });
 
   it('returns empty calls when the transaction has no from', async () => {
@@ -211,6 +211,7 @@ describe('getPaymentOverrideData', () => {
       }),
     );
     expect(result).toStrictEqual({
+      authorizationList: MOCK_AUTHORIZATION_LIST,
       calls: [
         {
           to: DELEGATION_MANAGER,
@@ -316,17 +317,14 @@ describe('getPaymentOverrideData', () => {
       });
     });
 
-    it('returns empty calls when the money account is unavailable', async () => {
+    it('throws when the money account is unavailable', async () => {
       const { messenger } = createMoneyPayMessengerMock({
         moneyAccountAddress: undefined,
       });
 
-      const result = await getPaymentOverrideData(
-        buildPostQuoteRequest(),
-        messenger,
-      );
-
-      expect(result).toStrictEqual({ calls: [] });
+      await expect(
+        getPaymentOverrideData(buildPostQuoteRequest(), messenger),
+      ).rejects.toThrow('Money account payment override is not available');
     });
 
     it('returns raw approve and deposit calls without delegation when non-atomic', async () => {
