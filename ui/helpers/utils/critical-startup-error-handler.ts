@@ -166,9 +166,10 @@ export class CriticalStartupErrorHandler {
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
         livenessError as ErrorLike,
-        undefined,
-        this.#port,
-        CriticalErrorType.BackgroundConnectionTimeout,
+        {
+          port: this.#port,
+          criticalErrorType: CriticalErrorType.BackgroundConnectionTimeout,
+        },
       );
     } else if (!this.#uninstalled) {
       if (!this.#initializationCompleted) {
@@ -217,9 +218,10 @@ export class CriticalStartupErrorHandler {
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
         initError as ErrorLike,
-        undefined,
-        this.#port,
-        CriticalErrorType.BackgroundInitTimeout,
+        {
+          port: this.#port,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
       );
     } else if (!this.#uninstalled && !this.#startUiSyncCompleted) {
       await this.#startStateSyncCheck();
@@ -259,9 +261,10 @@ export class CriticalStartupErrorHandler {
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
         stateSyncError as ErrorLike,
-        undefined,
-        this.#port,
-        CriticalErrorType.BackgroundStateSyncTimeout,
+        {
+          port: this.#port,
+          criticalErrorType: CriticalErrorType.BackgroundStateSyncTimeout,
+        },
       );
     }
   }
@@ -299,9 +302,10 @@ export class CriticalStartupErrorHandler {
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
           new Error('Unreachable error, liveness check not initialized'),
-          undefined,
-          this.#port,
-          CriticalErrorType.UnreachableLivenessCheck,
+          {
+            port: this.#port,
+            criticalErrorType: CriticalErrorType.UnreachableLivenessCheck,
+          },
         );
       }
     } else if (method === BACKGROUND_INITIALIZED_METHOD) {
@@ -315,9 +319,10 @@ export class CriticalStartupErrorHandler {
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
           new Error('Unreachable error, initialization check not initialized'),
-          undefined,
-          this.#port,
-          CriticalErrorType.UnreachableInitializationCheck,
+          {
+            port: this.#port,
+            criticalErrorType: CriticalErrorType.UnreachableInitializationCheck,
+          },
         );
       }
     } else if (method === RELOAD_WINDOW) {
@@ -363,12 +368,14 @@ export class CriticalStartupErrorHandler {
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
           error,
-          currentLocale,
-          this.#port,
-          criticalErrorType,
-          repairAction,
-          analyticsConsent,
-          true,
+          {
+            currentLocale,
+            port: this.#port,
+            criticalErrorType,
+            repairActionFromBackground: repairAction,
+            analyticsConsentFromBackground: analyticsConsent,
+            backgroundCaptureAttempted: true,
+          },
         );
       }
     } else if (method === DISPLAY_GENERAL_STARTUP_ERROR) {
@@ -390,12 +397,12 @@ export class CriticalStartupErrorHandler {
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
           error as ErrorLike,
-          currentLocale,
-          this.#port,
-          CriticalErrorType.GeneralStartupError,
-          undefined,
-          undefined,
-          true,
+          {
+            currentLocale,
+            port: this.#port,
+            criticalErrorType: CriticalErrorType.GeneralStartupError,
+            backgroundCaptureAttempted: true,
+          },
         );
       }
     }

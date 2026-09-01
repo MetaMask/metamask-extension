@@ -204,9 +204,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.Other,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.Other,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -241,9 +243,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.Other,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.Other,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -352,9 +356,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.SomethingIsWrong,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.Other,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.Other,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -394,9 +400,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.Other,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.Other,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -441,9 +449,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.Other,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.Other,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -491,9 +501,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        port,
-        CriticalErrorType.BackgroundInitTimeout,
+        {
+          currentLocale: 'en',
+          port,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -581,9 +593,11 @@ describe('repair button', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.MissingVaultInDatabase,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -669,9 +683,11 @@ describe('repair button', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.BackgroundInitTimeout,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -726,9 +742,11 @@ describe('repair button', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.BackgroundInitTimeout,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -790,11 +808,13 @@ describe('repair button', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.MissingVaultInDatabase,
-        CriticalErrorRepairAction.Recover,
-        false,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+          repairActionFromBackground: CriticalErrorRepairAction.Recover,
+          analyticsConsentFromBackground: false,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -832,12 +852,14 @@ describe('repair button', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.MissingVaultInDatabase,
-        CriticalErrorRepairAction.Recover,
-        true,
-        true,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+          repairActionFromBackground: CriticalErrorRepairAction.Recover,
+          analyticsConsentFromBackground: true,
+          backgroundCaptureAttempted: true,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -890,9 +912,11 @@ describe('repair button', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.BackgroundInitTimeout,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -933,9 +957,11 @@ describe('repair button', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.MissingVaultInDatabase,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -962,9 +988,11 @@ describe('repair button', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.MissingVaultInDatabase,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -1018,9 +1046,11 @@ describe('repair button', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.MissingVaultInDatabase,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        },
       ),
     ).rejects.toBe(error);
 
@@ -1067,12 +1097,12 @@ describe('repair button', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.MissingVaultInDatabase,
-        undefined,
-        undefined,
-        true,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+          backgroundCaptureAttempted: true,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -1143,8 +1173,10 @@ describe('repair button', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+        },
       ),
     ).rejects.toThrow(error);
 

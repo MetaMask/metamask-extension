@@ -119,9 +119,10 @@ describe('CriticalStartupErrorHandler', () => {
         expect.objectContaining({
           message: 'Background connection unresponsive',
         }),
-        undefined,
-        port,
-        CriticalErrorType.BackgroundConnectionTimeout,
+        {
+          port,
+          criticalErrorType: CriticalErrorType.BackgroundConnectionTimeout,
+        },
       );
     });
 
@@ -167,9 +168,10 @@ describe('CriticalStartupErrorHandler', () => {
         expect.objectContaining({
           message: 'Background initialization timeout',
         }),
-        undefined,
-        port,
-        CriticalErrorType.BackgroundInitTimeout,
+        {
+          port,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
       );
     });
 
@@ -194,8 +196,6 @@ describe('CriticalStartupErrorHandler', () => {
         expect.objectContaining({
           message: 'Background initialization timeout',
         }),
-        undefined,
-        port,
       );
 
       handler.uninstall();
@@ -225,9 +225,10 @@ describe('CriticalStartupErrorHandler', () => {
         expect.objectContaining({
           message: 'Background state sync timeout',
         }),
-        undefined,
-        port,
-        CriticalErrorType.BackgroundStateSyncTimeout,
+        {
+          port,
+          criticalErrorType: CriticalErrorType.BackgroundStateSyncTimeout,
+        },
       );
     });
 
@@ -257,8 +258,6 @@ describe('CriticalStartupErrorHandler', () => {
         expect.objectContaining({
           message: 'Background state sync timeout',
         }),
-        undefined,
-        port,
       );
     });
   });
@@ -386,12 +385,14 @@ describe('CriticalStartupErrorHandler', () => {
         container,
         'troubleStarting',
         error,
-        'en',
-        port,
-        CriticalErrorType.InaccessibleDatabase,
-        CriticalErrorRepairAction.Recover,
-        true,
-        true,
+        {
+          currentLocale: 'en',
+          port,
+          criticalErrorType: CriticalErrorType.InaccessibleDatabase,
+          repairActionFromBackground: CriticalErrorRepairAction.Recover,
+          analyticsConsentFromBackground: true,
+          backgroundCaptureAttempted: true,
+        },
       );
 
       handler.uninstall();
@@ -416,12 +417,12 @@ describe('CriticalStartupErrorHandler', () => {
         container,
         'troubleStarting',
         { message: 'startup error', name: 'Error', stack: '' },
-        'en',
-        port,
-        CriticalErrorType.GeneralStartupError,
-        undefined,
-        undefined,
-        true,
+        {
+          currentLocale: 'en',
+          port,
+          criticalErrorType: CriticalErrorType.GeneralStartupError,
+          backgroundCaptureAttempted: true,
+        },
       );
 
       handler.uninstall();
@@ -519,9 +520,10 @@ describe('CriticalStartupErrorHandler', () => {
         expect.objectContaining({
           message: 'Background connection unresponsive',
         }),
-        undefined,
-        port,
-        CriticalErrorType.BackgroundConnectionTimeout,
+        {
+          port,
+          criticalErrorType: CriticalErrorType.BackgroundConnectionTimeout,
+        },
       );
       const capturedError = mockDisplayCriticalErrorMessage.mock.calls[0][2];
       expect(

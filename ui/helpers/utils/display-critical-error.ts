@@ -202,6 +202,18 @@ async function handleRestartAction(
 }
 
 /**
+ * Optional context for {@link displayCriticalErrorMessage}.
+ */
+export type DisplayCriticalErrorMessageOptions = {
+  currentLocale?: string;
+  port?: browser.Runtime.Port;
+  criticalErrorType?: CriticalErrorType;
+  repairActionFromBackground?: CriticalErrorRepairAction;
+  analyticsConsentFromBackground?: boolean;
+  backgroundCaptureAttempted?: boolean;
+};
+
+/**
  * Displays a critical error message in the given container.
  *
  * This function always throws the error after displaying the message.
@@ -209,12 +221,13 @@ async function handleRestartAction(
  * @param container - The HTML element to display the error in.
  * @param errorKey - The key for the error message to display.
  * @param error - The error object to log.
- * @param currentLocale - Optional locale context for translations.
- * @param port - Optional port for background communication (needed for vault recovery functionality).
- * @param criticalErrorType - Optional type of critical error (for analytics). Defaults to Other.
- * @param repairActionFromBackground - Optional repair action derived by the background.
- * @param analyticsConsentFromBackground - Optional analytics consent derived by the background.
- * @param backgroundCaptureAttempted - Whether background already passed the error to Sentry.
+ * @param options - Optional display context.
+ * @param options.currentLocale - Locale context for translations.
+ * @param options.port - Port for background communication (needed for vault recovery).
+ * @param options.criticalErrorType - Type of critical error (for analytics). Defaults to Other.
+ * @param options.repairActionFromBackground - Repair action derived by the background.
+ * @param options.analyticsConsentFromBackground - Analytics consent derived by the background.
+ * @param options.backgroundCaptureAttempted - Whether background already passed the error to Sentry.
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
  */
@@ -222,12 +235,14 @@ export async function displayCriticalErrorMessage(
   container: HTMLElement,
   errorKey: CriticalErrorTranslationKey,
   error: ErrorLike,
-  currentLocale?: string,
-  port?: browser.Runtime.Port,
-  criticalErrorType?: CriticalErrorType,
-  repairActionFromBackground?: CriticalErrorRepairAction,
-  analyticsConsentFromBackground?: boolean,
-  backgroundCaptureAttempted: boolean = false,
+  {
+    currentLocale,
+    port,
+    criticalErrorType,
+    repairActionFromBackground,
+    analyticsConsentFromBackground,
+    backgroundCaptureAttempted = false,
+  }: DisplayCriticalErrorMessageOptions = {},
 ): Promise<never> {
   let repairAction =
     repairActionFromBackground ?? CriticalErrorRepairAction.None;
