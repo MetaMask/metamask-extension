@@ -2511,7 +2511,7 @@
     "message": "Use max allowed"
   },
   "bridgeValidationInsufficientGasMessage": {
-    "message": "You don't have enough $1 to pay the gas fee for this bridge. Enter a smaller amount or buy more $1."
+    "message": "You don't have enough $1 to pay the network fee for this bridge. Enter a smaller amount or buy more $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "More $1 needed for gas"
@@ -3554,7 +3554,7 @@
     "message": "Disable"
   },
   "disabledGasOptionToolTipMessage": {
-    "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
+    "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original network fee.",
     "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
@@ -3727,7 +3727,7 @@
     "message": "Edit contact"
   },
   "editGasFeeModalTitle": {
-    "message": "Edit gas fee"
+    "message": "Edit network fee"
   },
   "editGasLimitOutOfBounds": {
     "message": "Gas limit must be at least $1"
@@ -4190,7 +4190,7 @@
     "message": "Gas price"
   },
   "gasPriceExcessive": {
-    "message": "Your gas fee is set unnecessarily high. Consider lowering the amount."
+    "message": "Your network fee is set unnecessarily high. Consider lowering the amount."
   },
   "gasPriceFetchFailed": {
     "message": "Gas price estimation failed due to network error."
@@ -5997,7 +5997,7 @@
     "message": "Range of priority fees (aka “miner tip”). This goes to miners and incentivizes them to prioritize your transaction."
   },
   "networkStatusStabilityFeeTooltip": {
-    "message": "Gas fees are $1 relative to the past 72 hours.",
+    "message": "Network fees are $1 relative to the past 72 hours.",
     "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
@@ -11063,7 +11063,7 @@
     "message": "Swap would have failed"
   },
   "stxCancelledDescription": {
-    "message": "Your transaction would have failed and was cancelled to protect you from paying unnecessary gas fees."
+    "message": "Your transaction would have failed and was cancelled to protect you from paying unnecessary network fees."
   },
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
@@ -11108,7 +11108,7 @@
     "message": "Swap cancelled"
   },
   "stxUserCancelledDescription": {
-    "message": "Your transaction has been cancelled and you did not pay any unnecessary gas fees."
+    "message": "Your transaction has been cancelled and you did not pay any unnecessary network fees."
   },
   "submit": {
     "message": "Submit"
@@ -11240,7 +11240,7 @@
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "swapGasFeesExplanation": {
-    "message": "MetaMask doesn't make money from gas fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is. Learn more $1.",
+    "message": "MetaMask doesn't make money from network fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is. Learn more $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
@@ -11251,7 +11251,7 @@
     "message": " Included"
   },
   "swapGasFeesSplit": {
-    "message": "Gas fees on the previous screen are split between these two transactions."
+    "message": "Network fees on the previous screen are split between these two transactions."
   },
   "swapGasFeesSponsored": {
     "message": "Paid by MetaMask"
@@ -11387,7 +11387,7 @@
     "message": "Liquidity source"
   },
   "swapSuggestedGasSettingToolTipMessage": {
-    "message": "Swaps are complex and time sensitive transactions. We recommend this gas fee for a good balance between cost and confidence of a successful Swap."
+    "message": "Swaps are complex and time sensitive transactions. We recommend this network fee for a good balance between cost and confidence of a successful Swap."
   },
   "swapToConfirmWithHwWallet": {
     "message": "to confirm with your hardware wallet"
@@ -11412,7 +11412,7 @@
     "message": "Unknown"
   },
   "swapValidationInsufficientGasMessage": {
-    "message": "You don't have enough $1 to pay the gas fee for this swap. Enter a smaller amount or buy more $1."
+    "message": "You don't have enough $1 to pay the network fee for this swap. Enter a smaller amount or buy more $1."
   },
   "swapZeroSlippage": {
     "message": "0% Slippage"
@@ -11628,7 +11628,7 @@
     "message": "Function"
   },
   "transactionDetailGasHeading": {
-    "message": "Estimated gas fee"
+    "message": "Estimated network fee"
   },
   "transactionError": {
     "message": "Transaction error. Exception thrown in contract code."
@@ -11649,7 +11649,7 @@
     "message": "Base fee (GWEI)"
   },
   "transactionHistoryL1GasLabel": {
-    "message": "Total L1 gas fee"
+    "message": "Total L1 network fee"
   },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2 gas limit"
@@ -11664,7 +11664,7 @@
     "message": "Priority fee (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "Total gas fee"
+    "message": "Total network fee"
   },
   "transactionIdCopied": {
     "message": "Transaction ID copied"
