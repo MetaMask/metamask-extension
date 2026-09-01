@@ -3609,51 +3609,49 @@ describe('LegacyBackgroundApiService', () => {
     }
 
     it('selects the imported EVM account from the created multichain wallet', async () => {
-      await withService(
-        async ({ rootMessenger, serviceMessenger }) => {
-          const { getAccount, getMultichainAccountGroup, newAccount, wallet } =
-            createMockMnemonicWallet();
-          const createMultichainAccountWallet =
-            registerNonSocialLoginMnemonicImport({
-              rootMessenger,
-              wallet,
-            });
-          const getAccountByAddress = jest.fn().mockReturnValue({ id: 'foo' });
-          const setSelectedAccount = jest.fn();
-
-          rootMessenger.registerActionHandler(
-            'AccountsController:getAccountByAddress',
-            getAccountByAddress,
-          );
-          rootMessenger.registerActionHandler(
-            'AccountsController:setSelectedAccount',
-            setSelectedAccount,
-          );
-
-          const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-          await expect(
-            rootMessenger.call(
-              'LegacyBackgroundApiService:importMnemonicToVault',
-              mnemonic,
-            ),
-          ).resolves.toBeUndefined();
-
-          expect(createMultichainAccountWallet).toHaveBeenCalledWith({
-            type: 'import',
-            mnemonic: expect.any(Uint8Array),
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const { getAccount, getMultichainAccountGroup, newAccount, wallet } =
+          createMockMnemonicWallet();
+        const createMultichainAccountWallet =
+          registerNonSocialLoginMnemonicImport({
+            rootMessenger,
+            wallet,
           });
-          expect(getMultichainAccountGroup).toHaveBeenCalledWith(0);
-          expect(getAccount).toHaveBeenCalledWith({ type: EthAccountType.Eoa });
-          expect(callSpy).not.toHaveBeenCalledWith(
-            'KeyringController:withKeyringV2',
-            { id: keyringId },
-            expect.any(Function),
-          );
-          expect(getAccountByAddress).toHaveBeenCalledWith(newAccount.address);
-          expect(setSelectedAccount).toHaveBeenCalledWith('foo');
-        },
-      );
+        const getAccountByAddress = jest.fn().mockReturnValue({ id: 'foo' });
+        const setSelectedAccount = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          getAccountByAddress,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:setSelectedAccount',
+          setSelectedAccount,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importMnemonicToVault',
+            mnemonic,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(createMultichainAccountWallet).toHaveBeenCalledWith({
+          type: 'import',
+          mnemonic: expect.any(Uint8Array),
+        });
+        expect(getMultichainAccountGroup).toHaveBeenCalledWith(0);
+        expect(getAccount).toHaveBeenCalledWith({ type: EthAccountType.Eoa });
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'KeyringController:withKeyringV2',
+          { id: keyringId },
+          expect.any(Function),
+        );
+        expect(getAccountByAddress).toHaveBeenCalledWith(newAccount.address);
+        expect(setSelectedAccount).toHaveBeenCalledWith('foo');
+      });
     });
 
     it('rethrows when the multichain wallet import rejects a duplicate mnemonic', async () => {
