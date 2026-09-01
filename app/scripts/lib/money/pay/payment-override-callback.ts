@@ -77,7 +77,9 @@ async function wrapCallsInDelegation(
     nestedTransactions: BatchTransactionParams[];
     networkClientId: string;
   },
-): Promise<Pick<GetPaymentOverrideDataResponse, 'authorizationList' | 'calls'>> {
+): Promise<
+  Pick<GetPaymentOverrideDataResponse, 'authorizationList' | 'calls'>
+> {
   const transactionMeta = {
     chainId,
     id: `${idPrefix}-${Date.now()}`,
@@ -129,7 +131,9 @@ async function getMoneyAccountWithdrawPaymentOverrideData(
 ): Promise<GetPaymentOverrideDataResponse> {
   const context = getMoneyPayContext(messenger);
   if (!context) {
-    throw new Error(`${LOG_TAG} Money account payment override is not available`);
+    throw new Error(
+      `${LOG_TAG} Money account payment override is not available`,
+    );
   }
 
   const amount = parseMusdHumanAmount(amountHuman, BigNumber.ROUND_DOWN);
@@ -183,7 +187,9 @@ async function getMoneyAccountDepositPaymentOverrideData(
 ): Promise<GetPaymentOverrideDataResponse> {
   const context = getMoneyPayContext(messenger);
   if (!context) {
-    throw new Error(`${LOG_TAG} Money account payment override is not available`);
+    throw new Error(
+      `${LOG_TAG} Money account payment override is not available`,
+    );
   }
 
   const amount = parseMusdHumanAmount(amountHuman, BigNumber.ROUND_DOWN);

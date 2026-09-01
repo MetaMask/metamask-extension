@@ -32,14 +32,11 @@ jest.mock('../../pay/useTransactionPayToken');
 jest.mock('../../pay/useTransactionPayData');
 jest.mock('../../send/useSendTokens');
 jest.mock('../../tokens/useTokenWithBalance');
-jest.mock(
-  '../../../../../hooks/money/useMoneyAccountWithdrawableFiat',
-  () => ({
-    useMoneyAccountWithdrawableFiat: jest.fn(() => ({
-      withdrawableFiatRaw: '10',
-    })),
-  }),
-);
+jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
+  useMoneyAccountWithdrawableFiat: jest.fn(() => ({
+    withdrawableFiatRaw: '10',
+  })),
+}));
 
 const PAY_TOKEN_MOCK = {
   address: '0x123' as Hex,

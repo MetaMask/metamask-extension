@@ -54,12 +54,9 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
     return messages[key] ?? key;
   },
 }));
-jest.mock(
-  '../../../../hooks/money/useMoneyAccountWithdrawableFiat',
-  () => ({
-    useMoneyAccountWithdrawableFiat: jest.fn(),
-  }),
-);
+jest.mock('../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
+  useMoneyAccountWithdrawableFiat: jest.fn(),
+}));
 jest.mock('../../../../hooks/useFiatFormatter', () => ({
   useFiatFormatter: () => (value: number) => `$${value.toFixed(2)}`,
 }));

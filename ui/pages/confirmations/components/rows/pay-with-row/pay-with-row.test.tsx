@@ -28,14 +28,11 @@ jest.mock('../../../hooks/send/useSendTokens');
 jest.mock('../../../context/confirm');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
 jest.mock('../../../../../hooks/useAlerts');
-jest.mock(
-  '../../../../../hooks/money/useMoneyAccountWithdrawableFiat',
-  () => ({
-    useMoneyAccountWithdrawableFiat: jest.fn(() => ({
-      withdrawableFiatFormatted: '$12.34',
-    })),
-  }),
-);
+jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
+  useMoneyAccountWithdrawableFiat: jest.fn(() => ({
+    withdrawableFiatFormatted: '$12.34',
+  })),
+}));
 
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',

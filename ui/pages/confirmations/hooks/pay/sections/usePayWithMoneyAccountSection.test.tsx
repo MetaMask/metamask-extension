@@ -26,12 +26,9 @@ jest.mock('../../../../../hooks/useI18nContext', () => ({
     return messages[key] ?? key;
   },
 }));
-jest.mock(
-  '../../../../../hooks/money/useMoneyAccountWithdrawableFiat',
-  () => ({
-    useMoneyAccountWithdrawableFiat: jest.fn(),
-  }),
-);
+jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
+  useMoneyAccountWithdrawableFiat: jest.fn(),
+}));
 jest.mock('../../../utils/transaction-pay', () => ({
   applyMoneyAccountOverride: jest.fn(),
 }));
@@ -58,9 +55,7 @@ function mockSelectors({
 
 describe('usePayWithMoneyAccountSection', () => {
   const useConfirmContextMock = jest.mocked(useConfirmContext);
-  const useCachedBalanceMock = jest.mocked(
-    useMoneyAccountWithdrawableFiat,
-  );
+  const useCachedBalanceMock = jest.mocked(useMoneyAccountWithdrawableFiat);
   const applyMoneyAccountOverrideMock = jest.mocked(applyMoneyAccountOverride);
   const onClose = jest.fn();
 

@@ -30,14 +30,11 @@ jest.mock('../pay/usePayWithNoFeeToken');
 jest.mock('../pay/useTransactionPayData');
 jest.mock('../pay/useTransactionPayToken');
 jest.mock('../pay/usePayTokenAccountBalance');
-jest.mock(
-  '../../../../hooks/money/useMoneyAccountWithdrawableFiat',
-  () => ({
-    useMoneyAccountWithdrawableFiat: jest.fn(() => ({
-      withdrawableFiatRaw: undefined,
-    })),
-  }),
-);
+jest.mock('../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
+  useMoneyAccountWithdrawableFiat: jest.fn(() => ({
+    withdrawableFiatRaw: undefined,
+  })),
+}));
 jest.mock('./useDepositPrefillAmount');
 jest.mock('./useUpdateTokenAmount');
 jest.mock('../../../../store/actions', () => ({

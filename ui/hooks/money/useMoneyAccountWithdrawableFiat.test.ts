@@ -58,9 +58,7 @@ describe('useMoneyAccountWithdrawableFiat', () => {
   });
 
   it('returns withdrawable fiat when active', () => {
-    const { result } = renderHook(() =>
-      useMoneyAccountWithdrawableFiat(true),
-    );
+    const { result } = renderHook(() => useMoneyAccountWithdrawableFiat(true));
 
     expect(result.current.withdrawableFiatRaw).toBe('12.34');
     expect(result.current.withdrawableFiatFormatted).toBe('$12.34');
@@ -78,9 +76,7 @@ describe('useMoneyAccountWithdrawableFiat', () => {
   it('returns undefined while the cached query is loading', () => {
     mockBalance({ isLoading: true });
 
-    const { result } = renderHook(() =>
-      useMoneyAccountWithdrawableFiat(true),
-    );
+    const { result } = renderHook(() => useMoneyAccountWithdrawableFiat(true));
 
     expect(result.current).toStrictEqual({
       withdrawableFiatFormatted: undefined,
@@ -91,9 +87,7 @@ describe('useMoneyAccountWithdrawableFiat', () => {
   it('returns undefined when the cached query errored', () => {
     mockBalance({ isError: true });
 
-    const { result } = renderHook(() =>
-      useMoneyAccountWithdrawableFiat(true),
-    );
+    const { result } = renderHook(() => useMoneyAccountWithdrawableFiat(true));
 
     expect(result.current).toStrictEqual({
       withdrawableFiatFormatted: undefined,
@@ -102,9 +96,7 @@ describe('useMoneyAccountWithdrawableFiat', () => {
   });
 
   it('does not use a data service query key when inactive', () => {
-    const { result } = renderHook(() =>
-      useMoneyAccountWithdrawableFiat(false),
-    );
+    const { result } = renderHook(() => useMoneyAccountWithdrawableFiat(false));
 
     expect(result.current).toStrictEqual({
       withdrawableFiatFormatted: undefined,
