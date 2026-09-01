@@ -93,9 +93,7 @@ async function addAppInstalledEvent(
  *
  * @param deps - Install lifecycle dependencies.
  */
-async function onInstall(
-  deps: InstallLifecycleDependencies,
-): Promise<void> {
+async function onInstall(deps: InstallLifecycleDependencies): Promise<void> {
   log.debug('First install detected');
   const installAttributionPromise = getInstallAttribution();
 

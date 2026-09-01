@@ -59,9 +59,7 @@ function createController(
   };
 }
 
-function createPlatform(
-  overrides: Partial<{ getVersion: () => string }> = {},
-) {
+function createPlatform(overrides: Partial<{ getVersion: () => string }> = {}) {
   return {
     openExtensionInBrowser: jest.fn(),
     getVersion: overrides.getVersion ?? jest.fn(() => '13.0.0'),
