@@ -335,15 +335,12 @@ export const getBatchSellQuotes = createSelector(
     (_, { requestCount }: { requestCount: number }) => requestCount,
   ],
   (controllerStates, sortOrder, selectedQuote, requestCount) => {
-    return selectBatchSellQuotes(
-      controllerStates,
-      {
-        sortOrder,
-        requestCount,
-        selectedQuote,
-        migrationPhase: QuoteMetadataMigrationPhase.V1Data,
-      }
-    );
+    return selectBatchSellQuotes(controllerStates, {
+      sortOrder,
+      requestCount,
+      selectedQuote,
+      migrationPhase: QuoteMetadataMigrationPhase.V1Data,
+    });
   },
 );
 
