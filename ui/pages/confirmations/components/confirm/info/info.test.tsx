@@ -292,7 +292,7 @@ describe('Info', () => {
         goBackTo: undefined,
         backTo: undefined,
         setExitTarget: jest.fn(),
-      clearExitTarget: jest.fn(),
+        clearExitTarget: jest.fn(),
       };
     });
 

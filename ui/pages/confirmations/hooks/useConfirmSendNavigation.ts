@@ -12,7 +12,9 @@ export const useConfirmSendNavigation = () => {
   const returnToSendDraftIfSend = useCallback(() => {
     const { id, origin, type } = currentConfirmation;
     const isWalletInitiatedSend =
-      origin === ORIGIN_METAMASK && type && SEND_TRANSACTION_TYPES.includes(type);
+      origin === ORIGIN_METAMASK &&
+      type &&
+      SEND_TRANSACTION_TYPES.includes(type);
 
     if (!isWalletInitiatedSend || !backTo) {
       return false;

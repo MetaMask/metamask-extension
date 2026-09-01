@@ -77,7 +77,6 @@ export const useSendActions = () => {
       // can restore it. Deliberately `backTo`, not `goBackTo`: only Back
       // returns here, while cancel and confirm still exit to Home.
 
-
       params.set('backTo', `${pathname}${search}`);
       const route = `${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`;
       navigate(route);
