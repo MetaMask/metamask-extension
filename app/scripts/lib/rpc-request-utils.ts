@@ -10,14 +10,22 @@ export type TabAwareJsonRpcRequest = OriginAwareJsonRpcRequest & {
   tabId: number;
 };
 
-/** Type guard for requests with origin metadata. */
+/**
+ * Type guard for requests with origin metadata.
+ *
+ * @param req - The JSON-RPC request to check.
+ */
 export function isOriginAwareJsonRpcRequest(
   req: JsonRpcRequest,
 ): req is OriginAwareJsonRpcRequest {
   return typeof (req as Partial<OriginAwareJsonRpcRequest>).origin === 'string';
 }
 
-/** Type guard for requests with origin and tabId metadata. */
+/**
+ * Type guard for requests with origin and tabId metadata.
+ *
+ * @param req - The JSON-RPC request to check.
+ */
 export function isTabAwareJsonRpcRequest(
   req: JsonRpcRequest,
 ): req is TabAwareJsonRpcRequest {
