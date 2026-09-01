@@ -3445,7 +3445,7 @@ describe('LegacyBackgroundApiService', () => {
 
     it('selects the imported EVM account from the created multichain wallet', async () => {
       await withService(
-        async ({ rootMessenger, service, serviceMessenger }) => {
+        async ({ rootMessenger, serviceMessenger }) => {
           const { getAccount, getMultichainAccountGroup, newAccount, wallet } =
             createMockMnemonicWallet();
           const createMultichainAccountWallet =
@@ -3468,7 +3468,10 @@ describe('LegacyBackgroundApiService', () => {
           const callSpy = jest.spyOn(serviceMessenger, 'call');
 
           await expect(
-            service.importMnemonicToVault(mnemonic),
+            rootMessenger.call(
+              'LegacyBackgroundApiService:importMnemonicToVault',
+              mnemonic,
+            ),
           ).resolves.toBeUndefined();
 
           expect(createMultichainAccountWallet).toHaveBeenCalledWith({
@@ -3495,9 +3498,12 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockRejectedValue(new Error(duplicateMnemonicError)),
         );
 
-        await expect(service.importMnemonicToVault(mnemonic)).rejects.toThrow(
-          duplicateMnemonicError,
-        );
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importMnemonicToVault',
+            mnemonic,
+          ),
+        ).rejects.toThrow(duplicateMnemonicError);
       });
     });
 
@@ -3534,10 +3540,14 @@ describe('LegacyBackgroundApiService', () => {
           }),
         );
 
-        await service.importMnemonicToVault(mnemonic, {
-          shouldCreateSocialBackup: false,
-          shouldSelectAccount: false,
-        });
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:importMnemonicToVault',
+          mnemonic,
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+          },
+        );
 
         await waitForImportMnemonicFireAndForgetTasks();
 
@@ -3563,10 +3573,14 @@ describe('LegacyBackgroundApiService', () => {
           syncWithUserStorage,
         );
 
-        await service.importMnemonicToVault(mnemonic, {
-          shouldCreateSocialBackup: false,
-          shouldSelectAccount: false,
-        });
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:importMnemonicToVault',
+          mnemonic,
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+          },
+        );
 
         await waitForImportMnemonicFireAndForgetTasks();
 
@@ -3596,9 +3610,12 @@ describe('LegacyBackgroundApiService', () => {
           getAccountByAddress,
         );
 
-        await expect(service.importMnemonicToVault(mnemonic)).rejects.toThrow(
-          'No new account found',
-        );
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importMnemonicToVault',
+            mnemonic,
+          ),
+        ).rejects.toThrow('No new account found');
 
         expect(getMultichainAccountGroup).toHaveBeenCalledWith(0);
         expect(getAccount).toHaveBeenCalledWith({ type: EthAccountType.Eoa });
