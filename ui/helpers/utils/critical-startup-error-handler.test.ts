@@ -9,6 +9,7 @@ import {
   RELOAD_WINDOW,
 } from '../../../shared/constants/start-up-errors';
 import {
+  CriticalErrorRepairAction,
   CriticalErrorType,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
 } from '../../../shared/constants/critical-error';
@@ -367,18 +368,15 @@ describe('CriticalStartupErrorHandler', () => {
           name: 'Error',
         },
       };
-      const backup = {
-        KeyringController: { vault: 'encrypted-vault-data' },
-      };
-
       port.simulateMessage({
         data: {
           method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
           params: {
+            analyticsConsent: true,
             error,
-            backup,
             criticalErrorType: CriticalErrorType.InaccessibleDatabase,
             currentLocale: 'en',
+            repairAction: CriticalErrorRepairAction.Recover,
           },
         },
       });
@@ -391,7 +389,8 @@ describe('CriticalStartupErrorHandler', () => {
         'en',
         port,
         CriticalErrorType.InaccessibleDatabase,
-        backup,
+        CriticalErrorRepairAction.Recover,
+        true,
         true,
       );
 
@@ -420,6 +419,7 @@ describe('CriticalStartupErrorHandler', () => {
         'en',
         port,
         CriticalErrorType.GeneralStartupError,
+        undefined,
         undefined,
         true,
       );

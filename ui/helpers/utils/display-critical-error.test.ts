@@ -9,6 +9,7 @@ import {
 import { MISSING_VAULT_ERROR } from '../../../shared/constants/errors';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 import * as errorUtils from '../../../shared/lib/error-utils';
+import type { Backup } from '../../../shared/lib/stores/persistence-manager';
 import {
   displayCriticalErrorMessage,
   displayCriticalErrorPage,
@@ -103,12 +104,17 @@ const MOCK_BACKUP_WITH_VAULT = {
   KeyringController: { vault: 'encrypted-vault-data' },
 };
 
-/** Mocks `globalThis.stateHooks.getBackupState` to resolve a vault backup. */
-function mockGetBackupStateWithVault(): () => void {
+/**
+ * Mocks `globalThis.stateHooks.getBackupState` to resolve a vault backup.
+ * @param backup
+ */
+function mockGetBackupStateWithVault(
+  backup: Backup = MOCK_BACKUP_WITH_VAULT,
+): () => void {
   const previous = globalThis.stateHooks?.getBackupState;
   globalThis.stateHooks = {
     ...(globalThis.stateHooks ?? {}),
-    getBackupState: async () => MOCK_BACKUP_WITH_VAULT,
+    getBackupState: async () => backup,
   };
   return () => {
     if (previous) {
@@ -495,7 +501,6 @@ describe('displayCriticalError', () => {
       data: {
         method: CRITICAL_ERROR_SCREEN_VIEWED,
         params: {
-          backup: null,
           repairAction: CriticalErrorRepairAction.None,
           criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
         },
@@ -633,7 +638,6 @@ describe('repair button', () => {
           params: expect.objectContaining({
             repairAction: CriticalErrorRepairAction.Recover,
             criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
-            backup: expect.any(Object),
           }),
         }),
       }),
@@ -752,7 +756,6 @@ describe('repair button', () => {
         data: expect.objectContaining({
           method: CRITICAL_ERROR_SCREEN_VIEWED,
           params: expect.objectContaining({
-            backup: expect.anything(),
             repairAction: CriticalErrorRepairAction.Recover,
             criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
           }),
@@ -761,7 +764,7 @@ describe('repair button', () => {
     );
   });
 
-  it('uses backup from the background without re-reading IndexedDB', async () => {
+  it('uses values from the background without re-reading IndexedDB', async () => {
     jest
       .spyOn(errorUtils, 'getErrorHtml')
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
@@ -790,7 +793,8 @@ describe('repair button', () => {
         'en',
         mockPort,
         CriticalErrorType.MissingVaultInDatabase,
-        MOCK_BACKUP_WITH_VAULT,
+        CriticalErrorRepairAction.Recover,
+        false,
       ),
     ).rejects.toThrow(error);
 
@@ -809,7 +813,6 @@ describe('repair button', () => {
         data: expect.objectContaining({
           method: CRITICAL_ERROR_SCREEN_VIEWED,
           params: expect.objectContaining({
-            backup: MOCK_BACKUP_WITH_VAULT,
             repairAction: CriticalErrorRepairAction.Recover,
           }),
         }),
@@ -824,11 +827,6 @@ describe('repair button', () => {
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
     jest.spyOn(window, 'confirm').mockReturnValue(true);
     const error = new Error(MISSING_VAULT_ERROR);
-    const backup = {
-      ...MOCK_BACKUP_WITH_VAULT,
-      AnalyticsController: { optedIn: true },
-    };
-
     await expect(
       displayCriticalErrorMessage(
         container,
@@ -837,7 +835,8 @@ describe('repair button', () => {
         'en',
         mockPort,
         CriticalErrorType.MissingVaultInDatabase,
-        backup,
+        CriticalErrorRepairAction.Recover,
+        true,
         true,
       ),
     ).rejects.toThrow(error);
@@ -881,22 +880,10 @@ describe('repair button', () => {
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
     jest.spyOn(window, 'confirm').mockReturnValue(true);
     const error = new Error('Background initialization timeout');
-    const backup = {
+    restoreGetBackupState = mockGetBackupStateWithVault({
       ...MOCK_BACKUP_WITH_VAULT,
-      AnalyticsController: { optedIn: true },
-    };
-    const previous = globalThis.stateHooks?.getBackupState;
-    globalThis.stateHooks = {
-      ...(globalThis.stateHooks ?? {}),
-      getBackupState: async () => backup,
-    };
-    restoreGetBackupState = () => {
-      if (previous) {
-        globalThis.stateHooks.getBackupState = previous;
-      } else {
-        delete globalThis.stateHooks.getBackupState;
-      }
-    };
+      AnalyticsController: { consentDecisionMade: true, optedIn: true },
+    });
 
     await expect(
       displayCriticalErrorMessage(
@@ -931,51 +918,15 @@ describe('repair button', () => {
     );
   });
 
-  it('shows a checked report checkbox when analytics is disabled or unset', async () => {
+  it('shows a checked report checkbox when analytics is disabled', async () => {
     jest
       .spyOn(errorUtils, 'getErrorHtml')
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
-
-    for (const optedIn of [false, undefined]) {
-      container = document.createElement('div');
-      rootContainer = document.createElement('div');
-      rootContainer.appendChild(container);
-      const error = new Error(MISSING_VAULT_ERROR);
-      const backup = {
-        ...MOCK_BACKUP_WITH_VAULT,
-        AnalyticsController: { optedIn },
-      };
-
-      await expect(
-        displayCriticalErrorMessage(
-          container,
-          CriticalErrorTranslationKey.TroubleStarting,
-          error,
-          'en',
-          mockPort,
-          CriticalErrorType.MissingVaultInDatabase,
-          backup,
-        ),
-      ).rejects.toThrow(error);
-
-      const reportCheckbox = rootContainer.querySelector<HTMLInputElement>(
-        '#critical-error-checkbox',
-      );
-      expect(reportCheckbox?.checked).toBe(true);
-    }
-  });
-
-  it('does not report during repair when analytics is disabled and the checkbox is unchecked', async () => {
-    jest.useFakeTimers();
-    jest
-      .spyOn(errorUtils, 'getErrorHtml')
-      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
-    jest.spyOn(window, 'confirm').mockReturnValue(true);
     const error = new Error(MISSING_VAULT_ERROR);
-    const backup = {
+    restoreGetBackupState = mockGetBackupStateWithVault({
       ...MOCK_BACKUP_WITH_VAULT,
-      AnalyticsController: { optedIn: false },
-    };
+      AnalyticsController: { consentDecisionMade: true, optedIn: false },
+    });
 
     await expect(
       displayCriticalErrorMessage(
@@ -985,8 +936,35 @@ describe('repair button', () => {
         'en',
         mockPort,
         CriticalErrorType.MissingVaultInDatabase,
-        backup,
-        true,
+      ),
+    ).rejects.toThrow(error);
+
+    const reportCheckbox = rootContainer.querySelector<HTMLInputElement>(
+      '#critical-error-checkbox',
+    );
+    expect(reportCheckbox?.checked).toBe(true);
+  });
+
+  it('does not report during repair when analytics is disabled and the checkbox is unchecked', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const error = new Error(MISSING_VAULT_ERROR);
+    restoreGetBackupState = mockGetBackupStateWithVault({
+      ...MOCK_BACKUP_WITH_VAULT,
+      AnalyticsController: { consentDecisionMade: true, optedIn: false },
+    });
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.MissingVaultInDatabase,
       ),
     ).rejects.toThrow(error);
 
@@ -1017,10 +995,12 @@ describe('repair button', () => {
     );
   });
 
-  it('excludes the separately supplied vault backup from the thrown error', async () => {
+  it('does not attach the vault backup to thrown errors or background messages', async () => {
+    jest.useFakeTimers();
     jest
       .spyOn(errorUtils, 'getErrorHtml')
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
 
     const error = {
       message: MISSING_VAULT_ERROR,
@@ -1031,26 +1011,45 @@ describe('repair button', () => {
       },
     };
 
-    let thrownError: unknown;
-    try {
-      await displayCriticalErrorMessage(
+    restoreGetBackupState = mockGetBackupStateWithVault();
+
+    await expect(
+      displayCriticalErrorMessage(
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
         'en',
         mockPort,
         CriticalErrorType.MissingVaultInDatabase,
-        MOCK_BACKUP_WITH_VAULT,
-      );
-    } catch (caughtError) {
-      thrownError = caughtError;
-    }
+      ),
+    ).rejects.toBe(error);
 
-    // The thrown value is what an unhandled rejection hands to Sentry's global
-    // handler, so it must not carry vault data even though recovery used it.
-    expect(thrownError).toBe(error);
-    expect(thrownError).not.toHaveProperty('backup');
-    expect(JSON.stringify(thrownError)).not.toContain('encrypted-vault-data');
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(error).not.toHaveProperty('backup');
+    expect(JSON.stringify(error)).not.toContain('encrypted-vault-data');
+    expect(
+      JSON.stringify(jest.mocked(mockPort.postMessage).mock.calls),
+    ).not.toContain('encrypted-vault-data');
+    expect(
+      JSON.stringify(jest.mocked(mockPort.postMessage).mock.calls),
+    ).not.toContain('"backup"');
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
   });
 
   it('sends METHOD_REPAIR_DATABASE with reset action when repair button is clicked and user confirms', async () => {
@@ -1071,6 +1070,7 @@ describe('repair button', () => {
         'en',
         mockPort,
         CriticalErrorType.MissingVaultInDatabase,
+        undefined,
         undefined,
         true,
       ),
@@ -1123,7 +1123,6 @@ describe('repair button', () => {
           params: {
             repairAction: CriticalErrorRepairAction.Reset,
             criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
-            backup: null,
           },
         }),
       }),

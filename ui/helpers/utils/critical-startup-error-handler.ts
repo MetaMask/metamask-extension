@@ -3,6 +3,7 @@ import { isObject, hasProperty, createDeferredPromise } from '@metamask/utils';
 import log from 'loglevel';
 import { type ErrorLike } from '../../../shared/constants/errors';
 import {
+  CriticalErrorRepairAction,
   CriticalErrorType,
   isStateCorruptionErrorType,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
@@ -16,7 +17,6 @@ import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
 } from '../../../shared/constants/start-up-errors';
-import type { Backup } from '../../../shared/lib/stores/persistence-manager';
 import {
   displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
@@ -332,16 +332,27 @@ export class CriticalStartupErrorHandler {
         return;
       }
 
-      const { error, backup, criticalErrorType, currentLocale } =
-        data.params as {
-          error: ErrorLike;
-          backup?: Backup;
-          criticalErrorType?: CriticalErrorType;
-          currentLocale?: string;
-        };
-      if (!isStateCorruptionErrorType(criticalErrorType)) {
+      const {
+        analyticsConsent,
+        error,
+        repairAction,
+        criticalErrorType,
+        currentLocale,
+      } = data.params as {
+        analyticsConsent?: boolean;
+        error: ErrorLike;
+        repairAction?: CriticalErrorRepairAction;
+        criticalErrorType?: CriticalErrorType;
+        currentLocale?: string;
+      };
+      if (
+        !isStateCorruptionErrorType(criticalErrorType) ||
+        (repairAction !== CriticalErrorRepairAction.Recover &&
+          repairAction !== CriticalErrorRepairAction.Reset) ||
+        typeof analyticsConsent !== 'boolean'
+      ) {
         log.error(
-          'Received state corruption error message without a valid error type:',
+          'Received state corruption error message without valid derived fields:',
           message,
         );
         return;
@@ -355,7 +366,8 @@ export class CriticalStartupErrorHandler {
           currentLocale,
           this.#port,
           criticalErrorType,
-          backup,
+          repairAction,
+          analyticsConsent,
           true,
         );
       }
@@ -381,6 +393,7 @@ export class CriticalStartupErrorHandler {
           currentLocale,
           this.#port,
           CriticalErrorType.GeneralStartupError,
+          undefined,
           undefined,
           true,
         );

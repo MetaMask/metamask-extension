@@ -1,8 +1,8 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { v4 as uuidv4 } from 'uuid';
-import { isObject } from '@metamask/utils';
 import { type ErrorLike } from '../../../shared/constants/errors';
+import { hasAnalyticsConsent } from '../../../shared/lib/analytics';
 import {
   getErrorHtml,
   maybeGetLocaleContext,
@@ -41,17 +41,6 @@ async function safeGetVaultBackup(
   });
   const backupPromise = getBackupState().catch(() => null);
   return Promise.race([backupPromise, timeoutPromise]);
-}
-
-/**
- * Checks whether analytics consent is enabled in a persistence backup.
- *
- * @param backup - The persistence backup.
- * @returns Whether the user opted in to analytics.
- */
-function isAnalyticsOptedIn(backup: Backup | null): boolean {
-  const analyticsController = backup?.AnalyticsController;
-  return isObject(analyticsController) && analyticsController.optedIn === true;
 }
 
 /**
@@ -223,7 +212,8 @@ async function handleRestartAction(
  * @param currentLocale - Optional locale context for translations.
  * @param port - Optional port for background communication (needed for vault recovery functionality).
  * @param criticalErrorType - Optional type of critical error (for analytics). Defaults to Other.
- * @param backupFromBackground - Optional vault backup sent separately from the error.
+ * @param repairActionFromBackground - Optional repair action derived by the background.
+ * @param analyticsConsentFromBackground - Optional analytics consent derived by the background.
  * @param backgroundCaptureAttempted - Whether background already passed the error to Sentry.
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
@@ -235,32 +225,33 @@ export async function displayCriticalErrorMessage(
   currentLocale?: string,
   port?: browser.Runtime.Port,
   criticalErrorType?: CriticalErrorType,
-  backupFromBackground?: Backup | null,
+  repairActionFromBackground?: CriticalErrorRepairAction,
+  analyticsConsentFromBackground?: boolean,
   backgroundCaptureAttempted: boolean = false,
 ): Promise<never> {
-  // Prefer the backup sent separately from the error by the background. Only
-  // fall back to IndexedDB when it does not contain a vault, so a timed-out UI
-  // re-read cannot flip Recover into Reset.
-  let backup = backupFromBackground ?? null;
-  if (port && !hasVault(backup)) {
-    backup = (await safeGetVaultBackup()) ?? backup;
-  }
-  let repairAction: CriticalErrorRepairAction = CriticalErrorRepairAction.None;
-  if (port) {
+  let repairAction =
+    repairActionFromBackground ?? CriticalErrorRepairAction.None;
+  let analyticsOptedIn = analyticsConsentFromBackground ?? false;
+
+  if (
+    port &&
+    (repairActionFromBackground === undefined ||
+      analyticsConsentFromBackground === undefined)
+  ) {
+    const backup = await safeGetVaultBackup();
     if (hasVault(backup)) {
       repairAction = CriticalErrorRepairAction.Recover;
     } else if (isStateCorruptionErrorType(criticalErrorType)) {
       repairAction = CriticalErrorRepairAction.Reset;
     }
+    analyticsOptedIn = hasAnalyticsConsent(backup);
   }
-  const analyticsOptedIn = isAnalyticsOptedIn(backup);
 
   try {
     port?.postMessage({
       data: {
         method: CRITICAL_ERROR_SCREEN_VIEWED,
         params: {
-          backup,
           repairAction,
           criticalErrorType,
         },
@@ -348,7 +339,6 @@ export async function displayCriticalErrorMessage(
                 params: {
                   repairAction,
                   criticalErrorType,
-                  backup,
                 },
               },
             });

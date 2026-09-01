@@ -28,6 +28,12 @@ jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
 }));
 
+// persistence-manager pulls app-state -> trace, which crashes this isolated suite.
+jest.mock('../../../../shared/lib/stores/persistence-manager', () => ({
+  hasVault: (state?: Record<string, { vault?: unknown }> | null) =>
+    Boolean(state?.KeyringController?.vault),
+}));
+
 function createMockPort(): chrome.runtime.Port {
   const messageListeners: ((message: unknown) => void)[] = [];
   const disconnectListeners: (() => void)[] = [];
@@ -72,16 +78,15 @@ function createConfig(
   overrides: Partial<RegisterPortForCriticalErrorConfig> = {},
 ): RegisterPortForCriticalErrorConfig {
   const port = createMockPort();
+  const getBackup = jest.fn().mockResolvedValue(null);
   const repairCallback = jest.fn().mockResolvedValue(true);
-  return { port, repairCallback, ...overrides };
+  return { getBackup, port, repairCallback, ...overrides };
 }
 
 function createRepairMessage({
-  backup,
   criticalErrorType = CriticalErrorType.BackgroundInitTimeout,
   repairAction = CriticalErrorRepairAction.Recover,
 }: {
-  backup?: Backup | null;
   criticalErrorType?: CriticalErrorType;
   repairAction?: CriticalErrorRepairAction;
 } = {}) {
@@ -91,18 +96,15 @@ function createRepairMessage({
       params: {
         repairAction,
         criticalErrorType,
-        backup,
       },
     },
   };
 }
 
 function createScreenViewedMessage({
-  backup,
   criticalErrorType = CriticalErrorType.BackgroundStateSyncTimeout,
   repairAction = CriticalErrorRepairAction.Recover,
 }: {
-  backup?: Backup | null;
   criticalErrorType?: CriticalErrorType;
   repairAction?: CriticalErrorRepairAction;
 } = {}) {
@@ -110,7 +112,6 @@ function createScreenViewedMessage({
     data: {
       method: CRITICAL_ERROR_SCREEN_VIEWED,
       params: {
-        backup,
         repairAction,
         criticalErrorType,
       },
@@ -164,16 +165,19 @@ describe('CriticalErrorHandler', () => {
 
   describe('when port receives METHOD_REPAIR_DATABASE', () => {
     it('handles recover repair click through the shared repair callback', async () => {
-      const backup: Backup = { KeyringController: {} };
+      const backup: Backup = {
+        KeyringController: { vault: 'encrypted-vault' },
+      };
       const repairCallback = jest.fn().mockResolvedValue(true);
-      const config = createConfig({ repairCallback });
+      const getBackup = jest.fn().mockResolvedValue(backup);
+      const config = createConfig({ getBackup, repairCallback });
 
       handler.registerPortForCriticalError(config);
 
       const portWithEmit = config.port as chrome.runtime.Port & {
         emitTestMessage: (message: unknown) => void;
       };
-      portWithEmit.emitTestMessage(createRepairMessage({ backup }));
+      portWithEmit.emitTestMessage(createRepairMessage());
 
       await flushPromises();
 
@@ -195,41 +199,12 @@ describe('CriticalErrorHandler', () => {
       expect(handler.connectedPorts.size).toBe(0);
     });
 
-    it('uses backup from params for analytics', async () => {
-      const backupFromUi: Backup = {
-        KeyringController: { vault: 'from-ui' },
-        AppMetadataController: {},
-        MetaMetricsController: {},
-      };
+    it('returns without restoring when the background backup has no vault', async () => {
       const repairCallback = jest.fn().mockResolvedValue(true);
-      const config = createConfig({ repairCallback });
-
-      handler.registerPortForCriticalError(config);
-
-      const portWithEmit = config.port as chrome.runtime.Port & {
-        emitTestMessage: (message: unknown) => void;
-      };
-      portWithEmit.emitTestMessage(
-        createRepairMessage({ backup: backupFromUi }),
-      );
-
-      await flushPromises();
-
-      expect(repairCallback).toHaveBeenCalled();
-      expect(jest.mocked(trackCriticalErrorEvent)).toHaveBeenCalledWith(
-        backupFromUi,
-        MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
-        CriticalErrorType.BackgroundInitTimeout,
-        {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          repair_action: CriticalErrorRepairAction.Recover,
-        },
-      );
-    });
-
-    it('returns without restoring when params.backup is missing', async () => {
-      const repairCallback = jest.fn().mockResolvedValue(true);
-      const config = createConfig({ repairCallback });
+      const config = createConfig({
+        getBackup: jest.fn().mockResolvedValue({ KeyringController: {} }),
+        repairCallback,
+      });
       handler.registerPortForCriticalError(config);
 
       const portWithEmit = config.port as chrome.runtime.Port & {
@@ -244,17 +219,26 @@ describe('CriticalErrorHandler', () => {
     });
 
     it('removes listeners from all connected ports before restore', async () => {
-      const backup: Backup = { KeyringController: {} };
+      const backup: Backup = {
+        KeyringController: { vault: 'encrypted-vault' },
+      };
       const sharedRestore = jest.fn().mockResolvedValue(true);
-      const config1 = createConfig({ repairCallback: sharedRestore });
-      const config2 = createConfig({ repairCallback: sharedRestore });
+      const getBackup = jest.fn().mockResolvedValue(backup);
+      const config1 = createConfig({
+        getBackup,
+        repairCallback: sharedRestore,
+      });
+      const config2 = createConfig({
+        getBackup,
+        repairCallback: sharedRestore,
+      });
       handler.registerPortForCriticalError(config1);
       handler.registerPortForCriticalError(config2);
 
       const portWithEmit = config1.port as chrome.runtime.Port & {
         emitTestMessage: (message: unknown) => void;
       };
-      portWithEmit.emitTestMessage(createRepairMessage({ backup }));
+      portWithEmit.emitTestMessage(createRepairMessage());
 
       await flushPromises();
 
@@ -277,7 +261,6 @@ describe('CriticalErrorHandler', () => {
       };
       portWithEmit.emitTestMessage(
         createRepairMessage({
-          backup: null,
           repairAction: CriticalErrorRepairAction.Reset,
           criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
         }),
@@ -311,14 +294,16 @@ describe('CriticalErrorHandler', () => {
   describe('when port receives CRITICAL_ERROR_SCREEN_VIEWED', () => {
     it('tracks critical error screen view event with backup and criticalErrorType', async () => {
       const backup: Backup = { KeyringController: {} };
-      const config = createConfig();
+      const config = createConfig({
+        getBackup: jest.fn().mockResolvedValue(backup),
+      });
 
       handler.registerPortForCriticalError(config);
 
       const portWithEmit = config.port as chrome.runtime.Port & {
         emitTestMessage: (message: unknown) => void;
       };
-      portWithEmit.emitTestMessage(createScreenViewedMessage({ backup }));
+      portWithEmit.emitTestMessage(createScreenViewedMessage());
 
       await flushPromises();
 
@@ -335,7 +320,9 @@ describe('CriticalErrorHandler', () => {
 
     it('tracks state corruption screen view events with backup and criticalErrorType', async () => {
       const backup: Backup = { KeyringController: { vault: 'vault' } };
-      const config = createConfig();
+      const config = createConfig({
+        getBackup: jest.fn().mockResolvedValue(backup),
+      });
 
       handler.registerPortForCriticalError(config);
 
@@ -344,7 +331,6 @@ describe('CriticalErrorHandler', () => {
       };
       portWithEmit.emitTestMessage(
         createScreenViewedMessage({
-          backup,
           repairAction: CriticalErrorRepairAction.Reset,
           criticalErrorType: CriticalErrorType.InaccessibleDatabase,
         }),

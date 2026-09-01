@@ -68,6 +68,7 @@ import {
   isStateCorruptionErrorType,
 } from '../../shared/constants/critical-error';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
+import { hasAnalyticsConsent } from '../../shared/lib/analytics';
 import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
   createEvent,
@@ -389,6 +390,7 @@ let connectEip1193;
 let connectCaipMultichain;
 
 const criticalErrorHandler = new CriticalErrorHandler();
+
 /**
  * Handles the onConnect event.
  *
@@ -432,6 +434,8 @@ const handleOnConnect = async (port) => {
   let removeCriticalErrorListeners;
   if (isMetaMaskUIPort) {
     criticalErrorHandler.registerPortForCriticalError({
+      getBackup: async () =>
+        (await persistenceManager.getBackup().catch(() => null)) ?? null,
       port,
       repairCallback: async ({
         repairAction,
@@ -507,6 +511,9 @@ const handleOnConnect = async (port) => {
         const stateCorruptionErrorType = getStateCorruptionErrorType(errorLike);
         const isStateCorruption = stateCorruptionErrorType !== undefined;
         const backup = isStateCorruption ? getErrorBackup(error) : undefined;
+        const repairAction = hasVault(backup)
+          ? CriticalErrorRepairAction.Recover
+          : CriticalErrorRepairAction.Reset;
         criticalErrorMessageSent = tryPostMessage(
           port,
           isStateCorruption
@@ -515,9 +522,12 @@ const handleOnConnect = async (port) => {
           {
             error: errorLike,
             ...(isStateCorruption
-              ? { criticalErrorType: stateCorruptionErrorType }
+              ? {
+                  analyticsConsent: hasAnalyticsConsent(backup),
+                  criticalErrorType: stateCorruptionErrorType,
+                  repairAction,
+                }
               : {}),
-            ...(backup === undefined ? {} : { backup }),
             currentLocale:
               controller?.preferencesController?.state?.currentLocale,
           },

@@ -1,4 +1,7 @@
-import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
+import {
+  hasVault,
+  type Backup,
+} from '../../../../shared/lib/stores/persistence-manager';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../../shared/constants/start-up-errors';
 import {
   CriticalErrorRepairAction,
@@ -25,6 +28,7 @@ export type RepairCallback = (
 ) => Promise<boolean>;
 
 export type RegisterPortForCriticalErrorConfig = {
+  getBackup: () => Promise<Backup | null>;
   port: chrome.runtime.Port;
   repairCallback: RepairCallback;
 };
@@ -63,6 +67,8 @@ export class CriticalErrorHandler {
 
   #repairCallback: RepairCallback | null = null;
 
+  #getBackup: (() => Promise<Backup | null>) | null = null;
+
   #portDisconnectHandlers = new WeakMap<chrome.runtime.Port, () => void>();
 
   #restoreListener = (message: Message): void => {
@@ -79,14 +85,17 @@ export class CriticalErrorHandler {
    * unregister from all UI windows in one go when one triggers repair), and
    * removes listeners when the port disconnects.
    *
-   * @param config - Configuration for this port (port, repairCallback).
+   * @param config - Configuration for this port.
+   * @param config.getBackup - Reads the backup in the background process.
    * @param config.port
    * @param config.repairCallback
    */
   registerPortForCriticalError({
+    getBackup,
     port,
     repairCallback,
   }: RegisterPortForCriticalErrorConfig): void {
+    this.#getBackup = getBackup;
     this.#repairCallback = repairCallback;
 
     this.connectedPorts.add(port);
@@ -134,13 +143,19 @@ export class CriticalErrorHandler {
       : CriticalErrorRepairAction.None;
     if (
       !this.#repairCallback ||
-      repairAction === CriticalErrorRepairAction.None ||
-      (repairAction === CriticalErrorRepairAction.Recover && !params.backup)
+      !this.#getBackup ||
+      repairAction === CriticalErrorRepairAction.None
     ) {
       return;
     }
 
-    const backup = params.backup as Backup | null;
+    const backup = await this.#getBackup();
+    if (
+      repairAction === CriticalErrorRepairAction.Recover &&
+      !hasVault(backup)
+    ) {
+      return;
+    }
     const criticalErrorType = getCriticalErrorType(params);
     const connectedPorts = new Set(this.connectedPorts);
 
@@ -194,7 +209,7 @@ export class CriticalErrorHandler {
     )
       ? (params.repairAction as CriticalErrorRepairAction)
       : CriticalErrorRepairAction.None;
-    const backup = params.backup as Backup | null;
+    const backup = (await this.#getBackup?.()) ?? null;
     const criticalErrorType = getCriticalErrorType(params);
 
     if (isStateCorruptionErrorType(criticalErrorType)) {
