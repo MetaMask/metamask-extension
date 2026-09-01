@@ -27,6 +27,7 @@ export function getMoneyAccountUpgradeServiceMessenger(
   messenger.delegate({
     messenger: serviceMessenger,
     actions: [
+      'GeolocationController:getGeolocation',
       'KeyringController:getState',
       'LegacyBackgroundApiService:addNetwork',
       'NetworkController:getState',

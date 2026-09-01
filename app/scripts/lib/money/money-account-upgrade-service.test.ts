@@ -46,6 +46,7 @@ function createService({
   hasHdKeyring = true,
   completedOnboarding = true,
   useExternalServices = true,
+  geolocation = 'US',
   vaultConfig = VAULT_CONFIG as unknown,
   networkConfigured = true,
   init = jest.fn().mockResolvedValue(undefined),
@@ -56,6 +57,7 @@ function createService({
   hasHdKeyring?: boolean;
   completedOnboarding?: boolean;
   useExternalServices?: boolean;
+  geolocation?: string;
   vaultConfig?: unknown;
   networkConfigured?: boolean;
   init?: jest.Mock;
@@ -67,6 +69,7 @@ function createService({
     hasHdKeyring,
     completedOnboarding,
     useExternalServices,
+    geolocation,
     vaultConfig,
     networkConfigured,
   };
@@ -104,6 +107,9 @@ function createService({
           ? { [CHAIN_IDS.MONAD]: MONAD_NETWORK_CONFIGURATION }
           : {},
       };
+    }
+    if (action === 'GeolocationController:getGeolocation') {
+      return config.geolocation;
     }
     if (action === 'LegacyBackgroundApiService:addNetwork') {
       return addNetwork(...args);
@@ -244,6 +250,34 @@ describe('MoneyAccountUpgradeService', () => {
     await trigger('KeyringController:stateChange');
 
     expect(init).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not bootstrap while the user is geo-blocked, then bootstraps once eligible', async () => {
+    const addNetwork = jest
+      .fn()
+      .mockResolvedValue(MONAD_NETWORK_CONFIGURATION);
+    const { config, init, trigger } = createService({
+      geolocation: 'GB',
+      networkConfigured: false,
+      addNetwork,
+    });
+    await flushPromises();
+
+    expect(addNetwork).not.toHaveBeenCalled();
+    expect(init).not.toHaveBeenCalled();
+
+    config.geolocation = 'US';
+    await trigger('RemoteFeatureFlagController:stateChange');
+
+    expect(addNetwork).toHaveBeenCalledTimes(1);
+    expect(init).toHaveBeenCalledTimes(1);
+  });
+
+  it('treats unknown geolocation as blocked', async () => {
+    const { init } = createService({ geolocation: 'UNKNOWN' });
+    await flushPromises();
+
+    expect(init).not.toHaveBeenCalled();
   });
 
   it('skips the init when the wallet locks while the chain is being configured', async () => {
