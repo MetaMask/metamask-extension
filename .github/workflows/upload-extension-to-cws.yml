@@ -102,21 +102,10 @@ jobs:
               exit 1
             fi
           fi
-          if [[ ! "${VERSION}" =~ ^[0-9]+(\.[0-9]+){0,3}$ ]]; then
-            echo "::error::Invalid version format (Chrome manifest): ${VERSION} — use 1–4 dot-separated integers (e.g. 13.0.0), not semver pre-release/build metadata"
+          if [[ ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version: ${VERSION} — use release semver X.Y.Z (e.g. 13.43.0)"
             exit 1
           fi
-          IFS='.' read -r -a version_parts <<< "${VERSION}"
-          for part in "${version_parts[@]}"; do
-            if [[ ! "${part}" =~ ^(0|[1-9][0-9]*)$ ]]; then
-              echo "::error::Version segment must be a non-negative integer without leading zeros: ${part} in ${VERSION}"
-              exit 1
-            fi
-            if (( 10#${part} > 65535 )); then
-              echo "::error::Version segment out of range (0–65535): ${part} in ${VERSION}"
-              exit 1
-            fi
-          done
           if [[ "${TARGET}" == "dev" ]]; then
             WIF_PROVIDER="${WIF_PROVIDER_DEV}"
             WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_DEV}"
@@ -241,7 +230,8 @@ jobs:
             echo "| Field | Value |"
             echo "|-------|-------|"
             echo "| Target | \`${{ inputs.target }}\` |"
-            echo "| Version | \`${{ inputs.version }}\` |"
+            echo "| Version input | \`${{ inputs.version }}\` |"
+            echo "| crxVersion | \`${{ env.CRX_VERSION }}\` |"
             echo "| Sender | \`${{ github.event.sender.login }}\` (id=\`${{ github.event.sender.id }}\`) |"
             echo "| Dry-run | \`true\` |"
             echo "| Result | Validation and sender verification passed. No download or upload performed. |"
