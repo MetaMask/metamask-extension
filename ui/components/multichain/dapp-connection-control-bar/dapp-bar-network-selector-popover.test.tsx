@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
@@ -230,7 +230,8 @@ describe('DappBarNetworkSelectorPopover', () => {
   });
 
   afterEach(() => {
-    document.body.innerHTML = '';
+    // Unmount React trees (including portals) before removing manual DOM nodes.
+    cleanup();
   });
 
   it('renders the list of enabled EVM networks', () => {

@@ -14,10 +14,7 @@ import {
   TextButtonSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  Box,
-  Text,
-} from '../../../component-library';
+import { Box, Text } from '../../../component-library';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import {
   setEnabledNetworks,
@@ -94,6 +91,8 @@ const PopularNetworkList = ({
               offset={[16, 12]}
               isOpen={isOpen}
               flip
+              isPortal
+              referenceHidden={false}
               onMouseLeave={close}
               style={{
                 width: '326px',

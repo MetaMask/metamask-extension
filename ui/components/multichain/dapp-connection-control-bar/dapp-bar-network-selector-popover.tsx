@@ -262,6 +262,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
       offset={[0, 8]}
       flip
       preventOverflow
+      isPortal
       referenceHidden={false}
       data-testid="dapp-bar-network-selector-popover"
       className="dapp-bar-network-selector-popover p-0"
