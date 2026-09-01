@@ -896,24 +896,12 @@
     "message": "已出售 $1",
     "description": "$1 is the token symbol"
   },
-  "activity_receive_failed_description": {
-    "message": "从：$1",
-    "description": "$1 is the shortened sender address"
-  },
   "activity_receive_failed_title": {
     "message": "接收失败"
-  },
-  "activity_receive_pending_description": {
-    "message": "从：$1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "正在接收 $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_receive_success_description": {
-    "message": "从：$1",
-    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "已接收 $1",
@@ -962,24 +950,12 @@
     "message": "已出售 $1",
     "description": "$1 is the token symbol"
   },
-  "activity_send_failed_description": {
-    "message": "至：$1",
-    "description": "$1 is the shortened recipient address"
-  },
   "activity_send_failed_title": {
     "message": "发送失败"
-  },
-  "activity_send_pending_description": {
-    "message": "至：$1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "正在发送 $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_send_success_description": {
-    "message": "至：$1",
-    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "已发送 $1",
@@ -1291,7 +1267,7 @@
     "message": "已添加"
   },
   "addedProtectionDescription": {
-    "message": "您正在与一个未知地址交互。这有助于防止恶意交易。"
+    "message": "由于您正在与一个未知地址交互，保障功能可以防止某些恶意交易。"
   },
   "addedProtectionIncludesNetworkFee": {
     "message": "含 $1 额外保护费用",
@@ -1523,6 +1499,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "钱包不获支持"
   },
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "无法检查您的永续合约余额。请重试。"
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "首次交互"
   },
@@ -1555,6 +1534,9 @@
   },
   "alertReasonPendingTransactions": {
     "message": "待定交易"
+  },
+  "alertReasonPerpsWithdrawBalanceUnavailable": {
+    "message": "余额不可用"
   },
   "alertReasonSignIn": {
     "message": "可疑登录请求"
@@ -2002,6 +1984,78 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertModalMessage": {
+    "message": "安全合作伙伴在此 $1 中检测到高风险信号。如果您继续，您的资金将无法追回。",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request"
+  },
+  "blockaidAlertModalMessageWithAmount": {
+    "message": "安全合作伙伴在此 $1 中检测到高风险信号。如果您继续，您的 $2 将无法追回。",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request; $2 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionApproveFarming": {
+    "message": "您正在授权一个安全合作伙伴标记的地址转移您的资产。"
+  },
+  "blockaidDescriptionErrored": {
+    "message": "我们无法完成此安全检查。仅当您信任该网站及相关地址时，才继续操作。"
+  },
+  "blockaidDescriptionHighRiskSignature": {
+    "message": "安全合作伙伴将此签名标记为高风险。签署可能允许在未经您许可的情况下对您的资产进行操作。"
+  },
+  "blockaidDescriptionMaliciousDomain": {
+    "message": "安全合作伙伴将此网站标记为恶意。如果这是欺诈，您的资金将无法追回。"
+  },
+  "blockaidDescriptionMaliciousDomainWithAmount": {
+    "message": "安全合作伙伴将此网站标记为恶意。如果这是欺诈，您的 $1 将无法追回。",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidDescriptionMarketplaceFarming": {
+    "message": "您正在授权一个安全合作伙伴标记的地址转移您在 $1 上的资产。",
+    "description": "$1 is a marketplace name such as OpenSea or Blur"
+  },
+  "blockaidDescriptionRiskSignals": {
+    "message": "安全合作伙伴在此请求中检测到风险信号。请在继续前审核。"
+  },
+  "blockaidDescriptionTransferFarming": {
+    "message": "您正在向一个安全合作伙伴标记的地址发送资产。如果这是欺诈，您的资金将无法追回。"
+  },
+  "blockaidDescriptionTransferFarmingWithAmount": {
+    "message": "您正在向一个安全合作伙伴标记的地址发送资产。如果这是欺诈，您的 $1 将无法追回。",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidRequestTypeApproval": {
+    "message": "批准",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeRequest": {
+    "message": "请求",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeSignature": {
+    "message": "签名",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeTransfer": {
+    "message": "转账",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidTitleHighRiskApproval": {
+    "message": "高风险授权"
+  },
+  "blockaidTitleHighRiskSignature": {
+    "message": "高风险签名"
+  },
+  "blockaidTitleHighRiskTransfer": {
+    "message": "高风险转账"
+  },
+  "blockaidTitleMayNotBeSafe": {
+    "message": "安全检查不可用"
+  },
+  "blockaidTitleRiskSignalsDetected": {
+    "message": "检测到风险信号"
+  },
+  "blockaidTitleSiteFlaggedUnsafe": {
+    "message": "网站标记为不安全"
+  },
   "blockies": {
     "message": "Blockies"
   },
@@ -2091,12 +2145,6 @@
   },
   "bridgeNoPriceInfoTitle": {
     "message": "无价格信息"
-  },
-  "bridgeOffHoursDescription": {
-    "message": "市场已关闭：价格由发行方计算，并非实时市场数据。当市场在下一个可用交易时段重新开放时，价格可能有所不同。"
-  },
-  "bridgeOffHoursTitle": {
-    "message": "盘后交易"
   },
   "bridgePoints": {
     "message": "预计积分",
@@ -2740,6 +2788,9 @@
   "confirmationAlertDetails": {
     "message": "为了保护您的资产，我们建议您拒绝该请求。"
   },
+  "confirmationAlertModalTitleDescription": {
+    "message": "高风险请求"
+  },
   "confirmed": {
     "message": "已确认"
   },
@@ -3081,6 +3132,9 @@
   },
   "dappSwapRewardText": {
     "message": "赚取 $1 积分"
+  },
+  "dapps": {
+    "message": "去中心化应用"
   },
   "darkTheme": {
     "message": "深色"
@@ -5114,10 +5168,6 @@
   "memo": {
     "message": "备忘录"
   },
-  "merklRewardsClaimBonus": {
-    "message": "领取奖励",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "您的 mUSD 奖励领取失败",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5129,10 +5179,6 @@
   "merklRewardsToastSuccess": {
     "message": "您的 mUSD 奖励已到账！",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "发生意外错误。请重试。",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "消息"
@@ -5221,11 +5267,23 @@
   "moneyActivity": {
     "message": "活动"
   },
+  "moneyActivityPlaceholderDescription": {
+    "message": "您的 Money 活动将显示在此处。"
+  },
   "moneyAdd": {
     "message": "添加"
   },
+  "moneyApy": {
+    "message": "$1 年化收益率"
+  },
   "moneyBalanceUnavailable": {
     "message": "余额不可用"
+  },
+  "moneyBenefitAutoEarn": {
+    "message": "为您的 Money 余额自动赚取收益"
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "自动赚取最高约 $1 年化收益率"
   },
   "moneyBenefitLiquidity": {
     "message": "享受完全流动性，无锁仓期限制，可随时交易或提现"
@@ -5239,17 +5297,69 @@
   "moneyBenefits": {
     "message": "福利"
   },
+  "moneyEarnApyTitle": {
+    "message": "赚取最高 $1 年化收益率"
+  },
   "moneyEarnOnCrypto": {
     "message": "用您的加密货币赚取收益"
+  },
+  "moneyEarnOnCryptoDescription": {
+    "message": "了解将您的加密货币转换为 mUSD 后，资金如何随时间增值。"
+  },
+  "moneyEarnOnCryptoDescriptionMiddle": {
+    "message": "在资产方面，最高可赚取"
+  },
+  "moneyEarnOnCryptoDescriptionPrefix": {
+    "message": "添加您的"
+  },
+  "moneyEarnOnCryptoDescriptionSuffix": {
+    "message": "（每年）。"
+  },
+  "moneyEarnOnCryptoNoFee": {
+    "message": "不收费"
+  },
+  "moneyEarnTitle": {
+    "message": "为余额赚取收益"
+  },
+  "moneyEarnings": {
+    "message": "收益"
+  },
+  "moneyExploreBenefits": {
+    "message": "查看您的权益"
   },
   "moneyFundDescription": {
     "message": "为您的 Money Account 充值，见证余额增长。"
   },
+  "moneyFundDescriptionWithApy": {
+    "message": "为您的 Money Account 充值，享受最高 $1 年化收益率，见证余额增长。"
+  },
   "moneyHowItWorks": {
     "message": "如何运行"
   },
+  "moneyHowItWorksDescription": {
+    "message": "添加 mUSD，您的美元挂钩余额即可随时用于消费、交易或转账。"
+  },
+  "moneyHowItWorksDescriptionWithApy": {
+    "message": "添加 mUSD，赚取最高 $1 年化收益率。您的余额与美元挂钩，可随时消费、交易或转账。",
+    "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowYourMoneyGrows": {
+    "message": "资金增长方式"
+  },
   "moneyLearnMore": {
     "message": "了解更多。"
+  },
+  "moneyLifetime": {
+    "message": "累计"
+  },
+  "moneyMeetMusd": {
+    "message": "了解 mUSD"
+  },
+  "moneyMoreInformation": {
+    "message": "更多信息"
+  },
+  "moneyMoreOptions": {
+    "message": "更多选项"
   },
   "moneyMusd": {
     "message": "mUSD"
@@ -5336,54 +5446,6 @@
     "message": "$1 想连接 $2 个 snap。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "下一笔奖励累积中",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "领取 $1 奖励",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "预估年度奖励",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "您的奖励信息",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "根据您当前余额及利率估算的一年预期收益。利率为浮动值，可能发生变动。",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "了解更多。",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "自您参与以来已领取的奖励总额。",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "仅需持有 mUSD 即可获得 $1% 年化奖励。您可每日在 Linea 上领取该奖励。$2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "累计已领奖励",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "无累积中的奖励",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "$1% 奖励",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "您的奖励",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "每日奖励",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5447,14 +5509,6 @@
   "musdBuyMusd": {
     "message": "购买 mUSD"
   },
-  "musdClaimSendingTo": {
-    "message": "正在发送至",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "正在发送至 $1",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "领取奖励",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5517,10 +5571,6 @@
     "message": "仅保存您信任的地址。",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "已确定其为恶意。我们建议不要与此地址交互。",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "如果您知道此地址，则为其添加昵称，以便将来识别。",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5532,10 +5582,6 @@
   "nameInstructionsSaved": {
     "message": "您以前为此地址添加过昵称。您可以编辑或查看其他建议的昵称。",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "我们无法验证此地址。它可能是新地址或未经验证的地址。请设置个人显示名称以便后续识别。",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "昵称",
@@ -5564,10 +5610,6 @@
   "nameModalTitleVerified": {
     "message": "已验证地址",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "地址需要审核",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "由 $1 提议",
@@ -6086,6 +6128,12 @@
   "notificationsPageNoNotificationsContent": {
     "message": "您尚未收到任何通知。"
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "代理钱包的 CLI 连接请求、审批和会话更新"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "代理钱包"
+  },
   "notificationsSettingsBoxError": {
     "message": "出错了。请重试。"
   },
@@ -6406,6 +6454,10 @@
   "passkeyErrorNotEnrolled": {
     "message": "此钱包未设置 $1。请在设置中开启 $1。",
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotSupported": {
+    "message": "不支持通行密钥",
+    "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "$1 设置失败。请重试",
@@ -6851,6 +6903,9 @@
   "permissions": {
     "message": "权限"
   },
+  "permissionsPageEmptyDescription": {
+    "message": "当您授予权限时，详情将显示在此处。"
+  },
   "permissionsPageEmptyTitle": {
     "message": "此处无内容"
   },
@@ -6898,9 +6953,6 @@
   },
   "perpsAddFunds": {
     "message": "充值"
-  },
-  "perpsAddFundsDescription": {
-    "message": "添加资金以开始使用杠杆交易永续合约"
   },
   "perpsAddMargin": {
     "message": "追加保证金"
@@ -7742,12 +7794,6 @@
     "message": "止盈/止损更新成功",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
-  "perpsTotalBalance": {
-    "message": "总余额"
-  },
-  "perpsTradePerps": {
-    "message": "交易永续合约"
-  },
   "perpsTrades": {
     "message": "交易"
   },
@@ -8265,6 +8311,9 @@
   "rampsOrderToastSuccessTitle": {
     "message": "买入成功",
     "description": "Title for the successful ramp buy order toast"
+  },
+  "rampsPayWith": {
+    "message": "支付方式："
   },
   "rampsPaymentDelayBusinessDay": {
     "message": "工作日"
@@ -11674,6 +11723,10 @@
   },
   "value": {
     "message": "值"
+  },
+  "variationalReferralSubtitle": {
+    "message": "使用 MetaMask 推荐码可获得 +15% Omni 积分和 90 天白银等级。",
+    "description": "The subtitle of the Variational referral confirmation screen"
   },
   "version": {
     "message": "版本"

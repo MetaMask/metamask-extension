@@ -5,7 +5,7 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
@@ -163,10 +163,9 @@ describe('Add wallet', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'Imported accounts',
           account: IMPORTED_ACCOUNT_NAME,
-          balance: '$0.00',
         });
         await accountListPage.checkNumberOfAvailableAccounts(4);
         await accountListPage.switchToAccount(IMPORTED_ACCOUNT_NAME);

@@ -45,6 +45,10 @@ import { ApprovalType, ERC20 } from '@metamask/controller-utils';
 import { parseCaipAccountId } from '@metamask/utils';
 
 import { createTestProviderTools } from '../../test/stub/provider';
+import {
+  InternalKeyringType,
+  SnapKeyringType,
+} from '../../shared/constants/keyring';
 import { KEYRING_DEVICE_PROPERTY_MAP } from '../../shared/constants/hardware-wallets';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
@@ -2226,6 +2230,86 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('isEip7702Supported', () => {
+      const ADDRESS = '0x123';
+      const CHAIN_ID = '0x1';
+
+      const mockKeyringType = (type) =>
+        jest
+          .spyOn(metamaskController.keyringController, 'getKeyringForAccount')
+          .mockResolvedValue({ type });
+
+      const mockAtomicBatchSupport = () =>
+        jest
+          .spyOn(metamaskController.txController, 'isAtomicBatchSupported')
+          .mockResolvedValue([
+            {
+              chainId: CHAIN_ID,
+              isSupported: false,
+              upgradeContractAddress: '0xabc',
+            },
+          ]);
+
+      it.each([InternalKeyringType.hdKeyTree, InternalKeyringType.imported])(
+        'consults atomic batch support for %s keyrings',
+        async (type) => {
+          mockKeyringType(type);
+          const isAtomicBatchSupported = mockAtomicBatchSupport();
+
+          const result = await metamaskController.isEip7702Supported({
+            address: ADDRESS,
+            chainId: CHAIN_ID,
+          });
+
+          expect(isAtomicBatchSupported).toHaveBeenCalledWith({
+            address: ADDRESS,
+            chainIds: [CHAIN_ID],
+          });
+          expect(result.upgradeContractAddress).toBe('0xabc');
+        },
+      );
+
+      it.each([
+        KeyringTypeV2.Ledger,
+        KeyringTypeV2.Trezor,
+        SnapKeyringType.snap,
+      ])('reports %s keyrings as unsupported', async (type) => {
+        mockKeyringType(type);
+        const isAtomicBatchSupported = mockAtomicBatchSupport();
+
+        const result = await metamaskController.isEip7702Supported({
+          address: ADDRESS,
+          chainId: CHAIN_ID,
+        });
+
+        expect(result).toStrictEqual({
+          isSupported: false,
+          upgradeContractAddress: null,
+        });
+        expect(isAtomicBatchSupported).not.toHaveBeenCalled();
+      });
+
+      it('reports unsupported when the keyring lookup fails', async () => {
+        jest
+          .spyOn(metamaskController.keyringController, 'getKeyringForAccount')
+          .mockRejectedValue(
+            new Error('No keyring found for the requested account.'),
+          );
+        const isAtomicBatchSupported = mockAtomicBatchSupport();
+
+        const result = await metamaskController.isEip7702Supported({
+          address: ADDRESS,
+          chainId: CHAIN_ID,
+        });
+
+        expect(result).toStrictEqual({
+          isSupported: false,
+          upgradeContractAddress: null,
+        });
+        expect(isAtomicBatchSupported).not.toHaveBeenCalled();
+      });
+    });
+
     describe('#setupPhishingCommunication', () => {
       beforeEach(() => {
         jest.spyOn(metamaskController, 'safelistPhishingDomain');
@@ -2777,6 +2861,60 @@ describe('MetaMaskController', () => {
           );
         });
         streamTest.end();
+      });
+
+      it('scans the origin for wallet_createSession', async () => {
+        const previousSecurityAlertsApiEnabled =
+          process.env.SECURITY_ALERTS_API_ENABLED;
+        process.env.SECURITY_ALERTS_API_ENABLED = 'true';
+
+        try {
+          localMetamaskController.preferencesController.setSecurityAlertsEnabled(
+            true,
+          );
+
+          const scanUrlSpy = jest
+            .spyOn(localMetamaskController.phishingController, 'scanUrl')
+            .mockResolvedValue({});
+
+          const messageSender = { url: 'http://mycrypto.com' };
+          const streamTest = createThroughStream((chunk, _, cb) => {
+            if (chunk && chunk.method) {
+              cb(null, chunk);
+              return;
+            }
+            cb();
+          });
+
+          localMetamaskController.setupUntrustedCommunicationCaip({
+            connectionStream: streamTest,
+            sender: messageSender,
+          });
+
+          streamTest.write(
+            {
+              id: 1,
+              jsonrpc: '2.0',
+              method: 'wallet_createSession',
+              params: {
+                requiredScopes: {
+                  'eip155:1': { methods: [], notifications: [] },
+                },
+              },
+            },
+            null,
+            () => undefined,
+          );
+
+          await waitForAllPromises();
+          await new Promise((resolve) => setTimeout(resolve, 0));
+
+          expect(scanUrlSpy).toHaveBeenCalledWith('http://mycrypto.com');
+          streamTest.end();
+        } finally {
+          process.env.SECURITY_ALERTS_API_ENABLED =
+            previousSecurityAlertsApiEnabled;
+        }
       });
     });
 

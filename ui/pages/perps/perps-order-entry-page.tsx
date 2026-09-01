@@ -115,10 +115,7 @@ import {
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
-import {
-  isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
-  isNearLiquidationPrice as checkNearLiquidationPrice,
-} from '../../components/app/perps/order-entry/limit-price-warnings';
+import { isNearLiquidationPrice as checkNearLiquidationPrice } from '../../components/app/perps/order-entry/limit-price-warnings';
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
@@ -880,17 +877,6 @@ const PerpsOrderEntryPage = () => {
     orderMode === 'new' && !isLoadingAccount && availableBalance <= 0;
   const isPrimaryTradeAction = orderMode !== 'new' || !hasNoAvailableBalance;
 
-  const isLimitPriceUnfavorable = useMemo(() => {
-    if (orderType !== 'limit' || !orderFormState) {
-      return false;
-    }
-    return checkLimitPriceUnfavorable(
-      orderFormState.limitPrice ?? '',
-      currentPrice,
-      orderDirection,
-    );
-  }, [orderType, orderFormState, orderDirection, currentPrice]);
-
   const isNearLiquidation = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
       return false;
@@ -1092,7 +1078,6 @@ const PerpsOrderEntryPage = () => {
       (isMaxSlippageLoading || !isEstimatedSlippageReady)) ||
     (isPrimaryTradeAction &&
       (isLimitPriceInvalid ||
-        isLimitPriceUnfavorable ||
         isNearLiquidation ||
         hasInvalidTPSL ||
         isInsufficientFunds ||
