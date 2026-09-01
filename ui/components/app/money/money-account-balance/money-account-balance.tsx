@@ -22,6 +22,7 @@ import { InfoPopover } from '../../musd/info-popover';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
+import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
 
 export const MONEY_ACCOUNT_BALANCE_TEST_ID = 'money-account-balance';
@@ -33,6 +34,8 @@ export const MONEY_ACCOUNT_BALANCE_APY_TEST_ID = 'money-account-balance-apy';
 export const MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID =
   'money-account-balance-skeleton';
 export const MONEY_ACCOUNT_BALANCE_INFO_TEST_ID = 'money-account-balance-info';
+export const MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID =
+  'money-account-balance-add-button';
 
 // The vault APY isn't wired up to a data source yet, so this is shown as a
 // fixed placeholder until a hook for it exists.
@@ -83,6 +86,8 @@ export const MoneyAccountBalance = () => {
   const { hasMoneyAccount } = useMoneyAccountInfo();
   const { totalFiatFormatted, lastKnownTotalFiatFormatted, isBalanceLoading } =
     useMoneyAccountBalance();
+  const { initiateDeposit, isLoading: isDepositLoading } =
+    useMoneyAccountDeposit();
 
   const balance = totalFiatFormatted ?? lastKnownTotalFiatFormatted;
   const isLoading = isBalanceLoading && balance === undefined;
@@ -195,6 +200,13 @@ export const MoneyAccountBalance = () => {
         size={ButtonSize.Md}
         variant={ButtonVariant.Primary}
         className="shrink-0 "
+        isLoading={isDepositLoading}
+        data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
+        onClick={() =>
+          initiateDeposit({ intent: 'addMusd' }).catch((error) =>
+            console.error('Failed to initiate money account deposit', error),
+          )
+        }
       >
         {t('moneyAdd')}
       </Button>
