@@ -20,6 +20,7 @@ describe('getMoneyAccountUpgradeServiceMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         actions: [
+          'GeolocationController:getGeolocation',
           'KeyringController:getState',
           'LegacyBackgroundApiService:addNetwork',
           'NetworkController:getState',

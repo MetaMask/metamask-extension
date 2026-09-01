@@ -1,3 +1,4 @@
+import type { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import {
   KeyringTypes,
   type KeyringControllerGetStateAction,
@@ -11,7 +12,11 @@ import type {
   RemoteFeatureFlagControllerStateChangeEvent,
 } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger } from '@metamask/utils';
-import { isMoneyAccountEnabled } from '../../../../shared/lib/money/feature-flags';
+import {
+  getMoneyAccountGeoBlockedCountries,
+  isMoneyAccountEnabled,
+  isMoneyAccountGeoEligible,
+} from '../../../../shared/lib/money/feature-flags';
 import {
   getMoneyAccountVaultConfig,
   type MoneyAccountVaultConfig,
@@ -36,6 +41,7 @@ const log = createProjectLogger('money-account-upgrade-service');
 const serviceName = 'MoneyAccountUpgradeService';
 
 type MoneyAccountUpgradeAllowedActions =
+  | GeolocationControllerGetGeolocationAction
   | KeyringControllerGetStateAction
   | LegacyBackgroundApiServiceAddNetworkAction
   | NetworkControllerGetStateAction
@@ -81,7 +87,9 @@ const configsEqual = (
  * 1. Onboarding is complete with basic functionality enabled
  * 2. the moneyEnableMoneyAccount flag is on
  * 3. The wallet is unlocked
- * 4. The moneyAccountVaultConfig flag is served
+ * 4. The user's region is not geo-blocked, fail-closed, per the same check
+ * `MoneyAccountAvailabilityService` makes
+ * 5. The moneyAccountVaultConfig flag is served
  *
  * We then re-run the init if the vault config ever changes.
  *
@@ -196,13 +204,36 @@ export class MoneyAccountUpgradeService {
     );
   }
 
+  /**
+   * Whether the user's region is allowed to use Money Account, using the same
+   * fail-closed check as `MoneyAccountAvailabilityService`: unknown or failed
+   * geolocation is treated as blocked, so a geo-blocked user never gets the
+   * Money chain added or a Chomp call made on their behalf.
+   *
+   * @returns Whether the user is geo-eligible.
+   */
+  async #isGeoEligible(): Promise<boolean> {
+    const { remoteFeatureFlags } = this.#messenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    const blockedCountries =
+      getMoneyAccountGeoBlockedCountries(remoteFeatureFlags);
+    const location = await this.#messenger.call(
+      'GeolocationController:getGeolocation',
+    );
+
+    return isMoneyAccountGeoEligible(location, blockedCountries);
+  }
+
   #scheduleBootstrap(vaultConfig: MoneyAccountVaultConfig): void {
     this.#bootstrappedConfig = vaultConfig;
 
     const run = async () => {
       // The gates were checked when this run was scheduled, but it may start
-      // much later, chained behind an in-flight bootstrap.
-      if (!this.#areGatesOpen()) {
+      // much later, chained behind an in-flight bootstrap. Geo comes after
+      // the gates so a Basic Functionality opt-out also stops the
+      // geolocation lookup.
+      if (!this.#areGatesOpen() || !(await this.#isGeoEligible())) {
         this.#forget(vaultConfig);
         return;
       }
