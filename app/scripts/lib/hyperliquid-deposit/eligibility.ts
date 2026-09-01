@@ -1,35 +1,28 @@
-import type {
-  AccountTrackerControllerState,
-  TokenBalancesControllerState,
-  TokensControllerState,
-} from '@metamask/assets-controllers';
+import type { AssetsControllerState } from '@metamask/assets-controller';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type {
   AccountState,
   PerpsControllerState,
 } from '@metamask/perps-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import {
+  type CaipAssetType,
+  KnownCaipNamespace,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import log from 'loglevel';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import { getIsPerpsIncludedInBuild } from '../../../../shared/lib/environment';
 import { isPerpsRemoteConfigSatisfied } from '../../../../shared/lib/perps-feature-flags';
 import { getBooleanFeatureFlag } from '../../../../shared/lib/remote-feature-flag-utils';
 import {
-  HYPERLIQUID_DEPOSIT_CHAIN_ID,
-  HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
+  HYPERLIQUID_DEPOSIT_USDC_CAIP_ID,
   HYPERLIQUID_DEPOSIT_USDC_THRESHOLD,
 } from './constants';
 
 const HYPERLIQUID_PROVIDER_ID = 'hyperliquid';
 const ELIGIBILITY_ACCOUNT_STATE_SOURCE =
   'hyperliquid_deposit_prompt_eligibility';
-
-type TokenBalances = NonNullable<TokenBalancesControllerState['tokenBalances']>;
-
-type UpdateBalancesOptions = {
-  chainIds?: string[];
-  queryAllAccounts?: boolean;
-  tokenAddresses?: string[];
-};
 
 type PerpsControllerLike = {
   getAccountState?: (params?: {
@@ -40,17 +33,15 @@ type PerpsControllerLike = {
   state?: Partial<Pick<PerpsControllerState, 'perpsBalances'>>;
 };
 
-type AccountTrackerControllerLike = {
-  state?: Partial<Pick<AccountTrackerControllerState, 'accountsByChainId'>>;
+export type AssetsControllerLike = {
+  state?: {
+    assetsBalance?: AssetsControllerState['assetsBalance'];
+    assetsInfo?: AssetsControllerState['assetsInfo'];
+  };
 };
 
-type TokenBalancesControllerLike = {
-  state?: Partial<TokenBalancesControllerState>;
-  updateBalances?: (options?: UpdateBalancesOptions) => Promise<void> | void;
-};
-
-type TokensControllerLike = {
-  state?: Partial<Pick<TokensControllerState, 'allTokens'>>;
+export type AccountsControllerLike = {
+  state?: Partial<Pick<AccountsControllerState, 'internalAccounts'>>;
 };
 
 type RemoteFeatureFlagControllerLike = {
@@ -58,36 +49,33 @@ type RemoteFeatureFlagControllerLike = {
 };
 
 type IsHyperliquidDepositPromptEligibleOptions = {
-  accountTrackerController?: AccountTrackerControllerLike;
+  accountsController?: AccountsControllerLike;
+  assetsController?: AssetsControllerLike;
   logger?: Pick<typeof log, 'warn'>;
   perpsController?: PerpsControllerLike;
   remoteFeatureFlagController?: RemoteFeatureFlagControllerLike;
   signerAddress?: string;
-  tokenBalancesController?: TokenBalancesControllerLike;
-  tokensController?: TokensControllerLike;
 };
 
 /**
  * Eligible when: no Hyperliquid balance, <$10 Arbitrum USDC, and has MM Pay funds.
  *
  * @param options - The eligibility check options.
- * @param options.accountTrackerController - Provides native balances by chain.
+ * @param options.accountsController - Provides account ID to address mapping.
+ * @param options.assetsController - Provides token balances via AssetsController.
  * @param options.logger - Logger used for non-fatal failures.
  * @param options.perpsController - Provides Hyperliquid account state.
  * @param options.remoteFeatureFlagController - Provides the perps rollout flag.
  * @param options.signerAddress - The address that signed the ApproveAgent request.
- * @param options.tokenBalancesController - Provides ERC-20 balances.
- * @param options.tokensController - Provides tracked tokens by chain.
  * @returns Whether the deposit prompt should be shown.
  */
 export async function isHyperliquidDepositPromptEligible({
-  accountTrackerController,
+  accountsController,
+  assetsController,
   logger = log,
   perpsController,
   remoteFeatureFlagController,
   signerAddress,
-  tokenBalancesController,
-  tokensController,
 }: IsHyperliquidDepositPromptEligibleOptions): Promise<boolean> {
   if (!isPerpsExperienceAvailable(remoteFeatureFlagController)) {
     return false;
@@ -99,11 +87,15 @@ export async function isHyperliquidDepositPromptEligible({
 
   if (
     !signerAddress ||
-    !accountTrackerController ||
-    !perpsController ||
-    !tokenBalancesController ||
-    !tokensController
+    !accountsController ||
+    !assetsController ||
+    !perpsController
   ) {
+    return false;
+  }
+
+  const accountId = getAccountIdByAddress(accountsController, signerAddress);
+  if (!accountId) {
     return false;
   }
 
@@ -117,31 +109,22 @@ export async function isHyperliquidDepositPromptEligible({
     return false;
   }
 
-  const didRefreshUsdcBalance = await refreshArbitrumUsdcBalance({
-    logger,
-    tokenBalancesController,
+  const zeroHLBalance = hasZeroHyperliquidPerpsBalance({
+    accountState,
+    perpsBalances: perpsController.state?.perpsBalances,
   });
 
-  if (!didRefreshUsdcBalance) {
-    return false;
-  }
+  const lowArbitrumUsdc = hasLowArbitrumUsdcBalance({
+    accountId,
+    assetsController,
+  });
 
-  return (
-    hasZeroHyperliquidPerpsBalance({
-      accountState,
-      perpsBalances: perpsController.state?.perpsBalances,
-    }) &&
-    hasLowArbitrumUsdcBalance({
-      address: signerAddress,
-      tokenBalances: tokenBalancesController.state?.tokenBalances ?? {},
-    }) &&
-    hasAvailableMetaMaskPayBalance({
-      accountTrackerState: accountTrackerController.state,
-      address: signerAddress,
-      tokenBalances: tokenBalancesController.state?.tokenBalances ?? {},
-      tokensControllerState: tokensController.state,
-    })
-  );
+  const hasPayBalance = hasAvailableMetaMaskPayBalance({
+    accountId,
+    assetsController,
+  });
+
+  return zeroHLBalance && lowArbitrumUsdc && hasPayBalance;
 }
 
 export function hasZeroHyperliquidPerpsBalance({
@@ -163,77 +146,72 @@ export function hasZeroHyperliquidPerpsBalance({
 
 /**
  * True if Arbitrum USDC balance is below $10 (user can't deposit directly on HL).
- *
- * @param options - The balance check options.
- * @param options.address - The wallet address to check.
- * @param options.tokenBalances - ERC-20 balances from TokenBalancesController.
- * @returns Whether the Arbitrum USDC balance is below the $10 threshold.
+ * @param options0
+ * @param options0.accountId
+ * @param options0.assetsController
  */
 export function hasLowArbitrumUsdcBalance({
-  address,
-  tokenBalances,
+  accountId,
+  assetsController,
 }: {
-  address: string;
-  tokenBalances: TokenBalances;
+  accountId: string;
+  assetsController: AssetsControllerLike;
 }): boolean {
-  const accountBalances = getCaseInsensitiveRecordValue(tokenBalances, address);
-  const chainBalances = getCaseInsensitiveRecordValue(
-    accountBalances,
-    HYPERLIQUID_DEPOSIT_CHAIN_ID,
-  );
-  const usdcBalance = getCaseInsensitiveRecordValue(
-    chainBalances,
-    HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
+  const assetsBalance = assetsController.state?.assetsBalance ?? {};
+  const accountBalances = assetsBalance[accountId] ?? {};
+
+  // Look for Arbitrum USDC using CAIP asset ID (case-insensitive)
+  const usdcEntry = Object.entries(accountBalances).find(
+    ([assetId]) =>
+      assetId.toLowerCase() === HYPERLIQUID_DEPOSIT_USDC_CAIP_ID.toLowerCase(),
   );
 
-  return (
-    usdcBalance === undefined ||
-    isHexBalanceBelowThreshold(usdcBalance, HYPERLIQUID_DEPOSIT_USDC_THRESHOLD)
+  const usdcBalance = usdcEntry?.[1];
+  const rawAmount = usdcBalance?.amount;
+
+  if (!rawAmount) {
+    return true; // No USDC = below threshold
+  }
+
+  return isDecimalBalanceBelowThreshold(
+    rawAmount,
+    HYPERLIQUID_DEPOSIT_USDC_THRESHOLD,
   );
 }
 
 /**
  * True if user has any positive balance on mainnet EVM chains that MM Pay can use.
- * Background approximation of UI token-picker eligibility (native + ERC-20 balances).
- *
- * @param options - The balance check options.
- * @param options.accountTrackerState - Native balances by chain from AccountTrackerController.
- * @param options.address - The wallet address to check.
- * @param options.tokenBalances - ERC-20 balances from TokenBalancesController.
- * @param options.tokensControllerState - Tracked tokens by chain from TokensController.
- * @returns Whether the user has at least one Pay-eligible balance.
+ * @param options0
+ * @param options0.accountId
+ * @param options0.assetsController
  */
 export function hasAvailableMetaMaskPayBalance({
-  accountTrackerState,
-  address,
-  tokenBalances,
-  tokensControllerState,
+  accountId,
+  assetsController,
 }: {
-  accountTrackerState?: Partial<
-    Pick<AccountTrackerControllerState, 'accountsByChainId'>
-  >;
-  address: string;
-  tokenBalances: TokenBalances;
-  tokensControllerState?: Partial<Pick<TokensControllerState, 'allTokens'>>;
+  accountId: string;
+  assetsController: AssetsControllerLike;
 }): boolean {
-  return (
-    hasAvailableNativeBalance({ accountTrackerState, address }) ||
-    hasAvailableTokenBalance({
-      address,
-      tokenBalances,
-      tokensControllerState,
-    })
-  );
+  const assetsBalance = assetsController.state?.assetsBalance ?? {};
+  const assetsInfo = assetsController.state?.assetsInfo ?? {};
+  const accountBalances = assetsBalance[accountId] ?? {};
+
+  return Object.entries(accountBalances).some(([assetId, balance]) => {
+    const metadata = assetsInfo[assetId as CaipAssetType];
+    if (!metadata) {
+      return false;
+    }
+
+    // Skip test chains
+    const chainId = getHexChainIdFromCaipAssetId(assetId);
+    if (!chainId || isTestChain(chainId)) {
+      return false;
+    }
+
+    return isPositiveDecimalBalance(balance?.amount);
+  });
 }
 
-/**
- * Background equivalent of the UI `getIsPerpsExperienceAvailable` selector:
- * perps must be included in the build (`PERPS_ENABLED`) and the
- * `perpsEnabledVersion` remote rollout flag must be satisfied.
- *
- * @param remoteFeatureFlagController - Provides the remote feature flags.
- * @returns Whether the perps experience is available.
- */
 function isPerpsExperienceAvailable(
   remoteFeatureFlagController?: RemoteFeatureFlagControllerLike,
 ): boolean {
@@ -246,12 +224,6 @@ function isPerpsExperienceAvailable(
   );
 }
 
-/**
- * Checks whether `extensionUxHyperliquidDepositPrompt` remote feature flag is enabled.
- *
- * @param remoteFeatureFlagController - Provides the remote feature flags.
- * @returns Whether the Hyperliquid deposit prompt is enabled.
- */
 function isHyperliquidDepositPromptEnabled(
   remoteFeatureFlagController?: RemoteFeatureFlagControllerLike,
 ): boolean {
@@ -260,6 +232,19 @@ function isHyperliquidDepositPromptEnabled(
       ?.extensionUxHyperliquidDepositPrompt,
     false,
   );
+}
+
+function getAccountIdByAddress(
+  accountsController: AccountsControllerLike,
+  address: string,
+): string | undefined {
+  const accounts = accountsController.state?.internalAccounts?.accounts ?? {};
+
+  const entry = Object.entries(accounts).find(
+    ([, account]) => account.address.toLowerCase() === address.toLowerCase(),
+  );
+
+  return entry?.[0];
 }
 
 async function getHyperliquidAccountState({
@@ -284,40 +269,9 @@ async function getHyperliquidAccountState({
   } catch (error) {
     logger.warn(
       'Unable to fetch Hyperliquid account state for deposit prompt',
-      {
-        error,
-      },
+      { error },
     );
     return undefined;
-  }
-}
-
-async function refreshArbitrumUsdcBalance({
-  logger,
-  tokenBalancesController,
-}: {
-  logger: Pick<typeof log, 'warn'>;
-  tokenBalancesController: TokenBalancesControllerLike;
-}): Promise<boolean> {
-  if (!tokenBalancesController.updateBalances) {
-    return false;
-  }
-
-  try {
-    await tokenBalancesController.updateBalances({
-      chainIds: [HYPERLIQUID_DEPOSIT_CHAIN_ID],
-      queryAllAccounts: true,
-      tokenAddresses: [HYPERLIQUID_DEPOSIT_USDC_ADDRESS],
-    });
-    return true;
-  } catch (error) {
-    logger.warn(
-      'Unable to refresh Arbitrum USDC balance for Hyperliquid deposit prompt',
-      {
-        error,
-      },
-    );
-    return false;
   }
 }
 
@@ -326,83 +280,45 @@ function isZeroDecimalBalance(balance: string): boolean {
   return Number.isFinite(parsedBalance) && parsedBalance === 0;
 }
 
-function isHexBalanceBelowThreshold(
-  balance: string,
+function isDecimalBalanceBelowThreshold(
+  amount: string,
   threshold: bigint,
 ): boolean {
   try {
-    return BigInt(balance) < threshold;
+    // AssetsController stores amounts as decimal strings (e.g., "0.1" for 0.1 USDC)
+    // USDC has 6 decimals, so multiply by 10^6 to get raw units
+    const decimalAmount = Number.parseFloat(amount);
+    if (!Number.isFinite(decimalAmount)) {
+      return true;
+    }
+    const rawAmount = BigInt(Math.floor(decimalAmount * 1_000_000));
+    return rawAmount < threshold;
+  } catch {
+    return true;
+  }
+}
+
+function isPositiveDecimalBalance(amount: string | undefined): boolean {
+  if (!amount) {
+    return false;
+  }
+  try {
+    const decimalAmount = Number.parseFloat(amount);
+    return Number.isFinite(decimalAmount) && decimalAmount > 0;
   } catch {
     return false;
   }
 }
 
-function hasAvailableNativeBalance({
-  accountTrackerState,
-  address,
-}: {
-  accountTrackerState?: Partial<
-    Pick<AccountTrackerControllerState, 'accountsByChainId'>
-  >;
-  address: string;
-}): boolean {
-  const accountsByChainId = accountTrackerState?.accountsByChainId ?? {};
-
-  return Object.entries(accountsByChainId).some(([chainId, accounts]) => {
-    if (isTestChain(chainId)) {
-      return false;
-    }
-
-    const account = getCaseInsensitiveRecordValue(accounts, address);
-    return Boolean(account?.balance && isPositiveHexBalance(account.balance));
-  });
-}
-
-function hasAvailableTokenBalance({
-  address,
-  tokenBalances,
-  tokensControllerState,
-}: {
-  address: string;
-  tokenBalances: TokenBalances;
-  tokensControllerState?: Partial<Pick<TokensControllerState, 'allTokens'>>;
-}): boolean {
-  const allTokens = tokensControllerState?.allTokens ?? {};
-
-  return Object.entries(allTokens).some(([chainId, tokensByAddress]) => {
-    if (isTestChain(chainId)) {
-      return false;
-    }
-
-    const accountTokens = getCaseInsensitiveRecordValue(
-      tokensByAddress,
-      address,
-    );
-
-    return (accountTokens ?? []).some(({ address: tokenAddress }) => {
-      const accountBalances = getCaseInsensitiveRecordValue(
-        tokenBalances,
-        address,
-      );
-      const chainBalances = getCaseInsensitiveRecordValue(
-        accountBalances,
-        chainId,
-      );
-      const tokenBalance = getCaseInsensitiveRecordValue(
-        chainBalances,
-        tokenAddress,
-      );
-
-      return Boolean(tokenBalance && isPositiveHexBalance(tokenBalance));
-    });
-  });
-}
-
-function isPositiveHexBalance(balance: string): boolean {
+function getHexChainIdFromCaipAssetId(assetId: string): string | undefined {
   try {
-    return BigInt(balance) > 0n;
+    const { chain } = parseCaipAssetType(assetId as CaipAssetType);
+    if (chain.namespace !== KnownCaipNamespace.Eip155) {
+      return undefined;
+    }
+    return `0x${Number(chain.reference).toString(16)}`;
   } catch {
-    return false;
+    return undefined;
   }
 }
 
@@ -410,13 +326,4 @@ function isTestChain(chainId: string): boolean {
   return TEST_CHAINS.some(
     (testChainId) => testChainId.toLowerCase() === chainId.toLowerCase(),
   );
-}
-
-function getCaseInsensitiveRecordValue<Value>(
-  record: Record<string, Value> | undefined,
-  key: string,
-): Value | undefined {
-  return Object.entries(record ?? {}).find(
-    ([recordKey]) => recordKey.toLowerCase() === key.toLowerCase(),
-  )?.[1];
 }

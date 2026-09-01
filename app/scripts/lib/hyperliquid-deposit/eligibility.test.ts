@@ -1,12 +1,10 @@
-import type { Hex } from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import {
-  HYPERLIQUID_DEPOSIT_CHAIN_ID,
-  HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
-  HYPERLIQUID_DEPOSIT_USDC_THRESHOLD,
-} from './constants';
+import { HYPERLIQUID_DEPOSIT_USDC_CAIP_ID } from './constants';
 
 import {
+  type AccountsControllerLike,
+  type AssetsControllerLike,
   hasAvailableMetaMaskPayBalance,
   hasLowArbitrumUsdcBalance,
   hasZeroHyperliquidPerpsBalance,
@@ -14,22 +12,48 @@ import {
 } from './eligibility';
 
 const SIGNER_ADDRESS = '0x1111111111111111111111111111111111111111' as Hex;
-const TOKEN_ADDRESS = '0x2222222222222222222222222222222222222222' as Hex;
+const ACCOUNT_ID = 'test-account-id-1234';
 
-/**
- * Helper to build tokenBalances with proper Hex typing.
- * @param address
- * @param chainId
- * @param tokenAddress
- * @param balance
- */
-function buildTokenBalances(
-  address: Hex,
-  chainId: Hex,
-  tokenAddress: Hex,
-  balance: Hex,
-): Record<Hex, Record<Hex, Record<Hex, Hex>>> {
-  return { [address]: { [chainId]: { [tokenAddress]: balance } } };
+// CAIP asset IDs for testing
+const ETH_MAINNET_CAIP = 'eip155:1/slip44:60' as CaipAssetType;
+const USDC_ARBITRUM_CAIP = HYPERLIQUID_DEPOSIT_USDC_CAIP_ID;
+const ETH_SEPOLIA_CAIP = 'eip155:11155111/slip44:60' as CaipAssetType;
+
+function createAssetsController(
+  accountId: string,
+  balances: Record<CaipAssetType, { amount: string }>,
+): AssetsControllerLike {
+  return {
+    state: {
+      assetsBalance: {
+        [accountId]: balances,
+      },
+      assetsInfo: Object.fromEntries(
+        Object.keys(balances).map((assetId) => [
+          assetId,
+          {
+            type: assetId.includes('slip44') ? 'native' : 'erc20',
+            decimals: 6,
+          },
+        ]),
+      ),
+    },
+  } as AssetsControllerLike;
+}
+
+function createAccountsController(
+  accountId: string,
+  address: string,
+): AccountsControllerLike {
+  return {
+    state: {
+      internalAccounts: {
+        accounts: {
+          [accountId]: { address },
+        },
+      },
+    },
+  } as AccountsControllerLike;
 }
 
 describe('hyperliquid-deposit eligibility', () => {
@@ -73,8 +97,8 @@ describe('hyperliquid-deposit eligibility', () => {
     it('returns true when Arbitrum USDC balance is missing', () => {
       expect(
         hasLowArbitrumUsdcBalance({
-          address: SIGNER_ADDRESS,
-          tokenBalances: {},
+          accountId: ACCOUNT_ID,
+          assetsController: createAssetsController(ACCOUNT_ID, {}),
         }),
       ).toBe(true);
     });
@@ -82,82 +106,54 @@ describe('hyperliquid-deposit eligibility', () => {
     it('returns true when Arbitrum USDC balance is zero', () => {
       expect(
         hasLowArbitrumUsdcBalance({
-          address: SIGNER_ADDRESS,
-          tokenBalances: {
-            [SIGNER_ADDRESS]: {
-              [HYPERLIQUID_DEPOSIT_CHAIN_ID]: {
-                [HYPERLIQUID_DEPOSIT_USDC_ADDRESS]: '0x0',
-              },
-            },
-          },
+          accountId: ACCOUNT_ID,
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [USDC_ARBITRUM_CAIP]: { amount: '0' },
+          }),
         }),
       ).toBe(true);
     });
 
     it('returns true when Arbitrum USDC balance is below $10 threshold', () => {
-      // $9.99 USDC = 9,990,000 raw units = 0x989670
-      const belowThreshold =
-        `0x${(HYPERLIQUID_DEPOSIT_USDC_THRESHOLD - 1n).toString(16)}` as Hex;
       expect(
         hasLowArbitrumUsdcBalance({
-          address: SIGNER_ADDRESS,
-          tokenBalances: buildTokenBalances(
-            SIGNER_ADDRESS,
-            HYPERLIQUID_DEPOSIT_CHAIN_ID,
-            HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
-            belowThreshold,
-          ),
+          accountId: ACCOUNT_ID,
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [USDC_ARBITRUM_CAIP]: { amount: '9.99' },
+          }),
         }),
       ).toBe(true);
     });
 
     it('returns false when Arbitrum USDC balance is at $10 threshold', () => {
-      // Exactly $10 USDC = 10,000,000 raw units
-      const atThreshold =
-        `0x${HYPERLIQUID_DEPOSIT_USDC_THRESHOLD.toString(16)}` as Hex;
       expect(
         hasLowArbitrumUsdcBalance({
-          address: SIGNER_ADDRESS,
-          tokenBalances: buildTokenBalances(
-            SIGNER_ADDRESS,
-            HYPERLIQUID_DEPOSIT_CHAIN_ID,
-            HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
-            atThreshold,
-          ),
+          accountId: ACCOUNT_ID,
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [USDC_ARBITRUM_CAIP]: { amount: '10' },
+          }),
         }),
       ).toBe(false);
     });
 
     it('returns false when Arbitrum USDC balance is above $10 threshold', () => {
-      // $100 USDC = 100,000,000 raw units = 0x5F5E100
-      const aboveThreshold =
-        `0x${(HYPERLIQUID_DEPOSIT_USDC_THRESHOLD * 10n).toString(16)}` as Hex;
       expect(
         hasLowArbitrumUsdcBalance({
-          address: SIGNER_ADDRESS,
-          tokenBalances: buildTokenBalances(
-            SIGNER_ADDRESS,
-            HYPERLIQUID_DEPOSIT_CHAIN_ID,
-            HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
-            aboveThreshold,
-          ),
+          accountId: ACCOUNT_ID,
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [USDC_ARBITRUM_CAIP]: { amount: '100.5' },
+          }),
         }),
       ).toBe(false);
     });
   });
 
   describe('hasAvailableMetaMaskPayBalance', () => {
-    it('returns false when the signer has no native or token balances', () => {
+    it('returns false when the signer has no balances', () => {
       expect(
         hasAvailableMetaMaskPayBalance({
-          accountTrackerState: {
-            accountsByChainId: {},
-          },
-          address: SIGNER_ADDRESS,
-          tokenBalances: {},
-          tokensControllerState: {
-            allTokens: {},
-          },
+          accountId: ACCOUNT_ID,
+          assetsController: createAssetsController(ACCOUNT_ID, {}),
         }),
       ).toBe(false);
     });
@@ -165,20 +161,10 @@ describe('hyperliquid-deposit eligibility', () => {
     it('returns true when the signer has a non-testnet native balance', () => {
       expect(
         hasAvailableMetaMaskPayBalance({
-          accountTrackerState: {
-            accountsByChainId: {
-              [CHAIN_IDS.MAINNET]: {
-                [SIGNER_ADDRESS]: {
-                  balance: '0x1',
-                },
-              },
-            },
-          },
-          address: SIGNER_ADDRESS,
-          tokenBalances: {},
-          tokensControllerState: {
-            allTokens: {},
-          },
+          accountId: ACCOUNT_ID,
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [ETH_MAINNET_CAIP]: { amount: '0.1' },
+          }),
         }),
       ).toBe(true);
     });
@@ -186,30 +172,10 @@ describe('hyperliquid-deposit eligibility', () => {
     it('returns true when the signer has a non-testnet ERC20 balance', () => {
       expect(
         hasAvailableMetaMaskPayBalance({
-          accountTrackerState: {
-            accountsByChainId: {},
-          },
-          address: SIGNER_ADDRESS,
-          tokenBalances: {
-            [SIGNER_ADDRESS]: {
-              [CHAIN_IDS.MAINNET]: {
-                [TOKEN_ADDRESS]: '0x1',
-              },
-            },
-          },
-          tokensControllerState: {
-            allTokens: {
-              [CHAIN_IDS.MAINNET]: {
-                [SIGNER_ADDRESS]: [
-                  {
-                    address: TOKEN_ADDRESS,
-                    decimals: 18,
-                    symbol: 'TST',
-                  },
-                ],
-              },
-            },
-          },
+          accountId: ACCOUNT_ID,
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [USDC_ARBITRUM_CAIP]: { amount: '5' },
+          }),
         }),
       ).toBe(true);
     });
@@ -217,36 +183,21 @@ describe('hyperliquid-deposit eligibility', () => {
     it('returns false when the only positive balance is on a testnet', () => {
       expect(
         hasAvailableMetaMaskPayBalance({
-          accountTrackerState: {
-            accountsByChainId: {
-              [CHAIN_IDS.SEPOLIA]: {
-                [SIGNER_ADDRESS]: {
-                  balance: '0x1',
-                },
-              },
-            },
-          },
-          address: SIGNER_ADDRESS,
-          tokenBalances: {
-            [SIGNER_ADDRESS]: {
-              [CHAIN_IDS.SEPOLIA]: {
-                [TOKEN_ADDRESS]: '0x1',
-              },
-            },
-          },
-          tokensControllerState: {
-            allTokens: {
-              [CHAIN_IDS.SEPOLIA]: {
-                [SIGNER_ADDRESS]: [
-                  {
-                    address: TOKEN_ADDRESS,
-                    decimals: 18,
-                    symbol: 'TST',
-                  },
-                ],
-              },
-            },
-          },
+          accountId: ACCOUNT_ID,
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [ETH_SEPOLIA_CAIP]: { amount: '1' },
+          }),
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false when balances are zero', () => {
+      expect(
+        hasAvailableMetaMaskPayBalance({
+          accountId: ACCOUNT_ID,
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [ETH_MAINNET_CAIP]: { amount: '0' },
+          }),
         }),
       ).toBe(false);
     });
@@ -340,46 +291,16 @@ describe('hyperliquid-deposit eligibility', () => {
       expect(getAccountState).not.toHaveBeenCalled();
     });
 
-    it('returns false when extensionUxHyperliquidDepositPrompt flag version is not met', async () => {
-      const getAccountState = jest.fn();
-
+    it('returns true when Hyperliquid and Arbitrum USDC balances are zero and MM Pay has a source balance', async () => {
       await expect(
         isHyperliquidDepositPromptEligible({
-          perpsController: { getAccountState },
-          remoteFeatureFlagController: {
-            state: {
-              remoteFeatureFlags: {
-                perpsEnabledVersion: true,
-                extensionUxHyperliquidDepositPrompt: {
-                  enabled: true,
-                  minimumVersion: '999.0.0',
-                },
-              },
-            },
-          },
-          signerAddress: SIGNER_ADDRESS,
-        }),
-      ).resolves.toBe(false);
-
-      expect(getAccountState).not.toHaveBeenCalled();
-    });
-
-    it('returns true after refreshing balances when Hyperliquid and Arbitrum USDC balances are zero and MM Pay has a source balance', async () => {
-      const updateBalances = jest.fn().mockResolvedValue(undefined);
-
-      await expect(
-        isHyperliquidDepositPromptEligible({
-          accountTrackerController: {
-            state: {
-              accountsByChainId: {
-                [CHAIN_IDS.MAINNET]: {
-                  [SIGNER_ADDRESS]: {
-                    balance: '0x1',
-                  },
-                },
-              },
-            },
-          },
+          accountsController: createAccountsController(
+            ACCOUNT_ID,
+            SIGNER_ADDRESS,
+          ),
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [ETH_MAINNET_CAIP]: { amount: '0.1' },
+          }),
           perpsController: {
             getAccountState: jest.fn().mockResolvedValue({
               marginUsed: '0',
@@ -392,45 +313,21 @@ describe('hyperliquid-deposit eligibility', () => {
           },
           remoteFeatureFlagController: enabledRemoteFeatureFlagController,
           signerAddress: SIGNER_ADDRESS,
-          tokenBalancesController: {
-            state: {
-              tokenBalances: {},
-            },
-            updateBalances,
-          },
-          tokensController: {
-            state: {
-              allTokens: {},
-            },
-          },
         }),
       ).resolves.toBe(true);
-
-      expect(updateBalances).toHaveBeenCalledWith({
-        chainIds: [HYPERLIQUID_DEPOSIT_CHAIN_ID],
-        queryAllAccounts: true,
-        tokenAddresses: [HYPERLIQUID_DEPOSIT_USDC_ADDRESS],
-      });
     });
 
     it('returns false when the signer has ≥$10 Arbitrum USDC', async () => {
-      // $10 USDC = 10,000,000 raw units (at threshold)
-      const atThreshold =
-        `0x${HYPERLIQUID_DEPOSIT_USDC_THRESHOLD.toString(16)}` as Hex;
-
       await expect(
         isHyperliquidDepositPromptEligible({
-          accountTrackerController: {
-            state: {
-              accountsByChainId: {
-                [CHAIN_IDS.MAINNET]: {
-                  [SIGNER_ADDRESS]: {
-                    balance: '0x1',
-                  },
-                },
-              },
-            },
-          },
+          accountsController: createAccountsController(
+            ACCOUNT_ID,
+            SIGNER_ADDRESS,
+          ),
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [ETH_MAINNET_CAIP]: { amount: '0.1' },
+            [USDC_ARBITRUM_CAIP]: { amount: '10' },
+          }),
           perpsController: {
             getAccountState: jest.fn().mockResolvedValue({
               marginUsed: '0',
@@ -443,22 +340,6 @@ describe('hyperliquid-deposit eligibility', () => {
           },
           remoteFeatureFlagController: enabledRemoteFeatureFlagController,
           signerAddress: SIGNER_ADDRESS,
-          tokenBalancesController: {
-            state: {
-              tokenBalances: buildTokenBalances(
-                SIGNER_ADDRESS,
-                HYPERLIQUID_DEPOSIT_CHAIN_ID,
-                HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
-                atThreshold,
-              ),
-            },
-            updateBalances: jest.fn().mockResolvedValue(undefined),
-          },
-          tokensController: {
-            state: {
-              allTokens: {},
-            },
-          },
         }),
       ).resolves.toBe(false);
     });
@@ -466,11 +347,11 @@ describe('hyperliquid-deposit eligibility', () => {
     it('returns false when MM Pay has no source balance', async () => {
       await expect(
         isHyperliquidDepositPromptEligible({
-          accountTrackerController: {
-            state: {
-              accountsByChainId: {},
-            },
-          },
+          accountsController: createAccountsController(
+            ACCOUNT_ID,
+            SIGNER_ADDRESS,
+          ),
+          assetsController: createAssetsController(ACCOUNT_ID, {}),
           perpsController: {
             getAccountState: jest.fn().mockResolvedValue({
               marginUsed: '0',
@@ -483,50 +364,27 @@ describe('hyperliquid-deposit eligibility', () => {
           },
           remoteFeatureFlagController: enabledRemoteFeatureFlagController,
           signerAddress: SIGNER_ADDRESS,
-          tokenBalancesController: {
-            state: {
-              tokenBalances: {},
-            },
-            updateBalances: jest.fn().mockResolvedValue(undefined),
-          },
-          tokensController: {
-            state: {
-              allTokens: {},
-            },
-          },
         }),
       ).resolves.toBe(false);
     });
 
-    it('returns false when Hyperliquid balance cannot be fetched', async () => {
+    it('returns false when account ID cannot be found for signer address', async () => {
       await expect(
         isHyperliquidDepositPromptEligible({
-          accountTrackerController: {
-            state: {
-              accountsByChainId: {
-                [CHAIN_IDS.MAINNET]: {
-                  [SIGNER_ADDRESS]: {
-                    balance: '0x1',
-                  },
-                },
-              },
-            },
-          },
+          accountsController: createAccountsController(
+            ACCOUNT_ID,
+            '0xDifferentAddress',
+          ),
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [ETH_MAINNET_CAIP]: { amount: '0.1' },
+          }),
           perpsController: {
-            getAccountState: jest.fn().mockRejectedValue(new Error('failed')),
+            getAccountState: jest.fn().mockResolvedValue({
+              totalBalance: '0',
+            }),
           },
           remoteFeatureFlagController: enabledRemoteFeatureFlagController,
           signerAddress: SIGNER_ADDRESS,
-          tokenBalancesController: {
-            state: {
-              tokenBalances: {},
-            },
-          },
-          tokensController: {
-            state: {
-              allTokens: {},
-            },
-          },
         }),
       ).resolves.toBe(false);
     });

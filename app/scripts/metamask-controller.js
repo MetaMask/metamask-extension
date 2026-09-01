@@ -5462,12 +5462,11 @@ export default class MetamaskController extends EventEmitter {
         createHyperliquidDepositMiddleware({
           isEligible: ({ signerAddress }) =>
             isHyperliquidDepositPromptEligible({
-              accountTrackerController: this.accountTrackerController,
+              accountsController: this.accountsController,
+              assetsController: this.assetsController,
               perpsController: this.messengerClientsByName.PerpsController,
               remoteFeatureFlagController: this.remoteFeatureFlagController,
               signerAddress,
-              tokenBalancesController: this.tokenBalancesController,
-              tokensController: this.tokensController,
             }),
           showDepositPrompt: ({ origin: promptOrigin, signerAddress }) =>
             showHyperliquidDepositPromptApproval({

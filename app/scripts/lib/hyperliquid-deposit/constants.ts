@@ -1,4 +1,4 @@
-import type { Hex } from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 // Hyperliquid deposits are funded with USDC on Arbitrum.
@@ -7,6 +7,10 @@ export const HYPERLIQUID_DEPOSIT_CHAIN_ID = CHAIN_IDS.ARBITRUM;
 // Native USDC on Arbitrum One.
 export const HYPERLIQUID_DEPOSIT_USDC_ADDRESS =
   '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as Hex;
+
+// CAIP asset ID for Arbitrum USDC (eip155:42161/erc20:address).
+export const HYPERLIQUID_DEPOSIT_USDC_CAIP_ID =
+  'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as CaipAssetType;
 
 // Minimum Arbitrum $10 USDC balance (in raw units).
 // USDC has 6 decimals, so $10 = 10 × 10^6 = 10,000,000.
