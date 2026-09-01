@@ -18,10 +18,11 @@ export function useAddressPoisoningAlert(): Alert[] {
   const transactionMeta = useTransactionMetadataRequestOptional();
 
   // Only the first payee is checked, because the detector takes a single
-  // address and the alert renders a single comparison. Batches with more than
-  // one send are rare and the first nested send is the one shown in the
-  // interacting-with row. `getSendRecipients` decodes calldata, so keep this
-  // memoized on the transaction rather than recomputing every render.
+  // address and the alert renders a single comparison. Batch confirmations do
+  // not render a top-level interacting-with row, so supporting multiple payees
+  // requires confirmation UX support. `getSendRecipients` decodes calldata,
+  // so keep this memoized on the transaction rather than recomputing every
+  // render.
   const recipient = useMemo(
     () => (transactionMeta ? getSendRecipients(transactionMeta)[0] : undefined),
     [transactionMeta],
