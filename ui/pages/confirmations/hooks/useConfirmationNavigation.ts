@@ -39,7 +39,22 @@ const CONNECT_APPROVAL_TYPES = [
 export type ConfirmationNavigationOptions = {
   loader?: ConfirmationLoader;
   goBackTo?: string;
+  backTo?: string;
 };
+
+const BACK_TO_PARAM = 'backTo';
+
+function withoutBackToParam(queryString: string) {
+  if (!queryString.includes(BACK_TO_PARAM)) {
+    return queryString;
+  }
+
+  const params = new URLSearchParams(queryString);
+  params.delete(BACK_TO_PARAM);
+  const remaining = params.toString();
+
+  return remaining.length ? `?${remaining}` : '';
+}
 
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
@@ -65,7 +80,7 @@ export function useConfirmationNavigation() {
         confirmationId,
         confirmations,
         Boolean(approvalFlows?.length),
-        queryString,
+        withoutBackToParam(queryString),
       );
 
       if (url) {
@@ -211,9 +226,11 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
     ConfirmationLoader.Default;
 
   const goBackTo = sanitizeRedirectUrl(searchParams.get('goBackTo'));
+  const backTo = sanitizeRedirectUrl(searchParams.get(BACK_TO_PARAM));
 
   return {
     loader,
     goBackTo,
+    backTo,
   };
 }

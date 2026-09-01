@@ -23,7 +23,6 @@ import {
   Severity,
 } from '../../../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
-import { SEND_TRANSACTION_TYPES } from '../../../constants/send';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
@@ -324,12 +323,8 @@ const Footer = () => {
   const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
-  const {
-    currentConfirmation,
-    isScrollToBottomCompleted,
-    goBackTo,
-    suppressAutoExit,
-  } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, isScrollToBottomCompleted, goBackTo } =
+    useConfirmContext<TransactionMeta>();
   const currentConfirmationId = currentConfirmation?.id;
   const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
@@ -356,15 +351,6 @@ const Footer = () => {
     currentConfirmation?.type,
   );
   const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
-  // Send pushes the confirm route onto history (perps/mUSD replace into it),
-  // so Cancel must pop that entry via history.back() rather than replace() to
-  // goBackTo, which would leave a duplicate send-amount entry in history.
-  const isWalletInitiatedSend =
-    currentConfirmation?.origin === 'metamask' &&
-    Boolean(currentConfirmation?.type) &&
-    SEND_TRANSACTION_TYPES.includes(
-      currentConfirmation?.type as TransactionType,
-    );
 
   const onUserRejectedHardwareWalletError = useCallback(async () => {
     // User intentionally rejected on device; follow the cancel flow.
@@ -435,16 +421,7 @@ const Footer = () => {
       if (isTransactionConfirmation) {
         const didConfirm = await onTransactionConfirm();
         if (didConfirm && currentConfirmationId) {
-          // A successful send must land on Home, not the send amount page. The
-          // encoded goBackTo would otherwise make the auto-exit return there,
-          // so suppress it and navigate Home explicitly for wallet-initiated
-          // send.
-          if (isWalletInitiatedSend && goBackTo) {
-            suppressAutoExit();
-            navigate(DEFAULT_ROUTE, { replace: true });
-          } else {
-            navigateNext(currentConfirmationId);
-          }
+          navigateNext(currentConfirmationId);
         }
         return;
       }
@@ -483,9 +460,6 @@ const Footer = () => {
     shouldRunHardwareWalletPreflight,
     isAddEthereumChain,
     isTransactionConfirmation,
-    isWalletInitiatedSend,
-    goBackTo,
-    suppressAutoExit,
     onAddEthereumChain,
     navigate,
     onTransactionConfirm,
@@ -500,18 +474,6 @@ const Footer = () => {
   const handleFooterCancel = useCallback(async () => {
     if (shouldThrottleOrigin) {
       setShowOriginThrottleModal(true);
-      return;
-    }
-
-    if (isWalletInitiatedSend) {
-      // Cancelling a wallet-initiated send abandons the draft and returns Home.
-      // The encoded goBackTo would otherwise make the auto-exit return to the
-      // send amount page, so suppress it and navigate Home explicitly.
-      suppressAutoExit();
-      await onCancel({ location: MetaMetricsEventLocation.Confirmation });
-      onDappSwapCompleted();
-      dismissErrorModal();
-      navigate(DEFAULT_ROUTE, { replace: true });
       return;
     }
 
@@ -539,8 +501,6 @@ const Footer = () => {
     navigateNext,
     onCancel,
     goBackTo,
-    isWalletInitiatedSend,
-    suppressAutoExit,
     shouldThrottleOrigin,
     currentConfirmationId,
     isAddEthereumChain,

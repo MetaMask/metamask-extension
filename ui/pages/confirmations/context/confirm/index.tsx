@@ -26,13 +26,17 @@ export type ConfirmContextType = {
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
   /** Route to use for cancel / reject / auto-exit; captured once from URL on mount. */
   goBackTo: string | undefined;
-  /**
-   * Call before rejecting an approval when the caller will handle navigation
-   * itself (e.g. send Back uses history.back()). Prevents the ConfirmContext
-   * auto-exit from firing a competing navigate() after the confirmation
-   * disappears from state.
-   */
-  suppressAutoExit: () => void;
+  /** Route back to the editable draft. Used only by Back, never by cancel / confirm / external-removal exits. */
+  backTo: string | undefined;
+  /** Declare where auto-exit navigates once the confirmation clears. Callers must NOT also call navigate() — that reintroduces the race this replaces. */
+  setExitTarget: (exitTarget: ExitTarget) => void;
+  clearExitTarget: () => void;
+};
+
+/** `confirmationId` scopes the target so an intent for one confirmation cannot redirect or swallow the exit of a later one. */
+export type ExitTarget = {
+  confirmationId: string;
+  route: string;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -49,8 +53,10 @@ export const ConfirmContextProvider = ({
   /** When provided, injects this as currentConfirmation (e.g. for gas modal opened from cancel-speedup). Skips route sync and navigation. */
   currentConfirmationOverride?: Confirmation;
 }>) => {
-  const { goBackTo: goBackFromUrl } = useConfirmationNavigationOptions();
+  const { goBackTo: goBackFromUrl, backTo: backFromUrl } =
+    useConfirmationNavigationOptions();
   const [goBackTo] = useState(goBackFromUrl);
+  const [backTo] = useState(backFromUrl);
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
   const { currentConfirmation: currentConfirmationFromHook } =
@@ -64,19 +70,28 @@ export const ConfirmContextProvider = ({
   const navigate = useNavigate();
   const previousConfirmation = usePrevious(currentConfirmation);
   const shouldNavigateHomeRef = useRef(false);
-  const autoExitSuppressedRef = useRef(false);
+  const exitTargetRef = useRef<ExitTarget | undefined>(undefined);
+  const exitedConfirmationIdRef = useRef<string | undefined>(undefined);
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
   );
 
-  const suppressAutoExit = useCallback(() => {
-    autoExitSuppressedRef.current = true;
+  const setExitTarget = useCallback((exitTarget: ExitTarget) => {
+    exitTargetRef.current = exitTarget;
+  }, []);
+
+  const clearExitTarget = useCallback(() => {
+    exitTargetRef.current = undefined;
   }, []);
 
   /**
-   * The hook below takes care of navigating to the home page when the confirmation not acted on by user
-   * but removed by us, this can happen in cases like when dapp changes network.
-   * We also skip navigation if the hardware wallet error modal is visible to allow for retry functionality.
+   * Sole owner of exit navigation, for both user-acted confirmations (which
+   * declare an exit target first) and ones we removed ourselves, e.g. when a
+   * dapp changes network. Action handlers must therefore never navigate
+   * themselves: two owners disagreeing on the destination is the race that
+   * landed send Back on Home (CONF-1865).
+   *
+   * Skipped while the hardware wallet error modal is visible, to allow retry.
    */
   useEffect(() => {
     if (currentConfirmationOverride !== undefined) {
@@ -84,14 +99,28 @@ export const ConfirmContextProvider = ({
     }
     if (previousConfirmation && !currentConfirmation) {
       shouldNavigateHomeRef.current = true;
+      exitedConfirmationIdRef.current = previousConfirmation.id;
     }
 
     if (shouldNavigateHomeRef.current && !isHardwareWalletErrorModalVisible) {
       shouldNavigateHomeRef.current = false;
-      if (!autoExitSuppressedRef.current) {
-        navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
-      }
-      autoExitSuppressedRef.current = false;
+
+      const exitTarget = exitTargetRef.current;
+      const exitedConfirmationId = exitedConfirmationIdRef.current;
+      exitTargetRef.current = undefined;
+      exitedConfirmationIdRef.current = undefined;
+
+      const isTargetForExitedConfirmation =
+        exitTarget !== undefined &&
+        exitedConfirmationId !== undefined &&
+        exitTarget.confirmationId === exitedConfirmationId;
+
+      navigate(
+        isTargetForExitedConfirmation
+          ? exitTarget.route
+          : (goBackTo ?? DEFAULT_ROUTE),
+        { replace: true },
+      );
     }
   }, [
     currentConfirmationOverride,
@@ -108,14 +137,18 @@ export const ConfirmContextProvider = ({
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
-      suppressAutoExit,
+      backTo,
+      setExitTarget,
+      clearExitTarget,
     }),
     [
       currentConfirmation,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
-      suppressAutoExit,
+      backTo,
+      setExitTarget,
+      clearExitTarget,
     ],
   );
 
@@ -139,6 +172,8 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
-    suppressAutoExit: () => void;
+    backTo: string | undefined;
+    setExitTarget: (exitTarget: ExitTarget) => void;
+    clearExitTarget: () => void;
   };
 };

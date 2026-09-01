@@ -18,9 +18,9 @@ import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 export const useConfirmActions = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { currentConfirmation, goBackTo } =
+  const { currentConfirmation, goBackTo, clearExitTarget } =
     useConfirmContext<TransactionMeta>();
-  const { navigateBackIfSend } = useConfirmSendNavigation();
+  const { returnToSendDraftIfSend } = useConfirmSendNavigation();
   const { id: currentConfirmationId } = currentConfirmation || {};
 
   const rejectApproval = useCallback(
@@ -49,20 +49,30 @@ export const useConfirmActions = () => {
   const onCancel = useCallback(
     async ({
       location,
-      navigateBackForSend = false,
+      returnToSendDraft = false,
       navigateBackToPreviousPage = false,
     }: {
       location?: MetaMetricsEventLocation;
-      navigateBackForSend?: boolean;
+      returnToSendDraft?: boolean;
       navigateBackToPreviousPage?: boolean;
     }) => {
       if (!currentConfirmation) {
         return;
       }
-      if (navigateBackForSend) {
-        navigateBackIfSend();
+      // The exit target must be declared before rejecting, because the
+      // confirmation can leave state before this function resumes.
+      const willReturnToSendDraft =
+        returnToSendDraft && returnToSendDraftIfSend();
+
+      try {
+        await rejectApproval({ location });
+      } catch (error) {
+        if (willReturnToSendDraft) {
+          clearExitTarget();
+        }
+        throw error;
       }
-      await rejectApproval({ location });
+
       resetTransactionState();
       if (navigateBackToPreviousPage) {
         // Replace (not push) so the transient wallet-initiated confirmation
@@ -76,9 +86,10 @@ export const useConfirmActions = () => {
       }
     },
     [
+      clearExitTarget,
       currentConfirmation,
       navigate,
-      navigateBackIfSend,
+      returnToSendDraftIfSend,
       rejectApproval,
       resetTransactionState,
       goBackTo,

@@ -80,9 +80,7 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        expect.stringMatching(
-          /^\/confirm-transaction\?.*loader=send.*goBackTo=/u,
-        ),
+        expect.stringMatching(/^\/confirm-transaction\?.*loader=send.*backTo=/u),
       );
     });
   });

@@ -73,10 +73,12 @@ export const useSendActions = () => {
         params.set('maxValueMode', String(maxValueMode));
       }
       params.set('loader', ConfirmationLoader.Send);
-      // Capture the current send URL so ConfirmContext auto-exit and the Back
-      // button both navigate back here (replace) instead of going to Home.
-      // This eliminates the race between navigate(-1) and the auto-exit replace.
-      params.set('goBackTo', `${pathname}${search}`);
+      // Encodes the draft URL (which carries amount/recipient/asset) so Back
+      // can restore it. Deliberately `backTo`, not `goBackTo`: only Back
+      // returns here, while cancel and confirm still exit to Home.
+
+
+      params.set('backTo', `${pathname}${search}`);
       const route = `${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`;
       navigate(route);
     } else {

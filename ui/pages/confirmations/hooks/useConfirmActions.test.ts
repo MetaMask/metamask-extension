@@ -3,6 +3,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../test/data/confirmations/token-transfer';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import * as ConfirmContext from '../context/confirm';
 import * as ConfirmSendNavigation from './useConfirmSendNavigation';
 import { useConfirmActions } from './useConfirmActions';
 
@@ -61,24 +62,50 @@ describe('useConfirmActions', () => {
     });
   });
 
-  it('calls navigateBackIfSend when onCancel is called with navigateBackForSend true', () => {
-    const mockNavigateBackIfSend = jest.fn();
+  it('calls returnToSendDraftIfSend when onCancel is called with returnToSendDraft true', () => {
+    const mockReturnToSendDraftIfSend = jest.fn();
     jest
       .spyOn(ConfirmSendNavigation, 'useConfirmSendNavigation')
-      .mockReturnValue({ navigateBackIfSend: mockNavigateBackIfSend });
+      .mockReturnValue({
+        returnToSendDraftIfSend: mockReturnToSendDraftIfSend,
+      });
     const result = renderHook();
-    result.onCancel({ location: 'dummy', navigateBackForSend: true });
-    expect(mockNavigateBackIfSend).toHaveBeenCalled();
+    result.onCancel({ location: 'dummy', returnToSendDraft: true });
+    expect(mockReturnToSendDraftIfSend).toHaveBeenCalled();
   });
 
-  it('does not call navigateBackIfSend when onCancel is called by default', () => {
-    const mockNavigateBackIfSend = jest.fn();
+  it('does not call returnToSendDraftIfSend when onCancel is called by default', () => {
+    const mockReturnToSendDraftIfSend = jest.fn();
     jest
       .spyOn(ConfirmSendNavigation, 'useConfirmSendNavigation')
-      .mockReturnValue({ navigateBackIfSend: mockNavigateBackIfSend });
+      .mockReturnValue({
+        returnToSendDraftIfSend: mockReturnToSendDraftIfSend,
+      });
     const result = renderHook();
     result.onCancel({ location: 'dummy' });
-    expect(mockNavigateBackIfSend).not.toHaveBeenCalled();
+    expect(mockReturnToSendDraftIfSend).not.toHaveBeenCalled();
+  });
+
+  // The exit target is declared before rejection, so a failed rejection would
+  // otherwise leave it armed to hijack a later confirmation's exit.
+  it('clears the exit target when rejecting the approval fails', async () => {
+    const mockClearExitTarget = jest.fn();
+    jest
+      .spyOn(ConfirmSendNavigation, 'useConfirmSendNavigation')
+      .mockReturnValue({ returnToSendDraftIfSend: () => true });
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: { id: 'tx-1' },
+      goBackTo: undefined,
+      clearExitTarget: mockClearExitTarget,
+    } as unknown as ReturnType<typeof ConfirmContext.useConfirmContext>);
+    mockDispatch.mockRejectedValue(new Error('reject failed'));
+
+    const result = renderHook();
+
+    await expect(
+      result.onCancel({ location: 'dummy', returnToSendDraft: true }),
+    ).rejects.toThrow('reject failed');
+    expect(mockClearExitTarget).toHaveBeenCalled();
   });
 
   it('does not navigate when onCancel is called by default', async () => {

@@ -68,7 +68,7 @@ export const WalletInitiatedHeader = () => {
     if (isNativeSend || isERC20TokenSend || isNFTTokenSend) {
       onCancel({
         location: MetaMetricsEventLocation.Confirmation,
-        navigateBackForSend: true,
+        returnToSendDraft: true,
       });
     }
   }, [confirmationType, currentConfirmation, navigate, onCancel]);

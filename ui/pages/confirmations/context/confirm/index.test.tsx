@@ -164,4 +164,101 @@ describe('ConfirmContextProvider', () => {
     rerender();
     expect(result.current.goBackTo).toBe('/asset/keep');
   });
+
+  describe('exit target', () => {
+    const setSearch = (search: string) => {
+      mockWindowSearch = search;
+      window.history.replaceState({}, '', `/${search}`);
+    };
+
+    it('reads backTo from the URL', () => {
+      setSearch('?backTo=/send/amount-recipient');
+      const { result } = renderContextProvider(createStore());
+
+      expect(result.current.backTo).toBe('/send/amount-recipient');
+    });
+
+    it('ignores unsafe backTo values (absolute URLs)', () => {
+      setSearch('?backTo=https%3A%2F%2Fevil.com%2Fphishing');
+      const { result } = renderContextProvider(createStore());
+
+      expect(result.current.backTo).toBeUndefined();
+    });
+
+    it('navigates to the declared exit target instead of goBackTo', () => {
+      setSearch('?goBackTo=/asset/eth&backTo=/send/amount-recipient');
+      const { result, rerender } = renderContextProvider(createStore());
+
+      result.current.setExitTarget({
+        confirmationId: 'test-id',
+        route: '/send/amount-recipient',
+      });
+      mockCurrentConfirmation = undefined;
+      rerender();
+
+      expect(mockNavigate).toHaveBeenCalledWith('/send/amount-recipient', {
+        replace: true,
+      });
+    });
+
+    // Guards the stale-intent leak: a target declared for one confirmation must
+    // never redirect the exit of the next one in the approval queue.
+    it('ignores an exit target declared for a different confirmation', () => {
+      const { result, rerender } = renderContextProvider(createStore());
+
+      result.current.setExitTarget({
+        confirmationId: 'some-other-confirmation',
+        route: '/send/amount-recipient',
+      });
+      mockCurrentConfirmation = undefined;
+      rerender();
+
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
+    });
+
+    it('ignores an exit target that was cleared', () => {
+      const { result, rerender } = renderContextProvider(createStore());
+
+      result.current.setExitTarget({
+        confirmationId: 'test-id',
+        route: '/send/amount-recipient',
+      });
+      result.current.clearExitTarget();
+      mockCurrentConfirmation = undefined;
+      rerender();
+
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
+    });
+
+    // A one-shot target that survived its exit could hijack a later one, which
+    // is how the previous suppression flag could strand the user on a dead
+    // confirmation screen.
+    it('consumes the exit target so a later exit falls back to the default', () => {
+      const { result, rerender } = renderContextProvider(createStore());
+
+      result.current.setExitTarget({
+        confirmationId: 'test-id',
+        route: '/send/amount-recipient',
+      });
+      mockCurrentConfirmation = undefined;
+      rerender();
+      expect(mockNavigate).toHaveBeenCalledWith('/send/amount-recipient', {
+        replace: true,
+      });
+
+      mockNavigate.mockClear();
+      mockCurrentConfirmation = { id: 'test-id', type: 'transaction' };
+      rerender();
+      mockCurrentConfirmation = undefined;
+      rerender();
+
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
+    });
+  });
 });

@@ -1,32 +1,26 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { useConfirmContext } from '../context/confirm';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
-
-const SendTransactionTypes = [
-  TransactionType.simpleSend,
-  TransactionType.tokenMethodTransfer,
-  TransactionType.tokenMethodTransferFrom,
-  TransactionType.tokenMethodSafeTransferFrom,
-];
+import { SEND_TRANSACTION_TYPES } from '../constants/send';
 
 export const useConfirmSendNavigation = () => {
-  const navigate = useNavigate();
-  const { currentConfirmation, suppressAutoExit } =
+  const { currentConfirmation, backTo, setExitTarget } =
     useConfirmContext<TransactionMeta>();
 
-  const navigateBackIfSend = useCallback(() => {
-    const { origin, type } = currentConfirmation;
-    if (origin === 'metamask' && type && SendTransactionTypes.includes(type)) {
-      suppressAutoExit();
-      navigate(PREVIOUS_ROUTE);
-    }
-  }, [currentConfirmation, navigate, suppressAutoExit]);
+  const returnToSendDraftIfSend = useCallback(() => {
+    const { id, origin, type } = currentConfirmation;
+    const isWalletInitiatedSend =
+      origin === ORIGIN_METAMASK && type && SEND_TRANSACTION_TYPES.includes(type);
 
-  return { navigateBackIfSend };
+    if (!isWalletInitiatedSend || !backTo) {
+      return false;
+    }
+
+    setExitTarget({ confirmationId: id, route: backTo });
+    return true;
+  }, [backTo, currentConfirmation, setExitTarget]);
+
+  return { returnToSendDraftIfSend };
 };

@@ -34,7 +34,7 @@ const E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700 = {
   usdPrice: ETH_USD_PRICE,
 };
 
-describe.only('Send - Edit Transaction', function () {
+describe('Send - Edit Transaction', function () {
   it('edits ETH value and legacy gas from confirm page', async function () {
     await withFixtures(
       {

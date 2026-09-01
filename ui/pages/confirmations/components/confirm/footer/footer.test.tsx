@@ -212,10 +212,9 @@ jest.mock('../../../hooks/transactions/useTransactionConfirm', () => ({
     onTransactionConfirm: mockOnTransactionConfirm,
   })),
 }));
-const mockNavigateBackIfSend = jest.fn();
 jest.mock('../../../hooks/useConfirmSendNavigation', () => ({
   useConfirmSendNavigation: jest.fn(() => ({
-    navigateBackIfSend: mockNavigateBackIfSend,
+    returnToSendDraftIfSend: jest.fn(),
   })),
 }));
 
@@ -291,7 +290,6 @@ describe('ConfirmFooter', () => {
     setErrorModalSuppressedMock.mockReset();
     mockNavigateNext.mockReset();
     mockNavigateToId.mockReset();
-    mockNavigateBackIfSend.mockReset();
     mockUseHardwareWalletState.mockReset();
     mockUseHardwareWalletConfig.mockReset();
     mockUseHardwareWalletActions.mockReset();
@@ -1543,90 +1541,6 @@ describe('ConfirmFooter', () => {
       await waitFor(() => {
         expect(navigateNextMock).toHaveBeenCalled();
       });
-    });
-
-    it('navigates Home when cancelling a wallet-initiated send instead of returning to goBackTo', async () => {
-      const navigateNextMock = jest.fn();
-      useConfirmationNavigationMock.mockReturnValue({
-        navigateNext: navigateNextMock,
-        navigateToId: jest.fn(),
-      } as unknown as ReturnType<typeof useConfirmationNavigation>);
-
-      const suppressAutoExitMock = jest.fn();
-      const goBackTo = '/send/amount-recipient';
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: genUnapprovedTokenTransferConfirmation({
-          isWalletInitiatedConfirmation: true,
-        }),
-        isScrollToBottomCompleted: true,
-        setIsScrollToBottomCompleted: () => undefined,
-        goBackTo,
-        suppressAutoExit: suppressAutoExitMock,
-      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
-
-      const rejectSpy = jest
-        .spyOn(Actions, 'rejectPendingApproval')
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .mockImplementation(() => Promise.resolve() as any);
-      mockUseNavigate.mockClear();
-
-      const { getAllByRole } = render();
-      fireEvent.click(getAllByRole('button')[0]);
-
-      await waitFor(() => {
-        expect(rejectSpy).toHaveBeenCalled();
-      });
-
-      expect(suppressAutoExitMock).toHaveBeenCalledTimes(1);
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: true,
-      });
-      expect(mockUseNavigate).not.toHaveBeenCalledWith(goBackTo, {
-        replace: true,
-      });
-      expect(navigateNextMock).not.toHaveBeenCalled();
-    });
-
-    it('navigates Home after confirming a wallet-initiated send instead of returning to goBackTo', async () => {
-      const navigateNextMock = jest.fn();
-      useConfirmationNavigationMock.mockReturnValue({
-        navigateNext: navigateNextMock,
-        navigateToId: jest.fn(),
-      } as unknown as ReturnType<typeof useConfirmationNavigation>);
-
-      const suppressAutoExitMock = jest.fn();
-      const goBackTo = '/send/amount-recipient';
-      const sendConfirmation = genUnapprovedTokenTransferConfirmation({
-        isWalletInitiatedConfirmation: true,
-      });
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: sendConfirmation,
-        isScrollToBottomCompleted: true,
-        setIsScrollToBottomCompleted: () => undefined,
-        goBackTo,
-        suppressAutoExit: suppressAutoExitMock,
-      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
-      mockOnTransactionConfirm.mockResolvedValue(true);
-      mockUseNavigate.mockClear();
-
-      const { getByText } = render(
-        getMockConfirmStateForTransaction(sendConfirmation),
-      );
-      fireEvent.click(getByText(messages.confirm.message));
-
-      await waitFor(() => {
-        expect(mockOnTransactionConfirm).toHaveBeenCalled();
-      });
-
-      expect(suppressAutoExitMock).toHaveBeenCalledTimes(1);
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: true,
-      });
-      expect(mockUseNavigate).not.toHaveBeenCalledWith(goBackTo, {
-        replace: true,
-      });
-      expect(navigateNextMock).not.toHaveBeenCalled();
     });
   });
 });
