@@ -22,6 +22,16 @@ export const TRX_BALANCE = 106072392; // ~106.07 TRX
 export const TRX_TO_USD_RATE = 0.29469;
 export const SUN_PER_TRX = 1_000_000;
 
+export const BROADCAST_TXID =
+  '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5';
+
+// Hex-encoded version of TRON_ACCOUNT_ADDRESS (TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3).
+export const TRON_ACCOUNT_ADDRESS_HEX =
+  '41588c5216750cceaad16cf5a757e3f7b32835a5e1';
+
+export const TRON_RECIPIENT_ADDRESS_HEX =
+  '41639f09ebb2021f11ab768b639859ea6f66a9ea50';
+
 const TRON_BLOCK_RESPONSE = {
   blockID: '0000000004b6f733ff89d72ddc1ce1eabd6045d84cbc4eb0a7e88d9223c12c5e',
   block_header: {
@@ -216,7 +226,7 @@ export async function mockBroadTransaction(
       statusCode: 200,
       json: {
         result: true,
-        txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
+        txid: BROADCAST_TXID,
       },
     }));
 }
@@ -476,7 +486,7 @@ export async function createStatefulTronAccountMock(
         statusCode: 200,
         json: {
           result: true,
-          txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
+          txid: BROADCAST_TXID,
         },
       };
     });
@@ -1626,6 +1636,217 @@ export async function mockAccountsApiV5WithTron(
         balances,
       },
     }));
+}
+
+/**
+ * Minimal Tron mocks for a native TRX send flow.
+ *
+ * - TRX-only account (no TRC20/TRC10 tokens)
+ * - Stateful broadcast: after the tx is broadcast, both
+ *   `gettransactioninfobyid` and the `/transactions` history endpoint
+ *   return the confirmed tx so the snap's polling loop can flip the
+ *   activity row from pending → confirmed.
+ * - TRX-only spot prices (no HTX/SEED/USDT/USDD data)
+ * - No pre-existing transaction history
+ */
+export async function mockTronSendApis(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  let broadcasted = false;
+
+  // --- stateful broadcast + confirmation mocks ---
+
+  const broadcastEndpoint = await mockServer
+    .forPost(tronInfuraUrl('/wallet/broadcasttransaction'))
+    .thenCallback(() => {
+      broadcasted = true;
+      return {
+        statusCode: 200,
+        json: { result: true, txid: BROADCAST_TXID },
+      };
+    });
+
+  // The snap polls this endpoint every 3 s after broadcast (up to 5 attempts).
+  // Once it sees `id` + `blockNumber` it triggers a history sync.
+  const txInfoEndpoint = await mockServer
+    .forPost(tronInfuraUrl('/wallet/gettransactioninfobyid'))
+    .always()
+    .thenCallback(() => {
+      if (!broadcasted) {
+        return { statusCode: 200, json: {} };
+      }
+      return {
+        statusCode: 200,
+        json: {
+          id: BROADCAST_TXID,
+          blockNumber: 79099700,
+          blockTimeStamp: Date.now(),
+          receipt: { result: 'SUCCESS', net_usage: 265 },
+        },
+      };
+    });
+
+  // Native tx history: returns the confirmed send after broadcast.
+  const txHistoryEndpoint = await mockServer
+    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions`))
+    .always()
+    .thenCallback(() => {
+      if (!broadcasted) {
+        return {
+          statusCode: 200,
+          json: {
+            data: [],
+            success: true,
+            meta: { at: Date.now(), page_size: 0 },
+          },
+        };
+      }
+      return {
+        statusCode: 200,
+        json: {
+          data: [
+            {
+              ret: [{ contractRet: 'SUCCESS', fee: 0 }],
+              txID: BROADCAST_TXID,
+              net_usage: 265,
+              blockNumber: 79099700,
+              block_timestamp: Date.now(),
+              raw_data: {
+                contract: [
+                  {
+                    parameter: {
+                      value: {
+                        amount: 1_000_000,
+                        owner_address: TRON_ACCOUNT_ADDRESS_HEX,
+                        to_address: TRON_RECIPIENT_ADDRESS_HEX,
+                      },
+                      type_url: 'type.googleapis.com/protocol.TransferContract',
+                    },
+                    type: 'TransferContract',
+                  },
+                ],
+                ref_block_bytes: 'f733',
+                ref_block_hash: 'ff89d72ddc1ce1ea',
+                expiration: Date.now() + 60_000,
+                timestamp: Date.now(),
+              },
+              internal_transactions: [],
+            },
+          ],
+          success: true,
+          meta: { at: Date.now(), page_size: 1 },
+        },
+      };
+    });
+
+  // TRC20 history: always empty (native TRX send, not a token transfer)
+  const trc20HistoryEndpoint = await mockServer
+    .forGet(
+      tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions/trc20`),
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: [],
+        success: true,
+        meta: { at: Date.now(), page_size: 0 },
+      },
+    }));
+
+  // --- TRX-only account (no TRC20/TRC10 balances) ---
+
+  const accountEndpoint = await mockServer
+    .forGet(
+      new RegExp(
+        `^${TRON_INFURA_BASE_URL}/v1/accounts/${TRON_ACCOUNT_ADDRESS}($|\\?)`,
+        'u',
+      ),
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: [
+          {
+            address: TRON_ACCOUNT_ADDRESS_HEX,
+            balance: TRX_BALANCE,
+            owner_permission: {
+              keys: [{ address: TRON_ACCOUNT_ADDRESS, weight: 1 }],
+              threshold: 1,
+              permission_name: 'owner',
+            },
+            active_permission: [
+              {
+                operations:
+                  '7fff1fc0033ec30f000000000000000000000000000000000000000000000000',
+                keys: [{ address: TRON_ACCOUNT_ADDRESS, weight: 1 }],
+                threshold: 1,
+                id: 2,
+                type: 'Active',
+                permission_name: 'active',
+              },
+            ],
+            account_resource: { energy_window_optimized: true },
+            frozenV2: [
+              {},
+              { amount: 20000000, type: 'ENERGY' },
+              { type: 'TRON_POWER' },
+            ],
+            trc20: [],
+            assetV2: [],
+          },
+        ],
+        success: true,
+        meta: { at: Date.now(), page_size: 1 },
+      },
+    }));
+
+  // --- TRX-only spot prices ---
+
+  const spotPricesEndpoint = await mockServer
+    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const ids = url.searchParams.get('assetIds')?.split(',') ?? [];
+      const withMarket = url.searchParams.get('includeMarketData') === 'true';
+      const vs = url.searchParams.get('vsCurrency') ?? 'usd';
+
+      const trxMarketData = { id: 'tron', price: TRX_TO_USD_RATE };
+      const json = Object.fromEntries(
+        ids.map((id) => [
+          id,
+          id.includes('slip44:195')
+            ? withMarket
+              ? trxMarketData
+              : { [vs]: TRX_TO_USD_RATE }
+            : null,
+        ]),
+      );
+      return { statusCode: 200, json };
+    });
+
+  return [
+    await mockTokensV2SupportedNetworks(mockServer),
+    await mockTokensV3Assets(mockServer),
+    await mockAccountsApiV2WithTron(mockServer),
+    await mockAccountsApiV5WithTron(mockServer),
+    await mockTronFeatureFlags(mockServer),
+    await mockTronGetReward(mockServer),
+    await mockTronGetBlock(mockServer),
+    await mockTronGetNowBlock(mockServer),
+    await mockTronGetBlockByNum(mockServer),
+    await mockTronGetAccountResource(mockServer),
+    await mockExchangeRates(mockServer),
+    await mockFiatExchangeRates(mockServer),
+    broadcastEndpoint,
+    txInfoEndpoint,
+    txHistoryEndpoint,
+    trc20HistoryEndpoint,
+    accountEndpoint,
+    spotPricesEndpoint,
+  ];
 }
 
 export async function mockTronApis(
