@@ -367,7 +367,7 @@ class AccountListPage {
     if (expectedErrorMessage) {
       await this.driver.clickElement(this.importAccountConfirmButton);
       await this.driver.waitForSelector({
-        css: '.mm-help-text',
+        css: 'p.text-error-default',
         text: expectedErrorMessage,
       });
     } else {
