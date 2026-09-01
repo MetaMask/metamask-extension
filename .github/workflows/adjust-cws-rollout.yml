@@ -105,11 +105,6 @@ jobs:
           # Sets GITHUB_ENV and same-step vars: WIF_*, EXTENSION_ID, PUBLISHER_ID, CRX_VERSION.
           # shellcheck disable=SC1091
           source .github/scripts/cws-target-config.sh
-          {
-            echo "target=${TARGET}"
-            echo "extension_id=${EXTENSION_ID}"
-            echo "publisher_id=${PUBLISHER_ID}"
-          } >> "${GITHUB_OUTPUT}"
 
       - name: Authenticate to Google Cloud
         id: auth

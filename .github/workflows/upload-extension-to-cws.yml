@@ -37,7 +37,7 @@ on:
       version:
         required: true
         type: string
-        description: 'Chrome manifest version — must match GitHub Release tag v{version}'
+        description: 'Release semver X.Y.Z (e.g. 13.43.0) — crxVersion is derived per target (prod/dev → X.Y.Z.0, flask → X.Y.Z.150)'
       target:
         required: true
         type: string
