@@ -10,7 +10,7 @@ import { buildApproveAgentTypedData } from "./approve-agent-action";
 
 // Repo root, used to anchor the oracle subprocess's module resolution to this
 // repository's node_modules (where @nktkas/hyperliquid is installed as a
-// transitive dependency of @metamask/perps-controller).
+// direct dependency).
 const REPO_ROOT = path.join(__dirname, "..", "..", "..", "..", "..");
 
 const TEST_PRIVATE_KEY = `0x${"11".repeat(32)}`;

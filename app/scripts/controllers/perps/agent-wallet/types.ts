@@ -58,6 +58,11 @@ export type PerpsAgentWalletControllerGetActiveAgentAction = {
   handler: PerpsAgentWalletController['getActiveAgent'];
 };
 
+export type PerpsAgentWalletControllerGetAgentSignerAction = {
+  type: 'PerpsAgentWalletController:getAgentSigner';
+  handler: PerpsAgentWalletController['getAgentSigner'];
+};
+
 export type PerpsAgentWalletControllerBeginSetupAction = {
   type: 'PerpsAgentWalletController:beginSetup';
   handler: PerpsAgentWalletController['beginSetup'];
@@ -91,6 +96,7 @@ export type PerpsAgentWalletControllerOnLockAction = {
 export type PerpsAgentWalletControllerActions =
   | PerpsAgentWalletControllerGetStateAction
   | PerpsAgentWalletControllerGetActiveAgentAction
+  | PerpsAgentWalletControllerGetAgentSignerAction
   | PerpsAgentWalletControllerBeginSetupAction
   | PerpsAgentWalletControllerCompleteSetupAction
   | PerpsAgentWalletControllerFailSetupAction

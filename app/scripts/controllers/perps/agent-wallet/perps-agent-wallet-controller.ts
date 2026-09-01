@@ -45,6 +45,7 @@ const perpsAgentWalletControllerMetadata = {
 
 const MESSENGER_EXPOSED_METHODS = [
   'getActiveAgent',
+  'getAgentSigner',
   'beginSetup',
   'completeSetup',
   'failSetup',

@@ -6,6 +6,7 @@ import {
   type UserHistoryItem,
 } from '@metamask/perps-controller';
 import { SERVICE_NAME as STORAGE_SERVICE_NAME } from '@metamask/storage-service';
+import log from 'loglevel';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { isBenignDisconnectError } from '../controllers/perps/perps-error-utils';
 import { MessengerClientInitFunction } from './types';
@@ -115,8 +116,60 @@ export const PerpsControllerInit: MessengerClientInitFunction<
         : {}),
     },
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
+    // Single-path wallet seam: when the selected master account has an active
+    // agent key (in-memory plaintext, only while unlocked), HyperLiquid actions
+    // sign with the agent key and never contact the keyring.
+    getAgentSigner: async (masterAccountAddress) =>
+      controllerMessenger.call(
+        'PerpsAgentWalletController:getAgentSigner',
+        masterAccountAddress,
+      ),
   });
   messengerClientRef.current = messengerClient;
+
+  // Switch the HyperLiquid trading wallet to the agent signer when an agent
+  // activates, and back to the master keyring path when the wallet locks
+  // (the in-memory agent plaintext is cleared on lock, so `getAgentSigner`
+  // returns null and master signing fails with KEYRING_LOCKED while locked,
+  // exactly as before this seam existed). Best-effort: the provider may not
+  // be initialized yet; the next activation/lock event re-syncs.
+  controllerMessenger.subscribe(
+    'PerpsAgentWalletController:agentActivated',
+    ({ masterAccountAddress }: { masterAccountAddress: string }) => {
+      let signer;
+      try {
+        signer = controllerMessenger.call(
+          'PerpsAgentWalletController:getAgentSigner',
+          masterAccountAddress,
+        );
+      } catch (error) {
+        log.warn(
+          'PerpsController: failed to get agent signer for override',
+          error,
+        );
+        return;
+      }
+      (controllerMessenger as PackagePerpsControllerMessenger)
+        .call('PerpsController:setTradingWalletOverride', signer)
+        .catch((error) => {
+          log.warn(
+            'PerpsController: failed to apply agent trading wallet override',
+            error,
+          );
+        });
+    },
+  );
+
+  controllerMessenger.subscribe('KeyringController:lock', () => {
+    (controllerMessenger as PackagePerpsControllerMessenger)
+      .call('PerpsController:setTradingWalletOverride', null)
+      .catch((error) => {
+        log.warn(
+          'PerpsController: failed to reset agent trading wallet override',
+          error,
+        );
+      });
+  });
 
   const api = getApi(
     messengerClient,
