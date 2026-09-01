@@ -8618,8 +8618,11 @@
     "message": "Min $1",
     "description": "$1 is the minimum fiat buy amount"
   },
+  "rampsChooseProvider": {
+    "message": "Choose provider"
+  },
   "rampsPreviouslyUsed": {
-    "message": "Previously used"
+    "message": "Last used"
   },
   "rampsProviders": {
     "message": "Providers"
