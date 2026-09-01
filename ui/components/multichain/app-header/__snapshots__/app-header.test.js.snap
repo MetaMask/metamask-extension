@@ -503,8 +503,8 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                           </svg>
                         </div>
                         <div
-                          class="absolute"
-                          style="top: 0px; right: 4px;"
+                          class="absolute inline-flex items-center justify-center"
+                          style="top: 7%; right: 7%; transform: translate(calc(50% + 4px), -50%);"
                         >
                           <div
                             class="inline-flex rounded-full border-2 border-background-default"
