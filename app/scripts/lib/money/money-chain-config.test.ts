@@ -19,6 +19,10 @@ const MONAD_NETWORK_CONFIGURATION = FEATURED_RPCS.find(
   ({ chainId }) => chainId === CHAIN_IDS.MONAD,
 );
 
+const SEI_NETWORK_CONFIGURATION = FEATURED_RPCS.find(
+  ({ chainId }) => chainId === CHAIN_IDS.SEI,
+);
+
 function createConfigurator({
   networkConfigured = false,
   addNetwork = jest.fn().mockResolvedValue(MONAD_NETWORK_CONFIGURATION),
@@ -95,6 +99,62 @@ describe('createMoneyChainConfigurator', () => {
     await Promise.all([first, second]);
 
     expect(addNetwork).toHaveBeenCalledTimes(1);
+  });
+
+  it('runs a configuration for a different chain after the in-flight one instead of joining it', async () => {
+    let resolveFirst: (value?: unknown) => void = () => undefined;
+    const addNetwork = jest
+      .fn()
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveFirst = resolve;
+          }),
+      )
+      .mockResolvedValue(SEI_NETWORK_CONFIGURATION);
+    const { ensureMoneyChainConfigured } = createConfigurator({ addNetwork });
+
+    const first = ensureMoneyChainConfigured(VAULT_CONFIG);
+    const second = ensureMoneyChainConfigured({
+      ...VAULT_CONFIG,
+      chainId: CHAIN_IDS.SEI,
+    });
+    expect(addNetwork).toHaveBeenCalledTimes(1);
+
+    resolveFirst();
+    await Promise.all([first, second]);
+
+    expect(addNetwork).toHaveBeenCalledTimes(2);
+    expect(SEI_NETWORK_CONFIGURATION).toBeDefined();
+    expect(addNetwork).toHaveBeenLastCalledWith(SEI_NETWORK_CONFIGURATION, {
+      setActive: false,
+    });
+  });
+
+  it('configures a different chain even when the in-flight one fails', async () => {
+    let rejectFirst: (error: Error) => void = () => undefined;
+    const addNetwork = jest
+      .fn()
+      .mockImplementationOnce(
+        () =>
+          new Promise((_resolve, reject) => {
+            rejectFirst = reject;
+          }),
+      )
+      .mockResolvedValue(SEI_NETWORK_CONFIGURATION);
+    const { ensureMoneyChainConfigured } = createConfigurator({ addNetwork });
+
+    const first = ensureMoneyChainConfigured(VAULT_CONFIG);
+    const second = ensureMoneyChainConfigured({
+      ...VAULT_CONFIG,
+      chainId: CHAIN_IDS.SEI,
+    });
+
+    rejectFirst(new Error('offline'));
+    await expect(first).rejects.toThrow('offline');
+    await second;
+
+    expect(addNetwork).toHaveBeenCalledTimes(2);
   });
 
   it('does not cache a failure, so the next call retries', async () => {

@@ -1,5 +1,6 @@
 import type { Messenger } from '@metamask/messenger';
 import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
+import type { Hex } from '@metamask/utils';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import type { MoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
 import type { LegacyBackgroundApiServiceAddNetworkAction } from '../../services/legacy-background-api-service-method-action-types';
@@ -31,6 +32,7 @@ export function createMoneyChainConfigurator(
   messenger: MoneyChainConfigMessenger,
 ): EnsureMoneyChainConfigured {
   let inFlight: Promise<void> | undefined;
+  let inFlightChainId: Hex | undefined;
 
   const configureChain = async (
     vaultConfig: MoneyAccountVaultConfig,
@@ -61,18 +63,31 @@ export function createMoneyChainConfigurator(
   return async function ensureMoneyChainConfigured(
     vaultConfig: MoneyAccountVaultConfig,
   ): Promise<void> {
-    if (inFlight) {
+    if (inFlight && inFlightChainId === vaultConfig.chainId) {
       return await inFlight;
     }
 
-    const configuration = configureChain(vaultConfig);
+    // A request for a different chain must not join the in-flight run — it
+    // would resolve without its chain ever being added. It must not overlap
+    // it either: `addNetwork` temporarily mutates the enabled-network map and
+    // restores it afterwards, so two interleaved runs could clobber each
+    // other's restore. Queue behind the in-flight run instead.
+    const previous = inFlight;
+    const configuration = (async () => {
+      if (previous) {
+        await previous.catch(() => undefined);
+      }
+      await configureChain(vaultConfig);
+    })();
     inFlight = configuration;
+    inFlightChainId = vaultConfig.chainId;
 
     try {
       await configuration;
     } finally {
       if (inFlight === configuration) {
         inFlight = undefined;
+        inFlightChainId = undefined;
       }
     }
   };
