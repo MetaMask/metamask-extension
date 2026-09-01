@@ -9,6 +9,7 @@ import type {
   KeyringControllerGetStateAction,
   KeyringControllerLockEvent,
   KeyringControllerSignTypedMessageAction,
+  KeyringControllerVerifyPasswordAction,
 } from '@metamask/keyring-controller';
 import type { PerpsAgentWalletController } from './perps-agent-wallet-controller';
 
@@ -118,15 +119,18 @@ export type PerpsAgentWalletControllerEvents =
   | PerpsAgentWalletControllerAgentActivatedEvent;
 
 // Allowances for KeyringController actions exist so that any accidental
-// keyring access is possible-but-observable (and covered by tests asserting
-// zero keyring calls); the controller never registers agent keys as keyring
-// accounts.
+// keyring access is possible-but-observable; the controller never registers
+// agent keys as keyring accounts. Two actions are used deliberately by the
+// setup flow (`agent-setup-flow.ts`): `signTypedMessage` (the MASTER account
+// signs the approveAgent typed data) and `verifyPassword` (the password gates
+// encryption of the agent key).
 export type PerpsAgentWalletControllerAllowedActions =
   | PerpsAgentWalletControllerActions
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerGetStateAction
-  | KeyringControllerSignTypedMessageAction;
+  | KeyringControllerSignTypedMessageAction
+  | KeyringControllerVerifyPasswordAction;
 
 export type PerpsAgentWalletControllerAllowedEvents =
   | PerpsAgentWalletControllerEvents

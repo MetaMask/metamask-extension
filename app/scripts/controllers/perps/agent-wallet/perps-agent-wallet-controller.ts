@@ -7,6 +7,7 @@ import log from 'loglevel';
 import { encryptorFactory } from '../../../lib/encryptor-factory';
 import { AgentSecretStore, generateAgentKeypair } from './agent-secret-store';
 import type { AgentKeyHandle } from './agent-secret-store';
+import { setupAgentWallet } from './agent-setup-flow';
 import type {
   AgentRegistration,
   PerpsAgentSigner,
@@ -239,6 +240,33 @@ export class PerpsAgentWalletController extends BaseController<
     this.update((state) => {
       state.setupStatusByAccount[masterAccountAddress] = 'failed';
     });
+  }
+
+  /**
+   * Orchestration entry point for the full agent setup flow: verifies the
+   * wallet password, generates the agent keypair, has the MASTER account sign
+   * the Hyperliquid `approveAgent` typed data via
+   * `KeyringController:signTypedMessage`, submits the action to the exchange,
+   * and — on success — activates and persists the agent (emitting
+   * `agentActivated`).
+   *
+   * Throws {@link AgentSetupRejectionError} when the password is wrong or the
+   * master signature is rejected, and {@link AgentSetupSubmissionError} when
+   * the exchange submission fails; a mid-flight setup is marked failed via
+   * {@link failSetup} in both cases.
+   *
+   * @param params - The setup parameters.
+   * @param params.masterAccountAddress - The master account the agent is created for.
+   * @param params.isTestnet - Whether the agent targets Hyperliquid testnet.
+   * @param params.password - The wallet password (gates encryption of the agent key).
+   * @returns The activated agent address.
+   */
+  async setupAgentWallet(params: {
+    masterAccountAddress: string;
+    isTestnet: boolean;
+    password: string;
+  }): Promise<{ agentAddress: `0x${string}` }> {
+    return setupAgentWallet(this, this.messenger, params);
   }
 
   /**

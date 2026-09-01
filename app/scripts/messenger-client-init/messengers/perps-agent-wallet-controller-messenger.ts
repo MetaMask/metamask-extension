@@ -12,9 +12,13 @@ import type { RootMessenger } from '../../lib/messenger';
  * PerpsAgentWalletController.
  *
  * The KeyringController action allowances exist so that any accidental
- * keyring access by the controller is observable (tests assert zero keyring
- * calls); the controller must never register agent keys as keyring accounts.
- * The `KeyringController:lock` event drives clearing of in-memory plaintext.
+ * keyring access by the controller is observable; the controller must never
+ * register agent keys as keyring accounts. Two actions are used deliberately
+ * by the agent setup flow: `KeyringController:signTypedMessage` (the MASTER
+ * account signs the approveAgent typed data) and
+ * `KeyringController:verifyPassword` (the password gates encryption of the
+ * agent key). The `KeyringController:lock` event drives clearing of
+ * in-memory plaintext.
  *
  * @param messenger - The root messenger used to create the restricted
  * messenger.
@@ -39,6 +43,7 @@ export function getPerpsAgentWalletControllerMessenger(
       'KeyringController:getKeyringsByType',
       'KeyringController:getState',
       'KeyringController:signTypedMessage',
+      'KeyringController:verifyPassword',
     ],
     events: ['KeyringController:lock'],
   });
