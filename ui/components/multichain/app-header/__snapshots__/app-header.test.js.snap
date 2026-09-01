@@ -4,6 +4,7 @@ exports[`App Header locked state matches snapshot: locked 1`] = `
 <div>
   <div
     class="mm-box multichain-app-header mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
+    data-testid="parent-selector-header-navbar"
   >
     <div
       class="mm-box multichain-app-header__lock-contents mm-box--padding-2 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
@@ -91,6 +92,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
   </div>
   <div
     class="mm-box multichain-app-header mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-alternative"
+    data-testid="parent-selector-header-navbar"
   >
     <div
       class="mm-box multichain-app-header__contents flex mm-box--padding-2 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--gap-2 mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
@@ -161,11 +163,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: 0px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/arbitrum.svg"
                           />
                         </div>
@@ -175,11 +178,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/pol-token.svg"
                           />
                         </div>
@@ -189,11 +193,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/bnb.svg"
                           />
                         </div>
@@ -203,11 +208,12 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/eth_logo.svg"
                           />
                         </div>
@@ -407,7 +413,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                             <div
                               class="flex-1 min-w-0"
                             >
-                              Dapp connections
+                              Permissions
                             </div>
                             <div
                               class="flex flex-row items-center ml-2 flex-shrink-0"

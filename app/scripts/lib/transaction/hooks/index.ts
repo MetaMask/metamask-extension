@@ -16,9 +16,12 @@ import { Hex } from '@metamask/utils';
 
 import { AccountOverviewTabKey } from '../../../../../shared/constants/app-state';
 import { getEip7702SupportedChains } from '../../../../../shared/lib/eip7702-support-utils';
-import { isEnforcedSimulationsEligible } from '../../../../../shared/lib/transaction/enforced-simulations';
+import {
+  getInternalEvmAddresses,
+  isEnforcedSimulationsEligible,
+} from '../../../../../shared/lib/transaction/enforced-simulations';
 import { TransactionMetricsRequest } from '../../../../../shared/types/metametrics';
-import { accountSupports7702 } from '../../account-supports-7702';
+import { accountSupports7702ForRelay } from '../../account-supports-7702';
 import {
   getSmartTransactionCommonParams,
   SmartTransactionHookMessenger,
@@ -82,17 +85,31 @@ function beforePublishHook({ messenger }: TransactionControllerHookRequest) {
 }
 
 function beforeSignHook({ messenger }: TransactionControllerHookRequest) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const m = messenger as any;
   return new EnforceSimulationHook({
     messenger,
-    isEligible: (transactionMeta) =>
-      isEnforcedSimulationsEligible(transactionMeta, {
-        ...m.call('AppStateController:getState'),
-        eip7702SupportedChains: getEip7702SupportedChains(
-          m.call('RemoteFeatureFlagController:getState'),
-        ),
-      }),
+    isEligible: (transactionMeta) => {
+      const { addressSecurityAlertResponses } = messenger.call(
+        'AppStateController:getState',
+      );
+
+      const featureFlagState = messenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+
+      const {
+        internalAccounts: { accounts },
+      } = messenger.call('AccountsController:getState');
+
+      const internalAddresses = getInternalEvmAddresses(
+        Object.values(accounts),
+      );
+
+      return isEnforcedSimulationsEligible(transactionMeta, {
+        addressSecurityAlertResponses,
+        eip7702SupportedChains: getEip7702SupportedChains(featureFlagState),
+        internalAddresses,
+      });
+    },
   }).getBeforeSignHook();
 }
 
@@ -135,7 +152,7 @@ function publishHook({
 
     const { isExternalSign } = transactionMeta;
 
-    const keyringSupports7702 = await accountSupports7702(
+    const keyringSupports7702 = await accountSupports7702ForRelay(
       transactionMeta.txParams?.from,
       getKeyringController(messenger),
     );

@@ -94,22 +94,22 @@ export class IndexedDBStore {
     return keys.map((key) => resultMap.get(key));
   }
 
-  /**
-   * Get every key present in the store.
-   *
-   * @returns The keys, as strings.
-   */
-  async getAllKeys(): Promise<string[]> {
+  async getKeys(prefix: string): Promise<string[]> {
     if (!this.#db) {
-      throw new Error('IndexedDBStore: database is not open');
+      throw new Error('Database is not open');
     }
     const tx = this.#db.transaction('store', 'readonly');
     const store = tx.objectStore('store');
-    return await new Promise((resolve, reject) => {
-      const request = store.getAllKeys();
-      request.onsuccess = () => resolve(request.result.map(String));
+
+    const request = store.getAllKeys(
+      IDBKeyRange.bound(prefix, `${prefix}\uffff`),
+    );
+    const keys = await new Promise<IDBValidKey[]>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
+    await transactionPromise(tx);
+    return keys.filter((key): key is string => typeof key === 'string');
   }
 
   async remove(keys: string[]): Promise<void> {

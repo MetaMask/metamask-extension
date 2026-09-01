@@ -236,6 +236,8 @@ const mockPerpsEventValueLiterals = {
     TRADING: 'trading',
     WALLET_HOME_PERPS_TAB: 'perps_tab',
     PERPS_TAB: 'perps_tab',
+    PERPS_HOME: 'perps_home',
+    PERPS_HOME_EMPTY_STATE: 'perps_home_empty_state',
   },
 };
 
@@ -370,6 +372,12 @@ const mockDefaultProLayoutPreferences = {
   chartExpanded: false,
   orderBookPosition: 'left',
   orderFormPosition: 'right',
+  positionsSideFilter: 'all',
+  positionsSortField: 'positionValue',
+  positionsSortDirection: 'desc',
+  ordersSideFilter: 'all',
+  ordersSortField: 'time',
+  ordersSortDirection: 'desc',
 };
 
 module.exports = {

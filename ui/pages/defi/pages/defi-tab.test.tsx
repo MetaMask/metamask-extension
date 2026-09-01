@@ -183,7 +183,7 @@ describe('DefiList', () => {
     });
 
     await waitFor(() => {
-      const image = screen.getByAltText('stETH logo');
+      const image = screen.getByAltText('stETH');
 
       expect(screen.getByTestId('defi-list-market-value')).toHaveTextContent(
         '$20,000.00',

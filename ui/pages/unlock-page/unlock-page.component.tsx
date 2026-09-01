@@ -13,7 +13,6 @@ import React, {
 import PropTypes from 'prop-types';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
-import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   TextVariant,
   TextColor,
@@ -79,9 +78,6 @@ type UnlockPageProps = UnlockPageContext & {
   onSubmit: (password: string) => Promise<void>;
   navigateAfterUnlock: () => Promise<void>;
   isPasskeyActive: boolean;
-  onUnlockWithPasskey: (
-    authenticationResponse: PasskeyAuthenticationResponse,
-  ) => Promise<void>;
   checkIsSeedlessPasswordOutdated: () => Promise<void>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
   forceUpdateMetamaskState: () => Promise<void>;
@@ -126,7 +122,6 @@ type LoginError = {
 
 const FoxAppearAnimation = lazy(
   () =>
-    // @ts-expect-error - Build system resolves without extension, but TS wants .js
     // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
     import('../onboarding-flow/welcome/fox-appear-animation') as Promise<{
       default: ComponentType<
@@ -229,7 +224,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     /**
      * Completes passkey unlock and navigates after success (same redirect rules as password onSubmit).
      */
-    onUnlockWithPasskey: PropTypes.func,
   };
 
   state: UnlockPageState = {
@@ -582,13 +576,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     this.setPasswordUnlockMode(false);
   };
 
-  handleUnlockWithPasskey = async (
-    authenticationResponse: PasskeyAuthenticationResponse,
-  ) => {
-    await this.props.onUnlockWithPasskey(authenticationResponse);
-    await this.props.navigateAfterUnlock();
-  };
-
   onForgotPasswordOrLoginWithDiffMethods = async () => {
     const {
       isSocialLoginFlow,
@@ -683,6 +670,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
         backgroundColor={BoxBackgroundColor.BackgroundDefault}
         className="w-full"
         paddingBottom={12} // offset header to center content
+        data-testid="parent-selector-login-page"
       >
         {showResetPasswordModal && (
           <ResetPasswordModal
@@ -847,7 +835,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
                 this.props.mustDeferPasskeyToBrowserTab
               }
               isPasswordInProgress={isSubmitting}
-              onUnlockWithPasskey={this.handleUnlockWithPasskey}
+              onUnlockSuccess={this.props.navigateAfterUnlock}
               onUsePassword={() => this.setPasswordUnlockMode(true)}
             />
           )}

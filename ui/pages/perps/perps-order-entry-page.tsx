@@ -72,6 +72,7 @@ import {
   selectPerpsIsTestnet,
   selectPerpsActiveProvider,
   selectOrderBookPosition,
+  selectOrderBookExpanded,
 } from '../../selectors/perps-controller';
 import {
   CandlePeriod,
@@ -114,10 +115,7 @@ import {
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
-import {
-  isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
-  isNearLiquidationPrice as checkNearLiquidationPrice,
-} from '../../components/app/perps/order-entry/limit-price-warnings';
+import { isNearLiquidationPrice as checkNearLiquidationPrice } from '../../components/app/perps/order-entry/limit-price-warnings';
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
@@ -301,7 +299,10 @@ const PerpsOrderEntryPage = () => {
   const { buildTrackingData, buildTpslTrackingData, setFlowAttribution } =
     usePerpsAttribution();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
-  const [isOrderBookOpen, setIsOrderBookOpen] = useState(false);
+  const persistedOrderBookExpanded = useSelector(selectOrderBookExpanded);
+  const [isOrderBookOpen, setIsOrderBookOpen] = useState(
+    persistedOrderBookExpanded,
+  );
   const [orderBookWidthPct, setOrderBookWidthPct] = useState(
     ORDER_BOOK_DEFAULT_WIDTH_PCT,
   );
@@ -876,17 +877,6 @@ const PerpsOrderEntryPage = () => {
     orderMode === 'new' && !isLoadingAccount && availableBalance <= 0;
   const isPrimaryTradeAction = orderMode !== 'new' || !hasNoAvailableBalance;
 
-  const isLimitPriceUnfavorable = useMemo(() => {
-    if (orderType !== 'limit' || !orderFormState) {
-      return false;
-    }
-    return checkLimitPriceUnfavorable(
-      orderFormState.limitPrice ?? '',
-      currentPrice,
-      orderDirection,
-    );
-  }, [orderType, orderFormState, orderDirection, currentPrice]);
-
   const isNearLiquidation = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
       return false;
@@ -1088,7 +1078,6 @@ const PerpsOrderEntryPage = () => {
       (isMaxSlippageLoading || !isEstimatedSlippageReady)) ||
     (isPrimaryTradeAction &&
       (isLimitPriceInvalid ||
-        isLimitPriceUnfavorable ||
         isNearLiquidation ||
         hasInvalidTPSL ||
         isInsufficientFunds ||
@@ -1447,6 +1436,11 @@ const PerpsOrderEntryPage = () => {
   const handleToggleOrderBook = useCallback(() => {
     const next = !isOrderBookOpen;
     setIsOrderBookOpen(next);
+    submitRequestToBackground('perpsSetProLayoutPreferences', [
+      { orderBookExpanded: next },
+    ]).catch((error) =>
+      console.error('Failed to persist order book open state', error),
+    );
     // Tracking is a side effect and must run outside the state updater (updaters
     // must be pure and may be invoked more than once). Specific open/close values
     // keep dark-launch open-rate measurable (generic TAP cannot).
@@ -2265,7 +2259,7 @@ const PerpsOrderEntryPage = () => {
   return (
     <form
       className="main-container asset__container relative overflow-hidden"
-      data-testid="perps-order-entry-page"
+      data-testid="parent-selector-perps-order-entry"
       onSubmit={handleFormSubmit}
     >
       <OrderEntryHeader

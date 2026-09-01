@@ -12,10 +12,11 @@ import {
 } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
+import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 
@@ -48,9 +49,10 @@ export function ReceiveRow({
   // currency symbol matches the numerical value even if the user has set a
   // non-USD primary currency.
   const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
-  const isLoading = useIsTransactionPayLoading();
+  const isLoading = useIsTransactionPayQuotePending();
   const totals = useTransactionPayTotals();
   const quotes = useTransactionPayQuotes();
+  const isPaidByMetaMask = useIsPaidByMetaMask();
 
   const hasQuotes = Boolean(quotes?.length);
 
@@ -65,6 +67,14 @@ export function ReceiveRow({
     }
 
     const inputUsd = new BigNumber(inputAmountUsd || '0');
+    // Same-token Money Account withdraws quote estimated network gas that
+    // Monad sponsors. Subtracting it would show $0 received on a tiny send.
+    if (isPaidByMetaMask) {
+      return formatFiat(
+        (inputUsd.gte(0) ? inputUsd : new BigNumber(0)).toNumber(),
+      );
+    }
+
     const providerFee = new BigNumber(totals.fees?.provider?.usd ?? 0);
     const sourceNetworkFee = new BigNumber(
       totals.fees?.sourceNetwork?.estimate?.usd ?? 0,
@@ -83,7 +93,7 @@ export function ReceiveRow({
     return formatFiat(
       (youReceive.gte(0) ? youReceive : new BigNumber(0)).toNumber(),
     );
-  }, [hasQuotes, inputAmountUsd, totals, formatFiat]);
+  }, [hasQuotes, inputAmountUsd, isPaidByMetaMask, totals, formatFiat]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
