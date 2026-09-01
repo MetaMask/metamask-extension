@@ -4,4 +4,5 @@ export type HyperliquidDepositPromptResult =
 
 export type HyperliquidDepositPromptProps = {
   onActionComplete: (result: HyperliquidDepositPromptResult) => void;
+  selectedAddress?: string;
 };

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -24,6 +24,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
@@ -149,10 +150,23 @@ const TokenSelectButton: React.FC<{
 
 export const HyperliquidDepositPrompt: React.FC<
   HyperliquidDepositPromptProps
-> = ({ onActionComplete }) => {
+> = ({ onActionComplete, selectedAddress }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const tokens = useHyperliquidDepositTokens();
+  const currentAccount = useSelector(getSelectedInternalAccount);
+
+  // Dismiss if the signer account isn't the currently selected account as
+  // useSendTokens and usePerpsDepositConfirmation use the selected account.
+  useEffect(() => {
+    if (
+      selectedAddress &&
+      currentAccount?.address &&
+      selectedAddress.toLowerCase() !== currentAccount.address.toLowerCase()
+    ) {
+      onActionComplete({ action: 'dismiss' });
+    }
+  }, [selectedAddress, currentAccount?.address, onActionComplete]);
 
   // The same entry point the Perps "Add funds" button uses. It creates the
   // unapproved draft transaction that backs the Perps deposit confirmation;

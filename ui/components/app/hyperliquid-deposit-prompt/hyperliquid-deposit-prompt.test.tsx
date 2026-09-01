@@ -86,13 +86,18 @@ const USDC_TOKEN: Asset = {
 
 const mockStore = configureMockStore([]);
 
-const renderComponent = (onActionComplete = jest.fn()) => {
+const SELECTED_ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+const renderComponent = (
+  onActionComplete = jest.fn(),
+  selectedAddress = SELECTED_ACCOUNT_ADDRESS,
+) => {
   const store = mockStore(mockState);
 
   renderWithProvider(
     <HyperliquidDepositPrompt
       onActionComplete={onActionComplete}
-      selectedAddress="0x123"
+      selectedAddress={selectedAddress}
     />,
     store,
   );
@@ -194,5 +199,16 @@ describe('HyperliquidDepositPrompt', () => {
 
     expect(onActionComplete).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('dismisses immediately when the signer address does not match the selected account', async () => {
+    const onActionComplete = jest.fn();
+    renderComponent(onActionComplete, '0xDifferentAddress');
+
+    await waitFor(() => {
+      expect(onActionComplete).toHaveBeenCalledWith({ action: 'dismiss' });
+    });
+
+    expect(mockStartPerpsDeposit).not.toHaveBeenCalled();
   });
 });
