@@ -182,6 +182,9 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
+    "MoneyAccountController": {
+      "moneyAccounts": {}
+    },
     "MultichainAssetsController": {
       "accountsAssets": {},
       "allIgnoredAssets": {},
@@ -2073,12 +2076,6 @@
       "syncQueue": {}
     },
     "RampsController": {
-      "countries": {
-        "data": [],
-        "error": null,
-        "isLoading": false,
-        "selected": null
-      },
       "orders": [],
       "providerAutoSelected": false,
       "userRegion": null

@@ -1,16 +1,21 @@
 import React from 'react';
-import { screen, within } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { MONEY_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { MoneyHomePage } from './money-home-page';
+import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
+import { onchainItem } from './types/money-activity';
 
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyAccountBalance = jest.fn();
 const mockUseMoneyAccountInterest = jest.fn();
 const mockUseMoneyDepositTokens = jest.fn();
+const mockUseMoneyActivityItems = jest.fn();
+const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
 );
@@ -48,6 +53,7 @@ jest.mock('react-router-dom', () => ({
   Navigate: ({ to }: { to: string }) => (
     <div data-testid="navigate" data-to={to} />
   ),
+  useNavigate: () => mockNavigate,
 }));
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
   useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
@@ -61,6 +67,9 @@ jest.mock('../../hooks/money/useMoneyAccountInterest', () => ({
 }));
 jest.mock('../../hooks/money/use-money-deposit-tokens', () => ({
   useMoneyDepositTokens: () => mockUseMoneyDepositTokens(),
+}));
+jest.mock('../../hooks/money/use-money-activity-items', () => ({
+  useMoneyActivityItems: () => mockUseMoneyActivityItems(),
 }));
 
 describe('MoneyHomePage', () => {
@@ -88,17 +97,18 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('12.34'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('56.78'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
     mockUseMoneyDepositTokens.mockReturnValue({
       tokens: [],
       isNoFeeToken: () => false,
     });
+    mockUseMoneyActivityItems.mockReturnValue({ items: [] });
   });
 
   it('renders the full empty-state composition with a live zero balance', () => {
@@ -146,12 +156,13 @@ describe('MoneyHomePage', () => {
         .closest('li')
         ?.querySelector('svg'),
     ).toHaveClass('shrink-0');
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
     expect(
-      screen.getByTestId('money-activity-placeholder'),
+      screen.getByText(messages.moneyActivityPlaceholderDescription.message),
     ).toBeInTheDocument();
     expect(
-      screen.getAllByTestId('money-activity-placeholder-row'),
-    ).toHaveLength(3);
+      screen.queryByTestId(/money-activity-row-/u),
+    ).not.toBeInTheDocument();
   });
 
   it('keeps all groundwork actions inert', () => {
@@ -189,9 +200,7 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-position-lifetime-value'),
     ).toHaveTextContent('+$56.78');
-    expect(
-      screen.getByTestId('money-activity-placeholder'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
     expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
     expect(
       screen.getByText(messages.moneyEarnOnCrypto.message),
@@ -225,6 +234,38 @@ describe('MoneyHomePage', () => {
     });
   });
 
+  it('renders mock activity rows instead of the empty copy', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      totalFiatRaw: '3475.45',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: MOCK_MONEY_TRANSACTIONS.map(onchainItem),
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
+    ).not.toBeInTheDocument();
+    expect(screen.getAllByTestId(/money-activity-row-money-tx-/u)).toHaveLength(
+      5,
+    );
+    expect(screen.getByTestId('money-activity-view-all')).toBeEnabled();
+    fireEvent.click(screen.getByTestId('money-activity-view-all'));
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_ACTIVITY_ROUTE);
+    expect(
+      screen.getByText(messages.moneyActivityDeposited.message),
+    ).toBeInTheDocument();
+  });
+
   it('shows earnings skeletons during the initial interest load', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
@@ -237,8 +278,8 @@ describe('MoneyHomePage', () => {
       vaultApyQuery: { isLoading: false },
     });
     mockUseMoneyAccountInterest.mockReturnValue({
-      last30DaysQuery: { data: undefined, isInitialLoading: true },
-      sinceInceptionQuery: { data: undefined, isInitialLoading: true },
+      last30DaysQuery: { data: undefined, isLoading: true },
+      sinceInceptionQuery: { data: undefined, isLoading: true },
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -265,11 +306,11 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('invalid'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('Infinity'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
 
@@ -297,11 +338,11 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('0'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('0.001'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
 
@@ -329,11 +370,11 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('-12.34'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('-0.001'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
 
@@ -368,9 +409,7 @@ describe('MoneyHomePage', () => {
     expect(mockUseMoneyAccountInterest).toHaveBeenCalledWith({
       enabled: false,
     });
-    expect(
-      screen.getByTestId('money-activity-placeholder'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
     expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
   });
 
