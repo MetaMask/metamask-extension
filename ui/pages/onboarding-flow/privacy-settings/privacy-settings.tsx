@@ -253,7 +253,7 @@ export default function PrivacySettings() {
           <Box className="list-view">
             <Box
               className="privacy-settings__header"
-              marginTop={6}
+              marginTop={2}
               marginBottom={6}
               flexDirection={BoxFlexDirection.Column}
               justifyContent={BoxJustifyContent.Start}
@@ -288,7 +288,7 @@ export default function PrivacySettings() {
               <Text
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
-                className="mt-5"
+                className="mt-4"
               >
                 {t('defaultSettingsSubTitle')}
               </Text>
@@ -304,16 +304,14 @@ export default function PrivacySettings() {
             </Box>
             <Box>
               <Box
-                marginTop={4}
-                marginBottom={4}
                 className="privacy-settings__categories-list list-none"
+                gap={6}
+                flexDirection={BoxFlexDirection.Column}
                 asChild
               >
                 <ul>
                   {items.map((item) => (
                     <Box
-                      marginTop={5}
-                      marginBottom={5}
                       key={item.id}
                       className="categories-item"
                       onClick={() => handleItemSelected(item)}
@@ -357,8 +355,8 @@ export default function PrivacySettings() {
           >
             <Box
               className="privacy-settings__header"
-              marginTop={6}
-              marginBottom={5}
+              marginTop={2}
+              marginBottom={6}
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
               alignItems={BoxAlignItems.Center}
