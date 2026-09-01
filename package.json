@@ -330,14 +330,16 @@
     "@metamask/keyring-api": "^24.1.0",
     "@metamask/accounts-controller": "^39.0.7",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
-    "@metamask/messenger": "^2.0.0",
     "postcss@npm:7.0.36": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
     "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
     "@ledgerhq/context-module/ethers": "^6.15.0",
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/assets-controller@npm:^13.1.0": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
     "@metamask/assets-controller@npm:^13.1.2": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
-    "@metamask/bridge-controller@npm:^80.1.0": "patch:@metamask/bridge-controller@npm%3A80.1.0#~/.yarn/patches/@metamask-bridge-controller-npm-80.1.0-ea41d41dd2.patch"
+    "@metamask/bridge-controller@npm:^80.1.0": "patch:@metamask/bridge-controller@npm%3A80.1.0#~/.yarn/patches/@metamask-bridge-controller-npm-80.1.0-ea41d41dd2.patch",
+    "@metamask/base-controller": "npm:@metamask-previews/base-controller@npm:9.1.0-preview-3866c0ff1",
+    "@metamask/base-data-service": "npm:@metamask-previews/base-data-service@npm:1.0.0-preview-3866c0ff1",
+    "@metamask/messenger": "npm:@metamask-previews/messenger@npm:2.0.0-preview-3866c0ff1"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -902,5 +904,19 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/base-controller": {
+      "type": "breaking",
+      "previewVersion": "9.1.0-preview-3866c0ff1"
+    },
+    "@metamask/base-data-service": {
+      "type": "breaking",
+      "previewVersion": "1.0.0-preview-3866c0ff1"
+    },
+    "@metamask/messenger": {
+      "type": "breaking",
+      "previewVersion": "2.0.0-preview-3866c0ff1"
+    }
   }
 }

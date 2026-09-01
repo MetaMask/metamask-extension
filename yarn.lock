@@ -6103,20 +6103,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^9.0.0, @metamask/base-controller@npm:^9.0.1, @metamask/base-controller@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@metamask/base-controller@npm:9.1.0"
+"@metamask/base-controller@npm:@metamask-previews/base-controller@9.1.0-preview-3866c0ff1, @metamask/base-controller@npm:@metamask-previews/base-controller@npm:9.1.0-preview-3866c0ff1":
+  version: 9.1.0-preview-3866c0ff1
+  resolution: "@metamask-previews/base-controller@npm:9.1.0-preview-3866c0ff1"
   dependencies:
-    "@metamask/messenger": "npm:^1.1.1"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/utils": "npm:^11.11.0"
     immer: "npm:^9.0.6"
-  checksum: 10/752b70b35026fdf31ea8feef638f06286dbbde8d17e1ba804085fdbedbb076d900d2d7b6db3d2af284b3aa8fa84c95a0ceea6a3a46ee7b7e29433f037e9afc69
+  checksum: 10/15d954aaa77e3afb802bcbe2e34bee5e6e1a02b69ef161436e2b1bfef7aa93c139f752ee5d3e0c185a8c20f0a168cd8101171ec51600eb6556c7f5ddc80b9017
   languageName: node
   linkType: hard
 
-"@metamask/base-data-service@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/base-data-service@npm:1.0.0"
+"@metamask/base-data-service@npm:@metamask-previews/base-data-service@1.0.0-preview-3866c0ff1, @metamask/base-data-service@npm:@metamask-previews/base-data-service@npm:1.0.0-preview-3866c0ff1":
+  version: 1.0.0-preview-3866c0ff1
+  resolution: "@metamask-previews/base-data-service@npm:1.0.0-preview-3866c0ff1"
   dependencies:
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/storage-service": "npm:^1.0.2"
@@ -6125,8 +6125,8 @@ __metadata:
     "@tanstack/query-core": "npm:^5.62.16"
     cockatiel: "npm:^3.1.2"
     fast-deep-equal: "npm:^3.1.3"
-    lodash: "npm:^4.17.21"
-  checksum: 10/c965dc930a3c172c71624278499f4ec2da829def684c3923b2729d1a31dd2635d5c05230a9dc9ea8546adc029c4e2ed782fdc992be4692d47d9aafdb2d778deb
+    lodash-es: "npm:^4.17.21"
+  checksum: 10/d9837f164bc534849809c0ec590c96c11a4d8b36e5c58748d63ec5ec8d28ebb662f2bc17b49e356a5fb34aa1d74cd1f2b03ef1543615d435b4999e73a14aba37
   languageName: node
   linkType: hard
 
@@ -7647,14 +7647,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/messenger@npm:2.0.0"
+"@metamask/messenger@npm:@metamask-previews/messenger@2.0.0-preview-3866c0ff1, @metamask/messenger@npm:@metamask-previews/messenger@npm:2.0.0-preview-3866c0ff1":
+  version: 2.0.0-preview-3866c0ff1
+  resolution: "@metamask-previews/messenger@npm:2.0.0-preview-3866c0ff1"
   dependencies:
     "@metamask/utils": "npm:^11.11.0"
   peerDependencies:
     typescript: ">=5.0.0"
-  checksum: 10/c387511edd89db73b774f631fb4bb382c9254af2dd7f80f9bd45f776e618cf90f653cc0e9744b1bf491f71f99c8318b16e8230a847f619a4fca655ea3f6a08e1
+  checksum: 10/5e2230a7a50b1219ea0e72ba3e5df358fdae0f8d7d154e06dd2c7bcbee20a383ea56ce08b414442238534e7cfd3c8616a3f924b233ff7dc7754e9d152c95ddaa
   languageName: node
   linkType: hard
 

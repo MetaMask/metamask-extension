@@ -1,5 +1,13 @@
 const consoleReporterRules = require('./test/jest/console-reporter-rules-unit');
 
+// TODO: Find a way to share this list with `jest.integration.config.js`.
+const ESM_DEPENDENCIES_TO_TRANSPILE = [
+  '@metamask/base-controller',
+  '@metamask/base-data-service',
+  '@metamask/messenger',
+  'lodash-es',
+];
+
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
@@ -108,6 +116,9 @@ module.exports = {
       },
     ],
   },
+  transformIgnorePatterns: [
+    `/node_modules/(?!(${ESM_DEPENDENCIES_TO_TRANSPILE.join('|')})/)`,
+  ],
   workerIdleMemoryLimit: '500MB',
   // Ensure console output is buffered (not streamed) so reporters can access testResult.console
   // Without this, Jest uses verbose mode for single-file runs which bypasses buffering

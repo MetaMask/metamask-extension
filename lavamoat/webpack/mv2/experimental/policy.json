@@ -949,13 +949,12 @@
     },
     "@metamask/base-data-service": {
       "packages": {
-        "@metamask/messenger": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true,
-        "lodash": true
+        "@metamask/base-data-service>lodash-es": true
       }
     },
     "@metamask/bridge-controller": {
@@ -5512,6 +5511,12 @@
     "lodash": {
       "globals": {
         "define": true
+      }
+    },
+    "@metamask/base-data-service>lodash-es": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
       }
     },
     "loglevel": {
