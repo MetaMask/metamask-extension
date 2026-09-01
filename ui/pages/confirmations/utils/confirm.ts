@@ -104,23 +104,19 @@ function unwrapSanitizedMessage({ value }: SanitizedMessage): unknown {
 }
 
 /**
- * Parses EIP-712 data and filters message and domain values to fields included
- * in their respective signing schemas.
+ * Parses EIP-712 data and filters message values to fields included in the
+ * primary type's signing schema.
  *
  * @param dataToParse - The serialized EIP-712 data.
- * @returns The parsed data with display-safe message and domain values.
+ * @returns The parsed data with display-safe message values.
  */
 export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
   const typedDataMessage = parseTypedDataMessage(dataToParse);
-  const { domain, message, primaryType, types } = typedDataMessage;
+  const { message, primaryType, types } = typedDataMessage;
   const sanitizedMessage = sanitizeMessage(message, primaryType, types);
-  const sanitizedDomain = types.EIP712Domain
-    ? sanitizeMessage(domain, 'EIP712Domain', types)
-    : { type: 'EIP712Domain', value: {} };
 
   return {
     ...typedDataMessage,
-    domain: unwrapSanitizedMessage(sanitizedDomain) as Record<string, unknown>,
     message: unwrapSanitizedMessage(sanitizedMessage) as Record<
       string,
       unknown

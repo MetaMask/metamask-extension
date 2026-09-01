@@ -52,25 +52,6 @@ describe('confirm util', () => {
       expect(result.message).not.toHaveProperty('allowed');
     });
 
-    it('removes domain fields that are not declared by EIP712Domain', () => {
-      const result = parseSanitizeTypedDataMessage(
-        JSON.stringify({
-          types: {
-            EIP712Domain: [{ name: 'name', type: 'string' }],
-            Permit: [{ name: 'value', type: 'uint256' }],
-          },
-          primaryType: 'Permit',
-          domain: {
-            name: 'Token',
-            verifyingContract: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          },
-          message: { value: '1' },
-        }),
-      );
-
-      expect(result.domain).toStrictEqual({ name: 'Token' });
-    });
-
     it('removes unsigned fields from nested struct arrays', () => {
       const result = parseSanitizeTypedDataMessage(
         JSON.stringify({
