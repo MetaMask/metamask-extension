@@ -283,6 +283,16 @@ export function getErrorHtml(
   if (isStateCorruptionError) {
     if (repairAction === CriticalErrorRepairAction.Reset) {
       troubleStartingMessage = t('criticalErrorStateCorruptionResetMessage');
+    } else if (repairAction === CriticalErrorRepairAction.Recover) {
+      troubleStartingMessage = t('criticalErrorStateCorruptionRecoverMessage');
+    } else {
+      troubleStartingMessage = '';
+    }
+
+    if (
+      repairAction === CriticalErrorRepairAction.Reset ||
+      repairAction === CriticalErrorRepairAction.Recover
+    ) {
       const instructionsLink = `<a
         href="${lodashEscape(VAULT_RECOVERY_LINK)}"
         title="${lodashEscape(t('stateCorruptionTheseInstructionsLinkTitle') ?? '')}"
@@ -310,10 +320,6 @@ export function getErrorHtml(
       if (salvageGuidance) {
         salvageGuidance = `<p>${salvageGuidance}</p>`;
       }
-    } else if (repairAction === CriticalErrorRepairAction.Recover) {
-      troubleStartingMessage = t('criticalErrorStateCorruptionRecoverMessage');
-    } else {
-      troubleStartingMessage = '';
     }
   }
 

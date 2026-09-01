@@ -425,8 +425,14 @@ describe('Error utils Tests', function () {
         enMessages.criticalErrorStateCorruptionResetMessage.message,
       );
       expect(html).not.toContain(enMessages.troubleStartingMessage.message);
-      expect(html).not.toContain(getStateCorruptionResetSalvagePrefix());
-      expect(html).not.toContain(VAULT_RECOVERY_LINK);
+      expect(html).toContain(getStateCorruptionResetSalvagePrefix());
+      expect(html).toContain(VAULT_RECOVERY_LINK);
+      expect(html).toContain(
+        enMessages.stateCorruptionTheseInstructions.message,
+      );
+      expect(html).toContain(
+        enMessages.stateCorruptionTheseInstructionsLinkTitle.message,
+      );
     });
 
     it('includes reset state button when repairAction is reset', async () => {
