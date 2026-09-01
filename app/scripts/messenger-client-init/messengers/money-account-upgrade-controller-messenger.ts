@@ -7,15 +7,7 @@ import type { MoneyAccountUpgradeControllerMessenger } from '@metamask/money-acc
 import type { RootMessenger } from '../../lib/messenger';
 
 /**
- * Create a messenger for the MoneyAccountUpgradeController, scoped to the
- * actions and events it is allowed to use.
- *
- * The upgrade sequence associates the account with the user's CHOMP profile
- * (personal-message signature), EIP-7702-delegates it (authorization
- * signature, submitted through CHOMP), signs and stores the deposit and
- * withdrawal delegations, and registers them as CHOMP intents — hence the
- * CHOMP, keyring signing, delegation, and user storage actions. The network
- * actions serve the EIP-7702 step's on-chain code and nonce reads.
+ * Create a messenger for the MoneyAccountUpgradeController
  *
  * @param messenger - The root messenger.
  * @returns The MoneyAccountUpgradeController messenger.
