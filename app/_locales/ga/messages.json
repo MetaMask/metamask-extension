@@ -2803,10 +2803,6 @@
     "message": "Ná sábháil ach seoltaí a bhfuil muinín agat astu.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Aithníodh gur seoladh mailíseach é seo. Molaimid gan idirghníomhú leis an seoladh seo.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Más eol duit an seoladh seo, tabhair leasainm dó le go n-aithneoidh tú é amach anseo.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -2818,10 +2814,6 @@
   "nameInstructionsSaved": {
     "message": "Chuir tú leasainm leis an seoladh seo cheana. Is féidir leat leasainmneacha molta eile a chur in eagar nó a fheiceáil.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Aithníodh gur amhrasach an rud é seo. Má tá muinín agat as an údar seo, socraigh ainm taispeána pearsanta chun é a aithint feasta.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Leasainm",
@@ -2850,10 +2842,6 @@
   "nameModalTitleVerified": {
     "message": "Seoladh fíoraithe",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Seoladh amhrasach",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Molta ag $1",

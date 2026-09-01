@@ -10,9 +10,11 @@ import {
 } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../context/confirm';
+import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import { selectPaymentOverrideByTransactionId } from '../../../../selectors/transactionPayController';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
+import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import { MONEY_ACCOUNT_DUMMY_BALANCE_FIAT } from './sections/usePayWithMoneyAccountSection';
 import { usePayWithToken } from './usePayWithToken';
 
@@ -28,6 +30,12 @@ jest.mock('./useTransactionPayToken', () => ({
 }));
 jest.mock('./useTransactionPayData', () => ({
   useTransactionPayRequiredTokens: jest.fn(),
+}));
+jest.mock('./useTransactionPayAvailableTokens', () => ({
+  useTransactionPayAvailableTokens: jest.fn(),
+}));
+jest.mock('../../../../selectors/accounts', () => ({
+  getInternalAccountByAddress: jest.fn(),
 }));
 jest.mock('../../../../selectors/transactionPayController', () => ({
   selectPaymentOverrideByTransactionId: jest.fn(),
@@ -75,6 +83,12 @@ describe('usePayWithToken', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
+  const useTransactionPayAvailableTokensMock = jest.mocked(
+    useTransactionPayAvailableTokens,
+  );
+  const getInternalAccountByAddressMock = jest.mocked(
+    getInternalAccountByAddress,
+  );
   const selectPaymentOverrideByTransactionIdMock = jest.mocked(
     selectPaymentOverrideByTransactionId,
   );
@@ -96,6 +110,8 @@ describe('usePayWithToken', () => {
       isNative: false,
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useTransactionPayAvailableTokensMock.mockReturnValue([]);
+    getInternalAccountByAddressMock.mockReturnValue(ACCOUNT as never);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
 
     useSelectorMock.mockImplementation(
@@ -179,5 +195,25 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.displayToken).toBeUndefined();
+  });
+
+  it('reports hasAvailableTokens when a selectable funding token exists', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: PAY_TOKEN.address,
+        chainId: PAY_TOKEN.chainId,
+        disabled: false,
+      },
+    ] as never);
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.hasAvailableTokens).toBe(true);
+  });
+
+  it('reports no available tokens when the list is empty', () => {
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.hasAvailableTokens).toBe(false);
   });
 });
