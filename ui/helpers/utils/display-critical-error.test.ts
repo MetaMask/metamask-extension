@@ -942,6 +942,67 @@ describe('repair button', () => {
     );
   });
 
+  it('starts repair after the Sentry report times out', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+    jest
+      .mocked(fetch)
+      .mockImplementation(() => new Promise<Response>(() => undefined));
+    const error = new Error('Background initialization timeout');
+    restoreGetBackupState = mockGetBackupStateWithVault({
+      ...MOCK_BACKUP_WITH_VAULT,
+      AnalyticsController: { consentDecisionMade: true, optedIn: true },
+    });
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(fetch).toHaveBeenCalled();
+    expect(mockPort.postMessage).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(2_000);
+    });
+
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+  });
+
   it('shows a checked report checkbox when analytics is disabled', async () => {
     jest
       .spyOn(errorUtils, 'getErrorHtml')

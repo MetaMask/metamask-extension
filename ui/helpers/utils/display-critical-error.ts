@@ -22,6 +22,7 @@ import {
 
 const SAFE_GET_VAULT_BACKUP_TIMEOUT_MS = 5_000;
 const REPAIR_BUTTON_ENABLE_DELAY_MS = 5_000;
+const SENTRY_REPORT_TIMEOUT_MS = 2_000;
 
 /**
  * Reads backup with a timeout so a hanging IndexedDB cannot block the critical error UI.
@@ -177,6 +178,7 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
         'Content-Type': 'application/x-sentry-envelope',
       },
       body: envelope,
+      keepalive: true,
     });
   } catch (e) {
     console.error('Error sending report to Sentry:', e);
@@ -346,7 +348,12 @@ export async function displayCriticalErrorMessage(
 
           try {
             if (shouldReportError()) {
-              await sendErrorToSentry(error);
+              await Promise.race([
+                sendErrorToSentry(error),
+                new Promise<void>((resolve) => {
+                  setTimeout(resolve, SENTRY_REPORT_TIMEOUT_MS);
+                }),
+              ]);
             }
             port.postMessage({
               data: {
