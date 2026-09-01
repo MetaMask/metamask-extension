@@ -1,6 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import type {
+  ActivityListItem,
+  MoneyAccountActivityItem,
+} from '../../../../shared/lib/activity/types';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { useActivityRowContent } from './useActivityRowContent';
@@ -349,25 +352,24 @@ describe('useActivityRowContent', () => {
     const MUSD_ASSET_ID = 'eip155:1/erc20:0xmusd';
 
     const buildMoneyActivity = (
-      type: 'moneyAccountDeposit' | 'moneyAccountWithdraw',
+      type: MoneyAccountActivityItem['type'],
       fiatAmount?: string,
-    ) =>
-      ({
-        type,
-        chainId: 'eip155:1',
-        status: 'success',
-        timestamp: 1,
-        hash: '0xabc',
-        data: {
-          from: '0x1111111111111111111111111111111111111111',
-          ...(fiatAmount === undefined ? {} : { fiat: { amount: fiatAmount } }),
-          token: {
-            direction: type === 'moneyAccountDeposit' ? 'in' : 'out',
-            symbol: 'mUSD',
-            assetId: MUSD_ASSET_ID,
-          },
+    ): MoneyAccountActivityItem => ({
+      type,
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        ...(fiatAmount === undefined ? {} : { fiat: { amount: fiatAmount } }),
+        token: {
+          assetId: MUSD_ASSET_ID,
+          direction: type === 'moneyAccountDeposit' ? 'in' : 'out',
+          symbol: 'mUSD',
         },
-      }) as unknown as ActivityListItem;
+      },
+    });
 
     it('renders a deposit as a positive USD amount flowing in', () => {
       const { result } = renderHookWithProvider(() =>
@@ -386,7 +388,7 @@ describe('useActivityRowContent', () => {
       );
     });
 
-    it('negates the amount for a withdrawal and leaves it directionless', () => {
+    it('negates the withdrawal amount and does not mark it as incoming', () => {
       const { result } = renderHookWithProvider(() =>
         useActivityRowContent(
           buildMoneyActivity('moneyAccountWithdraw', '25.5'),

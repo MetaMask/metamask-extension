@@ -129,8 +129,9 @@ function enrichApprovalActivity(
 /**
  * Resolves the raw mUSD amount of a money-account deposit batch. The amount
  * is committed at approval into both the mUSD `requiredAssets` entry and the
- * nested approve calldata; the placeholder batch holds zero in both, in
- * which case no amount is shown yet.
+ * nested approve calldata; the placeholder contains zero in both locations,
+ * so no committed raw amount is available yet; callers may fall back to the
+ * quoted fiat amount.
  *
  * @param transaction - The deposit batch transaction.
  * @returns Raw mUSD amount in base units, or undefined when not committed.
@@ -153,21 +154,6 @@ function getMoneyAccountDepositAmount(
     : undefined;
 
   return approveAmount && approveAmount !== '0' ? approveAmount : undefined;
-}
-
-/**
- * Resolves the raw mUSD amount of a money-account withdraw batch from the
- * nested mUSD transfer calldata. Empty while the batch is a placeholder —
- * the amount is only encoded at approval.
- *
- * @param transaction - The withdraw batch transaction.
- * @returns Raw mUSD amount in base units, or undefined when not committed.
- */
-function getMoneyAccountWithdrawAmount(
-  transaction: TransactionGroup['initialTransaction'],
-): string | undefined {
-  const { amountRaw } = getMoneyAccountWithdrawTransferDetails(transaction);
-  return amountRaw;
 }
 
 /**
@@ -195,8 +181,8 @@ function toMusdFiat(
  * activity kinds. `mapLocalTransaction` only reads the top-level type, so
  * these EIP-7702 batches arrive as `contractInteraction`; the meaningful
  * type sits on a nested transaction. Rendered like the other MM Pay rows
- * (perps): a fiat amount against the Money account, mirroring mobile's
- * money activity rows.
+ * (perps): a signed fiat amount and token avatar without a counterparty
+ * address, mirroring mobile's money activity rows.
  *
  * @param activity - Activity item from `mapLocalTransaction`.
  * @param transactionGroup - Source local transaction group.
@@ -221,17 +207,19 @@ function enrichMoneyAccountActivity(
   const type: MoneyAccountActivityKind = isDeposit
     ? 'moneyAccountDeposit'
     : 'moneyAccountWithdraw';
+  // Withdrawal amount comes from nested transfer calldata; undefined while
+  // the batch is still a placeholder (calldata is populated when committed).
   const amount = isDeposit
     ? getMoneyAccountDepositAmount(transaction)
-    : getMoneyAccountWithdrawAmount(transaction);
+    : getMoneyAccountWithdrawTransferDetails(transaction).amountRaw;
   const { chainId } = transaction;
   const assetId = chainId ? MUSD_TOKEN_ASSET_ID_BY_CHAIN[chainId] : undefined;
   const token: TokenAmount = {
-    direction: isDeposit ? 'in' : 'out',
-    symbol: MUSD_TOKEN.symbol,
-    decimals: MUSD_DECIMALS,
     ...(amount ? { amount } : {}),
     ...(assetId ? { assetId } : {}),
+    decimals: MUSD_DECIMALS,
+    direction: isDeposit ? 'in' : 'out',
+    symbol: MUSD_TOKEN.symbol,
   };
   const fiat = toMusdFiat(amount, transaction);
 

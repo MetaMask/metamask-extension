@@ -3,26 +3,17 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  Text,
 } from '@metamask/design-system-react';
 import { TransactionStatus as TransactionMetaStatus } from '@metamask/transaction-controller';
 import type { MoneyAccountActivityItem } from '../../../../shared/lib/activity/types';
-import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
-import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
+import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../shared/lib/money/constants';
 import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
 import { useMoneyAccountDeposit } from '../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../hooks/money/useMoneyAccountInfo';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { TransactionDetailsProvider } from '../../confirmations/components/activity/transaction-details-context';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { TransactionDetailsSummary } from '../../confirmations/components/activity/transaction-details-summary';
 import { BlockExplorerButton } from '../components/block-explorer-button';
-import { Footer, Row, Section } from '../components/shared';
-
-// mUSD is pegged 1:1 to USD, so money-account details show USD like perps.
-const MONEY_ACCOUNT_FIAT_CURRENCY = 'usd';
+import { MmPayDetailsLayout } from './mm-pay-details-layout';
 
 type Props = {
   item: MoneyAccountActivityItem;
@@ -38,13 +29,13 @@ type Props = {
  */
 export function MoneyAccountDetails({ item }: Readonly<Props>) {
   const t = useI18nContext();
-  const { formatDateTime, formatCurrencyWithMinThreshold } = useFormatters();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const { hasMoneyAccount } = useMoneyAccountInfo();
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
   const transactionMeta = useLocalTransactionMeta(item.hash);
   const { metamaskPay } = transactionMeta ?? {};
-  const { networkFeeFiat, bridgeFeeFiat, totalFiat } = metamaskPay || {};
+  const { bridgeFeeFiat, networkFeeFiat, totalFiat } = metamaskPay || {};
 
   const isDeposit = item.type === 'moneyAccountDeposit';
 
@@ -61,66 +52,12 @@ export function MoneyAccountDetails({ item }: Readonly<Props>) {
   const signedAmount = formattedAmount
     ? `${amountSign}${formattedAmount}`
     : null;
-  const hasFees = Boolean(networkFeeFiat || bridgeFeeFiat || totalFiat);
 
   return (
-    <div className="flex grow flex-col">
-      <div className="divide-y divide-border-muted">
-        <div
-          className="flex items-center gap-2 pb-4"
-          data-testid="transaction-details-hero"
-        >
-          <ActivityAvatar tokens={[item.data.token?.assetId]} />
-          <Text
-            variant="heading-lg"
-            color={isDeposit ? 'text-success-default' : 'text-default'}
-          >
-            {signedAmount}
-          </Text>
-        </div>
-
-        <Section>
-          <Row
-            label={t('status')}
-            value={<TransactionStatus status={item.status} hash={item.hash} />}
-          />
-
-          <Row label={t('date')} value={formatDateTime(item.timestamp)} />
-        </Section>
-
-        {hasFees ? (
-          <Section>
-            <Row
-              label={t('networkFee')}
-              testId="transaction-base-fee"
-              value={formatFiat(networkFeeFiat)}
-            />
-            {bridgeFeeFiat ? (
-              <Row
-                label={t('providerFee')}
-                testId="transaction-bridge-fee"
-                value={formatFiat(bridgeFeeFiat)}
-              />
-            ) : null}
-            <Row
-              label={t('total')}
-              testId="transaction-breakdown-value-amount"
-              value={formatFiat(totalFiat)}
-            />
-          </Section>
-        ) : null}
-
-        {transactionMeta ? (
-          <Section>
-            <TransactionDetailsProvider transactionMeta={transactionMeta}>
-              <TransactionDetailsSummary />
-            </TransactionDetailsProvider>
-          </Section>
-        ) : null}
-      </div>
-
-      <Footer>
-        {isDeposit &&
+    <MmPayDetailsLayout
+      avatarTokens={[item.data.token?.assetId]}
+      footer={
+        isDeposit &&
         hasMoneyAccount &&
         transactionMeta?.status === TransactionMetaStatus.confirmed ? (
           <Button
@@ -134,8 +71,14 @@ export function MoneyAccountDetails({ item }: Readonly<Props>) {
           </Button>
         ) : (
           <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
-        )}
-      </Footer>
-    </div>
+        )
+      }
+      formatFiat={formatFiat}
+      heroAmount={signedAmount}
+      heroTextColor={isDeposit ? 'text-success-default' : 'text-default'}
+      item={item}
+      metamaskPay={{ bridgeFeeFiat, networkFeeFiat, totalFiat }}
+      transactionMeta={transactionMeta}
+    />
   );
 }
