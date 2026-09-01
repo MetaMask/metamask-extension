@@ -14,7 +14,7 @@ type LintChangedOptions = {
   fix: boolean;
 };
 
-const JS_TS_TSX_MTS_SNAP_FILE_REGEX = /\.(js|ts|tsx|mts|snap)$/u;
+const JS_TS_TSX_MTS_SNAP_FILE_REGEX = /\.(js|mjs|ts|tsx|mts|snap)$/u;
 const require = createRequire(import.meta.url);
 
 function runGit(args: string[]): string {
