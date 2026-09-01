@@ -82,6 +82,7 @@ export const submitBridgeTx = (
  * @param params.tokenSecurityTypeDestination - Security classification of the destination token (e.g. "Malicious", "Warning"), or null when unavailable.
  * @param params.activeAbTests - Active experiment assignments for transaction attribution.
  * @param params.inputPrimaryDenomination - The source denomination shown at submission time.
+ * @param params.quotesReceivedContext - Metrics context captured when quotes were received.
  * @returns A thunk that dispatches the `submitIntent` bridge status action.
  */
 export const submitBridgeIntent = (params: {
@@ -91,6 +92,7 @@ export const submitBridgeIntent = (params: {
   tokenSecurityTypeDestination?: string | null;
   activeAbTests?: ActiveABTestAssignment[];
   inputPrimaryDenomination?: InputPrimaryDenomination;
+  quotesReceivedContext?: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived];
 }) =>
   callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [params]);
 
