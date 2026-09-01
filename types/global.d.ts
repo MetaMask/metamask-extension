@@ -6,6 +6,7 @@ import type { Browser } from 'webextension-polyfill';
 import type { Preferences } from '../shared/types/preferences';
 import type ExtensionPlatform from '../app/scripts/platforms/extension';
 import type { ExtensionLazyListener } from '../app/scripts/lib/extension-lazy-listener/extension-lazy-listener';
+import type { ExtensionStartup } from '../app/scripts/lib/extension-startup';
 import type {
   LongTaskMetrics,
   LongTaskMetricsWithTBT,
@@ -65,6 +66,10 @@ type StateHooks = {
    * This is initialized by the service worker in MV3. It is handled in `background.js`.
    */
   lazyListener?: ExtensionLazyListener<typeof chrome>;
+  /**
+   * MV3 post-update startup coordination shared with `background.js`.
+   */
+  extensionStartup?: ExtensionStartup;
   /**
    * Reload the extension. This is used to trigger extension reload from a page context by E2E
    * tests.

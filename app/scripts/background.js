@@ -144,6 +144,14 @@ import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 const lazyListener =
   globalThis.stateHooks.lazyListener ?? new ExtensionLazyListener(browser);
 
+// MV3 configures ExtensionStartup in service-worker.ts and sets it on globalThis.stateHooks.
+// MV2 does not need post-update startup coordination, so it uses an immediately-ready fallback.
+const extensionStartup = globalThis.stateHooks.extensionStartup ?? {
+  ready: Promise.resolve(),
+  claimReload: () => true,
+  markReady: () => undefined,
+};
+
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
@@ -206,13 +214,6 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-const postUpdateReloadAbortController = new AbortController();
-
-if (!isFirefox) {
-  browser.action.enable().catch((error) => {
-    log.warn('[post-update-reload] Failed to enable the toolbar action', error);
-  });
-}
 
 /**
  * Parses port connection info for routing decisions.
@@ -261,9 +262,10 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
 
 lazyListener
   .once('runtime', 'onInstalled')
-  .then((details) => handleOnInstalled(details))
+  .then(handleOnInstalled)
   .catch((error) => {
-    log.error('MetaMask - Failed to handle runtime.onInstalled', error);
+    log.error('MetaMask - Failed to coordinate extension startup', error);
+    extensionStartup.markReady();
   });
 
 /**
@@ -401,10 +403,6 @@ const criticalErrorHandler = new CriticalErrorHandler();
  */
 const handleOnConnect = async (port) => {
   const { isMetaMaskUIPort } = parsePortInfo(port);
-  if (isMetaMaskUIPort && !postUpdateReloadAbortController.signal.aborted) {
-    log.info('[post-update-reload] Internal UI connection attempt observed');
-    postUpdateReloadAbortController.abort();
-  }
   if (process.env.IN_TEST) {
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
@@ -451,7 +449,7 @@ const handleOnConnect = async (port) => {
 
   // Queue up connection attempts here, waiting until after initialization
   try {
-    await isInitialized;
+    await Promise.all([isInitialized, extensionStartup.ready]);
 
     // Notify UI that background initialization is complete, before sending state.
     // This is sent on the raw port (like ALIVE) so the UI can distinguish between
@@ -557,7 +555,7 @@ if (
 
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
-  await isInitialized;
+  await Promise.all([isInitialized, extensionStartup.ready]);
   // This is set in `setupController`, which is called as part of initialization
   connectExternallyConnectable(...args);
 });
@@ -1886,6 +1884,8 @@ async function getCurrentTab() {
  * Opens the browser popup for user confirmation
  */
 async function triggerUi() {
+  await extensionStartup.ready;
+
   const tabs = await platform.getActiveTabs();
   const currentlyActiveMetamaskTab = Boolean(
     tabs.find((tab) => openMetamaskTabsIDs[tab.id]),
@@ -1975,16 +1975,26 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
 async function handleOnInstalled([details]) {
   if (details.reason === 'install') {
     await onInstall();
-  } else if (details.reason === 'update') {
-    const { previousVersion } = details;
-    if (!previousVersion || previousVersion === platform.getVersion()) {
+  } else if (
+    details.reason === 'update' &&
+    details.previousVersion &&
+    details.previousVersion !== platform.getVersion()
+  ) {
+    await isInitialized;
+    if (
+      (await onUpdate(
+        controller,
+        platform,
+        details.previousVersion,
+        requestSafeReload,
+        extensionStartup.claimReload(),
+      )) === 'reload'
+    ) {
       return;
     }
-    await isInitialized;
-    await onUpdate(controller, platform, previousVersion, requestSafeReload, {
-      postUpdateReloadAbortSignal: postUpdateReloadAbortController.signal,
-    });
   }
+
+  extensionStartup.markReady();
 }
 
 /**

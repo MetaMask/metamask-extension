@@ -3,10 +3,18 @@
 import './scripts/load/bootstrap';
 import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
+import {
+  ExtensionStartup,
+  type ExtensionStartupServiceWorker,
+} from './scripts/lib/extension-startup';
 
 const { chrome } = globalThis;
 
 const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+const serviceWorker = self as unknown as ExtensionStartupServiceWorker;
+const extensionStartup = new ExtensionStartup(chrome, serviceWorker);
+globalThis.stateHooks.extensionStartup = extensionStartup;
 
 function saveTimestamp() {
   const timestamp = new Date().toISOString();
@@ -40,8 +48,16 @@ async function runImportScripts() {
 
   const startImportScriptsTime = performance.now();
 
-  // eslint-disable-next-line import-x/extensions
-  await import('./scripts/background.js');
+  try {
+    // eslint-disable-next-line import-x/extensions
+    await import('./scripts/background.js');
+  } catch (error) {
+    // If background startup fails before it can schedule the update recovery
+    // reload, expose the UI so its existing critical-startup-error flow can
+    // recover or guide the user.
+    extensionStartup.markReady();
+    throw error;
+  }
 
   const endImportScriptsTime = performance.now();
 
@@ -91,7 +107,6 @@ chrome.runtime.onConnect.addListener((port) => {
  * that whenever the already installed service worker is stopped and then restarted, the state
  * is 'activated'.
  */
-// @ts-expect-error - typescript doesn't know about this
-if (self.serviceWorker.state === 'activated') {
+if (serviceWorker.serviceWorker.state === 'activated') {
   runImportScripts();
 }
