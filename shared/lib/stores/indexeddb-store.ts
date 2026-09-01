@@ -94,6 +94,24 @@ export class IndexedDBStore {
     return keys.map((key) => resultMap.get(key));
   }
 
+  /**
+   * Get every key present in the store.
+   *
+   * @returns The keys, as strings.
+   */
+  async getAllKeys(): Promise<string[]> {
+    if (!this.#db) {
+      throw new Error('IndexedDBStore: database is not open');
+    }
+    const tx = this.#db.transaction('store', 'readonly');
+    const store = tx.objectStore('store');
+    return await new Promise((resolve, reject) => {
+      const request = store.getAllKeys();
+      request.onsuccess = () => resolve(request.result.map(String));
+      request.onerror = () => reject(request.error);
+    });
+  }
+
   async remove(keys: string[]): Promise<void> {
     if (!this.#db) {
       throw new Error('Database is not open');

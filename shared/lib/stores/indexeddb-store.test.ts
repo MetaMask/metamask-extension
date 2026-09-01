@@ -127,4 +127,25 @@ describe('IndexedDBStore', () => {
       await expect(db.remove(['key'])).rejects.toThrow('Database is not open');
     });
   });
+
+  describe('getAllKeys', () => {
+    it('returns every key in the store', async () => {
+      await db.open(dbName, dbVersion);
+      await db.set({ a: 1, b: 2, c: 3 });
+
+      expect((await db.getAllKeys()).sort()).toStrictEqual(['a', 'b', 'c']);
+    });
+
+    it('returns an empty array for an empty store', async () => {
+      await db.open(dbName, dbVersion);
+
+      expect(await db.getAllKeys()).toStrictEqual([]);
+    });
+
+    it('throws when the database is not open', async () => {
+      await expect(db.getAllKeys()).rejects.toThrow(
+        'IndexedDBStore: database is not open',
+      );
+    });
+  });
 });
