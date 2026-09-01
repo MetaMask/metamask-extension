@@ -191,6 +191,8 @@ export function getLegacyBackgroundApiServiceMessenger(
       'AddressBookController:clear',
       'PreferencesController:resetState',
       'OnboardingController:resetOnboarding',
+      'PerpsAgentWalletController:onUnlock',
+      'PerpsAgentWalletController:onPasswordChange',
     ],
     events: [
       'NetworkEnablementController:stateChange',

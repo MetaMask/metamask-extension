@@ -319,6 +319,10 @@ import {
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
 import type { UsePPOMAction } from '../lib/ppom/ppom-util';
+import type {
+  PerpsAgentWalletControllerOnUnlockAction,
+  PerpsAgentWalletControllerOnPasswordChangeAction,
+} from '../controllers/perps/agent-wallet/types';
 import {
   OnboardingControllerGetIsSocialLoginFlowAction,
   OnboardingControllerResetOnboardingAction,
@@ -696,6 +700,8 @@ type AllowedActions =
   | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdateCaveatAction
   | PermissionControllerUpdatePermissionsByCaveatAction
+  | PerpsAgentWalletControllerOnPasswordChangeAction
+  | PerpsAgentWalletControllerOnUnlockAction
   | PhishingControllerMaybeUpdateStateAction
   | PhishingControllerScanAddressAction
   | PhishingControllerTestOriginAction
@@ -2286,6 +2292,19 @@ export class LegacyBackgroundApiService {
           throw err;
         }
       }
+
+      // Best-effort: re-encrypt perps agent keys with the new password. Must
+      // never fail the password change flow.
+      try {
+        await this.#messenger.call(
+          'PerpsAgentWalletController:onPasswordChange',
+          {
+            password: newPassword,
+          },
+        );
+      } catch (error) {
+        log.warn('error while re-encrypting perps agent wallets', error);
+      }
     } catch (error) {
       log.error('error while changing password', error);
       throw error;
@@ -2517,6 +2536,17 @@ export class LegacyBackgroundApiService {
           'SeedlessOnboardingController:submitPassword',
           password,
         );
+      }
+      // Best-effort: decrypt perps agent keys now that the vault is unlocked.
+      // Must never block the unlock flow, and is skipped for encryptionKey
+      // unlocks (passkey / social-login recovery) — agent signing stays
+      // inactive for that session and perps falls back to master signing.
+      try {
+        await this.#messenger.call('PerpsAgentWalletController:onUnlock', {
+          password,
+        });
+      } catch (error) {
+        log.warn('error while unlocking perps agent wallets', error);
       }
     }
 
