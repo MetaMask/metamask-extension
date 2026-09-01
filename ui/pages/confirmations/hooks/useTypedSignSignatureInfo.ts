@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 
 import {
+  getEip712TokenId,
   isOrderSignatureRequest,
   isPermitSignatureRequest,
   isSignatureTransactionType,
+  parseSanitizeTypedDataMessage,
 } from '../utils';
 import { SignatureRequestType } from '../types/confirm';
-import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { TypedSignSignaturePrimaryTypes } from '../constants';
@@ -30,17 +31,17 @@ export const useTypedSignSignatureInfo = (
     return undefined;
   }, [confirmation]);
 
-  // here we are using presence of tokenId in typed message data to know if its NFT permit
-  // we can get contract details for verifyingContract but that is async process taking longer
-  // and result in confirmation page content loading late
   const tokenStandard = useMemo(() => {
     if (primaryType !== TypedSignSignaturePrimaryTypes.PERMIT) {
       return undefined;
     }
-    const {
-      message: { tokenId },
-    } = parseTypedDataMessage(confirmation?.msgParams?.data as string);
-    if (tokenId !== undefined) {
+
+    const { message, types, primaryType: messagePrimaryType } =
+      parseSanitizeTypedDataMessage(
+        confirmation?.msgParams?.data as string,
+      );
+
+    if (getEip712TokenId(message, types, messagePrimaryType) !== undefined) {
       return TokenStandard.ERC721;
     }
     return undefined;

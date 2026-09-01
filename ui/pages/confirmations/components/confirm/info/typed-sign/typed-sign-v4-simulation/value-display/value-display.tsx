@@ -31,6 +31,7 @@ import {
 import { DAI_CONTRACT_ADDRESS } from '../../../shared/constants';
 import { getAmountColors } from '../../../utils';
 import { isSpendingCapUnlimited } from '../../../approve/hooks/use-approve-token-simulation';
+import { normalizeUint256 } from '../../../../../../utils';
 
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */
@@ -50,7 +51,7 @@ type PermitSimulationValueDisplayParams = {
   value?: number | string;
 
   /** The tokenId for NFT */
-  tokenId?: string;
+  tokenId?: number | string;
 
   /** The permit message */
   message?: { allowed?: boolean | null };
@@ -88,22 +89,24 @@ const PermitSimulationValueDisplay = ({
     MetaMetricsEventLocation.SignatureConfirmation,
   );
   const { decimalsNumber: tokenDecimals } = tokenDetails;
+  const normalizedTokenId = normalizeUint256(tokenId);
 
   const fiatValue = useMemo(() => {
-    if (exchangeRate && value && !tokenId) {
+    if (exchangeRate && value && !normalizedTokenId) {
       const tokenAmount = calcTokenAmount(value, tokenDecimals);
       return exchangeRate.times(tokenAmount).toNumber();
     }
     return undefined;
-  }, [exchangeRate, tokenDecimals, tokenId, value]);
+  }, [exchangeRate, normalizedTokenId, tokenDecimals, value]);
 
   const { tokenValue, tokenValueMaxPrecision, shouldShowUnlimitedValue } =
     useMemo(() => {
-      const isDAIPermit = tokenContract === DAI_CONTRACT_ADDRESS;
-      const hasPermitAllowedProp = message?.allowed !== undefined;
-      const showUnlimitedDueToDAIContract = isDAIPermit && hasPermitAllowedProp;
+      const isDAIPermit =
+        tokenContract.toLowerCase() === DAI_CONTRACT_ADDRESS.toLowerCase();
+      const showUnlimitedDueToDAIContract =
+        isDAIPermit && message?.allowed === true;
 
-      if (!value || tokenId) {
+      if (!value || normalizedTokenId) {
         return {
           tokenValue: null,
           tokenValueMaxPrecision: null,
@@ -131,7 +134,7 @@ const PermitSimulationValueDisplay = ({
       message?.allowed,
       tokenDecimals,
       tokenContract,
-      tokenId,
+      normalizedTokenId,
       value,
     ]);
 
@@ -146,6 +149,17 @@ const PermitSimulationValueDisplay = ({
   }
 
   const { color, backgroundColor } = getAmountColors(credit, debit);
+  const shortenedTokenId = normalizedTokenId
+    ? shortenString(normalizedTokenId, {
+        truncatedCharLimit: 15,
+        truncatedStartChars: 15,
+        truncatedEndChars: 0,
+        skipCharacterInEnd: true,
+      })
+    : undefined;
+  const tooltipTitle =
+    tokenValueMaxPrecision ??
+    (normalizedTokenId ? `#${normalizedTokenId}` : undefined);
 
   return (
     <Box marginLeft="auto" style={{ maxWidth: '100%' }}>
@@ -157,7 +171,7 @@ const PermitSimulationValueDisplay = ({
         >
           <Tooltip
             position="bottom"
-            title={tokenValueMaxPrecision}
+            title={tooltipTitle}
             wrapperStyle={{ minWidth: 0 }}
             interactive
           >
@@ -181,7 +195,7 @@ const PermitSimulationValueDisplay = ({
                     truncatedEndChars: 0,
                     skipCharacterInEnd: true,
                   })}
-              {tokenId && `#${tokenId}`}
+              {shortenedTokenId && `#${shortenedTokenId}`}
             </Text>
           </Tooltip>
         </Box>

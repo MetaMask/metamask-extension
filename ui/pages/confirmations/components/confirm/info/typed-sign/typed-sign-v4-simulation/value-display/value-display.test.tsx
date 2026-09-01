@@ -8,6 +8,7 @@ import { enLocale as messages } from '../../../../../../../../../test/lib/i18n-h
 import { MetaMetricsEventName } from '../../../../../../../../../shared/constants/metametrics';
 import * as actions from '../../../../../../../../store/actions';
 import { memoizedGetTokenStandardAndDetailsByChain } from '../../../../../../utils/token';
+import { DAI_CONTRACT_ADDRESS } from '../../../shared/constants';
 import PermitSimulationValueDisplay from './value-display';
 
 const mockTrackEvent = jest.fn();
@@ -58,6 +59,55 @@ describe('PermitSimulationValueDisplay', () => {
 
     expect(await findByText('0.432')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+  });
+
+  it('does not let an invalid token ID suppress the token value', async () => {
+    const mockStore = configureMockStore([])(mockState);
+
+    const { findByText } = renderWithProvider(
+      <PermitSimulationValueDisplay
+        tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        tokenId="not-a-number"
+        value="4321"
+        chainId="0x1"
+      />,
+      mockStore,
+    );
+
+    expect(await findByText('0.432')).toBeInTheDocument();
+  });
+
+  it('bounds the visible token ID length', async () => {
+    const mockStore = configureMockStore([])(mockState);
+
+    const { findByText } = renderWithProvider(
+      <PermitSimulationValueDisplay
+        tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        tokenId="115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        chainId="0x1"
+      />,
+      mockStore,
+    );
+
+    expect(await findByText('#115792089237316...')).toBeInTheDocument();
+  });
+
+  it('does not render unlimited for a DAI revocation', async () => {
+    const mockStore = configureMockStore([])(mockState);
+
+    const { queryByText } = renderWithProvider(
+      <PermitSimulationValueDisplay
+        tokenContract={DAI_CONTRACT_ADDRESS}
+        chainId="0x1"
+        message={{ allowed: false }}
+        canDisplayValueAsUnlimited
+      />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(queryByText(messages.unlimited.message)).not.toBeInTheDocument();
+    });
   });
 
   it('should invoke method to track missing decimal information for ERC20 tokens', async () => {

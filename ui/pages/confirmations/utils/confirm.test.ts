@@ -7,11 +7,13 @@ import {
 import {
   orderSignatureMsg,
   permitSignatureMsg,
+  permitSignatureMsgWithUnsignedFields,
   unapprovedTypedSignMsgV4,
 } from '../../../../test/data/confirmations/typed_sign';
 import { SignatureRequestType } from '../types/confirm';
 import {
   getConfirmationTransactionType,
+  getEip712TokenId,
   getMoneyAccountTransactionType,
   isOrderSignatureRequest,
   isPermitSignatureRequest,
@@ -33,10 +35,113 @@ describe('confirm util', () => {
       expect(result.sanitizedMessage.type).toBe('Mail');
       expect(result.primaryType).toBe('Mail');
     });
+    it('removes message fields that are not declared by the primary type', () => {
+      const result = parseSanitizeTypedDataMessage(
+        permitSignatureMsgWithUnsignedFields.msgParams?.data as string,
+      );
+
+      expect(result.message).toStrictEqual({
+        owner: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+        spender: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4',
+        value:
+          '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+        nonce: '0',
+        deadline: '1893456000',
+      });
+      expect(result.message).not.toHaveProperty('tokenId');
+      expect(result.message).not.toHaveProperty('allowed');
+    });
+
+    it('removes domain fields that are not declared by EIP712Domain', () => {
+      const result = parseSanitizeTypedDataMessage(
+        JSON.stringify({
+          types: {
+            EIP712Domain: [{ name: 'name', type: 'string' }],
+            Permit: [{ name: 'value', type: 'uint256' }],
+          },
+          primaryType: 'Permit',
+          domain: {
+            name: 'Token',
+            verifyingContract:
+              '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          },
+          message: { value: '1' },
+        }),
+      );
+
+      expect(result.domain).toStrictEqual({ name: 'Token' });
+    });
+
+    it('removes unsigned fields from nested struct arrays', () => {
+      const result = parseSanitizeTypedDataMessage(
+        JSON.stringify({
+          types: {
+            PermitBatch: [{ name: 'details', type: 'PermitDetails[]' }],
+            PermitDetails: [
+              { name: 'token', type: 'address' },
+              { name: 'amount', type: 'uint160' },
+            ],
+          },
+          primaryType: 'PermitBatch',
+          domain: {},
+          message: {
+            details: [
+              {
+                token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                amount: '100',
+                unsignedAmount: '0',
+              },
+            ],
+          },
+        }),
+      );
+
+      expect(result.message).toStrictEqual({
+        details: [
+          {
+            token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            amount: '100',
+          },
+        ],
+      });
+    });
+
     it('throw error for invalid typedDataMessage', () => {
       expect(() => {
         parseSanitizeTypedDataMessage('{}');
       }).toThrow();
+    });
+  });
+
+  describe('getEip712TokenId', () => {
+    const types = {
+      Permit: [{ name: 'tokenId', type: 'uint256' }],
+    };
+
+    it('returns a normalized schema-declared uint256 token ID', () => {
+      expect(getEip712TokenId({ tokenId: '0x2a' }, types, 'Permit')).toBe(
+        '42',
+      );
+    });
+
+    it('ignores an undeclared token ID', () => {
+      expect(getEip712TokenId({ tokenId: '42' }, {}, 'Permit')).toBeUndefined();
+    });
+
+    it('ignores malformed and out-of-range token IDs', () => {
+      expect(
+        getEip712TokenId({ tokenId: 'not-a-number' }, types, 'Permit'),
+      ).toBeUndefined();
+      expect(
+        getEip712TokenId(
+          {
+            tokenId:
+              '115792089237316195423570985008687907853269984665640564039457584007913129639936',
+          },
+          types,
+          'Permit',
+        ),
+      ).toBeUndefined();
     });
   });
 
