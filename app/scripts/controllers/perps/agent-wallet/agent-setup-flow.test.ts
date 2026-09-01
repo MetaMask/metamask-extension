@@ -169,9 +169,12 @@ describe('setupAgentWallet', () => {
       expect(body.nonce).toBe(data.message.nonce);
       expect(body.signature).toEqual({
         r: SIGNATURE.slice(0, 66),
-        s: SIGNATURE.slice(66, 130),
+        s: `0x${SIGNATURE.slice(66, 130)}`,
         v: 28,
       });
+      // Both r and s are Hex(66): 0x + 64 chars (ApproveAgentRequest schema).
+      expect(body.signature.r).toMatch(/^0x[0-9a-fA-F]{64}$/u);
+      expect(body.signature.s).toMatch(/^0x[0-9a-fA-F]{64}$/u);
 
       // Activation: registration persisted, status active, event emitted.
       expect(harness.controller.state.agentsByAccount[MASTER]).toMatchObject({
@@ -306,6 +309,35 @@ describe('setupAgentWallet', () => {
       expect(harness.controller.state.setupStatusByAccount[MASTER]).toBe(
         'failed',
       );
+    });
+
+    it('calls failSetup and throws AGENT_SETUP_SUBMISSION_FAILED when fetch rejects with a network error', async () => {
+      jest
+        .spyOn(global, 'fetch')
+        .mockRejectedValue(new TypeError('fetch failed'));
+      const harness = buildHarness();
+
+      await expect(
+        setupAgentWallet(harness.flowController, harness.messenger, {
+          masterAccountAddress: MASTER,
+          isTestnet: false,
+          password: PASSWORD,
+        }),
+      ).rejects.toThrow(
+        new AgentSetupSubmissionError(
+          'submission failed: TypeError: fetch failed',
+        ),
+      );
+      expect(harness.failSetup).toHaveBeenCalledWith(
+        MASTER,
+        expect.stringContaining('TypeError: fetch failed'),
+      );
+      // Not left mid-flight: the setup is marked failed.
+      expect(harness.controller.state.setupStatusByAccount[MASTER]).toBe(
+        'failed',
+      );
+      expect(harness.controller.state.agentsByAccount).toEqual({});
+      expect(harness.controller.state.agentKeyVaultByAccount).toEqual({});
     });
   });
 });

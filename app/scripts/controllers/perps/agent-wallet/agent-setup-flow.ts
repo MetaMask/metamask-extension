@@ -10,7 +10,9 @@ export class AgentSetupSubmissionError extends Error {}
 
 function splitSignature(signature: string): { r: string; s: string; v: 27 | 28 } {
   const r = signature.slice(0, 66);
-  const s = signature.slice(66, 130);
+  // HyperLiquid's ApproveAgentRequest schema requires Hex(66) (0x + 64 chars)
+  // for both r and s, same as r.
+  const s = `0x${signature.slice(66, 130)}`;
   const rawV = parseInt(signature.slice(130, 132), 16);
   const v = (rawV < 27 ? rawV + 27 : rawV) as 27 | 28;
   return { r, s, v };
@@ -83,9 +85,18 @@ export async function setupAgentWallet(
               signatureChainId: '0xa4b1', agentAddress: handle.address, agentName, nonce },
     nonce, signature: { r, s, v },
   });
-  const res = await fetch(EXCHANGE_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
-  const json = (await res.json()) as { status?: string };
-  if (!res.ok || json.status === 'err') {
+  // Network/transport failures must not leave the setup stuck mid-flight.
+  let json: { status?: string };
+  let ok: boolean;
+  try {
+    const res = await fetch(EXCHANGE_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+    ok = res.ok;
+    json = (await res.json()) as { status?: string };
+  } catch (err) {
+    controller.failSetup(opts.masterAccountAddress, `submission failed: ${String(err)}`);
+    throw new AgentSetupSubmissionError(`submission failed: ${String(err)}`);
+  }
+  if (!ok || json.status === 'err') {
     controller.failSetup(opts.masterAccountAddress, `submission failed: ${JSON.stringify(json)}`);
     throw new AgentSetupSubmissionError(JSON.stringify(json));
   }
