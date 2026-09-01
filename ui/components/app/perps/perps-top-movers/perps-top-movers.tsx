@@ -186,11 +186,11 @@ export const PerpsTopMovers = ({
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
-          className="w-full rounded-lg border border-muted p-1"
+          className="w-full rounded-full border border-muted p-0.5"
           data-testid="perps-top-movers-toggle"
         >
           <ButtonBase
-            className={`flex-1 h-8 rounded-md ${
+            className={`flex-1 h-8 rounded-full ${
               isGainers ? 'bg-muted' : 'bg-transparent hover:bg-hover'
             }`}
             onClick={handleSelectGainers}
@@ -208,7 +208,7 @@ export const PerpsTopMovers = ({
             </Text>
           </ButtonBase>
           <ButtonBase
-            className={`flex-1 h-8 rounded-md ${
+            className={`flex-1 h-8 rounded-full ${
               isGainers ? 'bg-transparent hover:bg-hover' : 'bg-muted'
             }`}
             onClick={handleSelectLosers}
@@ -230,7 +230,7 @@ export const PerpsTopMovers = ({
 
       {isLoading ? (
         <Box
-          className="flex-col gap-2 overflow-hidden px-4"
+          className="flex-col gap-1.5 overflow-hidden px-4"
           data-testid="perps-top-movers-skeleton"
         >
           {Array.from({ length: PILL_ROW_COUNT }).map((_, rowIndex) => (
@@ -251,7 +251,7 @@ export const PerpsTopMovers = ({
         </Box>
       ) : (
         <Box
-          className="flex-col gap-2 overflow-x-auto px-4"
+          className="flex-col gap-1.5 overflow-x-auto px-4"
           data-testid="perps-top-movers-list"
         >
           {pillRows.map((row, rowIndex) => (
