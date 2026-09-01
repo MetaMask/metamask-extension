@@ -390,6 +390,7 @@ import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metri
 import { ProofOfOwnershipServiceInit } from './messenger-client-init/proof-of-ownership-service-init';
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
+import { UserTraitsServiceInit } from './messenger-client-init/user-traits-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
@@ -593,6 +594,7 @@ export default class MetamaskController extends EventEmitter {
       GeolocationController: GeolocationControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
+      UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
       UserOperationController: UserOperationControllerInit,
@@ -735,6 +737,7 @@ export default class MetamaskController extends EventEmitter {
     this.networkController = this.wallet.getInstance('NetworkController');
     this.analyticsController = messengerClientsByName.AnalyticsController;
     this.metaMetricsController = messengerClientsByName.MetaMetricsController;
+    this.userTraitsService = messengerClientsByName.UserTraitsService;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
       messengerClientsByName.MetaMetricsDataDeletionController;
@@ -853,8 +856,12 @@ export default class MetamaskController extends EventEmitter {
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
 
+    // Derives MetaMetrics user traits from the full state and forwards changes
+    // to the analytics pipeline. This lives in a service (not MetaMetricsController)
+    // as part of the MetaMetricsController deprecation; the `update` firehose
+    // subscription stays here because it is the only source of the flattened state.
     this.on('update', (update) => {
-      this.metaMetricsController.handleMetaMaskStateUpdate(update);
+      this.userTraitsService.handleMetaMaskStateUpdate(update);
     });
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
@@ -2912,46 +2919,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:toggleExternalServices',
       ),
-      addToken: async ({
-        address,
-        symbol,
-        decimals,
-        image,
-        networkClientId,
-      }) => {
-        if (getIsAssetsUnifiedStateIncludedInBuild()) {
-          const selectedAccount = this.accountsController.getSelectedAccount();
-          const chainId =
-            this.networkController.getNetworkClientById(networkClientId)
-              ?.configuration?.chainId;
-          const assetId = toAssetId(address, chainId);
-          if (!assetId) {
-            throw new Error(
-              `MetaMask - Cannot build assetId for token ${address} on ${chainId}`,
-            );
-          }
-          await this.assetsController.addCustomAsset(
-            selectedAccount.id,
-            assetId,
-            {
-              address,
-              symbol,
-              name: symbol,
-              decimals,
-              chainId,
-              ...(image ? { iconUrl: image } : {}),
-            },
-          );
-        } else {
-          await tokensController.addToken({
-            address,
-            symbol,
-            decimals,
-            image,
-            networkClientId,
-          });
-        }
-      },
+      addToken: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addToken',
+      ),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
@@ -3540,32 +3511,6 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // MetaMetrics
-      trackMetaMetricsEvent: (payload, options) => {
-        trackEvent(
-          createEventBuilder(payload.event)
-            .addProperties({
-              ...(payload.properties ?? {}),
-              ...(payload.category === undefined
-                ? {}
-                : { category: payload.category }),
-              ...(payload.revenue === undefined
-                ? {}
-                : { revenue: payload.revenue }),
-              ...(payload.value === undefined ? {} : { value: payload.value }),
-              ...(payload.currency === undefined
-                ? {}
-                : { currency: payload.currency }),
-            })
-            .addSensitiveProperties(payload.sensitiveProperties)
-            .build({
-              environmentType: payload.environmentType,
-              page: payload.page,
-              referrer: payload.referrer,
-              excludeMetaMetricsId: options?.excludeMetaMetricsId,
-              matomoEvent: options?.matomoEvent,
-            }),
-        );
-      },
       trackAnalyticsEvent: trackEvent,
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
