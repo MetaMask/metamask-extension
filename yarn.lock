@@ -6834,13 +6834,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^24.0.1":
-  version: 24.0.1
-  resolution: "@metamask/eth-json-rpc-middleware@npm:24.0.1"
+"@metamask/eth-json-rpc-middleware@npm:^24.0.2":
+  version: 24.0.2
+  resolution: "@metamask/eth-json-rpc-middleware@npm:24.0.2"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^15.0.1"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/eth-sig-util": "npm:^9.0.0"
     "@metamask/json-rpc-engine": "npm:^10.5.0"
     "@metamask/message-manager": "npm:^14.1.2"
     "@metamask/rpc-errors": "npm:^7.0.2"
@@ -6848,7 +6848,7 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     klona: "npm:^2.0.6"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/54ebe641625c1dec7c8d2e9b46551ca9b0006b2b0f0cbdb6aa79644334222711b15cc660250710c4d5bfd0767e5a5e27a35f62dc93e63d90e35e1cf83727be28
+  checksum: 10/f01d71878e994b43a50f97e9da67373167a1f3e02343f16a692ee91ae99348336a278273c91d1c1c09203bc5c158390ba664bd8bd6a7b906138b922c75b30922
   languageName: node
   linkType: hard
 
@@ -33410,7 +33410,7 @@ __metadata:
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.1"
     "@metamask/eth-hd-keyring": "npm:^15.0.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^24.0.1"
+    "@metamask/eth-json-rpc-middleware": "npm:^24.0.2"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:^13.1.0"
     "@metamask/eth-money-keyring": "npm:3.0.0"
