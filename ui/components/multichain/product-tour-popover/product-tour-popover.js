@@ -23,10 +23,12 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Menu } from '../../ui/menu';
 
 export const ProductTour = ({
   className = '',
@@ -45,7 +47,7 @@ export const ProductTour = ({
 }) => {
   const t = useI18nContext();
   return (
-    <Menu
+    <Popover
       className={classnames(
         'multichain-product-tour-menu',
         {
@@ -53,8 +55,12 @@ export const ProductTour = ({
         },
         className,
       )}
-      anchorElement={anchorElement}
-      onHide={closeMenu}
+      referenceElement={anchorElement}
+      onClickOutside={closeMenu}
+      onPressEscKey={closeMenu}
+      isOpen
+      isPortal
+      role={PopoverRole.Dialog}
       data-testid="multichain-product-tour-menu-popover"
       {...props}
     >
@@ -133,7 +139,7 @@ export const ProductTour = ({
           </Button>
         </Box>
       </Box>
-    </Menu>
+    </Popover>
   );
 };
 
