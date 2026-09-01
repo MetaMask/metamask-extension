@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { selectLocalActivityItemsByIdentifier } from '../../../selectors/activity';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../selectors/activity/types';
 import type { ToastStatus } from './shared';
 
 const genericToastLabels: Record<ToastStatus, string> = {

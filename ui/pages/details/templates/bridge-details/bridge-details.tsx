@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import type { CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../../selectors/activity/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';

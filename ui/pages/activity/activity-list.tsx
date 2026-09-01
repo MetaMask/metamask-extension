@@ -16,7 +16,7 @@ import {
   ScreenViewedEntryPoint,
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
-import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../selectors/activity/types';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetails } from '../details/transaction-details';
 import { useRampsOrderActivity } from '../../hooks/ramps/useRampsOrderActivity';

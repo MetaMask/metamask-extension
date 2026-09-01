@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../selectors/activity/types';
 import { ApprovalDetails } from './approval-details';
 import { BridgeDetails } from './bridge-details/bridge-details';
 import { ConvertDetails } from './convert-details';

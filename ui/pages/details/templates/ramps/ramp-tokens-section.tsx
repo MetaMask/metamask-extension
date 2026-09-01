@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from '@metamask/design-system-react';
-import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../../selectors/activity/types';
 import { ActivityAvatar } from '../../../../components/app/activity-list-item-avatar';
 import { formatPendingRampTokenLabel } from '../../../../hooks/ramps/utils/formatPendingRampTokenLabel';
 import { hasPositiveNumericAmount } from '../../../../hooks/ramps/utils/hasPositiveNumericAmount';

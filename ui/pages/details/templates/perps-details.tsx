@@ -1,9 +1,7 @@
 import React, { useMemo } from 'react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import type {
-  ActivityListItem,
-  TokenAmount,
-} from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../selectors/activity/types';
+import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { NetworkName } from '../../../components/app/transaction/network-name';

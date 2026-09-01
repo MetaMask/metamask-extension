@@ -10,7 +10,7 @@ import {
 } from '@metamask/design-system-react';
 import { getInternalOrderCode } from '@metamask/ramps-controller';
 import { isCaipAssetType } from '@metamask/utils';
-import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../../selectors/activity/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';

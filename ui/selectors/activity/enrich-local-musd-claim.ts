@@ -2,10 +2,7 @@ import type { CaipChainId } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { getTokenMetadataFromKnownToken } from '../../../shared/lib/activity/adapters/helpers';
 import { toAssetId } from '../../../shared/lib/asset-utils';
-import type {
-  ActivityListItem,
-  TokenAmount,
-} from '../../../shared/lib/activity/types';
+import type { TokenAmount } from '../../../shared/lib/activity/types';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import {
   MUSD_DECIMALS,
@@ -15,6 +12,7 @@ import {
   decodeMerklClaimParams,
   getClaimPayoutFromReceipt,
 } from '../../hooks/musd/transaction-amount-utils';
+import type { ActivityListItem } from './types';
 
 type TransferInformation = {
   amount?: string | number;

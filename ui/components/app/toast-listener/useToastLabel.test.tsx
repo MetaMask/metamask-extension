@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../selectors/activity/types';
 import { useToastLabel } from './useToastLabel';
 
 const mockT = jest.fn((key: string, args?: string[]) =>

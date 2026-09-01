@@ -8,8 +8,8 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
+import type { ActivityListItem } from './types';
 import { enrichLocalActivity } from './enrich-local-activity';
 
 const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';

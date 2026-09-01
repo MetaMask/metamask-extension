@@ -1,11 +1,7 @@
 import React from 'react';
 import { CaipAssetType } from '@metamask/utils';
-import type {
-  ActivityFee,
-  ActivityListItem,
-  FiatAmount,
-  TokenAmount,
-} from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../selectors/activity/types';
+import type { ActivityFee, FiatAmount, TokenAmount } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useIsGasFeeSponsored } from '../../../hooks/activity/useIsGasFeeSponsored';

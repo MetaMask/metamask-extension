@@ -1,4 +1,4 @@
-import type { ActivityKind, Status } from './types';
+import type { Status } from './types';
 
 const fallbackLabelKey = 'activity_fallback';
 
@@ -6,7 +6,7 @@ export function getLabelKeys({
   type,
   status,
 }: {
-  type: ActivityKind;
+  type: string;
   status: Status;
 }) {
   const key = type && status ? `activity_${type}_${status}` : fallbackLabelKey;

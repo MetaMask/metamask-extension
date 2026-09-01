@@ -1,10 +1,8 @@
 import React, { useMemo } from 'react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type {
-  ActivityListItem,
-  TokenAmount,
-} from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../selectors/activity/types';
+import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { parseValueTransfers } from '../../../../shared/lib/activity/adapters/helpers';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
